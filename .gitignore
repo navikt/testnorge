@@ -139,4 +139,5 @@ crashlytics.properties
 crashlytics-build.properties
 
 # Generated web bundle
+/dolly-app/src/main/resources/application.yaml
 /dolly-app/src/main/resources/public/

@@ -20,6 +20,7 @@
 
 	<modules>
 		<module>dolly-app</module>
+		<module>dolly-webapp</module>
 	</modules>
 
 	<properties>
