@@ -21,7 +21,8 @@
 	<modules>
 		<module>dolly-app</module>
 		<module>dolly-webapp</module>
-	</modules>
+        <module>dolly-test</module>
+    </modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
