@@ -19,3 +19,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# package-lock
+package-lock.json
+
+# testdata db.json
+#/mock-api/mock-data/db.json
