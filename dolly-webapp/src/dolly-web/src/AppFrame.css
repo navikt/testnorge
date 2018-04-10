@@ -1,0 +1,21 @@
+#dolly-app {
+  text-align: center;
+}
+
+#dolly-content {
+  display: flex;
+  flex-direction: row;
+}
+
+#sidebar {
+  width: 150px;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
