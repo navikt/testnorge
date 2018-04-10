@@ -1,8 +1,6 @@
 import * as types from './actionTypes';
 import axios from 'axios';
-
-// URL
-const mockApiUrl = "http://localhost:3050";
+import ContentApi from '../ContentApi';
 
 
 export function loadPersonsSuccess(persons){
@@ -29,11 +27,10 @@ export function updatePersonSuccess(person){
 export function fetchPersons() {
     return dispatch => {
         try{
-            const getPersons = async () => {
-                const response = await axios.get(mockApiUrl+"/persons");
+            return (async () => {
+                const response = await axios.get(ContentApi.getPersons());
                 dispatch(loadPersonsSuccess(response.data));
-            };
-            return getPersons();
+            })();
 
         } catch(error) {
             console.log(error);
@@ -42,16 +39,12 @@ export function fetchPersons() {
 }
 
 export function createPerson(person){
-    console.log("Create person called");
-    console.log(person);
     return dispatch => {
         try{
-            const createPerson = async () => {
-                let response = await axios.post(mockApiUrl+"/persons", person);
-                console.log(response.data);
+            return (async () => {
+                const response = await axios.post(ContentApi.postPersons(), person);
                 dispatch(createPersonSuccess(response.data));
-            };
-            return createPerson();
+            })();
 
         } catch(error){
             console.log(error)
@@ -59,14 +52,13 @@ export function createPerson(person){
     }
 }
 
-export function updatePerson(id){
+export function updatePerson(person){
     return dispatch => {
         try{
-            const updatePerson = async () => {
-                let response = await axios.post(mockApiUrl+"/persons/"+id, id);
+            return (async () => {
+                const response = await axios.post(ContentApi.putPersons(person.id), person);
                 dispatch(updatePersonSuccess(response.data));
-            };
-            return updatePerson();
+            })();
 
         } catch(error){
             console.log(error)
