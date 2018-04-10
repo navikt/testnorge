@@ -24,4 +24,4 @@ yarn-error.log*
 package-lock.json
 
 # testdata db.json
-#/mock-api/mock-data/db.json
+src/mock-api/mock-data/db.json
