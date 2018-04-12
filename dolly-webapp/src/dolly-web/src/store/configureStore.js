@@ -1,5 +1,5 @@
 import {createStore, combineReducers, applyMiddleware} from 'redux';
-import reducerCollection from '../reducers';
+import reducerCollection from '../reducers/reducerCollection';
 import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import thunk from 'redux-thunk';
 import {routerReducer, routerMiddleware} from 'react-router-redux';
