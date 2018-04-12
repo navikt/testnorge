@@ -9,5 +9,5 @@ public interface IdentRepository extends Repository<Testident, Long>{
 
     List<Testident> findAll();
 
-    List<Testident> findById();
+    List<Testident> findByIdent( Long ident);
 }

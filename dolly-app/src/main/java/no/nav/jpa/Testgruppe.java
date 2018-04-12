@@ -41,21 +41,18 @@ public class Testgruppe {
     private String navn;
     
     @ManyToOne
-    @JoinColumn(name = "NAV_IDENT")
-    @Column(name = "OPPRETTET_AV",nullable = false)
+    @JoinColumn(name = "OPPRETTET_AV",nullable = false)
     private Testident opprettetAv;
     
     @ManyToOne
-    @JoinColumn(name = "NAV_IDENT")
-    @Column(name = "SIST_ENDRET_AV",nullable = false)
+    @JoinColumn(name = "SIST_ENDRET_AV",nullable = false)
     private Testident sistEndretAv;
     
     @Column(name = "DATO_ENDRET", nullable = false)
     private  LocalDateTime datoEndret;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    @Column(nullable = false)
+    @JoinColumn(name = "teamtilhoerighet", nullable = false, referencedColumnName = "id")
     private Team teamtilhoerighet;
 
     @OneToMany(mappedBy = "testgruppe", orphanRemoval = true)

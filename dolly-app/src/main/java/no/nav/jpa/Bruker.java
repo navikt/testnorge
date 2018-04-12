@@ -23,7 +23,7 @@ import java.util.Set;
 public class Bruker {
 
     @Id
-    private Long NAV_IDENT;
+    private String NAV_IDENT;
 
     @ManyToMany(mappedBy = "brukere")
     @Column(name = "TEAM_MEDLEMSKAP")

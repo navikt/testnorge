@@ -12,6 +12,7 @@ import org.hibernate.annotations.Parameter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -49,8 +50,7 @@ public class Team {
 	private LocalDateTime datoOpprettet;
 	
 	@ManyToOne
-	@JoinColumn(name = "NAV_IDENT")
-	@Column(nullable = false)
+	@JoinColumn(name = "EIER",nullable = false, foreignKey = @ForeignKey(name = "EIER"))
 	private Bruker eier;
 	
 	@OneToMany(mappedBy = "teamtilhoerighet", orphanRemoval = true)

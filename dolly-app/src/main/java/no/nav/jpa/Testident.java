@@ -22,6 +22,6 @@ public class Testident {
     private Long ident;
 
     @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name = "GRUPPE_ID", nullable = false)
+    @JoinColumn(name = "GRUPPETILHOERIGHET", nullable = false)
     private Testgruppe testgruppe;
 }
