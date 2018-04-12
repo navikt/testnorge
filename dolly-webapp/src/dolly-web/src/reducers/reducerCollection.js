@@ -1,8 +1,8 @@
-import personReducer from './personReducer';
+import gruppeReducer from './gruppeReducer';
 
 // Knytter alle reducerene i prosjektet samme
 const reducerCollection = {
-    personReducer: personReducer
+    gruppeReducer: gruppeReducer
 };
 
 export default reducerCollection;

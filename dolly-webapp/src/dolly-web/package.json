@@ -38,7 +38,7 @@
     "start-mock-api": "json-server --watch src/mock-api/mock-data/db.json --port 3050"
   },
   "devDependencies": {
-    "json-schema-faker": "^0.5.0-rc14",
+    "json-schema-faker": "^0.5.0-rc15",
     "json-server": "^0.12.1",
     "redux-immutable-state-invariant": "2.1.0"
   }

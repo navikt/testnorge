@@ -1,10 +1,8 @@
 import React from 'react';
 
-const PersonList = ( {
-    persons
-}) => {
+const PersonList = ( {personer} ) => {
 
-    const personList = persons.map(person =>
+    const personList = personer.map(person =>
         <li key={person.id}>
             {person.fornavn}
         </li>

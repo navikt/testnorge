@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
@@ -31,4 +31,10 @@ public class Team {
     private Long id;
 
     private String navn;
+
+    @ManyToMany( cascade = {CascadeType.MERGE, CascadeType.PERSIST })
+    @JoinTable(name = "team_gruppe",
+            joinColumns = @JoinColumn(name = "team_id"),
+            inverseJoinColumns = @JoinColumn(name = "gruppe_id"))
+    private Set<Bruker> brukere = new HashSet<>();
 }

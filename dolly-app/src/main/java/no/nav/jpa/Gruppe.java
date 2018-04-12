@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+import java.util.List;
+import java.util.Set;
 
 import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
@@ -31,4 +31,7 @@ public class Gruppe {
     private Long id;
 
     private String navn;
+
+    @OneToMany(mappedBy = "gruppe", orphanRemoval = true)
+    private Set<Ident> identer;
 }
