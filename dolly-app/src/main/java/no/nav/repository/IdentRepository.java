@@ -1,13 +1,13 @@
 package no.nav.repository;
 
-import no.nav.jpa.Ident;
+import no.nav.jpa.Testident;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;
 
-public interface IdentRepository extends Repository<Ident, Long>{
+public interface IdentRepository extends Repository<Testident, Long>{
 
-    List<Ident> findAll();
+    List<Testident> findAll();
 
-    List<Ident> findById();
+    List<Testident> findById();
 }

@@ -8,7 +8,7 @@ import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
@@ -18,8 +18,8 @@ import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "T_GRUPPER")
-public class Gruppe {
+@Table(name = "T_TESTGRUPPE")
+public class Testgruppe {
 
     @Id
     @GeneratedValue(generator = "gruppeIdGenerator")
@@ -29,9 +29,29 @@ public class Gruppe {
             @Parameter(name = "increment_size", value = "1")
     })
     private Long id;
-
+    
+    @Column(nullable = false)
     private String navn;
+    
+    @ManyToOne
+    @JoinColumn(name = "NAV_IDENT")
+    @Column(name = "OPPRETTET_AV",nullable = false)
+    private Testident opprettetAv;
+    
+    @ManyToOne
+    @JoinColumn(name = "NAV_IDENT")
+    @Column(name = "SIST_ENDRET_AV",nullable = false)
+    private Testident sistEndretAv;
+    
+    @Column(name = "DATO_ENDRET", nullable = false)
+    private  LocalDateTime datoEndret;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    @Column(nullable = false)
+    private Team teamtilhoerighet;
 
-    @OneToMany(mappedBy = "gruppe", orphanRemoval = true)
-    private Set<Ident> identer;
+    @OneToMany(mappedBy = "testgruppe", orphanRemoval = true)
+    @Column(unique = true)
+    private Set<Testident> testidenter;
 }

@@ -12,7 +12,7 @@ public class IdentController {
     @Autowired
     IdentRepository identRepository;
 
-    @GetMapping("/identer")
+    @GetMapping("/testidenter")
     ResponseEntity alleIdenter(){
         return ResponseEntity.ok(identRepository.findAll().toString());
     }
