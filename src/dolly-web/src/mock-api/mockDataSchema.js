@@ -2,18 +2,15 @@ const schema = {
     "type": "object",
     "properties": {
         "persons": {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 20,
-            "items": {
-                "type": "object",
-                "properties": {
+            type: "array",
+            minItems: 10,
+            maxItems: 10,
+            items: {
+                type: "object",
+                properties: {
                     id: {
-                        type: 'string',
-                        unique: true,
-                        minLength: 1,
-                        maxLength: 3,
-                        pattern: '\\d+'
+                        "type": "integer",
+                        "autoIncrement": true
                     },
                     fnr: {
                         type: 'string',
@@ -34,13 +31,47 @@ const schema = {
                     adresse: {
                         type: "string",
                         pattern: '[a-z]{1,9}'
+                    },
+                    gruppeId: {
+                        tyoe: "string",
+                        pattern: '[1-5]'
                     }
+
                 },
-                "required": ["id","fnr", "kjonn", "fornavn", "etternavn", "adresse"]
+                required: ["id","fnr", "kjonn", "fornavn", "etternavn", "adresse", "gruppeId"]
+            }
+        },
+        "grupper": {
+            type: "array",
+            minItems: 5,
+            maxItems: 5,
+            items: {
+                type: "object",
+                properties: {
+                    id: {
+                        "type": "integer",
+                        "autoIncrement": true
+                    },
+                    navn: {
+                        type: 'string',
+                        pattern: '[a-z]{1,9}'
+                    },
+                },
+                required: ["id", "navn"]
+            }
+        },
+        "bruker": {
+            type: "object",
+            properties: {
+                id: {
+                    "type": "integer",
+                    "autoIncrement": true
+                },
+                navn: "testBruker"
             }
         }
     },
-    "required": ["persons"]
+    "required": ["persons", "grupper", "bruker"]
 };
 
 module.exports = schema;
