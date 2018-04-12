@@ -1,11 +1,13 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
 import {Switch} from 'react-router-dom';
-import Home from './components/home/Home';
+import Gruppe from './components/gruppe/GruppeContainer';
+import Home from './components/home/HomeContainer';
 
 const Routes = () => (
     <Switch>
-        <Route path="/" component={Home} />
+        <Route exact path="/" component={Home} />
+        <Route exact path={"/gruppe/:gruppeId"} component={Gruppe} />
     </Switch>
 );
 
