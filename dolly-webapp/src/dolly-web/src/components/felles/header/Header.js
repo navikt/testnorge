@@ -1,6 +1,6 @@
 import React from 'react';
 import './header.css';
-import {Row, Col, Glyphicon} from 'react-bootstrap';
+import {Row, Col} from 'react-bootstrap';
 import DropdownMenuHeader from './user_menu/DropdownMenuHeader';
 
 export default () => {
