@@ -1,7 +1,14 @@
-#dolly-header {
+.dolly-header {
+  max-width: 100%;
   min-height: 7vh;
   padding: 10px;
   background-color: greenyellow;
-
-
 }
+
+.dolly-header .header_dropdown {
+  padding: 18px;
+  padding-left: 30px;
+}
+
+
+
