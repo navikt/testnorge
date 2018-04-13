@@ -26,6 +26,10 @@ class ContentApi {
         return uri + "/persons/" + id;
     }
 
+    static getTeams(id){
+        return uri + "/teams";
+    }
+
 }
 
 export default ContentApi;

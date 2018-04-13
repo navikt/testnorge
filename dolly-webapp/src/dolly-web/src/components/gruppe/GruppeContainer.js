@@ -6,7 +6,6 @@ import axios from 'axios';
 import PersonListe from './PersonListe';
 import ContentApi from '../../ContentApi';
 
-
 class Gruppe extends Component {
     constructor(props, context) {
         super(props, context);
@@ -27,10 +26,13 @@ class Gruppe extends Component {
                 const response = await axios.get(ContentApi.getPersons());
                 this.setState( {personer: response.data });
             })();
-
         } catch (error) {
             console.log(error);
         }
+    }
+
+    saveGrouppeTilTPSF(){
+        return;
     }
 
     render() {
