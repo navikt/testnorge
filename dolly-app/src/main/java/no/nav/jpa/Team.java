@@ -12,7 +12,6 @@ import org.hibernate.annotations.Parameter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -50,16 +49,16 @@ public class Team {
 	private LocalDateTime datoOpprettet;
 	
 	@ManyToOne
-	@JoinColumn(name = "EIER",nullable = false, foreignKey = @ForeignKey(name = "EIER"))
+	@JoinColumn(name = "EIER",nullable = false)
 	private Bruker eier;
 	
 	@OneToMany(mappedBy = "teamtilhoerighet", orphanRemoval = true)
-	@Column(unique = true)
+	@Column(name = "GRUPPER", unique = true)
 	private Set<Testgruppe> grupper;
 	
 	@ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-	@JoinTable(name = "team_gruppe",
+	@JoinTable(name = "team_brukere",
 			joinColumns = @JoinColumn(name = "team_id"),
-			inverseJoinColumns = @JoinColumn(name = "gruppe_id"))
+			inverseJoinColumns = @JoinColumn(name = "bruker_id"))
 	private Set<Bruker> brukere = new HashSet<>();
 }

@@ -8,11 +8,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -23,14 +21,14 @@ import java.util.Set;
 public class Bruker {
 
     @Id
-    private String NAV_IDENT;
+    @Column(name = "NAV_IDENT", length = 10)
+    private String navIdent;
 
     @ManyToMany(mappedBy = "brukere")
     @Column(name = "TEAM_MEDLEMSKAP")
-    private Set<Team> teamMedlemskap = new HashSet<>();
+    private Set<Team> teamMedlemskap;
     
-    @OneToMany
-    @JoinColumn(name = "id")
+    @OneToMany(mappedBy = "eier")
     @Column(name = "TEAM_EIERSKAP",unique = true)
     private Set<Team> teamEierskap;
 }
