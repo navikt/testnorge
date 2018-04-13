@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import React from 'react';
 import AppFrame from './AppFrame';
 import ReactDOM from 'react-dom';
@@ -9,6 +10,7 @@ import registerServiceWorker from './registerServiceWorker';
 import configureStore from './store/configureStore';
 import 'normalize.css';
 import {fetchGrupper} from "./actions/gruppeActions";
+import {AppContainer} from 'react-hot-loader';
 
 
 const history = createHistory();
@@ -17,16 +19,36 @@ const appReduxStore = configureStore(history);
 
 appReduxStore.dispatch(fetchGrupper());
 
-ReactDOM.render((
-    <Provider store={appReduxStore}>
-        <ConnectedRouter history={history}>
-            <AppFrame>
-                <Routes/>
-            </AppFrame>
-        </ConnectedRouter>
-    </Provider>
-    ),
-    document.getElementById('root'));
+const App = () => {
+    return (
+        <Provider store={appReduxStore}>
+            <ConnectedRouter history={history}>
+                <AppFrame>
+                    <Routes/>
+                </AppFrame>
+            </ConnectedRouter>
+        </Provider>
+    )
+};
 
+const render = Component => {
+    ReactDOM.render((
+            <AppContainer>
+                <App/>
+            </AppContainer>
+        ),
+        document.getElementById('root'));
+};
 
 registerServiceWorker();
+
+render(App);
+
+if (module.hot) {
+    module.hot.accept('./', () => {
+        render(App);
+    });
+}
+
+
+

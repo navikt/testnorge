@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {Component} from 'react';
 import SidebarLink from './SidebarLink'
 import './sidebar.css';
 
 
-export default class Sidebar extends React.Component {
+export default class Sidebar extends Component {
     constructor() {
         super();
         this.state = {showItems:[]}

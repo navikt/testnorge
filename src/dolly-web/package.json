@@ -42,9 +42,13 @@
     "redux-thunk": "2.2.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "build-css": "node-less-chokidar src/ -o src/",
+    "watch-css": "npm run build-css && node-less-chokidar src/ -o src/ --watch --recursive",
+    "start-js": "react-app-rewired start",
+    "start": "npm-run-all -p watch-css start-js",
+    "build-js": "react-scripts build",
+    "build": "npm run build-css react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
     "generate-mock-data": "node src/mock-api/generateMockData",
     "prestart-mock-api": "npm run generate-mock-data",
@@ -53,6 +57,7 @@
   "devDependencies": {
     "json-schema-faker": "^0.5.0-rc15",
     "json-server": "^0.12.1",
+    "react-app-rewired": "^1.5.0",
     "redux-immutable-state-invariant": "2.1.0"
   }
 }

@@ -1,17 +1,15 @@
 import React from 'react';
+import Person from './Person';
 
 const PersonList = ( {personer} ) => {
 
     const personList = personer.map(person =>
-        <li key={person.id}>
-            {person.fornavn}
-        </li>
+        <Person key={person.id} person={person} />
     );
 
     return (
         <div>
-            <ul>{personList}</ul>
-
+            {personList}
         </div>
     )
 };

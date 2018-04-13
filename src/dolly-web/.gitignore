@@ -9,6 +9,10 @@
 # production
 /build
 
+# Generated style sheets for less to css
+/src/**/*.css
+/src/**/*.css.map
+
 # misc
 .DS_Store
 .env.local

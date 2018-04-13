@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import * as gruppeActions from '../../actions/gruppeActions';
 import GruppeList from "./GruppeListe";
 import {Input} from 'nav-frontend-skjema';
 
-class Home extends React.Component{
+class Home extends Component{
     constructor(props, context){
         super(props, context);
 
@@ -24,6 +24,7 @@ class Home extends React.Component{
             <div id="home-container">
                 <h1>Home Container</h1>
                 <Input label='testy' />
+                <input label="Bare" />
                 <GruppeList grupper={grupper}/>
             </div>
         )
