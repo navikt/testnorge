@@ -4,12 +4,13 @@ package no.nav.jpa;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
-import javax.persistence.*;
-
-import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Data
@@ -17,11 +18,11 @@ import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 @NoArgsConstructor
 @Table(name = "T_TEST_IDENT")
 public class Testident {
-
-    @Id
-    private Long ident;
-
-    @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name = "GRUPPETILHOERIGHET", nullable = false)
-    private Testgruppe testgruppe;
+	
+	@Id
+	private Long ident;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TILHOERER_GRUPPE", nullable = false)
+	private Testgruppe testgruppe;
 }
