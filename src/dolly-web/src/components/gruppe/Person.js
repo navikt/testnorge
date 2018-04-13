@@ -20,12 +20,11 @@ class Person extends Component {
         });
     }
 
-    onInputChange(stateKeyToChange , value){
-        this.state.person[stateKeyToChange] = value;
+    onInputChange(statePropToChange , value){
+        let person = Object.assign({}, this.state.person);
+        person[statePropToChange] = value;
 
-        this.setState( {
-            person: Object.assign({}, this.state.person)
-        })
+        this.setState( {person: person });
     }
 
     render() {
@@ -36,13 +35,13 @@ class Person extends Component {
                                 id={"navn-id"}
                                 value={this.state.person.fornavn}
                                 onChange={this.onInputChange}
-                                stateKeyToChange={"fornavn"}/>
+                                statePropToChange={"fornavn"}/>
 
                     <InputTextField label={"Etternavn"}
                                 id={"etternavn-id"}
                                 value={this.state.person.etternavn}
                                 onChange={this.onInputChange}
-                                stateKeyToChange={"etternavn"}/>
+                                statePropToChange={"etternavn"}/>
                 </div>
             )
 

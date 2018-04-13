@@ -9,7 +9,7 @@ export class InputTextField extends Component {
     }
 
     changeHandler(event){
-        this.props.onChange(this.props.stateKeyToChange, event.target.value);
+        this.props.onChange(this.props.statePropToChange, event.target.value);
     }
 
     render() {
