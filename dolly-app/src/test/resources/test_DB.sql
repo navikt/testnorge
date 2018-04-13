@@ -1,4 +1,4 @@
---SQL kommandoer for testing av relasjonene mellom de ulike tabellene i databasen.
+--SQL kommandoer for manuell testing av relasjonene mellom de ulike tabellene i databasen.
 INSERT INTO T_BRUKER VALUES ('S221313');
 INSERT INTO T_BRUKER VALUES ('S111111');
 INSERT INTO T_TEAM VALUES (1, 'dollyDB testes', {ts '2018-04-12 18:47:52.00'}, 'teamdollyNAVN', 'S221313');

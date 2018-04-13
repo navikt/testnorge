@@ -47,7 +47,11 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
             <!--<version>${spring.version}</version>-->
         </dependency>
-
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>5.0.7</version>
+        </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
