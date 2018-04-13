@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import * as gruppeActions from '../../actions/gruppeActions';
 import GruppeList from "./GruppeListe";
 import {Input} from 'nav-frontend-skjema';
+import InputDatePicker from '../felles/fields/InputDatePicker';
 
 class Home extends Component{
     constructor(props, context){
@@ -26,6 +27,7 @@ class Home extends Component{
                 <Input label='testy' />
                 <input label="Bare" />
                 <GruppeList grupper={grupper}/>
+                <InputDatePicker/>
             </div>
         )
 

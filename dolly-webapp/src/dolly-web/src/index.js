@@ -12,7 +12,6 @@ import 'normalize.css';
 import {fetchGrupper} from "./actions/gruppeActions";
 import {AppContainer} from 'react-hot-loader';
 
-
 const history = createHistory();
 
 const appReduxStore = configureStore(history);
