@@ -1,0 +1,4 @@
+.person-input-row {
+  display: flex;
+  flex-direction: row;
+}
