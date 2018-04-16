@@ -7,7 +7,5 @@ import java.util.List;
 
 public interface IdentRepository extends Repository<Testident, Long>{
 
-    List<Testident> findAll();
-
-    List<Testident> findByIdent( Long ident);
+    void save(Testident testident);
 }
