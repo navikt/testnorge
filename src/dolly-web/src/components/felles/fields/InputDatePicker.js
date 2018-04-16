@@ -9,9 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 export class InputDatePicker extends Component {
     constructor(props, context){
         super(props, context);
-        this.state = {
-            startDate: moment()
-        };
+
         this.handleChange = this.handleChange.bind(this);
     }
 
