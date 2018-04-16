@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import '../../../styles/nav-frontend.css';
+import './InputTextField.css';
 
-export class InputTextField extends Component {
+export default class InputTextField extends Component {
     constructor(props, context){
         super(props, context);
 
@@ -29,5 +30,3 @@ export class InputTextField extends Component {
         )
     }
 }
-
-export default InputTextField;

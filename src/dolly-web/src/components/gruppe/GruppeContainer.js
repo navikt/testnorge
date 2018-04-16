@@ -10,7 +10,7 @@ class Gruppe extends Component {
     constructor(props, context) {
         super(props, context);
 
-        const gruppeId = parseInt(props.match.params.gruppeId); //TODO når bruker ekte API så vil id være samme type, kan da fjerne denne
+        const gruppeId = parseInt(props.match.params.gruppeId, 10); //TODO når bruker ekte API så vil id være samme type, kan da fjerne denne
         let gruppe = this.props.grupper.find(gruppe => gruppe.id === gruppeId);
 
         this.state = {
@@ -61,11 +61,3 @@ const function_connectReduxAndComponent = connect(mapStateToProps, mapDispatchTo
 
 export default function_connectReduxAndComponent(Gruppe);
 
-const testPers = {
-    "id": "111",
-    "fnr": "83435728331",
-    "kjonn": "k",
-    "fornavn": "teessst",
-    "etternavn": "blaaaaa",
-    "adresse": "xmwgoe"
-};
