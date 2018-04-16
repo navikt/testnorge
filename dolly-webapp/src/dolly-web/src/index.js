@@ -9,9 +9,9 @@ import Routes from './Routes';
 import registerServiceWorker from './registerServiceWorker';
 import configureStore from './store/configureStore';
 import 'normalize.css';
+import './index.css';
 import {fetchGrupper} from "./actions/gruppeActions";
 import {AppContainer} from 'react-hot-loader';
-
 
 const history = createHistory();
 
@@ -23,9 +23,9 @@ const App = () => {
     return (
         <Provider store={appReduxStore}>
             <ConnectedRouter history={history}>
-                <AppFrame>
-                    <Routes/>
-                </AppFrame>
+                    <AppFrame>
+                        <Routes/>
+                    </AppFrame>
             </ConnectedRouter>
         </Provider>
     )
