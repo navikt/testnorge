@@ -31,4 +31,8 @@ public class TestgroupService {
 			throw new RuntimeException("Testgruppe " + gruppeId+ " finnes ikke i DollyDB.");
 		}
 	}
+	
+	public void slettTestidenter(Long gruppeId, List<Long> personIdentListe) {
+		personIdentListe.forEach(testident-> identRepository.deleteTestidentByIdentAndTestgruppeId(testident,gruppeId));
+	}
 }

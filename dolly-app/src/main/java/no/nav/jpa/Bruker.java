@@ -31,4 +31,8 @@ public class Bruker {
     @OneToMany(mappedBy = "eier")
     @Column(name = "TEAM_EIERSKAP",unique = true)
     private Set<Team> teamEierskap;
+    
+    public Bruker(String navIdent) {
+        this.navIdent = navIdent;
+    }
 }

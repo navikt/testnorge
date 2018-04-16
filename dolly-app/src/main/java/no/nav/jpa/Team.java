@@ -4,6 +4,7 @@ package no.nav.jpa;
 import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -28,6 +29,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "T_TEAM")
 public class Team {
 	

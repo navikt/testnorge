@@ -3,6 +3,7 @@ package no.nav.jpa;
 import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,11 +21,11 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "T_TESTGRUPPE")
 public class Testgruppe {
 	
@@ -59,3 +60,4 @@ public class Testgruppe {
 	@Column(unique = true)
 	private Set<Testident> testidenter;
 }
+
