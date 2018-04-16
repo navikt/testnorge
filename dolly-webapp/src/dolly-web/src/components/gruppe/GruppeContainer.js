@@ -19,7 +19,7 @@ class Gruppe extends Component {
         };
     }
 
-    //TODO Skal hente personer basert på identer i gruppen etter hvert.
+    //TODO Skal hente personer basert på testidenter i gruppen etter hvert.
     componentDidMount(){
         try {
             (async () => {
