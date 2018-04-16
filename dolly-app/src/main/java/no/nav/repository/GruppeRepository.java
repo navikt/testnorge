@@ -1,7 +1,7 @@
 package no.nav.repository;
 
-import no.nav.jpa.Gruppe;
+import no.nav.jpa.Testgruppe;
 import org.springframework.data.repository.Repository;
 
-public interface GruppeRepository extends Repository<Gruppe, Long> {
+public interface GruppeRepository extends Repository<Testgruppe, Long> {
 }
