@@ -16,19 +16,21 @@ export class InputDatePicker extends Component {
     }
 
     handleChange(date) {
-        this.setState({
-            startDate: date
-        });
+        this.props.onChange(date);
     }
 
     render() {
 
+        const {id, dateFormat, label, statePropToChange} = this.props;
+
         return (
             <div className="skjemaelement">
-                <label className="skjemaelement__label">Date</label>
+                <label className="skjemaelement__label">{label}</label>
                 <DatePicker
+                    id={id}
                     className="skjemaelement__input"
-                    selected={this.state.startDate}
+                    dateFormat={dateFormat}
+                    selected={statePropToChange}
                     onChange={this.handleChange}
                 />
                 <br/>
