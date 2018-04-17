@@ -1,10 +1,6 @@
 package no.nav.api;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import no.nav.service.BrukerService;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,10 +18,10 @@ public class UserController {
 	BrukerService brukerService;
 	
 	@PostMapping
-	public void opprettBruker(@RequestBody() Map<String ,String> jsonNavIdent) {
+	public void opprettBruker(@RequestBody() Map<String, String> jsonNavIdent) {
 		brukerService.opprettBruker(jsonNavIdent.get("NavIdent"));
 	}
 	
-	
-//	get team og grupper og testidenter for gitt medlemsskap og eierskap  (get all for gitt bruker)
+
+//	TODO get team og grupper og testidenter for gitt medlemsskap og eierskap  (get all for gitt bruker) GetAllBrukerinfo
 }

@@ -1,6 +1,7 @@
 package no.nav.jpa;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,7 @@ public class Bruker {
     
     @OneToMany(mappedBy = "eier")
     @Column(name = "TEAM_EIERSKAP",unique = true)
+    @JsonManagedReference
     private Set<Team> teamEierskap;
     
     public Bruker(String navIdent) {
