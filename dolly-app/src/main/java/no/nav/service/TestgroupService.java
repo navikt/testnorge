@@ -1,38 +1,54 @@
 package no.nav.service;
 
+import static no.nav.utilities.TeamUtility.findBrukerOrEierInTeam;
+
+import no.nav.api.request.CreateTestgruppeRequest;
+import no.nav.exceptions.DollyFunctionalException;
+import no.nav.jpa.Bruker;
+import no.nav.jpa.Team;
 import no.nav.jpa.Testgruppe;
-import no.nav.jpa.Testident;
+import no.nav.repository.BrukerRepository;
 import no.nav.repository.GruppeRepository;
-import no.nav.repository.IdentRepository;
+import no.nav.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 public class TestgroupService {
 	
 	@Autowired
-	IdentRepository identRepository;
-	
-	@Autowired
 	GruppeRepository gruppeRepository;
 	
-	public void persisterTestidenter(Long gruppeId, List<Long> personIdentListe) {
-		List<Testident> testidentList = new ArrayList<>();
-		Testgruppe testgruppe= gruppeRepository.findById(gruppeId);
-		if (testgruppe != null) {
-			for (Long personIdent : personIdentListe) {
-				testidentList.add(new Testident(personIdent, testgruppe));
-			}
-			testidentList.forEach(testident -> identRepository.save(testident));
-		} else {
-			throw new RuntimeException("Testgruppe " + gruppeId+ " finnes ikke i DollyDB.");
-		}
+	@Autowired
+	BrukerRepository brukerRepository;
+	
+	@Autowired
+	TeamRepository teamRepository;
+	
+	public void opprettTestgruppe(CreateTestgruppeRequest createTestgruppeRequest) {
+		Testgruppe testgruppe = konstruerTestgruppe(createTestgruppeRequest);
+		gruppeRepository.save(testgruppe);
 	}
 	
-	public void slettTestidenter(Long gruppeId, List<Long> personIdentListe) {
-		personIdentListe.forEach(testident-> identRepository.deleteTestidentByIdentAndTestgruppeId(testident,gruppeId));
+	private Testgruppe konstruerTestgruppe(CreateTestgruppeRequest createTestgruppeRequest) {
+		Team team = teamRepository.findTeamById(createTestgruppeRequest.getTilhoererTeamId());
+		Bruker opprettetAv = findBrukerOrEierInTeam(createTestgruppeRequest.getOpprettetAvNavIdent(), team);
+		if (opprettetAv == null) {
+			throw new DollyFunctionalException("Finner ikke navIdent " + createTestgruppeRequest.getOpprettetAvNavIdent() + " i Dolly DB.");
+		}
+		if (team == null) {
+			throw new DollyFunctionalException("Finner ikke team med ID=" + createTestgruppeRequest.getTilhoererTeamId() + " i Dolly DB.");
+		}
+		return Testgruppe.builder()
+				.navn(createTestgruppeRequest.getNavn())
+				.opprettetAv(opprettetAv)
+				.datoEndret(LocalDateTime.now())
+				.sistEndretAv(opprettetAv)
+				.teamtilhoerighet(team)
+				.build();
 	}
+	
+	
 }

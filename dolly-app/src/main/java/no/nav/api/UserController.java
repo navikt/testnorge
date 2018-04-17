@@ -14,6 +14,7 @@ public class UserController {
 	
 	@Autowired
 	BrukerService brukerService;
+	
 	@PostMapping
 	public void opprettBruker(@RequestBody String brukerId) {
 		brukerService.opprettBruker(brukerId);
