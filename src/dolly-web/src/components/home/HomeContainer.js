@@ -3,19 +3,26 @@ import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import * as gruppeActions from '../../actions/gruppeActions';
 import GruppeList from "./GruppeListe";
-import {Input} from 'nav-frontend-skjema';
 import InputAutocompleteField from '../felles/fields/InputAutocompleteField';
+import InputDatePicker from '../felles/fields/InputDatePicker';
+import moment from 'moment';
+import NyGruppe from '../gruppe/NyGruppeContainer';
 
 class Home extends Component{
     constructor(props, context){
         super(props, context);
 
         this.state = {
-            postnummer: {}
+            postnummer: {},
+            date: moment(),
+            date_formatted: "",
+            showGruppeForm: false
         };
 
         this.createPerson = this.createPerson.bind(this);
         this.onSelectedValue = this.onSelectedValue.bind(this);
+        this.onChangeUpdateDate = this.onChangeUpdateDate.bind(this);
+        this.showNyGruppeForm = this.showNyGruppeForm.bind(this);
     }
 
     createPerson(){
@@ -24,6 +31,21 @@ class Home extends Component{
 
     onSelectedValue(value){
         this.setState( {postnummer: Object.assign({}, value) });
+    }
+
+    onChangeUpdateDate(date) {
+        let date_formatted = date.format("DD/MM/YYYY");
+
+        this.setState( {
+            date_formatted: date_formatted,
+            date: date
+        });
+    }
+
+    showNyGruppeForm() {
+        this.setState({
+            showGruppeForm: !this.state.showGruppeForm
+        });
     }
 
     render(){
@@ -40,6 +62,27 @@ class Home extends Component{
                                         kodeverk={kodeverk}
                 />
                 <GruppeList grupper={grupper}/>
+
+                <InputDatePicker
+                    id="test"
+                    dateFormat="DD/MM/YYYY"
+                    label="Date"
+                    onChange={this.onChangeUpdateDate}
+                    statePropToChange={this.state.date}
+                />
+                <br/>
+
+                <div id="gruppe-form">
+                    <button onClick={this.showNyGruppeForm}>Legg til ny gruppe</button>
+                    {this.state.showGruppeForm ?
+                        <div>
+                            <NyGruppe/>
+                        </div>
+                        : null
+                    }
+                </div>
+
+
             </div>
         )
 
