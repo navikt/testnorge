@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import * as gruppeActions from '../../actions/gruppeActions';
 import GruppeList from "./GruppeListe";
 import {Input} from 'nav-frontend-skjema';
-import InputDatePicker from '../felles/fields/InputDatePicker';
 import InputAutocompleteField from '../felles/fields/InputAutocompleteField';
 
 class Home extends Component{
@@ -41,14 +40,6 @@ class Home extends Component{
                                         kodeverk={kodeverk}
                 />
                 <GruppeList grupper={grupper}/>
-
-                <InputDatePicker
-                    id="test"
-                    dateFormat="DD/MM/YYYY"
-                    label="Date"
-                    onChange={this.onChangeTest}
-                    statePropToChange={this.state.date}
-                />
             </div>
         )
 
