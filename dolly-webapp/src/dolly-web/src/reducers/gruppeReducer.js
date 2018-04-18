@@ -9,8 +9,11 @@ export default function gruppeReducer(state = [], actionObj) {
                 ...state.filter(gruppe => gruppe.id !== actionObj.gruppe.id),
                 Object.assign({}, actionObj.gruppe)
             ];
+        case types.CREATE_GRUPPE_SUCCESS:
+            return [
+                ...state, Object.assign({}, actionObj.gruppe)
+            ];
         default:
             return state;
     }
 }
-

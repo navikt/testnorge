@@ -16,6 +16,13 @@ export function updateGruppeSuccess(gruppe){
     };
 }
 
+export function createGruppeSuccess(gruppe){
+    return {
+        type: types.CREATE_GRUPPE_SUCCESS,
+        gruppe: gruppe
+    };
+}
+
 export function fetchGrupper() {
     return dispatch => {
         try{
@@ -26,6 +33,20 @@ export function fetchGrupper() {
 
         } catch(error) {
             console.log(error);
+        }
+    }
+}
+
+export function updateGruppe(gruppe){
+    return dispatch => {
+        try{
+            return (async () => {
+                const response = await axios.post(ContentApi.putGruppe(gruppe.id), gruppe);
+                dispatch(updateGruppeSuccess(response.data));
+            })();
+
+        } catch(error) {
+            console.log(error)
         }
     }
 }

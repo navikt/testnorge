@@ -7,11 +7,11 @@ class ContentApi {
     }
 
     static getGruppe(id){
-        return uri + "/grupper/id";
+        return uri + "/gruppe/id";
     }
 
     static putGruppe(id){
-        return uri + "/grupper/" + id;
+        return uri + "/gruppe/id";
     }
 
     static getPersons(){
@@ -30,8 +30,11 @@ class ContentApi {
         return uri + "/teams";
     }
 
+    static postGrupper() {
+        return uri + "/grupper";
+    }
+
 }
 
 export default ContentApi;
-
 
