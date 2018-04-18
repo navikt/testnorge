@@ -1,7 +1,7 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
 import {Switch} from 'react-router-dom';
-import Gruppe from './components/gruppe/GruppeContainer';
+import Gruppe from './components/gruppe/GruppeController';
 import Home from './components/home/HomeContainer';
 
 const Routes = () => (
