@@ -7,11 +7,11 @@ class ContentApi {
     }
 
     static getGruppe(id){
-        return uri + "/gruppe/id";
+        return uri + "/grupper/id";
     }
 
     static putGruppe(id){
-        return uri + "/gruppe/id";
+        return uri + "/grupper/" + id;
     }
 
     static getPersons(){

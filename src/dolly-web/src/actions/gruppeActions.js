@@ -29,17 +29,3 @@ export function fetchGrupper() {
         }
     }
 }
-
-export function updateGruppe(gruppe){
-    return dispatch => {
-        try{
-            return (async () => {
-                const response = await axios.post(ContentApi.putGruppe(gruppe.id), gruppe);
-                dispatch(updateGruppeSuccess(response.data));
-            })();
-
-        } catch(error) {
-            console.log(error)
-        }
-    }
-}
