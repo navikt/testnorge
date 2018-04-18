@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import * as gruppeActions from '../../actions/gruppeActions';
 import GruppeList from "./GruppeListe";
-import {Input} from 'nav-frontend-skjema';
 import InputAutocompleteField from '../felles/fields/InputAutocompleteField';
 
 class Home extends Component{
@@ -34,8 +33,6 @@ class Home extends Component{
         return (
             <div id="home-container">
                 <h1>Home Container</h1>
-                <Input label='testy' />
-                <input label="Bare" />
                 <InputAutocompleteField label={"Postnummer"}
                                         id={"postnummer-id"}
                                         onSelectedValue={this.onSelectedValue}
