@@ -3,7 +3,9 @@ package no.nav.jpa;
 
 import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -28,6 +30,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "T_TEAM")
 public class Team {
 	
@@ -40,7 +43,7 @@ public class Team {
 	})
 	private Long id;
 	
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String navn;
 	
 	private String beskrivelse;
@@ -50,6 +53,7 @@ public class Team {
 	
 	@ManyToOne
 	@JoinColumn(name = "EIER",nullable = false)
+	@JsonBackReference
 	private Bruker eier;
 	
 	@OneToMany(mappedBy = "teamtilhoerighet", orphanRemoval = true)

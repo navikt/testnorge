@@ -9,7 +9,7 @@ spring:
     password:
     driver-class-name: org.h2.Driver
   flyway:
-    enabled: true
+    enabled: false
     url: jdbc:h2:mem:dollyDB;DB_CLOSE_DELAY=-1
     user: sa
     password:
