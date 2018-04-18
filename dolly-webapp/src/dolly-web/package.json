@@ -7,7 +7,7 @@
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.5",
     "history": "^4.7.2",
-    "loadash": "^1.0.0",
+    "lodash": "^4.17.5",
     "lodash.throttle": "^4.1.1",
     "moment": "^2.22.0",
     "nav-frontend-alertstriper-style": "0.2.33",
@@ -34,13 +34,17 @@
     "react-dom": "16.3.0",
     "react-fontawesome": "1.6.1",
     "react-hot-loader": "^4.0.1",
+    "react-material-layout": "^1.1.7",
     "react-redux": "^5.0.7",
     "react-router-dom": "4.2.2",
     "react-router-redux": "5.0.0-alpha.9",
     "react-scripts": "1.1.4",
+    "react-select": "^1.2.1",
+    "recompose": "^0.26.0",
     "redux": "3.7.2",
     "redux-devtools-extension": "^2.13.2",
-    "redux-thunk": "2.2.0"
+    "redux-thunk": "2.2.0",
+    "source-sans-pro": "^2.20.2"
   },
   "scripts": {
     "build-css": "node-less-chokidar src/ -o src/",

@@ -1,33 +1,53 @@
-import React, {Component} from 'react';
+import React from 'react';
 import '../../../styles/nav-frontend.css';
+import './InputTextField.css';
+import {pure} from 'recompose';
 
-export class InputTextField extends Component {
-    constructor(props, context){
-        super(props, context);
+const InputTextFeild = ({id, name, value, label, pattern, disabled, onChange, patternFeilmelding, statePropToChange}) => {
 
-        this.changeHandler = this.changeHandler.bind(this);
-    }
+    const changeHandler = (event) => {
+        onChange(statePropToChange, event.target.value);
+    };
 
-    changeHandler(event){
-        this.props.onChange(this.props.statePropToChange, event.target.value);
-    }
+    const patternMismatch = () => {
+        let input = document.getElementById(id);
+        if (input) {
+            return input.validity.patternMismatch;
+        }
 
-    render() {
+        return false;
+    };
 
-        const {id, value, label, pattern} = this.props;
+    let patternError = false;
+    let feilmeldingHtml;
 
-        return(
-            <div className="skjemaelement">
-                <label className="skjemaelement__label">{label} </label>
-                <input className="skjemaelement__input"
-                       id={id}
-                       value={value}
-                       onChange={this.changeHandler}
-                       pattern={pattern}
-                       type="text" />
+    if (patternMismatch()) {
+        patternError = true;
+        feilmeldingHtml = (
+            <div className="skjemaelement__feilmelding"
+                 aria-live="assertive"
+                 role="alert"
+            >
+                {patternFeilmelding}
             </div>
         )
     }
-}
 
-export default InputTextField;
+    return (
+        <div className="skjemaelement input-text-field-container">
+            <label className="skjemaelement__label">{label} </label>
+            <input className={"skjemaelement__input " + (patternError ? "skjemaelement__input--harFeil" : "")}
+                   id={id}
+                   name={name}
+                   value={value}
+                   onChange={changeHandler}
+                   pattern={pattern}
+                   disabled={disabled}
+                   type="text"
+            />
+            {feilmeldingHtml}
+        </div>
+    )
+};
+
+export default pure(InputTextFeild);

@@ -11,6 +11,7 @@ class Person extends Component {
         };
 
         this.toggle = this.toggle.bind(this);
+        this.test = this.test.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
     }
 
@@ -20,28 +21,46 @@ class Person extends Component {
         });
     }
 
-    onInputChange(statePropToChange , value){
-        let person = Object.assign({}, this.state.person);
-        person[statePropToChange] = value;
+    test(){
+        console.log(this.state.person);
+    }
 
-        this.setState( {person: person });
+    onInputChange(statePropToChange , value){
+        let tempPerson = Object.assign({}, this.state.person);
+        tempPerson[statePropToChange] = value;
+
+        let isFormValid = document.getElementById('myform').checkValidity();
+
+        this.setState({person: tempPerson });
     }
 
     render() {
         if(this.state.expanded){
             return (
-                <div className="person-input-row">
-                    <InputTextField label={"Fornavn"}
-                                id={"navn-id"}
-                                value={this.state.person.fornavn}
-                                onChange={this.onInputChange}
-                                statePropToChange={"fornavn"}/>
+                <div className="person-input-row" data-flex data-layout="row">
+                    <form id="myform" name="formname" noValidate>
+                        <InputTextField label={"Fornavn"}
+                                        id={"navn-id"}
+                                        value={this.state.person.fornavn}
+                                        onChange={this.onInputChange}
+                                        pattern='[a-z]+'
+                                        patternFeilmelding='Bare små bokstaver'
+                                        statePropToChange={"fornavn"}
+                        />
 
-                    <InputTextField label={"Etternavn"}
-                                id={"etternavn-id"}
-                                value={this.state.person.etternavn}
-                                onChange={this.onInputChange}
-                                statePropToChange={"etternavn"}/>
+                        <InputTextField label={"Etternavn"}
+                                        id={"etternavn-id"}
+                                        value={this.state.person.etternavn}
+                                        onChange={this.onInputChange}
+                                        disabled={true}
+                                        statePropToChange={"etternavn"}
+                        />
+                    </form>
+
+
+                    <button onClick={this.test}>
+                        Se verdi
+                    </button>
                 </div>
             )
 
@@ -56,5 +75,3 @@ class Person extends Component {
 }
 
 export default Person;
-
-//{this.state.person.id} - {this.state.person.fornavn} - {this.state.person.fnr}
