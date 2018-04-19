@@ -68,6 +68,9 @@ public class Team {
 	
 	
 	public Set<String> getSetOfBrukernesNavidenter() {
+		if (brukere==null || brukere.isEmpty()) {
+			return null;
+		}
 		Set<String> brukernesNavIdent = new HashSet<>();
 		this.getBrukere().forEach(bruker -> brukernesNavIdent.add(bruker.getNavIdent()));
 		return brukernesNavIdent;

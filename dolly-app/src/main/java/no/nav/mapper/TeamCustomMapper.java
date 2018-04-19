@@ -15,10 +15,12 @@ public class TeamCustomMapper extends CustomMapper<Team, TeamResponse> {
 		
 		b.setBrukernesNavIdent(a.getSetOfBrukernesNavidenter());
 		
-		b.setGrupper(a.getGrupper()
-				.stream()
-				.map(testgruppe -> MapTestgruppeToResponse.map(testgruppe))
-				.collect(Collectors.toSet()));
+		if(a.getGrupper()!=null && !a.getGrupper().isEmpty()) {
+			b.setGrupper(a.getGrupper()
+					.stream()
+					.map(testgruppe -> MapTestgruppeToResponse.map(testgruppe))
+					.collect(Collectors.toSet()));
+		}
 	}
 	
 	@Override
