@@ -27,9 +27,9 @@ public class TestgroupService {
 	@Autowired
 	TeamRepository teamRepository;
 	
-	public void opprettTestgruppe(CreateTestgruppeRequest createTestgruppeRequest) {
+	public Testgruppe opprettTestgruppe(CreateTestgruppeRequest createTestgruppeRequest) {
 		Testgruppe testgruppe = konstruerTestgruppe(createTestgruppeRequest);
-		gruppeRepository.save(testgruppe);
+		return gruppeRepository.save(testgruppe);
 	}
 	
 	private Testgruppe konstruerTestgruppe(CreateTestgruppeRequest createTestgruppeRequest) {

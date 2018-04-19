@@ -1,6 +1,9 @@
 package no.nav.api;
 
 import no.nav.api.request.CreateTestgruppeRequest;
+import no.nav.api.response.TestgruppeResponse;
+import no.nav.jpa.Testgruppe;
+import no.nav.mapper.MapTestgruppeToResponse;
 import no.nav.service.IdentService;
 import no.nav.service.TestgroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +30,9 @@ public class TestgroupController {
 	IdentService identService;
 	
 	@PostMapping
-	public void opprettTestgruppe(@RequestBody CreateTestgruppeRequest createTestgruppeRequest) {
-		testgroupService.opprettTestgruppe(createTestgruppeRequest);
+	public TestgruppeResponse opprettTestgruppe(@RequestBody CreateTestgruppeRequest createTestgruppeRequest) {
+		Testgruppe testgruppe = testgroupService.opprettTestgruppe(createTestgruppeRequest);
+		return MapTestgruppeToResponse.map(testgruppe);
 	}
 	
 	@PostMapping(value = "/{testgruppeId}")

@@ -4,17 +4,30 @@ import {connect} from 'react-redux';
 import * as gruppeActions from '../../actions/gruppeActions';
 import GruppeList from "./GruppeListe";
 import InputAutocompleteField from '../felles/fields/InputAutocompleteField';
+import InputDatePicker from '../felles/fields/InputDatePicker';
+import moment from 'moment';
+import './HomeContainer.css';
+import Team from '../team/TeamContainer';
+import NyGruppe from '../gruppe/NyGruppeContainer';
+
 
 class Home extends Component{
     constructor(props, context){
         super(props, context);
 
         this.state = {
-            postnummer: {}
+            postnummer: {},
+            date: moment(),
+            date_formatted: "",
+            showGruppeForm: false,
+            showTeamForm: false
         };
 
         this.createPerson = this.createPerson.bind(this);
         this.onSelectedValue = this.onSelectedValue.bind(this);
+        this.onChangeUpdateDate = this.onChangeUpdateDate.bind(this);
+        this.showNyGruppeForm = this.showNyGruppeForm.bind(this);
+        this.showTeamForm = this.showTeamForm.bind(this);
     }
 
     createPerson(){
@@ -25,6 +38,27 @@ class Home extends Component{
         this.setState( {postnummer: Object.assign({}, value) });
     }
 
+    onChangeUpdateDate(date) {
+        let date_formatted = date.format("DD/MM/YYYY");
+
+        this.setState( {
+            date_formatted: date_formatted,
+            date: date
+        });
+    }
+
+    showNyGruppeForm() {
+        this.setState({
+            showGruppeForm: !this.state.showGruppeForm
+        });
+    }
+
+    showTeamForm() {
+        this.setState({
+            showTeamForm: !this.state.showTeamForm
+        });
+    }
+
     render(){
         const {grupper} = this.props;
 
@@ -33,12 +67,49 @@ class Home extends Component{
         return (
             <div id="home-container">
                 <h1>Home Container</h1>
-                <InputAutocompleteField label={"Postnummer"}
-                                        id={"postnummer-id"}
-                                        onSelectedValue={this.onSelectedValue}
-                                        kodeverk={kodeverk}
-                />
-                <GruppeList grupper={grupper}/>
+                <div id="first-row">
+                    <div id="first-column">
+                        <InputAutocompleteField label={"Postnummer"}
+                                                id={"postnummer-id"}
+                                                onSelectedValue={this.onSelectedValue}
+                                                kodeverk={kodeverk}
+                        />
+                        <GruppeList grupper={grupper}/>
+
+                        <InputDatePicker
+                            id="test"
+                            dateFormat="DD/MM/YYYY"
+                            label="Date"
+                            onChange={this.onChangeUpdateDate}
+                            statePropToChange={this.state.date}
+                        />
+                    </div>
+
+                    <div id="second-column">
+                            <button onClick={this.showNyGruppeForm}>Legg til ny gruppe</button>
+                            {this.state.showGruppeForm ?
+                                <div>
+                                    <NyGruppe />
+                                </div>
+                                : null
+                            }
+                    </div>
+
+                    <div id="third-column">
+                        <button onClick={this.showTeamForm}>Legg til nytt team</button>
+                        {this.state.showTeamForm ?
+                            <div>
+                                <Team/>
+                            </div>
+                            : null
+                        }
+                    </div>
+
+                </div>
+
+
+
+
             </div>
         )
 

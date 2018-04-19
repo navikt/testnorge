@@ -1,7 +1,9 @@
 package no.nav.api;
 
 import no.nav.api.request.CreateTeamRequest;
+import no.nav.api.response.TeamResponse;
 import no.nav.jpa.Team;
+import no.nav.mapper.MapTeamToResponse;
 import no.nav.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,9 +21,10 @@ public class TeamController {
 	TeamService teamService;
 
 	@PostMapping
-	public @ResponseBody Team opprettTeam(@RequestBody CreateTeamRequest createTeamRequest) {
+	public @ResponseBody
+	TeamResponse opprettTeam(@RequestBody CreateTeamRequest createTeamRequest) {
 		Team savedTeam = teamService.opprettTeam(createTeamRequest);
-		return savedTeam;
+		return MapTeamToResponse.map(savedTeam);
 	}
 	
 	//legg til brukere i team

@@ -3,7 +3,9 @@ package no.nav.jpa;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +16,8 @@ import javax.persistence.Table;
 
 @Entity
 @Data
+@ToString(of = "ident")
+@EqualsAndHashCode(of = "ident")
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "T_TEST_IDENT")

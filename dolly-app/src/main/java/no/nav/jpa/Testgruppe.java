@@ -5,7 +5,9 @@ import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -26,6 +28,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"teamtilhoerighet"}) //eksluderer cyclic references for å unngå stackoverflowError
+@EqualsAndHashCode(exclude = {"teamtilhoerighet"})
 @Table(name = "T_TESTGRUPPE")
 public class Testgruppe {
 	

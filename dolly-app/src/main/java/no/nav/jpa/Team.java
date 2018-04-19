@@ -65,4 +65,14 @@ public class Team {
 			joinColumns = @JoinColumn(name = "team_id"),
 			inverseJoinColumns = @JoinColumn(name = "bruker_id"))
 	private Set<Bruker> brukere = new HashSet<>();
+	
+	
+	public Set<String> getSetOfBrukernesNavidenter() {
+		if (brukere==null || brukere.isEmpty()) {
+			return null;
+		}
+		Set<String> brukernesNavIdent = new HashSet<>();
+		this.getBrukere().forEach(bruker -> brukernesNavIdent.add(bruker.getNavIdent()));
+		return brukernesNavIdent;
+	}
 }
