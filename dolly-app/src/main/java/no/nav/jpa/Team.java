@@ -3,7 +3,6 @@ package no.nav.jpa;
 
 import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,7 +52,6 @@ public class Team {
 	
 	@ManyToOne
 	@JoinColumn(name = "EIER",nullable = false)
-	@JsonBackReference
 	private Bruker eier;
 	
 	@OneToMany(mappedBy = "teamtilhoerighet", orphanRemoval = true)

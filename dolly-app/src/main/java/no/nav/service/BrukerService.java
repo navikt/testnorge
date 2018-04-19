@@ -14,4 +14,7 @@ public class BrukerService {
 		brukerRepository.save(new Bruker(bruker));
 	}
 	
+	public Bruker getBruker(String navIdent) {
+		return brukerRepository.findBrukerByNavIdent(navIdent);
+	}
 }

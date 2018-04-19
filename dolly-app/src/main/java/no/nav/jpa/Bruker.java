@@ -4,7 +4,9 @@ package no.nav.jpa;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +18,8 @@ import java.util.Set;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"teamMedlemskap","teamEierskap"})
+@ToString(exclude = {"teamMedlemskap","teamEierskap"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "T_BRUKER")
