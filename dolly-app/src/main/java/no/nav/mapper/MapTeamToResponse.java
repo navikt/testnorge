@@ -20,6 +20,7 @@ public class MapTeamToResponse {
 	private static BoundMapperFacade<Team, TeamResponse> constructMapper() {
 		MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 		mapperFactory.classMap(Team.class, TeamResponse.class)
+				.field("eier.navIdent","eierensNavIdent")
 				.customize(new TeamCustomMapper()).byDefault().register();
 		mapperFactory.getConverterFactory().registerConverter(new PassThroughConverter(LocalDateTime.class));
 		return mapperFactory.getMapperFacade(Team.class, TeamResponse.class);

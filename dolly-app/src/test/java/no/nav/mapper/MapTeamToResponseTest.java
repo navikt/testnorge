@@ -1,6 +1,8 @@
 package no.nav.mapper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import no.nav.api.response.TeamResponse;
@@ -12,6 +14,7 @@ import org.junit.Test;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MapTeamToResponseTest {
 	
@@ -22,8 +25,8 @@ public class MapTeamToResponseTest {
 		Team emptyteam = new Team();
 		MapTeamToResponse.map(emptyteam);
 	}
-		
-		@Test
+	
+	@Test
 	public void shouldMapTeamToTeamResponse() {
 		TeamResponse teamResponse = MapTeamToResponse.map(team);
 		
@@ -36,8 +39,10 @@ public class MapTeamToResponseTest {
 		assertEquals(team.getBeskrivelse(), teamResponse.getBeskrivelse());
 		assertEquals(team.getDatoOpprettet(), teamResponse.getDatoOpprettet());
 		assertEquals(team.getEier().getNavIdent(), teamResponse.getEierensNavIdent());
-		assertTrue("brukere", teamResponse.getGrupper().containsAll(team.getBrukere()));
-//	TODO	team.getGrupper().forEach(testgruppe ->				assertTrue("brukerId", teamResponse.().contains(bruker.getNavIdent())));
+		assertTrue("brukere", teamResponse.getBrukernesNavIdent()
+				.containsAll(team.getBrukere().stream().map(Bruker::getNavIdent).collect(Collectors.toSet())));
+		assertNotNull("testgrupper", teamResponse.getGrupper());
+		assertFalse("testgruppe", teamResponse.getGrupper().isEmpty());
 	}
 	
 	private Team createTeam() {
@@ -46,15 +51,19 @@ public class MapTeamToResponseTest {
 		brukere.add(new Bruker("bruker2"));
 		
 		Set<Testgruppe> testgrupper = new HashSet<>();
-		
-		return Team.builder()
+		testgrupper.add(Testgruppe.builder().navn("testgr").build());
+		Team team = Team.builder()
 				.id(1L)
 				.navn("teamnavn")
 				.beskrivelse("beskrivelse her")
 				.datoOpprettet(LocalDateTime.now())
 				.eier(new Bruker("eierId"))
 				.brukere(brukere)
-//				.grupper() TODO
+				.grupper(testgrupper)
 				.build();
+		Set<Team> eierskap = new HashSet<>();
+		eierskap.add(team);
+		team.getEier().setTeamEierskap(eierskap);
+		return team;
 	}
 }

@@ -11,8 +11,6 @@ public class TeamCustomMapper extends CustomMapper<Team, TeamResponse> {
 	
 	@Override
 	public void mapAtoB(Team a, TeamResponse b, MappingContext context) {
-		b.setEierensNavIdent(a.getEier().getNavIdent());
-		
 		b.setBrukernesNavIdent(a.getSetOfBrukernesNavidenter());
 		
 		if(a.getGrupper()!=null && !a.getGrupper().isEmpty()) {
