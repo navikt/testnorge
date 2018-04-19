@@ -11,6 +11,7 @@ import configureStore from './store/configureStore';
 import 'normalize.css';
 import './index.css';
 import {fetchGrupper} from "./actions/gruppeActions";
+import {fetchTeams} from "./actions/teamActions";
 import {AppContainer} from 'react-hot-loader';
 
 const history = createHistory();
@@ -18,6 +19,7 @@ const history = createHistory();
 const appReduxStore = configureStore(history);
 
 appReduxStore.dispatch(fetchGrupper());
+appReduxStore.dispatch(fetchTeams());
 
 const App = () => {
     return (
