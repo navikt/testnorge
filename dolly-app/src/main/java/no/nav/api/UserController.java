@@ -1,5 +1,6 @@
 package no.nav.api;
 
+import no.nav.api.request.BrukerRequest;
 import no.nav.service.BrukerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,10 +19,9 @@ public class UserController {
 	BrukerService brukerService;
 	
 	@PostMapping
-	public void opprettBruker(@RequestBody() Map<String, String> jsonNavIdent) {
-		brukerService.opprettBruker(jsonNavIdent.get("NavIdent"));
+	public void opprettBruker(@RequestBody() BrukerRequest brukerRequest) {
+		brukerService.opprettBruker(brukerRequest.getNavIdent());
 	}
 	
-
 //	TODO get team og grupper og testidenter for gitt medlemsskap og eierskap  (get all for gitt bruker) GetAllBrukerinfo
 }
