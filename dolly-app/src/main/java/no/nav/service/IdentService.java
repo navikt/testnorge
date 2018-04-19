@@ -7,9 +7,11 @@ import no.nav.repository.GruppeRepository;
 import no.nav.repository.IdentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class IdentService {
@@ -19,7 +21,7 @@ public class IdentService {
 	@Autowired
 	GruppeRepository gruppeRepository;
 	
-	public void persisterTestidenter(Long gruppeId, List<Long> personIdentListe) {
+	public void persisterTestidenter(Long gruppeId, Set<Long> personIdentListe) {
 		List<Testident> testidentList = new ArrayList<>();
 		Testgruppe testgruppe = gruppeRepository.findById(gruppeId);
 		if (testgruppe == null) {
@@ -32,7 +34,8 @@ public class IdentService {
 		
 	}
 	
-	public void slettTestidenter(Long gruppeId, List<Long> personIdentListe) {
-		personIdentListe.forEach(testident -> identRepository.deleteTestidentByIdentAndTestgruppeId(testident, gruppeId));
+	@Transactional
+	public void slettTestidenter(Set<Long> personIdentSet) {
+		personIdentSet.forEach(testident -> identRepository.deleteTestidentByIdent(testident));
 	}
 }

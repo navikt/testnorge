@@ -1,6 +1,7 @@
 package no.nav.api;
 
 import no.nav.api.request.CreateTestgruppeRequest;
+import no.nav.api.request.IdentListeRequest;
 import no.nav.api.response.TestgruppeResponse;
 import no.nav.jpa.Testgruppe;
 import no.nav.mapper.MapTestgruppeToResponse;
@@ -36,8 +37,8 @@ public class TestgroupController {
 	}
 	
 	@PostMapping(value = "/{testgruppeId}")
-	public void persisterTestidenter(@PathVariable("testgruppeId") Long gruppeId, @RequestBody List<Long> personIdentListe) {
-		identService.persisterTestidenter(gruppeId, personIdentListe);
+	public void persisterTestidenter(@PathVariable("testgruppeId") Long gruppeId, @RequestBody IdentListeRequest testpersonIdentListe) {
+		identService.persisterTestidenter(gruppeId, testpersonIdentListe.getIdentListe());
 	}
 	
 	//TODO REST endre gruppe
@@ -45,8 +46,8 @@ public class TestgroupController {
 	//TODO Slett gruppe
 	
 	@PutMapping("/{testgruppe}/slettTestidenter")
-	public ResponseEntity deleteTestident(@PathVariable("testgruppe") Long gruppeId, @RequestBody List<Long> personIdentListe) {
-		identService.slettTestidenter(gruppeId, personIdentListe);
+	public ResponseEntity deleteTestident(@PathVariable("testgruppe") Long gruppeId, @RequestBody IdentListeRequest testpersonIdentListe) {
+		identService.slettTestidenter( testpersonIdentListe.getIdentListe());
 		return ResponseEntity.ok(HttpEntity.EMPTY);
 	}
 }

@@ -18,12 +18,14 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentServiceTest {
-	List<Long> testidenter = Arrays.asList(12312312312L, 22222222222L);
+	Set<Long> testidenter = new HashSet<>(Arrays.asList(12312312312L, 22222222222L));
+	
 	@Mock
 	IdentRepository identRepository;
 	
@@ -45,8 +47,9 @@ public class IdentServiceTest {
 		when(gruppeRepository.findById(any())).thenReturn(testgruppe);
 		
 		identService.persisterTestidenter(1L, testidenter);
-		Mockito.verify(identRepository).save(eq(new Testident(testidenter.get(0), testgruppe)));
-		Mockito.verify(identRepository).save(eq(new Testident(testidenter.get(1), testgruppe)));
+		for (Long ident:testidenter) {
+			Mockito.verify(identRepository).save(eq(new Testident(ident, testgruppe)));
+		}
 	}
 	
 	@Test(expected = DollyFunctionalException.class)
