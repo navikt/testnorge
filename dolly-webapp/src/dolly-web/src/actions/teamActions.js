@@ -3,18 +3,25 @@ import axios from 'axios';
 import ContentApi from '../ContentApi';
 
 
-export function loadTeamsSuccess(grupper){
+export function loadTeamsSuccess(teams){
     return {
         type: types.LOAD_TEAMS_SUCCESS,
-        grupper: grupper
+        teams: teams
     };
 }
 
-export function fetchTeam() {
+export function createTeamSuccess(team){
+    return {
+        type: types.CREATE_TEAM_SUCCESS,
+        team: team
+    };
+}
+
+export function fetchTeams() {
     return dispatch => {
         try{
             return (async () => {
-                const response = await axios.get(ContentApi.getGrupper());
+                const response = await axios.get(ContentApi.getTeams());
                 dispatch(loadTeamsSuccess(response.data));
             })();
 

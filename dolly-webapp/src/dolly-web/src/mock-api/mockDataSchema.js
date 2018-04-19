@@ -60,6 +60,29 @@ const schema = {
                 required: ["id", "navn"]
             }
         },
+        "teams": {
+            type: "array",
+            minItems: 2,
+            maxItems: 10,
+            items: {
+                type: "object",
+                properties: {
+                    id: {
+                        "type": "integer",
+                        "autoIncrement": true
+                    },
+                    navn: {
+                        type: 'string',
+                        pattern: '[a-z]{1,9}'
+                    },
+                    beskrivelse: {
+                        type: 'string',
+                        pattern: '[a-z]{1,9}'
+                    },
+                },
+                required: ["id", "navn", "beskrivelse"]
+            }
+        },
         "bruker": {
             type: "object",
             properties: {
@@ -71,7 +94,7 @@ const schema = {
             }
         }
     },
-    "required": ["persons", "grupper", "bruker"]
+    "required": ["persons", "grupper", "teams","bruker"]
 };
 
 module.exports = schema;
