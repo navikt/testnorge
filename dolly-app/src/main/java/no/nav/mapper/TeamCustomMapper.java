@@ -5,19 +5,20 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.api.response.TeamResponse;
 import no.nav.jpa.Team;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TeamCustomMapper extends CustomMapper<Team, TeamResponse> {
 	
 	@Override
 	public void mapAtoB(Team a, TeamResponse b, MappingContext context) {
 		b.setEierensNavIdent(a.getEier().getNavIdent());
-		Set<String> brukernesNavIdent = new HashSet<>();
-		a.getBrukere().forEach(bruker -> brukernesNavIdent.add(bruker.getNavIdent()));
-		b.setBrukernesNavIdent(brukernesNavIdent);
 		
-		//TODO kalle mapperen til Testgruppe: MapTestgruppeToResponse.map(a.getTestgruppe());
+		b.setBrukernesNavIdent(a.getSetOfBrukernesNavidenter());
+		
+		b.setGrupper(a.getGrupper()
+				.stream()
+				.map(testgruppe -> MapTestgruppeToResponse.map(testgruppe))
+				.collect(Collectors.toSet()));
 	}
 	
 	@Override

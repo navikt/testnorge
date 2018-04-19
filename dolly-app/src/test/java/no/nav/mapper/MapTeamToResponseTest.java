@@ -17,8 +17,13 @@ public class MapTeamToResponseTest {
 	
 	Team team = createTeam();
 	
-	
 	@Test
+	public void shouldMapTeamContainingNullsWithoutThrowingNullpointerException() {
+		Team emptyteam = new Team();
+		MapTeamToResponse.map(emptyteam);
+	}
+		
+		@Test
 	public void shouldMapTeamToTeamResponse() {
 		TeamResponse teamResponse = MapTeamToResponse.map(team);
 		
@@ -31,8 +36,7 @@ public class MapTeamToResponseTest {
 		assertEquals(team.getBeskrivelse(), teamResponse.getBeskrivelse());
 		assertEquals(team.getDatoOpprettet(), teamResponse.getDatoOpprettet());
 		assertEquals(team.getEier().getNavIdent(), teamResponse.getEierensNavIdent());
-		team.getBrukere().forEach(bruker ->
-				assertTrue("brukerId", teamResponse.getBrukernesNavIdent().contains(bruker.getNavIdent())));
+		assertTrue("brukere", teamResponse.getGrupper().containsAll(team.getBrukere()));
 //	TODO	team.getGrupper().forEach(testgruppe ->				assertTrue("brukerId", teamResponse.().contains(bruker.getNavIdent())));
 	}
 	

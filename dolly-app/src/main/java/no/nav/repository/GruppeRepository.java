@@ -6,6 +6,6 @@ import org.springframework.data.repository.Repository;
 public interface GruppeRepository extends Repository<Testgruppe, Long> {
 	Testgruppe findById(Long id);
 	
-	void save(Testgruppe testgruppe);
+	Testgruppe save(Testgruppe testgruppe);
 	void deleteTestgruppeById(Long id);
 }

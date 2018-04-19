@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.jpa.Bruker;
-import no.nav.jpa.Team;
-import no.nav.jpa.Testident;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -19,10 +16,10 @@ import java.util.Set;
 public class TestgruppeResponse {
 	private Long id;
 	private String navn;
-	private Bruker opprettetAv;
-	private Bruker sistEndretAv;
+	private String opprettetAvNavIdent;
+	private String  sistEndretAvNavIdent;
 	private LocalDateTime datoEndret;
-	private Team teamtilhoerighet;
-	private Set<Testident> testidenter;
+	private String tilhoererTeamnavn;
+	private Set<Long> testidenterID;
 	
 }
