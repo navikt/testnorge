@@ -19,12 +19,13 @@ public class TeamController {
 
 	@Autowired
 	TeamService teamService;
-
+	@Autowired
+	private MapTeamToResponse mapTeamToResponse;
 	@PostMapping
 	public @ResponseBody
 	TeamResponse opprettTeam(@RequestBody CreateTeamRequest createTeamRequest) {
 		Team savedTeam = teamService.opprettTeam(createTeamRequest);
-		return MapTeamToResponse.map(savedTeam);
+		return mapTeamToResponse.map(savedTeam);
 	}
 	
 	//legg til brukere i team

@@ -20,6 +20,8 @@ public class UserController {
 	
 	@Autowired
 	BrukerService brukerService;
+	@Autowired
+	MapBrukerToResponse mapBrukerToResponse;
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void opprettBruker(@RequestBody() BrukerRequest brukerRequest) {
@@ -29,7 +31,7 @@ public class UserController {
 	@GetMapping("/{navIdent}")
 	public BrukerResponse getAllBrukerinfo(@PathVariable("navIdent") String navIdent) {
 		Bruker bruker =brukerService.getBruker(navIdent);
-		return MapBrukerToResponse.map(bruker);
+		return mapBrukerToResponse.map(bruker);
 	}
 //	TODO get team og grupper og testidenter for gitt medlemsskap og eierskap  (get all for gitt bruker) GetAllBrukerinfo
 }

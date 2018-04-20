@@ -6,17 +6,18 @@ import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import no.nav.api.response.TestgruppeResponse;
 import no.nav.jpa.Testgruppe;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-
+@Component
 public class MapTestgruppeToResponse {
-	private static BoundMapperFacade<Testgruppe, TestgruppeResponse> mapper = constructMapper();
+	private BoundMapperFacade<Testgruppe, TestgruppeResponse> mapper = constructMapper();
 	
-	public static TestgruppeResponse map(Testgruppe testgruppe) {
+	public TestgruppeResponse map(Testgruppe testgruppe) {
 		return mapper.map(testgruppe);
 	}
 	
-	private static BoundMapperFacade<Testgruppe, TestgruppeResponse> constructMapper() {
+	private BoundMapperFacade<Testgruppe, TestgruppeResponse> constructMapper() {
 		MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 		mapperFactory.classMap(Testgruppe.class, TestgruppeResponse.class)
 				.field("opprettetAv.navIdent","opprettetAvNavIdent")

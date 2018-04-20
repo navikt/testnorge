@@ -30,10 +30,13 @@ public class TestgroupController {
 	@Autowired
 	IdentService identService;
 	
+	@Autowired
+	MapTestgruppeToResponse mapTestgruppeToResponse;
+	
 	@PostMapping
 	public TestgruppeResponse opprettTestgruppe(@RequestBody CreateTestgruppeRequest createTestgruppeRequest) {
 		Testgruppe testgruppe = testgroupService.opprettTestgruppe(createTestgruppeRequest);
-		return MapTestgruppeToResponse.map(testgruppe);
+		return mapTestgruppeToResponse.map(testgruppe);
 	}
 	
 	@PostMapping(value = "/{testgruppeId}")

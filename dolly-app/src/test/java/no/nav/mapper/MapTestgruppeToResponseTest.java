@@ -18,6 +18,35 @@ import java.util.stream.Collectors;
 public class MapTestgruppeToResponseTest {
 	
 	private Testgruppe testgruppe = createTestgruppe();
+	private MapTestgruppeToResponse mapTestgruppeToResponse = new MapTestgruppeToResponse();
+	
+	
+	@Test
+	public void shouldMapTestgruppeToResponse() {
+		testgruppe.getTestidenter();
+		TestgruppeResponse response = mapTestgruppeToResponse.map(testgruppe);
+		
+		assertTestgruppeResponse(response);
+	}
+	
+	private void assertTestgruppeResponse(TestgruppeResponse response) {
+		assertEquals(testgruppe.getId(), response.getId());
+		assertEquals(testgruppe.getNavn(), response.getNavn());
+		assertEquals(testgruppe.getTeamtilhoerighet().getNavn(), response.getTilhoererTeamnavn());
+		assertEquals(testgruppe.getDatoEndret(), response.getDatoEndret());
+		assertEquals(testgruppe.getOpprettetAv().getNavIdent(), response.getOpprettetAvNavIdent());
+		assertEquals(testgruppe.getSistEndretAv().getNavIdent(), response.getSistEndretAvNavIdent());
+		
+		System.out.println(testgruppe.getTestidenter());
+		Set<Long> expectedTestidenter = testgruppe.getTestidenter().stream().map(Testident::getIdent).collect(Collectors
+				.toSet());
+		assertTrue("testidenter", response.getTestidenterID().containsAll(expectedTestidenter));
+	}
+	
+	@Test
+	public void shouldMapTestgruppeContainingNullsWithoutThrowingNullpointerException() {
+		mapTestgruppeToResponse.map(new Testgruppe());
+	}
 	
 	private Testgruppe createTestgruppe() {
 		Testgruppe testgruppe = Testgruppe.builder()
@@ -42,31 +71,4 @@ public class MapTestgruppeToResponseTest {
 		return testidenter;
 	}
 	
-	@Test
-	public void shouldMapTestgruppeToResponse() {
-		testgruppe.getTestidenter();
-		TestgruppeResponse response = MapTestgruppeToResponse.map(testgruppe);
-		
-		assertTestgruppeResponse(response);
-	}
-	
-	private void assertTestgruppeResponse(TestgruppeResponse response) {
-		assertEquals(testgruppe.getId(), response.getId());
-		assertEquals(testgruppe.getNavn(), response.getNavn());
-		assertEquals(testgruppe.getTeamtilhoerighet().getNavn(), response.getTilhoererTeamnavn());
-		assertEquals(testgruppe.getDatoEndret(), response.getDatoEndret());
-		assertEquals(testgruppe.getOpprettetAv().getNavIdent(), response.getOpprettetAvNavIdent());
-		assertEquals(testgruppe.getSistEndretAv().getNavIdent(), response.getSistEndretAvNavIdent());
-
-		System.out.println(testgruppe.getTestidenter());
-		Set<Long> expectedTestidenter = testgruppe.getTestidenter().stream().map(Testident::getIdent).collect(Collectors
-						.toSet());
-		assertTrue("testidenter", response.getTestidenterID().containsAll(expectedTestidenter));
-	}
-	
-	@Test
-	public void shouldMapTestgruppeContainingNullsWithoutThrowingNullpointerException() {
-		Testgruppe emptytestgruppe = new Testgruppe();
-		MapTestgruppeToResponse.map(emptytestgruppe);
-	}
 }

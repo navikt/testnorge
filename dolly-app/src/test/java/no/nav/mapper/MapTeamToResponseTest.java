@@ -6,6 +6,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import no.nav.api.response.TeamResponse;
 import no.nav.jpa.Bruker;
@@ -18,14 +20,18 @@ public class MapTeamToResponseTest {
 	
 	Team team = createTeam(new Bruker("eierId"), createBrukere());
 	
+	private MapTestgruppeToResponse mockMapTestgruppeToResponse = mock(MapTestgruppeToResponse.class);
+	private TeamCustomMapper teamCustomMapper = new TeamCustomMapper(mockMapTestgruppeToResponse);
+	private	MapTeamToResponse mapTeamToResponse = new MapTeamToResponse(teamCustomMapper);
+	
 	@Test
 	public void shouldMapTeamContainingNullsWithoutThrowingNullpointerException() {
-		MapTeamToResponse.map(new Team());
+		mapTeamToResponse.map(new Team());
 	}
 	
 	@Test
 	public void shouldMapTeamToTeamResponse() {
-		TeamResponse teamResponse = MapTeamToResponse.map(team);
+		TeamResponse teamResponse = mapTeamToResponse.map(team);
 		
 		assertTeamResponse(teamResponse);
 	}
@@ -40,6 +46,7 @@ public class MapTeamToResponseTest {
 				.containsAll(team.getBrukere().stream().map(Bruker::getNavIdent).collect(Collectors.toSet())));
 		assertNotNull("testgrupper", teamResponse.getGrupper());
 		assertFalse("testgruppe", teamResponse.getGrupper().isEmpty());
+		team.getGrupper().forEach(verify(mockMapTestgruppeToResponse)::map);
 	}
 	
 }

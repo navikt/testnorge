@@ -5,6 +5,8 @@ import static no.nav.testdata.CreateJpaObjects.createTeam;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import no.nav.api.response.BrukerResponse;
 import no.nav.jpa.Bruker;
@@ -26,14 +28,18 @@ public class MapBrukerToResponseTest {
 		return eier;
 	}
 	
+	MapTeamToResponse mockMapTeamToResponse = mock(MapTeamToResponse.class);
+	
+	MapBrukerToResponse mapBrukerToResponse = new MapBrukerToResponse(mockMapTeamToResponse);
+	
 	@Test
 	public void shouldMapBrukerContainingNullsWithoutThrowingNullpointerException() {
-		MapBrukerToResponse.map(new Bruker());
+		mapBrukerToResponse.map(new Bruker());
 	}
 	
 	@Test
 	public void shouldMapBrukerToResponse() {
-		BrukerResponse brukerResponse = MapBrukerToResponse.map(eier);
+		BrukerResponse brukerResponse = mapBrukerToResponse.map(eier);
 		
 		assertBrukerResponseMapping(eier, brukerResponse);
 	}
@@ -44,5 +50,7 @@ public class MapBrukerToResponseTest {
 		assertFalse("er brukerens teameierskap tom?", bruker.getTeamEierskap().isEmpty());
 		assertNotNull("brukerens teammedlemsskap", brukerResponse.getTeamMedlemskap());
 		assertFalse("er brukerens teammedlemskap tom?", bruker.getTeamMedlemskap().isEmpty());
+		eier.getTeamMedlemskap().forEach(verify(mockMapTeamToResponse)::map);
+		eier.getTeamMedlemskap().forEach(verify(mockMapTeamToResponse)::map);
 	}
 }
