@@ -59,18 +59,22 @@ public class Team {
 	private Set<Testgruppe> grupper;
 	
 	@ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-	@JoinTable(name = "team_brukere",
+	@JoinTable(name = "team_medlemmer",
 			joinColumns = @JoinColumn(name = "team_id"),
 			inverseJoinColumns = @JoinColumn(name = "bruker_id"))
-	private Set<Bruker> brukere = new HashSet<>();
+	private Set<Bruker> medlemmer = new HashSet<>();
 	
 	
 	public Set<String> getSetOfBrukernesNavidenter() {
-		if (brukere==null || brukere.isEmpty()) {
+		if (medlemmer ==null || medlemmer.isEmpty()) {
 			return null;
 		}
 		Set<String> brukernesNavIdent = new HashSet<>();
-		this.getBrukere().forEach(bruker -> brukernesNavIdent.add(bruker.getNavIdent()));
+		this.getMedlemmer().forEach(bruker -> brukernesNavIdent.add(bruker.getNavIdent()));
 		return brukernesNavIdent;
+	}
+	
+	public void addMedlemmer(Set<Bruker> nyeMedlemmer) {
+			nyeMedlemmer.forEach(medlemmer::add);
 	}
 }

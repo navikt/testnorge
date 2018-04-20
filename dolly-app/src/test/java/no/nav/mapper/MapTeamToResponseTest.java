@@ -42,8 +42,8 @@ public class MapTeamToResponseTest {
 		assertEquals(team.getBeskrivelse(), teamResponse.getBeskrivelse());
 		assertEquals(team.getDatoOpprettet(), teamResponse.getDatoOpprettet());
 		assertEquals(team.getEier().getNavIdent(), teamResponse.getEierensNavIdent());
-		assertTrue("brukere", teamResponse.getBrukernesNavIdent()
-				.containsAll(team.getBrukere().stream().map(Bruker::getNavIdent).collect(Collectors.toSet())));
+		assertTrue("medlemmer", teamResponse.getBrukernesNavIdent()
+				.containsAll(team.getMedlemmer().stream().map(Bruker::getNavIdent).collect(Collectors.toSet())));
 		assertNotNull("testgrupper", teamResponse.getGrupper());
 		assertFalse("testgruppe", teamResponse.getGrupper().isEmpty());
 		team.getGrupper().forEach(verify(mockMapTestgruppeToResponse)::map);

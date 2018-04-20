@@ -29,7 +29,7 @@ public class Bruker {
     @Column(name = "NAV_IDENT", length = 10)
     private String navIdent;
 
-    @ManyToMany(mappedBy = "brukere")
+    @ManyToMany(mappedBy = "medlemmer")
     @Column(name = "TEAM_MEDLEMSKAP")
     private Set<Team> teamMedlemskap;
     

@@ -10,7 +10,7 @@ public class TeamUtility {
 		Assert.notNull(opprettetAvNavIdent, "Opprettet NavIdent kan ikke være null.");
 		Bruker bruker = opprettetAvNavIdent.equals(teamtilhoerighet.getEier().getNavIdent())? teamtilhoerighet.getEier():null;
 		if(bruker==null) {
-			bruker=	teamtilhoerighet.getBrukere()
+			bruker=	teamtilhoerighet.getMedlemmer()
 					.stream()
 					.filter(teammedlem -> teammedlem.equals(opprettetAvNavIdent))
 					.findFirst().get();

@@ -26,7 +26,7 @@ public class CreateJpaObjects {
 				.beskrivelse("beskrivelse her")
 				.datoOpprettet(LocalDateTime.now())
 				.eier(eier)
-				.brukere(brukere)
+				.medlemmer(brukere)
 				.grupper(testgrupper)
 				.build();
 		
@@ -36,7 +36,7 @@ public class CreateJpaObjects {
 		
 		Set<Team> medlemskap = new HashSet<>();
 		medlemskap.add(team);
-		team.getBrukere().forEach(bruker -> bruker.setTeamMedlemskap(medlemskap));
+		team.getMedlemmer().forEach(bruker -> bruker.setTeamMedlemskap(medlemskap));
 		
 		return team;
 	}
