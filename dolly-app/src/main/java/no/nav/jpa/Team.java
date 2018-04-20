@@ -62,6 +62,7 @@ public class Team {
 	@JoinTable(name = "team_medlemmer",
 			joinColumns = @JoinColumn(name = "team_id"),
 			inverseJoinColumns = @JoinColumn(name = "bruker_id"))
+	@Builder.Default
 	private Set<Bruker> medlemmer = new HashSet<>();
 	
 	

@@ -4,39 +4,21 @@ package no.nav.service;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import no.nav.api.request.CreateTeamRequest;
 import no.nav.exceptions.DollyFunctionalException;
-import no.nav.jpa.Bruker;
 import no.nav.jpa.Team;
-import no.nav.repository.BrukerRepository;
-import no.nav.repository.TeamRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 
-import java.time.LocalDateTime;
-
 @RunWith(MockitoJUnitRunner.class)
-public class TeamServiceTest {
-	@Mock
-	TeamRepository teamRepository;
-	
-	@Mock
-	BrukerRepository brukerRepository;
-	@InjectMocks
-	TeamService teamService;
-	
-	Bruker eier = new Bruker("eierId");
-	Team team = Team.builder().eier(eier).navn("teamnavn").datoOpprettet(LocalDateTime.now()).build();
+public class TeamServiceOpprettTeamTest extends AbstractTeamServiceTest {
 	CreateTeamRequest createTeamRequest = new CreateTeamRequest(team.getNavn(), team.getBeskrivelse(), team.getEier()
 			.getNavIdent());
 	
@@ -50,7 +32,7 @@ public class TeamServiceTest {
 		teamService.opprettTeam(createTeamRequest);
 		
 		ArgumentCaptor<Team> argument = ArgumentCaptor.forClass(Team.class);
-		Mockito.verify(teamRepository).save(argument.capture());
+		verify(teamRepository).save(argument.capture());
 		assertEquals(team.getNavn(), argument.getValue().getNavn());
 		assertEquals(team.getBeskrivelse(), argument.getValue().getBeskrivelse());
 		assertEquals(team.getEier(), argument.getValue().getEier());

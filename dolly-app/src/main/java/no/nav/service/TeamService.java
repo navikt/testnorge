@@ -11,6 +11,8 @@ import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class TeamService {
@@ -45,5 +47,24 @@ public class TeamService {
 		} catch (NonTransientDataAccessException e) {
 			throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
 		}
+	}
+	
+	public void addMedlemmer(Long teamId, Set<String> navIdenter) {
+		Team team = teamRepository.findTeamById(teamId);
+		Set<Bruker> nyeMedlemmer = findOrCreateBrukere(navIdenter);
+		team.addMedlemmer(nyeMedlemmer);
+		teamRepository.save(team);
+	}
+	
+	private Set<Bruker> findOrCreateBrukere(Set<String> navIdenter) {
+		Set<Bruker> brukere = new HashSet<>();
+		for (String navIdent:navIdenter ) {
+			Bruker bruker = brukerRepository.findBrukerByNavIdent(navIdent);
+			if (bruker == null) {
+				bruker= brukerRepository.save(new Bruker(navIdent));
+			}
+			brukere.add(bruker);
+		}
+		return brukere;
 	}
 }
