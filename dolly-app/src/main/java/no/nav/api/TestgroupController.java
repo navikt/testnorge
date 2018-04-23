@@ -49,8 +49,7 @@ public class TestgroupController {
 	//TODO Slett gruppe
 	
 	@PutMapping("/{testgruppe}/slettTestidenter")
-	public ResponseEntity deleteTestident(@PathVariable("testgruppe") Long gruppeId, @RequestBody IdentListeRequest testpersonIdentListe) {
+	public void deleteTestident(@PathVariable("testgruppe") Long gruppeId, @RequestBody IdentListeRequest testpersonIdentListe) {
 		identService.slettTestidenter( testpersonIdentListe.getIdentListe());
-		return ResponseEntity.ok(HttpEntity.EMPTY);
 	}
 }
