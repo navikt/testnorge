@@ -18,7 +18,7 @@ public class TeamResponse {
 	private String beskrivelse;
 	private LocalDateTime datoOpprettet;
 	private String eierensNavIdent;
-	private Set<String> brukernesNavIdent;
+	private Set<String> medlemmenesNavIdent;
 	private Set<TestgruppeResponse> grupper;
 	
 }

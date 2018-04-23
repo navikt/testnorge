@@ -42,7 +42,7 @@ public class MapTeamToResponseTest {
 		assertEquals(team.getBeskrivelse(), teamResponse.getBeskrivelse());
 		assertEquals(team.getDatoOpprettet(), teamResponse.getDatoOpprettet());
 		assertEquals(team.getEier().getNavIdent(), teamResponse.getEierensNavIdent());
-		assertTrue("medlemmer", teamResponse.getBrukernesNavIdent()
+		assertTrue("medlemmer", teamResponse.getMedlemmenesNavIdent()
 				.containsAll(team.getMedlemmer().stream().map(Bruker::getNavIdent).collect(Collectors.toSet())));
 		assertNotNull("testgrupper", teamResponse.getGrupper());
 		assertFalse("testgruppe", teamResponse.getGrupper().isEmpty());

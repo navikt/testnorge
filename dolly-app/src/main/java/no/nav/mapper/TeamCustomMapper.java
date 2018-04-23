@@ -20,7 +20,7 @@ public class TeamCustomMapper extends CustomMapper<Team, TeamResponse> {
 	
 	@Override
 	public void mapAtoB(Team a, TeamResponse b, MappingContext context) {
-		b.setBrukernesNavIdent(a.getSetOfBrukernesNavidenter());
+		b.setMedlemmenesNavIdent(a.getSetOfBrukernesNavidenter());
 		
 		if(a.getGrupper()!=null && !a.getGrupper().isEmpty()) {
 			b.setGrupper(a.getGrupper()

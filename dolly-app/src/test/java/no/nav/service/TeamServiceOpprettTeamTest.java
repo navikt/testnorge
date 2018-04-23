@@ -37,7 +37,6 @@ public class TeamServiceOpprettTeamTest extends AbstractTeamServiceTest {
 		assertEquals(team.getNavn(), argument.getValue().getNavn());
 		assertEquals(team.getBeskrivelse(), argument.getValue().getBeskrivelse());
 		assertEquals(team.getEier(), argument.getValue().getEier());
-//		assertThat(argument.getValue().getDatoOpprettet(),is(leq(LocalDateTime.now()))); //FIXME
 	}
 	
 	/**
