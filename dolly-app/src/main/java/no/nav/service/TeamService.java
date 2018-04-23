@@ -67,4 +67,24 @@ public class TeamService {
 		}
 		return brukere;
 	}
+    
+    public Team updateTeamInfo(Long teamId, CreateTeamRequest teamRequest) {
+        Team team = teamRepository.findTeamById(teamId);
+        endreTeamInfo(team,teamRequest);
+        
+        Team savedTeam = saveToTeamRepository(team);
+        return savedTeam;
+    }
+    
+    private void endreTeamInfo(Team team,CreateTeamRequest teamRequest) {
+        team.setNavn(teamRequest.getNavn());
+        team.setBeskrivelse(teamRequest.getBeskrivelse());
+        if (!teamRequest.getEierensNavIdent().equals(team.getEier().getNavIdent())) {
+            Bruker nyEier = brukerRepository.findBrukerByNavIdent(teamRequest.getEierensNavIdent());
+            if (nyEier == null) {
+                throw new DollyFunctionalException("Bruker med nav-ident " + teamRequest.getEierensNavIdent() + " finnes ikke i Dolly DB");
+            }
+            team.setEier(nyEier);
+        }
+    }
 }

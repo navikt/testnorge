@@ -35,12 +35,14 @@ public class TeamController {
 	public void addBrukereSomTeamMedlemmer(@PathVariable("team_id") Long teamId, @RequestBody BrukereRequest brukereRequest) {
 		teamService.addMedlemmer(teamId, brukereRequest.getNavIdenter());
 	}
+    
+    @PutMapping("/{team_id}")
+    public @ResponseBody TeamResponse endreTeaminfo(@PathVariable("team_id") Long teamId, @RequestBody CreateTeamRequest createTeamRequest) {
+        Team savedTeam = teamService.updateTeamInfo(teamId, createTeamRequest);
+        return mapTeamToResponse.map(savedTeam);
+    }
 	//fjern bruker-medlemmer fra team
-	//endre teaminfo /oppdater teamMetadata
-	//opprette gruppe
-	//endre eier av team
 	
 	// slett team
-	
-	
+ 
 }

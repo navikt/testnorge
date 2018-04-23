@@ -4,6 +4,8 @@ import no.nav.jpa.Bruker;
 import no.nav.jpa.Team;
 import no.nav.repository.BrukerRepository;
 import no.nav.repository.TeamRepository;
+
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,7 +23,11 @@ public abstract class AbstractTeamServiceTest {
 	TeamService teamService;
 	
 	
-	Bruker eier = new Bruker("eierId");
-	Team team = Team.builder().eier(eier).navn("teamnavn").datoOpprettet(LocalDateTime.now()).build();
-	
+	Bruker eier;
+	Team team;
+	@Before
+	public void setupTestdata() {
+		eier = new Bruker("eierId");
+		team = Team.builder().eier(eier).navn("teamnavn").datoOpprettet(LocalDateTime.now()).build();
+	}
 }
