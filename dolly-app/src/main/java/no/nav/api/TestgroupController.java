@@ -44,7 +44,7 @@ public class TestgroupController {
 		identService.persisterTestidenter(gruppeId, testpersonIdentListe.getIdentListe());
 	}
 	
-	//TODO REST endre gruppe
+	//TODO REST endre navn gruppe
 	
 	//TODO Slett gruppe
 	

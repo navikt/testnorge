@@ -87,4 +87,12 @@ public class TeamService {
             team.setEier(nyEier);
         }
     }
+	
+	public Team fjernMedlemmer(Long teamId, Set<String> navIdenter) {
+		Team team = teamRepository.findTeamById(teamId);
+		if (team.getMedlemmer() != null && !team.getMedlemmer().isEmpty()) {
+			team.getMedlemmer().removeIf(medlem -> navIdenter.stream().anyMatch(fjernIdent -> fjernIdent.equals(medlem.getNavIdent())));
+		}
+		return saveToTeamRepository(team);
+	}
 }

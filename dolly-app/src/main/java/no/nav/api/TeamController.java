@@ -31,17 +31,22 @@ public class TeamController {
 		return mapTeamToResponse.map(savedTeam);
 	}
 	
-	@PutMapping("/{team_id}")
+	@PutMapping("/{team_id}/leggTilMedlemmer")
 	public void addBrukereSomTeamMedlemmer(@PathVariable("team_id") Long teamId, @RequestBody BrukereRequest brukereRequest) {
 		teamService.addMedlemmer(teamId, brukereRequest.getNavIdenter());
 	}
-    
+	
+	@PutMapping("/{team_id}/fjernMedlemmer")
+	public @ResponseBody TeamResponse fjernBrukerefraTeam(@PathVariable("team_id") Long teamId, @RequestBody BrukereRequest brukereRequest) {
+        Team savedTeam = teamService.fjernMedlemmer(teamId, brukereRequest.getNavIdenter());
+        return mapTeamToResponse.map(savedTeam);
+    }
+		
     @PutMapping("/{team_id}")
     public @ResponseBody TeamResponse endreTeaminfo(@PathVariable("team_id") Long teamId, @RequestBody CreateTeamRequest createTeamRequest) {
         Team savedTeam = teamService.updateTeamInfo(teamId, createTeamRequest);
         return mapTeamToResponse.map(savedTeam);
     }
-	//fjern bruker-medlemmer fra team
 	
 	// slett team
  

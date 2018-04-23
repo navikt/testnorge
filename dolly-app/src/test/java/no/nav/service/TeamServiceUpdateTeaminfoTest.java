@@ -13,14 +13,13 @@ import org.junit.Test;
 public class TeamServiceUpdateTeaminfoTest extends AbstractTeamServiceTest {
 	CreateTeamRequest teamRequest;
 	Bruker nyEier = new Bruker("nyeierId");
-	Long teamId = 123L;
 	Team nyttTeam;
 	
 	@Before
 	public void setupRequest() {
 		teamRequest = new CreateTeamRequest("navn", "beskrivelse", "nyeierId");
 		when(brukerRepository.findBrukerByNavIdent(teamRequest.getEierensNavIdent())).thenReturn(nyEier);
-		when(teamRepository.findTeamById(teamId)).thenReturn(team);
+		when(teamRepository.findTeamById(team.getId())).thenReturn(team);
 		
 		nyttTeam = Team.builder()
 				.id(team.getId())
@@ -35,7 +34,7 @@ public class TeamServiceUpdateTeaminfoTest extends AbstractTeamServiceTest {
 	
 	@Test
 	public void shouldUpdateTeamInfo() {
-		teamService.updateTeamInfo(teamId, teamRequest);
+		teamService.updateTeamInfo(team.getId(), teamRequest);
 		
 		verify(teamRepository).save(eq(nyttTeam));
 	}

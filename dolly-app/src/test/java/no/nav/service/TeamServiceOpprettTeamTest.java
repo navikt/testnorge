@@ -19,11 +19,12 @@ import org.springframework.dao.DuplicateKeyException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceOpprettTeamTest extends AbstractTeamServiceTest {
-	CreateTeamRequest createTeamRequest = new CreateTeamRequest(team.getNavn(), team.getBeskrivelse(), team.getEier()
-			.getNavIdent());
+	private CreateTeamRequest createTeamRequest;
 	
 	@Before
-	public void setupMocks() {
+	public void setup() {
+		createTeamRequest = new CreateTeamRequest(team.getNavn(), team.getBeskrivelse(), team.getEier()
+				.getNavIdent());
 		when(brukerRepository.findBrukerByNavIdent(anyString())).thenReturn(eier);
 	}
 	
