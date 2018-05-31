@@ -1,13 +1,15 @@
 import React from 'react';
-import { DropdownButton, MenuItem, Glyphicon} from 'react-bootstrap';
-
 
 class DropdownMenuHeader extends React.Component {
 
     render() {
-        const icon = <Glyphicon glyph="glyphicon glyphicon-user" />;
+        //const icon = <Glyphicon glyph="glyphicon glyphicon-user" />;
 
         return (
+            <div>
+                Hei
+            </div>
+            /*
               <DropdownButton
                   bsSize="small"
                   bsStyle="default"
@@ -25,6 +27,7 @@ class DropdownMenuHeader extends React.Component {
                       <Glyphicon glyph="glyphicon glyphicon-log-in"/>&nbsp; Logg inn
                   </MenuItem>
               </DropdownButton>
+              */
         );
     }
 }

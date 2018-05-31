@@ -3,10 +3,12 @@ import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import * as gruppeActions from '../../actions/gruppeActions';
 import GruppeList from "./GruppeListe";
+import Table from '../../components/felles/table/Table'
 import InputAutocompleteField from '../felles/fields/InputAutocompleteField';
 import InputDatePicker from '../felles/fields/InputDatePicker';
 import moment from 'moment';
 import './HomeContainer.css';
+import KnappBase from 'nav-frontend-knapper';
 import Team from '../team/TeamContainer';
 import NyGruppe from '../gruppe/NyGruppeContainer';
 
@@ -66,14 +68,19 @@ class Home extends Component{
 
         return (
             <div id="home-container">
-                <h1>Home Container</h1>
+                <div id="home-container-header" className="dolly-header">
+                    <h1 id="home-container-header-title">Mine testdatagrupper</h1>
+                    <div id="home-container-header-button" data-flex data-layout="row" data-layout-align="end center">
+                        <KnappBase type='standard'>
+                            Opprett ny gruppe
+                        </KnappBase>
+                    </div>
+                </div>
+
+                <Table />
+
                 <div id="first-row">
                     <div id="first-column">
-                        <InputAutocompleteField label={"Postnummer"}
-                                                id={"postnummer-id"}
-                                                onSelectedValue={this.onSelectedValue}
-                                                kodeverk={kodeverk}
-                        />
                         <GruppeList grupper={grupper}/>
 
                         <InputDatePicker
@@ -104,12 +111,15 @@ class Home extends Component{
                             : null
                         }
                     </div>
-
                 </div>
-
-
-
-
+                <div className="dolly-header">
+                    <h1>Søk etter testdatagrupper</h1>
+                    <InputAutocompleteField label={"Postnummer"}
+                                            id={"postnummer-id"}
+                                            onSelectedValue={this.onSelectedValue}
+                                            kodeverk={kodeverk}
+                    />
+                </div>
             </div>
         )
 

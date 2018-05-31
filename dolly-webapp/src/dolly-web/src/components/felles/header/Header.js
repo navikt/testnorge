@@ -1,25 +1,53 @@
 import React from 'react';
 import './header.css';
-import {Row, Col} from 'react-bootstrap';
-import DropdownMenuHeader from './user_menu/DropdownMenuHeader';
+import logo from '../../../assets/img/nav-logo-hvit.png'
+import '../../../styles/variables.css'
 
 export default () => {
     return (
         <div id="dolly-header">
-            <Row id="header_row">
-                <Col md={2}>
+            <div id="header-icon-area" className="logo-wrapper" data-flex data-layout="row" data-layout-align="center center">
+                <a rel="home">
+                    <img alt="NAV logo" src={logo}/>
+                </a>
 
-                </Col>
+            </div>
+            <div id="header-title" data-flex data-layout="row" data-layout-align="start center">
+                <h1 id="page-title">Dolly</h1>
+            </div>
 
-                <Col md={8} mdOffset={1} mdPull={1}>
-                    <h1 id="header_title">Dolly</h1>
-                </Col>
+            <div id="header-navigation" data-flex data-layout="row" data-layout-align="start center">
+                <div className="header-nav-clickable">
+                    <h3>Testdata</h3>
+                </div>
 
-                <Col md={1} mdPull={1} id="header_dropdown">
-                    <DropdownMenuHeader />
-                </Col>
-            </Row>
+                <div className="header-nav-clickable">
+
+                    <h3>Kømanager</h3>
+                </div>
+
+                <div className="header-nav-clickable">
+
+                    <h3>API-Dok</h3>
+                </div>
+            </div>
+
+
+            <div id="header-user-area" data-flex data-layout="row" data-layout-align="start center">
+                <div id="header-user-name">
+                    Sergio Fløgstad
+                </div>
+                <div id="header-user-icon">
+                    <i className="fa fa-user-circle"> </i>
+                </div>
+            </div>
         </div>
     );
 };
+
+/*
+                <div  id="header_dropdown">
+                    <DropdownMenuHeader />
+                </div>
+                */
 
