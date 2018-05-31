@@ -11,13 +11,18 @@ class AppFrame extends Component {
     return (
       <div id="dolly-app">
           <Header/>
-          <div id="dolly-content">
-              <Sidebar/>
-              {children}
+          <div id="dolly-content-outer" >
+              <div id="left-content"> </div>
+              <div id="dolly-content">
+                  {children}
+              </div>
+              <div id="right-content"> </div>
           </div>
       </div>
     );
   }
 }
+
+//<Sidebar/>  Denne er over {children}
 
 export default AppFrame;
