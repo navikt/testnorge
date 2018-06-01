@@ -1,49 +1,35 @@
-import React, {Component} from 'react';
-import NyGruppeForm from './NyGruppeForm';
-import axios from 'axios';
-import ContentApi from '../../ContentApi';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
-import * as gruppeActions from '../../actions/gruppeActions';
+import React, { PureComponent } from 'react'
+import NyGruppeForm from './NyGruppeForm'
+import axios from 'axios'
+import ContentApi from '../../ContentApi'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { createGruppeSuccess } from '~/ducks/grupper'
 
+export class NyGruppe extends PureComponent {
+	onClickSave = gruppe => {
+		let gruppe_obj = Object.assign({}, gruppe)
+		this.opprettGruppe(gruppe_obj).catch(error => {
+			console.log(error)
+		})
+	}
 
-export class NyGruppe extends Component {
-    constructor(props, context){
-        super(props, context);
+	opprettGruppe = async gruppe => {
+		const response = await axios.post(ContentApi.postGrupper(), gruppe)
+		this.props.createGruppeSuccess(response.data)
+	}
 
-        this.onClickSave = this.onClickSave.bind(this);
-        this.opprettGruppe = this.opprettGruppe.bind(this);
-    }
-
-    onClickSave(gruppe) {
-        let gruppe_obj = Object.assign({}, gruppe);
-        this.opprettGruppe(gruppe_obj).catch(error => {
-            console.log(error);
-        });
-    }
-
-    async opprettGruppe(gruppe){
-        const response = await axios.post(ContentApi.postGrupper(), gruppe);
-        this.props.gruppeActions.createGruppeSuccess(response.data);
-    }
-
-    render() {
-
-        return(
-            <NyGruppeForm
-                onClickSave={this.onClickSave}
-                onChangeInput={this.onInputChange}
-            />
-        )
-    }
+	render() {
+		return <NyGruppeForm onClickSave={this.onClickSave} onChangeInput={this.onInputChange} />
+	}
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        gruppeActions: bindActionCreators(gruppeActions, dispatch)
-    }
-}
+// Todo: Flyttes til connector
+const mapDispatchToProps = dispatch => ({
+	createGruppeSuccess: res => dispatch(createGruppeSuccess(res))
+})
 
-const function_connectReduxAndComponent = connect(null, mapDispatchToProps);
-
-export default function_connectReduxAndComponent(NyGruppe);
+export default connect(
+	null,
+	mapDispatchToProps
+)(NyGruppe)

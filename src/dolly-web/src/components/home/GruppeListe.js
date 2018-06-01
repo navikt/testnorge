@@ -1,15 +1,10 @@
-import React from 'react';
-import GruppeListeElement from './GruppeListeElement';
+import React from 'react'
+import GruppeListeElement from './GruppeListeElement'
 
-export default ( {grupper} ) => {
+export default ({ grupper }) => {
+	const gruppeList = grupper.map(gruppe => (
+		<GruppeListeElement key={gruppe.id} gruppeElement={gruppe} />
+	))
 
-    const gruppeList = grupper.map(gruppe =>
-        <GruppeListeElement key={gruppe.id} gruppeElement={gruppe} />
-    );
-
-    return (
-        <div>
-            {gruppeList}
-        </div>
-    )
-};
+	return <div>{gruppeList}</div>
+}

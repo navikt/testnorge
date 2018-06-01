@@ -1,52 +1,53 @@
-import React from 'react';
-import TableRow from './TableRow';
-import './table.css'
+import React from 'react'
+import TableRow from './TableRow'
+import './table.less'
 
+const Table = ({ id, tableObjects }) => {
+	const oby = [
+		{
+			Navn: 'dust',
+			Team: 'FREG',
+			Eier: 'Holene, Axel',
+			Hensikt: 'Hensikten med dette er å hh',
+			Personer: '30',
+			Miljø: 't5, t6, t7',
+			id: 0
+		},
+		{
+			Navn: 'bra',
+			Team: 'FO',
+			Eier: 'Fløgstad, Peter',
+			Hensikt: 'Hensikten loooooool',
+			Personer: '60',
+			Miljø: 't5, t6, t7',
+			id: 1
+		}
+	]
 
-const Table = ({id, tableObjects}) => {
+	tableObjects = oby
 
-    const oby = [
-        {"Navn": 'dust', "Team": 'FREG', "Eier": "Holene, Axel" ,"Hensikt": 'Hensikten med dette er å hh', "Personer": "30", "Miljø": "t5, t6, t7"},
-        {"Navn": 'bra', "Team": 'FO', "Eier": "Fløgstad, Peter", "Hensikt": 'Hensikten loooooool', "Personer": "60", "Miljø": "t5, t6, t7"}
-    ];
+	const rows = <tbody>{tableObjects.map(obj => <TableRow rowObject={obj} key={obj.id} />)}</tbody>
 
-    tableObjects = oby;
+	const headers = (
+		<thead className="dolly-table-header">
+			<tr>{Object.keys(tableObjects[0]).map((objKey, idx) => <th key={idx}>{objKey}</th>)}</tr>
+		</thead>
+	)
 
-    const rows = (
-        <tbody>
-        {
-            tableObjects.map(obj =>
-                <TableRow rowObject={obj} key={obj.id}/>
-            )
-        }
-        </tbody>
-    );
+	let addRow = null
+	if (false) addRow = <div>Hei</div>
 
-    const headers = (
-        <thead className="dolly-table-header">
-        <tr>
-            {Object.keys(tableObjects[0]).map(objKey => <th>{objKey}</th>)}
-        </tr>
-        </thead>
-    );
+	return (
+		<div className="dolly-table-container" id={id}>
+			<table className="dolly-table">
+				{headers}
 
-    let addRow = null;
-    if (false) {
-        addRow = <div>Hei</div>
-    }
+				{addRow}
 
-    return (
-        <div className="dolly-table-container" id={id}>
-            <table className="dolly-table">
+				{rows}
+			</table>
+		</div>
+	)
+}
 
-                {headers}
-
-                {addRow}
-
-                {rows}
-            </table>
-        </div>
-    )
-};
-
-export default Table;
+export default Table
