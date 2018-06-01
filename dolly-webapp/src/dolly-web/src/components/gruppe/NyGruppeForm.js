@@ -1,62 +1,63 @@
-import React, {Component} from 'react';
-import InputTextField from "../felles/fields/InputTextField";
+import React, { Component } from 'react'
+import InputTextField from '../felles/fields/InputTextField'
 
 class NyGruppeForm extends Component {
-    constructor(props, context) {
-        super(props, context);
+	constructor(props, context) {
+		super(props, context)
 
-        this.state = {
-            gruppe: {}
-        };
+		this.state = {
+			gruppe: {}
+		}
+	}
 
-        this.onInputChange = this.onInputChange.bind(this);
-        this.onClickSave = this.onClickSave.bind(this);
-    }
+	onInputChange = (statePropToChange, value) => {
+		let gruppe = Object.assign({}, this.state.gruppe)
+		gruppe[statePropToChange] = value
 
-    onInputChange(statePropToChange, value) {
-        let gruppe = Object.assign({}, this.state.gruppe);
-        gruppe[statePropToChange] = value;
+		this.setState({
+			gruppe: gruppe
+		})
+	}
 
-        this.setState({
-            gruppe: gruppe
-        });
-    }
+	onClickSave = () => {
+		this.props.onClickSave(this.state.gruppe)
+	}
 
-    onClickSave() {
-        this.props.onClickSave(this.state.gruppe);
-    }
+	render() {
+		return (
+			<div className="skjemaelement">
+				<br />
+				<InputTextField
+					label={'Navn'}
+					id={'navn-nygruppe'}
+					value={!this.state.gruppe['navn'] ? '' : this.state.gruppe['navn']}
+					onChange={this.onInputChange}
+					pattern="[a-z]+"
+					patternFeilmelding="Feilmelding"
+					statePropToChange={'navn'}
+				/>
 
-    render() {
-        return (
-            <div className="skjemaelement">
-                <br/>
-                <InputTextField label={"Navn"}
-                                id={"navn-nygruppe"}
-                                value={!this.state.gruppe["navn"] ? "" : this.state.gruppe["navn"]}
-                                onChange={this.onInputChange}
-                                pattern="[a-z]+"
-                                patternFeilmelding="Feilmelding"
-                                statePropToChange={"navn"}/>
+				<InputTextField
+					label={'Beskrivelse'}
+					id={'beskrivelse-nygruppe'}
+					value={!this.state.gruppe['beskrivelse'] ? '' : this.state.gruppe['beskrivelse']}
+					onChange={this.onInputChange}
+					statePropToChange={'beskrivelse'}
+				/>
 
-                <InputTextField label={"Beskrivelse"}
-                                id={"beskrivelse-nygruppe"}
-                                value={!this.state.gruppe["beskrivelse"] ? "" : this.state.gruppe["beskrivelse"]}
-                                onChange={this.onInputChange}
-                                statePropToChange={"beskrivelse"}/>
+				<InputTextField
+					label={'Team'}
+					id={'team-nygruppe'}
+					value={!this.state.gruppe['team'] ? '' : this.state.gruppe['team']}
+					onChange={this.onInputChange}
+					statePropToChange={'team'}
+				/>
 
-                <InputTextField label={"Team"}
-                                id={"team-nygruppe"}
-                                value={!this.state.gruppe["team"] ? "" : this.state.gruppe["team"]}
-                                onChange={this.onInputChange}
-                                statePropToChange={"team"}/>
-
-                <br/>
-                <button onClick={this.onClickSave}>Lagre gruppe</button>
-
-            </div>
-        );
-    }
+				<br />
+				<button onClick={this.onClickSave}>Lagre gruppe</button>
+			</div>
+		)
+	}
 }
 
-export default NyGruppeForm;
-
+export default NyGruppeForm

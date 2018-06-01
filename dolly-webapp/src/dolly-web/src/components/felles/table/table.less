@@ -1,56 +1,49 @@
-@import (reference) '../../../styles/variables.css';
-
 .dolly-table-container {
-  display: flex;
-  text-align: left;
-  margin-bottom: 30px;
+	display: flex;
+	text-align: left;
+	margin-bottom: 30px;
 
-  table {
-    border-spacing: 0;
-  }
+	table {
+		border-spacing: 0;
+	}
 
-  .dolly-table {
-    flex-grow: 1;
+	.dolly-table {
+		flex-grow: 1;
 
-    tr {
-      height: 5vh;
-      border-spacing: 0;
-    }
+		tr {
+			height: 5vh;
+			border-spacing: 0;
+		}
 
-    .dolly-table-header {
-      background-color: white;
+		.dolly-table-header {
+			background-color: white;
 
+			th {
+				font-weight: bold;
 
-        th {
-          font-weight: bold;
+				&:first-child {
+					padding-left: 20px;
+				}
+			}
+		}
 
-          &:first-child {
-            padding-left: 20px;
-          }
+		.dolly-table-row {
+			background-color: #f1f1f1;
 
-        }
-    }
+			td {
+				padding: 10px 0 0 0;
 
-    .dolly-table-row {
-      background-color: #f1f1f1;
+				&:first-child {
+					.dolly-table-row-inner {
+						padding-left: 20px;
+					}
+				}
 
-      td {
-        padding: 10px 0 0 0;
-
-        &:first-child {
-          .dolly-table-row-inner {
-            padding-left: 20px;
-          }
-        }
-
-        .dolly-table-row-inner {
-          background-color: white;
-          height: 5vh;
-        }
-
-      }
-    }
-  }
-
+				.dolly-table-row-inner {
+					background-color: white;
+					height: 5vh;
+				}
+			}
+		}
+	}
 }
-
