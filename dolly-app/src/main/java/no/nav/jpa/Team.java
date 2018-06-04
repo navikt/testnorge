@@ -67,15 +67,8 @@ public class Team {
 	
 	
 	public Set<String> getSetOfBrukernesNavidenter() {
-		if (medlemmer ==null || medlemmer.isEmpty()) {
-			return null;
-		}
 		Set<String> brukernesNavIdent = new HashSet<>();
 		this.getMedlemmer().forEach(bruker -> brukernesNavIdent.add(bruker.getNavIdent()));
 		return brukernesNavIdent;
-	}
-	
-	public void addMedlemmer(Set<Bruker> nyeMedlemmer) {
-			nyeMedlemmer.forEach(medlemmer::add);
 	}
 }

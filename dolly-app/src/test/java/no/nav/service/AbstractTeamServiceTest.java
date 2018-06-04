@@ -14,17 +14,19 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.time.LocalDateTime;
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractTeamServiceTest {
+
 	@Mock
 	TeamRepository teamRepository;
 	
 	@Mock
 	BrukerRepository brukerRepository;
+
 	@InjectMocks
 	TeamService teamService;
-	
-	
+
 	Bruker eier;
 	Team team;
+
 	@Before
 	public void setupTestdata() {
 		eier = new Bruker("eierId");

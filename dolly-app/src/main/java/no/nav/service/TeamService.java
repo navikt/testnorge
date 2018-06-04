@@ -19,11 +19,16 @@ public class TeamService {
 	
 	@Autowired
 	TeamRepository teamRepository;
+
 	@Autowired
 	BrukerRepository brukerRepository;
-	
+
+	@Autowired
+	BrukerService brukerService;
+
 	public Team opprettTeam(CreateTeamRequest createTeamRequest) {
-		Bruker eier = findBrukerByNavIdent(createTeamRequest.getEierensNavIdent());
+		Bruker eier = brukerService.getBruker(createTeamRequest.getEierensNavIdent());
+
 		Team team = Team.builder()
 				.navn(createTeamRequest.getNavn())
 				.beskrivelse(createTeamRequest.getBeskrivelse())
@@ -32,15 +37,30 @@ public class TeamService {
 		
 		return saveToTeamRepository(team);
 	}
-	
-	private Bruker findBrukerByNavIdent(String eierensNavIdent) {
-		Bruker eier = brukerRepository.findBrukerByNavIdent(eierensNavIdent);
-		if (eier == null) {
-			throw new DollyFunctionalException("Eierens NAV-Ident eksisterer ikke i Dolly databasen.");
-		}
-		return eier;
+
+
+	public void addMedlemmer(Long teamId, Set<String> navIdenter) {
+		Team team = teamRepository.findTeamById(teamId);
+		Set<Bruker> nyeMedlemmer = findOrCreateBrukere(navIdenter);
+		team.getMedlemmer().addAll(nyeMedlemmer);
+		teamRepository.save(team);
 	}
-	
+
+	public Team updateTeamInfo(Long teamId, CreateTeamRequest teamRequest) {
+		Team team = teamRepository.findTeamById(teamId);
+		endreTeamInfo(team,teamRequest);
+
+		return saveToTeamRepository(team);
+	}
+
+	public Team fjernMedlemmer(Long teamId, Set<String> navIdenter) {
+		Team team = teamRepository.findTeamById(teamId);
+		if (team.getMedlemmer() != null && !team.getMedlemmer().isEmpty()) {
+			team.getMedlemmer().removeIf(medlem -> navIdenter.stream().anyMatch(fjernIdent -> fjernIdent.equals(medlem.getNavIdent())));
+		}
+		return saveToTeamRepository(team);
+	}
+
 	private Team saveToTeamRepository(Team team) {
 		try {
 			return teamRepository.save(team);
@@ -48,14 +68,7 @@ public class TeamService {
 			throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
 		}
 	}
-	
-	public void addMedlemmer(Long teamId, Set<String> navIdenter) {
-		Team team = teamRepository.findTeamById(teamId);
-		Set<Bruker> nyeMedlemmer = findOrCreateBrukere(navIdenter);
-		team.addMedlemmer(nyeMedlemmer);
-		teamRepository.save(team);
-	}
-	
+
 	private Set<Bruker> findOrCreateBrukere(Set<String> navIdenter) {
 		Set<Bruker> brukere = new HashSet<>();
 		for (String navIdent:navIdenter ) {
@@ -67,15 +80,7 @@ public class TeamService {
 		}
 		return brukere;
 	}
-    
-    public Team updateTeamInfo(Long teamId, CreateTeamRequest teamRequest) {
-        Team team = teamRepository.findTeamById(teamId);
-        endreTeamInfo(team,teamRequest);
-        
-        Team savedTeam = saveToTeamRepository(team);
-        return savedTeam;
-    }
-    
+
     private void endreTeamInfo(Team team,CreateTeamRequest teamRequest) {
         team.setNavn(teamRequest.getNavn());
         team.setBeskrivelse(teamRequest.getBeskrivelse());
@@ -87,12 +92,4 @@ public class TeamService {
             team.setEier(nyEier);
         }
     }
-	
-	public Team fjernMedlemmer(Long teamId, Set<String> navIdenter) {
-		Team team = teamRepository.findTeamById(teamId);
-		if (team.getMedlemmer() != null && !team.getMedlemmer().isEmpty()) {
-			team.getMedlemmer().removeIf(medlem -> navIdenter.stream().anyMatch(fjernIdent -> fjernIdent.equals(medlem.getNavIdent())));
-		}
-		return saveToTeamRepository(team);
-	}
 }
