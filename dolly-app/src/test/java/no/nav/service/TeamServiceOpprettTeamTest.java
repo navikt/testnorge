@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.api.request.CreateTeamRequest;
+import no.nav.api.resultSet.RsTeam;
 import no.nav.exceptions.DollyFunctionalException;
 import no.nav.jpa.Team;
 import org.junit.Before;
@@ -19,12 +19,12 @@ import org.springframework.dao.DuplicateKeyException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceOpprettTeamTest extends AbstractTeamServiceTest {
-	private CreateTeamRequest createTeamRequest;
+	private RsTeam createTeamRequest;
 	
 	@Before
 	public void setup() {
-		createTeamRequest = new CreateTeamRequest(team.getNavn(), team.getBeskrivelse(), team.getEier()
-				.getNavIdent());
+//		createTeamRequest = new RsTeam(team.getNavn(), team.getBeskrivelse(), team.getEier()
+//				.getNavIdent())
 		when(brukerRepository.findBrukerByNavIdent(anyString())).thenReturn(eier);
 	}
 	

@@ -1,15 +1,7 @@
 package no.nav.jpa;
 
-import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,15 +13,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
+import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@ToString(exclude = {"teamtilhoerighet"}) //eksluderer cyclic references for å unngå stackoverflowError
-@EqualsAndHashCode(exclude = {"teamtilhoerighet"})
+@Getter
+@Setter
 @Table(name = "T_TESTGRUPPE")
 public class Testgruppe {
 	
@@ -55,13 +48,13 @@ public class Testgruppe {
 	
 	@Column(name = "DATO_ENDRET", nullable = false)
 	private LocalDateTime datoEndret;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TILHOERER_TEAM", nullable = false, referencedColumnName = "id")
+	@JoinColumn(name = "TILHOERER_TEAM", nullable = false)
 	private Team teamtilhoerighet;
 	
 	@OneToMany(mappedBy = "testgruppe", orphanRemoval = true)
 	@Column(unique = true)
-	private Set<Testident> testidenter;
+	private Set<Testident> testidenter = new HashSet<>();
 }
 

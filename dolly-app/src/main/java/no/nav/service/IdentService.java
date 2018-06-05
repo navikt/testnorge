@@ -1,6 +1,7 @@
 package no.nav.service;
 
-import no.nav.exceptions.DollyFunctionalException;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.api.resultSet.RsTestident;
 import no.nav.jpa.Testgruppe;
 import no.nav.jpa.Testident;
 import no.nav.repository.GruppeRepository;
@@ -11,34 +12,35 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class IdentService {
+
 	@Autowired
 	IdentRepository identRepository;
 	
 	@Autowired
 	GruppeRepository gruppeRepository;
+
+	@Autowired
+	TestgruppeService testgruppeService;
+
+	@Autowired MapperFacade mapperFacade;
 	
-	public void persisterTestidenter(Long gruppeId, Set<Long> personIdentListe) {
-		List<Testident> testidentList = new ArrayList<>();
-		Testgruppe testgruppe = gruppeRepository.findById(gruppeId);
+	public void persisterTestidenter(Long gruppeId, List<RsTestident> personIdentListe) {
+		List<Testident> testidentList = mapperFacade.mapAsList(personIdentListe, Testident.class);
+//		Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
-		if (testgruppe == null) {
-			throw new DollyFunctionalException("Testgruppe " + gruppeId + " finnes ikke i DollyDB.");
-		}
-
-		for (Long personIdent : personIdentListe) {
-			testidentList.add(new Testident(personIdent, testgruppe));
-		}
+//		for (RsTestident personIdent : personIdentListe) {
+//			testidentList.add();
+//		}
 
 		testidentList.forEach(testident -> identRepository.save(testident));
 		
 	}
 	
 	@Transactional
-	public void slettTestidenter(Set<Long> personIdentSet) {
-		personIdentSet.forEach(testident -> identRepository.deleteTestidentByIdent(testident));
+	public void slettTestidenter(List<RsTestident> personIdentSet) {
+		personIdentSet.forEach(testident -> identRepository.deleteTestidentByIdent(testident.getIdent()));
 	}
 }

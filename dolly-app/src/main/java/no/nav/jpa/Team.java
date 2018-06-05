@@ -6,7 +6,10 @@ import static no.nav.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -26,10 +29,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Getter
+@Setter
 @Table(name = "T_TEAM")
 public class Team {
 	
@@ -51,12 +52,11 @@ public class Team {
 	private LocalDateTime datoOpprettet;
 	
 	@ManyToOne
-	@JoinColumn(name = "EIER",nullable = false)
+	@JoinColumn(name = "EIER", nullable = false)
 	private Bruker eier;
 	
-	@OneToMany(mappedBy = "teamtilhoerighet", orphanRemoval = true)
-	@Column(name = "GRUPPER", unique = true)
-	private Set<Testgruppe> grupper;
+	@OneToMany(mappedBy = "teamtilhoerighet", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
+	private Set<Testgruppe> grupper = new HashSet<>();
 	
 	@ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 	@JoinTable(name = "team_medlemmer",
@@ -65,10 +65,4 @@ public class Team {
 	@Builder.Default
 	private Set<Bruker> medlemmer = new HashSet<>();
 	
-	
-	public Set<String> getSetOfBrukernesNavidenter() {
-		Set<String> brukernesNavIdent = new HashSet<>();
-		this.getMedlemmer().forEach(bruker -> brukernesNavIdent.add(bruker.getNavIdent()));
-		return brukernesNavIdent;
-	}
 }

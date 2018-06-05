@@ -29,7 +29,7 @@ public abstract class AbstractTeamServiceTest {
 
 	@Before
 	public void setupTestdata() {
-		eier = new Bruker("eierId");
-		team = Team.builder().eier(eier).navn("teamnavn").datoOpprettet(LocalDateTime.now()).build();
+//		eier = new Bruker("eierId");
+//		team = Team.builder().eier(eier).navn("teamnavn").datoOpprettet(LocalDateTime.now()).build();
 	}
 }
