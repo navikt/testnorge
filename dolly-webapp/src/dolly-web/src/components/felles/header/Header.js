@@ -1,6 +1,6 @@
 import React from 'react'
 import './header.less'
-import logo from '../../../assets/img/nav-logo-hvit.png'
+import logo from '~/assets/img/nav-logo-hvit.png'
 
 export default () => {
 	return (

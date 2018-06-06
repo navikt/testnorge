@@ -3,7 +3,7 @@ import { updateGruppeSuccess } from '~/ducks/grupper'
 import Gruppe from './Gruppe'
 
 const mapStateToProps = state => ({
-	grupperState: state.gruppe
+	grupperState: state.grupper
 })
 
 const mapDispatchToProps = dispatch => ({
