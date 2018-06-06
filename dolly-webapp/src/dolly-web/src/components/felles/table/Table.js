@@ -36,8 +36,6 @@ const Table = ({ id, tableObjects }) => {
 		<table className="dolly-table">
 			{headers}
 
-			{addRow}
-
 			<tbody>{tableObjects.map(obj => <TableRow rowObject={obj} key={obj.id} />)}</tbody>
 		</table>
 	)
