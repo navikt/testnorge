@@ -26,27 +26,20 @@ const Table = ({ id, tableObjects }) => {
 
 	tableObjects = oby
 
-	const rows = <tbody>{tableObjects.map(obj => <TableRow rowObject={obj} key={obj.id} />)}</tbody>
-
 	const headers = (
-		<thead className="dolly-table-header">
+		<thead>
 			<tr>{Object.keys(tableObjects[0]).map((objKey, idx) => <th key={idx}>{objKey}</th>)}</tr>
 		</thead>
 	)
 
-	let addRow = null
-	if (false) addRow = <div>Hei</div>
-
 	return (
-		<div className="dolly-table-container" id={id}>
-			<table className="dolly-table">
-				{headers}
+		<table className="dolly-table">
+			{headers}
 
-				{addRow}
+			{addRow}
 
-				{rows}
-			</table>
-		</div>
+			<tbody>{tableObjects.map(obj => <TableRow rowObject={obj} key={obj.id} />)}</tbody>
+		</table>
 	)
 }
 
