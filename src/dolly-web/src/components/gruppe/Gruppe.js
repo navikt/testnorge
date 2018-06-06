@@ -4,8 +4,8 @@ import PersonListe from './PersonListe'
 import ContentApi from '../../ContentApi'
 
 export default class Gruppe extends Component {
-	constructor(props, context) {
-		super(props, context)
+	constructor(props) {
+		super(props)
 
 		const gruppeId = parseInt(props.match.params.gruppeId, 10) //TODO når bruker ekte API så vil id være samme type, kan da fjerne denne
 		let gruppe = this.props.grupperState.find(gruppe => gruppe.id === gruppeId)

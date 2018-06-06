@@ -1,0 +1,24 @@
+@dividerBgColor: #d3dee3;
+
+.person-info-block {
+	margin-bottom: 20px;
+
+	h4 {
+		background-color: @dividerBgColor;
+		margin: 0;
+		padding: 3px 6px;
+		font-size: 0.8em;
+	}
+
+	.person-info-block-row {
+		display: flex;
+		.person-info-block-cell {
+			flex-grow: 1;
+			padding: 0px 5px;
+			h5 {
+				margin: 5px 0;
+				color: #444;
+			}
+		}
+	}
+}

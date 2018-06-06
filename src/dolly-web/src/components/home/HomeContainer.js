@@ -110,6 +110,27 @@ class Home extends Component {
 			{ navn: 'YRK', term: 'Yrkesskade / Menerstatning' }
 		]
 
+		const tableTestData = [
+			{
+				Navn: 'dust',
+				Team: 'FREG',
+				Eier: 'Holene, Axel',
+				Hensikt: 'Hensikten med dette er å hh',
+				Personer: '30',
+				Miljø: 't5, t6, t7',
+				id: 0
+			},
+			{
+				Navn: 'bra',
+				Team: 'FO',
+				Eier: 'Fløgstad, Peter',
+				Hensikt: 'Hensikten loooooool',
+				Personer: '60',
+				Miljø: 't5, t6, t7',
+				id: 1
+			}
+		]
+
 		return (
 			<div id="home-container">
 				<div id="home-container-header" className="dolly-header">
@@ -124,7 +145,7 @@ class Home extends Component {
 					</div>
 				</div>
 
-				<Table />
+				<Table data={tableTestData} />
 
 				<div id="first-row">
 					<div id="first-column">
