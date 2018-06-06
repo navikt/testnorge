@@ -1,14 +1,18 @@
-import 'babel-polyfill'
-import React from 'react'
-import AppFrame from './AppFrame'
+import React, { Component } from 'react'
+import Header from '~/components/felles/header/Header'
+import Sidebar from '~/components/felles/sidebar/Sidebar'
 import Routes from '../Routes'
+import './App.less'
 
-const App = () => {
-	return (
-		<AppFrame>
-			<Routes />
-		</AppFrame>
-	)
+export default class App extends Component {
+	render() {
+		return (
+			<div id="dolly-app">
+				<Header />
+				<main>
+					<Routes />
+				</main>
+			</div>
+		)
+	}
 }
-
-export default App
