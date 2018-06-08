@@ -1,6 +1,7 @@
+// TODO: lag config for denne
 const uri = 'http://localhost:3050'
 
-class ContentApi {
+class ContentApiEndpoints {
 	static getGrupper() {
 		return uri + '/grupper'
 	}
@@ -9,7 +10,7 @@ class ContentApi {
 		return uri + '/gruppe/id'
 	}
 
-	static postGrupper() {
+	static postGruppe() {
 		return uri + '/grupper'
 	}
 
@@ -38,4 +39,4 @@ class ContentApi {
 	}
 }
 
-export default ContentApi
+export default ContentApiEndpoints

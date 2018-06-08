@@ -1,61 +1,125 @@
 import axios from 'axios'
-import ContentApi from '~/ContentApi'
+import Endpoints from '~/service/ContentApiEndpoints'
 
 export const types = {
-    CREATE_GRUPPE_SUCCESS: 'CREATE_GRUPPE_SUCCESS',
-    UPDATE_GRUPPE_SUCCES: 'UPDATE_GRUPPE_SUCCES',
-    LOAD_GRUPPER_SUCCESS: 'LOAD_GRUPPER_SUCCESS'
+	GET_GRUPPER_REQUEST: 'grupper/get-grupper-request',
+	GET_GRUPPER_SUCCESS: 'grupper/get-grupper-success',
+	GET_GRUPPER_ERROR: 'grupper/get-grupper-error',
+
+	CREATE_GRUPPER_REQUEST: 'grupper/create-grupper-request',
+	CREATE_GRUPPER_SUCCESS: 'grupper/create-grupper-success',
+	CREATE_GRUPPER: 'grupper/create-grupper-error',
+
+	UPDATE_GRUPPER_REQUEST: 'grupper/update-grupper-request',
+	UPDATE_GRUPPER_SUCCESS: 'grupper/update-grupper-success',
+	UPDATE_GRUPPER_ERROR: 'grupper/update-grupper-error'
 }
 
-const initialState = [];
+const initialState = {
+	fetching: false,
+	items: null,
+	error: null
+}
 
 export default (state = initialState, action) => {
-    switch (action.type) {
-        case types.LOAD_GRUPPER_SUCCESS:
-            return action.grupper
-        case types.UPDATE_GRUPPE_SUCCES:
-            return [
-                ...state.filter(gruppe => gruppe.id !== action.gruppe.id),
-                Object.assign({}, action.gruppe)
-            ];
-        case types.CREATE_GRUPPE_SUCCESS:
-            return [...state, Object.assign({}, action.gruppe)]
-        default:
-            return state
-    }
+	switch (action.type) {
+		case types.GET_GRUPPER_REQUEST:
+			return {
+				...state,
+				fetching: true
+			}
+		case types.GET_GRUPPER_SUCCESS:
+			return {
+				...state,
+				fetching: false,
+				items: actions.grupper
+			}
+		case types.GET_GRUPPER_ERROR:
+			return {
+				...initialState,
+				error: action.error
+			}
+		default:
+			return state
+	}
 }
 
-const loadGrupperSuccess = grupper => ({
-    type: types.LOAD_GRUPPER_SUCCESS,
-    grupper: grupper
-});
+const getGrupperRequest = url => ({
+	type: types.GET_GRUPPER,
+	url
+})
 
-export const updateGruppeSuccess = gruppe => ({
-    type: types.UPDATE_GRUPPE_SUCCES,
-    gruppe: gruppe
-});
+const getGrupperSuccess = grupper => ({
+	type: types.GET_GRUPPER_SUCCESS,
+	grupper
+})
 
-export const createGruppeSuccess = gruppe => ({
-    type: types.CREATE_GRUPPE_SUCCESS,
-    gruppe: gruppe
-});
+const getGrupperError = error => ({
+	type: types.GET_GRUPPER_ERROR,
+	error
+})
 
+const createGrupperRequest = url => ({
+	type: types.CREATE_GRUPPER_REQUEST,
+	url
+})
+
+const createGrupperSuccess = gruppe => ({
+	type: types.CREATE_GRUPPER_SUCCESS,
+	gruppe
+})
+
+const createGrupperError = error => ({
+	type: types.CREATE_GRUPPER_ERROR,
+	error
+})
+
+const updateGrupperRequest = url => ({
+	type: types.UPDATE_GRUPPER_REQUEST,
+	url
+})
+
+const updateGrupperSuccess = grupper => ({
+	type: types.UPDATE_GRUPPER_SUCCESS,
+	grupper
+})
+
+const updateGrupperError = error => ({
+	type: types.UPDATE_GRUPPER_ERROR,
+	error
+})
 
 // THUNKS
-export const fetchGrupper = () => async dispatch => {
-    try {
-        const response = await axios.get(ContentApi.getGrupper());
-        dispatch(loadGrupperSuccess(response.data));
-    } catch (error) {
-        console.log(error)
-    }
-};
 
-export const updateGruppe = (gruppe) => async dispatch => {
-    try {
-        const response = await axios.post(ContentApi.putGruppe(gruppe.id), gruppe);
-        dispatch(updateGruppeSuccess(response.data))
-    } catch (error) {
-        console.log(error)
-    }
-};
+export const getGrupper = () => async dispatch => {
+	try {
+		const url = Endpoints.getGrupper()
+		dispatch(getGrupperRequest(url))
+		const response = await axios.get(url)
+		dispatch(getGrupperSuccess(response.data))
+	} catch (error) {
+		dispatch(getGrupperError(error))
+	}
+}
+
+export const createGruppe = nyGruppe => async dispatch => {
+	try {
+		const url = Endpoints.postGruppe()
+		dispatch(createGrupperRequest(url))
+		const response = await axios.get(url, nyGruppe)
+		dispatch(createGrupperSuccess(response.data))
+	} catch (error) {
+		dispatch(createGrupperError(error))
+	}
+}
+
+export const updateGruppe = gruppe => async dispatch => {
+	try {
+		const url = Endpoints.putGruppe(gruppe.id)
+		dispatch(updateGrupperRequest(url))
+		const response = await axios.post(url, gruppe)
+		dispatch(updateGruppeSuccess(response.data))
+	} catch (error) {
+		dispatch(updateGrupperError(error))
+	}
+}

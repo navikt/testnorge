@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
-import './InputAutocompleteField.less'
+import './Autocomplete.less'
 import Select from 'react-select'
 
-export default class InputAutocompleteField extends Component {
+export default class Autocomplete extends Component {
 	constructor(props, context) {
 		super(props, context)
 		this.handleChange = this.handleChange.bind(this)
 		this.optionsRenderer = this.optionsRenderer.bind(this)
 		this.formatKodeverk = this.formatKodeverk.bind(this)
 		this.handleOnInputChange = this.handleOnInputChange.bind(this)
-		InputAutocompleteField.capitalizeFirstLetter = InputAutocompleteField.capitalizeFirstLetter.bind(
-			this
-		)
+		Autocomplete.capitalizeFirstLetter = Autocomplete.capitalizeFirstLetter.bind(this)
 
 		this.customKodeverk = this.formatKodeverk(this.props.kodeverk)
 
@@ -30,7 +28,7 @@ export default class InputAutocompleteField extends Component {
 		kodeverk.forEach(kode => {
 			customKodeverk.push({
 				value: kode.navn,
-				label: kode.navn + ' - ' + InputAutocompleteField.capitalizeFirstLetter(kode.term)
+				label: kode.navn + ' - ' + Autocomplete.capitalizeFirstLetter(kode.term)
 			})
 		})
 
