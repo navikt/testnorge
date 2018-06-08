@@ -33,7 +33,8 @@ const webpackConfig = {
 	stats: statsOutputSettings,
 	devServer: {
 		stats: statsOutputSettings,
-		contentBase: path.join(__dirname, 'public')
+		contentBase: path.join(__dirname, 'public'),
+		historyApiFallback: true
 	},
 	plugins: [
 		new webpack.DefinePlugin({

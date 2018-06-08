@@ -1,5 +1,6 @@
 import React from 'react'
-import './header.less'
+import './Header.less'
+import { NavLink } from 'react-router-dom'
 import logo from '~/assets/img/nav-logo-hvit.png'
 
 export default () => {
@@ -17,7 +18,9 @@ export default () => {
 				</a>
 			</div>
 			<div id="header-title" data-flex data-layout="row" data-layout-align="start center">
-				<h1 id="page-title">Dolly</h1>
+				<NavLink exact to="/">
+					<h1 id="page-title">Dolly</h1>
+				</NavLink>
 			</div>
 
 			<div id="header-navigation" data-flex data-layout="row" data-layout-align="start center">

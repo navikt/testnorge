@@ -1,0 +1,69 @@
+@import '../../../node_modules/nav-frontend-core/less/_variabler';
+//TODO Finn ut hvordan man kan bare importere denne et sted å lage variabler jeg kan bruke overalt.
+
+#dolly-header {
+	width: 100vw;
+	height: 6vh;
+	padding: 15px 10px 15px 10px;
+	background-color: @navBlaDarken60;
+	color: white;
+
+	display: flex;
+	flex-direction: row;
+
+	.header-nav-clickable {
+		flex: auto;
+
+		h2 {
+			margin: 0;
+		}
+	}
+
+	.logo-wrapper {
+		img {
+			height: 40px;
+		}
+	}
+
+	#page-title {
+		color: white;
+		margin: 0 0 0 15px;
+	}
+
+	#header-icon-area {
+		flex-grow: 0.05;
+	}
+
+	#header-title {
+		flex-grow: 0.1;
+		border-left: white solid 1px;
+	}
+
+	#header-navigation {
+		flex-grow: 0.75;
+	}
+
+	#header-user-name {
+		flex-grow: 0.7;
+	}
+
+	#header-user-icon {
+		flex-grow: 0.3;
+
+		i {
+			font-size: 25px;
+		}
+	}
+
+	#header-user-area {
+		flex-grow: 0.1;
+		padding-left: 10px;
+		padding-right: 10px;
+		border-left: white solid 1px;
+	}
+
+	#header-dropdown {
+		padding: 18px;
+		padding-left: 30px;
+	}
+}

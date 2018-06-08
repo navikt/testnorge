@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import axios from 'axios'
-import PersonListe from './PersonListe'
-import ContentApi from '../../ContentApi'
+import Api from '~/service/Api'
 
 export default class Gruppe extends Component {
 	constructor(props) {
@@ -25,13 +23,13 @@ export default class Gruppe extends Component {
 	}
 
 	fetchPersonsInGroup = async () => {
-		const response = await axios.get(ContentApi.getPersons())
+		const response = await Api.getPersons()
 		this.setState({ personer: response.data, initialPersoner: response.date })
 	}
 
 	saveChangesInGroup = async () => {
 		testperson.gruppeId = this.state.gruppe.id
-		const response = await axios.post(ContentApi.postPersons(), testperson)
+		const response = await Api.postPerson(testperson)
 
 		this.setState({
 			personer: [...this.state.personer, Object.assign({}, response.data)]
@@ -42,7 +40,7 @@ export default class Gruppe extends Component {
 		let oppdatertGruppe = Object.assign({}, this.state.gruppe)
 		oppdatertGruppe.navn = 'nyttnavn'
 
-		const response = await axios.put(ContentApi.putGruppe(oppdatertGruppe.id), oppdatertGruppe)
+		const response = Api.updateGruppe(oppdatertGruppe.id, oppdatertGruppe)
 		this.props.updateGruppeSuccess(response.data)
 
 		this.setState({
@@ -66,20 +64,9 @@ export default class Gruppe extends Component {
 		return (
 			<div id="gruppe-container">
 				<h1>Gruppe Container</h1>
-				<PersonListe personer={this.state.personer} />
 				<button onClick={this.onClicker}>Update gruppe</button>
 				<button onClick={this.onClickerCreate}>Create person</button>
 			</div>
 		)
 	}
-}
-
-const testperson = {
-	id: 100,
-	fnr: '12345678987',
-	kjonn: 'k',
-	fornavn: 'testperson',
-	etternavn: 'ettertest',
-	adresse: 'finAdresse',
-	gruppeId: ''
 }

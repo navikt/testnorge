@@ -1,17 +1,11 @@
 import React, { Component } from 'react'
 import '~/styles/nav-frontend.less'
-import './InputDatePicker.less'
-import DatePicker from 'react-datepicker'
+import './Datepicker.less'
+import ReactDatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-export class InputDatePicker extends Component {
-	constructor(props, context) {
-		super(props, context)
-
-		this.handleChange = this.handleChange.bind(this)
-	}
-
-	handleChange(date) {
+export default class Datepicker extends Component {
+	handleChange = date => {
 		this.props.onChange(date)
 	}
 
@@ -21,7 +15,7 @@ export class InputDatePicker extends Component {
 		return (
 			<div className="skjemaelement">
 				<label className="skjemaelement__label">{label}</label>
-				<DatePicker
+				<ReactDatePicker
 					id={id}
 					className="skjemaelement__input"
 					dateFormat={dateFormat}
@@ -33,5 +27,3 @@ export class InputDatePicker extends Component {
 		)
 	}
 }
-
-export default InputDatePicker

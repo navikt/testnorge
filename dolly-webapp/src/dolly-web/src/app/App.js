@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import Header from '~/components/felles/header/Header'
-import Sidebar from '~/components/felles/sidebar/Sidebar'
+import Header from '~/components/header/Header'
 import Routes from '../Routes'
 import './App.less'
 
