@@ -1,72 +1,88 @@
 import React, { Component } from 'react'
-import Api from '~/service/Api'
+import Knapp from 'nav-frontend-knapper'
+import Ikon from 'nav-frontend-ikoner-assets'
+import GruppeDetaljer from './GruppeDetaljer'
+import Table from '~/components/table/Table'
+
+import './Gruppe.less'
 
 export default class Gruppe extends Component {
-	constructor(props) {
-		super(props)
-
-		const gruppeId = parseInt(props.match.params.gruppeId, 10) //TODO når bruker ekte API så vil id være samme type, kan da fjerne denne
-		let gruppe = this.props.grupperState.find(gruppe => gruppe.id === gruppeId)
-
-		this.state = {
-			personer: [],
-			initialPersoner: [],
-			gruppe: gruppe
-		}
-	}
-
-	//TODO Skal hente personer basert på testidenter i gruppen etter hvert.
 	componentDidMount() {
-		this.fetchPersonsInGroup().catch(err => {
-			console.log(err)
-		})
-	}
-
-	fetchPersonsInGroup = async () => {
-		const response = await Api.getPersons()
-		this.setState({ personer: response.data, initialPersoner: response.date })
-	}
-
-	saveChangesInGroup = async () => {
-		testperson.gruppeId = this.state.gruppe.id
-		const response = await Api.postPerson(testperson)
-
-		this.setState({
-			personer: [...this.state.personer, Object.assign({}, response.data)]
-		})
-	}
-
-	addIdentToGroup = async ident => {
-		let oppdatertGruppe = Object.assign({}, this.state.gruppe)
-		oppdatertGruppe.navn = 'nyttnavn'
-
-		const response = Api.updateGruppe(oppdatertGruppe.id, oppdatertGruppe)
-		this.props.updateGruppeSuccess(response.data)
-
-		this.setState({
-			gruppe: this.props.grupperState.find(gruppe => gruppe.id === oppdatertGruppe.id)
-		})
-	}
-
-	onClicker = () => {
-		this.addIdentToGroup('bla').catch(err => {
-			console.log(err)
-		})
-	}
-
-	onClickerCreate = () => {
-		this.saveChangesInGroup().catch(err => {
-			console.log(err)
-		})
+		// TODO: Currently handles refresh on pageload
+		if (!this.props.gruppe) this.props.getGrupper()
 	}
 
 	render() {
+		const { gruppe } = this.props
+		if (!gruppe) return false
+
 		return (
 			<div id="gruppe-container">
-				<h1>Gruppe Container</h1>
-				<button onClick={this.onClicker}>Update gruppe</button>
-				<button onClick={this.onClickerCreate}>Create person</button>
+				<div className="content-header">
+					<h1>
+						{gruppe.navn} <i className="fa fa-pencil" /> <Ikon kind="trashcan" />
+					</h1>
+					<div className="content-header-buttons">
+						<Knapp type="standard">Legg til personer</Knapp>
+						<Knapp type="standard">Dupliser gruppe</Knapp>
+					</div>
+				</div>
+
+				<GruppeDetaljer data={tempGRUPPEHEADER} />
+
+				{tempGRUPPE && <Table data={tempGRUPPE} selectable expandable />}
 			</div>
 		)
 	}
 }
+
+const tempGRUPPEHEADER = {
+	eier: 'Helga Woll Lunder',
+	team: 'Foreldrepenger',
+	env: 'T5, T6 og T7',
+	personer_num: '30',
+	menn_num: '23',
+	kvinner_num: '7',
+	opprettet: '10.06.2018',
+	sistEndret: '15.06.2018',
+	hensikt: 'Officia non nisi amet sit est proident culpa ipsum commodo consectetur minim officia.'
+}
+
+const tempGRUPPE = [
+	{
+		id: '010887 39501',
+		idType: 'FNR',
+		navn: 'Lunder, Helga Woll',
+		kjonn: 'Mann',
+		alder: '30',
+		gt: 'Drøbak',
+		arbforhold: 'ordinært'
+	},
+	{
+		id: '010887 39502',
+		idType: 'FNR',
+		navn: 'Lunder, Helga Woll',
+		kjonn: 'Mann',
+		alder: '30',
+		gt: 'Drøbak',
+		arbforhold: 'ordinært'
+	},
+	{
+		id: '010887 39503',
+		idType: 'FNR',
+		navn: 'Lunder, Helga Woll',
+		kjonn: 'Mann',
+		alder: '30',
+		gt: 'Drøbak',
+		arbforhold: 'ordinært'
+	},
+	{
+		id: '010887 39504',
+		idType: 'FNR',
+		navn: 'Lunder, Helga Woll',
+		kjonn: 'Mann',
+		alder: '30',
+		gt: 'Drøbak',
+		arbforhold: 'ordinært'
+	}
+]

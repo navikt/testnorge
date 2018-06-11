@@ -1,6 +1,22 @@
 @mainBgColor: #f1f1f1;
 @dividerBgColor: #d3dee3;
 
+.dolly-table-header {
+	background-color: white;
+	padding: 10px 20px;
+	margin-bottom: 10px;
+	display: flex;
+}
+
+.table-checkbox {
+	// TODO: Move to checkbox component
+	&.skjemaelement .skjemaelement__label:before {
+		top: -12px;
+		width: 22px;
+		height: 22px;
+	}
+}
+
 table.dolly-table {
 	width: 100%;
 	margin-bottom: 30px;
@@ -21,11 +37,6 @@ table.dolly-table {
 		border-top: 10px solid @mainBgColor;
 		td {
 			padding: 20px 10px;
-		}
-
-		// TODO: temp, ifl skisser skal det brukes arrow-down
-		&:hover:not(.table-row-detail) {
-			background-color: #c5def5;
 		}
 
 		&.table-row-detail {
