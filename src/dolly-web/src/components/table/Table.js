@@ -17,12 +17,14 @@ class Table extends PureComponent {
 		const { data, link, history, selectable, expandable } = this.props
 		return (
 			<React.Fragment>
-				<div className="dolly-table-header">
-					<Checkbox id="select-all" className="table-checkbox" label="" />
-					<label htmlFor="select-all">Velg alle</label>
+				{selectable && (
+					<div className="dolly-table-header">
+						<Checkbox id="select-all" className="table-checkbox" label="" />
+						<label htmlFor="select-all">Velg alle</label>
 
-					<span>Valgt: 0</span>
-				</div>
+						<span>Valgt: 0</span>
+					</div>
+				)}
 
 				<table className="dolly-table">
 					<thead>
