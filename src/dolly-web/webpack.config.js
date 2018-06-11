@@ -76,7 +76,7 @@ const webpackConfig = {
 			},
 			{
 				// images
-				test: /\.(ico|jpe?g|png|gif)$/,
+				test: /\.(ico|jpe?g|png|gif|woff|woff2|eot|ttf|svg)$/,
 				use: ['file-loader']
 			}
 		]

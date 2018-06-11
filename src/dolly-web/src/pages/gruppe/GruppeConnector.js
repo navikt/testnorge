@@ -1,13 +1,15 @@
 import { connect } from 'react-redux'
-import { updateGruppeSuccess } from '~/ducks/grupper'
 import Gruppe from './Gruppe'
+import { getGrupper } from '~/ducks/grupper'
 
-const mapStateToProps = state => ({
-	grupperState: state.grupper
+const mapStateToProps = (state, ownProps) => ({
+	gruppe:
+		state.grupper.items &&
+		state.grupper.items.find(v => String(v.id) === ownProps.match.params.gruppeId)
 })
 
 const mapDispatchToProps = dispatch => ({
-	updateGruppeSuccess: respons => dispatch(updateGruppeSuccess(respons))
+	getGrupper: () => dispatch(getGrupper())
 })
 
 export default connect(
