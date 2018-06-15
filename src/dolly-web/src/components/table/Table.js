@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import TableRow from './TableRow'
-import { Checkbox } from 'nav-frontend-skjema'
+import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { withRouter } from 'react-router-dom'
 import './table.less'
 
@@ -19,8 +19,7 @@ class Table extends PureComponent {
 			<React.Fragment>
 				{selectable && (
 					<div className="dolly-table-header">
-						<Checkbox id="select-all" className="table-checkbox" label="" />
-						<label htmlFor="select-all">Velg alle</label>
+						<Checkbox id="select-all" label="Velg alle" />
 
 						<span>Valgt: 0</span>
 					</div>

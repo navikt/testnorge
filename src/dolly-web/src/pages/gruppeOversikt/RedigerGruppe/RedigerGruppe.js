@@ -3,7 +3,7 @@ import { Input } from 'nav-frontend-skjema'
 import Knapp from 'nav-frontend-knapper'
 import Api from '~/service/Api'
 import PropTypes from 'prop-types'
-import './OpprettGruppe.less'
+import './RedigerGruppe.less'
 
 const initialState = {
 	gruppe: {
@@ -14,9 +14,10 @@ const initialState = {
 	error: null
 }
 
-export default class OpprettGruppe extends Component {
+export default class RedigerGruppe extends Component {
 	static propTypes = {
-		onSuccess: PropTypes.func.isRequired
+		onSuccess: PropTypes.func.isRequired,
+		onCancel: PropTypes.func.isRequired
 	}
 
 	state = {
@@ -64,6 +65,9 @@ export default class OpprettGruppe extends Component {
 				<Input label="HENSIKT" name="hensikt" value={hensikt} onChange={this.onInputChange} />
 				<Knapp type="hoved" onClick={this.createGroup}>
 					OPPRETT
+				</Knapp>
+				<Knapp type="standard" onClick={this.props.onCancel}>
+					Avbryt
 				</Knapp>
 			</div>
 		)
