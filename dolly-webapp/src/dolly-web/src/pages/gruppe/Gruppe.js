@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Knapp from 'nav-frontend-knapper'
 import Ikon from 'nav-frontend-ikoner-assets'
+import IconButton from '~/components/fields/IconButton/IconButton'
 import GruppeDetaljer from './GruppeDetaljer'
 import Table from '~/components/table/Table'
 
@@ -12,6 +13,8 @@ export default class Gruppe extends Component {
 		if (!this.props.gruppe) this.props.getGrupper()
 	}
 
+	startOppskrift = () => this.props.history.push(`${this.props.match.url}oppskrift`)
+
 	render() {
 		const { gruppe } = this.props
 		if (!gruppe) return false
@@ -20,7 +23,9 @@ export default class Gruppe extends Component {
 			<div id="gruppe-container">
 				<div className="content-header">
 					<h1>
-						{gruppe.navn} <i className="fa fa-pencil" /> <Ikon kind="trashcan" />
+						{gruppe.navn}
+						<IconButton iconName="pencil" onClick={() => {}} />
+						<IconButton iconName="trash-o" onClick={() => {}} />
 					</h1>
 					<div className="content-header-buttons">
 						<Knapp type="standard">Legg til personer</Knapp>
@@ -30,6 +35,10 @@ export default class Gruppe extends Component {
 
 				<GruppeDetaljer data={tempGRUPPEHEADER} />
 
+				<h2>
+					Testpersoner
+					<IconButton iconName="plus-circle" onClick={this.startOppskrift} />
+				</h2>
 				{tempGRUPPE && <Table data={tempGRUPPE} selectable expandable />}
 			</div>
 		)

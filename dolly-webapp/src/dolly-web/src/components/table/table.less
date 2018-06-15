@@ -8,15 +8,6 @@
 	display: flex;
 }
 
-.table-checkbox {
-	// TODO: Move to checkbox component
-	&.skjemaelement .skjemaelement__label:before {
-		top: -12px;
-		width: 22px;
-		height: 22px;
-	}
-}
-
 table.dolly-table {
 	width: 100%;
 	margin-bottom: 30px;
@@ -37,6 +28,11 @@ table.dolly-table {
 		border-top: 10px solid @mainBgColor;
 		td {
 			padding: 20px 10px;
+
+			button {
+				border: none;
+				background: none;
+			}
 		}
 
 		&.table-row-detail {
