@@ -1,0 +1,39 @@
+@orangeColor: #f7c377;
+@darkBlue: #194d62;
+
+.panel {
+	display: flex;
+	flex-direction: column;
+	padding: 0 10px;
+	margin-bottom: 20px;
+	background-color: white;
+	border: 1px solid white; // get correct sizing when open
+
+	&.panel-open {
+		border: 1px solid @orangeColor;
+	}
+
+	.panel-heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 10px 0;
+
+		h1,
+		h2,
+		h3,
+		h4 {
+			margin: 0;
+		}
+
+		.iconbutton {
+			width: 36px;
+			height: 36px;
+		}
+	}
+
+	.panel-content {
+		border-top: 2px solid @darkBlue;
+		padding: 20px 0;
+	}
+}

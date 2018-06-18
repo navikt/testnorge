@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import cn from 'classnames'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
+import IconButton from '~/components/fields/IconButton/IconButton'
 import TableRowDetail from './TableRowDetail'
 
 export default class TableRow extends Component {
@@ -26,11 +27,6 @@ export default class TableRow extends Component {
 			return <td key={idx}>{rowObject[key]}</td>
 		})
 
-		const toggleClass = cn('fa', {
-			'fa-chevron-down': !this.state.detailOpen,
-			'fa-chevron-up': this.state.detailOpen
-		})
-
 		return (
 			<React.Fragment>
 				<tr onClick={e => this.onClickRow(e, rowObject.id)}>
@@ -42,9 +38,10 @@ export default class TableRow extends Component {
 					{rowColumns}
 					{expandable && (
 						<td>
-							<button aria-label="Expand row" onClick={this.toggleOpenDetail}>
-								<i className={toggleClass} />
-							</button>
+							<IconButton
+								iconName={detailOpen ? 'chevron-up' : 'chevron-down'}
+								onClick={this.toggleOpenDetail}
+							/>
 						</td>
 					)}
 				</tr>

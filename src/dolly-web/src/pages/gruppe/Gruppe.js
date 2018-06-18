@@ -13,7 +13,10 @@ export default class Gruppe extends Component {
 		if (!this.props.gruppe) this.props.getGrupper()
 	}
 
-	startOppskrift = () => this.props.history.push(`${this.props.match.url}oppskrift`)
+	startOppskrift = () => {
+		const { gruppeId } = this.props.match.params
+		this.props.history.push(`/gruppe/${gruppeId}/oppskrift`)
+	}
 
 	render() {
 		const { gruppe } = this.props
