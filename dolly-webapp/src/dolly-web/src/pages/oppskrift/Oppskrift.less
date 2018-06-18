@@ -1,0 +1,21 @@
+@darkBlue: #194d62;
+
+.oppskrift-page {
+	margin-top: 30px;
+
+	// TODO: FLytte dette til felles row/column klasser?
+	.row {
+		display: flex;
+
+		.attributt-selector {
+			width: 60%;
+			padding-right: 30px;
+			border-right: 1px solid @darkBlue;
+		}
+
+		.utvalg {
+			flex-grow: 1;
+			padding-left: 30px;
+		}
+	}
+}
