@@ -1,6 +1,9 @@
 @import '~nav-frontend-core/less/_variabler';
 //TODO Finn ut hvordan man kan bare importere denne et sted å lage variabler jeg kan bruke overalt.
 
+@bgColor: #3e6386;
+@borderColor: #8ca6b0;
+
 #dolly-header {
 	background-color: @navBlaDarken60;
 	color: white;
@@ -23,7 +26,7 @@
 		h1 {
 			display: inline-block;
 			margin: 0;
-			border-left: 2px solid #8ca6b0;
+			border-left: 2px solid @borderColor;
 			padding-left: 20px;
 			color: white;
 		}
@@ -37,15 +40,25 @@
 		margin: 10px;
 		font-size: 1.2em;
 		&:hover {
-			background-color: #3e6386;
+			background-color: @bgColor;
 		}
 	}
 
 	#header-user-name {
 		padding: 10px 10px 10px 20px;
-		border-left: 2px solid #8ca6b0;
+		border-left: 2px solid @borderColor;
 		i {
 			margin-right: 5px;
+		}
+
+		a {
+			color: white;
+			text-decoration: none;
+			padding: 5px 10px;
+
+			&:hover {
+				background-color: @bgColor;
+			}
 		}
 	}
 }

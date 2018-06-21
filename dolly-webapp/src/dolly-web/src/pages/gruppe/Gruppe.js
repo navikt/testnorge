@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import Knapp from 'nav-frontend-knapper'
 import Ikon from 'nav-frontend-ikoner-assets'
-import IconButton from '~/components/fields/IconButton/IconButton'
+import Overskrift from '~/components/overskrift/Overskrift'
 import GruppeDetaljer from './GruppeDetaljer'
 import Table from '~/components/table/Table'
+import PersonDetaljer from './PersonDetaljer'
 
 import './Gruppe.less'
 
@@ -22,27 +23,55 @@ export default class Gruppe extends Component {
 		const { gruppe } = this.props
 		if (!gruppe) return false
 
+		const TempExpandComponent = () => {
+			return (
+				<div style={{ backgroundColor: 'yellow', padding: '10px' }}>
+					<h1>Dette er expanded content</h1>
+				</div>
+			)
+		}
+
 		return (
 			<div id="gruppe-container">
 				<div className="content-header">
-					<h1>
-						{gruppe.navn}
-						<IconButton iconName="pencil" onClick={() => {}} />
-						<IconButton iconName="trash-o" onClick={() => {}} />
-					</h1>
-					<div className="content-header-buttons">
-						<Knapp type="standard">Legg til personer</Knapp>
-						<Knapp type="standard">Dupliser gruppe</Knapp>
-					</div>
+					<Overskrift
+						label={gruppe.navn}
+						actions={[
+							{ icon: 'pencil', onClick: () => {} },
+							{ icon: 'trash-o', onClick: () => {} }
+						]}
+					/>
 				</div>
 
 				<GruppeDetaljer data={tempGRUPPEHEADER} />
 
-				<h2>
-					Testpersoner
-					<IconButton iconName="plus-circle" onClick={this.startOppskrift} />
-				</h2>
-				{tempGRUPPE && <Table data={tempGRUPPE} selectable expandable />}
+				<Overskrift
+					type="h2"
+					label="Testpersoner"
+					actions={[{ icon: 'plus-circle', onClick: this.startOppskrift }]}
+				/>
+
+				<Table>
+					<Table.Header>
+						<Table.Column width="15" value="ID" />
+						<Table.Column width="15" value="ID-type" />
+						<Table.Column width="30" value="Navn" />
+						<Table.Column width="10" value="Alder" />
+						<Table.Column width="20" value="Kjønn" />
+					</Table.Header>
+
+					{tempGRUPPE.map((o, idx) => {
+						return (
+							<Table.Row key={idx} expandComponent={<PersonDetaljer />} actionWidth="10">
+								<Table.Column width="15" value={o.id} />
+								<Table.Column width="15" value={o.idType} />
+								<Table.Column width="30" value={o.navn} />
+								<Table.Column width="10" value={o.alder} />
+								<Table.Column width="20" value={o.kjonn} />
+							</Table.Row>
+						)
+					})}
+				</Table>
 			</div>
 		)
 	}

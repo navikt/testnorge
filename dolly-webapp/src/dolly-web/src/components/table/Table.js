@@ -1,55 +1,146 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import TableRow from './TableRow'
-import Checkbox from '~/components/fields/Checkbox/Checkbox'
-import { withRouter } from 'react-router-dom'
+import cn from 'classnames'
+import IconButton from '~/components/fields/IconButton/IconButton'
 import './table.less'
 
-class Table extends PureComponent {
+class TableRow extends PureComponent {
 	static propTypes = {
-		data: PropTypes.array,
-		link: PropTypes.bool,
-		selectable: PropTypes.bool,
-		history: PropTypes.object
+		expandComponent: PropTypes.node,
+		navLink: PropTypes.func,
+		actionWidth: PropTypes.string,
+		editAction: PropTypes.func,
+		deleteAction: PropTypes.func
+	}
+
+	static defaultProps = {
+		actionWidth: '10'
+	}
+
+	state = {
+		expanded: false
+	}
+
+	onRowClick = event => {
+		const { expandComponent, navLink } = this.props
+		if (expandComponent) return this.setState({ expanded: !this.state.expanded })
+
+		if (navLink) return navLink()
 	}
 
 	render() {
-		const { data, link, history, selectable, expandable } = this.props
+		const {
+			children,
+			expandComponent,
+			actionWidth,
+			editAction,
+			deleteAction,
+			navLink,
+			...restProps
+		} = this.props
+
+		const rowProps = {
+			onClick: this.onRowClick,
+			...restProps
+		}
+
+		const rowClass = cn('dot-body-row', {
+			expanded: this.state.expanded
+		})
+
+		const iconChevronClass = cn({
+			'chevron-down': !this.state.expanded,
+			'chevron-up': this.state.expanded
+		})
+
 		return (
-			<React.Fragment>
-				{selectable && (
-					<div className="dolly-table-header">
-						<Checkbox id="select-all" label="Velg alle" />
-
-						<span>Valgt: 0</span>
-					</div>
+			<div className={rowClass}>
+				<div className="dot-body-row-columns" {...rowProps}>
+					{children}
+					<Table.Column width={actionWidth}>
+						{editAction && <IconButton iconName="pencil" onClick={editAction} />}
+						{deleteAction && <IconButton iconName="trash-o" onClick={deleteAction} />}
+						{expandComponent && (
+							<IconButton iconName={iconChevronClass} onClick={this.onRowClick} />
+						)}
+					</Table.Column>
+				</div>
+				{this.state.expanded && (
+					<div className="dot-body-row-expandcomponent">{expandComponent}</div>
 				)}
-
-				<table className="dolly-table">
-					<thead>
-						<tr>
-							{selectable && <th>[_]</th>}
-							{Object.keys(data[0]).map((objKey, idx) => <th key={idx}>{objKey}</th>)}
-							{expandable && <th />}
-						</tr>
-					</thead>
-
-					<tbody>
-						{data.map(obj => (
-							<TableRow
-								rowObject={obj}
-								key={obj.id}
-								link={link}
-								history={history}
-								selectable={selectable}
-								expandable={expandable}
-							/>
-						))}
-					</tbody>
-				</table>
-			</React.Fragment>
+			</div>
 		)
 	}
 }
 
-export default withRouter(Table)
+class TableHeader extends PureComponent {
+	static propTypes = {}
+
+	render() {
+		const { children, ...restProps } = this.props
+		return (
+			<div className="dot-header" {...restProps}>
+				{children}
+			</div>
+		)
+	}
+}
+
+class TableColumn extends PureComponent {
+	static propTypes = {
+		width: PropTypes.oneOf([
+			'10',
+			'15',
+			'20',
+			'25',
+			'30',
+			'35',
+			'40',
+			'45',
+			'50',
+			'55',
+			'60',
+			'65',
+			'70',
+			'75',
+			'80',
+			'85',
+			'90',
+			'95'
+		]),
+		value: PropTypes.string
+	}
+
+	static defaultProps = {
+		width: '10'
+	}
+
+	render() {
+		const { value, width, children, ...restProps } = this.props
+		const cssClass = cn('dot-column', `col${width}`)
+
+		const render = value ? value : children
+		return (
+			<div className={cssClass} {...restProps}>
+				{render}
+			</div>
+		)
+	}
+}
+
+export default class Table extends PureComponent {
+	static propTypes = {}
+
+	static Header = TableHeader
+	static Row = TableRow
+	static Column = TableColumn
+
+	render() {
+		const { children, ...restProps } = this.props
+		return (
+			<div className="dot" {...restProps}>
+				{children}
+			</div>
+		)
+	}
+}
