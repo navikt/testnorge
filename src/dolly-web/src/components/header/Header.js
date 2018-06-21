@@ -19,7 +19,9 @@ export default () => {
 			</div>
 
 			<div id="header-user-name">
-				<i className="fa fa-user-circle" /> L148286
+				<NavLink to="/profil">
+					<i className="fa fa-user-circle" /> L148286
+				</NavLink>
 			</div>
 		</div>
 	)

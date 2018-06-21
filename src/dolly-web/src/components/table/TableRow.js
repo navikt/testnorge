@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import cn from 'classnames'
-import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import IconButton from '~/components/fields/IconButton/IconButton'
 import TableRowDetail from './TableRowDetail'
 
@@ -21,7 +20,7 @@ export default class TableRow extends Component {
 
 	render() {
 		const { detailOpen } = this.state
-		const { rowObject, selectable, expandable } = this.props
+		const { rowObject, expandable } = this.props
 
 		const rowColumns = Object.keys(rowObject).map((key, idx) => {
 			return <td key={idx}>{rowObject[key]}</td>
@@ -30,11 +29,6 @@ export default class TableRow extends Component {
 		return (
 			<React.Fragment>
 				<tr onClick={e => this.onClickRow(e, rowObject.id)}>
-					{selectable && (
-						<td>
-							<Checkbox className="table-checkbox" label="" />
-						</td>
-					)}
 					{rowColumns}
 					{expandable && (
 						<td>

@@ -10,13 +10,18 @@ export default class IconButton extends PureComponent {
 		onClick: PropTypes.func.isRequired
 	}
 
+	onClickHandler = event => {
+		event.stopPropagation()
+		return this.props.onClick()
+	}
+
 	render() {
-		const { onClick, iconName } = this.props
+		const { iconName } = this.props
 
 		const cssClass = cn('fa', `fa-${iconName}`)
 
 		return (
-			<button className="iconbutton" onClick={onClick}>
+			<button className="iconbutton" onClick={this.onClickHandler}>
 				<i className={cssClass} />
 			</button>
 		)

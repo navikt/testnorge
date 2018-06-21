@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
-import Knapp from 'nav-frontend-knapper'
 import { ToggleGruppe, ToggleKnapp } from 'nav-frontend-skjema'
+import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
 import Input from '~/components/fields/Input/Input'
-import IconButton from '~/components/fields/IconButton/IconButton'
 import RedigerGruppe from './RedigerGruppe/RedigerGruppe'
 import './GruppeOversikt.less'
 
 export default class GruppeOversikt extends Component {
 	state = {
 		visOpprettGruppe: false,
-		gruppeEier: 'mine'
+		gruppeEier: 'mine',
+		editId: null
 	}
 
 	componentDidMount() {
@@ -25,16 +25,20 @@ export default class GruppeOversikt extends Component {
 
 	render() {
 		const { visOpprettGruppe } = this.state
-		const { grupper } = this.props
+		const { grupper, history } = this.props
 		const opprettGruppeText = visOpprettGruppe ? 'Lukk opprett gruppe' : 'Ny gruppe'
+
+		if (!grupper) return false
+
+		console.log(grupper)
 
 		return (
 			<div id="gruppeoversikt-container">
 				<div className="content-header">
-					<h1>
-						Testdatagrupper{' '}
-						<IconButton onClick={this.toggleVisOpprettGruppe} iconName="plus-circle" />
-					</h1>
+					<Overskrift
+						label="Testdatagrupper"
+						actions={[{ icon: 'plus-circle', onClick: this.toggleVisOpprettGruppe }]}
+					/>
 					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
 
@@ -56,7 +60,38 @@ export default class GruppeOversikt extends Component {
 					/>
 				)}
 
-				{grupper && <Table data={grupper} link />}
+				<Table>
+					<Table.Header>
+						<Table.Column width="15" value="ID" />
+						<Table.Column width="20" value="Navn" />
+						<Table.Column width="15" value="Team" />
+						<Table.Column width="50" value="Hensikt" />
+					</Table.Header>
+
+					{grupper.map((o, idx) => {
+						if (o.id === this.state.editId) {
+							return (
+								<RedigerGruppe
+									onSuccess={this.onOpprettGruppeSuccess}
+									onCancel={this.toggleVisOpprettGruppe}
+								/>
+							)
+						}
+
+						return (
+							<Table.Row
+								key={idx}
+								navLink={() => history.push(`gruppe/${o.id}`)}
+								editAction={() => this.setState({ editId: o.id })}
+							>
+								<Table.Column width="15" value={o.id.toString()} />
+								<Table.Column width="20" value={o.navn} />
+								<Table.Column width="15" value={o.team} />
+								<Table.Column width="40" value={o.hensikt} />
+							</Table.Row>
+						)
+					})}
+				</Table>
 			</div>
 		)
 	}
