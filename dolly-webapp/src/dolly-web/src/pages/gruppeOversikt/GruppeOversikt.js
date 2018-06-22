@@ -30,8 +30,6 @@ export default class GruppeOversikt extends Component {
 
 		if (!grupper) return false
 
-		console.log(grupper)
-
 		return (
 			<div id="gruppeoversikt-container">
 				<div className="content-header">
