@@ -23,3 +23,14 @@ resources:
   limits:
     cpu: 1
     memory: 1536Mi
+fasitResources:
+  used:
+  - alias: OpenIdConnect
+    resourceType: baseurl
+    propertyMap:
+      url: security.oidc.host
+
+  - alias: OpenIdConnectAgent
+    resourceType: credential
+    propertyMap:
+      password: security.oidc.clientSecret

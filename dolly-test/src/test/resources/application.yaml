@@ -1,0 +1,38 @@
+# Default properties uses H2 Database
+# H2 console at http://localhost:8080/h2-console
+
+# Datasource
+APP_NAME: dolly
+FASIT_ENVIRONMENT_NAME: localhost
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:dollyDB
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  flyway:
+    enabled: false
+    url: jdbc:h2:mem:dollyDB;DB_CLOSE_DELAY=-1
+    user: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2
+
+freg.security.oidc:
+  auth:
+   header-filter-enabled: false
+   cookie-filter-enabled: true
+  login:
+    enabled: true
+    path: /url1
+  refresh:
+    enabled: true
+    cookie-filter.enabled: true
+    remaining-seconds: 3600
+
+
+
+spring.datasource.initialization-mode: never

@@ -3,7 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>no.nav</groupId>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.0.RELEASE</version>
+	</parent>
+
+	<groupId>no.nav.dolly</groupId>
 	<artifactId>dolly</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -11,38 +17,78 @@
 	<name>dolly</name>
 	<description></description>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.0.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-
 	<modules>
-		<module>dolly-app</module>
-		<module>dolly-webapp</module>
+		<module>dolly-core</module>
+		<module>dolly-core-domain</module>
         <module>dolly-test</module>
+		<module>dolly-test-common</module>
+		<module>dolly-webapp</module>
+        <module>dolly-app-local</module>
+        <module>dolly-app-nais</module>
     </modules>
 
 	<properties>
+		<application.name>dolly</application.name>
+		<application.version>${project.version}</application.version>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<freg-security-oidc.version>2.1.0</freg-security-oidc.version>
 	</properties>
 
 	<dependencies>
 
+		<!-- Automatisk eksludert ved repackage -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>no.nav.freg</groupId>-->
+			<!--<artifactId>freg-security</artifactId>-->
+			<!--<version>${freg-security.version}</version>-->
+			<!--<scope>import</scope>-->
+			<!--<type>pom</type>-->
+		<!--</dependency>-->
+
+
+		<dependency>
+			<groupId>no.nav.freg</groupId>
+			<artifactId>abac-spring</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+        <dependencies>
+			<dependency>
+				<groupId>no.nav.freg</groupId>
+				<artifactId>freg-security-oidc</artifactId>
+				<version>${freg-security-oidc.version}</version>
+			</dependency>
+
+		</dependencies>
+
+	</dependencyManagement>
 
 
 </project>
