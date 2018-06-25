@@ -2,17 +2,17 @@ import axios from 'axios'
 import Endpoints from '~/service/ContentApiEndpoints'
 
 export const types = {
-	GET_GRUPPER_REQUEST: 'grupper/get-grupper-request',
-	GET_GRUPPER_SUCCESS: 'grupper/get-grupper-success',
-	GET_GRUPPER_ERROR: 'grupper/get-grupper-error',
+	GET_GRUPPER_REQUEST: 'grupper/get-request',
+	GET_GRUPPER_SUCCESS: 'grupper/get-success',
+	GET_GRUPPER_ERROR: 'grupper/get-error',
 
-	CREATE_GRUPPER_REQUEST: 'grupper/create-grupper-request',
-	CREATE_GRUPPER_SUCCESS: 'grupper/create-grupper-success',
-	CREATE_GRUPPER: 'grupper/create-grupper-error',
+	CREATE_GRUPPER_REQUEST: 'grupper/create-request',
+	CREATE_GRUPPER_SUCCESS: 'grupper/create-success',
+	CREATE_GRUPPER: 'grupper/create-error',
 
-	UPDATE_GRUPPER_REQUEST: 'grupper/update-grupper-request',
-	UPDATE_GRUPPER_SUCCESS: 'grupper/update-grupper-success',
-	UPDATE_GRUPPER_ERROR: 'grupper/update-grupper-error'
+	UPDATE_GRUPPER_REQUEST: 'grupper/update-request',
+	UPDATE_GRUPPER_SUCCESS: 'grupper/update-success',
+	UPDATE_GRUPPER_ERROR: 'grupper/update-error'
 }
 
 const initialState = {
@@ -32,7 +32,7 @@ export default (state = initialState, action) => {
 			return {
 				...state,
 				fetching: false,
-				items: actions.grupper
+				items: action.grupper
 			}
 		case types.GET_GRUPPER_ERROR:
 			return {
@@ -45,7 +45,7 @@ export default (state = initialState, action) => {
 }
 
 const getGrupperRequest = url => ({
-	type: types.GET_GRUPPER,
+	type: types.GET_GRUPPER_REQUEST,
 	url
 })
 
@@ -96,9 +96,9 @@ export const getGrupper = () => async dispatch => {
 		const url = Endpoints.getGrupper()
 		dispatch(getGrupperRequest(url))
 		const response = await axios.get(url)
-		dispatch(getGrupperSuccess(response.data))
+		return dispatch(getGrupperSuccess(response.data))
 	} catch (error) {
-		dispatch(getGrupperError(error))
+		return dispatch(getGrupperError(error))
 	}
 }
 

@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import StaticValue from '~/components/fields/StaticValue/StaticValue'
+
 import './personInfoBlock.less'
 
 export default class PersonInfoBlock extends PureComponent {
@@ -16,15 +18,7 @@ export default class PersonInfoBlock extends PureComponent {
 				{header && <h4>{header}</h4>}
 
 				<div className="person-info-block-row">
-					{data.map((v, k) => {
-						// TODO: use tables for this?
-						return (
-							<div className="person-info-block-cell" key={k}>
-								<h5>{v.label}</h5>
-								<span>{v.value}</span>
-							</div>
-						)
-					})}
+					{data.map((v, k) => <StaticValue key={k} header={v.label} value={v.value} />)}
 				</div>
 			</div>
 		)
