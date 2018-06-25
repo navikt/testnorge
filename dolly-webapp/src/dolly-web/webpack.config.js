@@ -34,7 +34,12 @@ const webpackConfig = {
 	devServer: {
 		stats: statsOutputSettings,
 		contentBase: path.join(__dirname, 'public'),
-		historyApiFallback: true
+		historyApiFallback: true,
+		proxy: {
+			'/api/v1': {
+				target: 'http://localhost:8080'
+			}
+		}
 	},
 	plugins: [
 		new webpack.DefinePlugin({
