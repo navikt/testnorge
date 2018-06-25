@@ -1,3 +1,5 @@
+@import (reference) '~lessVars';
+
 #gruppe-container {
 	width: 100%;
 }
@@ -8,6 +10,10 @@
 	background-color: white;
 	padding: 10px 20px;
 	margin-bottom: 10px;
+
+	// TODO: Skal vi beholde markant border
+	border: 1px solid @color-bg-grey-border;
+
 	.gd-blokker {
 		display: flex;
 		flex-grow: 1;

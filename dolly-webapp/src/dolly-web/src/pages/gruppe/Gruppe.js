@@ -33,15 +33,10 @@ export default class Gruppe extends Component {
 
 		return (
 			<div id="gruppe-container">
-				<div className="content-header">
-					<Overskrift
-						label={gruppe.navn}
-						actions={[
-							{ icon: 'pencil', onClick: () => {} },
-							{ icon: 'trash-o', onClick: () => {} }
-						]}
-					/>
-				</div>
+				<Overskrift
+					label={gruppe.navn}
+					actions={[{ icon: 'pencil', onClick: () => {} }, { icon: 'trash-o', onClick: () => {} }]}
+				/>
 
 				<GruppeDetaljer data={tempGRUPPEHEADER} />
 
