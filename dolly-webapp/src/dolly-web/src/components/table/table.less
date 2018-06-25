@@ -1,45 +1,115 @@
 @mainBgColor: #f1f1f1;
 @dividerBgColor: #d3dee3;
 
-table.dolly-table {
-	width: 100%;
-	margin-bottom: 30px;
-	background-color: @mainBgColor;
-	text-align: left;
-	border-collapse: collapse;
+// DOllyTable
+.dot {
+	.dot-column {
+		padding-right: 5px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
-	thead {
+	.col10 {
+		width: 10%;
+	}
+	.col15 {
+		width: 15%;
+	}
+	.col20 {
+		width: 20%;
+	}
+	.col25 {
+		width: 25%;
+	}
+	.col30 {
+		width: 30%;
+	}
+	.col35 {
+		width: 35%;
+	}
+	.col40 {
+		width: 40%;
+	}
+	.col45 {
+		width: 45%;
+	}
+	.col50 {
+		width: 50%;
+	}
+	.col55 {
+		width: 55%;
+	}
+	.col60 {
+		width: 60%;
+	}
+	.col65 {
+		width: 65%;
+	}
+	.col70 {
+		width: 70%;
+	}
+	.col75 {
+		width: 75%;
+	}
+	.col80 {
+		width: 80%;
+	}
+	.col85 {
+		width: 85%;
+	}
+	.col90 {
+		width: 90%;
+	}
+	.col95 {
+		width: 95%;
+	}
+
+	@rowPadding: 10px 10px 10px 20px;
+
+	.dot-header {
+		display: flex;
+		align-items: center;
 		background-color: white;
-		th {
+		margin-bottom: 10px;
+		padding: @rowPadding;
+
+		.dot-column {
+			color: #0067c5;
 			font-weight: bold;
-			padding: 10px 10px;
+			font-size: 18px;
 		}
 	}
 
-	tbody tr {
+	.dot-body-row {
+		display: flex;
+		flex-direction: column;
 		background-color: white;
-		border-top: 10px solid @mainBgColor;
-		td {
-			padding: 20px 10px;
+		margin-bottom: 10px;
+		border: 1px solid white; // prevent jumping
+
+		&.expanded {
+			border: 1px solid #ffc107;
 		}
 
-		// TODO: temp, ifl skisser skal det brukes arrow-down
-		&:hover:not(.table-row-detail) {
-			background-color: #c5def5;
-		}
+		.dot-body-row-columns {
+			cursor: pointer;
+			display: flex;
+			flex-grow: 1;
+			align-items: center;
+			padding: @rowPadding;
 
-		&.table-row-detail {
-			border-top: none;
-
-			td {
-				padding: 0;
-
-				.table-row-detail_view {
-					padding: 20px 0;
-					margin: 0 20px;
-					border-top: 2px solid @dividerBgColor;
-				}
+			.dot-column:last-child {
+				justify-content: flex-end;
+				display: flex;
+				padding-right: 0;
 			}
+		}
+
+		.dot-body-row-expandcomponent {
+			margin: 0px 20px 10px;
+			border-top: 2px solid #d2dee3;
+			padding-top: 10px;
 		}
 	}
 }

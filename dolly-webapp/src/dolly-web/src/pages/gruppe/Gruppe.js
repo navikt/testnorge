@@ -1,72 +1,129 @@
 import React, { Component } from 'react'
-import Api from '~/service/Api'
+import Knapp from 'nav-frontend-knapper'
+import Ikon from 'nav-frontend-ikoner-assets'
+import Overskrift from '~/components/overskrift/Overskrift'
+import GruppeDetaljer from './GruppeDetaljer'
+import Table from '~/components/table/Table'
+import PersonDetaljer from './PersonDetaljer'
+
+import './Gruppe.less'
 
 export default class Gruppe extends Component {
-	constructor(props) {
-		super(props)
-
-		const gruppeId = parseInt(props.match.params.gruppeId, 10) //TODO når bruker ekte API så vil id være samme type, kan da fjerne denne
-		let gruppe = this.props.grupperState.find(gruppe => gruppe.id === gruppeId)
-
-		this.state = {
-			personer: [],
-			initialPersoner: [],
-			gruppe: gruppe
-		}
-	}
-
-	//TODO Skal hente personer basert på testidenter i gruppen etter hvert.
 	componentDidMount() {
-		this.fetchPersonsInGroup().catch(err => {
-			console.log(err)
-		})
+		// TODO: Currently handles refresh on pageload
+		if (!this.props.gruppe) this.props.getGrupper()
 	}
 
-	fetchPersonsInGroup = async () => {
-		const response = await Api.getPersons()
-		this.setState({ personer: response.data, initialPersoner: response.date })
-	}
-
-	saveChangesInGroup = async () => {
-		testperson.gruppeId = this.state.gruppe.id
-		const response = await Api.postPerson(testperson)
-
-		this.setState({
-			personer: [...this.state.personer, Object.assign({}, response.data)]
-		})
-	}
-
-	addIdentToGroup = async ident => {
-		let oppdatertGruppe = Object.assign({}, this.state.gruppe)
-		oppdatertGruppe.navn = 'nyttnavn'
-
-		const response = Api.updateGruppe(oppdatertGruppe.id, oppdatertGruppe)
-		this.props.updateGruppeSuccess(response.data)
-
-		this.setState({
-			gruppe: this.props.grupperState.find(gruppe => gruppe.id === oppdatertGruppe.id)
-		})
-	}
-
-	onClicker = () => {
-		this.addIdentToGroup('bla').catch(err => {
-			console.log(err)
-		})
-	}
-
-	onClickerCreate = () => {
-		this.saveChangesInGroup().catch(err => {
-			console.log(err)
-		})
+	startOppskrift = () => {
+		const { gruppeId } = this.props.match.params
+		this.props.history.push(`/gruppe/${gruppeId}/oppskrift`)
 	}
 
 	render() {
+		const { gruppe } = this.props
+		if (!gruppe) return false
+
+		const TempExpandComponent = () => {
+			return (
+				<div style={{ backgroundColor: 'yellow', padding: '10px' }}>
+					<h1>Dette er expanded content</h1>
+				</div>
+			)
+		}
+
 		return (
 			<div id="gruppe-container">
-				<h1>Gruppe Container</h1>
-				<button onClick={this.onClicker}>Update gruppe</button>
-				<button onClick={this.onClickerCreate}>Create person</button>
+				<div className="content-header">
+					<Overskrift
+						label={gruppe.navn}
+						actions={[
+							{ icon: 'pencil', onClick: () => {} },
+							{ icon: 'trash-o', onClick: () => {} }
+						]}
+					/>
+				</div>
+
+				<GruppeDetaljer data={tempGRUPPEHEADER} />
+
+				<Overskrift
+					type="h2"
+					label="Testpersoner"
+					actions={[{ icon: 'plus-circle', onClick: this.startOppskrift }]}
+				/>
+
+				<Table>
+					<Table.Header>
+						<Table.Column width="15" value="ID" />
+						<Table.Column width="15" value="ID-type" />
+						<Table.Column width="30" value="Navn" />
+						<Table.Column width="10" value="Alder" />
+						<Table.Column width="20" value="Kjønn" />
+					</Table.Header>
+
+					{tempGRUPPE.map((o, idx) => {
+						return (
+							<Table.Row key={idx} expandComponent={<PersonDetaljer />} actionWidth="10">
+								<Table.Column width="15" value={o.id} />
+								<Table.Column width="15" value={o.idType} />
+								<Table.Column width="30" value={o.navn} />
+								<Table.Column width="10" value={o.alder} />
+								<Table.Column width="20" value={o.kjonn} />
+							</Table.Row>
+						)
+					})}
+				</Table>
 			</div>
 		)
 	}
 }
+
+const tempGRUPPEHEADER = {
+	eier: 'Helga Woll Lunder',
+	team: 'Foreldrepenger',
+	env: 'T5, T6 og T7',
+	personer_num: '30',
+	menn_num: '23',
+	kvinner_num: '7',
+	opprettet: '10.06.2018',
+	sistEndret: '15.06.2018',
+	hensikt: 'Officia non nisi amet sit est proident culpa ipsum commodo consectetur minim officia.'
+}
+
+const tempGRUPPE = [
+	{
+		id: '010887 39501',
+		idType: 'FNR',
+		navn: 'Lunder, Helga Woll',
+		kjonn: 'Mann',
+		alder: '30',
+		gt: 'Drøbak',
+		arbforhold: 'ordinært'
+	},
+	{
+		id: '010887 39502',
+		idType: 'FNR',
+		navn: 'Lunder, Helga Woll',
+		kjonn: 'Mann',
+		alder: '30',
+		gt: 'Drøbak',
+		arbforhold: 'ordinært'
+	},
+	{
+		id: '010887 39503',
+		idType: 'FNR',
+		navn: 'Lunder, Helga Woll',
+		kjonn: 'Mann',
+		alder: '30',
+		gt: 'Drøbak',
+		arbforhold: 'ordinært'
+	},
+	{
+		id: '010887 39504',
+		idType: 'FNR',
+		navn: 'Lunder, Helga Woll',
+		kjonn: 'Mann',
+		alder: '30',
+		gt: 'Drøbak',
+		arbforhold: 'ordinært'
+	}
+]

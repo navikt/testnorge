@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Header from '~/components/header/Header'
 import Routes from '../Routes'
-import './App.less'
+import Breadcrumb from '~/components/breadcrumb/Breadcrumb'
 
 export default class App extends Component {
 	render() {
@@ -9,6 +9,7 @@ export default class App extends Component {
 			<div id="dolly-app">
 				<Header />
 				<main>
+					<Breadcrumb />
 					<Routes />
 				</main>
 			</div>

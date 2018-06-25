@@ -1,29 +1,15 @@
 import React, { Component } from 'react'
-import '~/styles/nav-frontend.less'
-import './Datepicker.less'
-import ReactDatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+import Datovelger from 'nav-datovelger'
+import 'nav-datovelger/dist/datovelger/styles/datovelger.css'
 
 export default class Datepicker extends Component {
-	handleChange = date => {
-		this.props.onChange(date)
+	state = {
+		dato: null
 	}
 
 	render() {
-		const { id, dateFormat, label, statePropToChange } = this.props
-
 		return (
-			<div className="skjemaelement">
-				<label className="skjemaelement__label">{label}</label>
-				<ReactDatePicker
-					id={id}
-					className="skjemaelement__input"
-					dateFormat={dateFormat}
-					selected={statePropToChange}
-					onChange={this.handleChange}
-				/>
-				<br />
-			</div>
+			<Datovelger id="datofelt" dato={this.state.dato} onChange={dato => this.setState({ dato })} />
 		)
 	}
 }

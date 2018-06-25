@@ -1,0 +1,37 @@
+.utvalg {
+	h2 {
+		margin: 0;
+		font-size: 1.2em;
+	}
+
+	> ul > li {
+		padding: 5px 0;
+	}
+
+	li > span:hover {
+		> button:first-child {
+			display: inline-block;
+		}
+	}
+
+	ul {
+		padding-left: 20px;
+		li {
+			font-weight: bold;
+
+			button {
+				vertical-align: middle;
+				display: none;
+			}
+
+			ul {
+				list-style-type: disc;
+				margin-top: 3px;
+				li {
+					font-weight: normal;
+					padding: 3px 0px;
+				}
+			}
+		}
+	}
+}

@@ -1,45 +1,95 @@
 import React, { Component } from 'react'
+import { ToggleGruppe, ToggleKnapp } from 'nav-frontend-skjema'
+import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
-import Knapp from 'nav-frontend-knapper'
-import Api from '~/service/Api'
-import OpprettGruppe from './OpprettGruppe/OpprettGruppe'
+import Input from '~/components/fields/Input/Input'
+import RedigerGruppe from './RedigerGruppe/RedigerGruppe'
 import './GruppeOversikt.less'
 
 export default class GruppeOversikt extends Component {
 	state = {
-		grupper: null,
-		visOpprettGruppe: false
+		visOpprettGruppe: false,
+		gruppeEier: 'mine',
+		editId: null
 	}
 
 	componentDidMount() {
-		this.hentGrupper()
+		this.props.getGrupper()
 	}
 
-	hentGrupper = async () => {
-		const { data } = await Api.getGrupper()
-		this.setState({ grupper: data })
-	}
-
-	onOpprettGruppeSuccess = () => this.setState({ visOpprettGruppe: false }, this.hentGrupper)
+	onOpprettGruppeSuccess = () => this.setState({ visOpprettGruppe: false }, this.props.getGrupper)
 
 	toggleVisOpprettGruppe = () => this.setState({ visOpprettGruppe: !this.state.visOpprettGruppe })
 
+	toggleGruppeOwner = e => this.setState({ gruppeEier: e.target.value })
+
 	render() {
-		const { visOpprettGruppe, grupper } = this.state
-		const opprettGruppeText = visOpprettGruppe ? 'Lukk opprett gruppe' : 'Opprett ny gruppe'
+		const { visOpprettGruppe } = this.state
+		const { grupper, history } = this.props
+		const opprettGruppeText = visOpprettGruppe ? 'Lukk opprett gruppe' : 'Ny gruppe'
+
+		if (!grupper) return false
 
 		return (
 			<div id="gruppeoversikt-container">
-				<div className="gruppeoversikt-header">
-					<h1>Mine testdatagrupper</h1>
-					<Knapp type="standard" onClick={this.toggleVisOpprettGruppe}>
-						{opprettGruppeText}
-					</Knapp>
+				<div className="content-header">
+					<Overskrift
+						label="Testdatagrupper"
+						actions={[{ icon: 'plus-circle', onClick: this.toggleVisOpprettGruppe }]}
+					/>
+					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
 
-				{visOpprettGruppe && <OpprettGruppe onSuccess={this.onOpprettGruppeSuccess} />}
+				<div className="content-header">
+					<ToggleGruppe onChange={this.toggleGruppeOwner} name="toggleGruppe">
+						<ToggleKnapp value="mine" defaultChecked={true} key="1">
+							Mine
+						</ToggleKnapp>
+						<ToggleKnapp value="alle" key="2">
+							Alle
+						</ToggleKnapp>
+					</ToggleGruppe>
+				</div>
 
-				{grupper && <Table data={grupper} />}
+				{visOpprettGruppe && (
+					<RedigerGruppe
+						onSuccess={this.onOpprettGruppeSuccess}
+						onCancel={this.toggleVisOpprettGruppe}
+					/>
+				)}
+
+				<Table>
+					<Table.Header>
+						<Table.Column width="15" value="ID" />
+						<Table.Column width="20" value="Navn" />
+						<Table.Column width="15" value="Team" />
+						<Table.Column width="50" value="Hensikt" />
+					</Table.Header>
+
+					{grupper.map((o, idx) => {
+						if (o.id === this.state.editId) {
+							return (
+								<RedigerGruppe
+									onSuccess={this.onOpprettGruppeSuccess}
+									onCancel={this.toggleVisOpprettGruppe}
+								/>
+							)
+						}
+
+						return (
+							<Table.Row
+								key={idx}
+								navLink={() => history.push(`gruppe/${o.id}`)}
+								editAction={() => this.setState({ editId: o.id })}
+							>
+								<Table.Column width="15" value={o.id.toString()} />
+								<Table.Column width="20" value={o.navn} />
+								<Table.Column width="15" value={o.team} />
+								<Table.Column width="40" value={o.hensikt} />
+							</Table.Row>
+						)
+					})}
+				</Table>
 			</div>
 		)
 	}
