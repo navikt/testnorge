@@ -1,8 +1,6 @@
-@import '~normalize.css';
-
 @import './nav-frontend';
 @import './variables';
-@import './felles';
+@import './utils';
 @import (css) url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600');
 
 @import '~react-material-layout/dist/react-material-layout.min.css';
@@ -10,24 +8,6 @@
 
 body {
 	font-family: 'Source Sans Pro', sans-serif;
-	background-color: #f1f1f1;
-	//background-color: @navLysGra;
-}
-
-#dolly-app {
-	display: flex;
-	flex-direction: column;
-}
-
-main {
-	padding: 20px 10% 0;
-}
-
-.offscreen {
-	position: absolute;
-	left: -10000px;
-	top: auto;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
+	background-color: @color-bg-grey;
+	color: @color-textbase;
 }

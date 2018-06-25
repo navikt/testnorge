@@ -30,7 +30,7 @@ export default class AttributtVelger extends Component {
 					onChange={this.searchOnChange}
 				/>
 
-				<div className="row">
+				<div className="flexbox">
 					<div className="attributt-velger_panels">
 						<Panel heading={<h3>Personinformasjon</h3>}>
 							<div className="attributt-velger_panelcontent">

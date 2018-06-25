@@ -1,5 +1,4 @@
-@mainBgColor: #f1f1f1;
-@dividerBgColor: #d3dee3;
+@import (reference) '~lessVars';
 
 // DOllyTable
 .dot {
@@ -74,8 +73,11 @@
 		margin-bottom: 10px;
 		padding: @rowPadding;
 
+		// TODO: Skal vi beholde markant border
+		border: 1px solid @color-bg-grey-border;
+
 		.dot-column {
-			color: #0067c5;
+			color: @color-lightblue;
 			font-weight: bold;
 			font-size: 18px;
 		}
@@ -88,8 +90,11 @@
 		margin-bottom: 10px;
 		border: 1px solid white; // prevent jumping
 
+		// TODO: Skal vi beholde markant border
+		border: 1px solid @color-bg-grey-border;
+
 		&.expanded {
-			border: 1px solid #ffc107;
+			border: 1px solid @color-focus;
 		}
 
 		.dot-body-row-columns {
@@ -108,7 +113,7 @@
 
 		.dot-body-row-expandcomponent {
 			margin: 0px 20px 10px;
-			border-top: 2px solid #d2dee3;
+			border-top: 2px solid @color-bg-divider;
 			padding-top: 10px;
 		}
 	}
