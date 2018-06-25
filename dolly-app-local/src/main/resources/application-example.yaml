@@ -1,3 +1,5 @@
+# Eksempelfil om hvordan "application-h2.yaml" skal se ut.
+
 APP_NAME: dolly
 FASIT_ENVIRONMENT_NAME: localhost
 
