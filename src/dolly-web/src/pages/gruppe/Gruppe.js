@@ -23,14 +23,6 @@ export default class Gruppe extends Component {
 		const { gruppe } = this.props
 		if (!gruppe) return false
 
-		const TempExpandComponent = () => {
-			return (
-				<div style={{ backgroundColor: 'yellow', padding: '10px' }}>
-					<h1>Dette er expanded content</h1>
-				</div>
-			)
-		}
-
 		return (
 			<div id="gruppe-container">
 				<Overskrift
