@@ -1,5 +1,4 @@
-@orangeColor: #f7c377;
-@darkBlue: #194d62;
+@import (reference) '~lessVars';
 
 .panel {
 	display: flex;
@@ -9,8 +8,11 @@
 	background-color: white;
 	border: 1px solid white; // get correct sizing when open
 
+	// TODO: Skal vi beholde markant border
+	border-color: @color-bg-grey-border;
+
 	&.panel-open {
-		border: 1px solid @orangeColor;
+		border: 1px solid @color-focus;
 	}
 
 	.panel-heading {
@@ -34,7 +36,7 @@
 	}
 
 	.panel-content {
-		border-top: 2px solid @darkBlue;
+		border-top: 2px solid @color-darkblue;
 		padding: 20px 0;
 	}
 }

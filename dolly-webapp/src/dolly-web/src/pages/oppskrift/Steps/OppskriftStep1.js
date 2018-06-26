@@ -12,11 +12,11 @@ export default class OppskriftStep1 extends Component {
 	render() {
 		return (
 			<div>
-				<div className="content-header">
+				<div className="flexbox--space">
 					<Overskrift label="Legg til testpersoner" />
 				</div>
 
-				<div className="row">
+				<div className="flexbox">
 					<Select label={<Label label="Type" />} className="input-fnr">
 						<option value="fnr" key="fnr">
 							FNR

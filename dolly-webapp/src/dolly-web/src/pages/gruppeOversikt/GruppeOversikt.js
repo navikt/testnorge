@@ -32,7 +32,7 @@ export default class GruppeOversikt extends Component {
 
 		return (
 			<div id="gruppeoversikt-container">
-				<div className="content-header">
+				<div className="flexbox--space">
 					<Overskrift
 						label="Testdatagrupper"
 						actions={[{ icon: 'plus-circle', onClick: this.toggleVisOpprettGruppe }]}
@@ -40,7 +40,7 @@ export default class GruppeOversikt extends Component {
 					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
 
-				<div className="content-header">
+				<div className="flexbox--space">
 					<ToggleGruppe onChange={this.toggleGruppeOwner} name="toggleGruppe">
 						<ToggleKnapp value="mine" defaultChecked={true} key="1">
 							Mine

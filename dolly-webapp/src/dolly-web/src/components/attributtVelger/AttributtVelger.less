@@ -1,22 +1,21 @@
-@darkBlue: #194d62;
+@import (reference) '~lessVars';
 
 .attributt-velger {
-	.attributt-velger_search {
+	&_search {
 		width: 40%;
 	}
 
-	.attributt-velger_panels {
+	&_panels {
 		width: 60%;
 		padding-right: 30px;
-		border-right: 1px solid @darkBlue;
+		border-right: 1px solid @color-darkblue;
+	}
+	&_panelcontent {
+		display: flex;
+		flex-wrap: wrap;
 
-		.attributt-velger_panelcontent {
-			display: flex;
-			flex-wrap: wrap;
-
-			> * {
-				width: 25%;
-			}
+		> * {
+			width: 25%;
 		}
 	}
 

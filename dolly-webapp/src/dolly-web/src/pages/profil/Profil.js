@@ -4,6 +4,8 @@ import Tabs from 'nav-frontend-tabs'
 import TeamOversikt from './TeamOversikt/TeamOversikt'
 import Overskrift from '~/components/overskrift/Overskrift'
 
+import './Profil.less'
+
 export default class ProfilPage extends Component {
 	static propTypes = {}
 
