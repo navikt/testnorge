@@ -1,7 +1,6 @@
 package no.nav.api;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.freg.security.oidc.common.OidcTokenAuthentication;
 import no.nav.jpa.Bruker;
 import no.nav.resultSet.RsBruker;
 import no.nav.service.BrukerService;
@@ -46,13 +45,13 @@ public class BrukerController {
 		return mapperFacade.map(bruker, RsBruker.class);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/current")
-	public RsBruker getCurrentBruker() {
-		OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-		Bruker bruker = brukerService.fetchBruker(auth.getPrincipal());
-		return mapperFacade.map(bruker, RsBruker.class);
-	}
+//	@ResponseStatus(HttpStatus.OK)
+//	@GetMapping("/current")
+//	public RsBruker getCurrentBruker() {
+//		OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
+//		Bruker bruker = brukerService.fetchBruker(auth.getPrincipal());
+//		return mapperFacade.map(bruker, RsBruker.class);
+//	}
 
 	@GetMapping
     public List<RsBruker> getAllBrukere(){
