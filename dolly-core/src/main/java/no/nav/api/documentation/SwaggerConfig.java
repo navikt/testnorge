@@ -11,6 +11,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 /**
  * Configure automated swagger API documentation
  */
@@ -25,6 +28,8 @@ public class SwaggerConfig {
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
+                .directModelSubstitute(LocalDate.class, String.class)
+				.directModelSubstitute(LocalDateTime.class, String.class)
 				.select()
 				.apis(RequestHandlerSelectors.any())
 				.paths(PathSelectors.ant("/api/v1/**"))
@@ -39,8 +44,8 @@ public class SwaggerConfig {
 				""+appVersion,
 				"https://nav.no",
 				new Contact("Visma", "https://github.com/navikt/dolly", "nav.no"),
-				"Super Strict Licence",
-				"https://opensource.org/licenses/super-strict-license"
+				"MIT",
+				"https://github.com/navikt/dolly/blob/master/LICENSE"
 		);
 	}
 }
