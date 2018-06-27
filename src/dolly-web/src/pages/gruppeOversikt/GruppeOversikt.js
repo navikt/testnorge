@@ -82,6 +82,7 @@ export default class GruppeOversikt extends Component {
 							return (
 								<RedigerGruppe
 									key={idx}
+									gruppe={o}
 									onSuccess={this.onOpprettGruppeSuccess}
 									onCancel={this.toggleCancelEdit}
 								/>
@@ -96,7 +97,7 @@ export default class GruppeOversikt extends Component {
 							>
 								<Table.Column width="15" value={o.id.toString()} />
 								<Table.Column width="20" value={o.navn} />
-								<Table.Column width="15" value={o.team} />
+								<Table.Column width="15" value={o.teamTilhoerlighetNavn} />
 								<Table.Column width="40" value={o.hensikt} />
 							</Table.Row>
 						)
