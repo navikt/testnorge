@@ -6,6 +6,14 @@ class ContentApiEndpoints {
 		return uri + '/testgruppe'
 	}
 
+	static getGruppeByUser(userId) {
+		return uri + '/testgruppe/bruker/' + userId
+	}
+
+	static getGruppeByTeam(teamId) {
+		return uri + '/testgruppe/team/' + teamId
+	}
+
 	static getGruppe(id) {
 		return uri + '/testgruppe/id'
 	}
