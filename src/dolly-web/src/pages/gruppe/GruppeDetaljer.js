@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import cn from 'classnames'
+import IconButton from '~/components/fields/IconButton/IconButton'
 
 export default class GruppeDetaljer extends PureComponent {
 	static propTypes = {
@@ -16,10 +16,7 @@ export default class GruppeDetaljer extends PureComponent {
 	render() {
 		const { data } = this.props
 
-		const toggleClass = cn('fa', {
-			'fa-chevron-down': !this.state.expanded,
-			'fa-chevron-up': this.state.expanded
-		})
+		const iconType = this.state.expanded ? 'chevron-up' : 'chevron-down'
 
 		return (
 			<div className="gruppe-detaljer">
@@ -36,9 +33,7 @@ export default class GruppeDetaljer extends PureComponent {
 						<DetaljBlokk header="HENSIKT" value={data.hensikt} />
 					]}
 				</div>
-				<button onClick={this.toggleExpanded}>
-					<i className={toggleClass} />
-				</button>
+				<IconButton kind={iconType} onClick={this.toggleExpanded} />
 			</div>
 		)
 	}
