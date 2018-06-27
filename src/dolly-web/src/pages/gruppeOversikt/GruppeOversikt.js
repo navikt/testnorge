@@ -20,15 +20,20 @@ export default class GruppeOversikt extends Component {
 
 	onOpprettGruppeSuccess = () => this.setState({ visOpprettGruppe: false }, this.props.getGrupper)
 
-	toggleVisOpprettGruppe = () => this.setState(prevState => ({ visOpprettGruppe: !prevState.visOpprettGruppe }))
+	toggleVisOpprettGruppe = () =>
+		this.setState(
+			prevState => ({ visOpprettGruppe: !prevState.visOpprettGruppe }),
+			this.toggleCancelEdit
+		)
 
 	onOpprettGruppeCancel = () => this.setState({ visOpprettGruppe: false })
 
-	toggleGruppeVisning = e => this.setState({ visning: e.target.value }, () => {
-		this.props.getGrupper(this.state.visning)
-	})
+	toggleGruppeVisning = e =>
+		this.setState({ visning: e.target.value }, () => {
+			this.props.getGrupper(this.state.visning)
+		})
 
-	toggleCancelEdit = () => this.setState({editId: null})
+	toggleCancelEdit = () => this.setState({ editId: null })
 
 	render() {
 		const { visOpprettGruppe } = this.state
@@ -37,7 +42,7 @@ export default class GruppeOversikt extends Component {
 		if (!grupper) return false
 
 		return (
-			<div id="gruppeoversikt-container">
+			<div className="gruppeoversikt-container">
 				<div className="flexbox--space">
 					<Overskrift
 						label="Testdatagrupper"
@@ -87,7 +92,7 @@ export default class GruppeOversikt extends Component {
 							<Table.Row
 								key={idx}
 								navLink={() => history.push(`gruppe/${o.id}`)}
-								editAction={() => this.setState({ editId: o.id })}
+								editAction={() => this.setState({ editId: o.id }, this.onOpprettGruppeCancel)}
 							>
 								<Table.Column width="15" value={o.id.toString()} />
 								<Table.Column width="20" value={o.navn} />
