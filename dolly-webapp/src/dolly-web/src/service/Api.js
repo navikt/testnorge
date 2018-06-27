@@ -10,6 +10,14 @@ class Api {
 		return Request.get(Endpoints.getGrupper(id))
 	}
 
+	static getGruppeByUser(userId) {
+		return Request.get(Endpoints.getGruppeByUser(userId))
+	}
+
+	static getGruppeByTeam(teamId) {
+		return Request.get(Endpoints.getGruppeByTeam(teamId))
+	}
+
 	static postGruppe(gruppe) {
 		return Request.post(Endpoints.postGruppe(), gruppe)
 	}

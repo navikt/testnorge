@@ -91,9 +91,10 @@ const updateGrupperError = error => ({
 
 // THUNKS
 
-export const getGrupper = () => async dispatch => {
+export const getGrupper = visning => async dispatch => {
 	try {
-		const url = Endpoints.getGrupper()
+		// TODO: Use actual userID from login
+		const url = visning === 'mine' ? Endpoints.getGruppeByUser('Neymar') : Endpoints.getGrupper()
 		dispatch(getGrupperRequest(url))
 		const response = await axios.get(url)
 		return dispatch(getGrupperSuccess(response.data))

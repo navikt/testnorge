@@ -4,24 +4,29 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
 import Input from '~/components/fields/Input/Input'
 import RedigerGruppe from './RedigerGruppe/RedigerGruppe'
+import Api from '~/service/Api'
 import './GruppeOversikt.less'
 
 export default class GruppeOversikt extends Component {
 	state = {
 		visOpprettGruppe: false,
-		gruppeEier: 'mine',
+		visning: 'mine',
 		editId: null
 	}
 
 	componentDidMount() {
-		this.props.getGrupper()
+		this.props.getGrupper(this.state.visning)
 	}
 
 	onOpprettGruppeSuccess = () => this.setState({ visOpprettGruppe: false }, this.props.getGrupper)
 
-	toggleVisOpprettGruppe = () => this.setState({ visOpprettGruppe: !this.state.visOpprettGruppe })
+	toggleVisOpprettGruppe = () => this.setState(prevState => ({ visOpprettGruppe: !prevState.visOpprettGruppe }))
 
-	toggleGruppeOwner = e => this.setState({ gruppeEier: e.target.value })
+	toggleGruppeOwner = e => this.setState({ visning: e.target.value }, () => {
+		this.props.getGrupper(this.state.visning)
+	})
+
+	toggleCancelEdit = () => this.setState({editId: null})
 
 	render() {
 		const { visOpprettGruppe } = this.state
@@ -53,7 +58,7 @@ export default class GruppeOversikt extends Component {
 				{visOpprettGruppe && (
 					<RedigerGruppe
 						onSuccess={this.onOpprettGruppeSuccess}
-						onCancel={this.toggleVisOpprettGruppe}
+						onCancel={this.toggleCancelEdit}
 					/>
 				)}
 
@@ -69,8 +74,9 @@ export default class GruppeOversikt extends Component {
 						if (o.id === this.state.editId) {
 							return (
 								<RedigerGruppe
+									key={idx}
 									onSuccess={this.onOpprettGruppeSuccess}
-									onCancel={this.toggleVisOpprettGruppe}
+									onCancel={this.toggleCancelEdit}
 								/>
 							)
 						}
