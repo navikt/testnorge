@@ -22,7 +22,9 @@ export default class GruppeOversikt extends Component {
 
 	toggleVisOpprettGruppe = () => this.setState(prevState => ({ visOpprettGruppe: !prevState.visOpprettGruppe }))
 
-	toggleGruppeOwner = e => this.setState({ visning: e.target.value }, () => {
+	onOpprettGruppeCancel = () => this.setState({ visOpprettGruppe: false })
+
+	toggleGruppeVisning = e => this.setState({ visning: e.target.value }, () => {
 		this.props.getGrupper(this.state.visning)
 	})
 
@@ -46,7 +48,7 @@ export default class GruppeOversikt extends Component {
 				</div>
 
 				<div className="flexbox--space">
-					<ToggleGruppe onChange={this.toggleGruppeOwner} name="toggleGruppe">
+					<ToggleGruppe onChange={this.toggleGruppeVisning} name="toggleGruppe">
 						<ToggleKnapp value="mine" defaultChecked={true} key="1">
 							Mine
 						</ToggleKnapp>
@@ -59,7 +61,7 @@ export default class GruppeOversikt extends Component {
 				{visOpprettGruppe && (
 					<RedigerGruppe
 						onSuccess={this.onOpprettGruppeSuccess}
-						onCancel={this.toggleCancelEdit}
+						onCancel={this.onOpprettGruppeCancel}
 					/>
 				)}
 
