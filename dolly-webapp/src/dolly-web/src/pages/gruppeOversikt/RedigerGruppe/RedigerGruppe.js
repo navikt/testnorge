@@ -8,7 +8,7 @@ import './RedigerGruppe.less'
 const initialState = {
 	gruppe: {
 		navn: '',
-		team: '',
+		teamTilhoerlighetNavn: '',
 		hensikt: ''
 	},
 	error: null
@@ -17,11 +17,24 @@ const initialState = {
 export default class RedigerGruppe extends Component {
 	static propTypes = {
 		onSuccess: PropTypes.func.isRequired,
-		onCancel: PropTypes.func.isRequired
+		onCancel: PropTypes.func.isRequired,
+		gruppe: PropTypes.shape({
+			navn: PropTypes.string,
+			teamTilhoerlighetNavn: PropTypes.string,
+			hensikt: PropTypes.string
+		})
 	}
 
-	state = {
-		...initialState
+	constructor(props) {
+		super(props)
+
+		let _state = Object.assign({}, initialState)
+
+		if (props.gruppe) _state.gruppe = props.gruppe
+
+		this.state = {
+			..._state
+		}
 	}
 
 	createGroup = async e => {
@@ -57,11 +70,17 @@ export default class RedigerGruppe extends Component {
 	}
 
 	render() {
-		const { navn, team, hensikt } = this.state
+		const { navn, teamTilhoerlighetNavn, hensikt } = this.state.gruppe
+
 		return (
 			<div className="opprett-gruppe">
 				<Input label="NAVN" name="navn" value={navn} onChange={this.onInputChange} />
-				<Input label="TEAM" name="team" value={team} onChange={this.onInputChange} />
+				<Input
+					label="TEAM"
+					name="teamTilhoerlighetNavn"
+					value={teamTilhoerlighetNavn}
+					onChange={this.onInputChange}
+				/>
 				<Input label="HENSIKT" name="hensikt" value={hensikt} onChange={this.onInputChange} />
 				<Knapp type="hoved" onClick={this.createGroup}>
 					OPPRETT
