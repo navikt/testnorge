@@ -1,21 +1,21 @@
 // TODO: lag config for denne
-const uri = 'http://localhost:3050'
+const uri = 'http://localhost:8080/api/v1'
 
 class ContentApiEndpoints {
 	static getGrupper() {
-		return uri + '/grupper'
+		return uri + '/testgruppe'
 	}
 
 	static getGruppe(id) {
-		return uri + '/gruppe/id'
+		return uri + '/testgruppe/id'
 	}
 
 	static postGruppe() {
-		return uri + '/grupper'
+		return uri + '/testgruppe'
 	}
 
 	static putGruppe(id) {
-		return uri + '/gruppe/id'
+		return uri + '/testgruppe/id'
 	}
 
 	static getPersons() {
