@@ -9,7 +9,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	getGrupper: () => dispatch(getGrupper())
+	getGrupper: visning => dispatch(getGrupper(visning))
 })
 
 export default connect(
