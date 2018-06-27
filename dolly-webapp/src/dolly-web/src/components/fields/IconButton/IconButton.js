@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import cn from 'classnames'
+import Icon from '~/components/icon/Icon'
 
 import './IconButton.less'
 
 export default class IconButton extends PureComponent {
 	static propTypes = {
-		iconName: PropTypes.string.isRequired,
+		kind: PropTypes.string.isRequired,
 		onClick: PropTypes.func.isRequired
 	}
 
@@ -16,13 +16,11 @@ export default class IconButton extends PureComponent {
 	}
 
 	render() {
-		const { iconName } = this.props
-
-		const cssClass = cn('fa', `fa-${iconName}`)
+		const { kind } = this.props
 
 		return (
 			<button className="iconbutton" onClick={this.onClickHandler}>
-				<i className={cssClass} />
+				<Icon kind={kind} />
 			</button>
 		)
 	}

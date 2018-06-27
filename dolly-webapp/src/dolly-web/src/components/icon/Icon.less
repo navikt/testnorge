@@ -1,0 +1,28 @@
+@import (reference) '~lessVars';
+
+svg.svg-icon {
+	display: block;
+
+	&-trashcan,
+	&-add-circle,
+	&-remove-circle,
+	&-edit,
+	&-star,
+	&-search {
+		* {
+			stroke: @color-lightblue;
+		}
+	}
+
+	&-user {
+		* {
+			fill: white;
+		}
+	}
+
+	&-star-filled {
+		* {
+			fill: #f8e71c;
+		}
+	}
+}
