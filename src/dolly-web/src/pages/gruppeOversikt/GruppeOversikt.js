@@ -26,7 +26,6 @@ export default class GruppeOversikt extends Component {
 	render() {
 		const { visOpprettGruppe } = this.state
 		const { grupper, history } = this.props
-		const opprettGruppeText = visOpprettGruppe ? 'Lukk opprett gruppe' : 'Ny gruppe'
 
 		if (!grupper) return false
 
