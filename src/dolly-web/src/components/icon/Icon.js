@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 
 const iconList = [
@@ -9,10 +9,14 @@ const iconList = [
 	'star',
 	'star-filled',
 	'user',
-	'search'
+	'search',
+	'chevron-up',
+	'chevron-down',
+	'chevron-left',
+	'chevron-right'
 ]
 
-export default class Icon extends Component {
+export default class Icon extends PureComponent {
 	static propTypes = {
 		height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 		width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -45,6 +49,35 @@ export default class Icon extends Component {
             case ('star-filled'): return (<svg {...props} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Favoritt</title><path d="M23.973,8.836C23.902,8.635,23.713,8.5,23.5,8.5h-8.146l-2.883-8.166C12.4,0.134,12.211,0,12,0c-0.213,0-0.401,0.134-0.472,0.334L8.646,8.5H0.5c-0.213,0-0.403,0.135-0.473,0.336c-0.071,0.201-0.004,0.426,0.164,0.557l6.723,5.283l-2.889,8.666c-0.069,0.207,0.004,0.435,0.18,0.563s0.414,0.128,0.59-0.001L12,18.62l7.204,5.283C19.292,23.969,19.396,24,19.5,24s0.206-0.031,0.294-0.096c0.177-0.128,0.249-0.355,0.181-0.563l-2.89-8.666l6.724-5.283C23.977,9.262,24.042,9.037,23.973,8.836z"/></svg>)
             case ('user'): return (<svg {...props} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Bruker</title><path d="M12,0C5.383,0,0,5.383,0,12c0,3.18,1.232,6.177,3.469,8.438l0,0.001C5.743,22.735,8.772,24,12,24c3.234,0,6.268-1.27,8.542-3.573C22.772,18.166,24,15.174,24,12C24,5.383,18.617,0,12,0z M20.095,19.428c-1.055-0.626-2.64-1.202-4.32-1.81c-0.418-0.151-0.846-0.307-1.275-0.465v-1.848c0.501-0.309,1.384-1.107,1.49-2.935c0.386-0.227,0.63-0.728,0.63-1.37c0-0.578-0.197-1.043-0.52-1.294c0.242-0.757,0.681-2.145,0.385-3.327C16.138,4.992,14.256,4.5,12.75,4.5c-1.342,0-2.982,0.391-3.569,1.456C8.477,5.922,8.085,6.229,7.891,6.487c-0.635,0.838-0.216,2.368,0.021,3.21C7.583,9.946,7.38,10.415,7.38,11c0,0.643,0.244,1.144,0.63,1.37c0.106,1.828,0.989,2.626,1.49,2.935v1.848c-0.385,0.144-0.78,0.287-1.176,0.431c-1.621,0.587-3.288,1.194-4.407,1.857C2.04,17.405,1,14.782,1,12C1,5.935,5.935,1,12,1c6.065,0,11,4.935,11,11C23,14.775,21.965,17.394,20.095,19.428z"/></svg>)
             case ('search'): return (<svg {...props} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Søk</title><g stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><circle cx="8.5" cy="8.5" r="8"/><path strokeLinecap="round" d="M14.156 14.156l9.344 9.344"/></g></svg>)
+            case ('chevron-down'): return (<svg {...props} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil ned</title><Chevron direction="down" /></svg>)
+            case ('chevron-up'): return (<svg {...props} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil opp</title><Chevron direction="up" /></svg>)
+            case ('chevron-left'): return (<svg {...props} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil venstre</title><Chevron direction="left" /></svg>)
+            case ('chevron-right'): return (<svg {...props} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil høyre</title><Chevron direction="right" /></svg>)
         }
+	}
+}
+
+class Chevron extends PureComponent {
+	static propTypes = {
+		direction: PropTypes.oneOf(['up', 'down', 'left', 'right'])
+	}
+
+	static defaultProps = {
+		direction: 'up'
+	}
+
+	render() {
+		const transforms = {
+			up: 'rotate(-90 12.109999656677246,11.699999809265138)',
+			down: 'rotate(90 12.109999656677246,11.699999809265138)',
+			left: 'rotate(-180 12.109999656677246,11.699999809265138)',
+			right: 'rotate(0 12.109999656677246,11.699999809265138)'
+		}
+
+		return (
+			<g transform={transforms[this.props.direction]}>
+				<path d="m15.45545,11.74332l-8.69328,-9.03293a0.84851,0.84851 0 0 1 0,-1.19181a0.82782,0.82782 0 0 1 1.17964,0l9.53205,9.62701a0.84851,0.84851 0 0 1 0,1.19181l-9.53205,9.62701a0.82782,0.82782 0 0 1 -1.17964,0a0.84851,0.84851 0 0 1 0,-1.19181l8.69328,-9.02928z" />
+			</g>
+		)
 	}
 }

@@ -39,6 +39,10 @@ export default class Gruppe extends Component {
 					<Icon kind="user" />
 					<Icon kind="remove-circle" />
 					<Icon kind="search" />
+					<Icon kind="chevron-down" />
+					<Icon kind="chevron-up" />
+					<Icon kind="chevron-left" />
+					<Icon kind="chevron-right" />
 				</div>
 
 				<GruppeDetaljer data={tempGRUPPEHEADER} />
