@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input } from 'nav-frontend-skjema'
+import { Input, Select } from 'nav-frontend-skjema'
 import Knapp from 'nav-frontend-knapper'
 import Api from '~/service/Api'
 import PropTypes from 'prop-types'
@@ -58,10 +58,19 @@ export default class RedigerGruppe extends Component {
 
 	render() {
 		const { navn, team, hensikt } = this.state
+
+		//TODO: Finne faktiske teams som en bruker er medlem av. Kanskje dette bare skal fetches hver gang vi går inn i gruppeOversikt?
+		const test = ['team', 'team1', 'team2']
+
 		return (
 			<div className="opprett-gruppe">
 				<Input label="NAVN" name="navn" value={navn} onChange={this.onInputChange} />
-				<Input label="TEAM" name="team" value={team} onChange={this.onInputChange} />
+				{/* <Input label="TEAM" name="team" value={team} onChange={this.onInputChange} /> */}
+				<Select label="TEAM">
+					{test.map((team, idx) => 
+						<option value={team} key={idx}>{team}</option>
+					)}
+				</Select>
 				<Input label="HENSIKT" name="hensikt" value={hensikt} onChange={this.onInputChange} />
 				<Knapp type="hoved" onClick={this.createGroup}>
 					OPPRETT
