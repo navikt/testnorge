@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Knapp from 'nav-frontend-knapper'
-import Ikon from 'nav-frontend-ikoner-assets'
+import Icon from '~/components/icon/Icon'
 import Overskrift from '~/components/overskrift/Overskrift'
 import GruppeDetaljer from './GruppeDetaljer'
 import Table from '~/components/table/Table'
@@ -29,6 +29,17 @@ export default class Gruppe extends Component {
 					label={gruppe.navn}
 					actions={[{ icon: 'pencil', onClick: () => {} }, { icon: 'trash-o', onClick: () => {} }]}
 				/>
+
+				<div style={{ padding: '30px' }}>
+					<Icon kind="trashcan" />
+					<Icon kind="add-circle" />
+					<Icon kind="edit" />
+					<Icon kind="star" />
+					<Icon kind="star-filled" />
+					<Icon kind="user" />
+					<Icon kind="remove-circle" />
+					<Icon kind="search" />
+				</div>
 
 				<GruppeDetaljer data={tempGRUPPEHEADER} />
 
