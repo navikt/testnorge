@@ -17,34 +17,34 @@ export default class Utvalg extends PureComponent {
 				<ul>
 					<li>
 						<span>
-							Personinfo <IconButton iconName="times-circle-o" />
+							Personinfo <IconButton kind="remove-circle" />
 						</span>
 						<ul>
 							<li>
 								<span>
-									Kjønn <IconButton iconName="times-circle-o" />
+									Kjønn <IconButton kind="remove-circle" />
 								</span>
 							</li>
 							<li>
 								<span>
-									Født etter <IconButton iconName="times-circle-o" />
+									Født etter <IconButton kind="remove-circle" />
 								</span>
 							</li>
 							<li>
 								<span>
-									Født før <IconButton iconName="times-circle-o" />
+									Født før <IconButton kind="remove-circle" />
 								</span>
 							</li>
 						</ul>
 					</li>
 					<li>
 						<span>
-							Adresser <IconButton iconName="times-circle-o" />
+							Adresser <IconButton kind="remove-circle" />
 						</span>
 					</li>
 					<li>
 						<span>
-							Arbeidsforhold <IconButton iconName="times-circle-o" />
+							Arbeidsforhold <IconButton kind="remove-circle" />
 						</span>
 					</li>
 				</ul>

@@ -27,7 +27,7 @@ export default class Gruppe extends Component {
 			<div id="gruppe-container">
 				<Overskrift
 					label={gruppe.navn}
-					actions={[{ icon: 'pencil', onClick: () => {} }, { icon: 'trash-o', onClick: () => {} }]}
+					actions={[{ icon: 'edit', onClick: () => {} }, { icon: 'trashcan', onClick: () => {} }]}
 				/>
 
 				<div style={{ padding: '30px' }}>
@@ -50,7 +50,7 @@ export default class Gruppe extends Component {
 				<Overskrift
 					type="h2"
 					label="Testpersoner"
-					actions={[{ icon: 'plus-circle', onClick: this.startOppskrift }]}
+					actions={[{ icon: 'add-circle', onClick: this.startOppskrift }]}
 				/>
 
 				<Table>
