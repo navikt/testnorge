@@ -11,5 +11,7 @@ public interface TestGruppeRepository extends CrudRepository<Testgruppe, Long> {
 
 	List<Testgruppe> findAll();
 
+	Testgruppe findByNavn(String navn);
+
 	void deleteTestgruppeById(Long id);
 }

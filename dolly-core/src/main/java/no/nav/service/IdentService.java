@@ -1,11 +1,13 @@
 package no.nav.service;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.exceptions.ConstraintViolationException;
 import no.nav.resultSet.RsTestident;
 import no.nav.jpa.Testident;
 import no.nav.dolly.repository.TestGruppeRepository;
 import no.nav.dolly.repository.IdentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +18,6 @@ public class IdentService {
 
 	@Autowired
 	private IdentRepository identRepository;
-	
-	@Autowired
-	private TestGruppeRepository testGruppeRepository;
-
-	@Autowired
-	private TestgruppeService testgruppeService;
 
 	@Autowired
 	private MapperFacade mapperFacade;
@@ -29,7 +25,11 @@ public class IdentService {
 	public void persisterTestidenter(Long gruppeId, List<RsTestident> personIdentListe) {
 		List<Testident> testidentList = mapperFacade.mapAsList(personIdentListe, Testident.class);
 
-		identRepository.saveAll(testidentList);
+		try{
+			identRepository.saveAll(testidentList);
+		} catch (DataIntegrityViolationException e) {
+			throw new ConstraintViolationException("En Ident DB constraint er brutt! Kan ikke lagre Identer. Error: " + e.getMessage());
+		}
 	}
 	
 	@Transactional

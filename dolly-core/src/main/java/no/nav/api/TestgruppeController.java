@@ -2,6 +2,7 @@ package no.nav.api;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.jpa.Testgruppe;
+import no.nav.resultSet.RsOpprettTestgruppe;
 import no.nav.resultSet.RsTestgruppe;
 import no.nav.resultSet.RsTestident;
 import no.nav.service.IdentService;
@@ -34,17 +35,22 @@ public class TestgruppeController {
 
 	@Autowired
 	private MapperFacade mapperFacade;
-	
-	@PostMapping(value = "/team/{teamId}")
-	public RsTestgruppe opprettTestgruppe(@PathVariable Long teamId, @RequestBody RsTestgruppe createTestgruppeRequest) {
-		Testgruppe testgruppe = testgruppeService.opprettTestgruppe(teamId, createTestgruppeRequest);
-        return mapperFacade.map(testgruppe, RsTestgruppe.class);
+
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping
+	public RsTestgruppe opprettTestgruppe(@RequestBody RsOpprettTestgruppe createTestgruppeRequest) {
+	    return testgruppeService.opprettTestgruppe(createTestgruppeRequest);
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = "/{testgruppeId}")
 	public void persisterTestidenter(@PathVariable("testgruppeId") Long gruppeId, @RequestBody List<RsTestident> testpersonIdentListe) {
 		testgruppeService.saveAllIdenterToTestgruppe(gruppeId, testpersonIdentListe);
+	}
+
+	@PutMapping(value = "/{testgruppeId}")
+    public RsTestgruppe oppdaterTestgruppe(@PathVariable("testgruppeId") Long gruppeId, @RequestBody RsTestgruppe testgruppe){
+		return testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
 	}
 
 	@PutMapping("/{testgruppe}/slettTestidenter")

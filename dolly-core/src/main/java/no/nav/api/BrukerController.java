@@ -39,14 +39,12 @@ public class BrukerController {
 		brukerService.opprettBruker(brukerRequest);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{navIdent}")
 	public RsBruker getBrukerByNavIdent(@PathVariable("navIdent") String navIdent) {
 		Bruker bruker = brukerService.fetchBruker(navIdent);
 		return mapperFacade.map(bruker, RsBruker.class);
 	}
 
-	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/current")
 	public RsBruker getCurrentBruker() {
 		OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();

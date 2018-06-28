@@ -1,12 +1,11 @@
 package no.nav.regression.scenarios.rest;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import no.nav.config.DollyObjectMapper;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
+import no.nav.freg.security.oidc.common.OidcTokenAuthentication;
 import no.nav.jpa.Bruker;
 import no.nav.jpa.Team;
 import no.nav.jpa.Testgruppe;
@@ -14,6 +13,7 @@ import no.nav.regression.InMememoryDbTestSetup;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,7 +22,10 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -51,6 +54,8 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     protected String standardGruppenavn = "testgruppe";
     protected String standardNavnIdent = "ident";
     protected String standardGruppeHensikt = "hensikt";
+
+    protected String standardPrincipal = "principal";
 
     @Before
     public void setupBruker() {
@@ -84,6 +89,13 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
                 .teamtilhoerighet(standardTeam)
                 .build().convertToRealTestgruppe()
         );
+
+        /* Legger til securityContextHolder */
+        SecurityContextHolder.getContext().setAuthentication(createTestOidcToken());
+    }
+
+    private OidcTokenAuthentication createTestOidcToken(){
+        return new OidcTokenAuthentication(standardBruker.getNavIdent(), "test", "idtoken", "refreshtoken", null, new ArrayList<>());
     }
 
     protected static String convertObjectToJson(Object object) throws IOException {
