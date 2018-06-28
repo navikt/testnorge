@@ -46,7 +46,7 @@ export default class GruppeOversikt extends Component {
 				<div className="flexbox--space">
 					<Overskrift
 						label="Testdatagrupper"
-						actions={[{ icon: 'plus-circle', onClick: this.toggleVisOpprettGruppe }]}
+						actions={[{ icon: 'add-circle', onClick: this.toggleVisOpprettGruppe }]}
 					/>
 					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
