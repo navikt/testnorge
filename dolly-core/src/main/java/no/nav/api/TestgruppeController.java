@@ -58,8 +58,8 @@ public class TestgruppeController {
 		identService.slettTestidenter(testpersonIdentListe);
 	}
 
-	@GetMapping("/{gruppeId}")
-	public RsTestgruppe getTestgruppe(@PathVariable("gruppeId") Long gruppeId){
+	@GetMapping("/{testgruppeId}")
+	public RsTestgruppe getTestgruppe(@PathVariable("testgruppeId") Long gruppeId){
 		return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppe.class);
 	}
 
@@ -73,8 +73,8 @@ public class TestgruppeController {
 		return testgruppeService.fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navident);
 	}
 
-	@GetMapping("/attributter/{gruppeId}")
-	public Set<String> getAttributterForGruppe(@PathVariable("gruppeId") String gruppeId){
+	@GetMapping("/attributter/{testgruppeId}")
+	public Set<String> getAttributterForGruppe(@PathVariable("testgruppeId") String gruppeId){
 		return null;
 	}
 }
