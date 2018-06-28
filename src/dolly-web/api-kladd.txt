@@ -37,14 +37,16 @@ ENDPOINT    URL                         Aksjon                  Ekstra
 
 /*** TESTGRUPPE
 
-ENDPOINT    URL                             Aksjon                      Ekstra
-// GET      api/gruppe                      | Hent alle grupper         | ?bruker=<nav_ident>  ?paginering
-// POST     api/gruppe                      | Opprett ny gruppe     
-// GET      api/gruppe/<id>                 | Hent gruppe by id
-// PUT      api/gruppe/<id>                 | Update gruppe by id       
-// DELETE   api/gruppe/<id>                 | Delete gruppe by id       
-// PUT      api/gruppe/<id>/attributter     | Update gruppe attributter | Body: {attributt-object}
-// PUT      api/gruppe/<id>/identer         | Update personer           | Body: [<ident>, <ident>]
+ENDPOINT    URL                                 Aksjon                          Ekstra
+// GET      api/gruppe                          | Hent alle grupper             | ?bruker=<nav_ident>  ?paginering
+// POST     api/gruppe                          | Opprett ny gruppe     
+// GET      api/gruppe/<id>                     | Hent gruppe by id
+// PUT      api/gruppe/<id>                     | Update gruppe by id       
+// DELETE   api/gruppe/<id>                     | Delete gruppe by id       
+// PUT      api/gruppe/<id>/attributter         | Update gruppe attributter     | Body: {attributt-object}
+// PUT      api/gruppe/<id>/identer             | Update personer               | Body: [<ident>, <ident>]
+// POST     api/gruppe/<id>/bestilling          | Oppretter bestilling til TPSF | TODO: Må defineres oppsettet på {}
+// GET      api/gruppe/<id>/bestillingStatus    | Viser status på oppdatering   | 
 
 [{
     id: "<gruppe_id>",
@@ -69,3 +71,4 @@ AVKLARING::
 
 
 HUSK:
+
