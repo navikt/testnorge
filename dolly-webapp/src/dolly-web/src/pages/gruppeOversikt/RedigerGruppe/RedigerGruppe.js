@@ -22,7 +22,8 @@ export default class RedigerGruppe extends Component {
 			navn: PropTypes.string,
 			teamTilhoerlighetNavn: PropTypes.string,
 			hensikt: PropTypes.string
-		})
+		}),
+		redigering: PropTypes.boolean
 	}
 
 	constructor(props) {
@@ -51,7 +52,8 @@ export default class RedigerGruppe extends Component {
 				env: ''
 			}
 
-			const res = await Api.postGruppe(gruppe)
+			// TODO: Bruk endepunkt for redigering
+			const res = this.props.redigering ? await Api.postGruppe(gruppe) :  await Api.postGruppe(gruppe)
 
 			// IF success
 			if (res.data.id) return this.props.onSuccess()
@@ -79,8 +81,6 @@ export default class RedigerGruppe extends Component {
 		//TODO: Finne faktiske teams som en bruker er medlem av. Kanskje dette bare skal fetches hver gang vi går inn i gruppeOversikt?
 		const test = ['team', 'team1', 'team2']
 
-		console.log('team name:' , teamTilhoerlighetNavn)
-
 		return (
 			<div className="opprett-gruppe">
 				<Input label="NAVN" name="navn" value={navn} onChange={this.onInputChange} />
@@ -91,7 +91,7 @@ export default class RedigerGruppe extends Component {
 				</Select>
 				<Input label="HENSIKT" name="hensikt" value={hensikt} onChange={this.onInputChange} />
 				<Knapp type="hoved" onClick={this.createGroup}>
-					OPPRETT
+					{this.props.redigering ? 'OPPDATER' : 'OPPRETT'}
 				</Knapp>
 				<Knapp type="standard" onClick={this.props.onCancel}>
 					Avbryt
