@@ -30,21 +30,6 @@ export default class Gruppe extends Component {
 					actions={[{ icon: 'edit', onClick: () => {} }, { icon: 'trashcan', onClick: () => {} }]}
 				/>
 
-				<div style={{ padding: '30px' }}>
-					<Icon kind="trashcan" />
-					<Icon kind="add-circle" />
-					<Icon kind="edit" />
-					<Icon kind="star" />
-					<Icon kind="star-filled" />
-					<Icon kind="user" />
-					<Icon kind="remove-circle" />
-					<Icon kind="search" />
-					<Icon kind="chevron-down" />
-					<Icon kind="chevron-up" />
-					<Icon kind="chevron-left" />
-					<Icon kind="chevron-right" />
-				</div>
-
 				<GruppeDetaljer data={tempGRUPPEHEADER} />
 
 				<Overskrift

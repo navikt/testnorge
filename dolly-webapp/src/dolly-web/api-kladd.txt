@@ -1,0 +1,67 @@
+/*****************
+ **  API KLADD
+ *****************
+
+/*** BRUKER
+
+// GET api/bruker               | Hent alle brukere
+// GET api/bruker/<id>          | Hent bruker by id
+
+[{
+    id: <nav_ident>,
+    navn: "<fullt navn>"
+    teams: [{
+        teamId: <team_id>,
+        teamNavn: <team navn>
+    }],
+    favoritter: [<gruppeId_1>, <gruppeId_2>]
+}]
+----------------------------------------------------
+
+/*** TEAM
+
+ENDPOINT    URL                         Aksjon                  Ekstra
+// GET      api/team                    | Hent alle teams       | ?bruker=<bruker_id>  ?paginering
+// POST     api/team                    | Opprett nytt team     
+// GET      api/team/<id>               | Hent team by id
+// PUT      api/team/<id>               | Update team by id
+// PUT      api/team/<id>/medlemmer     | Legg til medlemmer    | Body: [<nav_ident>, <nav_ident>]
+// DELETE   api/team/<id>/medlemmer     | Fjern medlemmer       | Body: [<nav_ident>, <nav_ident>]    avklaring: Kan gjøres direkte via PUT 
+
+[{
+    id: "<team_id>",
+    navn: "<team navn>",
+    beskrivelse: "<beskrivelse>",
+    teamEier: "<nav_ident>",
+    medlemmer: [<nav_ident>, <nav_ident>],
+
+    editable: <boolean>
+}]
+----------------------------------------------------
+
+/*** TESTGRUPPE
+
+ENDPOINT    URL                             Aksjon                      Ekstra
+// GET      api/gruppe                      | Hent alle grupper         | ?bruker=<bruker_id>  ?paginering
+// POST     api/gruppe                      | Opprett ny gruppe     
+// PUT      api/gruppe/<id>                 | Update gruppe by id     
+// DELETE   api/gruppe/<id>                 | Delete gruppe by id   
+// PUT      api/gruppe/<id>/attributter     | Update gruppe attributter
+// PUT      api/gruppe/<id>/person          | Update personer           | Body: [<fnr>, <fnr>]
+// DELETE   api/gruppe/<id>/person          | Delete personer           | Body: [<fnr>, <fnr>]    avklaring: Kan gjøres direkte via PUT 
+
+[{
+    id: "<gruppe_id>",
+    navn: "<gruppe navn>",
+    beskrivelse: "<beskrivelse>",
+    teamTilhoerlighetNavn: "<team_id>",
+    personer: [<fnr>, <fnr>],
+
+    editable: <boolean>,
+    favorite: <boolean>,
+
+}]
+----------------------------------------------------
+
+AVKLARING::
+- Personer i en testgruppe. Må man vite hva slags type ident man har for å query info på det fra eksterne registre? (må man vite at det er et FNR og ikke DNR)
