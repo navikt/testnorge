@@ -36,7 +36,7 @@ export default class GruppeOversikt extends Component {
 	toggleCancelEdit = () => this.setState({ editId: null })
 
 	render() {
-		const { visOpprettGruppe } = this.state
+		const { visOpprettGruppe, editId } = this.state
 		const { grupper, history } = this.props
 
 		if (!grupper) return false
@@ -85,6 +85,7 @@ export default class GruppeOversikt extends Component {
 									gruppe={o}
 									onSuccess={this.onOpprettGruppeSuccess}
 									onCancel={this.toggleCancelEdit}
+									redigering={!!editId}
 								/>
 							)
 						}
