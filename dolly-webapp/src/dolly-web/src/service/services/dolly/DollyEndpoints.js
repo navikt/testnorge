@@ -6,9 +6,7 @@ const groupBase = `${uri}/testgruppe`
 const teamBase = `${uri}/team`
 const brukerBase = `${uri}/bruker`
 
-class ContentApiEndpoints {
-    
-
+class DollyEndpoints {
 	static gruppe() {
 		return groupBase
 	}
@@ -58,4 +56,4 @@ class ContentApiEndpoints {
     }
 }
 
-export default ContentApiEndpoints
+export default DollyEndpoints
