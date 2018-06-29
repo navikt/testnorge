@@ -33,27 +33,27 @@ class DollyEndpoints {
 
 	static gruppeBestillingStatus(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
-    }
-    
-    static team() {
-        return teamBase
-    }
+	}
 
-    static teamById(teamId) {
-        return `${teamBase}/${teamId}`
-    }
+	static team() {
+		return teamBase
+	}
 
-    static teamMedlemmer(teamId) {
-        return `${teamBase}/${teamId}/medlemmer`
-    }
+	static teamById(teamId) {
+		return `${teamBase}/${teamId}`
+	}
 
-    static bruker() {
-        return brukerBase
-    }
+	static teamMedlemmer(teamId) {
+		return `${teamBase}/${teamId}/medlemmer`
+	}
 
-    static brukerById(brukerId) {
-        return `${brukerBase}/brukerId`
-    }
+	static bruker() {
+		return brukerBase
+	}
+
+	static brukerById(brukerId) {
+		return `${brukerBase}/brukerId`
+	}
 }
 
 export default DollyEndpoints
