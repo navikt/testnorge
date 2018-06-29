@@ -12,6 +12,10 @@ class Request {
 	static put(url, data) {
 		return axios.put(url, data)
 	}
+
+	static delete(url) {
+		return axios.delete(url)
+	}
 }
 
 export default Request

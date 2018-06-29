@@ -1,5 +1,4 @@
-import axios from 'axios'
-import Endpoints from '~/service/ContentApiEndpoints'
+import { DollyApi } from '~/service/Api'
 
 export const types = {
 	GET_GRUPPER_REQUEST: 'grupper/get-request',
@@ -44,9 +43,8 @@ export default (state = initialState, action) => {
 	}
 }
 
-const getGrupperRequest = url => ({
-	type: types.GET_GRUPPER_REQUEST,
-	url
+const getGrupperRequest = () => ({
+	type: types.GET_GRUPPER_REQUEST
 })
 
 const getGrupperSuccess = grupper => ({
@@ -59,9 +57,8 @@ const getGrupperError = error => ({
 	error
 })
 
-const createGrupperRequest = url => ({
-	type: types.CREATE_GRUPPER_REQUEST,
-	url
+const createGrupperRequest = () => ({
+	type: types.CREATE_GRUPPER_REQUEST
 })
 
 const createGrupperSuccess = gruppe => ({
@@ -74,9 +71,8 @@ const createGrupperError = error => ({
 	error
 })
 
-const updateGrupperRequest = url => ({
-	type: types.UPDATE_GRUPPER_REQUEST,
-	url
+const updateGrupperRequest = () => ({
+	type: types.UPDATE_GRUPPER_REQUEST
 })
 
 const updateGrupperSuccess = grupper => ({
@@ -94,9 +90,8 @@ const updateGrupperError = error => ({
 export const getGrupper = visning => async dispatch => {
 	try {
 		// TODO: Use actual userID from login
-		const url = visning === 'mine' ? Endpoints.getGruppeByUser('Neymar') : Endpoints.getGrupper()
-		dispatch(getGrupperRequest(url))
-		const response = await axios.get(url)
+		dispatch(getGrupperRequest())
+		const response = visning === 'mine' ? await DollyApi.getGrupper() : await DollyApi.getGruppeByUserId('Neymar')
 		return dispatch(getGrupperSuccess(response.data))
 	} catch (error) {
 		return dispatch(getGrupperError(error))
@@ -105,9 +100,8 @@ export const getGrupper = visning => async dispatch => {
 
 export const createGruppe = nyGruppe => async dispatch => {
 	try {
-		const url = Endpoints.postGruppe()
 		dispatch(createGrupperRequest(url))
-		const response = await axios.get(url, nyGruppe)
+		const response = await DollyApi.createGruppe(nyGruppe)
 		dispatch(createGrupperSuccess(response.data))
 	} catch (error) {
 		dispatch(createGrupperError(error))
@@ -116,9 +110,8 @@ export const createGruppe = nyGruppe => async dispatch => {
 
 export const updateGruppe = gruppe => async dispatch => {
 	try {
-		const url = Endpoints.putGruppe(gruppe.id)
 		dispatch(updateGrupperRequest(url))
-		const response = await axios.post(url, gruppe)
+		const response = await DollyApi.updateGruppe(gruppe)
 		dispatch(updateGruppeSuccess(response.data))
 	} catch (error) {
 		dispatch(updateGrupperError(error))
