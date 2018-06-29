@@ -1,7 +1,7 @@
 import Request from '../../Request'
 import Endpoints from './DollyEndpoints'
 
-class Api {
+class DollyService {
     /*
         Grupper
     */
@@ -82,4 +82,4 @@ class Api {
     }
 }
 
-export default Api
+export default DollyService
