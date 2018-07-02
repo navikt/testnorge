@@ -3,7 +3,7 @@ import { ToggleGruppe, ToggleKnapp } from 'nav-frontend-skjema'
 import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
 import Input from '~/components/fields/Input/Input'
-import RedigerGruppe from './RedigerGruppe/RedigerGruppe'
+import RedigerGruppeConnector from './RedigerGruppe/RedigerGruppeConnector'
 import Api from '~/service/Api'
 import './GruppeOversikt.less'
 
@@ -63,9 +63,10 @@ export default class GruppeOversikt extends Component {
 				</div>
 
 				{visOpprettGruppe && (
-					<RedigerGruppe
+					<RedigerGruppeConnector
 						onSuccess={this.onOpprettGruppeSuccess}
 						onCancel={this.onOpprettGruppeCancel}
+						redigering={!!editId}
 					/>
 				)}
 
@@ -78,9 +79,9 @@ export default class GruppeOversikt extends Component {
 					</Table.Header>
 
 					{grupper.map((o, idx) => {
-						if (o.id === this.state.editId) {
+						if (o.id === editId) {
 							return (
-								<RedigerGruppe
+								<RedigerGruppeConnector
 									key={idx}
 									gruppe={o}
 									onSuccess={this.onOpprettGruppeSuccess}

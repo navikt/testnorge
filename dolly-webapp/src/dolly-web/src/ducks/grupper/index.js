@@ -7,7 +7,7 @@ export const types = {
 
 	CREATE_GRUPPER_REQUEST: 'grupper/create-request',
 	CREATE_GRUPPER_SUCCESS: 'grupper/create-success',
-	CREATE_GRUPPER: 'grupper/create-error',
+	CREATE_GRUPPER_ERROR: 'grupper/create-error',
 
 	UPDATE_GRUPPER_REQUEST: 'grupper/update-request',
 	UPDATE_GRUPPER_SUCCESS: 'grupper/update-success',
@@ -36,6 +36,23 @@ export default (state = initialState, action) => {
 		case types.GET_GRUPPER_ERROR:
 			return {
 				...initialState,
+				error: action.error
+			}
+		case types.CREATE_GRUPPER_REQUEST:
+			return {
+				...state,
+				fetching: true
+			}
+		case types.CREATE_GRUPPER_SUCCESS:
+			return {
+				...state,
+				fetching: false,
+				items: { ...state.items.push(action.gruppe) }
+			}
+		case types.CREATE_GRUPPER_ERROR:
+			return {
+				...state,
+				fetching: false,
 				error: action.error
 			}
 		default:
@@ -91,7 +108,8 @@ export const getGrupper = visning => async dispatch => {
 	try {
 		// TODO: Use actual userID from login
 		dispatch(getGrupperRequest())
-		const response = visning === 'mine' ? await DollyApi.getGrupper() : await DollyApi.getGruppeByUserId('Neymar')
+		const response =
+			visning === 'mine' ? await DollyApi.getGrupper() : await DollyApi.getGruppeByUserId('Neymar')
 		return dispatch(getGrupperSuccess(response.data))
 	} catch (error) {
 		return dispatch(getGrupperError(error))
@@ -100,7 +118,7 @@ export const getGrupper = visning => async dispatch => {
 
 export const createGruppe = nyGruppe => async dispatch => {
 	try {
-		dispatch(createGrupperRequest(url))
+		dispatch(createGrupperRequest())
 		const response = await DollyApi.createGruppe(nyGruppe)
 		dispatch(createGrupperSuccess(response.data))
 	} catch (error) {
