@@ -83,6 +83,7 @@ export default class GruppeOversikt extends Component {
 							return (
 								<RedigerGruppeConnector
 									key={idx}
+									index={idx}
 									gruppe={o}
 									onSuccess={this.onOpprettGruppeSuccess}
 									onCancel={this.toggleCancelEdit}
