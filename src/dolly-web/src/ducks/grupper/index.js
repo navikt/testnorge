@@ -47,9 +47,34 @@ export default (state = initialState, action) => {
 			return {
 				...state,
 				fetching: false,
-				items: { ...state.items.push(action.gruppe) }
+				items: [...state.items.push(action.gruppe)]
 			}
 		case types.CREATE_GRUPPER_ERROR:
+			return {
+				...state,
+				fetching: false,
+				error: action.error
+			}
+		case types.UPDATE_GRUPPER_REQUEST:
+			return {
+				...state,
+				fetching: true
+			}
+		case types.UPDATE_GRUPPER_SUCCESS:
+			return {
+				...state,
+				fetching: false,
+				items: state.items.map((item, idx) => {
+					if (index !== action.index) {
+						return item
+					}
+					return {
+						...item,
+						...action.grupper
+					}
+				})
+			}
+		case types.UPDATE_GRUPPER_ERROR:
 			return {
 				...state,
 				fetching: false,
@@ -92,9 +117,10 @@ const updateGrupperRequest = () => ({
 	type: types.UPDATE_GRUPPER_REQUEST
 })
 
-const updateGrupperSuccess = grupper => ({
+const updateGrupperSuccess = (index, gruppe) => ({
 	type: types.UPDATE_GRUPPER_SUCCESS,
-	grupper
+	index,
+	gruppe
 })
 
 const updateGrupperError = error => ({
@@ -126,11 +152,11 @@ export const createGruppe = nyGruppe => async dispatch => {
 	}
 }
 
-export const updateGruppe = gruppe => async dispatch => {
+export const updateGruppe = (index, gruppe) => async (dispatch, getState) => {
 	try {
-		dispatch(updateGrupperRequest(url))
-		const response = await DollyApi.updateGruppe(gruppe)
-		dispatch(updateGruppeSuccess(response.data))
+		dispatch(updateGrupperRequest())
+		const response = await DollyApi.updateGruppe(gruppe.id, gruppe)
+		dispatch(updateGrupperSuccess(index, response.data))
 	} catch (error) {
 		dispatch(updateGrupperError(error))
 	}
