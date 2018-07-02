@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import InputAutocompleteField from '~/components/fields/InputAutocompleteField'
+import Autocomplete from '~/components/fields/Autocomplete/Autocomplete'
 import LandKodeverk from './TEMP_kodeverk'
 
 class SokGrupper extends Component {
@@ -7,7 +7,7 @@ class SokGrupper extends Component {
 		return (
 			<div>
 				<h1>Søk etter testdatagrupper</h1>
-				<InputAutocompleteField
+				<Autocomplete
 					label={'Postnummer'}
 					id={'postnummer-id'}
 					onSelectedValue={this.onSelectedValue}

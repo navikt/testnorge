@@ -6,7 +6,9 @@
 	"scripts": {
 		"start": "webpack-dev-server --config ./webpack.config.js --port 3000",
 		"prestart-mock-api": "node mock-api/generateMockData",
-		"start-mock-api": "json-server --watch mock-api/mock-data/db.json --port 3050"
+		"start-mock-api": "json-server --watch mock-api/mock-data/db.json --port 3050",
+		"test": "jest --watch",
+		"test-cov": "jest --coverage"
 	},
 	"author": "",
 	"license": "ISC",
@@ -56,8 +58,11 @@
 		"babel-preset-env": "^1.7.0",
 		"babel-preset-react": "^6.24.1",
 		"css-loader": "^0.28.11",
+		"enzyme": "^3.3.0",
+		"enzyme-adapter-react-16": "^1.1.1",
 		"faker": "^4.1.0",
 		"file-loader": "^1.1.11",
+		"jest": "^23.2.0",
 		"json-schema-faker": "^0.5.0-rc15",
 		"json-server": "^0.13.0",
 		"less": "^3.0.4",
@@ -76,5 +81,13 @@
 		"semi": false,
 		"useTabs": true,
 		"printWidth": 100
+	},
+	"jest": {
+		"setupTestFrameworkScriptFile": "<rootDir>/testSetup.js",
+		"moduleNameMapper": {
+			"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+			"\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
+			"~/(.*)$": "<rootDir>/src/$1"
+		}
 	}
 }
