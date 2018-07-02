@@ -72,7 +72,9 @@ class TableRow extends PureComponent {
 }
 
 class TableHeader extends PureComponent {
-	static propTypes = {}
+	static propTypes = {
+		children: PropTypes.node
+	}
 
 	render() {
 		const { children, ...restProps } = this.props
@@ -127,7 +129,9 @@ class TableColumn extends PureComponent {
 }
 
 export default class Table extends PureComponent {
-	static propTypes = {}
+	static propTypes = {
+		children: PropTypes.node.isRequired
+	}
 
 	static Header = TableHeader
 	static Row = TableRow
@@ -135,6 +139,7 @@ export default class Table extends PureComponent {
 
 	render() {
 		const { children, ...restProps } = this.props
+
 		return (
 			<div className="dot" {...restProps}>
 				{children}
