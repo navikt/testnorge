@@ -18,6 +18,7 @@ export default class Overskrift extends PureComponent {
 	}
 
 	static defaultProps = {
+		label: 'default label',
 		type: 'h1',
 		actions: []
 	}
