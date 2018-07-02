@@ -1,9 +1,10 @@
 import { connect } from 'react-redux'
 import RedigerGruppe from './RedigerGruppe'
-import { createGruppe } from '~/ducks/grupper'
+import { createGruppe, updateGruppe } from '~/ducks/grupper'
 
 const mapDispatchToProps = dispatch => ({
-	createGruppe: nyGruppe => dispatch(createGruppe(nyGruppe))
+	createGruppe: nyGruppe => dispatch(createGruppe(nyGruppe)),
+	updateGruppe: (index, gruppe) => dispatch(updateGruppe(index, gruppe))
 })
 
 export default connect(
