@@ -9,12 +9,17 @@ export default class Panel extends Component {
 	static propTypes = {
 		forceOpen: PropTypes.bool,
 		startOpen: PropTypes.bool,
-		heading: PropTypes.node.isRequired,
+		heading: PropTypes.node,
 		content: PropTypes.node
 	}
 
+	static defaultProps = {
+		startOpen: false,
+		heading: 'Panel'
+	}
+
 	state = {
-		open: Boolean(this.props.startOpen)
+		open: this.props.startOpen
 	}
 
 	toggle = event => this.setState({ open: !this.state.open })
