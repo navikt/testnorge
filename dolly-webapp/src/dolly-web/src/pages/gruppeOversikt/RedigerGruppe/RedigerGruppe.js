@@ -22,7 +22,8 @@ export default class RedigerGruppe extends Component {
 			teamTilhoerlighetNavn: PropTypes.string,
 			hensikt: PropTypes.string
 		}),
-		redigering: PropTypes.bool
+		redigering: PropTypes.bool,
+		index: PropTypes.number
 	}
 
 	constructor(props) {
@@ -38,24 +39,18 @@ export default class RedigerGruppe extends Component {
 	}
 
 	createGroup = async e => {
+		const { redigering, index, createGruppe, updateGruppe } = this.props
 		// TODO: Validations
 
 		// TODO: Temp values for default values
-		const gruppe = {
+		const gruppeObj = {
 			...this.state.gruppe,
 			personer: '0',
 			eier: 'Andreas Ludvigsen',
 			env: ''
 		}
 
-		// TODO: Bruk endepunkt for redigering
-
-		const res = this.props.redigering
-			? await this.props.createGruppe(gruppe)
-			: await this.props.createGruppe(gruppe)
-
-		// IF success
-		//if (res.data.id) return this.props.onSuccess()
+		const res = redigering ? await updateGruppe(index, gruppeObj) : await createGruppe(gruppeObj)
 	}
 
 	onInputChange = e => {
