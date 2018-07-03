@@ -1,5 +1,7 @@
 package no.nav.security;
 
+import no.nav.freg.security.oidc.common.HttpSecurityConfigurer;
+
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
+public class RestSecurityConfig implements HttpSecurityConfigurer {
 
     @Value("${dolly.security.cors.origins: ''}")
     private String[] allowedOrigins;

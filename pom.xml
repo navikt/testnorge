@@ -91,14 +91,14 @@
 	</dependencies>
 
 	<dependencyManagement>
-        <!--<dependencies>-->
-			<!--<dependency>-->
-				<!--<groupId>no.nav.freg</groupId>-->
-				<!--<artifactId>freg-security-oidc</artifactId>-->
-				<!--<version>${freg-security-oidc.version}</version>-->
-			<!--</dependency>-->
+        <dependencies>
+			<dependency>
+				<groupId>no.nav.freg</groupId>
+				<artifactId>freg-security-oidc</artifactId>
+				<version>${freg-security-oidc.version}</version>
+			</dependency>
 
-		<!--</dependencies>-->
+		</dependencies>
 
 	</dependencyManagement>
 
