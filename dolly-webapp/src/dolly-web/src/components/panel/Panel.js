@@ -9,12 +9,17 @@ export default class Panel extends Component {
 	static propTypes = {
 		forceOpen: PropTypes.bool,
 		startOpen: PropTypes.bool,
-		heading: PropTypes.node.isRequired,
+		heading: PropTypes.node,
 		content: PropTypes.node
 	}
 
+	static defaultProps = {
+		startOpen: false,
+		heading: 'Panel'
+	}
+
 	state = {
-		open: Boolean(this.props.startOpen)
+		open: this.props.startOpen
 	}
 
 	toggle = event => this.setState({ open: !this.state.open })
@@ -28,16 +33,15 @@ export default class Panel extends Component {
 			'panel-open': panelIsOpen
 		})
 
+		const iconClass = panelIsOpen ? 'chevron-up' : 'chevron-down'
+
 		const renderContent = children ? children : content
 
 		return (
 			<div className={panelClass}>
 				<div className="panel-heading" onClick={this.toggle}>
 					{heading}
-					<IconButton
-						iconName={panelIsOpen ? 'chevron-up' : 'chevron-down'}
-						onClick={this.toggle}
-					/>
+					<IconButton kind={iconClass} onClick={this.toggle} />
 				</div>
 				{panelIsOpen && <div className="panel-content">{renderContent}</div>}
 			</div>

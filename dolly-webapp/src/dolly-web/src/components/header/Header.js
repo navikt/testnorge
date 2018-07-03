@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import Icon from '~/components/icon/Icon'
 import logo from '~/assets/img/nav-logo-hvit.png'
 
 import './Header.less'
@@ -20,7 +21,7 @@ export default () => {
 
 			<div id="header-user-name">
 				<NavLink to="/profil">
-					<i className="fa fa-user-circle" /> L148286
+					<Icon kind="user" size="20" /> L148286
 				</NavLink>
 			</div>
 		</div>

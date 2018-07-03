@@ -1,5 +1,4 @@
-import axios from 'axios'
-import Endpoints from '~/service/ContentApiEndpoints'
+import { DollyApi } from '~/service/Api'
 
 export const types = {
 	LOAD_TEAMS_SUCCESS: 'LOAD_TEAM_SUCCESS',
@@ -32,7 +31,7 @@ export const createTeamSuccess = team => ({
 export const fetchTeams = () => dispatch => {
 	try {
 		return (async () => {
-			const response = await axios.get(Endpoints.getTeams())
+			const response = await DollyApi.getTeams()
 			dispatch(loadTeamsSuccess(response.data))
 		})()
 	} catch (error) {

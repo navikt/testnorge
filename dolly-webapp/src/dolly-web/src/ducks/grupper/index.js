@@ -1,5 +1,4 @@
-import axios from 'axios'
-import Endpoints from '~/service/ContentApiEndpoints'
+import { DollyApi } from '~/service/Api'
 
 export const types = {
 	GET_GRUPPER_REQUEST: 'grupper/get-request',
@@ -8,7 +7,7 @@ export const types = {
 
 	CREATE_GRUPPER_REQUEST: 'grupper/create-request',
 	CREATE_GRUPPER_SUCCESS: 'grupper/create-success',
-	CREATE_GRUPPER: 'grupper/create-error',
+	CREATE_GRUPPER_ERROR: 'grupper/create-error',
 
 	UPDATE_GRUPPER_REQUEST: 'grupper/update-request',
 	UPDATE_GRUPPER_SUCCESS: 'grupper/update-success',
@@ -39,14 +38,55 @@ export default (state = initialState, action) => {
 				...initialState,
 				error: action.error
 			}
+		case types.CREATE_GRUPPER_REQUEST:
+			return {
+				...state,
+				fetching: true
+			}
+		case types.CREATE_GRUPPER_SUCCESS:
+			return {
+				...state,
+				fetching: false,
+				items: [...state.items.push(action.gruppe)]
+			}
+		case types.CREATE_GRUPPER_ERROR:
+			return {
+				...state,
+				fetching: false,
+				error: action.error
+			}
+		case types.UPDATE_GRUPPER_REQUEST:
+			return {
+				...state,
+				fetching: true
+			}
+		case types.UPDATE_GRUPPER_SUCCESS:
+			return {
+				...state,
+				fetching: false,
+				items: state.items.map((item, idx) => {
+					if (index !== action.index) {
+						return item
+					}
+					return {
+						...item,
+						...action.grupper
+					}
+				})
+			}
+		case types.UPDATE_GRUPPER_ERROR:
+			return {
+				...state,
+				fetching: false,
+				error: action.error
+			}
 		default:
 			return state
 	}
 }
 
-const getGrupperRequest = url => ({
-	type: types.GET_GRUPPER_REQUEST,
-	url
+const getGrupperRequest = () => ({
+	type: types.GET_GRUPPER_REQUEST
 })
 
 const getGrupperSuccess = grupper => ({
@@ -59,9 +99,8 @@ const getGrupperError = error => ({
 	error
 })
 
-const createGrupperRequest = url => ({
-	type: types.CREATE_GRUPPER_REQUEST,
-	url
+const createGrupperRequest = () => ({
+	type: types.CREATE_GRUPPER_REQUEST
 })
 
 const createGrupperSuccess = gruppe => ({
@@ -74,14 +113,14 @@ const createGrupperError = error => ({
 	error
 })
 
-const updateGrupperRequest = url => ({
-	type: types.UPDATE_GRUPPER_REQUEST,
-	url
+const updateGrupperRequest = () => ({
+	type: types.UPDATE_GRUPPER_REQUEST
 })
 
-const updateGrupperSuccess = grupper => ({
+const updateGrupperSuccess = (index, gruppe) => ({
 	type: types.UPDATE_GRUPPER_SUCCESS,
-	grupper
+	index,
+	gruppe
 })
 
 const updateGrupperError = error => ({
@@ -91,11 +130,12 @@ const updateGrupperError = error => ({
 
 // THUNKS
 
-export const getGrupper = () => async dispatch => {
+export const getGrupper = visning => async dispatch => {
 	try {
-		const url = Endpoints.getGrupper()
-		dispatch(getGrupperRequest(url))
-		const response = await axios.get(url)
+		// TODO: Use actual userID from login
+		dispatch(getGrupperRequest())
+		const response =
+			visning === 'mine' ? await DollyApi.getGrupper() : await DollyApi.getGruppeByUserId('Neymar')
 		return dispatch(getGrupperSuccess(response.data))
 	} catch (error) {
 		return dispatch(getGrupperError(error))
@@ -104,21 +144,19 @@ export const getGrupper = () => async dispatch => {
 
 export const createGruppe = nyGruppe => async dispatch => {
 	try {
-		const url = Endpoints.postGruppe()
-		dispatch(createGrupperRequest(url))
-		const response = await axios.get(url, nyGruppe)
+		dispatch(createGrupperRequest())
+		const response = await DollyApi.createGruppe(nyGruppe)
 		dispatch(createGrupperSuccess(response.data))
 	} catch (error) {
 		dispatch(createGrupperError(error))
 	}
 }
 
-export const updateGruppe = gruppe => async dispatch => {
+export const updateGruppe = (index, gruppe) => async (dispatch, getState) => {
 	try {
-		const url = Endpoints.putGruppe(gruppe.id)
-		dispatch(updateGrupperRequest(url))
-		const response = await axios.post(url, gruppe)
-		dispatch(updateGruppeSuccess(response.data))
+		dispatch(updateGrupperRequest())
+		const response = await DollyApi.updateGruppe(gruppe.id, gruppe)
+		dispatch(updateGrupperSuccess(index, response.data))
 	} catch (error) {
 		dispatch(updateGrupperError(error))
 	}

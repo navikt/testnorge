@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import cn from 'classnames'
 import IconButton from '~/components/fields/IconButton/IconButton'
+
+import './Overskrift.less'
 
 export default class Overskrift extends PureComponent {
 	static propTypes = {
@@ -15,16 +18,20 @@ export default class Overskrift extends PureComponent {
 	}
 
 	static defaultProps = {
+		label: 'default label',
 		type: 'h1',
 		actions: []
 	}
 
 	render() {
-		const { type, label, actions } = this.props
+		const { type, label, actions, className, ...restProps } = this.props
 
-		return React.createElement(type, null, [
+		const cssClass = cn('overskrift', className)
+		restProps.className = cssClass
+
+		return React.createElement(type, restProps, [
 			label,
-			actions.map((o, idx) => <IconButton key={idx} onClick={o.onClick} iconName={o.icon} />)
+			actions.map((o, idx) => <IconButton key={idx} onClick={o.onClick} kind={o.icon} />)
 		])
 	}
 }

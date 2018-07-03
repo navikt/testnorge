@@ -9,11 +9,7 @@ export default class TeamOversikt extends Component {
 	render() {
 		return (
 			<div className="team-tab">
-				<Overskrift
-					type="h2"
-					label="Teams"
-					actions={[{ icon: 'plus-circle', onClick: () => {} }]}
-				/>
+				<Overskrift type="h2" label="Teams" actions={[{ icon: 'add-circle', onClick: () => {} }]} />
 
 				<Table>
 					<Table.Header>

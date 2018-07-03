@@ -58,11 +58,9 @@ class TableRow extends PureComponent {
 				<div className="dot-body-row-columns" {...rowProps}>
 					{children}
 					<Table.Column width={actionWidth}>
-						{editAction && <IconButton iconName="pencil" onClick={editAction} />}
-						{deleteAction && <IconButton iconName="trash-o" onClick={deleteAction} />}
-						{expandComponent && (
-							<IconButton iconName={iconChevronClass} onClick={this.onRowClick} />
-						)}
+						{editAction && <IconButton kind="edit" onClick={editAction} />}
+						{deleteAction && <IconButton kind="trashcan" onClick={deleteAction} />}
+						{expandComponent && <IconButton kind={iconChevronClass} onClick={this.onRowClick} />}
 					</Table.Column>
 				</div>
 				{this.state.expanded && (
@@ -74,7 +72,9 @@ class TableRow extends PureComponent {
 }
 
 class TableHeader extends PureComponent {
-	static propTypes = {}
+	static propTypes = {
+		children: PropTypes.node
+	}
 
 	render() {
 		const { children, ...restProps } = this.props
@@ -129,7 +129,9 @@ class TableColumn extends PureComponent {
 }
 
 export default class Table extends PureComponent {
-	static propTypes = {}
+	static propTypes = {
+		children: PropTypes.node.isRequired
+	}
 
 	static Header = TableHeader
 	static Row = TableRow
@@ -137,6 +139,7 @@ export default class Table extends PureComponent {
 
 	render() {
 		const { children, ...restProps } = this.props
+
 		return (
 			<div className="dot" {...restProps}>
 				{children}
