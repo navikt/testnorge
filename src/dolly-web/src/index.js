@@ -5,11 +5,10 @@ import { Provider } from 'react-redux'
 import createHistory from 'history/createBrowserHistory'
 import configureStore from './Store'
 import './styles/main.less'
-import { ConnectedRouter } from 'react-router-redux'
+import { ConnectedRouter } from 'connected-react-router'
 import AppConnector from './app/AppConnector'
 
 const history = createHistory()
-
 const appReduxStore = configureStore(history)
 
 render(
