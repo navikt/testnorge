@@ -4,7 +4,7 @@ import { Switch } from 'react-router-dom'
 import Gruppe from './pages/gruppe/GruppeConnector'
 import GruppeOversikt from './pages/gruppeOversikt/GruppeOversiktConnector'
 import Oppskrift from './pages/oppskrift/Oppskrift'
-import Profil from './pages/profil/Profil'
+import Profil from './pages/profil/ProfilConnector'
 
 const Routes = () => (
 	<Switch>

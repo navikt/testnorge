@@ -13,10 +13,15 @@ export default class ProfilPage extends Component {
 		activePage: 0
 	}
 
+	componentDidMount() {
+		this.props.fetchTeams()
+	}
+
 	handleTabsChange = (e, idx) => this.setState({ activePage: idx })
 
 	render() {
 		const { activePage } = this.state
+		const { teams } = this.props
 
 		return (
 			<div>
@@ -24,7 +29,7 @@ export default class ProfilPage extends Component {
 
 				<Tabs tabs={[{ label: 'Teams' }]} onChange={this.handleTabsChange} />
 
-				{activePage === 0 && <TeamOversikt />}
+				{activePage === 0 && <TeamOversikt teams={teams} />}
 			</div>
 		)
 	}
