@@ -49,6 +49,10 @@ class DollyService {
 		return Request.get(Endpoints.team())
 	}
 
+	static getTeamsByUserId(userId) {
+		return Request.get(Endpoints.teamByUser(userId))
+	}
+
 	static getTeamById(teamId) {
 		return Request.get(Endpoints.teamById(teamId))
 	}

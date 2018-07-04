@@ -39,6 +39,10 @@ class DollyEndpoints {
 		return teamBase
 	}
 
+	static teamByUser(userId) {
+		return `${teamBase}?navIdent=${userId}`
+	}
+
 	static teamById(teamId) {
 		return `${teamBase}/${teamId}`
 	}
