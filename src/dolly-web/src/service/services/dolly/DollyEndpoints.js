@@ -54,6 +54,10 @@ class DollyEndpoints {
 	static brukerById(brukerId) {
 		return `${brukerBase}/brukerId`
 	}
+
+	static currentBruker() {
+		return `${brukerBase}/current`
+	}
 }
 
 export default DollyEndpoints

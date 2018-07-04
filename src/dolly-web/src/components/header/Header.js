@@ -5,7 +5,7 @@ import logo from '~/assets/img/nav-logo-hvit.png'
 
 import './Header.less'
 
-export default () => {
+export default ({ brukerData }) => {
 	return (
 		<div id="dolly-header">
 			<NavLink to="/" className="home-nav">
@@ -21,7 +21,7 @@ export default () => {
 
 			<div id="header-user-name">
 				<NavLink to="/profil">
-					<Icon kind="user" size="20" /> L148286
+					<Icon kind="user" size="20" /> {brukerData.navIdent}
 				</NavLink>
 			</div>
 		</div>

@@ -2,7 +2,7 @@ import Request from '../../Request'
 import Endpoints from './DollyEndpoints'
 
 class DollyService {
-    /*
+	/*
         Grupper
     */
 	static getGrupper() {
@@ -39,43 +39,47 @@ class DollyService {
 
 	static createBestilling(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
-    }
-    
-    /*
+	}
+
+	/*
         Team
     */
 
-    static getTeams() {
-        return Request.get(Endpoints.team())
-    }
+	static getTeams() {
+		return Request.get(Endpoints.team())
+	}
 
-    static getTeamById(teamId) {
-        return Request.get(Endpoints.teamById(teamId))
-    }
+	static getTeamById(teamId) {
+		return Request.get(Endpoints.teamById(teamId))
+	}
 
-    static createTeam() {
-        return Request.post(Endpoints.team())
-    }
+	static createTeam() {
+		return Request.post(Endpoints.team())
+	}
 
-    static updateTeam(teamId) {
-        return Request.put(Endpoints.teamById(teamId))
-    }
+	static updateTeam(teamId) {
+		return Request.put(Endpoints.teamById(teamId))
+	}
 
-    static updateTeamMedlemmer(teamId) {
-        return Request.put(Endpoints.teamById(teamId))
-    }
+	static updateTeamMedlemmer(teamId) {
+		return Request.put(Endpoints.teamById(teamId))
+	}
 
-    /*
+	/*
         Bruker
     */
 
-    static getBrukere() {
-        return Request.get(Endpoints.bruker())
-    }
+	static getBrukere() {
+		return Request.get(Endpoints.bruker())
+	}
 
-    static getBrukereById(brukerId) {
-        return Request.get(Endpoints.brukerById())
-    }
+	static getBrukereById(brukerId) {
+		return Request.get(Endpoints.brukerById())
+	}
+
+	static getCurrentBruker() {
+		return Request.get(Endpoints.currentBruker())
+	}
 }
 
 export default DollyService

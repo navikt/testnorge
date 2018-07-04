@@ -6,7 +6,7 @@ import createHistory from 'history/createBrowserHistory'
 import configureStore from './Store'
 import './styles/main.less'
 import { ConnectedRouter } from 'react-router-redux'
-import App from './app/App'
+import AppConnector from './app/AppConnector'
 
 const history = createHistory()
 
@@ -15,7 +15,7 @@ const appReduxStore = configureStore(history)
 render(
 	<Provider store={appReduxStore}>
 		<ConnectedRouter history={history}>
-			<App />
+			<AppConnector />
 		</ConnectedRouter>
 	</Provider>,
 	document.getElementById('root')
