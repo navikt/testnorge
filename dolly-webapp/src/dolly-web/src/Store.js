@@ -5,6 +5,7 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 
 import gruppeReducer from './ducks/grupper'
 import teamReducer from './ducks/team'
+import brukerReducer from './ducks/bruker'
 
 export default function configureReduxStore(history) {
 	const allMiddleware = [thunkMiddleware, routerMiddleware(history)]
@@ -19,6 +20,7 @@ export default function configureReduxStore(history) {
 	const rootReducer = combineReducers({
 		grupper: gruppeReducer,
 		team: teamReducer,
+		bruker: brukerReducer,
 		router: routerReducer
 	})
 
