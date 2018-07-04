@@ -1,6 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import { routerReducer, routerMiddleware } from 'react-router-redux'
+import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 
 import gruppeReducer from './ducks/grupper'
@@ -20,9 +20,11 @@ export default function configureReduxStore(history) {
 	const rootReducer = combineReducers({
 		grupper: gruppeReducer,
 		team: teamReducer,
-		bruker: brukerReducer,
-		router: routerReducer
+		bruker: brukerReducer
 	})
 
-	return createStore(rootReducer, composeWithDevTools(applyMiddleware(...allMiddleware)))
+	return createStore(
+		connectRouter(history)(rootReducer),
+		composeWithDevTools(applyMiddleware(...allMiddleware))
+	)
 }
