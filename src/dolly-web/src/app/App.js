@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
+import Routes from '~/Routes'
 import Header from '~/components/header/Header'
-import Routes from '../Routes'
 import Breadcrumb from '~/components/breadcrumb/Breadcrumb'
 
 import './App.less'
