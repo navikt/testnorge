@@ -10,5 +10,6 @@ import java.util.Set;
 @Getter
 public class RsBruker {
 	private String navIdent;
+	private Set<RsTeamMedIdOgNavn> teams = new HashSet<>();
 	private Set<RsTestgruppe> favoritter = new HashSet<>();
 }
