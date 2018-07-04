@@ -106,8 +106,8 @@ public class TeamService {
 	    Bruker endretEier = brukerService.fetchBruker(teamRequest.getEierNavIdent());
 	    team.setEier(endretEier);
 
-	    Set<Testgruppe> grupper = mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class);
-	    team.setGrupper(grupper);
+	    //Set<Testgruppe> grupper = mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class);
+	    //team.setGrupper(grupper);
 
 		Team endretTeam = saveToTeamRepository(team);
 		return mapperFacade.map(endretTeam, RsTeam.class);

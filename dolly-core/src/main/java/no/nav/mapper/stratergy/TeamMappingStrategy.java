@@ -22,7 +22,7 @@ public class TeamMappingStrategy implements MappingStrategy{
                     public void mapAtoB(Team team, RsTeam rsTeam, MappingContext context) {
                         rsTeam.setBeskrivelse(team.getBeskrivelse());
                         rsTeam.setDatoOpprettet(team.getDatoOpprettet());
-                        rsTeam.setGrupper(mapperFacade.mapAsSet(team.getGrupper(), RsTestgruppe.class));
+                        //rsTeam.setGrupper(mapperFacade.mapAsSet(team.getGrupper(), RsTestgruppe.class));
                         rsTeam.setNavn(team.getNavn());
                         rsTeam.setId(team.getId());
                         rsTeam.setEierNavIdent(team.getEier().getNavIdent());

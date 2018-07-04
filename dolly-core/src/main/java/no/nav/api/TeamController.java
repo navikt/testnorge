@@ -10,15 +10,7 @@ import no.nav.service.TeamService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "api/v1/team")
@@ -32,6 +24,14 @@ public class TeamController {
 
 	@Autowired
 	private MapperFacade mapperFacade;
+
+    @GetMapping
+    public List<RsTeam> getTeams(@RequestParam(name="navIdent", required = false) String navIdent){
+        if(navIdent != null && !navIdent.isEmpty()) {
+            return mapperFacade.mapAsList(teamService.fetchTeamsByMedlemskapInTeams(navIdent), RsTeam.class);
+        }
+        return mapperFacade.mapAsList(teamRepository.findAll(), RsTeam.class);
+    }
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
@@ -59,19 +59,9 @@ public class TeamController {
         return teamService.fjernMedlemmer(teamId, brukereRequest);
     }
 
-    @PutMapping(path = "/update")
-    public RsTeam endreTeaminfo(@RequestBody RsTeam createTeamRequest) {
+    @PutMapping("/{teamId}")
+    public RsTeam endreTeaminfo(@PathVariable("teamId") Long teamId ,@RequestBody RsTeam createTeamRequest) {
+        //TODO: Ta i bruk TeamId i pathVar for å update
         return teamService.updateTeamInfo(createTeamRequest);
     }
-
-    @GetMapping("/bruker/{navIdent}")
-    public List<RsTeam> getTeamByNavident(@PathVariable("navIdent") String navIdent){
-		return mapperFacade.mapAsList(teamService.fetchTeamsByMedlemskapInTeams(navIdent), RsTeam.class);
-	}
-
-	@GetMapping
-	public List<RsTeam> getTeams(){
-		return mapperFacade.mapAsList(teamRepository.findAll(), RsTeam.class);
-	}
-	
 }

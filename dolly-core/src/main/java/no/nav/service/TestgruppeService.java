@@ -73,7 +73,7 @@ public class TestgruppeService {
     public Set<RsTestgruppe> fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(String navIdent) {
         RsBrukerMedTeamsOgFavoritter brukerinfo = brukerService.getBrukerMedTeamsOgFavoritter(navIdent);
         Set<RsTestgruppe> testgrupper = brukerinfo.getBruker().getFavoritter();
-        brukerinfo.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
+        //brukerinfo.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
 
         return testgrupper;
     }
