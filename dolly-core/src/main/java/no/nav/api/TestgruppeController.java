@@ -42,11 +42,11 @@ public class TestgruppeController {
 	    return testgruppeService.opprettTestgruppe(createTestgruppeRequest);
 	}
 
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = "/{testgruppeId}")
-	public void persisterTestidenter(@PathVariable("testgruppeId") Long gruppeId, @RequestBody List<RsTestident> testpersonIdentListe) {
-		testgruppeService.saveAllIdenterToTestgruppe(gruppeId, testpersonIdentListe);
-	}
+	//@ResponseStatus(HttpStatus.CREATED)
+	//@PostMapping(value = "/{testgruppeId}")
+	//public void persisterTestidenter(@PathVariable("testgruppeId") Long gruppeId, @RequestBody List<RsTestident> testpersonIdentListe) {
+	//	testgruppeService.saveAllIdenterToTestgruppe(gruppeId, testpersonIdentListe);
+	//}
 
 	@PutMapping(value = "/{testgruppeId}")
     public RsTestgruppe oppdaterTestgruppe(@PathVariable("testgruppeId") Long gruppeId, @RequestBody RsTestgruppe testgruppe){
@@ -64,16 +64,19 @@ public class TestgruppeController {
 	}
 
 	@GetMapping
-	public List<RsTestgruppe> getTestgrupper(@RequestParam("team") Optional<String> teamnavn){
-		return mapperFacade.mapAsList(testgruppeService.fetchAlleTestgrupper(), RsTestgruppe.class);
+	public Set<RsTestgruppe> getTestgrupper(@RequestParam("team") Optional<String> teamnavn, @RequestParam(name = "navIdent", required = false) String navIdent){
+		if(navIdent != null && !navIdent.isEmpty()) {
+			return testgruppeService.fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navIdent);
+		}
+		return mapperFacade.mapAsSet(testgruppeService.fetchAlleTestgrupper(), RsTestgruppe.class);
 	}
 
-	@GetMapping("/bruker/{navident}")
-	public Set<RsTestgruppe> getTestgrupperForBruker(@PathVariable("navident") String navident){
-		return testgruppeService.fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navident);
-	}
+	//@GetMapping("/bruker/{navident}")
+	//public Set<RsTestgruppe> getTestgrupperForBruker(@PathVariable("navident") String navident){
+	//	return testgruppeService.fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navident);
+	//}
 
-	@GetMapping("/attributter/{testgruppeId}")
+	@GetMapping("/{testgruppeId}/attributter")
 	public Set<String> getAttributterForGruppe(@PathVariable("testgruppeId") String gruppeId){
 		return null;
 	}
