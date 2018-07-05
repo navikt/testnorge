@@ -23,23 +23,6 @@ export default class GruppeOversikt extends PureComponent {
 		this.props.getGrupper()
 	}
 
-	// onOpprettGruppeSuccess = () => this.setState({ visOpprettGruppe: false }, this.props.getGrupper)
-
-	// toggleVisOpprettGruppe = () =>
-	// 	this.setState(
-	// 		prevState => ({ visOpprettGruppe: !prevState.visOpprettGruppe }),
-	// 		this.toggleCancelEdit
-	// 	)
-
-	// onOpprettGruppeCancel = () => this.setState({ visOpprettGruppe: false })
-
-	// toggleGruppeVisning = e =>
-	// 	this.setState({ visning: e.target.value }, () => {
-	// 		this.props.getGrupper(this.state.visning)
-	// 	})
-
-	// toggleCancelEdit = () => this.setState({ editId: null })
-
 	render() {
 		const { grupper, history, startRedigerGruppe, startOpprettGruppe, settVisning } = this.props
 
