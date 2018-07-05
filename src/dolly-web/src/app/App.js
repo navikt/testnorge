@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Routes from '~/Routes'
 import Header from '~/components/header/Header'
 import Breadcrumb from '~/components/breadcrumb/Breadcrumb'
+import Loading from '~/components/loading/Loading'
 
 import './App.less'
 
@@ -12,15 +13,17 @@ export default class App extends Component {
 
 	render() {
 		const { brukerData } = this.props
-		if (!brukerData) return null
+
+		if (!brukerData) return <Loading label="laster dolly applikasjon" fullpage />
+
 		return (
-			<div id="dolly-app">
+			<React.Fragment>
 				<Header brukerData={brukerData} />
 				<main>
 					<Breadcrumb />
 					<Routes />
 				</main>
-			</div>
+			</React.Fragment>
 		)
 	}
 }
