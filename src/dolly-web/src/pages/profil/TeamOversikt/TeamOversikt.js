@@ -21,7 +21,7 @@ export default class TeamOversikt extends Component {
 						<Table.Column width="20" value="Personer" />
 					</Table.Header>
 
-					<Table.Row actionWidth="10" editAction={() => {}} deleteAction={() => {}}>
+					<Table.Row editAction={() => {}} deleteAction={() => {}}>
 						{teams.map(team => (
 							<Fragment>
 								<Table.Column width="30" value={team.navn} />

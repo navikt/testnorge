@@ -49,7 +49,7 @@ export default class Gruppe extends Component {
 
 					{tempGRUPPE.map((o, idx) => {
 						return (
-							<Table.Row key={idx} expandComponent={<PersonDetaljer />} actionWidth="10">
+							<Table.Row key={idx} expandComponent={<PersonDetaljer />}>
 								<Table.Column width="15" value={o.id} />
 								<Table.Column width="15" value={o.idType} />
 								<Table.Column width="30" value={o.navn} />
