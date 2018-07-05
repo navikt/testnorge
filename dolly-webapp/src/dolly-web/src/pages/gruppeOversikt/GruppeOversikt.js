@@ -20,11 +20,17 @@ export default class GruppeOversikt extends PureComponent {
 	}
 
 	componentDidMount() {
+		this.hentGrupper()
+	}
+
+	hentGrupper = () => this.props.getGrupper()
+	byttVisning = e => {
+		this.props.settVisning(e.target.value)
 		this.props.getGrupper()
 	}
 
 	render() {
-		const { grupper, history, startRedigerGruppe, startOpprettGruppe, settVisning } = this.props
+		const { grupper, history, startRedigerGruppe, startOpprettGruppe } = this.props
 
 		return (
 			<div className="gruppeoversikt-container">
@@ -37,7 +43,7 @@ export default class GruppeOversikt extends PureComponent {
 				</div>
 
 				<div className="flexbox--space">
-					<ToggleGruppe onChange={settVisning} name="toggleGruppe">
+					<ToggleGruppe onChange={this.byttVisning} name="toggleGruppe">
 						<ToggleKnapp value="mine" defaultChecked={true} key="1">
 							Mine
 						</ToggleKnapp>

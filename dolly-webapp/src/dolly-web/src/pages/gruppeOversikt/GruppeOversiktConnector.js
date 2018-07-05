@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import GruppeOversikt from './GruppeOversikt'
-import { getGrupper, startRedigerGruppe, startOpprettGruppe } from '~/ducks/grupper'
+import { getGrupper, startRedigerGruppe, startOpprettGruppe, settVisning } from '~/ducks/grupper'
 
 const mapStateToProps = state => ({
 	grupper: state.grupper,
