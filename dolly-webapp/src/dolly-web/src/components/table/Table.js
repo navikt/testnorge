@@ -8,13 +8,8 @@ class TableRow extends PureComponent {
 	static propTypes = {
 		expandComponent: PropTypes.node,
 		navLink: PropTypes.func,
-		actionWidth: PropTypes.string,
 		editAction: PropTypes.func,
 		deleteAction: PropTypes.func
-	}
-
-	static defaultProps = {
-		actionWidth: '10'
 	}
 
 	state = {
@@ -32,7 +27,6 @@ class TableRow extends PureComponent {
 		const {
 			children,
 			expandComponent,
-			actionWidth,
 			editAction,
 			deleteAction,
 			navLink,
@@ -57,7 +51,7 @@ class TableRow extends PureComponent {
 			<div className={rowClass}>
 				<div className="dot-body-row-columns" {...rowProps}>
 					{children}
-					<Table.Column width={actionWidth}>
+					<Table.Column className="dot-body-row-actioncolumn">
 						{editAction && <IconButton kind="edit" onClick={editAction} />}
 						{deleteAction && <IconButton kind="trashcan" onClick={deleteAction} />}
 						{expandComponent && <IconButton kind={iconChevronClass} onClick={this.onRowClick} />}
@@ -116,8 +110,8 @@ class TableColumn extends PureComponent {
 	}
 
 	render() {
-		const { value, width, children, ...restProps } = this.props
-		const cssClass = cn('dot-column', `col${width}`)
+		const { value, width, children, className, ...restProps } = this.props
+		const cssClass = cn('dot-column', `col${width}`, className)
 
 		const render = value ? value : children
 		return (

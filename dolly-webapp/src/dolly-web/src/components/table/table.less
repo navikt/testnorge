@@ -97,7 +97,7 @@
 			border: 1px solid @color-focus;
 		}
 
-		.dot-body-row-columns {
+		&-columns {
 			cursor: pointer;
 			display: flex;
 			flex-grow: 1;
@@ -111,7 +111,11 @@
 			}
 		}
 
-		.dot-body-row-expandcomponent {
+		&-actioncolumn {
+			flex-grow: 1;
+		}
+
+		&-expandcomponent {
 			margin: 0px 20px 10px;
 			border-top: 2px solid @color-bg-divider;
 			padding-top: 10px;
