@@ -1,15 +1,17 @@
 import { connect } from 'react-redux'
 import GruppeOversikt from './GruppeOversikt'
-import { getGrupper } from '~/ducks/grupper'
+import { getGrupper, startRedigerGruppe, startOpprettGruppe } from '~/ducks/grupper'
 
 const mapStateToProps = state => ({
-	isFetching: state.grupper.isFetching,
-	grupper: state.grupper.items,
+	grupper: state.grupper,
 	error: state.grupper.error
 })
 
 const mapDispatchToProps = dispatch => ({
-	getGrupper: visning => dispatch(getGrupper(visning))
+	getGrupper: () => dispatch(getGrupper()),
+	startRedigerGruppe: editId => dispatch(startRedigerGruppe(editId)),
+	startOpprettGruppe: () => dispatch(startOpprettGruppe()),
+	settVisning: visning => dispatch(settVisning(visning))
 })
 
 export default connect(
