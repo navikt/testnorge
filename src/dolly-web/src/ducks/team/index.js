@@ -28,10 +28,12 @@ export const createTeamSuccess = team => ({
 	team
 })
 
-export const fetchTeams = () => dispatch => {
+export const fetchTeams = () => (dispatch, getState) => {
+	const { bruker } = getState()
+	const currentBrukerId = bruker.brukerData.navIdent
 	try {
 		return (async () => {
-			const response = await DollyApi.getTeams()
+			const response = await DollyApi.getTeamsByUserId(currentBrukerId)
 			dispatch(loadTeamsSuccess(response.data))
 		})()
 	} catch (error) {
