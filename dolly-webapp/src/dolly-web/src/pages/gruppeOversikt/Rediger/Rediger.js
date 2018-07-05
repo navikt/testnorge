@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Input, Select } from 'nav-frontend-skjema'
 import Knapp from 'nav-frontend-knapper'
 import PropTypes from 'prop-types'
-import './RedigerGruppe.less'
+import './Rediger.less'
 
 const initialState = {
 	gruppe: {
@@ -13,17 +13,16 @@ const initialState = {
 	error: null
 }
 
-export default class RedigerGruppe extends Component {
+export default class Rediger extends Component {
 	static propTypes = {
-		onSuccess: PropTypes.func.isRequired,
-		onCancel: PropTypes.func.isRequired,
 		gruppe: PropTypes.shape({
 			navn: PropTypes.string,
 			teamTilhoerlighetNavn: PropTypes.string,
 			hensikt: PropTypes.string
 		}),
-		redigering: PropTypes.bool,
-		index: PropTypes.number
+		createGruppe: PropTypes.func,
+		updateGruppe: PropTypes.func,
+		cancelRedigerOgOpprett: PropTypes.func
 	}
 
 	constructor(props) {
@@ -39,7 +38,7 @@ export default class RedigerGruppe extends Component {
 	}
 
 	createGroup = async e => {
-		const { redigering, index, createGruppe, updateGruppe } = this.props
+		const { index, createGruppe, updateGruppe } = this.props
 		// TODO: Validations
 
 		// TODO: Temp values for default values
@@ -50,7 +49,7 @@ export default class RedigerGruppe extends Component {
 			env: ''
 		}
 
-		const res = redigering ? await updateGruppe(index, gruppeObj) : await createGruppe(gruppeObj)
+		const res = gruppeObj.id ? await updateGruppe(gruppeObj) : await createGruppe(gruppeObj)
 	}
 
 	onInputChange = e => {
@@ -89,7 +88,7 @@ export default class RedigerGruppe extends Component {
 				<Knapp type="hoved" onClick={this.createGroup}>
 					{this.props.redigering ? 'OPPDATER' : 'OPPRETT'}
 				</Knapp>
-				<Knapp type="standard" onClick={this.props.onCancel}>
+				<Knapp type="standard" onClick={this.props.cancelRedigerOgOpprett}>
 					Avbryt
 				</Knapp>
 			</div>

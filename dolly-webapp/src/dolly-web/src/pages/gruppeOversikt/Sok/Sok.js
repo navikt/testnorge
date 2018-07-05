@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Autocomplete from '~/components/fields/Autocomplete/Autocomplete'
 import LandKodeverk from './TEMP_kodeverk'
 
-class SokGrupper extends Component {
+export default class Sok extends Component {
 	render() {
 		return (
 			<div>
@@ -17,5 +17,3 @@ class SokGrupper extends Component {
 		)
 	}
 }
-
-export default SokGrupper

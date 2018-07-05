@@ -26,4 +26,10 @@ describe('Loading component', () => {
 		expect(wrapper.hasClass('fullpage-loading-container')).toBe(true)
 		expect(wrapper.children().length).toBe(1)
 	})
+
+	it('should render panel container', () => {
+		const wrapper = shallow(<Loading panel />)
+		expect(wrapper.hasClass('panel-loading-container')).toBe(true)
+		expect(wrapper.children().length).toBe(1)
+	})
 })
