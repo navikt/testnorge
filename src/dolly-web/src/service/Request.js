@@ -5,7 +5,7 @@ const instance = axios.create({ withCredentials: true })
 const debugLoading = resolvedValue => {
 	// TODO: Create debug flag? process.env.DEBUG ?
 	const debug = true
-	const DELAY_TIME = 1000
+	const DELAY_TIME = 500
 
 	return new Promise(resolve => {
 		if (debug) {
