@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
 import Loading from '~/components/loading/Loading'
-import OpprettTeamConnector from '../OpprettTeam/OpprettTeamConnector'
+import OpprettTeam from '../OpprettTeam/OpprettTeam'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
@@ -12,7 +12,7 @@ export default class TeamOversikt extends Component {
 	}
 
 	state = {
-		opprettTeam: true
+		opprettTeam: false
 	}
 
 	opprettToggle = () => {
@@ -23,8 +23,8 @@ export default class TeamOversikt extends Component {
 		this.setState({ opprettTeam: false })
 	}
 
-	opprettSuccess = () => {
-		//send opprett call til API
+	opprettHandler = data => {
+		this.props.createTeam(data)
 		this.setState({ opprettTeam: false })
 	}
 
@@ -52,7 +52,7 @@ export default class TeamOversikt extends Component {
 				</div>
 
 				{this.state.opprettTeam && (
-					<OpprettTeamConnector onCancel={this.opprettCancel} onSuccess={this.opprettSuccess} />
+					<OpprettTeam onCancel={this.opprettCancel} opprettHandler={this.opprettHandler} />
 				)}
 
 				{fetching ? (

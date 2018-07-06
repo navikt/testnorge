@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Profil from './Profil'
-import { fetchTeams, setTeamVisning, setActivePage } from '~/ducks/team'
+import { fetchTeams, setTeamVisning, setActivePage, createTeam } from '~/ducks/team'
 
 const mapStateToProps = state => ({
 	teams: state.team
@@ -9,7 +9,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
 	fetchTeams: () => dispatch(fetchTeams()),
 	setTeamVisning: visning => dispatch(setTeamVisning(visning)),
-	setActivePage: page => dispatch(setActivePage(page))
+	setActivePage: page => dispatch(setActivePage(page)),
+	createTeam: data => dispatch(createTeam(data))
 })
 
 export default connect(
