@@ -1,36 +1,54 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
+import { ToggleGruppe, ToggleKnapp } from 'nav-frontend-skjema'
 import PropTypes from 'prop-types'
 import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
+import Loading from '~/components/loading/Loading'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
-		teams: PropTypes.array
+		teams: PropTypes.object
 	}
 
 	render() {
-		const { teams } = this.props
+		const { teams, handleViewChange } = this.props
+		const { items, fetching, visning } = teams
+
+		console.log(items)
 		return (
 			<div className="team-tab">
 				<Overskrift type="h2" label="Teams" actions={[{ icon: 'add-circle', onClick: () => {} }]} />
 
-				<Table>
-					<Table.Header>
-						<Table.Column width="30" value="Navn" />
-						<Table.Column width="30" value="Eier" />
-						<Table.Column width="20" value="Personer" />
-					</Table.Header>
+				<div className="flexbox--space">
+					<ToggleGruppe onChange={handleViewChange} name="toggleGruppe">
+						<ToggleKnapp value="mine" checked={visning === 'mine'} key="1">
+							Mine
+						</ToggleKnapp>
+						<ToggleKnapp value="alle" checked={visning === 'alle'} key="2">
+							Alle
+						</ToggleKnapp>
+					</ToggleGruppe>
+				</div>
 
-					<Table.Row editAction={() => {}} deleteAction={() => {}}>
-						{teams.map(team => (
-							<Fragment>
+				{fetching ? (
+					<Loading label="laster teams" panel />
+				) : (
+					<Table>
+						<Table.Header>
+							<Table.Column width="30" value="Navn" />
+							<Table.Column width="30" value="Eier" />
+							<Table.Column width="20" value="Personer" />
+						</Table.Header>
+
+						{items.map(team => (
+							<Table.Row key={team.id} editAction={() => {}} deleteAction={() => {}}>
 								<Table.Column width="30" value={team.navn} />
 								<Table.Column width="30" value={team.eierNavIdent} />
-								<Table.Column width="20" value={team.medlemmer.length} />
-							</Fragment>
+								<Table.Column width="20" value={team.medlemmer.length.toString()} />
+							</Table.Row>
 						))}
-					</Table.Row>
-				</Table>
+					</Table>
+				)}
 			</div>
 		)
 	}
