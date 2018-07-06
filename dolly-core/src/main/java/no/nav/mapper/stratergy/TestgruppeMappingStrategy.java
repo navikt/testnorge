@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.jpa.Testgruppe;
 import no.nav.mapper.MappingStrategy;
+import no.nav.resultSet.RsTeamMedIdOgNavn;
 import no.nav.resultSet.RsTestgruppe;
 import no.nav.resultSet.RsTestident;
 
@@ -26,7 +27,10 @@ public class TestgruppeMappingStrategy implements MappingStrategy{
                         rsTestgruppe.setTestidenter(mapperFacade.mapAsSet(testgruppe.getTestidenter(), RsTestident.class));
                         rsTestgruppe.setOpprettetAvNavIdent(testgruppe.getOpprettetAv().getNavIdent());
                         rsTestgruppe.setSistEndretAvNavIdent(testgruppe.getSistEndretAv().getNavIdent());
-                        rsTestgruppe.setTeamTilhoerlighetNavn(testgruppe.getTeamtilhoerighet().getNavn());
+                        RsTeamMedIdOgNavn rsTeamMedIdOgNavn = new RsTeamMedIdOgNavn();
+                        rsTeamMedIdOgNavn.setNavn(testgruppe.getTeamtilhoerighet().getNavn());
+                        rsTeamMedIdOgNavn.setId(testgruppe.getTeamtilhoerighet().getId());
+                        rsTestgruppe.setTeam(rsTeamMedIdOgNavn);
                     }
                 })
                 .register();

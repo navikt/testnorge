@@ -10,5 +10,7 @@ public interface BrukerRepository extends CrudRepository<Bruker, Long> {
 
 	Bruker findBrukerByNavIdent(String navIdent);
 
+	List<Bruker> findByNavIdentIn(List<String> navIdenter);
+
 	List<Bruker> findAll();
 }

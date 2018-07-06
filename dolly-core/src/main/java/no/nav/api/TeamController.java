@@ -53,15 +53,20 @@ public class TeamController {
 	public RsTeam addBrukereSomTeamMedlemmer(@PathVariable("teamId") Long teamId, @RequestBody List<RsBruker> brukereRequest) {
 		return teamService.addMedlemmer(teamId, brukereRequest);
 	}
-	
+
+	@PutMapping("/{teamId}/medlemmer")
+	public RsTeam addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
+		return teamService.addMedlemmerByNavidenter(teamId, navIdenter);
+	}
+
 	@PutMapping("/{teamId}/fjernMedlemmer")
 	public RsTeam fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<RsBruker> brukereRequest) {
         return teamService.fjernMedlemmer(teamId, brukereRequest);
     }
 
     @PutMapping("/{teamId}")
-    public RsTeam endreTeaminfo(@PathVariable("teamId") Long teamId ,@RequestBody RsTeam createTeamRequest) {
+    public RsTeam endreTeaminfo(@PathVariable("teamId") Long teamId , @RequestBody RsTeam createTeamRequest) {
         //TODO: Ta i bruk TeamId i pathVar for å update
-        return teamService.updateTeamInfo(createTeamRequest);
+        return teamService.updateTeamInfo(teamId, createTeamRequest);
     }
 }

@@ -1,8 +1,6 @@
 package no.nav.service;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.repository.TestGruppeRepository;
 import no.nav.exceptions.ConstraintViolationException;
 import no.nav.exceptions.DollyFunctionalException;
@@ -15,6 +13,7 @@ import no.nav.jpa.Testident;
 import no.nav.resultSet.RsBrukerMedTeamsOgFavoritter;
 import no.nav.resultSet.RsOpprettTestgruppe;
 import no.nav.resultSet.RsTestgruppe;
+import no.nav.resultSet.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.resultSet.RsTestident;
 
 import java.time.LocalDate;
@@ -22,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
@@ -73,9 +73,37 @@ public class TestgruppeService {
     public Set<RsTestgruppe> fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(String navIdent) {
         RsBrukerMedTeamsOgFavoritter brukerinfo = brukerService.getBrukerMedTeamsOgFavoritter(navIdent);
         Set<RsTestgruppe> testgrupper = brukerinfo.getBruker().getFavoritter();
-        //brukerinfo.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
+        brukerinfo.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
 
         return testgrupper;
+    }
+
+    public Set<RsTestgruppeMedErMedlemOgFavoritt> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper) {
+        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        return getRsTestgruppeMedErMedlem(grupper, auth.getPrincipal());
+    }
+
+    public Set<RsTestgruppeMedErMedlemOgFavoritt> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper, String navIdent) {
+        Set<RsTestgruppeMedErMedlemOgFavoritt> mfGrupper = mapperFacade.mapAsSet(grupper, RsTestgruppeMedErMedlemOgFavoritt.class);
+
+        Bruker bruker = brukerService.fetchBruker(navIdent);
+        Set<String> favoritterIDs = bruker.getFavoritter().stream().map(gruppe -> gruppe.getId().toString()).collect(Collectors.toSet());
+        Set<String> teamNames = bruker.getTeams().stream().map(team -> team.getNavn()).collect(Collectors.toSet());
+
+        mfGrupper = mfGrupper.stream()
+                .map(gruppe -> {
+                    RsTestgruppeMedErMedlemOgFavoritt g = gruppe;
+                    g.setFavorittIGruppen(favoritterIDs.contains(gruppe.getId().toString()));
+                    return g;
+                })
+                .map(gruppe -> {
+                    RsTestgruppeMedErMedlemOgFavoritt g = gruppe;
+                    g.setErMedlemAvTeamSomEierGruppe(teamNames.contains(gruppe.getTeam().getNavn()));
+                    return g;
+                })
+                .collect(Collectors.toSet());
+
+        return mfGrupper;
     }
 
     public void saveAllIdenterToTestgruppe(Long gruppeId, Collection<RsTestident> testidenter) {

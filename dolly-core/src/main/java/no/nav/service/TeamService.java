@@ -78,6 +78,17 @@ public class TeamService {
 	}
 
 	@Transactional
+	public RsTeam addMedlemmerByNavidenter(Long teamId, List<String> navIdenter) {
+		Team team = fetchTeamById(teamId);
+		List<Bruker> brukere = brukerRepository.findByNavIdentIn(navIdenter);
+
+		team.getMedlemmer().addAll(mapperFacade.mapAsList(brukere, Bruker.class));
+
+		Team changedTeam = saveToTeamRepository(team);
+		return mapperFacade.map(changedTeam, RsTeam.class);
+	}
+
+	@Transactional
 	public RsTeam fjernMedlemmer(Long teamId, List<RsBruker> navIdenter) {
 		Team team = fetchTeamById(teamId);
 		if (!team.getMedlemmer().isEmpty()) {
@@ -89,12 +100,8 @@ public class TeamService {
 	}
 
 	@Transactional
-	public RsTeam updateTeamInfo(RsTeam teamRequest) {
-	    if(teamRequest.getId() == null){
-			throw new IllegalArgumentException("Team ID er ikke spesifisert. Finner ikke team å oppdatere uten ID");
-		}
-
-		Team team = fetchTeamById(teamRequest.getId());
+	public RsTeam updateTeamInfo(Long teamId, RsTeam teamRequest) {
+		Team team = fetchTeamById(teamId);
 
 		team.setNavn(teamRequest.getNavn());
 		team.setBeskrivelse(teamRequest.getBeskrivelse());
