@@ -19,8 +19,8 @@ export default class App extends Component {
 		return (
 			<React.Fragment>
 				<Header brukerData={brukerData} />
+				<Breadcrumb />
 				<main>
-					<Breadcrumb />
 					<Routes />
 				</main>
 			</React.Fragment>

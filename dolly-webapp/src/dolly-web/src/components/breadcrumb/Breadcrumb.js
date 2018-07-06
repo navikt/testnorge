@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
+import './Breadcrumb.less'
+
 export default class Breadcrumb extends PureComponent {
 	static propTypes = {}
 
