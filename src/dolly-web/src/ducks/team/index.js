@@ -1,42 +1,98 @@
 import { DollyApi } from '~/service/Api'
 
 export const types = {
-	LOAD_TEAMS_SUCCESS: 'LOAD_TEAM_SUCCESS',
-	CREATE_TEAM_SUCCESS: 'CREATE_TEAM_SUCCESS'
+	REQUEST_TEAMS: 'REQUEST_TEAMS',
+	REQUEST_TEAMS_SUCCESS: 'REQUEST_TEAM_SUCCESS',
+	REQUEST_TEAMS_ERROR: 'REQUEST_TEAMS_ERROR',
+	CREATE_TEAM_SUCCESS: 'CREATE_TEAM_SUCCESS',
+	SET_TEAM_VISNING: 'SETT_TEAM_VISNING'
 }
 
-const initialState = []
+const initialState = {
+	fetching: false,
+	items: [],
+	visning: 'mine',
+	activePage: 0
+}
 
 export default function teamReducer(state = initialState, action) {
 	switch (action.type) {
-		case types.LOAD_TEAMS_SUCCESS:
-			return action.teams
+		case types.REQUEST_TEAMS:
+			return {
+				...state,
+				fetching: true
+			}
+		case types.REQUEST_TEAMS_SUCCESS:
+			return {
+				...state,
+				fetching: false,
+				items: action.teams
+			}
+		case types.REQUEST_TEAMS_ERROR:
+			return {
+				...state,
+				fetching: false,
+				error: action.error
+			}
 		case types.CREATE_TEAM_SUCCESS:
 			return [...state, Object.assign({}, action.team)]
+		case types.SET_TEAM_VISNING:
+			return {
+				...state,
+				visning: action.visning
+			}
+		case types.SET_ACTIVE_PAGE:
+			return {
+				...state,
+				activePage: action.page
+			}
 		default:
 			return state
 	}
 }
 
-const loadTeamsSuccess = teams => ({
-	type: types.LOAD_TEAMS_SUCCESS,
+const requestTeams = () => ({
+	type: types.REQUEST_TEAMS
+})
+
+const requestTeamsSuccess = teams => ({
+	type: types.REQUEST_TEAMS_SUCCESS,
 	teams
 })
 
-export const createTeamSuccess = team => ({
+const requestTeamsError = error => ({
+	type: types.REQUEST_TEAMS_ERROR
+})
+
+const createTeamSuccess = team => ({
 	type: types.CREATE_TEAM_SUCCESS,
 	team
 })
 
-export const fetchTeams = () => (dispatch, getState) => {
-	const { bruker } = getState()
+export const setTeamVisning = visning => ({
+	type: types.SET_TEAM_VISNING,
+	visning
+})
+
+export const setActivePage = page => ({
+	type: types.SET_ACTIVE_PAGE,
+	page
+})
+
+export const fetchTeams = () => async (dispatch, getState) => {
+	const { bruker, team } = getState()
 	const currentBrukerId = bruker.brukerData.navIdent
+	const currentVisning = team.visning
 	try {
-		return (async () => {
-			const response = await DollyApi.getTeamsByUserId(currentBrukerId)
-			dispatch(loadTeamsSuccess(response.data))
-		})()
+		dispatch(requestTeams())
+
+		const response =
+			currentVisning === 'mine'
+				? await DollyApi.getTeamsByUserId(currentBrukerId)
+				: await DollyApi.getTeams()
+
+		dispatch(requestTeamsSuccess(response.data))
 	} catch (error) {
-		console.log(error)
+		dispatch(requestTeamsError)
 	}
 }
