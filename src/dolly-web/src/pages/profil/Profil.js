@@ -9,18 +9,18 @@ import './Profil.less'
 export default class ProfilPage extends Component {
 	static propTypes = {}
 
-	state = {
-		activePage: 0
-	}
-
 	componentDidMount() {
 		this.props.fetchTeams()
 	}
 
-	handleTabsChange = (e, idx) => this.setState({ activePage: idx })
+	handleTabsChange = (e, idx) => this.props.setActivePage(idx)
+
+	handleViewChange = e => {
+		this.props.setTeamVisning(e.target.value)
+		this.props.fetchTeams()
+	}
 
 	render() {
-		const { activePage } = this.state
 		const { teams } = this.props
 
 		return (
@@ -29,7 +29,9 @@ export default class ProfilPage extends Component {
 
 				<Tabs tabs={[{ label: 'Teams' }]} onChange={this.handleTabsChange} />
 
-				{activePage === 0 && <TeamOversikt teams={teams} />}
+				{teams.activePage === 0 && (
+					<TeamOversikt teams={teams} handleViewChange={this.handleViewChange} />
+				)}
 			</div>
 		)
 	}

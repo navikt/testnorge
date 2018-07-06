@@ -7,13 +7,15 @@ export default class Loading extends PureComponent {
 	static propTypes = {
 		label: PropTypes.string,
 		onlySpinner: PropTypes.bool,
-		fullpage: PropTypes.bool
+		fullpage: PropTypes.bool,
+		panel: PropTypes.bool
 	}
 
 	static defaultProps = {
 		label: 'Laster',
 		onlySpinner: false,
-		fullpage: false
+		fullpage: false,
+		panel: false
 	}
 
 	renderSpinner = () => {
@@ -21,7 +23,7 @@ export default class Loading extends PureComponent {
 	}
 
 	render() {
-		const { label, onlySpinner, fullpage } = this.props
+		const { label, onlySpinner, fullpage, panel } = this.props
 
 		if (onlySpinner) return this.renderSpinner()
 
@@ -31,6 +33,8 @@ export default class Loading extends PureComponent {
 				{this.renderSpinner()}
 			</div>
 		)
+
+		if (panel) return <div className="panel-loading-container">{component}</div>
 
 		if (fullpage) return <div className="fullpage-loading-container">{component}</div>
 
