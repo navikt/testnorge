@@ -21,7 +21,7 @@ export default class ProfilPage extends Component {
 	}
 
 	render() {
-		const { teams, createTeam } = this.props
+		const { teams, createTeam, history } = this.props
 
 		return (
 			<div>
@@ -34,6 +34,7 @@ export default class ProfilPage extends Component {
 						teams={teams}
 						handleViewChange={this.handleViewChange}
 						createTeam={createTeam}
+						history={history}
 					/>
 				)}
 			</div>
