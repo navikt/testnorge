@@ -1,0 +1,31 @@
+@import '~react-select/less/select';
+@import (reference) '~lessVars';
+
+.dollyselect {
+	&-input .Select .Select-control {
+		outline: 0;
+		border-radius: 4px;
+	}
+
+	&-input .Select.is-focused .Select-control {
+		outline: 0;
+		border-radius: 1px solid @navGra40;
+		box-shadow: 0 0 0 3px @color-focus !important;
+		overflow: visible;
+	}
+
+	.Select-control:hover {
+		border-color: @navGra40;
+	}
+
+	.option-container {
+		padding-right: 15px;
+		height: 48px;
+		text-overflow: ellipsis;
+		overflow: scroll;
+
+		.option-text {
+			font-size: 16px;
+		}
+	}
+}
