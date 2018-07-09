@@ -25,27 +25,27 @@ public class DollyTpsfService {
     IdentRepository identRepository;
 
     public void opprettPersonerByKriterier(Long gruppeId, RsDollyPersonKriteriumRequest request){
-        List<String> klareIdenter = tpsfApiService.opprettPersonerTpsf(request);
+        List<Object> klareIdenter = tpsfApiService.opprettPersonerTpsf(request);
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
-        klareIdenter.forEach(ident -> {
-            RsSkdMeldingResponse response = tpsfApiService.sendTilTpsFraTPSF(ident, request.getEnvironments());
-
-            Testident testident = new Testident();
-            testident.setIdent(Long.parseLong(ident));
-            testident.setTestgruppe(testgruppe);
-            identRepository.save(testident);
-
-            //TODO oppdater oversikt over hva som har skjedd.
-
-            response.getSendSkdMeldingTilTpsResponsene().forEach(res -> {
-                System.out.println(res.getSkdmeldingstype());
-                request.getEnvironments().forEach(env -> {
-                    System.out.println(res.getStatus(env));
-                });
-            });
-
-        });
+//        klareIdenter.forEach(ident -> {
+//            RsSkdMeldingResponse response = tpsfApiService.sendTilTpsFraTPSF(ident, request.getEnvironments());
+//
+//            Testident testident = new Testident();
+//            testident.setIdent(Long.parseLong(ident));
+//            testident.setTestgruppe(testgruppe);
+//            identRepository.save(testident);
+//
+//            //TODO oppdater oversikt over hva som har skjedd.
+//
+//            response.getSendSkdMeldingTilTpsResponsene().forEach(res -> {
+//                System.out.println(res.getSkdmeldingstype());
+//                request.getEnvironments().forEach(env -> {
+//                    System.out.println(res.getStatus(env));
+//                });
+//            });
+//
+//        });
 
         String g = "g";
 

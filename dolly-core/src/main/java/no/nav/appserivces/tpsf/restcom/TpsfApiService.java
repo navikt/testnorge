@@ -37,7 +37,7 @@ public class TpsfApiService {
     @Value("${tpsf.server.url}")
     private String tpsfServerUrl;
 
-    public List<String> opprettPersonerTpsf(RsDollyPersonKriteriumRequest request){
+    public List<Object> opprettPersonerTpsf(RsDollyPersonKriteriumRequest request){
         StringBuilder sb = new StringBuilder();
         sb.append(tpsfServerUrl).append(TPSF_BASE_URL).append(TPSF_OPPRETT_URL);
 
@@ -60,16 +60,17 @@ public class TpsfApiService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-        HttpEntity<String> entity;
+        HttpEntity<Object> entity;
         try {
             entity = new HttpEntity<>(objectMapper.writeValueAsString(request1), headers);
         } catch (Exception e){
             throw new DollyFunctionalException(e.getMessage());
         }
 
-        ResponseEntity<String[]> response = null;
+        ResponseEntity<Object[]> response = null;
+        ResponseEntity<Object[]> respyy = restTemplate.getForEntity("http://localhost:8050/api/v1/dolly/testdata/personerdata?identer=13101750196", Object[].class);
         try {
-            response = restTemplate.exchange("http://localhost/8050/api/v1/dolly/testdata/personer", HttpMethod.POST , entity, String[].class);
+            response = restTemplate.postForEntity("http://localhost/8050/api/v1/dolly/testdata/personer", entity, Object[].class);
         } catch (Exception e) {
             throw new DollyFunctionalException("TPSF exception ble kastet: " + e.getMessage());
         }

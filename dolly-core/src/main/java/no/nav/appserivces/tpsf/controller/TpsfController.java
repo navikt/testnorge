@@ -20,7 +20,6 @@ public class TpsfController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/opprett")
     public void opprettGruppe() {
-
         dollyTpsfService.opprettPersonerByKriterier(1L, null);
     }
 
