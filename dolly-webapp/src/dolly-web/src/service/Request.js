@@ -22,14 +22,14 @@ export default class Request {
 	}
 
 	static post(url, data) {
-		return instance.post(url, data)
+		return instance.post(url, data).then(debugLoading)
 	}
 
 	static put(url, data) {
-		return instance.put(url, data)
+		return instance.put(url, data).then(debugLoading)
 	}
 
 	static delete(url) {
-		return instance.delete(url)
+		return instance.delete(url).then(debugLoading)
 	}
 }

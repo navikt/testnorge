@@ -1,19 +1,15 @@
-import React, { Component } from 'react'
-import { Input, Select } from 'nav-frontend-skjema'
-import Knapp from 'nav-frontend-knapper'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import { FormikDollySelect } from '~/components/fields/Select/Select'
+import { FormikInput } from '~/components/fields/Input/Input'
+import { Formik, Form, Field } from 'formik'
+import { DollyApi } from '~/service/Api'
+import DisplayFormikState from '~/utils/DisplayFormikState'
+import Knapp from 'nav-frontend-knapper'
+
 import './Rediger.less'
 
-const initialState = {
-	gruppe: {
-		navn: '',
-		teamTilhoerlighetNavn: '',
-		hensikt: ''
-	},
-	error: null
-}
-
-export default class Rediger extends Component {
+export default class Rediger extends PureComponent {
 	static propTypes = {
 		gruppe: PropTypes.shape({
 			navn: PropTypes.string,
@@ -25,73 +21,51 @@ export default class Rediger extends Component {
 		cancelRedigerOgOpprett: PropTypes.func
 	}
 
-	constructor(props) {
-		super(props)
-
-		let _state = Object.assign({}, initialState)
-
-		if (props.gruppe) _state.gruppe = props.gruppe
-
-		this.state = {
-			..._state
-		}
-	}
-
 	createGroup = async e => {
 		const { index, createGruppe, updateGruppe } = this.props
-		// TODO: Validations
-
-		// TODO: Temp values for default values
-		const gruppeObj = {
-			...this.state.gruppe,
-			personer: '0',
-			eier: 'Andreas Ludvigsen',
-			env: ''
-		}
-
 		const res = gruppeObj.id ? await updateGruppe(gruppeObj) : await createGruppe(gruppeObj)
 	}
 
-	onInputChange = e => {
-		const { name, value } = e.target
-
-		const gruppe = {
-			...this.state.gruppe,
-			[name]: value
-		}
-
-		this.setState({ gruppe })
-	}
-
 	render() {
-		const { navn, teamTilhoerlighetNavn, hensikt } = this.state
-
-		//TODO: Finne faktiske teams som en bruker er medlem av. Kanskje dette bare skal fetches hver gang vi går inn i gruppeOversikt?
-		const test = ['team', 'team1', 'team2']
-
+		const { cancelRedigerOgOpprett, currentUserId } = this.props
 		return (
-			<div className="opprett-gruppe">
-				<Input label="NAVN" name="navn" value={navn} onChange={this.onInputChange} />
-				<Select
-					label="TEAM"
-					name="teamTilhoerlighetNavn"
-					value={teamTilhoerlighetNavn}
-					onChange={this.onInputChange}
-				>
-					{test.map((teamObj, idx) => (
-						<option value={teamObj} key={idx}>
-							{teamObj}
-						</option>
-					))}
-				</Select>
-				<Input label="HENSIKT" name="hensikt" value={hensikt} onChange={this.onInputChange} />
-				<Knapp type="hoved" onClick={this.createGroup}>
-					{this.props.redigering ? 'OPPDATER' : 'OPPRETT'}
-				</Knapp>
-				<Knapp type="standard" onClick={this.props.cancelRedigerOgOpprett}>
-					Avbryt
-				</Knapp>
-			</div>
+			<Formik
+				initialValues={{
+					navn: '',
+					team: null,
+					hensikt: ''
+				}}
+				onSubmit={(values, actions) => {
+					console.log(values, actions)
+				}}
+				render={props => {
+					const { values, touched, errors, dirty, isSubmitting } = props
+					return (
+						<Form className="opprett-gruppe" autoComplete="off">
+							<Field name="navn" label="Navn" className="test" component={FormikInput} />
+							<Field
+								name="team"
+								label="Velg team"
+								component={FormikDollySelect}
+								loadOptions={() =>
+									DollyApi.getTeamsByUserId(currentUserId).then(
+										DollyApi.Utils.NormalizeTeamListForDropdown
+									)
+								}
+							/>
+							<Field name="hensikt" label="Hensikt" component={FormikInput} />
+
+							<Knapp type="hoved" htmlType="submit">
+								{this.props.redigering ? 'OPPDATER' : 'OPPRETT'}
+							</Knapp>
+							<Knapp type="standard" onClick={cancelRedigerOgOpprett}>
+								Avbryt
+							</Knapp>
+							<DisplayFormikState {...props} />
+						</Form>
+					)
+				}}
+			/>
 		)
 	}
 }
