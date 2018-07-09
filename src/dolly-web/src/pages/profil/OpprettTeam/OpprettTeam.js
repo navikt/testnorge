@@ -6,34 +6,43 @@ import './OpprettTeam.less'
 
 class OpprettTeam extends Component {
 	state = {
-		nameInput: '',
-		beskrivelseInput: ''
+		navn: '',
+		beskrivelse: ''
 	}
 
-	nameInputHandler = e => {
+	navnHandler = e => {
 		this.setState({
-			nameInput: e.target.value
+			navn: e.target.value
 		})
 	}
 
-	beskrivelseInputHandler = e => {
+	beskrivelseHandler = e => {
 		this.setState({
-			beskrivelseInput: e.target.value
+			beskrivelse: e.target.value
 		})
+	}
+
+	onClickOpprett = () => {
+		const { navn, beskrivelse } = this.state
+		const data = {
+			navn,
+			beskrivelse
+		}
+		this.props.opprettHandler(data)
 	}
 
 	render() {
-		const { onCancel, onSuccess } = this.props
+		const { onCancel } = this.props
 		return (
 			<div className="opprett-team-container">
-				<Input label="NAVN" name="navn" value={this.state.nameInput} onChange={this.inputHandler} />
+				<Input label="NAVN" name="navn" value={this.state.navn} onChange={this.navnHandler} />
 				<Input
 					label="BESKRIVELSE"
 					name="beskrivelse"
-					value={this.state.beskrivelseInput}
-					onChange={this.beskrivelseInputHandler}
+					value={this.state.beskrivelse}
+					onChange={this.beskrivelseHandler}
 				/>
-				<Knapp type="hoved" onClick={onSuccess}>
+				<Knapp type="hoved" onClick={this.onClickOpprett}>
 					Opprett
 				</Knapp>
 				<Knapp type="standard" onClick={onCancel}>

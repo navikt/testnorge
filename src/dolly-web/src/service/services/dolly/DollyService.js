@@ -56,8 +56,8 @@ export default class DollyService {
 		return Request.get(Endpoints.teamById(teamId))
 	}
 
-	static createTeam() {
-		return Request.post(Endpoints.team())
+	static createTeam(data) {
+		return Request.post(Endpoints.team(), data)
 	}
 
 	static updateTeam(teamId) {
