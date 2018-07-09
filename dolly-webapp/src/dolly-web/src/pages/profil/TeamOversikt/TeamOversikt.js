@@ -29,7 +29,7 @@ export default class TeamOversikt extends Component {
 	}
 
 	render() {
-		const { teams, handleViewChange } = this.props
+		const { teams, handleViewChange, history } = this.props
 		const { items, fetching, visning } = teams
 
 		return (
@@ -67,7 +67,12 @@ export default class TeamOversikt extends Component {
 						</Table.Header>
 
 						{items.map(team => (
-							<Table.Row key={team.id} editAction={() => {}} deleteAction={() => {}}>
+							<Table.Row
+								key={team.id}
+								navLink={() => history.push(`profil/${team.id}`)}
+								editAction={() => {}}
+								deleteAction={() => {}}
+							>
 								<Table.Column width="20" value={team.navn} />
 								<Table.Column width="30" value={team.beskrivelse} />
 								<Table.Column width="20" value={team.eierNavIdent} />

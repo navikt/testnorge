@@ -17,6 +17,10 @@ class DollyService {
 		return Request.get(Endpoints.gruppeByUser(userId))
 	}
 
+	static getGruppeByTeamId(teamId) {
+		return Request.get(Endpoints.gruppeByTeam(teamId))
+	}
+
 	static createGruppe(data) {
 		return Request.post(Endpoints.gruppe(), data)
 	}
