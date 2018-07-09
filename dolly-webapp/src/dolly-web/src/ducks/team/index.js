@@ -5,11 +5,15 @@ export const types = {
 	REQUEST_TEAMS_SUCCESS: 'REQUEST_TEAM_SUCCESS',
 	REQUEST_TEAMS_ERROR: 'REQUEST_TEAMS_ERROR',
 	CREATE_TEAM_SUCCESS: 'CREATE_TEAM_SUCCESS',
-	SET_TEAM_VISNING: 'SETT_TEAM_VISNING'
+	SET_TEAM_VISNING: 'SETT_TEAM_VISNING',
+	CREATE_OR_UPDATE_TEAM_REQUEST: 'CREATE_OR_UPDATE_TEAM_REQUEST',
+	CREATE_TEAM_SUCCESS: 'CREATE_TEAM_SUCCESS',
+	UPDATE_TEAM_SUCCESS: 'UPDATE_TEAM_SUCCESS'
 }
 
 const initialState = {
 	fetching: false,
+	createOrUpdateFetching: false,
 	items: [],
 	visning: 'mine',
 	activePage: 0
@@ -34,8 +38,17 @@ export default function teamReducer(state = initialState, action) {
 				fetching: false,
 				error: action.error
 			}
+		case types.CREATE_OR_UPDATE_TEAM_REQUEST:
+			return {
+				...state,
+				createOrUpdateFetching: true
+			}
 		case types.CREATE_TEAM_SUCCESS:
-			return [...state, Object.assign({}, action.team)]
+			return {
+				...state,
+				createOrUpdateFetching: false,
+				items: [...state.items, action.team]
+			}
 		case types.SET_TEAM_VISNING:
 			return {
 				...state,
@@ -64,8 +77,17 @@ const requestTeamsError = error => ({
 	type: types.REQUEST_TEAMS_ERROR
 })
 
+const createOrUpdateTeamRequest = () => ({
+	type: types.CREATE_OR_UPDATE_TEAM_REQUEST
+})
+
 const createTeamSuccess = team => ({
 	type: types.CREATE_TEAM_SUCCESS,
+	team
+})
+
+const updateTeamSuccess = (team, index) => ({
+	type: types.UPDATE_TEAM_SUCCESS,
 	team
 })
 
@@ -94,5 +116,15 @@ export const fetchTeams = () => async (dispatch, getState) => {
 		dispatch(requestTeamsSuccess(response.data))
 	} catch (error) {
 		dispatch(requestTeamsError)
+	}
+}
+
+export const createTeam = data => async dispatch => {
+	try {
+		dispatch(createOrUpdateTeamRequest())
+		const response = await DollyApi.createTeam(data)
+		dispatch(createTeamSuccess(response.data))
+	} catch (error) {
+		console.log(error)
 	}
 }
