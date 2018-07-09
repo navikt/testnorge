@@ -1,10 +1,12 @@
 import Request from '../../Request'
 import Endpoints from './DollyEndpoints'
+import Utils from './Utils'
 
-class DollyService {
-	/*
-        Grupper
-    */
+export default class DollyService {
+	// UTILS
+	static Utils = Utils
+
+	// Grupper
 	static getGrupper() {
 		return Request.get(Endpoints.gruppe())
 	}
@@ -41,10 +43,7 @@ class DollyService {
 		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
 	}
 
-	/*
-        Team
-    */
-
+	// Team
 	static getTeams() {
 		return Request.get(Endpoints.team())
 	}
@@ -57,8 +56,8 @@ class DollyService {
 		return Request.get(Endpoints.teamById(teamId))
 	}
 
-	static createTeam() {
-		return Request.post(Endpoints.team())
+	static createTeam(data) {
+		return Request.post(Endpoints.team(), data)
 	}
 
 	static updateTeam(teamId) {
@@ -69,10 +68,7 @@ class DollyService {
 		return Request.put(Endpoints.teamById(teamId))
 	}
 
-	/*
-        Bruker
-    */
-
+	// Bruker
 	static getBrukere() {
 		return Request.get(Endpoints.bruker())
 	}
@@ -85,5 +81,3 @@ class DollyService {
 		return Request.get(Endpoints.currentBruker())
 	}
 }
-
-export default DollyService

@@ -21,7 +21,7 @@ export default class ProfilPage extends Component {
 	}
 
 	render() {
-		const { teams } = this.props
+		const { teams, createTeam } = this.props
 
 		return (
 			<div>
@@ -30,7 +30,11 @@ export default class ProfilPage extends Component {
 				<Tabs tabs={[{ label: 'Teams' }]} onChange={this.handleTabsChange} />
 
 				{teams.activePage === 0 && (
-					<TeamOversikt teams={teams} handleViewChange={this.handleViewChange} />
+					<TeamOversikt
+						teams={teams}
+						handleViewChange={this.handleViewChange}
+						createTeam={createTeam}
+					/>
 				)}
 			</div>
 		)
