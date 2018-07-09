@@ -3,6 +3,7 @@ import Knapp from 'nav-frontend-knapper'
 import Icon from '~/components/icon/Icon'
 import Overskrift from '~/components/overskrift/Overskrift'
 import GruppeDetaljer from './GruppeDetaljer'
+import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
 import PersonDetaljer from './PersonDetaljer'
 
@@ -20,7 +21,10 @@ export default class Gruppe extends Component {
 	}
 
 	render() {
-		const { gruppe } = this.props
+		const { gruppe, fetching } = this.props
+
+		if (fetching) return <Loading label="laster gruppe" panel />
+
 		if (!gruppe) return false
 
 		return (
@@ -30,7 +34,7 @@ export default class Gruppe extends Component {
 					actions={[{ icon: 'edit', onClick: () => {} }, { icon: 'trashcan', onClick: () => {} }]}
 				/>
 
-				<GruppeDetaljer data={tempGRUPPEHEADER} />
+				<GruppeDetaljer gruppe={gruppe} />
 
 				<Overskrift
 					type="h2"
@@ -62,18 +66,6 @@ export default class Gruppe extends Component {
 			</div>
 		)
 	}
-}
-
-const tempGRUPPEHEADER = {
-	eier: 'Helga Woll Lunder',
-	team: 'Foreldrepenger',
-	env: 'T5, T6 og T7',
-	personer_num: '30',
-	menn_num: '23',
-	kvinner_num: '7',
-	opprettet: '10.06.2018',
-	sistEndret: '15.06.2018',
-	hensikt: 'Officia non nisi amet sit est proident culpa ipsum commodo consectetur minim officia.'
 }
 
 const tempGRUPPE = [
