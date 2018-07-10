@@ -63,7 +63,13 @@ export default class Rediger extends PureComponent {
 					return (
 						<Form className="opprett-gruppe" autoComplete="off">
 							<div className="fields">
-								<Field name="navn" label="Navn" className="test" component={FormikInput} />
+								<Field
+									name="navn"
+									label="Navn"
+									className="test"
+									autoFocus
+									component={FormikInput}
+								/>
 								<Field
 									name="teamId"
 									label="Velg team"
