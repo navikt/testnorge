@@ -4,6 +4,8 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.freg.security.oidc.common.OidcTokenAuthentication;
 import no.nav.jpa.Bruker;
 import no.nav.resultSet.RsBruker;
+import no.nav.resultSet.RsBrukerMedTeamsOgFavoritter;
+import no.nav.resultSet.RsBrukerTeamAndGruppeIDs;
 import no.nav.service.BrukerService;
 import no.nav.service.TeamService;
 
@@ -28,9 +30,9 @@ public class BrukerController {
 	private MapperFacade mapperFacade;
 
 	@GetMapping("/{navIdent}")
-	public RsBruker getBrukerByNavIdent(@PathVariable("navIdent") String navIdent) {
+	public RsBrukerTeamAndGruppeIDs getBrukerByNavIdent(@PathVariable("navIdent") String navIdent) {
 		Bruker bruker = brukerService.fetchBruker(navIdent);
-		return mapperFacade.map(bruker, RsBruker.class);
+		return mapperFacade.map(bruker, RsBrukerTeamAndGruppeIDs.class);
 	}
 
 	@GetMapping("/current")
@@ -41,8 +43,8 @@ public class BrukerController {
 	}
 
 	@GetMapping
-    public List<RsBruker> getAllBrukere(){
-		return mapperFacade.mapAsList(brukerService.getBrukere(), RsBruker.class);
+    public List<RsBrukerTeamAndGruppeIDs> getAllBrukere(){
+		return mapperFacade.mapAsList(brukerService.getBrukere(), RsBrukerTeamAndGruppeIDs.class);
 	}
 
 }

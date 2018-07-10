@@ -9,19 +9,17 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
 @Setter
-public class RsTestgruppe {
+@Getter
+public class RsTeamMedMedlemmerUtenGrupper {
 	private Long id;
 	private String navn;
-	private String hensikt;
-	private String opprettetAvNavIdent;
-	private String sistEndretAvNavIdent;
+	private String beskrivelse;
 
 	@JsonDeserialize(using = LocalDateDeserializer.class)
-	private LocalDate datoEndret;
+	private LocalDate datoOpprettet;
 
-	private RsTeamMedIdOgNavn team;
-	private Set<RsTestident> testidenter = new HashSet<>();
+	private String eierNavIdent;
+	private Set<RsBruker> medlemmer = new HashSet<>();
 
 }

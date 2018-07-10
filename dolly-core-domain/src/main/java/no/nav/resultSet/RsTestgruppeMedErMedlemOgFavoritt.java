@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class RsTestgruppe {
+public class RsTestgruppeMedErMedlemOgFavoritt {
 	private Long id;
 	private String navn;
 	private String hensikt;
@@ -24,4 +24,6 @@ public class RsTestgruppe {
 	private RsTeamMedIdOgNavn team;
 	private Set<RsTestident> testidenter = new HashSet<>();
 
+	private boolean erMedlemAvTeamSomEierGruppe;
+	private boolean favorittIGruppen;
 }

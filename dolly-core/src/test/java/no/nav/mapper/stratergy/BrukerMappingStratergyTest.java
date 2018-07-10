@@ -74,7 +74,7 @@ public class BrukerMappingStratergyTest {
         assertThat(rs.getNavIdent(), is("ident"));
         assertThat(favoritterInBruker.get(0).getNavn(), is("gruppe"));
         assertThat(favoritterInBruker.get(0).getId(), is(2L));
-        assertThat(favoritterInBruker.get(0).getTeamTilhoerlighetNavn(), is(team.getNavn()));
+        assertThat(favoritterInBruker.get(0).getTeam().getNavn(), is(team.getNavn()));
 
     }
 }
