@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikInput } from '~/components/fields/Input/Input'
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form, Field, getIn } from 'formik'
 import { DollyApi } from '~/service/Api'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import Knapp from 'nav-frontend-knapper'
@@ -14,20 +14,23 @@ import './Rediger.less'
 export default class Rediger extends PureComponent {
 	static propTypes = {
 		gruppe: PropTypes.shape({
-			id: PropTypes.string,
+			id: PropTypes.number,
 			navn: PropTypes.string,
 			teamTilhoerlighetNavn: PropTypes.string,
 			hensikt: PropTypes.string
 		}),
 		createGruppe: PropTypes.func,
 		updateGruppe: PropTypes.func,
-		cancelRedigerOgOpprett: PropTypes.func
+		closeRedigerOgOpprett: PropTypes.func
 	}
 
-	onHandleSubmit = (values, actions) => {
-		console.log('onHandleSubmit()', values, actions)
-		// const { createGruppe, updateGruppe } = this.props
-		// const res = gruppeObj.id ? await updateGruppe(gruppeObj) : await createGruppe(gruppeObj)
+	erRedigering = Boolean(getIn(this.props.gruppe, 'id', false))
+
+	onHandleSubmit = async (values, actions) => {
+		const { createGruppe, updateGruppe } = this.props
+		// console.log('onHandleSubmit()', values, actions)
+		if (this.erRedigering) values = Object.assign({}, values, { id: this.props.gruppe.id })
+		const res = this.erRedigering ? await updateGruppe(values) : await createGruppe(values)
 	}
 
 	validation = () =>
@@ -41,7 +44,7 @@ export default class Rediger extends PureComponent {
 		})
 
 	render() {
-		const { cancelRedigerOgOpprett, currentUserId, gruppe } = this.props
+		const { closeRedigerOgOpprett, currentUserId, gruppe } = this.props
 
 		let initialValues = {
 			navn: '',
@@ -49,10 +52,10 @@ export default class Rediger extends PureComponent {
 			hensikt: ''
 		}
 
-		if (this.props.gruppe) {
+		if (this.erRedigering) {
 			initialValues = Object.assign({}, initialValues, {
 				navn: gruppe.navn,
-				teamId: 3000000,
+				teamId: gruppe.team.id,
 				hensikt: gruppe.hensikt || ''
 			})
 		}
@@ -81,9 +84,9 @@ export default class Rediger extends PureComponent {
 								<Field name="hensikt" label="Hensikt" component={FormikInput} />
 
 								<Knapp type="hoved" htmlType="submit">
-									{this.props.redigering ? 'OPPDATER' : 'OPPRETT'}
+									{this.erRedigering ? 'OPPDATER' : 'OPPRETT'}
 								</Knapp>
-								<Knapp type="standard" onClick={cancelRedigerOgOpprett}>
+								<Knapp type="standard" onClick={closeRedigerOgOpprett}>
 									Avbryt
 								</Knapp>
 							</div>
