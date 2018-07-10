@@ -60,8 +60,6 @@ export default class DollySelect extends PureComponent {
 export const FormikDollySelect = props => {
 	const { field, form, ...restProps } = props
 
-	console.log(props)
-
 	return (
 		<DollySelect
 			name={field.name}

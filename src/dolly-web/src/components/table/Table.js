@@ -28,6 +28,7 @@ class TableRow extends PureComponent {
 			children,
 			expandComponent,
 			editAction,
+			favoriteAction,
 			deleteAction,
 			navLink,
 			...restProps
@@ -53,6 +54,7 @@ class TableRow extends PureComponent {
 					{children}
 					<Table.Column className="dot-body-row-actioncolumn">
 						{editAction && <IconButton kind="edit" onClick={editAction} />}
+						{favoriteAction && <IconButton kind="star" onClick={favoriteAction} />}
 						{deleteAction && <IconButton kind="trashcan" onClick={deleteAction} />}
 						{expandComponent && <IconButton kind={iconChevronClass} onClick={this.onRowClick} />}
 					</Table.Column>
