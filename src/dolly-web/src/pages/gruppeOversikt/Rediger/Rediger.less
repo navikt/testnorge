@@ -1,14 +1,27 @@
+@import (reference) '~lessVars';
+
 .opprett-gruppe {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
 	background-color: white;
-	padding: 10px;
-	margin-bottom: 20px;
+	padding: 0;
+	margin: 20px -10px;
+	border: 1px solid @color-focus;
+
+	h2 {
+		margin: 0;
+		font-size: 14px;
+		background-color: #e0e0e0;
+		padding: 10px;
+		margin-bottom: 10px;
+		border-bottom: 1px solid #ccc;
+	}
 
 	.fields {
 		display: flex;
 		justify-content: space-around;
+		padding: 0px 10px 10px;
 	}
 
 	.skjemaelement:nth-child(1),

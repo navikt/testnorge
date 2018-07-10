@@ -62,6 +62,7 @@ export default class Rediger extends PureComponent {
 					const { values, touched, errors, dirty, isSubmitting } = props
 					return (
 						<Form className="opprett-gruppe" autoComplete="off">
+							<h2>{this.erRedigering ? 'Rediger gruppe' : 'Opprett gruppe'}</h2>
 							<div className="fields">
 								<Field
 									name="navn"
@@ -85,7 +86,7 @@ export default class Rediger extends PureComponent {
 								<Knapp type="hoved" htmlType="submit">
 									{this.erRedigering ? 'OPPDATER' : 'OPPRETT'}
 								</Knapp>
-								<Knapp type="standard" onClick={closeRedigerOgOpprett}>
+								<Knapp type="standard" htmlType="button" onClick={closeRedigerOgOpprett}>
 									Avbryt
 								</Knapp>
 							</div>
