@@ -26,7 +26,7 @@ export default class GruppeOversikt extends PureComponent {
 	hentGrupper = () => this.props.getGrupper()
 	byttVisning = e => {
 		this.props.settVisning(e.target.value)
-		this.props.getGrupper()
+		this.props.getGrupper(e.target.value)
 	}
 
 	render() {

@@ -16,7 +16,7 @@ class DollyEndpoints {
 	}
 
 	static gruppeByUser(userId) {
-		return `${groupBase}?bruker=${userId}`
+		return `${groupBase}?navIdent=${userId}`
 	}
 
 	static gruppeByTeam(teamId) {

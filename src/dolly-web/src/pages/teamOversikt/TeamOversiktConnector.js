@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import Profil from './Profil'
+import TeamOversikt from './TeamOversikt'
 import { fetchTeams, setTeamVisning, setActivePage, createTeam } from '~/ducks/team'
 
 const mapStateToProps = state => ({
@@ -15,4 +15,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(Profil)
+)(TeamOversikt)
