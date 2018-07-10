@@ -78,6 +78,13 @@ public class TestgruppeService {
         return testgrupper;
     }
 
+    public Set<RsTestgruppeMedErMedlemOgFavoritt> fetchTestgrupperByTeamId(String teamId) {
+        Team team = teamService.fetchTeamById(Long.parseLong(teamId));
+        List<Testgruppe> grupper = testGruppeRepository.findAllByTeamtilhoerighet(team);
+
+        return getRsTestgruppeMedErMedlem(mapperFacade.mapAsSet(grupper, RsTestgruppe.class));
+    }
+
     public Set<RsTestgruppeMedErMedlemOgFavoritt> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper) {
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         return getRsTestgruppeMedErMedlem(grupper, auth.getPrincipal());

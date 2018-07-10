@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import static no.nav.util.UtilFunctions.isNullOrEmpty;
 
 @RestController
 @RequestMapping(value = "api/v1/testgruppe")
@@ -69,21 +71,25 @@ public class TestgruppeController {
 	}
 
 	@GetMapping
-	public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgrupper(@RequestParam(name = "navIdent", required = false) String navIdent){
+	public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgrupper(@RequestParam(name = "navIdent", required = false) String navIdent,
+																@RequestParam(name = "teamId", required = false) Long teamId){
 	    Set<RsTestgruppe> grupper;
-		if(navIdent != null && !navIdent.isEmpty()) {
+		if(!isNullOrEmpty(navIdent)) {
 			grupper = testgruppeService.fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navIdent);
+		} else {
+			grupper = mapperFacade.mapAsSet(testgruppeService.fetchAlleTestgrupper(), RsTestgruppe.class);
+		}
+
+		if(!isNullOrEmpty(teamId)){
+			grupper = grupper.stream().filter(gruppe -> gruppe.getTeam().getId().toString().equals(teamId.toString())).collect(Collectors.toSet());
+		}
+
+		if(!isNullOrEmpty(navIdent)){
 			return testgruppeService.getRsTestgruppeMedErMedlem(grupper, navIdent);
 		}
 
-		grupper = mapperFacade.mapAsSet(testgruppeService.fetchAlleTestgrupper(), RsTestgruppe.class);
 		return testgruppeService.getRsTestgruppeMedErMedlem(grupper);
 	}
-
-	//@GetMapping("/bruker/{navident}")
-	//public Set<RsTestgruppe> getTestgrupperForBruker(@PathVariable("navident") String navident){
-	//	return testgruppeService.fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navident);
-	//}
 
 	@GetMapping("/{gruppeId}/attributter")
 	public Set<String> getAttributterForGruppe(@PathVariable("gruppeId") String gruppeId){
