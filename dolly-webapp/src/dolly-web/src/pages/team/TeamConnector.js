@@ -8,7 +8,8 @@ const mapStateToProps = (state, ownProps) => {
 		currentTeamId: ownProps.match.params.teamId,
 		team:
 			state.team.items &&
-			state.team.items.find(t => t.id === parseInt(ownProps.match.params.teamId))
+			state.team.items.find(t => t.id === parseInt(ownProps.match.params.teamId)),
+		grupper: state.grupper.items
 	}
 }
 

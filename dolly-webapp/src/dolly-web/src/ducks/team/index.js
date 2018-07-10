@@ -15,8 +15,7 @@ const initialState = {
 	fetching: false,
 	createOrUpdateFetching: false,
 	items: [],
-	visning: 'mine',
-	activePage: 0
+	visning: 'mine'
 }
 
 export default function teamReducer(state = initialState, action) {
@@ -54,11 +53,7 @@ export default function teamReducer(state = initialState, action) {
 				...state,
 				visning: action.visning
 			}
-		case types.SET_ACTIVE_PAGE:
-			return {
-				...state,
-				activePage: action.page
-			}
+
 		default:
 			return state
 	}
@@ -96,11 +91,6 @@ export const setTeamVisning = visning => ({
 	visning
 })
 
-export const setActivePage = page => ({
-	type: types.SET_ACTIVE_PAGE,
-	page
-})
-
 export const fetchTeams = () => async (dispatch, getState) => {
 	const { bruker, team } = getState()
 	const currentBrukerId = bruker.brukerData.navIdent
@@ -113,7 +103,7 @@ export const fetchTeams = () => async (dispatch, getState) => {
 				? await DollyApi.getTeamsByUserId(currentBrukerId)
 				: await DollyApi.getTeams()
 
-		dispatch(requestTeamsSuccess(response.data))
+		return dispatch(requestTeamsSuccess(response.data))
 	} catch (error) {
 		dispatch(requestTeamsError)
 	}

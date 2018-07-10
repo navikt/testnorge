@@ -4,7 +4,10 @@ import PropTypes from 'prop-types'
 import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
 import Loading from '~/components/loading/Loading'
-import OpprettTeam from '../OpprettTeam/OpprettTeam'
+import OpprettTeam from './OpprettTeam/OpprettTeam'
+import Input from '~/components/fields/Input/Input'
+
+import './TeamOversikt.less'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
@@ -13,6 +16,10 @@ export default class TeamOversikt extends Component {
 
 	state = {
 		opprettTeam: false
+	}
+
+	componentDidMount() {
+		this.props.fetchTeams()
 	}
 
 	opprettToggle = () => {
@@ -28,20 +35,27 @@ export default class TeamOversikt extends Component {
 		this.setState({ opprettTeam: false })
 	}
 
+	handleViewChange = e => {
+		this.props.setTeamVisning(e.target.value)
+		this.props.fetchTeams()
+	}
+
 	render() {
 		const { teams, handleViewChange, history } = this.props
 		const { items, fetching, visning } = teams
 
 		return (
 			<div className="team-tab">
-				<Overskrift
-					type="h2"
-					label="Teams"
-					actions={[{ icon: 'add-circle', onClick: this.opprettToggle }]}
-				/>
+				<div className="flexbox--space">
+					<Overskrift
+						label="Teams"
+						actions={[{ icon: 'add-circle', onClick: this.opprettToggle }]}
+					/>
+					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
+				</div>
 
 				<div className="flexbox--space">
-					<ToggleGruppe onChange={handleViewChange} name="toggleGruppe">
+					<ToggleGruppe onChange={this.handleViewChange} name="toggleGruppe">
 						<ToggleKnapp value="mine" checked={visning === 'mine'} key="1">
 							Mine
 						</ToggleKnapp>
@@ -69,7 +83,7 @@ export default class TeamOversikt extends Component {
 						{items.map(team => (
 							<Table.Row
 								key={team.id}
-								navLink={() => history.push(`profil/${team.id}`)}
+								navLink={() => history.push(`team/${team.id}`)}
 								editAction={() => {}}
 								deleteAction={() => {}}
 							>

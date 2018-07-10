@@ -161,14 +161,23 @@ export const startOpprettGruppe = () => ({ type: types.START_OPPRETT_GRUPPE })
 export const cancelRedigerOgOpprett = () => ({ type: types.CANCEL_REDIGER_OG_OPPRETT })
 
 // THUNKS
-export const getGrupper = () => async (dispatch, getState) => {
+export const getGrupper = ({ teamId = null } = {}) => async (dispatch, getState) => {
 	const { visning } = getState().grupper
+	const { brukerData } = getState().bruker
+	console.log(teamId)
 	try {
-		// TODO: Use actual userID from login
 		dispatch(getGrupperRequest())
-		const response =
-			visning !== 'mine' ? await DollyApi.getGrupper() : await DollyApi.getGruppeByUserId('Neymar')
-
+		let response
+		switch (true) {
+			case teamId !== null:
+				response = await DollyApi.getGruppeByTeamId(teamId)
+				break
+			case visning === 'mine':
+				response = await DollyApi.getGruppeByUserId(brukerData.navIdent)
+				break
+			default:
+				response = await DollyApi.getGrupper()
+		}
 		return dispatch(getGrupperSuccess(response.data))
 	} catch (error) {
 		return dispatch(getGrupperError(error))
