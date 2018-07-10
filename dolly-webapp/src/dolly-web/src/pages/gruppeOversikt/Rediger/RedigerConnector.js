@@ -8,7 +8,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	createGruppe: nyGruppe => dispatch(createGruppe(nyGruppe)),
-	updateGruppe: (index, gruppe) => dispatch(updateGruppe(index, gruppe)),
+	updateGruppe: (id, gruppe) => dispatch(updateGruppe(id, gruppe)),
 	closeRedigerOgOpprett: () => dispatch(closeRedigerOgOpprett())
 })
 
