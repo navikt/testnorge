@@ -12,17 +12,18 @@ export default class FormErrors extends PureComponent {
 	render() {
 		const { errors, touched } = this.props
 
-		const actualErrors = []
+		const errorsToRender = []
 
+		// hvis vi har error og feltet er 'touched'
 		for (let error in errors) {
-			if (getIn(touched, error, false)) actualErrors.push(errors[error])
+			if (getIn(touched, error, false)) errorsToRender.push(errors[error])
 		}
 
-		if (actualErrors.length <= 0) return false
+		if (errorsToRender.length <= 0) return false
 
 		return (
 			<div className="form-errors">
-				<ul>{actualErrors.map((e, idx) => <li key={idx}>{e}</li>)}</ul>
+				<ul>{errorsToRender.map((e, idx) => <li key={idx}>{e}</li>)}</ul>
 			</div>
 		)
 	}

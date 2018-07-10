@@ -29,8 +29,9 @@ export default class Rediger extends PureComponent {
 	onHandleSubmit = async (values, actions) => {
 		const { createGruppe, updateGruppe } = this.props
 		// console.log('onHandleSubmit()', values, actions)
-		if (this.erRedigering) values = Object.assign({}, values, { id: this.props.gruppe.id })
-		const res = this.erRedigering ? await updateGruppe(values) : await createGruppe(values)
+		const res = this.erRedigering
+			? await updateGruppe(gruppe.id, values)
+			: await createGruppe(values)
 	}
 
 	validation = () =>
@@ -47,17 +48,9 @@ export default class Rediger extends PureComponent {
 		const { closeRedigerOgOpprett, currentUserId, gruppe } = this.props
 
 		let initialValues = {
-			navn: '',
-			teamId: null,
-			hensikt: ''
-		}
-
-		if (this.erRedigering) {
-			initialValues = Object.assign({}, initialValues, {
-				navn: gruppe.navn,
-				teamId: gruppe.team.id,
-				hensikt: gruppe.hensikt || ''
-			})
+			navn: getIn(gruppe, 'navn', ''),
+			teamId: getIn(gruppe, 'team.id', null),
+			hensikt: getIn(gruppe, 'hensikt', '')
 		}
 
 		return (

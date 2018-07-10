@@ -162,12 +162,15 @@ export const closeRedigerOgOpprett = () => ({ type: types.CLOSE_REDIGER_OG_OPPRE
 
 // THUNKS
 export const getGrupper = () => async (dispatch, getState) => {
-	const { visning } = getState().grupper
+	const state = getState()
+
+	const { visning } = state.grupper
+	const { navIdent } = state.bruker.brukerData
 	try {
 		// TODO: Use actual userID from login
 		dispatch(getGrupperRequest())
 		const response =
-			visning !== 'mine' ? await DollyApi.getGrupper() : await DollyApi.getGruppeByUserId('Neymar')
+			visning !== 'mine' ? await DollyApi.getGrupper() : await DollyApi.getGruppeByUserId(navIdent)
 
 		return dispatch(getGrupperSuccess(response.data))
 	} catch (error) {
