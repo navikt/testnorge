@@ -16,7 +16,7 @@ export const types = {
 	SETT_VISNING: 'grupper/sett-visning',
 	START_OPPRETT_GRUPPE: 'grupper/start-opprett-gruppe',
 	START_REDIGER_GRUPPE: 'grupper/start-rediger-gruppe',
-	CANCEL_REDIGER_OG_OPPRETT: 'grupper/cancel-rediger-og-opprett'
+	CLOSE_REDIGER_OG_OPPRETT: 'grupper/close-rediger-og-opprett'
 }
 
 const initialState = {
@@ -102,7 +102,7 @@ export default (state = initialState, action) => {
 				editId: action.editId,
 				visOpprettGruppe: false
 			}
-		case types.CANCEL_REDIGER_OG_OPPRETT:
+		case types.CLOSE_REDIGER_OG_OPPRETT:
 			return {
 				...state,
 				visOpprettGruppe: false,
@@ -158,7 +158,7 @@ const updateGrupperError = error => ({
 export const settVisning = visning => ({ type: types.SETT_VISNING, visning })
 export const startRedigerGruppe = editId => ({ type: types.START_REDIGER_GRUPPE, editId })
 export const startOpprettGruppe = () => ({ type: types.START_OPPRETT_GRUPPE })
-export const cancelRedigerOgOpprett = () => ({ type: types.CANCEL_REDIGER_OG_OPPRETT })
+export const closeRedigerOgOpprett = () => ({ type: types.CLOSE_REDIGER_OG_OPPRETT })
 
 // THUNKS
 export const getGrupper = () => async (dispatch, getState) => {

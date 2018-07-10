@@ -30,15 +30,26 @@ export default class Liste extends PureComponent {
 						return <RedigerConnector key={gruppe.id} gruppe={gruppe} />
 					}
 
+					// base row props
+					const rowProps = {
+						key: `row${gruppe.id}`,
+						navLink: () => history.push(`gruppe/${gruppe.id}`)
+					}
+
+					// Vise redigeringsknapp eller stjerne
+					if (gruppe.erMedlemAvTeamSomEierGruppe) {
+						rowProps.editAction = () => startRedigerGruppe(gruppe.id)
+					} else {
+						rowProps.favoriteAction = () => {
+							alert('favorite this - not implemented')
+						}
+					}
+
 					return (
-						<Table.Row
-							key={`row${gruppe.id}`}
-							navLink={() => history.push(`gruppe/${gruppe.id}`)}
-							editAction={() => startRedigerGruppe(gruppe.id)}
-						>
+						<Table.Row {...rowProps}>
 							<Table.Column width="15" value={gruppe.id.toString()} />
 							<Table.Column width="20" value={gruppe.navn} />
-							<Table.Column width="15" value={gruppe.teamTilhoerlighetNavn} />
+							<Table.Column width="15" value={gruppe.team.navn} />
 							<Table.Column width="40" value={gruppe.hensikt} />
 						</Table.Row>
 					)
