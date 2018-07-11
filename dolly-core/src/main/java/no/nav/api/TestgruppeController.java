@@ -54,7 +54,7 @@ public class TestgruppeController {
 	//}
 
 	@PutMapping(value = "/{gruppeId}")
-    public RsTestgruppeMedErMedlemOgFavoritt oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsTestgruppe testgruppe){
+    public RsTestgruppeMedErMedlemOgFavoritt oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettTestgruppe testgruppe){
 		RsTestgruppe testgruppeRes = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
 		return new ArrayList<>(testgruppeService.getRsTestgruppeMedErMedlem(new HashSet<>(Arrays.asList(testgruppeRes)))).get(0);
 	}

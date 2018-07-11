@@ -133,19 +133,15 @@ public class TestgruppeService {
     }
 
     @Transactional
-    public RsTestgruppe oppdaterTestgruppe(Long gruppeId, RsTestgruppe testgruppe) {
+    public RsTestgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettTestgruppe testgruppe) {
         Testgruppe savedGruppe = fetchTestgruppeById(gruppeId);
         Testgruppe requestGruppe = mapperFacade.map(testgruppe, Testgruppe.class);
 
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
         Bruker bruker = brukerService.fetchBruker(auth.getPrincipal());
 
-        savedGruppe.setOpprettetAv(requestGruppe.getOpprettetAv());
         savedGruppe.setHensikt(requestGruppe.getHensikt());
         savedGruppe.setNavn(requestGruppe.getNavn());
-        savedGruppe.setTestidenter(requestGruppe.getTestidenter());
-        savedGruppe.setTeamtilhoerighet(requestGruppe.getTeamtilhoerighet());
-        savedGruppe.setFavorisertAv(requestGruppe.getFavorisertAv());
         savedGruppe.setSistEndretAv(bruker);
         savedGruppe.setDatoEndret(LocalDate.now());
 
