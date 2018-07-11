@@ -161,10 +161,11 @@ export const startOpprettGruppe = () => ({ type: types.START_OPPRETT_GRUPPE })
 export const closeRedigerOgOpprett = () => ({ type: types.CLOSE_REDIGER_OG_OPPRETT })
 
 // THUNKS
-export const getGrupper = ({ teamId = null } = {}) => async (dispatch, getState) => {
-	const { visning } = getState().grupper
-	const { brukerData } = getState().bruker
-	console.log(teamId)
+export const getGrupper = () => async (dispatch, getState) => {
+	const state = getState()
+
+	const { visning } = state.grupper
+	const { navIdent } = state.bruker.brukerData
 	try {
 		dispatch(getGrupperRequest())
 		let response
@@ -189,6 +190,7 @@ export const createGruppe = nyGruppe => async dispatch => {
 		dispatch(createGrupperRequest())
 		const response = await DollyApi.createGruppe(nyGruppe)
 		dispatch(createGrupperSuccess(response.data))
+		return dispatch(push(`/gruppe/${response.data.id}`))
 	} catch (error) {
 		dispatch(createGrupperError(error))
 	}
