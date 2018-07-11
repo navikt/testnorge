@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Rediger from './Rediger'
-import { createGruppe, updateGruppe, cancelRedigerOgOpprett } from '~/ducks/grupper'
+import { createGruppe, updateGruppe, closeRedigerOgOpprett } from '~/ducks/grupper'
 
 const mapStateToProps = state => ({
 	currentUserId: state.bruker.brukerData.navIdent
@@ -8,8 +8,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	createGruppe: nyGruppe => dispatch(createGruppe(nyGruppe)),
-	updateGruppe: (index, gruppe) => dispatch(updateGruppe(index, gruppe)),
-	cancelRedigerOgOpprett: () => dispatch(cancelRedigerOgOpprett())
+	updateGruppe: (id, gruppe) => dispatch(updateGruppe(id, gruppe)),
+	closeRedigerOgOpprett: () => dispatch(closeRedigerOgOpprett())
 })
 
 export default connect(
