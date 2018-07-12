@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
-import IconButton from '~/components/fields/IconButton/IconButton'
+import IconButton from '~/components/button/IconButton/IconButton'
+import ExpandButton from '~/components/button/ExpandButton'
 import './table.less'
 
 class TableRow extends PureComponent {
@@ -43,11 +44,6 @@ class TableRow extends PureComponent {
 			expanded: this.state.expanded
 		})
 
-		const iconChevronClass = cn({
-			'chevron-down': !this.state.expanded,
-			'chevron-up': this.state.expanded
-		})
-
 		return (
 			<div className={rowClass}>
 				<div className="dot-body-row-columns" {...rowProps}>
@@ -56,7 +52,9 @@ class TableRow extends PureComponent {
 						{editAction && <IconButton kind="edit" onClick={editAction} />}
 						{favoriteAction && <IconButton kind="star" onClick={favoriteAction} />}
 						{deleteAction && <IconButton kind="trashcan" onClick={deleteAction} />}
-						{expandComponent && <IconButton kind={iconChevronClass} onClick={this.onRowClick} />}
+						{expandComponent && (
+							<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
+						)}
 					</Table.Column>
 				</div>
 				{this.state.expanded && (
