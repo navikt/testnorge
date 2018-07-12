@@ -9,7 +9,7 @@ import Knapp from 'nav-frontend-knapper'
 import FormErrors from '~/components/formErrors/FormErrors'
 import * as yup from 'yup'
 
-import './Rediger.less'
+// import './Rediger.less'
 
 export default class Rediger extends PureComponent {
 	static propTypes = {
@@ -27,7 +27,7 @@ export default class Rediger extends PureComponent {
 	erRedigering = Boolean(getIn(this.props.gruppe, 'id', false))
 
 	onHandleSubmit = async (values, actions) => {
-		const { createGruppe, updateGruppe } = this.props
+		const { createGruppe, updateGruppe, gruppe } = this.props
 		// console.log('onHandleSubmit()', values, actions)
 		const res = this.erRedigering
 			? await updateGruppe(gruppe.id, values)
@@ -61,16 +61,10 @@ export default class Rediger extends PureComponent {
 				render={props => {
 					const { values, touched, errors, dirty, isSubmitting } = props
 					return (
-						<Form className="opprett-gruppe" autoComplete="off">
+						<Form className="opprett-tabellrad" autoComplete="off">
 							<h2>{this.erRedigering ? 'Rediger gruppe' : 'Opprett gruppe'}</h2>
 							<div className="fields">
-								<Field
-									name="navn"
-									label="Navn"
-									className="test"
-									autoFocus
-									component={FormikInput}
-								/>
+								<Field name="navn" label="Navn" autoFocus component={FormikInput} />
 								<Field
 									name="teamId"
 									label="Velg team"
@@ -92,7 +86,7 @@ export default class Rediger extends PureComponent {
 							</div>
 
 							<FormErrors errors={errors} touched={touched} />
-							<DisplayFormikState {...props} />
+							{/* <DisplayFormikState {...props} /> */}
 						</Form>
 					)
 				}}

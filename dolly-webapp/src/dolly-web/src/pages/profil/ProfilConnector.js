@@ -9,7 +9,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
 	fetchTeams: () => dispatch(fetchTeams()),
 	setTeamVisning: visning => dispatch(setTeamVisning(visning)),
-	setActivePage: page => dispatch(setActivePage(page)),
 	createTeam: data => dispatch(createTeam(data))
 })
 

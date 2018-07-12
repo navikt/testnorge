@@ -1,22 +1,30 @@
 import { DollyApi } from '~/service/Api'
 
 export const types = {
-	REQUEST_TEAMS: 'REQUEST_TEAMS',
-	REQUEST_TEAMS_SUCCESS: 'REQUEST_TEAM_SUCCESS',
-	REQUEST_TEAMS_ERROR: 'REQUEST_TEAMS_ERROR',
-	CREATE_TEAM_SUCCESS: 'CREATE_TEAM_SUCCESS',
-	SET_TEAM_VISNING: 'SETT_TEAM_VISNING',
-	CREATE_OR_UPDATE_TEAM_REQUEST: 'CREATE_OR_UPDATE_TEAM_REQUEST',
-	CREATE_TEAM_SUCCESS: 'CREATE_TEAM_SUCCESS',
-	UPDATE_TEAM_SUCCESS: 'UPDATE_TEAM_SUCCESS'
+	REQUEST_TEAMS: 'team/REQUEST_TEAMS',
+	REQUEST_TEAMS_SUCCESS: 'team/REQUEST_TEAM_SUCCESS',
+	REQUEST_TEAMS_ERROR: 'team/REQUEST_TEAMS_ERROR',
+	CREATE_TEAM_REQUEST: 'team/CREATE_TEAM_REQUEST',
+	CREATE_TEAM_SUCCESS: 'team/CREATE_TEAM_SUCCESS',
+	CREATE_TEAM_ERROR: 'team/CREATE_TEAM_ERROR',
+	UPDATE_TEAM_REQUEST: 'team/UPDATE_TEAM_REQUEST',
+	UPDATE_TEAM_SUCCESS: 'team/UPDATE_TEAM_SUCCESS',
+	UPDATE_TEAM_ERROR: 'team/UPDATE_TEAM_ERROR',
+	DELETE_TEAM_REQUEST: 'team/DELETE_TEAM_REQUEST',
+	DELETE_TEAM_SUCCESS: 'team/DELETE_TEAM_SUCCESS',
+	DELETE_TEAM_ERROR: 'team/DELETE_TEAM_ERROR',
+	SET_TEAM_VISNING: 'team/SET_TEAM_VISNING',
+	START_OPPRETT_TEAM: 'team/START_OPPRETT_TEAM',
+	START_REDIGER_TEAM: 'team/START_REDIGER_TEAM',
+	CLOSE_OPPRETT_REDIGER_TEAM: 'team/CLOSE_OPPRETT_REDIGER_TEAM'
 }
 
 const initialState = {
 	fetching: false,
-	createOrUpdateFetching: false,
 	items: [],
 	visning: 'mine',
-	activePage: 0
+	visOpprettTeam: false,
+	editTeamId: null
 }
 
 export default function teamReducer(state = initialState, action) {
@@ -38,26 +46,71 @@ export default function teamReducer(state = initialState, action) {
 				fetching: false,
 				error: action.error
 			}
-		case types.CREATE_OR_UPDATE_TEAM_REQUEST:
+		case types.CREATE_TEAM_REQUEST:
 			return {
 				...state,
-				createOrUpdateFetching: true
+				fetching: true
 			}
 		case types.CREATE_TEAM_SUCCESS:
 			return {
 				...state,
-				createOrUpdateFetching: false,
+				fetching: false,
+				visOpprettTeam: false,
 				items: [...state.items, action.team]
+			}
+		case types.CREATE_TEAM_ERROR:
+			return {
+				...state,
+				fetching: false,
+				error: action.error
+			}
+		case types.UPDATE_TEAM_REQUEST:
+			return {
+				...state,
+				fetching: true
+			}
+		case types.UPDATE_TEAM_SUCCESS:
+			return {
+				...state,
+				fetching: false,
+				editTeamId: null,
+				items: items.map(item => {
+					if (item.id !== action.team.id) return item
+
+					return {
+						...item,
+						...action.team
+					}
+				})
+			}
+		case types.UPDATE_TEAM_ERROR:
+			return {
+				...state,
+				fetching: false,
+				error: action.error
 			}
 		case types.SET_TEAM_VISNING:
 			return {
 				...state,
 				visning: action.visning
 			}
-		case types.SET_ACTIVE_PAGE:
+		case types.START_OPPRETT_TEAM:
 			return {
 				...state,
-				activePage: action.page
+				visOpprettTeam: true,
+				editTeamId: null
+			}
+		case types.START_REDIGER_TEAM:
+			return {
+				...state,
+				visOpprettTeam: false,
+				editTeamId: action.teamId
+			}
+		case types.CLOSE_OPPRETT_REDIGER_TEAM:
+			return {
+				...state,
+				visOpprettTeam: false,
+				editTeamId: null
 			}
 		default:
 			return state
@@ -77,8 +130,8 @@ const requestTeamsError = error => ({
 	type: types.REQUEST_TEAMS_ERROR
 })
 
-const createOrUpdateTeamRequest = () => ({
-	type: types.CREATE_OR_UPDATE_TEAM_REQUEST
+const createTeamRequest = () => ({
+	type: types.CREATE_TEAM_REQUEST
 })
 
 const createTeamSuccess = team => ({
@@ -86,21 +139,31 @@ const createTeamSuccess = team => ({
 	team
 })
 
-const updateTeamSuccess = (team, index) => ({
+const createTeamError = error => ({
+	type: types.CREATE_TEAM_ERROR,
+	error
+})
+
+const updateTeamRequest = () => ({
+	type: types.UPDATE_TEAM_REQUEST
+})
+
+const updateTeamSuccess = team => ({
 	type: types.UPDATE_TEAM_SUCCESS,
 	team
 })
 
-export const setTeamVisning = visning => ({
-	type: types.SET_TEAM_VISNING,
-	visning
+const updateTeamError = error => ({
+	type: types.UPDATE_TEAM_ERROR,
+	error
 })
 
-export const setActivePage = page => ({
-	type: types.SET_ACTIVE_PAGE,
-	page
-})
+export const setTeamVisning = visning => ({ type: types.SET_TEAM_VISNING, visning })
+export const startOpprettTeam = () => ({ type: types.START_OPPRETT_TEAM })
+export const startRedigerTeam = teamId => ({ type: types.START_REDIGER_TEAM, teamId })
+export const closeOpprettRedigerTeam = () => ({ type: types.CLOSE_OPPRETT_REDIGER_TEAM })
 
+// THUNKS
 export const fetchTeams = () => async (dispatch, getState) => {
 	const { bruker, team } = getState()
 	const currentBrukerId = bruker.brukerData.navIdent
@@ -113,7 +176,7 @@ export const fetchTeams = () => async (dispatch, getState) => {
 				? await DollyApi.getTeamsByUserId(currentBrukerId)
 				: await DollyApi.getTeams()
 
-		dispatch(requestTeamsSuccess(response.data))
+		return dispatch(requestTeamsSuccess(response.data))
 	} catch (error) {
 		dispatch(requestTeamsError)
 	}
@@ -121,10 +184,25 @@ export const fetchTeams = () => async (dispatch, getState) => {
 
 export const createTeam = data => async dispatch => {
 	try {
-		dispatch(createOrUpdateTeamRequest())
+		dispatch(createTeamRequest())
 		const response = await DollyApi.createTeam(data)
 		dispatch(createTeamSuccess(response.data))
 	} catch (error) {
-		console.log(error)
+		dispatch(createTeamError(error))
 	}
+}
+
+export const updateTeam = (teamId, data) => async dispatch => {
+	try {
+		dispatch(updateTeamRequest())
+		const response = await DollyApi.updateTeam(teamId, data)
+		dispatch(updateTeamSuccess(response.data))
+	} catch (error) {
+		dispatch(updateTeamError(error))
+	}
+}
+
+export const deleteTeam = teamId => async dispatch => {
+	try {
+	} catch (error) {}
 }

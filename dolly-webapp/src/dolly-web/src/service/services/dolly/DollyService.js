@@ -19,6 +19,10 @@ export default class DollyService {
 		return Request.get(Endpoints.gruppeByUser(userId))
 	}
 
+	static getGruppeByTeamId(teamId) {
+		return Request.get(Endpoints.gruppeByTeam(teamId))
+	}
+
 	static createGruppe(data) {
 		return Request.post(Endpoints.gruppe(), data)
 	}
@@ -60,8 +64,8 @@ export default class DollyService {
 		return Request.post(Endpoints.team(), data)
 	}
 
-	static updateTeam(teamId) {
-		return Request.put(Endpoints.teamById(teamId))
+	static updateTeam(teamId, data) {
+		return Request.put(Endpoints.teamById(teamId), data)
 	}
 
 	static updateTeamMedlemmer(teamId) {

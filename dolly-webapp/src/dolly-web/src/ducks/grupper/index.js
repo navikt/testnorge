@@ -1,5 +1,4 @@
 import { DollyApi } from '~/service/Api'
-import { push } from 'connected-react-router'
 
 export const types = {
 	GET_GRUPPER_REQUEST: 'grupper/get-request',
@@ -56,7 +55,7 @@ export default (state = initialState, action) => {
 			return {
 				...state,
 				fetching: false,
-				items: [...state.items.push(action.gruppe)],
+				items: [...state.items, action.gruppe],
 				visOpprettGruppe: false
 			}
 		case types.CREATE_GRUPPER_ERROR:
@@ -162,17 +161,24 @@ export const startOpprettGruppe = () => ({ type: types.START_OPPRETT_GRUPPE })
 export const closeRedigerOgOpprett = () => ({ type: types.CLOSE_REDIGER_OG_OPPRETT })
 
 // THUNKS
-export const getGrupper = () => async (dispatch, getState) => {
+export const getGrupper = ({ teamId = null } = {}) => async (dispatch, getState) => {
 	const state = getState()
 
 	const { visning } = state.grupper
 	const { navIdent } = state.bruker.brukerData
 	try {
-		// TODO: Use actual userID from login
 		dispatch(getGrupperRequest())
-		const response =
-			visning !== 'mine' ? await DollyApi.getGrupper() : await DollyApi.getGruppeByUserId(navIdent)
-
+		let response
+		switch (true) {
+			case teamId !== null:
+				response = await DollyApi.getGruppeByTeamId(teamId)
+				break
+			case visning === 'mine':
+				response = await DollyApi.getGruppeByUserId(navIdent)
+				break
+			default:
+				response = await DollyApi.getGrupper()
+		}
 		return dispatch(getGrupperSuccess(response.data))
 	} catch (error) {
 		return dispatch(getGrupperError(error))
@@ -190,10 +196,10 @@ export const createGruppe = nyGruppe => async dispatch => {
 	}
 }
 
-export const updateGruppe = gruppe => async (dispatch, getState) => {
+export const updateGruppe = (id, values) => async (dispatch, getState) => {
 	try {
 		dispatch(updateGrupperRequest())
-		const response = await DollyApi.updateGruppe(gruppe.id, gruppe)
+		const response = await DollyApi.updateGruppe(id, values)
 		dispatch(updateGrupperSuccess(response.data))
 	} catch (error) {
 		dispatch(updateGrupperError(error))
