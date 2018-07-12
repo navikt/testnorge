@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
-import IconButton from '~/components/fields/IconButton/IconButton'
+import IconButton from '~/components/button/IconButton/IconButton'
 
 import './Overskrift.less'
 
