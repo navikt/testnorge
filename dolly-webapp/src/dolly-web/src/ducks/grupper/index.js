@@ -196,10 +196,10 @@ export const createGruppe = nyGruppe => async dispatch => {
 	}
 }
 
-export const updateGruppe = gruppe => async (dispatch, getState) => {
+export const updateGruppe = (id, values) => async (dispatch, getState) => {
 	try {
 		dispatch(updateGrupperRequest())
-		const response = await DollyApi.updateGruppe(gruppe.id, gruppe)
+		const response = await DollyApi.updateGruppe(id, values)
 		dispatch(updateGrupperSuccess(response.data))
 	} catch (error) {
 		dispatch(updateGrupperError(error))
