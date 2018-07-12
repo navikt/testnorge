@@ -64,8 +64,8 @@ export default class DollyService {
 		return Request.post(Endpoints.team(), data)
 	}
 
-	static updateTeam(teamId) {
-		return Request.put(Endpoints.teamById(teamId))
+	static updateTeam(teamId, data) {
+		return Request.put(Endpoints.teamById(teamId), data)
 	}
 
 	static updateTeamMedlemmer(teamId) {

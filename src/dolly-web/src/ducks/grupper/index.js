@@ -161,7 +161,7 @@ export const startOpprettGruppe = () => ({ type: types.START_OPPRETT_GRUPPE })
 export const closeRedigerOgOpprett = () => ({ type: types.CLOSE_REDIGER_OG_OPPRETT })
 
 // THUNKS
-export const getGrupper = () => async (dispatch, getState) => {
+export const getGrupper = ({ teamId = null } = {}) => async (dispatch, getState) => {
 	const state = getState()
 
 	const { visning } = state.grupper
@@ -174,7 +174,7 @@ export const getGrupper = () => async (dispatch, getState) => {
 				response = await DollyApi.getGruppeByTeamId(teamId)
 				break
 			case visning === 'mine':
-				response = await DollyApi.getGruppeByUserId(brukerData.navIdent)
+				response = await DollyApi.getGruppeByUserId(navIdent)
 				break
 			default:
 				response = await DollyApi.getGrupper()
