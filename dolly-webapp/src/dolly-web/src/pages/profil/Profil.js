@@ -2,16 +2,27 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Tabs from 'nav-frontend-tabs'
 import Overskrift from '~/components/overskrift/Overskrift'
+import StaticValue from '~/components/fields/StaticValue/StaticValue'
+
+import './Profil.less'
 
 export default class ProfilPage extends Component {
-	static propTypes = {}
+	static propTypes = {
+		bruker: PropTypes.object
+	}
 
 	render() {
-		const { teams, createTeam, history } = this.props
+		const { bruker, history } = this.props
+		console.log(this.props)
 
 		return (
-			<div>
+			<div className="profil-container">
 				<Overskrift label="Min profil" />
+				<StaticValue header="NAVIDENT" value={bruker.navIdent} />
+				<StaticValue header="ROLLE" value={bruker.rolle} />
+
+				<div onClick={() => history.push('/team')}>Teams</div>
+				<div>Maler - NO WORK</div>
 			</div>
 		)
 	}
