@@ -8,8 +8,11 @@ import no.nav.jpa.Testgruppe;
 import no.nav.jpa.Testident;
 import no.nav.service.TestgruppeService;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -49,5 +52,20 @@ public class DollyTpsfService {
 
         String g = "g";
 
+    }
+
+    private HttpHeaders copyHeaders(HttpServletRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        Enumeration<String> headerNames = request.getHeaderNames();
+
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            if ("connection".equals(headerName)) {
+                headers.set(headerName, "keep-alive");
+            } else {
+                headers.set(headerName, request.getHeader(headerName));
+            }
+        }
+        return headers;
     }
 }

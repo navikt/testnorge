@@ -2,6 +2,7 @@ package no.nav.appserivces.tpsf.controller;
 
 import no.nav.appserivces.tpsf.service.DollyTpsfService;
 
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
