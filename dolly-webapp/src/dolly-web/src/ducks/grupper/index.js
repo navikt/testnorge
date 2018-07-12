@@ -55,7 +55,7 @@ export default (state = initialState, action) => {
 			return {
 				...state,
 				fetching: false,
-				items: [...state.items.push(action.gruppe)],
+				items: [...state.items, action.gruppe],
 				visOpprettGruppe: false
 			}
 		case types.CREATE_GRUPPER_ERROR:
