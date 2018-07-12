@@ -7,9 +7,11 @@ import no.nav.exceptions.DollyFunctionalException;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.jose4j.json.internal.json_simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +54,7 @@ public class TpsfApiService {
                 .antall(1)
                 .foedtEtter(LocalDate.of(2010, 1, 7))
                 .foedtFoer(LocalDate.now())
+                .regdato(LocalDateTime.now())
                 .identtype("FNR")
                 .kjonn('M')
                 .withAdresse(false)
@@ -60,9 +63,11 @@ public class TpsfApiService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
         HttpEntity<Object> entity;
         try {
-            entity = new HttpEntity<>(objectMapper.writeValueAsString(request1), headers);
+            Map<String, String> map = objectMapper.convertValue(request1, Map.class);
+            entity = new HttpEntity<>(map, headers);
         } catch (Exception e){
             throw new DollyFunctionalException(e.getMessage());
         }
@@ -70,7 +75,7 @@ public class TpsfApiService {
         ResponseEntity<Object[]> response = null;
         ResponseEntity<Object[]> respyy = restTemplate.getForEntity("http://localhost:8050/api/v1/dolly/testdata/personerdata?identer=13101750196", Object[].class);
         try {
-            response = restTemplate.postForEntity("http://localhost/8050/api/v1/dolly/testdata/personer", entity, Object[].class);
+            response = restTemplate.exchange("http://localhost:8050/api/v1/dolly/testdata/personer", HttpMethod.POST, entity, Object[].class);
         } catch (Exception e) {
             throw new DollyFunctionalException("TPSF exception ble kastet: " + e.getMessage());
         }
