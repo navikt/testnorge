@@ -5,7 +5,7 @@ import { createTeam, updateTeam, closeOpprettRedigerTeam } from '~/ducks/team'
 const mapStateToProps = state => ({})
 
 const mapDispatchToProps = dispatch => ({
-	createTeam: () => dispatch(createTeam()),
+	createTeam: values => dispatch(createTeam(values)),
 	updateTeam: (teamId, values) => dispatch(updateTeam(teamId, values)),
 	closeOpprettRedigerTeam: () => dispatch(closeOpprettRedigerTeam())
 })

@@ -4,13 +4,16 @@ export const types = {
 	REQUEST_TEAMS: 'team/REQUEST_TEAMS',
 	REQUEST_TEAMS_SUCCESS: 'team/REQUEST_TEAM_SUCCESS',
 	REQUEST_TEAMS_ERROR: 'team/REQUEST_TEAMS_ERROR',
-	SET_TEAM_VISNING: 'team/SET_TEAM_VISNING',
 	CREATE_TEAM_REQUEST: 'team/CREATE_TEAM_REQUEST',
 	CREATE_TEAM_SUCCESS: 'team/CREATE_TEAM_SUCCESS',
 	CREATE_TEAM_ERROR: 'team/CREATE_TEAM_ERROR',
 	UPDATE_TEAM_REQUEST: 'team/UPDATE_TEAM_REQUEST',
 	UPDATE_TEAM_SUCCESS: 'team/UPDATE_TEAM_SUCCESS',
 	UPDATE_TEAM_ERROR: 'team/UPDATE_TEAM_ERROR',
+	DELETE_TEAM_REQUEST: 'team/DELETE_TEAM_REQUEST',
+	DELETE_TEAM_SUCCESS: 'team/DELETE_TEAM_SUCCESS',
+	DELETE_TEAM_ERROR: 'team/DELETE_TEAM_ERROR',
+	SET_TEAM_VISNING: 'team/SET_TEAM_VISNING',
 	START_OPPRETT_TEAM: 'team/START_OPPRETT_TEAM',
 	START_REDIGER_TEAM: 'team/START_REDIGER_TEAM',
 	CLOSE_OPPRETT_REDIGER_TEAM: 'team/CLOSE_OPPRETT_REDIGER_TEAM'
@@ -52,6 +55,7 @@ export default function teamReducer(state = initialState, action) {
 			return {
 				...state,
 				fetching: false,
+				visOpprettTeam: false,
 				items: [...state.items, action.team]
 			}
 		case types.CREATE_TEAM_ERROR:
@@ -69,6 +73,7 @@ export default function teamReducer(state = initialState, action) {
 			return {
 				...state,
 				fetching: false,
+				editTeamId: null,
 				items: items.map(item => {
 					if (item.id !== action.team.id) return item
 
@@ -195,4 +200,9 @@ export const updateTeam = (teamId, data) => async dispatch => {
 	} catch (error) {
 		dispatch(updateTeamError(error))
 	}
+}
+
+export const deleteTeam = teamId => async dispatch => {
+	try {
+	} catch (error) {}
 }

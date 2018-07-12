@@ -7,8 +7,6 @@ import RedigerConnector from './Rediger/RedigerConnector'
 import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
 
-import './GruppeOversikt.less'
-
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {
 		grupper: PropTypes.object,
@@ -33,7 +31,7 @@ export default class GruppeOversikt extends PureComponent {
 		const { grupper, history, startRedigerGruppe, startOpprettGruppe } = this.props
 
 		return (
-			<div className="gruppeoversikt-container">
+			<div className="oversikt-container">
 				<div className="flexbox--space">
 					<Overskrift
 						label="Testdatagrupper"
