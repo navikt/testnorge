@@ -3,7 +3,7 @@ import Profil from './Profil'
 import { fetchTeams, setTeamVisning, setActivePage, createTeam } from '~/ducks/team'
 
 const mapStateToProps = state => ({
-	teams: state.team
+	bruker: state.bruker.brukerData
 })
 
 const mapDispatchToProps = dispatch => ({
