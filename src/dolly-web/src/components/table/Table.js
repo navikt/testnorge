@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
-import IconButton from '~/components/button/IconButton/IconButton'
+import Button from '~/components/button/Button'
 import ExpandButton from '~/components/button/ExpandButton'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import './table.less'
@@ -50,8 +50,8 @@ class TableRow extends PureComponent {
 				<div className="dot-body-row-columns" {...rowProps}>
 					{children}
 					<Table.Column className="dot-body-row-actioncolumn">
-						{editAction && <IconButton kind="edit" onClick={editAction} />}
-						{favoriteAction && <IconButton kind="star" onClick={favoriteAction} />}
+						{editAction && <Button kind="edit" onClick={editAction} />}
+						{favoriteAction && <Button kind="star" onClick={favoriteAction} />}
 						{deleteAction && <ConfirmTooltip onClick={deleteAction} />}
 						{expandComponent && (
 							<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />

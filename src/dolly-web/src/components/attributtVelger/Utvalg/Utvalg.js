@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import IconButton from '~/components/button/IconButton/IconButton'
+import Button from '~/components/button/Button'
 
 import './Utvalg.less'
 
@@ -17,34 +17,34 @@ export default class Utvalg extends PureComponent {
 				<ul>
 					<li>
 						<span>
-							Personinfo <IconButton kind="remove-circle" />
+							Personinfo <Button kind="remove-circle" />
 						</span>
 						<ul>
 							<li>
 								<span>
-									Kjønn <IconButton kind="remove-circle" />
+									Kjønn <Button kind="remove-circle" />
 								</span>
 							</li>
 							<li>
 								<span>
-									Født etter <IconButton kind="remove-circle" />
+									Født etter <Button kind="remove-circle" />
 								</span>
 							</li>
 							<li>
 								<span>
-									Født før <IconButton kind="remove-circle" />
+									Født før <Button kind="remove-circle" />
 								</span>
 							</li>
 						</ul>
 					</li>
 					<li>
 						<span>
-							Adresser <IconButton kind="remove-circle" />
+							Adresser <Button kind="remove-circle" />
 						</span>
 					</li>
 					<li>
 						<span>
-							Arbeidsforhold <IconButton kind="remove-circle" />
+							Arbeidsforhold <Button kind="remove-circle" />
 						</span>
 					</li>
 				</ul>

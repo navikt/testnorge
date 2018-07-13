@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Tooltip from 'rc-tooltip'
 import Icon from '~/components/icon/Icon'
-import LinkButton from '~/components/button/LinkButton/LinkButton'
-import IconButton from '~/components/button/IconButton/IconButton'
+import Button from '~/components/button/Button'
 
 import 'rc-tooltip/assets/bootstrap_white.css'
+import './ConfirmTooltip.less'
 
 export default class ConfirmTooltip extends Component {
 	static propTypes = {
@@ -34,8 +34,8 @@ export default class ConfirmTooltip extends Component {
 		const content = (
 			<div className="tooltip-content" onClick={this.stopPropagation}>
 				<div>{message}</div>
-				<LinkButton onClick={this.closeHandler}>JA</LinkButton>
-				<LinkButton onClick={this.closeHandler}>NEI</LinkButton>
+				<Button onClick={this.closeHandler}>JA</Button>
+				<Button onClick={this.closeHandler}>NEI</Button>
 			</div>
 		)
 		const arrow = <div className="rc-tooltip-arrow-inner" />
@@ -49,7 +49,7 @@ export default class ConfirmTooltip extends Component {
 				trigger={['click']}
 				onVisibleChange={this.onVisibleChangeHandler}
 			>
-				{children ? children : <IconButton kind="trashcan" />}
+				{children ? children : <Button kind="trashcan" />}
 			</Tooltip>
 		)
 	}
