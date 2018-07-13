@@ -45,7 +45,7 @@ export default class TeamOversikt extends Component {
 				</div>
 				{visOpprettTeam && <RedigerTeamConnector />}
 				{fetching ? (
-					<Loading label="laster grupper" panel />
+					<Loading label="laster teams" panel />
 				) : (
 					<Fragment>
 						<TeamListe
