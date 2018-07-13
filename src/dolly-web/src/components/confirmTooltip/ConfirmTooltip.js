@@ -25,8 +25,13 @@ export default class ConfirmTooltip extends Component {
 		this.setState({ visible })
 	}
 
-	closeHandler = e => {
+	closeHandler = () => {
 		this.setState({ visible: false })
+	}
+
+	confirmHandler = () => {
+		this.closeHandler()
+		this.props.onClick()
 	}
 
 	render() {
@@ -34,7 +39,7 @@ export default class ConfirmTooltip extends Component {
 		const content = (
 			<div className="tooltip-content" onClick={this.stopPropagation}>
 				<div>{message}</div>
-				<Button onClick={this.closeHandler}>JA</Button>
+				<Button onClick={this.confirmHandler}>JA</Button>
 				<Button onClick={this.closeHandler}>NEI</Button>
 			</div>
 		)

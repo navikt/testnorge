@@ -21,7 +21,7 @@ export default class TeamOversikt extends Component {
 	}
 
 	render() {
-		const { teams, history, startOpprettTeam, startRedigerTeam } = this.props
+		const { teams, history, startOpprettTeam, startRedigerTeam, deleteTeam } = this.props
 		const { items, fetching, visning, visOpprettTeam, editTeamId } = teams
 
 		return (
@@ -48,6 +48,7 @@ export default class TeamOversikt extends Component {
 					history={history}
 					startRedigerTeam={startRedigerTeam}
 					editTeamId={editTeamId}
+					deleteTeam={deleteTeam}
 				/>
 			</div>
 		)

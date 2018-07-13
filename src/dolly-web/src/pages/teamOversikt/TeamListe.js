@@ -5,7 +5,7 @@ import RedigerTeamConnector from './RedigerTeam/RedigerTeamConnector'
 
 class TeamListe extends Component {
 	render() {
-		const { items, fetching, history, startRedigerTeam, editTeamId } = this.props
+		const { items, fetching, history, startRedigerTeam, editTeamId, deleteTeam } = this.props
 		return (
 			<Fragment>
 				{fetching ? (
@@ -29,7 +29,7 @@ class TeamListe extends Component {
 									key={team.id}
 									navLink={() => history.push(`team/${team.id}`)}
 									editAction={() => startRedigerTeam(team.id)}
-									deleteAction={() => {}}
+									deleteAction={() => deleteTeam(team.id)}
 								>
 									<Table.Column width="20" value={team.navn} />
 									<Table.Column width="30" value={team.beskrivelse} />

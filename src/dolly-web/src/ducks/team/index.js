@@ -74,7 +74,7 @@ export default function teamReducer(state = initialState, action) {
 				...state,
 				fetching: false,
 				editTeamId: null,
-				items: items.map(item => {
+				items: state.items.map(item => {
 					if (item.id !== action.team.id) return item
 					return {
 						...item,
@@ -88,6 +88,25 @@ export default function teamReducer(state = initialState, action) {
 				fetching: false,
 				error: action.error
 			}
+		case types.DELETE_TEAM_REQUEST:
+			return {
+				...state,
+				fetching: true
+			}
+		case types.DELETE_TEAM_SUCCESS: {
+			return {
+				...state,
+				fetching: false,
+				items: state.items.filter(item => item.id !== action.teamId)
+			}
+		}
+		case types.DELETE_TEAM_ERROR: {
+			return {
+				...state,
+				fetching: false,
+				error: action.error
+			}
+		}
 		case types.SET_TEAM_VISNING:
 			return {
 				...state,
@@ -158,7 +177,17 @@ const updateTeamError = error => ({
 })
 
 const deleteTeamRequest = () => ({
-	type: DELETE_TEAM_REQUEST
+	type: types.DELETE_TEAM_REQUEST
+})
+
+const deleteTeamSuccess = teamId => ({
+	type: types.DELETE_TEAM_SUCCESS,
+	teamId
+})
+
+const deleteTeamError = error => ({
+	type: types.DELETE_TEAM_ERROR,
+	error
 })
 
 export const setTeamVisning = visning => ({ type: types.SET_TEAM_VISNING, visning })
@@ -207,5 +236,10 @@ export const updateTeam = (teamId, data) => async dispatch => {
 
 export const deleteTeam = teamId => async dispatch => {
 	try {
-	} catch (error) {}
+		dispatch(deleteTeamRequest())
+		const response = await DollyApi.deleteTeam(teamId)
+		dispatch(deleteTeamSuccess(teamId))
+	} catch (error) {
+		dispatch(deleteTeamError())
+	}
 }
