@@ -5,6 +5,7 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import Input from '~/components/fields/Input/Input'
 import RedigerTeamConnector from './RedigerTeam/RedigerTeamConnector'
 import TeamListe from './TeamListe'
+import FixedButton from '~/components/fixedButton/FixedButton'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
@@ -50,6 +51,7 @@ export default class TeamOversikt extends Component {
 					editTeamId={editTeamId}
 					deleteTeam={deleteTeam}
 				/>
+				<FixedButton onClick={startOpprettTeam} />
 			</div>
 		)
 	}
