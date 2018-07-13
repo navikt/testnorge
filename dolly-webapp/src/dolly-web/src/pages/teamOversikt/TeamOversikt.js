@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { ToggleGruppe, ToggleKnapp } from 'nav-frontend-skjema'
 import Overskrift from '~/components/overskrift/Overskrift'
 import Input from '~/components/fields/Input/Input'
 import RedigerTeamConnector from './RedigerTeam/RedigerTeamConnector'
+import Loading from '~/components/loading/Loading'
 import TeamListe from './TeamListe'
 import FixedButton from '~/components/fixedButton/FixedButton'
 
@@ -43,15 +44,21 @@ export default class TeamOversikt extends Component {
 					</ToggleGruppe>
 				</div>
 				{visOpprettTeam && <RedigerTeamConnector />}
-				<TeamListe
-					items={items}
-					fetching={fetching}
-					history={history}
-					startRedigerTeam={startRedigerTeam}
-					editTeamId={editTeamId}
-					deleteTeam={deleteTeam}
-				/>
-				<FixedButton onClick={startOpprettTeam} />
+				{fetching ? (
+					<Loading label="laster grupper" panel />
+				) : (
+					<Fragment>
+						<TeamListe
+							items={items}
+							fetching={fetching}
+							history={history}
+							startRedigerTeam={startRedigerTeam}
+							editTeamId={editTeamId}
+							deleteTeam={deleteTeam}
+						/>
+						<FixedButton onClick={startOpprettTeam} />
+					</Fragment>
+				)}
 			</div>
 		)
 	}
