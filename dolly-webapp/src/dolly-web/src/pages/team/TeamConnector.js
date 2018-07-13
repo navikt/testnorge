@@ -9,7 +9,9 @@ const mapStateToProps = (state, ownProps) => {
 		team:
 			state.team.items &&
 			state.team.items.find(t => t.id === parseInt(ownProps.match.params.teamId)),
-		grupper: state.grupper.items
+		teamFetching: state.team.fetching,
+		grupper: state.grupper.items,
+		gruppeFetching: state.grupper.fetching
 	}
 }
 
