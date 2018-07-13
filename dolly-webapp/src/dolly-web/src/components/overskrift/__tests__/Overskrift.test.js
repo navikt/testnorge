@@ -30,9 +30,9 @@ describe('Overskrift.js', () => {
 			}
 		]
 		const wrapper = shallow(<Overskrift actions={actions} />)
-		expect(wrapper.find('IconButton')).toHaveLength(1)
-		expect(wrapper.find('IconButton').props().onClick).toBe(actions[0].onClick)
-		expect(wrapper.find('IconButton').props().kind).toBe(actions[0].icon)
+		expect(wrapper.find('Button')).toHaveLength(1)
+		expect(wrapper.find('Button').props().onClick).toBe(actions[0].onClick)
+		expect(wrapper.find('Button').props().kind).toBe(actions[0].icon)
 	})
 
 	it('should merge className prop', () => {

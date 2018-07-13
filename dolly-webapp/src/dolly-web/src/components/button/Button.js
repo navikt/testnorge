@@ -2,16 +2,16 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Icon from '~/components/icon/Icon'
 
-import './IconButton.less'
+import './Button.less'
 
-export default class IconButton extends PureComponent {
+export default class Button extends PureComponent {
 	static propTypes = {
 		kind: PropTypes.string,
 		onClick: PropTypes.func
 	}
 
 	static defaultProps = {
-		kind: '',
+		kind: null,
 		onClick: () => {} // Default noop func
 	}
 
@@ -21,11 +21,12 @@ export default class IconButton extends PureComponent {
 	}
 
 	render() {
-		const { kind } = this.props
+		const { kind, children } = this.props
 
 		return (
-			<button className="iconbutton" onClick={this.onClickHandler}>
-				<Icon kind={kind} />
+			<button className="dolly-button" onClick={this.onClickHandler}>
+				{children && children}
+				{kind && <Icon kind={kind} />}
 			</button>
 		)
 	}

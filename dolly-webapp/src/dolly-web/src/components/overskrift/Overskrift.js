@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
-import IconButton from '~/components/button/IconButton/IconButton'
+import Button from '~/components/button/Button'
 
 import './Overskrift.less'
 
@@ -31,7 +31,7 @@ export default class Overskrift extends PureComponent {
 
 		return React.createElement(type, restProps, [
 			label,
-			actions.map((o, idx) => <IconButton key={idx} onClick={o.onClick} kind={o.icon} />)
+			actions.map((o, idx) => <Button key={idx} kind={o.icon} onClick={o.onClick} />)
 		])
 	}
 }
