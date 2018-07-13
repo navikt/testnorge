@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Tabs from 'nav-frontend-tabs'
 import Overskrift from '~/components/overskrift/Overskrift'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import LinkButton from '~/components/button/LinkButton/LinkButton'
 
 import './Profil.less'
 
@@ -21,8 +22,9 @@ export default class ProfilPage extends Component {
 				<StaticValue header="NAVIDENT" value={bruker.navIdent} />
 				<StaticValue header="ROLLE" value={bruker.rolle} />
 
-				<div onClick={() => history.push('/team')}>Teams</div>
-				<div>Maler - NO WORK</div>
+				<LinkButton fontSize={18} onClick={() => history.push('/team')}>
+					Teams
+				</LinkButton>
 			</div>
 		)
 	}
