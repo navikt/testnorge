@@ -76,7 +76,6 @@ export default function teamReducer(state = initialState, action) {
 				editTeamId: null,
 				items: items.map(item => {
 					if (item.id !== action.team.id) return item
-
 					return {
 						...item,
 						...action.team
@@ -156,6 +155,10 @@ const updateTeamSuccess = team => ({
 const updateTeamError = error => ({
 	type: types.UPDATE_TEAM_ERROR,
 	error
+})
+
+const deleteTeamRequest = () => ({
+	type: DELETE_TEAM_REQUEST
 })
 
 export const setTeamVisning = visning => ({ type: types.SET_TEAM_VISNING, visning })

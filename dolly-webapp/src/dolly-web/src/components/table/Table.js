@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import cn from 'classnames'
 import IconButton from '~/components/button/IconButton/IconButton'
 import ExpandButton from '~/components/button/ExpandButton'
+import DeleteButton from '~/components/button/DeleteButton'
 import './table.less'
 
 class TableRow extends PureComponent {
@@ -51,7 +52,7 @@ class TableRow extends PureComponent {
 					<Table.Column className="dot-body-row-actioncolumn">
 						{editAction && <IconButton kind="edit" onClick={editAction} />}
 						{favoriteAction && <IconButton kind="star" onClick={favoriteAction} />}
-						{deleteAction && <IconButton kind="trashcan" onClick={deleteAction} />}
+						{deleteAction && <DeleteButton onClick={deleteAction} />}
 						{expandComponent && (
 							<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
 						)}
