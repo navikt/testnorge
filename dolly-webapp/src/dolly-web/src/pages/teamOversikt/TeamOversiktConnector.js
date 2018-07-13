@@ -4,6 +4,7 @@ import {
 	fetchTeams,
 	setTeamVisning,
 	createTeam,
+	deleteTeam,
 	startOpprettTeam,
 	startRedigerTeam,
 	closeOpprettRedigerTeam
@@ -17,6 +18,7 @@ const mapDispatchToProps = dispatch => ({
 	fetchTeams: () => dispatch(fetchTeams()),
 	setTeamVisning: visning => dispatch(setTeamVisning(visning)),
 	createTeam: data => dispatch(createTeam(data)),
+	deleteTeam: teamId => dispatch(deleteTeam(teamId)),
 	startOpprettTeam: () => dispatch(startOpprettTeam()),
 	startRedigerTeam: teamId => dispatch(startRedigerTeam(teamId)),
 	closeOpprettRedigerTeam: () => dispatch(closeOpprettRedigerTeam())

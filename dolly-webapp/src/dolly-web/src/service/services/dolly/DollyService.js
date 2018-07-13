@@ -1,6 +1,7 @@
 import Request from '../../Request'
 import Endpoints from './DollyEndpoints'
 import Utils from './Utils'
+import { request } from 'http'
 
 export default class DollyService {
 	// UTILS
@@ -70,6 +71,10 @@ export default class DollyService {
 
 	static updateTeamMedlemmer(teamId) {
 		return Request.put(Endpoints.teamById(teamId))
+	}
+
+	static deleteTeam(teamId) {
+		return Request.delete(Endpoints.teamById(teamId))
 	}
 
 	// Bruker
