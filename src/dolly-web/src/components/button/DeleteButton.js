@@ -1,16 +1,14 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import Tooltip from 'rc-tooltip'
 import Icon from '~/components/icon/Icon'
 import LinkButton from './LinkButton/LinkButton'
+import IconButton from './IconButton/IconButton'
 
 import 'rc-tooltip/assets/bootstrap_white.css'
 
 export default class DeleteButton extends Component {
 	state = {
 		visible: false
-	}
-	stopPropagation = event => {
-		event.stopPropagation()
 	}
 
 	onVisibleChangeHandler = visible => {
@@ -32,20 +30,16 @@ export default class DeleteButton extends Component {
 		const arrow = <div className="rc-tooltip-arrow-inner" />
 
 		return (
-			<Fragment>
-				<Tooltip
-					visible={this.state.visible}
-					placement="right"
-					overlay={content}
-					arrowContent={arrow}
-					trigger={['click']}
-					onVisibleChange={this.onVisibleChangeHandler}
-				>
-					<button className="iconbutton" onClick={this.stopPropagation}>
-						<Icon kind="trashcan" />
-					</button>
-				</Tooltip>
-			</Fragment>
+			<Tooltip
+				visible={this.state.visible}
+				placement="right"
+				overlay={content}
+				arrowContent={arrow}
+				trigger={['click']}
+				onVisibleChange={this.onVisibleChangeHandler}
+			>
+				<IconButton kind="trashcan" onClick={() => {}} />
+			</Tooltip>
 		)
 	}
 }
