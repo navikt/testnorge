@@ -1,12 +1,22 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Tooltip from 'rc-tooltip'
 import Icon from '~/components/icon/Icon'
-import LinkButton from './LinkButton/LinkButton'
-import IconButton from './IconButton/IconButton'
+import LinkButton from '~/components/button/LinkButton/LinkButton'
+import IconButton from '~/components/button/IconButton/IconButton'
 
 import 'rc-tooltip/assets/bootstrap_white.css'
 
-export default class DeleteButton extends Component {
+export default class ConfirmTooltip extends Component {
+	static propTypes = {
+		message: PropTypes.string,
+		children: PropTypes.node
+	}
+
+	static defaultProps = {
+		message: 'Slette?'
+	}
+
 	state = {
 		visible: false
 	}
@@ -20,9 +30,10 @@ export default class DeleteButton extends Component {
 	}
 
 	render() {
+		const { message, children } = this.props
 		const content = (
 			<div className="tooltip-content" onClick={this.stopPropagation}>
-				<div>Slette?</div>
+				<div>{message}</div>
 				<LinkButton onClick={this.closeHandler}>JA</LinkButton>
 				<LinkButton onClick={this.closeHandler}>NEI</LinkButton>
 			</div>
@@ -38,7 +49,7 @@ export default class DeleteButton extends Component {
 				trigger={['click']}
 				onVisibleChange={this.onVisibleChangeHandler}
 			>
-				<IconButton kind="trashcan" onClick={() => {}} />
+				{children ? children : <IconButton kind="trashcan" />}
 			</Tooltip>
 		)
 	}

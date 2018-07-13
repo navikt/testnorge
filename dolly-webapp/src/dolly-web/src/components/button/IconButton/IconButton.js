@@ -6,8 +6,13 @@ import './IconButton.less'
 
 export default class IconButton extends PureComponent {
 	static propTypes = {
-		kind: PropTypes.string.isRequired,
-		onClick: PropTypes.func.isRequired
+		kind: PropTypes.string,
+		onClick: PropTypes.func
+	}
+
+	static defaultProps = {
+		kind: '',
+		onClick: () => {} // Default noop func
 	}
 
 	onClickHandler = event => {
