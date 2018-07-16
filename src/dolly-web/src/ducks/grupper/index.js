@@ -25,7 +25,8 @@ const initialState = {
 	error: null,
 	visning: 'mine',
 	editId: null,
-	visOpprettGruppe: false
+	visOpprettGruppe: false,
+	createOrUpdateFetching: false
 }
 
 export default (state = initialState, action) => {
@@ -67,12 +68,12 @@ export default (state = initialState, action) => {
 		case types.UPDATE_GRUPPER_REQUEST:
 			return {
 				...state,
-				fetching: true
+				createOrUpdateFetching: true
 			}
 		case types.UPDATE_GRUPPER_SUCCESS:
 			return {
 				...state,
-				fetching: false,
+				createOrUpdateFetching: false,
 				items: state.items.map((item, idx) => ({
 					...item,
 					...(item.id === action.gruppe.id && action.gruppe)
@@ -82,7 +83,7 @@ export default (state = initialState, action) => {
 		case types.UPDATE_GRUPPER_ERROR:
 			return {
 				...state,
-				fetching: false,
+				createOrUpdateFetching: false,
 				error: action.error
 			}
 		case types.SETT_VISNING:
