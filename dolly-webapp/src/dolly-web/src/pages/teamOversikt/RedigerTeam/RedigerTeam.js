@@ -8,6 +8,8 @@ import DisplayFormikState from '~/utils/DisplayFormikState'
 import Knapp from 'nav-frontend-knapper'
 import FormErrors from '~/components/formErrors/FormErrors'
 import * as yup from 'yup'
+import Table from '~/components/table/Table'
+import Loading from '~/components/loading/Loading'
 
 export default class RedigerTeam extends PureComponent {
 	static propTypes = {}
@@ -26,7 +28,14 @@ export default class RedigerTeam extends PureComponent {
 		})
 
 	render() {
-		const { closeOpprettRedigerTeam, team } = this.props
+		const { closeOpprettRedigerTeam, team, createOrUpdateFetching } = this.props
+		if (createOrUpdateFetching) {
+			return (
+				<Table.Row>
+					<Loading label="oppdaterer gruppe" />
+				</Table.Row>
+			)
+		}
 
 		let initialValues = {
 			navn: getIn(team, 'navn', ''),
