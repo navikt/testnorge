@@ -44,3 +44,6 @@ freg.security.oidc:
 # no.nav.abac.systemuser.password: abac passord
 
 #dolly.security.cors.origins: tillatte domener.
+
+### TPSF ###
+tpsf.server.url: https://tps-forvalteren-u2.nais.preprod.local
