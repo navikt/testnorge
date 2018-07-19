@@ -18,6 +18,9 @@ export default class RedigerTeam extends PureComponent {
 
 	onHandleSubmit = async (values, actions) => {
 		const { createTeam, updateTeam, team } = this.props
+
+		values.navIdent = values.navIdent.map(user => user.value)
+		console.log(values)
 		// const res = this.erRedigering ? await updateTeam(team.id, values) : await createTeam(values)
 	}
 
@@ -55,6 +58,7 @@ export default class RedigerTeam extends PureComponent {
 									name="navIdent"
 									label="Velg en bruker"
 									component={FormikDollySelect}
+									multi={true}
 									loadOptions={() =>
 										DollyApi.getBrukere().then(DollyApi.Utils.NormalizeBrukerListForDropdown)
 									}
