@@ -18,28 +18,29 @@ export default class RedigerTeam extends PureComponent {
 
 	onHandleSubmit = async (values, actions) => {
 		const { createTeam, updateTeam, team } = this.props
-		const res = this.erRedigering ? await updateTeam(team.id, values) : await createTeam(values)
+
+		values.navIdent = values.navIdent.map(user => user.value)
+		console.log(values)
+		// const res = this.erRedigering ? await updateTeam(team.id, values) : await createTeam(values)
 	}
 
 	validation = () =>
 		yup.object().shape({
-			navn: yup.string().required('Navn er et påkrevd felt'),
-			beskrivelse: yup.string().required('Gi en liten beskrivelse av teamet')
+			navIdent: yup.string().required('Bruker er et påkrevd felt')
 		})
 
 	render() {
-		const { closeOpprettRedigerTeam, team, createOrUpdateFetching } = this.props
-		if (createOrUpdateFetching) {
-			return (
-				<Table.Row>
-					<Loading label="oppdaterer gruppe" />
-				</Table.Row>
-			)
-		}
+		const { closeLeggTilBruker, team, createOrUpdateFetching } = this.props
+		// if (createOrUpdateFetching) {
+		// 	return (
+		// 		<Table.Row>
+		// 			<Loading label="oppdaterer gruppe" />
+		// 		</Table.Row>
+		// 	)
+		// }
 
 		let initialValues = {
-			navn: getIn(team, 'navn', ''),
-			beskrivelse: getIn(team, 'beskrivelse', '')
+			navIdent: ''
 		}
 
 		return (
@@ -51,15 +52,22 @@ export default class RedigerTeam extends PureComponent {
 					const { values, touched, errors, dirty, isSubmitting } = props
 					return (
 						<Form className="opprett-tabellrad" autoComplete="off">
-							<h2>{this.erRedigering ? 'Rediger team' : 'Opprett team'}</h2>
+							<h2>Legg til bruker</h2>
 							<div className="fields">
-								<Field name="navn" label="Navn" autoFocus component={FormikInput} />
-								<Field name="beskrivelse" label="Beskrivelse" component={FormikInput} />
+								<Field
+									name="navIdent"
+									label="Velg en bruker"
+									component={FormikDollySelect}
+									multi={true}
+									loadOptions={() =>
+										DollyApi.getBrukere().then(DollyApi.Utils.NormalizeBrukerListForDropdown)
+									}
+								/>
 
 								<Knapp type="hoved" htmlType="submit">
-									{this.erRedigering ? 'OPPDATER' : 'OPPRETT'}
+									Legg til
 								</Knapp>
-								<Knapp type="standard" htmlType="button" onClick={closeOpprettRedigerTeam}>
+								<Knapp type="standard" htmlType="button" onClick={closeLeggTilBruker}>
 									Avbryt
 								</Knapp>
 							</div>

@@ -1,12 +1,25 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
 import Loading from '~/components/loading/Loading'
+import LeggTilBruker from './LeggTilBruker/LeggTilBruker'
 
 class Team extends Component {
+	state = {
+		leggTilBruker: false
+	}
+
 	componentDidMount() {
 		this.props.fetchTeams()
 		this.props.getGrupper({ teamId: this.props.currentTeamId })
+	}
+
+	openLeggTilBrukerHandler = () => {
+		this.setState({ leggTilBruker: true })
+	}
+
+	closeLeggTilBruker = () => {
+		this.setState({ leggTilBruker: false })
 	}
 
 	render() {
@@ -15,26 +28,35 @@ class Team extends Component {
 		if (!team || !grupper) return null
 
 		return (
-			<div>
+			<div className="oversikt-container">
 				<Overskrift label={team.navn} />
 
-				<Overskrift label="Medlemmer" type="h2" />
+				<Overskrift
+					label="Medlemmer"
+					type="h2"
+					actions={[{ icon: 'add-circle', onClick: this.openLeggTilBrukerHandler }]}
+				/>
 				{teamFetching ? (
 					<Loading label="laster medlemmer" panel />
 				) : (
-					<Table>
-						<Table.Header>
-							<Table.Column width="30" value="Navn" />
-							<Table.Column width="20" value="Rolle" />
-						</Table.Header>
+					<Fragment>
+						{this.state.leggTilBruker && (
+							<LeggTilBruker teamId={team.id} closeLeggTilBruker={this.closeLeggTilBruker} />
+						)}
+						<Table>
+							<Table.Header>
+								<Table.Column width="30" value="Navn" />
+								<Table.Column width="20" value="Rolle" />
+							</Table.Header>
 
-						{team.medlemmer.map(medlem => (
-							<Table.Row key={medlem.navIdent} deleteAction={() => {}}>
-								<Table.Column width="30" value={medlem.navIdent} />
-								<Table.Column width="10" value="Utvikler" />
-							</Table.Row>
-						))}
-					</Table>
+							{team.medlemmer.map(medlem => (
+								<Table.Row key={medlem.navIdent} deleteAction={() => {}}>
+									<Table.Column width="30" value={medlem.navIdent} />
+									<Table.Column width="10" value="Utvikler" />
+								</Table.Row>
+							))}
+						</Table>
+					</Fragment>
 				)}
 
 				<Overskrift label="Testdatagrupper" type="h2" />

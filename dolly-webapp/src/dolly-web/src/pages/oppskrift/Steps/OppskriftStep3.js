@@ -44,7 +44,9 @@ export default class OppskriftStep3 extends Component {
 					</div>
 				</div>
 
-				<Knapp type="hoved">Opprett testpersoner</Knapp>
+				<Knapp type="hoved" htmlType="submit">
+					Opprett testpersoner
+				</Knapp>
 			</div>
 		)
 	}

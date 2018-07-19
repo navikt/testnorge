@@ -24,7 +24,8 @@ const initialState = {
 	items: [],
 	visning: 'mine',
 	visOpprettTeam: false,
-	editTeamId: null
+	editTeamId: null,
+	createOrUpdateFetching: false
 }
 
 export default function teamReducer(state = initialState, action) {
@@ -67,12 +68,12 @@ export default function teamReducer(state = initialState, action) {
 		case types.UPDATE_TEAM_REQUEST:
 			return {
 				...state,
-				fetching: true
+				createOrUpdateFetching: true
 			}
 		case types.UPDATE_TEAM_SUCCESS:
 			return {
 				...state,
-				fetching: false,
+				createOrUpdateFetching: false,
 				editTeamId: null,
 				items: state.items.map(item => {
 					if (item.id !== action.team.id) return item
@@ -85,7 +86,7 @@ export default function teamReducer(state = initialState, action) {
 		case types.UPDATE_TEAM_ERROR:
 			return {
 				...state,
-				fetching: false,
+				createOrUpdateFetching: false,
 				error: action.error
 			}
 		case types.DELETE_TEAM_REQUEST:

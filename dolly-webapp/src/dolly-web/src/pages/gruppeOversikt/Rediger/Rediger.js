@@ -8,6 +8,8 @@ import DisplayFormikState from '~/utils/DisplayFormikState'
 import Knapp from 'nav-frontend-knapper'
 import FormErrors from '~/components/formErrors/FormErrors'
 import * as yup from 'yup'
+import Loading from '~/components/loading/Loading'
+import Table from '~/components/table/Table'
 
 // import './Rediger.less'
 
@@ -45,7 +47,14 @@ export default class Rediger extends PureComponent {
 		})
 
 	render() {
-		const { closeRedigerOgOpprett, currentUserId, gruppe } = this.props
+		const { closeRedigerOgOpprett, currentUserId, gruppe, createOrUpdateFetching } = this.props
+		if (createOrUpdateFetching) {
+			return (
+				<Table.Row>
+					<Loading label="oppdaterer gruppe" />
+				</Table.Row>
+			)
+		}
 
 		let initialValues = {
 			navn: getIn(gruppe, 'navn', ''),
