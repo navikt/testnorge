@@ -5,11 +5,16 @@ import Label from '~/components/fields/Label/Label'
 import { Select } from 'nav-frontend-skjema'
 import AttributtVelger from '~/components/attributtVelger/AttributtVelger'
 import Overskrift from '~/components/overskrift/Overskrift'
+import { FormikDollySelect } from '~/components/fields/Select/Select'
+import { FormikInput } from '~/components/fields/Input/Input'
+import { Form, Field } from 'formik'
 
 export default class OppskriftStep1 extends Component {
 	static propTypes = {}
 
 	render() {
+		const options = [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
+
 		return (
 			<div>
 				<div className="flexbox--space">
@@ -25,8 +30,12 @@ export default class OppskriftStep1 extends Component {
 							DNR
 						</option>
 					</Select>
-
-					<Input label={<Label label="Antall personer" />} className="input-num-person" />
+					<Field
+						name="antall"
+						label="Antall personer"
+						className="input-num-person"
+						component={FormikInput}
+					/>
 				</div>
 
 				<AttributtVelger onChange={() => {}} />
