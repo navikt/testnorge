@@ -42,11 +42,11 @@ public class TestidentMappingTest {
                 .build()
                 .convertToRealTestgruppe();
 
-        Testident testident = TestidentBuilder.builder().ident(1L).testgruppe(testgruppe).build().convertToRealTestident();
+        Testident testident = TestidentBuilder.builder().ident("1").testgruppe(testgruppe).build().convertToRealTestident();
 
         RsTestident rsTestident = mapper.map(testident, RsTestident.class);
 
-        assertThat(rsTestident.getIdent(), is(1L));
+        assertThat(rsTestident.getIdent(), is("1"));
 //        assertThat(rsTestident.getTestgruppe().getId(), is(2L));
 //        assertThat(rsTestident.getTestgruppe().getNavn(), is("gruppe"));
     }

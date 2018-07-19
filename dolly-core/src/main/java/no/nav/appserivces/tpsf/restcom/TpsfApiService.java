@@ -1,26 +1,21 @@
 package no.nav.appserivces.tpsf.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.appserivces.tpsf.domain.request.RsDollyPersonKriteriumRequest;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.appserivces.tpsf.domain.request.RsDollyBestillingsRequest;
+import no.nav.appserivces.tpsf.domain.request.RsTpsfIdent;
 import no.nav.appserivces.tpsf.domain.response.RsSkdMeldingResponse;
+import no.nav.appserivces.tpsf.errorHandling.RestTemplateException;
+import no.nav.appserivces.tpsf.exceptions.TpsfErrorHandler;
 import no.nav.exceptions.DollyFunctionalException;
 
-import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import org.jose4j.json.internal.json_simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -36,73 +31,58 @@ public class TpsfApiService {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    MapperFacade mapperFacade;
+
     @Value("${tpsf.server.url}")
     private String tpsfServerUrl;
 
-    public List<Object> opprettPersonerTpsf(RsDollyPersonKriteriumRequest request){
-        StringBuilder sb = new StringBuilder();
-        sb.append(tpsfServerUrl).append(TPSF_BASE_URL).append(TPSF_OPPRETT_URL);
-
-        //        HttpEntity<String> httpEntity = null;
-        //        try {
-        //            httpEntity = new HttpEntity<>(objectMapper.writeValueAsString(request));
-        //        } catch (Exception e){
-        //            throw new DollyFunctionalException("Mapperfeil");
-        //        }
-
-        RsDollyPersonKriteriumRequest request1 = RsDollyPersonKriteriumRequest.builder()
-                .antall(1)
-                .foedtEtter(LocalDate.of(2010, 1, 7))
-                .foedtFoer(LocalDate.now())
-                .regdato(LocalDateTime.now())
-                .identtype("FNR")
-                .kjonn('M')
-                .withAdresse(false)
-                .statsborgerskap("NOR")
-                .build();
+    public List<String> opprettPersonerTpsf(RsDollyBestillingsRequest request) {
+        StringBuilder sbUrl = new StringBuilder();
+        sbUrl.append(tpsfServerUrl).append(TPSF_BASE_URL).append(TPSF_OPPRETT_URL);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
-        HttpEntity<Object> entity;
-        try {
-            Map<String, String> map = objectMapper.convertValue(request1, Map.class);
-            entity = new HttpEntity<>(map, headers);
-        } catch (Exception e){
-            throw new DollyFunctionalException(e.getMessage());
-        }
+        HttpEntity<Object> entity = new HttpEntity<>(request, headers);
 
-        ResponseEntity<Object[]> response = null;
-        ResponseEntity<Object[]> respyy = restTemplate.getForEntity("http://localhost:8050/api/v1/dolly/testdata/personerdata?identer=13101750196", Object[].class);
-        try {
-            response = restTemplate.exchange("http://localhost:8050/api/v1/dolly/testdata/personer", HttpMethod.POST, entity, Object[].class);
-        } catch (Exception e) {
-            throw new DollyFunctionalException("TPSF exception ble kastet: " + e.getMessage());
+        ResponseEntity<Object> response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, entity, Object.class);
+
+        if (response.getBody().toString().contains("exception=")) {
+            RestTemplateException rs = objectMapper.convertValue(response.getBody(), RestTemplateException.class);
+            throw new DollyFunctionalException("TPSF kall feilet med: " + rs.getMessage() + "\\r\\n Feil: " + rs.getError());
         }
 
         if (response.getStatusCode() != HttpStatus.CREATED) {
-            //throw IllegalArgumentException;
+            throw new DollyFunctionalException("TPSF kall feilet med: " + response.getBody());
         }
 
-        return Arrays.asList(response.getBody());
+        List<String> ident = objectMapper.convertValue(response.getBody(), List.class);
+
+        return ident;
     }
 
-    public RsSkdMeldingResponse sendTilTpsFraTPSF(String ident, List<String> environments) {
+    public RsSkdMeldingResponse sendTilTpsFraTPSF(String ident, List<String> environments) throws DollyFunctionalException {
         StringBuilder sb = new StringBuilder();
         sb.append(tpsfServerUrl).append(TPSF_BASE_URL).append(TPSF_SEND_TPS_URL);
-        sb.append("?ident=").append(ident);
-        sb.append("&environments=");
+        sb.append("?environments=");
         environments.forEach(env -> sb.append(env).append(","));
         String url = sb.toString().substring(0, sb.length() - 1);
 
-        HttpEntity<String> httpEntity = new HttpEntity<>(new JSONObject().toJSONString());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
-        ResponseEntity<RsSkdMeldingResponse> response = restTemplate.postForEntity(url, httpEntity, RsSkdMeldingResponse.class);
+        HttpEntity<Object> entity = new HttpEntity<>(new RsTpsfIdent(ident), headers);
 
-        if (response.getStatusCode() != HttpStatus.CREATED) {
-            //throw IllegalArgumentException;
+        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, entity, Object.class);
+
+        if (response.getBody().toString().contains("exception=")) {
+            RestTemplateException rs = objectMapper.convertValue(response.getBody(), RestTemplateException.class);
+            throw new DollyFunctionalException("TPSF kall feilet med: " + rs.getMessage() + "\\r\\n Feil: " + rs.getError());
         }
 
-        return response.getBody();
+        RsSkdMeldingResponse responseSkd = objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class);
+
+        return responseSkd;
     }
 }

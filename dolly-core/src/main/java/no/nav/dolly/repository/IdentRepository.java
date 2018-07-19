@@ -6,13 +6,14 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Set;
 
-public interface IdentRepository extends CrudRepository<Testident, Long> {
+public interface IdentRepository extends CrudRepository<Testident, String> {
 
 
 //    void saveAll(List<Testident> testidenter);
 
-    Testident findByIdent(Long ident);
+    Testident findByIdent(String ident);
 	
-	void deleteTestidentsByIdent(Set<Long> testident);
-	void deleteTestidentByIdent(Long testident);
+	void deleteTestidentsByIdent(Set<String> testident);
+
+	void deleteTestidentByIdent(String testident);
 }

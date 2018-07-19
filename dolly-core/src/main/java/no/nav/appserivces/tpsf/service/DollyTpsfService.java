@@ -1,9 +1,13 @@
 package no.nav.appserivces.tpsf.service;
 
-import no.nav.appserivces.tpsf.domain.request.RsDollyPersonKriteriumRequest;
+import no.nav.appserivces.tpsf.domain.request.RsDollyBestillingsRequest;
 import no.nav.appserivces.tpsf.domain.response.RsSkdMeldingResponse;
+import no.nav.appserivces.tpsf.domain.response.SendSkdMeldingTilTpsResponse;
 import no.nav.appserivces.tpsf.restcom.TpsfApiService;
+import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.IdentRepository;
+import no.nav.exceptions.DollyFunctionalException;
+import no.nav.jpa.BestillingProgress;
 import no.nav.jpa.Testgruppe;
 import no.nav.jpa.Testident;
 import no.nav.service.TestgruppeService;
@@ -11,8 +15,10 @@ import no.nav.service.TestgruppeService;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,45 +33,54 @@ public class DollyTpsfService {
     @Autowired
     IdentRepository identRepository;
 
-    public void opprettPersonerByKriterier(Long gruppeId, RsDollyPersonKriteriumRequest request){
-        List<Object> klareIdenter = tpsfApiService.opprettPersonerTpsf(request);
+    @Autowired
+    BestillingProgressRepository bestillingProgressRepository;
+
+    @Async
+    public void opprettPersonerByKriterier(Long gruppeId, RsDollyBestillingsRequest request, Long bestillingsId){
+
+        List<String> klareIdenter = tpsfApiService.opprettPersonerTpsf(request);
+
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
-//        klareIdenter.forEach(ident -> {
-//            RsSkdMeldingResponse response = tpsfApiService.sendTilTpsFraTPSF(ident, request.getEnvironments());
-//
-//            Testident testident = new Testident();
-//            testident.setIdent(Long.parseLong(ident));
-//            testident.setTestgruppe(testgruppe);
-//            identRepository.save(testident);
-//
-//            //TODO oppdater oversikt over hva som har skjedd.
-//
-//            response.getSendSkdMeldingTilTpsResponsene().forEach(res -> {
-//                System.out.println(res.getSkdmeldingstype());
-//                request.getEnvironments().forEach(env -> {
-//                    System.out.println(res.getStatus(env));
-//                });
-//            });
-//
-//        });
+        klareIdenter.forEach(ident -> {
+            BestillingProgress progress = new BestillingProgress();
+            progress.setBestillingsId(bestillingsId);
+            progress.setIdent(ident);
 
-        String g = "g";
+            RsSkdMeldingResponse response;
+            try{
+                response = tpsfApiService.sendTilTpsFraTPSF(ident, request.getEnvironments());
+            } catch (DollyFunctionalException e){
+                progress.setFeil(e.getMessage());
+                bestillingProgressRepository.save(progress);
+                return;
+            }
 
+            String env = extractSuccessEnvTPS(response.getSendSkdMeldingTilTpsResponsene().get(0));
+            progress.setTpsfSuccessEnv(env);
+
+            bestillingProgressRepository.save(progress);
+
+            if(env.length() > 0){
+                Testident testident = new Testident();
+                testident.setIdent(ident);
+                testident.setTestgruppe(testgruppe);
+                identRepository.save(testident);
+            }
+        });
     }
 
-    private HttpHeaders copyHeaders(HttpServletRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        Enumeration<String> headerNames = request.getHeaderNames();
+    private String extractSuccessEnvTPS(SendSkdMeldingTilTpsResponse response){
+        Map<String, String> status = response.getStatus();
+        String env = "";
 
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            if ("connection".equals(headerName)) {
-                headers.set(headerName, "keep-alive");
-            } else {
-                headers.set(headerName, request.getHeader(headerName));
+        for(Map.Entry<String, String> entry : status.entrySet()){
+            if(entry.getValue().contains("00")){
+                env += entry.getKey() + ",";
             }
         }
-        return headers;
+
+        return env;
     }
 }

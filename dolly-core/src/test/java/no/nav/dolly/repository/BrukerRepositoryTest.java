@@ -76,7 +76,7 @@ public class BrukerRepositoryTest {
     @Test
     public void opprettBrukerOgSetTilTeamOgSetFavoritter() throws Exception{
         Bruker savedBruker = brukerRepository.save(BrukerBuilder.builder().navIdent("nav").build().convertToRealBruker());
-        Testident testident = TestidentBuilder.builder().ident(123456789L).build().convertToRealTestident();
+        Testident testident = TestidentBuilder.builder().ident("123456789").build().convertToRealTestident();
 
         Team team = TeamBuilder.builder()
                 .navn("team")

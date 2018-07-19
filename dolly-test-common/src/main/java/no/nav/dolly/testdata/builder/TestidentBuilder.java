@@ -7,7 +7,7 @@ import no.nav.jpa.Testident;
 @Builder
 public class TestidentBuilder {
 
-    private Long ident;
+    private String ident;
     private Testgruppe testgruppe;
 
     public Testident convertToRealTestident(){

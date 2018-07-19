@@ -16,7 +16,7 @@ import javax.persistence.Table;
 public class Testident {
 	
 	@Id
-	private Long ident;
+	private String ident;
 	
 	@ManyToOne
 	@JoinColumn(name = "TILHOERER_GRUPPE", nullable = false)

@@ -39,7 +39,7 @@ public class TestidentRepositoryTest {
 
     @Test
     public void saveTestidentTilGruppe() {
-        Testident testident = TestidentBuilder.builder().ident(12345L).build().convertToRealTestident();
+        Testident testident = TestidentBuilder.builder().ident("12345").build().convertToRealTestident();
         Bruker bruker = brukerRepository.save(BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker());
 
         Team team = TeamBuilder.builder()
@@ -65,9 +65,9 @@ public class TestidentRepositoryTest {
 
         teamRepository.save(team);
 
-        Testident ident = identRepository.findByIdent(12345L);
+        Testident ident = identRepository.findByIdent("12345");
 
-        assertThat(ident.getIdent(), is(12345L));
+        assertThat(ident.getIdent(), is("12345"));
         assertThat(ident.getTestgruppe().getNavn(), is("gruppe"));
 
     }

@@ -59,8 +59,8 @@ public class TestgruppeController {
 		return new ArrayList<>(testgruppeService.getRsTestgruppeMedErMedlem(new HashSet<>(Arrays.asList(testgruppeRes)))).get(0);
 	}
 
-	@PutMapping("/{gruppe}/slettTestidenter")
-	public void deleteTestident(@PathVariable("gruppe") Long gruppeId, @RequestBody List<RsTestident> testpersonIdentListe) {
+	@PutMapping("/{gruppeId}/slettTestidenter")
+	public void deleteTestident(@PathVariable("gruppeId") Long gruppeId, @RequestBody List<RsTestident> testpersonIdentListe) {
 		identService.slettTestidenter(testpersonIdentListe);
 	}
 

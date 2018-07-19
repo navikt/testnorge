@@ -1,40 +1,41 @@
 package no.nav.appserivces.tpsf.domain.request;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.hibernate.validator.constraints.NotBlank;
 
 @Getter
 @Setter
-@Builder
-public class RsDollyPersonKriteriumRequest {
+public class RsDollyBestillingsRequest {
 
     private List<String> environments;
 
+    @NotBlank
     @Size(min = 3, max = 3)
     private String identtype;
 
+    @NotNull
     private LocalDate foedtEtter;
 
+    @NotNull
     private LocalDate foedtFoer;
 
-    @NotNull
+    @NotBlank
     @Min(1)
     @Max(99)
     private int antall;
 
     private boolean withAdresse;
 
-    @NotNull
+    @NotBlank
     @Size(min = 3, max = 3)
     private Character kjonn;
 

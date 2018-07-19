@@ -10,7 +10,7 @@ import no.nav.resultSet.RsTestident;
 @Builder
 public class RsTestidentBuilder {
 
-    private Long ident;
+    private String ident;
 
     public RsTestident convertToRealRsTestident(){
         RsTestident testident = new RsTestident();

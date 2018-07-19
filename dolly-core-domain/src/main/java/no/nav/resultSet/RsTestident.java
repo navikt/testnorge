@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class RsTestident {
 
-    private Long ident;
+    private String ident;
 
 }

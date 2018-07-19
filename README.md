@@ -8,7 +8,6 @@ Prosjektet kjører med to profiler:
 
 
 ### Localkjøring
-For å kunne gjøre kall mot NAIS apper, må nav truststore settes opp som spesifisert her: 
-https://confluence.adeo.no/display/LFEL/Debugging . 
+For å kunne gjøre kall mot NAIS apper, må nav truststore settes opp.
 
-I Intellij: Run -> Edit Configurations -> Fyll in verdier spesifisert i link over
+I Intellij: Run -> Edit Configurations -> VM Options (Fyll inn truststore verdier)

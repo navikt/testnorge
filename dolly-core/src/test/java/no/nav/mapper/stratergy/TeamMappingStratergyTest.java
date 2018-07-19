@@ -39,7 +39,7 @@ public class TeamMappingStratergyTest {
     public void mappingFromTeamToRsTeam(){
         Bruker bruker = BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker();
         Bruker brukerEier = BrukerBuilder.builder().navIdent("eier").build().convertToRealBruker();
-        Testident testident = TestidentBuilder.builder().ident(1L).build().convertToRealTestident();
+        Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
         Set<Testident> identer = new HashSet<>(Arrays.asList(testident));
 
         Testgruppe testgruppe = TestgruppeBuilder.builder()

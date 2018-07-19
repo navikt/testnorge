@@ -40,7 +40,7 @@ public class BrukerMappingStratergyTest {
     @Test
     public void testy(){
         Bruker bruker = BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker();
-        Testident testident = TestidentBuilder.builder().ident(1L).build().convertToRealTestident();
+        Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
         Set<Testident> identer = new HashSet<>(Arrays.asList(testident));
 
         Team team = TeamBuilder.builder()

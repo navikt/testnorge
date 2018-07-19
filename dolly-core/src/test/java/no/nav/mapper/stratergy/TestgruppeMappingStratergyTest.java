@@ -39,7 +39,7 @@ public class TestgruppeMappingStratergyTest {
     @Test
     public void mappingFromTesgruppeToRsTestgruppe(){
         Bruker bruker = BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker();
-        Testident testident = TestidentBuilder.builder().ident(1L).build().convertToRealTestident();
+        Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
         Set<Testident> identer = new HashSet<>(Arrays.asList(testident));
 
         Team team = TeamBuilder.builder()
@@ -76,6 +76,6 @@ public class TestgruppeMappingStratergyTest {
         assertThat(rs.getSistEndretAvNavIdent(), is(bruker.getNavIdent()));
 
         assertThat(rsIdenter.size(), is(1));
-        assertThat(rsIdenter.get(0).getIdent(), is(1L));
+        assertThat(rsIdenter.get(0).getIdent(), is("1"));
     }
 }
