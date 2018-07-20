@@ -145,3 +145,7 @@ crashlytics-build.properties
 /dolly-app-nais/src/main/resources/application-oracle.yaml
 /dolly-app-nais/src/main/resources/application.yaml
 /dolly-app/src/main/resources/public/
+
+# Start scripts
+start-dolly-maven.cmd
+start-dolly.cmd

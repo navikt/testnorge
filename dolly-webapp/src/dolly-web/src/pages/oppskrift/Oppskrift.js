@@ -18,7 +18,7 @@ export default class Oppskrift extends Component {
 		activeStep: 0
 	}
 
-	handleSubmit = (values, actions) => {
+	onHandleSubmit = (values, actions) => {
 		console.log(values)
 	}
 
@@ -47,7 +47,7 @@ export default class Oppskrift extends Component {
 			<Formik
 				initialValues={initialValues}
 				validationSchema={this.validation}
-				onSubmit={this.handleSubmit}
+				onSubmit={this.onHandleSubmit}
 				render={props => {
 					const { values, touched, errors, dirty, isSubmitting } = props
 					return (
