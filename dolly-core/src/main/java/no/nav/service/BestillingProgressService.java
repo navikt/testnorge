@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static no.nav.util.UtilFunctions.isNullOrEmpty;
+
 @Service
 public class BestillingProgressService {
 
@@ -17,7 +19,7 @@ public class BestillingProgressService {
     public List<BestillingProgress> fetchBestillingProgressByBestillingsIdFromDB(Long bestillingsId){
         List<BestillingProgress> progress = repository.findBestillingProgressByBestillingsId(bestillingsId);
 
-        if(progress == null || progress.isEmpty()){
+        if(isNullOrEmpty(progress)){
             throw new NotFoundException("Kunne ikke finne bestillingsprogress med bestillingsId=" + bestillingsId + ", i tabell T_BESTILLINGS_PROGRESS");
         }
 
