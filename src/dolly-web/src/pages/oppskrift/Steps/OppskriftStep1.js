@@ -14,7 +14,7 @@ export default class OppskriftStep1 extends Component {
 
 	render() {
 		const options = [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
-
+		// identtype
 		return (
 			<div>
 				<div className="flexbox--space">
@@ -22,14 +22,12 @@ export default class OppskriftStep1 extends Component {
 				</div>
 
 				<div className="flexbox">
-					<Select label={<Label label="Type" />} className="input-fnr">
-						<option value="fnr" key="fnr">
-							FNR
-						</option>
-						<option value="dnr" key="dnr">
-							DNR
-						</option>
-					</Select>
+					<Field
+						name="identtype"
+						label="Velg identtype"
+						component={FormikDollySelect}
+						options={options}
+					/>
 					<Field
 						name="antall"
 						label="Antall personer"
