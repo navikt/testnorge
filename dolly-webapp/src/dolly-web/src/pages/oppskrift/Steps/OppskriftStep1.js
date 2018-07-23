@@ -15,6 +15,19 @@ export default class OppskriftStep1 extends Component {
 	render() {
 		const options = [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
 		// identtype
+
+		let initialValues = {
+			identtype: 'FNR',
+			kjonn: 'M',
+			foedtEtter: '2015-01-31T00:00:00.000Z',
+			foedtFoer: '2018-07-16T00:00:00.000Z',
+			regdato: '2018-07-16T00:00:00.000Z',
+			withAdresse: false,
+			statsborgerskap: 'NOR',
+			antall: 2,
+
+			environments: ['u6']
+		}
 		return (
 			<div>
 				<div className="flexbox--space">

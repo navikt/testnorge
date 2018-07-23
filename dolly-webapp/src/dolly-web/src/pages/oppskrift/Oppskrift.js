@@ -4,7 +4,7 @@ import StepIndicator from './Steps/StepIndicator'
 import OppskriftSteg1 from './Steps/OppskriftStep1'
 import OppskriftSteg2 from './Steps/OppskriftStep2'
 import OppskriftSteg3 from './Steps/OppskriftStep3'
-import { Formik } from 'formik'
+import { Formik, Form } from 'formik'
 import * as yup from 'yup'
 import FormErrors from '~/components/formErrors/FormErrors'
 import DisplayFormikState from '~/utils/DisplayFormikState'
@@ -15,12 +15,15 @@ export default class Oppskrift extends Component {
 	static propTypes = {}
 
 	state = {
-		activeStep: 0
+		activeStep: 0,
+		selection: {}
 	}
 
 	onHandleSubmit = (values, actions) => {
 		console.log(values)
 	}
+
+	onSelectionHandler = e => {}
 
 	validation = () =>
 		yup.object().shape({
@@ -53,13 +56,23 @@ export default class Oppskrift extends Component {
 					return (
 						<div className="oppskrift-page">
 							<StepIndicator activeStep={activeStep} />
+							<Form autoComplete="off">
+								{activeStep === 0 && <OppskriftSteg1 />}
+								{activeStep === 1 && <OppskriftSteg2 />}
+								{activeStep === 2 && <OppskriftSteg3 />}
+							</Form>
 
-							{activeStep === 0 && <OppskriftSteg1 />}
-							{activeStep === 1 && <OppskriftSteg2 />}
-							{activeStep === 2 && <OppskriftSteg3 />}
+							<button onClick={() => {}}>Avbryt</button>
 
+							{activeStep !== 0 && (
+								<button onClick={() => this.setState({ activeStep: activeStep - 1 })}>
+									Tilbake
+								</button>
+							)}
 							{activeStep !== 2 && (
-								<button onClick={() => this.setState({ activeStep: activeStep + 1 })}>Next</button>
+								<button onClick={() => this.setState({ activeStep: activeStep + 1 })}>
+									Videre
+								</button>
 							)}
 							<FormErrors errors={errors} touched={touched} />
 							<DisplayFormikState {...props} />

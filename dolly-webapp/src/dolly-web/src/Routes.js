@@ -1,6 +1,5 @@
 import React from 'react'
-import { Route } from 'react-router-dom'
-import { Switch } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import Gruppe from './pages/gruppe/GruppeConnector'
 import GruppeOversikt from './pages/gruppeOversikt/GruppeOversiktConnector'
 import Oppskrift from './pages/oppskrift/Oppskrift'
