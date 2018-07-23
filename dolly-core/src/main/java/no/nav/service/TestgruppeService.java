@@ -17,7 +17,10 @@ import no.nav.resultSet.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.resultSet.RsTestident;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -68,6 +71,10 @@ public class TestgruppeService {
         }
 
         throw new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId);
+    }
+
+    public RsTestgruppeMedErMedlemOgFavoritt rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(RsTestgruppe gruppe){
+        return new ArrayList<>(getRsTestgruppeMedErMedlem(new HashSet<>(Arrays.asList(gruppe)))).get(0);
     }
 
     public Set<RsTestgruppe> fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(String navIdent) {

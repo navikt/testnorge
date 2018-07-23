@@ -8,9 +8,6 @@ import no.nav.resultSet.RsTestident;
 import no.nav.service.IdentService;
 import no.nav.service.TestgruppeService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,20 +40,15 @@ public class TestgruppeController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public RsTestgruppe opprettTestgruppe(@RequestBody RsOpprettTestgruppe createTestgruppeRequest) {
-	    return testgruppeService.opprettTestgruppe(createTestgruppeRequest);
+	public RsTestgruppeMedErMedlemOgFavoritt opprettTestgruppe(@RequestBody RsOpprettTestgruppe createTestgruppeRequest) {
+		RsTestgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
+		return testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
 	}
-
-	//@ResponseStatus(HttpStatus.CREATED)
-	//@PostMapping(value = "/{testgruppeId}")
-	//public void persisterTestidenter(@PathVariable("testgruppeId") Long gruppeId, @RequestBody List<RsTestident> testpersonIdentListe) {
-	//	testgruppeService.saveAllIdenterToTestgruppe(gruppeId, testpersonIdentListe);
-	//}
 
 	@PutMapping(value = "/{gruppeId}")
     public RsTestgruppeMedErMedlemOgFavoritt oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettTestgruppe testgruppe){
-		RsTestgruppe testgruppeRes = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
-		return new ArrayList<>(testgruppeService.getRsTestgruppeMedErMedlem(new HashSet<>(Arrays.asList(testgruppeRes)))).get(0);
+		RsTestgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
+		return testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
 	}
 
 	@PutMapping("/{gruppeId}/slettTestidenter")
@@ -66,8 +58,8 @@ public class TestgruppeController {
 
 	@GetMapping("/{gruppeId}")
 	public RsTestgruppeMedErMedlemOgFavoritt getTestgruppe(@PathVariable("gruppeId") Long gruppeId){
-		RsTestgruppe testgruppe = mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppe.class);
-		return new ArrayList<>(testgruppeService.getRsTestgruppeMedErMedlem(new HashSet<>(Arrays.asList(testgruppe)))).get(0);
+		RsTestgruppe gruppe = mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppe.class);
+		return testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
 	}
 
 	@GetMapping

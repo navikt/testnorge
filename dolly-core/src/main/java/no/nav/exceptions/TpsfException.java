@@ -3,10 +3,10 @@ package no.nav.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus( code = HttpStatus.NOT_FOUND)
-public class BrukerNotFoundException extends NotFoundException{
+@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+public class TpsfException extends RuntimeException{
 
-    public BrukerNotFoundException(String message) {
+    public TpsfException(String message) {
         super(message);
     }
 
