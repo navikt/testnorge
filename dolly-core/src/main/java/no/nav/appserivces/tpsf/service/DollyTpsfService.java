@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
@@ -50,7 +51,7 @@ public class DollyTpsfService {
 
             RsSkdMeldingResponse response;
             try{
-                response = tpsfApiService.sendTilTpsFraTPSF(ident, request.getEnvironments());
+                response = tpsfApiService.sendTilTpsFraTPSF(ident, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
             } catch (DollyFunctionalException e){
                 progress.setFeil(e.getMessage());
                 bestillingProgressRepository.save(progress);
