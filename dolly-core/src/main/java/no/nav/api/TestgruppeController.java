@@ -1,6 +1,11 @@
 package no.nav.api;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.appserivces.tpsf.domain.request.RsBestilling;
+import no.nav.appserivces.tpsf.domain.request.RsDollyBestillingsRequest;
+import no.nav.appserivces.tpsf.service.DollyTpsfService;
+import no.nav.dolly.repository.BestillingRepository;
+import no.nav.jpa.Bestilling;
 import no.nav.resultSet.RsOpprettTestgruppe;
 import no.nav.resultSet.RsTestgruppe;
 import no.nav.resultSet.RsTestgruppeMedErMedlemOgFavoritt;
@@ -26,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static no.nav.util.UtilFunctions.isNullOrEmpty;
 
 @RestController
-@RequestMapping(value = "api/v1/testgruppe")
+@RequestMapping(value = "api/v1/gruppe")
 public class TestgruppeController {
 	
 	@Autowired
@@ -37,6 +42,12 @@ public class TestgruppeController {
 
 	@Autowired
 	private MapperFacade mapperFacade;
+
+	@Autowired
+	DollyTpsfService dollyTpsfService;
+
+	@Autowired
+	BestillingRepository bestillingRepository;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
@@ -94,7 +105,9 @@ public class TestgruppeController {
 	}
 
 	@PostMapping("/{gruppeId}/bestilling")
-	public Set<String> createBestilling(@PathVariable("testgruppeId") String gruppeId, @RequestBody Object bestilling){
-		return null;
+	public RsBestilling opprettGruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
+		Bestilling bestilling = bestillingRepository.save(new Bestilling());
+		dollyTpsfService.opprettPersonerByKriterier(gruppeId, request, bestilling.getId());
+		return mapperFacade.map(bestilling, RsBestilling.class);
 	}
 }
