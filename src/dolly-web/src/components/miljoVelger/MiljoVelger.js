@@ -1,0 +1,62 @@
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import Panel from '~/components/panel/Panel'
+import Checkbox from '~/components/fields/Checkbox/Checkbox'
+
+import './MiljoVelger.less'
+import { array } from 'yup'
+
+const generateEnv = (label, length) => {
+	const envList = []
+
+	for (let i = 0; i <= length; i++) {
+		envList.push(`${label + i}`)
+	}
+	return envList
+}
+
+class MiljoVelger extends Component {
+	static propTypes = {
+		heading: PropTypes.string
+	}
+
+	onClickHandler = e => {
+		const { arrayHelpers, arrayValues } = this.props
+		const indexOf = arrayValues.indexOf(e.target.id)
+
+		if (e.target.checked && indexOf === -1) return arrayHelpers.push(e.target.id)
+
+		return arrayHelpers.remove(indexOf)
+	}
+
+	createCheckbox = id => (
+		<Checkbox
+			key={id}
+			id={id}
+			label={id}
+			checked={this.props.arrayValues.includes(id)}
+			onClick={this.onClickHandler}
+		/>
+	)
+
+	render() {
+		const { heading, arrayHelpers } = this.props
+
+		const UList = generateEnv('u', 6)
+		const TList = generateEnv('t', 13)
+		const QList = generateEnv('q', 11)
+
+		return (
+			<div className="miljo-velger">
+				<h3>{heading}</h3>
+				<div className="miljo-velger_content">
+					<div>{UList.map(env => this.createCheckbox(env))}</div>
+					<div>{TList.map(env => this.createCheckbox(env))}</div>
+					<div>{QList.map(env => this.createCheckbox(env))}</div>
+				</div>
+			</div>
+		)
+	}
+}
+
+export default MiljoVelger

@@ -8,6 +8,8 @@ import { Formik, Form } from 'formik'
 import * as yup from 'yup'
 import FormErrors from '~/components/formErrors/FormErrors'
 import DisplayFormikState from '~/utils/DisplayFormikState'
+import Attributter from './Attributter'
+import { DollyApi } from '~/service/Api'
 
 import './Oppskrift.less'
 
@@ -16,14 +18,35 @@ export default class Oppskrift extends Component {
 
 	state = {
 		activeStep: 0,
-		selection: {}
+		selection: {},
+		selectedTypes: {
+			foedtEtter: false,
+			foedtFoer: false,
+			kjonn: false,
+			regdato: false,
+			statsborgerskap: false,
+			withAdresse: false
+		}
 	}
 
-	onHandleSubmit = (values, actions) => {
-		console.log(values)
+	onHandleSubmit = async (values, actions) => {
+		const gruppeId = this.props.match.params.gruppeId
+		try {
+			const res = await DollyApi.createBestilling(gruppeId, values)
+
+			this.props.history.push(`/gruppe/${gruppeId}`)
+		} catch (error) {
+			console.log('error', error)
+		}
 	}
 
-	onSelectionHandler = e => {}
+	onSelectionHandler = e => {
+		const selectionId = e.target.id
+		const value = e.target.checked
+		this.setState(prevState => {
+			return { selectedTypes: { ...prevState.selectedTypes, [selectionId]: value } }
+		})
+	}
 
 	validation = () =>
 		yup.object().shape({
@@ -31,19 +54,37 @@ export default class Oppskrift extends Component {
 		})
 
 	render() {
-		const { activeStep } = this.state
+		const { activeStep, selectedTypes } = this.state
 
 		let initialValues = {
-			identtype: 'FNR',
-			kjonn: 'M',
-			foedtEtter: '2015-01-31T00:00:00.000Z',
-			foedtFoer: '2018-07-16T00:00:00.000Z',
-			regdato: '2018-07-16T00:00:00.000Z',
-			withAdresse: false,
-			statsborgerskap: 'NOR',
-			antall: 2,
+			identtype: null, //string
+			kjonn: null, // string
+			foedtEtter: null, // string
+			foedtFoer: null, // string
+			regdato: new Date(), // string
+			withAdresse: true, // bool
+			statsborgerskap: null, // string
+			antall: null, // number
 
-			environments: ['u6']
+			environments: [] // array
+		}
+
+		// test data
+		// let initialValues = {
+		// 	identtype: 'FNR',
+		// 	kjonn: 'M',
+		// 	foedtEtter: '2018-07-14T10:00:00.000Z',
+		// 	foedtFoer: '2018-07-02T10:00:00.000Z',
+		// 	regdato: '2018-07-24T11:59:49.051Z',
+		// 	withAdresse: true,
+		// 	statsborgerskap: 'NOR',
+		// 	antall: 3,
+		// 	environments: ['u6', 't1', 't2']
+		// }
+
+		const stegProps = {
+			attributter: Attributter,
+			selectedTypes
 		}
 
 		return (
@@ -57,12 +98,14 @@ export default class Oppskrift extends Component {
 						<div className="oppskrift-page">
 							<StepIndicator activeStep={activeStep} />
 							<Form autoComplete="off">
-								{activeStep === 0 && <OppskriftSteg1 />}
-								{activeStep === 1 && <OppskriftSteg2 />}
-								{activeStep === 2 && <OppskriftSteg3 />}
+								{activeStep === 0 && (
+									<OppskriftSteg1 onSelectionHandler={this.onSelectionHandler} {...stegProps} />
+								)}
+								{activeStep === 1 && <OppskriftSteg2 {...stegProps} values={values} />}
+								{activeStep === 2 && <OppskriftSteg3 {...stegProps} values={values} />}
 							</Form>
 
-							<button onClick={() => {}}>Avbryt</button>
+							<button onClick={() => this.props.history.goBack()}>Avbryt</button>
 
 							{activeStep !== 0 && (
 								<button onClick={() => this.setState({ activeStep: activeStep - 1 })}>

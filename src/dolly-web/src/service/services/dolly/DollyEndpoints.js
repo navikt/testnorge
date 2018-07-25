@@ -2,7 +2,7 @@
 const uri = 'http://localhost:8080/api/v1'
 
 // TODO: bytte /testgruppe til /gruppe når API er oppdatert
-const groupBase = `${uri}/testgruppe`
+const groupBase = `${uri}/gruppe`
 const teamBase = `${uri}/team`
 const brukerBase = `${uri}/bruker`
 

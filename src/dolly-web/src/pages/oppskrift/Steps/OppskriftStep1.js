@@ -7,27 +7,15 @@ import AttributtVelger from '~/components/attributtVelger/AttributtVelger'
 import Overskrift from '~/components/overskrift/Overskrift'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikInput } from '~/components/fields/Input/Input'
-import { Form, Field } from 'formik'
+import { Field } from 'formik'
 
 export default class OppskriftStep1 extends Component {
 	static propTypes = {}
 
 	render() {
+		// ident typer
 		const options = [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
-		// identtype
 
-		let initialValues = {
-			identtype: 'FNR',
-			kjonn: 'M',
-			foedtEtter: '2015-01-31T00:00:00.000Z',
-			foedtFoer: '2018-07-16T00:00:00.000Z',
-			regdato: '2018-07-16T00:00:00.000Z',
-			withAdresse: false,
-			statsborgerskap: 'NOR',
-			antall: 2,
-
-			environments: ['u6']
-		}
 		return (
 			<div>
 				<div className="flexbox--space">
@@ -45,11 +33,17 @@ export default class OppskriftStep1 extends Component {
 						name="antall"
 						label="Antall personer"
 						className="input-num-person"
+						type="number"
 						component={FormikInput}
 					/>
 				</div>
 
-				<AttributtVelger onChange={() => {}} />
+				<AttributtVelger
+					onChange={() => {}}
+					attributter={this.props.attributter}
+					selectedTypes={this.props.selectedTypes}
+					onSelectionHandler={this.props.onSelectionHandler}
+				/>
 			</div>
 		)
 	}

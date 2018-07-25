@@ -14,8 +14,6 @@ export default class DollyInput extends PureComponent {
 	render() {
 		const { className, labelOffscreen, ...restProps } = this.props
 
-		// console.log(this.props)
-
 		const cssClass = cn(className, {
 			'label-offscreen': labelOffscreen
 		})
