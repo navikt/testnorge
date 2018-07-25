@@ -1,5 +1,4 @@
 import { DollyApi } from '~/service/Api'
-import DollyCheckbox from '~/components/fields/Checkbox/Checkbox'
 
 export const types = {
 	REQUEST_CURRENT_BRUKER: 'REQUEST_CURRENT_BRUKER',
