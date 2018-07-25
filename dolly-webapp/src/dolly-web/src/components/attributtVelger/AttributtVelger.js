@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Panel from '~/components/panel/Panel'
 import Input from '~/components/fields/Input/Input'
@@ -20,6 +20,8 @@ export default class AttributtVelger extends Component {
 	searchOnChange = e => this.setState({ search: e.target.value })
 
 	render() {
+		const { onSelectionHandler, selectedTypes, attributter } = this.props
+
 		return (
 			<div className="attributt-velger">
 				<Input
@@ -34,7 +36,30 @@ export default class AttributtVelger extends Component {
 					<div className="attributt-velger_panels">
 						<Panel heading={<h3>Personinformasjon</h3>}>
 							<div className="attributt-velger_panelcontent">
-								<Checkbox label="Fornavn" id="fornavn" />
+								{attributter.personinformasjon.map((group, idx) => {
+									return (
+										<Fragment key={idx}>
+											<h4>{group.label}</h4>
+											<div className="attributt-velger_panelsubcontent">
+												{group.items.map(item => (
+													<Checkbox
+														key={item.id}
+														label={item.label}
+														id={item.id}
+														checked={Boolean(selectedTypes[item.id])}
+														onChange={onSelectionHandler}
+													/>
+												))}
+											</div>
+										</Fragment>
+									)
+								})}
+							</div>
+						</Panel>
+
+						{/* <Panel heading={<h3>Personinformasjon</h3>}>
+							<div className="attributt-velger_panelcontent">
+								<Checkbox label="Fornavn" id="fornavn" onClick={this.props.onSelectionHandler} />
 								<Checkbox label="Mellomnavn" id="mellomnavn" />
 								<Checkbox label="Etternavn" id="etternavn" />
 								<Checkbox label="Kjønn" id="kjonn" />
@@ -45,9 +70,9 @@ export default class AttributtVelger extends Component {
 								<Checkbox label="Spes.reg dato" id="spesregdato" />
 								<Checkbox label="Dødsdato" id="dodsdato" />
 							</div>
-						</Panel>
+						</Panel> */}
 
-						<Panel heading={<h3>Adresser</h3>}>
+						{/* <Panel heading={<h3>Adresser</h3>}>
 							<div className="attributt-velger_panelcontent">
 								<Checkbox label="Fornavn" id="fornavn1" />
 								<Checkbox label="Mellomnavn" id="mellomnavn1" />
@@ -60,9 +85,9 @@ export default class AttributtVelger extends Component {
 								<Checkbox label="Spes.reg dato" id="spesregdato1" />
 								<Checkbox label="Dødsdato" id="dodsdato1" />
 							</div>
-						</Panel>
+						</Panel> */}
 
-						<Panel heading={<h3>Familierelasjoner</h3>}>
+						{/* <Panel heading={<h3>Familierelasjoner</h3>}>
 							<div className="attributt-velger_panelcontent">
 								<Checkbox label="Fornavn" id="fornavn2" />
 								<Checkbox label="Mellomnavn" id="mellomnavn2" />
@@ -75,10 +100,10 @@ export default class AttributtVelger extends Component {
 								<Checkbox label="Spes.reg dato" id="spesregdato2" />
 								<Checkbox label="Dødsdato" id="dodsdato2" />
 							</div>
-						</Panel>
+						</Panel> */}
 					</div>
 
-					<Utvalg />
+					<Utvalg attributter={attributter} selectedTypes={selectedTypes} />
 				</div>
 			</div>
 		)
