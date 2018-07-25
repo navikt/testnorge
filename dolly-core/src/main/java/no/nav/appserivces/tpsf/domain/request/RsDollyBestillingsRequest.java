@@ -39,6 +39,7 @@ public class RsDollyBestillingsRequest {
     @Size(min = 3, max = 3)
     private Character kjonn;
 
+    @Size(min = 3, max = 3)
     private String statsborgerskap;
 
     @Size(min = 1, max = 1)
