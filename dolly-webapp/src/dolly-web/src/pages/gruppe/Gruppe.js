@@ -12,7 +12,16 @@ import './Gruppe.less'
 export default class Gruppe extends Component {
 	componentDidMount() {
 		// TODO: Currently handles refresh on pageload
-		if (!this.props.gruppe) this.props.getGrupper()
+		if (!this.props.gruppe) {
+			const groupId = this.props.match.params.gruppeId
+			this.props.getGrupper().then(res => {
+				const currentGroupObject = res.grupper.find(gruppe => gruppe.id === parseInt(groupId))
+				//TEMP - skal få ut i plain array
+				const brukerListe = currentGroupObject.testidenter.map(ident => ident.ident)
+				if (brukerListe.length === 0) return false
+				this.props.getTpsfBruker(brukerListe)
+			})
+		}
 	}
 
 	startOppskrift = () => {
@@ -21,7 +30,7 @@ export default class Gruppe extends Component {
 	}
 
 	render() {
-		const { gruppe, fetching } = this.props
+		const { gruppe, fetching, testbrukere } = this.props
 
 		if (fetching) return <Loading label="laster gruppe" panel />
 
@@ -51,58 +60,20 @@ export default class Gruppe extends Component {
 						<Table.Column width="20" value="Kjønn" />
 					</Table.Header>
 
-					{tempGRUPPE.map((o, idx) => {
-						return (
-							<Table.Row key={idx} expandComponent={<PersonDetaljer />}>
-								<Table.Column width="15" value={o.id} />
-								<Table.Column width="15" value={o.idType} />
-								<Table.Column width="30" value={o.navn} />
-								<Table.Column width="10" value={o.alder} />
-								<Table.Column width="20" value={o.kjonn} />
-							</Table.Row>
-						)
-					})}
+					{testbrukere &&
+						testbrukere.map((bruker, idx) => {
+							return (
+								<Table.Row key={idx} expandComponent={<PersonDetaljer />}>
+									<Table.Column width="15" value={bruker.ident} />
+									<Table.Column width="15" value={bruker.identtype} />
+									<Table.Column width="30" value={`${bruker.etternavn}, ${bruker.fornavn}`} />
+									<Table.Column width="10" value={bruker.alder || 'Ikke definert'} />
+									<Table.Column width="20" value={bruker.kjonn} />
+								</Table.Row>
+							)
+						})}
 				</Table>
 			</div>
 		)
 	}
 }
-
-const tempGRUPPE = [
-	{
-		id: '010887 39501',
-		idType: 'FNR',
-		navn: 'Lunder, Helga Woll',
-		kjonn: 'Mann',
-		alder: '30',
-		gt: 'Drøbak',
-		arbforhold: 'ordinært'
-	},
-	{
-		id: '010887 39502',
-		idType: 'FNR',
-		navn: 'Lunder, Helga Woll',
-		kjonn: 'Mann',
-		alder: '30',
-		gt: 'Drøbak',
-		arbforhold: 'ordinært'
-	},
-	{
-		id: '010887 39503',
-		idType: 'FNR',
-		navn: 'Lunder, Helga Woll',
-		kjonn: 'Mann',
-		alder: '30',
-		gt: 'Drøbak',
-		arbforhold: 'ordinært'
-	},
-	{
-		id: '010887 39504',
-		idType: 'FNR',
-		navn: 'Lunder, Helga Woll',
-		kjonn: 'Mann',
-		alder: '30',
-		gt: 'Drøbak',
-		arbforhold: 'ordinært'
-	}
-]

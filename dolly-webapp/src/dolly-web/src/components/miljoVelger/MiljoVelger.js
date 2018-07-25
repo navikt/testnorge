@@ -6,10 +6,10 @@ import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import './MiljoVelger.less'
 import { array } from 'yup'
 
-const generateEnv = (label, length) => {
+const generateEnv = (label, start, length) => {
 	const envList = []
 
-	for (let i = 0; i <= length; i++) {
+	for (let i = start; i <= length; i++) {
 		envList.push(`${label + i}`)
 	}
 	return envList
@@ -42,9 +42,9 @@ class MiljoVelger extends Component {
 	render() {
 		const { heading, arrayHelpers } = this.props
 
-		const UList = generateEnv('u', 6)
-		const TList = generateEnv('t', 13)
-		const QList = generateEnv('q', 11)
+		const UList = generateEnv('u', 6, 6)
+		const TList = generateEnv('t', 0, 13)
+		const QList = generateEnv('q', 0, 11)
 
 		return (
 			<div className="miljo-velger">
