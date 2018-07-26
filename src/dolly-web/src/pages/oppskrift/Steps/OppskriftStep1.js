@@ -8,6 +8,7 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikInput } from '~/components/fields/Input/Input'
 import { Field } from 'formik'
+import OppskriftError from '../OppskriftError'
 
 export default class OppskriftStep1 extends Component {
 	static propTypes = {}
@@ -15,6 +16,7 @@ export default class OppskriftStep1 extends Component {
 	render() {
 		// ident typer
 		const options = [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
+		const { errors, touched } = this.props
 
 		return (
 			<div>
@@ -28,6 +30,7 @@ export default class OppskriftStep1 extends Component {
 						label="Velg identtype"
 						component={FormikDollySelect}
 						options={options}
+						error={touched['identtype'] && errors['identtype']}
 					/>
 					<Field
 						name="antall"
@@ -35,6 +38,7 @@ export default class OppskriftStep1 extends Component {
 						className="input-num-person"
 						type="number"
 						component={FormikInput}
+						error={touched['antall'] && errors['antall']}
 					/>
 				</div>
 

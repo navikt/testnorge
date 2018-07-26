@@ -1,43 +1,58 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import StepIndicator from './Steps/StepIndicator'
 import OppskriftSteg1 from './Steps/OppskriftStep1'
 import OppskriftSteg2 from './Steps/OppskriftStep2'
 import OppskriftSteg3 from './Steps/OppskriftStep3'
 import { Formik, Form } from 'formik'
 import * as yup from 'yup'
-import FormErrors from '~/components/formErrors/FormErrors'
-import DisplayFormikState from '~/utils/DisplayFormikState'
 import Attributter from './Attributter'
 import { DollyApi } from '~/service/Api'
+import Wizard from '~/components/wizard/Wizard'
 
 import './Oppskrift.less'
+
+const validationList = [
+	yup.object().shape({
+		antall: yup.number().required('Oppgi antall testbrukere'),
+		identtype: yup.string().required('Velg en identtype')
+	}),
+	yup.object().shape({
+		kjonn: yup.string().required('Velg kjønn'),
+		foedtEtter: yup.string().required('Velg en dato'),
+		foedtFoer: yup.string().required('Velg en dato'),
+		statsborgerskap: yup.string().required('Velg en dato')
+		// regdato: '2018-07-24T11:59:49.051Z',
+		// withAdresse: true,
+		// environments: ['u6', 't1', 't2']
+	}),
+	yup.object().shape({
+		environments: yup.array().required('Velg minst ett miljø')
+	})
+]
 
 export default class Oppskrift extends Component {
 	static propTypes = {}
 
 	state = {
-		activeStep: 0,
-		selection: {},
 		selectedTypes: {
-			foedtEtter: false,
-			foedtFoer: false,
-			kjonn: false,
+			foedtEtter: true,
+			foedtFoer: true,
+			kjonn: true,
 			regdato: false,
-			statsborgerskap: false,
+			statsborgerskap: true,
 			withAdresse: false
 		}
 	}
 
 	onHandleSubmit = async (values, actions) => {
 		const gruppeId = this.props.match.params.gruppeId
-		try {
-			const res = await DollyApi.createBestilling(gruppeId, values)
-
-			this.props.history.push(`/gruppe/${gruppeId}`)
-		} catch (error) {
-			console.log('error', error)
-		}
+		console.log('oppskrift!!', gruppeId)
+		// try {
+		// const res = await DollyApi.createBestilling(gruppeId, values)
+		// this.props.history.push(`/gruppe/${gruppeId}`)
+		// } catch (error) {
+		// console.log('error', error)
+		// }
 	}
 
 	onSelectionHandler = e => {
@@ -48,23 +63,18 @@ export default class Oppskrift extends Component {
 		})
 	}
 
-	validation = () =>
-		yup.object().shape({
-			antall: yup.number().required('Oppgi antall testbrukere')
-		})
-
 	render() {
 		const { activeStep, selectedTypes } = this.state
 
 		let initialValues = {
-			identtype: null, //string
-			kjonn: null, // string
-			foedtEtter: null, // string
-			foedtFoer: null, // string
+			identtype: 'FNR', //string
+			kjonn: '', // string
+			foedtEtter: '', // string
+			foedtFoer: '', // string
 			regdato: new Date(), // string
 			withAdresse: true, // bool
-			statsborgerskap: null, // string
-			antall: null, // number
+			statsborgerskap: '', // string
+			antall: '', // number
 
 			environments: [] // array
 		}
@@ -88,41 +98,21 @@ export default class Oppskrift extends Component {
 		}
 
 		return (
-			<Formik
+			<Wizard
 				initialValues={initialValues}
-				validationSchema={this.validation}
 				onSubmit={this.onHandleSubmit}
-				render={props => {
-					const { values, touched, errors, dirty, isSubmitting } = props
-					return (
-						<div className="oppskrift-page">
-							<StepIndicator activeStep={activeStep} />
-							<Form autoComplete="off">
-								{activeStep === 0 && (
-									<OppskriftSteg1 onSelectionHandler={this.onSelectionHandler} {...stegProps} />
-								)}
-								{activeStep === 1 && <OppskriftSteg2 {...stegProps} values={values} />}
-								{activeStep === 2 && <OppskriftSteg3 {...stegProps} values={values} />}
-							</Form>
-
-							<button onClick={() => this.props.history.goBack()}>Avbryt</button>
-
-							{activeStep !== 0 && (
-								<button onClick={() => this.setState({ activeStep: activeStep - 1 })}>
-									Tilbake
-								</button>
-							)}
-							{activeStep !== 2 && (
-								<button onClick={() => this.setState({ activeStep: activeStep + 1 })}>
-									Videre
-								</button>
-							)}
-							<FormErrors errors={errors} touched={touched} />
-							<DisplayFormikState {...props} />
-						</div>
-					)
-				}}
-			/>
+				validationSchemaList={validationList}
+			>
+				<Wizard.Page>
+					<OppskriftSteg1 onSelectionHandler={this.onSelectionHandler} {...stegProps} />
+				</Wizard.Page>
+				<Wizard.Page>
+					<OppskriftSteg2 {...stegProps} />
+				</Wizard.Page>
+				<Wizard.Page>
+					<OppskriftSteg3 {...stegProps} />
+				</Wizard.Page>
+			</Wizard>
 		)
 	}
 }

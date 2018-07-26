@@ -2,6 +2,8 @@
 @import (reference) '~lessVars';
 
 .dollyselect {
+	width: @default-input-size;
+
 	&-input .Select .Select-control {
 		outline: 0;
 		border-radius: 4px;
@@ -27,5 +29,10 @@
 		.option-text {
 			font-size: 16px;
 		}
+	}
+
+	&.error .Select-control {
+		border-color: @color-error-border;
+		background-color: @color-error-background;
 	}
 }

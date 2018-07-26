@@ -23,7 +23,7 @@ export default class DollyInput extends PureComponent {
 }
 
 export const FormikInput = props => {
-	const { field, form, ...restProps } = props
+	const { field, form, error, ...restProps } = props
 
 	return (
 		<DollyInput
@@ -31,6 +31,7 @@ export const FormikInput = props => {
 			value={field.value}
 			onChange={field.onChange}
 			onBlur={field.onBlur}
+			feil={error ? { feilmelding: error } : null}
 			{...restProps}
 		/>
 	)

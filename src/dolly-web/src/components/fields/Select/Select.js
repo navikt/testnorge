@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Select, { Async } from 'react-select'
 import { getIn } from 'formik'
+import cn from 'classnames'
 
 import './Select.less'
 
@@ -25,10 +26,10 @@ export default class DollySelect extends PureComponent {
 	})
 
 	render() {
-		const { name, label, placeholder, loadOptions, ...restProps } = this.props
+		const { name, label, placeholder, loadOptions, error, ...restProps } = this.props
 
 		return (
-			<div className="skjemaelement dollyselect">
+			<div className={cn({ error: Boolean(error) }, 'skjemaelement dollyselect')}>
 				<label className="skjemaelement__label">{label} </label>
 				<div className="dollyselect-input">
 					{loadOptions ? (
@@ -52,6 +53,11 @@ export default class DollySelect extends PureComponent {
 						/>
 					)}
 				</div>
+				{error && (
+					<div role="alert" aria-live="assertive">
+						<div class="skjemaelement__feilmelding">{error}</div>
+					</div>
+				)}
 			</div>
 		)
 	}
