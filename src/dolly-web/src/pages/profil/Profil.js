@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Tabs from 'nav-frontend-tabs'
 import Overskrift from '~/components/overskrift/Overskrift'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import Button from '~/components/button/Button'
+import WideButton from '~/components/wideButton/WideButton'
 
 import './Profil.less'
 
@@ -17,13 +17,15 @@ export default class ProfilPage extends Component {
 		console.log(this.props)
 
 		return (
-			<div className="profil-container">
-				<Overskrift label="Min profil" />
-				<StaticValue header="NAVIDENT" value={bruker.navIdent} />
-				<StaticValue header="ROLLE" value={bruker.rolle} />
-
-				<Button onClick={() => history.push('/team')}>Teams</Button>
-			</div>
+			<Fragment>
+				<div className="profil-container">
+					<Overskrift label="Min profil" />
+					<StaticValue header="NAVIDENT" value={bruker.navIdent} />
+					<StaticValue header="ROLLE" value={bruker.rolle || 'Ikke definert'} />
+				</div>
+				<WideButton iconKind="team" text="Team" />
+				<WideButton iconKind="file-new" text="Maler" />
+			</Fragment>
 		)
 	}
 }
