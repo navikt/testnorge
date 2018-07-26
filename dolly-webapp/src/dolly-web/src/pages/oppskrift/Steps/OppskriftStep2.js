@@ -7,6 +7,7 @@ import Panel from '~/components/panel/Panel'
 import { Field } from 'formik'
 import { FormikInput } from '~/components/fields/Input/Input'
 import { FormikDatepicker } from '~/components/fields/Datepicker/Datepicker'
+import OppskriftError from '../OppskriftError'
 
 const inputComponentSelector = {
 	date: FormikDatepicker,
@@ -17,7 +18,7 @@ export default class OppskriftStep2 extends Component {
 	static propTypes = {}
 
 	render() {
-		const { selectedTypes, attributter, values } = this.props
+		const { selectedTypes, attributter, values, errors, touched } = this.props
 
 		return (
 			<div>
@@ -26,7 +27,7 @@ export default class OppskriftStep2 extends Component {
 				</div>
 
 				<div className="grunnoppsett">
-					<StaticValue header="TYPE" value={values.identtype} />
+					<StaticValue header="TYPE" value={values.identtype && values.identtype} />
 					<StaticValue header="ANTALL PERSONER" value={values.antall && values.antall.toString()} />
 				</div>
 
@@ -40,12 +41,15 @@ export default class OppskriftStep2 extends Component {
 
 									return (
 										Boolean(selectedTypes[item.id]) && (
-											<Field
-												key={item.id}
-												name={item.id}
-												label={item.label}
-												component={InputComponent}
-											/>
+											<Fragment>
+												<Field
+													key={item.id}
+													name={item.id}
+													label={item.label}
+													component={InputComponent}
+													error={touched[item.id] && errors[item.id]}
+												/>
+											</Fragment>
 										)
 									)
 								})}
@@ -53,14 +57,6 @@ export default class OppskriftStep2 extends Component {
 						)
 					})}
 				</Panel>
-
-				{/* <Panel heading={<h3>Adresser</h3>}>
-					Ullamco Lorem non voluptate adipisicing ipsum pariatur fugiat sint eu nostrud commodo.
-				</Panel> */}
-
-				{/* <Panel heading={<h3>Arbeidsforhold</h3>}>
-					Ullamco Lorem non voluptate adipisicing ipsum pariatur fugiat sint eu nostrud commodo.
-				</Panel> */}
 			</div>
 		)
 	}
