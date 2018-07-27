@@ -14,7 +14,6 @@ export default class ProfilPage extends Component {
 
 	render() {
 		const { bruker, history } = this.props
-		console.log(this.props)
 
 		return (
 			<Fragment>
@@ -23,7 +22,7 @@ export default class ProfilPage extends Component {
 					<StaticValue header="NAVIDENT" value={bruker.navIdent} />
 					<StaticValue header="ROLLE" value={bruker.rolle || 'Ikke definert'} />
 				</div>
-				<WideButton iconKind="team" text="Team" />
+				<WideButton iconKind="team" text="Team" onClick={() => this.props.history.push('/team')} />
 				<WideButton iconKind="file-new" text="Maler" />
 			</Fragment>
 		)

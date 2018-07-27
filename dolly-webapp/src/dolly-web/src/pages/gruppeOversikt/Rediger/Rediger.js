@@ -94,7 +94,7 @@ export default class Rediger extends PureComponent {
 								</Knapp>
 							</div>
 
-							<FormErrors errors={errors} touched={touched} />
+							{/* <FormErrors errors={errors} touched={touched} /> */}
 							{/* <DisplayFormikState {...props} /> */}
 						</Form>
 					)
