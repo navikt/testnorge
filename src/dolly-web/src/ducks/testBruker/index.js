@@ -16,9 +16,9 @@ export default function testbrukerReducer(state = initialState, action) {
 		case types.REQUEST_TPSF_BRUKER:
 			return { ...state, fetching: true }
 		case types.REQUEST_TPSF_BRUKER_SUCCESS:
-			return { ...state, items: action.brukere }
+			return { ...state, fetching: false, items: action.brukere }
 		case types.REQUEST_TPSF_BRUKER_ERROR:
-			return { ...state, error: action.error }
+			return { ...state, fetching: false, error: action.error }
 		default:
 			return state
 	}

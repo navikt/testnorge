@@ -12,8 +12,8 @@ import './Gruppe.less'
 export default class Gruppe extends Component {
 	componentDidMount() {
 		// TODO: Currently handles refresh on pageload
+		const groupId = this.props.match.params.gruppeId
 		if (!this.props.gruppe) {
-			const groupId = this.props.match.params.gruppeId
 			this.props.getGrupper().then(res => {
 				const currentGroupObject = res.grupper.find(gruppe => gruppe.id === parseInt(groupId))
 				//TEMP - skal få ut i plain array
@@ -21,6 +21,10 @@ export default class Gruppe extends Component {
 				if (brukerListe.length === 0) return false
 				this.props.getTpsfBruker(brukerListe)
 			})
+		} else {
+			const brukerListe = this.props.gruppe.testidenter.map(ident => ident.ident)
+			if (brukerListe.length === 0) return false
+			this.props.getTpsfBruker(brukerListe)
 		}
 	}
 
@@ -30,7 +34,7 @@ export default class Gruppe extends Component {
 	}
 
 	render() {
-		const { gruppe, fetching, testbrukere } = this.props
+		const { gruppe, fetching, testbrukere, testbrukerFetching } = this.props
 
 		if (fetching) return <Loading label="laster gruppe" panel />
 
@@ -60,7 +64,10 @@ export default class Gruppe extends Component {
 						<Table.Column width="20" value="Kjønn" />
 					</Table.Header>
 
-					{testbrukere &&
+					{testbrukerFetching ? (
+						<Loading label="laster testbrukere" panel />
+					) : (
+						testbrukere &&
 						testbrukere.map((bruker, idx) => {
 							return (
 								<Table.Row key={idx} expandComponent={<PersonDetaljer />}>
@@ -71,7 +78,8 @@ export default class Gruppe extends Component {
 									<Table.Column width="20" value={bruker.kjonn} />
 								</Table.Row>
 							)
-						})}
+						})
+					)}
 				</Table>
 			</div>
 		)
