@@ -23,7 +23,7 @@ export default class OppskriftStep1 extends Component {
 					<Overskrift label="Legg til testpersoner" />
 				</div>
 
-				<div className="flexbox">
+				<div className="oppskrift-field-group flexbox">
 					<Field
 						name="identtype"
 						label="Velg identtype"

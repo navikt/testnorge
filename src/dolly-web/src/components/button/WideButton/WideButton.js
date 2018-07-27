@@ -11,9 +11,9 @@ export default class WideButton extends PureComponent {
 	}
 
 	render() {
-		const { iconKind, text } = this.props
+		const { iconKind, text, onClick } = this.props
 		return (
-			<button className="wide-button">
+			<button className="wide-button" onClick={onClick}>
 				<span className="wide-button_icon">
 					<Icon kind={iconKind} size={30} />
 				</span>

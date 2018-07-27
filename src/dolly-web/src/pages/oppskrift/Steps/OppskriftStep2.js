@@ -36,20 +36,22 @@ export default class OppskriftStep2 extends Component {
 						return (
 							<Fragment key={idx}>
 								<h4>{group.label}</h4>
-								{group.items.map(item => {
-									const InputComponent = inputComponentSelector[item.type] || FormikInput
+								<div className="oppskrift-field-group">
+									{group.items.map(item => {
+										const InputComponent = inputComponentSelector[item.type] || FormikInput
 
-									return (
-										Boolean(selectedTypes[item.id]) && (
-											<Field
-												key={item.id}
-												name={item.id}
-												label={item.label}
-												component={InputComponent}
-											/>
+										return (
+											Boolean(selectedTypes[item.id]) && (
+												<Field
+													key={item.id}
+													name={item.id}
+													label={item.label}
+													component={InputComponent}
+												/>
+											)
 										)
-									)
-								})}
+									})}
+								</div>
 							</Fragment>
 						)
 					})}
