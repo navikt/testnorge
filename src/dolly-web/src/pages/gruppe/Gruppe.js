@@ -70,7 +70,7 @@ export default class Gruppe extends Component {
 						testbrukere &&
 						testbrukere.map((bruker, idx) => {
 							return (
-								<Table.Row key={idx} expandComponent={<PersonDetaljer />}>
+								<Table.Row key={idx} expandComponent={<PersonDetaljer brukerData={bruker} />}>
 									<Table.Column width="15" value={bruker.ident} />
 									<Table.Column width="15" value={bruker.identtype} />
 									<Table.Column width="30" value={`${bruker.etternavn}, ${bruker.fornavn}`} />
