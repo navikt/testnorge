@@ -55,7 +55,7 @@ export default class DollySelect extends PureComponent {
 				</div>
 				{error && (
 					<div role="alert" aria-live="assertive">
-						<div class="skjemaelement__feilmelding">{error}</div>
+						<div className="skjemaelement__feilmelding">{error}</div>
 					</div>
 				)}
 			</div>
@@ -71,7 +71,8 @@ export const FormikDollySelect = props => {
 			name={field.name}
 			value={field.value}
 			onChange={selected => form.setFieldValue(field.name, getIn(selected, 'value', selected))}
-			onBlur={e => form.setFieldTouched(field.name, true)}
+			onBlur={() => form.setFieldTouched(field.name, true)}
+			error={form.touched[field.name] && form.errors[field.name]}
 			{...restProps}
 		/>
 	)

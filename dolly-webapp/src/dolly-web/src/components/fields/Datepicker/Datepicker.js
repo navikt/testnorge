@@ -16,13 +16,13 @@ export default class Datepicker extends Component {
 		// classname = skjemaelement for å følge samme styling som andre input comps fra NAV
 		return (
 			<div className={cn({ error }, 'skjemaelement')}>
-				<label className="skjemaelement__label" for={label.toLowerCase()}>
+				<label className="skjemaelement__label" htmlFor={label.toLowerCase()}>
 					{label}
 				</label>
 				<Datovelger id={name} dato={value} {...restProps} />
 				{error && (
 					<div role="alert" aria-live="assertive">
-						<div class="skjemaelement__feilmelding">{error}</div>
+						<div className="skjemaelement__feilmelding">{error}</div>
 					</div>
 				)}
 			</div>
@@ -33,12 +33,16 @@ export default class Datepicker extends Component {
 export const FormikDatepicker = props => {
 	const { field, form, ...restProps } = props
 
+	//NAV-Datepicker har ikke onBlur, så ved onChange er den både touched og changed
 	return (
 		<Datepicker
 			name={field.name}
 			value={field.value}
-			onChange={dato => form.setFieldValue(field.name, dato)}
-			onBlur={e => form.setFieldTouched(field.name, true)}
+			onChange={dato => {
+				form.setFieldValue(field.name, dato)
+				form.setFieldTouched(field.name, true)
+			}}
+			error={form.touched[field.name] && form.errors[field.name]}
 			{...restProps}
 		/>
 	)

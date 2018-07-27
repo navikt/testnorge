@@ -12,7 +12,6 @@ export default class OppskriftStep3 extends Component {
 	render() {
 		const { values, attributter, selectedTypes } = this.props
 
-		console.log(values, attributter)
 		return (
 			<div>
 				<div className="content-header">
@@ -27,6 +26,7 @@ export default class OppskriftStep3 extends Component {
 							infoType.items.map(item => {
 								return Boolean(selectedTypes[item.id]) ? (
 									<StaticValue
+										key={item.id}
 										header={item.label}
 										value={values[item.id] && values[item.id].toString()}
 									/>

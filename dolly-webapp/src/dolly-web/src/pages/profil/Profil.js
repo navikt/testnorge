@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Tabs from 'nav-frontend-tabs'
 import Overskrift from '~/components/overskrift/Overskrift'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import WideButton from '~/components/wideButton/WideButton'
+import WideButton from '~/components/button/WideButton/WideButton'
 
 import './Profil.less'
 

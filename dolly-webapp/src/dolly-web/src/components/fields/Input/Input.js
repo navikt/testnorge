@@ -31,7 +31,11 @@ export const FormikInput = props => {
 			value={field.value}
 			onChange={field.onChange}
 			onBlur={field.onBlur}
-			feil={error ? { feilmelding: error } : null}
+			feil={
+				form.touched[field.name] && form.errors[field.name]
+					? { feilmelding: form.errors[field.name] }
+					: null
+			}
 			{...restProps}
 		/>
 	)

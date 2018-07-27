@@ -16,7 +16,6 @@ export default class OppskriftStep1 extends Component {
 	render() {
 		// ident typer
 		const options = [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
-		const { errors, touched } = this.props
 
 		return (
 			<div>
@@ -30,7 +29,6 @@ export default class OppskriftStep1 extends Component {
 						label="Velg identtype"
 						component={FormikDollySelect}
 						options={options}
-						error={touched['identtype'] && errors['identtype']}
 					/>
 					<Field
 						name="antall"
@@ -38,15 +36,13 @@ export default class OppskriftStep1 extends Component {
 						className="input-num-person"
 						type="number"
 						component={FormikInput}
-						error={touched['antall'] && errors['antall']}
 					/>
 				</div>
 
 				<AttributtVelger
-					onChange={() => {}}
+					onChange={this.props.onSelectionHandler}
 					attributter={this.props.attributter}
 					selectedTypes={this.props.selectedTypes}
-					onSelectionHandler={this.props.onSelectionHandler}
 				/>
 			</div>
 		)
