@@ -42,10 +42,10 @@ export default class GruppeOversikt extends PureComponent {
 
 				<div className="flexbox--space">
 					<ToggleGruppe onChange={this.byttVisning} name="toggleGruppe">
-						<ToggleKnapp value="mine" defaultChecked={true} key="1">
+						<ToggleKnapp value="mine" checked={grupper.visning === 'mine'} key="1">
 							Mine
 						</ToggleKnapp>
-						<ToggleKnapp value="alle" key="2">
+						<ToggleKnapp value="alle" checked={grupper.visning === 'alle'} key="2">
 							Alle
 						</ToggleKnapp>
 					</ToggleGruppe>

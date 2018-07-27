@@ -8,7 +8,8 @@ const mapStateToProps = (state, ownProps) => ({
 	gruppe:
 		state.grupper.items &&
 		state.grupper.items.find(v => String(v.id) === ownProps.match.params.gruppeId),
-	testbrukere: state.testbruker.items
+	testbrukere: state.testbruker.items,
+	testbrukerFetching: state.testbruker.fetching
 })
 
 const mapDispatchToProps = dispatch => ({
