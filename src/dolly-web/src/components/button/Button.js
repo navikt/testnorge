@@ -21,10 +21,10 @@ export default class Button extends PureComponent {
 	}
 
 	render() {
-		const { kind, children } = this.props
+		const { kind, children, type = 'button' } = this.props
 
 		return (
-			<button className="dolly-button" onClick={this.onClickHandler}>
+			<button type={type} className="dolly-button" onClick={this.onClickHandler}>
 				{children && children}
 				{kind && <Icon kind={kind} />}
 			</button>

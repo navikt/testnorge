@@ -3,6 +3,10 @@ import { Formik, Field } from 'formik'
 import StepIndicator from './StepIndicator'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import FormErrors from '~/components/formErrors/FormErrors'
+import Knapp from 'nav-frontend-knapper'
+import Button from '~/components/button/Button'
+import NavButton from '~/components/button/NavButton/NavButton'
+import Icon from '~/components/icon/Icon'
 
 export default class Wizard extends React.Component {
 	static Page = ({ children }) => children
@@ -45,12 +49,13 @@ export default class Wizard extends React.Component {
 		} else {
 			this.next(values)
 
+			bag.resetForm(values)
 			bag.setSubmitting(false)
 		}
 	}
 
 	render() {
-		const { children, validationSchemaList } = this.props
+		const { children, validationSchemaList, onCancelHandler } = this.props
 
 		const { page, values } = this.state
 
@@ -72,22 +77,26 @@ export default class Wizard extends React.Component {
 						<div className="oppskrift-page">
 							<StepIndicator activeStep={page} />
 							<form onSubmit={handleSubmit}>
-								{React.cloneElement(activePage, { values, errors, touched })}
+								{React.cloneElement(activePage, { values })}
 
-								<div className="buttons">
-									{page > 0 && (
-										<button type="button" onClick={this.previous}>
-											« Previous
-										</button>
-									)}
+								<div className="oppskrift-knapper">
+									<Knapp type="standard" onClick={onCancelHandler}>
+										AVBRYT
+									</Knapp>
 
-									{!isLastPage && <button type="submit">Next »</button>}
+									<div className="oppskrift-knapper_right">
+										{page > 0 && (
+											<NavButton direction="backward" type="button" onClick={this.previous} />
+										)}
 
-									{isLastPage && (
-										<button type="submit" disabled={isSubmitting}>
-											Submit
-										</button>
-									)}
+										{!isLastPage && <NavButton direction="forward" type="submit" />}
+
+										{isLastPage && (
+											<Knapp type="hoved" htmlType="submit" disabled={isSubmitting}>
+												OPPRETT
+											</Knapp>
+										)}
+									</div>
 								</div>
 
 								<FormErrors errors={errors} touched={touched} />

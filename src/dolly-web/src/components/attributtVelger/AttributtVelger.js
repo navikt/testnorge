@@ -20,7 +20,7 @@ export default class AttributtVelger extends Component {
 	searchOnChange = e => this.setState({ search: e.target.value })
 
 	render() {
-		const { onSelectionHandler, selectedTypes, attributter } = this.props
+		const { onChange, selectedTypes, attributter } = this.props
 
 		return (
 			<div className="attributt-velger">
@@ -34,7 +34,7 @@ export default class AttributtVelger extends Component {
 
 				<div className="flexbox">
 					<div className="attributt-velger_panels">
-						<Panel heading={<h3>Personinformasjon</h3>}>
+						<Panel heading={<h3>Personinformasjon</h3>} startOpen>
 							<div className="attributt-velger_panelcontent">
 								{attributter.personinformasjon.map((group, idx) => {
 									return (
@@ -47,7 +47,7 @@ export default class AttributtVelger extends Component {
 														label={item.label}
 														id={item.id}
 														checked={Boolean(selectedTypes[item.id])}
-														onChange={onSelectionHandler}
+														onChange={onChange}
 													/>
 												))}
 											</div>

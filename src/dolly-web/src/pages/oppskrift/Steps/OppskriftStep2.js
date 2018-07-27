@@ -18,7 +18,7 @@ export default class OppskriftStep2 extends Component {
 	static propTypes = {}
 
 	render() {
-		const { selectedTypes, attributter, values, errors, touched } = this.props
+		const { selectedTypes, attributter, values } = this.props
 
 		return (
 			<div>
@@ -31,7 +31,7 @@ export default class OppskriftStep2 extends Component {
 					<StaticValue header="ANTALL PERSONER" value={values.antall && values.antall.toString()} />
 				</div>
 
-				<Panel heading={<h3>Personinformasjon</h3>}>
+				<Panel heading={<h3>Personinformasjon</h3>} startOpen>
 					{attributter.personinformasjon.map((group, idx) => {
 						return (
 							<Fragment key={idx}>
@@ -41,15 +41,12 @@ export default class OppskriftStep2 extends Component {
 
 									return (
 										Boolean(selectedTypes[item.id]) && (
-											<Fragment>
-												<Field
-													key={item.id}
-													name={item.id}
-													label={item.label}
-													component={InputComponent}
-													error={touched[item.id] && errors[item.id]}
-												/>
-											</Fragment>
+											<Field
+												key={item.id}
+												name={item.id}
+												label={item.label}
+												component={InputComponent}
+											/>
 										)
 									)
 								})}

@@ -46,13 +46,12 @@ export default class Oppskrift extends Component {
 
 	onHandleSubmit = async (values, actions) => {
 		const gruppeId = this.props.match.params.gruppeId
-		console.log('oppskrift!!', gruppeId)
-		// try {
-		// const res = await DollyApi.createBestilling(gruppeId, values)
-		// this.props.history.push(`/gruppe/${gruppeId}`)
-		// } catch (error) {
-		// console.log('error', error)
-		// }
+		try {
+			const res = await DollyApi.createBestilling(gruppeId, values)
+			this.props.history.push(`/gruppe/${gruppeId}`)
+		} catch (error) {
+			console.log('error', error)
+		}
 	}
 
 	onSelectionHandler = e => {
@@ -63,11 +62,15 @@ export default class Oppskrift extends Component {
 		})
 	}
 
+	onCancelHandler = () => {
+		this.props.history.goBack()
+	}
+
 	render() {
 		const { activeStep, selectedTypes } = this.state
 
 		let initialValues = {
-			identtype: 'FNR', //string
+			identtype: '', //string
 			kjonn: '', // string
 			foedtEtter: '', // string
 			foedtFoer: '', // string
@@ -102,6 +105,7 @@ export default class Oppskrift extends Component {
 				initialValues={initialValues}
 				onSubmit={this.onHandleSubmit}
 				validationSchemaList={validationList}
+				onCancelHandler={this.onCancelHandler}
 			>
 				<Wizard.Page>
 					<OppskriftSteg1 onSelectionHandler={this.onSelectionHandler} {...stegProps} />
