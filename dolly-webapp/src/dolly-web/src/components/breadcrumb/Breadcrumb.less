@@ -1,6 +1,24 @@
 .breadcrumb {
 	background-color: white;
-	padding: 5px 10px;
 	font-size: 14px;
 	border-bottom: 1px solid #ccc;
+
+	ol {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0.75rem 1rem;
+		margin: 0;
+		list-style: none;
+	}
+
+	.breadcrumb-item + .breadcrumb-item {
+		padding-left: 0.5rem;
+	}
+
+	.breadcrumb-item + .breadcrumb-item::before {
+		display: inline-block;
+		padding-right: 0.5rem;
+		color: #6c757d;
+		content: '/';
+	}
 }

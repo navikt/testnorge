@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route } from 'react-router-dom'
+
 import Gruppe from './pages/gruppe/GruppeConnector'
 import GruppeOversikt from './pages/gruppeOversikt/GruppeOversiktConnector'
 import Oppskrift from './pages/oppskrift/Oppskrift'
@@ -7,15 +7,21 @@ import Profil from './pages/profil/ProfilConnector'
 import TeamOversiktConnector from './pages/teamOversikt/TeamOversiktConnector'
 import TeamConnector from './pages/team/TeamConnector'
 
-const Routes = () => (
-	<Switch>
-		<Route exact path="/" component={GruppeOversikt} />
-		<Route exact path="/profil" component={Profil} />
-		<Route exact path="/team" component={TeamOversiktConnector} />
-		<Route exact path="/team/:teamId" component={TeamConnector} />
-		<Route exact path="/gruppe/:gruppeId" component={Gruppe} />
-		<Route exact path="/gruppe/:gruppeId/oppskrift" component={Oppskrift} />
-	</Switch>
-)
+const GruppeBreadcrumb = props => <span>Gruppe #{props.match.params.gruppeId}</span>
+const TeamBreadcrumb = props => <span>Team #{props.match.params.teamId}</span>
 
-export default Routes
+const routes = [
+	{ path: '/', exact: true, breadcrumb: 'Hjem', component: GruppeOversikt },
+	{ path: '/profil', exact: true, breadcrumb: 'Min profil', component: Profil },
+	{ path: '/team', exact: true, breadcrumb: 'Team oversikt', component: TeamOversiktConnector },
+	{ path: '/team/:teamId', exact: true, breadcrumb: TeamBreadcrumb, component: TeamConnector },
+	{ path: '/gruppe/:gruppeId', exact: true, breadcrumb: GruppeBreadcrumb, component: Gruppe },
+	{
+		path: '/gruppe/:gruppeId/oppskrift',
+		exact: true,
+		breadcrumb: 'Lag bestilling',
+		component: Oppskrift
+	}
+]
+
+export default routes
