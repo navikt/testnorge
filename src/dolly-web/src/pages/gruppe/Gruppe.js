@@ -11,21 +11,7 @@ import './Gruppe.less'
 
 export default class Gruppe extends Component {
 	componentDidMount() {
-		// TODO: Currently handles refresh on pageload
-		const groupId = this.props.match.params.gruppeId
-		if (!this.props.gruppe) {
-			this.props.getGrupper().then(res => {
-				const currentGroupObject = res.grupper.find(gruppe => gruppe.id === parseInt(groupId))
-				//TEMP - skal få ut i plain array
-				const brukerListe = currentGroupObject.testidenter.map(ident => ident.ident)
-				if (brukerListe.length === 0) return false
-				this.props.getTpsfBruker(brukerListe)
-			})
-		} else {
-			const brukerListe = this.props.gruppe.testidenter.map(ident => ident.ident)
-			if (brukerListe.length === 0) return false
-			this.props.getTpsfBruker(brukerListe)
-		}
+		this.props.getGruppe()
 	}
 
 	startOppskrift = () => {
