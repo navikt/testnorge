@@ -1,4 +1,5 @@
 import { TpsfApi } from '~/service/Api'
+import { LOCATION_CHANGE } from 'connected-react-router'
 import TpsfTransformer from './tpsfTransformer'
 
 export const types = {
@@ -14,6 +15,8 @@ const initialState = {
 
 export default function testbrukerReducer(state = initialState, action) {
 	switch (action.type) {
+		case LOCATION_CHANGE:
+			return initialState
 		case types.REQUEST_TPSF_BRUKER:
 			return { ...state, fetching: true }
 		case types.REQUEST_TPSF_BRUKER_SUCCESS:
