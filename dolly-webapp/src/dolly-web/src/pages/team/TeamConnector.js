@@ -1,23 +1,18 @@
 import { connect } from 'react-redux'
-import { fetchTeams } from '~/ducks/team'
-import { getGrupper } from '~/ducks/grupper'
+import { getTeam } from '~/ducks/team'
 import Team from './Team'
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = state => {
 	return {
-		currentTeamId: ownProps.match.params.teamId,
-		team:
-			state.team.items &&
-			state.team.items.find(t => t.id === parseInt(ownProps.match.params.teamId)),
+		team: state.team.data,
 		teamFetching: state.team.fetching,
 		grupper: state.grupper.items,
-		gruppeFetching: state.grupper.fetching
+		grupperFetching: state.grupper.fetching
 	}
 }
 
-const mapDispatchToProps = dispatch => ({
-	fetchTeams: () => dispatch(fetchTeams()),
-	getGrupper: opts => dispatch(getGrupper(opts))
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	getTeam: () => dispatch(getTeam(ownProps.match.params.teamId))
 })
 
 export default connect(

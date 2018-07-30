@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Profil from './Profil'
-import { fetchTeams, setTeamVisning, setActivePage, createTeam } from '~/ducks/team'
+import { fetchTeams, setTeamVisning, setActivePage, createTeam } from '~/ducks/teams'
 
 const mapStateToProps = state => ({
 	bruker: state.bruker.brukerData

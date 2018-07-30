@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import RedigerTeam from './RedigerTeam'
-import { createTeam, updateTeam, closeOpprettRedigerTeam } from '~/ducks/team'
+import { createTeam, updateTeam, closeOpprettRedigerTeam } from '~/ducks/teams'
 
 const mapStateToProps = state => ({
-	createOrUpdateFetching: state.team.createOrUpdateFetching
+	createOrUpdateFetching: state.teams.createOrUpdateFetching
 })
 
 const mapDispatchToProps = dispatch => ({

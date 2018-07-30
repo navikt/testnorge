@@ -5,6 +5,7 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 
 import grupperReducer from './ducks/grupper'
 import gruppeReducer from './ducks/gruppe'
+import teamsReducer from './ducks/teams'
 import teamReducer from './ducks/team'
 import brukerReducer from './ducks/bruker'
 import testbrukerReducer from './ducks/testBruker'
@@ -22,6 +23,7 @@ export default function configureReduxStore(history) {
 	const rootReducer = combineReducers({
 		grupper: grupperReducer,
 		gruppe: gruppeReducer,
+		teams: teamsReducer,
 		team: teamReducer,
 		bruker: brukerReducer,
 		testbruker: testbrukerReducer
