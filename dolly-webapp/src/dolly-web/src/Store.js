@@ -3,7 +3,8 @@ import thunkMiddleware from 'redux-thunk'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 
-import gruppeReducer from './ducks/grupper'
+import grupperReducer from './ducks/grupper'
+import gruppeReducer from './ducks/gruppe'
 import teamReducer from './ducks/team'
 import brukerReducer from './ducks/bruker'
 import testbrukerReducer from './ducks/testBruker'
@@ -19,7 +20,8 @@ export default function configureReduxStore(history) {
 	}
 
 	const rootReducer = combineReducers({
-		grupper: gruppeReducer,
+		grupper: grupperReducer,
+		gruppe: gruppeReducer,
 		team: teamReducer,
 		bruker: brukerReducer,
 		testbruker: testbrukerReducer
