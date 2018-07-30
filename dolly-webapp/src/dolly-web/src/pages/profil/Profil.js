@@ -4,8 +4,7 @@ import Tabs from 'nav-frontend-tabs'
 import Overskrift from '~/components/overskrift/Overskrift'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import WideButton from '~/components/button/WideButton/WideButton'
-
-import './Profil.less'
+import ContentContainer from '~/components/contentContainer/ContentContainer'
 
 export default class ProfilPage extends Component {
 	static propTypes = {
@@ -17,11 +16,11 @@ export default class ProfilPage extends Component {
 
 		return (
 			<Fragment>
-				<div className="profil-container">
+				<ContentContainer>
 					<Overskrift label="Min profil" />
 					<StaticValue header="NAVIDENT" value={bruker.navIdent} />
 					<StaticValue header="ROLLE" value={bruker.rolle || 'Ikke definert'} />
-				</div>
+				</ContentContainer>
 				<WideButton iconKind="team" text="Team" onClick={() => this.props.history.push('/team')} />
 				<WideButton iconKind="file-new" text="Maler" />
 			</Fragment>
