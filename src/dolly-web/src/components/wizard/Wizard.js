@@ -15,7 +15,7 @@ export default class Wizard extends React.Component {
 		super(props)
 
 		this.state = {
-			page: 1,
+			page: 0,
 			values: props.initialValues
 		}
 	}
@@ -30,12 +30,6 @@ export default class Wizard extends React.Component {
 		this.setState(state => ({
 			page: Math.max(state.page - 1, 0)
 		}))
-
-	validate = values => {
-		const activePage = React.Children.toArray(this.props.children)[this.state.page]
-
-		return activePage.props.validate ? activePage.props.validate(values) : {}
-	}
 
 	handleSubmit = (values, bag) => {
 		const { children, onSubmit } = this.props
@@ -100,7 +94,7 @@ export default class Wizard extends React.Component {
 								</div>
 
 								<FormErrors errors={errors} touched={touched} />
-								<DisplayFormikState {...props} />
+								{/* <DisplayFormikState {...props} /> */}
 							</form>
 						</div>
 					)
