@@ -1,5 +1,6 @@
 import { DollyApi } from '~/service/Api'
 import { getGrupper } from '../grupper'
+import { LOCATION_CHANGE } from 'connected-react-router'
 
 export const types = {
 	GET_TEAM_REQUEST: 'team/get-request',
@@ -14,6 +15,8 @@ const initialState = {
 
 export default function teamReducer(state = initialState, action) {
 	switch (action.type) {
+		case LOCATION_CHANGE:
+			return initialState
 		case types.GET_TEAM_REQUEST:
 			return { ...state, fetching: true }
 		case types.GET_TEAM_SUCCESS:
