@@ -46,9 +46,7 @@ export default class Gruppe extends Component {
 					label={gruppe.navn}
 					actions={[{ icon: 'edit', onClick: () => {} }, { icon: 'trashcan', onClick: () => {} }]}
 				/>
-
 				<GruppeDetaljer gruppe={gruppe} />
-
 				<Overskrift
 					type="h2"
 					label="Testpersoner"
@@ -60,8 +58,8 @@ export default class Gruppe extends Component {
 						<Table.Column width="15" value="ID" />
 						<Table.Column width="15" value="ID-type" />
 						<Table.Column width="30" value="Navn" />
-						<Table.Column width="10" value="Alder" />
 						<Table.Column width="20" value="Kjønn" />
+						<Table.Column width="10" value="Alder" />
 					</Table.Header>
 
 					{testbrukerFetching ? (
@@ -70,12 +68,12 @@ export default class Gruppe extends Component {
 						testbrukere &&
 						testbrukere.map((bruker, idx) => {
 							return (
-								<Table.Row key={idx} expandComponent={<PersonDetaljer brukerData={bruker} />}>
-									<Table.Column width="15" value={bruker.ident} />
-									<Table.Column width="15" value={bruker.identtype} />
-									<Table.Column width="30" value={`${bruker.etternavn}, ${bruker.fornavn}`} />
-									<Table.Column width="10" value={bruker.alder || 'Ikke definert'} />
+								<Table.Row key={idx} expandComponent={<PersonDetaljer brukerData={bruker.data} />}>
+									<Table.Column width="15" value={bruker.id} />
+									<Table.Column width="15" value={bruker.idType} />
+									<Table.Column width="30" value={bruker.navn} />
 									<Table.Column width="20" value={bruker.kjonn} />
+									<Table.Column width="10" value={bruker.alder} />
 								</Table.Row>
 							)
 						})
