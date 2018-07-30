@@ -1,4 +1,5 @@
 import { TpsfApi } from '~/service/Api'
+import TpsfTransformer from './tpsfTransformer'
 
 export const types = {
 	REQUEST_TPSF_BRUKER: 'testbruker/get_tpsf_bruker',
@@ -42,7 +43,7 @@ export const getTpsfBruker = userArray => async dispatch => {
 	try {
 		dispatch(requestTpsfBruker())
 		const result = await TpsfApi.getTestbrukere(userArray)
-		dispatch(requestTpsfBrukerSuccess(result.data))
+		dispatch(requestTpsfBrukerSuccess(TpsfTransformer(result.data)))
 	} catch (err) {
 		return dispatch(requestTpsfBrukerError(err))
 	}
