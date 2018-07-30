@@ -5,7 +5,7 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import GruppeDetaljer from './GruppeDetaljer'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
-import PersonDetaljer from './PersonDetaljer'
+import PersonDetaljer from './PersonDetaljer/PersonDetaljer'
 
 import './Gruppe.less'
 
