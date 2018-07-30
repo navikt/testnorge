@@ -6,6 +6,7 @@ import GruppeDetaljer from './GruppeDetaljer'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
 import PersonDetaljer from './PersonDetaljer/PersonDetaljer'
+import ContentContainer from '~/components/contentContainer/ContentContainer'
 
 import './Gruppe.less'
 
@@ -24,7 +25,7 @@ export default class Gruppe extends Component {
 
 		if (fetching) return <Loading label="laster gruppe" panel />
 
-		if (!gruppe) return false
+		if (!gruppe) return null
 
 		return (
 			<div id="gruppe-container">
@@ -38,33 +39,39 @@ export default class Gruppe extends Component {
 					label="Testpersoner"
 					actions={[{ icon: 'add-circle', onClick: this.startOppskrift }]}
 				/>
+				{gruppe.testidenter.length <= 0 ? (
+					<ContentContainer>Det finnes ingen data i denne gruppen enda</ContentContainer>
+				) : (
+					<Table>
+						<Table.Header>
+							<Table.Column width="15" value="ID" />
+							<Table.Column width="15" value="ID-type" />
+							<Table.Column width="30" value="Navn" />
+							<Table.Column width="20" value="Kjønn" />
+							<Table.Column width="10" value="Alder" />
+						</Table.Header>
 
-				<Table>
-					<Table.Header>
-						<Table.Column width="15" value="ID" />
-						<Table.Column width="15" value="ID-type" />
-						<Table.Column width="30" value="Navn" />
-						<Table.Column width="20" value="Kjønn" />
-						<Table.Column width="10" value="Alder" />
-					</Table.Header>
-
-					{testbrukerFetching ? (
-						<Loading label="laster testbrukere" panel />
-					) : (
-						testbrukere &&
-						testbrukere.map((bruker, idx) => {
-							return (
-								<Table.Row key={idx} expandComponent={<PersonDetaljer brukerData={bruker.data} />}>
-									<Table.Column width="15" value={bruker.id} />
-									<Table.Column width="15" value={bruker.idType} />
-									<Table.Column width="30" value={bruker.navn} />
-									<Table.Column width="20" value={bruker.kjonn} />
-									<Table.Column width="10" value={bruker.alder} />
-								</Table.Row>
-							)
-						})
-					)}
-				</Table>
+						{testbrukerFetching ? (
+							<Loading label="laster testbrukere" panel />
+						) : (
+							testbrukere &&
+							testbrukere.map((bruker, idx) => {
+								return (
+									<Table.Row
+										key={idx}
+										expandComponent={<PersonDetaljer brukerData={bruker.data} />}
+									>
+										<Table.Column width="15" value={bruker.id} />
+										<Table.Column width="15" value={bruker.idType} />
+										<Table.Column width="30" value={bruker.navn} />
+										<Table.Column width="20" value={bruker.kjonn} />
+										<Table.Column width="10" value={bruker.alder} />
+									</Table.Row>
+								)
+							})
+						)}
+					</Table>
+				)}
 			</div>
 		)
 	}
