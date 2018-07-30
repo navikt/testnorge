@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import Routes from '~/Routes'
+import { Switch, Route } from 'react-router-dom'
 import Header from '~/components/header/Header'
 import Loading from '~/components/loading/Loading'
+import Breadcrumbs from '~/components/breadcrumb/Breadcrumb'
+import routes from '~/Routes'
 
 import './App.less'
 
@@ -18,8 +20,21 @@ export default class App extends Component {
 		return (
 			<React.Fragment>
 				<Header brukerData={brukerData} />
+				<Breadcrumbs />
 				<main>
-					<Routes />
+					<Switch>
+						{routes.map((route, idx) => {
+							return route.component ? (
+								<Route
+									key={idx}
+									path={route.path}
+									exact={route.exact}
+									name={route.name}
+									render={props => <route.component {...props} />}
+								/>
+							) : null
+						})}
+					</Switch>
 				</main>
 			</React.Fragment>
 		)
