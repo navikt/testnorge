@@ -1,5 +1,6 @@
 import { DollyApi } from '~/service/Api'
 import { getTpsfBruker } from '../testBruker'
+import { LOCATION_CHANGE } from 'connected-react-router'
 
 export const types = {
 	GET_GRUPPE_REQUEST: 'gruppe/get-request',
@@ -14,6 +15,8 @@ const initialState = {
 
 export default function gruppeReducer(state = initialState, action) {
 	switch (action.type) {
+		case LOCATION_CHANGE:
+			return initialState
 		case types.GET_GRUPPE_REQUEST:
 			return { ...state, fetching: true }
 		case types.GET_GRUPPE_SUCCESS:

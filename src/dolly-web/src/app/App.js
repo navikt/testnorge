@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Routes from '~/Routes'
 import Header from '~/components/header/Header'
-import Breadcrumb from '~/components/breadcrumb/Breadcrumb'
 import Loading from '~/components/loading/Loading'
 
 import './App.less'
@@ -19,7 +18,6 @@ export default class App extends Component {
 		return (
 			<React.Fragment>
 				<Header brukerData={brukerData} />
-				<Breadcrumb />
 				<main>
 					<Routes />
 				</main>
