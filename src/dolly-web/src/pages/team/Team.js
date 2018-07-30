@@ -10,8 +10,7 @@ class Team extends Component {
 	}
 
 	componentDidMount() {
-		this.props.fetchTeams()
-		this.props.getGrupper({ teamId: this.props.currentTeamId })
+		this.props.getTeam()
 	}
 
 	openLeggTilBrukerHandler = () => {
@@ -23,10 +22,11 @@ class Team extends Component {
 	}
 
 	render() {
-		const { team, grupper, teamFetching, gruppeFetching } = this.props
+		const { team, grupper, teamFetching, grupperFetching } = this.props
 
 		if (!team || !grupper) return null
 
+		console.log(grupper)
 		return (
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} />
@@ -61,7 +61,7 @@ class Team extends Component {
 
 				<Overskrift label="Testdatagrupper" type="h2" />
 
-				{gruppeFetching ? (
+				{grupperFetching ? (
 					<Loading label="laster grupper" panel />
 				) : (
 					<Table>

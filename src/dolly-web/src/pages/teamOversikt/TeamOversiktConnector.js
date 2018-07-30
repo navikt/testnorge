@@ -8,10 +8,10 @@ import {
 	startOpprettTeam,
 	startRedigerTeam,
 	closeOpprettRedigerTeam
-} from '~/ducks/team'
+} from '~/ducks/teams'
 
 const mapStateToProps = state => ({
-	teams: state.team
+	teams: state.teams
 })
 
 const mapDispatchToProps = dispatch => ({
