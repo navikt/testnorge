@@ -28,7 +28,7 @@ export default class TeamOversikt extends Component {
 
 		return (
 			<div className="oversikt-container">
-				<div className="flexbox--space">
+				<div className="page-header flexbox--space">
 					<Overskrift label="Teams" actions={[{ icon: 'add-circle', onClick: startOpprettTeam }]} />
 					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
