@@ -2,6 +2,7 @@ package no.nav.appserivces.tpsf.domain.request;
 
 import lombok.Getter;
 import lombok.Setter;
+import no.nav.appserivces.sigrunstub.domain.RsSigrunnOpprettSkattegrunnlag;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -64,4 +65,7 @@ public class RsDollyBestillingsRequest {
 
     @Size(min = 1, max = 50)
     private String beskrSikkerhetsTiltak;
+
+    /* Sigrunn */
+    private RsSigrunnOpprettSkattegrunnlag sigrunRequest;
 }

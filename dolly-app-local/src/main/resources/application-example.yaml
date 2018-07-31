@@ -47,3 +47,6 @@ freg.security.oidc:
 
 ### TPSF ###
 tpsf.server.url: https://tps-forvalteren-u2.nais.preprod.local
+
+### SIGRUN ###
+sigrun.server.url: http://localhost:8040

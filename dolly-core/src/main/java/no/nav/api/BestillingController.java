@@ -1,9 +1,11 @@
 package no.nav.api;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.appserivces.tpsf.domain.request.RsBestilling;
 import no.nav.appserivces.tpsf.domain.request.RsBestillingProgress;
 import no.nav.jpa.BestillingProgress;
 import no.nav.service.BestillingProgressService;
+import no.nav.service.BestillingService;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +23,17 @@ public class BestillingController {
     private MapperFacade mapperFacade;
 
     @Autowired
-    private BestillingProgressService service;
+    private BestillingProgressService progressService;
+
+    @Autowired
+    private BestillingService bestillingService;
 
     @GetMapping("/{bestillingsId}")
-    public List<RsBestillingProgress> checkBestillingsstatus(@PathVariable("bestillingsId") Long bestillingsId) {
-        List<BestillingProgress> progress = service.fetchBestillingProgressByBestillingsIdFromDB(bestillingsId);
-        return mapperFacade.mapAsList(progress, RsBestillingProgress.class);
+    public RsBestilling checkBestillingsstatus(@PathVariable("bestillingsId") Long bestillingsId) {
+        List<RsBestillingProgress> progress = mapperFacade.mapAsList(progressService.fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(bestillingsId), RsBestillingProgress.class);
+        RsBestilling rsBestilling = mapperFacade.map(bestillingService.fetchBestillingById(bestillingsId), RsBestilling.class);
+        rsBestilling.setPersonStatus(progress);
+        return rsBestilling;
     }
 
 }

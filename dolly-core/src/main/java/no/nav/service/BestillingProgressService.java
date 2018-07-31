@@ -4,6 +4,7 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.exceptions.NotFoundException;
 import no.nav.jpa.BestillingProgress;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,5 +25,9 @@ public class BestillingProgressService {
         }
 
         return progress;
+    }
+
+    public List<BestillingProgress> fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(Long bestillingsId){
+        return repository.findBestillingProgressByBestillingsId(bestillingsId);
     }
 }

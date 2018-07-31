@@ -4,9 +4,9 @@ import no.nav.jpa.Team;
 import no.nav.jpa.Testgruppe;
 
 import java.util.List;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TestGruppeRepository extends CrudRepository<Testgruppe, Long> {
+public interface TestGruppeRepository extends JpaRepository<Testgruppe, Long> {
 
 	Testgruppe save(Testgruppe testgruppe);
 

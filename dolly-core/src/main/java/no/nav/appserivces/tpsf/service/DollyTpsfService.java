@@ -1,5 +1,7 @@
 package no.nav.appserivces.tpsf.service;
 
+import no.nav.appserivces.sigrunstub.domain.RsGrunnlagResponse;
+import no.nav.appserivces.sigrunstub.restcom.SigrunStubApiService;
 import no.nav.appserivces.tpsf.domain.request.RsDollyBestillingsRequest;
 import no.nav.appserivces.tpsf.domain.response.RsSkdMeldingResponse;
 import no.nav.appserivces.tpsf.domain.response.SendSkdMeldingTilTpsResponse;
@@ -7,11 +9,14 @@ import no.nav.appserivces.tpsf.restcom.TpsfApiService;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.exceptions.DollyFunctionalException;
+import no.nav.jpa.Bestilling;
 import no.nav.jpa.BestillingProgress;
 import no.nav.jpa.Testgruppe;
 import no.nav.jpa.Testident;
+import no.nav.service.BestillingService;
 import no.nav.service.TestgruppeService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,17 +34,23 @@ public class DollyTpsfService {
     TestgruppeService testgruppeService;
 
     @Autowired
+    SigrunStubApiService sigrunStubApiService;
+
+    @Autowired
     IdentRepository identRepository;
 
     @Autowired
     BestillingProgressRepository bestillingProgressRepository;
 
+    @Autowired
+    BestillingService bestillingService;
+
     @Async
     public void opprettPersonerByKriterier(Long gruppeId, RsDollyBestillingsRequest request, Long bestillingsId){
-
         List<String> klareIdenter = tpsfApiService.opprettPersonerTpsf(request);
-
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
+
+        Bestilling bestilling = bestillingService.fetchBestillingById(bestillingsId);
 
         klareIdenter.forEach(ident -> {
             BestillingProgress progress = new BestillingProgress();
@@ -52,13 +63,18 @@ public class DollyTpsfService {
             } catch (DollyFunctionalException e){
                 progress.setFeil(e.getMessage());
                 bestillingProgressRepository.save(progress);
+                bestilling.setSistOppdatert(LocalDate.now());
+                bestillingService.saveBestillingToDB(bestilling);
                 return;
             }
 
             String env = extractSuccessEnvTPS(response.getSendSkdMeldingTilTpsResponsene().get(0));
-            progress.setTpsfSuccessEnv(env);
+            progress.setTpsfSuccessEnv(env.substring(0, env.length() - 1));
 
-            bestillingProgressRepository.save(progress);
+            BestillingProgress currentProgress = bestillingProgressRepository.save(progress);
+
+            bestilling.setSistOppdatert(LocalDate.now());
+            bestillingService.saveBestillingToDB(bestilling);
 
             if(env.length() > 0){
                 Testident testident = new Testident();
@@ -66,7 +82,23 @@ public class DollyTpsfService {
                 testident.setTestgruppe(testgruppe);
                 identRepository.save(testident);
             }
+
+            /* Sigrunn Handlinger */
+            if(request.getSigrunRequest() != null) {
+                try {
+                    List<RsGrunnlagResponse> res = sigrunStubApiService.createInntektstuff(request.getSigrunRequest());
+                    currentProgress.setSigrunSuccessEnv("all");
+                }catch (Exception e){
+                    currentProgress.setFeil(e.getMessage());
+                }
+
+                currentProgress = bestillingProgressRepository.save(progress);
+            }
         });
+
+        bestilling.setSistOppdatert(LocalDate.now());
+        bestilling.setFerdig(true);
+        bestillingService.saveBestillingToDB(bestilling);
     }
 
     private String extractSuccessEnvTPS(SendSkdMeldingTilTpsResponse response){

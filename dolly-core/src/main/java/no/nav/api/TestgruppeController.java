@@ -10,6 +10,7 @@ import no.nav.resultSet.RsOpprettTestgruppe;
 import no.nav.resultSet.RsTestgruppe;
 import no.nav.resultSet.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.resultSet.RsTestident;
+import no.nav.service.BestillingService;
 import no.nav.service.IdentService;
 import no.nav.service.TestgruppeService;
 
@@ -45,6 +46,9 @@ public class TestgruppeController {
 
 	@Autowired
 	DollyTpsfService dollyTpsfService;
+
+	@Autowired
+	private BestillingService bestillingService;
 
 	@Autowired
 	BestillingRepository bestillingRepository;
@@ -106,7 +110,7 @@ public class TestgruppeController {
 
 	@PostMapping("/{gruppeId}/bestilling")
 	public RsBestilling opprettGruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
-		Bestilling bestilling = bestillingRepository.save(new Bestilling());
+		Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, request.getAntall(), request.getEnvironments());
 		dollyTpsfService.opprettPersonerByKriterier(gruppeId, request, bestilling.getId());
 		return mapperFacade.map(bestilling, RsBestilling.class);
 	}

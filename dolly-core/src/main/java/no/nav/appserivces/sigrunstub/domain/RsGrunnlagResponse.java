@@ -3,15 +3,15 @@ package no.nav.appserivces.sigrunstub.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
-public class RsSigrunnOpprettSkattegrunnlag {
+public class RsGrunnlagResponse {
 
-    private String testdataEier;
+    private long id;
     private String personidentifikator;
     private String inntektsaar;
     private String tjeneste;
-    private List<RsSigrunnKodeverknavnGrunnlag> grunnlag;
+    private String grunnlag;
+    private String verdi;
+    private String testdataEier;
 }

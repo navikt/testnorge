@@ -1,15 +1,18 @@
 package no.nav.appserivces.sigrunstub.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.appserivces.sigrunstub.domain.RsGrunnlagResponse;
 import no.nav.appserivces.sigrunstub.domain.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.appserivces.tpsf.errorHandling.RestTemplateException;
 import no.nav.exceptions.SigrunnStubException;
 import no.nav.exceptions.TpsfException;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,25 +26,23 @@ import org.springframework.web.client.RestTemplate;
 public class SigrunStubApiService {
 
     private RestTemplate restTemplate = new RestTemplate();
-    private static final String SIGRUN_STUB_BASE_URL = "http://localhost:8040";
     private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/testdata/opprett";
 
     @Autowired
     ObjectMapper objectMapper;
 
-    public void createInntektstuff(RsSigrunnOpprettSkattegrunnlag request) throws IOException, SigrunnStubException{
-        StringBuilder sbUrl = new StringBuilder().append(SIGRUN_STUB_BASE_URL).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
+    @Value("${sigrun.server.url}")
+    private String sigrunHostUrl;
 
-        HttpHeaders header = new HttpHeaders();
-        header.add("testdataEier", "Dolly");
-        HttpEntity<Object> req = new HttpEntity<>(request, header);
-
-        ResponseEntity<Object> response =null;
+    public List<RsGrunnlagResponse> createInntektstuff(RsSigrunnOpprettSkattegrunnlag request) throws IOException, SigrunnStubException{
+        StringBuilder sbUrl = new StringBuilder().append(sigrunHostUrl).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
 
         try{
-            response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, req, Object.class);
+            ResponseEntity<RsGrunnlagResponse[]> response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, new HttpEntity<>(request), RsGrunnlagResponse[].class);
+            return Arrays.asList(response.getBody());
         } catch (HttpClientErrorException e){
             RestTemplateException rs = objectMapper.readValue(e.getResponseBodyAsString(), RestTemplateException.class);
+            throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());
         } catch (HttpServerErrorException e){
             RestTemplateException rs = objectMapper.readValue(e.getResponseBodyAsString(), RestTemplateException.class);
             throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());
