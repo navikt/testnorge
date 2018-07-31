@@ -15,7 +15,7 @@ const validationList = [
 	yup.object().shape({
 		antall: yup
 			.number()
-			.max(10, 'Maks 10 personer i første omgang')
+			.max(5, 'Maks 5 personer i første omgang')
 			.required('Oppgi antall testbrukere'),
 		identtype: yup.string().required('Velg en identtype')
 	}),

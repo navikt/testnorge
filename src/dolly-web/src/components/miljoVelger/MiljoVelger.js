@@ -33,6 +33,7 @@ class MiljoVelger extends Component {
 		<Checkbox
 			key={id}
 			id={id}
+			disabled={id !== 'u6'} // TEMP: Kun bruk dette miljøet foreløpig
 			label={id}
 			checked={this.props.arrayValues.includes(id)}
 			onClick={this.onClickHandler}
