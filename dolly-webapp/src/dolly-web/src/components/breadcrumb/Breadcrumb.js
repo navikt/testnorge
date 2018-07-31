@@ -13,7 +13,6 @@ class Breadcrumbs extends PureComponent {
 	render() {
 		const { breadcrumbs } = this.props
 
-		console.log('test')
 		return (
 			<nav aria-label="breadcrumb" className="breadcrumb">
 				<ol>

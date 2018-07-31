@@ -29,7 +29,6 @@ export default class App extends Component {
 									key={idx}
 									path={route.path}
 									exact={route.exact}
-									name={route.name}
 									render={props => <route.component {...props} />}
 								/>
 							) : null
