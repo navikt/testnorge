@@ -89,10 +89,10 @@ public class TeamService {
 	}
 
 	@Transactional
-	public RsTeam fjernMedlemmer(Long teamId, List<RsBruker> navIdenter) {
+	public RsTeam fjernMedlemmer(Long teamId, List<String> navIdenter) {
 		Team team = fetchTeamById(teamId);
 		if (!team.getMedlemmer().isEmpty()) {
-			team.getMedlemmer().removeIf(medlem -> navIdenter.stream().anyMatch(rsBruker -> rsBruker.getNavIdent().equals(medlem.getNavIdent())));
+			team.getMedlemmer().removeIf(medlem -> navIdenter.contains(medlem.getNavIdent()));
 		}
 
 		Team changedTeam = saveToTeamRepository(team);

@@ -55,8 +55,8 @@ public class TeamController {
 	}
 
 	@PutMapping("/{teamId}/fjernMedlemmer")
-	public RsTeam fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<RsBruker> brukereRequest) {
-        return teamService.fjernMedlemmer(teamId, brukereRequest);
+	public RsTeam fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
+        return teamService.fjernMedlemmer(teamId, navIdenter);
     }
 
     @PutMapping("/{teamId}")
