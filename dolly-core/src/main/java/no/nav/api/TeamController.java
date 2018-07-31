@@ -50,11 +50,6 @@ public class TeamController {
 	}
 
 	@PutMapping("/{teamId}/leggTilMedlemmer")
-	public RsTeam addBrukereSomTeamMedlemmer(@PathVariable("teamId") Long teamId, @RequestBody List<RsBruker> brukereRequest) {
-		return teamService.addMedlemmer(teamId, brukereRequest);
-	}
-
-	@PutMapping("/{teamId}/medlemmer")
 	public RsTeam addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
 		return teamService.addMedlemmerByNavidenter(teamId, navIdenter);
 	}
