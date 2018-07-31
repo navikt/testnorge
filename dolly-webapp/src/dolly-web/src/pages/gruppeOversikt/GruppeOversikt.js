@@ -32,7 +32,7 @@ export default class GruppeOversikt extends PureComponent {
 
 		return (
 			<div className="oversikt-container">
-				<div className="flexbox--space">
+				<div className="page-header flexbox--space">
 					<Overskrift
 						label="Testdatagrupper"
 						actions={[{ icon: 'add-circle', onClick: startOpprettGruppe }]}
