@@ -51,8 +51,12 @@ class DollyEndpoints {
 		return `${teamBase}/${teamId}`
 	}
 
-	static teamMedlemmer(teamId) {
-		return `${teamBase}/${teamId}/medlemmer`
+	static teamAddMember(teamId) {
+		return `${teamBase}/${teamId}/leggTilMedlemmer`
+	}
+
+	static teamRemoveMember(teamId) {
+		return `${teamBase}/${teamId}/fjernMedlemmer`
 	}
 
 	static bruker() {

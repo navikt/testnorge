@@ -17,11 +17,11 @@ export default class RedigerTeam extends PureComponent {
 	erRedigering = Boolean(getIn(this.props.team, 'id', false))
 
 	onHandleSubmit = async (values, actions) => {
-		const { createTeam, updateTeam, team } = this.props
+		const { closeLeggTilBruker, addMember } = this.props
 
-		values.navIdent = values.navIdent.map(user => user.value)
-		console.log(values)
-		// const res = this.erRedigering ? await updateTeam(team.id, values) : await createTeam(values)
+		const userArray = values.navIdent.map(user => user.value)
+		closeLeggTilBruker()
+		addMember(userArray)
 	}
 
 	validation = () =>
@@ -30,7 +30,7 @@ export default class RedigerTeam extends PureComponent {
 		})
 
 	render() {
-		const { closeLeggTilBruker, team, createOrUpdateFetching } = this.props
+		const { createOrUpdateFetching, closeLeggTilBruker, teamMembers } = this.props
 		// if (createOrUpdateFetching) {
 		// 	return (
 		// 		<Table.Row>
@@ -60,7 +60,9 @@ export default class RedigerTeam extends PureComponent {
 									component={FormikDollySelect}
 									multi={true}
 									loadOptions={() =>
-										DollyApi.getBrukere().then(DollyApi.Utils.NormalizeBrukerListForDropdown)
+										DollyApi.getBrukere().then(res =>
+											DollyApi.Utils.NormalizeBrukerListForDropdown(res.data, teamMembers)
+										)
 									}
 								/>
 

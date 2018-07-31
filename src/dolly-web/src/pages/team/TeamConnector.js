@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { getTeam } from '~/ducks/team'
+import { getTeam, addMember, removeMember } from '~/ducks/team'
 import Team from './Team'
 
 const mapStateToProps = state => {
@@ -11,9 +11,14 @@ const mapStateToProps = state => {
 	}
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-	getTeam: () => dispatch(getTeam(ownProps.match.params.teamId))
-})
+const mapDispatchToProps = (dispatch, ownProps) => {
+	const teamId = ownProps.match.params.teamId
+	return {
+		getTeam: () => dispatch(getTeam(teamId)),
+		addMember: userArray => dispatch(addMember(teamId, userArray)),
+		removeMember: userArray => dispatch(removeMember(teamId, userArray))
+	}
+}
 
 export default connect(
 	mapStateToProps,

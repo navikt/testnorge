@@ -22,11 +22,12 @@ class Team extends Component {
 	}
 
 	render() {
-		const { team, grupper, teamFetching, grupperFetching } = this.props
+		const { team, grupper, teamFetching, grupperFetching, addMember, removeMember } = this.props
 
 		if (!team || !grupper) return null
 
-		console.log(grupper)
+		const teamMembers = team.medlemmer.map(medlem => medlem.navIdent)
+
 		return (
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} />
@@ -41,7 +42,12 @@ class Team extends Component {
 				) : (
 					<Fragment>
 						{this.state.leggTilBruker && (
-							<LeggTilBruker teamId={team.id} closeLeggTilBruker={this.closeLeggTilBruker} />
+							<LeggTilBruker
+								teamId={team.id}
+								teamMembers={teamMembers}
+								closeLeggTilBruker={this.closeLeggTilBruker}
+								addMember={addMember}
+							/>
 						)}
 						<Table>
 							<Table.Header>
@@ -50,7 +56,10 @@ class Team extends Component {
 							</Table.Header>
 
 							{team.medlemmer.map(medlem => (
-								<Table.Row key={medlem.navIdent} deleteAction={() => {}}>
+								<Table.Row
+									key={medlem.navIdent}
+									deleteAction={() => removeMember([medlem.navIdent])}
+								>
 									<Table.Column width="30" value={medlem.navIdent} />
 									<Table.Column width="10" value="Utvikler" />
 								</Table.Row>
