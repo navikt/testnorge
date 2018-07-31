@@ -12,13 +12,10 @@ import no.nav.jpa.Testgruppe;
 import no.nav.jpa.Testident;
 import no.nav.service.TestgruppeService;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
