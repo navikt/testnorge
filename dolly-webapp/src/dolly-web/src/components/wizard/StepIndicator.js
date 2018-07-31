@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Steps from 'rc-steps'
 
 import 'rc-steps/assets/index.css'
-import 'rc-steps/assets/iconfont.css'
 
 export default class StepIndicator extends PureComponent {
 	static propTypes = {

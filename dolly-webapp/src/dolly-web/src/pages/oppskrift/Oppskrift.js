@@ -13,14 +13,17 @@ import './Oppskrift.less'
 
 const validationList = [
 	yup.object().shape({
-		antall: yup.number().required('Oppgi antall testbrukere'),
+		antall: yup
+			.number()
+			.max(10, 'Maks 10 personer i første omgang')
+			.required('Oppgi antall testbrukere'),
 		identtype: yup.string().required('Velg en identtype')
 	}),
 	yup.object().shape({
 		kjonn: yup.string().required('Velg kjønn'),
 		foedtEtter: yup.string().required('Velg en dato'),
 		foedtFoer: yup.string().required('Velg en dato'),
-		statsborgerskap: yup.string().required('Velg en dato')
+		statsborgerskap: yup.string().required('Krever et statsborgerskap')
 		// regdato: '2018-07-24T11:59:49.051Z',
 		// withAdresse: true,
 		// environments: ['u6', 't1', 't2']
@@ -45,7 +48,7 @@ export default class Oppskrift extends Component {
 	}
 
 	onHandleSubmit = async (values, actions) => {
-		const gruppeId = this.props.match.params.gruppeId
+		const { gruppeId } = this.props.match.params
 		try {
 			const res = await DollyApi.createBestilling(gruppeId, values)
 			this.props.history.push(`/gruppe/${gruppeId}`)
