@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Formik, Field } from 'formik'
 import StepIndicator from './StepIndicator'
 import DisplayFormikState from '~/utils/DisplayFormikState'
@@ -8,16 +8,12 @@ import Button from '~/components/button/Button'
 import NavButton from '~/components/button/NavButton/NavButton'
 import Icon from '~/components/icon/Icon'
 
-export default class Wizard extends React.Component {
+export default class Wizard extends Component {
 	static Page = ({ children }) => children
 
-	constructor(props) {
-		super(props)
-
-		this.state = {
-			page: 0,
-			values: props.initialValues
-		}
+	state = {
+		page: 0,
+		values: this.props.initialValues
 	}
 
 	next = values =>

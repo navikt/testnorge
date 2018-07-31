@@ -7,7 +7,7 @@ import './Header.less'
 
 export default ({ brukerData }) => {
 	return (
-		<div id="dolly-header">
+		<header className="app-header">
 			<NavLink to="/" className="home-nav">
 				<img alt="NAV logo" src={logo} />
 				<h1>Dolly</h1>
@@ -24,6 +24,6 @@ export default ({ brukerData }) => {
 					<Icon kind="user" size="20" /> {brukerData.navIdent}
 				</NavLink>
 			</div>
-		</div>
+		</header>
 	)
 }
