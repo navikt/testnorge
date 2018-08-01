@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import Knapp from 'nav-frontend-knapper'
 import Icon from '~/components/icon/Icon'
 import Overskrift from '~/components/overskrift/Overskrift'
-import GruppeDetaljer from './GruppeDetaljer'
+import GruppeDetaljer from './GruppeDetaljer/GruppeDetaljer'
+import BestillingStatus from './BestillingStatus/BestillingStatus'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
 import PersonDetaljer from './PersonDetaljer/PersonDetaljer'
@@ -21,7 +22,7 @@ export default class Gruppe extends Component {
 	}
 
 	render() {
-		const { gruppe, fetching, testbrukere, testbrukerFetching } = this.props
+		const { gruppe, fetching, testbrukere, testbrukerFetching, getGruppe } = this.props
 
 		if (fetching) return <Loading label="laster gruppe" panel />
 
@@ -34,6 +35,11 @@ export default class Gruppe extends Component {
 					actions={[{ icon: 'edit', onClick: () => {} }, { icon: 'trashcan', onClick: () => {} }]}
 				/>
 				<GruppeDetaljer gruppe={gruppe} />
+
+				{gruppe.bestillinger.map(bestilling => (
+					<BestillingStatus key={bestilling.id} bestilling={bestilling} onGroupUpdate={getGruppe} />
+				))}
+
 				<Overskrift
 					type="h2"
 					label="Testpersoner"
