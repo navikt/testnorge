@@ -1,10 +1,12 @@
+import kodeverk from '~/pages/gruppeOversikt/TEMP_kodeverk'
+
 // TODO: lag config for denne
 const uri = 'http://localhost:8080/api/v1'
 
-// TODO: bytte /testgruppe til /gruppe når API er oppdatert
 const groupBase = `${uri}/gruppe`
 const teamBase = `${uri}/team`
 const brukerBase = `${uri}/bruker`
+const kodeverkBase = `${uri}/kodeverk`
 
 class DollyEndpoints {
 	static gruppe() {
@@ -69,6 +71,10 @@ class DollyEndpoints {
 
 	static currentBruker() {
 		return `${brukerBase}/current`
+	}
+
+	static kodeverkByNavn(kodeverkNavn) {
+		return `${kodeverkBase}/${kodeverkNavn}`
 	}
 }
 

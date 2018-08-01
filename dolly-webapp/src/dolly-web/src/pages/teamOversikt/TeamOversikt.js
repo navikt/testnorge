@@ -47,17 +47,14 @@ export default class TeamOversikt extends Component {
 				{fetching ? (
 					<Loading label="laster teams" panel />
 				) : (
-					<Fragment>
-						<TeamListe
-							items={items}
-							fetching={fetching}
-							history={history}
-							startRedigerTeam={startRedigerTeam}
-							editTeamId={editTeamId}
-							deleteTeam={deleteTeam}
-						/>
-						<FixedButton onClick={startOpprettTeam} />
-					</Fragment>
+					<TeamListe
+						items={items}
+						fetching={fetching}
+						history={history}
+						startRedigerTeam={startRedigerTeam}
+						editTeamId={editTeamId}
+						deleteTeam={deleteTeam}
+					/>
 				)}
 			</div>
 		)

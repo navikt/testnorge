@@ -9,15 +9,23 @@ const Attributter = {
 		},
 		{
 			label: 'Nasjonalitet',
-			items: [{ id: 'statsborgerskap', type: 'text', label: 'Statsborgerskap' }]
+			items: [
+				{
+					id: 'statsborgerskap',
+					type: 'select',
+					label: 'Statsborgerskap',
+					kodeverkNavn: 'statsborgerskap'
+				}
+			]
 		},
 		{
 			label: 'Diverse',
 			items: [
 				{
 					id: 'kjonn',
-					type: ' text',
-					label: 'Kjønn'
+					type: ' select',
+					label: 'Kjønn',
+					options: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }]
 				}
 			]
 		}
