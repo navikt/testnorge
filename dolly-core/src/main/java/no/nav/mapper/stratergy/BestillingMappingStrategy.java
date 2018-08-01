@@ -3,7 +3,7 @@ package no.nav.mapper.stratergy;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.appserivces.tpsf.domain.request.RsBestilling;
+import no.nav.resultSet.RsBestilling;
 import no.nav.jpa.Bestilling;
 import no.nav.mapper.MappingStrategy;
 

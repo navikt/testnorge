@@ -1,4 +1,4 @@
-package no.nav.appserivces.sigrunstub.domain;
+package no.nav.resultSet;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

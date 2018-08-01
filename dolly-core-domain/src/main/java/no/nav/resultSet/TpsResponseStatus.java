@@ -1,4 +1,4 @@
-package no.nav.appserivces.tpsf.domain.response;
+package no.nav.resultSet;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseStatus {
+public class TpsResponseStatus {
 
     private String kode;
     private String melding;

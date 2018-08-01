@@ -1,8 +1,8 @@
 package no.nav.api;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.appserivces.tpsf.domain.request.RsBestilling;
-import no.nav.appserivces.tpsf.domain.request.RsDollyBestillingsRequest;
+import no.nav.resultSet.RsBestilling;
+import no.nav.resultSet.RsDollyBestillingsRequest;
 import no.nav.appserivces.tpsf.service.DollyTpsfService;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.jpa.Bestilling;
@@ -75,7 +75,7 @@ public class TestgruppeController {
     public RsTestgruppeMedErMedlemOgFavoritt getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
         RsTestgruppe gruppe = mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppe.class);
         RsTestgruppeMedErMedlemOgFavoritt gruppeMedMedlemOgFav = testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
-        gruppeMedMedlemOgFav.setBestillingsIder(bestillingService.fetchBestillingerByGruppeId(gruppeId).stream().map(Bestilling::getId).collect(Collectors.toList()));
+        gruppeMedMedlemOgFav.setBestillinger(mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestilling.class));
         return gruppeMedMedlemOgFav;
     }
 

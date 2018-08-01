@@ -1,9 +1,8 @@
 package no.nav.api;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.appserivces.tpsf.domain.request.RsBestilling;
-import no.nav.appserivces.tpsf.domain.request.RsBestillingProgress;
-import no.nav.jpa.BestillingProgress;
+import no.nav.resultSet.RsBestilling;
+import no.nav.resultSet.RsBestillingProgress;
 import no.nav.service.BestillingProgressService;
 import no.nav.service.BestillingService;
 

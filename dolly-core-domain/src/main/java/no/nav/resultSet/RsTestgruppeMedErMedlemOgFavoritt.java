@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class RsTestgruppeMedErMedlemOgFavoritt {
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate datoEndret;
 
-	private List<Long> bestillingsIder;
+	private List<RsBestilling> bestillinger = new ArrayList<>();
 
 	private RsTeamMedIdOgNavn team;
 	private Set<RsTestident> testidenter = new HashSet<>();

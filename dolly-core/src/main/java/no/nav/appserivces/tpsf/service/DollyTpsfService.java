@@ -1,10 +1,10 @@
 package no.nav.appserivces.tpsf.service;
 
-import no.nav.appserivces.sigrunstub.domain.RsGrunnlagResponse;
+import no.nav.resultSet.RsGrunnlagResponse;
 import no.nav.appserivces.sigrunstub.restcom.SigrunStubApiService;
-import no.nav.appserivces.tpsf.domain.request.RsDollyBestillingsRequest;
-import no.nav.appserivces.tpsf.domain.response.RsSkdMeldingResponse;
-import no.nav.appserivces.tpsf.domain.response.SendSkdMeldingTilTpsResponse;
+import no.nav.resultSet.RsDollyBestillingsRequest;
+import no.nav.resultSet.RsSkdMeldingResponse;
+import no.nav.resultSet.SendSkdMeldingTilTpsResponse;
 import no.nav.appserivces.tpsf.restcom.TpsfApiService;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.IdentRepository;

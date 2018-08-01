@@ -1,9 +1,9 @@
 package no.nav.appserivces.tpsf.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.appserivces.tpsf.domain.request.RsDollyBestillingsRequest;
-import no.nav.appserivces.tpsf.domain.request.RsTpsfIdent;
-import no.nav.appserivces.tpsf.domain.response.RsSkdMeldingResponse;
+import no.nav.resultSet.RsDollyBestillingsRequest;
+import no.nav.resultSet.RsTpsfIdent;
+import no.nav.resultSet.RsSkdMeldingResponse;
 import no.nav.appserivces.tpsf.errorHandling.RestTemplateException;
 import no.nav.exceptions.DollyFunctionalException;
 import no.nav.exceptions.TpsfException;

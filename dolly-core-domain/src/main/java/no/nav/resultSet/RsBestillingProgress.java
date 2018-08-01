@@ -1,4 +1,4 @@
-package no.nav.appserivces.tpsf.domain.request;
+package no.nav.resultSet;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
