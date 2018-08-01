@@ -40,6 +40,11 @@ public class BestillingService {
         }
     }
 
+    public List<Bestilling> fetchBestillingerByGruppeId(Long gruppeId){
+        Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
+        return bestillingRepository.findBestillingByGruppe(testgruppe);
+    }
+
     public Bestilling saveBestillingByGruppeIdAndAntallIdenter(Long gruppeId, int antallIdenter, List<String> miljoer){
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
         StringBuilder sb = new StringBuilder();

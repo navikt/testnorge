@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -21,9 +22,13 @@ public class RsTestgruppeMedErMedlemOgFavoritt {
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate datoEndret;
 
+	private List<Long> bestillingsIder;
+
 	private RsTeamMedIdOgNavn team;
 	private Set<RsTestident> testidenter = new HashSet<>();
 
 	private boolean erMedlemAvTeamSomEierGruppe;
 	private boolean favorittIGruppen;
+
+
 }

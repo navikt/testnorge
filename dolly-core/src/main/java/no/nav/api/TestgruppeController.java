@@ -34,84 +34,76 @@ import static no.nav.util.UtilFunctions.isNullOrEmpty;
 @RestController
 @RequestMapping(value = "api/v1/gruppe")
 public class TestgruppeController {
-	
-	@Autowired
-	private TestgruppeService testgruppeService;
 
-	@Autowired
-	private IdentService identService;
+    @Autowired
+    private TestgruppeService testgruppeService;
 
-	@Autowired
-	private MapperFacade mapperFacade;
+    @Autowired
+    private IdentService identService;
 
-	@Autowired
-	DollyTpsfService dollyTpsfService;
+    @Autowired
+    private MapperFacade mapperFacade;
 
-	@Autowired
-	private BestillingService bestillingService;
+    @Autowired
+    DollyTpsfService dollyTpsfService;
 
-	@Autowired
-	BestillingRepository bestillingRepository;
+    @Autowired
+    private BestillingService bestillingService;
 
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping
-	public RsTestgruppeMedErMedlemOgFavoritt opprettTestgruppe(@RequestBody RsOpprettTestgruppe createTestgruppeRequest) {
-		RsTestgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
-		return testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
-	}
+    @Autowired
+    BestillingRepository bestillingRepository;
 
-	@PutMapping(value = "/{gruppeId}")
-    public RsTestgruppeMedErMedlemOgFavoritt oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettTestgruppe testgruppe){
-		RsTestgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
-		return testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
-	}
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public RsTestgruppeMedErMedlemOgFavoritt opprettTestgruppe(@RequestBody RsOpprettTestgruppe createTestgruppeRequest) {
+        RsTestgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
+        return testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
+    }
 
-	@PutMapping("/{gruppeId}/slettTestidenter")
-	public void deleteTestident(@PathVariable("gruppeId") Long gruppeId, @RequestBody List<RsTestident> testpersonIdentListe) {
-		identService.slettTestidenter(testpersonIdentListe);
-	}
+    @PutMapping(value = "/{gruppeId}")
+    public RsTestgruppeMedErMedlemOgFavoritt oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettTestgruppe testgruppe) {
+        RsTestgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
+        return testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
+    }
 
-	@GetMapping("/{gruppeId}")
-	public RsTestgruppeMedErMedlemOgFavoritt getTestgruppe(@PathVariable("gruppeId") Long gruppeId){
-		RsTestgruppe gruppe = mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppe.class);
-		return testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
-	}
+    @PutMapping("/{gruppeId}/slettTestidenter")
+    public void deleteTestident(@PathVariable("gruppeId") Long gruppeId, @RequestBody List<RsTestident> testpersonIdentListe) {
+        identService.slettTestidenter(testpersonIdentListe);
+    }
 
-	@GetMapping
-	public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgrupper(@RequestParam(name = "navIdent", required = false) String navIdent,
-																@RequestParam(name = "teamId", required = false) Long teamId){
-	    Set<RsTestgruppe> grupper;
-		if(!isNullOrEmpty(navIdent)) {
-			grupper = testgruppeService.fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navIdent);
-		} else {
-			grupper = mapperFacade.mapAsSet(testgruppeService.fetchAlleTestgrupper(), RsTestgruppe.class);
-		}
+    @GetMapping("/{gruppeId}")
+    public RsTestgruppeMedErMedlemOgFavoritt getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
+        RsTestgruppe gruppe = mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppe.class);
+        RsTestgruppeMedErMedlemOgFavoritt gruppeMedMedlemOgFav = testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
+        gruppeMedMedlemOgFav.setBestillingsIder(bestillingService.fetchBestillingerByGruppeId(gruppeId).stream().map(Bestilling::getId).collect(Collectors.toList()));
+        return gruppeMedMedlemOgFav;
+    }
 
-		if(!isNullOrEmpty(teamId)){
-			grupper = grupper.stream().filter(gruppe -> gruppe.getTeam().getId().toString().equals(teamId.toString())).collect(Collectors.toSet());
-		}
+    @GetMapping
+    public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgrupper(@RequestParam(name = "navIdent", required = false) String navIdent,
+            @RequestParam(name = "teamId", required = false) Long teamId) {
+        Set<RsTestgruppe> grupper;
+        if (!isNullOrEmpty(navIdent)) {
+            grupper = testgruppeService.fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navIdent);
+        } else {
+            grupper = mapperFacade.mapAsSet(testgruppeService.fetchAlleTestgrupper(), RsTestgruppe.class);
+        }
 
-		if(!isNullOrEmpty(navIdent)){
-			return testgruppeService.getRsTestgruppeMedErMedlem(grupper, navIdent);
-		}
+        if (!isNullOrEmpty(teamId)) {
+            grupper = grupper.stream().filter(gruppe -> gruppe.getTeam().getId().toString().equals(teamId.toString())).collect(Collectors.toSet());
+        }
 
-		return testgruppeService.getRsTestgruppeMedErMedlem(grupper);
-	}
+        if (!isNullOrEmpty(navIdent)) {
+            return testgruppeService.getRsTestgruppeMedErMedlem(grupper, navIdent);
+        }
 
-	@GetMapping("/{gruppeId}/attributter")
-	public Set<String> getAttributterForGruppe(@PathVariable("gruppeId") String gruppeId){
-		return null;
-	}
+        return testgruppeService.getRsTestgruppeMedErMedlem(grupper);
+    }
 
-	@GetMapping("/{gruppeId}/bestillingStatus")
-	public Set<String> fetchBestillingsstatus(@PathVariable("testgruppeId") String gruppeId){
-		return null;
-	}
-
-	@PostMapping("/{gruppeId}/bestilling")
-	public RsBestilling opprettGruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
-		Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, request.getAntall(), request.getEnvironments());
-		dollyTpsfService.opprettPersonerByKriterier(gruppeId, request, bestilling.getId());
-		return mapperFacade.map(bestilling, RsBestilling.class);
-	}
+    @PostMapping("/{gruppeId}/bestilling")
+    public RsBestilling opprettGruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
+        Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, request.getAntall(), request.getEnvironments());
+        dollyTpsfService.opprettPersonerByKriterier(gruppeId, request, bestilling.getId());
+        return mapperFacade.map(bestilling, RsBestilling.class);
+    }
 }
