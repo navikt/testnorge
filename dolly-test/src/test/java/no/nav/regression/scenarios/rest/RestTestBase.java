@@ -5,7 +5,7 @@ import no.nav.config.DollyObjectMapper;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
-import no.nav.freg.security.oidc.common.OidcTokenAuthentication;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import no.nav.jpa.Bruker;
 import no.nav.jpa.Team;
 import no.nav.jpa.Testgruppe;
@@ -95,7 +95,9 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     }
 
     private OidcTokenAuthentication createTestOidcToken(){
-        return new OidcTokenAuthentication(standardBruker.getNavIdent(), "test", "idtoken", "refreshtoken", null, new ArrayList<>());
+        //TODO Fix sett skikkelig token
+        return new OidcTokenAuthentication(null, null);
+//        return new OidcTokenAuthentication(standardBruker.getNavIdent(), "test", "idtoken", "refreshtoken", null, new ArrayList<>());
     }
 
     protected static String convertObjectToJson(Object object) throws IOException {
