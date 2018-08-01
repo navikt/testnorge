@@ -2,6 +2,7 @@
 
 APP_NAME: dolly
 FASIT_ENVIRONMENT_NAME: localhost
+application.version: @application.version@
 
 spring:
   datasource:
@@ -53,3 +54,6 @@ tpsf.server.url: https://tps-forvalteren-u2.nais.preprod.local
 
 ### SIGRUN ###
 sigrun.server.url: http://localhost:8040
+
+### CORS ###
+dolly.security.cors.origins: #secret
