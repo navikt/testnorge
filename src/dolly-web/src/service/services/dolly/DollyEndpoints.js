@@ -1,10 +1,10 @@
 // TODO: lag config for denne
 const uri = 'http://localhost:8080/api/v1'
 
-// TODO: bytte /testgruppe til /gruppe når API er oppdatert
 const groupBase = `${uri}/gruppe`
 const teamBase = `${uri}/team`
 const brukerBase = `${uri}/bruker`
+const bestillingBase = `${uri}/bestilling`
 
 class DollyEndpoints {
 	static gruppe() {
@@ -69,6 +69,10 @@ class DollyEndpoints {
 
 	static currentBruker() {
 		return `${brukerBase}/current`
+	}
+
+	static bestillingStatus(bestillingId) {
+		return `${bestillingBase}/${bestillingId}`
 	}
 }
 

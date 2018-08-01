@@ -53,5 +53,10 @@ export const getGruppe = groupId => async dispatch => {
 		}
 	} catch (error) {
 		dispatch(getGruppeError(error))
+
+		// If 404 -> redirect to homepage
+		if (error.response && error.response.status === 404) {
+			window.location.replace('/')
+		}
 	}
 }

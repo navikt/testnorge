@@ -93,4 +93,9 @@ export default class DollyService {
 	static getCurrentBruker() {
 		return Request.get(Endpoints.currentBruker())
 	}
+
+	// Bestilling
+	static getBestillingStatus(bestillingId) {
+		return Request.get(Endpoints.bestillingStatus(bestillingId))
+	}
 }
