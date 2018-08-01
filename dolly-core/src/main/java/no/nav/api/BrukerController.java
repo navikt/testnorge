@@ -4,17 +4,18 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.freg.security.oidc.common.OidcTokenAuthentication;
 import no.nav.jpa.Bruker;
 import no.nav.resultSet.RsBruker;
-import no.nav.resultSet.RsBrukerMedTeamsOgFavoritter;
 import no.nav.resultSet.RsBrukerTeamAndGruppeIDs;
 import no.nav.service.BrukerService;
 import no.nav.service.TeamService;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/v1/bruker", produces = MediaType.APPLICATION_JSON_VALUE)
