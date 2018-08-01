@@ -6,11 +6,8 @@ const uri = 'http://localhost:8080/api/v1'
 const groupBase = `${uri}/gruppe`
 const teamBase = `${uri}/team`
 const brukerBase = `${uri}/bruker`
-<<<<<<< HEAD
 const kodeverkBase = `${uri}/kodeverk`
-=======
 const bestillingBase = `${uri}/bestilling`
->>>>>>> 7afffc2be6b1e6659dcc007d86f953cbf3603b50
 
 class DollyEndpoints {
 	static gruppe() {
@@ -78,9 +75,9 @@ class DollyEndpoints {
 	}
 
 	static kodeverkByNavn(kodeverkNavn) {
-        return `${kodeverkBase}/${kodeverkNavn}`
-    }
-    
+		return `${kodeverkBase}/${kodeverkNavn}`
+	}
+
 	static bestillingStatus(bestillingId) {
 		return `${bestillingBase}/${bestillingId}`
 	}
