@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -47,9 +48,9 @@ public class Bestilling {
     private int antallIdenter;
 
     @Column(name="SIST_OPPDATERT" , nullable = false)
-    private LocalDate sistOppdatert;
+    private LocalDateTime sistOppdatert;
 
-    public Bestilling(Testgruppe gruppe, int antallIdenter, LocalDate sistOppdatert, String miljoer){
+    public Bestilling(Testgruppe gruppe, int antallIdenter, LocalDateTime sistOppdatert, String miljoer){
         this.gruppe = gruppe;
         this.antallIdenter = antallIdenter;
         this.sistOppdatert = sistOppdatert;

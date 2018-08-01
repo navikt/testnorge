@@ -6,7 +6,7 @@ import no.nav.exceptions.NotFoundException;
 import no.nav.jpa.Bestilling;
 import no.nav.jpa.Testgruppe;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +49,6 @@ public class BestillingService {
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
         StringBuilder sb = new StringBuilder();
         miljoer.forEach(e -> sb.append(e).append(","));
-        return saveBestillingToDB(new Bestilling(gruppe, antallIdenter, LocalDate.now(), sb.toString().substring(0, sb.toString().length() - 1)));
+        return saveBestillingToDB(new Bestilling(gruppe, antallIdenter, LocalDateTime.now(), sb.toString().substring(0, sb.toString().length() - 1)));
     }
 }
