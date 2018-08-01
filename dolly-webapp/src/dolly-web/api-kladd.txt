@@ -72,12 +72,13 @@ ENDPOINT    URL                                 Aksjon                          
 /*** BESTILLING
 
 ENDPOINT    URL                                 Aksjon                          Ekstra
-// GET      api/bestilling/<id>               | Henter bestilling              | 
+// GET      api/bestilling/<id>                 | Henter bestilling             | 
 
 {
     kjorerStatus: <bool>,
-    antall: <number>,
-    "bestillingsId": 0,
+    antallBestilt: <number>,
+    miljøerBestilt: [<miljø>],
+    bestillingsId: <bestillingsId>,
     sistOppdatert: <date>,
     personStatus : [{
         "aaregSuccessEnv": "string",

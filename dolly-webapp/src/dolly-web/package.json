@@ -39,6 +39,7 @@
 		"nav-frontend-tabs-style": "0.0.4",
 		"nav-frontend-typografi-style": "^1.0.9",
 		"prop-types": "^15.6.1",
+		"rc-progress": "^2.2.5",
 		"rc-steps": "^3.1.1",
 		"rc-tooltip": "^3.7.2",
 		"react": "^16.4.0",

@@ -1,20 +1,17 @@
 package no.nav.appserivces.sigrunstub.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.appserivces.sigrunstub.domain.RsGrunnlagResponse;
-import no.nav.appserivces.sigrunstub.domain.RsSigrunnOpprettSkattegrunnlag;
+import no.nav.resultSet.RsGrunnlagResponse;
+import no.nav.resultSet.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.appserivces.tpsf.errorHandling.RestTemplateException;
 import no.nav.exceptions.SigrunnStubException;
-import no.nav.exceptions.TpsfException;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

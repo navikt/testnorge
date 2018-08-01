@@ -1,10 +1,6 @@
 package no.nav.appserivces.tpsf.service;
 
-import no.nav.appserivces.sigrunstub.domain.RsGrunnlagResponse;
 import no.nav.appserivces.sigrunstub.restcom.SigrunStubApiService;
-import no.nav.appserivces.tpsf.domain.request.RsDollyBestillingsRequest;
-import no.nav.appserivces.tpsf.domain.response.RsSkdMeldingResponse;
-import no.nav.appserivces.tpsf.domain.response.SendSkdMeldingTilTpsResponse;
 import no.nav.appserivces.tpsf.restcom.TpsfApiService;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.IdentRepository;
@@ -13,10 +9,14 @@ import no.nav.jpa.Bestilling;
 import no.nav.jpa.BestillingProgress;
 import no.nav.jpa.Testgruppe;
 import no.nav.jpa.Testident;
+import no.nav.resultSet.RsDollyBestillingsRequest;
+import no.nav.resultSet.RsGrunnlagResponse;
+import no.nav.resultSet.RsSkdMeldingResponse;
+import no.nav.resultSet.SendSkdMeldingTilTpsResponse;
 import no.nav.service.BestillingService;
 import no.nav.service.TestgruppeService;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -63,7 +63,7 @@ public class DollyTpsfService {
             } catch (DollyFunctionalException e){
                 progress.setFeil(e.getMessage());
                 bestillingProgressRepository.save(progress);
-                bestilling.setSistOppdatert(LocalDate.now());
+                bestilling.setSistOppdatert(LocalDateTime.now());
                 bestillingService.saveBestillingToDB(bestilling);
                 return;
             }
@@ -73,7 +73,7 @@ public class DollyTpsfService {
 
             BestillingProgress currentProgress = bestillingProgressRepository.save(progress);
 
-            bestilling.setSistOppdatert(LocalDate.now());
+            bestilling.setSistOppdatert(LocalDateTime.now());
             bestillingService.saveBestillingToDB(bestilling);
 
             if(env.length() > 0){
@@ -96,7 +96,7 @@ public class DollyTpsfService {
             }
         });
 
-        bestilling.setSistOppdatert(LocalDate.now());
+        bestilling.setSistOppdatert(LocalDateTime.now());
         bestilling.setFerdig(true);
         bestillingService.saveBestillingToDB(bestilling);
     }

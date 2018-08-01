@@ -98,4 +98,9 @@ export default class DollyService {
 	static getKodeverkByNavn(kodeverkNavn) {
 		return Request.get(Endpoints.kodeverkByNavn(kodeverkNavn))
 	}
+
+	// Bestilling
+	static getBestillingStatus(bestillingId) {
+		return Request.get(Endpoints.bestillingStatus(bestillingId))
+	}
 }

@@ -1,10 +1,10 @@
-package no.nav.appserivces.tpsf.domain.request;
+package no.nav.resultSet;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class RsBestilling {
     private Long id;
     private int antallIdenter;
     private boolean ferdig;
-    private LocalDate sistOppdatert;
+    private LocalDateTime sistOppdatert;
     private long gruppeId;
 
     private List<String> environments;

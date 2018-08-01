@@ -1,4 +1,4 @@
-package no.nav.appserivces.tpsf.domain.response;
+package no.nav.resultSet;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +15,6 @@ public class ServiceRoutineResponseStatus {
     private String personId;
     private String serviceRutinenavn;
     private String environment;
-    private ResponseStatus status;
+    private TpsResponseStatus status;
     
 }

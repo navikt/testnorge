@@ -1,7 +1,7 @@
 package no.nav.appserivces.sigrunstub.controller;
 
-import no.nav.appserivces.sigrunstub.domain.RsGrunnlagResponse;
-import no.nav.appserivces.sigrunstub.domain.RsSigrunnOpprettSkattegrunnlag;
+import no.nav.resultSet.RsGrunnlagResponse;
+import no.nav.resultSet.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.appserivces.sigrunstub.restcom.SigrunStubApiService;
 
 import java.util.List;
