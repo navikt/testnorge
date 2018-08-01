@@ -4,7 +4,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.exceptions.ConstraintViolationException;
 import no.nav.exceptions.DollyFunctionalException;
 import no.nav.exceptions.NotFoundException;
-import no.nav.freg.security.oidc.common.OidcTokenAuthentication;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import no.nav.jpa.Testgruppe;
 import no.nav.resultSet.RsBruker;
 import no.nav.resultSet.RsOpprettTeam;
@@ -28,124 +28,124 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TeamService {
-	
-	@Autowired
-	private TeamRepository teamRepository;
 
-	@Autowired
-	private BrukerRepository brukerRepository;
+    @Autowired
+    private TeamRepository teamRepository;
 
-	@Autowired
-	private BrukerService brukerService;
+    @Autowired
+    private BrukerRepository brukerRepository;
 
-	@Autowired
-	private MapperFacade mapperFacade;
+    @Autowired
+    private BrukerService brukerService;
 
-	@Transactional
-	public RsTeam opprettTeam(RsOpprettTeam rsTeam) {
-		Team team = mapperFacade.map(rsTeam, Team.class);
-		team.setDatoOpprettet(LocalDate.now());
+    @Autowired
+    private MapperFacade mapperFacade;
 
-		OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-		Bruker currentBruker = brukerService.fetchBruker(auth.getPrincipal());
+    @Transactional
+    public RsTeam opprettTeam(RsOpprettTeam rsTeam) {
+        Team team = mapperFacade.map(rsTeam, Team.class);
+        team.setDatoOpprettet(LocalDate.now());
 
-		team.setEier(currentBruker);
-		team.setMedlemmer(new HashSet<>(Arrays.asList(currentBruker)));
+        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        Bruker currentBruker = brukerService.fetchBruker(auth.getPrincipal());
 
-		Team savedTeam = saveToTeamRepository(team);
-		return mapperFacade.map(savedTeam, RsTeam.class);
-	}
+        team.setEier(currentBruker);
+        team.setMedlemmer(new HashSet<>(Arrays.asList(currentBruker)));
 
-	public Team fetchTeamById(Long id){
-		Team team = teamRepository.findTeamById(id);
-		if(team == null) {
-			throw new NotFoundException("Team ikke funnet for denne IDen");
-		}
-		return team;
-	}
+        Team savedTeam = saveToTeamRepository(team);
+        return mapperFacade.map(savedTeam, RsTeam.class);
+    }
 
-	public void deleteTeam(Long id){
-		teamRepository.deleteById(id);
-	}
+    public Team fetchTeamById(Long id) {
+        Team team = teamRepository.findTeamById(id);
+        if (team == null) {
+            throw new NotFoundException("Team ikke funnet for denne IDen");
+        }
+        return team;
+    }
 
-	@Transactional
-	public RsTeam addMedlemmer(Long teamId, List<RsBruker> navIdenter) {
-		Team team = fetchTeamById(teamId);
-		team.getMedlemmer().addAll(mapperFacade.mapAsList(navIdenter, Bruker.class));
+    public void deleteTeam(Long id) {
+        teamRepository.deleteById(id);
+    }
 
-		Team changedTeam = saveToTeamRepository(team);
-		return mapperFacade.map(changedTeam, RsTeam.class);
-	}
+    @Transactional
+    public RsTeam addMedlemmer(Long teamId, List<RsBruker> navIdenter) {
+        Team team = fetchTeamById(teamId);
+        team.getMedlemmer().addAll(mapperFacade.mapAsList(navIdenter, Bruker.class));
 
-	@Transactional
-	public RsTeam addMedlemmerByNavidenter(Long teamId, List<String> navIdenter) {
-		Team team = fetchTeamById(teamId);
-		List<Bruker> brukere = brukerRepository.findByNavIdentIn(navIdenter);
+        Team changedTeam = saveToTeamRepository(team);
+        return mapperFacade.map(changedTeam, RsTeam.class);
+    }
 
-		team.getMedlemmer().addAll(mapperFacade.mapAsList(brukere, Bruker.class));
+    @Transactional
+    public RsTeam addMedlemmerByNavidenter(Long teamId, List<String> navIdenter) {
+        Team team = fetchTeamById(teamId);
+        List<Bruker> brukere = brukerRepository.findByNavIdentIn(navIdenter);
 
-		Team changedTeam = saveToTeamRepository(team);
-		return mapperFacade.map(changedTeam, RsTeam.class);
-	}
+        team.getMedlemmer().addAll(mapperFacade.mapAsList(brukere, Bruker.class));
 
-	@Transactional
-	public RsTeam fjernMedlemmer(Long teamId, List<String> navIdenter) {
-		Team team = fetchTeamById(teamId);
-		if (!team.getMedlemmer().isEmpty()) {
-			team.getMedlemmer().removeIf(medlem -> navIdenter.contains(medlem.getNavIdent()));
-		}
+        Team changedTeam = saveToTeamRepository(team);
+        return mapperFacade.map(changedTeam, RsTeam.class);
+    }
 
-		Team changedTeam = saveToTeamRepository(team);
-		return mapperFacade.map(changedTeam, RsTeam.class);
-	}
+    @Transactional
+    public RsTeam fjernMedlemmer(Long teamId, List<String> navIdenter) {
+        Team team = fetchTeamById(teamId);
+        if (!team.getMedlemmer().isEmpty()) {
+            team.getMedlemmer().removeIf(medlem -> navIdenter.contains(medlem.getNavIdent()));
+        }
 
-	@Transactional
-	public RsTeam updateTeamInfo(Long teamId, RsTeam teamRequest) {
-		Team team = fetchTeamById(teamId);
+        Team changedTeam = saveToTeamRepository(team);
+        return mapperFacade.map(changedTeam, RsTeam.class);
+    }
 
-		team.setNavn(teamRequest.getNavn());
-		team.setBeskrivelse(teamRequest.getBeskrivelse());
-		team.setDatoOpprettet(teamRequest.getDatoOpprettet());
+    @Transactional
+    public RsTeam updateTeamInfo(Long teamId, RsTeam teamRequest) {
+        Team team = fetchTeamById(teamId);
 
-		Set<Bruker> medlemmer = mapperFacade.mapAsSet(teamRequest.getMedlemmer(), Bruker.class);
-		team.setMedlemmer(medlemmer);
+        team.setNavn(teamRequest.getNavn());
+        team.setBeskrivelse(teamRequest.getBeskrivelse());
+        team.setDatoOpprettet(teamRequest.getDatoOpprettet());
 
-	    Bruker endretEier = brukerService.fetchBruker(teamRequest.getEierNavIdent());
-	    team.setEier(endretEier);
+        Set<Bruker> medlemmer = mapperFacade.mapAsSet(teamRequest.getMedlemmer(), Bruker.class);
+        team.setMedlemmer(medlemmer);
 
-	    //Set<Testgruppe> grupper = mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class);
-	    //team.setGrupper(grupper);
+        Bruker endretEier = brukerService.fetchBruker(teamRequest.getEierNavIdent());
+        team.setEier(endretEier);
 
-		Team endretTeam = saveToTeamRepository(team);
-		return mapperFacade.map(endretTeam, RsTeam.class);
-	}
+        //Set<Testgruppe> grupper = mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class);
+        //team.setGrupper(grupper);
 
-	public List<Team> fetchTeamsByMedlemskapInTeams(String navIdent){
-		return teamRepository.findByMedlemmer_NavIdent(navIdent);
-	}
+        Team endretTeam = saveToTeamRepository(team);
+        return mapperFacade.map(endretTeam, RsTeam.class);
+    }
 
-	private Team saveToTeamRepository(Team team) {
-		try {
-			return teamRepository.save(team);
-		} catch (DataIntegrityViolationException e) {
-			throw new ConstraintViolationException("En Team DB constraint er brutt! Kan ikke lagre Team. Error: " + e.getMessage());
-		} catch (NonTransientDataAccessException e) {
-			throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
-		}
-	}
+    public List<Team> fetchTeamsByMedlemskapInTeams(String navIdent) {
+        return teamRepository.findByMedlemmer_NavIdent(navIdent);
+    }
 
-//	private Set<Bruker> findOrCreateBrukere(List<RsBruker> rsBrukere) {
-//		Set<Bruker> brukere = new HashSet<>();
-//
-//		for (RsBruker rsBruker : rsBrukere) {
-//			Bruker bruker = brukerRepository.findBrukerByNavIdent(rsBruker.getNavIdent());
-//
-//			if (bruker == null) {
-//				bruker= brukerRepository.save(mapperFacade.map(rsBruker, Bruker.class));
-//			}
-//
-//			brukere.add(bruker);
-//		}
-//		return brukere;
-//	}
+    private Team saveToTeamRepository(Team team) {
+        try {
+            return teamRepository.save(team);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConstraintViolationException("En Team DB constraint er brutt! Kan ikke lagre Team. Error: " + e.getMessage());
+        } catch (NonTransientDataAccessException e) {
+            throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
+        }
+    }
+
+    //	private Set<Bruker> findOrCreateBrukere(List<RsBruker> rsBrukere) {
+    //		Set<Bruker> brukere = new HashSet<>();
+    //
+    //		for (RsBruker rsBruker : rsBrukere) {
+    //			Bruker bruker = brukerRepository.findBrukerByNavIdent(rsBruker.getNavIdent());
+    //
+    //			if (bruker == null) {
+    //				bruker= brukerRepository.save(mapperFacade.map(rsBruker, Bruker.class));
+    //			}
+    //
+    //			brukere.add(bruker);
+    //		}
+    //		return brukere;
+    //	}
 }

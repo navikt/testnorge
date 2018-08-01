@@ -1,7 +1,7 @@
 package no.nav.api;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.freg.security.oidc.common.OidcTokenAuthentication;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import no.nav.jpa.Bruker;
 import no.nav.resultSet.RsBruker;
 import no.nav.resultSet.RsBrukerTeamAndGruppeIDs;

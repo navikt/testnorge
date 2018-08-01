@@ -26,11 +26,14 @@ resources:
 fasitResources:
   used:
   - alias: OpenIdConnect
-    resourceType: baseurl
+    resourceType: OpenIdConnect
     propertyMap:
-      url: security.oidc.host
+        agentName: freg.security.oidc.client-id
+        password: freg.security.oidc.client-secret
+        hostUrl: freg.security.oidc.openam.url
 
-  - alias: OpenIdConnectAgent
-    resourceType: credential
+  - alias: abac.pdp.endpoint
+    resourceType: restservice
     propertyMap:
-      password: security.oidc.clientSecret
+      url: no.nav.abac.url
+

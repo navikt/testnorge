@@ -19,29 +19,32 @@ spring:
       enabled: true
       path: /h2
 
+no.nav.abac:
+    url: https://wasapp-t4.adeo.no/asm-pdp/authorize
+    systemuser:
+      username: #secret
+      password: #secret
+
+#### NEW FREG-SECURITY #####
 freg.security.oidc:
+  idp:
+    openAm:
+      clientId: dolly-localhost
+      clientSecret: # Secret
+      hostUrl: https://isso-t.adeo.no:443/isso
+      issuerUrl: https://isso-t.adeo.no:443/isso/oauth2
+      loginUrl: https://isso-t.adeo.no/isso/oauth2/authorize
+      authorizationUrl: https://isso-t.adeo.no/isso/oauth2/access_token
+      jwksUrl: https://isso-t.adeo.no/isso/oauth2/connect/jwk_uri
   auth:
-   header-filter-enabled: false
-   cookie-filter-enabled: true
-  login:
-    enabled: true
-    path: /login
-  refresh:
-    enabled: true
-    cookie-filter.enabled: true
-    remaining-seconds: 3600
-
-
-#security:
-#  oidc:
-#    host: identity-provider server url
-#    clientSecret: KLientpassordet til app
-#security.oidc.secured-path: api/**
-
-
-# abac.url:  Url til abac server
-# no.nav.abac.systemuser.username: abac brukernavn
-# no.nav.abac.systemuser.password: abac passord
+    codeFlow:
+      enabled: true
+    idToken:
+      refresh-on-seconds-left: 300
+      cookie-enabled: true
+      header-enabled: false
+      validation:
+          type: refreshing
 
 #dolly.security.cors.origins: tillatte domener.
 

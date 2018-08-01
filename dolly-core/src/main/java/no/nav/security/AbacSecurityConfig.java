@@ -5,7 +5,7 @@ import no.nav.freg.abac.core.annotation.attribute.AbacAttributeLocator;
 import no.nav.freg.abac.core.annotation.attribute.ResolvingAbacAttributeLocator;
 import no.nav.freg.abac.spring.config.AbacConfig;
 import no.nav.freg.abac.spring.config.AbacRestTemplateConfig;
-import no.nav.freg.security.oidc.common.OidcTokenAuthentication;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 import java.util.HashSet;
 import java.util.Set;

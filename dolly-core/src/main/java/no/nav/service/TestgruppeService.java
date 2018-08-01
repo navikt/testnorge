@@ -5,7 +5,7 @@ import no.nav.dolly.repository.TestGruppeRepository;
 import no.nav.exceptions.ConstraintViolationException;
 import no.nav.exceptions.DollyFunctionalException;
 import no.nav.exceptions.NotFoundException;
-import no.nav.freg.security.oidc.common.OidcTokenAuthentication;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import no.nav.jpa.Bruker;
 import no.nav.jpa.Team;
 import no.nav.jpa.Testgruppe;
