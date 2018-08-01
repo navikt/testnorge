@@ -93,4 +93,9 @@ export default class DollyService {
 	static getCurrentBruker() {
 		return Request.get(Endpoints.currentBruker())
 	}
+
+	// Kodeverk
+	static getKodeverkByNavn(kodeverkNavn) {
+		return Request.get(Endpoints.kodeverkByNavn(kodeverkNavn))
+	}
 }
