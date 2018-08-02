@@ -1,10 +1,12 @@
 {
 	"compilerOptions": {
-		"checkJs": false,
-		"jsx": "react",
-		"module": "es6",
+		// "outDir": "./dist/",
+		"noImplicitAny": false,
 		"moduleResolution": "node",
+		"module": "es6",
 		"target": "es6",
+		"jsx": "react",
+		"allowJs": true,
 		"baseUrl": ".",
 		"paths": {
 			"~/*": ["./src/*"]
