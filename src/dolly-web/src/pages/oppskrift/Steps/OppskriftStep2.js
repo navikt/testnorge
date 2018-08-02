@@ -7,11 +7,35 @@ import Panel from '~/components/panel/Panel'
 import { Field } from 'formik'
 import { FormikInput } from '~/components/fields/Input/Input'
 import { FormikDatepicker } from '~/components/fields/Datepicker/Datepicker'
+import { FormikDollySelect } from '~/components/fields/Select/Select'
 import OppskriftError from '../OppskriftError'
+import { DollyApi } from '~/service/Api'
 
 const inputComponentSelector = {
 	date: FormikDatepicker,
-	string: FormikInput
+	string: FormikInput,
+	select: FormikDollySelect
+}
+
+const propsSelector = item => {
+	switch (item.type) {
+		case 'select': {
+			if (item.kodeverkNavn) {
+				return {
+					loadOptions: () =>
+						DollyApi.getKodeverkByNavn(item.kodeverkNavn).then(
+							DollyApi.Utils.NormalizeKodeverkForDropdown
+						)
+				}
+			} else {
+				return {
+					options: item.options
+				}
+			}
+		}
+		default:
+			return {}
+	}
 }
 
 export default class OppskriftStep2 extends Component {
@@ -39,6 +63,9 @@ export default class OppskriftStep2 extends Component {
 								<div className="oppskrift-field-group">
 									{group.items.map(item => {
 										const InputComponent = inputComponentSelector[item.type] || FormikInput
+										const extraProps = propsSelector(item)
+
+										console.log(item, InputComponent)
 
 										return (
 											Boolean(selectedTypes[item.id]) && (
@@ -47,6 +74,7 @@ export default class OppskriftStep2 extends Component {
 													name={item.id}
 													label={item.label}
 													component={InputComponent}
+													{...extraProps}
 												/>
 											)
 										)

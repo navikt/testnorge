@@ -23,7 +23,7 @@ const Attributter = {
 			items: [
 				{
 					id: 'kjonn',
-					type: ' select',
+					type: 'select',
 					label: 'Kjønn',
 					options: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }]
 				}
