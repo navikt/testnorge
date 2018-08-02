@@ -64,10 +64,18 @@ const webpackConfig = {
 	module: {
 		rules: [
 			{
+				test: /\.ts(x?)$/,
+				// include: [path.resolve(__dirname, 'src')],
+				// exclude: [path.resolve(__dirname, 'node_modules/')],
+				exclude: '/node_modules/',
+				use: ['babel-loader', 'ts-loader']
+			},
+			{
 				test: /\.js$/,
-				include: [path.resolve(__dirname, 'src')],
-				exclude: [path.resolve(__dirname, 'node_modules/')],
-				loader: 'babel-loader'
+				// include: [path.resolve(__dirname, 'src')],
+				// exclude: [path.resolve(__dirname, 'node_modules/')],
+				exclude: '/node_modules/',
+				use: ['babel-loader']
 			},
 			{
 				test: /\.less$/,

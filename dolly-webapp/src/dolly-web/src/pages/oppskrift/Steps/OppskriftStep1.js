@@ -10,6 +10,7 @@ import { FormikInput } from '~/components/fields/Input/Input'
 import { Field } from 'formik'
 import OppskriftError from '../OppskriftError'
 import { DollyApi } from '~/service/Api'
+import * as yup from 'yup'
 
 export default class OppskriftStep1 extends Component {
 	static propTypes = {}

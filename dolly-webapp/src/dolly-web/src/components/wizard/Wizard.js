@@ -9,8 +9,6 @@ import NavButton from '~/components/button/NavButton/NavButton'
 import Icon from '~/components/icon/Icon'
 
 export default class Wizard extends Component {
-	static Page = ({ children }) => children
-
 	state = {
 		page: 0,
 		values: this.props.initialValues
@@ -51,7 +49,8 @@ export default class Wizard extends Component {
 
 		const validationSchema = validationSchemaList[page]
 
-		const activePage = React.Children.toArray(children)[page].props.children
+		const activePage = React.Children.toArray(children)[page]
+		console.log(activePage)
 
 		const isLastPage = page === React.Children.count(children) - 1
 

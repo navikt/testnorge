@@ -8,6 +8,7 @@ import * as yup from 'yup'
 import Attributter from './Attributter'
 import { DollyApi } from '~/service/Api'
 import Wizard from '~/components/wizard/Wizard'
+import AttributtKodeverk from './AttributtKodeverk.ts'
 
 import './Oppskrift.less'
 
@@ -44,7 +45,8 @@ export default class Oppskrift extends Component {
 			regdato: false,
 			statsborgerskap: true,
 			withAdresse: false
-		}
+		},
+		selectedAttributes: []
 	}
 
 	onHandleSubmit = async (values, actions) => {
@@ -85,19 +87,6 @@ export default class Oppskrift extends Component {
 			environments: [] // array
 		}
 
-		// test data
-		// let initialValues = {
-		// 	identtype: 'FNR',
-		// 	kjonn: 'M',
-		// 	foedtEtter: '2018-07-14T10:00:00.000Z',
-		// 	foedtFoer: '2018-07-02T10:00:00.000Z',
-		// 	regdato: '2018-07-24T11:59:49.051Z',
-		// 	withAdresse: true,
-		// 	statsborgerskap: 'NOR',
-		// 	antall: 3,
-		// 	environments: ['u6', 't1', 't2']
-		// }
-
 		const stegProps = {
 			attributter: Attributter,
 			selectedTypes
@@ -110,15 +99,9 @@ export default class Oppskrift extends Component {
 				validationSchemaList={validationList}
 				onCancelHandler={this.onCancelHandler}
 			>
-				<Wizard.Page>
-					<OppskriftSteg1 onSelectionHandler={this.onSelectionHandler} {...stegProps} />
-				</Wizard.Page>
-				<Wizard.Page>
-					<OppskriftSteg2 {...stegProps} />
-				</Wizard.Page>
-				<Wizard.Page>
-					<OppskriftSteg3 {...stegProps} />
-				</Wizard.Page>
+				<OppskriftSteg1 {...stegProps} onSelectionHandler={this.onSelectionHandler} />
+				<OppskriftSteg2 {...stegProps} />
+				<OppskriftSteg3 {...stegProps} />
 			</Wizard>
 		)
 	}

@@ -65,8 +65,6 @@ export default class OppskriftStep2 extends Component {
 										const InputComponent = inputComponentSelector[item.type] || FormikInput
 										const extraProps = propsSelector(item)
 
-										console.log(item, InputComponent)
-
 										return (
 											Boolean(selectedTypes[item.id]) && (
 												<Field
