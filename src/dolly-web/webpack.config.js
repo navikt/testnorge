@@ -24,7 +24,7 @@ const statsOutputSettings = {
 const webpackConfig = {
 	mode: process.env.NODE_ENV,
 	devtool: 'source-map',
-	entry: './src/index.js',
+	entry: ['babel-polyfill', './src/index.js'],
 	output: {
 		filename: 'bundle.js',
 		publicPath: '/',
@@ -59,22 +59,19 @@ const webpackConfig = {
 			'~': path.resolve(__dirname, 'src'),
 			lessVars: path.resolve(__dirname, 'src/styles/variables.less'),
 			lessUtils: path.resolve(__dirname, 'src/styles/utils.less')
-		}
+		},
+		extensions: ['.js', '.json', '.ts', '.tsx']
 	},
 	module: {
 		rules: [
 			{
 				test: /\.ts(x?)$/,
-				// include: [path.resolve(__dirname, 'src')],
-				// exclude: [path.resolve(__dirname, 'node_modules/')],
-				exclude: '/node_modules/',
+				exclude: /node_modules/,
 				use: ['babel-loader', 'ts-loader']
 			},
 			{
 				test: /\.js$/,
-				// include: [path.resolve(__dirname, 'src')],
-				// exclude: [path.resolve(__dirname, 'node_modules/')],
-				exclude: '/node_modules/',
+				exclude: /node_modules/,
 				use: ['babel-loader']
 			},
 			{

@@ -41,11 +41,11 @@ export default class OppskriftStep1 extends Component {
 					/>
 				</div>
 
-				<AttributtVelger
+				{/* <AttributtVelger
 					onChange={this.props.onSelectionHandler}
 					attributter={this.props.attributter}
 					selectedTypes={this.props.selectedTypes}
-				/>
+				/> */}
 			</div>
 		)
 	}

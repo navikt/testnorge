@@ -1,16 +1,15 @@
 {
 	"compilerOptions": {
-		// "outDir": "./dist/",
-		"noImplicitAny": false,
+		"sourceMap": true,
 		"moduleResolution": "node",
 		"module": "es6",
 		"target": "es6",
+		"lib": ["es6", "dom", "es2017"],
 		"jsx": "react",
-		"allowJs": true,
 		"baseUrl": ".",
 		"paths": {
 			"~/*": ["./src/*"]
 		}
 	},
-	"exclude": ["node_modules", "**/node_modules/*"]
+	"exclude": ["node_modules"]
 }

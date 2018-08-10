@@ -1,4 +1,4 @@
-import Request from '../../Request'
+import Request from '../Request'
 
 const uri = 'https://tps-forvalteren-u2.nais.preprod.local/api/v1/dolly/testdata/personerdata'
 

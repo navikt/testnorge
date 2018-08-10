@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Select, { Async } from 'react-select'
-import { getIn } from 'formik'
 import cn from 'classnames'
+import _get from 'lodash/get'
 
 import './Select.less'
 
@@ -70,9 +70,12 @@ export const FormikDollySelect = props => {
 		<DollySelect
 			name={field.name}
 			value={field.value}
-			onChange={selected => form.setFieldValue(field.name, getIn(selected, 'value', selected))}
+			onChange={selected => {
+				const defaultValue = ''
+				form.setFieldValue(field.name, _get(selected, 'value', defaultValue))
+			}}
 			onBlur={() => form.setFieldTouched(field.name, true)}
-			error={form.touched[field.name] && form.errors[field.name]}
+			error={_get(form.touched, field.name) && _get(form.errors, field.name)}
 			{...restProps}
 		/>
 	)

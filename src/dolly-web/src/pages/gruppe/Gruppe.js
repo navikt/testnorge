@@ -18,7 +18,7 @@ export default class Gruppe extends Component {
 
 	startOppskrift = () => {
 		const { gruppeId } = this.props.match.params
-		this.props.history.push(`/gruppe/${gruppeId}/oppskrift`)
+		this.props.history.push(`/gruppe/${gruppeId}/bestilling`)
 	}
 
 	render() {
