@@ -89,7 +89,7 @@ export default class Wizard extends Component {
 								</div>
 
 								<FormErrors errors={errors} touched={touched} />
-								{/* <DisplayFormikState {...props} /> */}
+								<DisplayFormikState {...props} />
 							</form>
 						</div>
 					)

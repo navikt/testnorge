@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Datovelger from 'nav-datovelger'
 import cn from 'classnames'
+import _get from 'lodash/get'
 
 import 'nav-datovelger/dist/datovelger/styles/datovelger.css'
 import './Datepicker.less'
@@ -42,7 +43,7 @@ export const FormikDatepicker = props => {
 				form.setFieldValue(field.name, dato)
 				form.setFieldTouched(field.name, true)
 			}}
-			error={form.touched[field.name] && form.errors[field.name]}
+			error={_get(form.touched, field.name) && _get(form.errors, field.name)}
 			{...restProps}
 		/>
 	)

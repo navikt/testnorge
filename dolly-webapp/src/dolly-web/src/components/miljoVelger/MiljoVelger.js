@@ -2,22 +2,18 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Panel from '~/components/panel/Panel'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
+import { EnvironmentManager } from '~/service/Kodeverk'
 
 import './MiljoVelger.less'
-import { array } from 'yup'
 
-const generateEnv = (label, start, length) => {
-	const envList = []
-
-	for (let i = start; i <= length; i++) {
-		envList.push(`${label + i}`)
-	}
-	return envList
-}
-
-class MiljoVelger extends Component {
+export default class MiljoVelger extends Component {
 	static propTypes = {
 		heading: PropTypes.string
+	}
+
+	constructor(props) {
+		super(props)
+		this.Environments = new EnvironmentManager().getAllEnvironments()
 	}
 
 	onClickHandler = e => {
@@ -29,35 +25,35 @@ class MiljoVelger extends Component {
 		return arrayHelpers.remove(indexOf)
 	}
 
-	createCheckbox = id => (
+	createCheckbox = ({ id, label, disabled }) => (
 		<Checkbox
 			key={id}
 			id={id}
-			disabled={id !== 'u6'} // TEMP: Kun bruk dette miljøet foreløpig
-			label={id}
+			disabled={disabled}
+			label={label}
 			checked={this.props.arrayValues.includes(id)}
 			onClick={this.onClickHandler}
 		/>
 	)
 
+	renderError = ({ name, form }) => {
+		if (form.touched[name] && form.errors[name]) {
+			return <span style={{ color: 'red' }}>{form.errors[name]}</span>
+		}
+		return false
+	}
+
 	render() {
 		const { heading, arrayHelpers } = this.props
-
-		const UList = generateEnv('u', 6, 6)
-		const TList = generateEnv('t', 0, 13)
-		const QList = generateEnv('q', 0, 11)
 
 		return (
 			<div className="miljo-velger">
 				<h3>{heading}</h3>
 				<div className="miljo-velger_content">
-					<div>{UList.map(env => this.createCheckbox(env))}</div>
-					<div>{TList.map(env => this.createCheckbox(env))}</div>
-					<div>{QList.map(env => this.createCheckbox(env))}</div>
+					<div>{this.Environments.map(env => this.createCheckbox(env))}</div>
 				</div>
+				{this.renderError(arrayHelpers)}
 			</div>
 		)
 	}
 }
-
-export default MiljoVelger

@@ -5,7 +5,7 @@ export default function DisplayFormikState(props) {
 		<pre
 			style={{
 				position: 'absolute',
-				bottom: 0,
+				top: 0,
 				right: 0,
 				background: '#f6f8fa',
 				fontSize: '.7rem',
