@@ -1,6 +1,12 @@
 import { connect } from 'react-redux'
 import Bestilling from './Bestilling'
-import { startBestilling, toggleAttribute, setValues, postBestilling } from '~/ducks/bestilling'
+import {
+	startBestilling,
+	toggleAttribute,
+	setValues,
+	postBestilling,
+	setEnvironments
+} from '~/ducks/bestilling'
 
 const mapStateToProps = state => ({
 	fetching: state.bestilling.fetching,

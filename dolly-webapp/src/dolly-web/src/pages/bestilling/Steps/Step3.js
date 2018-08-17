@@ -27,8 +27,8 @@ export default class Step3 extends PureComponent {
 	}
 
 	submit = values => {
-		console.log(values)
-		this.props.setEnvironments(values)
+		console.log(values.environments)
+		this.props.setEnvironments(values.environments)
 	}
 
 	renderValues = () => {
