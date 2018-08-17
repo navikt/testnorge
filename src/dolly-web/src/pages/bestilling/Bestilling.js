@@ -20,7 +20,8 @@ export default class Bestilling extends PureComponent {
 			attributeIds,
 			startBestilling,
 			toggleAttribute,
-			setValues
+			setValues,
+			setEnvironments
 		} = this.props
 
 		return (
@@ -42,6 +43,7 @@ export default class Bestilling extends PureComponent {
 						selectedAttributeIds={attributeIds}
 						identtype={identtype}
 						antall={antall}
+						values={values}
 						setValues={setValues}
 					/>
 				)}
@@ -52,6 +54,7 @@ export default class Bestilling extends PureComponent {
 						identtype={identtype}
 						antall={antall}
 						values={values}
+						setEnvironments={setEnvironments}
 					/>
 				)}
 			</div>
