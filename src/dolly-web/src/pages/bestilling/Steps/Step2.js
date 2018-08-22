@@ -4,42 +4,10 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import NavigationConnector from '../Navigation/NavigationConnector'
 import Panel from '~/components/panel/Panel'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import { FormikDollySelect } from '~/components/fields/Select/Select'
-import { FormikDatepicker } from '~/components/fields/Datepicker/Datepicker'
-import { FormikInput } from '~/components/fields/Input/Input'
 import { Formik, Field } from 'formik'
 import { AttributtManager } from '~/service/Kodeverk'
-import { DollyApi } from '~/service/Api'
 import DisplayFormikState from '~/utils/DisplayFormikState'
-
-// TODO: FLYTT
-const inputComponentSelector = {
-	date: FormikDatepicker,
-	string: FormikInput,
-	select: FormikDollySelect
-}
-
-// TODO: FLYTT
-const propsSelector = item => {
-	switch (item.inputType) {
-		case 'select': {
-			if (item.apiKodeverkId) {
-				return {
-					loadOptions: () =>
-						DollyApi.getKodeverkByNavn(item.apiKodeverkId).then(
-							DollyApi.Utils.NormalizeKodeverkForDropdown
-						)
-				}
-			} else {
-				return {
-					options: item.options
-				}
-			}
-		}
-		default:
-			return {}
-	}
-}
+import InputSelector from '~/components/fields/InputSelector'
 
 export default class Step2 extends PureComponent {
 	static propTypes = {
@@ -58,7 +26,6 @@ export default class Step2 extends PureComponent {
 	}
 
 	submit = values => {
-		console.log(values)
 		this.props.setValues(values)
 	}
 
@@ -84,8 +51,7 @@ export default class Step2 extends PureComponent {
 	)
 
 	renderFieldComponent = item => {
-		const InputComponent = inputComponentSelector[item.inputType] || FormikInput
-		const extraProps = propsSelector(item)
+		const InputComponent = InputSelector(item.inputType)
 
 		return (
 			<Field
@@ -93,7 +59,7 @@ export default class Step2 extends PureComponent {
 				name={item.id}
 				label={item.label}
 				component={InputComponent}
-				{...extraProps}
+				item={item}
 			/>
 		)
 	}

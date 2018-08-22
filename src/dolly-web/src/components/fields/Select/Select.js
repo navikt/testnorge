@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Select, { Async } from 'react-select'
+import { DollyApi } from '~/service/Api'
 import cn from 'classnames'
 import _get from 'lodash/get'
 
@@ -64,19 +65,31 @@ export default class DollySelect extends PureComponent {
 }
 
 export const FormikDollySelect = props => {
-	const { field, form, ...restProps } = props
+	const { field, form, label, item } = props
+
+	let selectSourceProps = {}
+	if (item.apiKodeverkId) {
+		selectSourceProps.loadOptions = () => {
+			return DollyApi.getKodeverkByNavn(item.apiKodeverkId).then(
+				DollyApi.Utils.NormalizeKodeverkForDropdown
+			)
+		}
+	} else {
+		selectSourceProps.options = item.options
+	}
 
 	return (
 		<DollySelect
 			name={field.name}
 			value={field.value}
+			label={label}
 			onChange={selected => {
 				const defaultValue = ''
 				form.setFieldValue(field.name, _get(selected, 'value', defaultValue))
 			}}
 			onBlur={() => form.setFieldTouched(field.name, true)}
 			error={_get(form.touched, field.name) && _get(form.errors, field.name)}
-			{...restProps}
+			{...selectSourceProps}
 		/>
 	)
 }
