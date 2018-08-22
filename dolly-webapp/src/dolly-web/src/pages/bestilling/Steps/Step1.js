@@ -14,6 +14,7 @@ class Step1 extends Component {
 		identtype: PropTypes.string,
 		antall: PropTypes.number,
 		selectedAttributeIds: PropTypes.array,
+		startBestilling: PropTypes.func,
 		toggleAttributeSelection: PropTypes.func
 	}
 
