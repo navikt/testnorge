@@ -12,10 +12,12 @@ import DisplayFormikState from '~/utils/DisplayFormikState'
 
 export default class Step3 extends PureComponent {
 	static propTypes = {
+		identtype: PropTypes.string,
+		antall: PropTypes.number,
 		selectedAttributeIds: PropTypes.arrayOf(PropTypes.string),
 		values: PropTypes.object,
-		setEnvironments: PropTypes.func.isRequired,
-		postBestilling: PropTypes.func.isRequired
+		postBestilling: PropTypes.func.isRequired,
+		setEnvironments: PropTypes.func.isRequired
 	}
 
 	constructor(props) {

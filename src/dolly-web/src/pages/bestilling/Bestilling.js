@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import ProgressIndicator from './ProgressIndicator'
+import ProgressIndicator from '~/components/progressIndicator/ProgressIndicator'
 import Steg1 from './Steps/Step1'
 import Steg2 from './Steps/Step2'
 import Steg3 from './Steps/Step3'
@@ -27,7 +27,10 @@ export default class Bestilling extends PureComponent {
 
 		return (
 			<div className="bestilling-page">
-				<ProgressIndicator activeStep={page} />
+				<ProgressIndicator
+					activeStep={page}
+					steps={['Velg egenskaper', 'Velg verdier', 'Oppsummering']}
+				/>
 
 				{isPage.first(page) && (
 					<Steg1

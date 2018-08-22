@@ -45,7 +45,8 @@ export default class Step2 extends PureComponent {
 	static propTypes = {
 		identtype: PropTypes.string,
 		antall: PropTypes.number,
-		selectedAttributeIds: PropTypes.array
+		selectedAttributeIds: PropTypes.array,
+		setValues: PropTypes.func
 	}
 
 	constructor(props) {
