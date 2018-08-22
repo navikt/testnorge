@@ -7,12 +7,15 @@ import NavigationConnector from '../Navigation/NavigationConnector'
 import MiljoVelger from '~/components/miljoVelger/MiljoVelger'
 import { AttributtManager } from '~/service/Kodeverk'
 import { Formik, FieldArray, Field } from 'formik'
+import FormatDate from '~/utils/FormatDate'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
 export default class Step3 extends PureComponent {
 	static propTypes = {
 		selectedAttributeIds: PropTypes.arrayOf(PropTypes.string),
-		values: PropTypes.object
+		values: PropTypes.object,
+		setEnvironments: PropTypes.func.isRequired,
+		postBestilling: PropTypes.func.isRequired
 	}
 
 	constructor(props) {
@@ -27,8 +30,9 @@ export default class Step3 extends PureComponent {
 	}
 
 	submit = values => {
-		console.log(values.environments)
+		console.log(values)
 		this.props.setEnvironments(values.environments)
+		this.props.postBestilling()
 	}
 
 	renderValues = () => {
@@ -38,13 +42,16 @@ export default class Step3 extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }) => (
 		<Fragment key={hovedKategori.navn}>
 			<h4>{hovedKategori.navn}</h4>
-			<div>{items.map(item => this.renderItem(item))}</div>
+			<div className="oppsummering-blokk">{items.map(item => this.renderItem(item))}</div>
 		</Fragment>
 	)
 
-	renderItem = item => (
-		<StaticValue key={item.id} header={item.label} value={this.props.values[item.id]} />
-	)
+	renderItem = item => {
+		let value = this.props.values[item.id]
+		if (item.inputType === 'date') value = FormatDate(value)
+
+		return <StaticValue key={item.id} header={item.label} value={value} />
+	}
 
 	render() {
 		const { identtype, antall } = this.props
@@ -55,12 +62,11 @@ export default class Step3 extends PureComponent {
 				</div>
 
 				<div className="oppsummering">
-					<div className="oppsummering-values">
+					<div className="oppsummering-blokk">
 						<StaticValue header="Identtype" value={identtype} />
 						<StaticValue header="Antall personer" value={antall.toString()} />
-
-						{this.renderValues()}
 					</div>
+					{this.renderValues()}
 				</div>
 
 				<Formik
@@ -81,14 +87,6 @@ export default class Step3 extends PureComponent {
 											arrayValues={formikProps.values.environments}
 										/>
 									)}
-								/>
-								<Field
-									name="environments"
-									render={({ field, form }) => {
-										return form.touched[field.name] && form.errors[field.name] ? (
-											<span>{form.errors[field.name]}</span>
-										) : null
-									}}
 								/>
 								<NavigationConnector onClickNext={formikProps.submitForm} />
 								<DisplayFormikState {...formikProps} />
