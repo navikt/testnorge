@@ -8,6 +8,7 @@ import { Formik, Field } from 'formik'
 import { AttributtManager } from '~/service/Kodeverk'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import InputSelector from '~/components/fields/InputSelector'
+import { extraComponentProps } from '../Utils'
 
 export default class Step2 extends PureComponent {
 	static propTypes = {
@@ -52,6 +53,7 @@ export default class Step2 extends PureComponent {
 
 	renderFieldComponent = item => {
 		const InputComponent = InputSelector(item.inputType)
+		const componentProps = extraComponentProps(item)
 
 		return (
 			<Field
@@ -59,7 +61,7 @@ export default class Step2 extends PureComponent {
 				name={item.id}
 				label={item.label}
 				component={InputComponent}
-				item={item}
+				{...componentProps}
 			/>
 		)
 	}
