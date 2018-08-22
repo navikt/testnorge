@@ -8,7 +8,6 @@ import MiljoVelger from '~/components/miljoVelger/MiljoVelger'
 import { AttributtManager } from '~/service/Kodeverk'
 import { Formik, FieldArray, Field } from 'formik'
 import FormatDate from '~/utils/FormatDate'
-import DisplayFormikState from '~/utils/DisplayFormikState'
 
 export default class Step3 extends PureComponent {
 	static propTypes = {
@@ -91,7 +90,6 @@ export default class Step3 extends PureComponent {
 									)}
 								/>
 								<NavigationConnector onClickNext={formikProps.submitForm} />
-								<DisplayFormikState {...formikProps} />
 							</Fragment>
 						)
 					}}
