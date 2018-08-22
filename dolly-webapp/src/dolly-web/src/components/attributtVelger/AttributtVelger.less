@@ -13,6 +13,10 @@
 	&_panelcontent {
 		display: flex;
 		flex-direction: column;
+
+		h4 {
+			margin: 0 0 10px;
+		}
 	}
 
 	&_panelsubcontent {
@@ -21,6 +25,10 @@
 		> * {
 			width: 25%;
 		}
+	}
+
+	&_panelsubcontent:not(:last-child) {
+		margin-bottom: 20px;
 	}
 
 	.utvalg {

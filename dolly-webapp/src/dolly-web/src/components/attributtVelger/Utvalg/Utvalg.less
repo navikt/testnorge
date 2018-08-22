@@ -4,8 +4,12 @@
 		font-size: 1.2em;
 	}
 
-	> ul > li {
-		padding: 5px 0;
+	> ul {
+		list-style-type: none;
+		padding-left: 10px;
+		> li {
+			padding: 5px 0;
+		}
 	}
 
 	li > span:hover {
@@ -15,7 +19,6 @@
 	}
 
 	ul {
-		padding-left: 20px;
 		li {
 			font-weight: bold;
 
@@ -33,5 +36,12 @@
 				}
 			}
 		}
+	}
+
+	&--empty-result {
+		display: block;
+		margin: 10px 0;
+		color: #777;
+		font-style: italic;
 	}
 }

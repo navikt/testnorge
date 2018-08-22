@@ -16,6 +16,9 @@ export default class Utvalg extends PureComponent {
 
 	renderUtvalg = () => {
 		const list = this.AttributtManager.listSelectedByHovedKategori(this.props.selectedIds)
+
+		if (!list.length) return this.renderEmptyResult()
+
 		return list.map(hovedKategori => this.renderHovedKategori(hovedKategori))
 	}
 
@@ -33,6 +36,8 @@ export default class Utvalg extends PureComponent {
 			<span>{item.label}</span>
 		</li>
 	)
+
+	renderEmptyResult = () => <span className="utvalg--empty-result">Ingenting er valg</span>
 
 	render() {
 		// TODO: Legg til remove button
