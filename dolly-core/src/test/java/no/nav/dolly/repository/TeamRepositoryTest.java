@@ -124,7 +124,8 @@ public class TeamRepositoryTest {
 
         teamRepository.save(team);
 
-        Team teamByBruker = teamRepository.findTeamByEier(brukere.get(0));
+        List<Team> teamsByBruker = teamRepository.findTeamsByEier(brukere.get(0));
+        Team teamByBruker = teamsByBruker.get(0);
 
         assertThat(teamByBruker.getNavn(), is("team"));
         assertThat(teamByBruker.getBeskrivelse(), is("besk"));

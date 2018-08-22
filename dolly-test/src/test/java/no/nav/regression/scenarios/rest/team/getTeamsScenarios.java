@@ -9,7 +9,8 @@ import no.nav.resultSet.RsTeam;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -19,14 +20,16 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class hentAlleTeamBrukerEierEllerErMedlemAv extends TeamTestCaseBase {
+public class getTeamsScenarios extends TeamTestCaseBase {
 
-    @Test
-    public void hentAlleTeamBrukerEierEllerErMedlemAv() throws Exception {
-        Bruker bruker2 = brukerRepository.save(BrukerBuilder.builder().navIdent("navident2").build().convertToRealBruker());
+    Bruker bruker2;
+
+    @Before
+    public void setupData(){
+        bruker2 = brukerRepository.save(BrukerBuilder.builder().navIdent("navident2").build().convertToRealBruker());
 
         Team team2 = teamRepository.save(TeamBuilder.builder()
                 .navn("team2")
@@ -45,13 +48,17 @@ public class hentAlleTeamBrukerEierEllerErMedlemAv extends TeamTestCaseBase {
                 .medlemmer(new HashSet<>(Arrays.asList(bruker2)))
                 .build().convertToRealTeam()
         );
+    }
 
-        String url = endpointUrl + "/bruker/" + standardBruker.getNavIdent();
+    @Test
+    public void hentAlleTeamBrukerEierEllerErMedlemAv() throws Exception {
+        String url = endpointUrl + "?navIdent=" + standardBruker.getNavIdent();
+
         MvcResult mvcResult = mvcMock.perform(get(url))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        Set<RsTeam> resultat = convertMvcResultToSet(mvcResult, RsTeam.class);
+        List<RsTeam> resultat = convertMvcResultToList(mvcResult, RsTeam.class);
 
         assertThat(resultat.size(), is(2));
 
@@ -62,6 +69,34 @@ public class hentAlleTeamBrukerEierEllerErMedlemAv extends TeamTestCaseBase {
 
         assertThat(resultat, hasItem(both(
                 hasProperty(teamPropNavn, equalTo("team2"))).and(
+                hasProperty(teamPropEierIdent, equalTo(bruker2.getNavIdent())))
+        ));
+    }
+
+    @Test
+    public void hentAlleTeamsIBasen() throws Exception {
+        String url = endpointUrl;
+
+        MvcResult mvcResult = mvcMock.perform(get(url))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        List<RsTeam> resultat = convertMvcResultToList(mvcResult, RsTeam.class);
+
+        assertThat(resultat.size(), is(3));
+
+        assertThat(resultat, hasItem(both(
+                hasProperty(teamPropNavn, equalTo(standardTeamnavn))).and(
+                hasProperty(teamPropEierIdent, equalTo(standardNavIdent)))
+        ));
+
+        assertThat(resultat, hasItem(both(
+                hasProperty(teamPropNavn, equalTo("team2"))).and(
+                hasProperty(teamPropEierIdent, equalTo(bruker2.getNavIdent())))
+        ));
+
+        assertThat(resultat, hasItem(both(
+                hasProperty(teamPropNavn, equalTo("team3"))).and(
                 hasProperty(teamPropEierIdent, equalTo(bruker2.getNavIdent())))
         ));
     }

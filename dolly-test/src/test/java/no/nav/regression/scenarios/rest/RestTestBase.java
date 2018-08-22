@@ -13,7 +13,6 @@ import no.nav.regression.InMememoryDbTestSetup;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,9 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -52,7 +48,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     protected String standardTeamnavn = "team";
     protected String standardTeamBesk = "beskrivelse";
     protected String standardGruppenavn = "testgruppe";
-    protected String standardNavnIdent = "ident";
+    protected String standardNavIdent = "ident";
     protected String standardGruppeHensikt = "hensikt";
 
     protected String standardPrincipal = "principal";
@@ -67,7 +63,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
         identRepository.deleteAll();
 
         standardBruker = brukerRepository.save(BrukerBuilder.builder()
-                .navIdent(standardNavnIdent)
+                .navIdent(standardNavIdent)
                 .build().convertToRealBruker()
         );
 

@@ -14,7 +14,7 @@ public interface TeamRepository extends CrudRepository<Team, Long> {
 
 	List<Team> findAll();
 
-	Team findTeamByEier(Bruker eier);
+	List<Team> findTeamsByEier(Bruker eier);
 
 	List<Team> findByMedlemmer_NavIdent(String navIdent);
 
