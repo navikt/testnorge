@@ -6,7 +6,6 @@ import Panel from '~/components/panel/Panel'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import { Formik, Field } from 'formik'
 import { AttributtManager } from '~/service/Kodeverk'
-import DisplayFormikState from '~/utils/DisplayFormikState'
 import InputSelector from '~/components/fields/InputSelector'
 import { extraComponentProps } from '../Utils'
 
@@ -88,7 +87,6 @@ export default class Step2 extends PureComponent {
 						<Fragment>
 							{this.renderForm(formikProps)}
 							<NavigationConnector onClickNext={formikProps.submitForm} />
-							<DisplayFormikState {...formikProps} />
 						</Fragment>
 					)}
 				/>

@@ -7,7 +7,6 @@ import NavigationConnector from '../Navigation/NavigationConnector'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikInput } from '~/components/fields/Input/Input'
 import { Field, withFormik } from 'formik'
-import DisplayFormikState from '~/utils/DisplayFormikState'
 
 class Step1 extends Component {
 	static propTypes = {
@@ -49,7 +48,6 @@ class Step1 extends Component {
 				<AttributtVelger onToggle={toggleAttributeSelection} selectedIds={selectedAttributeIds} />
 
 				<NavigationConnector onClickNext={submitForm} />
-				<DisplayFormikState {...this.props} />
 			</div>
 		)
 	}
