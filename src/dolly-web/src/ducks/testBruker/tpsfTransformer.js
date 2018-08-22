@@ -11,7 +11,7 @@ const TpsfTransformer = data => {
 const kjonnTranslator = kjonn => (kjonn === 'M' ? 'Mann' : 'Kvinne')
 
 const mapDataToDolly = i => {
-	return {
+	let res = {
 		id: i.personId,
 		idType: i.identtype,
 		navn: `${i.fornavn} ${i.etternavn}`,
@@ -52,59 +52,67 @@ const mapDataToDolly = i => {
 						value: i.alder || 'Udefinert'
 					}
 				]
-			},
-			{
-				header: 'Nasjonalitet',
-				data: [
-					{
-						id: 'innvandretFra',
-						label: 'Innvandret fra',
-						value: i.innvandretFra || 'Udefinert'
-					},
-					{
-						id: 'statsborgerskap',
-						label: 'Statsborgerskap',
-						value: i.statsborgerskap
-					}
-				]
-			},
-			{
-				header: 'Bostedadresse',
-				data: [
-					{
-						parent: 'boadresse',
-						id: 'gateadresse',
-						label: 'Gatenavn',
-						value: i.boadresse.gateadresse
-					},
-					{
-						parent: 'boadresse',
-						id: 'husnummer',
-						label: 'Husnummer',
-						value: i.boadresse.husnummer
-					},
-					{
-						parent: 'boadresse',
-						id: 'gatekode',
-						label: 'Gatekode',
-						value: i.boadresse.gatekode
-					},
-					{
-						parent: 'boadresse',
-						id: 'postnr',
-						label: 'Postnummer',
-						value: i.boadresse.postnr
-					},
-					{
-						parent: 'boadresse',
-						id: 'flyttedato',
-						label: 'Flyttedato',
-						value: FormatDate(i.boadresse.flyttedato)
-					}
-				]
 			}
 		]
 	}
+
+	if (i.statsborgerskap) {
+		res.data.push({
+			header: 'Nasjonalitet',
+			data: [
+				{
+					id: 'innvandretFra',
+					label: 'Innvandret fra',
+					value: i.innvandretFra || 'Udefinert'
+				},
+				{
+					id: 'statsborgerskap',
+					label: 'Statsborgerskap',
+					value: i.statsborgerskap
+				}
+			]
+		})
+	}
+
+	if (i.boadresse) {
+		res.data.push({
+			header: 'Bostedadresse',
+			data: [
+				{
+					parent: 'boadresse',
+					id: 'gateadresse',
+					label: 'Gatenavn',
+					value: i.boadresse.gateadresse
+				},
+				{
+					parent: 'boadresse',
+					id: 'husnummer',
+					label: 'Husnummer',
+					value: i.boadresse.husnummer
+				},
+				{
+					parent: 'boadresse',
+					id: 'gatekode',
+					label: 'Gatekode',
+					value: i.boadresse.gatekode
+				},
+				{
+					parent: 'boadresse',
+					id: 'postnr',
+					label: 'Postnummer',
+					value: i.boadresse.postnr
+				},
+				{
+					parent: 'boadresse',
+					id: 'flyttedato',
+					label: 'Flyttedato',
+					value: FormatDate(i.boadresse.flyttedato)
+				}
+			]
+		})
+	}
+
+	return res
 }
 
 export default TpsfTransformer

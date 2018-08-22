@@ -21,7 +21,8 @@ export default class Bestilling extends PureComponent {
 			startBestilling,
 			toggleAttribute,
 			setValues,
-			setEnvironments
+			setEnvironments,
+			postBestilling
 		} = this.props
 
 		return (
@@ -30,30 +31,30 @@ export default class Bestilling extends PureComponent {
 
 				{isPage.first(page) && (
 					<Steg1
-						startBestilling={startBestilling}
-						selectedAttributeIds={attributeIds}
-						toggleAttributeSelection={toggleAttribute}
 						identtype={identtype}
 						antall={antall}
+						selectedAttributeIds={attributeIds}
+						startBestilling={startBestilling}
+						toggleAttributeSelection={toggleAttribute}
 					/>
 				)}
 
 				{isPage.second(page) && (
 					<Steg2
-						selectedAttributeIds={attributeIds}
 						identtype={identtype}
 						antall={antall}
-						values={values}
+						selectedAttributeIds={attributeIds}
 						setValues={setValues}
 					/>
 				)}
 
 				{isPage.last(page) && (
 					<Steg3
-						selectedAttributeIds={attributeIds}
 						identtype={identtype}
 						antall={antall}
+						selectedAttributeIds={attributeIds}
 						values={values}
+						postBestilling={postBestilling}
 						setEnvironments={setEnvironments}
 					/>
 				)}

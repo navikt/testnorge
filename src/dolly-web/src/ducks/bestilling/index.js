@@ -26,21 +26,21 @@ const initialState = {
 	error: null
 }
 
-const TEMP_INITIAL_STATE = {
-	page: 3,
-	fetching: false,
-	attributeIds: ['kjonn', 'statsborgerskap'],
-	environments: [],
-	antall: 2,
-	identtype: 'FNR',
-	values: {
-		kjonn: 'kvinne',
-		statsborgerskap: 'Norsk'
-	},
-	error: null
-}
+// const TEMP_INITIAL_STATE = {
+// 	page: 3,
+// 	fetching: false,
+// 	attributeIds: ['kjonn', 'statsborgerskap'],
+// 	environments: [],
+// 	antall: 2,
+// 	identtype: 'FNR',
+// 	values: {
+// 		kjonn: 'kvinne',
+// 		statsborgerskap: 'Norsk'
+// 	},
+// 	error: null
+// }
 
-export default function bestillingReducer(state = TEMP_INITIAL_STATE, action) {
+export default function bestillingReducer(state = initialState, action) {
 	switch (action.type) {
 		case types.NEXT_PAGE:
 			return { ...state, page: state.page + 1 }
@@ -103,11 +103,19 @@ export const abortBestilling = gruppeId => async dispatch => {
 }
 
 export const postBestilling = gruppeId => async (dispatch, getState) => {
-	const { values } = getState()
+	const { bestilling } = getState()
+
+	console.log('POSTING BESTILLING', bestilling)
 	try {
 		dispatch(_bestillingRequest())
 
-		const final_values = {}
+		const final_values = {
+			regdato: new Date(),
+			identtype: bestilling.identtype,
+			antall: bestilling.antall,
+			environments: bestilling.environments,
+			...bestilling.values
+		}
 
 		const res = await DollyApi.createBestilling(gruppeId, final_values)
 		dispatch(_bestillingRequestSuccess(res))

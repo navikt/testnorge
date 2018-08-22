@@ -4,8 +4,8 @@ import {
 	startBestilling,
 	toggleAttribute,
 	setValues,
-	postBestilling,
-	setEnvironments
+	setEnvironments,
+	postBestilling
 } from '~/ducks/bestilling'
 
 const mapStateToProps = state => ({
