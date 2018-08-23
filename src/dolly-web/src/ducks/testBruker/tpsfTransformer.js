@@ -12,7 +12,8 @@ const kjonnTranslator = kjonn => (kjonn === 'M' ? 'Mann' : 'Kvinne')
 
 const mapDataToDolly = i => {
 	let res = {
-		id: i.personId,
+		dollyId: i.personId,
+		id: i.ident,
 		idType: i.identtype,
 		navn: `${i.fornavn} ${i.etternavn}`,
 		kjonn: kjonnTranslator(i.kjonn),
