@@ -3,8 +3,8 @@ package no.nav.dolly.testdata.builder;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import no.nav.resultSet.RsTestgruppe;
-import no.nav.resultSet.RsTestident;
+import no.nav.dolly.domain.resultSet.RsTestgruppe;
+import no.nav.dolly.domain.resultSet.RsTestident;
 
 import java.time.LocalDate;
 import java.util.Set;

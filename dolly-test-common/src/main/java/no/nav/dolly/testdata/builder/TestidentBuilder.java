@@ -1,8 +1,8 @@
 package no.nav.dolly.testdata.builder;
 
 import lombok.Builder;
-import no.nav.jpa.Testgruppe;
-import no.nav.jpa.Testident;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 
 @Builder
 public class TestidentBuilder {

@@ -1,7 +1,7 @@
 package no.nav.dolly.testdata.builder;
 
-import no.nav.jpa.Bruker;
-import no.nav.jpa.Team;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
 
 import java.time.LocalDate;
 

@@ -142,6 +142,7 @@ crashlytics-build.properties
 /dolly-app-local/src/main/resources/application.yaml
 /dolly-app-local/src/main/resources/application-h2.yaml
 /dolly-test/src/test/resources/application.yaml
+/dolly-core/src/test/resources/application-h2.yaml
 /dolly-app/src/main/resources/public/
 
 # Start scripts

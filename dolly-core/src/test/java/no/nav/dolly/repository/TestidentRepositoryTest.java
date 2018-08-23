@@ -1,13 +1,13 @@
 package no.nav.dolly.repository;
 
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
-import no.nav.jpa.Bruker;
-import no.nav.jpa.Team;
-import no.nav.jpa.Testgruppe;
-import no.nav.jpa.Testident;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -55,6 +55,7 @@ public class TestidentRepositoryTest {
                 .datoEndret(LocalDate.of(2000, 1, 1))
                 .opprettetAv(bruker)
                 .navn("gruppe")
+                .hensikt("hensikt")
                 .teamtilhoerighet(team)
                 .testidenter(new HashSet<>(Arrays.asList(testident)))
                 .build()
@@ -64,6 +65,9 @@ public class TestidentRepositoryTest {
         testident.setTestgruppe(testgruppe);
 
         teamRepository.save(team);
+        testGruppeRepository.save(testgruppe);
+        identRepository.save(testident);
+
 
         Testident ident = identRepository.findByIdent("12345");
 

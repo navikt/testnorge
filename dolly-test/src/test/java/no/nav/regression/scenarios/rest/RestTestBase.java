@@ -1,14 +1,14 @@
 package no.nav.regression.scenarios.rest;
 
 import com.fasterxml.jackson.databind.JavaType;
-import no.nav.config.DollyObjectMapper;
+import no.nav.dolly.config.DollyObjectMapper;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
-import no.nav.jpa.Bruker;
-import no.nav.jpa.Team;
-import no.nav.jpa.Testgruppe;
 import no.nav.regression.InMememoryDbTestSetup;
 
 import java.io.IOException;
@@ -51,7 +51,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     protected String standardNavIdent = "ident";
     protected String standardGruppeHensikt = "hensikt";
 
-    protected String standardPrincipal = "principal";
+    protected String standardPrincipal = standardNavIdent;
 
     @Before
     public void setupBruker() {
@@ -92,7 +92,8 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
 
     private OidcTokenAuthentication createTestOidcToken(){
         //TODO Fix sett skikkelig token
-        return new OidcTokenAuthentication(null, null);
+        OidcTokenAuthentication token = new OidcTokenAuthentication(standardPrincipal,null, null, null);
+        return token;
 //        return new OidcTokenAuthentication(standardBruker.getNavIdent(), "test", "idtoken", "refreshtoken", null, new ArrayList<>());
     }
 

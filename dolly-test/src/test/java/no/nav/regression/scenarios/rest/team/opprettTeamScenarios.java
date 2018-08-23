@@ -1,9 +1,9 @@
 package no.nav.regression.scenarios.rest.team;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.jpa.Team;
-import no.nav.resultSet.RsOpprettTeam;
-import no.nav.resultSet.RsTeam;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultSet.RsOpprettTeam;
+import no.nav.dolly.domain.resultSet.RsTeam;
 
 import java.util.List;
 import org.junit.Test;

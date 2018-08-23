@@ -1,6 +1,6 @@
 package no.nav.dolly.repository;
 
-import no.nav.jpa.Testident;
+import no.nav.dolly.domain.jpa.Testident;
 
 import org.springframework.data.repository.CrudRepository;
 

@@ -1,6 +1,6 @@
 package no.nav.dolly.repository;
 
-import no.nav.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Bruker;
 
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;

@@ -1,13 +1,13 @@
 package no.nav.dolly.repository;
 
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
-import no.nav.jpa.Bruker;
-import no.nav.jpa.Team;
-import no.nav.jpa.Testgruppe;
-import no.nav.jpa.Testident;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@DataJpaTest    // Uses Transactional
 public class BrukerRepositoryTest {
 
     @Autowired
@@ -36,6 +36,9 @@ public class BrukerRepositoryTest {
 
     @Autowired
     TestGruppeRepository testGruppeRepository;
+
+    @Autowired
+    IdentRepository identRepository;
 
     @Test
     public void oppretteBrukerUtenTIlknytningTilTeamEllerGruppe(){
@@ -61,22 +64,21 @@ public class BrukerRepositoryTest {
                 .build()
                 .convertToRealTeam();
 
-//        foundBruker.setTeams(new HashSet<>(Arrays.asList(team)));
+        foundBruker.setTeams(new HashSet<>(Arrays.asList(team)));
         teamRepository.save(team);
 
         foundBruker = brukerRepository.findBrukerByNavIdent("nav");
-//        List<Team> teams = new ArrayList<>(foundBruker.getTeams());
+        List<Team> teams = new ArrayList<>(foundBruker.getTeams());
 
         assertThat(foundBruker.getNavIdent(), is("nav"));
-//        assertThat(foundBruker.getTeams().size(), is(1));
-//        assertThat(teams.get(0).getNavn(), is("team"));
-//        assertThat(teams.get(0).getMedlemmer().contains(foundBruker), is(true));
+        assertThat(foundBruker.getTeams().size(), is(1));
+        assertThat(teams.get(0).getNavn(), is("team"));
+        assertThat(teams.get(0).getMedlemmer().contains(foundBruker), is(true));
     }
 
     @Test
     public void opprettBrukerOgSetTilTeamOgSetFavoritter() throws Exception{
         Bruker savedBruker = brukerRepository.save(BrukerBuilder.builder().navIdent("nav").build().convertToRealBruker());
-        Testident testident = TestidentBuilder.builder().ident("123456789").build().convertToRealTestident();
 
         Team team = TeamBuilder.builder()
                 .navn("team")
@@ -89,32 +91,40 @@ public class BrukerRepositoryTest {
 
         Team savedTeam = teamRepository.save(team);
 
+
         Testgruppe testgruppe = TestgruppeBuilder.builder()
                 .sistEndretAv(savedBruker)
                 .datoEndret(LocalDate.of(2000, 1, 1))
                 .opprettetAv(savedBruker)
-                .navn("gruppe")
                 .teamtilhoerighet(savedTeam)
+                .hensikt("hensikt")
+                .navn("gruppe")
+                .favorisertAv(new HashSet<>(Arrays.asList(savedBruker)))
                 .build()
                 .convertToRealTestgruppe();
 
-        testident.setTestgruppe(testgruppe);
+        testGruppeRepository.save(testgruppe);
 
-//        testgruppe.setFavorisertAv(new HashSet<>(Arrays.asList(savedBruker)));
-        savedTeam.setGrupper(new HashSet<>(Arrays.asList(testgruppe)));
+        Testgruppe foundGruppe = testGruppeRepository.findByNavn("gruppe");
 
-        Set<Testident> identer = new HashSet<>(Arrays.asList(testident));
-        testgruppe.setTestidenter(identer);
+        Testident testident = TestidentBuilder.builder().ident("123456789").build().convertToRealTestident();
+        testident.setTestgruppe(foundGruppe);
+        identRepository.save(testident);
 
         savedBruker.setFavoritter(new HashSet<>(Arrays.asList(testgruppe)));
-//        savedBruker.setTeams(new HashSet<>(Arrays.asList(savedTeam)));
-
-        teamRepository.save(savedTeam);
         savedBruker = brukerRepository.save(savedBruker);
 
         Bruker foundByIdBruker = brukerRepository.findBrukerByNavIdent("nav");
+        foundGruppe = testGruppeRepository.findByNavn("gruppe");
+        Testident ident = identRepository.findByIdent("123456789");
 
         assertThat(savedBruker.getNavIdent(), is(savedBruker.getNavIdent()));
         assertThat(foundByIdBruker.getNavIdent(), is(savedBruker.getNavIdent()));
+        assertThat(foundByIdBruker.getFavoritter().contains(foundGruppe), is(true));
+
+        assertThat(ident.getIdent(), is("123456789"));
+
+        assertThat(foundGruppe.getFavorisertAv().size(), is(1));
+        assertThat(foundGruppe.getHensikt(), is("hensikt"));
     }
 }

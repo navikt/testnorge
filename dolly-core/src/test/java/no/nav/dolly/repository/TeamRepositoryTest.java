@@ -1,11 +1,11 @@
 package no.nav.dolly.repository;
 
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
-import no.nav.jpa.Bruker;
-import no.nav.jpa.Team;
-import no.nav.jpa.Testgruppe;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -88,12 +88,15 @@ public class TeamRepositoryTest {
         /*---  Med gruppe  ---*/
         Testgruppe testgruppe = TestgruppeBuilder.builder()
                 .navn("Testgruppe")
+                .hensikt("hensikt")
                 .datoEndret(LocalDate.of(2000, 1, 1))
                 .opprettetAv(bruker)
                 .sistEndretAv(bruker)
                 .teamtilhoerighet(foundTeam)
                 .build()
                 .convertToRealTestgruppe();
+
+        testGruppeRepository.save(testgruppe);
 
         foundTeam.setGrupper(new HashSet<>(Arrays.asList(testgruppe)));
         teamRepository.save(foundTeam);
@@ -102,7 +105,6 @@ public class TeamRepositoryTest {
         Testgruppe foundTestgruppe = testGruppeRepository.findAll().get(0);
 
         assertThat(foundTeam.getGrupper().contains(foundTestgruppe), is(true));
-        assertThat(foundTestgruppe.getNavn(), is("Testgruppe"));
         assertThat(foundTestgruppe.getTeamtilhoerighet(), is(foundTeam));
     }
 
@@ -124,12 +126,11 @@ public class TeamRepositoryTest {
 
         teamRepository.save(team);
 
-        List<Team> teamsByBruker = teamRepository.findTeamsByEier(brukere.get(0));
-        Team teamByBruker = teamsByBruker.get(0);
+        List<Team> teamByBruker = teamRepository.findTeamsByEier(brukere.get(0));
 
-        assertThat(teamByBruker.getNavn(), is("team"));
-        assertThat(teamByBruker.getBeskrivelse(), is("besk"));
-        assertThat(teamByBruker.getEier(), is(brukere.get(0)));
+        assertThat(teamByBruker.get(0).getNavn(), is("team"));
+        assertThat(teamByBruker.get(0).getBeskrivelse(), is("besk"));
+        assertThat(teamByBruker.get(0).getEier(), is(brukere.get(0)));
     }
 
     @Test

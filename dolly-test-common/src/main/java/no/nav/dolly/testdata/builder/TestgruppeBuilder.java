@@ -1,10 +1,10 @@
 package no.nav.dolly.testdata.builder;
 
 import lombok.Builder;
-import no.nav.jpa.Bruker;
-import no.nav.jpa.Team;
-import no.nav.jpa.Testgruppe;
-import no.nav.jpa.Testident;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 
 import java.time.LocalDate;
 import java.util.Set;

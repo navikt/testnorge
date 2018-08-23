@@ -1,7 +1,7 @@
 package no.nav.dolly.testdata.builder;
 
 import lombok.Builder;
-import no.nav.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Bruker;
 
 @Builder
 public class BrukerBuilder {

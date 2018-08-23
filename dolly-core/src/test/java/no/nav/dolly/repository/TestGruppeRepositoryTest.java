@@ -1,11 +1,11 @@
 package no.nav.dolly.repository;
 
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
-import no.nav.jpa.Bruker;
-import no.nav.jpa.Team;
-import no.nav.jpa.Testgruppe;
 
 import java.time.LocalDate;
 import org.junit.Test;
@@ -50,12 +50,14 @@ public class TestGruppeRepositoryTest {
                 .datoEndret(LocalDate.of(2000, 1, 1))
                 .opprettetAv(bruker)
                 .navn("gruppe")
+                .hensikt("hensikt")
                 .teamtilhoerighet(team)
                 .build()
                 .convertToRealTestgruppe();
 
         Testgruppe savedGruppe = testGruppeRepository.save(testgruppe);
         Testgruppe foundGruppe = testGruppeRepository.findById(savedGruppe.getId()).get();
+        Team foundTeam = teamRepository.findAll().get(0);
 
         assertThat(foundGruppe.getNavn(), is("gruppe"));
         assertThat(foundGruppe.getTeamtilhoerighet().getNavn(), is("team"));

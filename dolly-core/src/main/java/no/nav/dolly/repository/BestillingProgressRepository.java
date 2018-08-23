@@ -1,6 +1,6 @@
 package no.nav.dolly.repository;
 
-import no.nav.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;

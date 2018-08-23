@@ -1,9 +1,9 @@
 package no.nav.regression.scenarios.rest.testgruppe;
 
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultSet.RsOpprettTestgruppe;
 import no.nav.dolly.testdata.builder.RsOpprettTestgruppeBuilder;
-import no.nav.jpa.Team;
-import no.nav.jpa.Testgruppe;
-import no.nav.resultSet.RsOpprettTestgruppe;
 
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;

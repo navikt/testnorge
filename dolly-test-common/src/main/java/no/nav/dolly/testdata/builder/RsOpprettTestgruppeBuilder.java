@@ -3,7 +3,7 @@ package no.nav.dolly.testdata.builder;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import no.nav.resultSet.RsOpprettTestgruppe;
+import no.nav.dolly.domain.resultSet.RsOpprettTestgruppe;
 
 @Getter
 @Setter

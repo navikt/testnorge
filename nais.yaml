@@ -25,15 +25,13 @@ resources:
     memory: 1536Mi
 fasitResources:
   used:
-  - alias: OpenIdConnect
-    resourceType: OpenIdConnect
-    propertyMap:
-        agentName: freg.security.oidc.client-id
-        password: freg.security.oidc.client-secret
-        hostUrl: freg.security.oidc.openam.url
+    - alias: dolly-frontend-oidc
+      resourceType: OpenIdConnect
+      propertyMap:
+        agentName: freg.security.oidc.idp.openam.clientId
+        password: freg.security.oidc.idp.openam.clientSecret
+        hostUrl: freg.security.oidc.idp.openam.hostUrl
+        issuerUrl: freg.security.oidc.idp.openam.issuerUrl
+        jwksUrl: freg.security.oidc.idp.openam.jwksUrl
 
-  - alias: abac.pdp.endpoint
-    resourceType: restservice
-    propertyMap:
-      url: no.nav.abac.url
 

@@ -1,13 +1,12 @@
 package no.nav.regression.scenarios.rest.testgruppe;
 
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultSet.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
-import no.nav.jpa.Bruker;
-import no.nav.jpa.Team;
-import no.nav.jpa.Testgruppe;
-import no.nav.resultSet.RsTestgruppe;
-import no.nav.resultSet.RsTestgruppeMedErMedlemOgFavoritt;
 
 import java.time.LocalDate;
 import java.util.Arrays;

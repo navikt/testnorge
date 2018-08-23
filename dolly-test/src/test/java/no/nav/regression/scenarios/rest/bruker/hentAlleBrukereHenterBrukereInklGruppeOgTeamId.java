@@ -1,6 +1,7 @@
 package no.nav.regression.scenarios.rest.bruker;
 
-import no.nav.resultSet.RsBrukerTeamAndGruppeIDs;
+
+import no.nav.dolly.domain.resultSet.RsBrukerTeamAndGruppeIDs;
 
 import java.util.List;
 import org.junit.Test;
