@@ -29,7 +29,7 @@ class Step1 extends Component {
 					<Overskrift label="Legg til testpersoner" />
 				</div>
 
-				<div className="oppskrift-field-group flexbox">
+				<div className="flexbox">
 					<Field
 						name="identtype"
 						label="Velg identtype"
