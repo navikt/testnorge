@@ -141,6 +141,7 @@ crashlytics-build.properties
 # Generated web bundle
 /dolly-app-local/src/main/resources/application.yaml
 /dolly-app-local/src/main/resources/application-h2.yaml
+/dolly-core/src/main/resources/application-h2.yaml
 /dolly-test/src/test/resources/application.yaml
 /dolly-core/src/test/resources/application-h2.yaml
 /dolly-app/src/main/resources/public/

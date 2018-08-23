@@ -1,8 +1,8 @@
 applicationPipeline {
-    applicationName = "norg2-frontend"
+    applicationName = "dolly"
     javaVersion = "1.8"
-    environment = "q8"
-    namespace = "default"
+    environment = "u2"
+    namespace = "u2"
     hasPerformanceTest = false
     hasSmoketests = false
 }
