@@ -45,9 +45,13 @@ class TableRow extends PureComponent {
 			expanded: this.state.expanded
 		})
 
+		const columnsClass = cn('dot-body-row-columns', {
+			clickable: Boolean(expandComponent || navLink)
+		})
+
 		return (
 			<div className={rowClass}>
-				<div className="dot-body-row-columns" {...rowProps}>
+				<div className={columnsClass} {...rowProps}>
 					{children}
 					<Table.Column className="dot-body-row-actioncolumn">
 						{editAction && <Button kind="edit" onClick={editAction} />}
