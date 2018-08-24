@@ -1,0 +1,38 @@
+@import (reference) '~lessVars';
+
+.attributt-velger {
+	&_search {
+		width: 40%;
+	}
+
+	&_panels {
+		width: 60%;
+		padding-right: 30px;
+		border-right: 1px solid @color-darkblue;
+	}
+	&_panelcontent {
+		display: flex;
+		flex-direction: column;
+
+		h4 {
+			margin: 0 0 10px;
+		}
+	}
+
+	&_panelsubcontent {
+		display: flex;
+		flex-wrap: wrap;
+		> * {
+			width: 25%;
+		}
+	}
+
+	&_panelsubcontent:not(:last-child) {
+		margin-bottom: 20px;
+	}
+
+	.utvalg {
+		flex-grow: 1;
+		padding-left: 30px;
+	}
+}

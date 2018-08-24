@@ -1,0 +1,29 @@
+@import (reference) '~lessVars';
+
+.fixed-button {
+	position: fixed;
+	bottom: 50px;
+	right: 50vw;
+
+	cursor: pointer;
+	border: none;
+	border-bottom: 1px solid transparent;
+	background: none;
+	padding: 5px;
+	margin: 0;
+
+	g {
+		fill: @color-lightblue;
+	}
+	path {
+		stroke: white;
+	}
+
+	svg {
+		transition: transform 0.1s linear;
+	}
+
+	svg:hover {
+		transform: scale(1.1);
+	}
+}
