@@ -22,7 +22,15 @@ class Team extends Component {
 	}
 
 	render() {
-		const { team, grupper, teamFetching, grupperFetching, addMember, removeMember } = this.props
+		const {
+			team,
+			grupper,
+			teamFetching,
+			grupperFetching,
+			history,
+			addMember,
+			removeMember
+		} = this.props
 
 		if (!team || !grupper) return null
 
@@ -82,7 +90,11 @@ class Team extends Component {
 						</Table.Header>
 
 						{grupper.map(gruppe => (
-							<Table.Row key={gruppe.id} deleteAction={() => {}}>
+							<Table.Row
+								key={gruppe.id}
+								navLink={() => history.push(`/gruppe/${gruppe.id}`)}
+								deleteAction={() => {}}
+							>
 								<Table.Column width="15" value={gruppe.id.toString()} />
 								<Table.Column width="20" value={gruppe.navn} />
 								<Table.Column width="15" value={gruppe.team.navn} />

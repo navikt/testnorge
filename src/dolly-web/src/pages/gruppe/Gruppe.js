@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import Knapp from 'nav-frontend-knapper'
-import Icon from '~/components/icon/Icon'
 import Overskrift from '~/components/overskrift/Overskrift'
 import GruppeDetaljer from './GruppeDetaljer/GruppeDetaljer'
 import BestillingStatus from './BestillingStatus/BestillingStatus'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
 import PersonDetaljer from './PersonDetaljer/PersonDetaljer'
+import FormatIdentNr from '~/utils/FormatIdentNr'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 
 import './Gruppe.less'
@@ -16,9 +15,9 @@ export default class Gruppe extends Component {
 		this.props.getGruppe()
 	}
 
-	startOppskrift = () => {
+	startBestilling = () => {
 		const { gruppeId } = this.props.match.params
-		this.props.history.push(`/gruppe/${gruppeId}/oppskrift`)
+		this.props.history.push(`/gruppe/${gruppeId}/bestilling`)
 	}
 
 	render() {
@@ -43,7 +42,7 @@ export default class Gruppe extends Component {
 				<Overskrift
 					type="h2"
 					label="Testpersoner"
-					actions={[{ icon: 'add-circle', onClick: this.startOppskrift }]}
+					actions={[{ icon: 'add-circle', onClick: this.startBestilling }]}
 				/>
 				{gruppe.testidenter.length <= 0 ? (
 					<ContentContainer>Det finnes ingen data i denne gruppen enda</ContentContainer>
@@ -67,7 +66,7 @@ export default class Gruppe extends Component {
 										key={idx}
 										expandComponent={<PersonDetaljer brukerData={bruker.data} />}
 									>
-										<Table.Column width="15" value={bruker.id} />
+										<Table.Column width="15" value={FormatIdentNr(bruker.id)} />
 										<Table.Column width="15" value={bruker.idType} />
 										<Table.Column width="30" value={bruker.navn} />
 										<Table.Column width="20" value={bruker.kjonn} />

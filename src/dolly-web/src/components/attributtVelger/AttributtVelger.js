@@ -4,24 +4,67 @@ import Panel from '~/components/panel/Panel'
 import Input from '~/components/fields/Input/Input'
 import Utvalg from './Utvalg/Utvalg'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
+import { AttributtManager } from '~/service/Kodeverk'
 
 import './AttributtVelger.less'
 
 export default class AttributtVelger extends Component {
 	static propTypes = {
-		onChange: PropTypes.func.isRequired
+		onToggle: PropTypes.func.isRequired,
+		selectedIds: PropTypes.arrayOf(PropTypes.string)
+	}
+
+	constructor(props) {
+		super(props)
+		this.AttributtManager = new AttributtManager()
 	}
 
 	state = {
-		search: '',
-		selection: {}
+		search: ''
 	}
 
 	searchOnChange = e => this.setState({ search: e.target.value })
 
-	render() {
-		const { onChange, selectedTypes, attributter } = this.props
+	renderPanels = () => {
+		const list = this.AttributtManager.listAllByGroup(this.state.search)
+		if (list.length === 0) return this.renderEmptyResult()
+		return list.map(hovedKategori => this.renderHovedKategori(hovedKategori))
+	}
 
+	renderHovedKategori = ({ hovedKategori, items }) => {
+		return (
+			<Panel key={hovedKategori.navn} heading={<h3>{hovedKategori.navn}</h3>} startOpen>
+				<div className="attributt-velger_panelcontent">
+					{items.map(subKategori => this.renderSubKategori(subKategori))}
+				</div>
+			</Panel>
+		)
+	}
+
+	renderSubKategori = ({ subKategori, items }) => {
+		return (
+			<Fragment key={subKategori.navn}>
+				<h4>{subKategori.navn}</h4>
+				<div className="attributt-velger_panelsubcontent">
+					{items.map(item => this.renderItem(item))}
+				</div>
+			</Fragment>
+		)
+	}
+
+	renderItem = item => (
+		<Checkbox
+			key={item.id}
+			label={item.label}
+			id={item.id}
+			checked={this.props.selectedIds.includes(item.id)}
+			onChange={e => this.props.onToggle(e.target.id)}
+		/>
+	)
+
+	renderEmptyResult = () => <p>Søket ga ingen treff</p>
+
+	render() {
 		return (
 			<div className="attributt-velger">
 				<Input
@@ -33,77 +76,9 @@ export default class AttributtVelger extends Component {
 				/>
 
 				<div className="flexbox">
-					<div className="attributt-velger_panels">
-						<Panel heading={<h3>Personinformasjon</h3>} startOpen>
-							<div className="attributt-velger_panelcontent">
-								{attributter.personinformasjon.map((group, idx) => {
-									return (
-										<Fragment key={idx}>
-											<h4>{group.label}</h4>
-											<div className="attributt-velger_panelsubcontent">
-												{group.items.map(item => (
-													<Checkbox
-														key={item.id}
-														label={item.label}
-														id={item.id}
-														checked={Boolean(selectedTypes[item.id])}
-														onChange={onChange}
-													/>
-												))}
-											</div>
-										</Fragment>
-									)
-								})}
-							</div>
-						</Panel>
+					<div className="attributt-velger_panels">{this.renderPanels()}</div>
 
-						{/* <Panel heading={<h3>Personinformasjon</h3>}>
-							<div className="attributt-velger_panelcontent">
-								<Checkbox label="Fornavn" id="fornavn" onClick={this.props.onSelectionHandler} />
-								<Checkbox label="Mellomnavn" id="mellomnavn" />
-								<Checkbox label="Etternavn" id="etternavn" />
-								<Checkbox label="Kjønn" id="kjonn" />
-								<Checkbox label="Statsborgerskap" id="statsborgerskap" />
-								<Checkbox label="Født før" id="fodtFor" />
-								<Checkbox label="Født etter" id="fodtEtter" />
-								<Checkbox label="Spesialregister" id="spesialRegister" />
-								<Checkbox label="Spes.reg dato" id="spesregdato" />
-								<Checkbox label="Dødsdato" id="dodsdato" />
-							</div>
-						</Panel> */}
-
-						{/* <Panel heading={<h3>Adresser</h3>}>
-							<div className="attributt-velger_panelcontent">
-								<Checkbox label="Fornavn" id="fornavn1" />
-								<Checkbox label="Mellomnavn" id="mellomnavn1" />
-								<Checkbox label="Etternavn" id="etternavn1" />
-								<Checkbox label="Kjønn" id="kjonn1" />
-								<Checkbox label="Statsborgerskap" id="statsborgerskap1" />
-								<Checkbox label="Født før" id="fodtFor1" />
-								<Checkbox label="Født etter" id="fodtEtter1" />
-								<Checkbox label="Spesialregister" id="spesialRegister1" />
-								<Checkbox label="Spes.reg dato" id="spesregdato1" />
-								<Checkbox label="Dødsdato" id="dodsdato1" />
-							</div>
-						</Panel> */}
-
-						{/* <Panel heading={<h3>Familierelasjoner</h3>}>
-							<div className="attributt-velger_panelcontent">
-								<Checkbox label="Fornavn" id="fornavn2" />
-								<Checkbox label="Mellomnavn" id="mellomnavn2" />
-								<Checkbox label="Etternavn" id="etternavn2" />
-								<Checkbox label="Kjønn" id="kjonn2" />
-								<Checkbox label="Statsborgerskap" id="statsborgerskap2" />
-								<Checkbox label="Født før" id="fodtFor2" />
-								<Checkbox label="Født etter" id="fodtEtter2" />
-								<Checkbox label="Spesialregister" id="spesialRegister2" />
-								<Checkbox label="Spes.reg dato" id="spesregdato2" />
-								<Checkbox label="Dødsdato" id="dodsdato2" />
-							</div>
-						</Panel> */}
-					</div>
-
-					<Utvalg attributter={attributter} selectedTypes={selectedTypes} />
+					<Utvalg selectedIds={this.props.selectedIds} />
 				</div>
 			</div>
 		)

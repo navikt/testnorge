@@ -1,9 +1,9 @@
 import { DollyApi } from '~/service/Api'
 
 export const types = {
-	REQUEST_CURRENT_BRUKER: 'REQUEST_CURRENT_BRUKER',
-	REQUEST_CURRENT_BRUKER_SUCCESS: 'REQUEST_CURRENT_BRUKER_SUCCESS',
-	REQUEST_CURRENT_BRUKER_ERROR: 'REQUEST_CURRENT_BRUKER_ERROR'
+	REQUEST_CURRENT_BRUKER: 'bruker/get-request',
+	REQUEST_CURRENT_BRUKER_SUCCESS: 'bruker/get-success',
+	REQUEST_CURRENT_BRUKER_ERROR: 'bruker/get-error'
 }
 
 const initialState = {

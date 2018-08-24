@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import { Input } from 'nav-frontend-skjema'
+import _get from 'lodash/get'
 
 import './Input.less'
 
@@ -32,8 +33,8 @@ export const FormikInput = props => {
 			onChange={field.onChange}
 			onBlur={field.onBlur}
 			feil={
-				form.touched[field.name] && form.errors[field.name]
-					? { feilmelding: form.errors[field.name] }
+				_get(form.touched, field.name) && _get(form.errors, field.name)
+					? { feilmelding: _get(form.errors, field.name) }
 					: null
 			}
 			{...restProps}

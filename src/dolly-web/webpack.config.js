@@ -1,6 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const pkg = require('./package.json')
 
 // Buildtype
@@ -11,8 +13,8 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const devMode = process.env.NODE_ENV !== 'production'
 
 const outputDir = {
-	development: 'dist/devOutput',
-	production: 'dist/output'
+	development: 'dist/dev',
+	production: 'dist/production'
 }
 
 const statsOutputSettings = {
@@ -24,7 +26,7 @@ const statsOutputSettings = {
 const webpackConfig = {
 	mode: process.env.NODE_ENV,
 	devtool: 'source-map',
-	entry: './src/index.js',
+	entry: ['babel-polyfill', './src/index.js'],
 	output: {
 		filename: 'bundle.js',
 		publicPath: '/',
@@ -51,7 +53,14 @@ const webpackConfig = {
 		new MiniCssExtractPlugin({
 			// Options similar to the same options in webpackOptions.output
 			// both options are optional
-			filename: devMode ? '[name].css' : '[name].[hash].css'
+			filename: devMode ? '[name].css' : '[name].[contenthash:8].css'
+		}),
+		new HtmlWebpackPlugin({
+			title: 'Dolly',
+			favicon: 'src/assets/favicon.ico',
+			inject: false,
+			template: require('html-webpack-template'),
+			appMountId: 'root'
 		})
 	],
 	resolve: {
@@ -59,15 +68,20 @@ const webpackConfig = {
 			'~': path.resolve(__dirname, 'src'),
 			lessVars: path.resolve(__dirname, 'src/styles/variables.less'),
 			lessUtils: path.resolve(__dirname, 'src/styles/utils.less')
-		}
+		},
+		extensions: ['.js', '.json', '.ts', '.tsx']
 	},
 	module: {
 		rules: [
 			{
+				test: /\.ts(x?)$/,
+				exclude: /node_modules/,
+				use: ['babel-loader', 'ts-loader']
+			},
+			{
 				test: /\.js$/,
-				include: [path.resolve(__dirname, 'src')],
-				exclude: [path.resolve(__dirname, 'node_modules/')],
-				loader: 'babel-loader'
+				exclude: /node_modules/,
+				use: ['babel-loader']
 			},
 			{
 				test: /\.less$/,
@@ -95,7 +109,7 @@ if (TARGET === 'build-dev') {
 	webpackConfig.output = {
 		path: path.join(__dirname, outputDir.development),
 		filename: 'bundle.js',
-		publicPath: '/' + outputDir.development + '/'
+		publicPath: '/'
 	}
 }
 
@@ -104,9 +118,10 @@ if (TARGET === 'build') {
 	webpackConfig.devtool = 'none'
 	webpackConfig.output = {
 		path: path.join(__dirname, outputDir.production),
-		filename: 'bundle.js',
-		publicPath: '/' + outputDir.production + '/'
+		filename: 'bundle.[contenthash:8].js',
+		publicPath: '/'
 	}
+	webpackConfig.plugins = [new CleanWebpackPlugin(['dist'])].concat(webpackConfig.plugins)
 }
 
 module.exports = webpackConfig
