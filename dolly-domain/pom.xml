@@ -10,7 +10,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dolly-core-domain</artifactId>
+    <artifactId>dolly-domain</artifactId>
 
     <dependencies>
         <dependency>

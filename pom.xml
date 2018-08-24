@@ -18,12 +18,11 @@
 	<description></description>
 
 	<modules>
-		<module>dolly-core</module>
-		<module>dolly-core-domain</module>
-        <module>dolly-test</module>
-		<module>dolly-test-common</module>
+		<module>dolly-app</module>
+		<module>dolly-domain</module>
 		<module>dolly-webapp</module>
-        <module>dolly-app-local</module>
+		<module>dolly-test</module>
+		<module>dolly-test-common</module>
     </modules>
 
 	<properties>

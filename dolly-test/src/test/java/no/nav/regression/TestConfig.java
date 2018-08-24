@@ -1,12 +1,11 @@
 package no.nav.regression;
 
-
-import no.nav.dolly.ApplicationConfig;
+import no.nav.dolly.ApplicationStarter;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import(ApplicationConfig.class)
+@Import(ApplicationStarter.class)
 public class TestConfig {
 }

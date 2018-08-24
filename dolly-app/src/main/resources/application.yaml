@@ -3,14 +3,14 @@ server.port: 8080
 APP_NAME: dolly
 application.version: @application.version@
 
+### SPRING ###
 spring:
   datasource:
     driverClassName: oracle.jdbc.OracleDriver
   flyway:
     enabled: true
     url: jdbc:h2:mem:dollyDB;DB_CLOSE_DELAY=-1
-  main:
-    banner-mode: off
+
 
 #### NEW FREG-SECURITY #####
 freg.security.oidc:

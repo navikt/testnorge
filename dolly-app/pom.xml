@@ -10,7 +10,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dolly-core</artifactId>
+    <artifactId>dolly-app</artifactId>
 
     <properties>
         <springfox-swagger.version>2.4.0</springfox-swagger.version>
@@ -31,7 +31,7 @@
 
         <dependency>
             <groupId>no.nav.dolly</groupId>
-            <artifactId>dolly-core-domain</artifactId>
+            <artifactId>dolly-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -51,7 +51,6 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -59,26 +58,10 @@
             <artifactId>h2</artifactId>
         </dependency>
         <!-- FREG SECURITY -->
-
-        <!--<dependency>-->
-        <!--<groupId>no.nav.freg</groupId>-->
-        <!--<artifactId>freg-security</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>no.nav.freg</groupId>
             <artifactId>freg-security-oidc</artifactId>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        -->
-
-        <!--<dependency>-->
-            <!--<groupId>no.nav.freg</groupId>-->
-            <!--<artifactId>freg-security-oidc</artifactId>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -93,6 +76,7 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
+
         <!--DOCUMENTATION-->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -116,18 +100,19 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-
                 <executions>
                     <execution>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <finalName>${application.name}</finalName>
+                            <finalName>dolly-app</finalName>
+                            <classifier>exec</classifier>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
 </project>

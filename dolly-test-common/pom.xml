@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>no.nav.dolly</groupId>
-            <artifactId>dolly-core-domain</artifactId>
+            <artifactId>dolly-domain</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
