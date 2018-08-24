@@ -52,6 +52,25 @@
                         <artifactId>exec-maven-plugin</artifactId>
                         <executions>
                             <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <executable>npm${script.extension}</executable>
+                                    <arguments>
+                                        <!--OK-->
+                                        <argument>install</argument>
+                                        <argument>--registry=http://registry.npmjs.org/</argument>
+                                        <argument>--https-proxy=http://155.55.60.117:8088</argument>
+                                        <argument>--proxy=http://155.55.60.117:8088</argument>
+                                        <!--OK end-->
+                                    </arguments>
+                                    <workingDirectory>${basedir}/src/main/dolly-web</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>npm run build (with local node installation)</id>
                                 <goals>
                                     <goal>exec</goal>
@@ -68,7 +87,7 @@
                                         <argument>--proxy=http://155.55.60.117:8088</argument>
                                         <!--OK end-->
                                     </arguments>
-                                    <workingDirectory>${basedir}/src/dolly-web</workingDirectory>
+                                    <workingDirectory>${basedir}/src/main/dolly-web</workingDirectory>
                                 </configuration>
                             </execution>
                         </executions>
@@ -86,16 +105,16 @@
                         <configuration>
                             <filesets>
                                 <fileset>
-                                    <directory>src/dolly-web/node</directory>
+                                    <directory>src/main/dolly-web/node</directory>
                                 </fileset>
                                 <fileset>
-                                    <directory>src/dolly-web/node_modules</directory>
+                                    <directory>src/main/dolly-web/node_modules</directory>
                                 </fileset>
                                 <fileset>
-                                    <directory>src/dolly-web/build</directory>
+                                    <directory>src/main/dolly-web/build</directory>
                                 </fileset>
                                 <fileset>
-                                    <directory>src/resources/public</directory>
+                                    <directory>src/main/resources/public/production</directory>
                                 </fileset>
                             </filesets>
                         </configuration>
