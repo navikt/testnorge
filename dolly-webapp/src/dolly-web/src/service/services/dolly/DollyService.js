@@ -1,7 +1,6 @@
-import Request from '../../Request'
+import Request from '../Request'
 import Endpoints from './DollyEndpoints'
 import Utils from './Utils'
-import { request } from 'http'
 
 export default class DollyService {
 	// UTILS

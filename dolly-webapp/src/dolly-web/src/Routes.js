@@ -2,7 +2,7 @@ import React from 'react'
 
 import Gruppe from './pages/gruppe/GruppeConnector'
 import GruppeOversikt from './pages/gruppeOversikt/GruppeOversiktConnector'
-import Oppskrift from './pages/oppskrift/Oppskrift'
+import Bestilling from './pages/bestilling/BestillingConnector'
 import Profil from './pages/profil/ProfilConnector'
 import TeamOversiktConnector from './pages/teamOversikt/TeamOversiktConnector'
 import TeamConnector from './pages/team/TeamConnector'
@@ -17,10 +17,10 @@ const routes = [
 	{ path: '/team/:teamId', exact: true, breadcrumb: TeamBreadcrumb, component: TeamConnector },
 	{ path: '/gruppe/:gruppeId', exact: true, breadcrumb: GruppeBreadcrumb, component: Gruppe },
 	{
-		path: '/gruppe/:gruppeId/oppskrift',
+		path: '/gruppe/:gruppeId/bestilling',
 		exact: true,
 		breadcrumb: 'Lag bestilling',
-		component: Oppskrift
+		component: Bestilling
 	}
 ]
 

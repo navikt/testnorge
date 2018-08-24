@@ -12,7 +12,7 @@ export default class PersonDetaljer extends PureComponent {
 		return (
 			<div className="person-details">
 				{brukerData.map(i => (
-					<div className="person-details_content">
+					<div key={i.id} className="person-details_content">
 						<h4>{i.header}</h4>
 						<PersonInfoBlock data={i.data} />
 					</div>
