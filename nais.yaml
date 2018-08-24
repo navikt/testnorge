@@ -34,4 +34,17 @@ fasitResources:
         issuerUrl: freg.security.oidc.idp.openam.issuerUrl
         jwksUrl: freg.security.oidc.idp.openam.jwksUrl
 
+    - alias: tpsf-url
+      resourceType: baseurl
+      propertyMap:
+        url: tpsf.server.url
+
+    - alias: dollyDB
+      resourceType: DataSource
+      propertyMap:
+          url: spring.datasource.url
+          username: spring.datasource.username
+          password: spring.datasource.password
+          onsHosts: app.datasource.onsHosts
+
 

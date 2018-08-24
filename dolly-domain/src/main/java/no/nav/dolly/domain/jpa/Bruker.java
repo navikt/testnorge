@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.jpa;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -16,8 +17,13 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "T_BRUKER")
 public class Bruker {
+
+    public Bruker(String navIdent){
+        this.navIdent = navIdent;
+    }
 
     @Id
     @Column(name = "NAV_IDENT", length = 10)

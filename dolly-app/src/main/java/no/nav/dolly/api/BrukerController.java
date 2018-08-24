@@ -39,7 +39,7 @@ public class BrukerController {
 	@GetMapping("/current")
 	public RsBruker getCurrentBruker() {
 		OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-		Bruker bruker = brukerService.fetchBruker(auth.getPrincipal());
+		Bruker bruker = brukerService.fetchOrCreateBruker(auth.getPrincipal());
 		return mapperFacade.map(bruker, RsBruker.class);
 	}
 

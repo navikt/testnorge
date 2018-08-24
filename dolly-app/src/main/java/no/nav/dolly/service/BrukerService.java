@@ -38,6 +38,14 @@ public class BrukerService {
         return bruker;
     }
 
+    public Bruker fetchOrCreateBruker(String navIdent) {
+        try{
+            return fetchBruker(navIdent);
+        } catch (BrukerNotFoundException e){
+            return brukerRepository.save(new Bruker(navIdent));
+        }
+    }
+
     public RsBrukerMedTeamsOgFavoritter getBrukerMedTeamsOgFavoritter(String navIdent) {
         Bruker bruker = fetchBruker(navIdent);
         List<Team> teams = teamService.fetchTeamsByMedlemskapInTeams(navIdent);
