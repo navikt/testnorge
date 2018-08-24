@@ -34,7 +34,7 @@ fasitResources:
         issuerUrl: freg.security.oidc.idp.openam.issuerUrl
         jwksUrl: freg.security.oidc.idp.openam.jwksUrl
 
-    - alias: tpsf-url
+    - alias: tpsf-host
       resourceType: baseurl
       propertyMap:
         url: tpsf.server.url
