@@ -144,6 +144,8 @@ crashlytics-build.properties
 /dolly-app/src/main/resources/application-h2.yaml
 /dolly-test/src/test/resources/application.yaml
 /dolly-app/src/test/resources/application-h2.yaml
+/dolly-app/src/main/resources/public/
+/dolly-webapp/src/main/resources/
 
 # Start scripts
 start-dolly-maven.cmd
