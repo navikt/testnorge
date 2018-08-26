@@ -1,4 +1,5 @@
 name: dolly
+team: registre
 image: "docker.adeo.no:5000/registre/dolly"
 replicas:
   min: 1
@@ -21,8 +22,8 @@ resources:
     cpu: 0.5
     memory: 1024Mi
   limits:
-    cpu: 1
-    memory: 1536Mi
+    cpu: 1.5
+    memory: 2054Mi
 fasitResources:
   used:
     - alias: dolly-oidc
