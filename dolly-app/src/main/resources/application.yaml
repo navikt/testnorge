@@ -45,11 +45,11 @@ freg.security.oidc:
 
 
 ### TPSF ###
-tpsf.server.url:
+tpsf.server.url: http://tps-forvalteren   # Bruker kubernetes sin egen Lastbalangsering
 
 ### SIGRUN ###
-sigrun.server.url:
+sigrun.server.url: http://localhost:8040
 
 ### CORS ###
-dolly.security.cors.origins:
+dolly.security.cors.origins: http://localhost:3050,http://localhost:3000
 
