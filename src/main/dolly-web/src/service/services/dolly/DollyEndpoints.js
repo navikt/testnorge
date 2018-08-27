@@ -1,7 +1,7 @@
 import kodeverk from '~/pages/gruppeOversikt/TEMP_kodeverk'
 
 // TODO: lag config2 for denne
-const uri = 'http://localhost:8080/api/v1'
+const uri = '/api/v1'
 
 const groupBase = `${uri}/gruppe`
 const teamBase = `${uri}/team`
