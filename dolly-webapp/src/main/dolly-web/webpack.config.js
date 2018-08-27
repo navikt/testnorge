@@ -14,7 +14,7 @@ const devMode = process.env.NODE_ENV !== 'production'
 
 const outputDir = {
 	development: 'dist/dev',
-    production: './../resources/public'
+	production: './../resources/public'
 	// production: 'dist/production'
 }
 
@@ -41,6 +41,12 @@ const webpackConfig = {
 		proxy: {
 			'/api/v1': {
 				target: 'http://localhost:8080'
+			},
+			'/tpsf': {
+				target: 'https://tps-forvalteren-u2.nais.preprod.local',
+				pathRewrite: { '^/tpsf': '' },
+				secure: false,
+				changeOrigin: true
 			}
 		}
 	},
