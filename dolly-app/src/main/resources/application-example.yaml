@@ -9,7 +9,7 @@ spring:
     driverClassName: oracle.jdbc.OracleDriver
     url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=d26dbfl023.test.local)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=DOLLYU)(INSTANCE_NAME=ccuf03)(UR=A)(SERVER=DEDICATED)))
     username: DOLLY_U
-    password:
+    password: #secret
 
 #### APP DB ####
 app.datasource.onsHosts:

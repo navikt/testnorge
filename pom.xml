@@ -35,16 +35,20 @@
 		<freg-security-oidc.version>3.0.5</freg-security-oidc.version>
 		<springfox-swagger2.version>2.4.0</springfox-swagger2.version>
 		<springfox-swagger-ui.version>2.4.0</springfox-swagger-ui.version>
+
+        <ojdbc.version>12.2.0.1</ojdbc.version>
 	</properties>
 
 	<dependencies>
 
 		<!-- Automatisk eksludert ved repackage -->
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
+		-->
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -87,6 +91,24 @@
 				<groupId>no.nav.freg</groupId>
 				<artifactId>freg-security-oidc</artifactId>
 				<version>${freg-security-oidc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.oracle</groupId>
+				<artifactId>ojdbc8</artifactId>
+				<version>${ojdbc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.oracle</groupId>
+				<artifactId>ucp</artifactId>
+				<version>${ojdbc.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.oracle</groupId>
+				<artifactId>ons</artifactId>
+				<version>${ojdbc.version}</version>
 			</dependency>
 
 		</dependencies>

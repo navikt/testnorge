@@ -35,6 +35,6 @@ public class Bruker {
     @ManyToMany
     @JoinTable(name = "T_BRUKER_FAVORITTER",
             joinColumns = @JoinColumn(name = "bruker_id"),
-            inverseJoinColumns = @JoinColumn(name = "testgruppe_id"))
+            inverseJoinColumns = @JoinColumn(name = "gruppe_id"))
     private Set<Testgruppe> favoritter = new HashSet<>();
 }

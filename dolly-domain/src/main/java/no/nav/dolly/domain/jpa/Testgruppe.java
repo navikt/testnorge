@@ -24,7 +24,7 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 @Entity
 @Getter
 @Setter
-@Table(name = "T_TESTGRUPPE")
+@Table(name = "T_GRUPPE")
 public class Testgruppe {
 	
 	@Id
