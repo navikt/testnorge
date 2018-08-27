@@ -121,7 +121,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <finalName>dolly-app</finalName>
+                            <finalName>app</finalName>
                             <classifier>exec</classifier>
                         </configuration>
                     </execution>
