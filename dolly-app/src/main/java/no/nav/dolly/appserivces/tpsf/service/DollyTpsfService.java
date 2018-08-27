@@ -54,7 +54,7 @@ public class DollyTpsfService {
 
         klareIdenter.forEach(ident -> {
             BestillingProgress progress = new BestillingProgress();
-            progress.setBestillingsId(bestillingsId);
+            progress.setBestillingId(bestillingsId);
             progress.setIdent(ident);
 
             RsSkdMeldingResponse response;
@@ -69,7 +69,9 @@ public class DollyTpsfService {
             }
 
             String env = extractSuccessEnvTPS(response.getSendSkdMeldingTilTpsResponsene().get(0));
-            progress.setTpsfSuccessEnv(env.substring(0, env.length() - 1));
+            if(env.length() > 0){
+                progress.setTpsfSuccessEnv(env.substring(0, env.length() - 1));
+            }
 
             BestillingProgress currentProgress = bestillingProgressRepository.save(progress);
 

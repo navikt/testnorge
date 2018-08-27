@@ -7,5 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface BestillingProgressRepository extends CrudRepository<BestillingProgress, Long> {
 
-    List<BestillingProgress> findBestillingProgressByBestillingsId(Long bestillingsId);
+    List<BestillingProgress> findBestillingProgressByBestillingId(Long bestillingId);
 }

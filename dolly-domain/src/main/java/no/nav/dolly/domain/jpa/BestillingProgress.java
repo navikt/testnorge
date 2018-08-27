@@ -3,6 +3,7 @@ package no.nav.dolly.domain.jpa;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -27,14 +28,17 @@ public class BestillingProgress {
     })
     private Long id;
 
-    private Long bestillingsId;
+    private Long bestillingId;
 
     private String ident;
 
+    @Column(name = "TPSF_SUCCESS_ENVIRONMENTS")
     private String tpsfSuccessEnv;
 
+    @Column(name = "SIGRUN_SUCCESS_ENVIRONMENTS")
     private String sigrunSuccessEnv;
 
+    @Column(name = "AAREG_SUCCESS_ENVIRONMENTS")
     private String aaregSuccessEnv;
 
     private String feil;

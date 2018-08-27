@@ -17,16 +17,16 @@ public class BestillingProgressService {
     private BestillingProgressRepository repository;
 
     public List<BestillingProgress> fetchBestillingProgressByBestillingsIdFromDB(Long bestillingsId){
-        List<BestillingProgress> progress = repository.findBestillingProgressByBestillingsId(bestillingsId);
+        List<BestillingProgress> progress = repository.findBestillingProgressByBestillingId(bestillingsId);
 
         if(isNullOrEmpty(progress)){
-            throw new NotFoundException("Kunne ikke finne bestillingsprogress med bestillingsId=" + bestillingsId + ", i tabell T_BESTILLINGS_PROGRESS");
+            throw new NotFoundException("Kunne ikke finne bestillingsprogress med bestillingId=" + bestillingsId + ", i tabell T_BESTILLINGS_PROGRESS");
         }
 
         return progress;
     }
 
     public List<BestillingProgress> fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(Long bestillingsId){
-        return repository.findBestillingProgressByBestillingsId(bestillingsId);
+        return repository.findBestillingProgressByBestillingId(bestillingsId);
     }
 }

@@ -62,7 +62,7 @@ ENDPOINT    URL                                 Aksjon                          
     attributter: {},
     personer: [<fnr>, <fnr>],
 
-    aktivBestilling: [<bestillingsId>],
+    aktivBestilling: [<bestillingId>],
 
     erMedlemAvTeamSomEierGruppe: <boolean>,
     favorite: <boolean>
@@ -78,7 +78,7 @@ ENDPOINT    URL                                 Aksjon                          
     kjorerStatus: <bool>,
     antallBestilt: <number>,
     miljøerBestilt: [<miljø>],
-    bestillingsId: <bestillingsId>,
+    bestillingId: <bestillingId>,
     sistOppdatert: <date>,
     personStatus : [{
         "aaregSuccessEnv": "string",

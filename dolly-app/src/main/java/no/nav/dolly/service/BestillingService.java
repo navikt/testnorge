@@ -29,7 +29,7 @@ public class BestillingService {
             return bestilling.get();
         }
 
-        throw new NotFoundException("Fant ikke bestillingsId");
+        throw new NotFoundException("Fant ikke bestillingId");
     }
 
     public Bestilling saveBestillingToDB(Bestilling b){
