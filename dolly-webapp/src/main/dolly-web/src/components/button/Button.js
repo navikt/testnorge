@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import cn from 'classnames'
 import Icon from '~/components/icon/Icon'
 
 import './Button.less'
@@ -21,10 +22,12 @@ export default class Button extends PureComponent {
 	}
 
 	render() {
-		const { kind, children, type = 'button' } = this.props
+		const { kind, children, className, type = 'button' } = this.props
+
+		const cssClass = cn('dolly-button', className)
 
 		return (
-			<button type={type} className="dolly-button" onClick={this.onClickHandler}>
+			<button type={type} className={cssClass} onClick={this.onClickHandler}>
 				{children && children}
 				{kind && <Icon kind={kind} />}
 			</button>

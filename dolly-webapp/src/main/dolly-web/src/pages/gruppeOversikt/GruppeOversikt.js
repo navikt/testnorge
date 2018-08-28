@@ -6,6 +6,7 @@ import Input from '~/components/fields/Input/Input'
 import RedigerConnector from './Rediger/RedigerConnector'
 import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
+import AddButton from '~/components/button/AddButton'
 
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {
@@ -33,10 +34,7 @@ export default class GruppeOversikt extends PureComponent {
 		return (
 			<div className="oversikt-container">
 				<div className="page-header flexbox--space">
-					<Overskrift
-						label="Testdatagrupper"
-						actions={[{ icon: 'add-circle', onClick: startOpprettGruppe }]}
-					/>
+					<Overskrift label="Testdatagrupper" />
 					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
 
@@ -63,6 +61,8 @@ export default class GruppeOversikt extends PureComponent {
 						history={history}
 					/>
 				)}
+
+				<AddButton title="Opprett ny gruppe" onClick={startOpprettGruppe} />
 			</div>
 		)
 	}

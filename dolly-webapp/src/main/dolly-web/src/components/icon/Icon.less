@@ -26,3 +26,10 @@ svg.svg-icon {
 		}
 	}
 }
+
+// Prevent duplicate title on mouse tooltip
+button > svg,
+button > svg > path,
+button > svg > title {
+	pointer-events: none;
+}

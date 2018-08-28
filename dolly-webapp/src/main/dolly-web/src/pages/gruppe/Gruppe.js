@@ -7,6 +7,7 @@ import Table from '~/components/table/Table'
 import PersonDetaljer from './PersonDetaljer/PersonDetaljer'
 import FormatIdentNr from '~/utils/FormatIdentNr'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
+import AddButton from '~/components/button/AddButton'
 
 import './Gruppe.less'
 
@@ -31,7 +32,20 @@ export default class Gruppe extends Component {
 			<div id="gruppe-container">
 				<Overskrift
 					label={gruppe.navn}
-					actions={[{ icon: 'edit', onClick: () => {} }, { icon: 'trashcan', onClick: () => {} }]}
+					actions={[
+						{
+							icon: 'edit',
+							onClick: () => {
+								alert('ikke implementert')
+							}
+						},
+						{
+							icon: 'trashcan',
+							onClick: () => {
+								alert('ikke implementert')
+							}
+						}
+					]}
 				/>
 				<GruppeDetaljer gruppe={gruppe} />
 
@@ -39,11 +53,7 @@ export default class Gruppe extends Component {
 					<BestillingStatus key={bestilling.id} bestilling={bestilling} onGroupUpdate={getGruppe} />
 				))}
 
-				<Overskrift
-					type="h2"
-					label="Testpersoner"
-					actions={[{ icon: 'add-circle', onClick: this.startBestilling }]}
-				/>
+				<Overskrift type="h2" label="Testpersoner" />
 				{gruppe.testidenter.length <= 0 ? (
 					<ContentContainer>Det finnes ingen data i denne gruppen enda</ContentContainer>
 				) : (
@@ -77,6 +87,7 @@ export default class Gruppe extends Component {
 						)}
 					</Table>
 				)}
+				<AddButton title="Opprett ny bestilling" onClick={this.startBestilling} />
 			</div>
 		)
 	}
