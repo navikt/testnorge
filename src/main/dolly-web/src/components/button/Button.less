@@ -14,3 +14,27 @@
 		border-color: @color-lightblue;
 	}
 }
+
+.big-add-wrapper {
+	display: flex;
+	justify-content: center;
+
+	.big-add-button {
+		border: none;
+		background-color: @color-lightblue;
+		cursor: pointer;
+		padding: 5px;
+		border-radius: 50%;
+
+		svg {
+			display: block;
+			path {
+				stroke: white;
+			}
+		}
+
+		&:hover {
+			box-shadow: 1px 2px 7px #666;
+		}
+	}
+}

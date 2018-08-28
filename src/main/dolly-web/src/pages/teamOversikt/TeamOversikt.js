@@ -6,7 +6,7 @@ import Input from '~/components/fields/Input/Input'
 import RedigerTeamConnector from './RedigerTeam/RedigerTeamConnector'
 import Loading from '~/components/loading/Loading'
 import TeamListe from './TeamListe'
-import FixedButton from '~/components/fixedButton/FixedButton'
+import AddButton from '~/components/button/AddButton'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
@@ -29,7 +29,7 @@ export default class TeamOversikt extends Component {
 		return (
 			<div className="oversikt-container">
 				<div className="page-header flexbox--space">
-					<Overskrift label="Teams" actions={[{ icon: 'add-circle', onClick: startOpprettTeam }]} />
+					<Overskrift label="Teams" />
 					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
 
@@ -56,6 +56,8 @@ export default class TeamOversikt extends Component {
 						deleteTeam={deleteTeam}
 					/>
 				)}
+
+				<AddButton title="Opprett nytt team" onClick={startOpprettTeam} />
 			</div>
 		)
 	}

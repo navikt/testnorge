@@ -3,6 +3,7 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
 import Loading from '~/components/loading/Loading'
 import LeggTilBruker from './LeggTilBruker/LeggTilBruker'
+import AddButton from '~/components/button/AddButton'
 
 class Team extends Component {
 	state = {
@@ -40,11 +41,7 @@ class Team extends Component {
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} />
 
-				<Overskrift
-					label="Medlemmer"
-					type="h2"
-					actions={[{ icon: 'add-circle', onClick: this.openLeggTilBrukerHandler }]}
-				/>
+				<Overskrift label="Medlemmer" type="h2" />
 				{teamFetching ? (
 					<Loading label="laster medlemmer" panel />
 				) : (
@@ -73,6 +70,7 @@ class Team extends Component {
 								</Table.Row>
 							))}
 						</Table>
+						<AddButton title="Legg til nytt medlem" onClick={this.openLeggTilBrukerHandler} />
 					</Fragment>
 				)}
 
