@@ -1,12 +1,13 @@
 import Request from '../Request'
+import config from '~/config'
 
-// const uri = '/tpsf/api/v1/dolly/testdata/personerdata'
-const uri = 'https://tps-forvalteren-u2.nais.preprod.local/api/v1/dolly/testdata/personerdata'
+const uri = config.services.tpsf
 
 export default class TpsfService {
 	static getTestbrukere(userArray) {
 		const userString = userArray.join(',')
+		const endpoint = uri + '/dolly/testdata/personerdata'
 
-		return Request.get(`${uri}?identer=${userString}`)
+		return Request.get(`${endpoint}?identer=${userString}`)
 	}
 }
