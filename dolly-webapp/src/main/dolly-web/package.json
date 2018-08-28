@@ -9,7 +9,8 @@
 		"start-mock-api": "json-server --watch mock-api/mock-data/db.json --port 3050",
 		"build": "cross-env NODE_ENV=production webpack --config ./webpack.config.js",
 		"test": "jest --watch",
-		"test-cov": "jest --coverage"
+		"test-cov": "jest --coverage",
+		"copy-prod-build": "cpx dist/production/* ../resources/public"
 	},
 	"author": "",
 	"license": "ISC",
@@ -66,6 +67,7 @@
 		"babel-preset-env": "^1.7.0",
 		"babel-preset-react": "^6.24.1",
 		"clean-webpack-plugin": "^0.1.19",
+		"cpx": "^1.5.0",
 		"cross-env": "^5.2.0",
 		"css-loader": "^0.28.11",
 		"enzyme": "^3.3.0",

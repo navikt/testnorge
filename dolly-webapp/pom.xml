@@ -90,6 +90,23 @@
                                     <workingDirectory>${basedir}/src/main/dolly-web</workingDirectory>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>copy prod bundle to public folder</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <executable>npm${script.extension}</executable>
+                                    <arguments>
+                                        <!--OK-->
+                                        <argument>run</argument>
+                                        <argument>copy-prod-build</argument>
+                                        <!--OK end-->
+                                    </arguments>
+                                    <workingDirectory>${basedir}/src/main/dolly-web</workingDirectory>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>

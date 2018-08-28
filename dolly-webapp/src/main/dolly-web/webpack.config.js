@@ -14,14 +14,7 @@ const devMode = process.env.NODE_ENV !== 'production'
 
 const outputDir = {
 	development: 'dist/dev',
-	production: './../resources/public'
-	// production: 'dist/production'
-}
-
-const statsOutputSettings = {
-	colors: true,
-	chunks: false,
-	modules: false
+	production: 'dist/production'
 }
 
 const webpackConfig = {
@@ -33,9 +26,9 @@ const webpackConfig = {
 		publicPath: '/',
 		path: path.join(__dirname, 'dist')
 	},
-	stats: statsOutputSettings,
+	stats: 'minimal',
 	devServer: {
-		stats: statsOutputSettings,
+		stats: 'minimal',
 		contentBase: path.join(__dirname, 'public'),
 		historyApiFallback: true,
 		proxy: {
@@ -128,7 +121,9 @@ if (TARGET === 'build') {
 		filename: 'bundle.[contenthash:8].js',
 		publicPath: '/'
 	}
-	webpackConfig.plugins = [new CleanWebpackPlugin(['dist'])].concat(webpackConfig.plugins)
+	webpackConfig.plugins = [new CleanWebpackPlugin([outputDir.production])].concat(
+		webpackConfig.plugins
+	)
 }
 
 module.exports = webpackConfig
