@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom'
 import cn from 'classnames'
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc'
 import routes from '~/Routes'
+import Version from '~/components/Version/Version'
 
 import './Breadcrumb.less'
 
@@ -35,6 +36,7 @@ class Breadcrumbs extends PureComponent {
 						)
 					})}
 				</ol>
+				<Version />
 			</nav>
 		)
 	}

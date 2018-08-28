@@ -5,6 +5,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
 const pkg = require('./package.json')
+const GitRevisionPlugin = require('git-revision-webpack-plugin')
+
+const gitRevisionPlugin = new GitRevisionPlugin({
+	commithashCommand: 'rev-parse --short HEAD'
+})
 
 // Buildtype
 const TARGET = process.env.npm_lifecycle_event
@@ -48,8 +53,12 @@ const webpackConfig = {
 	plugins: [
 		new webpack.DefinePlugin({
 			'process.env': {
-				NODE_ENV: JSON.stringify(process.env.NODE_ENV) || '"development"',
-				CLIENT_VERSION: JSON.stringify(pkg.version) || '""'
+				NODE_ENV: JSON.stringify(process.env.NODE_ENV) || '"development"'
+			},
+			BUILD: {
+				VERSION: JSON.stringify(pkg.version) || '""',
+				COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
+				BRANCH: JSON.stringify(gitRevisionPlugin.branch())
 			}
 		}),
 		new MiniCssExtractPlugin({
