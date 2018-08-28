@@ -8,8 +8,6 @@ import AppConnector from './app/AppConnector'
 
 import './styles/main.less'
 
-// import './assets/favicon.ico'
-
 const history = createHistory()
 const appReduxStore = configureStore(history)
 

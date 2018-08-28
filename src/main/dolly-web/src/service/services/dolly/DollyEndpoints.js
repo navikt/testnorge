@@ -1,7 +1,5 @@
-import kodeverk from '~/pages/gruppeOversikt/TEMP_kodeverk'
-
-// TODO: lag config2 for denne
-const uri = '/api/v1'
+import config from '~/config'
+const uri = config.services.dollyBackend
 
 const groupBase = `${uri}/gruppe`
 const teamBase = `${uri}/team`

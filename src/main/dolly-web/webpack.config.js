@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
 const pkg = require('./package.json')
 
 // Buildtype
@@ -32,12 +33,13 @@ const webpackConfig = {
 		contentBase: path.join(__dirname, 'public'),
 		historyApiFallback: true,
 		proxy: {
-			'/api/v1': {
-				target: 'http://localhost:8080'
+			'/external/dolly/api/v1': {
+				target: 'http://localhost:8080',
+				pathRewrite: { '^/external/dolly': '' }
 			},
-			'/tpsf': {
+			'/external/tpsf': {
 				target: 'https://tps-forvalteren-u2.nais.preprod.local',
-				pathRewrite: { '^/tpsf': '' },
+				pathRewrite: { '^/external/tpsf': '' },
 				secure: false,
 				changeOrigin: true
 			}
@@ -121,9 +123,13 @@ if (TARGET === 'build') {
 		filename: 'bundle.[contenthash:8].js',
 		publicPath: '/'
 	}
-	webpackConfig.plugins = [new CleanWebpackPlugin([outputDir.production])].concat(
-		webpackConfig.plugins
-	)
+	webpackConfig.plugins = [
+		new CleanWebpackPlugin([outputDir.production]),
+		new Dotenv({
+			path: path.resolve(__dirname, '.env.prod'),
+			systemvars: true
+		})
+	].concat(webpackConfig.plugins)
 }
 
 module.exports = webpackConfig
