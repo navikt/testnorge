@@ -55,7 +55,10 @@ export default class Gruppe extends Component {
 
 				<Overskrift type="h2" label="Testpersoner" />
 				{gruppe.testidenter.length <= 0 ? (
-					<ContentContainer>Det finnes ingen data i denne gruppen enda</ContentContainer>
+					<ContentContainer>
+						Det finnes ingen data i denne gruppen enda. Trykk på + knappen under for å starte en
+						bestilling.
+					</ContentContainer>
 				) : (
 					<Table>
 						<Table.Header>
