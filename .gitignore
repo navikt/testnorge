@@ -151,4 +151,5 @@ crashlytics-build.properties
 start-dolly-maven.cmd
 start-dolly.cmd
 clean-install-run-app.sh
+clean-install-lite-run-app.sh
 run-app.sh

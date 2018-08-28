@@ -1,14 +1,13 @@
 import axios from 'axios'
+import config from '~/config'
 
 const instance = axios.create({ withCredentials: true })
 
 const debugLoading = resolvedValue => {
-	// TODO: Create debug flag? process.env.DEBUG ?
-	const debug = true
 	const DELAY_TIME = 300
 
 	return new Promise(resolve => {
-		if (debug) {
+		if (config.debug) {
 			setTimeout(() => resolve(resolvedValue), DELAY_TIME)
 		} else {
 			resolve(resolvedValue)
