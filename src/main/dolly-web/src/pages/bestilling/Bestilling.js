@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import ProgressIndicator from '~/components/progressIndicator/ProgressIndicator'
+import Stegindikator from 'nav-frontend-stegindikator'
 import Steg1 from './Steps/Step1'
 import Steg2 from './Steps/Step2'
 import Steg3 from './Steps/Step3'
@@ -27,9 +27,15 @@ export default class Bestilling extends PureComponent {
 
 		return (
 			<div className="bestilling-page">
-				<ProgressIndicator
-					activeStep={page}
-					steps={['Velg egenskaper', 'Velg verdier', 'Oppsummering']}
+				<Stegindikator
+					aktivtSteg={page}
+					steg={[
+						{ label: 'Velg egenskaper' },
+						{ label: 'Velg verdier' },
+						{ label: 'Oppsummering' }
+					]}
+					visLabel={true}
+					kompakt={true}
 				/>
 
 				{isPage.first(page) && (
