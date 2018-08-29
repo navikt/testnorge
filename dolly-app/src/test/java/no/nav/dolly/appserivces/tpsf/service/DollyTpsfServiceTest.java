@@ -47,6 +47,7 @@ public class DollyTpsfServiceTest {
     @Test
     public void bestillingBlirSattFerdigNaarExceptionKastes() throws Exception {
 
+        String s;
 //        when(tpsfApiService.opprettPersonerTpsf(any())).thenReturn(new ArrayList<>());
 //        when(tpsfApiService.sendTilTpsFraTPSF(any(), any())).thenThrow(Exception.class);
     }
