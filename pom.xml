@@ -90,7 +90,7 @@
                                     <workingDirectory>${basedir}/src/main/dolly-web</workingDirectory>
                                 </configuration>
                             </execution>
-                            <!-- <execution>
+                            <execution>
                                 <id>copy prod bundle to public folder</id>
                                 <goals>
                                     <goal>exec</goal>
@@ -104,7 +104,7 @@
                                     </arguments>
                                     <workingDirectory>${basedir}/src/main/dolly-web</workingDirectory>
                                 </configuration>
-                            </execution> -->
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
