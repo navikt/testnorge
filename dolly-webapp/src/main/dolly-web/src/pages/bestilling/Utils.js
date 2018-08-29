@@ -1,9 +1,9 @@
 import { DollyApi } from '~/service/Api'
 
 export const isPage = {
-	first: page => page === 1,
-	second: page => page === 2,
-	last: page => page === 3
+	first: page => page === 0,
+	second: page => page === 1,
+	last: page => page === 2
 }
 
 export const extraComponentProps = item => {

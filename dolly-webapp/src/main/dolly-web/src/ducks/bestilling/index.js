@@ -16,7 +16,7 @@ export const types = {
 }
 
 const initialState = {
-	page: 1,
+	page: 0,
 	fetching: false,
 	attributeIds: [],
 	environments: [],
