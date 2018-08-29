@@ -80,7 +80,8 @@ public class TestgruppeController {
     }
 
     @GetMapping
-    public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgrupper(@RequestParam(name = "navIdent", required = false) String navIdent,
+    public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgrupper(
+            @RequestParam(name = "navIdent", required = false) String navIdent,
             @RequestParam(name = "teamId", required = false) Long teamId) {
         Set<RsTestgruppe> grupper;
         if (!isNullOrEmpty(navIdent)) {
@@ -101,9 +102,9 @@ public class TestgruppeController {
     }
 
     @PostMapping("/{gruppeId}/bestilling")
-    public RsBestilling opprettGruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
+    public RsBestilling oppretteIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
         Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, request.getAntall(), request.getEnvironments());
-        dollyTpsfService.opprettPersonerByKriterier(gruppeId, request, bestilling.getId());
+        dollyTpsfService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling.getId());
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 }

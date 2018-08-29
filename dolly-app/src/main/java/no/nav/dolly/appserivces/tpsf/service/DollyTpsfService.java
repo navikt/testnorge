@@ -46,15 +46,27 @@ public class DollyTpsfService {
     BestillingService bestillingService;
 
     @Async
-    public void opprettPersonerByKriterier(Long gruppeId, RsDollyBestillingsRequest request, Long bestillingsId){
+    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest request, Long bestillingsId){
         List<String> klareIdenter = tpsfApiService.opprettPersonerTpsf(request);
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
         Bestilling bestilling = bestillingService.fetchBestillingById(bestillingsId);
 
+        try {
+            createIdenterIRegistrene(request, bestilling, klareIdenter, testgruppe);
+        } catch (Exception e){
+            // LOG Exception eller set i bestilling som error. Er Async, så skal ikke håndtere error.
+        } finally {
+            bestilling.setSistOppdatert(LocalDateTime.now());
+            bestilling.setFerdig(true);
+            bestillingService.saveBestillingToDB(bestilling);
+        }
+    }
+
+    private void createIdenterIRegistrene(RsDollyBestillingsRequest request, Bestilling bestilling, List<String> klareIdenter, Testgruppe testgruppe){
         klareIdenter.forEach(ident -> {
             BestillingProgress progress = new BestillingProgress();
-            progress.setBestillingId(bestillingsId);
+            progress.setBestillingId(bestilling.getId());
             progress.setIdent(ident);
 
             RsSkdMeldingResponse response;
@@ -98,9 +110,6 @@ public class DollyTpsfService {
             }
         });
 
-        bestilling.setSistOppdatert(LocalDateTime.now());
-        bestilling.setFerdig(true);
-        bestillingService.saveBestillingToDB(bestilling);
     }
 
     private String extractSuccessEnvTPS(SendSkdMeldingTilTpsResponse response){
