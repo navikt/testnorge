@@ -1,4 +1,4 @@
-package no.nav.identpool.navnepoll.provider;
+package no.nav.identpool.navnepool.provider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.identpool.navnepoll.NavnepollService;
-import no.nav.identpool.navnepoll.domain.Navn;
+import no.nav.identpool.navnepool.NavnepoolService;
+import no.nav.identpool.navnepool.domain.Navn;
 
 @RestController
 @RequestMapping("/navnepoll")

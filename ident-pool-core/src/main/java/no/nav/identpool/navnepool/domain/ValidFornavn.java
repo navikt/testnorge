@@ -1,4 +1,4 @@
-package no.nav.identpool.navnepoll.domain;
+package no.nav.identpool.navnepool.domain;
 
 import java.util.Arrays;
 import java.util.List;
