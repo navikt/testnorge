@@ -1,5 +1,9 @@
+# H2 console at http://localhost:8080/h2-console
+server.port: 8080
+
 APP_NAME: dolly
 FASIT_ENVIRONMENT_NAME: localhost
+APP_VERSION: ${application.version}
 
 spring:
   datasource:
@@ -17,18 +21,19 @@ spring:
       enabled: true
       path: /h2
 
+### ABAC ###
 no.nav.abac:
     url: https://wasapp-t4.adeo.no/asm-pdp/authorize
     systemuser:
-      username: #secret
-      password: #secret
+      username: srvnorg2_u
+      password: #
 
 #### NEW FREG-SECURITY #####
 freg.security.oidc:
   idp:
     openAm:
       clientId: dolly-localhost
-      clientSecret: #secret
+      clientSecret: test-secret
       hostUrl: https://isso-t.adeo.no:443/isso
       issuerUrl: https://isso-t.adeo.no:443/isso/oauth2
       loginUrl: https://isso-t.adeo.no/isso/oauth2/authorize
@@ -45,4 +50,11 @@ freg.security.oidc:
           type: refreshing
 
 
-#dolly.security.cors.origins: tillatte domener.
+### TPSF ###
+tpsf.server.url: https://tps-forvalteren-u2.nais.preprod.local
+
+### SIGRUN ###
+sigrun.server.url: http://localhost:8040
+
+### CORS ###
+dolly.security.cors.origins: http://localhost:3050,http://localhost:3000
