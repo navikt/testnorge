@@ -81,9 +81,6 @@ public class DollyTpsfService {
             }
 
             String env = extractSuccessEnvTPS(response.getSendSkdMeldingTilTpsResponsene().get(0));
-            if(env.length() > 0){
-                progress.setTpsfSuccessEnv(env.substring(0, env.length() - 1));
-            }
 
             BestillingProgress currentProgress = bestillingProgressRepository.save(progress);
 
@@ -120,6 +117,10 @@ public class DollyTpsfService {
             if(entry.getValue().contains("00")){
                 env += entry.getKey() + ",";
             }
+        }
+
+        if(env.length() > 0){
+            env = env.substring(0, env.length() - 1);
         }
 
         return env;

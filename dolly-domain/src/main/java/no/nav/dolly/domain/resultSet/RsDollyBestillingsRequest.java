@@ -16,7 +16,12 @@ public class RsDollyBestillingsRequest {
     private LocalDate foedtEtter;
     private LocalDate foedtFoer;
     private int antall;
+
     private boolean withAdresse;
+
+    private RsAdresse boadresse;
+
+    private List<RsPostadresse> postadresse;
 
     private Character kjonn;
 
