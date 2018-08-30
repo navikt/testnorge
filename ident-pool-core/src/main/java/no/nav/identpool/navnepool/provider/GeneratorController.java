@@ -10,10 +10,10 @@ import no.nav.identpool.navnepool.NavnepoolService;
 import no.nav.identpool.navnepool.domain.Navn;
 
 @RestController
-@RequestMapping("/navnepoll")
+@RequestMapping("/navnepool")
 public class GeneratorController {
     @Autowired
-    private NavnepollService service;
+    private NavnepoolService service;
 
     @GetMapping("/generer")
     public ResponseEntity<Navn> get() {

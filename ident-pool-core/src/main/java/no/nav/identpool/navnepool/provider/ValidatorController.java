@@ -11,10 +11,10 @@ import no.nav.identpool.navnepool.NavnepoolService;
 import no.nav.identpool.navnepool.domain.Navn;
 
 @RestController
-@RequestMapping("/navnepoll")
+@RequestMapping("/navnepool")
 public class ValidatorController {
     @Autowired
-    private NavnepollService service;
+    private NavnepoolService service;
 
     @PostMapping("/valider")
     public ResponseEntity<Boolean> validate(@RequestBody Navn navn) {
