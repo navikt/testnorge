@@ -148,3 +148,5 @@ start-dolly.cmd
 clean-install-run-app.sh
 clean-install-lite-run-app.sh
 run-app.sh
+/dolly-app/src/test/resources/application-h2.yaml
+/dolly-app/src/main/resources/application-h2.yaml
