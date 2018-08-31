@@ -172,7 +172,9 @@ public class TestgruppeServiceTest {
                 .build()
                 .convertToRealBruker();
 
-        RsTestgruppeMedErMedlemOgFavoritt r = RsTestgruppeMedErMedlemOgFavoritt.builder().id(1l).team(rsT).build();
+        RsTestgruppeMedErMedlemOgFavoritt r =  new RsTestgruppeMedErMedlemOgFavoritt();
+        r.setId(1l);
+        r.setTeam(rsT);
 
         HashSet gr = new HashSet(Arrays.asList(r));
         HashSet grupper = new HashSet(Arrays.asList(g4));

@@ -81,7 +81,7 @@ public class TeamService {
         Team team = fetchTeamById(teamId);
         List<Bruker> brukere = brukerRepository.findByNavIdentIn(navIdenter);
 
-        team.getMedlemmer().addAll(brukere);
+        team.getMedlemmer().addAll(mapperFacade.mapAsList(brukere, Bruker.class));
 
         Team changedTeam = saveToTeamRepository(team);
         return mapperFacade.map(changedTeam, RsTeam.class);

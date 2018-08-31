@@ -14,7 +14,6 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Builder
 public class RsTestgruppeMedErMedlemOgFavoritt {
 	private Long id;
 	private String navn;
