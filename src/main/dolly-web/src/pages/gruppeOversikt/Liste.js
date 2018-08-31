@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Table from '~/components/table/Table'
+import ContentContainer from '~/components/contentContainer/ContentContainer'
 import RedigerConnector from './Rediger/RedigerConnector'
 
 export default class Liste extends PureComponent {
@@ -14,7 +15,13 @@ export default class Liste extends PureComponent {
 	render() {
 		const { items, editId, startRedigerGruppe, history } = this.props
 
-		if (!items) return false
+		if (!items) {
+			return (
+				<ContentContainer>
+					Det finnes ingen grupper. Trykk på + knappen under for å opprette en gruppe.
+				</ContentContainer>
+			)
+		}
 
 		return (
 			<Table>
