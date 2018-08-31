@@ -2,6 +2,7 @@ package no.nav.dolly.domain.resultSet;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@Builder
 public class RsTestgruppeMedErMedlemOgFavoritt {
 	private Long id;
 	private String navn;
