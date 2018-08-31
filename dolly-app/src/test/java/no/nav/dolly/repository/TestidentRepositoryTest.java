@@ -43,11 +43,6 @@ public class TestidentRepositoryTest {
     IdentRepository identRepository;
 
     @Test
-    public void tempTomTest(){
-
-    }
-
-    @Test
     public void saveTestidentTilGruppe() {
         Testident testident = TestidentBuilder.builder().ident("12345").build().convertToRealTestident();
         Bruker bruker = brukerRepository.save(BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker());

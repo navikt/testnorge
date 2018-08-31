@@ -29,11 +29,6 @@ public class BestillingProgressServiceTest {
     @InjectMocks
     private BestillingProgressService progressService;
 
-    @Test
-    public void happyPath(){
-
-    }
-
     @Test(expected = NotFoundException.class)
     public void bestillingProgressKasterExceptionHvisManIkkeFinnerProgress() throws Exception{
         when(mockRepo.findBestillingProgressByBestillingId(any())).thenReturn(null);

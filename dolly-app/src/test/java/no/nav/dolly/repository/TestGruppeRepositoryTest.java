@@ -39,11 +39,6 @@ public class TestGruppeRepositoryTest {
     IdentRepository identRepository;
 
     @Test
-    public void tempTomTest(){
-
-    }
-
-    @Test
     public void saveTestgruppeUtenIdenterOgUtenFavorisertAv() {
         Bruker bruker = brukerRepository.save(BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker());
 

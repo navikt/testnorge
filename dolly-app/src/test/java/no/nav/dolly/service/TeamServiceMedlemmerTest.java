@@ -1,54 +1,53 @@
 package no.nav.dolly.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultSet.RsBruker;
+import no.nav.dolly.domain.resultSet.RsOpprettTeam;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
+import no.nav.dolly.testdata.builder.BrukerBuilder;
+import no.nav.dolly.testdata.builder.RsBrukerBuilder;
+import no.nav.dolly.testdata.builder.TeamBuilder;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultSet.RsBruker;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.TeamRepository;
-import no.nav.dolly.testdata.builder.RsBrukerBuilder;
-import no.nav.dolly.testdata.builder.TeamBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceMedlemmerTest {
-    private String medlem1 = "medlem1";
-    private String medlem2 = "medlem2";
-    private RsBruker medlem1bruker = RsBrukerBuilder.builder().navIdent(medlem1).build().convertToRealRsBruker();
-    private RsBruker medlem2bruker = RsBrukerBuilder.builder().navIdent(medlem2).build().convertToRealRsBruker();
-    private List<String> navidenter = Arrays.asList(medlem1, medlem2);
+    private String navident1 = "nav1";
+    private String navident2 = "nav2";
+    private RsBruker medlem1bruker = RsBrukerBuilder.builder().navIdent(navident1).build().convertToRealRsBruker();
+    private RsBruker medlem2bruker = RsBrukerBuilder.builder().navIdent(navident2).build().convertToRealRsBruker();
+    private List<String> navidenter = Arrays.asList(navident1, navident2);
 
     @Mock
     TeamRepository teamRepository;
 
     @Mock
     BrukerRepository brukerRepository;
+
+    @Mock
+    BrukerService brukerService;
 
     @Mock
     MapperFacade mapperFacade;
@@ -58,11 +57,39 @@ public class TeamServiceMedlemmerTest {
 
     @Before
     public void setupMocks() {
-        //        when(brukerRepository.findBrukerByNavIdent("medlem1")).thenReturn(medlem1bruker);
-        //        when(brukerRepository.findBrukerByNavIdent("medlem2")).thenReturn(null);
-        //        when(brukerRepository.save(medlem2bruker)).thenReturn(medlem2bruker);
-        //
-        //        when(teamRepository.findTeamById(any())).thenReturn(team);
+        SecurityContextHolder.getContext().setAuthentication(new OidcTokenAuthentication("bruker",null, null, null));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void fetchTeamById_kasterExceptionHvisTeamIkkeFunnet(){
+        when(teamRepository.findTeamById(any())).thenReturn(null);
+        teamService.fetchTeamById(1l);
+    }
+
+    @Test
+    public void fetchTeamById_girTeamHvisTeamFinnesIDB(){
+        when(teamRepository.findTeamById(any())).thenReturn(new Team());
+        Team t = teamService.fetchTeamById(1l);
+        assertThat(t, is(notNullValue()));
+    }
+
+    @Test
+    public void opprettTeam_oppretterTeamBasertPaaArgumentInputOgLeggerTilBrukerSomEierOgMedlem() {
+        RsOpprettTeam rt = new RsOpprettTeam();
+
+        Team t = TeamBuilder.builder().navn("t").medlemmer(new HashSet<>()).build().convertToRealTeam();
+        Bruker b1 = BrukerBuilder.builder().navIdent("nav1").build().convertToRealBruker();
+
+        when(mapperFacade.map(rt, Team.class)).thenReturn(t);
+        when(brukerService.fetchBruker(any())).thenReturn(b1);
+
+        teamService.opprettTeam(rt);
+
+        Team savedTeam = captureTheTeamSavedToRepo();
+
+        assertThat(savedTeam.getEier(), is(b1));
+        assertThat(savedTeam.getMedlemmer().contains(b1), is(true));
+        assertThat(savedTeam.getDatoOpprettet(), is(notNullValue()));
     }
 
     @Test
@@ -80,6 +107,7 @@ public class TeamServiceMedlemmerTest {
 
         when(teamRepository.findTeamById(any())).thenReturn(t);
         when(mapperFacade.mapAsList(inputBrukere, Bruker.class)).thenReturn(Arrays.asList(b1, b2));
+
         teamService.addMedlemmer(1l, inputBrukere);
 
         Team savedTeam = captureTheTeamSavedToRepo();
@@ -110,14 +138,25 @@ public class TeamServiceMedlemmerTest {
     public void fjernMedlemmer_fjernerMedlemHvisMedlemHarSammeNavidentSominput() {
         Bruker b1 = new Bruker();
         Bruker b2 = new Bruker();
-        b1.setNavIdent("nav1");
-        b2.setNavIdent("nav2");
+        b1.setNavIdent(navident1);
+        b2.setNavIdent(navident2);
 
-//        team.setMedlemmer(createBrukere());
-//        assertTrue("Is saved Team empty?", !team.getMedlemmer().isEmpty());
-//        teamService.fjernMedlemmer(team.getId(), navidenter);
-//        Team savedTeam = captureTheTeamSavedToRepo();
-//        assertTrue("Is saved Team empty?", savedTeam.getMedlemmer() == null || savedTeam.getMedlemmer().isEmpty());
+        Team t = TeamBuilder.builder().navn("t").medlemmer(new HashSet<>(Arrays.asList(b1, b2))).build().convertToRealTeam();
+
+        when(teamRepository.findTeamById(any())).thenReturn(t);
+        teamService.fjernMedlemmer(1l, Arrays.asList(navident1));
+
+        Team savedTeam = captureTheTeamSavedToRepo();
+
+        assertThat(savedTeam.getMedlemmer().size(), is(1));
+        assertThat(savedTeam.getMedlemmer().contains(b2), is(true));
+    }
+
+    @Test
+    public void deleteTeam_KallerRepositoryDeleteTeam(){
+        Long id = 1l;
+        teamService.deleteTeam(id);
+        verify(teamRepository).deleteById(id);
     }
 
     private Team captureTheTeamSavedToRepo() {
