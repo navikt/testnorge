@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestConfig.class)
-@ActiveProfiles(value = "h2")
+@ActiveProfiles(value = "test")
 public abstract class InMememoryDbTestSetup {
 
     @Autowired

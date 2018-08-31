@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = LocalAppStarter.class)
-@ActiveProfiles(value = "h2")
+@ActiveProfiles(value = "test")
 @Transactional
 public class TeamRepositoryTest {
 
