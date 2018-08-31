@@ -19,7 +19,7 @@ public enum ValidEtternavn {
     KAKE("Kake"),
     POTET("Potet"),
     KONSOLL("Konsoll"),
-    BÆREPOSE("Bærepose"),
+    BAEREPOSE("Bærepose"),
     BLYANT("Blyant"),
     PENN("Penn"),
     BOLLE("Bolle"),

@@ -14,7 +14,7 @@ public enum ValidFornavn {
     GUL("Gul"),
     GROENN("Grønn"),
     RASK("Rask"),
-    DØLL("Døll"),
+    DOELL("Døll"),
     ARTIG("Artig"),
     STOR("Stor"),
     KRIMINELL("Kriminell"),

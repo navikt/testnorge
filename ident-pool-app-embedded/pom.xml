@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>java.no.nav.ident-pool-embedded</groupId>
-    <artifactId>ident-pool-embedded</artifactId>
+    <artifactId>ident-pool-app-embedded</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

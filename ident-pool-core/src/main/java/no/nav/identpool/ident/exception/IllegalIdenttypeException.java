@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class IllegalIdenttypeException extends Exception {
-    public IllegalIdenttypeException(String message) {
-        super(message);
+    public IllegalIdenttypeException(String message, Exception e) {
+        super(message, e);
+
     }
 }

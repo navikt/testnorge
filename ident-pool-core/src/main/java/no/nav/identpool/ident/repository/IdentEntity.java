@@ -2,6 +2,8 @@ package no.nav.identpool.ident.repository;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,12 +22,14 @@ import no.nav.identpool.ident.domain.Rekvireringsstatus;
 @Table(name = "PERSONIDENTIFIKATOR")
 public class IdentEntity {
     @Id
+    @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personidentifikator_seq")
     @SequenceGenerator(name = "personidentifikator_seq", sequenceName = "PERSONIDENTIFIKATOR_SEQ", allocationSize = 1)
     private Long identity;
 
     @NotNull
     @Column(name = "IDENTTYPE")
+    @Enumerated(EnumType.STRING)
     private Identtype identtype;
 
     @NotNull
@@ -33,10 +37,21 @@ public class IdentEntity {
     private String personidentifikator;
 
     @NotNull
-    @Column(name = "Rekvireringsstatus")
+    @Column(name = "REKVIRERINGSSTATUS")
+    @Enumerated(EnumType.STRING)
     private Rekvireringsstatus rekvireringsstatus;
 
     @NotNull
     @Column(name = "FINNES_HOS_SKATT")
     private String finnesHosSkatt;
+
+    @Enumerated(EnumType.STRING)
+    public Identtype getIdenttype() {
+        return this.identtype;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public Rekvireringsstatus getRekvireringsstatus() {
+        return this.rekvireringsstatus;
+    }
 }

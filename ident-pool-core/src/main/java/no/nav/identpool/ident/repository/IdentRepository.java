@@ -1,11 +1,16 @@
 package no.nav.identpool.ident.repository;
 
 import java.util.List;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IdentRepository extends CrudRepository<IdentEntity, Long> {
+import no.nav.identpool.ident.domain.Identtype;
+import no.nav.identpool.ident.domain.Rekvireringsstatus;
+
+public interface IdentRepository extends JpaRepository<IdentEntity, Long> {
     IdentEntity findTopByPersonidentifikator(String personidentifkator);
 
-    List<IdentEntity> findAllByRekvireringsstatus(String rekvireringsstatus);
-    List<IdentEntity> findAllByRekvireringsstatusAndIdenttype(String rekvireringsstatus, String identtype);
+    List<IdentEntity> findByRekvireringsstatus(Rekvireringsstatus rekvireringsstatus, Pageable pageable);
+
+    List<IdentEntity> findByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype, Pageable pageable);
 }
