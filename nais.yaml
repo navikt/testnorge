@@ -26,3 +26,12 @@ resources:
   limits:
     cpu: 500m
     memory: 512Mi
+fasitResources:
+  used:
+  - alias: "ident-poolDB"
+    resourceType: datasource
+    propertyMap:
+      url: spring.datasource.url
+      username: spring.datasource.username
+      password: spring.datasource.password
+

@@ -18,6 +18,7 @@
     <modules>
         <module>ident-pool-core</module>
         <module>ident-pool-app</module>
+        <module>ident-pool-embedded</module>
     </modules>
 
     <properties>
