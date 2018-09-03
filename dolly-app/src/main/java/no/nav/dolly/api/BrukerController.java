@@ -25,9 +25,6 @@ public class BrukerController {
 	private BrukerService brukerService;
 
 	@Autowired
-	private TeamService teamService;
-
-	@Autowired
 	private MapperFacade mapperFacade;
 
 	@GetMapping("/{navIdent}")
