@@ -37,7 +37,7 @@
 		<springfox-swagger-ui.version>2.4.0</springfox-swagger-ui.version>
 
         <ojdbc.version>12.2.0.1</ojdbc.version>
-		<sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/main/dolly-web/**</sonar.exclusions>
+		<sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**, **/dolly/testdata/builder/**</sonar.exclusions>
 	</properties>
 
 	<dependencies>

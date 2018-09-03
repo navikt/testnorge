@@ -1,4 +1,4 @@
-package no.nav.dolly.kodeverk;
+package no.nav.dolly.domain.kodeverk;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
