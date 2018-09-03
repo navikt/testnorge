@@ -10,8 +10,8 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.domain.resultSet.RsBruker;
-import no.nav.dolly.domain.resultSet.RsTestgruppe;
+import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsTestgruppe;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

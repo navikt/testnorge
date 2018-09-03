@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultSet;
+package no.nav.dolly.domain.resultset;
 
 public class RsKode {
     private Long id;

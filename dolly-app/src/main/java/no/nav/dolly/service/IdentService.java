@@ -2,7 +2,7 @@ package no.nav.dolly.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.domain.resultSet.RsTestident;
+import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.repository.IdentRepository;
 import org.springframework.beans.factory.annotation.Autowired;

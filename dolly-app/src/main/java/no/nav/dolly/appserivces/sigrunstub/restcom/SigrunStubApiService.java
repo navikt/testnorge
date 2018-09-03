@@ -1,8 +1,8 @@
 package no.nav.dolly.appserivces.sigrunstub.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.dolly.domain.resultSet.RsGrunnlagResponse;
-import no.nav.dolly.domain.resultSet.RsSigrunnOpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
+import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.appserivces.tpsf.errorHandling.RestTemplateException;
 import no.nav.dolly.exceptions.SigrunnStubException;
 

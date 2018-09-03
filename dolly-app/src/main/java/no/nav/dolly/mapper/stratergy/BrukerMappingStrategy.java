@@ -5,8 +5,8 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.dolly.domain.resultSet.RsBrukerTeamAndGruppeIDs;
-import no.nav.dolly.domain.resultSet.RsTeamMedIdOgNavn;
+import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
+import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
 
 import java.util.List;
 import java.util.stream.Collectors;

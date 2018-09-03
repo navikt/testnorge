@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultSet;
+package no.nav.dolly.domain.resultset;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Setter
 @Getter
-public class RsTeam {
+public class RsTeamMedMedlemmerUtenGrupper {
 	private Long id;
 	private String navn;
 	private String beskrivelse;
@@ -20,7 +20,6 @@ public class RsTeam {
 	private LocalDate datoOpprettet;
 
 	private String eierNavIdent;
-	private Set<RsTestgruppe> grupper = new HashSet<>();
 	private Set<RsBruker> medlemmer = new HashSet<>();
 
 }

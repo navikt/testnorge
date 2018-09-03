@@ -3,7 +3,7 @@ package no.nav.dolly.mapper.stratergy;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultSet.RsTeam;
+import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;

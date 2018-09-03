@@ -3,10 +3,9 @@ package no.nav.dolly.api;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultSet.RsBruker;
-import no.nav.dolly.domain.resultSet.RsBrukerTeamAndGruppeIDs;
+import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
 import no.nav.dolly.service.BrukerService;
-import no.nav.dolly.service.TeamService;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
