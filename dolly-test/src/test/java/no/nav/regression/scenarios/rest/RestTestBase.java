@@ -91,10 +91,8 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     }
 
     private OidcTokenAuthentication createTestOidcToken(){
-        //TODO Fix sett skikkelig token
         OidcTokenAuthentication token = new OidcTokenAuthentication(standardPrincipal,null, null, null);
         return token;
-//        return new OidcTokenAuthentication(standardBruker.getNavIdent(), "test", "idtoken", "refreshtoken", null, new ArrayList<>());
     }
 
     protected static String convertObjectToJson(Object object) throws IOException {

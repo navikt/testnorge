@@ -1,18 +1,21 @@
 package no.nav.dolly.service;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.exceptions.BrukerNotFoundException;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultSet.RsBruker;
 import no.nav.dolly.domain.resultSet.RsBrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultSet.RsTeam;
+import no.nav.dolly.exceptions.BrukerNotFoundException;
+import no.nav.dolly.repository.BrukerRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BrukerService {
@@ -57,6 +60,13 @@ public class BrukerService {
                 .bruker(rsBruker)
                 .teams(rsTeams)
                 .build();
+    }
+
+    @Transactional
+    public Bruker addFavoritter(String navident, Collection<Testgruppe> grupper){
+        Bruker bruker = fetchBruker(navident);
+        bruker.getFavoritter().addAll(grupper);
+        return brukerRepository.save(bruker);
     }
 
     public List<Bruker> getBrukere() {

@@ -4,6 +4,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultSet.RsTestgruppeMedErMedlemOgFavoritt;
+import no.nav.dolly.service.BrukerService;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.CoreMatchers.both;
@@ -25,6 +27,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class getTestgrupperScenarios extends TestgruppeTestCaseBase {
+
+    @Autowired
+    private BrukerService brukerService;
 
     @Test
     public void hentAlleTestgrupperTilknyttetBrukerIgjennomFavoritterOgTeammedlemskap() throws Exception {
@@ -78,8 +83,7 @@ public class getTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .build().convertToRealTestgruppe()
         );
 
-        standardBruker.getFavoritter().add(testgruppe4);
-        brukerRepository.save(standardBruker);
+        brukerService.addFavoritter(standardBruker.getNavIdent(), Arrays.asList(testgruppe4));
 
         String url = endpointUrl + "?navIdent=" + standardBruker.getNavIdent();
         MvcResult mvcResult = mvcMock.perform(get(url))
