@@ -32,6 +32,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+
 @Service
 public class TestgruppeService {
 
@@ -139,6 +141,25 @@ public class TestgruppeService {
         Testgruppe endretGruppe = saveGruppeTilDB(savedGruppe);
 
         return mapperFacade.map(endretGruppe, RsTestgruppe.class);
+    }
+
+    public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId){
+        Set<RsTestgruppe> grupper;
+        if (!isNullOrEmpty(navIdent)) {
+            grupper = fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navIdent);
+        } else {
+            grupper = mapperFacade.mapAsSet(fetchAlleTestgrupper(), RsTestgruppe.class);
+        }
+
+        if (!isNullOrEmpty(teamId)) {
+            grupper = grupper.stream().filter(gruppe -> gruppe.getTeam().getId().toString().equals(teamId.toString())).collect(Collectors.toSet());
+        }
+
+        if (!isNullOrEmpty(navIdent)) {
+            return getRsTestgruppeMedErMedlem(grupper, navIdent);
+        }
+
+        return getRsTestgruppeMedErMedlem(grupper);
     }
 
     public List<Testgruppe> fetchAlleTestgrupper() {

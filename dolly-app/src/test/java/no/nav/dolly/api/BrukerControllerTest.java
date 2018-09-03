@@ -1,0 +1,70 @@
+package no.nav.dolly.api;
+
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultSet.RsBruker;
+import no.nav.dolly.domain.resultSet.RsBrukerTeamAndGruppeIDs;
+import no.nav.dolly.service.BrukerService;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class BrukerControllerTest {
+
+    @Mock
+    private BrukerService brukerService;
+
+    @Mock
+    private MapperFacade mapperFacade;
+
+    @InjectMocks
+    private BrukerController controller;
+
+    @Test
+    public void getBrukerByNavIdent() {
+        RsBrukerTeamAndGruppeIDs bruker = new RsBrukerTeamAndGruppeIDs();
+        bruker.setNavIdent("navident");
+        Bruker b = new Bruker();
+
+        when(brukerService.fetchBruker("navident")).thenReturn(b);
+        when(mapperFacade.map(b, RsBrukerTeamAndGruppeIDs.class)).thenReturn(bruker);
+
+        RsBrukerTeamAndGruppeIDs res = controller.getBrukerByNavIdent("navident");
+
+        assertThat(res.getNavIdent() , is("navident"));
+    }
+
+    @Test
+    public void getCurrentBruker() {
+        String standardPrincipal = "test";
+        OidcTokenAuthentication token = new OidcTokenAuthentication(standardPrincipal,null, null, null);
+        SecurityContextHolder.getContext().setAuthentication(token);
+
+        Bruker b = new Bruker();
+        RsBruker rsBruker = new RsBruker();
+
+        when(brukerService.fetchOrCreateBruker(standardPrincipal)).thenReturn(b);
+        when(mapperFacade.map(b, RsBruker.class)).thenReturn(rsBruker);
+
+        assertThat(controller.getCurrentBruker(), is(rsBruker));
+
+    }
+
+    @Test
+    public void getAllBrukere() {
+        controller.getAllBrukere();
+        verify(brukerService).fetchBrukere();
+    }
+}
