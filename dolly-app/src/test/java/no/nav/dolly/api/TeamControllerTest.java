@@ -1,7 +1,7 @@
 package no.nav.dolly.api;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.resultSet.RsTeam;
+import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.service.TeamService;
 
@@ -13,8 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,7 +32,6 @@ public class TeamControllerTest {
 
     @Test
     public void getTeams() {
-
     }
 
     @Test

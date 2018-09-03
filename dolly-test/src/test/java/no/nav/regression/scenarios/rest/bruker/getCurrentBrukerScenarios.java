@@ -1,7 +1,7 @@
 package no.nav.regression.scenarios.rest.bruker;
 
 
-import no.nav.dolly.domain.resultSet.RsBruker;
+import no.nav.dolly.domain.resultset.RsBruker;
 
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;

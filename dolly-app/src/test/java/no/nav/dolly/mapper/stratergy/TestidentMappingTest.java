@@ -1,7 +1,7 @@
 package no.nav.dolly.mapper.stratergy;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.resultSet.RsTestident;
+import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;

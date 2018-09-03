@@ -5,9 +5,9 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.dolly.domain.resultSet.RsTeamMedIdOgNavn;
-import no.nav.dolly.domain.resultSet.RsTestgruppe;
-import no.nav.dolly.domain.resultSet.RsTestident;
+import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
+import no.nav.dolly.domain.resultset.RsTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestident;
 
 import org.springframework.stereotype.Component;
 

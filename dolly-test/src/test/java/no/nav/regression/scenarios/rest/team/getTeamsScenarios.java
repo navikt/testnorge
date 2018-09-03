@@ -2,7 +2,7 @@ package no.nav.regression.scenarios.rest.team;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultSet.RsTeam;
+import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 

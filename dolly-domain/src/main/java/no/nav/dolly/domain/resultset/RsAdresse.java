@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultSet;
+package no.nav.dolly.domain.resultset;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

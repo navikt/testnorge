@@ -2,8 +2,8 @@ package no.nav.dolly.api;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.repository.TeamRepository;
-import no.nav.dolly.domain.resultSet.RsOpprettTeam;
-import no.nav.dolly.domain.resultSet.RsTeam;
+import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.service.TeamService;
 
 import java.util.List;

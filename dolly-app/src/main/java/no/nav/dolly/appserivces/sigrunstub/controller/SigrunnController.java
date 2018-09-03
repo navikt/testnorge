@@ -1,7 +1,7 @@
 package no.nav.dolly.appserivces.sigrunstub.controller;
 
-import no.nav.dolly.domain.resultSet.RsGrunnlagResponse;
-import no.nav.dolly.domain.resultSet.RsSigrunnOpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
+import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.appserivces.sigrunstub.restcom.SigrunStubApiService;
 
 import java.util.List;

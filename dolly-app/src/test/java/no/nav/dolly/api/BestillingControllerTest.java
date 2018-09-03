@@ -3,8 +3,8 @@ package no.nav.dolly.api;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultSet.RsBestilling;
-import no.nav.dolly.domain.resultSet.RsBestillingProgress;
+import no.nav.dolly.domain.resultset.RsBestilling;
+import no.nav.dolly.domain.resultset.RsBestillingProgress;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 

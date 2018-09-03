@@ -1,20 +1,17 @@
-package no.nav.dolly.domain.resultSet;
+package no.nav.dolly.domain.resultset;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
-public class RsTestgruppeMedErMedlemOgFavoritt {
+public class RsTestgruppe {
 	private Long id;
 	private String navn;
 	private String hensikt;
@@ -24,13 +21,7 @@ public class RsTestgruppeMedErMedlemOgFavoritt {
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate datoEndret;
 
-	private List<RsBestilling> bestillinger = new ArrayList<>();
-
 	private RsTeamMedIdOgNavn team;
 	private Set<RsTestident> testidenter = new HashSet<>();
-
-	private boolean erMedlemAvTeamSomEierGruppe;
-	private boolean favorittIGruppen;
-
 
 }

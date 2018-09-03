@@ -3,8 +3,8 @@ package no.nav.regression.scenarios.rest.team;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultSet.RsBruker;
-import no.nav.dolly.domain.resultSet.RsTeam;
+import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.RsTeamBuilder;
 

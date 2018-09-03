@@ -9,10 +9,10 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultSet.RsDollyBestillingsRequest;
-import no.nav.dolly.domain.resultSet.RsGrunnlagResponse;
-import no.nav.dolly.domain.resultSet.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultSet.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
+import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.TestgruppeService;
 
