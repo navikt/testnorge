@@ -4,7 +4,8 @@ import { createGruppe, updateGruppe, closeRedigerOgOpprett } from '~/ducks/grupp
 
 const mapStateToProps = state => ({
 	createOrUpdateFetching: state.grupper.createOrUpdateFetching,
-	currentUserId: state.bruker.brukerData.navIdent
+	currentUserId: state.bruker.brukerData.navIdent,
+	error: state.grupper.error
 })
 
 const mapDispatchToProps = dispatch => ({
