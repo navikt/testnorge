@@ -9,8 +9,7 @@ export default class Navigation extends PureComponent {
 		isSubmitting: PropTypes.bool,
 		currentPage: PropTypes.number.isRequired,
 		abortBestilling: PropTypes.func.isRequired,
-		onClickNext: PropTypes.func.isRequired,
-		prevPage: PropTypes.func.isRequired
+		onClickNext: PropTypes.func.isRequired
 	}
 
 	static defaultProps = {
@@ -18,7 +17,7 @@ export default class Navigation extends PureComponent {
 	}
 
 	render() {
-		const { currentPage, isSubmitting, onClickNext, prevPage, abortBestilling } = this.props
+		const { currentPage, isSubmitting, onClickNext, abortBestilling, onClickPrevious } = this.props
 
 		return (
 			<div className="step-navknapper">
@@ -28,7 +27,7 @@ export default class Navigation extends PureComponent {
 
 				<div className="step-navknapper--right">
 					{!isPage.first(currentPage) && (
-						<NavButton direction="backward" type="button" onClick={prevPage} />
+						<NavButton direction="backward" type="button" onClick={onClickPrevious} />
 					)}
 
 					{!isPage.last(currentPage) && (

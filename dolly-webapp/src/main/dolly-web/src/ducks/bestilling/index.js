@@ -1,4 +1,4 @@
-import { push } from 'connected-react-router'
+import { push, LOCATION_CHANGE } from 'connected-react-router'
 import { DollyApi } from '~/service/Api'
 import _xor from 'lodash/fp/xor'
 
@@ -42,6 +42,8 @@ const initialState = {
 
 export default function bestillingReducer(state = initialState, action) {
 	switch (action.type) {
+		case LOCATION_CHANGE:
+			return initialState
 		case types.NEXT_PAGE:
 			return { ...state, page: state.page + 1 }
 		case types.PREV_PAGE:
@@ -88,6 +90,16 @@ const _bestillingRequestError = error => ({ type: types.POST_BESTILLING_ERROR, e
 export const startBestilling = (identtype, antall) => async dispatch => {
 	dispatch(startBestillingAction(identtype, antall))
 	dispatch(nextPage())
+}
+
+export const setEnvironmentsAndGoBack = environmentIds => dispatch => {
+	dispatch(setEnvironments(environmentIds))
+	dispatch(prevPage())
+}
+
+export const setValuesAndGoBack = values => dispatch => {
+	dispatch(setValuesAction(values))
+	dispatch(prevPage())
 }
 
 export const setValues = values => async dispatch => {
