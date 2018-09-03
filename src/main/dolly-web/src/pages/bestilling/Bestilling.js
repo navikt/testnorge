@@ -54,6 +54,7 @@ export default class Bestilling extends PureComponent {
 						antall={antall}
 						selectedAttributeIds={attributeIds}
 						setValues={setValues}
+						values={values}
 					/>
 				)}
 
