@@ -60,7 +60,6 @@ public class TeamController {
 
     @PutMapping("/{teamId}")
     public RsTeam endreTeaminfo(@PathVariable("teamId") Long teamId , @RequestBody RsTeam createTeamRequest) {
-        //TODO: Ta i bruk TeamId i pathVar for å update
         return teamService.updateTeamInfo(teamId, createTeamRequest);
     }
 }

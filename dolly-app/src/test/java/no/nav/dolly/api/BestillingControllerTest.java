@@ -1,6 +1,7 @@
 package no.nav.dolly.api;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultSet.RsBestilling;
 import no.nav.dolly.domain.resultSet.RsBestillingProgress;
@@ -29,6 +30,9 @@ public class BestillingControllerTest {
     @Mock
     private BestillingProgressService progressService;
 
+    @Mock
+    private BestillingService bestillingService;
+
     @InjectMocks
     private BestillingController controller;
 
@@ -42,6 +46,7 @@ public class BestillingControllerTest {
 
         when(progressService.fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(any())).thenReturn(progList);
         when(mapperFacade.mapAsList(progList, RsBestillingProgress.class)).thenReturn(rsProgList);
+        when(bestillingService.fetchBestillingById(any())).thenReturn(new Bestilling());
         when(mapperFacade.map(any(), any())).thenReturn(rsBestilling);
 
         RsBestilling res = controller.checkBestillingsstatus(1l);
@@ -49,5 +54,4 @@ public class BestillingControllerTest {
         assertThat(res, is(rsBestilling));
         assertThat(res.getPersonStatus().get(0), is(rsProg));
     }
-
 }
