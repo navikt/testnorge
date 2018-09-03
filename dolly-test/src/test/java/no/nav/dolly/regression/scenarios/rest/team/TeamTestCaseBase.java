@@ -1,6 +1,6 @@
-package no.nav.regression.scenarios.rest.team;
+package no.nav.dolly.regression.scenarios.rest.team;
 
-import no.nav.regression.scenarios.rest.RestTestBase;
+import no.nav.dolly.regression.scenarios.rest.RestTestBase;
 
 public abstract class TeamTestCaseBase extends RestTestBase {
 

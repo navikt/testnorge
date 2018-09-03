@@ -1,4 +1,4 @@
-package no.nav.regression;
+package no.nav.dolly.regression;
 
 import no.nav.dolly.ApplicationStarter;
 

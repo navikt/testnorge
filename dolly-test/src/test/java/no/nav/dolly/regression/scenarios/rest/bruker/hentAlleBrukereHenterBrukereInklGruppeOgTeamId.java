@@ -1,8 +1,9 @@
-package no.nav.regression.scenarios.rest.bruker;
+package no.nav.dolly.regression.scenarios.rest.bruker;
 
 
 import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
 
+import java.util.List;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -11,26 +12,22 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class getBrukerByNavnIdentScenarios extends BrukerTestCaseBase {
+public class hentAlleBrukereHenterBrukereInklGruppeOgTeamId extends BrukerTestCaseBase{
 
     @Test
-    public void happyPath() throws Exception {
-        MvcResult mvcResult = mvcMock.perform(get(endpointUrl + "/" + standardNavIdent))
+    public void getBruker() throws Exception {
+
+        MvcResult mvcResult = mvcMock.perform(get(endpointUrl))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        RsBrukerTeamAndGruppeIDs res = convertMvcResultToObject(mvcResult, RsBrukerTeamAndGruppeIDs.class);
+        List<RsBrukerTeamAndGruppeIDs> resultat = convertMvcResultToList(mvcResult, RsBrukerTeamAndGruppeIDs.class);
 
+        RsBrukerTeamAndGruppeIDs res = resultat.get(0);
+
+        assertThat(resultat.size(), is(1));
         assertThat(res.getNavIdent(), is(standardNavIdent));
         assertThat(res.getTeams().size(), is(1));
         assertThat(res.getTeams().get(0).getNavn(), is(standardTeamnavn));
     }
-
-    @Test
-    public void whenNoBrukerExistsExceptionNotFoundThrownAndStatusCode404() throws Exception {
-        MvcResult mvcResult = mvcMock.perform(get(endpointUrl + "/" + "finnesIkke"))
-                .andExpect(status().isNotFound())
-                .andReturn();
-    }
-
 }
