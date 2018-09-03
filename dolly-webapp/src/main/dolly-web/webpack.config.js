@@ -38,9 +38,9 @@ const webpackConfig = {
 		contentBase: path.join(__dirname, 'public'),
 		historyApiFallback: true,
 		proxy: {
-			'/external/dolly/api/v1': {
+			'/local/dolly/api/v1': {
 				target: 'http://localhost:8080',
-				pathRewrite: { '^/external/dolly': '' }
+				pathRewrite: { '^/local/dolly': '' }
 			},
 			'/external/tpsf': {
 				target: 'https://tps-forvalteren-u2.nais.preprod.local',
@@ -115,6 +115,16 @@ const webpackConfig = {
 	}
 }
 
+// If webpack dev server
+if (TARGET === 'start') {
+	webpackConfig.plugins = [
+		new Dotenv({
+			path: path.resolve(__dirname, '.env.utv'),
+			systemvars: true
+		})
+	].concat(webpackConfig.plugins)
+}
+
 // If dev build
 if (TARGET === 'build-dev') {
 	webpackConfig.output = {
@@ -122,6 +132,13 @@ if (TARGET === 'build-dev') {
 		filename: 'bundle.js',
 		publicPath: '/'
 	}
+	webpackConfig.plugins = [
+		new CleanWebpackPlugin([outputDir.development]),
+		new Dotenv({
+			path: path.resolve(__dirname, '.env.utv'),
+			systemvars: true
+		})
+	].concat(webpackConfig.plugins)
 }
 
 // If production build
