@@ -1,6 +1,6 @@
-package no.nav.regression.scenarios.rest.testgruppe;
+package no.nav.dolly.regression.scenarios.rest.testgruppe;
 
-import no.nav.regression.scenarios.rest.RestTestBase;
+import no.nav.dolly.regression.scenarios.rest.RestTestBase;
 
 public abstract class TestgruppeTestCaseBase extends RestTestBase {
 

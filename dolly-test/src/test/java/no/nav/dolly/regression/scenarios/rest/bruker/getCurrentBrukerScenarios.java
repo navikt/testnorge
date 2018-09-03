@@ -1,4 +1,4 @@
-package no.nav.regression.scenarios.rest.bruker;
+package no.nav.dolly.regression.scenarios.rest.bruker;
 
 
 import no.nav.dolly.domain.resultset.RsBruker;

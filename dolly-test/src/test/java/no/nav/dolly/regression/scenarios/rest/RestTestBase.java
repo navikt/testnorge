@@ -1,4 +1,4 @@
-package no.nav.regression.scenarios.rest;
+package no.nav.dolly.regression.scenarios.rest;
 
 import com.fasterxml.jackson.databind.JavaType;
 import no.nav.dolly.config.DollyObjectMapper;
@@ -9,7 +9,7 @@ import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
-import no.nav.regression.InMememoryDbTestSetup;
+import no.nav.dolly.regression.InMememoryDbTestSetup;
 
 import java.io.IOException;
 import java.time.LocalDate;

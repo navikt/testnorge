@@ -1,4 +1,4 @@
-package no.nav.regression.scenarios.rest.team;
+package no.nav.dolly.regression.scenarios.rest.team;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;

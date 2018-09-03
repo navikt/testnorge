@@ -1,6 +1,6 @@
-package no.nav.regression.scenarios.rest.bruker;
+package no.nav.dolly.regression.scenarios.rest.bruker;
 
-import no.nav.regression.scenarios.rest.RestTestBase;
+import no.nav.dolly.regression.scenarios.rest.RestTestBase;
 
 public abstract class BrukerTestCaseBase extends RestTestBase {
 
