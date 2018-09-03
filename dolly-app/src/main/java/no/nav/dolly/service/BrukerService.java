@@ -45,7 +45,7 @@ public class BrukerService {
     public Bruker fetchOrCreateBruker(String navIdent) {
         try{
             return fetchBruker(navIdent);
-        } catch (BrukerNotFoundException e){
+        } catch (NotFoundException e){
             return brukerRepository.save(new Bruker(navIdent));
         }
     }
