@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+
 @RestController
 @RequestMapping(value = "api/v1/team")
 public class TeamController {
@@ -26,7 +28,7 @@ public class TeamController {
 
     @GetMapping
     public List<RsTeam> getTeams(@RequestParam(name="navIdent", required = false) String navIdent){
-        if(navIdent != null && !navIdent.isEmpty()) {
+        if(!isNullOrEmpty(navIdent)) {
             return mapperFacade.mapAsList(teamService.fetchTeamsByMedlemskapInTeams(navIdent), RsTeam.class);
         }
         return mapperFacade.mapAsList(teamRepository.findAll(), RsTeam.class);

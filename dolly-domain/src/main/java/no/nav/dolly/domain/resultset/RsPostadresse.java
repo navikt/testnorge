@@ -11,8 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsPostadresse {
 
-    private Long id;
-
     private String postLinje1;
 
     private String postLinje2;
