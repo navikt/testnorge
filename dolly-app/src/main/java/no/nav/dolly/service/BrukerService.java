@@ -69,7 +69,7 @@ public class BrukerService {
         return brukerRepository.save(bruker);
     }
 
-    public List<Bruker> getBrukere() {
+    public List<Bruker> fetchBrukere() {
         return brukerRepository.findAll();
     }
 }

@@ -45,7 +45,7 @@ public class BrukerController {
 
 	@GetMapping
     public List<RsBrukerTeamAndGruppeIDs> getAllBrukere(){
-		return mapperFacade.mapAsList(brukerService.getBrukere(), RsBrukerTeamAndGruppeIDs.class);
+		return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerTeamAndGruppeIDs.class);
 	}
 
 }
