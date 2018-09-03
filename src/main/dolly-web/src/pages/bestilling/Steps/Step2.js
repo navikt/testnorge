@@ -22,6 +22,7 @@ export default class Step2 extends PureComponent {
 		this.AttributtManager = new AttributtManager()
 		this.AttributtListe = this.AttributtManager.listSelectedByGroup(props.selectedAttributeIds)
 		this.ValidationListe = this.AttributtManager.getValidations(props.selectedAttributeIds)
+		this.initialValues = this.AttributtManager.getInitialValues(props.selectedAttributeIds)
 	}
 
 	submit = values => {
@@ -67,6 +68,8 @@ export default class Step2 extends PureComponent {
 	render() {
 		const { identtype, antall, values } = this.props
 
+		const initialValues = Object.keys(values).length !== 0 ? values : this.initialValues
+
 		return (
 			<div className="bestilling-step2">
 				<div className="content-header">
@@ -79,7 +82,7 @@ export default class Step2 extends PureComponent {
 				</div>
 
 				<Formik
-					initialValues={values}
+					initialValues={initialValues}
 					onSubmit={this.submit}
 					validationSchema={this.ValidationListe}
 					render={formikProps => (
