@@ -23,14 +23,14 @@ export default class Rediger extends PureComponent {
 		}),
 		createGruppe: PropTypes.func,
 		updateGruppe: PropTypes.func,
-		closeRedigerOgOpprett: PropTypes.func
+		closeRedigerOgOpprett: PropTypes.func,
+		error: PropTypes.object
 	}
 
 	erRedigering = Boolean(getIn(this.props.gruppe, 'id', false))
 
 	onHandleSubmit = async (values, actions) => {
 		const { createGruppe, updateGruppe, gruppe } = this.props
-		// console.log('onHandleSubmit()', values, actions)
 		const res = this.erRedigering
 			? await updateGruppe(gruppe.id, values)
 			: await createGruppe(values)
@@ -47,7 +47,14 @@ export default class Rediger extends PureComponent {
 		})
 
 	render() {
-		const { closeRedigerOgOpprett, currentUserId, gruppe, createOrUpdateFetching } = this.props
+		const {
+			closeRedigerOgOpprett,
+			currentUserId,
+			gruppe,
+			createOrUpdateFetching,
+			error
+		} = this.props
+
 		if (createOrUpdateFetching) {
 			return (
 				<Table.Row>
@@ -93,6 +100,11 @@ export default class Rediger extends PureComponent {
 									Avbryt
 								</Knapp>
 							</div>
+							{error && (
+								<div className="opprett-error">
+									<span>{error.message}</span>
+								</div>
+							)}
 						</Form>
 					)
 				}}
