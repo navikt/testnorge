@@ -24,7 +24,10 @@ export default class GruppeDetaljer extends PureComponent {
 				<div className="gd-blokker">
 					<StaticValue header="EIER" value={gruppe.opprettetAvNavIdent} />
 					<StaticValue header="TEAM" value={gruppe.team.navn} />
-					<StaticValue header="ANTALL PERSONER" value={String(gruppe.testidenter.length)} />
+					<StaticValue
+						header="ANTALL OPPRETTENDE TESTPERSONER"
+						value={String(gruppe.testidenter.length)}
+					/>
 					<StaticValue header="SIST ENDRET" value={gruppe.datoEndret} />
 					{this.state.expanded && <StaticValue header="HENSIKT" value={gruppe.hensikt} />}
 				</div>
