@@ -31,7 +31,6 @@ export default class Step3 extends PureComponent {
 	}
 
 	submit = values => {
-		console.log(values)
 		this.props.setEnvironments(values.environments)
 		this.props.postBestilling()
 	}
@@ -54,8 +53,13 @@ export default class Step3 extends PureComponent {
 		return <StaticValue key={item.id} header={item.label} value={value} />
 	}
 
+	onClickPrevious = values => {
+		this.props.setValuesAndGoBack(values)
+	}
+
 	render() {
-		const { identtype, antall } = this.props
+		const { identtype, antall, environments } = this.props
+
 		return (
 			<div className="bestilling-step3">
 				<div className="content-header">
@@ -72,7 +76,7 @@ export default class Step3 extends PureComponent {
 
 				<Formik
 					initialValues={{
-						environments: []
+						environments
 					}}
 					onSubmit={this.submit}
 					validationSchema={this.EnvValidation}
@@ -89,7 +93,12 @@ export default class Step3 extends PureComponent {
 										/>
 									)}
 								/>
-								<NavigationConnector onClickNext={formikProps.submitForm} />
+								<NavigationConnector
+									onClickNext={formikProps.submitForm}
+									onClickPrevious={() => {
+										this.props.setEnvironmentsAndGoBack(formikProps.values.environments)
+									}}
+								/>
 							</Fragment>
 						)
 					}}

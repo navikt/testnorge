@@ -22,7 +22,10 @@ export default class Step2 extends PureComponent {
 		this.AttributtManager = new AttributtManager()
 		this.AttributtListe = this.AttributtManager.listSelectedByGroup(props.selectedAttributeIds)
 		this.ValidationListe = this.AttributtManager.getValidations(props.selectedAttributeIds)
-		this.initialValues = this.AttributtManager.getInitialValues(props.selectedAttributeIds)
+		this.initialValues = this.AttributtManager.getInitialValues(
+			props.selectedAttributeIds,
+			props.values
+		)
 	}
 
 	submit = values => {
@@ -65,10 +68,12 @@ export default class Step2 extends PureComponent {
 		)
 	}
 
+	onClickPrevious = values => {
+		this.props.setValuesAndGoBack(values)
+	}
+
 	render() {
 		const { identtype, antall, values } = this.props
-
-		const initialValues = Object.keys(values).length !== 0 ? values : this.initialValues
 
 		return (
 			<div className="bestilling-step2">
@@ -82,13 +87,16 @@ export default class Step2 extends PureComponent {
 				</div>
 
 				<Formik
-					initialValues={initialValues}
+					initialValues={this.initialValues}
 					onSubmit={this.submit}
 					validationSchema={this.ValidationListe}
 					render={formikProps => (
 						<Fragment>
 							{this.renderForm(formikProps)}
-							<NavigationConnector onClickNext={formikProps.submitForm} />
+							<NavigationConnector
+								onClickNext={formikProps.submitForm}
+								onClickPrevious={() => this.props.setValuesAndGoBack(formikProps.values)}
+							/>
 						</Fragment>
 					)}
 				/>

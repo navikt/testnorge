@@ -4,7 +4,9 @@ import {
 	startBestilling,
 	toggleAttribute,
 	setValues,
+	setValuesAndGoBack,
 	setEnvironments,
+	setEnvironmentsAndGoBack,
 	postBestilling
 } from '~/ducks/bestilling'
 
@@ -23,7 +25,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	startBestilling: (identtype, antall) => dispatch(startBestilling(identtype, antall)),
 	toggleAttribute: attributeId => dispatch(toggleAttribute(attributeId)),
 	setValues: values => dispatch(setValues(values)),
+	setValuesAndGoBack: values => dispatch(setValuesAndGoBack(values)),
 	setEnvironments: environmentIds => dispatch(setEnvironments(environmentIds)),
+	setEnvironmentsAndGoBack: environmentIds => dispatch(setEnvironmentsAndGoBack(environmentIds)),
 	postBestilling: () => dispatch(postBestilling(ownProps.match.params.gruppeId))
 })
 
