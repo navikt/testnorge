@@ -1,4 +1,4 @@
-import { push } from 'connected-react-router'
+import { push, LOCATION_CHANGE } from 'connected-react-router'
 import { DollyApi } from '~/service/Api'
 import _xor from 'lodash/fp/xor'
 
@@ -60,6 +60,7 @@ export default function bestillingReducer(state = initialState, action) {
 			return { ...state, fetching: false, error: action.error }
 
 		// Reset state on succesfull & location change
+		case LOCATION_CHANGE:
 		case types.ABORT_BESTILLING:
 		case types.POST_BESTILLING_SUCCESS:
 			return initialState
