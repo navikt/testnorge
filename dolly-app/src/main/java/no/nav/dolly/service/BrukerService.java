@@ -8,6 +8,7 @@ import no.nav.dolly.domain.resultSet.RsBruker;
 import no.nav.dolly.domain.resultSet.RsBrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultSet.RsTeam;
 import no.nav.dolly.exceptions.BrukerNotFoundException;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 
 import java.util.Collection;
@@ -36,7 +37,7 @@ public class BrukerService {
     public Bruker fetchBruker(String navIdent) {
         Bruker bruker = brukerRepository.findBrukerByNavIdent(navIdent);
         if (bruker == null) {
-            throw new BrukerNotFoundException("Bruker ikke funnet");
+            throw new NotFoundException("Bruker ikke funnet");
         }
         return bruker;
     }
