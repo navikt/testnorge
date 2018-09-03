@@ -62,6 +62,7 @@ export default function bestillingReducer(state = initialState, action) {
 			return { ...state, fetching: false, error: action.error }
 
 		// Reset state on succesfull & location change
+		case LOCATION_CHANGE:
 		case types.ABORT_BESTILLING:
 		case types.POST_BESTILLING_SUCCESS:
 			return initialState

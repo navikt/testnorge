@@ -1,7 +1,7 @@
 package no.nav.dolly.api;
 
-import no.nav.dolly.kodeverk.Kode;
-import no.nav.dolly.kodeverk.Kodeverk;
+import no.nav.dolly.domain.kodeverk.Kode;
+import no.nav.dolly.domain.kodeverk.Kodeverk;
 
 import java.util.Arrays;
 import java.util.List;
