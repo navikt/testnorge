@@ -40,13 +40,7 @@ const webpackConfig = {
 		proxy: {
 			'/local/dolly/api/v1': {
 				target: 'http://localhost:8080',
-				pathRewrite: { '^/external/dolly': '' }
-			},
-			'/external/dolly/api/v1': {
-				target: 'https://dolly-u2.nais.preprod.local',
-				pathRewrite: { '^/external/dolly': '' },
-				secure: false,
-				changeOrigin: true
+				pathRewrite: { '^/local/dolly': '' }
 			},
 			'/external/tpsf': {
 				target: 'https://tps-forvalteren-u2.nais.preprod.local',
