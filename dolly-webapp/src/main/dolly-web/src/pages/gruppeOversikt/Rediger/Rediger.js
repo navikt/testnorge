@@ -92,10 +92,10 @@ export default class Rediger extends PureComponent {
 								/>
 								<Field name="hensikt" label="HENSIKT" component={FormikInput} />
 
-								<Knapp type="standard" htmlType="button" onClick={closeRedigerOgOpprett}>
+								<Knapp mini type="standard" htmlType="button" onClick={closeRedigerOgOpprett}>
 									Avbryt
 								</Knapp>
-								<Knapp type="hoved" htmlType="submit">
+								<Knapp mini type="hoved" htmlType="submit">
 									{this.erRedigering ? 'Lagre' : 'Opprett'}
 								</Knapp>
 							</div>
