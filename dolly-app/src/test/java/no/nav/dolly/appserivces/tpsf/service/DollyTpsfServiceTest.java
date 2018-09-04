@@ -79,6 +79,7 @@ public class DollyTpsfServiceTest {
         request.setEnvironments(Arrays.asList("u1", "t2"));
 
         List<String> identer = Arrays.asList("12", "34", "56");
+
         Testgruppe gruppe = new Testgruppe();
         Bestilling bestilling = new Bestilling();
         bestilling.setId(bestillingsId);
