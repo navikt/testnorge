@@ -51,16 +51,15 @@ export default class RedigerTeam extends PureComponent {
 					const { values, touched, errors, dirty, isSubmitting } = props
 					return (
 						<Form className="opprett-tabellrad" autoComplete="off">
-							<h2>{this.erRedigering ? 'Rediger team' : 'Opprett team'}</h2>
 							<div className="fields">
-								<Field name="navn" label="Navn" autoFocus component={FormikInput} />
-								<Field name="beskrivelse" label="Beskrivelse" component={FormikInput} />
+								<Field name="navn" label="NAVN" autoFocus component={FormikInput} />
+								<Field name="beskrivelse" label="BESKRIVELSE" component={FormikInput} />
 
-								<Knapp type="hoved" htmlType="submit">
-									{this.erRedigering ? 'OPPDATER' : 'OPPRETT'}
-								</Knapp>
 								<Knapp type="standard" htmlType="button" onClick={closeOpprettRedigerTeam}>
 									Avbryt
+								</Knapp>
+								<Knapp type="hoved" htmlType="submit">
+									{this.erRedigering ? 'Lagre' : 'Opprett'}
 								</Knapp>
 							</div>
 
