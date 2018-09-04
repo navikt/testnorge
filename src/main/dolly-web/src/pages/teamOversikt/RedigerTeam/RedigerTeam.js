@@ -55,10 +55,10 @@ export default class RedigerTeam extends PureComponent {
 								<Field name="navn" label="NAVN" autoFocus component={FormikInput} />
 								<Field name="beskrivelse" label="BESKRIVELSE" component={FormikInput} />
 
-								<Knapp type="standard" htmlType="button" onClick={closeOpprettRedigerTeam}>
+								<Knapp mini type="standard" htmlType="button" onClick={closeOpprettRedigerTeam}>
 									Avbryt
 								</Knapp>
-								<Knapp type="hoved" htmlType="submit">
+								<Knapp mini type="hoved" htmlType="submit">
 									{this.erRedigering ? 'Lagre' : 'Opprett'}
 								</Knapp>
 							</div>
