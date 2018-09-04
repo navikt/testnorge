@@ -1,6 +1,7 @@
 package no.nav.dolly.api;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.service.TeamService;
@@ -31,23 +32,46 @@ public class TeamControllerTest {
     private TeamController controller;
 
     @Test
-    public void getTeams() {
+    public void getTeams_hvisIdentTilstedetSaaHentesBasertPaaIdent() {
+        String navident = "nav";
+        controller.getTeams(navident);
+        verify(teamService).fetchTeamsByMedlemskapInTeams(navident);
+    }
+
+    @Test
+    public void getTeams_hvisIdentErFravaerendeSaaHentAlleTeams() {
+        controller.getTeams(null);
+        verify(teamRepository).findAll();
     }
 
     @Test
     public void opprettTeam() {
+        RsOpprettTeam res = new RsOpprettTeam();
+        controller.opprettTeam(res);
+        verify(teamService).opprettTeam(res);
     }
 
     @Test
     public void deleteTeam() {
+        Long id = 1l;
+        controller.deleteTeam(id);
+        verify(teamService).deleteTeam(id);
     }
 
     @Test
     public void fetchTeamById() {
+        Long id = 1l;
+        controller.fetchTeamById(id);
+        verify(teamService).fetchTeamById(id);
     }
 
     @Test
     public void addBrukereSomTeamMedlemmerByNavidenter() {
+        Long id = 1l;
+        List<String> navidenter = Arrays.asList("test");
+
+        controller.addBrukereSomTeamMedlemmerByNavidenter(id, navidenter);
+        verify(teamService).addMedlemmerByNavidenter(id, navidenter);
     }
 
     @Test

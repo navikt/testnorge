@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -31,19 +32,26 @@ public class SigrunStubApiService {
     @Value("${sigrun.server.url}")
     private String sigrunHostUrl;
 
-    public List<RsGrunnlagResponse> createInntektstuff(RsSigrunnOpprettSkattegrunnlag request) throws IOException, SigrunnStubException{
+    public List<RsGrunnlagResponse> createInntektstuff(RsSigrunnOpprettSkattegrunnlag request) {
         StringBuilder sbUrl = new StringBuilder().append(sigrunHostUrl).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
 
         try{
             ResponseEntity<RsGrunnlagResponse[]> response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, new HttpEntity<>(request), RsGrunnlagResponse[].class);
             return Arrays.asList(response.getBody());
         } catch (HttpClientErrorException e){
-            RestTemplateException rs = objectMapper.readValue(e.getResponseBodyAsString(), RestTemplateException.class);
+            RestTemplateException rs = lesOgMapFeilmelding(e);
             throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());
         } catch (HttpServerErrorException e){
-            RestTemplateException rs = objectMapper.readValue(e.getResponseBodyAsString(), RestTemplateException.class);
+            RestTemplateException rs = lesOgMapFeilmelding(e);
             throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());
         }
+    }
 
+    private RestTemplateException lesOgMapFeilmelding(HttpStatusCodeException e){
+        try {
+            return objectMapper.readValue(e.getResponseBodyAsString(), RestTemplateException.class);
+        } catch (IOException ex){
+            throw e;
+        }
     }
 }

@@ -20,10 +20,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public abstract class RsAdresse {
 
-    private Long adresseId;
-
-    private Long personId;
-
     private String postnr;
 
     private String kommunenr;

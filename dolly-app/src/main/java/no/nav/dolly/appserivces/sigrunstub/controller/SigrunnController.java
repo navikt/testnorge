@@ -23,13 +23,8 @@ public class SigrunnController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public List<RsGrunnlagResponse> opprettTeam(@RequestBody RsSigrunnOpprettSkattegrunnlag createTeamRequest) {
-        try{
-            return sigrunStubApiService.createInntektstuff(createTeamRequest);
-        } catch (Exception e){
-            // Set
-        }
-        return null;
+    public List<RsGrunnlagResponse> opprettInntekt(@RequestBody RsSigrunnOpprettSkattegrunnlag createTeamRequest) {
+        return sigrunStubApiService.createInntektstuff(createTeamRequest);
     }
 
 }
