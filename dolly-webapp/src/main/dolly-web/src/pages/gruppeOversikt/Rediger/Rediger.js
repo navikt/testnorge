@@ -78,12 +78,11 @@ export default class Rediger extends PureComponent {
 					const { values, touched, errors, dirty, isSubmitting } = props
 					return (
 						<Form className="opprett-tabellrad" autoComplete="off">
-							<h2>{this.erRedigering ? 'Rediger gruppe' : 'Opprett gruppe'}</h2>
 							<div className="fields">
-								<Field name="navn" label="Navn" autoFocus component={FormikInput} />
+								<Field name="navn" label="NAVN" autoFocus component={FormikInput} />
 								<Field
 									name="teamId"
-									label="Velg team"
+									label="VELG TEAM"
 									component={FormikDollySelect}
 									loadOptions={() =>
 										DollyApi.getTeamsByUserId(currentUserId).then(
@@ -91,13 +90,13 @@ export default class Rediger extends PureComponent {
 										)
 									}
 								/>
-								<Field name="hensikt" label="Hensikt" component={FormikInput} />
+								<Field name="hensikt" label="HENSIKT" component={FormikInput} />
 
-								<Knapp type="hoved" htmlType="submit">
-									{this.erRedigering ? 'OPPDATER' : 'OPPRETT'}
-								</Knapp>
 								<Knapp type="standard" htmlType="button" onClick={closeRedigerOgOpprett}>
 									Avbryt
+								</Knapp>
+								<Knapp type="hoved" htmlType="submit">
+									{this.erRedigering ? 'Lagre' : 'Opprett'}
 								</Knapp>
 							</div>
 							{error && (
