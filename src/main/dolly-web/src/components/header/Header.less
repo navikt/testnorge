@@ -11,11 +11,6 @@ header.app-header {
 	align-items: center;
 	justify-content: space-between;
 
-	.app-header--third {
-		flex-grow: 1;
-		flex-basis: 0;
-	}
-
 	.home-nav {
 		display: flex;
 		align-items: center;
@@ -40,24 +35,29 @@ header.app-header {
 		}
 	}
 
-	.menu-links a {
-		color: white;
-		text-decoration: none;
-		font-weight: normal;
-		padding: 5px 10px;
-		margin: 10px;
-		font-size: 1.2em;
-		&.active {
-			font-weight: bold;
-		}
-		&:hover {
-			background-color: @headerHoverColor;
+	.menu-links {
+		display: flex;
+		justify-content: center;
+		a {
+			color: white;
+			text-decoration: none;
+			font-weight: normal;
+			padding: 5px 10px;
+			margin: 0 10px;
+			font-size: 1.2em;
+			&.active {
+				font-weight: bold;
+			}
+			&:hover {
+				background-color: @headerHoverColor;
+			}
 		}
 	}
 
 	.header-user-name {
 		float: right;
 		width: @page-margin;
+		margin-left: 66px; // compensate for logo-image -- to make center navigation truly center
 		height: 30px;
 		padding: 5px;
 		text-align: center;
