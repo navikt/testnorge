@@ -46,11 +46,11 @@ public class DollyTpsfServiceTest {
     @Mock
     TestgruppeService testgruppeService;
 
-    @Mock
-    SigrunStubApiService sigrunStubApiService;
-
-    @Mock
-    IdentRepository identRepository;
+//    @Mock
+//    SigrunStubApiService sigrunStubApiService;
+//
+//    @Mock
+//    IdentRepository identRepository;
 
     @Mock
     BestillingProgressRepository bestillingProgressRepository;
@@ -76,6 +76,7 @@ public class DollyTpsfServiceTest {
         Long gruppeId = 1L;
         Long bestillingsId = 2L;
         RsDollyBestillingsRequest request = new RsDollyBestillingsRequest();
+        request.setEnvironments(Arrays.asList("u1", "t2"));
 
         List<String> identer = Arrays.asList("12", "34", "56");
         Testgruppe gruppe = new Testgruppe();
