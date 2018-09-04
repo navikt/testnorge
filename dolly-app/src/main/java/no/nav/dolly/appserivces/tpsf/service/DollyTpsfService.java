@@ -2,6 +2,7 @@ package no.nav.dolly.appserivces.tpsf.service;
 
 import no.nav.dolly.appserivces.sigrunstub.restcom.SigrunStubApiService;
 import no.nav.dolly.appserivces.tpsf.restcom.TpsfApiService;
+import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -72,7 +73,7 @@ public class DollyTpsfService {
             RsSkdMeldingResponse response;
             try{
                 response = tpsfApiService.sendTilTpsFraTPSF(ident, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
-            } catch (DollyFunctionalException e){
+            } catch (TpsfException e){
                 progress.setFeil(e.getMessage());
                 bestillingProgressRepository.save(progress);
                 bestilling.setSistOppdatert(LocalDateTime.now());
