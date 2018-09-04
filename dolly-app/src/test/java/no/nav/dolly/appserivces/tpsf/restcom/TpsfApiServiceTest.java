@@ -1,7 +1,7 @@
 package no.nav.dolly.appserivces.tpsf.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.dolly.appserivces.tpsf.errorHandling.RestTemplateException;
+import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.exceptions.TpsfException;
@@ -81,12 +81,12 @@ public class TpsfApiServiceTest {
 
         Object s = "exception=Feil";
         ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
-        RestTemplateException resExp = new RestTemplateException();
+        RestTemplateFailure resExp = new RestTemplateFailure();
         resExp.setMessage("msg");
         resExp.setError("err");
 
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
-        when(objectMapper.convertValue(s, RestTemplateException.class)).thenReturn(resExp);
+        when(objectMapper.convertValue(s, RestTemplateFailure.class)).thenReturn(resExp);
 
         service.opprettPersonerTpsf(req);
     }

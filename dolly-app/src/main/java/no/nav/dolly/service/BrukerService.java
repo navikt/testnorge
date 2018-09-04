@@ -7,7 +7,6 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.exceptions.BrukerNotFoundException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 

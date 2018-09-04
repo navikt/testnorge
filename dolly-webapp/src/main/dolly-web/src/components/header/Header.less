@@ -7,58 +7,69 @@ header.app-header {
 	background-color: @color-darkblue;
 	color: white;
 	display: flex;
-	padding: 5px 0;
+	padding: 15px 0;
 	align-items: center;
 	justify-content: space-between;
 
 	.home-nav {
-		padding: 10px;
 		display: flex;
 		align-items: center;
 		text-decoration: none;
 
-		img {
-			height: 30px;
-			margin-right: 20px;
+		.img-logo {
+			width: @page-margin;
+			text-align: center;
+			border-right: 2px solid #88b1d6;
+
+			img {
+				height: 30px;
+			}
 		}
 
 		h1 {
 			display: inline-block;
 			margin: 0;
-			border-left: 2px solid @borderColor;
-			padding-left: 20px;
+			padding-left: 10px;
+			font-size: 1.6em;
 			color: white;
 		}
 	}
 
-	.menu-links a {
-		color: white;
-		text-decoration: none;
-		font-weight: bold;
-		padding: 5px 10px;
-		margin: 10px;
-		font-size: 1.2em;
-		&:hover {
-			background-color: @headerHoverColor;
-		}
-	}
-
-	#header-user-name {
-		padding: 10px 10px 10px 20px;
-		border-left: 2px solid @borderColor;
-		svg {
-			vertical-align: bottom;
-			margin-right: 5px;
-		}
-
+	.menu-links {
+		display: flex;
+		justify-content: center;
 		a {
 			color: white;
 			text-decoration: none;
+			font-weight: normal;
 			padding: 5px 10px;
-
+			margin: 0 10px;
+			font-size: 1.2em;
+			&.active {
+				font-weight: bold;
+			}
 			&:hover {
 				background-color: @headerHoverColor;
 			}
+		}
+	}
+
+	.header-user-name {
+		float: right;
+		width: @page-margin;
+		margin-left: 66px; // compensate for logo-image -- to make center navigation truly center
+		height: 30px;
+		padding: 5px;
+		text-align: center;
+		border-left: 2px solid @borderColor;
+		color: white;
+		text-decoration: none;
+		&:hover {
+			background-color: @headerHoverColor;
+		}
+		svg {
+			vertical-align: bottom;
+			margin-right: 5px;
 		}
 	}
 }

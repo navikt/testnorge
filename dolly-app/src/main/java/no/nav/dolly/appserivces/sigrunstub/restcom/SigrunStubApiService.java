@@ -3,7 +3,7 @@ package no.nav.dolly.appserivces.sigrunstub.restcom;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
-import no.nav.dolly.appserivces.tpsf.errorHandling.RestTemplateException;
+import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.exceptions.SigrunnStubException;
 
 import java.io.IOException;
@@ -38,18 +38,15 @@ public class SigrunStubApiService {
         try{
             ResponseEntity<RsGrunnlagResponse[]> response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, new HttpEntity<>(request), RsGrunnlagResponse[].class);
             return Arrays.asList(response.getBody());
-        } catch (HttpClientErrorException e){
-            RestTemplateException rs = lesOgMapFeilmelding(e);
-            throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());
-        } catch (HttpServerErrorException e){
-            RestTemplateException rs = lesOgMapFeilmelding(e);
+        } catch (HttpClientErrorException|HttpServerErrorException e) {
+            RestTemplateFailure rs = lesOgMapFeilmelding(e);
             throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());
         }
     }
 
-    private RestTemplateException lesOgMapFeilmelding(HttpStatusCodeException e){
+    private RestTemplateFailure lesOgMapFeilmelding(HttpStatusCodeException e){
         try {
-            return objectMapper.readValue(e.getResponseBodyAsString(), RestTemplateException.class);
+            return objectMapper.readValue(e.getResponseBodyAsString(), RestTemplateFailure.class);
         } catch (IOException ex){
             throw e;
         }

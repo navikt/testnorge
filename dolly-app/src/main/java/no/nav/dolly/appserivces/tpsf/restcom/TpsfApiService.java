@@ -1,11 +1,10 @@
 package no.nav.dolly.appserivces.tpsf.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
-import no.nav.dolly.domain.resultset.RsTpsfIdent;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
-import no.nav.dolly.appserivces.tpsf.errorHandling.RestTemplateException;
-import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.domain.resultset.RsTpsfIdent;
 import no.nav.dolly.exceptions.TpsfException;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class TpsfApiService {
         ResponseEntity<Object> response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, new HttpEntity<>(request), Object.class);
 
         if (response.getBody().toString().contains("exception=")) {
-            RestTemplateException rs = objectMapper.convertValue(response.getBody(), RestTemplateException.class);
+            RestTemplateFailure rs = objectMapper.convertValue(response.getBody(), RestTemplateFailure.class);
             throw new TpsfException("TPSF kall feilet med: " + rs.getMessage() + "\\r\\n Feil: " + rs.getError());
         }
 
@@ -54,7 +53,7 @@ public class TpsfApiService {
         ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(new RsTpsfIdent(ident)), Object.class);
 
         if (response.getBody().toString().contains("exception=")) {
-            RestTemplateException rs = objectMapper.convertValue(response.getBody(), RestTemplateException.class);
+            RestTemplateFailure rs = objectMapper.convertValue(response.getBody(), RestTemplateFailure.class);
             throw new TpsfException("TPSF kall feilet med: " + rs.getMessage() + "\\r\\n Feil: " + rs.getError());
         }
 

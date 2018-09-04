@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class getTeamsScenarios extends TeamTestCaseBase {
+public class GetTeamsScenarios extends TeamTestCaseBase {
 
     Bruker bruker2;
 

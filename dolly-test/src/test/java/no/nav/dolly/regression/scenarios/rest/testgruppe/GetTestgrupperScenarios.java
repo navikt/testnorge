@@ -26,7 +26,7 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class getTestgrupperScenarios extends TestgruppeTestCaseBase {
+public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
 
     @Autowired
     private BrukerService brukerService;

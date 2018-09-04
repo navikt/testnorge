@@ -122,6 +122,10 @@ public class TestgruppeService {
         }
     }
 
+    public void slettGruppeById(Long gruppeId){
+        testGruppeRepository.deleteTestgruppeById(gruppeId);
+    }
+
     @Transactional
     public RsTestgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettTestgruppe testgruppe) {
         Testgruppe savedGruppe = fetchTestgruppeById(gruppeId);

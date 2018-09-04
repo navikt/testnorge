@@ -18,7 +18,14 @@ export default class Liste extends PureComponent {
 		if (!items) {
 			return (
 				<ContentContainer>
-					Det finnes ingen grupper. Trykk på + knappen under for å opprette en gruppe.
+					<p>Du har ingen testdatagrupper.</p>
+					<p>
+						For å se alle testdatagrupper, trykk på "Alle". Her kan du søke etter en spesifikk
+						testdatagruppe eller se om det er noen som er relevante for deg. Hvis du trykker på
+						stjerneikonet, legger du testdatagruppen til som en favoritt. Den vil da dukke opp under
+						"Mine" testdatagrupper.
+					</p>
+					<p>For å opprette en ny testdatagruppe, trykk på legg til-knappen nedenfor.</p>
 				</ContentContainer>
 			)
 		}
