@@ -44,14 +44,4 @@ public class IdentEntity {
     @NotNull
     @Column(name = "FINNES_HOS_SKATT")
     private String finnesHosSkatt;
-
-    @Enumerated(EnumType.STRING)
-    public Identtype getIdenttype() {
-        return this.identtype;
-    }
-
-    @Enumerated(EnumType.STRING)
-    public Rekvireringsstatus getRekvireringsstatus() {
-        return this.rekvireringsstatus;
-    }
 }

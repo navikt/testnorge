@@ -1,15 +1,16 @@
 package no.nav.identpool.ident.service;
 
-import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.PageRequest;
 
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
@@ -26,28 +27,28 @@ public class IdentpoolServiceTest {
 
     @Test
     public void findIdenterMedFNR() {
-        identpoolService.findIdents(1, Identtype.FNR);
+        identpoolService.findIdents(Identtype.FNR, PageRequest.of(0, 1));
 
-//        verify(identRepository, times(1)).findByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG.getStatus(), Identtype.FNR.getType());
-//        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG.getStatus(), Identtype.DNR.getType());
-//        verify(identRepository, times(0)).findByRekvireringsstatus(Rekvireringsstatus.LEDIG.getStatus());
+        verify(identRepository, times(1)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.FNR), any());
+        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.DNR), any());
+        verify(identRepository, times(0)).findByRekvireringsstatus(eq(Rekvireringsstatus.LEDIG), any());
     }
 
     @Test
     public void findIdenterMedDNR() {
-        identpoolService.findIdents(1, Identtype.DNR);
+        identpoolService.findIdents(Identtype.DNR, PageRequest.of(0, 1));
 
-//        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG.getStatus(), Identtype.FNR.getType());
-//        verify(identRepository, times(1)).findByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG.getStatus(), Identtype.DNR.getType());
-//        verify(identRepository, times(0)).findByRekvireringsstatus(Rekvireringsstatus.LEDIG.getStatus());
+        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.FNR), any());
+        verify(identRepository, times(1)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.DNR), any());
+        verify(identRepository, times(0)).findByRekvireringsstatus(eq(Rekvireringsstatus.LEDIG), any());
     }
 
     @Test
     public void findIdenterUtenBestemtIdenttype() {
-        identpoolService.findIdents(1, Identtype.UBESTEMT);
+        identpoolService.findIdents(Identtype.UBESTEMT, PageRequest.of(0, 1));
 
-//        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG.getStatus(), Identtype.FNR.getType());
-//        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG.getStatus(), Identtype.DNR.getType());
-//        verify(identRepository, times(1)).findByRekvireringsstatus(Rekvireringsstatus.LEDIG.getStatus());
+        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.FNR), any());
+        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.DNR), any());
+        verify(identRepository, times(1)).findByRekvireringsstatus(eq(Rekvireringsstatus.LEDIG), any());
     }
 }

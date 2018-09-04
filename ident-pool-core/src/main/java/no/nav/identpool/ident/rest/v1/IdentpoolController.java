@@ -1,4 +1,4 @@
-package no.nav.identpool.ident.rs.v1;
+package no.nav.identpool.ident.rest.v1;
 
 import java.util.List;
 import org.springframework.data.domain.PageRequest;

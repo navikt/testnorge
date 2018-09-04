@@ -1,4 +1,4 @@
-package no.nav.identpool.ident.rs.v1;
+package no.nav.identpool.ident.rest.v1;
 
 import org.springframework.http.HttpStatus;
 
