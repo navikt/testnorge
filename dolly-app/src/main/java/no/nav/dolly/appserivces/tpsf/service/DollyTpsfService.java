@@ -57,6 +57,8 @@ public class DollyTpsfService {
             createIdenterIRegistrene(request, bestilling, klareIdenter, testgruppe);
         } catch (Exception e){
             // LOG Exception eller set i bestilling som error. Er Async, så skal ikke håndtere error.
+            //TODO Dette skal logges.
+            System.out.println("Lage identer feiler. Dette bor logges!");
         } finally {
             bestilling.setSistOppdatert(LocalDateTime.now());
             bestilling.setFerdig(true);
