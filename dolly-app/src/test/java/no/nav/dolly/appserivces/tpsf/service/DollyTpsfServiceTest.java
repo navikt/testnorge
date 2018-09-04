@@ -94,7 +94,8 @@ public class DollyTpsfServiceTest {
 
         dollyTpsfService.opprettPersonerByKriterierAsync(gruppeId, request, bestillingsId);
 
-        assertThat(outContent.toString(), is("Lage identer feiler. Dette bor logges!\r\n"));
+        String out = outContent.toString().substring(0, outContent.toString().indexOf('!'));
+        assertThat(out, is("Lage identer feiler. Dette bor logges"));
         assertThat(bestilling.isFerdig(), is(true));
 
         verify(bestillingService).saveBestillingToDB(bestilling);
