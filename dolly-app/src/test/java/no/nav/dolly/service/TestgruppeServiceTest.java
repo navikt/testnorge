@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
+import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestGruppeRepository;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
@@ -33,18 +34,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeServiceTest {
@@ -74,7 +75,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void opprettTestgruppeHappyPath(){
+    public void opprettTestgruppe_HappyPath(){
         RsOpprettTestgruppe rsTestgruppe = Mockito.mock(RsOpprettTestgruppe.class);
         Team team = Mockito.mock(Team.class);
         Bruker bruker = Mockito.mock(Bruker.class);
@@ -99,7 +100,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void fetchTestgruppeByIdKasterExceptionHvisGruppeIkkeErFunnet() throws Exception {
+    public void fetchTestgruppeById_KasterExceptionHvisGruppeIkkeErFunnet() throws Exception {
         Optional<Testgruppe> op = Optional.empty();
         when(testGruppeRepository.findById(any())).thenReturn(op);
 
@@ -107,7 +108,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void fetchTestgruppeByIdReturnererGruppeHvisGruppeMedIdFinnes() throws Exception {
+    public void fetchTestgruppeById_ReturnererGruppeHvisGruppeMedIdFinnes() throws Exception {
         Testgruppe g = Mockito.mock(Testgruppe.class);
         Optional<Testgruppe> op = Optional.of(g);
         when(testGruppeRepository.findById(any())).thenReturn(op);
@@ -149,7 +150,47 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void getRsTestgruppeMedErMedlem_HappyPath(){
+    public void getRsTestgruppeMedErMedlem_happyPath(){
+        Testgruppe g1 = TestgruppeBuilder.builder().id(1l).build().convertToRealTestgruppe();
+        Testgruppe g2 = TestgruppeBuilder.builder().id(2l).build().convertToRealTestgruppe();
+        Testgruppe g3 = TestgruppeBuilder.builder().id(3l).build().convertToRealTestgruppe();
+        Testgruppe g4 = TestgruppeBuilder.builder().id(4l).build().convertToRealTestgruppe();
+
+        Team t1 = TeamBuilder.builder()
+                .grupper(new HashSet<>(Arrays.asList(g3)))
+                .navn("team")
+                .build()
+                .convertToRealTeam();
+
+        RsTeamMedIdOgNavn rsT = new RsTeamMedIdOgNavn();
+        rsT.setId(1l);
+        rsT.setNavn("team");
+
+        Bruker bruker = BrukerBuilder.builder()
+                .favoritter(new HashSet(Arrays.asList(g1, g2)))
+                .teams(new HashSet<>(Arrays.asList(t1)))
+                .navIdent(standardPrincipal)
+                .build()
+                .convertToRealBruker();
+
+        RsTestgruppeMedErMedlemOgFavoritt r =  new RsTestgruppeMedErMedlemOgFavoritt();
+        r.setId(1l);
+        r.setTeam(rsT);
+
+        HashSet gr = new HashSet(Arrays.asList(r));
+
+        HashSet grupper = new HashSet(Arrays.asList(g4));
+
+        when(mapperFacade.mapAsSet(grupper, RsTestgruppeMedErMedlemOgFavoritt.class)).thenReturn(gr);
+        when(brukerService.fetchBruker(standardPrincipal)).thenReturn(bruker);
+
+        testgruppeService.getRsTestgruppeMedErMedlem(grupper);
+
+        verify(mapperFacade).mapAsSet(grupper, RsTestgruppeMedErMedlemOgFavoritt.class);
+    }
+
+    @Test
+    public void getRsTestgruppeMedErMedlem_happyPathTwoArgs(){
         Testgruppe g1 = TestgruppeBuilder.builder().id(1l).build().convertToRealTestgruppe();
         Testgruppe g2 = TestgruppeBuilder.builder().id(2l).build().convertToRealTestgruppe();
         Testgruppe g3 = TestgruppeBuilder.builder().id(3l).build().convertToRealTestgruppe();
@@ -186,5 +227,21 @@ public class TestgruppeServiceTest {
 
         assertThat(res.size(), is(1));
         assertThat(res, hasItem(hasProperty("id", equalTo(1l))));
+    }
 
-    } }
+    @Test
+    public void saveGruppeTilDB_returnererTestgruppeHvisTestgruppeFinnes(){
+        Testgruppe g = new Testgruppe();
+        when(testGruppeRepository.save(any())).thenReturn(g);
+
+        Testgruppe res = testgruppeService.saveGruppeTilDB(new Testgruppe());
+        assertThat(res, is(notNullValue()));
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void saveGruppeTilDB_kasterExceptionHvisDBConstraintErBrutt(){
+        when(testGruppeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
+        testgruppeService.saveGruppeTilDB(new Testgruppe());
+    }
+
+}

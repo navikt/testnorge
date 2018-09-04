@@ -44,7 +44,7 @@ public class TpsfApiService {
         return objectMapper.convertValue(response.getBody(), List.class);
     }
 
-    public RsSkdMeldingResponse sendTilTpsFraTPSF(String ident, List<String> environments) throws DollyFunctionalException {
+    public RsSkdMeldingResponse sendTilTpsFraTPSF(String ident, List<String> environments) {
         StringBuilder sb = new StringBuilder();
         sb.append(tpsfServerUrl).append(TPSF_BASE_URL).append(TPSF_SEND_TPS_URL);
         sb.append("?environments=");
