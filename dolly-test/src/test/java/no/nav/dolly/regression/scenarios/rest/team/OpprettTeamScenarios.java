@@ -17,7 +17,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class opprettTeamScenarios extends TeamTestCaseBase{
+public class OpprettTeamScenarios extends TeamTestCaseBase{
 
     @Autowired
     MapperFacade mapperFacade;

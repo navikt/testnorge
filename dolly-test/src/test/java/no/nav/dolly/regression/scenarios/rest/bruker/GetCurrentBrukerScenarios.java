@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-public class getCurrentBrukerScenarios extends BrukerTestCaseBase{
+public class GetCurrentBrukerScenarios extends BrukerTestCaseBase{
 
     @Test
     public void getBrukerBasertPaaInloggetBrukerFraOIDC() throws Exception {

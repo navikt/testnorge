@@ -1,7 +1,7 @@
 package no.nav.dolly.appserivces.sigrunstub.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.dolly.appserivces.tpsf.errorHandling.RestTemplateException;
+import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.exceptions.SigrunnStubException;
@@ -70,13 +70,13 @@ public class SigrunStubApiServiceTest {
         gListe[0] = grunn;
 
         ResponseEntity<RsGrunnlagResponse[]> res = new ResponseEntity<>(gListe, HttpStatus.OK);
-        RestTemplateException ex = new RestTemplateException();
+        RestTemplateFailure ex = new RestTemplateFailure();
         ex.setMessage("msg");
 
         HttpClientErrorException clientErrorException = new HttpClientErrorException(HttpStatus.OK, "OK");
 
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(RsGrunnlagResponse[].class))).thenThrow(clientErrorException);
-        when(objectMapper.readValue(anyString(), eq(RestTemplateException.class))).thenReturn(ex);
+        when(objectMapper.readValue(anyString(), eq(RestTemplateFailure.class))).thenReturn(ex);
 
         service.createInntektstuff(new RsSigrunnOpprettSkattegrunnlag());
     }
@@ -89,13 +89,13 @@ public class SigrunStubApiServiceTest {
         gListe[0] = grunn;
 
         ResponseEntity<RsGrunnlagResponse[]> res = new ResponseEntity<>(gListe, HttpStatus.OK);
-        RestTemplateException ex = new RestTemplateException();
+        RestTemplateFailure ex = new RestTemplateFailure();
         ex.setMessage("msg");
 
         HttpServerErrorException clientErrorException = new HttpServerErrorException(HttpStatus.OK, "OK");
 
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(RsGrunnlagResponse[].class))).thenThrow(clientErrorException);
-        when(objectMapper.readValue(anyString(), eq(RestTemplateException.class))).thenReturn(ex);
+        when(objectMapper.readValue(anyString(), eq(RestTemplateFailure.class))).thenReturn(ex);
 
         service.createInntektstuff(new RsSigrunnOpprettSkattegrunnlag());
     }

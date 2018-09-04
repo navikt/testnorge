@@ -1,4 +1,4 @@
-package no.nav.dolly.appserivces.tpsf.errorHandling;
+package no.nav.dolly.appserivces.tpsf.errorhandling;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestTemplateException {
+public class RestTemplateFailure {
 
     String timestamp;
     String status;

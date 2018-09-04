@@ -2,10 +2,6 @@ package no.nav.dolly.appserivces.tpsf.service;
 
 import no.nav.dolly.appserivces.sigrunstub.restcom.SigrunStubApiService;
 import no.nav.dolly.appserivces.tpsf.restcom.TpsfApiService;
-import no.nav.dolly.exceptions.TpsfException;
-import no.nav.dolly.repository.BestillingProgressRepository;
-import no.nav.dolly.repository.IdentRepository;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -14,6 +10,9 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.repository.BestillingProgressRepository;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.TestgruppeService;
 
@@ -114,14 +113,17 @@ public class DollyTpsfService {
 
     private String extractSuccessEnvTPS(SendSkdMeldingTilTpsResponse response){
         Map<String, String> status = response.getStatus();
-        String env = "";
+        StringBuilder sb = new StringBuilder("");
+//        String env = "";
 
         for(Map.Entry<String, String> entry : status.entrySet()){
             if(entry.getValue().contains("00")){
-                env += entry.getKey() + ",";
+                sb.append(entry.getKey()).append(",");
+//                env += entry.getKey() + ",";
             }
         }
 
+        String env = sb.toString();
         if(env.length() > 0){
             env = env.substring(0, env.length() - 1);
         }
