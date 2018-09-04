@@ -19,8 +19,10 @@ export interface Options {
 }
 
 export interface Kategori {
+	id: string
 	navn: string
 	order: number
+	multiple?: boolean
 }
 
 export interface KategoriTypes {

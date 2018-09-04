@@ -4,8 +4,9 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import NavigationConnector from '../Navigation/NavigationConnector'
 import Panel from '~/components/panel/Panel'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import { Formik, Field } from 'formik'
+import { Formik, Field, FieldArray } from 'formik'
 import { AttributtManager } from '~/service/Kodeverk'
+import DisplayFormikState from '~/utils/DisplayFormikState'
 import InputSelector from '~/components/fields/InputSelector'
 import { extraComponentProps } from '../Utils'
 
@@ -33,14 +34,64 @@ export default class Step2 extends PureComponent {
 	}
 
 	renderForm = formikProps => {
-		return this.AttributtListe.map(hovedKategori => this.renderHovedKategori(hovedKategori))
+		return this.AttributtListe.map(hovedKategori =>
+			this.renderHovedKategori(hovedKategori, formikProps)
+		)
 	}
 
-	renderHovedKategori = ({ hovedKategori, items }) => {
+	renderHovedKategori = ({ hovedKategori, items }, formikProps) => {
 		return (
-			<Panel key={hovedKategori.navn} heading={<h3>{hovedKategori.navn}</h3>} startOpen>
-				{items.map(subKategori => this.renderSubKategori(subKategori))}
+			<Panel key={hovedKategori.id} heading={<h3>{hovedKategori.id}</h3>} startOpen>
+				{items.map(
+					item =>
+						item.subKategori.multiple
+							? this.renderSubKategoriAsFieldArray(item, formikProps)
+							: this.renderSubKategori(item, formikProps)
+				)}
 			</Panel>
+		)
+	}
+
+	renderSubKategoriAsFieldArray = ({ subKategori, items }, formikProps) => {
+		const subId = subKategori.id
+		return (
+			<div className="subkategori" key={subId}>
+				<FieldArray
+					name={subId}
+					render={arrayHelpers => {
+						const defs = items.reduce((prev, curr) => ({ ...prev, [curr.id]: '' }), {})
+						const createDefaultObject = () => arrayHelpers.push({ ...defs })
+						return (
+							<Fragment>
+								<h4>
+									{subId} <button onClick={createDefaultObject}>+</button>
+								</h4>
+								{formikProps.values[subId] && formikProps.values[subId].length > 0 ? (
+									formikProps.values[subId].map((faKey, idx) => {
+										return (
+											<div key={idx}>
+												<div className="subkategori-field-group">
+													{items.map(item => {
+														// Add subKategori to ID
+														const fakeItem = {
+															...item,
+															id: `${subId}[${idx}]${item.id}`
+														}
+														return this.renderFieldComponent(fakeItem)
+													})}
+												</div>
+												<button onClick={e => arrayHelpers.remove(idx)}>fjern</button>
+											</div>
+										)
+									})
+								) : (
+									<span>ingen</span>
+								)}
+							</Fragment>
+						)
+					}}
+				/>
+			</div>
 		)
 	}
 
@@ -97,6 +148,7 @@ export default class Step2 extends PureComponent {
 								onClickNext={formikProps.submitForm}
 								onClickPrevious={() => this.props.setValuesAndGoBack(formikProps.values)}
 							/>
+							<DisplayFormikState {...formikProps} />
 						</Fragment>
 					)}
 				/>
