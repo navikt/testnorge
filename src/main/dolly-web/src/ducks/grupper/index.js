@@ -1,4 +1,5 @@
 import { DollyApi } from '~/service/Api'
+import history from '~/history'
 
 export const types = {
 	GET_GRUPPER_REQUEST: 'grupper/get-request',
@@ -191,7 +192,7 @@ export const createGruppe = nyGruppe => async dispatch => {
 		dispatch(createGrupperRequest())
 		const response = await DollyApi.createGruppe(nyGruppe)
 		dispatch(createGrupperSuccess(response.data))
-		return dispatch(push(`/gruppe/${response.data.id}`))
+		return history.push(`/gruppe/${response.data.id}`)
 	} catch (error) {
 		dispatch(createGrupperError(error))
 	}
