@@ -11,6 +11,11 @@ const Kategorier: KategoriTypes = {
 		id: 'adresser',
 		navn: 'Adresser',
 		order: 20
+	},
+	FamilieRelasjoner: {
+		id: 'familierelasjoner',
+		navn: 'Familierelasjoner',
+		order: 30
 	}
 }
 
