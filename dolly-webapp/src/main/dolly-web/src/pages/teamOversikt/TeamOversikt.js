@@ -30,7 +30,6 @@ export default class TeamOversikt extends Component {
 			<div className="oversikt-container">
 				<div className="page-header flexbox--space">
 					<Overskrift label="Teams" />
-					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
 
 				<div className="flexbox--space">
@@ -42,6 +41,7 @@ export default class TeamOversikt extends Component {
 							Alle
 						</ToggleKnapp>
 					</ToggleGruppe>
+					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
 				{visOpprettTeam && <RedigerTeamConnector />}
 				{fetching ? (
