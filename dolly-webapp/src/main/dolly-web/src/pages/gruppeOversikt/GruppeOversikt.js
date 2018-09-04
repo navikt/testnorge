@@ -7,6 +7,7 @@ import RedigerConnector from './Rediger/RedigerConnector'
 import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
 import AddButton from '~/components/button/AddButton'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {
@@ -34,7 +35,9 @@ export default class GruppeOversikt extends PureComponent {
 		return (
 			<div className="oversikt-container">
 				<div className="page-header flexbox--space">
-					<Overskrift label="Testdatagrupper" />
+					<Overskrift label="Testdatagrupper">
+						<ContentTooltip />
+					</Overskrift>
 				</div>
 
 				<div className="flexbox--space">
