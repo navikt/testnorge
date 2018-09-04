@@ -1,4 +1,5 @@
 import { DollyApi } from '~/service/Api'
+import history from '~/history'
 
 export const types = {
 	REQUEST_TEAMS: 'team/REQUEST_TEAMS',
@@ -220,6 +221,7 @@ export const createTeam = data => async dispatch => {
 		dispatch(createTeamRequest())
 		const response = await DollyApi.createTeam(data)
 		dispatch(createTeamSuccess(response.data))
+		return history.push(`/team/${response.data.id}`)
 	} catch (error) {
 		dispatch(createTeamError(error))
 	}

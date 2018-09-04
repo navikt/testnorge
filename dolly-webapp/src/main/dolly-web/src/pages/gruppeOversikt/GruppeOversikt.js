@@ -35,7 +35,6 @@ export default class GruppeOversikt extends PureComponent {
 			<div className="oversikt-container">
 				<div className="page-header flexbox--space">
 					<Overskrift label="Testdatagrupper" />
-					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
 
 				<div className="flexbox--space">
@@ -47,6 +46,7 @@ export default class GruppeOversikt extends PureComponent {
 							Alle
 						</ToggleKnapp>
 					</ToggleGruppe>
+					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
 				</div>
 
 				{grupper.visOpprettGruppe && <RedigerConnector />}
