@@ -238,6 +238,14 @@ public class TestgruppeServiceTest {
         assertThat(res, is(notNullValue()));
     }
 
+    @Test
+    public void slettGruppeById_deleteBlirKaltMotRepoMedGittId(){
+        Long gruppeId = 1L;
+
+        testgruppeService.slettGruppeById(gruppeId);
+        verify(testGruppeRepository).deleteTestgruppeById(gruppeId);
+    }
+
     @Test(expected = ConstraintViolationException.class)
     public void saveGruppeTilDB_kasterExceptionHvisDBConstraintErBrutt(){
         when(testGruppeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);

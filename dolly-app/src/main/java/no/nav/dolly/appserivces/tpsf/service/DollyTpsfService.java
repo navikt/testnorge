@@ -113,7 +113,7 @@ public class DollyTpsfService {
 
     private String extractSuccessEnvTPS(SendSkdMeldingTilTpsResponse response){
         Map<String, String> status = response.getStatus();
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 //        String env = "";
 
         for(Map.Entry<String, String> entry : status.entrySet()){
