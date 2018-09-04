@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import Button from '~/components/button/Button'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 import './Overskrift.less'
 
@@ -24,14 +25,15 @@ export default class Overskrift extends PureComponent {
 	}
 
 	render() {
-		const { type, label, actions, className, ...restProps } = this.props
+		const { type, label, actions, className, children, ...restProps } = this.props
 
 		const cssClass = cn('overskrift', className)
 		restProps.className = cssClass
 
 		return React.createElement(type, restProps, [
 			label,
-			actions.map((o, idx) => <Button key={idx} kind={o.icon} onClick={o.onClick} />)
+			actions.map((o, idx) => <Button key={idx} kind={o.icon} onClick={o.onClick} />),
+			children
 		])
 	}
 }
