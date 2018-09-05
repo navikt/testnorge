@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 import Header from '~/components/header/Header'
 import Loading from '~/components/loading/Loading'
 import Breadcrumbs from '~/components/breadcrumb/Breadcrumb'
+import SplashscreenConnector from '~/components/splashscreen/SplashscreenConnector'
 import routes from '~/Routes'
 
 import './App.less'
@@ -35,6 +36,7 @@ export default class App extends Component {
 						})}
 					</Switch>
 				</main>
+				{brukerData.showSplashscreen && <SplashscreenConnector />}
 			</React.Fragment>
 		)
 	}
