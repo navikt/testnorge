@@ -3,25 +3,25 @@ package no.nav.identpool.batch.factory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
+
+import no.nav.freg.fasit.utils.domain.QueueManager;
+import no.nav.identpool.batch.fasit.FasitClient;
 import no.nav.identpool.batch.strategy.ConnectionStrategy;
 
 @Component
+@RequiredArgsConstructor
 public class ConnectionStrategyFactory {
-
-    @Value("${MQGATEWAY_NAME}")
-    private String queueManagerAlias;
-
-    @Value("${MQGATEWAY_HOSTNAME}")
-    private String hostname;
-
-    @Value("${MQGATEWAY_PORT}")
-    private Integer port;
 
     @Value("${messagequeue.channel.postfix}")
     private String CHANNEL_POSTFIX;
 
+    private final FasitClient fasitClient;
+
+
     ConnectionStrategy createConnectionStrategy(String environment) {
-        String channel = environment.toUpperCase() + CHANNEL_POSTFIX;
-        return new ConnectionStrategy(queueManagerAlias, hostname, port, channel);
+        String channel = environment + CHANNEL_POSTFIX;
+        QueueManager queueManager = fasitClient.getQueueManager(environment);
+        return new ConnectionStrategy(queueManager.getName(), queueManager.getHostname(), Integer.parseInt(queueManager.getPort()), channel);
     }
 }

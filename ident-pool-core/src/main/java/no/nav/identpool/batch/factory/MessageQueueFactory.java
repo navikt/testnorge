@@ -19,9 +19,6 @@ public class MessageQueueFactory {
     @Value("${TPS_FORESPORSEL_XML_O_QUEUENAME}")
     private String tpsRequestQueue;
 
-    @Value("${messagequeue.channel.environment}")
-    private String channelEnvironment;
-
     @Value("${messagequeue.consumer.username}")
     private String messageQueueUsername;
 
@@ -32,8 +29,9 @@ public class MessageQueueFactory {
     private final ConnectionFactoryFactory connectionFactoryFactory;
 
     public DefaultMessageQueueConsumer createMessageQueue(String environment) throws JMSException {
-        String requestQueue = String.format(tpsRequestQueue, environment.toUpperCase());
-        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(channelEnvironment);
+        environment = environment.toUpperCase();
+        String requestQueue = String.format(tpsRequestQueue, environment);
+        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment);
         ConnectionFactory connectionFactory = connectionFactoryFactory.createConnectionFactory(connectionStrategy);
         return new DefaultMessageQueueConsumer(requestQueue, connectionFactory, messageQueueUsername, messageQueuePassword);
     }
