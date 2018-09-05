@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { ToggleGruppe, ToggleKnapp } from 'nav-frontend-skjema'
 import Overskrift from '~/components/overskrift/Overskrift'
-import Input from '~/components/fields/Input/Input'
+import SearchField from '~/components/searchField/SearchField'
 import RedigerConnector from './Rediger/RedigerConnector'
 import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
@@ -49,7 +49,7 @@ export default class GruppeOversikt extends PureComponent {
 							Alle
 						</ToggleKnapp>
 					</ToggleGruppe>
-					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
+					<SearchField />
 				</div>
 
 				{grupper.visOpprettGruppe && <RedigerConnector />}
