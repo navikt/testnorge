@@ -31,6 +31,10 @@ export default class DollyService {
 		return Request.put(Endpoints.gruppeById(gruppeId), data)
 	}
 
+	static deleteGruppe(gruppeId) {
+		return Request.delete(Endpoints.gruppeById(gruppeId))
+	}
+
 	static updateGruppeAttributter(gruppeId, data) {
 		return Request.put(Endpoints.gruppeAttributter(gruppeId), data)
 	}
