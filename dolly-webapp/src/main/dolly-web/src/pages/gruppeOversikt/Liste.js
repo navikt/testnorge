@@ -13,7 +13,7 @@ export default class Liste extends PureComponent {
 	}
 
 	render() {
-		const { items, editId, startRedigerGruppe, history } = this.props
+		const { items, editId, startRedigerGruppe, history, deleteGruppe } = this.props
 
 		if (!items) {
 			return (
@@ -53,6 +53,7 @@ export default class Liste extends PureComponent {
 					// Vise redigeringsknapp eller stjerne
 					if (gruppe.erMedlemAvTeamSomEierGruppe) {
 						rowProps.editAction = () => startRedigerGruppe(gruppe.id)
+						rowProps.deleteAction = () => deleteGruppe(gruppe.id)
 					} else {
 						rowProps.favoriteAction = () => {
 							alert('favorite this - not implemented')

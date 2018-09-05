@@ -14,6 +14,10 @@ export const types = {
 	UPDATE_GRUPPER_SUCCESS: 'grupper/update-success',
 	UPDATE_GRUPPER_ERROR: 'grupper/update-error',
 
+	DELETE_GRUPPER_REQUEST: 'grupper/delete-request',
+	DELETE_GRUPPER_SUCCESS: 'grupper/delete-success',
+	DELETE_GRUPPER_ERROR: 'grupper/delete-error',
+
 	SETT_VISNING: 'grupper/sett-visning',
 	START_OPPRETT_GRUPPE: 'grupper/start-opprett-gruppe',
 	START_REDIGER_GRUPPE: 'grupper/start-rediger-gruppe',
@@ -67,6 +71,7 @@ export default (state = initialState, action) => {
 				error: action.error
 			}
 		case types.UPDATE_GRUPPER_REQUEST:
+		case types.DELETE_GRUPPER_REQUEST:
 			return {
 				...state,
 				createOrUpdateFetching: true
@@ -82,10 +87,17 @@ export default (state = initialState, action) => {
 				editId: null
 			}
 		case types.UPDATE_GRUPPER_ERROR:
+		case types.DELETE_GRUPPER_ERROR:
 			return {
 				...state,
 				createOrUpdateFetching: false,
 				error: action.error
+			}
+		case types.DELETE_GRUPPER_SUCCESS:
+			return {
+				...state,
+				createOrUpdateFetching: false,
+				items: state.items.filter(item => item.id !== action.gruppeId)
 			}
 		case types.SETT_VISNING:
 			return {
@@ -157,6 +169,20 @@ const updateGrupperError = error => ({
 	error
 })
 
+const deleteGrupperRequest = () => ({
+	type: types.DELETE_GRUPPER_REQUEST
+})
+
+const deleteGrupperSuccess = gruppeId => ({
+	type: types.DELETE_GRUPPER_SUCCESS,
+	gruppeId
+})
+
+const deleteGrupperError = error => ({
+	type: types.DELETE_GRUPPER_ERROR,
+	error
+})
+
 export const settVisning = visning => ({ type: types.SETT_VISNING, visning })
 export const startRedigerGruppe = editId => ({ type: types.START_REDIGER_GRUPPE, editId })
 export const startOpprettGruppe = () => ({ type: types.START_OPPRETT_GRUPPE })
@@ -205,5 +231,15 @@ export const updateGruppe = (id, values) => async (dispatch, getState) => {
 		dispatch(updateGrupperSuccess(response.data))
 	} catch (error) {
 		dispatch(updateGrupperError(error))
+	}
+}
+
+export const deleteGruppe = id => async dispatch => {
+	try {
+		dispatch(deleteGrupperRequest())
+		const response = await DollyApi.deleteGruppe(id)
+		dispatch(deleteGrupperSuccess(id))
+	} catch (error) {
+		dispatch(deleteGrupperError(error))
 	}
 }

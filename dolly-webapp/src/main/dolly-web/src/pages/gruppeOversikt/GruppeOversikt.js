@@ -16,7 +16,8 @@ export default class GruppeOversikt extends PureComponent {
 		startRedigerGruppe: PropTypes.func,
 		startOpprettGruppe: PropTypes.func,
 		getGrupper: PropTypes.func,
-		settVisning: PropTypes.func
+		settVisning: PropTypes.func,
+		deleteGruppe: PropTypes.func
 	}
 
 	componentDidMount() {
@@ -30,7 +31,7 @@ export default class GruppeOversikt extends PureComponent {
 	}
 
 	render() {
-		const { grupper, history, startRedigerGruppe, startOpprettGruppe } = this.props
+		const { grupper, history, startRedigerGruppe, startOpprettGruppe, deleteGruppe } = this.props
 
 		return (
 			<div className="oversikt-container">
@@ -62,6 +63,7 @@ export default class GruppeOversikt extends PureComponent {
 						editId={grupper.editId}
 						startRedigerGruppe={startRedigerGruppe}
 						history={history}
+						deleteGruppe={deleteGruppe}
 					/>
 				)}
 

@@ -1,6 +1,12 @@
 import { connect } from 'react-redux'
 import GruppeOversikt from './GruppeOversikt'
-import { getGrupper, startRedigerGruppe, startOpprettGruppe, settVisning } from '~/ducks/grupper'
+import {
+	getGrupper,
+	startRedigerGruppe,
+	startOpprettGruppe,
+	settVisning,
+	deleteGruppe
+} from '~/ducks/grupper'
 
 const mapStateToProps = state => ({
 	grupper: state.grupper,
@@ -11,7 +17,8 @@ const mapDispatchToProps = dispatch => ({
 	getGrupper: () => dispatch(getGrupper()),
 	startRedigerGruppe: editId => dispatch(startRedigerGruppe(editId)),
 	startOpprettGruppe: () => dispatch(startOpprettGruppe()),
-	settVisning: visning => dispatch(settVisning(visning))
+	settVisning: visning => dispatch(settVisning(visning)),
+	deleteGruppe: gruppeId => dispatch(deleteGruppe(gruppeId))
 })
 
 export default connect(
