@@ -20,7 +20,8 @@ const iconList = [
 	'chevron-right',
 	'file-new',
 	'team',
-	'info-circle'
+	'info-circle',
+	'search'
 ]
 
 export default class Icon extends PureComponent {
@@ -63,7 +64,8 @@ export default class Icon extends PureComponent {
             case ('chevron-right'): return (<svg {...props} className={cn('svg-icon-chevron-right', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil høyre</title><Chevron direction="right" /></svg>)
             case ('file-new'): return (<svg {...props} className={cn('svg-icon-file-new', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Maler</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M20.5 23.5h-17v-23h11l6 6zM14.5.5v6h6"/></g></svg>)
             case ('team'): return (<svg {...props} className={cn('svg-icon-team', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Team</title><g stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M4 6.609v1.391l-2.539.726c-.528.151-.961.724-.961 1.274v.5h5.5M7 6.578v1.422l2.538.726c.529.151.962.724.962 1.274v.5h-5.5"/><ellipse cx="5.5" cy="3.771" rx="3" ry="3.271"/><path d="M8.469 3.198c-.5.5-1.93.476-2.469-.527-1 1-2.625 1-3.434.429M17 6.609v1.391l-2.539.726c-.528.151-.961.724-.961 1.274v.5h5.5M20 6.594v1.406l2.538.726c.529.151.962.724.962 1.274v.5h-5.5"/><ellipse cx="18.5" cy="3.771" rx="3" ry="3.271"/><path d="M21.453 3.195c-.5.5-1.914.479-2.453-.524-1 1-2.625 1-3.434.429M10.5 19.609v1.391l-2.539.726c-.528.151-.961.724-.961 1.274v.5h5.5M13.5 19.609v1.391l2.538.726c.529.151.962.724.962 1.274v.5h-5.5"/><ellipse cx="12" cy="16.771" rx="3" ry="3.271"/><path d="M14.953 16.171c-.5.5-1.914.503-2.453-.5-1 1-2.625 1-3.434.429"/><path strokeLinecap="round" d="M4 12.5l2.5 2.5M20 12.5l-2.5 2.5"/></g></svg>)
-            case ('info-circle'): return (<svg {...props} className={cn('svg-icon-team', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Info</title><g><circle stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" cx="11.5" cy="12.5" r="11" fill="none"/><path stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none" d="M8.5 19.5h6M9.5 10.5h2v8.5"/><path stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" d="M11 6c-.277 0-.5.225-.5.5 0 .277.223.5.5.5.275 0 .5-.223.5-.5 0-.275-.225-.5-.5-.5z" fill="none"/></g></svg>)
+            case ('info-circle'): return (<svg {...props} className={cn('svg-icon-info-circle', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Info</title><g><circle stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" cx="11.5" cy="12.5" r="11" fill="none"/><path stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none" d="M8.5 19.5h6M9.5 10.5h2v8.5"/><path stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" d="M11 6c-.277 0-.5.225-.5.5 0 .277.223.5.5.5.275 0 .5-.223.5-.5 0-.275-.225-.5-.5-.5z" fill="none"/></g></svg>)
+            case ('search'): return (<svg {...props} className={cn('svg-icon-search', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Info</title><g stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><circle cx="8.5" cy="8.5" r="8"/><path strokeLinecap="round" d="M14.156 14.156l9.344 9.344"/></g></svg>)
         }
 	}
 }

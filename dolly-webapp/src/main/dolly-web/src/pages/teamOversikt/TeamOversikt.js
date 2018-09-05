@@ -7,6 +7,7 @@ import RedigerTeamConnector from './RedigerTeam/RedigerTeamConnector'
 import Loading from '~/components/loading/Loading'
 import TeamListe from './TeamListe'
 import AddButton from '~/components/button/AddButton'
+import SearchField from '~/components/searchField/SearchField'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
@@ -41,7 +42,7 @@ export default class TeamOversikt extends Component {
 							Alle
 						</ToggleKnapp>
 					</ToggleGruppe>
-					<Input name="sokefelt" className="label-offscreen" label="" placeholder="Søk" />
+					<SearchField />
 				</div>
 				{visOpprettTeam && <RedigerTeamConnector />}
 				{fetching ? (
