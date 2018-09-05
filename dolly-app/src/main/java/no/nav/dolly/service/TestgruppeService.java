@@ -122,6 +122,7 @@ public class TestgruppeService {
         }
     }
 
+    @Transactional
     public void slettGruppeById(Long gruppeId){
         testGruppeRepository.deleteTestgruppeById(gruppeId);
     }
