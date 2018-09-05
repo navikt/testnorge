@@ -3,7 +3,6 @@ package no.nav.identpool.ident.rest.v1;
 import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.ident.domain.Identtype;
+import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.ident.exception.IllegalIdenttypeException;
 import no.nav.identpool.ident.service.IdentpoolService;
 
@@ -34,16 +34,16 @@ public class IdentpoolController {
     }
 
     @GetMapping("/ledig")
-    public ResponseEntity<Boolean> erLedig(
-            @RequestParam String personidentifkator
+    public Boolean erLedig(
+            @RequestParam String personidentifikator
     ) {
-        return ResponseEntity.ok(identpoolService.erLedig(personidentifkator));
+        return identpoolService.erLedig(personidentifikator);
     }
 
     @PostMapping("/bruk")
-    public ResponseEntity<String> markerBrukt(
+    public String markerBrukt(
             @RequestParam String personidentifikator
-    ) {
-        return ResponseEntity.ok(identpoolService.markerBrukt(personidentifikator));
+    ) throws IdentAlleredeIBrukException {
+        return identpoolService.markerBrukt(personidentifikator);
     }
 }
