@@ -3,6 +3,8 @@ package no.nav.identpool.batch.fasit;
 import static no.nav.freg.fasit.utils.domain.ResourceType.QUEUE_MANAGER;
 import static no.nav.freg.fasit.utils.domain.Zone.FSS;
 
+import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,5 +32,9 @@ public class FasitClient {
 
     public QueueManager getQueueManager(String environ) {
         return fasitService.find("mqGateway", QUEUE_MANAGER, environ, applicationName, FSS, QueueManager.class);
+    }
+
+    public List<String> findAllEnvironments(String environmentclass) throws IOException {
+        return fasitService.findEnvironmentNames(environmentclass);
     }
 }

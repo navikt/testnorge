@@ -1,4 +1,4 @@
-package no.nav.identpool.batch.factory;
+package no.nav.identpool.batch.mq.factory;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -9,8 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 
 import lombok.RequiredArgsConstructor;
 
-import no.nav.identpool.batch.consumers.DefaultMessageQueueConsumer;
-import no.nav.identpool.batch.strategy.ConnectionStrategy;
+import no.nav.identpool.batch.mq.consumer.DefaultMessageQueue;
+import no.nav.identpool.batch.mq.consumer.MessageQueue;
+import no.nav.identpool.batch.mq.strategy.ConnectionStrategy;
 
 @Component
 @RequiredArgsConstructor
@@ -28,11 +29,11 @@ public class MessageQueueFactory {
     private final ConnectionStrategyFactory connectionStrategyFactory;
     private final ConnectionFactoryFactory connectionFactoryFactory;
 
-    public DefaultMessageQueueConsumer createMessageQueue(String environment) throws JMSException {
+    public MessageQueue createMessageQueue(String environment) throws JMSException {
         environment = environment.toUpperCase();
         String requestQueue = String.format(tpsRequestQueue, environment);
         ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment);
         ConnectionFactory connectionFactory = connectionFactoryFactory.createConnectionFactory(connectionStrategy);
-        return new DefaultMessageQueueConsumer(requestQueue, connectionFactory, messageQueueUsername, messageQueuePassword);
+        return new DefaultMessageQueue(requestQueue, connectionFactory, messageQueueUsername, messageQueuePassword);
     }
 }

@@ -31,6 +31,10 @@
         <dhbcore.version>DH610-GOLD</dhbcore.version>
         <javaee.version>7.0</javaee.version>
         <fasit.util.version>2.1.1-SNAPSHOT</fasit.util.version>
+        <guava.version>23.0</guava.version>
+        <jackson.version>2.9.6</jackson.version>
+        <woodstox.version>4.4.1</woodstox.version>
+        <woodstox.core.version>5.0.3</woodstox.core.version>
     </properties>
 
     <dependencyManagement>
@@ -64,6 +68,26 @@
                 <groupId>no.nav.freg</groupId>
                 <artifactId>fasit-util</artifactId>
                 <version>${fasit.util.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.woodstox</groupId>
+                <artifactId>woodstox-core-asl</artifactId>
+                <version>${woodstox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.woodstox</groupId>
+                <artifactId>woodstox-core</artifactId>
+                <version>${woodstox.core.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
