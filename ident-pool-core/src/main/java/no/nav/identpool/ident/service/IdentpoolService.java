@@ -1,32 +1,33 @@
 package no.nav.identpool.ident.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import lombok.AllArgsConstructor;
-import no.nav.identpool.ident.domain.Identtype;
+import lombok.RequiredArgsConstructor;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.ident.repository.IdentEntity;
+import no.nav.identpool.ident.repository.IdentPredicateUtil;
 import no.nav.identpool.ident.repository.IdentRepository;
+import no.nav.identpool.ident.rest.v1.HentIdenterRequest;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class IdentpoolService {
-    private IdentRepository identRepository;
+    private final IdentRepository identRepository;
+    private final IdentPredicateUtil identPredicateUtil;
 
-    public List<String> findIdents(Identtype identtype, Pageable pageable) {
-        List<IdentEntity> identEntityList;
-        if (identtype.equals(Identtype.DNR)) {
-            identEntityList = identRepository.findByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG, Identtype.DNR, pageable);
-        } else if (identtype.equals(Identtype.FNR)) {
-            identEntityList = identRepository.findByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG, Identtype.FNR, pageable);
-        } else {
-            identEntityList = identRepository.findByRekvireringsstatus(Rekvireringsstatus.LEDIG, pageable);
-        }
-        return identEntityList.stream().map(IdentEntity::getPersonidentifikator).collect(Collectors.toList());
+    public List<String> findIdents(HentIdenterRequest hentIdenterRequest) {
+
+        List<String> personidentifikatorList = new ArrayList<>();
+
+        Iterable<IdentEntity> identEntities = identRepository.findAll(identPredicateUtil.lagPredicateFraRequest(hentIdenterRequest));
+        identEntities.forEach(i -> personidentifikatorList.add(i.getPersonidentifikator()));
+
+        return personidentifikatorList;
     }
 
     public Boolean erLedig(String personidentifkator) {
