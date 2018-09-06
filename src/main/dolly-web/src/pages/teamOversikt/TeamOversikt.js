@@ -7,7 +7,7 @@ import RedigerTeamConnector from './RedigerTeam/RedigerTeamConnector'
 import Loading from '~/components/loading/Loading'
 import TeamListe from './TeamListe'
 import AddButton from '~/components/button/AddButton'
-import SearchField from '~/components/searchField/SearchField'
+import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
@@ -24,8 +24,8 @@ export default class TeamOversikt extends Component {
 	}
 
 	render() {
-		const { teams, history, startOpprettTeam, startRedigerTeam, deleteTeam } = this.props
-		const { items, fetching, visning, visOpprettTeam, editTeamId } = teams
+		const { teamListe, teams, history, startOpprettTeam, startRedigerTeam, deleteTeam } = this.props
+		const { fetching, visning, visOpprettTeam, editTeamId } = teams
 
 		return (
 			<div className="oversikt-container">
@@ -42,14 +42,14 @@ export default class TeamOversikt extends Component {
 							Alle
 						</ToggleKnapp>
 					</ToggleGruppe>
-					<SearchField />
+					<SearchFieldConnector />
 				</div>
 				{visOpprettTeam && <RedigerTeamConnector />}
 				{fetching ? (
 					<Loading label="laster teams" panel />
 				) : (
 					<TeamListe
-						items={items}
+						items={teamListe}
 						fetching={fetching}
 						history={history}
 						startRedigerTeam={startRedigerTeam}

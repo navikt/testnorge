@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { ToggleGruppe, ToggleKnapp } from 'nav-frontend-skjema'
 import Overskrift from '~/components/overskrift/Overskrift'
-import SearchField from '~/components/searchField/SearchField'
+import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import RedigerConnector from './Rediger/RedigerConnector'
 import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
@@ -31,7 +31,14 @@ export default class GruppeOversikt extends PureComponent {
 	}
 
 	render() {
-		const { grupper, history, startRedigerGruppe, startOpprettGruppe, deleteGruppe } = this.props
+		const {
+			gruppeListe,
+			grupper,
+			history,
+			startRedigerGruppe,
+			startOpprettGruppe,
+			deleteGruppe
+		} = this.props
 
 		return (
 			<div className="oversikt-container">
@@ -50,7 +57,7 @@ export default class GruppeOversikt extends PureComponent {
 							Alle
 						</ToggleKnapp>
 					</ToggleGruppe>
-					<SearchField />
+					<SearchFieldConnector />
 				</div>
 
 				{grupper.visOpprettGruppe && <RedigerConnector />}
@@ -59,7 +66,7 @@ export default class GruppeOversikt extends PureComponent {
 					<Loading label="laster grupper" panel />
 				) : (
 					<Liste
-						items={grupper.items}
+						items={gruppeListe}
 						editId={grupper.editId}
 						startRedigerGruppe={startRedigerGruppe}
 						history={history}

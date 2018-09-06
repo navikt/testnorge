@@ -8,10 +8,27 @@ import {
 	deleteGruppe
 } from '~/ducks/grupper'
 
-const mapStateToProps = state => ({
-	grupper: state.grupper,
-	error: state.grupper.error
-})
+const gruppeFiltering = (items, searchText) => {
+	if (!items) return null
+
+	if (!searchText) return items
+
+	const query = searchText.toLowerCase()
+	return items.filter(item => {
+		if (item.navn.toLowerCase().includes(query)) return true
+		if (item.team.navn.toLowerCase().includes(query)) return true
+
+		return false
+	})
+}
+
+const mapStateToProps = state => {
+	return {
+		gruppeListe: gruppeFiltering(state.grupper.items, state.search),
+		grupper: state.grupper,
+		error: state.grupper.error
+	}
+}
 
 const mapDispatchToProps = dispatch => ({
 	getGrupper: () => dispatch(getGrupper()),
