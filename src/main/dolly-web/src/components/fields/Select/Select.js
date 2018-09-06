@@ -27,7 +27,6 @@ export default class DollySelect extends PureComponent {
 
 	render() {
 		const { name, label, placeholder, loadOptions, error, ...restProps } = this.props
-
 		return (
 			<div className={cn({ error: Boolean(error) }, 'skjemaelement dollyselect')}>
 				<label className="skjemaelement__label">{label} </label>
@@ -66,14 +65,21 @@ export default class DollySelect extends PureComponent {
 export const FormikDollySelect = props => {
 	const { field, form, ...restProps } = props
 
+	const singleSelectChangeHandler = selected => {
+		form.setFieldValue(field.name, _get(selected, 'value', ''))
+	}
+
+	const multiSelectChangeHandler = selected => {
+		form.setFieldValue(field.name, selected)
+	}
+
+	const onChangeHandler = props.multi ? multiSelectChangeHandler : singleSelectChangeHandler
+
 	return (
 		<DollySelect
 			name={field.name}
 			value={field.value}
-			onChange={selected => {
-				const defaultValue = ''
-				form.setFieldValue(field.name, _get(selected, 'value', defaultValue))
-			}}
+			onChange={onChangeHandler}
 			onBlur={() => form.setFieldTouched(field.name, true)}
 			error={_get(form.touched, field.name) && _get(form.errors, field.name)}
 			{...restProps}

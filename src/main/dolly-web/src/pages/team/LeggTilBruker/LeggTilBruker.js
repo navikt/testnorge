@@ -52,7 +52,6 @@ export default class RedigerTeam extends PureComponent {
 					const { values, touched, errors, dirty, isSubmitting } = props
 					return (
 						<Form className="opprett-tabellrad" autoComplete="off">
-							<h2>Legg til bruker</h2>
 							<div className="fields">
 								<Field
 									name="navIdent"
