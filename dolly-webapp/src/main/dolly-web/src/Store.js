@@ -10,6 +10,7 @@ import teamsReducer from './ducks/teams'
 import teamReducer from './ducks/team'
 import brukerReducer from './ducks/bruker'
 import testbrukerReducer from './ducks/testBruker'
+import searchReducer from './ducks/search'
 
 export default function configureReduxStore(history) {
 	const allMiddleware = [thunkMiddleware, routerMiddleware(history)]
@@ -28,7 +29,8 @@ export default function configureReduxStore(history) {
 		teams: teamsReducer,
 		team: teamReducer,
 		bruker: brukerReducer,
-		testbruker: testbrukerReducer
+		testbruker: testbrukerReducer,
+		search: searchReducer
 	})
 
 	return createStore(
