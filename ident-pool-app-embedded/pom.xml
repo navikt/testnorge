@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>java.no.nav.ident-pool-embedded</groupId>
+    <groupId>no.nav.ident-pool-embedded</groupId>
     <artifactId>ident-pool-app-embedded</artifactId>
     <dependencies>
         <dependency>
