@@ -4,6 +4,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
+import no.nav.dolly.domain.resultset.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.service.BrukerService;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -66,5 +68,21 @@ public class BrukerControllerTest {
     public void getAllBrukere() {
         controller.getAllBrukere();
         verify(brukerService).fetchBrukere();
+    }
+
+    @Test
+    public void fjernFavoritter() {
+        RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
+        req.setGruppeId(1l);
+        controller.fjernFavoritt(req);
+        verify(brukerService).fjernFavoritter(anyList());
+    }
+
+    @Test
+    public void leggTilFavoritter() {
+        RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
+        req.setGruppeId(1l);
+        controller.leggTilFavoritt(req);
+        verify(brukerService).leggTilFavoritter(anyList());
     }
 }

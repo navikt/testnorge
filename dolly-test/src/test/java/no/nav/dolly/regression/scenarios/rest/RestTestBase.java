@@ -5,20 +5,22 @@ import no.nav.dolly.config.DollyObjectMapper;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.regression.InMememoryDbTestSetup;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
-import no.nav.dolly.regression.InMememoryDbTestSetup;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,14 +55,35 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
 
     protected String standardPrincipal = standardNavIdent;
 
-    @Before
-    public void setupBruker() {
-        mvcMock = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    @After
+    public void after() {
+        removeManyToManyRelationships();
 
         testGruppeRepository.deleteAll();
         teamRepository.deleteAll();
         brukerRepository.deleteAll();
         identRepository.deleteAll();
+
+        bestillingProgressRepository.deleteAll();
+        bestillingRepository.deleteAll();
+    }
+
+    private void removeManyToManyRelationships(){
+        List<Bruker> brukere = brukerRepository.findAll();
+        brukere.forEach(b -> {
+            b.setFavoritter(new HashSet<>());
+            b.setTeams(new HashSet<>());
+        });
+        brukerRepository.saveAll(brukere);
+
+        List<Testgruppe> grupper = testGruppeRepository.findAll();
+        grupper.forEach(g -> g.setFavorisertAv(new HashSet<>()));
+        testGruppeRepository.saveAll(grupper);
+    }
+
+    @Before
+    public void setupBruker() {
+        mvcMock = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         standardBruker = brukerRepository.save(BrukerBuilder.builder()
                 .navIdent(standardNavIdent)

@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
+
 @Service
 public class BrukerService {
 
@@ -25,6 +27,9 @@ public class BrukerService {
 
     @Autowired
     private TeamService teamService;
+
+    @Autowired
+    private TestgruppeService gruppeService;
 
     @Autowired
     private MapperFacade mapperFacade;
@@ -37,7 +42,7 @@ public class BrukerService {
         Bruker bruker = brukerRepository.findBrukerByNavIdent(navIdent);
         if (bruker == null) {
             throw new NotFoundException("Bruker ikke funnet");
-        }
+        };
         return bruker;
     }
 
@@ -62,11 +67,35 @@ public class BrukerService {
                 .build();
     }
 
+    public Bruker leggTilFavoritter(Collection<Long> gruppeIDer){
+        String navIdent = getLoggedInNavIdent();
+        List<Testgruppe> grupper = gruppeService.fetchGrupperByIdsIn(gruppeIDer);
+
+        return leggTilFavoritter(navIdent, grupper);
+    }
+
     @Transactional
-    public Bruker addFavoritter(String navident, Collection<Testgruppe> grupper){
+    public Bruker leggTilFavoritter(String navident, Collection<Testgruppe> grupper){
         Bruker bruker = fetchBruker(navident);
         bruker.getFavoritter().addAll(grupper);
         return brukerRepository.save(bruker);
+    }
+
+    public Bruker fjernFavoritter(Collection<Long> gruppeIDer){
+        String navIdent = getLoggedInNavIdent();
+        List<Testgruppe> grupper = gruppeService.fetchGrupperByIdsIn(gruppeIDer);
+
+        return fjernFavoritter(navIdent, grupper);
+    }
+
+    @Transactional
+    public Bruker fjernFavoritter(String navident, Collection<Testgruppe> grupper){
+        Bruker bruker = fetchBruker(navident);
+        bruker.getFavoritter().removeAll(grupper);
+        grupper.forEach(g ->  g.getFavorisertAv().remove(bruker));
+        Bruker lagretBruker = brukerRepository.save(bruker);
+        gruppeService.saveGrupper(grupper);
+        return lagretBruker;
     }
 
     public List<Bruker> fetchBrukere() {

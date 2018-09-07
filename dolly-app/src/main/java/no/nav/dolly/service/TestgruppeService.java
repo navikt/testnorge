@@ -17,6 +17,7 @@ import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 @Service
@@ -70,6 +72,16 @@ public class TestgruppeService {
         }
 
         throw new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId);
+    }
+
+    public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer){
+        List<Testgruppe> grupper = testGruppeRepository.findAllById(grupperIDer);
+
+        if(!isNullOrEmpty(grupper)){
+            return grupper;
+        }
+
+        throw new NotFoundException("Finner ikke grupper basert på IDer : " +  grupperIDer);
     }
 
     public RsTestgruppeMedErMedlemOgFavoritt rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(RsTestgruppe gruppe){
@@ -122,6 +134,16 @@ public class TestgruppeService {
         }
     }
 
+    public List<Testgruppe> saveGrupper(Collection<Testgruppe> testgrupper) {
+        try {
+            return testGruppeRepository.saveAll(testgrupper);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage());
+        } catch (NonTransientDataAccessException e) {
+            throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
+        }
+    }
+
     @Transactional
     public void slettGruppeById(Long gruppeId){
         testGruppeRepository.deleteTestgruppeById(gruppeId);
@@ -132,8 +154,7 @@ public class TestgruppeService {
         Testgruppe savedGruppe = fetchTestgruppeById(gruppeId);
         Testgruppe requestGruppe = mapperFacade.map(testgruppe, Testgruppe.class);
 
-        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-        Bruker bruker = brukerService.fetchBruker(auth.getPrincipal());
+        Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
 
         savedGruppe.setHensikt(requestGruppe.getHensikt());
         savedGruppe.setNavn(requestGruppe.getNavn());

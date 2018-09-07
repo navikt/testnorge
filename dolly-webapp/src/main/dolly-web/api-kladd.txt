@@ -5,6 +5,8 @@
 /*** BRUKER
 // GET api/bruker               | Hent alle brukere
 // GET api/bruker/<id>          | Hent bruker by id
+// PUT api/bruker/leggTilFavoritter
+// PUT api/bruker/fjernFavoritter
 
 [{
     id: <nav_ident>,

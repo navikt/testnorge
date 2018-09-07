@@ -14,16 +14,19 @@ import no.nav.dolly.testdata.builder.RsBrukerBuilder;
 import no.nav.dolly.testdata.builder.RsTeamBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -42,6 +45,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class BrukerServiceTest {
 
+    private final static String navIdent = "bruker";
+
     @Mock
     private BrukerRepository brukerRepository;
 
@@ -51,8 +56,16 @@ public class BrukerServiceTest {
     @Mock
     private MapperFacade mapperFacade;
 
+    @Mock
+    private TestgruppeService gruppeService;
+
     @InjectMocks
     private BrukerService service;
+
+    @Before
+    public void setup(){
+        SecurityContextHolder.getContext().setAuthentication(new OidcTokenAuthentication(navIdent, null, null, null));
+    }
 
     @Test
     public void opprettBruker_kallerRepositorySave() {
@@ -115,7 +128,7 @@ public class BrukerServiceTest {
         when(brukerRepository.findBrukerByNavIdent(navident)).thenReturn(bruker);
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
-        Bruker endretBruker = service.addFavoritter(navident, gruppeList);
+        Bruker endretBruker = service.leggTilFavoritter(navident, gruppeList);
 
         assertThat(endretBruker.getFavoritter().size(), is(1));
         assertThat(endretBruker.getFavoritter(), hasItem(both(
@@ -123,4 +136,63 @@ public class BrukerServiceTest {
                 hasProperty("hensikt", equalTo("hen"))
         )));
     }
+
+
+    @Test
+    public void leggTilFavoritter_medGrupperIDer(){
+        List<Long> ider = Arrays.asList(1l,2l);
+        Testgruppe g = TestgruppeBuilder.builder().navn("gruppe").hensikt("hen").build().convertToRealTestgruppe();
+        List<Testgruppe>  grupper = Arrays.asList(g);
+        Bruker b = BrukerBuilder.builder().navIdent(navIdent).favoritter(new HashSet<>()).teams(new HashSet<>()).build().convertToRealBruker();
+
+        when(gruppeService.fetchGrupperByIdsIn(ider)).thenReturn(grupper);
+        when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(b);
+        when(brukerRepository.save(b)).thenReturn(b);
+
+        Bruker hentetBruker = service.leggTilFavoritter(ider);
+
+        verify(brukerRepository).save(b);
+
+        assertThat(hentetBruker, is(b));
+        assertThat(hentetBruker.getFavoritter().size(), is(1));
+
+        assertThat(hentetBruker.getFavoritter(), hasItem(both(
+                hasProperty("navn", equalTo("gruppe"))).and(
+                hasProperty("hensikt", equalTo("hen"))
+        )));
+    }
+
+    @Test
+    public void fjernFavoritter_medGrupperIDer(){
+        List<Long> ider = Arrays.asList(1l);
+        Testgruppe g = TestgruppeBuilder.builder().navn("gruppe").hensikt("hen").build().convertToRealTestgruppe();
+        Testgruppe g2 = TestgruppeBuilder.builder().navn("gruppe2").hensikt("hen2").build().convertToRealTestgruppe();
+        List<Testgruppe> grupperSomSkalBort = Arrays.asList(g);
+        Set<Testgruppe> favoritter = new HashSet<>();
+        favoritter.add(g);
+        favoritter.add(g2);
+
+        Bruker b = BrukerBuilder.builder().navIdent(navIdent).favoritter(favoritter).teams(new HashSet<>()).build().convertToRealBruker();
+        g.setFavorisertAv(new HashSet<>(Arrays.asList(b)));
+        g2.setFavorisertAv(new HashSet<>(Arrays.asList(b)));
+
+        when(gruppeService.fetchGrupperByIdsIn(ider)).thenReturn(grupperSomSkalBort);
+        when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(b);
+        when(brukerRepository.save(b)).thenReturn(b);
+
+        Bruker hentetBruker = service.fjernFavoritter(ider);
+
+        verify(brukerRepository).save(b);
+
+        assertThat(hentetBruker, is(b));
+        assertThat(hentetBruker.getFavoritter().size(), is(1));
+
+        assertThat(hentetBruker.getFavoritter(), hasItem(both(
+                hasProperty("navn", equalTo("gruppe2"))).and(
+                hasProperty("hensikt", equalTo("hen2"))
+        )));
+
+        assertThat(g.getFavorisertAv().isEmpty(), is(true));
+    }
+
 }

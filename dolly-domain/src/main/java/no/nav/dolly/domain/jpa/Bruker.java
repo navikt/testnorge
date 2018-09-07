@@ -34,7 +34,7 @@ public class Bruker {
     @ManyToMany(mappedBy = "medlemmer")
     private Set<Team> teams = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "T_BRUKER_FAVORITTER",
             joinColumns = @JoinColumn(name = "bruker_id"),
             inverseJoinColumns = @JoinColumn(name = "gruppe_id"))
