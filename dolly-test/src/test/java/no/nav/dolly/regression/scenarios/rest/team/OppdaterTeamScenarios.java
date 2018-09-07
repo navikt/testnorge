@@ -18,13 +18,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class OppdaterTeamMedNyEierScenarios extends TeamTestCaseBase{
+public class OppdaterTeamScenarios extends TeamTestCaseBase{
 
     @Autowired
     MapperFacade mapperFacade;
 
     @Test
-    public void hentAlleTeamBrukerEierEllerErMedlemAv() throws Exception {
+    public void oppdaterBrukerMedAlleInputs() throws Exception {
         Bruker nyEier = brukerRepository.save(BrukerBuilder.builder().navIdent("nyEier").build().convertToRealBruker());
 
         Team teamSomSkalEndres = teamRepository.findAll().get(0);
@@ -54,6 +54,38 @@ public class OppdaterTeamMedNyEierScenarios extends TeamTestCaseBase{
         teamSomSkalEndres = teamRepository.findTeamById(teamSomSkalEndres.getId());
 
         assertThat(teamSomSkalEndres.getEier().getNavIdent(), is("nyEier"));
+    }
+
+    @Test
+    public void oppdaterTeamKunNavnOgBeskrivelseIBody() throws Exception {
+        Bruker nyEier = brukerRepository.save(BrukerBuilder.builder().navIdent("nyEier").build().convertToRealBruker());
+
+        Team teamSomSkalErEndret = teamRepository.findAll().get(0);
+
+        RsTeam request = RsTeamBuilder.builder()
+                .beskrivelse("endretTeam")
+                .navn("endretTeamNavn")
+                .build()
+                .convertToRealRsTeam();
+
+        String url = endpointUrl + "/" + teamSomSkalErEndret.getId();
+
+        MvcResult mvcResult = mvcMock.perform(put(url)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(convertObjectToJson(request)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        RsTeam response = convertMvcResultToObject(mvcResult, RsTeam.class);
+        teamSomSkalErEndret = teamRepository.findTeamById(teamSomSkalErEndret.getId());
+
+        assertThat(response.getEierNavIdent(), is(standardNavIdent));
+        assertThat(response.getNavn(), is("endretTeamNavn"));
+        assertThat(response.getBeskrivelse(), is("endretTeam"));
+
+        assertThat(teamSomSkalErEndret.getEier().getNavIdent(), is(standardNavIdent));
+        assertThat(teamSomSkalErEndret.getNavn(), is("endretTeamNavn"));
+        assertThat(teamSomSkalErEndret.getBeskrivelse(), is("endretTeam"));
     }
 
 }

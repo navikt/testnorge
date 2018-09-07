@@ -107,13 +107,16 @@ public class TeamService {
 
         team.setNavn(teamRequest.getNavn());
         team.setBeskrivelse(teamRequest.getBeskrivelse());
-        team.setDatoOpprettet(teamRequest.getDatoOpprettet());
 
-        Set<Bruker> medlemmer = mapperFacade.mapAsSet(teamRequest.getMedlemmer(), Bruker.class);
-        team.setMedlemmer(medlemmer);
+        if(!isNullOrEmpty(teamRequest.getMedlemmer())) {
+            Set<Bruker> medlemmer = mapperFacade.mapAsSet(teamRequest.getMedlemmer(), Bruker.class);
+            team.setMedlemmer(medlemmer);
+        }
 
-        Bruker endretEier = brukerService.fetchBruker(teamRequest.getEierNavIdent());
-        team.setEier(endretEier);
+        if(!isNullOrEmpty(teamRequest.getEierNavIdent())) {
+            Bruker endretEier = brukerService.fetchBruker(teamRequest.getEierNavIdent());
+            team.setEier(endretEier);
+        }
 
         if(!isNullOrEmpty(teamRequest.getGrupper())){
             Set<Testgruppe> grupper = mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class);
