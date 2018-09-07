@@ -1,6 +1,5 @@
 package no.nav.identpool.ident.repository;
 
-import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
