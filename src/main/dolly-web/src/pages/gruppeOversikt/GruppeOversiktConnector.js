@@ -1,12 +1,7 @@
 import { connect } from 'react-redux'
 import GruppeOversikt from './GruppeOversikt'
-import {
-	getGrupper,
-	startRedigerGruppe,
-	startOpprettGruppe,
-	settVisning,
-	deleteGruppe
-} from '~/ducks/grupper'
+import { getGrupper, settVisning, deleteGruppe } from '~/ducks/grupper'
+import { showCreateOrEditGroup } from '~/ducks/gruppe'
 
 const gruppeFiltering = (items, searchText) => {
 	if (!items) return null
@@ -22,18 +17,17 @@ const gruppeFiltering = (items, searchText) => {
 	})
 }
 
-const mapStateToProps = state => {
-	return {
-		gruppeListe: gruppeFiltering(state.grupper.items, state.search),
-		grupper: state.grupper,
-		error: state.grupper.error
-	}
-}
+const mapStateToProps = state => ({
+	gruppeListe: gruppeFiltering(state.grupper.items, state.search),
+	createOrUpdateId: state.gruppe.createOrUpdateId,
+	grupper: state.grupper,
+	error: state.grupper.error
+})
 
 const mapDispatchToProps = dispatch => ({
 	getGrupper: () => dispatch(getGrupper()),
-	startRedigerGruppe: editId => dispatch(startRedigerGruppe(editId)),
-	startOpprettGruppe: () => dispatch(startOpprettGruppe()),
+	createGroup: () => dispatch(showCreateOrEditGroup(-1)),
+	editGroup: editId => dispatch(showCreateOrEditGroup(editId)),
 	settVisning: visning => dispatch(settVisning(visning)),
 	deleteGruppe: gruppeId => dispatch(deleteGruppe(gruppeId))
 })

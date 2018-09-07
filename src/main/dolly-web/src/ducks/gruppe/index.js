@@ -5,11 +5,14 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 export const types = {
 	GET_GRUPPE_REQUEST: 'gruppe/get-request',
 	GET_GRUPPE_SUCCESS: 'gruppe/get-success',
-	GET_GRUPPE_ERROR: 'gruppe/get-error'
+	GET_GRUPPE_ERROR: 'gruppe/get-error',
+
+	TOGGLE_CREATE_OR_UPDATE: 'gruppe/toggle-create-or-update'
 }
 
 const initialState = {
 	fetching: false,
+	createOrUpdateId: null, // null = ingen, -1 = opprett ny gruppe, '45235' (ex: 425323) = rediger
 	data: null
 }
 
@@ -23,6 +26,8 @@ export default function gruppeReducer(state = initialState, action) {
 			return { ...state, fetching: false, data: action.data }
 		case types.GET_GRUPPE_ERROR:
 			return { ...state, fetching: false, error: action.error }
+		case types.TOGGLE_CREATE_OR_UPDATE:
+			return { ...state, createOrUpdateId: action.editId }
 		default:
 			return state
 	}
@@ -41,6 +46,13 @@ const getGruppeError = error => ({
 	type: types.GET_GRUPPE_ERROR,
 	error
 })
+
+export const showCreateOrEditGroup = editId => ({
+	type: types.TOGGLE_CREATE_OR_UPDATE,
+	editId
+})
+
+export const closeCreateOrEdit = () => ({ type: types.TOGGLE_CREATE_OR_UPDATE, editId: null })
 
 export const getGruppe = groupId => async dispatch => {
 	try {

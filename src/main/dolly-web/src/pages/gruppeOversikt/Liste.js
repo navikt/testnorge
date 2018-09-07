@@ -2,18 +2,18 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
-import RedigerConnector from './Rediger/RedigerConnector'
+import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 
 export default class Liste extends PureComponent {
 	static propTypes = {
 		items: PropTypes.array,
 		editId: PropTypes.number,
-		startRedigerGruppe: PropTypes.func,
+		editGroup: PropTypes.func,
 		history: PropTypes.object
 	}
 
 	render() {
-		const { items, editId, startRedigerGruppe, history, deleteGruppe } = this.props
+		const { items, editId, editGroup, history, deleteGruppe } = this.props
 
 		if (!items) {
 			return (
@@ -40,8 +40,9 @@ export default class Liste extends PureComponent {
 				</Table.Header>
 
 				{items.map(gruppe => {
+					console.log(gruppe.id, editId)
 					if (gruppe.id === editId) {
-						return <RedigerConnector key={gruppe.id} gruppe={gruppe} />
+						return <RedigerGruppeConnector key={gruppe.id} gruppe={gruppe} />
 					}
 
 					// base row props
@@ -52,7 +53,7 @@ export default class Liste extends PureComponent {
 
 					// Vise redigeringsknapp eller stjerne
 					if (gruppe.erMedlemAvTeamSomEierGruppe) {
-						rowProps.editAction = () => startRedigerGruppe(gruppe.id)
+						rowProps.editAction = () => editGroup(gruppe.id)
 						rowProps.deleteAction = () => deleteGruppe(gruppe.id)
 					} else {
 						rowProps.favoriteAction = () => {
