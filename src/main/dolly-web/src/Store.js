@@ -1,5 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
+import promiseMiddleware from 'redux-promise-middleware'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 
@@ -11,9 +12,15 @@ import teamReducer from './ducks/team'
 import brukerReducer from './ducks/bruker'
 import testbrukerReducer from './ducks/testBruker'
 import searchReducer from './ducks/search'
+import loadingReducer from './ducks/loading'
+import errorsReducer from './ducks/errors'
 
 export default function configureReduxStore(history) {
-	const allMiddleware = [thunkMiddleware, routerMiddleware(history)]
+	const allMiddleware = [
+		thunkMiddleware,
+		promiseMiddleware({ promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'] }),
+		routerMiddleware(history)
+	]
 
 	// Add redux logger if not in production
 	if (process.env.NODE_ENV !== `production`) {
@@ -30,7 +37,9 @@ export default function configureReduxStore(history) {
 		team: teamReducer,
 		bruker: brukerReducer,
 		testbruker: testbrukerReducer,
-		search: searchReducer
+		search: searchReducer,
+		loading: loadingReducer,
+		errors: errorsReducer
 	})
 
 	return createStore(
