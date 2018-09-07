@@ -40,7 +40,6 @@ export default class Liste extends PureComponent {
 				</Table.Header>
 
 				{items.map(gruppe => {
-					console.log(gruppe.id, editId)
 					if (gruppe.id === editId) {
 						return <RedigerGruppeConnector key={gruppe.id} gruppe={gruppe} />
 					}
