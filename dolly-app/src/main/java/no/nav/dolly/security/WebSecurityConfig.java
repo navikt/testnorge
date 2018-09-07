@@ -15,7 +15,7 @@ public class WebSecurityConfig extends OidcWebSecurityConfig {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers(HttpMethod.GET);
+//        web.ignoring().antMatchers(HttpMethod.GET);
 //        web.ignoring().antMatchers(HttpMethod.POST,"/api/v1/kompetansekoe/findby", "/api/v1/arbeidsfordeling", "/api/v1/arbeidsfordelinger", "/api/v1/enhet/kontaktinformasjoner");
     }
 }
