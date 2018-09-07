@@ -1,13 +1,11 @@
 package no.nav.identpool.ident.domain;
 
-import no.nav.identpool.ident.exception.IllegalIdenttypeException;
-
 public enum Identtype {
     FNR,
     DNR;
 
-    public static Identtype enumFromString(String string) throws IllegalIdenttypeException {
-        if (string.equals("UBESTEMT")) {
+    public static Identtype enumFromString(String string) {
+        if ("UBESTEMT".equals(string)) {
             return null;
         }
         try {
