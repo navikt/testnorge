@@ -67,6 +67,7 @@ public class BrukerService {
                 .build();
     }
 
+    @Transactional
     public Bruker leggTilFavoritter(Collection<Long> gruppeIDer){
         String navIdent = getLoggedInNavIdent();
         List<Testgruppe> grupper = gruppeService.fetchGrupperByIdsIn(gruppeIDer);
@@ -81,6 +82,7 @@ public class BrukerService {
         return brukerRepository.save(bruker);
     }
 
+    @Transactional
     public Bruker fjernFavoritter(Collection<Long> gruppeIDer){
         String navIdent = getLoggedInNavIdent();
         List<Testgruppe> grupper = gruppeService.fetchGrupperByIdsIn(gruppeIDer);
