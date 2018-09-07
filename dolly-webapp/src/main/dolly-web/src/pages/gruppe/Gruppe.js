@@ -11,6 +11,7 @@ import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConn
 import AddButton from '~/components/button/AddButton'
 
 import './Gruppe.less'
+import { showCreateOrEditGroup } from '../../ducks/gruppe'
 
 export default class Gruppe extends Component {
 	state = {
@@ -29,7 +30,15 @@ export default class Gruppe extends Component {
 	toggleRedigerGruppe = () => this.setState({ redigerGruppe: !this.state.redigerGruppe })
 
 	render() {
-		const { gruppe, fetching, testbrukere, testbrukerFetching, getGruppe } = this.props
+		const {
+			gruppe,
+			createOrUpdateId,
+			createGroup,
+			fetching,
+			testbrukere,
+			testbrukerFetching,
+			getGruppe
+		} = this.props
 
 		if (fetching) return <Loading label="laster gruppe" panel />
 
@@ -42,7 +51,7 @@ export default class Gruppe extends Component {
 					actions={[
 						{
 							icon: 'edit',
-							onClick: () => this.toggleRedigerGruppe()
+							onClick: createGroup
 						},
 						{
 							icon: 'trashcan',
@@ -53,7 +62,7 @@ export default class Gruppe extends Component {
 					]}
 				/>
 
-				{this.state.redigerGruppe && <RedigerGruppeConnector gruppe={gruppe} />}
+				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
 
 				<GruppeDetaljer gruppe={gruppe} />
 
