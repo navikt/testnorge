@@ -7,11 +7,16 @@ import Table from '~/components/table/Table'
 import PersonDetaljer from './PersonDetaljer/PersonDetaljer'
 import FormatIdentNr from '~/utils/FormatIdentNr'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
+import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import AddButton from '~/components/button/AddButton'
 
 import './Gruppe.less'
 
 export default class Gruppe extends Component {
+	state = {
+		redigerGruppe: false
+	}
+
 	componentDidMount() {
 		this.props.getGruppe()
 	}
@@ -20,6 +25,8 @@ export default class Gruppe extends Component {
 		const { gruppeId } = this.props.match.params
 		this.props.history.push(`/gruppe/${gruppeId}/bestilling`)
 	}
+
+	toggleRedigerGruppe = () => this.setState({ redigerGruppe: !this.state.redigerGruppe })
 
 	render() {
 		const { gruppe, fetching, testbrukere, testbrukerFetching, getGruppe } = this.props
@@ -35,9 +42,7 @@ export default class Gruppe extends Component {
 					actions={[
 						{
 							icon: 'edit',
-							onClick: () => {
-								alert('ikke implementert')
-							}
+							onClick: () => this.toggleRedigerGruppe()
 						},
 						{
 							icon: 'trashcan',
@@ -47,6 +52,9 @@ export default class Gruppe extends Component {
 						}
 					]}
 				/>
+
+				{this.state.redigerGruppe && <RedigerGruppeConnector gruppe={gruppe} />}
+
 				<GruppeDetaljer gruppe={gruppe} />
 
 				{gruppe.bestillinger.map(bestilling => (
