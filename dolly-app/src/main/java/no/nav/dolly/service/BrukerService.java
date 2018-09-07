@@ -42,7 +42,7 @@ public class BrukerService {
         Bruker bruker = brukerRepository.findBrukerByNavIdent(navIdent);
         if (bruker == null) {
             throw new NotFoundException("Bruker ikke funnet");
-        };
+        }
         return bruker;
     }
 

@@ -21,7 +21,7 @@ public class IdentService {
 	@Autowired
 	private MapperFacade mapperFacade;
 	
-	public void persisterTestidenter(Long gruppeId, List<RsTestident> personIdentListe) {
+	public void persisterTestidenter(List<RsTestident> personIdentListe) {
 		List<Testident> testidentList = mapperFacade.mapAsList(personIdentListe, Testident.class);
 
 		try{

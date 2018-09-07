@@ -17,7 +17,6 @@ public class KodeverkController {
     @GetMapping("/{kodeverkNavn}")
     public Kodeverk fetchKodeverk(){
         List<Kode> koder = Arrays.asList(new Kode("NOR", "NORGE"), new Kode("NLD", "NEDERLAND"), new Kode("OMN", "OMAN"), new Kode("SWE", "SVERIGE"));
-        Kodeverk kodeverk = Kodeverk.builder().koder(koder).navn("StartborgerskapFreg").versjon(1).build();
-        return kodeverk;
+        return Kodeverk.builder().koder(koder).navn("StartborgerskapFreg").versjon(1).build();
     }
 }

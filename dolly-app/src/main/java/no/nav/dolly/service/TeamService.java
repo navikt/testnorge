@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -24,6 +25,8 @@ import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 @Service
 public class TeamService {
@@ -112,8 +115,10 @@ public class TeamService {
         Bruker endretEier = brukerService.fetchBruker(teamRequest.getEierNavIdent());
         team.setEier(endretEier);
 
-        //Set<Testgruppe> grupper = mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class);
-        //team.setGrupper(grupper);
+        if(!isNullOrEmpty(teamRequest.getGrupper())){
+            Set<Testgruppe> grupper = mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class);
+            team.setGrupper(grupper);
+        }
 
         Team endretTeam = saveToTeamRepository(team);
         return mapperFacade.map(endretTeam, RsTeam.class);
@@ -132,19 +137,4 @@ public class TeamService {
             throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
         }
     }
-
-    //	private Set<Bruker> findOrCreateBrukere(List<RsBruker> rsBrukere) {
-    //		Set<Bruker> brukere = new HashSet<>();
-    //
-    //		for (RsBruker rsBruker : rsBrukere) {
-    //			Bruker bruker = brukerRepository.findBrukerByNavIdent(rsBruker.getNavIdent());
-    //
-    //			if (bruker == null) {
-    //				bruker= brukerRepository.save(mapperFacade.map(rsBruker, Bruker.class));
-    //			}
-    //
-    //			brukere.add(bruker);
-    //		}
-    //		return brukere;
-    //	}
 }

@@ -61,7 +61,7 @@ public class IdentServiceTest {
 
 		when(mapperFacade.mapAsList(rsTestidenter, Testident.class)).thenReturn(testidenter);
 
-		identService.persisterTestidenter(1L, rsTestidenter);
+		identService.persisterTestidenter( rsTestidenter);
 
 		verify(identRepository).saveAll(testidenter);
 	}
@@ -75,7 +75,7 @@ public class IdentServiceTest {
 
 		when(identRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
 
-		identService.persisterTestidenter(1L, rsTestidenter);
+		identService.persisterTestidenter(rsTestidenter);
 	}
 	
 }
