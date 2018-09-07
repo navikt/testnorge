@@ -4,8 +4,8 @@ import FormatDate from '~/utils/FormatDate'
     Transformer for TPSF-data.
 */
 
-const TpsfTransformer = data => {
-	return data.map(i => mapDataToDolly(i))
+const TpsfTransformer = response => {
+	return response.data.map(i => mapDataToDolly(i))
 }
 
 const kjonnTranslator = kjonn => (kjonn === 'M' ? 'Mann' : 'Kvinne')

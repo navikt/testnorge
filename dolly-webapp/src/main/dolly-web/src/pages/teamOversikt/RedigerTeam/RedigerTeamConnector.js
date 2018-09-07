@@ -1,15 +1,15 @@
 import { connect } from 'react-redux'
 import RedigerTeam from './RedigerTeam'
-import { createTeam, updateTeam, closeOpprettRedigerTeam } from '~/ducks/teams'
+import { actions } from '~/ducks/teams'
 
 const mapStateToProps = state => ({
 	createOrUpdateFetching: state.teams.createOrUpdateFetching
 })
 
 const mapDispatchToProps = dispatch => ({
-	createTeam: values => dispatch(createTeam(values)),
-	updateTeam: (teamId, values) => dispatch(updateTeam(teamId, values)),
-	closeOpprettRedigerTeam: () => dispatch(closeOpprettRedigerTeam())
+	createTeam: values => dispatch(actions.api.create(values)),
+	updateTeam: (teamId, values) => dispatch(actions.api.update(teamId, values)),
+	closeOpprettRedigerTeam: () => dispatch(actions.ui.closeCreateEditTeam())
 })
 
 export default connect(

@@ -1,5 +1,15 @@
 import { DollyApi } from '~/service/Api'
 import history from '~/history'
+import { createActions } from 'redux-actions'
+
+export const actions = createActions({
+	GRUPPER: {
+		GET: undefined,
+		CREATE: undefined,
+		UPDATE: undefined,
+		DELETE: undefined
+	}
+})
 
 export const types = {
 	GET_GRUPPER_REQUEST: 'grupper/get-request',

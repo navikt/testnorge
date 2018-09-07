@@ -1,21 +1,17 @@
 import { LOCATION_CHANGE } from 'connected-react-router'
+import { createAction } from 'redux-actions'
 
-export const types = {
-	SET: 'search/set'
-}
+export const setSearchText = createAction('SEARCH/SET_TEXT')
 
-export default (state = '', action) => {
+const initialState = ''
+
+export default (state = initialState, action) => {
 	switch (action.type) {
 		case LOCATION_CHANGE:
-			return ''
-		case types.SET:
-			return action.text
+			return initialState
+		case setSearchText:
+			return action.payload.text
 		default:
 			return state
 	}
 }
-
-export const setSearchText = text => ({
-	type: types.SET,
-	text
-})
