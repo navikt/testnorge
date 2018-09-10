@@ -13,7 +13,7 @@ export default class Liste extends PureComponent {
 	}
 
 	render() {
-		const { items, editId, editGroup, history, deleteGruppe } = this.props
+		const { items, editId, editGroup, history, deleteGruppe, setSort, sort } = this.props
 
 		if (!items) {
 			return (
@@ -30,13 +30,42 @@ export default class Liste extends PureComponent {
 			)
 		}
 
+		const baseProps = {
+			sortable: true,
+			setSort
+		}
+
 		return (
 			<Table>
 				<Table.Header>
-					<Table.Column width="15" value="ID" />
-					<Table.Column width="20" value="Navn" />
-					<Table.Column width="15" value="Team" />
-					<Table.Column width="50" value="Hensikt" />
+					<Table.Column
+						width="15"
+						value="ID"
+						columnId="id"
+						sortOrder={sort.id === 'id' ? sort.order : null}
+						{...baseProps}
+					/>
+					<Table.Column
+						width="20"
+						value="Navn"
+						columnId="navn"
+						sortOrder={sort.id === 'navn' ? sort.order : null}
+						{...baseProps}
+					/>
+					<Table.Column
+						width="15"
+						value="Team"
+						columnId="team"
+						sortOrder={sort.id === 'team' ? sort.order : null}
+						{...baseProps}
+					/>
+					<Table.Column
+						width="50"
+						value="Hensikt"
+						columnId="hensikt"
+						sortOrder={sort.id === 'hensikt' ? sort.order : null}
+						{...baseProps}
+					/>
 				</Table.Header>
 
 				{items.map(gruppe => {

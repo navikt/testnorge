@@ -37,7 +37,9 @@ export default class GruppeOversikt extends PureComponent {
 			createOrUpdateId,
 			editGroup,
 			createGroup,
-			deleteGruppe
+			deleteGruppe,
+			setSort,
+			sort
 		} = this.props
 
 		return (
@@ -71,6 +73,8 @@ export default class GruppeOversikt extends PureComponent {
 						editGroup={editGroup}
 						history={history}
 						deleteGruppe={deleteGruppe}
+						setSort={setSort}
+						sort={sort}
 					/>
 				)}
 
