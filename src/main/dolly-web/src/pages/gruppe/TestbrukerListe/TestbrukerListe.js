@@ -8,7 +8,7 @@ import PersonDetaljer from '../PersonDetaljer/PersonDetaljer'
 
 export default class Gruppe extends Component {
 	componentDidMount() {
-		this.props.getTestbrukere()
+		if (this.props.testidenter.length) this.props.getTestbrukere()
 	}
 
 	render() {
