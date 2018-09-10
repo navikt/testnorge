@@ -1,6 +1,6 @@
 import { DollyApi } from '~/service/Api'
-import history from '~/history'
 import { createActions, handleActions, combineActions } from 'redux-actions'
+import success from '~/utils/SuccessAction'
 
 export const actions = createActions(
 	{
@@ -30,7 +30,7 @@ const initialState = {
 
 export default handleActions(
 	{
-		[combineActions(`${actions.api.get}_SUCCESS`, `${actions.api.getByUserId}_SUCCESS`)]: (
+		[combineActions(success(actions.api.get), success(actions.api.getByUserId))]: (
 			state,
 			action
 		) => ({
