@@ -36,21 +36,17 @@ public class DefaultMessageQueue implements MessageQueue {
         return connection;
     }
 
-    public Session startSession(Connection connection) throws JMSException {
-        return connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-    }
-
     public String sendMessage(String requestMessageContent) throws JMSException {
         Connection connection = connectionFactory.createConnection(username, password);
         connection.start();
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        String response = sendMessage(requestMessageContent, session);
-        session.close();
+        String response = sendMessage(requestMessageContent, connection);
         connection.close();
         return response;
     }
 
-    public String sendMessage(String requestMessageContent, Session session) throws JMSException {
+    public String sendMessage(String requestMessageContent, Connection connection) throws JMSException {
+
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         Destination requestDestination = session.createQueue(requestQueueName);
         Destination responseDestination = session.createTemporaryQueue();
@@ -69,6 +65,8 @@ public class DefaultMessageQueue implements MessageQueue {
         String attributes = String.format("JMSCorrelationID='%s'", requestMessage.getJMSMessageID());
         MessageConsumer consumer = session.createConsumer(responseDestination, attributes);
         TextMessage responseMessage = (TextMessage) consumer.receive(DEFAULT_TIMEOUT);
+
+        session.close();
 
         return responseMessage != null ? responseMessage.getText() : null;
     }

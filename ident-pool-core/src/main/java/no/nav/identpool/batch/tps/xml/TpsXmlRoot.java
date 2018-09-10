@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 @JacksonXmlRootElement(localName = "tpsPersonData")
-public class TpsXmlRoot {
+class TpsXmlRoot {
 
     private static final XmlMapper xmlMapper = new XmlMapper();
 
@@ -23,7 +23,7 @@ public class TpsXmlRoot {
     @JsonProperty("tpsServiceRutine")
     private final TpsServiceRutine tpsServiceRutine;
 
-    public static String toXml(TpsServiceRutine rutine) throws JsonProcessingException {
-        return xmlMapper.writeValueAsString(new TpsXmlRoot(rutine));
+    String toXml() throws JsonProcessingException {
+        return xmlMapper.writeValueAsString(this);
     }
 }

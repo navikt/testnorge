@@ -6,10 +6,9 @@ import javax.jms.Session;
 
 public interface MessageQueue {
     public Connection startConnection() throws JMSException;
-    public Session startSession(Connection connection) throws JMSException;
     public String sendMessage(String requestMessageContent) throws JMSException;
     public String sendMessage(
             String requestMessageContent,
-            Session session) throws JMSException;
+            Connection connection) throws JMSException;
     boolean ping() throws JMSException;
 }

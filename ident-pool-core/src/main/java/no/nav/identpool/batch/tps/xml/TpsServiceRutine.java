@@ -1,12 +1,11 @@
 package no.nav.identpool.batch.tps.xml;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import no.nav.identpool.batch.tps.xml.service.ServiceRutinenavn;
 
 @Getter
 @RequiredArgsConstructor
@@ -22,7 +21,7 @@ public abstract class TpsServiceRutine {
     @JsonProperty("aksjonsKode2")
     private final String aksjonsKode2;
 
-    public String getServiceRutinenavn() {
-        return serviceRutinenavn.getValue();
+    public String toXml() throws JsonProcessingException {
+        return new TpsXmlRoot(this).toXml();
     }
 }
