@@ -1,6 +1,7 @@
 package no.nav.identpool.ident.repository;
 
 import java.time.LocalDate;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +31,7 @@ import no.nav.identpool.ident.domain.Rekvireringsstatus;
 public class IdentEntity {
     @Id
     @Column(name = "ID")
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personidentifikator_seq")
     @SequenceGenerator(name = "personidentifikator_seq", sequenceName = "PERSONIDENTIFIKATOR_SEQ", allocationSize = 1)
     private Long identity;
@@ -53,4 +57,7 @@ public class IdentEntity {
     @NotNull
     @Column(name = "FOEDSELSDATO")
     private LocalDate foedselsdato;
+
+    @Column(name = "REKVIRERT_AV")
+    private String rekvirertAv;
 }

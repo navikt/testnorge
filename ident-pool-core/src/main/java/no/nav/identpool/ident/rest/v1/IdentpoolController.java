@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
+import no.nav.identpool.ident.repository.IdentEntity;
 import no.nav.identpool.ident.service.IdentpoolService;
 
 @Slf4j
@@ -54,5 +56,12 @@ public class IdentpoolController {
             @RequestParam String personidentifikator
     ) throws IdentAlleredeIBrukException {
         return identpoolService.markerBrukt(personidentifikator);
+    }
+
+    @GetMapping("/les")
+    public IdentEntity lesInnhold(
+            @RequestParam(value = "personidentifikator") String personidentifikator
+    ) {
+        return identpoolService.lesInnhold(personidentifikator);
     }
 }

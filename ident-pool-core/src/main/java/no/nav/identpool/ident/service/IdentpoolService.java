@@ -24,6 +24,8 @@ public class IdentpoolService {
 
         Iterable<IdentEntity> identEntities = identRepository.findAll(identPredicateUtil.lagPredicateFraRequest(hentIdenterRequest));
         identEntities.forEach(i -> personidentifikatorList.add(i.getPersonidentifikator()));
+        identEntities.forEach(i -> i.setRekvireringsstatus(Rekvireringsstatus.I_BRUK));
+        identRepository.saveAll(identEntities);
 
         return personidentifikatorList;
     }
@@ -44,5 +46,9 @@ public class IdentpoolService {
             throw new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som brukt.");
         }
         throw new IllegalStateException("Denne feilen skal ikke kunne forekomme.");
+    }
+
+    public IdentEntity lesInnhold(String personidentifikator) {
+        return identRepository.findTopByPersonidentifikator(personidentifikator);
     }
 }

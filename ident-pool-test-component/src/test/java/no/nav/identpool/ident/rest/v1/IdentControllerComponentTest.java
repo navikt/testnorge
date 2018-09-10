@@ -7,8 +7,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.net.URISyntaxException;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
@@ -16,11 +14,6 @@ import no.nav.identpool.ComponentTestbase;
 
 public class IdentControllerComponentTest extends ComponentTestbase {
 
-    private HttpEntity lagHttpEntity() {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
-        return new HttpEntity(httpHeaders);
-    }
 
     @Test
     public void hentLedigFnr() throws URISyntaxException {

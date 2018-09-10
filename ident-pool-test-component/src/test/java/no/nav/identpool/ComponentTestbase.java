@@ -8,6 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.identpool.ident.domain.Identtype;
@@ -20,9 +22,10 @@ import no.nav.identpool.ident.repository.IdentRepository;
 public class ComponentTestbase {
     protected static final String IDENT_V1_BASEURL = "/identifikator/v1";
     protected static final String OPERASJON_HENT = "/hent";
+    protected static final String OPERASJON_LES = "/les";
 
     @Autowired
-    private IdentRepository identRepository;
+    protected IdentRepository identRepository;
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
@@ -63,6 +66,12 @@ public class ComponentTestbase {
     @After
     public void clearDatabase() {
         identRepository.deleteAll();
+    }
+
+    public HttpEntity lagHttpEntity() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        return new HttpEntity(httpHeaders);
     }
 
 }
