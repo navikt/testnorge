@@ -36,7 +36,8 @@ export default class Liste extends PureComponent {
 					<Table.Column width="15" value="ID" />
 					<Table.Column width="20" value="Navn" />
 					<Table.Column width="15" value="Team" />
-					<Table.Column width="50" value="Hensikt" />
+					<Table.Column width="20" value="Hensikt" />
+					<Table.Column width="20" value="Personer" />
 				</Table.Header>
 
 				{items.map(gruppe => {
@@ -65,7 +66,8 @@ export default class Liste extends PureComponent {
 							<Table.Column width="15" value={gruppe.id.toString()} />
 							<Table.Column width="20" value={gruppe.navn} />
 							<Table.Column width="15" value={gruppe.team.navn} />
-							<Table.Column width="40" value={gruppe.hensikt} />
+							<Table.Column width="20" value={gruppe.hensikt} />
+							<Table.Column width="20" value={gruppe.testidenter.length.toString()} />
 						</Table.Row>
 					)
 				})}
