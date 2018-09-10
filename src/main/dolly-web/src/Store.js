@@ -12,6 +12,7 @@ import teamReducer from './ducks/team'
 import brukerReducer from './ducks/bruker'
 import testbrukerReducer from './ducks/testBruker'
 import searchReducer from './ducks/search'
+import sortReducer from './ducks/sort'
 import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
 
@@ -38,6 +39,7 @@ export default function configureReduxStore(history) {
 		bruker: brukerReducer,
 		testbruker: testbrukerReducer,
 		search: searchReducer,
+		sort: sortReducer,
 		loading: loadingReducer,
 		errors: errorsReducer
 	})

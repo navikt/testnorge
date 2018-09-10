@@ -4,6 +4,7 @@ import cn from 'classnames'
 import Button from '~/components/button/Button'
 import ExpandButton from '~/components/button/ExpandButton'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
+import Icon from '~/components/icon/Icon'
 import './table.less'
 
 class TableRow extends PureComponent {
@@ -114,14 +115,33 @@ class TableColumn extends PureComponent {
 		width: '10'
 	}
 
+	onSortHandler = () => {
+		const { sortOrder, setSort, columnId } = this.props
+
+		setSort({ id: columnId, order: sortOrder === 'asc' ? 'desc' : 'asc' })
+	}
+
 	render() {
-		const { value, width, children, className, ...restProps } = this.props
-		const cssClass = cn('dot-column', `col${width}`, className)
+		const {
+			value,
+			width,
+			children,
+			className,
+			sortOrder,
+			setSort,
+			columnId,
+			sortable,
+			...restProps
+		} = this.props
+		const cssClass = cn('dot-column', `col${width}`, className, { sortable })
+
+		const iconKind = sortOrder === 'asc' ? 'arrow-up' : 'arrow-down'
 
 		const render = value ? value : children
 		return (
-			<div className={cssClass} {...restProps}>
+			<div className={cssClass} {...restProps} onClick={this.onSortHandler}>
 				{render}
+				{sortOrder && <Icon size={16} kind={iconKind} />}
 			</div>
 		)
 	}
