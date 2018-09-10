@@ -8,6 +8,7 @@ import MiljoVelger from '~/components/miljoVelger/MiljoVelger'
 import { AttributtManager } from '~/service/Kodeverk'
 import { Formik, FieldArray, Field } from 'formik'
 import FormatDate from '~/utils/FormatDate'
+import _get from 'lodash/get'
 
 export default class Step3 extends PureComponent {
 	static propTypes = {
@@ -47,7 +48,7 @@ export default class Step3 extends PureComponent {
 	)
 
 	renderItem = item => {
-		let value = this.props.values[item.id]
+		let value = _get(this.props.values, item.id)
 		if (item.inputType === 'date') value = FormatDate(value)
 
 		return <StaticValue key={item.id} header={item.label} value={value} />
