@@ -72,6 +72,14 @@ class DollyEndpoints {
 		return `${brukerBase}/current`
 	}
 
+	static addFavorite() {
+		return `${brukerBase}/leggTilFavoritt`
+	}
+
+	static removeFavorite() {
+		return `${brukerBase}/fjernFavoritt`
+	}
+
 	static kodeverkByNavn(kodeverkNavn) {
 		return `${kodeverkBase}/${kodeverkNavn}`
 	}

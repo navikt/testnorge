@@ -39,7 +39,8 @@ export default class GruppeOversikt extends PureComponent {
 			createGroup,
 			deleteGruppe,
 			setSort,
-			sort
+			sort,
+			addFavorite
 		} = this.props
 
 		return (
@@ -75,6 +76,7 @@ export default class GruppeOversikt extends PureComponent {
 						deleteGruppe={deleteGruppe}
 						setSort={setSort}
 						sort={sort}
+						addFavorite={addFavorite}
 					/>
 				)}
 

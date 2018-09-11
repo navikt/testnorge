@@ -4,6 +4,7 @@ import GruppeOversikt from './GruppeOversikt'
 import { getGrupper, settVisning, deleteGruppe } from '~/ducks/grupper'
 import { setSort } from '~/ducks/sort'
 import { showCreateOrEditGroup } from '~/ducks/gruppe'
+import { addFavorite } from '~/ducks/bruker'
 
 const gruppeFiltering = (items, searchText) => {
 	if (!items) return null
@@ -44,7 +45,8 @@ const mapDispatchToProps = dispatch => ({
 	editGroup: editId => dispatch(showCreateOrEditGroup(editId)),
 	settVisning: visning => dispatch(settVisning(visning)),
 	deleteGruppe: gruppeId => dispatch(deleteGruppe(gruppeId)),
-	setSort: sortObj => dispatch(setSort(sortObj))
+	setSort: sortObj => dispatch(setSort(sortObj)),
+	addFavorite: groupId => dispatch(addFavorite(groupId))
 })
 
 export default connect(
