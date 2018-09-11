@@ -13,9 +13,15 @@ const initialState = {
 	showSplashscreen: false
 }
 
+const successActions = combineActions(
+	success(getCurrentBruker),
+	success(addFavorite),
+	success(removeFavorite)
+)
+
 export default handleActions(
 	{
-		[combineActions(success(getCurrentBruker), success(addFavorite))](state, action) {
+		[successActions](state, action) {
 			return { ...state, brukerData: action.payload.data }
 		},
 		[setSplashscreenStatus](state, action) {
