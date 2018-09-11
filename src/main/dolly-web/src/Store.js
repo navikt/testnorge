@@ -14,6 +14,7 @@ import searchReducer from './ducks/search'
 import sortReducer from './ducks/sort'
 import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
+import commonReducer from './ducks/common'
 
 export default function configureReduxStore(history) {
 	const allMiddleware = [
@@ -39,7 +40,8 @@ export default function configureReduxStore(history) {
 		search: searchReducer,
 		sort: sortReducer,
 		loading: loadingReducer,
-		errors: errorsReducer
+		errors: errorsReducer,
+		common: commonReducer
 	})
 
 	return createStore(
