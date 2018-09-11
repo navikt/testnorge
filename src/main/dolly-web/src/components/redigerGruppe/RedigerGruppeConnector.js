@@ -1,12 +1,16 @@
 import { connect } from 'react-redux'
 import RedigerGruppe from './RedigerGruppe'
-import { createGruppe, updateGruppe } from '~/ducks/grupper'
-import { closeCreateOrEdit } from '~/ducks/gruppe'
+import { closeCreateOrEdit, createGruppe, updateGruppe } from '~/ducks/gruppe'
+import { createLoadingSelector } from '~/ducks/loading'
+import { createErrorMessageSelector } from '~/ducks/errors'
+
+const loadingSelector = createLoadingSelector([createGruppe, updateGruppe])
+const errorSelector = createErrorMessageSelector([createGruppe, updateGruppe])
 
 const mapStateToProps = state => ({
-	createOrUpdateFetching: state.grupper.createOrUpdateFetching,
+	createOrUpdateFetching: loadingSelector(state),
 	currentUserId: state.bruker.brukerData.navIdent,
-	error: state.grupper.error
+	error: errorSelector(state)
 })
 
 const mapDispatchToProps = dispatch => ({

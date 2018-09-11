@@ -23,7 +23,7 @@ export default class Rediger extends PureComponent {
 		createGruppe: PropTypes.func,
 		updateGruppe: PropTypes.func,
 		onCancel: PropTypes.func,
-		error: PropTypes.object
+		error: PropTypes.string
 	}
 
 	erRedigering = Boolean(getIn(this.props.gruppe, 'id', false))

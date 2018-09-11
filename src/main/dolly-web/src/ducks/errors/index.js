@@ -1,5 +1,5 @@
 export const createErrorMessageSelector = actions => state => {
-	const errors = actions.map(action => state.error[action])
+	const errors = actions.map(action => state.errors[action])
 	if (errors && errors[0]) {
 		return errors[0]
 	}
