@@ -28,12 +28,4 @@ public class ComponentTestbase {
     protected IdentRepository identRepository;
     @Autowired
     protected TestRestTemplate testRestTemplate;
-
-
-    public HttpEntity lagHttpEntity() {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
-        return new HttpEntity(httpHeaders);
-    }
-
 }

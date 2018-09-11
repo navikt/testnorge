@@ -1,5 +1,6 @@
 package no.nav.identpool.ident.rest.v1;
 
+import static no.nav.identpool.util.RestUtil.lagEnkelHttpEntity;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -39,7 +40,7 @@ public class LesInnholdComponentTest extends ComponentTestbase {
         );
         URI url = new URIBuilder(IDENT_V1_BASEURL + OPERASJON_LES).addParameter("personidentifikator", PERSONIDENTIFIKATOR).build();
 
-        ResponseEntity<IdentEntity> identEntityResponseEntity = testRestTemplate.exchange(url, HttpMethod.GET, lagHttpEntity(), IdentEntity.class);
+        ResponseEntity<IdentEntity> identEntityResponseEntity = testRestTemplate.exchange(url, HttpMethod.GET, lagEnkelHttpEntity(), IdentEntity.class);
         IdentEntity ident = identEntityResponseEntity.getBody();
 
         assertThat(ident, is(notNullValue()));
