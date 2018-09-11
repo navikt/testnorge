@@ -37,12 +37,12 @@ export default handleActions(
 			...state,
 			items: action.payload.data
 		}),
-		[`${actions.api.create}_SUCCESS`]: (state, action) => ({
+		[success(actions.api.create)]: (state, action) => ({
 			...state,
 			visOpprettTeam: false,
 			items: [...state.items, action.payload.data]
 		}),
-		[`${actions.api.update}_SUCCESS`]: (state, action) => ({
+		[success(actions.api.update)]: (state, action) => ({
 			...state,
 			editTeamId: null,
 			items: state.items.map(item => {
@@ -53,7 +53,7 @@ export default handleActions(
 				}
 			})
 		}),
-		[`${actions.api.delete}_SUCCESS`]: (state, action) => ({
+		[success(actions.api.delete)]: (state, action) => ({
 			...state,
 			items: state.items.filter(item => item.id !== action.meta.teamId)
 		}),
