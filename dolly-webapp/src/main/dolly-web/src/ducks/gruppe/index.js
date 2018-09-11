@@ -1,62 +1,89 @@
 import { DollyApi } from '~/service/Api'
-import { getTpsfBruker } from '../testBruker'
 import { LOCATION_CHANGE } from 'connected-react-router'
+import { createAction, handleActions, combineActions } from 'redux-actions'
+import success from '~/utils/SuccessAction'
 
-export const types = {
-	GET_GRUPPE_REQUEST: 'gruppe/get-request',
-	GET_GRUPPE_SUCCESS: 'gruppe/get-success',
-	GET_GRUPPE_ERROR: 'gruppe/get-error'
-}
+// GET
+export const getGruppe = createAction('GET_GRUPPE', DollyApi.getGruppeById)
+export const getGrupper = createAction('GET_GRUPPER', DollyApi.getGrupper)
+export const getGrupperByTeamId = createAction('GET_GRUPPER_BY_TEAM_ID', DollyApi.getGruppeByTeamId)
+export const getGrupperByUserId = createAction('GET_GRUPPER_BY_USER_ID', DollyApi.getGruppeByUserId)
+
+// CRUD
+export const createGruppe = createAction('CREATE_GRUPPE', DollyApi.createGruppe)
+export const updateGruppe = createAction('UPDATE_GRUPPE', DollyApi.updateGruppe)
+export const deleteGruppe = createAction('DELETE_GRUPPE', DollyApi.deleteGruppe, gruppeId => ({
+	gruppeId
+}))
+
+// UI
+export const showCreateOrEditGroup = createAction('TOGGLE_SHOW_CREATE_OR_EDIT')
+export const closeCreateOrEdit = createAction('CANCEL_CREATE_OR_EDIT')
+export const settVisning = createAction('SETT_VISNING')
 
 const initialState = {
-	fetching: false,
-	data: null
+	data: null,
+	createOrUpdateId: null, // null = ingen, -1 = opprett ny gruppe, '45235' (ex: 425323) = rediger
+	visning: 'mine'
 }
 
-export default function gruppeReducer(state = initialState, action) {
-	switch (action.type) {
-		case LOCATION_CHANGE:
+const getSuccess = combineActions(
+	success(getGruppe),
+	success(getGrupper),
+	success(getGrupperByTeamId),
+	success(getGrupperByUserId)
+)
+
+export default handleActions(
+	{
+		[LOCATION_CHANGE](state, action) {
 			return initialState
-		case types.GET_GRUPPE_REQUEST:
-			return { ...state, fetching: true }
-		case types.GET_GRUPPE_SUCCESS:
-			return { ...state, fetching: false, data: action.data }
-		case types.GET_GRUPPE_ERROR:
-			return { ...state, fetching: false, error: action.error }
-		default:
-			return state
-	}
-}
-
-const getGruppeRequest = () => ({
-	type: types.GET_GRUPPE_REQUEST
-})
-
-const getGruppeSuccess = data => ({
-	type: types.GET_GRUPPE_SUCCESS,
-	data
-})
-
-const getGruppeError = error => ({
-	type: types.GET_GRUPPE_ERROR,
-	error
-})
-
-export const getGruppe = groupId => async dispatch => {
-	try {
-		dispatch(getGruppeRequest())
-		const res = await DollyApi.getGruppeById(groupId)
-		dispatch(getGruppeSuccess(res.data))
-		if (res.data.testidenter.length > 0) {
-			const brukerListe = res.data.testidenter.map(ident => ident.ident)
-			return dispatch(getTpsfBruker(brukerListe))
+		},
+		[getSuccess](state, action) {
+			const { data } = action.payload
+			return { ...state, data: Array.isArray(data) ? data : [data] }
+		},
+		[success(updateGruppe)](state, action) {
+			return {
+				...state,
+				createOrUpdateId: null,
+				data: state.data.map((item, idx) => ({
+					...item,
+					...(item.id === action.payload.data.id && action.payload.data)
+				}))
+			}
+		},
+		[success(deleteGruppe)](state, action) {
+			return {
+				...state,
+				data: state.data.filter(item => item.id !== action.meta.gruppeId)
+			}
+		},
+		[showCreateOrEditGroup](state, action) {
+			return { ...state, createOrUpdateId: action.payload }
+		},
+		[closeCreateOrEdit](state, action) {
+			return { ...state, createOrUpdateId: null }
+		},
+		[settVisning](state, action) {
+			return { ...state, visning: action.payload }
 		}
-	} catch (error) {
-		dispatch(getGruppeError(error))
+	},
+	initialState
+)
 
-		// If 404 -> redirect to homepage
-		if (error.response && error.response.status === 404) {
-			window.location.replace('/')
-		}
+// THunk
+export const listGrupper = ({ teamId = null } = {}) => async (dispatch, getState) => {
+	const state = getState()
+
+	const { visning } = state.gruppe
+	const { navIdent } = state.bruker.brukerData
+
+	if (teamId) {
+		return dispatch(getGrupperByTeamId(teamId))
+	} else if (visning === 'mine') {
+		return dispatch(getGrupperByUserId(navIdent))
+	} else {
+		return dispatch(getGrupper())
 	}
 }

@@ -1,17 +1,26 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Overskrift from '~/components/overskrift/Overskrift'
 import GruppeDetaljer from './GruppeDetaljer/GruppeDetaljer'
 import BestillingStatus from './BestillingStatus/BestillingStatus'
 import Loading from '~/components/loading/Loading'
-import Table from '~/components/table/Table'
-import PersonDetaljer from './PersonDetaljer/PersonDetaljer'
-import FormatIdentNr from '~/utils/FormatIdentNr'
-import ContentContainer from '~/components/contentContainer/ContentContainer'
+import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
+import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import AddButton from '~/components/button/AddButton'
 
 import './Gruppe.less'
 
 export default class Gruppe extends Component {
+	static propTypes = {
+		gruppeArray: PropTypes.array,
+		isFetching: PropTypes.bool,
+		createOrUpdateId: PropTypes.string
+	}
+
+	state = {
+		redigerGruppe: false
+	}
+
 	componentDidMount() {
 		this.props.getGruppe()
 	}
@@ -21,75 +30,53 @@ export default class Gruppe extends Component {
 		this.props.history.push(`/gruppe/${gruppeId}/bestilling`)
 	}
 
+	toggleRedigerGruppe = () => this.setState({ redigerGruppe: !this.state.redigerGruppe })
+
 	render() {
-		const { gruppe, fetching, testbrukere, testbrukerFetching, getGruppe } = this.props
+		const { gruppeArray, createOrUpdateId, createGroup, isFetching, getGruppe } = this.props
 
-		if (fetching) return <Loading label="laster gruppe" panel />
+		if (isFetching) return <Loading label="laster gruppe" panel />
 
-		if (!gruppe) return null
+		if (!gruppeArray) return null
+
+		const gruppe = gruppeArray[0]
+
+		let groupActions = []
+
+		// Vise redigeringsknapp eller stjerne
+		if (gruppe.erMedlemAvTeamSomEierGruppe) {
+			groupActions.push({
+				icon: 'edit',
+				onClick: createGroup
+			})
+			groupActions.push({
+				icon: 'trashcan',
+				onClick: () => {
+					alert('ikke implementert')
+				}
+			})
+		} else {
+			groupActions.push({
+				icon: 'star',
+				onClick: () => {
+					alert('ikke implementert')
+				}
+			})
+		}
 
 		return (
 			<div id="gruppe-container">
-				<Overskrift
-					label={gruppe.navn}
-					actions={[
-						{
-							icon: 'edit',
-							onClick: () => {
-								alert('ikke implementert')
-							}
-						},
-						{
-							icon: 'trashcan',
-							onClick: () => {
-								alert('ikke implementert')
-							}
-						}
-					]}
-				/>
+				<Overskrift label={gruppe.navn} actions={groupActions} />
+
+				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
+
 				<GruppeDetaljer gruppe={gruppe} />
 
 				{gruppe.bestillinger.map(bestilling => (
 					<BestillingStatus key={bestilling.id} bestilling={bestilling} onGroupUpdate={getGruppe} />
 				))}
 
-				<Overskrift type="h2" label="Testpersoner" />
-				{gruppe.testidenter.length <= 0 ? (
-					<ContentContainer>
-						Det finnes ingen data i denne gruppen enda. Trykk på + knappen under for å starte en
-						bestilling.
-					</ContentContainer>
-				) : (
-					<Table>
-						<Table.Header>
-							<Table.Column width="15" value="ID" />
-							<Table.Column width="15" value="ID-type" />
-							<Table.Column width="30" value="Navn" />
-							<Table.Column width="20" value="Kjønn" />
-							<Table.Column width="10" value="Alder" />
-						</Table.Header>
-
-						{testbrukerFetching ? (
-							<Loading label="laster testbrukere" panel />
-						) : (
-							testbrukere &&
-							testbrukere.map((bruker, idx) => {
-								return (
-									<Table.Row
-										key={idx}
-										expandComponent={<PersonDetaljer brukerData={bruker.data} />}
-									>
-										<Table.Column width="15" value={FormatIdentNr(bruker.id)} />
-										<Table.Column width="15" value={bruker.idType} />
-										<Table.Column width="30" value={bruker.navn} />
-										<Table.Column width="20" value={bruker.kjonn} />
-										<Table.Column width="10" value={bruker.alder} />
-									</Table.Row>
-								)
-							})
-						)}
-					</Table>
-				)}
+				<TestbrukerListeConnector testidenter={gruppe.testidenter} />
 				<AddButton title="Opprett ny bestilling" onClick={this.startBestilling} />
 			</div>
 		)

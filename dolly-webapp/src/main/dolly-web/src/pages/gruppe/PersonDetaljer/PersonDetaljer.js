@@ -11,8 +11,8 @@ export default class PersonDetaljer extends PureComponent {
 		const { brukerData } = this.props
 		return (
 			<div className="person-details">
-				{brukerData.map(i => (
-					<div key={i.id} className="person-details_content">
+				{brukerData.map((i, idx) => (
+					<div key={idx} className="person-details_content">
 						<h4>{i.header}</h4>
 						<PersonInfoBlock data={i.data} />
 					</div>

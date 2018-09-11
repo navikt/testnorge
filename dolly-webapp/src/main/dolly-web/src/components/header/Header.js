@@ -17,8 +17,10 @@ export default ({ brukerData }) => {
 
 			<div className="menu-links">
 				<NavLink to="/">Testdatagrupper</NavLink>
-				<NavLink to="/kømanager">Kømanager</NavLink>
-				<NavLink to="/swagger-ui.html">API-dok</NavLink>
+				{/* <NavLink to="/kømanager">Kømanager</NavLink> */}
+				<a href="/swagger-ui.html" target="_blank">
+					API-dok
+				</a>
 			</div>
 
 			<NavLink to="/profil" className="header-user-name">

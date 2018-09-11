@@ -13,8 +13,13 @@ export default class App extends Component {
 		this.props.fetchCurrentBruker()
 	}
 
+	componentDidUpdate() {
+		const { redirectTo, onRedirect } = this.props
+		if (redirectTo) return onRedirect(redirectTo)
+	}
+
 	render() {
-		const { brukerData } = this.props
+		const { brukerData, showSplashscreen } = this.props
 
 		if (!brukerData) return <Loading label="laster dolly applikasjon" fullpage />
 
@@ -36,7 +41,7 @@ export default class App extends Component {
 						})}
 					</Switch>
 				</main>
-				{brukerData.showSplashscreen && <SplashscreenConnector />}
+				{showSplashscreen && <SplashscreenConnector />}
 			</React.Fragment>
 		)
 	}

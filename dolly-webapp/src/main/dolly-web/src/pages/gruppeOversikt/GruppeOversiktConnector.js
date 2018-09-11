@@ -1,12 +1,20 @@
 import { connect } from 'react-redux'
+import _orderBy from 'lodash/orderBy'
 import GruppeOversikt from './GruppeOversikt'
+import { setSort } from '~/ducks/sort'
+import { addFavorite } from '~/ducks/bruker'
 import {
-	getGrupper,
-	startRedigerGruppe,
-	startOpprettGruppe,
+	listGrupper,
 	settVisning,
-	deleteGruppe
-} from '~/ducks/grupper'
+	deleteGruppe,
+	showCreateOrEditGroup,
+	getGrupper,
+	getGrupperByTeamId,
+	getGrupperByUserId
+} from '~/ducks/gruppe'
+import { createLoadingSelector } from '~/ducks/loading'
+
+const loadingSelector = createLoadingSelector(getGrupper, getGrupperByTeamId, getGrupperByUserId)
 
 const gruppeFiltering = (items, searchText) => {
 	if (!items) return null
@@ -24,18 +32,31 @@ const gruppeFiltering = (items, searchText) => {
 
 const mapStateToProps = state => {
 	return {
-		gruppeListe: gruppeFiltering(state.grupper.items, state.search),
-		grupper: state.grupper,
-		error: state.grupper.error
+		isFetching: loadingSelector(state),
+		gruppeListe: _orderBy(
+			gruppeFiltering(state.gruppe.data, state.search),
+			gruppe => {
+				const value = gruppe[state.sort.id]
+				if (typeof value === 'string') return gruppe[state.sort.id].toLowerCase()
+
+				return gruppe[state.sort.id]
+			},
+			state.sort.order
+		),
+		createOrUpdateId: state.gruppe.createOrUpdateId,
+		visning: state.gruppe.visning,
+		sort: state.sort
 	}
 }
 
 const mapDispatchToProps = dispatch => ({
-	getGrupper: () => dispatch(getGrupper()),
-	startRedigerGruppe: editId => dispatch(startRedigerGruppe(editId)),
-	startOpprettGruppe: () => dispatch(startOpprettGruppe()),
+	listGrupper: () => dispatch(listGrupper()),
+	createGroup: () => dispatch(showCreateOrEditGroup(-1)),
+	editGroup: editId => dispatch(showCreateOrEditGroup(editId)),
 	settVisning: visning => dispatch(settVisning(visning)),
-	deleteGruppe: gruppeId => dispatch(deleteGruppe(gruppeId))
+	deleteGruppe: gruppeId => dispatch(deleteGruppe(gruppeId)),
+	setSort: sortObj => dispatch(setSort(sortObj)),
+	addFavorite: groupId => dispatch(addFavorite(groupId))
 })
 
 export default connect(

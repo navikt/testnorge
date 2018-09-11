@@ -2,18 +2,27 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
-import RedigerConnector from './Rediger/RedigerConnector'
+import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 
 export default class Liste extends PureComponent {
 	static propTypes = {
 		items: PropTypes.array,
 		editId: PropTypes.number,
-		startRedigerGruppe: PropTypes.func,
+		editGroup: PropTypes.func,
 		history: PropTypes.object
 	}
 
 	render() {
-		const { items, editId, startRedigerGruppe, history, deleteGruppe } = this.props
+		const {
+			items,
+			editId,
+			editGroup,
+			history,
+			deleteGruppe,
+			setSort,
+			sort,
+			addFavorite
+		} = this.props
 
 		if (!items) {
 			return (
@@ -30,18 +39,48 @@ export default class Liste extends PureComponent {
 			)
 		}
 
+		const baseProps = {
+			sortable: true,
+			setSort
+		}
+
 		return (
 			<Table>
 				<Table.Header>
-					<Table.Column width="15" value="ID" />
-					<Table.Column width="20" value="Navn" />
-					<Table.Column width="15" value="Team" />
-					<Table.Column width="50" value="Hensikt" />
+					<Table.Column
+						width="15"
+						value="ID"
+						columnId="id"
+						sortOrder={sort.id === 'id' ? sort.order : null}
+						{...baseProps}
+					/>
+					<Table.Column
+						width="20"
+						value="Navn"
+						columnId="navn"
+						sortOrder={sort.id === 'navn' ? sort.order : null}
+						{...baseProps}
+					/>
+					<Table.Column
+						width="15"
+						value="Team"
+						columnId="team"
+						sortOrder={sort.id === 'team' ? sort.order : null}
+						{...baseProps}
+					/>
+					<Table.Column
+						width="20"
+						value="Hensikt"
+						columnId="hensikt"
+						sortOrder={sort.id === 'hensikt' ? sort.order : null}
+						{...baseProps}
+					/>
+					<Table.Column width="20" value="Personer" />
 				</Table.Header>
 
 				{items.map(gruppe => {
 					if (gruppe.id === editId) {
-						return <RedigerConnector key={gruppe.id} gruppe={gruppe} />
+						return <RedigerGruppeConnector key={gruppe.id} gruppe={gruppe} />
 					}
 
 					// base row props
@@ -52,12 +91,10 @@ export default class Liste extends PureComponent {
 
 					// Vise redigeringsknapp eller stjerne
 					if (gruppe.erMedlemAvTeamSomEierGruppe) {
-						rowProps.editAction = () => startRedigerGruppe(gruppe.id)
+						rowProps.editAction = () => editGroup(gruppe.id)
 						rowProps.deleteAction = () => deleteGruppe(gruppe.id)
 					} else {
-						rowProps.favoriteAction = () => {
-							alert('favorite this - not implemented')
-						}
+						rowProps.groupId = gruppe.id
 					}
 
 					return (
@@ -65,7 +102,8 @@ export default class Liste extends PureComponent {
 							<Table.Column width="15" value={gruppe.id.toString()} />
 							<Table.Column width="20" value={gruppe.navn} />
 							<Table.Column width="15" value={gruppe.team.navn} />
-							<Table.Column width="40" value={gruppe.hensikt} />
+							<Table.Column width="20" value={gruppe.hensikt} />
+							<Table.Column width="20" value={gruppe.testidenter.length.toString()} />
 						</Table.Row>
 					)
 				})}

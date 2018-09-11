@@ -1,6 +1,8 @@
 import { push, LOCATION_CHANGE } from 'connected-react-router'
 import { DollyApi } from '~/service/Api'
 import _xor from 'lodash/fp/xor'
+import _get from 'lodash/get'
+import success from '~/utils/SuccessAction'
 
 export const types = {
 	NEXT_PAGE: 'bestilling/neste-side',
@@ -118,7 +120,6 @@ export const abortBestilling = gruppeId => async dispatch => {
 export const postBestilling = gruppeId => async (dispatch, getState) => {
 	const { bestilling } = getState()
 
-	console.log('POSTING BESTILLING', bestilling)
 	try {
 		dispatch(_bestillingRequest())
 
@@ -129,6 +130,13 @@ export const postBestilling = gruppeId => async (dispatch, getState) => {
 			environments: bestilling.environments,
 			...bestilling.values
 		}
+
+		// TODO: SPECIAL HANDLING - Hva gjør vi her?
+		if (_get(final_values, 'boadresse.gateadresse')) {
+			final_values.boadresse.adressetype = 'GATE'
+		}
+
+		console.log('POSTING BESTILLING', final_values)
 
 		const res = await DollyApi.createBestilling(gruppeId, final_values)
 		dispatch(_bestillingRequestSuccess(res))

@@ -1,22 +1,28 @@
 import { connect } from 'react-redux'
-import { getTeam, addMember, removeMember } from '~/ducks/team'
+import { actions } from '~/ducks/team'
+import { listGrupper } from '~/ducks/gruppe'
+import { createLoadingSelector } from '~/ducks/loading'
 import Team from './Team'
+
+const teamLoadingSelector = createLoadingSelector(actions.team.get)
+const grupperLoadingSelector = createLoadingSelector('TODO')
 
 const mapStateToProps = state => {
 	return {
 		team: state.team.data,
-		teamFetching: state.team.fetching,
+		teamIsFetching: teamLoadingSelector(state),
 		grupper: state.grupper.items,
-		grupperFetching: state.grupper.fetching
+		grupperIsFetching: grupperLoadingSelector(state)
 	}
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const teamId = ownProps.match.params.teamId
+	const { teamId } = ownProps.match.params
 	return {
-		getTeam: () => dispatch(getTeam(teamId)),
-		addMember: userArray => dispatch(addMember(teamId, userArray)),
-		removeMember: userArray => dispatch(removeMember(teamId, userArray))
+		getTeam: () => dispatch(actions.team.get(teamId)),
+		listGrupper: () => dispatch(listGrupper(teamId)),
+		addMember: userArray => dispatch(actions.team.addMember(teamId, userArray)),
+		removeMember: userArray => dispatch(actions.team.removeMember(teamId, userArray))
 	}
 }
 

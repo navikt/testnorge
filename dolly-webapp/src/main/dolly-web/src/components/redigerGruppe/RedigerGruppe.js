@@ -6,12 +6,11 @@ import { Formik, Form, Field, getIn } from 'formik'
 import { DollyApi } from '~/service/Api'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import Knapp from 'nav-frontend-knapper'
-import FormErrors from '~/components/formErrors/FormErrors'
 import * as yup from 'yup'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
 
-// import './Rediger.less'
+// import './RedigerGruppe.less'
 
 export default class Rediger extends PureComponent {
 	static propTypes = {
@@ -23,17 +22,15 @@ export default class Rediger extends PureComponent {
 		}),
 		createGruppe: PropTypes.func,
 		updateGruppe: PropTypes.func,
-		closeRedigerOgOpprett: PropTypes.func,
-		error: PropTypes.object
+		onCancel: PropTypes.func,
+		error: PropTypes.string
 	}
 
 	erRedigering = Boolean(getIn(this.props.gruppe, 'id', false))
 
 	onHandleSubmit = async (values, actions) => {
 		const { createGruppe, updateGruppe, gruppe } = this.props
-		const res = this.erRedigering
-			? await updateGruppe(gruppe.id, values)
-			: await createGruppe(values)
+		return this.erRedigering ? updateGruppe(gruppe.id, values) : createGruppe(values)
 	}
 
 	validation = () =>
@@ -47,13 +44,7 @@ export default class Rediger extends PureComponent {
 		})
 
 	render() {
-		const {
-			closeRedigerOgOpprett,
-			currentUserId,
-			gruppe,
-			createOrUpdateFetching,
-			error
-		} = this.props
+		const { onCancel, currentUserId, gruppe, createOrUpdateFetching, error } = this.props
 
 		if (createOrUpdateFetching) {
 			return (
@@ -92,7 +83,7 @@ export default class Rediger extends PureComponent {
 								/>
 								<Field name="hensikt" label="HENSIKT" component={FormikInput} />
 
-								<Knapp mini type="standard" htmlType="button" onClick={closeRedigerOgOpprett}>
+								<Knapp mini type="standard" htmlType="button" onClick={onCancel}>
 									Avbryt
 								</Knapp>
 								<Knapp mini type="hoved" htmlType="submit">

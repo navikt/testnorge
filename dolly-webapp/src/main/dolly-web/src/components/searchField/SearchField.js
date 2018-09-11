@@ -19,6 +19,7 @@ export default class SearchField extends PureComponent {
 						type="text"
 						placeholder="Hva leter du etter?"
 						onChange={this.onChangeHandler}
+						aria-label="Search"
 					/>
 					<Icon kind="search" size="20" />
 				</div>

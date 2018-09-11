@@ -3,7 +3,9 @@ import PropTypes from 'prop-types'
 import cn from 'classnames'
 import Button from '~/components/button/Button'
 import ExpandButton from '~/components/button/ExpandButton'
+import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
+import Icon from '~/components/icon/Icon'
 import './table.less'
 
 class TableRow extends PureComponent {
@@ -30,9 +32,9 @@ class TableRow extends PureComponent {
 			children,
 			expandComponent,
 			editAction,
-			favoriteAction,
 			deleteAction,
 			navLink,
+			groupId,
 			...restProps
 		} = this.props
 
@@ -55,8 +57,8 @@ class TableRow extends PureComponent {
 					{children}
 					<Table.Column className="dot-body-row-actioncolumn">
 						{editAction && <Button kind="edit" onClick={editAction} />}
-						{favoriteAction && <Button kind="star" onClick={favoriteAction} />}
 						{deleteAction && <ConfirmTooltip onClick={deleteAction} />}
+						{groupId && <FavoriteButtonConnector groupId={groupId} />}
 						{expandComponent && (
 							<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
 						)}
@@ -114,14 +116,33 @@ class TableColumn extends PureComponent {
 		width: '10'
 	}
 
+	onSortHandler = () => {
+		const { sortOrder, setSort, columnId } = this.props
+
+		setSort({ id: columnId, order: sortOrder === 'asc' ? 'desc' : 'asc' })
+	}
+
 	render() {
-		const { value, width, children, className, ...restProps } = this.props
-		const cssClass = cn('dot-column', `col${width}`, className)
+		const {
+			value,
+			width,
+			children,
+			className,
+			sortOrder,
+			setSort,
+			columnId,
+			sortable,
+			...restProps
+		} = this.props
+		const cssClass = cn('dot-column', `col${width}`, className, { sortable })
+
+		const iconKind = sortOrder === 'asc' ? 'arrow-up' : 'arrow-down'
 
 		const render = value ? value : children
 		return (
-			<div className={cssClass} {...restProps}>
+			<div className={cssClass} {...restProps} onClick={this.onSortHandler}>
 				{render}
+				{sortOrder && <Icon size={16} kind={iconKind} />}
 			</div>
 		)
 	}
