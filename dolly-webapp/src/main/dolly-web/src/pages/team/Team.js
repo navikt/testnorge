@@ -12,7 +12,7 @@ class Team extends Component {
 
 	componentDidMount() {
 		this.props.getTeam()
-		this.props.getGrupper()
+		this.props.listGrupper()
 	}
 
 	openLeggTilBrukerHandler = () => {
