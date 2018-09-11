@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { actions } from '~/ducks/team'
-import { getGrupper } from '~/ducks/grupper'
+import { listGrupper } from '~/ducks/gruppe'
 import { createLoadingSelector } from '~/ducks/loading'
 import Team from './Team'
 
@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	const { teamId } = ownProps.match.params
 	return {
 		getTeam: () => dispatch(actions.team.get(teamId)),
-		getGrupper: () => dispatch(getGrupper(teamId)),
+		listGrupper: () => dispatch(listGrupper(teamId)),
 		addMember: userArray => dispatch(actions.team.addMember(teamId, userArray)),
 		removeMember: userArray => dispatch(actions.team.removeMember(teamId, userArray))
 	}

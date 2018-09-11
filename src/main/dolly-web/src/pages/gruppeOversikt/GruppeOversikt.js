@@ -11,10 +11,12 @@ import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {
-		grupper: PropTypes.object,
+		isFetching: PropTypes.bool,
+		gruppeListe: PropTypes.array,
+		visning: PropTypes.string,
 		createOrUpdateId: PropTypes.number,
 		history: PropTypes.object,
-		getGrupper: PropTypes.func,
+		listGrupper: PropTypes.func,
 		settVisning: PropTypes.func,
 		deleteGruppe: PropTypes.func
 	}
@@ -23,16 +25,17 @@ export default class GruppeOversikt extends PureComponent {
 		this.hentGrupper()
 	}
 
-	hentGrupper = () => this.props.getGrupper()
+	hentGrupper = () => this.props.listGrupper()
 	byttVisning = e => {
 		this.props.settVisning(e.target.value)
-		this.props.getGrupper(e.target.value)
+		this.props.listGrupper(e.target.value)
 	}
 
 	render() {
 		const {
+			isFetching,
 			gruppeListe,
-			grupper,
+			visning,
 			history,
 			createOrUpdateId,
 			editGroup,
@@ -52,10 +55,10 @@ export default class GruppeOversikt extends PureComponent {
 
 				<div className="flexbox--space">
 					<ToggleGruppe onChange={this.byttVisning} name="toggleGruppe">
-						<ToggleKnapp value="mine" checked={grupper.visning === 'mine'} key="1">
+						<ToggleKnapp value="mine" checked={visning === 'mine'} key="1">
 							Mine
 						</ToggleKnapp>
-						<ToggleKnapp value="alle" checked={grupper.visning === 'alle'} key="2">
+						<ToggleKnapp value="alle" checked={visning === 'alle'} key="2">
 							Alle
 						</ToggleKnapp>
 					</ToggleGruppe>
@@ -64,7 +67,7 @@ export default class GruppeOversikt extends PureComponent {
 
 				{createOrUpdateId === -1 && <RedigerGruppeConnector />}
 
-				{grupper.fetching ? (
+				{isFetching ? (
 					<Loading label="laster grupper" panel />
 				) : (
 					<Liste

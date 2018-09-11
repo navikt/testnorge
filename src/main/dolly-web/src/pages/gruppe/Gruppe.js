@@ -43,7 +43,7 @@ export default class Gruppe extends Component {
 		return (
 			<div id="gruppe-container">
 				<Overskrift
-					label={gruppe.navn}
+					label={gruppe[0].navn}
 					actions={[
 						{
 							icon: 'edit',
@@ -58,15 +58,15 @@ export default class Gruppe extends Component {
 					]}
 				/>
 
-				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
+				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe[0]} />}
 
-				<GruppeDetaljer gruppe={gruppe} />
+				<GruppeDetaljer gruppe={gruppe[0]} />
 
-				{gruppe.bestillinger.map(bestilling => (
+				{gruppe[0].bestillinger.map(bestilling => (
 					<BestillingStatus key={bestilling.id} bestilling={bestilling} onGroupUpdate={getGruppe} />
 				))}
 
-				<TestbrukerListeConnector testidenter={gruppe.testidenter} />
+				<TestbrukerListeConnector testidenter={gruppe[0].testidenter} />
 				<AddButton title="Opprett ny bestilling" onClick={this.startBestilling} />
 			</div>
 		)
