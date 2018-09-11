@@ -55,38 +55,38 @@ const SubKategorier: KategoriTypes = {
 }
 
 const AttributtListe: Attributt[] = [
-	{
-		hovedKategori: Kategorier.PersInfo,
-		subKategori: SubKategorier.Alder,
-		id: 'alder',
-		label: 'Alder',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Number,
-		validation: yup
-			.number()
-			.typeError('Må være et tall')
-			.integer()
-			.positive()
-			.max(125)
-	},
-	{
-		hovedKategori: Kategorier.PersInfo,
-		subKategori: SubKategorier.Alder,
-		id: 'fraAlder',
-		label: 'Fra alder',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Date,
-		validation: yup.date()
-	},
-	{
-		hovedKategori: Kategorier.PersInfo,
-		subKategori: SubKategorier.Alder,
-		id: 'tilAlder',
-		label: 'Til alder',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Date,
-		validation: yup.date()
-	},
+	// {
+	// 	hovedKategori: Kategorier.PersInfo,
+	// 	subKategori: SubKategorier.Alder,
+	// 	id: 'alder',
+	// 	label: 'Alder',
+	// 	dataSource: DataSource.TPSF,
+	// 	inputType: InputType.Number,
+	// 	validation: yup
+	// 		.number()
+	// 		.typeError('Må være et tall')
+	// 		.integer()
+	// 		.positive()
+	// 		.max(125)
+	// },
+	// {
+	// 	hovedKategori: Kategorier.PersInfo,
+	// 	subKategori: SubKategorier.Alder,
+	// 	id: 'fraAlder',
+	// 	label: 'Fra alder',
+	// 	dataSource: DataSource.TPSF,
+	// 	inputType: InputType.Date,
+	// 	validation: yup.date()
+	// },
+	// {
+	// 	hovedKategori: Kategorier.PersInfo,
+	// 	subKategori: SubKategorier.Alder,
+	// 	id: 'tilAlder',
+	// 	label: 'Til alder',
+	// 	dataSource: DataSource.TPSF,
+	// 	inputType: InputType.Date,
+	// 	validation: yup.date()
+	// },
 	{
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Alder,
@@ -108,7 +108,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Alder,
-		id: 'dodsdato',
+		id: 'doedsdato',
 		label: 'Dødsdato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
