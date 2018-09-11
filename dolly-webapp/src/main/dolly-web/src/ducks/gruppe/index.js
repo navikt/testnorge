@@ -12,7 +12,9 @@ export const getGrupperByUserId = createAction('GET_GRUPPER_BY_USER_ID', DollyAp
 // CRUD
 export const createGruppe = createAction('CREATE_GRUPPE', DollyApi.createGruppe)
 export const updateGruppe = createAction('UPDATE_GRUPPE', DollyApi.updateGruppe)
-export const deleteGruppe = createAction('DELETE_GRUPPE', DollyApi.deleteGruppe)
+export const deleteGruppe = createAction('DELETE_GRUPPE', DollyApi.deleteGruppe, gruppeId => ({
+	gruppeId
+}))
 
 // UI
 export const showCreateOrEditGroup = createAction('TOGGLE_SHOW_CREATE_OR_EDIT')
@@ -54,7 +56,7 @@ export default handleActions(
 		[success(deleteGruppe)](state, action) {
 			return {
 				...state,
-				data: state.data.filter(item => item.id !== action.payload)
+				data: state.data.filter(item => item.id !== action.meta.gruppeId)
 			}
 		},
 		[showCreateOrEditGroup](state, action) {

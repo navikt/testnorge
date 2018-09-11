@@ -13,6 +13,11 @@ export default class App extends Component {
 		this.props.fetchCurrentBruker()
 	}
 
+	componentDidUpdate() {
+		const { redirectTo, onRedirect } = this.props
+		if (redirectTo) return onRedirect(redirectTo)
+	}
+
 	render() {
 		const { brukerData, showSplashscreen } = this.props
 
