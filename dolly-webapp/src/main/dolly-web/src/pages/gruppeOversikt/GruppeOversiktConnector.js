@@ -1,9 +1,19 @@
 import { connect } from 'react-redux'
 import _orderBy from 'lodash/orderBy'
 import GruppeOversikt from './GruppeOversikt'
-import { getGrupper, settVisning, deleteGruppe } from '~/ducks/grupper'
 import { setSort } from '~/ducks/sort'
-import { showCreateOrEditGroup } from '~/ducks/gruppe'
+import {
+	listGrupper,
+	settVisning,
+	deleteGruppe,
+	showCreateOrEditGroup,
+	getGrupper,
+	getGrupperByTeamId,
+	getGrupperByUserId
+} from '~/ducks/gruppe'
+import { createLoadingSelector } from '~/ducks/loading'
+
+const loadingSelector = createLoadingSelector(getGrupper, getGrupperByTeamId, getGrupperByUserId)
 
 const gruppeFiltering = (items, searchText) => {
 	if (!items) return null
@@ -21,8 +31,9 @@ const gruppeFiltering = (items, searchText) => {
 
 const mapStateToProps = state => {
 	return {
+		isFetching: loadingSelector(state),
 		gruppeListe: _orderBy(
-			gruppeFiltering(state.grupper.items, state.search),
+			gruppeFiltering(state.gruppe.data, state.search),
 			gruppe => {
 				const value = gruppe[state.sort.id]
 				if (typeof value === 'string') return gruppe[state.sort.id].toLowerCase()
@@ -32,14 +43,13 @@ const mapStateToProps = state => {
 			state.sort.order
 		),
 		createOrUpdateId: state.gruppe.createOrUpdateId,
-		grupper: state.grupper,
-		error: state.grupper.error,
+		visning: state.gruppe.visning,
 		sort: state.sort
 	}
 }
 
 const mapDispatchToProps = dispatch => ({
-	getGrupper: () => dispatch(getGrupper()),
+	listGrupper: () => dispatch(listGrupper()),
 	createGroup: () => dispatch(showCreateOrEditGroup(-1)),
 	editGroup: editId => dispatch(showCreateOrEditGroup(editId)),
 	settVisning: visning => dispatch(settVisning(visning)),
