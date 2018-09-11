@@ -1,6 +1,7 @@
 import { DollyApi } from '~/service/Api'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import { createActions } from 'redux-actions'
+import success from '~/utils/SuccessAction'
 
 export const actions = createActions({
 	TEAM: {
@@ -18,9 +19,9 @@ export default function teamReducer(state = initialState, action) {
 	switch (action.type) {
 		case LOCATION_CHANGE:
 			return initialState
-		case `${actions.team.get}_SUCCESS`:
-		case `${actions.team.addMember}_SUCCESS`:
-		case `${actions.team.removeMember}_SUCCESS`:
+		case success(actions.team.get):
+		case success(actions.team.addMember):
+		case success(actions.team.removeMember):
 			return { ...state, data: action.payload.data }
 		default:
 			return state
