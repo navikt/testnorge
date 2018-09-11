@@ -9,8 +9,8 @@ export default (state = initialState, action) => {
 	switch (action.type) {
 		case LOCATION_CHANGE:
 			return initialState
-		case setSearchText:
-			return action.payload.text
+		case setSearchText.toString():
+			return action.payload
 		default:
 			return state
 	}
