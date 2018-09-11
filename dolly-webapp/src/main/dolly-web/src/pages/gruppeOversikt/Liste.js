@@ -94,7 +94,7 @@ export default class Liste extends PureComponent {
 						rowProps.editAction = () => editGroup(gruppe.id)
 						rowProps.deleteAction = () => deleteGruppe(gruppe.id)
 					} else {
-						rowProps.favoriteAction = () => addFavorite(gruppe.id)
+						rowProps.groupId = gruppe.id
 					}
 
 					return (

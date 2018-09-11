@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import cn from 'classnames'
 import Button from '~/components/button/Button'
 import ExpandButton from '~/components/button/ExpandButton'
+import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Icon from '~/components/icon/Icon'
 import './table.less'
@@ -31,9 +32,9 @@ class TableRow extends PureComponent {
 			children,
 			expandComponent,
 			editAction,
-			favoriteAction,
 			deleteAction,
 			navLink,
+			groupId,
 			...restProps
 		} = this.props
 
@@ -56,8 +57,8 @@ class TableRow extends PureComponent {
 					{children}
 					<Table.Column className="dot-body-row-actioncolumn">
 						{editAction && <Button kind="edit" onClick={editAction} />}
-						{favoriteAction && <Button kind="star" onClick={favoriteAction} />}
 						{deleteAction && <ConfirmTooltip onClick={deleteAction} />}
+						{groupId && <FavoriteButtonConnector groupId={groupId} />}
 						{expandComponent && (
 							<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
 						)}

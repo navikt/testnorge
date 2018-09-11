@@ -6,6 +6,7 @@ import success from '~/utils/SuccessAction'
 export const getCurrentBruker = createAction('GET_CURRENT_BRUKER', DollyApi.getCurrentBruker)
 export const setSplashscreenStatus = createAction('SET_SPLASHSCREEN_STATUS')
 export const addFavorite = createAction('ADD_FAVORITE', DollyApi.addFavorite)
+export const removeFavorite = createAction('REMOVE_FAVORITE', DollyApi.removeFavorite)
 
 const initialState = {
 	brukerData: null,
