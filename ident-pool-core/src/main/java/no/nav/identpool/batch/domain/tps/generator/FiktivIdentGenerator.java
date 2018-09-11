@@ -1,4 +1,4 @@
-package no.nav.identpool.batch.tps.generator;
+package no.nav.identpool.batch.domain.tps.generator;
 
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class FiktivIdentGenerator {
     private static final SecureRandom secureRandom = new SecureRandom();
 
     private static final int MULTIPLY_ANT_IDENTER = 1;
-    private static final LocalDate DEFUALT_FODT_ETTER_DATE = LocalDate.of(1900, Month.JANUARY,1);
+    private static final LocalDate DEFUALT_FODT_ETTER_DATE = LocalDate.of(1910, Month.JANUARY,1);
     private static final LocalDate DEFUALT_FODT_FOER_DATE = LocalDate.now();
 
     //Starter på 1 fordi individ nummer "000" er reservert for F-DAT nummer. Spesielt nummer.

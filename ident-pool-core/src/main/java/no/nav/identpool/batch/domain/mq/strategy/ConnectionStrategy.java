@@ -1,4 +1,4 @@
-package no.nav.identpool.batch.mq.strategy;
+package no.nav.identpool.batch.domain.mq.strategy;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class ConnectionStrategy {
 
     public int hashCode() {
         int result = 17;
-        result = 31 * result + (queueManager.hashCode() + hostName.hashCode() + port);
+        result = 31 * result + (queueManager.hashCode() + hostName.hashCode() + port) / channel.hashCode();
         return result;
     }
 }

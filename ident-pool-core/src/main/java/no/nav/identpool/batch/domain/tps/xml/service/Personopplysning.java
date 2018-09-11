@@ -1,11 +1,11 @@
-package no.nav.identpool.batch.tps.xml.service;
+package no.nav.identpool.batch.domain.tps.xml.service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 
-import no.nav.identpool.batch.tps.xml.ServiceRutinenavn;
-import no.nav.identpool.batch.tps.xml.TpsServiceRutine;
+import no.nav.identpool.batch.domain.tps.xml.ServiceRutinenavn;
+import no.nav.identpool.batch.domain.tps.xml.TpsServiceRutine;
 
 @Getter
 public class Personopplysning extends TpsServiceRutine {

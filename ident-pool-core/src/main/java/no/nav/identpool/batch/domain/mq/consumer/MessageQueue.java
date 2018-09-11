@@ -1,8 +1,7 @@
-package no.nav.identpool.batch.mq.consumer;
+package no.nav.identpool.batch.domain.mq.consumer;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
-import javax.jms.Session;
 
 public interface MessageQueue {
     public Connection startConnection() throws JMSException;

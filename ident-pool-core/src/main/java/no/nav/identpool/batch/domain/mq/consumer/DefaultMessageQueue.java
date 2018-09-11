@@ -1,4 +1,4 @@
-package no.nav.identpool.batch.mq.consumer;
+package no.nav.identpool.batch.domain.mq.consumer;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;

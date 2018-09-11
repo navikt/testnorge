@@ -1,4 +1,4 @@
-package no.nav.identpool.batch.mq.factory;
+package no.nav.identpool.batch.domain.mq.factory;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 import no.nav.freg.fasit.utils.domain.QueueManager;
-import no.nav.identpool.batch.fasit.FasitClient;
-import no.nav.identpool.batch.mq.strategy.ConnectionStrategy;
+import no.nav.identpool.batch.domain.fasit.FasitClient;
+import no.nav.identpool.batch.domain.mq.strategy.ConnectionStrategy;
 
 @Component
 @RequiredArgsConstructor
 public class ConnectionStrategyFactory {
 
-    @Value("${messagequeue.channel.postfix}")
+    @Value("${mq.channel.postfix}")
     private String CHANNEL_POSTFIX;
 
     private final FasitClient fasitClient;

@@ -1,4 +1,4 @@
-package no.nav.identpool.batch.tps.generator;
+package no.nav.identpool.batch.domain.tps.generator;
 
 import java.time.LocalDate;
 

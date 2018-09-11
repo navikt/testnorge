@@ -12,13 +12,18 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 
 @Data
 @Entity
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "PERSONIDENTIFIKATOR")
 public class IdentEntity {
     @Id
@@ -44,14 +49,4 @@ public class IdentEntity {
     @NotNull
     @Column(name = "FINNES_HOS_SKATT")
     private String finnesHosSkatt;
-
-    @Enumerated(EnumType.STRING)
-    public Identtype getIdenttype() {
-        return this.identtype;
-    }
-
-    @Enumerated(EnumType.STRING)
-    public Rekvireringsstatus getRekvireringsstatus() {
-        return this.rekvireringsstatus;
-    }
 }

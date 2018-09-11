@@ -1,4 +1,4 @@
-package no.nav.identpool.batch.tps.xml;
+package no.nav.identpool.batch.domain.tps.xml;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;

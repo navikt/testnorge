@@ -1,4 +1,4 @@
-package no.nav.identpool.batch.mq.factory;
+package no.nav.identpool.batch.domain.mq.factory;
 
 
 import java.util.concurrent.TimeUnit;
@@ -14,7 +14,7 @@ import javax.jms.JMSException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.identpool.batch.mq.strategy.ConnectionStrategy;
+import no.nav.identpool.batch.domain.mq.strategy.ConnectionStrategy;
 
 /**
  * A connection factory factory maintaining an internal cache of connection factories.
@@ -39,18 +39,26 @@ public class ConnectionFactoryFactory {
      * @throws JMSException
      */
     ConnectionFactory createConnectionFactory(ConnectionStrategy strategy) throws JMSException {
+        return createConnectionFactory(strategy, false);
+    }
 
-        ConnectionFactory connectionFactory = cache.getIfPresent(strategy);
-        if (connectionFactory != null) {
-            return connectionFactory;
+    ConnectionFactory createConnectionFactoryIgnoreCache(ConnectionStrategy strategy) throws JMSException {
+        return createConnectionFactory(strategy, true);
+    }
+
+    private ConnectionFactory createConnectionFactory(ConnectionStrategy strategy, boolean ignoreCache) throws JMSException {
+        if (!ignoreCache) {
+            ConnectionFactory connectionFactory = cache.getIfPresent(strategy);
+            if (connectionFactory != null) {
+                return connectionFactory;
+            }
         }
-
         log.info(String.format("Creating connection factory '%s@%s:%d' on channel '%s' using transport type '%d'",
                 strategy.getQueueManager(),
                 strategy.getHostName(),
                 strategy.getPort(),
                 strategy.getChannel(),
-                strategy.getTransportType()) );
+                strategy.getTransportType()));
 
         MQQueueConnectionFactory factory = new MQQueueConnectionFactory();
 
@@ -60,6 +68,9 @@ public class ConnectionFactoryFactory {
         factory.setPort(strategy.getPort());
         factory.setChannel(strategy.getChannel());
 
+        if (ignoreCache) {
+            cache.invalidate(factory);
+        }
         cache.put(strategy, factory);
 
         return factory;
