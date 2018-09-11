@@ -2,6 +2,7 @@ import { push, LOCATION_CHANGE } from 'connected-react-router'
 import { DollyApi } from '~/service/Api'
 import _xor from 'lodash/fp/xor'
 import _get from 'lodash/get'
+import success from '~/utils/SuccessAction'
 
 export const types = {
 	NEXT_PAGE: 'bestilling/neste-side',
