@@ -13,7 +13,16 @@ export default class Liste extends PureComponent {
 	}
 
 	render() {
-		const { items, editId, editGroup, history, deleteGruppe, setSort, sort } = this.props
+		const {
+			items,
+			editId,
+			editGroup,
+			history,
+			deleteGruppe,
+			setSort,
+			sort,
+			addFavorite
+		} = this.props
 
 		if (!items) {
 			return (
@@ -85,9 +94,7 @@ export default class Liste extends PureComponent {
 						rowProps.editAction = () => editGroup(gruppe.id)
 						rowProps.deleteAction = () => deleteGruppe(gruppe.id)
 					} else {
-						rowProps.favoriteAction = () => {
-							alert('favorite this - not implemented')
-						}
+						rowProps.favoriteAction = () => addFavorite(gruppe.id)
 					}
 
 					return (

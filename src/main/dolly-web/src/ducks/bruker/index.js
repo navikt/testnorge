@@ -1,11 +1,12 @@
 import { DollyApi } from '~/service/Api'
-import { createAction, handleActions } from 'redux-actions'
+import { createAction, handleActions, combineActions } from 'redux-actions'
 import Cookie from '~/utils/Cookie'
 import success from '~/utils/SuccessAction'
 import { create } from 'domain'
 
 export const getCurrentBruker = createAction('GET_CURRENT_BRUKER', DollyApi.getCurrentBruker)
 export const setSplashscreenStatus = createAction('SET_SPLASHSCREEN_STATUS')
+export const addFavorite = createAction('ADD_FAVORITE', DollyApi.addFavorite)
 
 const initialState = {
 	brukerData: null,
@@ -14,7 +15,7 @@ const initialState = {
 
 export default handleActions(
 	{
-		[success(getCurrentBruker)](state, action) {
+		[combineActions(success(getCurrentBruker), success(addFavorite))](state, action) {
 			return { ...state, brukerData: action.payload.data }
 		},
 		[setSplashscreenStatus](state, action) {
