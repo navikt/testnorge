@@ -14,7 +14,7 @@ export default class App extends Component {
 	}
 
 	render() {
-		const { brukerData } = this.props
+		const { brukerData, showSplashscreen } = this.props
 
 		if (!brukerData) return <Loading label="laster dolly applikasjon" fullpage />
 
@@ -36,7 +36,7 @@ export default class App extends Component {
 						})}
 					</Switch>
 				</main>
-				{brukerData.showSplashscreen && <SplashscreenConnector />}
+				{showSplashscreen && <SplashscreenConnector />}
 			</React.Fragment>
 		)
 	}
