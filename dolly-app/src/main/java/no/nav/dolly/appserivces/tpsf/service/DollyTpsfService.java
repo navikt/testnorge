@@ -46,18 +46,26 @@ public class DollyTpsfService {
     BestillingService bestillingService;
 
     @Async
-    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest request, Long bestillingsId){
-        List<String> klareIdenter = tpsfApiService.opprettPersonerTpsf(request);
-        Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
-
+    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest request, Long bestillingsId) {
         Bestilling bestilling = bestillingService.fetchBestillingById(bestillingsId);
+        request.getTpsf().setAntall(request.getAntall());
+        request.getTpsf().setEnvironments(request.getEnvironments());
 
         try {
-            createIdenterIRegistrene(request, bestilling, klareIdenter, testgruppe);
-        } catch (Exception e){
+            for (int i = 0; i < request.getAntall(); i++) {
+                RsDollyBestillingsRequest tempReq = request;
+                tempReq.setAntall(1);
+
+                List<String> klareIdenter = tpsfApiService.opprettPersonerTpsf(tempReq.getTpsf());
+                Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
+
+                createIdenterIRegistrene(request, bestilling, klareIdenter, testgruppe);
+            }
+
+        } catch (Exception e) {
             // LOG Exception eller set i bestilling som error. Er Async, så skal ikke håndtere error.
             //TODO Dette skal logges.
-            System.out.println("Lage identer feiler. Dette bor logges!");
+            System.out.println("Lage identer feiler. Dette bor logges!  Error: " + e.getMessage());
         } finally {
             bestilling.setSistOppdatert(LocalDateTime.now());
             bestilling.setFerdig(true);
@@ -65,66 +73,71 @@ public class DollyTpsfService {
         }
     }
 
-    private void createIdenterIRegistrene(RsDollyBestillingsRequest request, Bestilling bestilling, List<String> klareIdenter, Testgruppe testgruppe){
-        klareIdenter.forEach(ident -> {
-            BestillingProgress progress = new BestillingProgress();
-            progress.setBestillingId(bestilling.getId());
-            progress.setIdent(ident);
+    private void createIdenterIRegistrene(RsDollyBestillingsRequest request, Bestilling bestilling, List<String> klareIdenter, Testgruppe testgruppe) {
+        String hovedPersonIdent = klareIdenter.get(0);   //TODO Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
 
-            RsSkdMeldingResponse response;
-            try{
-                response = tpsfApiService.sendTilTpsFraTPSF(ident, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
-            } catch (TpsfException e){
-                progress.setFeil(e.getMessage());
-                bestillingProgressRepository.save(progress);
-                bestilling.setSistOppdatert(LocalDateTime.now());
-                bestillingService.saveBestillingToDB(bestilling);
-                return;
-            }
+        BestillingProgress progress = new BestillingProgress();
+        progress.setBestillingId(bestilling.getId());
+        progress.setIdent(hovedPersonIdent);
 
-            String env = extractSuccessEnvTPS(response.getSendSkdMeldingTilTpsResponsene().get(0));
-
-            BestillingProgress currentProgress = bestillingProgressRepository.save(progress);
-
+        RsSkdMeldingResponse response;
+        try {
+            response = tpsfApiService.sendTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
+        } catch (TpsfException e) {
+            progress.setFeil(e.getMessage());
+            bestillingProgressRepository.save(progress);
             bestilling.setSistOppdatert(LocalDateTime.now());
             bestillingService.saveBestillingToDB(bestilling);
+            return;
+        }
 
-            if(env.length() > 0){
-                Testident testident = new Testident();
-                testident.setIdent(ident);
-                testident.setTestgruppe(testgruppe);
-                identRepository.save(testident);
+        String env = extractSuccessEnvTPS(response.getSendSkdMeldingTilTpsResponsene().get(0));
+
+        BestillingProgress currentProgress = bestillingProgressRepository.save(progress);
+
+        bestilling.setSistOppdatert(LocalDateTime.now());
+        bestillingService.saveBestillingToDB(bestilling);
+
+        if (env.length() > 0) {
+            Testident testident = new Testident();
+            testident.setIdent(hovedPersonIdent);
+            testident.setTestgruppe(testgruppe);
+            identRepository.save(testident);
+        }
+
+        /* Sigrunn Handlinger */
+        if (request.getSigrunRequest() != null) {
+            try {
+                List<RsGrunnlagResponse> res = sigrunStubApiService.createInntektstuff(request.getSigrunRequest());
+                currentProgress.setSigrunSuccessEnv("all");
+            } catch (Exception e) {
+                currentProgress.setFeil(e.getMessage());
             }
 
-            /* Sigrunn Handlinger */
-            if(request.getSigrunRequest() != null) {
-                try {
-                    List<RsGrunnlagResponse> res = sigrunStubApiService.createInntektstuff(request.getSigrunRequest());
-                    currentProgress.setSigrunSuccessEnv("all");
-                }catch (Exception e){
-                    currentProgress.setFeil(e.getMessage());
-                }
-
-                currentProgress = bestillingProgressRepository.save(progress);
-            }
-        });
-
+            currentProgress = bestillingProgressRepository.save(progress);
+        }
     }
 
-    private String extractSuccessEnvTPS(SendSkdMeldingTilTpsResponse response){
+    private String identTilString(List<String> identer){
+        StringBuilder sb = new StringBuilder();
+        identer.forEach(i -> sb.append(i).append(","));
+        return sb.toString();
+    }
+
+    private String extractSuccessEnvTPS(SendSkdMeldingTilTpsResponse response) {
         Map<String, String> status = response.getStatus();
         StringBuilder sb = new StringBuilder();
-//        String env = "";
+        //        String env = "";
 
-        for(Map.Entry<String, String> entry : status.entrySet()){
-            if(entry.getValue().contains("00")){
+        for (Map.Entry<String, String> entry : status.entrySet()) {
+            if (entry.getValue().contains("00")) {
                 sb.append(entry.getKey()).append(",");
-//                env += entry.getKey() + ",";
+                //                env += entry.getKey() + ",";
             }
         }
 
         String env = sb.toString();
-        if(env.length() > 0){
+        if (env.length() > 0) {
             env = env.substring(0, env.length() - 1);
         }
 
