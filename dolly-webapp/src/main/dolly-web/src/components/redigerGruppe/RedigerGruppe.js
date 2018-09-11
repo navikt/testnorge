@@ -30,9 +30,7 @@ export default class Rediger extends PureComponent {
 
 	onHandleSubmit = async (values, actions) => {
 		const { createGruppe, updateGruppe, gruppe } = this.props
-		const res = this.erRedigering
-			? await updateGruppe(gruppe.id, values)
-			: await createGruppe(values)
+		return this.erRedigering ? updateGruppe(gruppe.id, values) : createGruppe(values)
 	}
 
 	validation = () =>
