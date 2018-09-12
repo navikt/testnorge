@@ -1,149 +1,104 @@
-import { push, LOCATION_CHANGE } from 'connected-react-router'
+import { LOCATION_CHANGE } from 'connected-react-router'
 import { DollyApi } from '~/service/Api'
 import _xor from 'lodash/fp/xor'
 import _get from 'lodash/get'
+import { handleActions, createActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 
-export const types = {
-	NEXT_PAGE: 'bestilling/neste-side',
-	PREV_PAGE: 'bestilling/forrige-side',
-	TOGGLE_ATTRIBUTES: 'bestilling/toggle-attributter',
-	SET_VALUES: 'bestilling/sett-verdier',
-	SET_ENVIRONMENTS: 'bestilling/sett-miljo',
-	START_BESTILLING: 'bestilling/start',
-	ABORT_BESTILLING: 'bestilling/abort',
-	POST_BESTILLING: 'bestilling/send-bestilling',
-	POST_BESTILLING_SUCCESS: 'bestilling/send-success',
-	POST_BESTILLING_ERROR: 'bestilling/send-error'
-}
+export const actions = createActions(
+	{
+		POST_BESTILLING: [
+			(gruppeId, values) => DollyApi.createBestilling(gruppeId, values), // Payload
+			gruppeId => ({ gruppeId }) // Meta
+		]
+	},
+	'NEXT_PAGE',
+	'PREV_PAGE',
+	'TOGGLE_ATTRIBUTE',
+	'SET_ENVIRONMENTS',
+	'SET_VALUES',
+	'START_BESTILLING',
+	'ABORT_BESTILLING'
+)
+
+console.log(actions)
 
 const initialState = {
 	page: 0,
-	fetching: false,
 	attributeIds: [],
 	environments: [],
 	antall: 0,
 	identtype: '',
-	values: {},
-	error: null
+	values: {}
 }
 
-// const TEMP_INITIAL_STATE = {
-// 	page: 3,
-// 	fetching: false,
-// 	attributeIds: ['kjonn', 'statsborgerskap'],
-// 	environments: [],
-// 	antall: 2,
-// 	identtype: 'FNR',
-// 	values: {
-// 		kjonn: 'kvinne',
-// 		statsborgerskap: 'Norsk'
-// 	},
-// 	error: null
-// }
-
-export default function bestillingReducer(state = initialState, action) {
-	switch (action.type) {
-		case LOCATION_CHANGE:
-			return initialState
-		case types.NEXT_PAGE:
+export default handleActions(
+	{
+		[actions.nextPage](state, action) {
 			return { ...state, page: state.page + 1 }
-		case types.PREV_PAGE:
+		},
+		[actions.prevPage](state, action) {
 			return { ...state, page: state.page - 1 }
-		case types.TOGGLE_ATTRIBUTES:
-			return { ...state, attributeIds: _xor(state.attributeIds, [action.attributeId]) }
-		case types.SET_ENVIRONMENTS:
-			return { ...state, environments: action.environmentIds }
-		case types.SET_VALUES:
-			return { ...state, values: action.values }
-		case types.START_BESTILLING:
-			return { ...state, identtype: action.identtype, antall: action.antall }
-		case types.POST_BESTILLING:
-			return { ...state, fetching: true }
-		case types.POST_BESTILLING_ERROR:
-			return { ...state, fetching: false, error: action.error }
-
-		// Reset state on succesfull & location change
-		case LOCATION_CHANGE:
-		case types.ABORT_BESTILLING:
-		case types.POST_BESTILLING_SUCCESS:
+		},
+		[actions.toggleAttribute](state, action) {
+			return { ...state, attributeIds: _xor(state.attributeIds, [action.payload]) }
+		},
+		[actions.startBestilling](state, action) {
+			return {
+				...state,
+				identtype: action.payload.identtype,
+				antall: action.payload.antall,
+				page: state.page + 1
+			}
+		},
+		[actions.setEnvironments](state, action) {
+			return {
+				...state,
+				environments: action.payload.values,
+				...(action.payload.goBack && { page: state.page - 1 })
+			}
+		},
+		[actions.setValues](state, action) {
+			return {
+				...state,
+				values: action.payload.values,
+				page: (state.page += action.payload.goBack ? -1 : 1)
+			}
+		},
+		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestilling))](
+			state,
+			action
+		) {
 			return initialState
+		}
+	},
+	initialState
+)
 
-		default:
-			return state
+// TODO: Denne må ryddes opp i og gjøres bedre
+// - kanskje flyttes ut til egen fil (er jo bare en formatter og ikke thunk)
+// - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
+const bestillingFormatter = bestillingState => {
+	const final_values = {
+		regdato: new Date(),
+		identtype: bestillingState.identtype,
+		antall: bestillingState.antall,
+		environments: bestillingState.environments,
+		...bestillingState.values
 	}
+
+	// TODO: SPECIAL HANDLING - Hva gjør vi her?
+	if (_get(final_values, 'boadresse.gateadresse')) {
+		final_values.boadresse.adressetype = 'GATE'
+	}
+
+	console.log('POSTING BESTILLING', final_values)
+
+	return final_values
 }
 
-export const nextPage = () => ({ type: types.NEXT_PAGE })
-export const prevPage = () => ({ type: types.PREV_PAGE })
-export const toggleAttribute = attributeId => ({ type: types.TOGGLE_ATTRIBUTES, attributeId })
-export const setEnvironments = environmentIds => ({ type: types.SET_ENVIRONMENTS, environmentIds })
-const setValuesAction = values => ({ type: types.SET_VALUES, values })
-const startBestillingAction = (identtype, antall) => ({
-	type: types.START_BESTILLING,
-	identtype,
-	antall
-})
-const abortBestillingAction = () => ({ type: types.ABORT_BESTILLING })
-
-const _bestillingRequest = () => ({ type: types.POST_BESTILLING })
-const _bestillingRequestSuccess = () => ({ type: types.POST_BESTILLING_SUCCESS })
-const _bestillingRequestError = error => ({ type: types.POST_BESTILLING_ERROR, error })
-
-export const startBestilling = (identtype, antall) => async dispatch => {
-	dispatch(startBestillingAction(identtype, antall))
-	dispatch(nextPage())
-}
-
-export const setEnvironmentsAndGoBack = environmentIds => dispatch => {
-	dispatch(setEnvironments(environmentIds))
-	dispatch(prevPage())
-}
-
-export const setValuesAndGoBack = values => dispatch => {
-	dispatch(setValuesAction(values))
-	dispatch(prevPage())
-}
-
-export const setValues = values => async dispatch => {
-	dispatch(setValuesAction(values))
-	dispatch(nextPage())
-}
-
-export const abortBestilling = gruppeId => async dispatch => {
-	dispatch(abortBestillingAction())
-
-	// Navigate to group page
-	dispatch(push(`/gruppe/${gruppeId}`))
-}
-
-export const postBestilling = gruppeId => async (dispatch, getState) => {
+export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { bestilling } = getState()
-
-	try {
-		dispatch(_bestillingRequest())
-
-		const final_values = {
-			regdato: new Date(),
-			identtype: bestilling.identtype,
-			antall: bestilling.antall,
-			environments: bestilling.environments,
-			...bestilling.values
-		}
-
-		// TODO: SPECIAL HANDLING - Hva gjør vi her?
-		if (_get(final_values, 'boadresse.gateadresse')) {
-			final_values.boadresse.adressetype = 'GATE'
-		}
-
-		console.log('POSTING BESTILLING', final_values)
-
-		const res = await DollyApi.createBestilling(gruppeId, final_values)
-		dispatch(_bestillingRequestSuccess(res))
-
-		// Navigate to group page
-		dispatch(push(`/gruppe/${gruppeId}`))
-	} catch (error) {
-		dispatch(_bestillingRequestError(error))
-	}
+	const values = bestillingFormatter(bestilling)
+	return dispatch(actions.postBestilling(gruppeId, values))
 }

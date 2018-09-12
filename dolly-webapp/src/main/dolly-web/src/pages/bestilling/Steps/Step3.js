@@ -16,7 +16,7 @@ export default class Step3 extends PureComponent {
 		antall: PropTypes.number,
 		selectedAttributeIds: PropTypes.arrayOf(PropTypes.string),
 		values: PropTypes.object,
-		postBestilling: PropTypes.func.isRequired,
+		sendBestilling: PropTypes.func.isRequired,
 		setEnvironments: PropTypes.func.isRequired
 	}
 
@@ -32,8 +32,8 @@ export default class Step3 extends PureComponent {
 	}
 
 	submit = values => {
-		this.props.setEnvironments(values.environments)
-		this.props.postBestilling()
+		this.props.setEnvironments({ values: values.environments })
+		this.props.sendBestilling()
 	}
 
 	renderValues = () => {
@@ -55,7 +55,7 @@ export default class Step3 extends PureComponent {
 	}
 
 	onClickPrevious = values => {
-		this.props.setValuesAndGoBack(values)
+		this.props.setEnvironments({ values, goBack: true })
 	}
 
 	render() {
@@ -97,7 +97,7 @@ export default class Step3 extends PureComponent {
 								<NavigationConnector
 									onClickNext={formikProps.submitForm}
 									onClickPrevious={() => {
-										this.props.setEnvironmentsAndGoBack(formikProps.values.environments)
+										this.onClickPrevious(formikProps.values.environments)
 									}}
 								/>
 							</Fragment>
