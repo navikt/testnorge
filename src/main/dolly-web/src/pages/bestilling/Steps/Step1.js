@@ -68,7 +68,6 @@ export default withFormik({
 		identtype: yup.string().required('Velg en identtype')
 	}),
 	handleSubmit: (values, { props, setSubmitting, setErrors }) => {
-		console.log('Submitting', values)
-		props.startBestilling(values.identtype, values.antall)
+		props.startBestilling(values)
 	}
 })(Step1)

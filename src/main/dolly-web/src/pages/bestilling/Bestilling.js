@@ -21,10 +21,8 @@ export default class Bestilling extends PureComponent {
 			startBestilling,
 			toggleAttribute,
 			setValues,
-			setValuesAndGoBack,
 			setEnvironments,
-			setEnvironmentsAndGoBack,
-			postBestilling,
+			sendBestilling,
 			environments
 		} = this.props
 
@@ -58,7 +56,6 @@ export default class Bestilling extends PureComponent {
 						selectedAttributeIds={attributeIds}
 						setValues={setValues}
 						values={values}
-						setValuesAndGoBack={setValuesAndGoBack}
 					/>
 				)}
 
@@ -68,10 +65,9 @@ export default class Bestilling extends PureComponent {
 						antall={antall}
 						selectedAttributeIds={attributeIds}
 						values={values}
-						postBestilling={postBestilling}
+						sendBestilling={sendBestilling}
 						setEnvironments={setEnvironments}
 						environments={environments}
-						setEnvironmentsAndGoBack={setEnvironmentsAndGoBack}
 					/>
 				)}
 			</div>
