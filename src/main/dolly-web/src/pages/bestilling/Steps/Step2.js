@@ -26,7 +26,7 @@ export default class Step2 extends PureComponent {
 	}
 
 	submit = values => {
-		this.props.setValues(values)
+		this.props.setValues({ values })
 	}
 
 	renderForm = formikProps => {
@@ -117,7 +117,7 @@ export default class Step2 extends PureComponent {
 	}
 
 	onClickPrevious = values => {
-		this.props.setValuesAndGoBack(values)
+		this.props.setValues({ values, goBack: true })
 	}
 
 	render() {
@@ -143,7 +143,7 @@ export default class Step2 extends PureComponent {
 							{this.renderForm(formikProps)}
 							<NavigationConnector
 								onClickNext={formikProps.submitForm}
-								onClickPrevious={() => this.props.setValuesAndGoBack(formikProps.values)}
+								onClickPrevious={() => this.onClickPrevious(formikProps.values)}
 							/>
 							{/* <DisplayFormikState {...formikProps} /> */}
 						</Fragment>
