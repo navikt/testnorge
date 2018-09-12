@@ -21,8 +21,6 @@ export const actions = createActions(
 	'ABORT_BESTILLING'
 )
 
-console.log(actions)
-
 const initialState = {
 	page: 0,
 	attributeIds: [],

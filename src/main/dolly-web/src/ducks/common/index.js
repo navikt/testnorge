@@ -13,7 +13,6 @@ const redirectReducer = (state = null, action) => {
 		case bestillingActions.abortBestilling.toString():
 			return `/gruppe/${action.payload}`
 		case success(bestillingActions.postBestilling):
-			console.log(action)
 			return `/gruppe/${action.meta.gruppeId}`
 		case LOCATION_CHANGE:
 		default:
