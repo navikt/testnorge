@@ -36,13 +36,14 @@ export default class Step2 extends PureComponent {
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }, formikProps) => {
+		console.log(hovedKategori, items)
 		return (
-			<Panel key={hovedKategori.id} heading={<h3>{hovedKategori.id}</h3>} startOpen>
+			<Panel key={hovedKategori.id} heading={<h3>{hovedKategori.navn}</h3>} startOpen>
 				{items.map(
-					item =>
-						item.subKategori.multiple
+					(item, idx) =>
+						item.subKategori && item.subKategori.multiple
 							? this.renderSubKategoriAsFieldArray(item, formikProps)
-							: this.renderSubKategori(item, formikProps)
+							: this.renderSubKategori(item, idx)
 				)}
 			</Panel>
 		)
@@ -91,9 +92,9 @@ export default class Step2 extends PureComponent {
 		)
 	}
 
-	renderSubKategori = ({ subKategori, items }) => (
-		<div className="subkategori" key={subKategori.navn}>
-			<h4>{subKategori.navn}</h4>
+	renderSubKategori = ({ subKategori, items }, idx) => (
+		<div className="subkategori" key={idx}>
+			{subKategori && <h4>{subKategori.navn}</h4>}
 			<div className="subkategori-field-group">
 				{items.map(item => this.renderFieldComponent(item))}
 			</div>
