@@ -36,7 +36,6 @@ export default class Step2 extends PureComponent {
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }, formikProps) => {
-		console.log(hovedKategori, items)
 		return (
 			<Panel key={hovedKategori.id} heading={<h3>{hovedKategori.navn}</h3>} startOpen>
 				{items.map(
