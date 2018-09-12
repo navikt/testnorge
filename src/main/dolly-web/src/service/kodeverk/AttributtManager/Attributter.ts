@@ -5,6 +5,6 @@ import TpsfPersoninformasjon from './tpsf/Personinformasjon'
 import TpsfAdresse from './tpsf/Adresse'
 import TpsfRelasjon from './tpsf/Relasjon'
 
-const AttributtListe: Attributt[] = [...TpsfPersoninformasjon, ...TpsfAdresse]
+const AttributtListe: Attributt[] = [...TpsfPersoninformasjon, ...TpsfAdresse, ...TpsfRelasjon]
 
 export default AttributtListe

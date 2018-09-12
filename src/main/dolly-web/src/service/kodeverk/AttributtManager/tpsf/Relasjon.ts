@@ -6,7 +6,7 @@ import * as yup from 'yup'
 const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
-		subKategori: SubKategorier.Boadresse,
+		subKategori: null,
 		id: 'relasjon.barn',
 		label: 'Har barn',
 		dataSource: DataSource.TPSF,
