@@ -5,7 +5,8 @@ export enum InputType {
 	Text = 'text',
 	Number = 'number',
 	Select = 'select',
-	Date = 'date'
+	Date = 'date',
+	Multifield = 'multifield'
 }
 
 export enum DataSource {
@@ -36,6 +37,7 @@ export interface Attributt {
 	label: string
 	dataSource: DataSource
 	inputType: InputType
+	items?: Attributt[]
 	options?: Options[]
 	apiKodeverkId?: string
 	validation?: yup.MixedSchema

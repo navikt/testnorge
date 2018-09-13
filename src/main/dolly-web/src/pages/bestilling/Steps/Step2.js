@@ -38,12 +38,11 @@ export default class Step2 extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps) => {
 		return (
 			<Panel key={hovedKategori.id} heading={<h3>{hovedKategori.navn}</h3>} startOpen>
-				{items.map(
-					(item, idx) =>
-						item.subKategori && item.subKategori.multiple
-							? this.renderSubKategoriAsFieldArray(item, formikProps)
-							: this.renderSubKategori(item, idx)
-				)}
+				{items.map((item, idx) => {
+					return item.subKategori && item.subKategori.multiple
+						? this.renderSubKategoriAsFieldArray(item, formikProps)
+						: this.renderFieldContainer(null, item.items, idx)
+				})}
 			</Panel>
 		)
 	}
@@ -55,7 +54,9 @@ export default class Step2 extends PureComponent {
 				<FieldArray
 					name={subId}
 					render={arrayHelpers => {
+						console.log(items)
 						const defs = items.reduce((prev, curr) => ({ ...prev, [curr.id]: '' }), {})
+						console.log(defs)
 						const createDefaultObject = () => arrayHelpers.push({ ...defs })
 						return (
 							<Fragment>
@@ -91,9 +92,9 @@ export default class Step2 extends PureComponent {
 		)
 	}
 
-	renderSubKategori = ({ subKategori, items }, idx) => (
-		<div className="subkategori" key={idx}>
-			{subKategori && <h4>{subKategori.navn}</h4>}
+	renderFieldContainer = (header, items, uniqueId) => (
+		<div className="subkategori" key={uniqueId}>
+			{header && <h4>{header}</h4>}
 			<div className="subkategori-field-group">
 				{items.map(item => this.renderFieldComponent(item))}
 			</div>
@@ -101,6 +102,9 @@ export default class Step2 extends PureComponent {
 	)
 
 	renderFieldComponent = item => {
+		if (item.inputType === 'multifield') {
+			return this.renderFieldContainer(item.label, item.items, item.id)
+		}
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = extraComponentProps(item)
 
@@ -144,7 +148,7 @@ export default class Step2 extends PureComponent {
 								onClickNext={formikProps.submitForm}
 								onClickPrevious={() => this.onClickPrevious(formikProps.values)}
 							/>
-							{/* <DisplayFormikState {...formikProps} /> */}
+							<DisplayFormikState {...formikProps} />
 						</Fragment>
 					)}
 				/>
