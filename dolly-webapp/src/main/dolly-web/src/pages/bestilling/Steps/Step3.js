@@ -48,6 +48,15 @@ export default class Step3 extends PureComponent {
 	)
 
 	renderItem = item => {
+		if (item.inputType === 'multifield') {
+			return (
+				<div className="oppsummering-multifield" key={item.id}>
+					<h4>{item.label}</h4>
+					<div className="oppsummering-blokk">{item.items.map(item => this.renderItem(item))}</div>
+				</div>
+			)
+		}
+
 		let value = _get(this.props.values, item.id)
 		if (item.inputType === 'date') value = FormatDate(value)
 

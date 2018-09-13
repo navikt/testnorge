@@ -76,18 +76,25 @@ export default handleActions(
 // TODO: Denne må ryddes opp i og gjøres bedre
 // - kanskje flyttes ut til egen fil (er jo bare en formatter og ikke thunk)
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
+// - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
 const bestillingFormatter = bestillingState => {
 	const final_values = {
-		regdato: new Date(),
-		identtype: bestillingState.identtype,
 		antall: bestillingState.antall,
 		environments: bestillingState.environments,
-		...bestillingState.values
+		tpsf: {
+			regdato: new Date(),
+			identtype: bestillingState.identtype,
+			...bestillingState.values
+		}
 	}
 
 	// TODO: SPECIAL HANDLING - Hva gjør vi her?
-	if (_get(final_values, 'boadresse.gateadresse')) {
-		final_values.boadresse.adressetype = 'GATE'
+	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
+		final_values.tpsf.boadresse.adressetype = 'GATE'
+	}
+
+	if (_get(final_values, 'tpsf.relasjoner.barn')) {
+		final_values.tpsf.relasjoner.barn = [final_values.tpsf.relasjoner.barn]
 	}
 
 	console.log('POSTING BESTILLING', final_values)
