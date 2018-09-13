@@ -11,7 +11,7 @@ const mapStateToProps = state => {
 	return {
 		team: state.team.data,
 		teamIsFetching: teamLoadingSelector(state),
-		grupper: state.grupper.items,
+		grupper: state.gruppe.data,
 		grupperIsFetching: grupperLoadingSelector(state)
 	}
 }
