@@ -11,6 +11,7 @@ import no.nav.identpool.ident.repository.IdentEntity;
 import no.nav.identpool.ident.repository.IdentPredicateUtil;
 import no.nav.identpool.ident.repository.IdentRepository;
 import no.nav.identpool.ident.rest.v1.HentIdenterRequest;
+import no.nav.identpool.ident.rest.v1.MarkerBruktRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -34,12 +35,13 @@ public class IdentpoolService {
         return identRepository.findTopByPersonidentifikator(personidentifkator).getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;
     }
 
-    public String markerBrukt(String personidentifikator) throws IdentAlleredeIBrukException {
-        IdentEntity identEntity = identRepository.findTopByPersonidentifikator(personidentifikator);
+    public String markerBrukt(MarkerBruktRequest markerBruktRequest) throws IdentAlleredeIBrukException {
+        IdentEntity identEntity = identRepository.findTopByPersonidentifikator(markerBruktRequest.getPersonidentifikator());
         if (identEntity == null) {
             //implement generering av ident og sett identen til brukt.
         } else if (identEntity.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG)) {
             identEntity.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
+            identEntity.setRekvirertAv(markerBruktRequest.getBruker());
             identRepository.save(identEntity);
             return "ok";
         } else if (identEntity.getRekvireringsstatus().equals(Rekvireringsstatus.I_BRUK)) {

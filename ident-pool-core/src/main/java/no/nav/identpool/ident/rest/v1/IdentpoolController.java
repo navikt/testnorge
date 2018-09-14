@@ -52,9 +52,14 @@ public class IdentpoolController {
 
     @PostMapping("/bruk")
     public String markerBrukt(
-            @RequestParam String personidentifikator
+            @RequestParam String personidentifikator,
+            @RequestParam String bruker
     ) throws IdentAlleredeIBrukException {
-        return identpoolService.markerBrukt(personidentifikator);
+        MarkerBruktRequest markerBruktRequest = MarkerBruktRequest.builder()
+                .personidentifikator(personidentifikator)
+                .bruker(bruker)
+                .build();
+        return identpoolService.markerBrukt(markerBruktRequest);
     }
 
     @GetMapping("/les")
