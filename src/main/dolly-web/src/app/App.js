@@ -14,8 +14,8 @@ export default class App extends Component {
 	}
 
 	componentDidUpdate() {
-		const { redirectTo, onRedirect } = this.props
-		if (redirectTo) return onRedirect(redirectTo)
+		const { redirectTo, onRedirect, router } = this.props
+		if (redirectTo && router.location.pathname !== redirectTo) return onRedirect(redirectTo)
 	}
 
 	render() {
