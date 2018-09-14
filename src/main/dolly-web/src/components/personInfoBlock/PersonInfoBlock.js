@@ -10,17 +10,28 @@ export default class PersonInfoBlock extends PureComponent {
 		data: PropTypes.array
 	}
 
-	render() {
-		const { header, data } = this.props
-
+	renderPersonInfoBlock = (data, header, idx) => {
 		return (
-			<div className="person-info-block">
+			<div key={idx} className="person-info-block">
 				{header && <h4>{header}</h4>}
 
 				<div className="person-info-block_content">
-					{data.map((v, k) => <StaticValue key={k} header={v.label} value={v.value || ''} />)}
+					{data.map((v, k) => {
+						return <StaticValue key={k} header={v.label} value={v.value || ''} />
+					})}
 				</div>
 			</div>
 		)
+	}
+
+	render() {
+		const { header, data, multiple } = this.props
+		if (multiple) {
+			return data.map((subBlock, idx) =>
+				this.renderPersonInfoBlock(subBlock.value, subBlock.label, idx)
+			)
+		}
+
+		return this.renderPersonInfoBlock(data)
 	}
 }

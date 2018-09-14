@@ -10,6 +10,18 @@ const TpsfTransformer = response => {
 
 const kjonnTranslator = kjonn => (kjonn === 'M' ? 'Mann' : 'Kvinne')
 
+const relasjonTranslator = relasjon => {
+	switch (relasjon) {
+		case 'EKTEFELLE':
+			return 'PARTNER'
+		case 'MOR':
+		case 'FAR':
+			return 'BARN'
+		default:
+			return 'UKJENT'
+	}
+}
+
 const mapDataToDolly = i => {
 	let res = {
 		dollyId: i.personId,
@@ -110,6 +122,46 @@ const mapDataToDolly = i => {
 					value: FormatDate(i.boadresse.flyttedato)
 				}
 			]
+		})
+	}
+	if (i.relasjoner.length) {
+		res.data.push({
+			header: 'Familierelasjoner',
+			multiple: true,
+			data: i.relasjoner.map(relasjon => {
+				return {
+					parent: 'relasjoner',
+					id: relasjon.id,
+					label: relasjonTranslator(relasjon.relasjonTypeNavn),
+					value: [
+						{
+							id: 'ident',
+							label: relasjon.personRelasjonMed.identtype,
+							value: relasjon.personRelasjonMed.ident
+						},
+						{
+							id: 'fornavn',
+							label: 'Fornavn',
+							value: relasjon.personRelasjonMed.fornavn
+						},
+						{
+							id: 'mellomnavn',
+							label: 'Mellomnavn',
+							value: relasjon.personRelasjonMed.mellomnavn
+						},
+						{
+							id: 'etternavn',
+							label: 'Etternavn',
+							value: relasjon.personRelasjonMed.etternavn
+						},
+						{
+							id: 'kjonn',
+							label: 'Kjønn',
+							value: kjonnTranslator(relasjon.personRelasjonMed.kjonn)
+						}
+					]
+				}
+			})
 		})
 	}
 
