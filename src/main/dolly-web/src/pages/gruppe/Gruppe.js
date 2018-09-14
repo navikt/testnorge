@@ -7,6 +7,7 @@ import Loading from '~/components/loading/Loading'
 import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import AddButton from '~/components/button/AddButton'
+import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 
 import './Gruppe.less'
 
@@ -33,7 +34,14 @@ export default class Gruppe extends Component {
 	toggleRedigerGruppe = () => this.setState({ redigerGruppe: !this.state.redigerGruppe })
 
 	render() {
-		const { gruppeArray, createOrUpdateId, createGroup, isFetching, getGruppe } = this.props
+		const {
+			gruppeArray,
+			createOrUpdateId,
+			createGroup,
+			isFetching,
+			getGruppe,
+			deleteGruppe
+		} = this.props
 
 		if (isFetching) return <Loading label="laster gruppe" panel />
 
@@ -49,12 +57,6 @@ export default class Gruppe extends Component {
 				icon: 'edit',
 				onClick: createGroup
 			})
-			groupActions.push({
-				icon: 'trashcan',
-				onClick: () => {
-					alert('ikke implementert')
-				}
-			})
 		} else {
 			groupActions.push({
 				icon: 'star',
@@ -66,7 +68,9 @@ export default class Gruppe extends Component {
 
 		return (
 			<div id="gruppe-container">
-				<Overskrift label={gruppe.navn} actions={groupActions} />
+				<Overskrift label={gruppe.navn} actions={groupActions}>
+					<ConfirmTooltip onClick={deleteGruppe} />
+				</Overskrift>
 
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
 

@@ -71,6 +71,15 @@ const AttributtListe: Attributt[] = [
 				options: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }],
 				validation: yup.string().required('Velg identtype')
 			},
+			// {
+			// 	hovedKategori: Kategorier.PersInfo,
+			// 	subKategori: null,
+			// 	id: 'relasjoner.barn.antall',
+			// 	label: 'Antall',
+			// 	dataSource: DataSource.TPSF,
+			// 	inputType: InputType.Text,
+			// 	validation: yup.string().required('Velg antall')
+			// },
 			{
 				hovedKategori: Kategorier.PersInfo,
 				subKategori: SubKategorier.Diverse,
@@ -78,7 +87,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Kjønn',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
-				options: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
+				options: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
 				validation: yup.string().required('Velg kjønn')
 			},
 			{
