@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Gruppe from './Gruppe'
-import { getGruppe, showCreateOrEditGroup } from '~/ducks/gruppe'
+import { getGruppe, showCreateOrEditGroup, deleteGruppe } from '~/ducks/gruppe'
 import { createLoadingSelector } from '~/ducks/loading'
 
 const loadingSelector = createLoadingSelector(getGruppe)
@@ -10,10 +10,14 @@ const mapStateToProps = state => ({
 	createOrUpdateId: state.gruppe.createOrUpdateId
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-	getGruppe: () => dispatch(getGruppe(ownProps.match.params.gruppeId)),
-	createGroup: () => dispatch(showCreateOrEditGroup(-1))
-})
+const mapDispatchToProps = (dispatch, ownProps) => {
+	const gruppeId = ownProps.match.params.gruppeId
+	return {
+		getGruppe: () => dispatch(getGruppe(gruppeId)),
+		deleteGruppe: () => dispatch(deleteGruppe(gruppeId)),
+		createGroup: () => dispatch(showCreateOrEditGroup(-1))
+	}
+}
 
 export default connect(
 	mapStateToProps,

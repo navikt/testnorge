@@ -1,6 +1,6 @@
 import { LOCATION_CHANGE } from 'connected-react-router'
 import success from '~/utils/SuccessAction'
-import { createGruppe } from '~/ducks/gruppe'
+import { createGruppe, deleteGruppe } from '~/ducks/gruppe'
 import { actions as teamActions } from '~/ducks/teams'
 import { actions as bestillingActions } from '~/ducks/bestilling'
 
@@ -14,6 +14,8 @@ const redirectReducer = (state = null, action) => {
 			return `/gruppe/${action.payload}`
 		case success(bestillingActions.postBestilling):
 			return `/gruppe/${action.meta.gruppeId}`
+		case success(deleteGruppe):
+			return '/'
 		case LOCATION_CHANGE:
 		default:
 			return null
