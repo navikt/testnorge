@@ -55,4 +55,14 @@ public class IdentpoolController {
     ) throws IdentAlleredeIBrukException {
         return identpoolService.markerBrukt(personidentifikator);
     }
+
+    @PostMapping("/finneshosskatt")
+    public ApiResponse finnesHosSkatt(
+            @RequestParam(value = "personidentifikator") String personidentifikator,
+            @RequestParam(value = "foedselsdato") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate foedselsdato
+    ) {
+        FinnesHosSkattRequest finnesHosSkattRequest = FinnesHosSkattRequest.builder().personidentifikator(personidentifikator).foedselsdato(foedselsdato).build();
+        identpoolService.registrerFinnesHosSkatt(finnesHosSkattRequest);
+        return new ApiResponse("Registrert.");
+    }
 }
