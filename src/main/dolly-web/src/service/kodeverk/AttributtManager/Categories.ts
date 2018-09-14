@@ -37,8 +37,8 @@ export const SubKategorier: KategoriTypes = {
 	Boadresse: {
 		id: 'boadresse',
 		navn: 'Boadresse',
-		order: 10,
-		multiple: true
+		order: 10
+		//multiple: true
 	},
 	PostadrInnland: {
 		id: 'postadresseInnland',
