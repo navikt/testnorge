@@ -134,15 +134,15 @@ class TableColumn extends PureComponent {
 			sortable,
 			...restProps
 		} = this.props
-		const cssClass = cn('dot-column', `col${width}`, className, { sortable })
+		const cssClass = cn('dot-column', `col${width}`, className)
 
 		const iconKind = sortOrder === 'asc' ? 'arrow-up' : 'arrow-down'
 
 		const render = value ? value : children
 		return (
-			<div className={cssClass} {...restProps} onClick={this.onSortHandler}>
+			<div className={cssClass} {...restProps}>
 				{render}
-				{sortOrder && <Icon size={16} kind={iconKind} />}
+				{/* {sortOrder && <Icon size={16} kind={iconKind} />} */}
 			</div>
 		)
 	}
