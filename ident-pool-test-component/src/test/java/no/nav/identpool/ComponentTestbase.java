@@ -25,48 +25,10 @@ public class ComponentTestbase {
     protected static final String OPERASJON_FINNES_HOS_SKD = "/finneshosskatt";
 
     @Autowired
-    private IdentRepository identRepository;
+    protected IdentRepository identRepository;
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
-    @Before
-    public void polulateDatabase() {
-        identRepository.saveAll(Arrays.asList(
-                IdentEntity.builder()
-                        .identtype(Identtype.FNR)
-                        .personidentifikator("10108000398")
-                        .rekvireringsstatus(Rekvireringsstatus.LEDIG)
-                        .finnesHosSkatt("0")
-                        .foedselsdato(LocalDate.of(1980, 10, 10))
-                        .build(),
-                IdentEntity.builder()
-                        .identtype(Identtype.DNR)
-                        .personidentifikator("50108000398")
-                        .rekvireringsstatus(Rekvireringsstatus.LEDIG)
-                        .finnesHosSkatt("0")
-                        .foedselsdato(LocalDate.of(1980, 10, 10))
-                        .build(),
-                IdentEntity.builder()
-                        .identtype(Identtype.FNR)
-                        .personidentifikator("10108000399")
-                        .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
-                        .finnesHosSkatt("0")
-                        .foedselsdato(LocalDate.of(1980, 10, 10))
-                        .build(),
-                IdentEntity.builder()
-                        .identtype(Identtype.DNR)
-                        .personidentifikator("50108000399")
-                        .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
-                        .finnesHosSkatt("0")
-                        .foedselsdato(LocalDate.of(1991, 1, 1))
-                        .build()
-        ));
-    }
-
-    @After
-    public void clearDatabase() {
-        identRepository.deleteAll();
-    }
 
     protected HttpEntity lagHttpEntity() {
         HttpHeaders httpHeaders = new HttpHeaders();
