@@ -41,7 +41,11 @@ export default class Step2 extends PureComponent {
 				{items.map((item, idx) => {
 					return item.subKategori && item.subKategori.multiple
 						? this.renderSubKategoriAsFieldArray(item, formikProps)
-						: this.renderFieldContainer(null, item.items, idx)
+						: this.renderFieldContainer(
+								item.subKategori ? item.subKategori.navn : null,
+								item.items,
+								idx
+						  )
 				})}
 			</Panel>
 		)
@@ -103,7 +107,7 @@ export default class Step2 extends PureComponent {
 
 	renderFieldComponent = item => {
 		if (item.inputType === 'multifield') {
-			return this.renderFieldContainer(item.label, item.items, item.id)
+			return this.renderFieldContainer(null, item.items, item.id)
 		}
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = extraComponentProps(item)
