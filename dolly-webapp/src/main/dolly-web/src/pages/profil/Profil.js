@@ -19,7 +19,6 @@ export default class ProfilPage extends Component {
 				<ContentContainer>
 					<Overskrift label="Min profil" />
 					<StaticValue header="NAVIDENT" value={bruker.navIdent} />
-					<StaticValue header="ROLLE" value={bruker.rolle || 'Ikke definert'} />
 				</ContentContainer>
 				<WideButton iconKind="team" text="Team" onClick={() => this.props.history.push('/team')} />
 				<WideButton iconKind="file-new" text="Maler" />
