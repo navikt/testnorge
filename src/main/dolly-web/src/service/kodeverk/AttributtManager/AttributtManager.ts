@@ -3,6 +3,8 @@ import * as yup from 'yup'
 import { FormikValues } from 'formik'
 import AttributtListe from './Attributter'
 import { groupList, groupListByHovedKategori } from './GroupList'
+import _set from 'lodash/set'
+import _get from 'lodash/get'
 
 export default class AttributtManager {
 	listSelected(selectedIds: string[]): Attributt[] {
@@ -30,8 +32,16 @@ export default class AttributtManager {
 		return groupListByHovedKategori(this.listSelected(selectedIds))
 	}
 
-	listEditable(): Attributt[] {
-		return AttributtListe.filter(attr => attr.kanRedigeres)
+	listEditable(): AttributtGruppe[] {
+		return groupList(AttributtListe.filter(attr => attr.kanRedigeres))
+	}
+
+	getInitialValuesForEditableItems(values: Object): Object {
+		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
+
+		return editableAttributes.reduce((prev, item) => {
+			return _set(prev, item.id, _get(values, item.id))
+		}, {})
 	}
 
 	getValidations(selectedIds: string[]): yup.MixedSchema {

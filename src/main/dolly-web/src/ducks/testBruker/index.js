@@ -3,6 +3,13 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 import { createAction } from 'redux-actions'
 import tpsfTransformer from './tpsfTransformer'
 
+export const getInitialValuesSelector = (state, ownProps) => {
+	if (!state.testbruker.items) return null
+
+	console.log(state)
+	console.log(ownProps)
+}
+
 export const GET_TESTBRUKERE = createAction('GET_TESTBRUKERE', identArray =>
 	TpsfApi.getTestbrukere(identArray)
 )
