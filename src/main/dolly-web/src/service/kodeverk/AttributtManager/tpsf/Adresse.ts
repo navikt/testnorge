@@ -11,7 +11,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Gatenavn',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string()
+		validation: yup.string(),
+		kanRedigeres: true
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -20,7 +21,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Husnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string()
+		validation: yup.string(),
+		kanRedigeres: true
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -29,7 +31,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Postnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string()
+		validation: yup.string(),
+		kanRedigeres: true
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -38,7 +41,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Kommunenummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string()
+		validation: yup.string(),
+		kanRedigeres: true
 	},
 	// {
 	// 	hovedKategori: Kategorier.Adresser,
@@ -56,7 +60,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Flyttedato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: yup.date()
+		validation: yup.date(),
+		kanRedigeres: true
 	}
 	// {
 	// 	hovedKategori: Kategorier.Adresser,
