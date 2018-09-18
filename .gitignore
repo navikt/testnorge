@@ -90,9 +90,8 @@ nbdist/
 nbactions.xml
 nb-configuration.xml
 .nb-gradle/
-### JetBrains template
+### JetBrains templates
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
-
 *.iml
 
 ## Directory-based project format:
