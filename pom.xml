@@ -28,6 +28,8 @@
         <logstash.logback.encoder.version>4.11</logstash.logback.encoder.version>
         <ojdbc.version>11.2.0.3</ojdbc.version>
         <javassist.version>3.22.0-GA</javassist.version>
+        <fasit-util.version>2.1.1-SNAPSHOT</fasit-util.version> <!-->UPGRADE WHEN AVAILABLE<-->
+        <freg-security-oidc.version>3.1.0</freg-security-oidc.version>
         <guava.version>18.0</guava.version>
     </properties>
 
@@ -52,6 +54,11 @@
                 <groupId>no.nav.ident-pool</groupId>
                 <artifactId>ident-pool-core</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.freg</groupId>
+                <artifactId>freg-security-oidc</artifactId>
+                <version>${freg-security-oidc.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

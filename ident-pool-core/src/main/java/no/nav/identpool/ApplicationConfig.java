@@ -6,4 +6,5 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @SpringBootApplication
 @EnableConfigurationProperties
 public class ApplicationConfig {
+
 }

@@ -34,4 +34,17 @@ fasitResources:
       url: spring.datasource.url
       username: spring.datasource.username
       password: spring.datasource.password
-
+#   - alias: nav-sts-oidc
+#      resourceType: OpenIdConnect
+#      propertyMap:
+#        agentName: freg.security.oidc.idp.navSts.clientId
+#        password: freg.security.oidc.idp.navSts.clientSecret
+#        hostUrl: freg.security.oidc.idp.navSts.hostUrl
+#        issuerUrl: freg.security.oidc.idp.navSts.issuerUrl
+#        jwksUrl: freg.security.oidc.idp.navSts.jwksUrl
+  - alias: "securityTokenService"
+    resourceType: baseurl
+  - alias: "security-token-service-jwks"
+    resourceType: restservice
+  - alias: "security-token-service-issuer"
+    resourceType: baseurl

@@ -36,6 +36,12 @@
         </dependency>
 
         <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>freg-security-oidc</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${apache.httpclient.version}</version>
