@@ -39,7 +39,8 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'statsborgerskap',
-		validation: yup.string().required('Krever et statsborgerskap')
+		validation: yup.string().required('Krever et statsborgerskap'),
+		kanRedigeres: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -49,7 +50,8 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		options: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
-		validation: yup.string().required('Velg kjønn')
+		validation: yup.string().required('Velg kjønn'),
+		kanRedigeres: true
 	}
 	// {
 	// 	hovedKategori: Kategorier.PersInfo,

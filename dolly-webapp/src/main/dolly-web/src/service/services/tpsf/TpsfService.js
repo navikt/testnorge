@@ -16,7 +16,6 @@ export default class TpsfService {
 		if (!userData) return
 
 		const endpoint = uri + '/testdata/updatepersoner'
-		console.log(endpoint)
 
 		return Request.post(endpoint, [userData])
 	}
