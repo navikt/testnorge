@@ -6,9 +6,13 @@ import InputSelector from '~/components/fields/InputSelector'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 
 export default class FormEditor extends Component {
-	renderHovedKategori = ({ hovedKategori, items }, formikProps) => {
+	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
 		return (
-			<Panel key={hovedKategori.id} heading={<h3>{hovedKategori.navn}</h3>} startOpen>
+			<Panel
+				key={hovedKategori.id}
+				heading={<h3>{hovedKategori.navn}</h3>}
+				startOpen={!closePanels}
+			>
 				{items.map((item, idx) => {
 					return item.subKategori && item.subKategori.multiple
 						? this.renderSubKategoriAsFieldArray(item, formikProps)
@@ -115,8 +119,10 @@ export default class FormEditor extends Component {
 	}
 
 	render() {
-		const { AttributtListe, FormikProps } = this.props
+		const { AttributtListe, FormikProps, ClosePanels } = this.props
 
-		return AttributtListe.map(hovedKategori => this.renderHovedKategori(hovedKategori, FormikProps))
+		return AttributtListe.map(hovedKategori =>
+			this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
+		)
 	}
 }

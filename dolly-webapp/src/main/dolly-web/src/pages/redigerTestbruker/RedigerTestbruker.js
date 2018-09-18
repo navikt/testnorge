@@ -1,6 +1,13 @@
 import React, { Component } from 'react'
+import _merge from 'lodash/merge'
+import Knapp from 'nav-frontend-knapper'
 import { AttributtManager } from '~/service/Kodeverk'
+import { Formik } from 'formik'
 import FormEditor from '~/components/formEditor/FormEditor'
+import DisplayFormikState from '~/utils/DisplayFormikState'
+import Button from '~/components/button/Button'
+
+import './RedigerTestbruker.less'
 
 export default class RedigerTestbruker extends Component {
 	constructor() {
@@ -13,17 +20,10 @@ export default class RedigerTestbruker extends Component {
 		this.props.getTestbruker()
 	}
 
-	onClickUpdateHandler = () => {
+	submit = values => {
 		const { testbruker, updateTestbruker } = this.props
-		const updateObject = {
-			fornavn: 'NyttNavnSattAvUpdate',
-			etternavn: 'etternavnSattPåNytt'
-		}
 
-		console.log('før', testbruker)
-		const update = Object.assign(testbruker, updateObject)
-		console.log('etter', update)
-		updateTestbruker(update)
+		updateTestbruker(_merge(testbruker, values))
 	}
 
 	render() {
@@ -31,13 +31,32 @@ export default class RedigerTestbruker extends Component {
 
 		if (!testbruker) return null
 
-		console.log(this.AttributtListe)
+		const initialValues = this.AttributtManager.getInitialValuesForEditableItems(testbruker)
 
 		return (
-			<div>
-				Rediger
-				<button onClick={this.onClickUpdateHandler}>test oppdater navn!</button>
-			</div>
+			<Formik
+				onSubmit={this.submit}
+				initialValues={initialValues}
+				render={formikProps => (
+					<div>
+						<h2>Rediger {`${testbruker.fornavn} ${testbruker.etternavn}`}</h2>
+						<FormEditor
+							AttributtListe={this.AttributtListe}
+							FormikProps={formikProps}
+							ClosePanels
+						/>
+						<div className="form-editor-knapper">
+							<Knapp type="standard" onClick={() => alert('avbryt')}>
+								Avbryt
+							</Knapp>
+							<Knapp type="hoved" onClick={formikProps.submitForm}>
+								Lagre
+							</Knapp>
+						</div>
+						{/* <DisplayFormikState {...formikProps} /> */}
+					</div>
+				)}
+			/>
 		)
 	}
 }
