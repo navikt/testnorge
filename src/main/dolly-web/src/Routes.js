@@ -24,7 +24,7 @@ const routes = [
 		component: Bestilling
 	},
 	{
-		path: '/testbruker/:ident/rediger',
+		path: '/gruppe/:gruppeId/testbruker/:ident',
 		exact: true,
 		breadcrumb: 'Rediger',
 		component: RedigerTestbrukerConnector

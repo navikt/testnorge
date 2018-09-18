@@ -21,13 +21,14 @@ export default class RedigerTestbruker extends Component {
 	}
 
 	submit = values => {
-		const { testbruker, updateTestbruker } = this.props
+		const { testbruker, updateTestbruker, goBack } = this.props
 
 		updateTestbruker(_merge(testbruker, values))
+		goBack()
 	}
 
 	render() {
-		const { testbruker } = this.props
+		const { testbruker, goBack } = this.props
 
 		if (!testbruker) return null
 
@@ -46,7 +47,7 @@ export default class RedigerTestbruker extends Component {
 							ClosePanels
 						/>
 						<div className="form-editor-knapper">
-							<Knapp type="standard" onClick={() => alert('avbryt')}>
+							<Knapp type="standard" onClick={goBack}>
 								Avbryt
 							</Knapp>
 							<Knapp type="hoved" onClick={formikProps.submitForm}>
