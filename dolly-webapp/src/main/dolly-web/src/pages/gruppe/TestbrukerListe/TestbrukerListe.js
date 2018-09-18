@@ -12,7 +12,7 @@ export default class Gruppe extends Component {
 	}
 
 	render() {
-		const { isFetching, testidenter, testbrukere } = this.props
+		const { isFetching, testidenter, testbrukere, editTestbruker } = this.props
 
 		return (
 			<div className="testbruker-liste">
@@ -41,6 +41,7 @@ export default class Gruppe extends Component {
 									<Table.Row
 										key={idx}
 										expandComponent={<PersonDetaljer brukerData={bruker.data} />}
+										editAction={() => editTestbruker(bruker.id)}
 									>
 										<Table.Column width="15" value={FormatIdentNr(bruker.id)} />
 										<Table.Column width="15" value={bruker.idType} />

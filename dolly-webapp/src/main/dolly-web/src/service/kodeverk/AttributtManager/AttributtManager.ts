@@ -30,6 +30,10 @@ export default class AttributtManager {
 		return groupListByHovedKategori(this.listSelected(selectedIds))
 	}
 
+	listEditable(): Attributt[] {
+		return AttributtListe.filter(attr => attr.kanRedigeres)
+	}
+
 	getValidations(selectedIds: string[]): yup.MixedSchema {
 		// Get all selected attributes that has validations
 		const list = this.listSelected(selectedIds).filter(s => s.validation)

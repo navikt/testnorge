@@ -40,7 +40,9 @@ export interface Attributt {
 	items?: Attributt[]
 	options?: Options[]
 	apiKodeverkId?: string
-	validation?: yup.MixedSchema
+    validation?: yup.MixedSchema
+    kanRedigeres?: Boolean
+    kanBestilles?: Boolean
 }
 
 // Attributt grupper
