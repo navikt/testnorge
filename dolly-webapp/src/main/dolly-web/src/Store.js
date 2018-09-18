@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import promiseMiddleware from 'redux-promise-middleware'
-import { connectRouter, routerMiddleware } from 'connected-react-router'
+import { connectRouter, routerMiddleware, LOCATION_CHANGE } from 'connected-react-router'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 
 import bestillingReducer from './ducks/bestilling'
@@ -16,8 +16,21 @@ import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
 import commonReducer from './ducks/common'
 
+const locationMiddleware = store => next => action => {
+	if (action.type === LOCATION_CHANGE) {
+		const prevPath = store.getState().router.location.pathname
+		const nextPath = action.payload.location.pathname
+		if (prevPath === nextPath) {
+			console.log('cancel location change - same path')
+			return false
+		}
+	}
+	return next(action)
+}
+
 export default function configureReduxStore(history) {
 	const allMiddleware = [
+		locationMiddleware,
 		thunkMiddleware,
 		promiseMiddleware({ promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'] }),
 		routerMiddleware(history)
