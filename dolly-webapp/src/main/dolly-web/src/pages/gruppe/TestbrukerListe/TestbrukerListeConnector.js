@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import TestbrukerListe from './TestbrukerListe'
 import { GET_TESTBRUKERE } from '~/ducks/testBruker'
 import tpsfTransformer from '~/ducks/testBruker/tpsfTransformer'
@@ -12,8 +11,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	getTestbrukere: () => dispatch(GET_TESTBRUKERE(ownProps.testidenter.map(ident => ident.ident))),
-	editTestbruker: ident => dispatch(push(`/testbruker/${ident}/rediger`))
+	getTestbrukere: () => dispatch(GET_TESTBRUKERE(ownProps.testidenter.map(ident => ident.ident)))
 })
 
 export default connect(
