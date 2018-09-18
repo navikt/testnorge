@@ -1,4 +1,4 @@
-package no.nav.dolly.common.nais;
+package no.nav.dolly.nais;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
