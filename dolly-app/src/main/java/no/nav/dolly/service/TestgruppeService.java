@@ -141,10 +141,12 @@ public class TestgruppeService {
         Testgruppe requestGruppe = mapperFacade.map(testgruppe, Testgruppe.class);
 
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
+        Team team = teamService.fetchTeamById(testgruppe.getTeamId());
 
         savedGruppe.setHensikt(requestGruppe.getHensikt());
         savedGruppe.setNavn(requestGruppe.getNavn());
         savedGruppe.setSistEndretAv(bruker);
+        savedGruppe.setTeamtilhoerighet(team);
         savedGruppe.setDatoEndret(LocalDate.now());
 
         Testgruppe endretGruppe = saveGruppeTilDB(savedGruppe);
