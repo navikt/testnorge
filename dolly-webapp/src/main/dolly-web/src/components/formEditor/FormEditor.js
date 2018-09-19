@@ -1,11 +1,10 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Field, FieldArray } from 'formik'
 import { DollyApi } from '~/service/Api'
 import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
-import StaticValue from '~/components/fields/StaticValue/StaticValue'
 
-export default class FormEditor extends Component {
+export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
 		return (
 			<Panel
