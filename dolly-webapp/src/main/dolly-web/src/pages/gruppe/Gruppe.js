@@ -40,7 +40,8 @@ export default class Gruppe extends Component {
 			createGroup,
 			isFetching,
 			getGruppe,
-			deleteGruppe
+			deleteGruppe,
+			editTestbruker
 		} = this.props
 
 		if (isFetching) return <Loading label="laster gruppe" panel />
@@ -80,7 +81,10 @@ export default class Gruppe extends Component {
 					<BestillingStatus key={bestilling.id} bestilling={bestilling} onGroupUpdate={getGruppe} />
 				))}
 
-				<TestbrukerListeConnector testidenter={gruppe.testidenter} />
+				<TestbrukerListeConnector
+					testidenter={gruppe.testidenter}
+					editTestbruker={editTestbruker}
+				/>
 				<AddButton title="Opprett ny bestilling" onClick={this.startBestilling} />
 			</div>
 		)

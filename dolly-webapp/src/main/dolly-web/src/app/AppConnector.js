@@ -6,7 +6,6 @@ import { fetchCurrentBruker } from '~/ducks/bruker'
 const mapStateToProps = state => ({
 	router: state.router, // Need to use this to tell mapStateToProps if url changes
 	brukerData: state.bruker.brukerData,
-	showSplashscreen: state.bruker.showSplashscreen,
 	redirectTo: state.common.redirectTo
 })
 

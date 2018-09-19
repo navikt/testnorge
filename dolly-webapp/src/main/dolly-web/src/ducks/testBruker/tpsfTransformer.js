@@ -5,7 +5,9 @@ import FormatDate from '~/utils/FormatDate'
 */
 
 const TpsfTransformer = response => {
-	return response.data.map(i => mapDataToDolly(i))
+	//return response.data.map(i => mapDataToDolly(i))
+	if (!response) return null
+	return response.map(i => mapDataToDolly(i))
 }
 
 const kjonnTranslator = kjonn => (kjonn === 'M' ? 'Mann' : 'Kvinne')
@@ -24,7 +26,7 @@ const relasjonTranslator = relasjon => {
 
 const mapDataToDolly = i => {
 	let res = {
-		dollyId: i.personId,
+		personId: i.personId,
 		id: i.ident,
 		idType: i.identtype,
 		navn: `${i.fornavn} ${i.etternavn}`,

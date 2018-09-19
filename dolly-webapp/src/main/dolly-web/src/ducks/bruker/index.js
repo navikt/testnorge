@@ -33,11 +33,11 @@ export default handleActions(
 
 export const fetchCurrentBruker = () => async dispatch => {
 	const { action } = await dispatch(getCurrentBruker())
-	const brukerIdent = action.payload.data.navIdent
+	// const brukerIdent = action.payload.data.navIdent
 
-	if (!Cookie.hasItem(brukerIdent)) {
-		dispatch(setSplashscreenStatus(true))
-	}
+	// if (!Cookie.hasItem(brukerIdent)) {
+	// 	dispatch(setSplashscreenStatus(true))
+	// }
 }
 
 export const setSplashscreenAccepted = () => (dispatch, getState) => {

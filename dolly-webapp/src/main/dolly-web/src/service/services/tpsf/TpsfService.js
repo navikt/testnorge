@@ -11,4 +11,12 @@ export default class TpsfService {
 
 		return Request.get(`${endpoint}?identer=${userString}`)
 	}
+
+	static updateTestbruker(userData) {
+		if (!userData) return
+
+		const endpoint = uri + '/testdata/updatepersoner'
+
+		return Request.post(endpoint, [userData])
+	}
 }
