@@ -64,7 +64,7 @@ const mapDataToDolly = i => {
 					{
 						id: 'alder',
 						label: 'Alder',
-						value: i.alder || 'Udefinert'
+						value: i.alder
 					}
 				]
 			}
@@ -78,7 +78,7 @@ const mapDataToDolly = i => {
 				{
 					id: 'innvandretFra',
 					label: 'Innvandret fra',
-					value: i.innvandretFra || 'Udefinert'
+					value: i.innvandretFra
 				},
 				{
 					id: 'statsborgerskap',
