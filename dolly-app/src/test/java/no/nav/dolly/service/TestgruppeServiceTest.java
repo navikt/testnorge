@@ -82,7 +82,7 @@ public class TestgruppeServiceTest {
         Testgruppe gruppe = new Testgruppe();
         Testgruppe savedGruppe = Mockito.mock(Testgruppe.class);
 
-        when(teamService.fetchTeamById(any())).thenReturn(team);
+        when(teamService.fetchTeamOrOpprettBrukerteam(any())).thenReturn(team);
         when(brukerService.fetchBruker(standardPrincipal)).thenReturn(bruker);
         when(mapperFacade.map(rsTestgruppe, Testgruppe.class)).thenReturn(gruppe);
         when(testGruppeRepository.save(gruppe)).thenReturn(savedGruppe);
