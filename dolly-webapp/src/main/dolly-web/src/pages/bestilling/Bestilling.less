@@ -29,14 +29,16 @@
 		display: flex;
 		flex-direction: column;
 
-		h4 {
-			margin: 0;
-			padding: 10px 0;
+		> h4 {
+			background-color: #d3dee3;
+			margin: 0 0 10px 0;
+			padding: 3px 6px;
 		}
 
 		.oppsummering-blokk {
 			display: flex;
 			flex-wrap: wrap;
+			padding: 0 10px;
 
 			.static-value {
 				flex-grow: 0;
@@ -45,6 +47,15 @@
 
 			.oppsummering-multifield {
 				width: 100%;
+				margin-bottom: 10px;
+				border-bottom: 1px solid #f1f1f1;
+				h4 {
+					margin: 0;
+					font-size: 0.95em;
+				}
+				.oppsummering-blokk {
+					padding: 10px 0 0;
+				}
 			}
 
 			> * {
