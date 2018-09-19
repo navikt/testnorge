@@ -1,4 +1,4 @@
-import FormatDate from '~/utils/FormatDate'
+import Formatters from '~/utils/DataFormatter'
 
 /*
     Transformer for TPSF-data.
@@ -9,8 +9,6 @@ const TpsfTransformer = response => {
 	if (!response) return null
 	return response.map(i => mapDataToDolly(i))
 }
-
-const kjonnTranslator = kjonn => (kjonn === 'M' ? 'Mann' : 'Kvinne')
 
 const relasjonTranslator = relasjon => {
 	switch (relasjon) {
@@ -30,7 +28,7 @@ const mapDataToDolly = i => {
 		id: i.ident,
 		idType: i.identtype,
 		navn: `${i.fornavn} ${i.etternavn}`,
-		kjonn: kjonnTranslator(i.kjonn),
+		kjonn: Formatters.kjonnToString(i.kjonn),
 		alder: i.alder,
 		data: [
 			{
@@ -59,7 +57,7 @@ const mapDataToDolly = i => {
 					{
 						id: 'kjonn',
 						label: 'Kjønn',
-						value: kjonnTranslator(i.kjonn)
+						value: Formatters.kjonnToString(i.kjonn)
 					},
 					{
 						id: 'alder',
@@ -121,7 +119,7 @@ const mapDataToDolly = i => {
 					parent: 'boadresse',
 					id: 'flyttedato',
 					label: 'Flyttedato',
-					value: FormatDate(i.boadresse.flyttedato)
+					value: Formatters.formatDate(i.boadresse.flyttedato)
 				}
 			]
 		})
@@ -159,7 +157,7 @@ const mapDataToDolly = i => {
 						{
 							id: 'kjonn',
 							label: 'Kjønn',
-							value: kjonnTranslator(relasjon.personRelasjonMed.kjonn)
+							value: Formatters.kjonnToString(relasjon.personRelasjonMed.kjonn)
 						}
 					]
 				}

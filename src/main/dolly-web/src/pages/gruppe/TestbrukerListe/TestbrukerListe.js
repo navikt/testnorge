@@ -3,7 +3,7 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
-import FormatIdentNr from '~/utils/FormatIdentNr'
+import Formatters from '~/utils/DataFormatter'
 import PersonDetaljer from '../PersonDetaljer/PersonDetaljer'
 
 export default class Gruppe extends Component {
@@ -43,7 +43,7 @@ export default class Gruppe extends Component {
 										expandComponent={<PersonDetaljer brukerData={bruker.data} />}
 										editAction={() => editTestbruker(bruker.id)}
 									>
-										<Table.Column width="15" value={FormatIdentNr(bruker.id)} />
+										<Table.Column width="15" value={Formatters.formatIdentNr(bruker.id)} />
 										<Table.Column width="15" value={bruker.idType} />
 										<Table.Column width="30" value={bruker.navn} />
 										<Table.Column width="20" value={bruker.kjonn} />
