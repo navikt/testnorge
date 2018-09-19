@@ -51,7 +51,7 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
 
         assertThat(resultat.getEierNavIdent(), is("nyEier"));
 
-        teamSomSkalEndres = teamRepository.findTeamById(teamSomSkalEndres.getId());
+        teamSomSkalEndres = teamRepository.findById(teamSomSkalEndres.getId()).get();
 
         assertThat(teamSomSkalEndres.getEier().getNavIdent(), is("nyEier"));
     }
@@ -77,7 +77,7 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
                 .andReturn();
 
         RsTeam response = convertMvcResultToObject(mvcResult, RsTeam.class);
-        teamSomSkalErEndret = teamRepository.findTeamById(teamSomSkalErEndret.getId());
+        teamSomSkalErEndret = teamRepository.findById(teamSomSkalErEndret.getId()).get();
 
         assertThat(response.getEierNavIdent(), is(standardNavIdent));
         assertThat(response.getNavn(), is("endretTeamNavn"));
