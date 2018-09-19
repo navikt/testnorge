@@ -1,14 +1,13 @@
 package no.nav.dolly.service;
 
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BestillingRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -23,13 +22,7 @@ public class BestillingService {
     private TestgruppeService testgruppeService;
 
     public Bestilling fetchBestillingById(Long bestillingsId){
-        Optional<Bestilling> bestilling = bestillingRepository.findById(bestillingsId);
-
-        if(bestilling.isPresent()){
-            return bestilling.get();
-        }
-
-        throw new NotFoundException("Fant ikke bestillingId");
+        return bestillingRepository.findById(bestillingsId).orElseThrow(() -> new NotFoundException("Fant ikke bestillingId"));
     }
 
     public Bestilling saveBestillingToDB(Bestilling b){
@@ -41,8 +34,7 @@ public class BestillingService {
     }
 
     public List<Bestilling> fetchBestillingerByGruppeId(Long gruppeId){
-        Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
-        return bestillingRepository.findBestillingByGruppe(testgruppe);
+        return bestillingRepository.findBestillingByGruppe(testgruppeService.fetchTestgruppeById(gruppeId));
     }
 
     public Bestilling saveBestillingByGruppeIdAndAntallIdenter(Long gruppeId, int antallIdenter, List<String> miljoer){

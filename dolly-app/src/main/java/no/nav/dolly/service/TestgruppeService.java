@@ -1,11 +1,6 @@
 package no.nav.dolly.service;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.repository.TestGruppeRepository;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -13,6 +8,10 @@ import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.TestGruppeRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,13 +19,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,10 +46,8 @@ public class TestgruppeService {
     private MapperFacade mapperFacade;
 
     public RsTestgruppe opprettTestgruppe(RsOpprettTestgruppe rsTestgruppe) {
-        Team team = teamService.fetchTeamById(rsTestgruppe.getTeamId());
-
-        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-        Bruker bruker = brukerService.fetchBruker(auth.getPrincipal());
+        Team team = teamService.fetchTeamOrOpprettBrukerteam(rsTestgruppe.getTeamId());
+        Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
 
         Testgruppe gruppe = mapperFacade.map(rsTestgruppe, Testgruppe.class);
         gruppe.setTeamtilhoerighet(team);
@@ -65,22 +60,14 @@ public class TestgruppeService {
     }
 
     public Testgruppe fetchTestgruppeById(Long gruppeId) {
-        Optional<Testgruppe> testgruppe = testGruppeRepository.findById(gruppeId);
-
-        if (testgruppe.isPresent()) {
-            return testgruppe.get();
-        }
-
-        throw new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId);
+        return testGruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
     }
 
     public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer){
         List<Testgruppe> grupper = testGruppeRepository.findAllById(grupperIDer);
-
         if(!isNullOrEmpty(grupper)){
             return grupper;
         }
-
         throw new NotFoundException("Finner ikke grupper basert på IDer : " +  grupperIDer);
     }
 
@@ -97,8 +84,7 @@ public class TestgruppeService {
     }
 
     public Set<RsTestgruppeMedErMedlemOgFavoritt> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper) {
-        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-        return getRsTestgruppeMedErMedlem(grupper, auth.getPrincipal());
+        return getRsTestgruppeMedErMedlem(grupper, getLoggedInNavIdent());
     }
 
     public Set<RsTestgruppeMedErMedlemOgFavoritt> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper, String navIdent) {
@@ -155,10 +141,12 @@ public class TestgruppeService {
         Testgruppe requestGruppe = mapperFacade.map(testgruppe, Testgruppe.class);
 
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
+        Team team = teamService.fetchTeamById(testgruppe.getTeamId());
 
         savedGruppe.setHensikt(requestGruppe.getHensikt());
         savedGruppe.setNavn(requestGruppe.getNavn());
         savedGruppe.setSistEndretAv(bruker);
+        savedGruppe.setTeamtilhoerighet(team);
         savedGruppe.setDatoEndret(LocalDate.now());
 
         Testgruppe endretGruppe = saveGruppeTilDB(savedGruppe);

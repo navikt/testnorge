@@ -20,7 +20,8 @@ public class IdentService {
 
 	@Autowired
 	private MapperFacade mapperFacade;
-	
+
+	@Transactional
 	public void persisterTestidenter(List<RsTestident> personIdentListe) {
 		List<Testident> testidentList = mapperFacade.mapAsList(personIdentListe, Testident.class);
 

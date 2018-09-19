@@ -5,7 +5,6 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeam;
@@ -18,15 +17,16 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+
+//TODO Burde gjore at alle returnerer team istedenfor "json/POJO" representasjonen av de.
 
 @Service
 public class TeamService {
@@ -45,25 +45,36 @@ public class TeamService {
 
     @Transactional
     public RsTeam opprettTeam(RsOpprettTeam rsTeam) {
+        Bruker currentBruker = brukerService.fetchBruker(getLoggedInNavIdent());
+
         Team team = mapperFacade.map(rsTeam, Team.class);
         team.setDatoOpprettet(LocalDate.now());
-
-        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-        Bruker currentBruker = brukerService.fetchBruker(auth.getPrincipal());
-
         team.setEier(currentBruker);
         team.setMedlemmer(new HashSet<>(Arrays.asList(currentBruker)));
 
-        Team savedTeam = saveToTeamRepository(team);
+        Team savedTeam = saveTeamToDB(team);
         return mapperFacade.map(savedTeam, RsTeam.class);
     }
 
     public Team fetchTeamById(Long id) {
-        Team team = teamRepository.findTeamById(id);
-        if (team == null) {
-            throw new NotFoundException("Team ikke funnet for denne IDen");
+        return teamRepository.findById(id).orElseThrow(()-> new NotFoundException("Team ikke funnet for denne IDen: " + id));
+    }
+
+    public Team fetchTeamByNavn(String navn) {
+        return teamRepository.findByNavn(navn).orElseThrow(()-> new NotFoundException("Team ikke funnet for dette navnet: " + navn));
+    }
+
+    @Transactional
+    public Team fetchTeamOrOpprettBrukerteam(Long teamId){
+        if(isNullOrEmpty(teamId)){
+            try{
+                return fetchTeamByNavn(getLoggedInNavIdent());
+            } catch (NotFoundException e){
+                return saveTeamToDB(new Team(getLoggedInNavIdent(), brukerService.fetchBruker(getLoggedInNavIdent())));
+            }
+        } else {
+            return fetchTeamById(teamId);
         }
-        return team;
     }
 
     public void deleteTeam(Long id) {
@@ -75,7 +86,7 @@ public class TeamService {
         Team team = fetchTeamById(teamId);
         team.getMedlemmer().addAll(mapperFacade.mapAsList(navIdenter, Bruker.class));
 
-        Team changedTeam = saveToTeamRepository(team);
+        Team changedTeam = saveTeamToDB(team);
         return mapperFacade.map(changedTeam, RsTeam.class);
     }
 
@@ -86,18 +97,18 @@ public class TeamService {
 
         team.getMedlemmer().addAll(brukere);
 
-        Team changedTeam = saveToTeamRepository(team);
+        Team changedTeam = saveTeamToDB(team);
         return mapperFacade.map(changedTeam, RsTeam.class);
     }
 
     @Transactional
     public RsTeam fjernMedlemmer(Long teamId, List<String> navIdenter) {
         Team team = fetchTeamById(teamId);
-        if (!team.getMedlemmer().isEmpty()) {
+        if (!isNullOrEmpty(team.getMedlemmer())) {
             team.getMedlemmer().removeIf(medlem -> navIdenter.contains(medlem.getNavIdent()));
         }
 
-        Team changedTeam = saveToTeamRepository(team);
+        Team changedTeam = saveTeamToDB(team);
         return mapperFacade.map(changedTeam, RsTeam.class);
     }
 
@@ -109,21 +120,18 @@ public class TeamService {
         team.setBeskrivelse(teamRequest.getBeskrivelse());
 
         if(!isNullOrEmpty(teamRequest.getMedlemmer())) {
-            Set<Bruker> medlemmer = mapperFacade.mapAsSet(teamRequest.getMedlemmer(), Bruker.class);
-            team.setMedlemmer(medlemmer);
+            team.setMedlemmer(mapperFacade.mapAsSet(teamRequest.getMedlemmer(), Bruker.class));
         }
 
         if(!isNullOrEmpty(teamRequest.getEierNavIdent())) {
-            Bruker endretEier = brukerService.fetchBruker(teamRequest.getEierNavIdent());
-            team.setEier(endretEier);
+            team.setEier(brukerService.fetchBruker(teamRequest.getEierNavIdent()));
         }
 
         if(!isNullOrEmpty(teamRequest.getGrupper())){
-            Set<Testgruppe> grupper = mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class);
-            team.setGrupper(grupper);
+            team.setGrupper(mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class));
         }
 
-        Team endretTeam = saveToTeamRepository(team);
+        Team endretTeam = saveTeamToDB(team);
         return mapperFacade.map(endretTeam, RsTeam.class);
     }
 
@@ -131,7 +139,7 @@ public class TeamService {
         return teamRepository.findByMedlemmer_NavIdent(navIdent);
     }
 
-    private Team saveToTeamRepository(Team team) {
+    public Team saveTeamToDB(Team team) {
         try {
             return teamRepository.save(team);
         } catch (DataIntegrityViolationException e) {

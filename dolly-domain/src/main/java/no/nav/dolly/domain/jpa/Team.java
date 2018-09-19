@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.jpa;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.annotations.GenericGenerator;
@@ -22,11 +24,19 @@ import org.hibernate.annotations.Parameter;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
+@NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "T_TEAM")
 public class Team {
-	
+
+	public Team(String navn, Bruker eier){
+		this.navn = navn;
+		this.eier = eier;
+		this.datoOpprettet = LocalDate.now();
+		this.medlemmer = new HashSet<>(Arrays.asList(eier));
+	}
+
 	@Id
 	@GeneratedValue(generator = "teamIdGenerator")
 	@GenericGenerator(name = "teamIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
