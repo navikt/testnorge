@@ -10,7 +10,7 @@ formatters.formatIdentNr = ident => {
 	return `${birth} ${personnummer}`
 }
 
-// Format date to
+// Format date to readable string format
 formatters.formatDate = date => {
 	return dateFormatter(date, 'DD.MM.YYYY')
 }
