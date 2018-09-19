@@ -7,7 +7,6 @@ import NavigationConnector from '../Navigation/NavigationConnector'
 import MiljoVelger from '~/components/miljoVelger/MiljoVelger'
 import { AttributtManager } from '~/service/Kodeverk'
 import { Formik, FieldArray, Field } from 'formik'
-import Formatters from '~/utils/DataFormatter'
 import _get from 'lodash/get'
 
 export default class Step3 extends PureComponent {
@@ -57,10 +56,14 @@ export default class Step3 extends PureComponent {
 			)
 		}
 
-		let value = _get(this.props.values, item.id)
-		if (item.inputType === 'date') value = Formatters.formatDate(value)
-
-		return <StaticValue key={item.id} header={item.label} value={value} />
+		return (
+			<StaticValue
+				key={item.id}
+				header={item.label}
+				value={_get(this.props.values, item.id)}
+				format={item.format}
+			/>
+		)
 	}
 
 	onClickPrevious = values => {
