@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
-import { GET_TESTBRUKERE, UPDATE_TESTBRUKER, getInitialValuesSelector } from '~/ducks/testBruker'
+import { GET_TESTBRUKERE, UPDATE_TESTBRUKER } from '~/ducks/testBruker'
 import RedigerTestbruker from './RedigerTestbruker'
 
 const mapStateToProps = (state, ownProps) => {
