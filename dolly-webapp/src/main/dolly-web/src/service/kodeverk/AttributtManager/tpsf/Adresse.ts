@@ -1,5 +1,6 @@
 import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource } from '../Types'
+import Formatters from '~/utils/DataFormatter'
 
 import * as yup from 'yup'
 
@@ -61,6 +62,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
 		validation: yup.date(),
+		format: Formatters.formatDate,
 		kanRedigeres: true
 	}
 	// {

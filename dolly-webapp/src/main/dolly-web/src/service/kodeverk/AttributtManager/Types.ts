@@ -39,10 +39,11 @@ export interface Attributt {
 	inputType: InputType
 	items?: Attributt[]
 	options?: Options[]
+	format?: Function
 	apiKodeverkId?: string
-    validation?: yup.MixedSchema
-    kanRedigeres?: Boolean
-    kanBestilles?: Boolean
+	validation?: yup.MixedSchema
+	kanRedigeres?: Boolean
+	kanBestilles?: Boolean
 }
 
 // Attributt grupper

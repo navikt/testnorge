@@ -6,15 +6,20 @@ import './StaticValue.less'
 export default class StaticValue extends PureComponent {
 	static propTypes = {
 		header: PropTypes.string.isRequired,
-		value: PropTypes.string.isRequired
+		value: PropTypes.string.isRequired,
+		format: PropTypes.func
 	}
 
 	render() {
-		const { header, value } = this.props
+		const { header, value, format } = this.props
+
+		let _value = value
+		if (format) _value = format(value)
+
 		return (
 			<div className="static-value">
 				<h5>{header}</h5>
-				<span>{value}</span>
+				<span>{_value}</span>
 			</div>
 		)
 	}

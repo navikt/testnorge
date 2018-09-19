@@ -1,5 +1,6 @@
 import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource } from '../Types'
+import Formatters from '~/utils/DataFormatter'
 
 import * as yup from 'yup'
 
@@ -30,6 +31,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
 				options: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
+				format: Formatters.kjonnToString,
 				validation: yup.string().required('Velg kjønn')
 			},
 			{
@@ -39,6 +41,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Født etter',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Date,
+				format: Formatters.formatDate,
 				validation: yup.date()
 			},
 			{
@@ -48,6 +51,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Født før',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Date,
+				format: Formatters.formatDate,
 				validation: yup.date()
 			}
 		],
@@ -88,6 +92,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
 				options: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
+				format: Formatters.kjonnToStringBarn,
 				validation: yup.string().required('Velg kjønn')
 			},
 			{
@@ -97,6 +102,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Født etter',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Date,
+				format: Formatters.formatDate,
 				validation: yup.date()
 			},
 			{
@@ -106,6 +112,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Født før',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Date,
+				format: Formatters.formatDate,
 				validation: yup.date()
 			}
 		],

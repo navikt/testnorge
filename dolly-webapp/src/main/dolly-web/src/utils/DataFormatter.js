@@ -21,4 +21,10 @@ formatters.kjonnToString = (kjonn = '') => {
 	return _kjonn === 'm' ? 'Mann' : 'Kvinne'
 }
 
+formatters.kjonnToStringBarn = (kjonn = '') => {
+	const _kjonn = kjonn.toLowerCase()
+	if (!['m', 'k'].includes(_kjonn)) return 'udefinert'
+	return _kjonn === 'm' ? 'Gutt' : 'Jente'
+}
+
 export default formatters

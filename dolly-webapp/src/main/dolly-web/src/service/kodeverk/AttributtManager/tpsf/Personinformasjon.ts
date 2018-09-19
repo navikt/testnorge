@@ -1,5 +1,6 @@
 import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource } from '../Types'
+import Formatters from '~/utils/DataFormatter'
 
 import * as yup from 'yup'
 
@@ -11,6 +12,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Født etter',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
+		format: Formatters.formatDate,
 		validation: yup.date()
 	},
 	{
@@ -20,6 +22,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Født før',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
+		format: Formatters.formatDate,
 		validation: yup.date()
 	},
 	{
@@ -29,6 +32,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Dødsdato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
+		format: Formatters.formatDate,
 		validation: yup.date()
 	},
 	{
@@ -51,6 +55,7 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		options: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
 		validation: yup.string().required('Velg kjønn'),
+		format: Formatters.kjonnToString,
 		kanRedigeres: true
 	}
 	// {
