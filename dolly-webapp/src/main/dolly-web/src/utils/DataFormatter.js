@@ -5,8 +5,8 @@ const formatters = {}
 // Skriv ut FNR og DNR med mellom mellom fødselsdato og personnummer
 // Ex: 010195 12345
 formatters.formatIdentNr = identNr => {
-	const birth = ident.substring(0, 6)
-	const personnummer = ident.substring(6, 11)
+	const birth = identNr.substring(0, 6)
+	const personnummer = identNr.substring(6, 11)
 	return `${birth} ${personnummer}`
 }
 
