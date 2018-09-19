@@ -63,6 +63,11 @@ export default class AttributtManager {
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
 		// Setter alle id'er til default value empty string
 		// Formik krever at form'et har initialValues
-		return selectedIds.reduce((prev, curr) => ({ ...prev, [curr]: values[curr] || '' }), {})
+        return selectedIds.reduce((prev, item) => {
+            let initVal = ''
+            const fromState = _get(values, item)
+            if(fromState) initVal = fromState
+			return _set(prev, item, initVal)
+		}, {})
 	}
 }
