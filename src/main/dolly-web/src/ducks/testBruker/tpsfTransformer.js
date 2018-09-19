@@ -1,4 +1,4 @@
-import Formatters from '~/utils/DataFormatters'
+import Formatters from '~/utils/DataFormatter'
 
 /*
     Transformer for TPSF-data.

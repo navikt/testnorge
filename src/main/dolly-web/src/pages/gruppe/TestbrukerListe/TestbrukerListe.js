@@ -3,7 +3,7 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
-import Formatters from '~/utils/DataFormatters'
+import Formatters from '~/utils/DataFormatter'
 import PersonDetaljer from '../PersonDetaljer/PersonDetaljer'
 
 export default class Gruppe extends Component {
