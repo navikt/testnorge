@@ -7,7 +7,7 @@ import NavigationConnector from '../Navigation/NavigationConnector'
 import MiljoVelger from '~/components/miljoVelger/MiljoVelger'
 import { AttributtManager } from '~/service/Kodeverk'
 import { Formik, FieldArray, Field } from 'formik'
-import Formatters from '~/utils/DataFormatters'
+import Formatters from '~/utils/DataFormatter'
 import _get from 'lodash/get'
 
 export default class Step3 extends PureComponent {
