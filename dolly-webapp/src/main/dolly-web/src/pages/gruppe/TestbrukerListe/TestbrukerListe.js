@@ -15,7 +15,7 @@ export default class Gruppe extends Component {
 		const { isFetching, testidenter, testbrukere, editTestbruker } = this.props
 
 		return (
-			<div className="testbruker-liste">
+			<div className="oversikt-container">
 				<Overskrift type="h2" label="Testpersoner" />
 				{testidenter.length <= 0 ? (
 					<ContentContainer>
