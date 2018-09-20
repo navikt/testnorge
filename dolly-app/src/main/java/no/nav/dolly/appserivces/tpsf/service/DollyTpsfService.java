@@ -66,7 +66,7 @@ public class DollyTpsfService {
         } catch (Exception e) {
             // LOG Exception eller set i bestilling som error. Er Async, så skal ikke håndtere error.
             //TODO Dette skal logges.
-            System.out.println("Lage identer feiler. Dette bor logges!  Error: " + e.getMessage());
+            System.out.println("##### LAGE IDENTER FEILET ######  Error: " + e.getMessage() +  "   feil: " + e.getMessage() + "       error: " + e);
         } finally {
             bestilling.setSistOppdatert(LocalDateTime.now());
             bestilling.setFerdig(true);
