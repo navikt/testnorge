@@ -1,15 +1,19 @@
 import { DollyApi } from '~/service/Api'
 import { createActions, handleActions, combineActions } from 'redux-actions'
+import { LOCATION_CHANGE } from 'connected-react-router'
 import success from '~/utils/SuccessAction'
 
 export const actions = createActions(
 	{
 		API: {
 			GET: () => DollyApi.getTeams(),
+			GET_BY_ID: teamId => DollyApi.getTeamById(teamId),
 			GET_BY_USER_ID: currentUserId => DollyApi.getTeamsByUserId(currentUserId),
 			CREATE: newTeam => DollyApi.createTeam(newTeam),
 			UPDATE: (teamId, data) => DollyApi.updateTeam(teamId, data),
-			DELETE: [teamId => DollyApi.deleteTeam(teamId), teamId => ({ teamId })]
+			DELETE: [teamId => DollyApi.deleteTeam(teamId), teamId => ({ teamId })],
+			ADD_TEAM_MEMBER: (teamId, userArray) => DollyApi.addTeamMedlemmer(teamId, userArray),
+			REMOVE_TEAM_MEMBER: (teamId, userArray) => DollyApi.removeTeamMedlemmer(teamId, userArray)
 		},
 		UI: {
 			SET_TEAM_VISNING: visning => ({ visning }),
@@ -30,12 +34,21 @@ const initialState = {
 
 export default handleActions(
 	{
+		[LOCATION_CHANGE]: () => initialState,
 		[combineActions(success(actions.api.get), success(actions.api.getByUserId))]: (
 			state,
 			action
 		) => ({
 			...state,
 			items: action.payload.data
+		}),
+		[combineActions(
+			success(actions.api.getById),
+			success(actions.api.addTeamMember),
+			success(actions.api.removeTeamMember)
+		)]: (state, action) => ({
+			...state,
+			items: [action.payload.data]
 		}),
 		[success(actions.api.create)]: (state, action) => ({
 			...state,
