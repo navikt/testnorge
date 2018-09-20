@@ -7,7 +7,6 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import bestillingReducer from './ducks/bestilling'
 import gruppeReducer from './ducks/gruppe'
 import teamsReducer from './ducks/teams'
-import teamReducer from './ducks/team'
 import brukerReducer from './ducks/bruker'
 import testbrukerReducer from './ducks/testBruker'
 import searchReducer from './ducks/search'
@@ -47,7 +46,6 @@ export default function configureReduxStore(history) {
 		bestilling: bestillingReducer,
 		gruppe: gruppeReducer,
 		teams: teamsReducer,
-		team: teamReducer,
 		bruker: brukerReducer,
 		testbruker: testbrukerReducer,
 		search: searchReducer,
