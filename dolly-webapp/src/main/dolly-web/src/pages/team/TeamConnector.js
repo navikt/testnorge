@@ -8,9 +8,12 @@ const teamLoadingSelector = createLoadingSelector(actions.api.getById)
 const grupperLoadingSelector = createLoadingSelector('TODO')
 
 const mapStateToProps = (state, ownProps) => {
+	const { teamId } = ownProps.match.params
+
 	return {
 		team: state.teams.items && state.teams.items[0],
 		teamIsFetching: teamLoadingSelector(state),
+		visRedigerTeam: state.teams.editTeamId === teamId.toString(),
 		grupper: state.gruppe.data,
 		grupperIsFetching: grupperLoadingSelector(state)
 	}
