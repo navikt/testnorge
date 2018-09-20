@@ -11,9 +11,10 @@ class FavoriteButton extends PureComponent {
 
 	render() {
 		const { isFavorite, addFavorite, removeFavorite } = this.props
-		if (isFavorite) return <Button kind="star-filled" onClick={removeFavorite} />
+		if (isFavorite)
+			return <Button title="Fjern fra favoritter" kind="star-filled" onClick={removeFavorite} />
 
-		return <Button kind="star" onClick={addFavorite} />
+		return <Button title="Legg til som favoritt" kind="star" onClick={addFavorite} />
 	}
 }
 

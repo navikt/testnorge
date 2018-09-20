@@ -60,7 +60,7 @@ export default class Step2 extends PureComponent {
 								onClickNext={formikProps.submitForm}
 								onClickPrevious={() => this.onClickPrevious(formikProps.values)}
 							/>
-							<DisplayFormikState {...formikProps} />
+							{/* <DisplayFormikState {...formikProps} /> */}
 						</Fragment>
 					)}
 				/>
