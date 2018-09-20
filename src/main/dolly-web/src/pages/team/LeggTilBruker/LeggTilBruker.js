@@ -55,7 +55,7 @@ export default class RedigerTeam extends PureComponent {
 							<div className="fields">
 								<Field
 									name="navIdent"
-									label="Velg en bruker"
+									label="Velg brukere"
 									component={FormikDollySelect}
 									multi={true}
 									loadOptions={() =>
