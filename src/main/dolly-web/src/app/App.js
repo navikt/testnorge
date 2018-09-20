@@ -4,6 +4,7 @@ import Header from '~/components/header/Header'
 import Loading from '~/components/loading/Loading'
 import Breadcrumbs from '~/components/breadcrumb/Breadcrumb'
 import SplashscreenConnector from '~/components/splashscreen/SplashscreenConnector'
+import Toast from '~/components/toast/Toast'
 import routes from '~/Routes'
 
 import './App.less'
@@ -19,7 +20,7 @@ export default class App extends Component {
 	}
 
 	render() {
-		const { brukerData } = this.props
+		const { brukerData, applicationError, clearAllErrors } = this.props
 
 		if (!brukerData) return <Loading label="laster dolly applikasjon" fullpage />
 
@@ -41,6 +42,7 @@ export default class App extends Component {
 						})}
 					</Switch>
 				</main>
+				{applicationError && <Toast error={applicationError} clearErrors={clearAllErrors} />}
 			</React.Fragment>
 		)
 	}
