@@ -17,7 +17,7 @@ const redirectReducer = (state = null, action) => {
 		case success(deleteGruppe):
 			return '/'
 		case success(teamActions.api.delete):
-			return '/team/'
+			return '/team'
 		case LOCATION_CHANGE:
 		default:
 			return null
