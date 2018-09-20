@@ -35,12 +35,8 @@ public class TpsfApiService {
     public List<String> opprettPersonerTpsf(RsTpsfBestilling request) {
         StringBuilder sbUrl = new StringBuilder().append(tpsfServerUrl).append(TPSF_BASE_URL).append(TPSF_OPPRETT_URL);
 
-
-        System.out.println("#### OPPRETTER PERSONER ######   " + sbUrl.toString());
-        System.out.println(request);
         ResponseEntity<Object> response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, new HttpEntity<>(request), Object.class);
 
-        System.out.println("#### RESPONSE ######   " + response.getBody());
         if (response.getBody().toString().contains("exception=")) {
             RestTemplateFailure rs = objectMapper.convertValue(response.getBody(), RestTemplateFailure.class);
             throw new TpsfException("TPSF kall feilet med: " + rs.getMessage() + "\\r\\n Feil: " + rs.getError());

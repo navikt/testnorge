@@ -19,4 +19,13 @@ public class RsDollyBestillingsRequest {
     /* Sigrunn */
     private RsSigrunnOpprettSkattegrunnlag sigrunRequest;
 
+
+    public RsDollyBestillingsRequest copy(){
+        RsDollyBestillingsRequest request = new RsDollyBestillingsRequest();
+        request.setEnvironments(this.environments);
+        request.setAntall(this.antall);
+        request.setTpsf(this.tpsf);
+        request.setSigrunRequest(this.sigrunRequest);
+        return request;
+    }
 }

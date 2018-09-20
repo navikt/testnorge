@@ -54,10 +54,10 @@ public class DollyTpsfService {
 
         try {
             for (int i = 0; i < request.getAntall(); i++) {
-                RsDollyBestillingsRequest tempReq = request;
-                tempReq.setAntall(1);
+                RsDollyBestillingsRequest tempRequest = request.copy();
+                tempRequest.setAntall(1);
 
-                List<String> klareIdenter = tpsfApiService.opprettPersonerTpsf(tempReq.getTpsf());
+                List<String> klareIdenter = tpsfApiService.opprettPersonerTpsf(tempRequest.getTpsf());
                 Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
                 createIdenterIRegistrene(request, bestilling, klareIdenter, testgruppe);
