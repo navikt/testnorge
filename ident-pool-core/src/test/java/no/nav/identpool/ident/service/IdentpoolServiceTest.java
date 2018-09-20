@@ -18,6 +18,11 @@ import no.nav.identpool.ident.repository.IdentRepository;
 @RunWith(MockitoJUnitRunner.class)
 public class IdentpoolServiceTest {
 
+    @Test
+    public void test() {
+
+    }
+
 /*    @Mock
     private IdentRepository identRepository;
 
