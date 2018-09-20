@@ -104,7 +104,7 @@ const webpackConfig = {
 			},
 			{
 				test: /\.css$/,
-				use: ['style-loader', 'css-loader']
+				use: [devMode ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader']
 			},
 			{
 				// images
