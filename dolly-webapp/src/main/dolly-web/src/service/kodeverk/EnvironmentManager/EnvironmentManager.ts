@@ -22,7 +22,9 @@ export default class EnvironmentManager {
 
 		// TEMP: Set all as disabled except u6
 		const envsWithDisabled = envs.map(f => {
-			if (f.id === 'u6') return f
+			// if (f.id === 'u6') return f
+
+			if (f.id.includes('t')) return f
 
 			return {
 				...f,
