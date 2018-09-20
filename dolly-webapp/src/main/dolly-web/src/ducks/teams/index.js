@@ -35,7 +35,6 @@ const initialState = {
 const successActions = combineActions(
 	success(actions.api.get),
 	success(actions.api.getByUserId),
-	success(actions.api.getById),
 	success(actions.api.addTeamMember),
 	success(actions.api.removeTeamMember)
 )
@@ -46,6 +45,10 @@ export default handleActions(
 		[successActions]: (state, action) => ({
 			...state,
 			items: action.payload.data
+		}),
+		[success(actions.api.getById)]: (state, action) => ({
+			...state,
+			items: [action.payload.data]
 		}),
 		[success(actions.api.create)]: (state, action) => ({
 			...state,

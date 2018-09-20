@@ -4,6 +4,7 @@ import Table from '~/components/table/Table'
 import Loading from '~/components/loading/Loading'
 import LeggTilBruker from './LeggTilBruker/LeggTilBruker'
 import AddButton from '~/components/button/AddButton'
+import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 
 class Team extends Component {
 	state = {
@@ -31,7 +32,8 @@ class Team extends Component {
 			grupperFetching,
 			history,
 			addMember,
-			removeMember
+			removeMember,
+			deleteTeam
 		} = this.props
 
 		if (!team || !grupper) return null
@@ -40,7 +42,9 @@ class Team extends Component {
 
 		return (
 			<div className="oversikt-container">
-				<Overskrift label={team.navn} />
+				<Overskrift label={team.navn}>
+					<ConfirmTooltip onClick={deleteTeam} />
+				</Overskrift>
 
 				<Overskrift label="Medlemmer" type="h2" />
 				{teamFetching ? (
