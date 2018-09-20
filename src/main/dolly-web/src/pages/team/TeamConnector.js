@@ -9,7 +9,7 @@ const grupperLoadingSelector = createLoadingSelector('TODO')
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		team: state.teams.items,
+		team: state.teams.items && state.teams.items[0],
 		teamIsFetching: teamLoadingSelector(state),
 		grupper: state.gruppe.data,
 		grupperIsFetching: grupperLoadingSelector(state)
@@ -20,6 +20,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	const { teamId } = ownProps.match.params
 	return {
 		getTeam: () => dispatch(actions.api.getById(teamId)),
+		deleteTeam: () => dispatch(actions.api.delete(teamId)),
+		startRedigerTeam: () => dispatch(actions.ui.startEditTeam(teamId)),
 		listGrupper: () => dispatch(listGrupper({ teamId })),
 		addMember: userArray => dispatch(actions.api.addTeamMember(teamId, userArray)),
 		removeMember: userArray => dispatch(actions.api.removeTeamMember(teamId, userArray))
