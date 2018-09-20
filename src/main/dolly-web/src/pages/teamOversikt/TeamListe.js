@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import Table from '~/components/table/Table'
 import Loading from '~/components/loading/Loading'
-import RedigerTeamConnector from './RedigerTeam/RedigerTeamConnector'
+import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
 
 class TeamListe extends Component {
 	render() {
