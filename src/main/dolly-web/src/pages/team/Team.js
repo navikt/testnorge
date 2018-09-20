@@ -5,6 +5,7 @@ import Loading from '~/components/loading/Loading'
 import LeggTilBruker from './LeggTilBruker/LeggTilBruker'
 import AddButton from '~/components/button/AddButton'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
+import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
 
 class Team extends Component {
 	state = {
@@ -33,18 +34,29 @@ class Team extends Component {
 			history,
 			addMember,
 			removeMember,
-			deleteTeam
+			deleteTeam,
+			startRedigerTeam,
+			visRedigerTeam
 		} = this.props
 
 		if (!team || !grupper) return null
 
 		const teamMembers = team.medlemmer.map(medlem => medlem.navIdent)
 
+		const teamActions = [
+			{
+				icon: 'edit',
+				onClick: startRedigerTeam
+			}
+		]
+
 		return (
 			<div className="oversikt-container">
-				<Overskrift label={team.navn}>
+				<Overskrift label={team.navn} actions={teamActions}>
 					<ConfirmTooltip onClick={deleteTeam} />
 				</Overskrift>
+
+				{visRedigerTeam && <RedigerTeamConnector team={team} />}
 
 				<Overskrift label="Medlemmer" type="h2" />
 				{teamFetching ? (
