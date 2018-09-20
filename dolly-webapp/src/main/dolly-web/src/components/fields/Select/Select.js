@@ -29,10 +29,13 @@ export default class DollySelect extends PureComponent {
 		const { name, label, placeholder, loadOptions, error, ...restProps } = this.props
 		return (
 			<div className={cn({ error: Boolean(error) }, 'skjemaelement dollyselect')}>
-				<label className="skjemaelement__label">{label} </label>
+				<label htmlFor={name} className="skjemaelement__label">
+					{label}{' '}
+				</label>
 				<div className="dollyselect-input">
 					{loadOptions ? (
 						<Async
+							id={name}
 							name={name}
 							loadOptions={loadOptions}
 							placeholder={placeholder}
@@ -43,6 +46,7 @@ export default class DollySelect extends PureComponent {
 						/>
 					) : (
 						<Select
+							id={name}
 							name={name}
 							placeholder={placeholder}
 							clearable
