@@ -112,6 +112,11 @@ export default class FormEditor extends PureComponent {
 					}
 				}
 			}
+			case 'number': {
+				return {
+					type: item.inputType
+				}
+			}
 			default:
 				return {}
 		}

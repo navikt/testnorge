@@ -8,6 +8,7 @@ export default function InputSelector(inputType) {
 			return FormikDatepicker
 		case 'select':
 			return FormikDollySelect
+		case 'number':
 		case 'string':
 		default:
 			return FormikInput

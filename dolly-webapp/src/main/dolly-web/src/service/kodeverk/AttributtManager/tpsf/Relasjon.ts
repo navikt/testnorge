@@ -81,8 +81,8 @@ const AttributtListe: Attributt[] = [
 			// 	id: 'relasjoner.barn.antall',
 			// 	label: 'Antall',
 			// 	dataSource: DataSource.TPSF,
-			// 	inputType: InputType.Text,
-			// 	validation: yup.string().required('Velg antall')
+			// 	inputType: InputType.Number,
+			// 	validation: yup.number().required('Velg antall')
 			// },
 			{
 				hovedKategori: Kategorier.PersInfo,
