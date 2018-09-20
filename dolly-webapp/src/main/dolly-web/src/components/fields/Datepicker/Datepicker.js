@@ -17,7 +17,7 @@ export default class Datepicker extends Component {
 		// classname = skjemaelement for å følge samme styling som andre input comps fra NAV
 		return (
 			<div className={cn({ error }, 'skjemaelement')}>
-				<label className="skjemaelement__label" htmlFor={label.toLowerCase()}>
+				<label className="skjemaelement__label" htmlFor={name}>
 					{label}
 				</label>
 				<Datovelger id={name} dato={value} {...restProps} />
