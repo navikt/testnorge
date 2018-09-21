@@ -8,6 +8,7 @@ import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
 import AddButton from '~/components/button/AddButton'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
+import './GruppeOversikt.less'
 
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {
@@ -48,10 +49,9 @@ export default class GruppeOversikt extends PureComponent {
 
 		return (
 			<div className="oversikt-container">
-				<div className="page-header flexbox--space">
-					<Overskrift label="Testdatagrupper">
-						<ContentTooltip />
-					</Overskrift>
+				<div className="page-header gruppe-oversikt-header">
+					<Overskrift label="Testdatagrupper"/>
+					<ContentTooltip />
 				</div>
 
 				<div className="flexbox--space">
