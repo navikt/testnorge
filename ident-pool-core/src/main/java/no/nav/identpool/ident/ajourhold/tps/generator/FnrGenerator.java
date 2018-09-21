@@ -17,6 +17,10 @@ public class FnrGenerator {
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
 
+    public static String[] genererIdenterArray(LocalDate date) {
+        return genererIdenter(date, date).toArray(new String[0]);
+    }
+
     public static String[] genererIdenterArray(LocalDate fom, LocalDate tom) {
         return genererIdenter(fom, tom).toArray(new String[0]);
     }

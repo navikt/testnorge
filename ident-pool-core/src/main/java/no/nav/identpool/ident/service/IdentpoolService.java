@@ -33,6 +33,6 @@ public class IdentpoolService {
     }
 
     public String markerBrukt(String personidentifikator) {
-        return "ok";
+        return null;
     }
 }

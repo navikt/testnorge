@@ -11,7 +11,7 @@ public enum Identtype {
         try {
             return Identtype.valueOf(string.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Identtype må være FNR, DNR eller blank.", e);
+            throw new IllegalIdenttypeException("Identtype må være FNR, DNR eller blank.", e);
         }
     }
 }

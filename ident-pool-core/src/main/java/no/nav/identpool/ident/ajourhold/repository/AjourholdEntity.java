@@ -1,6 +1,5 @@
 package no.nav.identpool.ident.ajourhold.repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.batch.runtime.BatchStatus;
@@ -38,14 +37,6 @@ public class AjourholdEntity {
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
     private BatchStatus status;
-
-    @NotNull
-    @Column(name = "STARTDATO")
-    private LocalDate startDato;
-
-    @NotNull
-    @Column(name = "SLUTTDATO")
-    private LocalDate sluttDato;
 
     @NotNull
     @Column(name = "SISTOPPDATERT")

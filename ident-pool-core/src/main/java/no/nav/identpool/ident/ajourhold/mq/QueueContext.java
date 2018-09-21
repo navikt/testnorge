@@ -27,22 +27,24 @@ public class QueueContext {
     @Value("#{'${mq.context.exclude}'.split(',')}")
     private List<String> excluded;
 
-    private static HashSet<String> environments;
-    private static HashSet<String> filteredEnvironments;
+    private static final HashSet<String> environments = new LinkedHashSet<>();
+    private static final HashSet<String> filteredEnvironments = new LinkedHashSet<>();
 
     private final FasitClient fasitClient;
     private final MessageQueueFactory queueFactory;
 
     @PostConstruct
     private void init() {
-        environments = new LinkedHashSet<>(fasitClient.getAllEnvironments("t", "q"));
+        environments.addAll(fasitClient.getAllEnvironments("t", "q"));
         environments.removeAll(excluded);
-        excluded.retainAll(environments);
-        filteredEnvironments = new HashSet<>(environments).stream()
+        this.excluded.retainAll(environments);
+
+        filteredEnvironments.addAll(environments.stream()
                 .filter(this::filterOnQueue)
-                .collect(Collectors.toCollection(HashSet::new));
+                .collect(Collectors.toCollection(HashSet::new)));
 
         environments.removeAll(filteredEnvironments);
+        filteredEnvironments.addAll(excluded);
 
         logInfo("Failed to create Connection factories for the following enironments:  ",
                 filteredEnvironments);
@@ -50,7 +52,6 @@ public class QueueContext {
         logInfo("Created connection factories for the following enironments: ",
                 environments);
 
-        filteredEnvironments.addAll(excluded);
         logInfo("Exclueded enviroments: ", filteredEnvironments);
     }
 
@@ -70,7 +71,7 @@ public class QueueContext {
         log.info(builder.toString());
     }
 
-    public static HashSet<String> getIncluded() {
+    public static Set<String> getIncluded() {
         return new HashSet<>(environments);
     }
 

@@ -1,11 +1,11 @@
-package no.nav.identpool.ident.batch.util;
+package no.nav.identpool.ident.ajourhold.util;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public class IdentDistribusjon {
+class IdentDistribusjon {
 
-    public Integer antallPersonerPerDag(Integer fraAar, Integer tomAar) {
+    Integer antallPersonerPerDag(Integer fraAar, Integer tomAar) {
         Integer antallDager = 365*(tomAar-fraAar+1);
         return (int) Math.ceil((double) hentKritiskAntallForTidsintervall(fraAar, tomAar)/(double) antallDager);
     }

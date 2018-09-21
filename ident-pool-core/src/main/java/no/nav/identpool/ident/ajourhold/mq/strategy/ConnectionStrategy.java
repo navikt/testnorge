@@ -11,9 +11,10 @@ public class ConnectionStrategy {
     private final String hostName;
     private final Integer port;
     private final String channel;
+    private final static Integer transportType = 1;
 
     public Integer getTransportType() {
-        return 1;
+        return transportType;
     }
 
     public boolean equals(Object o) {

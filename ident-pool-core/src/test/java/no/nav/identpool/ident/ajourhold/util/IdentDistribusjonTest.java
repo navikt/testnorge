@@ -1,4 +1,4 @@
-package no.nav.identpool.ident.batch.util;
+package no.nav.identpool.ident.ajourhold.util;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;

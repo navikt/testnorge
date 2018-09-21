@@ -1,14 +1,13 @@
 package no.nav.identpool.ident.ajourhold.mq.consumer;
 
-import javax.jms.Connection;
-import javax.jms.Destination;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
+
 import javax.jms.JMSException;
-import javax.jms.Session;
 
 public interface MessageQueue {
-    public Connection startConnection() throws JMSException;
-
     public String sendMessage(String requestMessageContent) throws JMSException;
-    public String sendMessage(String requestMessageContent, Session session) throws JMSException;
+    public void sendMessages(BiConsumer<Integer, String> consumer, Function<Integer, Boolean> ignoreIndex, String... requestMessages) throws JMSException;
     boolean ping() throws JMSException;
 }

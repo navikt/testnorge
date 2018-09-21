@@ -1,5 +1,12 @@
 package no.nav.identpool.ident.ajourhold.mq.consumer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -13,6 +20,8 @@ import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.wmq.v6.jms.internal.JMSC;
 
 public class DefaultMessageQueue implements MessageQueue {
+
+    private static final int RETRYCOUNT = 3;
 
     private static final long DEFAULT_TIMEOUT = 5000;
 
@@ -30,47 +39,89 @@ public class DefaultMessageQueue implements MessageQueue {
         this.connectionFactory = connectionFactory;
     }
 
-    public Connection startConnection() throws JMSException {
-        Connection connection = connectionFactory.createConnection(username, password);
-        connection.start();
-        return connection;
-    }
-
     public String sendMessage(String requestMessageContent) throws JMSException {
-        Connection connection = connectionFactory.createConnection(username, password);
-        connection.start();
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        String response = sendMessage(requestMessageContent, session);
-        session.close();
-        connection.close();
-        return response;
+        String[] array = new String[1];
+        sendMessages((ignored, s) -> array[0] = s, i -> false, requestMessageContent);
+        return array[0];
     }
 
-    public String sendMessage(String requestMessageContent, Session session) throws JMSException {
+    public void sendMessages(
+            BiConsumer<Integer, String> consumer,
+            Function<Integer, Boolean> ignoreIndex,
+            String... requestMessages) throws JMSException {
+        sendMessageConnection(consumer, ignoreIndex, new ArrayList<>(Arrays.asList(requestMessages)), 0, RETRYCOUNT);
+    }
 
+    private void sendMessageConnection(BiConsumer<Integer, String> consumer, Function<Integer, Boolean> ignoreIndex, List<String> requestMessages, int index, int retryCount) throws JMSException {
+        try (Connection connection = connectionFactory.createConnection(username, password)) {
+            connection.start();
+            sendMessageSession(consumer, ignoreIndex, requestMessages, connection, index, RETRYCOUNT);
+        } catch (JMSException e) {
+            if (retryCount > 0){
+                this.sendMessageConnection(consumer, ignoreIndex, requestMessages, index, retryCount - 1);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    private void sendMessageSession(
+            BiConsumer<Integer, String> consumer,
+            Function<Integer, Boolean> ignoreIndex,
+            List<String> requestMessages,
+            Connection connection,
+            int index, int retryCount) throws JMSException {
+
+        try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
+            Iterator<String> iterator = requestMessages.iterator();
+            while (iterator.hasNext()) {
+                String message = iterator.next();
+                if (!ignoreIndex.apply(index)) {
+                    consumer.accept(index, sendMessage(message, session));
+                }
+                iterator.remove();
+                index += 1;
+                retryCount = RETRYCOUNT;
+            }
+        } catch (JMSException e) {
+            if (retryCount > 0) {
+                this.sendMessageSession(consumer, ignoreIndex, requestMessages, connection, index, retryCount - 1);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    private String sendMessage(String requestMessageContent, Session session) throws JMSException {
         Destination requestDestination = session.createQueue(requestQueueName);
         Destination responseDestination = session.createTemporaryQueue();
 
         if (requestDestination instanceof MQQueue) {
-            ((MQQueue) requestDestination).setTargetClient(JMSC.MQJMS_CLIENT_NONJMS_MQ);         //TODO: This method should be provider independent?
+            ((MQQueue) requestDestination).setTargetClient(JMSC.MQJMS_CLIENT_NONJMS_MQ);
         }
-
+        String responseMessage;
         /* Prepare request message */
         TextMessage requestMessage = session.createTextMessage(requestMessageContent);
-        MessageProducer producer = session.createProducer(requestDestination);
+        try (MessageProducer producer = session.createProducer(requestDestination)) {
 
-        requestMessage.setJMSReplyTo(responseDestination);
-        producer.send(requestMessage);
+            requestMessage.setJMSReplyTo(responseDestination);
+            producer.send(requestMessage);
 
-        String attributes = String.format("JMSCorrelationID='%s'", requestMessage.getJMSMessageID());
-        MessageConsumer consumer = session.createConsumer(responseDestination, attributes);
-        TextMessage responseMessage = (TextMessage) consumer.receive(DEFAULT_TIMEOUT);
+            String attributes = String.format("JMSCorrelationID='%s'", requestMessage.getJMSMessageID());
+            responseMessage = consumerReceive(session, responseDestination, attributes);
+        }
+        return responseMessage;
+    }
 
+    private String consumerReceive(Session session, Destination responseDestination, String attributes) throws JMSException {
+        TextMessage responseMessage;
+        try (MessageConsumer consumer = session.createConsumer(responseDestination, attributes)) {
+            responseMessage = (TextMessage) consumer.receive(DEFAULT_TIMEOUT);
+        }
         return responseMessage != null ? responseMessage.getText() : "";
     }
 
     public boolean ping() throws JMSException {
-        this.sendMessage(PING_MESSAGE);
-        return true;
+        return !this.sendMessage(PING_MESSAGE).equals("");
     }
 }
