@@ -119,7 +119,7 @@ public class DollyTpsfService {
         }
     }
 
-    private String identTilString(List<String> identer){
+    private String identTilString(List<String> identer) {
         StringBuilder sb = new StringBuilder();
         identer.forEach(i -> sb.append(i).append(","));
         return sb.toString();

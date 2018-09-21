@@ -10,7 +10,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.repository.TestGruppeRepository;
+import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.testdata.builder.RsTestidentBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
@@ -33,7 +33,7 @@ public class IdentServiceTest {
 	IdentRepository identRepository;
 	
 	@Mock
-    TestGruppeRepository testGruppeRepository;
+    GruppeRepository gruppeRepository;
 
 	@Mock
 	MapperFacade mapperFacade;

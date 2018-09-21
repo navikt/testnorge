@@ -1,12 +1,14 @@
 package no.nav.dolly.regression;
 
-import no.nav.dolly.regression.scenarios.UtilsMetoderForTransactions;
+import no.nav.dolly.regression.scenarios.testrepositories.BrukerTestRepository;
+import no.nav.dolly.regression.scenarios.testrepositories.GruppeTestRepository;
+import no.nav.dolly.regression.scenarios.testrepositories.TeamTestRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TeamRepository;
-import no.nav.dolly.repository.TestGruppeRepository;
+import no.nav.dolly.repository.GruppeRepository;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ public abstract class InMememoryDbTestSetup {
     public BrukerRepository brukerRepository;
 
     @Autowired
-    public TestGruppeRepository testGruppeRepository;
+    public GruppeRepository gruppeRepository;
 
     @Autowired
     public TeamRepository teamRepository;
@@ -39,5 +41,11 @@ public abstract class InMememoryDbTestSetup {
     public BestillingProgressRepository bestillingProgressRepository;
 
     @Autowired
-    public UtilsMetoderForTransactions utilsMetoderForLazyLoadingValues;
+    public TeamTestRepository teamTestRepository;
+
+    @Autowired
+    public BrukerTestRepository brukerTestRepository;
+
+    @Autowired
+    public GruppeTestRepository gruppeTestRepository;
 }

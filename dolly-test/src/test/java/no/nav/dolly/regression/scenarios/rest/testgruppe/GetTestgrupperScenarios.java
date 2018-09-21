@@ -53,7 +53,7 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .build().convertToRealTeam()
         );
 
-        Testgruppe testgruppe2 = testGruppeRepository.save(TestgruppeBuilder.builder()
+        Testgruppe testgruppe2 = gruppeRepository.save(TestgruppeBuilder.builder()
                 .navn("gruppe2")
                 .hensikt("hensikt2")
                 .opprettetAv(standardBruker)
@@ -63,7 +63,7 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .build().convertToRealTestgruppe()
         );
 
-        Testgruppe testgruppe3 = testGruppeRepository.save(TestgruppeBuilder.builder()
+        Testgruppe testgruppe3 = gruppeRepository.save(TestgruppeBuilder.builder()
                 .navn("gruppe3")
                 .hensikt("hensikt3")
                 .opprettetAv(bruker2)
@@ -73,7 +73,7 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .build().convertToRealTestgruppe()
         );
 
-        Testgruppe testgruppe4 = testGruppeRepository.save(TestgruppeBuilder.builder()
+        Testgruppe testgruppe4 = gruppeRepository.save(TestgruppeBuilder.builder()
                 .navn("gruppe4")
                 .hensikt("hensikt4")
                 .opprettetAv(bruker2)

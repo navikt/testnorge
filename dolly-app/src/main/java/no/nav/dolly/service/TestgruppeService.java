@@ -11,7 +11,7 @@ import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.TestGruppeRepository;
+import no.nav.dolly.repository.GruppeRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 public class TestgruppeService {
 
     @Autowired
-    private TestGruppeRepository testGruppeRepository;
+    private GruppeRepository gruppeRepository;
 
     @Autowired
     private BrukerService brukerService;
@@ -60,11 +60,11 @@ public class TestgruppeService {
     }
 
     public Testgruppe fetchTestgruppeById(Long gruppeId) {
-        return testGruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        return gruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
     }
 
     public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer){
-        List<Testgruppe> grupper = testGruppeRepository.findAllById(grupperIDer);
+        List<Testgruppe> grupper = gruppeRepository.findAllById(grupperIDer);
         if(!isNullOrEmpty(grupper)){
             return grupper;
         }
@@ -112,7 +112,7 @@ public class TestgruppeService {
 
     public Testgruppe saveGruppeTilDB(Testgruppe testgruppe) {
         try {
-            return testGruppeRepository.save(testgruppe);
+            return gruppeRepository.save(testgruppe);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage());
         } catch (NonTransientDataAccessException e) {
@@ -122,7 +122,7 @@ public class TestgruppeService {
 
     public List<Testgruppe> saveGrupper(Collection<Testgruppe> testgrupper) {
         try {
-            return testGruppeRepository.saveAll(testgrupper);
+            return gruppeRepository.saveAll(testgrupper);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage());
         } catch (NonTransientDataAccessException e) {
@@ -132,7 +132,7 @@ public class TestgruppeService {
 
     @Transactional
     public void slettGruppeById(Long gruppeId){
-        testGruppeRepository.deleteTestgruppeById(gruppeId);
+        gruppeRepository.deleteTestgruppeById(gruppeId);
     }
 
     @Transactional
@@ -174,7 +174,7 @@ public class TestgruppeService {
     }
 
     public List<Testgruppe> fetchAlleTestgrupper() {
-        return testGruppeRepository.findAll();
+        return gruppeRepository.findAll();
     }
 
 }

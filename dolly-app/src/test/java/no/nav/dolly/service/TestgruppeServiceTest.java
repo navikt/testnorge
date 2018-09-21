@@ -13,7 +13,7 @@ import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.TestGruppeRepository;
+import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.RsBrukerBuilder;
 import no.nav.dolly.testdata.builder.RsTeamBuilder;
@@ -53,7 +53,7 @@ public class TestgruppeServiceTest {
     private String standardPrincipal = "princ";
 
     @Mock
-    private TestGruppeRepository testGruppeRepository;
+    private GruppeRepository gruppeRepository;
 
     @Mock
     private BrukerService brukerService;
@@ -85,12 +85,12 @@ public class TestgruppeServiceTest {
         when(teamService.fetchTeamOrOpprettBrukerteam(any())).thenReturn(team);
         when(brukerService.fetchBruker(standardPrincipal)).thenReturn(bruker);
         when(mapperFacade.map(rsTestgruppe, Testgruppe.class)).thenReturn(gruppe);
-        when(testGruppeRepository.save(gruppe)).thenReturn(savedGruppe);
+        when(gruppeRepository.save(gruppe)).thenReturn(savedGruppe);
 
         testgruppeService.opprettTestgruppe(rsTestgruppe);
 
         ArgumentCaptor<Testgruppe> cap = ArgumentCaptor.forClass(Testgruppe.class);
-        verify(testGruppeRepository).save(cap.capture());
+        verify(gruppeRepository).save(cap.capture());
 
         Testgruppe res = cap.getValue();
 
@@ -102,7 +102,7 @@ public class TestgruppeServiceTest {
     @Test(expected = NotFoundException.class)
     public void fetchTestgruppeById_KasterExceptionHvisGruppeIkkeErFunnet() throws Exception {
         Optional<Testgruppe> op = Optional.empty();
-        when(testGruppeRepository.findById(any())).thenReturn(op);
+        when(gruppeRepository.findById(any())).thenReturn(op);
 
         testgruppeService.fetchTestgruppeById(1l);
     }
@@ -111,7 +111,7 @@ public class TestgruppeServiceTest {
     public void fetchTestgruppeById_ReturnererGruppeHvisGruppeMedIdFinnes() throws Exception {
         Testgruppe g = Mockito.mock(Testgruppe.class);
         Optional<Testgruppe> op = Optional.of(g);
-        when(testGruppeRepository.findById(any())).thenReturn(op);
+        when(gruppeRepository.findById(any())).thenReturn(op);
 
         Testgruppe hentetGruppe = testgruppeService.fetchTestgruppeById(1l);
 
@@ -232,7 +232,7 @@ public class TestgruppeServiceTest {
     @Test
     public void saveGruppeTilDB_returnererTestgruppeHvisTestgruppeFinnes(){
         Testgruppe g = new Testgruppe();
-        when(testGruppeRepository.save(any())).thenReturn(g);
+        when(gruppeRepository.save(any())).thenReturn(g);
 
         Testgruppe res = testgruppeService.saveGruppeTilDB(new Testgruppe());
         assertThat(res, is(notNullValue()));
@@ -243,12 +243,12 @@ public class TestgruppeServiceTest {
         Long gruppeId = 1L;
 
         testgruppeService.slettGruppeById(gruppeId);
-        verify(testGruppeRepository).deleteTestgruppeById(gruppeId);
+        verify(gruppeRepository).deleteTestgruppeById(gruppeId);
     }
 
     @Test(expected = ConstraintViolationException.class)
     public void saveGruppeTilDB_kasterExceptionHvisDBConstraintErBrutt(){
-        when(testGruppeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
+        when(gruppeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
         testgruppeService.saveGruppeTilDB(new Testgruppe());
     }
 
