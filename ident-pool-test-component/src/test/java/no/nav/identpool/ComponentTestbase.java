@@ -1,5 +1,9 @@
 package no.nav.identpool;
 
+import static no.nav.identpool.SecurityTestConfig.NAV_STS_ISSUER_URL;
+
+import java.time.LocalDateTime;
+import org.jose4j.jwt.JwtClaims;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,6 +12,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
+import no.nav.freg.security.test.oidc.tools.OidcTestService;
 import no.nav.identpool.ident.repository.IdentRepository;
 
 @RunWith(SpringRunner.class)
@@ -21,11 +27,28 @@ public abstract class ComponentTestbase {
     protected IdentRepository identRepository;
     @Autowired
     protected TestRestTemplate testRestTemplate;
+    @Autowired
+    private OidcTestService oidcTestService;
 
-    protected HttpEntity lagHttpEntity() {
+
+    protected HttpEntity lagHttpEntity(boolean withOidc) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        if (withOidc){
+            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + oidcTestService.createOidc(getJwtClaims()));
+        }
         return new HttpEntity(httpHeaders);
+    }
+
+    private JwtClaims getJwtClaims() {
+        return new JwtClaimsBuilder()
+                .subject("sub")
+                .audience("aud")
+                .expiry(LocalDateTime.now().plusMinutes(10))
+                .validFrom(LocalDateTime.now().minusMinutes(5))
+                .azp("azp")
+                .issuer(NAV_STS_ISSUER_URL)
+                .build();
     }
 
 }
