@@ -32,7 +32,7 @@ public class IdentControllerComponentTest extends ComponentTestbase {
 
         ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagEnkelHttpEntity(), String[].class);
 
-        assertThat(fnr.getBody(), notNullValue());
+        assertThat(fnr.getBody(), is(notNullValue()));
         assertThat(fnr.getBody().length, is(1));
     }
 
@@ -45,7 +45,7 @@ public class IdentControllerComponentTest extends ComponentTestbase {
 
         ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagEnkelHttpEntity(), String[].class);
 
-        assertThat(fnr.getBody(), notNullValue());
+        assertThat(fnr.getBody(), is(notNullValue()));
         assertThat(fnr.getBody().length, is(1));
     }
 

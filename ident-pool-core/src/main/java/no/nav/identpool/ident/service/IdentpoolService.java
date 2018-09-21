@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.ident.repository.IdentEntity;
 import no.nav.identpool.ident.repository.IdentPredicateUtil;
 import no.nav.identpool.ident.repository.IdentRepository;
+import no.nav.identpool.ident.rest.v1.FinnesHosSkattRequest;
 import no.nav.identpool.ident.rest.v1.HentIdenterRequest;
 import no.nav.identpool.ident.rest.v1.MarkerBruktRequest;
 
@@ -52,5 +54,21 @@ public class IdentpoolService {
 
     public IdentEntity lesInnhold(String personidentifikator) {
         return identRepository.findTopByPersonidentifikator(personidentifikator);
+    }
+
+    public void registrerFinnesHosSkatt(FinnesHosSkattRequest finnesHosSkattRequest) {
+        IdentEntity identEntity = identRepository.findTopByPersonidentifikator(finnesHosSkattRequest.getPersonidentifikator());
+        if (identEntity != null) {
+            identEntity.setFinnesHosSkatt("1");
+        } else {
+            identEntity = IdentEntity.builder()
+                    .identtype(Identtype.DNR)
+                    .personidentifikator(finnesHosSkattRequest.getPersonidentifikator())
+                    .foedselsdato(finnesHosSkattRequest.getFoedselsdato())
+                    .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
+                    .finnesHosSkatt("1")
+                    .build();
+        }
+        identRepository.save(identEntity);
     }
 }

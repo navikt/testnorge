@@ -1,9 +1,9 @@
 package no.nav.identpool.ident.rest.v1;
 
 import static no.nav.identpool.util.RestUtil.lagEnkelHttpEntity;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
 
 import java.net.URI;
 import java.net.URISyntaxException;
