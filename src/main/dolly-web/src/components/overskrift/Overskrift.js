@@ -33,7 +33,6 @@ export default class Overskrift extends PureComponent {
 		return React.createElement(type, restProps, [
 			label,
 			actions.map((o, idx) => <Button key={idx} kind={o.icon} onClick={o.onClick} />),
-			children
 		])
 	}
 }
