@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import _mapValues from 'lodash/mapValues'
 import Panel from '~/components/panel/Panel'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { EnvironmentManager } from '~/service/Kodeverk'
@@ -13,19 +14,59 @@ export default class MiljoVelger extends Component {
 
 	constructor(props) {
 		super(props)
-		this.Environments = new EnvironmentManager().getAllEnvironments()
+		this.Environments = new EnvironmentManager().getEnvironmentsSortedByType()
 	}
+
+	isChecked = id => this.props.arrayValues.includes(id)
+	add = id => this.props.arrayHelpers.push(id)
+	remove = id => this.props.arrayHelpers.remove(this.props.arrayValues.indexOf(id))
 
 	onClickHandler = e => {
-		const { arrayHelpers, arrayValues } = this.props
-		const indexOf = arrayValues.indexOf(e.target.id)
-
-		if (e.target.checked && indexOf === -1) return arrayHelpers.push(e.target.id)
-
-		return arrayHelpers.remove(indexOf)
+		const { id } = e.target
+		return this.isChecked(id) ? this.remove(id) : this.add(id)
 	}
 
-	createCheckbox = ({ id, label, disabled }) => (
+	velgAlle = (e, type, envs) => {
+		e.preventDefault()
+		const self = this
+		envs.forEach(env =>
+			setTimeout(function() {
+				return !self.isChecked(env.id) && self.add(env.id)
+			}, 0)
+		)
+	}
+
+	fjernAlle = (e, type, envs) => {
+		e.preventDefault()
+		const self = this
+		envs.forEach(env =>
+			setTimeout(function() {
+				return self.isChecked(env.id) && self.remove(env.id)
+			}, 0)
+		)
+	}
+
+	renderEnvCategory = (envs, type) => {
+		const allDisabled = envs.some(f => f.disabled)
+		return (
+			<fieldset key={type} name={`Liste over ${type}-mijøer`}>
+				<h3>{type} miljøer</h3>
+				<div className="miljo-velger_checkboxes">{envs.map(env => this.renderCheckbox(env))}</div>
+				{!allDisabled && (
+					<div className="miljo-velger_buttons">
+						<a href="#" onClick={e => this.velgAlle(e, type, envs)}>
+							Velg alle
+						</a>
+						<a href="#" onClick={e => this.fjernAlle(e, type, envs)}>
+							Fjern alle
+						</a>
+					</div>
+				)}
+			</fieldset>
+		)
+	}
+
+	renderCheckbox = ({ id, label, disabled }) => (
 		<Checkbox
 			key={id}
 			id={id}
@@ -48,10 +89,10 @@ export default class MiljoVelger extends Component {
 
 		return (
 			<div className="miljo-velger">
-				<h3>{heading}</h3>
-				<div className="miljo-velger_content">
-					<div>{this.Environments.map(env => this.createCheckbox(env))}</div>
-				</div>
+				<h2>{heading}</h2>
+				{Object.keys(this.Environments).map(type =>
+					this.renderEnvCategory(this.Environments[type], type)
+				)}
 				{this.renderError(arrayHelpers)}
 			</div>
 		)
