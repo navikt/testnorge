@@ -82,8 +82,8 @@ export default class GruppeOversikt extends PureComponent {
 						addFavorite={addFavorite}
 					/>
 				)}
-
-				<AddButton title="Opprett ny gruppe" onClick={createGroup} />
+				
+				<div className="gruppe-oversikt-legg-til"><AddButton title="Opprett ny gruppe" onClick={createGroup} /></div>
 			</div>
 		)
 	}
