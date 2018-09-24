@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 @SpringBootTest(classes = LocalAppStarter.class)
 @ActiveProfiles(value = "test")
 @Transactional
-public class TestGruppeRepositoryTest {
+public class TestGruppeRepository {
 
     @Autowired
     TeamRepository teamRepository;
@@ -33,7 +33,7 @@ public class TestGruppeRepositoryTest {
     BrukerRepository brukerRepository;
 
     @Autowired
-    TestGruppeRepository testGruppeRepository;
+    GruppeRepository gruppeRepository;
 
     @Autowired
     IdentRepository identRepository;
@@ -60,8 +60,8 @@ public class TestGruppeRepositoryTest {
                 .build()
                 .convertToRealTestgruppe();
 
-        Testgruppe savedGruppe = testGruppeRepository.save(testgruppe);
-        Testgruppe foundGruppe = testGruppeRepository.findById(savedGruppe.getId()).get();
+        Testgruppe savedGruppe = gruppeRepository.save(testgruppe);
+        Testgruppe foundGruppe = gruppeRepository.findById(savedGruppe.getId()).get();
         Team foundTeam = teamRepository.findAll().get(0);
 
         assertThat(foundGruppe.getNavn(), is("gruppe"));

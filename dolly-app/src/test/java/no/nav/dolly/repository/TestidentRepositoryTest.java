@@ -37,7 +37,7 @@ public class TestidentRepositoryTest {
     TeamRepository teamRepository;
 
     @Autowired
-    TestGruppeRepository testGruppeRepository;
+    GruppeRepository gruppeRepository;
 
     @Autowired
     IdentRepository identRepository;
@@ -70,7 +70,7 @@ public class TestidentRepositoryTest {
         testident.setTestgruppe(testgruppe);
 
         teamRepository.save(team);
-        testGruppeRepository.save(testgruppe);
+        gruppeRepository.save(testgruppe);
         identRepository.save(testident);
 
 

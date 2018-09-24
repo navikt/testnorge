@@ -40,7 +40,7 @@ public class BrukerRepositoryTest {
     TeamRepository teamRepository;
 
     @Autowired
-    TestGruppeRepository testGruppeRepository;
+    GruppeRepository gruppeRepository;
 
     @Autowired
     IdentRepository identRepository;
@@ -109,9 +109,9 @@ public class BrukerRepositoryTest {
                 .build()
                 .convertToRealTestgruppe();
 
-        testGruppeRepository.save(testgruppe);
+        gruppeRepository.save(testgruppe);
 
-        Testgruppe foundGruppe = testGruppeRepository.findByNavn("gruppe");
+        Testgruppe foundGruppe = gruppeRepository.findByNavn("gruppe");
 
         Testident testident = TestidentBuilder.builder().ident("123456789").build().convertToRealTestident();
         testident.setTestgruppe(foundGruppe);
@@ -121,7 +121,7 @@ public class BrukerRepositoryTest {
         savedBruker = brukerRepository.save(savedBruker);
 
         Bruker foundByIdBruker = brukerRepository.findBrukerByNavIdent("nav");
-        foundGruppe = testGruppeRepository.findByNavn("gruppe");
+        foundGruppe = gruppeRepository.findByNavn("gruppe");
         Testident ident = identRepository.findByIdent("123456789");
 
         assertThat(savedBruker.getNavIdent(), is(savedBruker.getNavIdent()));

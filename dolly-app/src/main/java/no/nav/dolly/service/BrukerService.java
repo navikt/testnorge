@@ -7,6 +7,8 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 
@@ -14,6 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +39,18 @@ public class BrukerService {
     private MapperFacade mapperFacade;
 
     public void opprettBruker(RsBruker bruker) {
-        brukerRepository.save(mapperFacade.map(bruker, Bruker.class));
+        saveBrukerTilDB(mapperFacade.map(bruker, Bruker.class));
+    }
+
+    public Bruker saveBrukerTilDB(Bruker b){
+        try {
+            return brukerRepository.save(b);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConstraintViolationException("En Bruker DB constraint er brutt! Kan ikke lagre bruker. Error: " + e.getMessage());
+        } catch (NonTransientDataAccessException e) {
+            throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
+        }
+
     }
 
     public Bruker fetchBruker(String navIdent) {
@@ -88,6 +103,12 @@ public class BrukerService {
         List<Testgruppe> grupper = gruppeService.fetchGrupperByIdsIn(gruppeIDer);
 
         return fjernFavoritter(navIdent, grupper);
+    }
+
+    @Transactional
+    public Bruker leggTilTeam(Bruker b, Team t){
+        b.getTeams().add(t);
+        return saveBrukerTilDB(b);
     }
 
     @Transactional

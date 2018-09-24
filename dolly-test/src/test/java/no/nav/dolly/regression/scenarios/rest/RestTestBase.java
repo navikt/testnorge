@@ -13,7 +13,6 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -59,7 +58,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     public void after() {
         removeManyToManyRelationships();
 
-        testGruppeRepository.deleteAll();
+        gruppeRepository.deleteAll();
         teamRepository.deleteAll();
         brukerRepository.deleteAll();
         identRepository.deleteAll();
@@ -76,9 +75,9 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
         });
         brukerRepository.saveAll(brukere);
 
-        List<Testgruppe> grupper = testGruppeRepository.findAll();
+        List<Testgruppe> grupper = gruppeRepository.findAll();
         grupper.forEach(g -> g.setFavorisertAv(new HashSet<>()));
-        testGruppeRepository.saveAll(grupper);
+        gruppeRepository.saveAll(grupper);
     }
 
     @Before
@@ -99,7 +98,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
                 .build().convertToRealTeam()
         );
 
-        standardTestgruppe = testGruppeRepository.save(TestgruppeBuilder.builder()
+        standardTestgruppe = gruppeRepository.save(TestgruppeBuilder.builder()
                 .navn(standardGruppenavn)
                 .hensikt(standardGruppeHensikt)
                 .opprettetAv(standardBruker)

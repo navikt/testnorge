@@ -70,7 +70,10 @@ public class TeamService {
             try{
                 return fetchTeamByNavn(getLoggedInNavIdent());
             } catch (NotFoundException e){
-                return saveTeamToDB(new Team(getLoggedInNavIdent(), brukerService.fetchBruker(getLoggedInNavIdent())));
+                Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
+                Team t = new Team(getLoggedInNavIdent(),bruker);
+                brukerService.leggTilTeam(bruker, t);
+                return saveTeamToDB(t);
             }
         } else {
             return fetchTeamById(teamId);

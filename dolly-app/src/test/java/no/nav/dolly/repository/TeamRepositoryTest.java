@@ -36,7 +36,7 @@ public class TeamRepositoryTest {
     BrukerRepository brukerRepository;
 
     @Autowired
-    TestGruppeRepository testGruppeRepository;
+    GruppeRepository gruppeRepository;
 
     @Test
     public void saveTeamWithoutGruppe() {
@@ -101,13 +101,13 @@ public class TeamRepositoryTest {
                 .build()
                 .convertToRealTestgruppe();
 
-        testGruppeRepository.save(testgruppe);
+        gruppeRepository.save(testgruppe);
 
         foundTeam.setGrupper(new HashSet<>(Arrays.asList(testgruppe)));
         teamRepository.save(foundTeam);
 
         foundTeam = teamRepository.findAll().get(0);
-        Testgruppe foundTestgruppe = testGruppeRepository.findAll().get(0);
+        Testgruppe foundTestgruppe = gruppeRepository.findAll().get(0);
 
         assertThat(foundTeam.getGrupper().contains(foundTestgruppe), is(true));
         assertThat(foundTestgruppe.getTeamtilhoerighet(), is(foundTeam));

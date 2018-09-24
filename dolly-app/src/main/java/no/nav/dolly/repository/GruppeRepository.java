@@ -6,7 +6,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TestGruppeRepository extends JpaRepository<Testgruppe, Long> {
+public interface GruppeRepository extends JpaRepository<Testgruppe, Long> {
 
 	Testgruppe save(Testgruppe testgruppe);
 
