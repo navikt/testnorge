@@ -20,7 +20,7 @@ export default class EnvironmentManager {
 
 		const envs = [...UList, ...TList, ...QList]
 
-		// TEMP: Set all as disabled except u6
+		// TEMP: Force use of test env
 		const envsWithDisabled = envs.map(f => {
 			// if (f.id === 'u6') return f
 
@@ -33,5 +33,17 @@ export default class EnvironmentManager {
 		})
 
 		return envsWithDisabled
+	}
+
+	getEnvironmentsSortedByType() {
+		return this.getAllEnvironments().reduce((prev, curr) => {
+			const envType = curr.label.charAt(0)
+			if (prev[envType]) {
+				prev[envType].push(curr)
+			} else {
+				prev[envType] = [curr]
+			}
+			return prev
+		}, {})
 	}
 }

@@ -3,23 +3,34 @@
 	padding: 20px;
 	margin-bottom: 20px;
 
-	h3 {
+	h2 {
 		margin-top: 0;
-		margin-bottom: 20px;
+		font-size: 1.4rem;
 	}
 
-	&_content {
-		display: flex;
-		flex-direction: column;
+	fieldset {
+		margin-bottom: 20px;
 
-		> * {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
+		h3 {
+			margin: 0 0 10px;
+			font-size: 1rem;
 		}
 
-		.skjemaelement {
-			width: 3.5rem;
+		.miljo-velger_checkboxes {
+			display: flex;
+			flex-wrap: wrap;
+			> * {
+				min-width: 60px;
+			}
+		}
+
+		.miljo-velger_buttons {
+			a {
+				padding: 5px 0;
+				font-size: 0.9rem;
+				margin-right: 10px;
+				display: inline-block;
+			}
 		}
 	}
 }

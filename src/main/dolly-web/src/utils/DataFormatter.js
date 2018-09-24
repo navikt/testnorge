@@ -5,6 +5,7 @@ const formatters = {}
 // Skriv ut FNR og DNR med mellom mellom fødselsdato og personnummer
 // Ex: 010195 12345
 formatters.formatIdentNr = ident => {
+	if (!ident) return ident
 	const birth = ident.substring(0, 6)
 	const personnummer = ident.substring(6, 11)
 	return `${birth} ${personnummer}`
@@ -12,6 +13,7 @@ formatters.formatIdentNr = ident => {
 
 // Format date to readable string format
 formatters.formatDate = date => {
+	if (!date) return date
 	return dateFormatter(date, 'DD.MM.YYYY')
 }
 
