@@ -23,8 +23,10 @@ export default class RedigerTestbruker extends Component {
 	submit = values => {
 		const { testbruker, updateTestbruker, goBack } = this.props
 
-		updateTestbruker(_merge(testbruker, values))
-		goBack()
+		console.log(values)
+
+		//updateTestbruker(_merge(testbruker, values))
+		//goBack()
 	}
 
 	render() {
@@ -33,6 +35,9 @@ export default class RedigerTestbruker extends Component {
 		if (!testbruker) return null
 
 		const initialValues = this.AttributtManager.getInitialValuesForEditableItems(testbruker)
+
+		console.log('attributtliste', this.AttributtListe)
+		console.log('iinit vals', initialValues)
 
 		return (
 			<Formik
