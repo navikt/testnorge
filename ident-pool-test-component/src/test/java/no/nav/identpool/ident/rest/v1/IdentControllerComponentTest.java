@@ -1,6 +1,5 @@
 package no.nav.identpool.ident.rest.v1;
 
-import static no.nav.identpool.util.RestUtil.lagEnkelHttpEntity;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,7 +29,7 @@ public class IdentControllerComponentTest extends ComponentTestbase {
                 .addParameter("antall", "1")
                 .addParameter("identtype", "FNR");
 
-        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagEnkelHttpEntity(), String[].class);
+        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), String[].class);
 
         assertThat(fnr.getBody(), is(notNullValue()));
         assertThat(fnr.getBody().length, is(1));
@@ -43,7 +42,7 @@ public class IdentControllerComponentTest extends ComponentTestbase {
                 .addParameter("antall", "1")
                 .addParameter("identtype", "DNR");
 
-        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagEnkelHttpEntity(), String[].class);
+        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), String[].class);
 
         assertThat(fnr.getBody(), is(notNullValue()));
         assertThat(fnr.getBody().length, is(1));
@@ -56,7 +55,7 @@ public class IdentControllerComponentTest extends ComponentTestbase {
                 .addParameter("antall", "1")
                 .addParameter("identtype", "buksestørrelse");
 
-        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagEnkelHttpEntity(), ApiError.class);
+        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), ApiError.class);
 
         assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
     }

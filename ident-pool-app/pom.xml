@@ -17,12 +17,6 @@
             <groupId>no.nav.ident-pool</groupId>
             <artifactId>ident-pool-core</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
-            <version>${logstash.logback.encoder.version}</version>
         </dependency>
     </dependencies>
 
