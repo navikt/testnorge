@@ -81,8 +81,8 @@ export default class Step3 extends PureComponent {
 
 				<div className="oppsummering">
 					<div className="oppsummering-blokk">
-						<StaticValue header="Identtype" value={identtype} />
-						<StaticValue header="Antall personer" value={antall.toString()} />
+						<StaticValue header={<h2>Identtype</h2>} value={identtype} />
+						<StaticValue header={<h2>Antall personer</h2>} value={antall.toString()} />
 					</div>
 					{this.renderValues()}
 				</div>

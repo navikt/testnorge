@@ -45,8 +45,8 @@ export default class Step2 extends PureComponent {
 				</div>
 
 				<div className="grunnoppsett">
-					<StaticValue header="TYPE" value={identtype} />
-					<StaticValue header="ANTALL PERSONER" value={antall.toString()} />
+					<StaticValue header={<h2>TYPE</h2>} value={identtype} />
+					<StaticValue header={<h2>ANTALL PERSONER</h2>} value={antall.toString()} />
 				</div>
 
 				<Formik
