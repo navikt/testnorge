@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Datovelger from 'nav-datovelger'
+import NavDatoInput from 'nav-datovelger'
 import cn from 'classnames'
 import _get from 'lodash/get'
 
@@ -20,7 +20,14 @@ export default class Datepicker extends Component {
 				<label className="skjemaelement__label" htmlFor={name}>
 					{label}
 				</label>
-				<Datovelger id={name} dato={value} {...restProps} />
+				<NavDatoInput.Datovelger
+					id={name}
+					dato={value}
+					input={{
+						placeholder: 'eks: 01.01.2000'
+					}}
+					{...restProps}
+				/>
 				{error && (
 					<div role="alert" aria-live="assertive">
 						<div className="skjemaelement__feilmelding">{error}</div>
