@@ -8,43 +8,67 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Boadresse,
-		id: 'boadresse.gateadresse',
-		label: 'Gatenavn',
+		id: 'boadresse',
+		label: 'Har adresse',
 		dataSource: DataSource.TPSF,
-		inputType: InputType.Text,
-		validation: yup.string(),
-		kanRedigeres: true
-	},
-	{
-		hovedKategori: Kategorier.Adresser,
-		subKategori: SubKategorier.Boadresse,
-		id: 'boadresse.husnummer',
-		label: 'Husnummer',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Text,
-		validation: yup.string(),
-		kanRedigeres: true
-	},
-	{
-		hovedKategori: Kategorier.Adresser,
-		subKategori: SubKategorier.Boadresse,
-		id: 'boadresse.postnr',
-		label: 'Postnummer',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Text,
-		validation: yup.string(),
-		kanRedigeres: true
-	},
-	{
-		hovedKategori: Kategorier.Adresser,
-		subKategori: SubKategorier.Boadresse,
-		id: 'boadresse.kommunenr',
-		label: 'Kommunenummer',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Text,
-		validation: yup.string(),
-		kanRedigeres: true
-	},
+		inputType: InputType.Multifield,
+		kanRedigeres: true,
+		validation: yup.object(),
+		items: [
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'boadresse.gateadresse',
+				label: 'Gatenavn',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup.string().required('Vennligst fyll ut'),
+				kanRedigeres: true
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'boadresse.husnummer',
+				label: 'Husnummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup.string().required('Vennligst fyll ut'),
+				kanRedigeres: true
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'boadresse.postnr',
+				label: 'Postnummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup.string().required('Vennligst fyll ut'),
+				kanRedigeres: true
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'boadresse.kommunenr',
+				label: 'Kommunenummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup.string().required('Vennligst fyll ut'),
+				kanRedigeres: true
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'boadresse.flyttedato',
+				label: 'Flyttedato',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				validation: yup.date().required('Vennligst fyll ut'),
+				format: Formatters.formatDate,
+				kanRedigeres: true
+			}
+		]
+	}
+
 	// {
 	// 	hovedKategori: Kategorier.Adresser,
 	// 	subKategori: SubKategorier.Boadresse,
@@ -54,17 +78,6 @@ const AttributtListe: Attributt[] = [
 	// 	inputType: InputType.Text,
 	// 	validation: yup.string()
 	// },
-	{
-		hovedKategori: Kategorier.Adresser,
-		subKategori: SubKategorier.Boadresse,
-		id: 'boadresse.flyttedato',
-		label: 'Flyttedato',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Date,
-		validation: yup.date(),
-		format: Formatters.formatDate,
-		kanRedigeres: true
-	}
 	// {
 	// 	hovedKategori: Kategorier.Adresser,
 	// 	subKategori: SubKategorier.Boadresse,
