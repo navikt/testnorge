@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
+import no.nav.identpool.ident.repository.IdentEntity;
 import no.nav.identpool.ident.service.IdentpoolService;
 
 @Slf4j
@@ -51,9 +52,21 @@ public class IdentpoolController {
 
     @PostMapping("/bruk")
     public String markerBrukt(
-            @RequestParam String personidentifikator
+            @RequestParam String personidentifikator,
+            @RequestParam String bruker
     ) throws IdentAlleredeIBrukException {
-        return identpoolService.markerBrukt(personidentifikator);
+        MarkerBruktRequest markerBruktRequest = MarkerBruktRequest.builder()
+                .personidentifikator(personidentifikator)
+                .bruker(bruker)
+                .build();
+        return identpoolService.markerBrukt(markerBruktRequest);
+    }
+
+    @GetMapping("/les")
+    public IdentEntity lesInnhold(
+            @RequestParam(value = "personidentifikator") String personidentifikator
+    ) {
+        return identpoolService.lesInnhold(personidentifikator);
     }
 
     @PostMapping("/finneshosskatt")

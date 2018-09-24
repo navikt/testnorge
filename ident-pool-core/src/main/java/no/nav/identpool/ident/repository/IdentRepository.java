@@ -14,4 +14,5 @@ public interface IdentRepository extends JpaRepository<IdentEntity, Long>, Query
     List<IdentEntity> findByRekvireringsstatus(Rekvireringsstatus rekvireringsstatus, Pageable pageable);
 
     List<IdentEntity> findByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype, Pageable pageable);
+
 }

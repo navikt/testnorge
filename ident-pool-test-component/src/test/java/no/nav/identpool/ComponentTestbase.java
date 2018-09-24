@@ -21,6 +21,7 @@ import no.nav.identpool.ident.repository.IdentRepository;
 public abstract class ComponentTestbase {
     protected static final String IDENT_V1_BASEURL = "/identifikator/v1";
     protected static final String OPERASJON_HENT = "/hent";
+    protected static final String OPERASJON_LES = "/les";
     protected static final String OPERASJON_FINNES_HOS_SKD = "/finneshosskatt";
 
     @Autowired
@@ -30,11 +31,10 @@ public abstract class ComponentTestbase {
     @Autowired
     private OidcTestService oidcTestService;
 
-
     protected HttpEntity lagHttpEntity(boolean withOidc) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
-        if (withOidc){
+        if (withOidc) {
             httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + oidcTestService.createOidc(getJwtClaims()));
         }
         return new HttpEntity(httpHeaders);

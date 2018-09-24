@@ -21,6 +21,7 @@ import no.nav.identpool.ident.repository.IdentEntity;
 
 public class IdentControllerComponentTest extends ComponentTestbase {
 
+
     @Test
     public void hentLedigFnr() throws URISyntaxException {
         populerDatabaseMedTestidenter();
