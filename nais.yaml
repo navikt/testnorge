@@ -46,9 +46,9 @@ fasitResources:
   - alias: "security-token-service-jwks"
     resourceType: restservice
     propertyMap:
-          url: "security-token-service-jwks"
+          url: "freg.security.oidc.idp.navsts.jwksUrl"
 
   - alias: "security-token-service-issuer"
     resourceType: baseurl
     propertyMap:
-              url: "security-token-service-issuer"
+              url: "freg.security.oidc.idp.navsts.issuerUrl"
