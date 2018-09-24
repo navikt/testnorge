@@ -2,10 +2,12 @@ package no.nav.identpool.ident.ajourhold.mq.consumer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -49,10 +51,27 @@ public class DefaultMessageQueue implements MessageQueue {
             BiConsumer<Integer, String> consumer,
             Function<Integer, Boolean> ignoreIndex,
             String... requestMessages) throws JMSException {
-        sendMessageConnection(consumer, ignoreIndex, new ArrayList<>(Arrays.asList(requestMessages)), 0, RETRYCOUNT);
+        List<String> messages = new ArrayList<>(requestMessages.length);
+        Collections.addAll(messages, requestMessages);
+        sendMessageConnection(consumer, ignoreIndex, messages, 0, RETRYCOUNT);
     }
 
-    private void sendMessageConnection(BiConsumer<Integer, String> consumer, Function<Integer, Boolean> ignoreIndex, List<String> requestMessages, int index, int retryCount) throws JMSException {
+    public void sendMessages(
+            BiConsumer<Integer, String> consumer,
+            Function<Integer, Boolean> ignoreIndex,
+            int startIndex,
+            int stopIndex,
+            String... requestMessages) throws JMSException {
+        List<String> messages = Arrays.stream(requestMessages, startIndex, stopIndex)
+                .collect(Collectors.toList());
+        sendMessageConnection(consumer, ignoreIndex, messages, 0, RETRYCOUNT);
+    }
+
+    private void sendMessageConnection(
+            BiConsumer<Integer, String> consumer,
+            Function<Integer, Boolean> ignoreIndex,
+            List<String> requestMessages,
+            int index, int retryCount) throws JMSException {
         try (Connection connection = connectionFactory.createConnection(username, password)) {
             connection.start();
             sendMessageSession(consumer, ignoreIndex, requestMessages, connection, index, RETRYCOUNT);

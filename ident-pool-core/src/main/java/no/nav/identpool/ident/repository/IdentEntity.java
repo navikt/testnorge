@@ -1,5 +1,7 @@
 package no.nav.identpool.ident.repository;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -45,6 +47,10 @@ public class IdentEntity {
     @Column(name = "REKVIRERINGSSTATUS")
     @Enumerated(EnumType.STRING)
     private Rekvireringsstatus rekvireringsstatus;
+
+    @NotNull
+    @Column(name = "FODSELSDATO")
+    private LocalDate fodselsdato;
 
     @NotNull
     @Column(name = "FINNES_HOS_SKATT")

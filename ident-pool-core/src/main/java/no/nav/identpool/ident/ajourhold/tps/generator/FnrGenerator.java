@@ -2,10 +2,10 @@ package no.nav.identpool.ident.ajourhold.tps.generator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.stream.IntStream;
+import static java.lang.Math.toIntExact;
 
 import org.springframework.stereotype.Service;
 
@@ -17,33 +17,27 @@ public class FnrGenerator {
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
 
-    public static String[] genererIdenterArray(LocalDate date) {
-        return genererIdenter(date, date).toArray(new String[0]);
+    public static String[] genererIdenter(LocalDate date) {
+        return genererIdenter(date, date)[0];
     }
 
-    public static String[] genererIdenterArray(LocalDate fom, LocalDate tom) {
-        return genererIdenter(fom, tom).toArray(new String[0]);
-    }
-
-    private static HashSet<String> genererIdenter(LocalDate fom, LocalDate tom) {
-        if (fom.isAfter(tom)) {
-            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være før eller lik dato til og med %s", fom.toString(), tom.toString()));
+    public static String[][] genererIdenter(final LocalDate fom, final LocalDate to) {
+        if (fom.isAfter(to)) {
+            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være før eller lik dato til og med %s", fom.toString(), to.toString()));
         }
-        tom = tom.plusDays(1);
-        LinkedHashSet<String> identSet = new LinkedHashSet<>();
-        while(!fom.equals(tom)) {
-            generateNumbers(identSet, fom);
-            fom = fom.plusDays(1);
-        }
-        return identSet;
+        int days = toIntExact(ChronoUnit.DAYS.between(fom, to));
+        return IntStream.range(0, days)
+                .mapToObj(fom::plusDays)
+                .map(FnrGenerator::generateNumbers)
+                .toArray(String[][]::new);
     }
 
-    private static void generateNumbers(HashSet<String> set, LocalDate birthdate) {
+    private static String[] generateNumbers(LocalDate birthdate) {
         String date = formatter.format(birthdate) + "%03d";
-        getCategoryRange(birthdate)
+        return getCategoryRange(birthdate)
                 .mapToObj(number -> generateFnr(String.format(date, number)))
                 .filter(Objects::nonNull)
-                .forEach(set::add);
+                .toArray(String[]::new);
     }
 
     private static IntStream getCategoryRange(LocalDate birthDate) {

@@ -1,6 +1,5 @@
 package no.nav.identpool.ident.ajourhold.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.batch.runtime.BatchStatus;
@@ -15,10 +14,8 @@ import no.nav.identpool.ident.ajourhold.repository.AjourholdRepository;
 @RequiredArgsConstructor
 public class AjourholdService {
 
-    private static final int YEARINTERVALLENGTH = 110;
-
     private final AjourholdRepository batchRepository;
-    private final IdentMQService identMQService;
+    private final IdentDbService identService;
 
     public void startBatch() {
         AjourholdEntity entity = AjourholdEntity.builder()
@@ -30,6 +27,7 @@ public class AjourholdService {
     }
 
     private void execute(AjourholdEntity ajourholdEntity) {
-        identMQService.generateForDates(LocalDate.of(1975, 3, 4), 1);
+        long time = System.nanoTime();
+        identService.checkCritcalAndGenerate();
     }
 }

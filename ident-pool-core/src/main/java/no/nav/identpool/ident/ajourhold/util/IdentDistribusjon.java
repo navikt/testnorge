@@ -1,13 +1,14 @@
 package no.nav.identpool.ident.ajourhold.util;
 
-import java.time.LocalDate;
+import static java.time.LocalDate.now;
+
 import org.springframework.stereotype.Service;
 
 @Service
-class IdentDistribusjon {
+public class IdentDistribusjon {
 
-    public Integer antallPersonerForDag(LocalDate localDate) {
-        double antallForAar = verdiFraDistribusjon(localDate.now().getYear() - localDate.getYear());
+    public Integer antallPersonerPerDagPerAar(int year) {
+        double antallForAar = verdiFraDistribusjon(now().getYear() - year);
         return (int) (Math.ceil(antallForAar/365));
     }
 
