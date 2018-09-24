@@ -56,7 +56,7 @@ class Step1 extends Component {
 export default withFormik({
 	displayName: 'BestillingStep1',
 	mapPropsToValues: props => ({
-		identtype: props.identtype,
+		identtype: props.identtype || 'FNR', // default to FNR
 		antall: props.antall
 	}),
 	validationSchema: yup.object().shape({
