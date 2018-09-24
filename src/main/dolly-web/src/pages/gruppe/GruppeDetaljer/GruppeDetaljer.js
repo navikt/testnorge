@@ -31,7 +31,9 @@ export default class GruppeDetaljer extends PureComponent {
 					<StaticValue header={<h2>SIST ENDRET</h2>} value={gruppe.datoEndret} />
 		{this.state.expanded && <StaticValue header={<h2>HENSIKT</h2>} value={gruppe.hensikt} />}
 				</div>
+				<div className="gruppe-detaljer-chevron">
 				<ExpandButton onClick={this.toggleExpanded} expanded={this.state.expanded} />
+				</div>
 			</div>
 		)
 	}
