@@ -29,7 +29,7 @@ public class IdentpoolServiceTest {
 
     @Test
     public void findIdenterMedFNR() {
-        //        identpoolService.findIdents(Identtype.FNR, PageRequest.of(0, 1));
+        //        identpoolService.finnIdenter(Identtype.FNR, PageRequest.of(0, 1));
         //
         //        verify(identRepository, times(1)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.FNR), any());
         //        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.DNR), any());
@@ -38,7 +38,7 @@ public class IdentpoolServiceTest {
 
     @Test
     public void findIdenterMedDNR() {
-        //        identpoolService.findIdents(Identtype.DNR, PageRequest.of(0, 1));
+        //        identpoolService.finnIdenter(Identtype.DNR, PageRequest.of(0, 1));
         //
         //        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.FNR), any());
         //        verify(identRepository, times(1)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.DNR), any());
@@ -47,7 +47,7 @@ public class IdentpoolServiceTest {
 
     @Test
     public void findIdenterUtenBestemtIdenttype() {
-        //        identpoolService.findIdents(Identtype.UBESTEMT, PageRequest.of(0, 1));
+        //        identpoolService.finnIdenter(Identtype.UBESTEMT, PageRequest.of(0, 1));
         //
         //        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.FNR), any());
         //        verify(identRepository, times(0)).findByRekvireringsstatusAndIdenttype(eq(Rekvireringsstatus.LEDIG), eq(Identtype.DNR), any());

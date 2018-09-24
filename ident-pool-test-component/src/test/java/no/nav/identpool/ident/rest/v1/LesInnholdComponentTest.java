@@ -37,7 +37,7 @@ public class LesInnholdComponentTest extends ComponentTestbase {
                         .rekvirertAv(REKVIRERT_AV)
                         .build()
         );
-        URI url = new URIBuilder(IDENT_V1_BASEURL + OPERASJON_LES).addParameter("personidentifikator", PERSONIDENTIFIKATOR).build();
+        URI url = new URIBuilder(IDENT_V1_BASEURL).addParameter("personidentifikator", PERSONIDENTIFIKATOR).build();
 
         ResponseEntity<IdentEntity> identEntityResponseEntity = testRestTemplate.exchange(url, HttpMethod.GET, lagHttpEntity(false), IdentEntity.class);
         IdentEntity ident = identEntityResponseEntity.getBody();

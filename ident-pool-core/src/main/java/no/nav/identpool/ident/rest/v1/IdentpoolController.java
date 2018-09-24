@@ -20,13 +20,13 @@ import no.nav.identpool.ident.service.IdentpoolService;
 
 @Slf4j
 @RestController
-@RequestMapping("/identifikator/v1")
+@RequestMapping("/api/v1/identifikator")
 @RequiredArgsConstructor
 public class IdentpoolController {
     private final IdentpoolService identpoolService;
 
-    @GetMapping("/hent")
-    public List<String> get(
+    @PostMapping()
+    public List<String> rekvirer(
             @RequestParam(value = "antall") Integer antall,
             @RequestParam(value = "identtype", defaultValue = "UBESTEMT") String identtypeString,
             @RequestParam(value = "foedtfoer", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate foedtFoer,
@@ -40,14 +40,7 @@ public class IdentpoolController {
                 .foedtEtter(foedtEtter)
                 .kjoenn(Kjoenn.enumFromString(kjoenn))
                 .build();
-        return identpoolService.findIdents(hentIdenterRequest);
-    }
-
-    @GetMapping("/ledig")
-    public Boolean erLedig(
-            @RequestParam String personidentifikator
-    ) {
-        return identpoolService.erLedig(personidentifikator);
+        return identpoolService.finnIdenter(hentIdenterRequest);
     }
 
     @PostMapping("/bruk")
@@ -62,20 +55,10 @@ public class IdentpoolController {
         return identpoolService.markerBrukt(markerBruktRequest);
     }
 
-    @GetMapping("/les")
+    @GetMapping()
     public IdentEntity lesInnhold(
             @RequestParam(value = "personidentifikator") String personidentifikator
     ) {
         return identpoolService.lesInnhold(personidentifikator);
-    }
-
-    @PostMapping("/finneshosskatt")
-    public ApiResponse finnesHosSkatt(
-            @RequestParam(value = "personidentifikator") String personidentifikator,
-            @RequestParam(value = "foedselsdato") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate foedselsdato
-    ) {
-        FinnesHosSkattRequest finnesHosSkattRequest = FinnesHosSkattRequest.builder().personidentifikator(personidentifikator).foedselsdato(foedselsdato).build();
-        identpoolService.registrerFinnesHosSkatt(finnesHosSkattRequest);
-        return new ApiResponse("Registrert.");
     }
 }

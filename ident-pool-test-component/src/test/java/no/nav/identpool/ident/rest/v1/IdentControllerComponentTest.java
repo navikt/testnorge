@@ -21,15 +21,14 @@ import no.nav.identpool.ident.repository.IdentEntity;
 
 public class IdentControllerComponentTest extends ComponentTestbase {
 
-
     @Test
     public void hentLedigFnr() throws URISyntaxException {
         populerDatabaseMedTestidenter();
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + OPERASJON_HENT)
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
                 .addParameter("antall", "1")
                 .addParameter("identtype", "FNR");
 
-        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), String[].class);
+        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), String[].class);
 
         assertThat(fnr.getBody(), is(notNullValue()));
         assertThat(fnr.getBody().length, is(1));
@@ -38,11 +37,11 @@ public class IdentControllerComponentTest extends ComponentTestbase {
     @Test
     public void hentLedigDnr() throws URISyntaxException {
         populerDatabaseMedTestidenter();
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + OPERASJON_HENT)
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
                 .addParameter("antall", "1")
                 .addParameter("identtype", "DNR");
 
-        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), String[].class);
+        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), String[].class);
 
         assertThat(fnr.getBody(), is(notNullValue()));
         assertThat(fnr.getBody().length, is(1));
@@ -51,11 +50,11 @@ public class IdentControllerComponentTest extends ComponentTestbase {
     @Test
     public void skalFeileNaarUgyldigIdenttypeBrukes() throws URISyntaxException {
         populerDatabaseMedTestidenter();
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + OPERASJON_HENT)
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
                 .addParameter("antall", "1")
                 .addParameter("identtype", "buksestørrelse");
 
-        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), ApiError.class);
+        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiError.class);
 
         assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
     }
