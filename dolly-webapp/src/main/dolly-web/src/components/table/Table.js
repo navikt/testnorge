@@ -52,7 +52,7 @@ class TableRow extends PureComponent {
 		})
 
 		return (
-			<div className={rowClass}>
+			<div tabIndex={0} className={rowClass}>
 				<div className={columnsClass} {...rowProps}>
 					{children}
 					<Table.Column className="dot-body-row-actioncolumn">
@@ -80,7 +80,7 @@ class TableHeader extends PureComponent {
 	render() {
 		const { children, ...restProps } = this.props
 		return (
-			<div className="dot-header" {...restProps}>
+			<div tabIndex={0} className="dot-header" {...restProps}>
 				{children}
 			</div>
 		)
@@ -140,7 +140,7 @@ class TableColumn extends PureComponent {
 
 		const render = value ? value : children
 		return (
-			<div className={cssClass} {...restProps}>
+			<div tabIndex={0} className={cssClass} {...restProps}>
 				{render}
 				{/* {sortOrder && <Icon size={16} kind={iconKind} />} */}
 			</div>

@@ -34,7 +34,7 @@ export default class AttributtVelger extends Component {
 	renderHovedKategori = ({ hovedKategori, items }) => {
 		const name = hovedKategori.navn
 		return (
-			<Panel key={name} heading={<h3>{name}</h3>} startOpen>
+			<Panel key={name} heading={<h2>{name}</h2>} startOpen>
 				<fieldset name={name}>
 					<div className="attributt-velger_panelcontent">
 						{items.map((subKategori, idx) => this.renderSubKategori(subKategori, idx))}
@@ -47,7 +47,7 @@ export default class AttributtVelger extends Component {
 	renderSubKategori = ({ subKategori, items }, idx) => {
 		return (
 			<Fragment key={idx}>
-				{subKategori && <h4>{subKategori.navn}</h4>}
+				{subKategori && <h3>{subKategori.navn}</h3>}
 				<fieldset name={subKategori.navn}>
 					<div className="attributt-velger_panelsubcontent">
 						{items.map(item => this.renderItem(item))}
