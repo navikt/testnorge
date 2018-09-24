@@ -5,7 +5,7 @@ import './StaticValue.less'
 
 export default class StaticValue extends PureComponent {
 	static propTypes = {
-		header: PropTypes.string.isRequired,
+		header: PropTypes.object.isRequired, // Wraps headers around string (h1, h2)
 		value: PropTypes.string.isRequired,
 		format: PropTypes.func
 	}
@@ -16,7 +16,7 @@ export default class StaticValue extends PureComponent {
 		if (format) _value = format(value)
 
 		return (
-			<div className="static-value">
+			<div tabIndex={0} className="static-value">
 				{header} 
 				<span>{_value}</span>
 			</div>

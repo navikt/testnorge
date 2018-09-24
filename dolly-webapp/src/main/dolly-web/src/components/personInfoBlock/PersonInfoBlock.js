@@ -13,11 +13,11 @@ export default class PersonInfoBlock extends PureComponent {
 	renderPersonInfoBlock = (data, header, idx) => {
 		return (
 			<div key={idx} className="person-info-block">
-				{header && <h4>{header}</h4>}
+				{header && <h3>{header}</h3>}
 
 				<div className="person-info-block_content">
 					{data.map((v, k) => {
-						return v.value && <StaticValue key={k} header={v.label} value={v.value || ''} />
+						return v.value && <StaticValue key={k} header={<h4>{v.label}</h4>} value={v.value || ''} />
 					})}
 				</div>
 			</div>
