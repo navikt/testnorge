@@ -20,7 +20,7 @@ public class FnrGeneratorTest {
         String[] fnrs = FnrGenerator.genererIdenter(localDate);
         assertTrue(Ordering.natural().reverse().isOrdered(Arrays.asList(fnrs)));
 
-        String[][] fnrsArray = FnrGenerator.genererIdenter(localDate, localDate.plusDays(1));
+        String[][] fnrsArray = FnrGenerator.genererIdenter(localDate, localDate.plusDays(2));
         assertEquals(2, fnrsArray.length);
         assertTrue(Ordering.natural().reverse().isOrdered(Collections.singletonList(fnrs[0])));
         assertTrue(Ordering.natural().reverse().isOrdered(Collections.singletonList(fnrs[1])));

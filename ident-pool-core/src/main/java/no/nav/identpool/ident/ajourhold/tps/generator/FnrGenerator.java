@@ -18,7 +18,7 @@ public class FnrGenerator {
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
 
     public static String[] genererIdenter(LocalDate date) {
-        return genererIdenter(date, date)[0];
+        return genererIdenter(date, date.plusDays(1))[0];
     }
 
     public static String[][] genererIdenter(final LocalDate fom, final LocalDate to) {
