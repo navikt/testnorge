@@ -12,13 +12,12 @@ export default class StaticValue extends PureComponent {
 
 	render() {
 		const { header, value, format } = this.props
-
 		let _value = value
 		if (format) _value = format(value)
 
 		return (
 			<div className="static-value">
-				<h5>{header}</h5>
+				{header} 
 				<span>{_value}</span>
 			</div>
 		)
