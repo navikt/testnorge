@@ -25,7 +25,7 @@ import no.nav.identpool.ident.service.IdentpoolService;
 public class IdentpoolController {
     private final IdentpoolService identpoolService;
 
-    @PostMapping()
+    @PostMapping
     public List<String> rekvirer(
             @RequestParam(value = "antall") Integer antall,
             @RequestParam(value = "identtype", defaultValue = "UBESTEMT") String identtypeString,
@@ -55,7 +55,7 @@ public class IdentpoolController {
         return identpoolService.markerBrukt(markerBruktRequest);
     }
 
-    @GetMapping()
+    @GetMapping
     public IdentEntity lesInnhold(
             @RequestParam(value = "personidentifikator") String personidentifikator
     ) {

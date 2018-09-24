@@ -17,7 +17,7 @@ public class FinnesHosSkattController {
 
     private final IdentpoolService identpoolService;
 
-    @PostMapping()
+    @PostMapping
     public ApiResponse finnesHosSkatt(
             @RequestParam(value = "personidentifikator") String personidentifikator,
             @RequestParam(value = "foedselsdato") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate foedselsdato
