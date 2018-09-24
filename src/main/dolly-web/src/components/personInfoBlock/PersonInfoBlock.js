@@ -17,7 +17,11 @@ export default class PersonInfoBlock extends PureComponent {
 
 				<div className="person-info-block_content">
 					{data.map((v, k) => {
-						return v.value && <StaticValue key={k} header={<h4>{v.label}</h4>} value={v.value || ''} />
+						return (
+							v.value && (
+								<StaticValue key={k} header={v.label} headerType="h4" value={v.value || ''} />
+							)
+						)
 					})}
 				</div>
 			</div>
