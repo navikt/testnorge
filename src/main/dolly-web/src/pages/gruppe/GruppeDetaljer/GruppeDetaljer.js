@@ -22,14 +22,14 @@ export default class GruppeDetaljer extends PureComponent {
 		return (
 			<div className="gruppe-detaljer">
 				<div className="gd-blokker">
-					<StaticValue header="EIER" value={gruppe.opprettetAvNavIdent} />
-					<StaticValue header="TEAM" value={gruppe.team.navn} />
+					<StaticValue header={<h2>EIER</h2>} value={gruppe.opprettetAvNavIdent} />
+					<StaticValue header={<h2>TEAM</h2>} value={gruppe.team.navn} />
 					<StaticValue
-						header="ANTALL OPPRETTEDE TESTPERSONER"
+						header={<h2>ANTALL OPPRETTEDE TESTPERSONER</h2>}
 						value={String(gruppe.testidenter.length)}
 					/>
-					<StaticValue header="SIST ENDRET" value={gruppe.datoEndret} />
-					{this.state.expanded && <StaticValue header="HENSIKT" value={gruppe.hensikt} />}
+					<StaticValue header={<h2>SIST ENDRET</h2>} value={gruppe.datoEndret} />
+		{this.state.expanded && <StaticValue header={<h2>HENSIKT</h2>} value={gruppe.hensikt} />}
 				</div>
 				<ExpandButton onClick={this.toggleExpanded} expanded={this.state.expanded} />
 			</div>
