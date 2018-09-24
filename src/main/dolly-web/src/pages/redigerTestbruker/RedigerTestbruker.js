@@ -23,10 +23,8 @@ export default class RedigerTestbruker extends Component {
 	submit = values => {
 		const { testbruker, updateTestbruker, goBack } = this.props
 
-		console.log(values)
-
-		//updateTestbruker(_merge(testbruker, values))
-		//goBack()
+		updateTestbruker(_merge(testbruker, values))
+		goBack()
 	}
 
 	render() {

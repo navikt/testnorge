@@ -36,14 +36,6 @@ export default class AttributtManager {
 		return groupList(AttributtListe.filter(attr => attr.kanRedigeres))
 	}
 
-	getInitialValuesForEditableItems(values: Object): Object {
-		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
-
-		return editableAttributes.reduce((prev, item) => {
-			return _set(prev, item.id, _get(values, item.id))
-		}, {})
-	}
-
 	getValidations(selectedIds: string[]): yup.MixedSchema {
 		// Get all selected attributes that has validations
 		const list = this.listSelected(selectedIds).filter(s => s.validation)
@@ -72,20 +64,20 @@ export default class AttributtManager {
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
 		const list = this.listSelected(selectedIds)
 
-		const setInitialValue = (currentObject, itemId) => {
-			let initialValue = ''
-			const fromState = _get(values, itemId)
-			if (fromState) initialValue = fromState
+		return this._getListOfInitialValues(list, values)
+	}
 
-			return _set(currentObject, itemId, initialValue)
-		}
+	getInitialValuesForEditableItems(values: object): FormikValues {
+		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
 
-		// Setter alle id'er til default value empty string
-		// Formik krever at form'et har initialValues
+		return this._getListOfInitialValues(editableAttributes, values)
+	}
+
+	_getListOfInitialValues(list, values) {
 		return list.reduce((prev, item) => {
 			if (item.inputType === 'multifield') {
 				const nestedInitialValues = item.items.reduce((prevNestedItem, nestedItem) => {
-					return setInitialValue(prevNestedItem, nestedItem.id)
+					return this._setInitialValue(prevNestedItem, nestedItem.id, values)
 				}, {})
 
 				return {
@@ -94,7 +86,14 @@ export default class AttributtManager {
 				}
 			}
 
-			return setInitialValue(prev, item.id)
+			return this._setInitialValue(prev, item.id, values)
 		}, {})
+	}
+	_setInitialValue(currentObject, itemId, stateValues) {
+		let initialValue = ''
+		const fromState = _get(stateValues, itemId)
+		if (fromState) initialValue = fromState
+
+		return _set(currentObject, itemId, initialValue)
 	}
 }
