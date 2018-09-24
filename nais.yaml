@@ -34,7 +34,6 @@ fasitResources:
       url: spring.datasource.url
       username: spring.datasource.username
       password: spring.datasource.password
-
 # TODO: oppdater fasit-utils slik at OIDC-infoen kan hentes ut på denne formen fra fasit.
 #   - alias: nav-sts-oidc
 #      resourceType: OpenIdConnect
@@ -42,7 +41,7 @@ fasitResources:
 #        agentName: freg.security.oidc.idp.navSts.clientId   <-- dummy
 #        password: freg.security.oidc.idp.navSts.clientSecret <-- dummy
 #        issuerUrl: freg.security.oidc.idp.navSts.issuerUrl
-#
+#        jwksUrl: freg.security.oidc.idp.navSts.jwksUrl
 
   - alias: "security-token-service-jwks"
     resourceType: restservice
