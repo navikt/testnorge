@@ -1,5 +1,7 @@
 package no.nav.identpool.ident.ajourhold.tps.generator;
 
+import static java.lang.Math.toIntExact;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -9,15 +11,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import static java.lang.Math.toIntExact;
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class FnrGenerator {
 
-    private static final int[] CONTROL_DIGIT_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
-    private static final int[] CONTROL_DIGIT_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
+    private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
+    private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
 
@@ -84,7 +84,7 @@ public class FnrGenerator {
 
     private static int getControlDigit(String fnr, int... sequence) {
         int digitsum = 0;
-        for(int i = 0; i < sequence.length; ++i) {
+        for (int i = 0; i < sequence.length; ++i) {
             digitsum += (fnr.charAt(i) - 48) * sequence[i];
         }
         digitsum = 11 - (digitsum % 11);

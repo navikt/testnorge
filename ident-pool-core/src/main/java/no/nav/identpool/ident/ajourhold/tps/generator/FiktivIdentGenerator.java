@@ -1,7 +1,5 @@
 package no.nav.identpool.ident.ajourhold.tps.generator;
 
-import org.springframework.stereotype.Service;
-
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.Month;
@@ -13,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import org.springframework.stereotype.Service;
 
 @Service
 public class FiktivIdentGenerator {
@@ -20,7 +19,7 @@ public class FiktivIdentGenerator {
     private static final SecureRandom secureRandom = new SecureRandom();
 
     private static final int MULTIPLY_ANT_IDENTER = 1;
-    private static final LocalDate DEFUALT_FODT_ETTER_DATE = LocalDate.of(1910, Month.JANUARY,1);
+    private static final LocalDate DEFUALT_FODT_ETTER_DATE = LocalDate.of(1910, Month.JANUARY, 1);
     private static final LocalDate DEFUALT_FODT_FOER_DATE = LocalDate.now();
 
     //Starter på 1 fordi individ nummer "000" er reservert for F-DAT nummer. Spesielt nummer.
@@ -44,28 +43,28 @@ public class FiktivIdentGenerator {
     private static final int CATEGORY4_TIME_PERIOD_START = 1949;
     private static final int CATEGORY4_TIME_PERIOD_END = 1999;
 
-    private static final int[] KONTROLL_SIFFER_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
-    private static final int[] KONTROLL_SIFFER_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
+    private static final int[] KONTROLL_SIFFER_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
+    private static final int[] KONTROLL_SIFFER_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
 
     private static final SecureRandom randomNumberProvider = new SecureRandom();
 
     public static Set<String> genererFiktiveIdenter(PersonKriterier kriterie) {
         StringBuilder identitetBuilder;
         HashSet<String> identSet = new HashSet<>();
-        while(identSet.size() != (kriterie.getAntall() * MULTIPLY_ANT_IDENTER)){
+        while (identSet.size() != (kriterie.getAntall() * MULTIPLY_ANT_IDENTER)) {
             identitetBuilder = new StringBuilder();
             LocalDate fodselsdatoDate = genererFodsselsdatoBasertPaaKriterie(kriterie);
-            String fodselsdato =  localDateToDDmmYYStringFormat(fodselsdatoDate);
+            String fodselsdato = localDateToDDmmYYStringFormat(fodselsdatoDate);
             List<Integer> rangeList = hentKategoriIntervallForDato(fodselsdatoDate);
             identitetBuilder.append(fodselsdato).append(genererIndividnummer(rangeList.get(0), rangeList.get(1), kriterie.getKjonn()));
             int forsteKontrollSiffer = hentForsteKontrollSiffer(identitetBuilder.toString());
-            if(forsteKontrollSiffer == 10){
+            if (forsteKontrollSiffer == 10) {
                 // Hvis kontrollsiffer er 10, så må fodselsnummeret forkastes, og man prøver å lage et nytt.
                 continue;
             }
             identitetBuilder.append(forsteKontrollSiffer);
             int andreKontrollSiffer = getAndreKontrollSiffer(identitetBuilder.toString());
-            if(andreKontrollSiffer == 10){
+            if (andreKontrollSiffer == 10) {
                 continue;
             }
             identitetBuilder.append(andreKontrollSiffer);
@@ -80,20 +79,20 @@ public class FiktivIdentGenerator {
         return date.format(formatter);
     }
 
-    private static LocalDate genererFodsselsdatoBasertPaaKriterie(PersonKriterier kriterier){
+    private static LocalDate genererFodsselsdatoBasertPaaKriterie(PersonKriterier kriterier) {
         LocalDate mustBeAfterDate;
         LocalDate mustBeBeforeDate;
-        if(kriterier.getFoedtEtter() == null){
+        if (kriterier.getFoedtEtter() == null) {
             mustBeAfterDate = DEFUALT_FODT_ETTER_DATE;
         } else {
             mustBeAfterDate = kriterier.getFoedtEtter();
         }
-        if(kriterier.getFoedtFoer() == null){
+        if (kriterier.getFoedtFoer() == null) {
             mustBeBeforeDate = DEFUALT_FODT_FOER_DATE;
         } else {
             mustBeBeforeDate = kriterier.getFoedtFoer();
         }
-        return genererRandomDatoInnenforIntervalInclusiveDatoEtterExclusiveDatoFoer(mustBeAfterDate,mustBeBeforeDate);
+        return genererRandomDatoInnenforIntervalInclusiveDatoEtterExclusiveDatoFoer(mustBeAfterDate, mustBeBeforeDate);
     }
 
     private static List<Integer> hentKategoriIntervallForDato(LocalDate date) {
@@ -127,25 +126,25 @@ public class FiktivIdentGenerator {
 
         if (erKvinne(kjoennPaaIdent)) {         //KVINNE: Individnummer avsluttes med partall
             individNummber = lagBunntungRandom(rangeStart, rangeSlutt);
-            if (individNummber % 2 > 0){
+            if (individNummber % 2 > 0) {
                 individNummber = individNummber + 1;
             }
         } else {                                  // MANN: Individnummer avsluttes med oddetall
-            individNummber = lagBunntungRandom(rangeStart, rangeSlutt );
-            if (individNummber % 2 == 0){
+            individNummber = lagBunntungRandom(rangeStart, rangeSlutt);
+            if (individNummber % 2 == 0) {
                 individNummber = individNummber + 1;
             }
         }
-        if (individNummber > rangeSlutt){
+        if (individNummber > rangeSlutt) {
             individNummber = individNummber - 2;
         }
 
         StringBuilder individNummerBuilder = new StringBuilder(Integer.toString(individNummber));
         individNummerBuilder.reverse();
-        if (individNummber < 10){
+        if (individNummber < 10) {
             individNummerBuilder.append(0);
         }
-        if (individNummber < 100){
+        if (individNummber < 100) {
             individNummerBuilder.append(0);
         }
         return individNummerBuilder.reverse().toString();
@@ -187,18 +186,18 @@ public class FiktivIdentGenerator {
         return (date.getYear() >= rangeYearStart && date.getYear() <= rangeYearEnd);
     }
 
-    private static boolean erKvinne(Character kjonn){
+    private static boolean erKvinne(Character kjonn) {
         return kjonn == 'K';
     }
 
-    private static char lagTilfeldigKvinneEllerMann(){
-        if(randomNumberProvider.nextDouble() < 0.5){
+    private static char lagTilfeldigKvinneEllerMann() {
+        if (randomNumberProvider.nextDouble() < 0.5) {
             return 'K';
         }
         return 'M';
     }
 
-    private static LocalDate genererRandomDatoInnenforIntervalInclusiveDatoEtterExclusiveDatoFoer(LocalDate dateEtter, LocalDate dateFoer){
+    private static LocalDate genererRandomDatoInnenforIntervalInclusiveDatoEtterExclusiveDatoFoer(LocalDate dateEtter, LocalDate dateFoer) {
 
         long time = ChronoUnit.DAYS.between(dateEtter, dateFoer);
         long rand = (long) (secureRandom.nextDouble() * time);
@@ -206,13 +205,13 @@ public class FiktivIdentGenerator {
         return dateEtter.plusDays(rand);
     }
 
-    private static int lagBiasedRandom(int low, int high){
+    private static int lagBiasedRandom(int low, int high) {
         float biasedRandom = ThreadLocalRandom.current().nextFloat();
         double biasedRandomD = Math.pow(biasedRandom, (float) 3.0);
-        return (int) (low + (high - low)* biasedRandomD);
+        return (int) (low + (high - low) * biasedRandomD);
     }
 
-    private static int lagBunntungRandom(int low, int high){
+    private static int lagBunntungRandom(int low, int high) {
         return lagBiasedRandom(low, high);
     }
 }

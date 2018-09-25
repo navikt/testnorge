@@ -9,14 +9,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import javax.jms.JMSException;
-
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.identpool.ident.ajourhold.mq.QueueContext;
 import no.nav.identpool.ident.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
@@ -24,7 +21,7 @@ import no.nav.identpool.ident.ajourhold.tps.xml.service.Personopplysning;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor 
 class IdentMQService {
 
     private final MessageQueueFactory messageQueueFactory;
@@ -36,8 +33,8 @@ class IdentMQService {
     }
 
     public Map<String, Boolean> fnrsExists(Set<String> environments, List<String> fnr) {
-        String[] fnrs = fnr.toArray(new String[]{});
-        String[][] fnrsArray = {fnrs};
+        String[] fnrs = fnr.toArray(new String[] {});
+        String[][] fnrsArray = { fnrs };
         boolean[] fnrExists = fnrsExistsArray(environments, fnrsArray)[0];
         return IntStream.range(0, fnrs.length).boxed()
                 .collect(Collectors.toMap(i -> fnrs[i], i -> fnrExists[i]));

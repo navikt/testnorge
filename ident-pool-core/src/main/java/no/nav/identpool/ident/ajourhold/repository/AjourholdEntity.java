@@ -1,7 +1,6 @@
 package no.nav.identpool.ident.ajourhold.repository;
 
 import java.time.LocalDateTime;
-
 import javax.batch.runtime.BatchStatus;
 import javax.persistence.Column;
 import javax.persistence.Entity;

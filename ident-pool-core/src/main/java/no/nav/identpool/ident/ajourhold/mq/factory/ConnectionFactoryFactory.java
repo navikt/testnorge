@@ -1,19 +1,14 @@
 package no.nav.identpool.ident.ajourhold.mq.factory;
 
 import java.util.concurrent.TimeUnit;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.ibm.disthub2.client.JMS;
-import com.ibm.mq.jms.MQQueueConnectionFactory;
-
-import org.springframework.stereotype.Component;
-
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+import org.springframework.stereotype.Component;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.ibm.mq.jms.MQQueueConnectionFactory;
 
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.identpool.ident.ajourhold.mq.strategy.ConnectionStrategy;
 
 /**

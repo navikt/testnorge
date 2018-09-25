@@ -4,10 +4,11 @@ import java.time.LocalDate;
 
 public class PersonIdentifikatorUtil {
 
-    private static final int[] CONTROL_DIGIT_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
-    private static final int[] CONTROL_DIGIT_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
+    private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
+    private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
 
-    private PersonIdentifikatorUtil() {}
+    private PersonIdentifikatorUtil() {
+    }
 
     public static LocalDate toBirthdate(String personIdentifikator) {
         int dag = Integer.parseInt(personIdentifikator.substring(0, 2));
@@ -38,7 +39,7 @@ public class PersonIdentifikatorUtil {
 
     private static int getControlDigit(String fnr, int... sequence) {
         int digitsum = 0;
-        for(int i = 0; i < sequence.length; ++i) {
+        for (int i = 0; i < sequence.length; ++i) {
             digitsum += (fnr.charAt(i) - 48) * sequence[i];
         }
         digitsum = 11 - (digitsum % 11);

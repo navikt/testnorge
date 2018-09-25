@@ -8,11 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-
 import no.nav.identpool.ident.ajourhold.tps.generator.FnrGenerator;
 import no.nav.identpool.ident.ajourhold.util.IdentDistribusjon;
 import no.nav.identpool.ident.ajourhold.util.PersonIdentifikatorUtil;
@@ -36,7 +34,7 @@ public class IdentDbService {
         int minYearMinus = 110;
         LocalDate minDate = LocalDate.of(current.getYear() - minYearMinus, 1, 1);
         int counter = 0;
-        while(minDate.isBefore(current)) {
+        while (minDate.isBefore(current)) {
             if (counter == 3 || !criticalForYear(minDate.getYear())) {
                 counter = 0;
                 minDate = minDate.plusYears(1);
@@ -77,7 +75,7 @@ public class IdentDbService {
                 return;
             }
             int count = 0;
-            for (int i = 0; i < fnrs.size() && count < antallPerDag * 3; ++i)  {
+            for (int i = 0; i < fnrs.size() && count < antallPerDag * 3; ++i) {
                 String fnr = fnrs.get(i);
                 if (identRepository.existsByPersonidentifikator(fnr)) {
                     continue;
