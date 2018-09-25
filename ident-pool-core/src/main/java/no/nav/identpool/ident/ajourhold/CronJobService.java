@@ -13,6 +13,7 @@ public class CronJobService {
 
     private final AjourholdService ajourholdService;
 
+//    @Scheduled(fixedDelay = 60000)
     public void execute() {
         ajourholdService.startBatch();
     }

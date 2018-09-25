@@ -96,7 +96,10 @@ public class IdentDbService {
 
     private void checkMqStore(int startIndex, int numberOfThreads, String[]... fnrs) {
 
-        boolean[][] identerIBruk = mqService.fnrsExistsArray(fnrs);
+        String[][] fnrsArray = new String[numberOfThreads][];
+        System.arraycopy(fnrs, startIndex, fnrsArray, 0, numberOfThreads);
+
+        boolean[][] identerIBruk = mqService.fnrsExistsArray(fnrsArray);
         for (int i = 0; i < identerIBruk.length; ++i) {
             storeIdenter(identerIBruk[i], fnrs[i]);
         }

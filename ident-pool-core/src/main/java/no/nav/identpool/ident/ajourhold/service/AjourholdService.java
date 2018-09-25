@@ -29,6 +29,8 @@ public class AjourholdService {
     private void execute(AjourholdEntity ajourholdEntity) {
         try {
             identService.checkCritcalAndGenerate();
+            ajourholdEntity.setStatus(BatchStatus.COMPLETED);
+            ajourholdRepository.update(ajourholdEntity);
         } catch (Exception e) {
             ajourholdEntity.setFeilmelding(e.getMessage());
             ajourholdEntity.setStatus(BatchStatus.FAILED);
