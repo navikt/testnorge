@@ -10,7 +10,7 @@ public class SecurityConfig implements HttpSecurityConfigurer {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/identifikator/v1/finneshosskatt").authenticated()
+                .antMatchers("/api/v1/finneshosskatt").authenticated()
                 .antMatchers("/**").permitAll()
                 .and()
                 .csrf().disable();

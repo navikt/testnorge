@@ -21,7 +21,7 @@ public class IdentpoolService {
     private final IdentRepository identRepository;
     private final IdentPredicateUtil identPredicateUtil;
 
-    public List<String> findIdents(HentIdenterRequest hentIdenterRequest) {
+    public List<String> finnIdenter(HentIdenterRequest hentIdenterRequest) {
 
         List<String> personidentifikatorList = new ArrayList<>();
 
@@ -33,9 +33,6 @@ public class IdentpoolService {
         return personidentifikatorList;
     }
 
-    public Boolean erLedig(String personidentifkator) {
-        return identRepository.findTopByPersonidentifikator(personidentifkator).getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;
-    }
 
     public String markerBrukt(MarkerBruktRequest markerBruktRequest) throws IdentAlleredeIBrukException {
         IdentEntity identEntity = identRepository.findTopByPersonidentifikator(markerBruktRequest.getPersonidentifikator());

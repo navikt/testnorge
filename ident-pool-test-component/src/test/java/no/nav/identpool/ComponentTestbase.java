@@ -19,10 +19,8 @@ import no.nav.identpool.ident.repository.IdentRepository;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ComponentTestConfig.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ComponentTestbase {
-    protected static final String IDENT_V1_BASEURL = "/identifikator/v1";
-    protected static final String OPERASJON_HENT = "/hent";
-    protected static final String OPERASJON_LES = "/les";
-    protected static final String OPERASJON_FINNES_HOS_SKD = "/finneshosskatt";
+    protected static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
+    protected static final String FINNESHOSSKATT_V1_BASEURL = "/api/v1/finneshosskatt";
 
     @Autowired
     protected IdentRepository identRepository;
