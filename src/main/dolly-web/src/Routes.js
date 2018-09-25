@@ -7,6 +7,7 @@ import Profil from './pages/profil/ProfilConnector'
 import TeamOversiktConnector from './pages/teamOversikt/TeamOversiktConnector'
 import TeamConnector from './pages/team/TeamConnector'
 import RedigerTestbrukerConnector from './pages/redigerTestbruker/RedigerTestbrukerConnector'
+import SkatteMelding from './pages/skattemelding/SkatteMelding'
 
 const GruppeBreadcrumb = props => <span>Gruppe #{props.match.params.gruppeId}</span>
 const TeamBreadcrumb = props => <span>Team #{props.match.params.teamId}</span>
@@ -28,7 +29,8 @@ const routes = [
 		exact: true,
 		breadcrumb: 'Rediger',
 		component: RedigerTestbrukerConnector
-	}
+	},
+	{ path: '/skattemelding', exact: true, breadcrumb: 'Skattemelding', component: SkatteMelding }
 ]
 
 export default routes
