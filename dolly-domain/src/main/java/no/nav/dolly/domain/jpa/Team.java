@@ -30,13 +30,6 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 @Table(name = "T_TEAM")
 public class Team {
 
-	public Team(String navn, Bruker eier){
-		this.navn = navn;
-		this.eier = eier;
-		this.datoOpprettet = LocalDate.now();
-		this.medlemmer = new HashSet<>(Arrays.asList(eier));
-	}
-
 	@Id
 	@GeneratedValue(generator = "teamIdGenerator")
 	@GenericGenerator(name = "teamIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
@@ -66,5 +59,11 @@ public class Team {
 			joinColumns = @JoinColumn(name = "team_id"),
 			inverseJoinColumns = @JoinColumn(name = "bruker_id"))
 	private Set<Bruker> medlemmer = new HashSet<>();
-	
+
+	public Team(String navn, Bruker eier){
+		this.navn = navn;
+		this.eier = eier;
+		this.datoOpprettet = LocalDate.now();
+		this.medlemmer = new HashSet<>(Arrays.asList(eier));
+	}
 }

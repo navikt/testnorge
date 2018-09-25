@@ -64,7 +64,7 @@ public class TpsfApiServiceTest {
 //        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
 //        when(objectMapper.convertValue("body", List.class)).thenReturn(Arrays.asList("test"));
 //
-//        List<String> res = service.opprettPersonerTpsf(req);
+//        List<String> res = service.opprettIdenterTpsf(req);
 //        verify(restTemplate).exchange(endpointCaptor.capture(), httpMethodCaptor.capture(), httpEntityCaptor.capture(), eq(Object.class));
 //
 //        HttpEntity entity = httpEntityCaptor.getValue();
@@ -89,7 +89,7 @@ public class TpsfApiServiceTest {
 //        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
 //        when(objectMapper.convertValue(s, RestTemplateFailure.class)).thenReturn(resExp);
 //
-//        service.opprettPersonerTpsf(req);
+//        service.opprettIdenterTpsf(req);
     }
 
     @Test
