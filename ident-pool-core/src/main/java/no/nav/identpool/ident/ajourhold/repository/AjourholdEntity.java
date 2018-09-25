@@ -24,13 +24,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BATCH")
+@Table(name = "AJOURHOLD")
 public class AjourholdEntity {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "batch_seq")
-    @SequenceGenerator(name = "batch_seq", sequenceName = "BATCH_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ajourhold_seq")
+    @SequenceGenerator(name = "ajourhold_seq", sequenceName = "AJOURHOLD_SEQ", allocationSize = 1)
     private Long identity;
 
     @NotNull

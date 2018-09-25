@@ -14,7 +14,7 @@ import no.nav.identpool.ident.ajourhold.repository.AjourholdRepository;
 @RequiredArgsConstructor
 public class AjourholdService {
 
-    private final AjourholdRepository batchRepository;
+    private final AjourholdRepository ajourholdRepository;
     private final IdentDbService identService;
 
     public void startBatch() {
@@ -22,12 +22,18 @@ public class AjourholdService {
                 .sistOppdatert(LocalDateTime.now())
                 .status(BatchStatus.STARTED)
                 .build();
-        batchRepository.save(entity);
+        ajourholdRepository.update(entity);
         this.execute(entity);
     }
 
     private void execute(AjourholdEntity ajourholdEntity) {
-        long time = System.nanoTime();
-        identService.checkCritcalAndGenerate();
+        try {
+            identService.checkCritcalAndGenerate();
+        } catch (Exception e) {
+            ajourholdEntity.setFeilmelding(e.getMessage());
+            ajourholdEntity.setStatus(BatchStatus.FAILED);
+            ajourholdRepository.update(ajourholdEntity);
+            throw e;
+        }
     }
 }

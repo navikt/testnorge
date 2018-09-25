@@ -37,7 +37,7 @@ public class QueueContext {
     private void init() {
         environments.addAll(fasitClient.getAllEnvironments("t", "q"));
         environments.removeAll(excluded);
-        this.excluded.retainAll(environments);
+        excluded.retainAll(environments);
 
         filteredEnvironments.addAll(environments.stream()
                 .filter(this::filterOnQueue)

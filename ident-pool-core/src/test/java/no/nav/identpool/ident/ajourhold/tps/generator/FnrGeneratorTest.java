@@ -17,10 +17,13 @@ public class FnrGeneratorTest {
     @Test
     public void fnrGenererDescendingTest() {
         LocalDate localDate = LocalDate.now();
-        String[] fnrs = FnrGenerator.genererIdenter(localDate);
+        String[] fnrs = FnrGenerator.genererIdenter(localDate).toArray(new String[]{});
         assertTrue(Ordering.natural().reverse().isOrdered(Arrays.asList(fnrs)));
 
-        String[][] fnrsArray = FnrGenerator.genererIdenter(localDate, localDate.plusDays(2));
+        String[] fnrs2 = FnrGenerator.genererIdenter(localDate, localDate.plusDays(1)).toArray(new String[]{});
+        assertTrue(Ordering.natural().reverse().isOrdered(Arrays.asList(fnrs2)));
+
+        String[][] fnrsArray = FnrGenerator.genererIdenterArray(localDate, localDate.plusDays(2));
         assertEquals(2, fnrsArray.length);
         assertTrue(Ordering.natural().reverse().isOrdered(Collections.singletonList(fnrs[0])));
         assertTrue(Ordering.natural().reverse().isOrdered(Collections.singletonList(fnrs[1])));

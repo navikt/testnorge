@@ -2,11 +2,10 @@ package no.nav.identpool.ident.ajourhold.service;
 
 import static java.time.LocalDate.now;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -26,65 +25,81 @@ import no.nav.identpool.ident.repository.IdentRepository;
 @RequiredArgsConstructor
 public class IdentDbService {
 
-    private final int minYearMinus = 110;
-    private final int paralellThreads = 2;
-
     private final IdentMQService mqService;
     private final IdentRepository identRepository;
     private final IdentDistribusjon identDistribusjon;
 
-    public void checkCritcalAndGenerate() {
-        LocalDate current = now();
+    private LocalDate current;
+
+    void checkCritcalAndGenerate() {
+        current = now();
+        int minYearMinus = 110;
         LocalDate minDate = LocalDate.of(current.getYear() - minYearMinus, 1, 1);
+        int counter = 0;
         while(minDate.isBefore(current)) {
-            generateForYear(minDate.getYear());
+            if (counter == 3 || !criticalForYear(minDate.getYear())) {
+                counter = 0;
+                minDate = minDate.plusYears(1);
+            } else {
+                generateForYear(minDate.getYear());
+                counter += 1;
+            }
         }
     }
 
     private void generateForYear(int year) {
         LocalDate firstDate = LocalDate.of(year, 1, 1);
-        LocalDate current = now();
         LocalDate lastDate = LocalDate.of(year, 12, 31);
+
         if (lastDate.isAfter(current)) {
             lastDate = LocalDate.of(year, current.getMonth(), current.getDayOfMonth());
         }
-        int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year);
-        if (!criticalForYear(year, antallPerDag)) return;
 
-        String[][] fnrs = FnrGenerator.genererIdenter(firstDate, lastDate.plusDays(1));
-        String[][] filtered = filterDatabse(antallPerDag, fnrs);
-        for (int i = 0; i < fnrs.length; ++i) {
+        int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year);
+
+        Map<LocalDate, List<String>> fnrMap = FnrGenerator.genererIdenterMap(firstDate, lastDate.plusDays(1));
+        String[][] filtered = filterDatabse(antallPerDag, fnrMap);
+        int paralellThreads = 2;
+        for (int i = 0; i < filtered.length; i += paralellThreads) {
             int threads = paralellThreads;
             if (i + paralellThreads > filtered.length) {
-                threads = filtered.length - threads;
+                threads = filtered.length - i;
             }
-            String[][] copy = new String[threads][];
-            System.arraycopy(filtered, i, copy, 0, threads);
-            checkMqStore(copy);
+            checkMqStore(i, threads, filtered);
         }
     }
 
-    private String[][] filterDatabse(int antallPerDag, String[]... fnrs) {
+    private String[][] filterDatabse(int antallPerDag, Map<LocalDate, List<String>> fnrMap) {
         List<ArrayList<String>> fnrArray = new ArrayList<>();
-        ArrayList<String> currentArray = new ArrayList<>(501);
-        for (String[] array: fnrs) {
-            int count = 0;
-            for (int i = 0; i < array.length && count < antallPerDag * 3; ++i)  {
-                if (!identRepository.existsByPersonidentifikator(array[i])) {
-                    if (currentArray.size() == 500) {
-                        fnrArray.add(currentArray);
-                        currentArray = new ArrayList<>(501);
-                    }
-                    currentArray.add(array[i]);
-                }
-                count += 1;
+        final ArrayList<String> currentArray = new ArrayList<>(501);
+        fnrMap.forEach((date, fnrs) -> {
+            if (identRepository.countByFodselsdato(date) == fnrs.size()) {
+                return;
             }
-        }
-        fnrArray.add(currentArray);
-        return fnrArray.stream().map(i -> i.toArray(new String[0])).toArray(String[][]::new);
+            int count = 0;
+            for (int i = 0; i < fnrs.size() && count < antallPerDag * 3; ++i)  {
+                String fnr = fnrs.get(i);
+                if (identRepository.existsByPersonidentifikator(fnr)) {
+                    continue;
+                }
+                if (currentArray.size() == 500) {
+                    fnrArray.add(new ArrayList<>(currentArray));
+                    currentArray.clear();
+                }
+                currentArray.add(fnr);
+                count += 1;
+
+            }
+        });
+        return fnrArray.stream().map(array -> array.toArray(new String[0])).toArray(String[][]::new);
     }
 
-    private void checkMqStore(String[]... fnrs) {
+    private void checkMqStore(int startIndex, int numberOfThreads, String[]... fnrs) {
+
+        boolean[][] identerIBruk = mqService.fnrsExistsArray(fnrs);
+        for (int i = 0; i < identerIBruk.length; ++i) {
+            storeIdenter(identerIBruk[i], fnrs[i]);
+        }
     }
 
     private void storeIdenter(boolean[] identerIBruk, String[] identer) {
@@ -100,8 +115,8 @@ public class IdentDbService {
                         .collect(Collectors.toList()));
     }
 
-    private boolean criticalForYear(int year, int antallPerDag) {
-        LocalDate current = now();
+    private boolean criticalForYear(int year) {
+        int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year);
         int days = year == current.getYear() ? 365 - current.getDayOfYear() : 365;
         long count = identRepository.countByFodselsdatoBetweenAndRekvireringsstatus(
                 LocalDate.of(year, 1, 1),

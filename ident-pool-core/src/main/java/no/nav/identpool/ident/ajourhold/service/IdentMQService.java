@@ -3,9 +3,11 @@ package no.nav.identpool.ident.ajourhold.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.jms.JMSException;
@@ -29,29 +31,34 @@ class IdentMQService {
 
     private final ArrayList<Thread> threadArray = new ArrayList<>();
 
-    public boolean[] fnrsExists(String... fnr) {
-        String[][] fnrs = {fnr};
-        return fnrsExists(fnrs)[0];
+    public Map<String, Boolean> fnrsExists(List<String> fnr) {
+        return fnrsExists(QueueContext.getIncluded(), fnr);
     }
 
-    public boolean[] fnrsExists(Set<String> environments, String... fnr) {
-        String[][] fnrs = {fnr};
-        return fnrsExists(environments, fnrs)[0];
+    public Map<String, Boolean> fnrsExists(Set<String> environments, List<String> fnr) {
+        String[] fnrs = fnr.toArray(new String[]{});
+        String[][] fnrsArray = {fnrs};
+        boolean[] fnrExists = fnrsExistsArray(environments, fnrsArray)[0];
+        return IntStream.range(0, fnrs.length).boxed()
+                .collect(Collectors.toMap(i -> fnrs[i], i -> fnrExists[i]));
     }
 
-    public boolean[][] fnrsExists(String[][] fnrs) {
-        return fnrsExists(QueueContext.getIncluded(), fnrs);
+    public boolean[][] fnrsExistsArray(String[][] fnrs) {
+        return fnrsExistsArray(QueueContext.getIncluded(), fnrs);
     }
 
-    public boolean[][] fnrsExists(Set<String> environmentSet, String[]... fnrs) {
+    public boolean[][] fnrsExistsArray(Set<String> environmentSet, String[]... fnrs) {
 
         List<String> environments = new ArrayList<>(environmentSet);
+        if (environments.isEmpty()) {
+            return Arrays.stream(fnrs).map(array -> new boolean[array.length]).toArray(boolean[][]::new);
+        }
 
         threadArray.clear();
         String[][] identRequests =
                 Arrays.stream(fnrs)
-                .map(this::fnrsToRequests)
-                .toArray(String[][]::new);
+                        .map(this::fnrsToRequests)
+                        .toArray(String[][]::new);
 
         boolean[][] identerIBruk = new boolean[fnrs.length][];
         IntStream.range(0, identerIBruk.length)

@@ -3,7 +3,11 @@ package no.nav.identpool.ident.ajourhold.tps.generator;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import static java.lang.Math.toIntExact;
 
@@ -17,27 +21,39 @@ public class FnrGenerator {
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
 
-    public static String[] genererIdenter(LocalDate date) {
-        return genererIdenter(date, date.plusDays(1))[0];
+    public static List<String> genererIdenter(LocalDate date) {
+        return genererIdenter(date, date.plusDays(1));
     }
 
-    public static String[][] genererIdenter(final LocalDate fom, final LocalDate to) {
+    public static List<String> genererIdenter(final LocalDate fom, final LocalDate to) {
+        if (fom.isAfter(to) || fom.isEqual(to)) {
+            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være eller dato til %s", fom.toString(), to.toString()));
+        }
+        int days = toIntExact(ChronoUnit.DAYS.between(fom, to));
+        ArrayList<String> list = new ArrayList<>(toIntExact(ChronoUnit.DAYS.between(fom, to) * 400));
+        IntStream.range(0, days)
+                .mapToObj(fom::plusDays)
+                .map(FnrGenerator::generateNumbers)
+                .forEach(list::addAll);
+        return list;
+    }
+
+    public static Map<LocalDate, List<String>> genererIdenterMap(final LocalDate fom, final LocalDate to) {
         if (fom.isAfter(to)) {
             throw new IllegalArgumentException(String.format("Dato fra og med %s, må være før eller lik dato til og med %s", fom.toString(), to.toString()));
         }
         int days = toIntExact(ChronoUnit.DAYS.between(fom, to));
         return IntStream.range(0, days)
                 .mapToObj(fom::plusDays)
-                .map(FnrGenerator::generateNumbers)
-                .toArray(String[][]::new);
+                .collect(Collectors.toMap(i -> i, FnrGenerator::generateNumbers));
     }
 
-    private static String[] generateNumbers(LocalDate birthdate) {
+    private static List<String> generateNumbers(LocalDate birthdate) {
         String date = formatter.format(birthdate) + "%03d";
         return getCategoryRange(birthdate)
                 .mapToObj(number -> generateFnr(String.format(date, number)))
                 .filter(Objects::nonNull)
-                .toArray(String[]::new);
+                .collect(Collectors.toList());
     }
 
     private static IntStream getCategoryRange(LocalDate birthDate) {

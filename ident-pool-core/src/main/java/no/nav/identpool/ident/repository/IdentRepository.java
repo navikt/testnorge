@@ -14,6 +14,8 @@ public interface IdentRepository extends JpaRepository<IdentEntity, Long> {
 
     long countByFodselsdatoBetweenAndRekvireringsstatus(LocalDate from, LocalDate to, Rekvireringsstatus rekvireringsstatus);
 
+    long countByFodselsdato(LocalDate fodselsdato);
+
     IdentEntity findTopByPersonidentifikator(String personidentifkator);
 
     List<IdentEntity> findByRekvireringsstatus(Rekvireringsstatus rekvireringsstatus, Pageable pageable);
