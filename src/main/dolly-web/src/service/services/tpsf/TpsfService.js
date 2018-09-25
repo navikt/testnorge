@@ -19,4 +19,10 @@ export default class TpsfService {
 
 		return Request.post(endpoint, [userData])
 	}
+
+	static createFoedselmelding(userData) {
+		console.log(userData)
+		// TODO: get real res from TPSF
+		return Promise.resolve('status OK')
+	}
 }

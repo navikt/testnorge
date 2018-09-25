@@ -1,15 +1,27 @@
 import React, { PureComponent, Fragment } from 'react'
 import Overskrift from '~/components/overskrift/Overskrift'
-import { Formik, Form, Field } from 'formik'
+import { Formik, Form, Field, setNestedObjectValues } from 'formik'
 import { FormikInput } from '~/components/fields/Input/Input'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
-import './SkatteMelding.less'
+import './TPSEndring.less'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import Knapp from 'nav-frontend-knapper'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikDatepicker } from '~/components/fields/Datepicker/Datepicker'
+import { TpsfApi } from '~/service/Api'
 
-export default class SkatteMelding extends PureComponent {
+export default class TPSEndring extends PureComponent {
+	state = {
+		isFetching: false
+	}
+
+	onSubmit = values => {
+		console.log(values)
+		this.setState({ isFetching: true }, () => {
+			TpsfApi.createFoedselmelding(values).then(res => console.log(res))
+		})
+	}
+
 	render() {
 		let initialValues = {
 			morsId: 1,
@@ -22,16 +34,17 @@ export default class SkatteMelding extends PureComponent {
 
 		return (
 			<Fragment>
-				<Overskrift label={'Send skattemeldinger'} />
+				<Overskrift label={'Send TPS-endringsmelding'} />
 				<ContentContainer>
 					<Formik
+						onSubmit={this.onSubmit}
 						initialValues={initialValues}
 						render={props => {
 							const { values, touched, errors, dirty, isSubmitting } = props
 							return (
 								<Form autoComplete="off">
 									<h2>Send fødselsmelding</h2>
-									<div className="skattemelding-foedselmelding-top">
+									<div className="tps-endring-foedselmelding-top">
 										<Field name="morsId" label="MORS ID" component={FormikInput} />
 										<Field name="farsId" label="FARS ID" component={FormikInput} />
 										<Field
@@ -43,7 +56,7 @@ export default class SkatteMelding extends PureComponent {
 										<Field name="foedseldato" label="BARNETS KJØNN" component={FormikDollySelect} />
 										<Field name="miljoe" label="SEND TIL MILJØ" component={FormikDollySelect} />
 									</div>
-									<div className="skattemelding-foedselmelding-bottom">
+									<div className="tps-endring-foedselmelding-bottom">
 										<div className="flexbox">
 											<Checkbox id={'2'} label={'ARV ADRESSE FRA MOR'} />
 											<Checkbox id={'3'} label={'NY ADRESSE'} />
