@@ -18,11 +18,18 @@
 	}
 }
 
+.knapp-container {
+	display: flex;
+	flex: 1;
+	justify-content: flex-end;
+	margin: 10px 10px 0 0;
+}
+
 .tps-endring-foedselmelding-bottom {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 10px 10px 0 0;
+	margin: 10px 10px 0 0;
 
 	.skjemaelement {
 		margin-right: 10px;
@@ -31,5 +38,25 @@
 			font-size: 16px;
 			margin-right: 10px;
 		}
+	}
+}
+
+.tps-endring-doedsmelding {
+	display: flex;
+
+	.doedsmelding-fields {
+		display: flex;
+		flex: 1;
+	}
+
+	.skjemaelement {
+		flex: 1;
+		margin-right: 15px;
+		flex-wrap: wrap;
+	}
+
+	.knapp {
+		flex: 0;
+		height: 34.45px; //same height as
 	}
 }
