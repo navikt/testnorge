@@ -85,7 +85,7 @@ export default class Gruppe extends Component {
 					testidenter={gruppe.testidenter}
 					editTestbruker={editTestbruker}
 				/>
-				<AddButton title="Opprett ny bestilling" onClick={this.startBestilling} />
+				<AddButton title="Legg til nye testpersoner" onClick={this.startBestilling} />
 			</div>
 		)
 	}

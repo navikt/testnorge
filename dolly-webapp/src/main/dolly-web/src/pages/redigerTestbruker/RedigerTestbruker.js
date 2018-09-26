@@ -34,6 +34,9 @@ export default class RedigerTestbruker extends Component {
 
 		const initialValues = this.AttributtManager.getInitialValuesForEditableItems(testbruker)
 
+		console.log('attributtliste', this.AttributtListe)
+		console.log('iinit vals', initialValues)
+
 		return (
 			<Formik
 				onSubmit={this.submit}
