@@ -2,8 +2,12 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 import { DollyApi } from '~/service/Api'
 import _xor from 'lodash/fp/xor'
 import _get from 'lodash/get'
+import _set from 'lodash/set'
 import { handleActions, createActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
+import { AttributtManager } from '~/service/Kodeverk'
+
+const AttributtManagerInstance = new AttributtManager()
 
 export const actions = createActions(
 	{
@@ -78,13 +82,17 @@ export default handleActions(
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
 const bestillingFormatter = bestillingState => {
+	console.log(bestillingState)
+	const { attributeIds, antall, environments, identtype, values } = bestillingState
+	const AttributtListe = AttributtManagerInstance.listSelectedWithChildNodes(attributeIds)
+
 	const final_values = {
-		antall: bestillingState.antall,
-		environments: bestillingState.environments,
+		antall: antall,
+		environments: environments,
 		tpsf: {
 			regdato: new Date(),
-			identtype: bestillingState.identtype,
-			...bestillingState.values
+			identtype: identtype,
+			...getTpsfValues(AttributtListe, values)
 		}
 	}
 
@@ -100,6 +108,13 @@ const bestillingFormatter = bestillingState => {
 	console.log('POSTING BESTILLING', final_values)
 
 	return final_values
+}
+
+const getTpsfValues = (attributeList, values) => {
+	//TODO: Legg inn filter for datasource type så vi kun får TPSF verdier.
+	return attributeList.reduce((accumulator, attribute) => {
+		return _set(accumulator, attribute.path || attribute.id, values[attribute.id])
+	}, {})
 }
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {

@@ -24,6 +24,7 @@ export interface Kategori {
 	navn: string
 	order: number
 	multiple?: boolean
+	showInSummary?: boolean
 }
 
 export interface KategoriTypes {
@@ -34,16 +35,16 @@ export interface Attributt {
 	hovedKategori: Kategori
 	subKategori: Kategori
 	id: string
+	path?: string
 	label: string
 	dataSource: DataSource
 	inputType: InputType
-	items?: Attributt[]
 	options?: Options[]
 	format?: Function
 	apiKodeverkId?: string
 	validation?: yup.MixedSchema
 	kanRedigeres?: Boolean
-	kanBestilles?: Boolean
+	parent?: string
 }
 
 // Attributt grupper

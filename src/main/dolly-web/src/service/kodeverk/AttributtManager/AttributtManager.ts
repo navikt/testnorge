@@ -8,29 +8,46 @@ import _get from 'lodash/get'
 import _mapValues from 'lodash/mapValues'
 
 export default class AttributtManager {
-	listSelected(selectedIds: string[]): Attributt[] {
+	listSelectedWithChildNodes(selectedIds: string[]): Attributt[] {
+		return AttributtListe.filter(f => {
+			if (f.inputType === 'multifield') return false
+			if (f.parent && selectedIds.includes(f.parent)) return true
+			return selectedIds.includes(f.id)
+		})
+	}
+
+	listSelectedWithParents(selectedIds: string[]): Attributt[] {
 		return AttributtListe.filter(f => selectedIds.includes(f.id))
 	}
 
-	searchList(list: Attributt[], searchTerm: string): Attributt[] {
+	searchListWithParents(list: Attributt[], searchTerm: string): Attributt[] {
 		return searchTerm
-			? list.filter(f => f.label.toLowerCase().includes(searchTerm.toLowerCase()))
-			: list
+			? list.filter(f => !f.parent && f.label.toLowerCase().includes(searchTerm.toLowerCase()))
+			: list.filter(f => !f.parent)
 	}
 
 	listAllByGroup(searchTerm: string): AttributtGruppe[] {
-		const list = this.searchList(AttributtListe, searchTerm)
+		const list = this.searchListWithParents(AttributtListe, searchTerm)
 		return groupList(list)
 	}
 
-	listSelectedByGroup(selectedIds: string[], searchTerm: string): AttributtGruppe[] {
-		let list = this.searchList(AttributtListe, searchTerm)
-		if (selectedIds.length > 0) list = list.filter(f => selectedIds.includes(f.id))
+	listSelectedAttributesForValueSelection(selectedIds: string[]): AttributtGruppe[] {
+		// multifield consist of several fields - only children fields should be rendered
+		let list = AttributtListe.filter(f => f.inputType !== 'multifield')
+		if (selectedIds.length > 0) {
+			list = list.filter(
+				f => selectedIds.includes(f.id) || (f.parent && selectedIds.includes(f.parent))
+			)
+		}
 		return groupList(list)
 	}
 
 	listSelectedByHovedKategori(selectedIds: string[]): AttributtGruppeHovedKategori[] {
-		return groupListByHovedKategori(this.listSelected(selectedIds))
+		return groupListByHovedKategori(this.listSelectedWithParents(selectedIds))
+	}
+
+	listSelectedByHovedKategoriWithChildNodes(selectedIds: string[]): AttributtGruppe[] {
+		return groupList(this.listSelectedWithChildNodes(selectedIds))
 	}
 
 	listEditable(): AttributtGruppe[] {
@@ -39,43 +56,20 @@ export default class AttributtManager {
 
 	getValidations(selectedIds: string[]): yup.MixedSchema {
 		// Get all selected attributes that has validations
-		const list = this.listSelected(selectedIds).filter(s => s.validation)
+		const list = this.listSelectedWithChildNodes(selectedIds).filter(s => s.validation)
 
 		// Reduce to item.id and validation to create a validation object
 		const validationObject = list.reduce((prev, currentObject) => {
-			if (currentObject.inputType === 'multifield') {
-				const nestedValidation = currentObject.items.reduce((prevNestedItem, nestedItem) => {
-					if (nestedItem.validation) {
-						const idArray = nestedItem.id.split('.')
-						const fieldId = idArray[idArray.length - 1]
-						return prevNestedItem.shape({ [fieldId]: nestedItem.validation })
-					}
-
-					return prevNestedItem
-				}, yup.object())
-
-				//TODO: FINN MER GENERISK MÅTE Å LØSE DETTE PÅ
-				const idList = currentObject.id.split('.')
-				let completeValidation = { [idList[0]]: nestedValidation }
-				if (idList.length > 1) {
-					completeValidation[idList[0]] = yup.object().shape({ barn: nestedValidation })
-				}
-
-				return { ...prev, ...completeValidation }
-			}
-
 			return {
 				...prev,
 				[currentObject.id]: currentObject.validation
 			}
 		}, {})
-
-		console.log(validationObject)
 		return yup.object().shape(validationObject)
 	}
 
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
-		const list = this.listSelected(selectedIds)
+		const list = this.listSelectedWithChildNodes(selectedIds)
 
 		return this._getListOfInitialValues(list, values)
 	}
@@ -88,17 +82,6 @@ export default class AttributtManager {
 
 	_getListOfInitialValues(list, values) {
 		return list.reduce((prev, item) => {
-			if (item.inputType === 'multifield') {
-				const nestedInitialValues = item.items.reduce((prevNestedItem, nestedItem) => {
-					return this._setInitialValue(prevNestedItem, nestedItem.id, values)
-				}, {})
-
-				return {
-					...prev,
-					...nestedInitialValues
-				}
-			}
-
 			return this._setInitialValue(prev, item.id, values)
 		}, {})
 	}
