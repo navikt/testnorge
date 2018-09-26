@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
@@ -47,6 +48,7 @@ public class Bestilling {
     private int antallIdenter;
 
     @Column(name="SIST_OPPDATERT" , nullable = false)
+    @UpdateTimestamp
     private LocalDateTime sistOppdatert;
 
     public Bestilling(Testgruppe gruppe, int antallIdenter, LocalDateTime sistOppdatert, String miljoer){

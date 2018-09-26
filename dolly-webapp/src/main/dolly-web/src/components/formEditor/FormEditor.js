@@ -79,9 +79,6 @@ export default class FormEditor extends PureComponent {
 	)
 
 	renderFieldComponent = item => {
-		if (item.inputType === 'multifield') {
-			return this.renderFieldContainer(null, item.items, item.id)
-		}
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item)
 
