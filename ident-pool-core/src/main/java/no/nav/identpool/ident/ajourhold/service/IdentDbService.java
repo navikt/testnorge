@@ -71,7 +71,7 @@ public class IdentDbService {
         List<ArrayList<String>> fnrArray = new ArrayList<>();
         final ArrayList<String> currentArray = new ArrayList<>(501);
         fnrMap.forEach((date, fnrs) -> {
-            if (identRepository.countByFodselsdato(date) == fnrs.size()) {
+            if (identRepository.countByFoedselsdato(date) == fnrs.size()) {
                 return;
             }
             int count = 0;
@@ -119,7 +119,7 @@ public class IdentDbService {
     private boolean criticalForYear(int year) {
         int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year);
         int days = year == current.getYear() ? 365 - current.getDayOfYear() : 365;
-        long count = identRepository.countByFodselsdatoBetweenAndRekvireringsstatus(
+        long count = identRepository.countByFoedselsdatoBetweenAndRekvireringsstatus(
                 LocalDate.of(year, 1, 1),
                 LocalDate.of(year + 1, 1, 1),
                 Rekvireringsstatus.LEDIG);
@@ -130,7 +130,7 @@ public class IdentDbService {
         return IdentEntity.builder()
                 .finnesHosSkatt("0")
                 .personidentifikator(fnr)
-                .fodselsdato(PersonIdentifikatorUtil.toBirthdate(fnr))
+                .foedselsdato(PersonIdentifikatorUtil.toBirthdate(fnr))
                 .rekvireringsstatus(status)
                 .identtype(Identtype.FNR)
                 .build();

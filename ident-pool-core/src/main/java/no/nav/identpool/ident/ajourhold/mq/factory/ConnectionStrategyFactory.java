@@ -10,7 +10,7 @@ import no.nav.identpool.ident.ajourhold.mq.strategy.ConnectionStrategy;
 
 @Component
 @RequiredArgsConstructor
-class ConnectionStrategyFactory {
+public class ConnectionStrategyFactory {
 
     @Value("${mq.channel.postfix}")
     private String CHANNELPOSTFIX;

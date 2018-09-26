@@ -11,11 +11,11 @@ import no.nav.identpool.ident.domain.Rekvireringsstatus;
 
 public interface IdentRepository extends JpaRepository<IdentEntity, Long>, QuerydslPredicateExecutor<IdentEntity> {
 
-    long countByFodselsdato(LocalDate fodselsdato);
+    long countByFoedselsdato(LocalDate foedselsdato);
 
     boolean existsByPersonidentifikator(String identifikator);
 
-    long countByFodselsdatoBetweenAndRekvireringsstatus(LocalDate from, LocalDate to, Rekvireringsstatus rekvireringsstatus);
+    long countByFoedselsdatoBetweenAndRekvireringsstatus(LocalDate from, LocalDate to, Rekvireringsstatus rekvireringsstatus);
 
     IdentEntity findTopByPersonidentifikator(String personidentifkator);
 

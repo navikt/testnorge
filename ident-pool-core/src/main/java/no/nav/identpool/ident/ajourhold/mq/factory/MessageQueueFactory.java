@@ -3,6 +3,7 @@ package no.nav.identpool.ident.ajourhold.mq.factory;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import org.springframework.beans.factory.annotation.Value;

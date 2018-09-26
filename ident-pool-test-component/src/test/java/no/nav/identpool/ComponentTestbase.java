@@ -5,6 +5,7 @@ import static no.nav.identpool.SecurityTestConfig.NAV_STS_ISSUER_URL;
 import java.time.LocalDateTime;
 import org.jose4j.jwt.JwtClaims;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
 import no.nav.freg.security.test.oidc.tools.OidcTestService;
+import no.nav.identpool.ident.ajourhold.mq.factory.ConnectionStrategyFactory;
 import no.nav.identpool.ident.repository.IdentRepository;
 
 @RunWith(SpringRunner.class)
