@@ -26,7 +26,7 @@ class Step1 extends Component {
 		return (
 			<div className="bestilling-step1">
 				<div className="flexbox--space">
-					<Overskrift label="Legg til testpersoner" />
+					<Overskrift label="Velg egenskaper" />
 				</div>
 
 				<div className="flexbox">
