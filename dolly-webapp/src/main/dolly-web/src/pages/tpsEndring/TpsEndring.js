@@ -39,7 +39,8 @@ export default class TPSEndring extends PureComponent {
 			IdType: 2,
 			foedseldato: 0,
 			kjoenn: 0,
-			miljoe: 0
+			miljoe: 0,
+			adresse: 'Elgeseter gate 9'
 		}
 		return (
 			<ContentContainer>
@@ -64,12 +65,9 @@ export default class TPSEndring extends PureComponent {
 									<Field name="miljoe" label="SEND TIL MILJØ" component={FormikDollySelect} />
 								</div>
 								<div className="tps-endring-foedselmelding-bottom">
-									<div className="flexbox">
-										<Checkbox id={'2'} label={'ARVE ADRESSE FRA MOR'} />
-										<Checkbox id={'3'} label={'NY ADRESSE'} />
-									</div>
+									<Field name="adresse" label="ADRESSE" component={FormikDollySelect} />
 									<Knapp type="hoved" htmlType="submit">
-										Opprett fødselsmelding
+										Opprett doedsmelding
 									</Knapp>
 								</div>
 							</Form>
