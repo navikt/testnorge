@@ -5,10 +5,10 @@ import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.properties.TpsfProps;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +27,11 @@ public class TpsfApiService {
     @Autowired
     ObjectMapper objectMapper;
 
-    @Value("${tpsf.server.url}")
-    private String tpsfServerUrl;
+    @Autowired
+    TpsfProps tpsfProps;
 
     public List<String> opprettIdenterTpsf(RsTpsfBestilling request) {
-        StringBuilder tpsfUrlSb = new StringBuilder().append(tpsfServerUrl).append(TPSF_BASE_URL).append(TPSF_OPPRETT_URL);
+        StringBuilder tpsfUrlSb = new StringBuilder().append(tpsfProps.getUrl()).append(TPSF_BASE_URL).append(TPSF_OPPRETT_URL);
         ResponseEntity<Object> response = postToTpsf(tpsfUrlSb.toString(), new HttpEntity<>(request));
         return objectMapper.convertValue(response.getBody(), List.class);
     }
@@ -57,7 +57,7 @@ public class TpsfApiService {
 
     private String buildTpsfUrlFromEnvironmentsInput(List<String> environments){
         StringBuilder sb = new StringBuilder();
-        sb.append(tpsfServerUrl).append(TPSF_BASE_URL).append(TPSF_SEND_TPS_FLERE_URL).append("?environments=");
+        sb.append(tpsfProps).append(TPSF_BASE_URL).append(TPSF_SEND_TPS_FLERE_URL).append("?environments=");
         environments.forEach(env -> sb.append(env).append(","));
         return sb.toString().substring(0, sb.length() - 1);
     }

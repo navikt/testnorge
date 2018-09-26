@@ -5,6 +5,7 @@ import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.properties.TpsfProps;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,18 +41,16 @@ public class TpsfApiServiceTest {
     private List<String> standardIdenter = new ArrayList<>(Arrays.asList(standardIdent));
     private List<String> standardMiljoer_u1_t1 = Arrays.asList("u1", "t1");
 
-    @Mock
-    RestTemplate restTemplate;
-
-    @Mock
-    ObjectMapper objectMapper;
+    @Mock RestTemplate restTemplate;
+    @Mock ObjectMapper objectMapper;
+    @Mock TpsfProps tpsfProps;
 
     @InjectMocks
     private TpsfApiService service;
 
     @Before
     public void setup(){
-        ReflectionTestUtils.setField(service, "tpsfServerUrl", "https://localhost:8080");
+        when(tpsfProps.getUrl()).thenReturn("https://localhost:8080");
     }
 
     @Test
