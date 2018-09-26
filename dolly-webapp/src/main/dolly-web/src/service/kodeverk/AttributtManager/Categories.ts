@@ -55,11 +55,13 @@ export const SubKategorier: KategoriTypes = {
 	Partner: {
 		id: 'partner',
 		navn: 'Partner',
-		order: 10
+		order: 10,
+		showInSummary: true
 	},
 	Barn: {
 		id: 'barn',
 		navn: 'Barn',
-		order: 20
+		order: 20,
+		showInSummary: true
 	}
 }
