@@ -75,15 +75,6 @@ const AttributtListe: Attributt[] = [
 				options: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }],
 				validation: yup.string().required('Velg identtype')
 			},
-			// {
-			// 	hovedKategori: Kategorier.PersInfo,
-			// 	subKategori: null,
-			// 	id: 'relasjoner.barn.antall',
-			// 	label: 'Antall',
-			// 	dataSource: DataSource.TPSF,
-			// 	inputType: InputType.Number,
-			// 	validation: yup.number().required('Velg antall')
-			// },
 			{
 				hovedKategori: Kategorier.PersInfo,
 				subKategori: SubKategorier.Diverse,
@@ -116,7 +107,7 @@ const AttributtListe: Attributt[] = [
 				validation: yup.date()
 			}
 		],
-		validation: yup.string()
+		validation: yup.object()
 	}
 ]
 

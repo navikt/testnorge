@@ -16,7 +16,9 @@ export default ({ brukerData }) => {
 			</NavLink>
 
 			<div className="menu-links">
-				<NavLink to="/">Testdatagrupper</NavLink>
+				<NavLink exact to="/">
+					Testdatagrupper
+				</NavLink>
 				<NavLink to="/team">Team</NavLink>
 				<NavLink to="/tpsendring">TPS-Endringsmelding</NavLink>
 				{/* <NavLink to="/kømanager">Kømanager</NavLink> */}
