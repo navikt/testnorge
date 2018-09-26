@@ -41,6 +41,8 @@ public class RsTpsfBestilling {
 
     private LocalDateTime doedsdato;
 
+    private String sivilstand;
+
     private LocalDateTime regdato;
 
     private LocalDateTime egenAnsattDatoFom;
