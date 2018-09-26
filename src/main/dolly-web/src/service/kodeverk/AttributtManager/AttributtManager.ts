@@ -5,6 +5,7 @@ import AttributtListe from './Attributter'
 import { groupList, groupListByHovedKategori } from './GroupList'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
+import _mapValues from 'lodash/mapValues'
 
 export default class AttributtManager {
 	listSelected(selectedIds: string[]): Attributt[] {
@@ -44,21 +45,33 @@ export default class AttributtManager {
 		const validationObject = list.reduce((prev, currentObject) => {
 			if (currentObject.inputType === 'multifield') {
 				const nestedValidation = currentObject.items.reduce((prevNestedItem, nestedItem) => {
-					if (nestedItem.validation)
-						return _set(prevNestedItem, nestedItem.id.split('.')[1], nestedItem.validation)
+					if (nestedItem.validation) {
+						const idArray = nestedItem.id.split('.')
+						const fieldId = idArray[idArray.length - 1]
+						return prevNestedItem.shape({ [fieldId]: nestedItem.validation })
+					}
 
 					return prevNestedItem
-				}, {})
+				}, yup.object())
 
-				return { ...prev, [currentObject.id]: yup.object(nestedValidation) }
+				//TODO: FINN MER GENERISK MÅTE Å LØSE DETTE PÅ
+				const idList = currentObject.id.split('.')
+				let completeValidation = { [idList[0]]: nestedValidation }
+				if (idList.length > 1) {
+					completeValidation[idList[0]] = yup.object().shape({ barn: nestedValidation })
+				}
+
+				return { ...prev, ...completeValidation }
 			}
+
 			return {
 				...prev,
 				[currentObject.id]: currentObject.validation
 			}
 		}, {})
 
-		return yup.object(validationObject)
+		console.log(validationObject)
+		return yup.object().shape(validationObject)
 	}
 
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
