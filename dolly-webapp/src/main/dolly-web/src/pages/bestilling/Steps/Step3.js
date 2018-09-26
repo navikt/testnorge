@@ -22,7 +22,7 @@ export default class Step3 extends PureComponent {
 	constructor(props) {
 		super(props)
 		this.AttributtManager = new AttributtManager()
-		this.SelectedAttributes = this.AttributtManager.listSelectedByHovedKategori(
+		this.SelectedAttributes = this.AttributtManager.listSelectedByHovedKategoriWithChildNodes(
 			props.selectedAttributeIds
 		)
 		this.EnvValidation = yup.object().shape({
@@ -42,20 +42,23 @@ export default class Step3 extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }) => (
 		<Fragment key={hovedKategori.navn}>
 			<h4>{hovedKategori.navn}</h4>
-			<div className="oppsummering-blokk">{items.map(item => this.renderItem(item))}</div>
+			<div className="oppsummering-blokk">{items.map(item => this.renderSubKategori(item))}</div>
 		</Fragment>
 	)
 
-	renderItem = item => {
-		if (item.inputType === 'multifield') {
-			return (
-				<div className="oppsummering-multifield" key={item.id}>
-					<h4>{item.label}</h4>
-					<div className="oppsummering-blokk">{item.items.map(item => this.renderItem(item))}</div>
-				</div>
-			)
+	renderSubKategori = ({ subKategori, items }) => {
+		if (!subKategori.showInSummary) {
+			return items.map(item => this.renderItem(item))
 		}
+		return (
+			<div className="oppsummering-multifield" key={subKategori.navn}>
+				<h4>{subKategori.navn}</h4>
+				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item))}</div>
+			</div>
+		)
+	}
 
+	renderItem = item => {
 		return (
 			<StaticValue
 				key={item.id}
