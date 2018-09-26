@@ -6,7 +6,6 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
-import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.exceptions.TpsfException;
@@ -16,7 +15,6 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -113,21 +111,5 @@ public class DollyTpsfService {
         }
 
         return env;
-    }
-
-    private String sendIdentTilSigrun(RsDollyBestillingsRequest request, BestillingProgress currentProgress){
-        /* Sigrunn Handlinger */
-        if (request.getSigrunRequest() != null) {
-            try {
-                List<RsGrunnlagResponse> res = sigrunStubApiService.createInntektstuff(request.getSigrunRequest());
-                currentProgress.setSigrunSuccessEnv("all");
-            } catch (Exception e) {
-                currentProgress.setFeil(e.getMessage());
-            }
-
-            currentProgress = bestillingProgressRepository.save(currentProgress);
-        }
-
-        return "";
     }
 }
