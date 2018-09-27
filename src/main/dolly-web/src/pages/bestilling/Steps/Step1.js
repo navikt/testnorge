@@ -7,6 +7,7 @@ import NavigationConnector from '../Navigation/NavigationConnector'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikInput } from '~/components/fields/Input/Input'
 import { Field, withFormik } from 'formik'
+import { animateScroll } from 'react-scroll'
 
 class Step1 extends Component {
 	static propTypes = {
@@ -17,9 +18,12 @@ class Step1 extends Component {
 		toggleAttributeSelection: PropTypes.func
 	}
 
+	_onSubmitForm = () => {
+		this.props.submitForm()
+		animateScroll.scrollToTop({ duration: 250 })
+	}
 	render() {
-		const { submitForm, selectedAttributeIds, toggleAttributeSelection } = this.props
-
+		const { selectedAttributeIds, toggleAttributeSelection } = this.props
 		// ident typer
 		const identOptions = [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
 
@@ -47,7 +51,7 @@ class Step1 extends Component {
 
 				<AttributtVelger onToggle={toggleAttributeSelection} selectedIds={selectedAttributeIds} />
 
-				<NavigationConnector onClickNext={submitForm} />
+				<NavigationConnector onClickNext={this._onSubmitForm} />
 			</div>
 		)
 	}
