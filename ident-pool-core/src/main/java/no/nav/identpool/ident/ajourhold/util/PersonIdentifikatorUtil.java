@@ -11,7 +11,13 @@ public class PersonIdentifikatorUtil {
     }
 
     public static LocalDate toBirthdate(String personIdentifikator) {
+
         int dag = Integer.parseInt(personIdentifikator.substring(0, 2));
+
+        if (Integer.parseInt(personIdentifikator.substring(0, 1)) > 3) {
+            dag = Integer.parseInt(personIdentifikator.substring(0, 2)) - 40;
+        }
+
         int maaned = Integer.parseInt(personIdentifikator.substring(2, 4));
         String aar = personIdentifikator.substring(4, 6);
         int epoke = Integer.parseInt(personIdentifikator.substring(6, 9));
@@ -24,14 +30,15 @@ public class PersonIdentifikatorUtil {
     }
 
     public static boolean gyldigPersonidentifikator(String personIdentifikator) {
+
         try {
-            Integer.parseInt(personIdentifikator);
+            Long.parseLong(personIdentifikator);
             int digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C1);
-            if (digit == 10 || digit != (personIdentifikator.charAt(9))) {
+            if (digit == 10 || digit != Character.getNumericValue(personIdentifikator.charAt(9))) {
                 return false;
             }
             digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C2);
-            return digit != 10 && digit == personIdentifikator.charAt(10);
+            return digit != 10 && digit == Character.getNumericValue(personIdentifikator.charAt(10));
         } catch (NumberFormatException e) {
             return false;
         }

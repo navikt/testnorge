@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,6 @@ public class IdentControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void hentLedigFnr() throws URISyntaxException {
-        populerDatabaseMedTestidenter();
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
                 .addParameter("antall", "1")
                 .addParameter("identtype", "FNR");
@@ -36,7 +36,6 @@ public class IdentControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void hentLedigDnr() throws URISyntaxException {
-        populerDatabaseMedTestidenter();
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
                 .addParameter("antall", "1")
                 .addParameter("identtype", "DNR");
@@ -49,7 +48,6 @@ public class IdentControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void skalFeileNaarUgyldigIdenttypeBrukes() throws URISyntaxException {
-        populerDatabaseMedTestidenter();
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
                 .addParameter("antall", "1")
                 .addParameter("identtype", "buksestørrelse");
@@ -59,7 +57,9 @@ public class IdentControllerComponentTest extends ComponentTestbase {
         assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
     }
 
+    @Before
     public void populerDatabaseMedTestidenter() {
+        identRepository.deleteAll();
         identRepository.saveAll(Arrays.asList(
                 IdentEntity.builder()
                         .identtype(Identtype.FNR)

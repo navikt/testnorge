@@ -21,7 +21,7 @@ public class DrekComponentTest extends ComponentTestbase {
     @Test
     public void registrerFinnesISkdUtenOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
-                .addParameter("personidentifikator", "711200510101")
+                .addParameter("personidentifikator", "10108000398")
                 .addParameter("foedselsdato", "2000-12-31")
                 .build();
 
@@ -32,7 +32,7 @@ public class DrekComponentTest extends ComponentTestbase {
     @Test
     public void registrerFinnesISkdMedGyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
-                .addParameter("personidentifikator", "711200510101")
+                .addParameter("personidentifikator", "10108000398")
                 .addParameter("foedselsdato", "2000-12-31")
                 .build();
 
@@ -45,7 +45,7 @@ public class DrekComponentTest extends ComponentTestbase {
     @Test
     public void registrerFinnesISkdMedUgyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
-                .addParameter("personidentifikator", "711200510101")
+                .addParameter("personidentifikator", "10108000398")
                 .addParameter("foedselsdato", "2000-12-31")
                 .build();
 
