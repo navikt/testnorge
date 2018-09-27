@@ -74,12 +74,12 @@ public class FnrGenerator {
         if (digit1 == 10) {
             return null;
         }
-        number += digit1;
+        number += Integer.toString(digit1);
         int digit2 = getControlDigit(number, CONTROL_DIGIT_C2);
         if (digit2 == 10) {
             return null;
         }
-        return number + digit2;
+        return number + Integer.toString(digit2);
     }
 
     private static int getControlDigit(String fnr, int... sequence) {

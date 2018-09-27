@@ -2,7 +2,7 @@ package no.nav.identpool.ident.ajourhold.util;
 
 import java.time.LocalDate;
 
-public class PersonIdentifikatorUtil {
+public final class PersonIdentifikatorUtil {
 
     private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
     private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
@@ -24,17 +24,12 @@ public class PersonIdentifikatorUtil {
     }
 
     public static boolean gyldigPersonidentifikator(String personIdentifikator) {
-        try {
-            Integer.parseInt(personIdentifikator);
             int digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C1);
             if (digit == 10 || digit != (personIdentifikator.charAt(9))) {
                 return false;
             }
             digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C2);
             return digit != 10 && digit == personIdentifikator.charAt(10);
-        } catch (NumberFormatException e) {
-            return false;
-        }
     }
 
     private static int getControlDigit(String fnr, int... sequence) {

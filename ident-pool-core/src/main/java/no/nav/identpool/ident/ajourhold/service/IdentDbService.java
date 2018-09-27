@@ -103,7 +103,7 @@ public class IdentDbService {
         }
     }
 
-    private void storeIdenter(boolean[] identerIBruk, String[] identer) {
+    private void storeIdenter(boolean[] identerIBruk, String... identer) {
         identRepository.saveAll(
                 IntStream.range(0, identer.length)
                         .filter(j -> !identerIBruk[j])

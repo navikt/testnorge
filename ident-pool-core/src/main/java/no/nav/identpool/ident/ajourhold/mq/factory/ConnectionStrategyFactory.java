@@ -13,12 +13,12 @@ import no.nav.identpool.ident.ajourhold.mq.strategy.ConnectionStrategy;
 public class ConnectionStrategyFactory {
 
     @Value("${mq.channel.postfix}")
-    private String CHANNELPOSTFIX;
+    private String channelPostfix;
 
     private final FasitClient fasitClient;
 
     ConnectionStrategy createConnectionStrategy(String environment) {
-        String channel = environment + CHANNELPOSTFIX;
+        String channel = environment + channelPostfix;
         QueueManager queueManager = fasitClient.getQueueManager(environment);
         return new ConnectionStrategy(queueManager.getName(), queueManager.getHostname(), Integer.parseInt(queueManager.getPort()), channel);
     }

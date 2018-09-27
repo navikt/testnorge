@@ -28,7 +28,7 @@ public abstract class TpsServiceRutine {
             return new TpsXmlRoot(this).toXml();
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
-            throw new IllegalArgumentException("Could not convert object to xml");
+            throw new IllegalArgumentException(e);
         }
     }
 }

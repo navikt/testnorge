@@ -137,6 +137,6 @@ public class DefaultMessageQueue implements MessageQueue {
     }
 
     public boolean ping() throws JMSException {
-        return !this.sendMessage(PING_MESSAGE).equals("");
+        return !"".equals(this.sendMessage(PING_MESSAGE));
     }
 }
