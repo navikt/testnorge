@@ -57,7 +57,7 @@ public class TpsfApiService {
 
     private String buildTpsfUrlFromEnvironmentsInput(List<String> environments){
         StringBuilder sb = new StringBuilder();
-        sb.append(tpsfProps).append(TPSF_BASE_URL).append(TPSF_SEND_TPS_FLERE_URL).append("?environments=");
+        sb.append(tpsfProps.getUrl()).append(TPSF_BASE_URL).append(TPSF_SEND_TPS_FLERE_URL).append("?environments=");
         environments.forEach(env -> sb.append(env).append(","));
         return sb.toString().substring(0, sb.length() - 1);
     }
