@@ -14,7 +14,7 @@ public class QueueContextController {
 
     @GetMapping(value = "env", produces = "text/plain")
     public ResponseEntity<String> getQueueEnvironContext() {
-        StringBuilder builder = new StringBuilder("Included: ");
+        StringBuilder builder = new StringBuilder(28).append("Included: ");
         QueueContext.getIncluded().stream().map(env -> env + ", ").forEach(builder::append);
         builder.append("\r\n\r\nExcluded: ");
         QueueContext.getExcluded().stream().map(env -> env + ", ").forEach(builder::append);

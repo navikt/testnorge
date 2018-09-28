@@ -82,8 +82,8 @@ public class DefaultMessageQueue implements MessageQueue {
     }
 
     private void sendMessageSession(BiConsumer<Integer, String> consumer, Function<Integer, Boolean> ignoreIndex,
-            List<String> requestMessages, Connection connection, int initialIndex, int InitialRetryCount) throws JMSException {
-        int retryCount = InitialRetryCount;
+            List<String> requestMessages, Connection connection, int initialIndex, int initialRetryCount) throws JMSException {
+        int retryCount = initialRetryCount;
         int index = initialIndex;
 
         try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
