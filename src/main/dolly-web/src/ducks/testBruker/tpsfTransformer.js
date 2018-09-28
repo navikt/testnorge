@@ -15,7 +15,11 @@ const relasjonTranslator = relasjon => {
 		case 'EKTEFELLE':
 			return 'PARTNER'
 		case 'MOR':
+			return 'MOR'
 		case 'FAR':
+			return 'FAR'
+		case 'BARN':
+		case 'FOEDSEL':
 			return 'BARN'
 		default:
 			return 'UKJENT'
