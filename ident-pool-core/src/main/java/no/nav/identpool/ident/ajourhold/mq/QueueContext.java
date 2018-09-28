@@ -25,14 +25,16 @@ public class QueueContext {
     @Value("#{'${mq.context.exclude}'.split(',')}")
     private String[] excluded;
 
-    private static final HashSet<String> environments = new LinkedHashSet<>();
-    private static final HashSet<String> filteredEnvironments = new LinkedHashSet<>();
+    private static HashSet<String> environments;
+    private static HashSet<String> filteredEnvironments;
 
     private final FasitClient fasitClient;
     private final MessageQueueFactory queueFactory;
 
     @PostConstruct
     private void init() {
+        environments = new LinkedHashSet<>();
+        filteredEnvironments = new LinkedHashSet<>();
         environments.addAll(fasitClient.getAllEnvironments("t", "q"));
         List<String> excludedEnvironments = Arrays.stream(excluded).collect(Collectors.toList());
         environments.removeAll(excludedEnvironments);
