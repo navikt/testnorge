@@ -91,7 +91,7 @@ public class IdentDbService {
         });
         return fnrArray
                 .stream()
-                .map(array -> array.toArray(new String[0]))
+                .map(array -> array.toArray(new String[array.size()]))
                 .toArray(String[][]::new);
     }
 
