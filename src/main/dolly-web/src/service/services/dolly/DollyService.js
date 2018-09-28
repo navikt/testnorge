@@ -114,4 +114,8 @@ export default class DollyService {
 	static getBestillingStatus(bestillingId) {
 		return Request.get(Endpoints.bestillingStatus(bestillingId))
 	}
+
+	static getConfig() {
+		return Request.get(Endpoints.config())
+	}
 }

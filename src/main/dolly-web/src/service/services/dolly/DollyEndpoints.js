@@ -1,4 +1,5 @@
 import config from '~/config'
+
 const uri = config.services.dollyBackend
 
 const groupBase = `${uri}/gruppe`
@@ -6,6 +7,7 @@ const teamBase = `${uri}/team`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
+const configBase = `${uri}/config`
 
 class DollyEndpoints {
 	static gruppe() {
@@ -86,6 +88,10 @@ class DollyEndpoints {
 
 	static bestillingStatus(bestillingId) {
 		return `${bestillingBase}/${bestillingId}`
+	}
+
+	static config() {
+		return configBase
 	}
 }
 
