@@ -2,14 +2,10 @@ package no.nav.identpool.ident.ajourhold.mq.factory;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import lombok.RequiredArgsConstructor;
-
 import no.nav.identpool.ident.ajourhold.mq.consumer.DefaultMessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.strategy.ConnectionStrategy;
@@ -31,17 +27,15 @@ public class MessageQueueFactory {
     private final ConnectionFactoryFactory connectionFactoryFactory;
 
     public MessageQueue createMessageQueue(String environment) throws JMSException {
-        environment = environment.toUpperCase();
-        String requestQueue = String.format(tpsRequestQueue, environment);
-        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment);
+        String requestQueue = String.format(tpsRequestQueue, environment.toUpperCase());
+        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment.toUpperCase());
         ConnectionFactory connectionFactory = connectionFactoryFactory.createConnectionFactory(connectionStrategy, false);
         return new DefaultMessageQueue(requestQueue, connectionFactory, messageQueueUsername, messageQueuePassword);
     }
 
     public MessageQueue createMessageQueueIgnoreCache(String environment) throws JMSException {
-        environment = environment.toUpperCase();
-        String requestQueue = String.format(tpsRequestQueue, environment);
-        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment);
+        String requestQueue = String.format(tpsRequestQueue, environment.toUpperCase());
+        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment.toUpperCase());
         ConnectionFactory connectionFactory = connectionFactoryFactory.createConnectionFactory(connectionStrategy, true);
         return new DefaultMessageQueue(requestQueue, connectionFactory, messageQueueUsername, messageQueuePassword);
     }

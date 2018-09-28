@@ -40,7 +40,7 @@ public class IdentMQService {
                 .collect(Collectors.toMap(i -> fnrs[i], i -> fnrExists[i]));
     }
 
-    public boolean[][] fnrsExistsArray(String[][] fnrs) {
+    public boolean[][] fnrsExistsArray(String[]... fnrs) {
         return fnrsExistsArray(QueueContext.getIncluded(), fnrs);
     }
 
@@ -82,7 +82,7 @@ public class IdentMQService {
         return identerIBruk;
     }
 
-    private String[] fnrsToRequests(String[] fnrs) {
+    private String[] fnrsToRequests(String... fnrs) {
         return Arrays.stream(fnrs).map(fnr -> new Personopplysning(fnr).toXml())
                 .toArray(String[]::new);
     }
@@ -96,7 +96,7 @@ public class IdentMQService {
 
         private MessageQueue messageQueue;
 
-        IdentThread(String environment, int startIndex, String[] messageArray, boolean[] identInUseArray) {
+        IdentThread(String environment, int startIndex, String[] messageArray, boolean... identInUseArray) {
             this.environment = environment;
             this.startIndex = startIndex;
             this.messageArray = messageArray;

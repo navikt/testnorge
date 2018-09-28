@@ -49,9 +49,9 @@ public class FnrGenerator {
     }
 
     private static List<String> generateNumbers(LocalDate birthdate) {
-        String date = formatter.format(birthdate) + "%03d";
+        String dateFormat = formatter.format(birthdate) + "%03d";
         return getCategoryRange(birthdate)
-                .mapToObj(number -> generateFnr(String.format(date, number)))
+                .mapToObj(number -> generateFnr(String.format(dateFormat, number)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -69,17 +69,18 @@ public class FnrGenerator {
         }
     }
 
-    private static String generateFnr(String number) {
-        int digit1 = getControlDigit(number, CONTROL_DIGIT_C1);
+    private static String generateFnr(String birthdate) {
+
+        int digit1 = getControlDigit(birthdate, CONTROL_DIGIT_C1);
         if (digit1 == 10) {
             return null;
         }
-        number += digit1;
-        int digit2 = getControlDigit(number, CONTROL_DIGIT_C2);
+
+        int digit2 = getControlDigit(birthdate + digit1, CONTROL_DIGIT_C2);
         if (digit2 == 10) {
             return null;
         }
-        return number + digit2;
+        return birthdate + digit1 + digit2;
     }
 
     private static int getControlDigit(String fnr, int... sequence) {

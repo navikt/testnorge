@@ -11,17 +11,20 @@ public class ConnectionStrategy {
     private final String hostName;
     private final Integer port;
     private final String channel;
-    private final static Integer transportType = 1;
+    private static final Integer TRANSPORT_TYPE = 1;
 
     public Integer getTransportType() {
-        return transportType;
+        return TRANSPORT_TYPE;
     }
 
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof ConnectionStrategy)) {
+        if (o == null) {
+            return false;
+        }
+        if (o.getClass() != this.getClass()) {
             return false;
         }
         ConnectionStrategy strategy = (ConnectionStrategy) o;

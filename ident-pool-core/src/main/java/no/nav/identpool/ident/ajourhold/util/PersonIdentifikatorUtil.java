@@ -2,7 +2,7 @@ package no.nav.identpool.ident.ajourhold.util;
 
 import java.time.LocalDate;
 
-public class PersonIdentifikatorUtil {
+public final class PersonIdentifikatorUtil {
 
     private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
     private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
@@ -19,29 +19,25 @@ public class PersonIdentifikatorUtil {
         }
 
         int maaned = Integer.parseInt(personIdentifikator.substring(2, 4));
-        String aar = personIdentifikator.substring(4, 6);
+        String aarstall = personIdentifikator.substring(4, 6);
+        StringBuilder aar = new StringBuilder();
         int epoke = Integer.parseInt(personIdentifikator.substring(6, 9));
         if (epoke > 0 && epoke < 500) {
-            aar = "19" + aar;
+            aar.append(19).append(aarstall);
         } else {
-            aar = "20" + aar;
+            aar.append(20).append(aarstall);
         }
-        return LocalDate.of(Integer.parseInt(aar), maaned, dag);
+        return LocalDate.of(Integer.parseInt(aar.toString()), maaned, dag);
     }
 
     public static boolean gyldigPersonidentifikator(String personIdentifikator) {
-
-        try {
-            Long.parseLong(personIdentifikator);
-            int digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C1);
-            if (digit == 10 || digit != Character.getNumericValue(personIdentifikator.charAt(9))) {
-                return false;
-            }
-            digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C2);
-            return digit != 10 && digit == Character.getNumericValue(personIdentifikator.charAt(10));
-        } catch (NumberFormatException e) {
+        int digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C1);
+        if (digit == 10 || digit != Character.getNumericValue(personIdentifikator.charAt(9))) {
             return false;
         }
+        digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C2);
+
+        return digit != 10 && digit == Character.getNumericValue(personIdentifikator.charAt(10));
     }
 
     private static int getControlDigit(String fnr, int... sequence) {

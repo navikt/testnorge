@@ -89,7 +89,10 @@ public class IdentDbService {
 
             }
         });
-        return fnrArray.stream().map(array -> array.toArray(new String[0])).toArray(String[][]::new);
+        return fnrArray
+                .stream()
+                .map(array -> array.toArray(new String[0]))
+                .toArray(String[][]::new);
     }
 
     private void checkMqStore(int startIndex, int numberOfThreads, String[]... fnrs) {
@@ -103,7 +106,7 @@ public class IdentDbService {
         }
     }
 
-    private void storeIdenter(boolean[] identerIBruk, String[] identer) {
+    private void storeIdenter(boolean[] identerIBruk, String... identer) {
         identRepository.saveAll(
                 IntStream.range(0, identer.length)
                         .filter(j -> !identerIBruk[j])
