@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.freg.fasit.utils.config.FasitServiceFactory;
 import no.nav.identpool.ident.ajourhold.fasit.FasitClient;
 import no.nav.identpool.ident.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
@@ -22,7 +23,8 @@ import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
 @RequiredArgsConstructor
 public class QueueContext {
 
-    private static String[] EXCLUDED;
+    @Value("#{'${mq.context.exclude}'.split(',')}")
+    private String[] excluded;
 
     private static final HashSet<String> environments = new LinkedHashSet<>();
     private static final HashSet<String> filteredEnvironments = new LinkedHashSet<>();
@@ -30,36 +32,20 @@ public class QueueContext {
     private final FasitClient fasitClient;
     private final MessageQueueFactory queueFactory;
 
-    private static FasitClient staticFasitClient;
-    private static MessageQueueFactory staticQueueFactory;
 
-    @Value("#{'${mq.context.exclude}'.split(',')}")
-    public void setExcluded(String[] excluded) {
-        EXCLUDED = excluded;
-    }
-
-    private static void initFasitStuff(){
-
-        environments.addAll(staticFasitClient.getAllEnvironments("t", "q"));
-        List<String> excludedEnvironments = Arrays.stream(EXCLUDED).collect(Collectors.toList());
+    @PostConstruct
+    private void init() {
+        environments.addAll(fasitClient.getAllEnvironments("t", "q"));
+        List<String> excludedEnvironments = Arrays.stream(excluded).collect(Collectors.toList());
         environments.removeAll(excludedEnvironments);
         excludedEnvironments.retainAll(environments);
 
         filteredEnvironments.addAll(environments.stream()
-                .filter(QueueContext::filterOnQueue)
+                .filter(this::filterOnQueue)
                 .collect(Collectors.toCollection(HashSet::new)));
 
         environments.removeAll(filteredEnvironments);
         filteredEnvironments.addAll(excludedEnvironments);
-    }
-
-
-    @PostConstruct
-    private void init() {
-        staticFasitClient = fasitClient;
-        staticQueueFactory = queueFactory;
-
-        initFasitStuff();
 
         logInfo("Failed to create Connection factories for the following enironments:  ",
                 filteredEnvironments);
@@ -70,16 +56,16 @@ public class QueueContext {
         logInfo("Exclueded enviroments: ", filteredEnvironments);
     }
 
-    private static boolean filterOnQueue(String environ) {
+    private boolean filterOnQueue(String environ) {
         try {
-            MessageQueue queue = staticQueueFactory.createMessageQueue(environ);
+            MessageQueue queue = queueFactory.createMessageQueue(environ);
             return !queue.ping();
         } catch (JMSException e) {
             return true;
         }
     }
 
-    private static void logInfo(String prefix, Set<String> set) {
+    private void logInfo(String prefix, Set<String> set) {
         StringBuilder builder = new StringBuilder(prefix.length());
         builder.append(prefix);
         set.stream().map(e -> e + ", ").forEach(builder::append);
