@@ -74,7 +74,7 @@ public class QueueContext {
         return new HashSet<>(environments);
     }
 
-    static HashSet<String> getExcluded() {
+    static Set<String> getExcluded() {
         return new HashSet<>(filteredEnvironments);
     }
 }
