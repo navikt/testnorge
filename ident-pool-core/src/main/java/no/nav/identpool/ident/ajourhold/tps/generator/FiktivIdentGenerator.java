@@ -109,18 +109,17 @@ public class FiktivIdentGenerator {
         return rangeList;
     }
 
-    private static String genererIndividnummer(int rangeStart, int rangeSlutt, Character kjonn) {
+    private static String genererIndividnummer(int rangeStart, int rangeSlutt, Character kjoenn) {
         int individNummber;
 
         char kjoennPaaIdent;
-        if (kjonn == null) {
+        if (kjoenn == null) {
             kjoennPaaIdent = lagTilfeldigKvinneEllerMann();
         } else {
-            kjonn = Character.toUpperCase(kjonn);
-            if (kjonn != 'K' && kjonn != 'M') {
+            if (Character.toUpperCase(kjoenn) != 'K' && Character.toUpperCase(kjoenn) != 'M') {
                 kjoennPaaIdent = lagTilfeldigKvinneEllerMann();
             } else {
-                kjoennPaaIdent = kjonn;
+                kjoennPaaIdent = kjoenn;
             }
         }
 

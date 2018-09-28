@@ -21,7 +21,10 @@ public class ConnectionStrategy {
         if (o == this) {
             return true;
         }
-        if (!(o.getClass() == this.getClass())) {
+        if (o == null) {
+            return false;
+        }
+        if (o.getClass() != this.getClass()) {
             return false;
         }
         ConnectionStrategy strategy = (ConnectionStrategy) o;

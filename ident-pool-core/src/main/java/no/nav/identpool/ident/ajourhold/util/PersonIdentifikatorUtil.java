@@ -13,14 +13,15 @@ public final class PersonIdentifikatorUtil {
     public static LocalDate toBirthdate(String personIdentifikator) {
         int dag = Integer.parseInt(personIdentifikator.substring(0, 2));
         int maaned = Integer.parseInt(personIdentifikator.substring(2, 4));
-        String aar = personIdentifikator.substring(4, 6);
+        String aarstall = personIdentifikator.substring(4, 6);
+        StringBuilder aar = new StringBuilder();
         int epoke = Integer.parseInt(personIdentifikator.substring(6, 9));
         if (epoke > 0 && epoke < 500) {
-            aar = "19" + aar;
+            aar.append(19).append(aarstall);
         } else {
-            aar = "20" + aar;
+            aar.append(20).append(aarstall);
         }
-        return LocalDate.of(Integer.parseInt(aar), maaned, dag);
+        return LocalDate.of(Integer.parseInt(aar.toString()), maaned, dag);
     }
 
     public static boolean gyldigPersonidentifikator(String personIdentifikator) {

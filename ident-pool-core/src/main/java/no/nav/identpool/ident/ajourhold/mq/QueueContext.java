@@ -1,5 +1,6 @@
 package no.nav.identpool.ident.ajourhold.mq;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,7 +23,7 @@ import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
 public class QueueContext {
 
     @Value("#{'${mq.context.exclude}'.split(',')}")
-    private List<String> excluded;
+    private String[] excluded;
 
     private static final HashSet<String> environments = new LinkedHashSet<>();
     private static final HashSet<String> filteredEnvironments = new LinkedHashSet<>();
@@ -33,15 +34,16 @@ public class QueueContext {
     @PostConstruct
     private void init() {
         environments.addAll(fasitClient.getAllEnvironments("t", "q"));
-        environments.removeAll(excluded);
-        excluded.retainAll(environments);
+        List<String> excludedEnvironments = Arrays.stream(excluded).collect(Collectors.toList());
+        environments.removeAll(excludedEnvironments);
+        excludedEnvironments.retainAll(environments);
 
         filteredEnvironments.addAll(environments.stream()
                 .filter(this::filterOnQueue)
                 .collect(Collectors.toCollection(HashSet::new)));
 
         environments.removeAll(filteredEnvironments);
-        filteredEnvironments.addAll(excluded);
+        filteredEnvironments.addAll(excludedEnvironments);
 
         logInfo("Failed to create Connection factories for the following enironments:  ",
                 filteredEnvironments);

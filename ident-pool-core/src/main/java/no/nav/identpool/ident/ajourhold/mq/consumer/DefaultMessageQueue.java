@@ -69,6 +69,7 @@ public class DefaultMessageQueue implements MessageQueue {
             List<String> requestMessages,
             int index, int retryCount) throws JMSException {
         try (Connection connection = connectionFactory.createConnection(username, password)) {
+
             connection.start();
             sendMessageSession(consumer, ignoreIndex, requestMessages, connection, index, RETRYCOUNT);
         } catch (JMSException e) {
@@ -80,14 +81,13 @@ public class DefaultMessageQueue implements MessageQueue {
         }
     }
 
-    private void sendMessageSession(
-            BiConsumer<Integer, String> consumer,
-            Function<Integer, Boolean> ignoreIndex,
-            List<String> requestMessages,
-            Connection connection,
-            int index, int retryCount) throws JMSException {
+    private void sendMessageSession(BiConsumer<Integer, String> consumer, Function<Integer, Boolean> ignoreIndex,
+            List<String> requestMessages, Connection connection, int initialIndex, int InitialRetryCount) throws JMSException {
+        int retryCount = InitialRetryCount;
+        int index = initialIndex;
 
         try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
+
             Iterator<String> iterator = requestMessages.iterator();
             while (iterator.hasNext()) {
                 String message = iterator.next();

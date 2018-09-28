@@ -27,17 +27,15 @@ public class MessageQueueFactory {
     private final ConnectionFactoryFactory connectionFactoryFactory;
 
     public MessageQueue createMessageQueue(String environment) throws JMSException {
-        environment = environment.toUpperCase();
-        String requestQueue = String.format(tpsRequestQueue, environment);
-        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment);
+        String requestQueue = String.format(tpsRequestQueue, environment.toUpperCase());
+        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment.toUpperCase());
         ConnectionFactory connectionFactory = connectionFactoryFactory.createConnectionFactory(connectionStrategy, false);
         return new DefaultMessageQueue(requestQueue, connectionFactory, messageQueueUsername, messageQueuePassword);
     }
 
     public MessageQueue createMessageQueueIgnoreCache(String environment) throws JMSException {
-        environment = environment.toUpperCase();
-        String requestQueue = String.format(tpsRequestQueue, environment);
-        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment);
+        String requestQueue = String.format(tpsRequestQueue, environment.toUpperCase());
+        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment.toUpperCase());
         ConnectionFactory connectionFactory = connectionFactoryFactory.createConnectionFactory(connectionStrategy, true);
         return new DefaultMessageQueue(requestQueue, connectionFactory, messageQueueUsername, messageQueuePassword);
     }

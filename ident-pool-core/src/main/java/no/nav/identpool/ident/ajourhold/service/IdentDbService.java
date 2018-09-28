@@ -89,7 +89,10 @@ public class IdentDbService {
 
             }
         });
-        return fnrArray.stream().map(array -> array.toArray(new String[0])).toArray(String[][]::new);
+        return fnrArray
+                .stream()
+                .map(array -> array.toArray(new String[0]))
+                .toArray(String[][]::new);
     }
 
     private void checkMqStore(int startIndex, int numberOfThreads, String[]... fnrs) {
