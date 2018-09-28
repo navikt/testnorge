@@ -5,7 +5,7 @@ import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
-import no.nav.dolly.properties.TpsfProps;
+import no.nav.dolly.properties.ProvidersProps;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +21,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import static org.hamcrest.core.Is.is;
@@ -43,14 +42,14 @@ public class TpsfApiServiceTest {
 
     @Mock RestTemplate restTemplate;
     @Mock ObjectMapper objectMapper;
-    @Mock TpsfProps tpsfProps;
+    @Mock ProvidersProps providersProps;
 
     @InjectMocks
     private TpsfApiService service;
 
     @Before
     public void setup(){
-        when(tpsfProps.getUrl()).thenReturn("https://localhost:8080");
+        when(providersProps.getTpsf().getUrl()).thenReturn("https://localhost:8080");
     }
 
     @Test
@@ -92,6 +91,26 @@ public class TpsfApiServiceTest {
         service.opprettIdenterTpsf(standardTpsfBestilling);
     }
 
+    @Test(expected = TpsfException.class)
+    public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException(){
+        Object s = "exception=Feil";
+        ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
+        RestTemplateFailure resExp = new RestTemplateFailure();
+        resExp.setMessage("msg");
+        resExp.setError("err");
+
+        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
+        when(objectMapper.convertValue(s, RestTemplateFailure.class)).thenReturn(resExp);
+
+        RsSkdMeldingResponse ressponse = service.sendIdenterTilTpsFraTPSF(standardIdenter, standardMiljoer_u1_t1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void sendIdenterTilTpsFraTPSF_hvisIngenMiljoerErSpesifisertSaaKastesIllegalArgumentException(){
+        List<String> tomListe = new ArrayList<>();
+        service.sendIdenterTilTpsFraTPSF(standardIdenter, tomListe);
+    }
+
     @Test
     public void sendTilTpsFraTPSF_happyPath(){
         ArgumentCaptor<String> endpointCaptor = ArgumentCaptor.forClass(String.class);
@@ -105,7 +124,7 @@ public class TpsfApiServiceTest {
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
         when(objectMapper.convertValue(s, RsSkdMeldingResponse.class)).thenReturn(res);
 
-        RsSkdMeldingResponse ressponse = service.sendTilTpsFraTPSF(standardIdenter, standardMiljoer_u1_t1);
+        RsSkdMeldingResponse ressponse = service.sendIdenterTilTpsFraTPSF(standardIdenter, standardMiljoer_u1_t1);
         verify(restTemplate).exchange(endpointCaptor.capture(), httpMethodCaptor.capture(), httpEntityCaptor.capture(), eq(Object.class));
 
         assertThat(endpointCaptor.getValue().contains("u1"), is(true));

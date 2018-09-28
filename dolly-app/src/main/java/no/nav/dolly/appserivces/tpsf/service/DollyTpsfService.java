@@ -6,9 +6,9 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
-import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingService;
@@ -76,14 +76,14 @@ public class DollyTpsfService {
 
     private void senderIdenterTilTPS(RsDollyBestillingsRequest request,  List<String> klareIdenter, Testgruppe testgruppe, Bestilling bestilling, BestillingProgress progress) {
         try {
-            RsSkdMeldingResponse response = tpsfApiService.sendTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
+            RsSkdMeldingResponse response = tpsfApiService.sendIdenterTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
             String env = extractSuccessEnvTPS(response.getSendSkdMeldingTilTpsResponsene().get(0));
 
             if (!isNullOrEmpty(env)) {
                 identService.saveIdentTilGruppe(getHovedpersonAvBestillingsidenter(klareIdenter), testgruppe);
                 progress.setTpsfSuccessEnv(env);
             }
-        } catch (TpsfException e) {
+        } catch (Exception e) {
             progress.setFeil(e.getMessage());
         }
 
@@ -92,7 +92,7 @@ public class DollyTpsfService {
     }
 
     private String getHovedpersonAvBestillingsidenter(List<String> identer){
-        return identer.get(0); //TODO Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
+        return identer.get(0); //Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
     }
 
     private String extractSuccessEnvTPS(SendSkdMeldingTilTpsResponse response) {

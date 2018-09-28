@@ -5,7 +5,6 @@ import no.nav.dolly.appserivces.tpsf.restcom.TpsfApiService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
@@ -32,11 +31,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.Matchers.both;
-import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -63,6 +60,7 @@ public class DollyTpsfServiceTest {
     private Long standardGruppeId = 1L;
     private Long bestillingsId = 2l;
     private String standardHovedident = "10";
+    private String standardFeilmelding = "feil";
     List<String> standardIdenter = Arrays.asList(standardHovedident, "34", "56");
 
     @Mock
@@ -113,11 +111,11 @@ public class DollyTpsfServiceTest {
     }
 
     @Test
-    public void opprettPersonerByKriterierAsync_bestillingBlirSattFerdigNaarExceptionKastesUnderOppretting() throws Exception {
+    public void opprettPersonerByKriterierAsync_bestillingBlirSattFerdigNaarExceptionKastesUnderOppretting() {
         when(tpsfApiService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
         when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
-        when(tpsfApiService.sendTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
+        when(tpsfApiService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
         when(bestillingProgressRepository.save(any())).thenThrow(standardTpsfException);
 
         dollyTpsfService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
@@ -139,7 +137,7 @@ public class DollyTpsfServiceTest {
         when(tpsfApiService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
         when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
-        when(tpsfApiService.sendTilTpsFraTPSF(any(), any())).thenReturn(response);
+        when(tpsfApiService.sendIdenterTilTpsFraTPSF(any(), any())).thenReturn(response);
 
         dollyTpsfService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
 
@@ -153,5 +151,72 @@ public class DollyTpsfServiceTest {
         assertThat(bestillingProgress.getTpsfSuccessEnv().contains("u1"), is(true));
         assertThat(bestillingProgress.getTpsfSuccessEnv().contains("t2"), is(true));
         assertThat(bestillingProgress.getTpsfSuccessEnv().contains("q3"), is(false));
+        assertThat(bestillingProgress.getFeil(), is(nullValue()));
     }
+
+    @Test
+    public void opprettPersonerByKriterierAsync_hvisFlereIdenterBestillesOgEnFeilerOgEnOkSaaEtBestillingProgressObjMedFeilOgEtMedOk(){
+        int bestiltAntallIdenter = 2;
+        standardBestillingRequest_u1_t2_q3.setAntall(bestiltAntallIdenter);
+        standardSkdResponse.setStatus(status_SuccU1T2_FailQ3);
+
+        RsSkdMeldingResponse response = new RsSkdMeldingResponse();
+        response.setSendSkdMeldingTilTpsResponsene(Arrays.asList(standardSkdResponse));
+
+        TpsfException tpsfException = new TpsfException(standardFeilmelding);
+
+        when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
+        when(tpsfApiService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
+        when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
+        when(tpsfApiService.sendIdenterTilTpsFraTPSF(any(), any())).thenReturn(response).thenThrow(tpsfException);
+
+        dollyTpsfService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
+
+        ArgumentCaptor<BestillingProgress> argumentCaptor = ArgumentCaptor.forClass(BestillingProgress.class);
+
+        verify(identService, times(1)).saveIdentTilGruppe(standardHovedident, standardGruppe);
+        verify(bestillingProgressRepository, times(2)).save(argumentCaptor.capture());
+
+        List<BestillingProgress> bestillingProgresses = argumentCaptor.getAllValues();
+        BestillingProgress bestillingProgressOK = bestillingProgresses.get(0);
+        BestillingProgress bestillingProgressFEIL = bestillingProgresses.get(1);
+
+        assertThat(bestillingProgressOK.getTpsfSuccessEnv().contains("u1"), is(true));
+        assertThat(bestillingProgressOK.getTpsfSuccessEnv().contains("t2"), is(true));
+        assertThat(bestillingProgressOK.getTpsfSuccessEnv(), is("u1,t2"));
+        assertThat(bestillingProgressOK.getTpsfSuccessEnv().contains("q3"), is(false));
+        assertThat(bestillingProgressOK.getFeil(), is(nullValue()));
+
+        assertThat(bestillingProgressFEIL.getTpsfSuccessEnv(), is(nullValue()));
+        assertThat(bestillingProgressFEIL.getFeil(), is(notNullValue()));
+        assertThat(bestillingProgressFEIL.getFeil(), is(standardFeilmelding));
+    }
+
+    @Test
+    public void opprettPersonerByKriterierAsync_lagrerFeilIProgressHvisSendingAvIdenterTilTpsMiljoFeiler() throws Exception {
+        standardSkdResponse.setStatus(status_SuccU1T2_FailQ3);
+
+        RsSkdMeldingResponse response = new RsSkdMeldingResponse();
+        response.setSendSkdMeldingTilTpsResponsene(Arrays.asList(standardSkdResponse));
+        TpsfException tpsfException = new TpsfException(standardFeilmelding);
+
+        when(tpsfApiService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
+        when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
+        when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
+        when(tpsfApiService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(tpsfException);
+
+        dollyTpsfService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
+
+        ArgumentCaptor<BestillingProgress> argumentCaptor = ArgumentCaptor.forClass(BestillingProgress.class);
+
+        verify(identService, never()).saveIdentTilGruppe(standardHovedident, standardGruppe);
+        verify(bestillingProgressRepository).save(argumentCaptor.capture());
+
+        BestillingProgress bestillingProgress = argumentCaptor.getValue();
+
+        assertThat(bestillingProgress.getFeil(), is(notNullValue()));
+        assertThat(bestillingProgress.getFeil(), is(standardFeilmelding));
+    }
+
+
 }

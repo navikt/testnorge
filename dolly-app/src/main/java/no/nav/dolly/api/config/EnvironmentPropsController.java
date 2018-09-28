@@ -1,7 +1,7 @@
 package no.nav.dolly.api.config;
 
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfProps;
-import no.nav.dolly.properties.TpsfProps;
+import no.nav.dolly.properties.ProvidersProps;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class EnvironmentPropsController {
 
     @Autowired
-    private TpsfProps tpsfProps;
+    private ProvidersProps providersProps;
 
     @GetMapping
     public RsTpsfProps getEnvironmentProps() {
-        return RsTpsfProps.builder().url(tpsfProps.getUrl()).build();
+        return RsTpsfProps.builder().url(providersProps.getTpsf().getUrl()).build();
     }
 }
