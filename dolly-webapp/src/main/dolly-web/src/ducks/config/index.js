@@ -5,13 +5,13 @@ import success from '~/utils/SuccessAction'
 export const getDollyApiConfig = createAction('GET_DOLLY_API_CONFIG', DollyApi.getConfig)
 
 const initialState = {
-	config: null
+	dollyApi: null
 }
 
 export default handleActions(
 	{
 		[success(getDollyApiConfig)](state, action) {
-			return { ...state, config: action.payload.data }
+			return { ...state, dollyApi: action.payload.data }
 		}
 	},
 	initialState
