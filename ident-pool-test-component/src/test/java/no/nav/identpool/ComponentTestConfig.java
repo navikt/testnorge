@@ -1,8 +1,5 @@
 package no.nav.identpool;
 
-import static org.mockito.Mockito.mock;
-
-import org.mockito.Mock;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,10 +10,10 @@ import no.nav.identpool.ident.ajourhold.CronJobService;
 import no.nav.identpool.ident.ajourhold.mq.QueueContext;
 import no.nav.identpool.ident.ajourhold.mq.factory.ConnectionStrategyFactory;
 import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
-import no.nav.identpool.ident.ajourhold.util.PersonIdentifikatorUtil;
 
 @Configuration
-@ComponentScan(basePackages = "no.nav.identpool") class ComponentTestConfig {
+@ComponentScan(basePackages = "no.nav.identpool")
+class ComponentTestConfig {
 
     @Bean
     RestTemplate restTemplate() {

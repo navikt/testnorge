@@ -11,8 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-@JacksonXmlRootElement(localName = "tpsPersonData")
-class TpsXmlRoot {
+@JacksonXmlRootElement(localName = "tpsPersonData") class TpsXmlRoot {
 
     private static final XmlMapper xmlMapper = new XmlMapper();
 

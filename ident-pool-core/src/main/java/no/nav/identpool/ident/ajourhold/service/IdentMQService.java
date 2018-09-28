@@ -21,7 +21,7 @@ import no.nav.identpool.ident.ajourhold.tps.xml.service.Personopplysning;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor 
+@RequiredArgsConstructor
 public class IdentMQService {
 
     private final MessageQueueFactory messageQueueFactory;

@@ -7,6 +7,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class IdentDistribusjon {
 
+    // tilfeldige konstanter for å få til en fin chi^2-fordeling
+    private static final double C1 = 60000;
+    private static final double C2 = 20;
+    private static final double C3 = 40;
+    private static final double C4 = 2;
+    private static final double C5 = 10;
+
     public Integer antallPersonerPerDagPerAar(int year) {
         double antallForAar = verdiFraDistribusjon(now().getYear() - year);
         return (int) (Math.ceil(antallForAar / 365));
@@ -18,6 +25,6 @@ public class IdentDistribusjon {
 
     private Double verdiFraDistribusjon(Integer aar) {
         double aarDouble = (double) aar;
-        return (Math.floor(60000.0 / 20.0 * (Math.exp(-aarDouble / 40.0) * Math.sqrt(aarDouble)) / (2.0 * Math.sqrt(10.0 * 3.14159265359))));
+        return (Math.floor(C1 / C2 * (Math.exp(-aarDouble / C3) * Math.sqrt(aarDouble)) / (C4 * Math.sqrt(C5 * Math.PI))));
     }
 }

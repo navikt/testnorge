@@ -29,13 +29,13 @@ public class IdentDbService {
 
     private LocalDate current;
 
-    void checkCritcalAndGenerate() {
+    void checkCriticalAndGenerate() {
         current = now();
         int minYearMinus = 110;
         LocalDate minDate = LocalDate.of(current.getYear() - minYearMinus, 1, 1);
         int counter = 0;
         while (minDate.isBefore(current)) {
-            if (counter == 3 || !criticalForYear(minDate.getYear())) {
+            if (counter == 3 || !isCriticalYear(minDate.getYear())) {
                 counter = 0;
                 minDate = minDate.plusYears(1);
             } else {
@@ -63,7 +63,7 @@ public class IdentDbService {
             if (i + paralellThreads > filtered.length) {
                 threads = filtered.length - i;
             }
-            checkMqStore(i, threads, filtered);
+            checkMqAndStore(i, threads, filtered);
         }
     }
 
@@ -95,7 +95,7 @@ public class IdentDbService {
                 .toArray(String[][]::new);
     }
 
-    private void checkMqStore(int startIndex, int numberOfThreads, String[]... fnrs) {
+    private void checkMqAndStore(int startIndex, int numberOfThreads, String[]... fnrs) {
 
         String[][] fnrsArray = new String[numberOfThreads][];
         System.arraycopy(fnrs, startIndex, fnrsArray, 0, numberOfThreads);
@@ -119,7 +119,7 @@ public class IdentDbService {
                         .collect(Collectors.toList()));
     }
 
-    private boolean criticalForYear(int year) {
+    private boolean isCriticalYear(int year) {
         int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year);
         int days = year == current.getYear() ? 365 - current.getDayOfYear() : 365;
         long count = identRepository.countByFoedselsdatoBetweenAndRekvireringsstatus(
