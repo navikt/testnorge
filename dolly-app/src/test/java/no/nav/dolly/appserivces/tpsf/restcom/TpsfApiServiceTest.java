@@ -49,7 +49,9 @@ public class TpsfApiServiceTest {
 
     @Before
     public void setup(){
-        when(providersProps.getTpsf().getUrl()).thenReturn("https://localhost:8080");
+        ProvidersProps.Tpsf tpsf = new ProvidersProps().new Tpsf();
+        tpsf.setUrl("https://localhost:8080");
+        when(providersProps.getTpsf()).thenReturn(tpsf);
     }
 
     @Test

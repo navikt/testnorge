@@ -45,7 +45,9 @@ public class SigrunStubApiServiceTest {
 
     @Before
     public void setup(){
-        when(providersProps.getSigrun().getUrl()).thenReturn("https://localhost:8080");
+        ProvidersProps.Sigrun sigrun = new ProvidersProps().new Sigrun();
+        sigrun.setUrl("https://localhost:8080");
+        when(providersProps.getSigrun()).thenReturn(sigrun);
     }
 
     @Test
