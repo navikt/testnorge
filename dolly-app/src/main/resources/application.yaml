@@ -14,7 +14,6 @@ spring:
 #### APP DB ####
 app.datasource.onsHosts:
 
-
 #### NEW FREG-SECURITY #####
 freg.security.oidc:
   idp:
@@ -35,13 +34,6 @@ freg.security.oidc:
       header-enabled: false
       validation:
           type: refreshing
-
-### ABAC ###
-#no.nav.abac:
-#  url: ${no.nav.abac.url}
-#  systemuser:
-#    username: ${dolly.username}
-#    password: ${dolly.password}
 
 
 ### TPSF ###

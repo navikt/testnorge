@@ -5,6 +5,7 @@ import no.nav.dolly.config.DollyObjectMapper;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.regression.InMememoryDbTestSetup;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
@@ -13,6 +14,7 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -45,6 +47,8 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     protected Testgruppe standardTestgruppe;
     protected Bruker standardBruker;
     protected Team standardTeam;
+    protected RsDollyBestillingsRequest standardBestilling_u6 = new RsDollyBestillingsRequest();
+    protected List<String> standardEnvironments =  new ArrayList<>(Arrays.asList("u6"));
 
     protected String standardTeamnavn = "team";
     protected String standardTeamBesk = "beskrivelse";
@@ -107,6 +111,9 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
                 .teamtilhoerighet(standardTeam)
                 .build().convertToRealTestgruppe()
         );
+
+        standardBestilling_u6.setAntall(1);
+        standardBestilling_u6.setEnvironments(standardEnvironments);
 
         /* Legger til securityContextHolder */
         SecurityContextHolder.getContext().setAuthentication(createTestOidcToken());
