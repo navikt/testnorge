@@ -23,8 +23,18 @@ export default class TpsfService {
 	}
 
 	static createFoedselmelding(userData) {
-		console.log(userData)
+		this.getTpsfUrl()
+		const endpoint = url + '/tpsmelding/foedselsmelding'
 		// TODO: get real res from TPSF
-		return Promise.resolve('status OK')
+		return Request.post(endpoint, userData)
+	}
+
+	static getKontaktInformasjon(fnr, env) {
+		const endpoint =
+			'https://tps-forvalteren-u2.nais.preprod.local:443/api/tps/kontaktinformasjon?fnr=' +
+			fnr +
+			'&environment=' +
+			env
+		return Request.get(endpoint)
 	}
 }
