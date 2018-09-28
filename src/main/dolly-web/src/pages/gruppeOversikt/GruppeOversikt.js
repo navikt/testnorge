@@ -50,7 +50,7 @@ export default class GruppeOversikt extends PureComponent {
 		return (
 			<div className="oversikt-container">
 				<div className="page-header gruppe-oversikt-header">
-					<Overskrift label="Testdatagrupper"/>
+					<Overskrift label="Testdatagrupper" />
 					<ContentTooltip />
 				</div>
 
@@ -82,8 +82,8 @@ export default class GruppeOversikt extends PureComponent {
 						addFavorite={addFavorite}
 					/>
 				)}
-				
-				<div className="gruppe-oversikt-legg-til"><AddButton title="Opprett ny gruppe" onClick={createGroup} /></div>
+
+				<AddButton title="Opprett ny gruppe" onClick={createGroup} />
 			</div>
 		)
 	}

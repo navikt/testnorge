@@ -77,7 +77,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
 		subKategori: SubKategorier.Barn,
-		id: 'barn_identtype',
+		id: 'identtype',
 		path: 'relasjoner.barn.identtype',
 		parent: 'barn',
 		label: 'Type',
@@ -89,7 +89,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
 		subKategori: SubKategorier.Barn,
-		id: 'barn_kjonn',
+		id: 'kjonn',
 		path: 'relasjoner.barn.kjonn',
 		parent: 'barn',
 		label: 'Kjønn',
@@ -102,7 +102,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
 		subKategori: SubKategorier.Barn,
-		id: 'barn_foedtEtter',
+		id: 'foedtEtter',
 		path: 'relasjoner.barn.foedtEtter',
 		parent: 'barn',
 		label: 'Født etter',
@@ -114,7 +114,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
 		subKategori: SubKategorier.Barn,
-		id: 'barn_foedtFoer',
+		id: 'foedtFoer',
 		path: 'relasjoner.barn.foedtFoer',
 		parent: 'barn',
 		label: 'Født før',
