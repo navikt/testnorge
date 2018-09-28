@@ -39,17 +39,21 @@ export default class Step3 extends PureComponent {
 		return this.SelectedAttributes.map(hovedKategori => this.renderHovedKategori(hovedKategori))
 	}
 
-	renderHovedKategori = ({ hovedKategori, items }) => (
-		<Fragment key={hovedKategori.navn}>
-			<h4>{hovedKategori.navn}</h4>
-			<div className="oppsummering-blokk">{items.map(item => this.renderSubKategori(item))}</div>
-		</Fragment>
-	)
+	renderHovedKategori = ({ hovedKategori, items }) => {
+		console.log('items hovedkat', items)
+		return (
+			<Fragment key={hovedKategori.navn}>
+				<h4>{hovedKategori.navn}</h4>
+				<div className="oppsummering-blokk">{items.map(item => this.renderSubKategori(item))}</div>
+			</Fragment>
+		)
+	}
 
 	renderSubKategori = ({ subKategori, items }) => {
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item))
 		}
+		console.log('items', items)
 		return (
 			<div className="oppsummering-multifield" key={subKategori.navn}>
 				<h4>{subKategori.navn}</h4>
@@ -59,6 +63,7 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderItem = item => {
+		console.log('item', item)
 		return (
 			<StaticValue
 				key={item.id}

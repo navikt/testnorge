@@ -1,4 +1,5 @@
 import { KategoriTypes } from './Types'
+import { DEFAULT_ECDH_CURVE } from 'tls'
 
 export const Kategorier: KategoriTypes = {
 	PersInfo: {
@@ -62,6 +63,7 @@ export const SubKategorier: KategoriTypes = {
 		id: 'barn',
 		navn: 'Barn',
 		order: 20,
-		showInSummary: true
+		showInSummary: true,
+		multiple: true
 	}
 }
