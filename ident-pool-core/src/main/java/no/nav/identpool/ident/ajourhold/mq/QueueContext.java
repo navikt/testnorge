@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.freg.fasit.utils.config.FasitServiceFactory;
 import no.nav.identpool.ident.ajourhold.fasit.FasitClient;
 import no.nav.identpool.ident.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
@@ -31,7 +30,6 @@ public class QueueContext {
 
     private final FasitClient fasitClient;
     private final MessageQueueFactory queueFactory;
-
 
     @PostConstruct
     private void init() {
