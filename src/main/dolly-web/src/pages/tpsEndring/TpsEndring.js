@@ -8,18 +8,14 @@ import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import Knapp from 'nav-frontend-knapper'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikDatepicker } from '~/components/fields/Datepicker/Datepicker'
-import { TpsfApi } from '~/service/Api'
+import { TpsfApi, DollyApi } from '~/service/Api'
+import TpsfService from '../../service/services/tpsf/TpsfService'
 
 export default class TPSEndring extends PureComponent {
 	state = {
-		isFetching: false
-	}
-
-	onSubmit = values => {
-		console.log(values)
-		this.setState({ isFetching: true }, () => {
-			TpsfApi.createFoedselmelding(values).then(res => console.log(res))
-		})
+		isFetching: false,
+		foedselmeldingSent: false,
+		nyttBarn: null
 	}
 
 	render() {
@@ -32,20 +28,41 @@ export default class TPSEndring extends PureComponent {
 		)
 	}
 
+	validation = () =>
+		yup.object().shape({
+			navn: yup.string().required('Navn er et påkrevd felt'),
+			teamId: yup.number().nullable(),
+			// .required('Du må velge hvilket team gruppen skal knyttes til'),
+			hensikt: yup.string().required('Gi en liten beskrivelse av hensikten med gruppen')
+		})
+
+	onFoedselsMeldingSubmit = values => {
+		console.log(values)
+		this.setState({ isFetching: true }, () => {
+			TpsfApi.createFoedselmelding(values).then(res => {
+				TpsfService.getKontaktInformasjon(res.data.personId, 't0').then(res2 => {
+					console.log(res2)
+					this.setState({ nyttBarn: res2.data.person, foedselmeldingSent: true, isFetching: false })
+				})
+				// this.setState({ foedselmeldingSent: true, isFetching: false })
+			})
+		})
+	}
+
 	_renderSendFoedselsmelding = () => {
 		let initialValues = {
-			morsId: 0,
-			farsId: 2,
-			IdType: 2,
-			foedseldato: 0,
-			kjoenn: 0,
-			miljoe: 0,
-			adresse: 'Elgeseter gate 9'
+			identMor: '01111206747',
+			identFar: '',
+			identtype: 'FNR',
+			foedselsdato: '2018-12-01T00:00:00',
+			kjonn: 'M',
+			miljoe: 't0',
+			adresseFra: 'LAGNY'
 		}
 		return (
 			<ContentContainer>
 				<Formik
-					onSubmit={this.onSubmit}
+					onSubmit={this.onFoedselsMeldingSubmit}
 					initialValues={initialValues}
 					render={props => {
 						const { values, touched, errors, dirty, isSubmitting } = props
@@ -53,29 +70,46 @@ export default class TPSEndring extends PureComponent {
 							<Form autoComplete="off">
 								<h2>Send fødselsmelding</h2>
 								<div className="tps-endring-foedselmelding-top">
-									<Field name="morsId" label="MORS IDENT" component={FormikInput} />
-									<Field name="farsId" label="FARS IDENT" component={FormikInput} />
+									<Field name="identMor" label="MORS IDENT" component={FormikInput} />
+									<Field name="identFar" label="FARS IDENT" component={FormikInput} />
 									<Field
-										name="BARNETS IDENTTYPE"
+										name="identtype"
 										label="BARNETS IDENTTYPE"
 										component={FormikDollySelect}
+										// loadOptions={} //TODO: spoer Cong for load options her
 									/>
-									<Field name="IdType" label="BARNETS FØDSELSDATO" component={FormikDatepicker} />
-									<Field name="foedseldato" label="BARNETS KJØNN" component={FormikDollySelect} />
+									<Field name="date" label="BARNETS FØDSELSDATO" component={FormikDatepicker} />
+									<Field name="kjonn" label="BARNETS KJØNN" component={FormikDollySelect} />
 									<Field name="miljoe" label="SEND TIL MILJØ" component={FormikDollySelect} />
 								</div>
 								<div className="tps-endring-foedselmelding-bottom">
-									<Field name="adresse" label="ADRESSE" component={FormikDollySelect} />
+									<Field name="adresseFra" label="ADRESSE" component={FormikDollySelect} />
 									<Knapp type="hoved" htmlType="submit">
-										Opprett doedsmelding
+										Opprett fødselsmelding
 									</Knapp>
 								</div>
 							</Form>
 						)
 					}}
 				/>
+				{this.state.nyttBarn && this._renderNyttBarn(this.state.nyttBarn)}
 			</ContentContainer>
 		)
+	}
+
+	_renderNyttBarn = person => {
+		return (
+			<Fragment>
+				<h2>Gratulere, {person.personNavn.gjeldendePersonnavn} ble født! </h2>
+				<p className="build-version">
+					den {person.fodselsdato} med personnr {person.fodselsnummer}
+				</p>
+			</Fragment>
+		)
+	}
+
+	_renderNyttBarn2 = () => {
+		return <h2> ble født! </h2>
 	}
 
 	_renderSendDoedsmelding = () => {
@@ -106,7 +140,7 @@ export default class TPSEndring extends PureComponent {
 								</div>
 								<div className="knapp-container">
 									<Knapp type="hoved" htmlType="submit">
-										Opprett fødselsmelding
+										Opprett dødsmelding
 									</Knapp>
 								</div>
 							</Form>
