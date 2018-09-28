@@ -25,8 +25,8 @@ public class QueueContext {
     @Value("#{'${mq.context.exclude}'.split(',')}")
     private String[] excluded;
 
-    private static final HashSet<String> environments = new LinkedHashSet<>();
-    private static final HashSet<String> filteredEnvironments = new LinkedHashSet<>();
+    private static HashSet<String> environments = new LinkedHashSet<>();
+    private static HashSet<String> filteredEnvironments = new LinkedHashSet<>();
 
     private final FasitClient fasitClient;
     private final MessageQueueFactory queueFactory;
