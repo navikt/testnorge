@@ -1,6 +1,7 @@
 import Request from '../Request'
 import config from '~/config'
 
+// TODO: erstartt med state.config
 const uri = config.services.tpsf
 
 export default class TpsfService {
