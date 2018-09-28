@@ -21,12 +21,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>no.nav.freg</groupId>-->
-            <!--<artifactId>fasit-util</artifactId>-->
-            <!--<version>${fasit-util.version}</version>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>no.nav.ident-pool</groupId>
             <artifactId>ident-pool-core</artifactId>
