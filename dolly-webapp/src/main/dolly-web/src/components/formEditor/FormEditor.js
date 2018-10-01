@@ -3,6 +3,7 @@ import { Field, FieldArray } from 'formik'
 import { DollyApi } from '~/service/Api'
 import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
+import Button from '~/components/button/Button'
 
 export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
@@ -36,7 +37,12 @@ export default class FormEditor extends PureComponent {
 						return (
 							<Fragment>
 								<h4>
-									{subId} <button onClick={createDefaultObject}>+</button>
+									{subKategori.navn}{' '}
+									<Button
+										className="field-group-add"
+										kind="add-circle"
+										onClick={createDefaultObject}
+									/>
 								</h4>
 								{formikProps.values[subId] && formikProps.values[subId].length > 0 ? (
 									formikProps.values[subId].map((faKey, idx) => {
@@ -51,13 +57,17 @@ export default class FormEditor extends PureComponent {
 														}
 														return this.renderFieldComponent(fakeItem)
 													})}
+													<Button
+														className="field-group-remove"
+														kind="remove-circle"
+														onClick={e => arrayHelpers.remove(idx)}
+													/>
 												</div>
-												<button onClick={e => arrayHelpers.remove(idx)}>fjern</button>
 											</div>
 										)
 									})
 								) : (
-									<span>ingen</span>
+									<span>Ingen barn lagt til</span>
 								)}
 							</Fragment>
 						)
