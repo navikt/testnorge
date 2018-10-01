@@ -31,9 +31,7 @@ export default class FormEditor extends PureComponent {
 				<FieldArray
 					name={subId}
 					render={arrayHelpers => {
-						console.log(items)
 						const defs = items.reduce((prev, curr) => ({ ...prev, [curr.id]: '' }), {})
-						console.log(defs)
 						const createDefaultObject = () => arrayHelpers.push({ ...defs })
 						return (
 							<Fragment>
