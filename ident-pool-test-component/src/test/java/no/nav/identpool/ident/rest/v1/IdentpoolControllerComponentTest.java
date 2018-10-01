@@ -2,6 +2,7 @@ package no.nav.identpool.ident.rest.v1;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.net.URISyntaxException;
@@ -90,6 +91,39 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(apiResponseEntity.getBody(), is(false));
+
+    }
+
+    @Test
+    public void eksistererIkkeIDbOgLedigITps() throws URISyntaxException {
+        assertThat(identRepository.findTopByPersonidentifikator("20018049946"), is(nullValue()));
+
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig")
+                .addParameter("personidentifikator", "20018049946");
+
+        ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), Boolean.class);
+
+        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(apiResponseEntity.getBody(), is(true));
+        assertThat(identRepository.findTopByPersonidentifikator("20018049946").getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
+    }
+
+    @Test
+    public void lesIdenterTest() throws URISyntaxException {
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
+                .addParameter("personidentifikator", "10108000398");
+
+        ResponseEntity<IdentEntity> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), IdentEntity.class);
+
+        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(apiResponseEntity.getBody(), is(IdentEntity.builder()
+                .identtype(Identtype.FNR)
+                .personidentifikator("10108000398")
+                .rekvireringsstatus(Rekvireringsstatus.LEDIG)
+                .finnesHosSkatt("0")
+                .foedselsdato(LocalDate.of(1980, 10, 10))
+                .build()
+        ));
 
     }
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class IdentDistribusjon {
 
     // tilfeldige konstanter for å få til en fin chi^2-fordeling
-    private static final double C1 = 60000;
+    private static final double C1 = 60_000;
     private static final double C2 = 20;
     private static final double C3 = 40;
     private static final double C4 = 2;

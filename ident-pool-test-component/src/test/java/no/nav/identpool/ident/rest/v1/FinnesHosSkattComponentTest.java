@@ -2,11 +2,13 @@ package no.nav.identpool.ident.rest.v1;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNull.notNullValue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import org.apache.http.client.utils.URIBuilder;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import no.nav.identpool.ComponentTestbase;
+import no.nav.identpool.ident.domain.Identtype;
+import no.nav.identpool.ident.domain.Rekvireringsstatus;
+import no.nav.identpool.ident.repository.IdentEntity;
 
 public class FinnesHosSkattComponentTest extends ComponentTestbase {
 
@@ -22,7 +27,6 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     public void registrerFinnesISkdUtenOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
                 .addParameter("personidentifikator", "10108000398")
-                .addParameter("foedselsdato", "2000-12-31")
                 .build();
 
         ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(false), ApiResponse.class);
@@ -33,20 +37,19 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     public void registrerFinnesISkdMedGyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
                 .addParameter("personidentifikator", "10108000398")
-                .addParameter("foedselsdato", "2000-12-31")
                 .build();
 
         ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true), ApiResponse.class);
 
-        assertThat(apiResponseResponseEntity, is(notNullValue()));
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
+
+        assertThat(identRepository.findTopByPersonidentifikator("10108000398").getFinnesHosSkatt(), is("1"));
     }
 
     @Test
     public void registrerFinnesISkdMedUgyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
                 .addParameter("personidentifikator", "10108000398")
-                .addParameter("foedselsdato", "2000-12-31")
                 .build();
 
         HttpHeaders httpEntityWithInvalidToken = new HttpHeaders();
@@ -58,4 +61,23 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.FORBIDDEN));
     }
 
+    @Before
+    public void populerDatabaseMedTestidenter() {
+        identRepository.deleteAll();
+        identRepository.save(
+                IdentEntity.builder()
+                        .identtype(Identtype.FNR)
+                        .personidentifikator("10108000398")
+                        .rekvireringsstatus(Rekvireringsstatus.LEDIG)
+                        .finnesHosSkatt("0")
+                        .foedselsdato(LocalDate.of(1980, 10, 10))
+                        .build()
+        );
+    }
+
+    @After
+    public void clearDatabase() {
+        identRepository.deleteAll();
+    }
 }
+
