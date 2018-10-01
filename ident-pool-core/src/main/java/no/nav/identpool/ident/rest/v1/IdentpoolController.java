@@ -6,8 +6,6 @@ import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.ident.ajourhold.util.PersonIdentifikatorUtil;
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
@@ -72,8 +69,7 @@ public class IdentpoolController {
     }
 
     @GetMapping
-    public IdentEntity lesInnhold(
-            @RequestParam(value = "personidentifikator") String personidentifikator
+    public IdentEntity lesInnhold(@RequestParam(value = "personidentifikator") String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
         valider(personidentifikator);
         return identpoolService.lesInnhold(personidentifikator);
