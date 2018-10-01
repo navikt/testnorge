@@ -59,6 +59,7 @@ export default class Step3 extends PureComponent {
 
 	renderSubKategori = ({ subKategori, items }) => {
 		const { values } = this.props
+		console.log(items)
 		if (subKategori.multiple) {
 			const valueArray = _get(this.props.values, subKategori.id)
 			return valueArray.map((values, idx) => {
@@ -74,7 +75,7 @@ export default class Step3 extends PureComponent {
 			return items.map(item => this.renderItem(item, values))
 		}
 
-		return this.renderSubKategoriBlokk(subKategori.navn, values)
+		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
 	renderItem = (item, stateValues) => {
