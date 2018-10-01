@@ -22,13 +22,13 @@ public class RestSecurityConfig implements HttpSecurityConfigurer {
     @Value("${dolly.security.cors.origins: ''}")
     private String[] allowedOrigins;
 
-    @Value("${FASIT_ENVIRONMENT_NAME: ''}")
+    @Value("${environment: ''}")
     private String environment;
 
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors();
-        httpSecurity.csrf().disable();  //TODO Sett tilbake den for sikkert. Må legge til CSRF token
+        httpSecurity.csrf().disable();  //TODO disabler fordi aldri prod. Vurder å ta inn igjen.
 
         if("localhost".equals(environment)){
             httpSecurity.headers().frameOptions().disable();
@@ -45,10 +45,8 @@ public class RestSecurityConfig implements HttpSecurityConfigurer {
                 "Access-Control-Request-Headers",
                 "Access-Control-Request-Method",
                 "X-Requested-With",
-                "X-Auth-Token",
                 "X-XSRF-TOKEN",
-                "Content-Type",
-                "Authorization"
+                "Content-Type"
         ));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

@@ -26,7 +26,7 @@ public class RsTpsfBestillingBuilder {
     private boolean withAdresse;
     private RsAdresse boadresse;
     private List<RsPostadresse> postadresse;
-    private Character kjonn;
+    private String kjonn;
     private String statsborgerskap;
     private String spesreg;
     private LocalDateTime spesregDato;

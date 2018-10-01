@@ -1,5 +1,5 @@
 APP_NAME: dolly
-FASIT_ENVIRONMENT_NAME: localhost
+environment: localhost
 
 spring:
   datasource:
