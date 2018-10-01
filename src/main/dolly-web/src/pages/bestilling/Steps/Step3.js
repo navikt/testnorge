@@ -40,7 +40,6 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }) => {
-		console.log('items hovedkat', items)
 		return (
 			<Fragment key={hovedKategori.navn}>
 				<h4>{hovedKategori.navn}</h4>
@@ -49,26 +48,41 @@ export default class Step3 extends PureComponent {
 		)
 	}
 
-	renderSubKategori = ({ subKategori, items }) => {
-		if (!subKategori.showInSummary) {
-			return items.map(item => this.renderItem(item))
-		}
-		console.log('items', items)
+	renderSubKategoriBlokk = (header, items, values) => {
 		return (
-			<div className="oppsummering-multifield" key={subKategori.navn}>
-				<h4>{subKategori.navn}</h4>
-				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item))}</div>
+			<div className="oppsummering-multifield" key={header}>
+				<h4>{header}</h4>
+				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
 			</div>
 		)
 	}
 
-	renderItem = item => {
-		console.log('item', item)
+	renderSubKategori = ({ subKategori, items }) => {
+		const { values } = this.props
+		if (subKategori.multiple) {
+			const valueArray = _get(this.props.values, subKategori.id)
+			return valueArray.map((values, idx) => {
+				return this.renderSubKategoriBlokk(
+					`${subKategori.navn} ${idx ? idx + 1 : ''}`,
+					items,
+					values
+				)
+			})
+		}
+
+		if (!subKategori.showInSummary) {
+			return items.map(item => this.renderItem(item, values))
+		}
+
+		return this.renderSubKategoriBlokk(subKategori.navn, values)
+	}
+
+	renderItem = (item, stateValues) => {
 		return (
 			<StaticValue
 				key={item.id}
 				header={item.label}
-				value={_get(this.props.values, item.id)}
+				value={_get(stateValues, item.id)}
 				format={item.format}
 			/>
 		)

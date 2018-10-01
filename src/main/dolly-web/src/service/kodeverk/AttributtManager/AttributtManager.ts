@@ -28,7 +28,7 @@ export default class AttributtManager {
 	}
 
 	listSelectedWithParents(selectedIds: string[]): Attributt[] {
-		return AttributtListe.filter(f => selectedIds.includes(f.id))
+		return AttributtListe.filter(f => !f.parent && selectedIds.includes(f.id))
 	}
 
 	searchListWithParents(list: Attributt[], searchTerm: string): Attributt[] {
@@ -46,9 +46,14 @@ export default class AttributtManager {
 		// multifield consist of several fields - only children fields should be rendered
 		let list = AttributtListe.filter(f => f.inputType !== 'multifield')
 		if (selectedIds.length > 0) {
-			list = list.filter(
-				f => selectedIds.includes(f.id) || (f.parent && selectedIds.includes(f.parent))
-			)
+			list = list.filter(f => {
+				if (f.parent) {
+					if (selectedIds.includes(f.parent)) return true
+					return false
+				}
+
+				return selectedIds.includes(f.id)
+			})
 		}
 		return groupList(list)
 	}
