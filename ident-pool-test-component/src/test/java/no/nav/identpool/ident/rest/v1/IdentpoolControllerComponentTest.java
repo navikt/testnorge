@@ -20,7 +20,7 @@ import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.repository.IdentEntity;
 
-public class IdentControllerComponentTest extends ComponentTestbase {
+public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void hentLedigFnr() throws URISyntaxException {
@@ -57,6 +57,42 @@ public class IdentControllerComponentTest extends ComponentTestbase {
         assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
     }
 
+    @Test
+    public void markerIBrukPaaIdentAlleredeIbruk() throws URISyntaxException {
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk")
+                .addParameter("personidentifikator", "11108000327")
+                .addParameter("bruker", "TesterMcTestFace");
+
+        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiError.class);
+
+        assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.GONE));
+
+    }
+
+    @Test
+    public void sjekkOmLedigIdentErLedig() throws URISyntaxException {
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig")
+                .addParameter("personidentifikator", "10108000398");
+
+        ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), Boolean.class);
+
+        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(apiResponseEntity.getBody(), is(true));
+
+    }
+
+    @Test
+    public void sjekkOmUledigIdentErLedig() throws URISyntaxException {
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig")
+                .addParameter("personidentifikator", "11108000327");
+
+        ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), Boolean.class);
+
+        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(apiResponseEntity.getBody(), is(false));
+
+    }
+
     @Before
     public void populerDatabaseMedTestidenter() {
         identRepository.deleteAll();
@@ -70,24 +106,24 @@ public class IdentControllerComponentTest extends ComponentTestbase {
                         .build(),
                 IdentEntity.builder()
                         .identtype(Identtype.DNR)
-                        .personidentifikator("50108000398")
+                        .personidentifikator("50108000381")
                         .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                         .finnesHosSkatt("0")
-                        .foedselsdato(LocalDate.of(1980, 10, 10))
+                        .foedselsdato(LocalDate.of(1980, 10, 20))
                         .build(),
                 IdentEntity.builder()
                         .identtype(Identtype.FNR)
-                        .personidentifikator("10108000399")
+                        .personidentifikator("11108000327")
                         .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
                         .finnesHosSkatt("0")
-                        .foedselsdato(LocalDate.of(1980, 10, 10))
+                        .foedselsdato(LocalDate.of(1980, 10, 11))
                         .build(),
                 IdentEntity.builder()
                         .identtype(Identtype.DNR)
-                        .personidentifikator("50108000399")
+                        .personidentifikator("12108000366")
                         .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
                         .finnesHosSkatt("0")
-                        .foedselsdato(LocalDate.of(1991, 1, 1))
+                        .foedselsdato(LocalDate.of(1980, 10, 12))
                         .build()
         ));
     }

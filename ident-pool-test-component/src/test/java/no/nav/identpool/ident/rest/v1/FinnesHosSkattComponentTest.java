@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import no.nav.identpool.ComponentTestbase;
 
-public class DrekComponentTest extends ComponentTestbase {
+public class FinnesHosSkattComponentTest extends ComponentTestbase {
 
     @Test
     public void registrerFinnesISkdUtenOidc() throws URISyntaxException {
