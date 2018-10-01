@@ -25,25 +25,20 @@ public class QueueContext {
     @Value("#{'${mq.context.exclude}'.split(',')}")
     private String[] excluded;
 
-    private static final HashSet<String> environments = new LinkedHashSet<>();
-    private static final HashSet<String> filteredEnvironments = new LinkedHashSet<>();
+    private static String[] environments = {};
+    private static String[] filteredEnvironments = {};
 
     private final FasitClient fasitClient;
     private final MessageQueueFactory queueFactory;
 
     @PostConstruct
     private void init() {
-        environments.addAll(fasitClient.getAllEnvironments("t", "q"));
+        List<String> environmentList = fasitClient.getAllEnvironments("t", "q");
         List<String> excludedEnvironments = Arrays.stream(excluded).collect(Collectors.toList());
-        environments.removeAll(excludedEnvironments);
-        excludedEnvironments.retainAll(environments);
+        environmentList.removeAll(excludedEnvironments);
+        excludedEnvironments.retainAll(environmentList);
 
-        filteredEnvironments.addAll(environments.stream()
-                .filter(this::filterOnQueue)
-                .collect(Collectors.toCollection(HashSet::new)));
-
-        environments.removeAll(filteredEnvironments);
-        filteredEnvironments.addAll(excludedEnvironments);
+        filterEnvironments(environmentList, excludedEnvironments, queueFactory);
 
         logInfo("Failed to create Connection factories for the following enironments:  ",
                 filteredEnvironments);
@@ -54,7 +49,18 @@ public class QueueContext {
         logInfo("Exclueded enviroments: ", filteredEnvironments);
     }
 
-    private boolean filterOnQueue(String environ) {
+    private static void filterEnvironments(List<String> environmentList, List<String> excludedEnvironments, MessageQueueFactory queueFactory) {
+        List<String> filtered = environmentList.stream()
+                .filter(env -> QueueContext.filterOnQueue(env, queueFactory))
+                .collect(Collectors.toList());
+
+        environmentList.removeAll(filtered);
+        QueueContext.environments = environmentList.toArray(new String[environmentList.size()]);
+        excludedEnvironments.addAll(filtered);
+        QueueContext.filteredEnvironments = filtered.toArray(new String[filtered.size()]);
+    }
+
+    private static boolean filterOnQueue(String environ, MessageQueueFactory queueFactory) {
         try {
             MessageQueue queue = queueFactory.createMessageQueue(environ);
             return !queue.ping();
@@ -63,18 +69,18 @@ public class QueueContext {
         }
     }
 
-    private void logInfo(String prefix, Set<String> set) {
+    private void logInfo(String prefix, String[] array) {
         StringBuilder builder = new StringBuilder(prefix.length());
         builder.append(prefix);
-        set.stream().map(e -> e + ", ").forEach(builder::append);
+        Arrays.stream(array).map(e -> e + ", ").forEach(builder::append);
         log.info(builder.toString());
     }
 
     public static Set<String> getIncluded() {
-        return new HashSet<>(environments);
+        return new HashSet<>(Arrays.asList(environments));
     }
 
-    static Set<String> getExcluded() {
-        return new HashSet<>(filteredEnvironments);
+    static HashSet<String> getExcluded() {
+        return new HashSet<>(Arrays.asList(filteredEnvironments));
     }
 }
