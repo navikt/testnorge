@@ -11,7 +11,11 @@ export default class AttributtManager {
 	listSelectedWithChildNodes(selectedIds: string[]): Attributt[] {
 		return AttributtListe.filter(f => {
 			if (f.inputType === 'multifield') return false
-			if (f.parent && selectedIds.includes(f.parent)) return true
+			if (f.parent) {
+				if (selectedIds.includes(f.parent)) return true
+
+				return false
+			}
 			return selectedIds.includes(f.id)
 		})
 	}
@@ -21,7 +25,11 @@ export default class AttributtManager {
 		return groupListByParent(
 			AttributtListe.filter(f => {
 				if (f.inputType === 'multifield') return false
-				if (f.parent && selectedIds.includes(f.parent)) return true
+				if (f.parent) {
+					if (selectedIds.includes(f.parent)) return true
+
+					return false
+				}
 				return selectedIds.includes(f.id)
 			})
 		)
