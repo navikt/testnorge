@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, Fragment } from 'react'
 import { Field, FieldArray } from 'formik'
 import { DollyApi } from '~/service/Api'
 import Panel from '~/components/panel/Panel'
