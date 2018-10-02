@@ -1,5 +1,7 @@
 package no.nav.identpool.ident.service;
 
+import static no.nav.identpool.ident.domain.Rekvireringsstatus.I_BRUK;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +13,7 @@ import no.nav.identpool.ident.ajourhold.util.PersonIdentifikatorUtil;
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
+import no.nav.identpool.ident.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.ident.repository.IdentEntity;
 import no.nav.identpool.ident.repository.IdentPredicateUtil;
 import no.nav.identpool.ident.repository.IdentRepository;
@@ -30,7 +33,7 @@ public class IdentpoolService {
 
         Iterable<IdentEntity> identEntities = identRepository.findAll(identPredicateUtil.lagPredicateFraRequest(hentIdenterRequest));
         identEntities.forEach(i -> personidentifikatorList.add(i.getPersonidentifikator()));
-        identEntities.forEach(i -> i.setRekvireringsstatus(Rekvireringsstatus.I_BRUK));
+        identEntities.forEach(i -> i.setRekvireringsstatus(I_BRUK));
         identRepository.saveAll(identEntities);
 
         return personidentifikatorList;
@@ -55,7 +58,7 @@ public class IdentpoolService {
             IdentEntity newIdentEntity = IdentEntity.builder()
                     .identtype(Integer.parseInt(personidentifikator.substring(0, 1)) > 3 ? Identtype.DNR : Identtype.FNR)
                     .personidentifikator(personidentifikator)
-                    .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
+                    .rekvireringsstatus(I_BRUK)
                     .finnesHosSkatt("0")
                     .foedselsdato(PersonIdentifikatorUtil.toBirthdate(personidentifikator))
                     .build();
@@ -72,7 +75,7 @@ public class IdentpoolService {
             IdentEntity newIdentEntity = IdentEntity.builder()
                     .identtype(Integer.parseInt(personidentifikator.substring(0, 1)) > 3 ? Identtype.DNR : Identtype.FNR)
                     .personidentifikator(personidentifikator)
-                    .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
+                    .rekvireringsstatus(I_BRUK)
                     .rekvirertAv(markerBruktRequest.getBruker())
                     .finnesHosSkatt("0")
                     .foedselsdato(PersonIdentifikatorUtil.toBirthdate(personidentifikator))
@@ -82,11 +85,11 @@ public class IdentpoolService {
             return;
 
         } else if (identEntity.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG)) {
-            identEntity.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
+            identEntity.setRekvireringsstatus(I_BRUK);
             identEntity.setRekvirertAv(markerBruktRequest.getBruker());
             identRepository.save(identEntity);
             return;
-        } else if (identEntity.getRekvireringsstatus().equals(Rekvireringsstatus.I_BRUK)) {
+        } else if (identEntity.getRekvireringsstatus().equals(I_BRUK)) {
             throw new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som brukt.");
         }
         throw new IllegalStateException("Denne feilen skal ikke kunne forekomme.");
@@ -96,7 +99,12 @@ public class IdentpoolService {
         return identRepository.findTopByPersonidentifikator(personidentifikator);
     }
 
-    public void registrerFinnesHosSkatt(String personidentifikator) {
+    public void registrerFinnesHosSkatt(String personidentifikator) throws UgyldigPersonidentifikatorException {
+
+        if (Integer.parseInt(personidentifikator.substring(0, 1)) <= 3) {
+            throw new UgyldigPersonidentifikatorException("personidentifikatoren er ikke et DNR");
+        }
+
         IdentEntity identEntity = identRepository.findTopByPersonidentifikator(personidentifikator);
         if (identEntity != null) {
             identEntity.setFinnesHosSkatt("1");
@@ -105,7 +113,7 @@ public class IdentpoolService {
                     .identtype(Identtype.DNR)
                     .personidentifikator(personidentifikator)
                     .foedselsdato(PersonIdentifikatorUtil.toBirthdate(personidentifikator))
-                    .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
+                    .rekvireringsstatus(I_BRUK)
                     .finnesHosSkatt("1")
                     .build();
         }

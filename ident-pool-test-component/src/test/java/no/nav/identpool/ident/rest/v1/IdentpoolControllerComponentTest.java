@@ -23,6 +23,11 @@ import no.nav.identpool.ident.repository.IdentEntity;
 
 public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
+    private static final String FNR_LEDIG = "10108000398";
+    private static final String DNR_LEDIG = "50108000381";
+    private static final String FNR_IBRUK = "11108000327";
+    private static final String NYTT_FNR_LEDIG = "20018049946";
+
     @Test
     public void hentLedigFnr() throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
@@ -61,7 +66,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     @Test
     public void markerIBrukPaaIdentAlleredeIbruk() throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk")
-                .addParameter("personidentifikator", "11108000327")
+                .addParameter("personidentifikator", FNR_IBRUK)
                 .addParameter("bruker", "TesterMcTestFace");
 
         ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiError.class);
@@ -71,9 +76,40 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
+    public void markerEksisterendeLedigIdentIBruk() throws URISyntaxException {
+        assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
+
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk")
+                .addParameter("personidentifikator", FNR_LEDIG)
+                .addParameter("bruker", "TesterMcTestFace");
+
+        ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiResponse.class);
+
+        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
+
+    }
+
+    @Test
+    public void markerNyLedigIdentIBruk() throws URISyntaxException {
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
+
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk")
+                .addParameter("personidentifikator", NYTT_FNR_LEDIG)
+                .addParameter("bruker", "TesterMcTestFace");
+
+        ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiResponse.class);
+
+        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getIdenttype(), is(Identtype.FNR));
+
+    }
+
+    @Test
     public void sjekkOmLedigIdentErLedig() throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig")
-                .addParameter("personidentifikator", "10108000398");
+                .addParameter("personidentifikator", FNR_LEDIG);
 
         ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), Boolean.class);
 
@@ -85,7 +121,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     @Test
     public void sjekkOmUledigIdentErLedig() throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig")
-                .addParameter("personidentifikator", "11108000327");
+                .addParameter("personidentifikator", FNR_IBRUK);
 
         ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), Boolean.class);
 
@@ -96,29 +132,29 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void eksistererIkkeIDbOgLedigITps() throws URISyntaxException {
-        assertThat(identRepository.findTopByPersonidentifikator("20018049946"), is(nullValue()));
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
 
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig")
-                .addParameter("personidentifikator", "20018049946");
+                .addParameter("personidentifikator", NYTT_FNR_LEDIG);
 
         ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), Boolean.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(apiResponseEntity.getBody(), is(true));
-        assertThat(identRepository.findTopByPersonidentifikator("20018049946").getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
     }
 
     @Test
     public void lesIdenterTest() throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
-                .addParameter("personidentifikator", "10108000398");
+                .addParameter("personidentifikator", FNR_LEDIG);
 
         ResponseEntity<IdentEntity> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), IdentEntity.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(apiResponseEntity.getBody(), is(IdentEntity.builder()
                 .identtype(Identtype.FNR)
-                .personidentifikator("10108000398")
+                .personidentifikator(FNR_LEDIG)
                 .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                 .finnesHosSkatt("0")
                 .foedselsdato(LocalDate.of(1980, 10, 10))
@@ -133,21 +169,21 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         identRepository.saveAll(Arrays.asList(
                 IdentEntity.builder()
                         .identtype(Identtype.FNR)
-                        .personidentifikator("10108000398")
+                        .personidentifikator(FNR_LEDIG)
                         .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                         .finnesHosSkatt("0")
                         .foedselsdato(LocalDate.of(1980, 10, 10))
                         .build(),
                 IdentEntity.builder()
                         .identtype(Identtype.DNR)
-                        .personidentifikator("50108000381")
+                        .personidentifikator(DNR_LEDIG)
                         .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                         .finnesHosSkatt("0")
                         .foedselsdato(LocalDate.of(1980, 10, 20))
                         .build(),
                 IdentEntity.builder()
                         .identtype(Identtype.FNR)
-                        .personidentifikator("11108000327")
+                        .personidentifikator(FNR_IBRUK)
                         .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
                         .finnesHosSkatt("0")
                         .foedselsdato(LocalDate.of(1980, 10, 11))

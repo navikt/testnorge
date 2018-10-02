@@ -23,10 +23,14 @@ import no.nav.identpool.ident.repository.IdentEntity;
 
 public class FinnesHosSkattComponentTest extends ComponentTestbase {
 
+    private static final String DNR = "50108000381";
+    private static final String NYTT_DNR= "50058000393";
+    private static final String FNR= "10108000398";
+
     @Test
     public void registrerFinnesISkdUtenOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
-                .addParameter("personidentifikator", "10108000398")
+                .addParameter("personidentifikator", DNR)
                 .build();
 
         ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(false), ApiResponse.class);
@@ -34,22 +38,46 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void registrerFinnesISkdMedGyldigOidc() throws URISyntaxException {
+    public void registrerFnrFinnesISkdMedGyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
-                .addParameter("personidentifikator", "10108000398")
+                .addParameter("personidentifikator", FNR)
+                .build();
+
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true), ApiResponse.class);
+
+        assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+    }
+
+    @Test
+    public void registrerFinnesISkdOgIdentpoolMedGyldigOidc() throws URISyntaxException {
+        URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
+                .addParameter("personidentifikator", DNR)
                 .build();
 
         ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true), ApiResponse.class);
 
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
 
-        assertThat(identRepository.findTopByPersonidentifikator("10108000398").getFinnesHosSkatt(), is("1"));
+        assertThat(identRepository.findTopByPersonidentifikator(DNR).getFinnesHosSkatt(), is("1"));
+    }
+
+    @Test
+    public void registrerFinnesISkdMenIkkeIIdentpoolMedGyldigOidc() throws URISyntaxException {
+        URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
+                .addParameter("personidentifikator", NYTT_DNR)
+                .build();
+
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true), ApiResponse.class);
+
+        assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
+
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_DNR).getFinnesHosSkatt(), is("1"));
     }
 
     @Test
     public void registrerFinnesISkdMedUgyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL)
-                .addParameter("personidentifikator", "10108000398")
+                .addParameter("personidentifikator", DNR)
                 .build();
 
         HttpHeaders httpEntityWithInvalidToken = new HttpHeaders();
@@ -67,7 +95,7 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
         identRepository.save(
                 IdentEntity.builder()
                         .identtype(Identtype.FNR)
-                        .personidentifikator("10108000398")
+                        .personidentifikator(DNR)
                         .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                         .finnesHosSkatt("0")
                         .foedselsdato(LocalDate.of(1980, 10, 10))
