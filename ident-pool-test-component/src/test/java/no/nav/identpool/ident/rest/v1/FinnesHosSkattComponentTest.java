@@ -24,8 +24,8 @@ import no.nav.identpool.ident.repository.IdentEntity;
 public class FinnesHosSkattComponentTest extends ComponentTestbase {
 
     private static final String DNR = "50108000381";
-    private static final String NYTT_DNR= "50058000393";
-    private static final String FNR= "10108000398";
+    private static final String NYTT_DNR = "50058000393";
+    private static final String FNR = "10108000398";
 
     @Test
     public void registrerFinnesISkdUtenOidc() throws URISyntaxException {
@@ -45,6 +45,7 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
 
         ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true), ApiResponse.class);
 
+        //skal feile siden endepunktet kun skal ta DNR
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
     }
 
@@ -59,6 +60,7 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
 
         assertThat(identRepository.findTopByPersonidentifikator(DNR).getFinnesHosSkatt(), is("1"));
+        assertThat(identRepository.findTopByPersonidentifikator(DNR).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
     }
 
     @Test
@@ -72,6 +74,7 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
 
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_DNR).getFinnesHosSkatt(), is("1"));
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_DNR).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
     }
 
     @Test
