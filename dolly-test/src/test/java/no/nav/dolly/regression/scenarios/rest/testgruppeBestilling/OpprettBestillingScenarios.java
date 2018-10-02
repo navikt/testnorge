@@ -26,7 +26,7 @@ public class OpprettBestillingScenarios extends TestgruppeBestillingTestCaseBase
 
         RsTpsfBestilling tpsfBestilling = RsTpsfBestillingBuilder.builder()
                 .antall(1)
-                .kjonn("Ms")
+                .kjonn("M")
                 .foedtEtter(LocalDate.of(2000, 1, 1))
                 .build()
                 .convertToRealRsTpsfBestilling();
