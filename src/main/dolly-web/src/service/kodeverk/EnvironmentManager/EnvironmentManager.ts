@@ -35,6 +35,21 @@ export default class EnvironmentManager {
 		return envsWithDisabled
 	}
 
+	getAllDropdownEnvironments(): Environment[] {
+		const envs = []
+
+		this.getAllEnvironments()
+			.filter(e => !e.disabled)
+			.forEach(e => {
+				envs.push({
+					value: e.id,
+					label: e.label
+				})
+			})
+
+		return envs
+	}
+
 	getEnvironmentsSortedByType() {
 		return this.getAllEnvironments().reduce((prev, curr) => {
 			const envType = curr.label.charAt(0)
