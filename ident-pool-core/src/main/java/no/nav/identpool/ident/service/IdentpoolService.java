@@ -108,6 +108,7 @@ public class IdentpoolService {
         IdentEntity identEntity = identRepository.findTopByPersonidentifikator(personidentifikator);
         if (identEntity != null) {
             identEntity.setFinnesHosSkatt("1");
+            identEntity.setRekvireringsstatus(I_BRUK);
         } else {
             identEntity = IdentEntity.builder()
                     .identtype(Identtype.DNR)
