@@ -10,9 +10,9 @@ const AttributtListe: Attributt[] = [
 		hovedKategori: Kategorier.FamilieRelasjoner,
 		subKategori: SubKategorier.Partner,
 		id: 'partner',
+		path: 'relasjoner.partner',
 		label: 'Har partner',
 		dataSource: DataSource.TPSF,
-		inputType: InputType.Multifield,
 		validation: yup.object()
 	},
 	{
@@ -69,59 +69,62 @@ const AttributtListe: Attributt[] = [
 		hovedKategori: Kategorier.FamilieRelasjoner,
 		subKategori: SubKategorier.Barn,
 		id: 'barn',
+		path: 'relasjoner.barn',
 		label: 'Har barn',
+		harBarn: true,
 		dataSource: DataSource.TPSF,
-		inputType: InputType.Multifield,
-		validation: yup.object()
-	},
-	{
-		hovedKategori: Kategorier.FamilieRelasjoner,
-		subKategori: SubKategorier.Barn,
-		id: 'identtype',
-		path: 'relasjoner.barn.identtype',
-		parent: 'barn',
-		label: 'Type',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Select,
-		options: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }],
-		validation: yup.string().required('Velg identtype')
-	},
-	{
-		hovedKategori: Kategorier.FamilieRelasjoner,
-		subKategori: SubKategorier.Barn,
-		id: 'kjonn',
-		path: 'relasjoner.barn.kjonn',
-		parent: 'barn',
-		label: 'Kjønn',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Select,
-		options: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
-		format: Formatters.kjonnToStringBarn,
-		validation: yup.string().required('Velg kjønn')
-	},
-	{
-		hovedKategori: Kategorier.FamilieRelasjoner,
-		subKategori: SubKategorier.Barn,
-		id: 'foedtEtter',
-		path: 'relasjoner.barn.foedtEtter',
-		parent: 'barn',
-		label: 'Født etter',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Date,
-		format: Formatters.formatDate,
-		validation: yup.date()
-	},
-	{
-		hovedKategori: Kategorier.FamilieRelasjoner,
-		subKategori: SubKategorier.Barn,
-		id: 'foedtFoer',
-		path: 'relasjoner.barn.foedtFoer',
-		parent: 'barn',
-		label: 'Født før',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Date,
-		format: Formatters.formatDate,
-		validation: yup.date()
+		validation: yup.object(),
+		items: [
+			{
+				hovedKategori: Kategorier.FamilieRelasjoner,
+				subKategori: SubKategorier.Barn,
+				id: 'identtype',
+				path: 'relasjoner.barn.identtype',
+				parent: 'barn',
+				label: 'Type',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				options: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }],
+				validation: yup.string().required('Velg identtype')
+			},
+			{
+				hovedKategori: Kategorier.FamilieRelasjoner,
+				subKategori: SubKategorier.Barn,
+				id: 'kjonn',
+				path: 'relasjoner.barn.kjonn',
+				parent: 'barn',
+				label: 'Kjønn',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				options: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
+				format: Formatters.kjonnToStringBarn,
+				validation: yup.string().required('Velg kjønn')
+			},
+			{
+				hovedKategori: Kategorier.FamilieRelasjoner,
+				subKategori: SubKategorier.Barn,
+				id: 'foedtEtter',
+				path: 'relasjoner.barn.foedtEtter',
+				parent: 'barn',
+				label: 'Født etter',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				format: Formatters.formatDate,
+				validation: yup.date()
+			},
+			{
+				hovedKategori: Kategorier.FamilieRelasjoner,
+				subKategori: SubKategorier.Barn,
+				id: 'foedtFoer',
+				path: 'relasjoner.barn.foedtFoer',
+				parent: 'barn',
+				label: 'Født før',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Date,
+				format: Formatters.formatDate,
+				validation: yup.date()
+			}
+		]
 	}
 ]
 

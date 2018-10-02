@@ -8,103 +8,66 @@ import _get from 'lodash/get'
 import _mapValues from 'lodash/mapValues'
 
 export default class AttributtManager {
-	listSelectedWithChildNodes(selectedIds: string[]): Attributt[] {
-		return AttributtListe.filter(f => {
-			if (f.inputType === 'multifield') return false
-			if (f.parent) {
-				if (selectedIds.includes(f.parent)) return true
+	// BASE FUNCTIONS
+	listAllSelected(selectedIds: string[]): Attributt[] {
+		return AttributtListe.filter(f => selectedIds.includes(f.parent || f.id))
+	}
 
-				return false
-			}
-			return selectedIds.includes(f.id)
+	listSelectedExcludingParent(selectedIds: string[]): Attributt[] {
+		return AttributtListe.filter(f => {
+			if (f.harBarn) return false
+			return selectedIds.includes(f.parent || f.id)
 		})
 	}
 
-	//TODO: FIX
-	listSelectedGroupedByParent(selectedIds: string[]) {
-		return groupListByParent(
-			AttributtListe.filter(f => {
-				if (f.inputType === 'multifield') return false
-				if (f.parent) {
-					if (selectedIds.includes(f.parent)) return true
-
-					return false
-				}
-				return selectedIds.includes(f.id)
-			})
-		)
+	listAllExcludingChildren(): Attributt[] {
+		return AttributtListe.filter(f => !f.parent)
 	}
 
-	listSelectedWithParents(selectedIds: string[]): Attributt[] {
+	listSelectedExcludingChildren(selectedIds: string[]): Attributt[] {
 		return AttributtListe.filter(f => !f.parent && selectedIds.includes(f.id))
 	}
 
-	searchListWithParents(list: Attributt[], searchTerm: string): Attributt[] {
-		return searchTerm
-			? list.filter(f => !f.parent && f.label.toLowerCase().includes(searchTerm.toLowerCase()))
-			: list.filter(f => !f.parent)
+	//STEP 1
+	listSelectableAttributes(searchTerm: string): AttributtGruppe[] {
+		const list = this.listAllExcludingChildren()
+		return groupList(
+			searchTerm ? list.filter(f => f.label.toLowerCase().includes(searchTerm.toLowerCase())) : list
+		)
 	}
 
-	listAllByGroup(searchTerm: string): AttributtGruppe[] {
-		const list = this.searchListWithParents(AttributtListe, searchTerm)
-		return groupList(list)
+	listUtvalg(selectedIds: string[]): AttributtGruppeHovedKategori[] {
+		return groupListByHovedKategori(this.listSelectedExcludingChildren(selectedIds))
 	}
 
+	//STEP 2 + 3
 	listSelectedAttributesForValueSelection(selectedIds: string[]): AttributtGruppe[] {
-		// multifield consist of several fields - only children fields should be rendered
-		let list = AttributtListe.filter(f => f.inputType !== 'multifield')
-		if (selectedIds.length > 0) {
-			list = list.filter(f => {
-				if (f.parent) {
-					if (selectedIds.includes(f.parent)) return true
-					return false
-				}
-
-				return selectedIds.includes(f.id)
-			})
-		}
-		return groupList(list)
-	}
-
-	listSelectedByHovedKategori(selectedIds: string[]): AttributtGruppeHovedKategori[] {
-		return groupListByHovedKategori(this.listSelectedWithParents(selectedIds))
-	}
-
-	listSelectedByHovedKategoriWithChildNodes(selectedIds: string[]): AttributtGruppe[] {
-		return groupList(this.listSelectedWithChildNodes(selectedIds))
+		return groupList(this.listAllSelected(selectedIds))
 	}
 
 	listEditable(): AttributtGruppe[] {
 		return groupList(AttributtListe.filter(attr => attr.kanRedigeres))
 	}
 
-	//TODO: CLEANUP
 	getValidations(selectedIds: string[]): yup.MixedSchema {
 		// Get all selected attributes that has validations
-		const list = this.listSelectedWithChildNodes(selectedIds).filter(s => s.validation)
-		const groupedList = groupListByParent(list)
+		const list = this.listAllSelected(selectedIds).filter(s => s.validation)
 		// Reduce to item.id and validation to create a validation object
-		const validationObject = groupedList.reduce((prev, currentObject) => {
-			if (currentObject.multiple) {
+		const validationObject = list.reduce((accumulator, currentObject) => {
+			if (currentObject.items) {
 				const mapItemsToObject = this._mapArrayToObjectWithValidation(currentObject.items)
 				return {
-					...prev,
-					[currentObject.id]: yup.array().of(yup.object(mapItemsToObject))
+					...accumulator,
+					[currentObject.id]: yup.array().of(yup.object().shape(mapItemsToObject))
 				}
 			}
-			return {
-				...prev,
-				[currentObject.id]: currentObject.validation
-			}
+			return _set(accumulator, currentObject.id, currentObject.validation)
 		}, {})
-
 		return yup.object().shape(validationObject)
 	}
 
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
-		const list = this.listSelectedWithChildNodes(selectedIds)
-		const groupedList = groupListByParent(list)
-		return this._getListOfInitialValues(groupedList, values)
+		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
 	}
 
 	getInitialValuesForEditableItems(values: object): FormikValues {
@@ -113,13 +76,17 @@ export default class AttributtManager {
 		return this._getListOfInitialValues(editableAttributes, values)
 	}
 
-	//TODO: CLEANUP
 	_getListOfInitialValues(list, values) {
 		return list.reduce((prev, item) => {
-			if (item.multiple) {
+			// Array
+			if (item.items) {
 				const mapItemsToObject = this._mapArrayToObjectWithEmptyValues(item.items)
 				return this._setInitialArrayValue(prev, item.id, values, [mapItemsToObject])
 			}
+			// Flattened object -> Ignore parent that has no inputType
+			if (!item.inputType) return prev
+
+			// Initvalue based on key-value
 			return this._setInitialValue(prev, item.id, values)
 		}, {})
 	}
@@ -138,7 +105,7 @@ export default class AttributtManager {
 
 		return _set(currentObject, itemId, initialValue)
 	}
-	//TODO: CLEANUP
+
 	_mapArrayToObjectWithEmptyValues = list => {
 		return list.reduce((accumulator, item) => {
 			return _set(accumulator, item.id, '')

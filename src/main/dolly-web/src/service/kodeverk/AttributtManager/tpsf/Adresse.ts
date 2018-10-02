@@ -9,10 +9,9 @@ const AttributtListe: Attributt[] = [
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Boadresse,
 		id: 'boadresse',
+		path: 'boadresse',
 		label: 'Har adresse',
 		dataSource: DataSource.TPSF,
-		inputType: InputType.Multifield,
-		kanRedigeres: true,
 		validation: yup.object()
 	},
 	{

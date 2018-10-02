@@ -15,7 +15,7 @@ export default class Utvalg extends PureComponent {
 	}
 
 	renderUtvalg = () => {
-		const list = this.AttributtManager.listSelectedByHovedKategori(this.props.selectedIds)
+		const list = this.AttributtManager.listUtvalg(this.props.selectedIds)
 
 		if (!list.length) return this.renderEmptyResult()
 

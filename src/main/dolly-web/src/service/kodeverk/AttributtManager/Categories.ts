@@ -39,20 +39,19 @@ export const SubKategorier: KategoriTypes = {
 		id: 'boadresse',
 		navn: 'Boadresse',
 		order: 10
-		//multiple: true
 	},
-	PostadrInnland: {
-		id: 'postadresseInnland',
-		navn: 'Postadresse innland',
-		order: 20,
-		multiple: true
-	},
-	PostadrUtland: {
-		id: 'postadresseUtland',
-		navn: 'Postadresse utland',
-		order: 30,
-		multiple: true
-	},
+	// PostadrInnland: {
+	// 	id: 'postadresseInnland',
+	// 	navn: 'Postadresse innland',
+	// 	order: 20,
+	// 	multiple: true
+	// },
+	// PostadrUtland: {
+	// 	id: 'postadresseUtland',
+	// 	navn: 'Postadresse utland',
+	// 	order: 30,
+	// 	multiple: true
+	// },
 	Partner: {
 		id: 'partner',
 		navn: 'Partner',
@@ -63,7 +62,6 @@ export const SubKategorier: KategoriTypes = {
 		id: 'barn',
 		navn: 'Barn',
 		order: 20,
-		showInSummary: true,
-		multiple: true
+		showInSummary: true
 	}
 }
