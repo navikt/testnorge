@@ -5,7 +5,6 @@ import ContentContainer from '~/components/contentContainer/ContentContainer'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikDatepicker } from '~/components/fields/Datepicker/Datepicker'
 import { TpsfApi } from '~/service/Api'
-import TpsfService from '../../service/services/tpsf/TpsfService'
 import Knapp from 'nav-frontend-knapper'
 import * as yup from 'yup'
 import Loading from '~/components/loading/Loading'
@@ -39,7 +38,7 @@ export default class SendFoedselsmelding extends PureComponent {
 		return (
 			<ContentContainer>
 				<Formik
-					onSubmit={this.onFoedselsMeldingSubmit}
+					onSubmit={this._onSubmit}
 					validationSchema={this.validation}
 					initialValues={initialValues}
 					render={props => {
@@ -90,7 +89,9 @@ export default class SendFoedselsmelding extends PureComponent {
 					}}
 				/>
 				{this.state.isFetching && <Loading label="Sender fødselsmelding" />}
-				{this.state.errorMessage && this._renderError(this.state.errorMessage)}{' '}
+				{this.state.errorMessage && (
+					<h4 className="error-message"> Feil: {this.state.errorMessage} </h4>
+				)}
 				{this.state.nyttBarn && this._renderNyttBarn(this.state.nyttBarn)}
 			</ContentContainer>
 		)
@@ -109,12 +110,12 @@ export default class SendFoedselsmelding extends PureComponent {
 			adresseFra: yup.string().required('Adresse er et påkrevd felt')
 		})
 
-	onFoedselsMeldingSubmit = values => {
+	_onSubmit = values => {
 		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, () => {
-			TpsfApi.createFoedselmelding(values)
+			TpsfApi.createFoedselsmelding(values)
 				.then(fodselRes => {
 					console.log(fodselRes)
-					TpsfService.getKontaktInformasjon(fodselRes.data.personId, 't0')
+					TpsfApi.getKontaktInformasjon(fodselRes.data.personId, 't0')
 						.then(kontaktInfoRes => {
 							console.log(kontaktInfoRes)
 							this.setState({
@@ -145,9 +146,5 @@ export default class SendFoedselsmelding extends PureComponent {
 				<h4>med ident {person.fodselsnummer}</h4>
 			</Fragment>
 		)
-	}
-
-	_renderError = error => {
-		return <h4 className="error-message"> Feil: {error} </h4>
 	}
 }

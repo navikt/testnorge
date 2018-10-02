@@ -22,10 +22,9 @@ export default class TpsfService {
 		return Request.post(endpoint, [userData])
 	}
 
-	static createFoedselmelding(userData) {
+	static createFoedselsmelding(userData) {
 		this.getTpsfUrl()
 		const endpoint = url + '/tpsmelding/foedselsmelding'
-		// TODO: get real res from TPSF
 		return Request.post(endpoint, userData)
 	}
 
@@ -36,5 +35,11 @@ export default class TpsfService {
 			'&environment=' +
 			env
 		return Request.get(endpoint)
+	}
+
+	static createDoedsmelding(userData) {
+		this.getTpsfUrl()
+		const endpoint = url + '/tpsmelding/doedsmelding'
+		return Request.post(endpoint, userData)
 	}
 }
