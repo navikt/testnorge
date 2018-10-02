@@ -4,6 +4,7 @@ import static java.time.LocalDate.now;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,9 +71,11 @@ class IdentDbService {
         final List<String> arrayList = new ArrayList<>(antallPerDag * fnrMap.size());
         fnrMap.forEach((ignored, value) -> {
             ArrayList<String> local = new ArrayList<>(antallPerDag);
-            for (int i = 0; i < value.size() && local.size() < antallPerDag; ++i) {
-                if (!identRepository.existsByPersonidentifikator(value.get(i))) {
-                    local.add(value.get(i));
+            Iterator<String> iterator = value.iterator();
+            while(iterator.hasNext() && local.size() < antallPerDag) {
+                String personidentifikator = iterator.next();
+                if (!identRepository.existsByPersonidentifikator(personidentifikator)) {
+                    local.add(personidentifikator);
                 }
             }
             arrayList.addAll(local);
