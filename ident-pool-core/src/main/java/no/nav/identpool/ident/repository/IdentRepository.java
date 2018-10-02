@@ -2,6 +2,7 @@ package no.nav.identpool.ident.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -22,5 +23,4 @@ public interface IdentRepository extends JpaRepository<IdentEntity, Long>, Query
     List<IdentEntity> findByRekvireringsstatus(Rekvireringsstatus rekvireringsstatus, Pageable pageable);
 
     List<IdentEntity> findByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype, Pageable pageable);
-
 }

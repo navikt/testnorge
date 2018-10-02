@@ -1,8 +1,9 @@
 package no.nav.identpool.ident.repository;
 
-import org.springframework.stereotype.Service;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+
+import org.springframework.stereotype.Service;
 
 import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;

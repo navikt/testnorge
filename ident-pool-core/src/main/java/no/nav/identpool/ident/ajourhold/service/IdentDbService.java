@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import com.google.common.collect.Lists;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +24,7 @@ import no.nav.identpool.ident.repository.IdentRepository;
 
 @Service
 @RequiredArgsConstructor
-public class IdentDbService {
+class IdentDbService {
 
     private final IdentMQService mqService;
     private final IdentRepository identRepository;
@@ -33,76 +36,65 @@ public class IdentDbService {
         current = now();
         int minYearMinus = 110;
         LocalDate minDate = LocalDate.of(current.getYear() - minYearMinus, 1, 1);
-        int counter = 0;
         while (minDate.isBefore(current)) {
-            if (counter == 3 || !criticalForYear(minDate.getYear())) {
-                counter = 0;
-                minDate = minDate.plusYears(1);
-            } else {
-                generateForYear(minDate.getYear());
-                counter += 1;
-            }
+            checkAndGenerateForDate(current);
+            current = current.plusDays(1);
         }
+    }
+
+    private void checkAndGenerateForDate(LocalDate date) {
+        IntStream.range(0, 3).forEach(
+                ignored -> {
+                    if (!criticalForYear(date.getYear())) {
+                        generateForYear(date.getYear());
+                    }
+                }
+        );
     }
 
     private void generateForYear(int year) {
         LocalDate firstDate = LocalDate.of(year, 1, 1);
         LocalDate lastDate = LocalDate.of(year, 12, 31);
-
         if (lastDate.isAfter(current)) {
             lastDate = LocalDate.of(year, current.getMonth(), current.getDayOfMonth());
         }
 
-        int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year);
-
+        int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year) * 2;
         Map<LocalDate, List<String>> fnrMap = FnrGenerator.genererIdenterMap(firstDate, lastDate.plusDays(1));
-        String[][] filtered = filterDatabse(antallPerDag, fnrMap);
-        int paralellThreads = 2;
-        for (int i = 0; i < filtered.length; i += paralellThreads) {
-            int threads = paralellThreads;
-            if (i + paralellThreads > filtered.length) {
-                threads = filtered.length - i;
-            }
-            checkMqStore(i, threads, filtered);
-        }
+
+        List<String> filtered = filterDatabse(antallPerDag, fnrMap);
+        checkTpsAndStore(filtered);
     }
 
-    private String[][] filterDatabse(int antallPerDag, Map<LocalDate, List<String>> fnrMap) {
-        List<ArrayList<String>> fnrArray = new ArrayList<>();
-        final ArrayList<String> currentArray = new ArrayList<>(501);
-        fnrMap.forEach((date, fnrs) -> {
-            if (identRepository.countByFoedselsdato(date) == fnrs.size()) {
-                return;
-            }
-            int count = 0;
-            for (int i = 0; i < fnrs.size() && count < antallPerDag * 3; ++i) {
-                String fnr = fnrs.get(i);
-                if (identRepository.existsByPersonidentifikator(fnr)) {
-                    continue;
+    private List<String> filterDatabse(int antallPerDag, Map<LocalDate, List<String>> fnrMap) {
+        final List<String> arrayList = new ArrayList<>(antallPerDag * fnrMap.size());
+        fnrMap.forEach((ignored, value) -> {
+            ArrayList<String> local = new ArrayList<>(antallPerDag);
+            for (int i = 0; i < value.size() && local.size() < antallPerDag; ++i) {
+                if (!identRepository.existsByPersonidentifikator(value.get(i))) {
+                    local.add(value.get(i));
                 }
-                if (currentArray.size() == 500) {
-                    fnrArray.add(new ArrayList<>(currentArray));
-                    currentArray.clear();
-                }
-                currentArray.add(fnr);
-                count += 1;
-
             }
+            arrayList.addAll(local);
         });
-        return fnrArray
-                .stream()
-                .map(array -> array.toArray(new String[array.size()]))
-                .toArray(String[][]::new);
+        return arrayList;
     }
 
-    private void checkMqStore(int startIndex, int numberOfThreads, String[]... fnrs) {
+    private void checkTpsAndStore(List<String> filtered) {
 
-        String[][] fnrsArray = new String[numberOfThreads][];
-        System.arraycopy(fnrs, startIndex, fnrsArray, 0, numberOfThreads);
-
-        boolean[][] identerIBruk = mqService.fnrsExistsArray(fnrsArray);
-        for (int i = 0; i < identerIBruk.length; ++i) {
-            storeIdenter(identerIBruk[i], fnrs[i]);
+        List<List<String>> partioned = Lists.partition(filtered, 300);
+        for (int index = 0; index < partioned.size(); index+=2) {
+            int stopIndex = index + 2;
+            if (stopIndex > partioned.size()) {
+                stopIndex = partioned.size();
+            }
+            String[][] subArray = partioned.subList(index, stopIndex)
+                    .stream()
+                    .map(List::toArray)
+                    .toArray(String[][]::new);
+            boolean[][] identerIBruk = mqService.fnrsExistsArray(subArray);
+            IntStream.range(0, identerIBruk.length)
+                    .forEach(i -> storeIdenter(identerIBruk[i], subArray[i]));
         }
     }
 

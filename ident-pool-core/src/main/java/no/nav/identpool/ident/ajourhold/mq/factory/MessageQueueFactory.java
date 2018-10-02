@@ -2,10 +2,12 @@ package no.nav.identpool.ident.ajourhold.mq.factory;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+
 import no.nav.identpool.ident.ajourhold.mq.consumer.DefaultMessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.strategy.ConnectionStrategy;
@@ -14,17 +16,14 @@ import no.nav.identpool.ident.ajourhold.mq.strategy.ConnectionStrategy;
 @RequiredArgsConstructor
 public class MessageQueueFactory {
 
-    @Value("${TPS_FORESPORSEL_XML_O_QUEUENAME}")
-    private String tpsRequestQueue;
-
-    @Value("${mq.consumer.username}")
-    private String messageQueueUsername;
-
-    @Value("${mq.consumer.password}")
-    private String messageQueuePassword;
-
     private final ConnectionStrategyFactory connectionStrategyFactory;
     private final ConnectionFactoryFactory connectionFactoryFactory;
+    @Value("${TPS_FORESPORSEL_XML_O_QUEUENAME}")
+    private String tpsRequestQueue;
+    @Value("${mq.consumer.username}")
+    private String messageQueueUsername;
+    @Value("${mq.consumer.password}")
+    private String messageQueuePassword;
 
     public MessageQueue createMessageQueue(String environment) throws JMSException {
         String requestQueue = String.format(tpsRequestQueue, environment.toUpperCase());

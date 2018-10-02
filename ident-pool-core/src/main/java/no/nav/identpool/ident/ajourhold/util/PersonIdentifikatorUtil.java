@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public final class PersonIdentifikatorUtil {
 
-    private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
-    private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
+    private static final int[] CONTROL_DIGIT_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
+    private static final int[] CONTROL_DIGIT_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
 
     private PersonIdentifikatorUtil() {
     }
@@ -25,12 +25,12 @@ public final class PersonIdentifikatorUtil {
     }
 
     public static boolean gyldigPersonidentifikator(String personIdentifikator) {
-            int digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C1);
-            if (digit == 10 || digit != (personIdentifikator.charAt(9))) {
-                return false;
-            }
-            digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C2);
-            return digit != 10 && digit == personIdentifikator.charAt(10);
+        int digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C1);
+        if (digit == 10 || digit != (personIdentifikator.charAt(9))) {
+            return false;
+        }
+        digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C2);
+        return digit != 10 && digit == personIdentifikator.charAt(10);
     }
 
     private static int getControlDigit(String fnr, int... sequence) {

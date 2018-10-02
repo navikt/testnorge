@@ -32,45 +32,45 @@ class IdentMQService {
         return fnrsExists(QueueContext.getIncluded(), fnr);
     }
 
-    public Map<String, Boolean> fnrsExists(Set<String> environments, List<String> fnr) {
-        String[] fnrs = fnr.toArray(new String[] {});
+    private Map<String, Boolean> fnrsExists(Set<String> environments, List<String> fnr) {
+        String[] fnrs = fnr.toArray(new String[]{});
         String[][] fnrsArray = { fnrs };
         boolean[] fnrExists = fnrsExistsArray(environments, fnrsArray)[0];
         return IntStream.range(0, fnrs.length).boxed()
                 .collect(Collectors.toMap(i -> fnrs[i], i -> fnrExists[i]));
     }
 
-    public boolean[][] fnrsExistsArray(String[]... fnrs) {
+    boolean[][] fnrsExistsArray(String[]... fnrs) {
         return fnrsExistsArray(QueueContext.getIncluded(), fnrs);
     }
 
-    public boolean[][] fnrsExistsArray(Set<String> environmentSet, String[]... fnrs) {
+    private boolean[][] fnrsExistsArray(Set<String> environmentSet, String[]... fnrs) {
+
+        threadArray.clear();
+        String[][] identRequests = Arrays.stream(fnrs)
+                .map(this::fnrsToRequests)
+                .toArray(String[][]::new);
+
+        boolean[][] identerIBruk = Arrays.stream(identRequests)
+                .map(i -> new boolean[i.length])
+                .toArray(boolean[][]::new);
 
         List<String> environments = new ArrayList<>(environmentSet);
         if (environments.isEmpty()) {
-            return Arrays.stream(fnrs).map(array -> new boolean[array.length]).toArray(boolean[][]::new);
+            return identerIBruk;
         }
-
-        threadArray.clear();
-        String[][] identRequests =
-                Arrays.stream(fnrs)
-                        .map(this::fnrsToRequests)
-                        .toArray(String[][]::new);
-
-        boolean[][] identerIBruk = new boolean[fnrs.length][];
-        IntStream.range(0, identerIBruk.length)
-                .forEach(i -> identerIBruk[i] = new boolean[identRequests[i].length]);
 
         for (int requestIndex = 0; requestIndex < identRequests.length; ++requestIndex) {
             int chunkSize = identRequests[requestIndex].length / environments.size();
+
             for (int envIndex = 0; envIndex < environments.size(); ++envIndex) {
                 int startIndex = chunkSize * envIndex;
                 IdentThread identThread = new IdentThread(environments.get(envIndex), startIndex, identRequests[requestIndex], identerIBruk[requestIndex]);
-                Thread thread = new Thread(identThread);
-                thread.start();
-                threadArray.add(thread);
+                threadArray.add(new Thread(identThread));
+                threadArray.get(threadArray.size() - 1).start();
             }
         }
+
         try {
             for (Thread thread : threadArray) {
                 thread.join();
@@ -83,7 +83,8 @@ class IdentMQService {
     }
 
     private String[] fnrsToRequests(String... fnrs) {
-        return Arrays.stream(fnrs).map(fnr -> new Personopplysning(fnr).toXml())
+        return Arrays.stream(fnrs)
+                .map(fnr -> new Personopplysning(fnr).toXml())
                 .toArray(String[]::new);
     }
 
@@ -116,7 +117,7 @@ class IdentMQService {
                 this.messageQueue = messageQueueFactory.createMessageQueueIgnoreCache(this.environment);
                 this.messageQueue.ping();
             } catch (JMSException e) {
-                log.info(String.format("Could not reset connection for environment %s", this.environment));
+                log.error(String.format("Could not reset connection for environment %s", this.environment));
                 throw new RuntimeException(e);
             }
         }
@@ -125,10 +126,10 @@ class IdentMQService {
 
             Function<Integer, Boolean> shouldIgnore = i -> identInUseArray[i + start];
 
-            BiConsumer<Integer, String> consumer = (index, response) ->
+            BiConsumer<Integer, String> responseConsumer = (index, response) ->
                     identInUseArray[index + start] = !response.contains("<returStatus>08</returStatus>");
 
-            messageQueue.sendMessages(consumer, shouldIgnore, start, stop, messageArray);
+            messageQueue.sendMessages(responseConsumer, shouldIgnore, start, stop, messageArray);
         }
 
         public void run() {

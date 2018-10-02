@@ -3,6 +3,7 @@ package no.nav.identpool.ident.ajourhold.tps.xml.service;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
+
 import no.nav.identpool.ident.ajourhold.tps.xml.ServiceRutinenavn;
 import no.nav.identpool.ident.ajourhold.tps.xml.TpsServiceRutine;
 

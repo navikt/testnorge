@@ -2,9 +2,11 @@ package no.nav.identpool.ident.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
