@@ -13,7 +13,8 @@ import Loading from '~/components/loading/Loading'
 export default class SendFoedselsmelding extends PureComponent {
 	state = {
 		isFetching: false,
-		nyttBarn: null
+		nyttBarn: null,
+		errorMessage: null
 	}
 
 	render() {
@@ -88,8 +89,8 @@ export default class SendFoedselsmelding extends PureComponent {
 						)
 					}}
 				/>
-
 				{this.state.isFetching && <Loading label="Sender fødselsmelding" />}
+				{this.state.errorMessage && this._renderError(this.state.errorMessage)}{' '}
 				{this.state.nyttBarn && this._renderNyttBarn(this.state.nyttBarn)}
 			</ContentContainer>
 		)
@@ -100,7 +101,7 @@ export default class SendFoedselsmelding extends PureComponent {
 			identMor: yup
 				.string()
 				.max(11, 'Morindent må inneholde 11 sifre')
-				.required('Indent er et påkrevd felt'),
+				.required('Morindent er et påkrevd felt'),
 			identFar: yup.string().max(11, 'Indent må inneholde 11 sifre'),
 			kjonn: yup.string().required('Kjønn er et påkrevd felt'),
 			miljoe: yup.string().required('Miljø er et påkrevd felt'),
@@ -109,7 +110,7 @@ export default class SendFoedselsmelding extends PureComponent {
 		})
 
 	onFoedselsMeldingSubmit = values => {
-		this.setState({ isFetching: true }, () => {
+		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, () => {
 			TpsfApi.createFoedselmelding(values)
 				.then(fodselRes => {
 					console.log(fodselRes)
@@ -121,21 +122,32 @@ export default class SendFoedselsmelding extends PureComponent {
 								isFetching: false
 							})
 						})
-						.catch(err => console.log(err.response))
-					this.setState({ isFetching: false })
+						.catch(err =>
+							this.setState({ isFetching: false, errorMessage: err.response.data.message })
+						)
 				})
-				.catch(err => console.log(err.response))
+				.catch(err => {
+					console.log(err.response)
+					this.setState({
+						isFetching: false,
+						errorMessage: err.response.data.message
+					})
+				})
 		})
 	}
 
 	_renderNyttBarn = person => {
 		return (
 			<Fragment>
-				<h2>Gratulere, {person.personNavn.gjeldendePersonnavn} ble født! </h2>
-				<p className="build-version">
-					den {person.fodselsdato} med personnr {person.fodselsnummer}
-				</p>
+				<h2 className="success-message">
+					Gratulere, {person.personNavn.gjeldendePersonnavn} ble født!{' '}
+				</h2>
+				<h4>med ident {person.fodselsnummer}</h4>
 			</Fragment>
 		)
+	}
+
+	_renderError = error => {
+		return <h4 className="error-message"> Feil: {error} </h4>
 	}
 }
