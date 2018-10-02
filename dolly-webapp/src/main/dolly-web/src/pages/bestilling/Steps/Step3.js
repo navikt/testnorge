@@ -22,7 +22,7 @@ export default class Step3 extends PureComponent {
 	constructor(props) {
 		super(props)
 		this.AttributtManager = new AttributtManager()
-		this.SelectedAttributes = this.AttributtManager.listSelectedByHovedKategoriWithChildNodes(
+		this.SelectedAttributes = this.AttributtManager.listSelectedAttributesForValueSelection(
 			props.selectedAttributeIds
 		)
 		this.EnvValidation = yup.object().shape({
@@ -59,17 +59,6 @@ export default class Step3 extends PureComponent {
 
 	renderSubKategori = ({ subKategori, items }) => {
 		const { values } = this.props
-		console.log(items)
-		if (subKategori.multiple) {
-			const valueArray = _get(this.props.values, subKategori.id)
-			return valueArray.map((values, idx) => {
-				return this.renderSubKategoriBlokk(
-					`${subKategori.navn} ${idx ? idx + 1 : ''}`,
-					items,
-					values
-				)
-			})
-		}
 
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
@@ -79,6 +68,15 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderItem = (item, stateValues) => {
+		if (item.items) {
+			const valueArray = _get(this.props.values, item.id)
+			return valueArray.map((values, idx) => {
+				return this.renderSubKategoriBlokk(`# ${idx + 1}`, item.items, values)
+			})
+		}
+
+		if (!item.inputType) return null
+
 		return (
 			<StaticValue
 				key={item.id}
