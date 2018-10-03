@@ -16,6 +16,49 @@ export default class SendFoedselsmelding extends PureComponent {
 		errorMessage: null
 	}
 
+	validation = () =>
+		yup.object().shape({
+			identMor: yup
+				.string()
+				.max(11, 'Morindent må inneholde 11 sifre')
+				.required('Morindent er et påkrevd felt'),
+			identFar: yup.string().max(11, 'Indent må inneholde 11 sifre'),
+			kjonn: yup.string().required('Kjønn er et påkrevd felt'),
+			miljoe: yup.string().required('Miljø er et påkrevd felt'),
+			foedselsdato: yup.date().required('Dato er et påkrevd felt'),
+			adresseFra: yup.string().required('Adresse er et påkrevd felt')
+		})
+
+	_onSubmit = values => {
+		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, async () => {
+			try {
+				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding(values)
+				const getKontaktInformasjonRes = await TpsfApi.getKontaktInformasjon(
+					createFoedselsmeldingRes.data.personId,
+					't0'
+				)
+
+				return this.setState({
+					nyttBarn: getKontaktInformasjonRes.data.person,
+					isFetching: false
+				})
+			} catch (err) {
+				this.setState({ isFetching: false, errorMessage: err.response.data.message })
+			}
+		})
+	}
+
+	_renderNyttBarn = person => {
+		return (
+			<Fragment>
+				<h2 className="success-message">
+					Gratulere, {person.personNavn.gjeldendePersonnavn} ble født!{' '}
+				</h2>
+				<h4>med ident {person.fodselsnummer}</h4>
+			</Fragment>
+		)
+	}
+
 	render() {
 		let initialValues = {
 			identMor: '',
@@ -94,49 +137,6 @@ export default class SendFoedselsmelding extends PureComponent {
 				)}
 				{this.state.nyttBarn && this._renderNyttBarn(this.state.nyttBarn)}
 			</ContentContainer>
-		)
-	}
-
-	validation = () =>
-		yup.object().shape({
-			identMor: yup
-				.string()
-				.max(11, 'Morindent må inneholde 11 sifre')
-				.required('Morindent er et påkrevd felt'),
-			identFar: yup.string().max(11, 'Indent må inneholde 11 sifre'),
-			kjonn: yup.string().required('Kjønn er et påkrevd felt'),
-			miljoe: yup.string().required('Miljø er et påkrevd felt'),
-			foedselsdato: yup.date().required('Dato er et påkrevd felt'),
-			adresseFra: yup.string().required('Adresse er et påkrevd felt')
-		})
-
-	_onSubmit = values => {
-		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, async () => {
-			try {
-				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding(values)
-				const getKontaktInformasjonRes = await TpsfApi.getKontaktInformasjon(
-					createFoedselsmeldingRes.data.personId,
-					't0'
-				)
-
-				return this.setState({
-					nyttBarn: getKontaktInformasjonRes.data.person,
-					isFetching: false
-				})
-			} catch (err) {
-				this.setState({ isFetching: false, errorMessage: err.response.data.message })
-			}
-		})
-	}
-
-	_renderNyttBarn = person => {
-		return (
-			<Fragment>
-				<h2 className="success-message">
-					Gratulere, {person.personNavn.gjeldendePersonnavn} ble født!{' '}
-				</h2>
-				<h4>med ident {person.fodselsnummer}</h4>
-			</Fragment>
 		)
 	}
 }
