@@ -23,7 +23,9 @@ const iconList = [
 	'info-circle',
 	'search',
 	'arrow-up',
-	'arrow-down'
+	'arrow-down',
+	'arrow-circle-right',
+	'arrow-circle-left'
 ]
 
 export default class Icon extends PureComponent {
@@ -70,7 +72,18 @@ export default class Icon extends PureComponent {
             case ('search'): return (<svg {...props} className={cn('svg-icon-search', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Søk</title><g stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><circle cx="8.5" cy="8.5" r="8"/><path strokeLinecap="round" d="M14.156 14.156l9.344 9.344"/></g></svg>)
             case ('arrow-up'): return (<svg {...props} className={cn('svg-arrow-up', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil opp</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M6.513 5.5l5-5 5 5M11.513.5v23"/></g></svg>)
             case ('arrow-down'): return (<svg {...props} className={cn('svg-arrow-down', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil ned</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M16.513 18.5l-5 5-5-5M11.513 23.5v-23"/></g></svg>)
-        }
+			case ('arrow-circle-right'): return (<svg {...props} className={cn('svg-arrow-circle-right', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Arrow up</title>
+	   <path d="M12,0.004c-6.617,0-12,5.383-12,12s5.383,12,12,12s12-5.383,12-12S18.617,0.004,12,0.004z M17.317,12.401l-8.514,6.496
+	C8.713,18.967,8.606,19,8.5,19c-0.151,0-0.3-0.067-0.398-0.196c-0.167-0.22-0.125-0.534,0.094-0.701l7.993-6.099L8.196,5.897
+	C7.977,5.729,7.935,5.416,8.103,5.196c0.168-0.219,0.482-0.261,0.701-0.094l8.514,6.504c0.124,0.095,0.196,0.242,0.196,0.397
+	C17.514,12.16,17.441,12.307,17.317,12.401z"/> </svg>)
+			case ('arrow-circle-left'): return (<svg {...props} className={cn('svg-arrow-circle-left', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Arrow up</title>
+		<path d="M12,0.004c-6.617,0-12,5.383-12,12s5.383,12,12,12s12-5.383,12-12S18.617,0.004,12,0.004z M15.897,18.804
+	C15.799,18.933,15.65,19,15.5,19c-0.106,0-0.212-0.033-0.303-0.103l-8.5-6.496C6.573,12.307,6.5,12.16,6.5,12.004
+	c0-0.155,0.072-0.303,0.196-0.397l8.5-6.504c0.219-0.167,0.534-0.125,0.701,0.094c0.168,0.219,0.126,0.533-0.093,0.701l-7.98,6.106
+	l7.98,6.099C16.023,18.271,16.065,18.584,15.897,18.804z"/>
+		  </svg>)
+	   		}
 	}
 }
 

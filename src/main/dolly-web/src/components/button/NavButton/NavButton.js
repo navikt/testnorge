@@ -10,8 +10,8 @@ const NavButton = ({ direction, ...restProps }) => {
 		<Button {...restProps}>
 			<div className="nav-button-container">
 				{direction === 'forward' && 'Videre'}
-				<Icon kind={`chevron-${direction === 'forward' ? 'right' : 'left'}`} />
-				{direction === 'backward' && 'Tilbake'}
+				<Icon kind={`arrow-circle-${direction === 'forward' ? 'right' : 'left'}`} />
+				{direction === 'backward' && ' Tilbake'}
 			</div>
 		</Button>
 	)
