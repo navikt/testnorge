@@ -3,6 +3,8 @@ import _flow from 'lodash/fp/flow'
 import _groupBy from 'lodash/fp/groupBy'
 import _map from 'lodash/fp/map'
 import _sortBy from 'lodash/fp/sortBy'
+import _reduce from 'lodash/fp/reduce'
+import _chain from 'lodash/fp/chain'
 
 export const groupListByHovedKategori = (list: Attributt[]): AttributtGruppeHovedKategori[] => {
 	const outerMapper = x => ({ hovedKategori: x[0].hovedKategori, items: x })

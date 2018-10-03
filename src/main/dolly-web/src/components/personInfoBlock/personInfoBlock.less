@@ -1,8 +1,6 @@
 @import (reference) '~lessVars';
 
 .person-info-block {
-	margin-bottom: 20px;
-
 	h3 {
 		background-color: @color-bg-divider;
 		margin: 0 0 10px 0;
@@ -16,5 +14,11 @@
 
 	&_content {
 		display: flex;
+		flex-wrap: wrap;
+
+		.static-value {
+			flex: 0 0 160px;
+			margin-bottom: 10px;
+		}
 	}
 }
