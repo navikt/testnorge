@@ -1,7 +1,7 @@
 applicationPipeline {
-    applicationName = "edvard"
+    applicationName = "orkestratoren"
     javaVersion = "1.8"
-    environment = "t9"
+    environment = "u6"
     hasPerformanceTest = false
     hasSmoketests = false
 }
