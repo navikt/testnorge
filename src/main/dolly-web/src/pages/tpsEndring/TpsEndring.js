@@ -16,7 +16,7 @@ export default class TPSEndring extends PureComponent {
 			<Fragment>
 				<Overskrift label={'Send TPS-endringsmelding'} />
 				<SendFoedselsmelding dropdownMiljoe={this.evns} />
-				<SendDoedsmelding dropdownMiljoe={this.envs} />
+				<SendDoedsmelding dropdownMiljoe={this.evns} />
 			</Fragment>
 		)
 	}

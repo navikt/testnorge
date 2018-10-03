@@ -106,7 +106,7 @@ export default class SendFoedselsmelding extends PureComponent {
 			identFar: yup.string().max(11, 'Indent må inneholde 11 sifre'),
 			kjonn: yup.string().required('Kjønn er et påkrevd felt'),
 			miljoe: yup.string().required('Miljø er et påkrevd felt'),
-			foedselsdato: yup.date().required('Fødselsdato er et påkrevd felt'),
+			foedselsdato: yup.date().required('Dato er et påkrevd felt'),
 			adresseFra: yup.string().required('Adresse er et påkrevd felt')
 		})
 
@@ -114,10 +114,8 @@ export default class SendFoedselsmelding extends PureComponent {
 		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, () => {
 			TpsfApi.createFoedselsmelding(values)
 				.then(fodselRes => {
-					console.log(fodselRes)
 					TpsfApi.getKontaktInformasjon(fodselRes.data.personId, 't0')
 						.then(kontaktInfoRes => {
-							console.log(kontaktInfoRes)
 							this.setState({
 								nyttBarn: kontaktInfoRes.data.person,
 								isFetching: false
@@ -128,7 +126,6 @@ export default class SendFoedselsmelding extends PureComponent {
 						)
 				})
 				.catch(err => {
-					console.log(err.response)
 					this.setState({
 						isFetching: false,
 						errorMessage: err.response.data.message
