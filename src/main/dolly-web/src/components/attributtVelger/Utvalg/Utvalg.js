@@ -20,19 +20,21 @@ export default class Utvalg extends PureComponent {
 
 		if (!list.length) return this.renderEmptyResult()
 
-		return list.map(hovedKategori => this.renderHovedKategori(hovedKategori))
+		return (
+			<React.Fragment>
+				{list.map(hovedKategori => this.renderHovedKategori(hovedKategori))}
+				<LinkButton text="Fjern alle" onClick={this.props.uncheckAllAttributes} />
+			</React.Fragment>
+		)
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }) => (
-		<React.Fragment key={hovedKategori.navn}>
-			<ul>
-				<li>
-					<span>{hovedKategori.navn}</span>
-					<ul>{items.map(item => this.renderItem(item))}</ul>
-				</li>
-			</ul>
-			<LinkButton text="Fjern alle" onClick={this.props.uncheckAllAttributes} />
-		</React.Fragment>
+		<ul key={hovedKategori.navn}>
+			<li>
+				<span>{hovedKategori.navn}</span>
+				<ul>{items.map(item => this.renderItem(item))}</ul>
+			</li>
+		</ul>
 	)
 
 	renderItem = item => (
