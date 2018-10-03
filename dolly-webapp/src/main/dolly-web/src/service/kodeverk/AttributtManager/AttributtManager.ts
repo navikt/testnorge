@@ -108,7 +108,7 @@ export default class AttributtManager {
 
 	_mapArrayToObjectWithEmptyValues = list => {
 		return list.reduce((accumulator, item) => {
-			return _set(accumulator, item.id, '')
+			return _set(accumulator, item.id, this._initValueSelector(item))
 		}, {})
 	}
 
@@ -116,5 +116,14 @@ export default class AttributtManager {
 		return list.reduce((accumulator, item) => {
 			return _set(accumulator, item.id, item.validation)
 		}, {})
+	}
+
+	_initValueSelector = item => {
+		switch (item.inputType) {
+			case 'date':
+				return new Date()
+			default:
+				return ''
+		}
 	}
 }
