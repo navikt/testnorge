@@ -1,6 +1,7 @@
 package no.nav.identpool.ident.ajourhold.util;
 
 import java.time.LocalDate;
+import org.springframework.util.StringUtils;
 
 public final class PersonIdentifikatorUtil {
 
@@ -31,6 +32,11 @@ public final class PersonIdentifikatorUtil {
     }
 
     public static boolean gyldigPersonidentifikator(String personIdentifikator) {
+
+        if (personIdentifikator == null || !personIdentifikator.matches("\\d{11}")) {
+            return false;
+        }
+
         int digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C1);
         if (digit == 10 || digit != Character.getNumericValue(personIdentifikator.charAt(9))) {
             return false;
