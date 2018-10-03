@@ -117,7 +117,7 @@ public class DollyTpsfService {
         String env = sb.toString();
 
         if(env.length() > 4000){
-            env = env.substring(0 - (MAX_LENGTH_VARCHAR2-10));
+            env = env.substring(0, (MAX_LENGTH_VARCHAR2-10));
             env = env + ".... END";
         }
 
