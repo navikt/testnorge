@@ -11,8 +11,8 @@ import no.nav.identpool.navnepool.NavnepoolService;
 import no.nav.identpool.navnepool.domain.Navn;
 
 @RestController
-@RequestMapping("/navnepool")
 @RequiredArgsConstructor
+@RequestMapping("/navnepool")
 public class ValidatorController {
 
     private final NavnepoolService service;
