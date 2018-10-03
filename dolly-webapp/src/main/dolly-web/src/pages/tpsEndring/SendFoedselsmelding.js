@@ -8,6 +8,7 @@ import { TpsfApi } from '~/service/Api'
 import Knapp from 'nav-frontend-knapper'
 import * as yup from 'yup'
 import Loading from '~/components/loading/Loading'
+import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 
 export default class SendFoedselsmelding extends PureComponent {
 	state = {
@@ -70,8 +71,6 @@ export default class SendFoedselsmelding extends PureComponent {
 			adresseFra: ''
 		}
 
-		const identOptions = [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
-		const kjoennOptions = [{ value: 'M', label: 'GUTT' }, { value: 'F', label: 'JENTE' }]
 		const adresseOptions = [
 			{ value: 'LAGNY', label: 'LAG NY ADRESSE' },
 			{ value: 'MOR', label: 'ARV FRA MORS' },
@@ -96,7 +95,7 @@ export default class SendFoedselsmelding extends PureComponent {
 										name="identtype"
 										label="BARNETS IDENTTYPE"
 										component={FormikDollySelect}
-										options={identOptions}
+										options={SelectOptionsManager('identtype')}
 									/>
 									<Field
 										name="foedselsdato"
@@ -107,7 +106,7 @@ export default class SendFoedselsmelding extends PureComponent {
 										name="kjonn"
 										label="BARNETS KJØNN"
 										component={FormikDollySelect}
-										options={kjoennOptions}
+										options={SelectOptionsManager('kjonnBarn')}
 									/>
 									<Field
 										name="miljoe"
