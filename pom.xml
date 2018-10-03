@@ -6,7 +6,7 @@
 	<groupId>no.nav.registre</groupId>
 	<artifactId>orkestratoren</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>orkestratoren</name>
 	<description>Testdata orkestratoren til fellesregisterne</description>
@@ -21,6 +21,7 @@
     <modules>
         <module>orkestratoren-core</module>
         <module>orkestratoren-local</module>
+        <module>orkestratoren-nais</module>
     </modules>
 
 	<properties>
@@ -42,10 +43,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-ldap</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
