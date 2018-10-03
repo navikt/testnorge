@@ -111,26 +111,21 @@ export default class SendFoedselsmelding extends PureComponent {
 		})
 
 	_onSubmit = values => {
-		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, () => {
-			TpsfApi.createFoedselsmelding(values)
-				.then(fodselRes => {
-					TpsfApi.getKontaktInformasjon(fodselRes.data.personId, 't0')
-						.then(kontaktInfoRes => {
-							this.setState({
-								nyttBarn: kontaktInfoRes.data.person,
-								isFetching: false
-							})
-						})
-						.catch(err =>
-							this.setState({ isFetching: false, errorMessage: err.response.data.message })
-						)
+		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, async () => {
+			try {
+				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding(values)
+				const getKontaktInformasjonRes = await TpsfApi.getKontaktInformasjon(
+					createFoedselsmeldingRes.data.personId,
+					't0'
+				)
+
+				return this.setState({
+					nyttBarn: getKontaktInformasjonRes.data.person,
+					isFetching: false
 				})
-				.catch(err => {
-					this.setState({
-						isFetching: false,
-						errorMessage: err.response.data.message
-					})
-				})
+			} catch (err) {
+				this.setState({ isFetching: false, errorMessage: err.response.data.message })
+			}
 		})
 	}
 
