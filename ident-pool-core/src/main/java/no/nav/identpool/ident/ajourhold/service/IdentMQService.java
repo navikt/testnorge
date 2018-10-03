@@ -55,11 +55,11 @@ class IdentMQService {
 
     private void filterTpsQueue(String environment, final HashSet<String> nonexistent, final HashSet<String> exists) throws JMSException {
         MessageQueue messageQueue = messageQueueFactory.createMessageQueue(environment);
-        if (nonexistent.size() == 0) {
+        if (nonexistent.isEmpty()) {
             return;
         }
 
-        Consumer<PersondataFraTpsM201.AFnr.EFnr> filterExisting = (personData) -> {
+        Consumer<PersondataFraTpsM201.AFnr.EFnr> filterExisting = personData -> {
             if (personData.getSvarStatus() == null || "00".equals(personData.getSvarStatus().getReturStatus())) {
                 nonexistent.remove(personData.getFnr());
                 exists.add(personData.getFnr());
