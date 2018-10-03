@@ -11,6 +11,7 @@ import './App.less'
 
 export default class App extends Component {
 	componentDidMount() {
+		this.props.fetchDollyApiConfig()
 		this.props.fetchCurrentBruker()
 	}
 

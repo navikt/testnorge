@@ -22,7 +22,7 @@ export default class Step3 extends PureComponent {
 	constructor(props) {
 		super(props)
 		this.AttributtManager = new AttributtManager()
-		this.SelectedAttributes = this.AttributtManager.listSelectedByHovedKategori(
+		this.SelectedAttributes = this.AttributtManager.listSelectedAttributesForValueSelection(
 			props.selectedAttributeIds
 		)
 		this.EnvValidation = yup.object().shape({
@@ -39,28 +39,49 @@ export default class Step3 extends PureComponent {
 		return this.SelectedAttributes.map(hovedKategori => this.renderHovedKategori(hovedKategori))
 	}
 
-	renderHovedKategori = ({ hovedKategori, items }) => (
-		<Fragment key={hovedKategori.navn}>
-			<h4>{hovedKategori.navn}</h4>
-			<div className="oppsummering-blokk">{items.map(item => this.renderItem(item))}</div>
-		</Fragment>
-	)
+	renderHovedKategori = ({ hovedKategori, items }) => {
+		return (
+			<Fragment key={hovedKategori.navn}>
+				<h4>{hovedKategori.navn}</h4>
+				<div className="oppsummering-blokk">{items.map(item => this.renderSubKategori(item))}</div>
+			</Fragment>
+		)
+	}
 
-	renderItem = item => {
-		if (item.inputType === 'multifield') {
-			return (
-				<div className="oppsummering-multifield" key={item.id}>
-					<h4>{item.label}</h4>
-					<div className="oppsummering-blokk">{item.items.map(item => this.renderItem(item))}</div>
-				</div>
-			)
+	renderSubKategoriBlokk = (header, items, values) => {
+		return (
+			<div className="oppsummering-multifield" key={header}>
+				<h4>{header}</h4>
+				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
+			</div>
+		)
+	}
+
+	renderSubKategori = ({ subKategori, items }) => {
+		const { values } = this.props
+
+		if (!subKategori.showInSummary) {
+			return items.map(item => this.renderItem(item, values))
 		}
+
+		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
+	}
+
+	renderItem = (item, stateValues) => {
+		if (item.items) {
+			const valueArray = _get(this.props.values, item.id)
+			return valueArray.map((values, idx) => {
+				return this.renderSubKategoriBlokk(`# ${idx + 1}`, item.items, values)
+			})
+		}
+
+		if (!item.inputType) return null
 
 		return (
 			<StaticValue
 				key={item.id}
 				header={item.label}
-				value={_get(this.props.values, item.id)}
+				value={_get(stateValues, item.id)}
 				format={item.format}
 			/>
 		)

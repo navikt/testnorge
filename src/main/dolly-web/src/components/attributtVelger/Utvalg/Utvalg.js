@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { AttributtManager } from '~/service/Kodeverk'
+import LinkButton from '~/components/button/LinkButton/LinkButton'
 
 import './Utvalg.less'
 
@@ -15,7 +16,7 @@ export default class Utvalg extends PureComponent {
 	}
 
 	renderUtvalg = () => {
-		const list = this.AttributtManager.listSelectedByHovedKategori(this.props.selectedIds)
+		const list = this.AttributtManager.listUtvalg(this.props.selectedIds)
 
 		if (!list.length) return this.renderEmptyResult()
 
@@ -23,12 +24,15 @@ export default class Utvalg extends PureComponent {
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }) => (
-		<ul key={hovedKategori.navn}>
-			<li>
-				<span>{hovedKategori.navn}</span>
-				<ul>{items.map(item => this.renderItem(item))}</ul>
-			</li>
-		</ul>
+		<React.Fragment key={hovedKategori.navn}>
+			<ul>
+				<li>
+					<span>{hovedKategori.navn}</span>
+					<ul>{items.map(item => this.renderItem(item))}</ul>
+				</li>
+			</ul>
+			<LinkButton text="Fjern alle" onClick={this.props.uncheckAllAttributes} />
+		</React.Fragment>
 	)
 
 	renderItem = item => (

@@ -19,7 +19,9 @@ export default class Step2 extends PureComponent {
 	constructor(props) {
 		super(props)
 		this.AttributtManager = new AttributtManager()
-		this.AttributtListe = this.AttributtManager.listSelectedByGroup(props.selectedAttributeIds)
+		this.AttributtListe = this.AttributtManager.listSelectedAttributesForValueSelection(
+			props.selectedAttributeIds
+		)
 		this.ValidationListe = this.AttributtManager.getValidations(props.selectedAttributeIds)
 		this.InitialValues = this.AttributtManager.getInitialValues(
 			props.selectedAttributeIds,

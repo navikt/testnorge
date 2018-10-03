@@ -20,7 +20,7 @@ const routes = [
 	{
 		path: '/gruppe/:gruppeId/bestilling',
 		exact: true,
-		breadcrumb: 'Lag bestilling',
+		breadcrumb: 'Legg til testpersoner',
 		component: Bestilling
 	},
 	{

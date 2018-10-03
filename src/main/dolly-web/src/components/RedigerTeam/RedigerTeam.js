@@ -23,8 +23,14 @@ export default class RedigerTeam extends PureComponent {
 
 	validation = () =>
 		yup.object().shape({
-			navn: yup.string().required('Navn er et påkrevd felt'),
-			beskrivelse: yup.string().required('Gi en liten beskrivelse av teamet')
+			navn: yup
+				.string()
+				.required('Navn er et påkrevd felt')
+				.max(50, 'Maksimalt 30 bokstaver'),
+			beskrivelse: yup
+				.string()
+				.required('Gi en liten beskrivelse av teamet')
+				.max(200, 'Maksimalt 200 bokstaver')
 		})
 
 	render() {
