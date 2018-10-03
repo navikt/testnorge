@@ -28,7 +28,7 @@ export default class SendFoedselsmelding extends PureComponent {
 		}
 
 		const identOptions = [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
-		const kjoennOptions = [{ value: 'M', label: 'MENN' }, { value: 'F', label: 'KVINNE' }]
+		const kjoennOptions = [{ value: 'M', label: 'GUTT' }, { value: 'F', label: 'JENTE' }]
 		const adresseOptions = [
 			{ value: 'LAGNY', label: 'LAG NY ADRESSE' },
 			{ value: 'MOR', label: 'ARV FRA MORS' },
