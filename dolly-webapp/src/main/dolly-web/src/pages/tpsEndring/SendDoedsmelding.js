@@ -36,18 +36,17 @@ export default class SendDoedsmelding extends PureComponent {
 				errorMessage: null,
 				handlingsType: values.handling
 			},
-			() => {
-				TpsfApi.createDoedsmelding(values)
-					.then(res => {
-						this.setState({ meldingSent: true, isFetching: false })
+			async () => {
+				try {
+					await TpsfApi.createDoedsmelding(values)
+					return this.setState({ meldingSent: true, isFetching: false })
+				} catch (err) {
+					this.setState({
+						meldingSent: false,
+						errorMessage: err.response.data.message,
+						isFetching: false
 					})
-					.catch(err => {
-						this.setState({
-							meldingSent: false,
-							errorMessage: err.response.data.message,
-							isFetching: false
-						})
-					})
+				}
 			}
 		)
 	}
