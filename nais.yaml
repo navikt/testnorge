@@ -48,3 +48,5 @@ fasitResources:
       resourceType: webserviceendpoint
     - alias: "virksomhet:Kodeverk_v2"
       resourceType: webserviceendpoint
+    - alias: "OrkestratorensProperties"
+      resourceType: applicationproperties
