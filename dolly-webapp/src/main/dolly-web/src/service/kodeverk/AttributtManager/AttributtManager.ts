@@ -2,7 +2,7 @@ import { AttributtGruppe, AttributtGruppeHovedKategori, Attributt } from './Type
 import * as yup from 'yup'
 import { FormikValues } from 'formik'
 import AttributtListe from './Attributter'
-import { groupList, groupListByHovedKategori, groupListByParent } from './GroupList'
+import { groupList, groupListByHovedKategori } from './GroupList'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
 import _mapValues from 'lodash/mapValues'

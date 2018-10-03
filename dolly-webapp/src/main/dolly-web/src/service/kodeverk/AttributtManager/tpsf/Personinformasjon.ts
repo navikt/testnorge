@@ -1,6 +1,7 @@
 import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource } from '../Types'
 import Formatters from '~/utils/DataFormatter'
+import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 
 import * as yup from 'yup'
 
@@ -53,7 +54,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Kjønn',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		options: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
+		options: SelectOptionsManager('kjonn'),
 		validation: yup.string().required('Velg kjønn'),
 		format: Formatters.kjonnToString,
 		kanRedigeres: true

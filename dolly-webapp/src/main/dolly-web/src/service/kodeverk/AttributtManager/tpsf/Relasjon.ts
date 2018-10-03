@@ -1,6 +1,7 @@
 import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource } from '../Types'
 import Formatters from '~/utils/DataFormatter'
+import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 
 import * as yup from 'yup'
 
@@ -24,7 +25,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Type',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		options: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }],
+		options: SelectOptionsManager('identtype'),
 		validation: yup.string().required('Velg identtype')
 	},
 	{
@@ -36,7 +37,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Kjønn',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		options: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
+		options: SelectOptionsManager('kjonn'),
 		format: Formatters.kjonnToString,
 		validation: yup.string().required('Velg kjønn')
 	},
@@ -84,7 +85,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Type',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
-				options: [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }],
+				options: SelectOptionsManager('identtype'),
 				validation: yup.string().required('Velg identtype')
 			},
 			{
@@ -96,7 +97,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Kjønn',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
-				options: [{ value: 'K', label: 'Jente' }, { value: 'M', label: 'Gutt' }],
+				options: SelectOptionsManager('kjonnBarn'),
 				format: Formatters.kjonnToStringBarn,
 				validation: yup.string().required('Velg kjønn')
 			},
