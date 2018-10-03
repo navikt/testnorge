@@ -101,6 +101,12 @@
             <version>${logstash.logback.encoder.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>no.nav.repository.fellesreg.tpsws</groupId>
+            <artifactId>nav-repository-fellesregister-jaxb-tps-m201-domain</artifactId>
+            <version>${tpsws-domain.version}</version>
+        </dependency>
+
         <!--TEST-->
 
         <dependency>

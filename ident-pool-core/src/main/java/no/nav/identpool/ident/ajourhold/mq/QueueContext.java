@@ -1,9 +1,7 @@
 package no.nav.identpool.ident.ajourhold.mq;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -51,12 +49,12 @@ public class QueueContext {
         }
     }
 
-    public static Set<String> getIncluded() {
-        return new HashSet<>(Arrays.asList(environments));
+    public static List<String> getIncluded() {
+        return Arrays.asList(environments);
     }
 
-    static HashSet<String> getExcluded() {
-        return new HashSet<>(Arrays.asList(filteredEnvironments));
+    static List<String> getExcluded() {
+        return Arrays.asList(filteredEnvironments);
     }
 
     @PostConstruct

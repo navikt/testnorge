@@ -2,7 +2,6 @@ package no.nav.identpool.ident.ajourhold.mq.factory;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;

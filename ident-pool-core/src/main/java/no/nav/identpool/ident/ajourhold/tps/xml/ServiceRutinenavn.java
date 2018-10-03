@@ -11,7 +11,7 @@ import lombok.Getter;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ServiceRutinenavn {
 
-    HENT_PERSONOPPLYSNIGNER("FS03-FDNUMMER-PERSDATA-O");
+    HENT_NAVNOPPLYSNINGER("FS03-FDLISTER-DISKNAVN-M");
 
     @JsonValue
     private String value;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class IdentDistribusjon {
 
     public Integer antallPersonerPerDagPerAar(int year) {
-        double antallForAar = verdiFraDistribusjon(now().getYear() - year);
+        double antallForAar = verdiFraDistribusjon(now().getYear() + year);
         return (int) (Math.ceil(antallForAar / 365));
     }
 
@@ -18,6 +18,6 @@ public class IdentDistribusjon {
 
     private Double verdiFraDistribusjon(Integer aar) {
         double aarDouble = (double) aar;
-        return (Math.floor(60000.0 / 20.0 * (Math.exp(-aarDouble / 40.0) * Math.sqrt(aarDouble)) / (2.0 * Math.sqrt(10.0 * 3.14159265359))));
+        return (Math.floor(60000.0 / 20.0 * (Math.exp(-aarDouble / 40.0) * Math.sqrt(aarDouble)) / (2.0 * Math.sqrt(10.0 * Math.PI))));
     }
 }

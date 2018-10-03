@@ -16,7 +16,7 @@ import no.nav.identpool.ident.ajourhold.repository.AjourholdRepository;
 public class AjourholdService {
 
     private final AjourholdRepository ajourholdRepository;
-    private final IdentDbService identService;
+    private final IdentDBService identService;
 
     public void startBatch() {
         AjourholdEntity entity = AjourholdEntity.builder()
