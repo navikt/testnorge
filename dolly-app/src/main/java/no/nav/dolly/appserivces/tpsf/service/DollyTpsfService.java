@@ -28,6 +28,8 @@ import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 @Service
 public class DollyTpsfService {
 
+    private static final int MAX_LENGTH_VARCHAR2 = 4000;
+
     @Autowired
     TpsfApiService tpsfApiService;
 
@@ -67,7 +69,7 @@ public class DollyTpsfService {
 
         } catch (Exception e) {
             //TODO Dette skal logges.
-            System.out.println("##### LAGE IDENTER FEILET ######  Error: " + e.getMessage() +  "   feil: " + e.getCause() + "       error: " + e);
+            System.out.println("##### LAGE IDENTER FEILET ######  Error: " + e.getMessage() +  "   feil: " + e.getCause().getMessage() + "       error: " + e);
         } finally {
             bestilling.setFerdig(true);
             bestillingService.saveBestillingToDB(bestilling);
@@ -113,9 +115,11 @@ public class DollyTpsfService {
         }
 
         String env = sb.toString();
-//        if (env.length() > 0) {
-//            env = env.substring(0, env.length() - 1);
-//        }
+
+        if(env.length() > 4000){
+            env = env.substring(0 - (MAX_LENGTH_VARCHAR2-10));
+            env = env + ".... END";
+        }
 
         return env;
     }

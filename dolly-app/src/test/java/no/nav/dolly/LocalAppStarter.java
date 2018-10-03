@@ -9,7 +9,7 @@ public class LocalAppStarter {
 
     public static void main(String[] args) {
 
-        System.setProperty("spring.profiles.active", "h2");
+        System.setProperty("spring.profiles.active", "u");
 
         ApplicationStarter.main(args);
 
