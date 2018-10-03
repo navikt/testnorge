@@ -1,4 +1,5 @@
 import { KategoriTypes } from './Types'
+import { DEFAULT_ECDH_CURVE } from 'tls'
 
 export const Kategorier: KategoriTypes = {
 	PersInfo: {
@@ -38,28 +39,29 @@ export const SubKategorier: KategoriTypes = {
 		id: 'boadresse',
 		navn: 'Boadresse',
 		order: 10
-		//multiple: true
 	},
-	PostadrInnland: {
-		id: 'postadresseInnland',
-		navn: 'Postadresse innland',
-		order: 20,
-		multiple: true
-	},
-	PostadrUtland: {
-		id: 'postadresseUtland',
-		navn: 'Postadresse utland',
-		order: 30,
-		multiple: true
-	},
+	// PostadrInnland: {
+	// 	id: 'postadresseInnland',
+	// 	navn: 'Postadresse innland',
+	// 	order: 20,
+	// 	multiple: true
+	// },
+	// PostadrUtland: {
+	// 	id: 'postadresseUtland',
+	// 	navn: 'Postadresse utland',
+	// 	order: 30,
+	// 	multiple: true
+	// },
 	Partner: {
 		id: 'partner',
 		navn: 'Partner',
-		order: 10
+		order: 10,
+		showInSummary: true
 	},
 	Barn: {
 		id: 'barn',
 		navn: 'Barn',
-		order: 20
+		order: 20,
+		showInSummary: true
 	}
 }

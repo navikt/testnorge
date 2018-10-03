@@ -5,8 +5,7 @@ export enum InputType {
 	Text = 'text',
 	Number = 'number',
 	Select = 'select',
-	Date = 'date',
-	Multifield = 'multifield'
+	Date = 'date'
 }
 
 export enum DataSource {
@@ -23,7 +22,7 @@ export interface Kategori {
 	id: string
 	navn: string
 	order: number
-	multiple?: boolean
+	showInSummary?: boolean
 }
 
 export interface KategoriTypes {
@@ -34,16 +33,18 @@ export interface Attributt {
 	hovedKategori: Kategori
 	subKategori: Kategori
 	id: string
+	path?: string
 	label: string
 	dataSource: DataSource
-	inputType: InputType
-	items?: Attributt[]
+	inputType?: InputType
 	options?: Options[]
 	format?: Function
 	apiKodeverkId?: string
 	validation?: yup.MixedSchema
-	kanRedigeres?: Boolean
-	kanBestilles?: Boolean
+	kanRedigeres?: boolean
+	parent?: string
+	harBarn?: boolean
+	items?: Attributt[]
 }
 
 // Attributt grupper

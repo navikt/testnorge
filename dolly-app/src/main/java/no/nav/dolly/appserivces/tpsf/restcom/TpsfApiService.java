@@ -5,16 +5,18 @@ import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.properties.ProvidersProps;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 @Service
 public class TpsfApiService {
@@ -27,16 +29,17 @@ public class TpsfApiService {
     @Autowired
     ObjectMapper objectMapper;
 
-    @Value("${tpsf.server.url}")
-    private String tpsfServerUrl;
+    @Autowired
+    ProvidersProps providersProps;
 
     public List<String> opprettIdenterTpsf(RsTpsfBestilling request) {
-        StringBuilder tpsfUrlSb = new StringBuilder().append(tpsfServerUrl).append(TPSF_BASE_URL).append(TPSF_OPPRETT_URL);
+        StringBuilder tpsfUrlSb = new StringBuilder().append(providersProps.getTpsf().getUrl()).append(TPSF_BASE_URL).append(TPSF_OPPRETT_URL);
         ResponseEntity<Object> response = postToTpsf(tpsfUrlSb.toString(), new HttpEntity<>(request));
         return objectMapper.convertValue(response.getBody(), List.class);
     }
 
-    public RsSkdMeldingResponse sendTilTpsFraTPSF(List<String> identer, List<String> environments) {
+    public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
+        validateEnvironments(environments);
         String url = buildTpsfUrlFromEnvironmentsInput(environments);
         ResponseEntity<Object> response = postToTpsf(url, new HttpEntity<>(identer));
         return objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class);
@@ -55,9 +58,15 @@ public class TpsfApiService {
         }
     }
 
+    private void validateEnvironments(List<String> environments){
+        if(isNullOrEmpty(environments)){
+            throw new IllegalArgumentException("Ingen TPS miljoer er spesifisert for sending av testdata");
+        }
+    }
+
     private String buildTpsfUrlFromEnvironmentsInput(List<String> environments){
         StringBuilder sb = new StringBuilder();
-        sb.append(tpsfServerUrl).append(TPSF_BASE_URL).append(TPSF_SEND_TPS_FLERE_URL).append("?environments=");
+        sb.append(providersProps.getTpsf().getUrl()).append(TPSF_BASE_URL).append(TPSF_SEND_TPS_FLERE_URL).append("?environments=");
         environments.forEach(env -> sb.append(env).append(","));
         return sb.toString().substring(0, sb.length() - 1);
     }

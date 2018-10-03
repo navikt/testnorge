@@ -1,8 +1,11 @@
-import React, { PureComponent } from 'react'
-import { Field, FieldArray } from 'formik'
+import React, { PureComponent, Fragment } from 'react'
+import { Field } from 'formik'
 import { DollyApi } from '~/service/Api'
 import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
+import FormEditorFieldArray from './FormEditorFieldArray'
+
+import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
@@ -12,76 +15,30 @@ export default class FormEditor extends PureComponent {
 				heading={<h3>{hovedKategori.navn}</h3>}
 				startOpen={!closePanels}
 			>
-				{items.map((item, idx) => {
-					return item.subKategori && item.subKategori.multiple
-						? this.renderSubKategoriAsFieldArray(item, formikProps)
-						: this.renderFieldContainer(
-								item.subKategori ? item.subKategori.navn : null,
-								item.items,
-								idx
-						  )
-				})}
+				{items.map((item, idx) => this.renderFieldContainer(item, idx, formikProps))}
 			</Panel>
 		)
 	}
-	renderSubKategoriAsFieldArray = ({ subKategori, items }, formikProps) => {
-		const subId = subKategori.id
+
+	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
+		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		return (
-			<div className="subkategori" key={subId}>
-				<FieldArray
-					name={subId}
-					render={arrayHelpers => {
-						console.log(items)
-						const defs = items.reduce((prev, curr) => ({ ...prev, [curr.id]: '' }), {})
-						console.log(defs)
-						const createDefaultObject = () => arrayHelpers.push({ ...defs })
-						return (
-							<Fragment>
-								<h4>
-									{subId} <button onClick={createDefaultObject}>+</button>
-								</h4>
-								{formikProps.values[subId] && formikProps.values[subId].length > 0 ? (
-									formikProps.values[subId].map((faKey, idx) => {
-										return (
-											<div key={idx}>
-												<div className="subkategori-field-group">
-													{items.map(item => {
-														// Add subKategori to ID
-														const fakeItem = {
-															...item,
-															id: `${subId}[${idx}]${item.id}`
-														}
-														return this.renderFieldComponent(fakeItem)
-													})}
-												</div>
-												<button onClick={e => arrayHelpers.remove(idx)}>fjern</button>
-											</div>
-										)
-									})
-								) : (
-									<span>ingen</span>
-								)}
-							</Fragment>
-						)
-					}}
-				/>
+			<div className="subkategori" key={uniqueId}>
+				{<h4>{subKategori.navn}</h4>}
+				<div className="subkategori-field-group">
+					{items.map(
+						item =>
+							item.items
+								? FormEditorFieldArray(item, formikProps, this.renderFieldComponent)
+								: this.renderFieldComponent(item)
+					)}
+				</div>
 			</div>
 		)
 	}
 
-	renderFieldContainer = (header, items, uniqueId) => (
-		<div className="subkategori" key={uniqueId}>
-			{header && <h4>{header}</h4>}
-			<div className="subkategori-field-group">
-				{items.map(item => this.renderFieldComponent(item))}
-			</div>
-		</div>
-	)
-
 	renderFieldComponent = item => {
-		if (item.inputType === 'multifield') {
-			return this.renderFieldContainer(null, item.items, item.id)
-		}
+		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item)
 

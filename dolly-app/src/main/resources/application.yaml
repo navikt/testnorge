@@ -14,7 +14,6 @@ spring:
 #### APP DB ####
 app.datasource.onsHosts:
 
-
 #### NEW FREG-SECURITY #####
 freg.security.oidc:
   idp:
@@ -36,19 +35,12 @@ freg.security.oidc:
       validation:
           type: refreshing
 
-### ABAC ###
-#no.nav.abac:
-#  url: ${no.nav.abac.url}
-#  systemuser:
-#    username: ${dolly.username}
-#    password: ${dolly.password}
 
-
-### TPSF ###
-tpsf.server.url: http://tps-forvalteren   # Bruker kubernetes sin egen Lastbalangsering
-
-### SIGRUN ###
-sigrun.server.url: http://localhost:8040
+providers:
+  tpsf:
+    url: http://localhost:8050
+  sigrun:
+    url: http://localhost:8040
 
 ### CORS ###
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000

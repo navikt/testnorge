@@ -19,6 +19,8 @@ export default class Navigation extends PureComponent {
 	render() {
 		const { currentPage, isSubmitting, onClickNext, abortBestilling, onClickPrevious } = this.props
 
+		const resetBestilling = () => {}
+
 		return (
 			<div className="step-navknapper">
 				<Knapp type="standard" onClick={abortBestilling}>

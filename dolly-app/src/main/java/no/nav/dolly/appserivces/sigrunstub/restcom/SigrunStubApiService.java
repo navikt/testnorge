@@ -5,12 +5,12 @@ import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.exceptions.SigrunnStubException;
+import no.nav.dolly.properties.ProvidersProps;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +29,11 @@ public class SigrunStubApiService {
     @Autowired
     ObjectMapper objectMapper;
 
-    @Value("${sigrun.server.url}")
-    private String sigrunHostUrl;
+    @Autowired
+    ProvidersProps providersProps;
 
     public List<RsGrunnlagResponse> createInntektstuff(RsSigrunnOpprettSkattegrunnlag request) {
-        StringBuilder sbUrl = new StringBuilder().append(sigrunHostUrl).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
-
+        StringBuilder sbUrl = new StringBuilder().append(providersProps.getSigrun()).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
         try{
             ResponseEntity<RsGrunnlagResponse[]> response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, new HttpEntity<>(request), RsGrunnlagResponse[].class);
             return Arrays.asList(response.getBody());

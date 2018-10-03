@@ -26,7 +26,7 @@ export default class AttributtVelger extends Component {
 	searchOnChange = e => this.setState({ search: e.target.value })
 
 	renderPanels = () => {
-		const list = this.AttributtManager.listAllByGroup(this.state.search)
+		const list = this.AttributtManager.listSelectableAttributes(this.state.search)
 		if (list.length === 0) return this.renderEmptyResult()
 		return list.map(hovedKategori => this.renderHovedKategori(hovedKategori))
 	}
@@ -70,6 +70,7 @@ export default class AttributtVelger extends Component {
 	renderEmptyResult = () => <p>Søket ga ingen treff</p>
 
 	render() {
+		const { selectedIds, uncheckAllAttributes } = this.props
 		return (
 			<div className="attributt-velger">
 				<Input
@@ -83,7 +84,7 @@ export default class AttributtVelger extends Component {
 				<div className="flexbox">
 					<div className="attributt-velger_panels">{this.renderPanels()}</div>
 
-					<Utvalg selectedIds={this.props.selectedIds} />
+					<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />
 				</div>
 			</div>
 		)

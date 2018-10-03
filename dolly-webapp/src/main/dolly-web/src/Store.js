@@ -14,6 +14,8 @@ import sortReducer from './ducks/sort'
 import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
 import commonReducer from './ducks/common'
+import configReducer from './ducks/config'
+import history from './history'
 
 const locationMiddleware = store => next => action => {
 	if (action.type === LOCATION_CHANGE) {
@@ -27,7 +29,7 @@ const locationMiddleware = store => next => action => {
 	return next(action)
 }
 
-export default function configureReduxStore(history) {
+const configureReduxStore = history => {
 	const allMiddleware = [
 		locationMiddleware,
 		thunkMiddleware,
@@ -52,7 +54,8 @@ export default function configureReduxStore(history) {
 		sort: sortReducer,
 		loading: loadingReducer,
 		errors: errorsReducer,
-		common: commonReducer
+		common: commonReducer,
+		config: configReducer
 	})
 
 	return createStore(
@@ -60,3 +63,5 @@ export default function configureReduxStore(history) {
 		composeWithDevTools(applyMiddleware(...allMiddleware))
 	)
 }
+
+export default configureReduxStore(history)

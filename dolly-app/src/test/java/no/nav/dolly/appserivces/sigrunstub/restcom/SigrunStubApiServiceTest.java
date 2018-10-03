@@ -5,6 +5,7 @@ import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.exceptions.SigrunnStubException;
+import no.nav.dolly.properties.ProvidersProps;
 
 import java.util.List;
 import org.junit.Before;
@@ -17,7 +18,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -38,12 +38,16 @@ public class SigrunStubApiServiceTest {
     @Mock
     ObjectMapper objectMapper;
 
+    @Mock ProvidersProps providersProps;
+
     @InjectMocks
     private SigrunStubApiService service;
 
     @Before
     public void setup(){
-        ReflectionTestUtils.setField(service, "sigrunHostUrl", "https://localhost:8080");
+        ProvidersProps.Sigrun sigrun = new ProvidersProps().new Sigrun();
+        sigrun.setUrl("https://localhost:8080");
+        when(providersProps.getSigrun()).thenReturn(sigrun);
     }
 
     @Test

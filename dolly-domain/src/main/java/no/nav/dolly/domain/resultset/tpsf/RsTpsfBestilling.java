@@ -31,7 +31,7 @@ public class RsTpsfBestilling {
 
     private List<RsPostadresse> postadresse;
 
-    private Character kjonn;
+    private String kjonn;
 
     private String statsborgerskap;
 
@@ -40,6 +40,8 @@ public class RsTpsfBestilling {
     private LocalDateTime spesregDato;
 
     private LocalDateTime doedsdato;
+
+    private String sivilstand;
 
     private LocalDateTime regdato;
 

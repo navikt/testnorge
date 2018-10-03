@@ -2,7 +2,7 @@
 server.port: 8080
 
 APP_NAME: dolly
-FASIT_ENVIRONMENT_NAME: localhost
+environment: localhost
 APP_VERSION: ${application.version}
 
 spring:
@@ -50,11 +50,11 @@ freg.security.oidc:
           type: refreshing
 
 
-### TPSF ###
-tpsf.server.url: https://tps-forvalteren-u2.nais.preprod.local
-
-### SIGRUN ###
-sigrun.server.url: http://localhost:8040
+providers:
+  tpsf:
+    url: https://tps-forvalteren-u2.nais.preprod.local
+  sigrun:
+    url: http://localhost:8040
 
 ### CORS ###
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000

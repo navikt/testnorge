@@ -2,7 +2,7 @@
 server.port: 8080
 
 APP_NAME: dolly
-FASIT_ENVIRONMENT_NAME: localhost
+environment: localhost
 APP_VERSION: ${application.version}
 
 spring:
@@ -26,7 +26,7 @@ freg.security.oidc:
   idp:
     openAm:
       clientId: dolly-localhost
-      clientSecret: KLNebXvbi4-gSPMzWrlNK7LPT93voNjm
+      clientSecret: test-secret
       hostUrl: https://isso-t.adeo.no:443/isso
       issuerUrl: https://isso-t.adeo.no:443/isso/oauth2
       loginUrl: https://isso-t.adeo.no/isso/oauth2/authorize
