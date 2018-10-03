@@ -21,7 +21,7 @@ export default class ProfilPage extends Component {
 					<StaticValue header="NAVIDENT" value={bruker.navIdent} />
 				</ContentContainer>
 				<WideButton iconKind="team" text="Team" onClick={() => this.props.history.push('/team')} />
-				<WideButton iconKind="file-new" text="Maler" />
+				{/* <WideButton iconKind="file-new" text="Maler" /> */}
 			</Fragment>
 		)
 	}

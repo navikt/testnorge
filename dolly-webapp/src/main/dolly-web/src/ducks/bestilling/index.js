@@ -19,6 +19,7 @@ export const actions = createActions(
 	'NEXT_PAGE',
 	'PREV_PAGE',
 	'TOGGLE_ATTRIBUTE',
+	'UNCHECK_ALL_ATTRIBUTES',
 	'SET_ENVIRONMENTS',
 	'SET_VALUES',
 	'START_BESTILLING',
@@ -44,6 +45,9 @@ export default handleActions(
 		},
 		[actions.toggleAttribute](state, action) {
 			return { ...state, attributeIds: _xor(state.attributeIds, [action.payload]) }
+		},
+		[actions.uncheckAllAttributes](state, action) {
+			return { ...state, attributeIds: [] }
 		},
 		[actions.startBestilling](state, action) {
 			return {

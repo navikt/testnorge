@@ -70,6 +70,7 @@ export default class AttributtVelger extends Component {
 	renderEmptyResult = () => <p>Søket ga ingen treff</p>
 
 	render() {
+		const { selectedIds, uncheckAllAttributes } = this.props
 		return (
 			<div className="attributt-velger">
 				<Input
@@ -83,7 +84,7 @@ export default class AttributtVelger extends Component {
 				<div className="flexbox">
 					<div className="attributt-velger_panels">{this.renderPanels()}</div>
 
-					<Utvalg selectedIds={this.props.selectedIds} />
+					<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />
 				</div>
 			</div>
 		)

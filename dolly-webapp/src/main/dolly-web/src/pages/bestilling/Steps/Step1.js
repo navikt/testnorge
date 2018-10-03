@@ -8,6 +8,7 @@ import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikInput } from '~/components/fields/Input/Input'
 import { Field, withFormik } from 'formik'
 import { animateScroll } from 'react-scroll'
+import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 
 class Step1 extends Component {
 	static propTypes = {
@@ -23,9 +24,7 @@ class Step1 extends Component {
 		animateScroll.scrollToTop({ duration: 250 })
 	}
 	render() {
-		const { selectedAttributeIds, toggleAttributeSelection } = this.props
-		// ident typer
-		const identOptions = [{ value: 'FNR', label: 'FNR' }, { value: 'DNR', label: 'DNR' }]
+		const { selectedAttributeIds, toggleAttributeSelection, uncheckAllAttributes } = this.props
 
 		return (
 			<div className="bestilling-step1">
@@ -38,7 +37,7 @@ class Step1 extends Component {
 						name="identtype"
 						label="Velg identtype"
 						component={FormikDollySelect}
-						options={identOptions}
+						options={SelectOptionsManager('identtype')}
 					/>
 					<Field
 						name="antall"
@@ -49,7 +48,11 @@ class Step1 extends Component {
 					/>
 				</div>
 
-				<AttributtVelger onToggle={toggleAttributeSelection} selectedIds={selectedAttributeIds} />
+				<AttributtVelger
+					onToggle={toggleAttributeSelection}
+					uncheckAllAttributes={uncheckAllAttributes}
+					selectedIds={selectedAttributeIds}
+				/>
 
 				<NavigationConnector onClickNext={this._onSubmitForm} />
 			</div>
