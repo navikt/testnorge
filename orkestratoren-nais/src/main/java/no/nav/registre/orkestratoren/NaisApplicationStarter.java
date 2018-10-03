@@ -1,4 +1,4 @@
-package no.nav.registre;
+package no.nav.registre.orkestratoren;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
