@@ -17,6 +17,57 @@ export default class SendDoedsmelding extends PureComponent {
 		handlingsType: null
 	}
 
+	validation = () =>
+		yup.object().shape({
+			ident: yup
+				.string()
+				.max(11, 'Morindent må inneholde 11 sifre')
+				.required('Morindent er et påkrevd felt'),
+			handling: yup.string().required('Handling er et påkrevd felt'),
+			miljoe: yup.string().required('Miljø er et påkrevd felt'),
+			doedsdato: yup.date().required('Dato er et påkrevd felt')
+		})
+
+	_onSubmit = values => {
+		this.setState(
+			{
+				isFetching: true,
+				meldingSent: false,
+				errorMessage: null,
+				handlingsType: values.handling
+			},
+			() => {
+				TpsfApi.createDoedsmelding(values)
+					.then(res => {
+						this.setState({ meldingSent: true, isFetching: false })
+					})
+					.catch(err => {
+						this.setState({
+							meldingSent: false,
+							errorMessage: err.response.data.message,
+							isFetching: false
+						})
+					})
+			}
+		)
+	}
+
+	_renderMeldingSent = () => {
+		var handling = ''
+		switch (this.state.handlingsType) {
+			case 'C':
+				handling = 'sent'
+				break
+			case 'U':
+				handling = 'endret'
+				break
+			case 'D':
+				handling = 'annullert'
+				break
+		}
+		return <h3 className="success-message"> Dødsmelding {handling} </h3>
+	}
+
 	render() {
 		let initialValues = {
 			ident: '',
@@ -74,56 +125,5 @@ export default class SendDoedsmelding extends PureComponent {
 				{this.state.meldingSent && this._renderMeldingSent()}
 			</ContentContainer>
 		)
-	}
-
-	validation = () =>
-		yup.object().shape({
-			ident: yup
-				.string()
-				.max(11, 'Morindent må inneholde 11 sifre')
-				.required('Morindent er et påkrevd felt'),
-			handling: yup.string().required('Handling er et påkrevd felt'),
-			miljoe: yup.string().required('Miljø er et påkrevd felt'),
-			doedsdato: yup.date().required('Dato er et påkrevd felt')
-		})
-
-	_onSubmit = values => {
-		this.setState(
-			{
-				isFetching: true,
-				meldingSent: false,
-				errorMessage: null,
-				handlingsType: values.handling
-			},
-			() => {
-				TpsfApi.createDoedsmelding(values)
-					.then(res => {
-						this.setState({ meldingSent: true, isFetching: false })
-					})
-					.catch(err => {
-						this.setState({
-							meldingSent: false,
-							errorMessage: err.response.data.message,
-							isFetching: false
-						})
-					})
-			}
-		)
-	}
-
-	_renderMeldingSent = () => {
-		var handling = ''
-		switch (this.state.handlingsType) {
-			case 'C':
-				handling = 'sent'
-				break
-			case 'U':
-				handling = 'endret'
-				break
-			case 'D':
-				handling = 'annullert'
-				break
-		}
-		return <h3 className="success-message"> Dødsmelding {handling} </h3>
 	}
 }
