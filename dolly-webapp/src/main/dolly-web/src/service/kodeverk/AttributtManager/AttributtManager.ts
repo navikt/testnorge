@@ -8,46 +8,41 @@ import _get from 'lodash/get'
 import _mapValues from 'lodash/mapValues'
 
 export default class AttributtManager {
-	listSelectedWithChildNodes(selectedIds: string[]): Attributt[] {
+	// BASE FUNCTIONS
+	listAllSelected(selectedIds: string[]): Attributt[] {
+		return AttributtListe.filter(f => selectedIds.includes(f.parent || f.id))
+	}
+
+	listSelectedExcludingParent(selectedIds: string[]): Attributt[] {
 		return AttributtListe.filter(f => {
-			if (f.inputType === 'multifield') return false
-			if (f.parent && selectedIds.includes(f.parent)) return true
-			return selectedIds.includes(f.id)
+			if (f.harBarn) return false
+			return selectedIds.includes(f.parent || f.id)
 		})
 	}
 
-	listSelectedWithParents(selectedIds: string[]): Attributt[] {
-		return AttributtListe.filter(f => selectedIds.includes(f.id))
+	listAllExcludingChildren(): Attributt[] {
+		return AttributtListe.filter(f => !f.parent)
 	}
 
-	searchListWithParents(list: Attributt[], searchTerm: string): Attributt[] {
-		return searchTerm
-			? list.filter(f => !f.parent && f.label.toLowerCase().includes(searchTerm.toLowerCase()))
-			: list.filter(f => !f.parent)
+	listSelectedExcludingChildren(selectedIds: string[]): Attributt[] {
+		return AttributtListe.filter(f => !f.parent && selectedIds.includes(f.id))
 	}
 
-	listAllByGroup(searchTerm: string): AttributtGruppe[] {
-		const list = this.searchListWithParents(AttributtListe, searchTerm)
-		return groupList(list)
+	//STEP 1
+	listSelectableAttributes(searchTerm: string): AttributtGruppe[] {
+		const list = this.listAllExcludingChildren()
+		return groupList(
+			searchTerm ? list.filter(f => f.label.toLowerCase().includes(searchTerm.toLowerCase())) : list
+		)
 	}
 
+	listUtvalg(selectedIds: string[]): AttributtGruppeHovedKategori[] {
+		return groupListByHovedKategori(this.listSelectedExcludingChildren(selectedIds))
+	}
+
+	//STEP 2 + 3
 	listSelectedAttributesForValueSelection(selectedIds: string[]): AttributtGruppe[] {
-		// multifield consist of several fields - only children fields should be rendered
-		let list = AttributtListe.filter(f => f.inputType !== 'multifield')
-		if (selectedIds.length > 0) {
-			list = list.filter(
-				f => selectedIds.includes(f.id) || (f.parent && selectedIds.includes(f.parent))
-			)
-		}
-		return groupList(list)
-	}
-
-	listSelectedByHovedKategori(selectedIds: string[]): AttributtGruppeHovedKategori[] {
-		return groupListByHovedKategori(this.listSelectedWithParents(selectedIds))
-	}
-
-	listSelectedByHovedKategoriWithChildNodes(selectedIds: string[]): AttributtGruppe[] {
-		return groupList(this.listSelectedWithChildNodes(selectedIds))
+		return groupList(this.listAllSelected(selectedIds))
 	}
 
 	listEditable(): AttributtGruppe[] {
@@ -56,22 +51,23 @@ export default class AttributtManager {
 
 	getValidations(selectedIds: string[]): yup.MixedSchema {
 		// Get all selected attributes that has validations
-		const list = this.listSelectedWithChildNodes(selectedIds).filter(s => s.validation)
-
+		const list = this.listAllSelected(selectedIds).filter(s => s.validation)
 		// Reduce to item.id and validation to create a validation object
-		const validationObject = list.reduce((prev, currentObject) => {
-			return {
-				...prev,
-				[currentObject.id]: currentObject.validation
+		const validationObject = list.reduce((accumulator, currentObject) => {
+			if (currentObject.items) {
+				const mapItemsToObject = this._mapArrayToObjectWithValidation(currentObject.items)
+				return {
+					...accumulator,
+					[currentObject.id]: yup.array().of(yup.object().shape(mapItemsToObject))
+				}
 			}
+			return _set(accumulator, currentObject.id, currentObject.validation)
 		}, {})
 		return yup.object().shape(validationObject)
 	}
 
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
-		const list = this.listSelectedWithChildNodes(selectedIds)
-
-		return this._getListOfInitialValues(list, values)
+		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
 	}
 
 	getInitialValuesForEditableItems(values: object): FormikValues {
@@ -82,6 +78,15 @@ export default class AttributtManager {
 
 	_getListOfInitialValues(list, values) {
 		return list.reduce((prev, item) => {
+			// Array
+			if (item.items) {
+				const mapItemsToObject = this._mapArrayToObjectWithEmptyValues(item.items)
+				return this._setInitialArrayValue(prev, item.id, values, [mapItemsToObject])
+			}
+			// Flattened object -> Ignore parent that has no inputType
+			if (!item.inputType) return prev
+
+			// Initvalue based on key-value
 			return this._setInitialValue(prev, item.id, values)
 		}, {})
 	}
@@ -91,5 +96,25 @@ export default class AttributtManager {
 		if (fromState) initialValue = fromState
 
 		return _set(currentObject, itemId, initialValue)
+	}
+
+	_setInitialArrayValue(currentObject, itemId, stateValues, array) {
+		let initialValue = array
+		const fromState = _get(stateValues, itemId)
+		if (fromState) initialValue = fromState
+
+		return _set(currentObject, itemId, initialValue)
+	}
+
+	_mapArrayToObjectWithEmptyValues = list => {
+		return list.reduce((accumulator, item) => {
+			return _set(accumulator, item.id, '')
+		}, {})
+	}
+
+	_mapArrayToObjectWithValidation = list => {
+		return list.reduce((accumulator, item) => {
+			return _set(accumulator, item.id, item.validation)
+		}, {})
 	}
 }

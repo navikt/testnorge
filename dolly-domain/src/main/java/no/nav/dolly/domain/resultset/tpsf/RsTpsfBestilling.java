@@ -31,7 +31,7 @@ public class RsTpsfBestilling {
 
     private List<RsPostadresse> postadresse;
 
-    private Character kjonn;
+    private String kjonn;
 
     private String statsborgerskap;
 

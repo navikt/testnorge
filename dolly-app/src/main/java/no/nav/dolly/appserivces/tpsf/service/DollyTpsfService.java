@@ -6,9 +6,9 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
-import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingService;
@@ -76,14 +76,14 @@ public class DollyTpsfService {
 
     private void senderIdenterTilTPS(RsDollyBestillingsRequest request,  List<String> klareIdenter, Testgruppe testgruppe, Bestilling bestilling, BestillingProgress progress) {
         try {
-            RsSkdMeldingResponse response = tpsfApiService.sendTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
-            String env = extractSuccessEnvTPS(response.getSendSkdMeldingTilTpsResponsene().get(0));
+            RsSkdMeldingResponse response = tpsfApiService.sendIdenterTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
+            String env = extractSuccessEnvTPS(response.getSendSkdMeldingTilTpsResponsene());
 
             if (!isNullOrEmpty(env)) {
                 identService.saveIdentTilGruppe(getHovedpersonAvBestillingsidenter(klareIdenter), testgruppe);
                 progress.setTpsfSuccessEnv(env);
             }
-        } catch (TpsfException e) {
+        } catch (Exception e) {
             progress.setFeil(e.getMessage());
         }
 
@@ -92,23 +92,30 @@ public class DollyTpsfService {
     }
 
     private String getHovedpersonAvBestillingsidenter(List<String> identer){
-        return identer.get(0); //TODO Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
+        return identer.get(0); //Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
     }
 
-    private String extractSuccessEnvTPS(SendSkdMeldingTilTpsResponse response) {
-        Map<String, String> status = response.getStatus();
+    private String extractSuccessEnvTPS(List<SendSkdMeldingTilTpsResponse> responses) {
         StringBuilder sb = new StringBuilder();
 
-        for (Map.Entry<String, String> entry : status.entrySet()) {
-            if (entry.getValue().contains("00")) {
-                sb.append(entry.getKey()).append(",");
+        for(SendSkdMeldingTilTpsResponse response : responses){
+            sb.append("{ (personId: ").append(response.getPersonId()).append(")");
+            sb.append(",(meldingstype: ").append(response.getSkdmeldingstype()).append(")");
+            sb.append(",(miljoer: ");
+            Map<String, String> status = response.getStatus();
+            for (Map.Entry<String, String> entry : status.entrySet()) {
+                if (entry.getValue().contains("00")) {
+                    sb.append(entry.getKey()).append(",");
+                }
             }
+
+            sb.append(")}");
         }
 
         String env = sb.toString();
-        if (env.length() > 0) {
-            env = env.substring(0, env.length() - 1);
-        }
+//        if (env.length() > 0) {
+//            env = env.substring(0, env.length() - 1);
+//        }
 
         return env;
     }

@@ -8,6 +8,7 @@ import no.nav.dolly.testdata.builder.RsTpsfBestillingBuilder;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -21,10 +22,11 @@ public class OpprettBestillingScenarios extends TestgruppeBestillingTestCaseBase
     public void happyPath() throws Exception{
         Long gruppeId = gruppeRepository.findByNavn(standardGruppenavn).getId();
         String url = getEndpointUrl(gruppeId);
+        CompletableFuture<String> future = new CompletableFuture<>();
 
         RsTpsfBestilling tpsfBestilling = RsTpsfBestillingBuilder.builder()
                 .antall(1)
-                .kjonn('M')
+                .kjonn("M")
                 .foedtEtter(LocalDate.of(2000, 1, 1))
                 .build()
                 .convertToRealRsTpsfBestilling();

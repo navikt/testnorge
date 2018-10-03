@@ -84,7 +84,7 @@ export default handleActions(
 const bestillingFormatter = bestillingState => {
 	console.log(bestillingState)
 	const { attributeIds, antall, environments, identtype, values } = bestillingState
-	const AttributtListe = AttributtManagerInstance.listSelectedWithChildNodes(attributeIds)
+	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
 
 	const final_values = {
 		antall: antall,
@@ -101,9 +101,9 @@ const bestillingFormatter = bestillingState => {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 	}
 
-	if (_get(final_values, 'tpsf.relasjoner.barn')) {
-		final_values.tpsf.relasjoner.barn = [final_values.tpsf.relasjoner.barn]
-	}
+	//if (_get(final_values, 'tpsf.relasjoner.barn')) {
+	//	final_values.tpsf.relasjoner.barn = [final_values.tpsf.relasjoner.barn]
+	//}
 
 	console.log('POSTING BESTILLING', final_values)
 
@@ -112,6 +112,7 @@ const bestillingFormatter = bestillingState => {
 
 const getTpsfValues = (attributeList, values) => {
 	//TODO: Legg inn filter for datasource type så vi kun får TPSF verdier.
+	console.log(attributeList)
 	return attributeList.reduce((accumulator, attribute) => {
 		return _set(accumulator, attribute.path || attribute.id, values[attribute.id])
 	}, {})

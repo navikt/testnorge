@@ -38,7 +38,7 @@ fasitResources:
     - alias: tpsf-host
       resourceType: baseurl
       propertyMap:
-        url: tpsf.server.url
+        url: providers.tpsf.url
 
     - alias: dollyDB
       resourceType: DataSource

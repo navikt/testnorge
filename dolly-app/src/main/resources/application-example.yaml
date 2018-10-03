@@ -44,11 +44,10 @@ freg.security.oidc:
 #    password: ${dolly.password}
 
 
-### TPSF ###
-tpsf.server.url:
-
-### SIGRUN ###
-sigrun.server.url:
+providers:
+  url:
+    tpsf: http://localhost:8050
+    sigrun: http://localhost:8040
 
 ### CORS ###
 dolly.security.cors.origins:
