@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import _mapValues from 'lodash/mapValues'
-import Panel from '~/components/panel/Panel'
+import LinkButton from '~/components/button/LinkButton/LinkButton'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { EnvironmentManager } from '~/service/Kodeverk'
 
@@ -27,7 +27,6 @@ export default class MiljoVelger extends Component {
 	}
 
 	velgAlle = (e, type, envs) => {
-		e.preventDefault()
 		const self = this
 		envs.forEach(env =>
 			setTimeout(function() {
@@ -37,7 +36,6 @@ export default class MiljoVelger extends Component {
 	}
 
 	fjernAlle = (e, type, envs) => {
-		e.preventDefault()
 		const self = this
 		envs.forEach(env =>
 			setTimeout(function() {
@@ -54,12 +52,8 @@ export default class MiljoVelger extends Component {
 				<div className="miljo-velger_checkboxes">{envs.map(env => this.renderCheckbox(env))}</div>
 				{!allDisabled && (
 					<div className="miljo-velger_buttons">
-						<a href="#" onClick={e => this.velgAlle(e, type, envs)}>
-							Velg alle
-						</a>
-						<a href="#" onClick={e => this.fjernAlle(e, type, envs)}>
-							Fjern alle
-						</a>
+						<LinkButton text="Velg alle" onClick={e => this.velgAlle(e, type, envs)} />
+						<LinkButton text="Fjern alle" onClick={e => this.fjernAlle(e, type, envs)} />
 					</div>
 				)}
 			</fieldset>
