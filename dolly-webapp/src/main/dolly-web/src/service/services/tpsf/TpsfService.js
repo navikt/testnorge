@@ -21,4 +21,25 @@ export default class TpsfService {
 		const endpoint = url + '/testdata/updatepersoner'
 		return Request.post(endpoint, [userData])
 	}
+
+	static createFoedselsmelding(userData) {
+		this.getTpsfUrl()
+		const endpoint = url + '/tpsmelding/foedselsmelding'
+		return Request.post(endpoint, userData)
+	}
+
+	static getKontaktInformasjon(fnr, env) {
+		const endpoint =
+			'https://tps-forvalteren-u2.nais.preprod.local:443/api/tps/kontaktinformasjon?fnr=' +
+			fnr +
+			'&environment=' +
+			env
+		return Request.get(endpoint)
+	}
+
+	static createDoedsmelding(userData) {
+		this.getTpsfUrl()
+		const endpoint = url + '/tpsmelding/doedsmelding'
+		return Request.post(endpoint, userData)
+	}
 }
