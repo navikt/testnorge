@@ -183,6 +183,7 @@ public class DollyTpsfServiceTest {
 
         assertThat(bestillingProgressOK.getTpsfSuccessEnv().contains("u1"), is(true));
         assertThat(bestillingProgressOK.getTpsfSuccessEnv().contains("t2"), is(true));
+        assertThat(bestillingProgressOK.getTpsfSuccessEnv(), is("u1,t2"));
         assertThat(bestillingProgressOK.getTpsfSuccessEnv().contains("q3"), is(false));
         assertThat(bestillingProgressOK.getFeil(), is(nullValue()));
 

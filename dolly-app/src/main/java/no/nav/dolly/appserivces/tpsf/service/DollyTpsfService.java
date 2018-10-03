@@ -69,7 +69,7 @@ public class DollyTpsfService {
 
         } catch (Exception e) {
             //TODO Dette skal logges.
-            System.out.println("##### LAGE IDENTER FEILET ######  Error: " + e.getMessage() +  "   feil: " + e.getCause().getMessage() + "       error: " + e);
+            System.out.println("##### LAGE IDENTER FEILET ######  Error: " + e.getStackTrace());
         } finally {
             bestilling.setFerdig(true);
             bestillingService.saveBestillingToDB(bestilling);
