@@ -57,7 +57,7 @@ class TableRow extends PureComponent {
 					{children}
 					<Table.Column className="dot-body-row-actioncolumn">
 						{editAction && <Button kind="edit" onClick={editAction} />}
-						{deleteAction && <ConfirmTooltip onClick={deleteAction} />}
+						{/* {deleteAction && <ConfirmTooltip onClick={deleteAction} />} */}
 						{groupId && <FavoriteButtonConnector groupId={groupId} />}
 						{expandComponent && (
 							<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />

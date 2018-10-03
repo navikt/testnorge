@@ -70,7 +70,7 @@ export default class Gruppe extends Component {
 		return (
 			<div id="gruppe-container">
 				<Overskrift label={gruppe.navn} actions={groupActions}>
-					<ConfirmTooltip onClick={deleteGruppe} />
+					{/* <ConfirmTooltip onClick={deleteGruppe} /> */}
 				</Overskrift>
 
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
