@@ -70,7 +70,7 @@ export default withFormik({
 		antall: yup
 			.number()
 			.min(1, 'Må minst opprette 1 testperson')
-			.max(5, 'Maks 5 personer i første omgang')
+			// .max(5, 'Maks 5 personer i første omgang')
 			.required('Oppgi antall testbrukere'),
 		identtype: yup.string().required('Velg en identtype')
 	}),

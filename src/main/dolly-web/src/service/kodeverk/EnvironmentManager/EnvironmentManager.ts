@@ -21,15 +21,14 @@ export default class EnvironmentManager {
 		const envs = [...UList, ...TList, ...QList]
 
 		// TEMP: Force use of test env
-		const envsWithDisabled = envs.map(f => {
+		const envsWithDisabled = envs.filter(f => {
 			// if (f.id === 'u6') return f
 
-			if (f.id.includes('t')) return f
+			// if (f.id.includes('t')) return f
+			if (f.id.includes('t13')) return false
 
-			return {
-				...f,
-				disabled: true
-			}
+			return f
+			// disabled: true
 		})
 
 		return envsWithDisabled
