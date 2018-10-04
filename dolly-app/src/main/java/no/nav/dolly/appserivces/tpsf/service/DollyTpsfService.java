@@ -131,7 +131,7 @@ public class DollyTpsfService {
         StringBuilder sb = new StringBuilder();
         sb.append(e.getMessage());
         if(e.getCause() != null){
-            sb.append("  cause: " + e.getCause().getMessage());
+            sb.append("  cause: ").append(e.getCause().getMessage());
         }
         sb.append("  localizedMsg: ").append(e.getLocalizedMessage());
 
@@ -154,7 +154,7 @@ public class DollyTpsfService {
         sb.append(e.getMessage());
 
         if(e.getCause() != null){
-            sb.append("  cause: " + e.getCause().getMessage());
+            sb.append("  cause: ").append(e.getCause().getMessage());
         }
 
         sb.append("  localizedMsg: ").append(e.getLocalizedMessage());
