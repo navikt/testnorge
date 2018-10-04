@@ -13,7 +13,7 @@ import no.nav.registre.orkestratoren.service.ConsumeTpsSyntPakken;
 @EnableScheduling
 public class JobController {
     
-    @Value( "${orkestratoren.batch.miljoer}")
+    @Value( "${orkestratoren.batch.miljoer}.split(',')")
     private List<String> miljoer;
     @Value( "${orkestratoren.batch.opprettAntallPersoner:500}")
     private int antallPersoner;

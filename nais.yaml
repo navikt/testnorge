@@ -28,25 +28,5 @@ resources:
     memory: 2054Mi
 fasitResources:
   used:
-    - alias: "ldap"
-      resourceType: ldap
-    - alias: "mqGateway"
-      resourceType: queuemanager
-    - alias: "securityTokenService"
-      resourceType: baseurl
-    - alias: "srvtps-forvalteren"
-      resourceType: credential
-    - alias: "tpsforvalterenDB"
-      resourceType: datasource
-    - alias: "tps-forvalterenProperties"
-      resourceType: applicationproperties
-    - alias: "TPS_FORESPORSEL_XML_O"
-      resourceType: queue
-    - alias: "virksomhet:Diskresjonskode_v1"
-      resourceType: webserviceendpoint
-    - alias: "virksomhet:EgenAnsatt_v1"
-      resourceType: webserviceendpoint
-    - alias: "virksomhet:Kodeverk_v2"
-      resourceType: webserviceendpoint
-    - alias: "OrkestratorensProperties"
+    - alias: "orkestratorensProperties"
       resourceType: applicationproperties
