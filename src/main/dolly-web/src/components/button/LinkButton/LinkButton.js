@@ -5,7 +5,7 @@ import './LinkButton.less'
 
 export default class LinkButton extends PureComponent {
 	static propTypes = {
-		text: PropTypes.text,
+		text: PropTypes.string,
 		preventDefault: PropTypes.bool
 	}
 

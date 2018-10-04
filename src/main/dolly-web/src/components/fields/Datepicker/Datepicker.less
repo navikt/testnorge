@@ -4,3 +4,500 @@
 	border-color: @color-error-border;
 	background-color: @color-error-background;
 }
+
+// DATOVELGER-KOMPONENT BUNDLER HELE BOOTSTRAP FILA --- DERFOR ER ALT UNDER KOPIERT INN FRA
+// https://github.com/navikt/datovelger/blob/master/dist/datovelger/styles/datovelger.css
+
+/* DayPicker styles */
+.DayPicker {
+	display: inline-block;
+	font-size: 1rem;
+}
+.DayPicker-wrapper {
+	position: relative;
+	flex-direction: row;
+	padding-bottom: 1em;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.DayPicker-Months {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+.DayPicker-Month {
+	display: table;
+	margin: 0 1em;
+	margin-top: 1em;
+	border-spacing: 0;
+	border-collapse: collapse;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.DayPicker-NavButton {
+	position: absolute;
+	top: 1em;
+	right: 1.5em;
+	left: auto;
+	display: inline-block;
+	margin-top: 2px;
+	width: 1.25em;
+	height: 1.25em;
+	background-position: center;
+	background-size: 50%;
+	background-repeat: no-repeat;
+	color: #8b9898;
+	cursor: pointer;
+}
+.DayPicker-NavButton:hover {
+	opacity: 0.8;
+}
+.DayPicker-NavButton--prev {
+	margin-right: 1.5em;
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAwCAYAAAB5R9gVAAAABGdBTUEAALGPC/xhBQAAAVVJREFUWAnN2G0KgjAYwPHpGfRkaZeqvgQaK+hY3SUHrk1YzNLay/OiEFp92I+/Mp2F2Mh2lLISWnflFjzH263RQjzMZ19wgs73ez0o1WmtW+dgA01VxrE3p6l2GLsnBy1VYQOtVSEH/atCCgqpQgKKqYIOiq2CBkqtggLKqQIKgqgCBjpJ2Y5CdJ+zrT9A7HHSTA1dxUdHgzCqJIEwq0SDsKsEg6iqBIEoq/wEcVRZBXFV+QJxV5mBtlDFB5VjYTaGZ2sf4R9PM7U9ZU+lLuaetPP/5Die3ToO1+u+MKtHs06qODB2zBnI/jBd4MPQm1VkY79Tb18gB+C62FdBFsZR6yeIo1YQiLJWMIiqVjQIu1YSCLNWFgijVjYIuhYYCKoWKAiiFgoopxYaKLUWOii2FgkophYp6F3r42W5A9s9OcgNvva8xQaysKXlFytoqdYmQH6tF3toSUo0INq9AAAAAElFTkSuQmCC');
+}
+.DayPicker-NavButton--next {
+	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAwCAYAAAB5R9gVAAAABGdBTUEAALGPC/xhBQAAAXRJREFUWAnN119ugjAcwPHWzJ1gnmxzB/BBE0n24m4xfNkTaOL7wOtsl3AXMMb+Vjaa1BG00N8fSEibPpAP3xAKKs2yjzTPH9RAjhEo9WzPr/Vm8zgE0+gXATAxxuxtqeJ9t5tIwv5AtQAApsfT6TPdbp+kUBcgVwvO51KqVhMkXKsVJFXrOkigVhCIs1Y4iKlWZxB1rX4gwlpRIIpa8SDkWmggrFq4IIRaJKCYWnSgnrXIQV1r8YD+1Vrn+bReagysIFfLABRt31v8oBu1xEBttfRbltmfjgEcWh9snUS2kNdBK6WN1vrOWxObWsz+fjxevsxmB1GQDfINWiev83nhaoiB/CoOU438oPrhXS0WpQ9xc1ZQWxWHqUYe0I0qrKCQKjygDlXIQV2r0IF6ViEBxVTBBSFUQQNhVYkHIVeJAtkNsbQ7c1LtzP6FsObhb2rCKv7NBIGoq4SDmKoEgTirXAcJVGkFSVVpgoSrXICGUMUH/QBZNSUy5XWUhwAAAABJRU5ErkJggg==');
+}
+.DayPicker-NavButton--interactionDisabled {
+	display: none;
+}
+.DayPicker-Caption {
+	display: table-caption;
+	margin-bottom: 0.5em;
+	padding: 0 0.5em;
+	text-align: left;
+}
+.DayPicker-Caption > div {
+	font-weight: 500;
+	font-size: 1.15em;
+}
+.DayPicker-Weekdays {
+	display: table-header-group;
+	margin-top: 1em;
+}
+.DayPicker-WeekdaysRow {
+	display: table-row;
+}
+.DayPicker-Weekday {
+	display: table-cell;
+	padding: 0.5em;
+	color: #8b9898;
+	text-align: center;
+	font-size: 0.875em;
+}
+.DayPicker-Weekday abbr[title] {
+	border-bottom: none;
+	text-decoration: none;
+}
+.DayPicker-Body {
+	display: table-row-group;
+}
+.DayPicker-Week {
+	display: table-row;
+}
+.DayPicker-Day {
+	display: table-cell;
+	padding: 0.5em;
+	border-radius: 50%;
+	vertical-align: middle;
+	text-align: center;
+	cursor: pointer;
+}
+.DayPicker-WeekNumber {
+	display: table-cell;
+	padding: 0.5em;
+	min-width: 1em;
+	border-right: 1px solid #eaecec;
+	color: #8b9898;
+	vertical-align: middle;
+	text-align: right;
+	font-size: 0.75em;
+	cursor: pointer;
+}
+.DayPicker--interactionDisabled .DayPicker-Day {
+	cursor: default;
+}
+.DayPicker-Footer {
+	padding-top: 0.5em;
+}
+.DayPicker-TodayButton {
+	border: none;
+	background-color: transparent;
+	background-image: none;
+	box-shadow: none;
+	color: #4a90e2;
+	font-size: 0.875em;
+	cursor: pointer;
+}
+/* Default modifiers */
+.DayPicker-Day--today {
+	color: #d0021b;
+	font-weight: 700;
+}
+.DayPicker-Day--outside {
+	color: #8b9898;
+	cursor: default;
+}
+.DayPicker-Day--disabled {
+	color: #dce0e0;
+	cursor: default;
+	/* background-color: #eff1f1; */
+}
+/* Example modifiers */
+.DayPicker-Day--sunday {
+	background-color: #f7f8f8;
+}
+.DayPicker-Day--sunday:not(.DayPicker-Day--today) {
+	color: #dce0e0;
+}
+.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
+	position: relative;
+	background-color: #4a90e2;
+	color: #f0f8ff;
+}
+.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):hover {
+	background-color: #51a0fa;
+}
+.DayPicker:not(.DayPicker--interactionDisabled)
+	.DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
+	background-color: #f0f8ff;
+}
+/* DayPickerInput */
+.DayPickerInput {
+	display: inline-block;
+}
+.DayPickerInput-OverlayWrapper {
+	position: relative;
+}
+.DayPickerInput-Overlay {
+	position: absolute;
+	left: 0;
+	z-index: 1;
+	background: white;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+.nav-datovelger {
+	position: relative;
+	display: inline-block;
+	font-size: 1rem;
+}
+.nav-datovelger * {
+	box-sizing: border-box;
+}
+.nav-datovelger__inputContainer {
+	display: inline-block;
+	width: 11rem;
+	position: relative;
+}
+.nav-datovelger__kalenderknapp {
+	display: inline-block;
+	font-weight: 600;
+	font-family: inherit;
+	font-size: 1em;
+	white-space: nowrap;
+	border-radius: 0.125em;
+	cursor: pointer;
+	user-select: none;
+	letter-spacing: 0.0625em;
+	line-height: 1;
+	text-transform: uppercase;
+	text-decoration: none;
+	background-color: transparent;
+	padding: calc(0.5em - 2px) calc(2.5em - 2px) calc(0.625em - 2px) calc(2.5em - 2px);
+	padding: 0.1rem 0.5rem;
+	background-color: #fff;
+	border: 1px solid #0067c5;
+	border-radius: 0 4px 4px 0;
+	margin: 0;
+	height: 100%;
+	z-index: 2;
+	position: absolute;
+	right: 0;
+}
+.nav-datovelger__kalenderknapp:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px #ffbd66;
+}
+.nav-datovelger__kalenderknapp > svg {
+	width: 16px;
+	height: 16px;
+}
+.nav-datovelger__kalenderknapp:active,
+.nav-datovelger__kalenderknapp:hover,
+.nav-datovelger__kalenderknapp:focus {
+	outline: none;
+}
+.nav-datovelger__kalenderknapp:disabled {
+	background: transparent;
+	cursor: default;
+}
+.nav-datovelger__caption {
+	padding: 0 2rem;
+	text-align: center;
+	text-transform: capitalize;
+	font-size: 2rem;
+}
+.nav-datovelger__input {
+	padding: 0.45rem;
+	background-color: #fff;
+	border-radius: 4px;
+	border: 1px solid #b7b1a9;
+	box-sizing: border-box;
+	width: 100%;
+	padding-right: 3rem;
+}
+.nav-datovelger__input:focus {
+	outline: 0;
+	box-shadow: 0 0 0 3px #ffbd66;
+}
+.nav-datovelger__input:hover {
+	border-color: #0067c5;
+	transition: border-color 200ms cubic-bezier(0.465, 0.183, 0.153, 0.946);
+}
+.nav-datovelger__input:disabled {
+	background-color: #e9e7e7;
+	border-color: #b7b1a9;
+	box-shadow: none;
+	color: #3e3832 !important;
+	font-style: normal;
+}
+.nav-datovelger__input--datePickerTarget {
+	outline: none;
+	box-shadow: 0 0 0 3px #ffbd66;
+	border-radius: 3px;
+}
+.nav-datovelger__navbar {
+	position: absolute;
+	left: 0.6rem;
+	right: 0.6rem;
+	top: 0.4rem;
+}
+.nav-datovelger__navbar__knapp {
+	display: inline-block;
+	font-weight: 600;
+	font-family: inherit;
+	font-size: 1em;
+	white-space: nowrap;
+	border-radius: 0.125em;
+	cursor: pointer;
+	user-select: none;
+	letter-spacing: 0.0625em;
+	line-height: 1;
+	text-transform: uppercase;
+	text-decoration: none;
+	background-color: transparent;
+	padding: calc(0.5em - 2px) calc(2.5em - 2px) calc(0.625em - 2px) calc(2.5em - 2px);
+	padding: 0.5rem 0.5rem;
+	position: absolute;
+	border: none;
+	margin-top: 3px;
+}
+.nav-datovelger__navbar__knapp:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px #ffbd66;
+}
+.nav-datovelger__navbar__knapp[disabled] {
+	cursor: default;
+	opacity: 0;
+}
+.nav-datovelger__navbar__knapp:not([disabled]):hover {
+	outline: none;
+	box-shadow: 0 0 0 1px #0067c5;
+}
+.nav-datovelger__navbar__knapp:not([disabled]):focus,
+.nav-datovelger__navbar__knapp:not([disabled]):active {
+	outline: none;
+	box-shadow: 0 0 0 3px #ffbd66;
+	border-radius: 3px;
+}
+.nav-datovelger__navbar__knapp--forrige {
+	left: 0;
+}
+.nav-datovelger__navbar__knapp--neste {
+	right: 0;
+}
+.nav-datovelger__navbar__knapp svg {
+	display: block;
+}
+.nav-datovelger__kalenderPortal {
+	position: absolute;
+	top: calc(100% + 2px);
+	left: 0;
+	line-height: 1.3em;
+	z-index: 10;
+}
+.nav-datovelger__kalenderPortal--fullskjerm {
+	z-index: 100;
+	position: fixed;
+	display: flex;
+	align-items: center;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(255, 255, 255, 0.8);
+}
+.nav-datovelger__kalenderPortal--fullskjerm .nav-datovelger__kalenderPortal__content {
+	margin: 0 auto;
+	min-height: 20rem;
+}
+.nav-datovelger__kalender {
+	border: 1px solid #b7b1a9;
+	border-radius: 4px;
+	overflow: hidden;
+}
+.nav-datovelger
+	.DayPicker:not(.DayPicker--interactionDisabled)
+	.DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):active {
+	background-color: #0067c5 !important;
+	color: #fff;
+}
+.nav-datovelger
+	.DayPicker:not(.DayPicker--interactionDisabled)
+	.DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):hover {
+	outline: none;
+	box-shadow: 0 0 0 1px #0067c5;
+	z-index: 2;
+	position: relative;
+	border-radius: 2px !important;
+}
+.nav-datovelger
+	.DayPicker:not(.DayPicker--interactionDisabled)
+	.DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):hover:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside) {
+	background-color: inherit;
+}
+.nav-datovelger
+	.DayPicker:not(.DayPicker--interactionDisabled)
+	.DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):active,
+.nav-datovelger
+	.DayPicker:not(.DayPicker--interactionDisabled)
+	.DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):focus {
+	outline: none;
+	box-shadow: 0 0 0 3px #ffbd66;
+	border-radius: 3px;
+	z-index: 2;
+	position: relative;
+	border-radius: 2px !important;
+	background: #fff;
+	z-index: 3;
+}
+.nav-datovelger
+	.DayPicker:not(.DayPicker--interactionDisabled)
+	.DayPicker-Day.DayPicker-Day--disabled:focus,
+.nav-datovelger
+	.DayPicker:not(.DayPicker--interactionDisabled)
+	.DayPicker-Day
+	.DayPicker-Day--outside:focus {
+	outline: none;
+	box-shadow: 0 0 0 1px #ffbd66;
+	border-radius: 2px;
+	z-index: 2;
+	position: relative;
+	border-radius: 2px !important;
+}
+.nav-datovelger .DayPicker {
+	background: #fff;
+}
+.nav-datovelger .DayPicker-wrapper:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px #ffbd66;
+	border-radius: 3px;
+}
+.nav-datovelger .DayPicker-Day {
+	border-radius: 0;
+	border-radius: 0 !important;
+	padding-left: 0.6em;
+	padding-right: 0.6em;
+}
+.nav-datovelger .DayPicker-Day--selected:not(.DayPicker-Day--disabled) {
+	color: #fff;
+	background-color: #0067c5 !important;
+}
+.nav-datovelger .DayPicker-Day--disabled {
+	color: #b7b1a9;
+	background-color: #f6f6f6;
+	font-weight: normal !important;
+}
+.nav-datovelger .DayPicker-Day--outside {
+	background-color: transparent;
+}
+.nav-datovelger .DayPicker-Day--today {
+	color: #0067c5;
+}
+.nav-datovelger .DayPicker-Day--today.DayPicker-Day--disabled {
+	color: #66a4dc;
+}
+.nav-datovelger .DayPicker-Day:last-child {
+	color: #e79999 !important;
+}
+.nav-datovelger .DayPicker-Weekday {
+	text-transform: capitalize;
+}
+.nav-datovelger .DayPicker-Caption {
+	padding: 0 2rem;
+	text-align: center;
+	text-transform: capitalize;
+}
+.nav-datovelger .DayPicker-WeekNumber {
+	border-right: none;
+	position: relative;
+	padding-left: 0;
+	padding-right: 1rem;
+	font-size: 0.8rem;
+}
+.nav-datovelger .DayPicker-WeekNumber:focus {
+	outline: none;
+	position: relative;
+}
+.nav-datovelger .DayPicker-WeekNumber:focus:after {
+	content: '';
+	position: absolute;
+	top: 2px;
+	left: -0.5rem;
+	bottom: 2px;
+	right: 0.55rem;
+	border: 1px solid #ffbd66;
+	border-radius: 2px;
+}
+.nav-datovelger .DayPicker-WeekNumber:before {
+	content: '';
+	width: 1px;
+	height: 100%;
+	top: 0;
+	right: 0.5rem;
+	background-color: #c6c2bf;
+	position: absolute;
+}
+.nav-datovelger .DayPicker--range .DayPicker-Day--selected {
+	background-color: #3385d1 !important;
+}
+.nav-datovelger .DayPicker--range .DayPicker-Day--start {
+	background-color: #0067c5 !important;
+}
+.nav-datovelger .DayPicker--range .DayPicker-Day--end {
+	background-color: #0067c5 !important;
+}
+.nav-datovelger .DayPicker--range .DayPicker-Day--outside {
+	visibility: hidden;
+}
+.nav-datovelger__periode {
+	display: flex;
+	padding-right: 2.5rem;
+}
+.nav-datovelger__periode .nav-datovelger__inputContainer {
+	width: 9rem;
+}
+.nav-datovelger__periode__startInput {
+	padding-right: 1.5rem;
+}
+.nav-datovelger__periode__startInput:after {
+	content: '—';
+	margin-left: 0.35rem;
+	line-height: 2rem;
+	position: absolute;
+}
