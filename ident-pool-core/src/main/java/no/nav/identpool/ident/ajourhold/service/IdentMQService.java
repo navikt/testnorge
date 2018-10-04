@@ -7,13 +7,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
 import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
-import org.springframework.stereotype.Service;
+
 import com.google.common.collect.Lists;
+
+import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import no.nav.identpool.ident.ajourhold.mq.QueueContext;
 import no.nav.identpool.ident.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
@@ -50,7 +54,14 @@ public class IdentMQService {
     }
 
     private void filterTpsQueue(String environment, final HashSet<String> nonexistent, final HashSet<String> exists) throws JMSException {
-        MessageQueue messageQueue = messageQueueFactory.createMessageQueue(environment);
+
+        MessageQueue messageQueue;
+        try {
+            messageQueue = messageQueueFactory.createMessageQueue(environment);
+        } catch (JMSException e) {
+            log.warn(e.getMessage());
+            messageQueue = messageQueueFactory.createMessageQueueIgnoreCache(environment);
+        }
         if (nonexistent.isEmpty()) {
             return;
         }

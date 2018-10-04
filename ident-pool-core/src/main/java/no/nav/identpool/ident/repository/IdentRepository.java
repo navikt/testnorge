@@ -16,7 +16,7 @@ public interface IdentRepository extends JpaRepository<IdentEntity, Long>, Query
 
     boolean existsByPersonidentifikator(String identifikator);
 
-    long countByFoedselsdatoBetweenAndRekvireringsstatus(LocalDate from, LocalDate to, Rekvireringsstatus rekvireringsstatus);
+    long countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(LocalDate from, LocalDate to, Identtype type, Rekvireringsstatus rekvireringsstatus);
 
     IdentEntity findTopByPersonidentifikator(String personidentifkator);
 

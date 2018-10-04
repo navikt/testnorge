@@ -24,10 +24,10 @@ public class AjourholdService {
                 .status(BatchStatus.STARTED)
                 .build();
         ajourholdRepository.update(entity);
-        this.execute(entity);
+        this.run(entity);
     }
 
-    private void execute(AjourholdEntity ajourholdEntity) {
+    private void run(AjourholdEntity ajourholdEntity) {
         try {
             identService.checkCriticalAndGenerate();
             ajourholdEntity.setStatus(BatchStatus.COMPLETED);
