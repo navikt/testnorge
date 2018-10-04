@@ -7,7 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.sql.DataSource;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -33,5 +36,15 @@ public class FasitClient {
                 .map(fasitReadService::findEnvironmentNames)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+    }
+
+    @Bean
+    public Flyway flyway(DataSource dataSource) {
+        Flyway flyway = new Flyway();
+        flyway.setDataSource(dataSource);
+        flyway.clean();
+        flyway.setLocations("classpath:db/migration");
+        flyway.migrate();
+        return flyway;
     }
 }
