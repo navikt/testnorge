@@ -13,16 +13,16 @@ const TpsfTransformer = response => {
 const relasjonTranslator = relasjon => {
 	switch (relasjon) {
 		case 'EKTEFELLE':
-			return 'PARTNER'
+			return 'Partner'
 		case 'MOR':
-			return 'MOR'
+			return 'Mor'
 		case 'FAR':
-			return 'FAR'
+			return 'Far'
 		case 'BARN':
 		case 'FOEDSEL':
-			return 'BARN'
+			return 'Barn'
 		default:
-			return 'UKJENT'
+			return 'Ukjent relasjon'
 	}
 }
 
