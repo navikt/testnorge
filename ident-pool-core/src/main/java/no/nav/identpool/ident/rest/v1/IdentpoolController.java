@@ -1,5 +1,7 @@
 package no.nav.identpool.ident.rest.v1;
 
+import static no.nav.identpool.util.PersonidentifikatorValidatorUtil.valider;
+
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
+import no.nav.identpool.ident.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.ident.repository.IdentEntity;
 import no.nav.identpool.ident.service.IdentpoolService;
 
@@ -23,6 +26,7 @@ import no.nav.identpool.ident.service.IdentpoolService;
 @RequestMapping("/api/v1/identifikator")
 @RequiredArgsConstructor
 public class IdentpoolController {
+
     private final IdentpoolService identpoolService;
 
     @PostMapping
@@ -44,21 +48,30 @@ public class IdentpoolController {
     }
 
     @PostMapping("/bruk")
-    public String markerBrukt(
+    public void markerBrukt(
             @RequestParam String personidentifikator,
             @RequestParam String bruker
-    ) throws IdentAlleredeIBrukException {
+    ) throws IdentAlleredeIBrukException, UgyldigPersonidentifikatorException {
+        valider(personidentifikator);
         MarkerBruktRequest markerBruktRequest = MarkerBruktRequest.builder()
                 .personidentifikator(personidentifikator)
                 .bruker(bruker)
                 .build();
-        return identpoolService.markerBrukt(markerBruktRequest);
+        identpoolService.markerBrukt(markerBruktRequest);
+    }
+
+    @GetMapping("/ledig")
+    public Boolean erLedig(
+            @RequestParam String personidentifikator
+    ) throws UgyldigPersonidentifikatorException {
+        valider(personidentifikator);
+        return identpoolService.erLedig(personidentifikator);
     }
 
     @GetMapping
-    public IdentEntity lesInnhold(
-            @RequestParam(value = "personidentifikator") String personidentifikator
-    ) {
+    public IdentEntity lesInnhold(@RequestParam(value = "personidentifikator") String personidentifikator
+    ) throws UgyldigPersonidentifikatorException {
+        valider(personidentifikator);
         return identpoolService.lesInnhold(personidentifikator);
     }
 }

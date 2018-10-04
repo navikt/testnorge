@@ -41,7 +41,7 @@ class IdentDBService {
                 .build();
     }
 
-    void checkCritcalAndGenerate() {
+    void checkCriticalAndGenerate() {
         current = now();
         int minYearMinus = 110;
         LocalDate minDate = LocalDate.of(current.getYear() - minYearMinus, 1, 1);

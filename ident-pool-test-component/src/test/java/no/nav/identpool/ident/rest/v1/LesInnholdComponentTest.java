@@ -18,7 +18,7 @@ import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.repository.IdentEntity;
 
 public class LesInnholdComponentTest extends ComponentTestbase {
-    private static final String PERSONIDENTIFIKATOR = "10108000340";
+    private static final String PERSONIDENTIFIKATOR = "10108000398";
     private static final Identtype IDENTTYPE = Identtype.FNR;
     private static final Rekvireringsstatus REKVIRERINGSSTATUS = Rekvireringsstatus.I_BRUK;
     private static final String FINNES_HOS_SKATT = "0";
