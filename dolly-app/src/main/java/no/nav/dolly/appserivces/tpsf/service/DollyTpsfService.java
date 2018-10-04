@@ -151,7 +151,12 @@ public class DollyTpsfService {
 
     private void handleError(TpsfException e, BestillingProgress progress){
         StringBuilder sb = new StringBuilder();
-        sb.append(e.getMessage()).append("  cause: " + e.getCause().getMessage());
+        sb.append(e.getMessage());
+
+        if(e.getCause() != null){
+            sb.append("  cause: " + e.getCause().getMessage());
+        }
+
         sb.append("  localizedMsg: ").append(e.getLocalizedMessage());
 
         String feil = sb.toString();

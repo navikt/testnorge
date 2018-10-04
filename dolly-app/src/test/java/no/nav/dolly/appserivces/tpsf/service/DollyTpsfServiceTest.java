@@ -188,7 +188,7 @@ public class DollyTpsfServiceTest {
 
         assertThat(bestillingProgressFEIL.getTpsfSuccessEnv(), is(nullValue()));
         assertThat(bestillingProgressFEIL.getFeil(), is(notNullValue()));
-        assertThat(bestillingProgressFEIL.getFeil(), is(standardFeilmelding));
+        assertThat(bestillingProgressFEIL.getFeil().contains(standardFeilmelding), is(true));
     }
 
     @Test
@@ -214,7 +214,7 @@ public class DollyTpsfServiceTest {
         BestillingProgress bestillingProgress = argumentCaptor.getValue();
 
         assertThat(bestillingProgress.getFeil(), is(notNullValue()));
-        assertThat(bestillingProgress.getFeil(), is(standardFeilmelding));
+        assertThat(bestillingProgress.getFeil().contains(standardFeilmelding), is(true));
     }
 
 
