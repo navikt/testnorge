@@ -32,4 +32,5 @@ public class FasitClient {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
+
 }

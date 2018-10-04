@@ -1,8 +1,8 @@
 CREATE TABLE AJOURHOLD (
   ID                    NUMBER          PRIMARY KEY,
-  STATUS                VARCHAR2        NOT NULL,
-  SISTOPPDATERT         DATE                    ,
-  FEILMELDING           VARCHAR2                ,
+  STATUS                VARCHAR2(255)   NOT NULL,
+  SISTOPPDATERT         DATE            ,
+  FEILMELDING           VARCHAR2(255)
 );
 
 CREATE SEQUENCE AJOURHOLD_SEQ START WITH 1;
