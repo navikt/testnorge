@@ -41,7 +41,7 @@ export default class Gruppe extends Component {
 									<Table.Row
 										key={idx}
 										expandComponent={<PersonDetaljer brukerData={bruker.data} />}
-										editAction={() => editTestbruker(bruker.id)}
+										// editAction={() => editTestbruker(bruker.id)}
 									>
 										<Table.Column width="15" value={Formatters.formatIdentNr(bruker.id)} />
 										<Table.Column width="15" value={bruker.idType} />
