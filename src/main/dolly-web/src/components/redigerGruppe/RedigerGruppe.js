@@ -39,10 +39,8 @@ export default class Rediger extends PureComponent {
 				.string()
 				.required('Navn er et påkrevd felt')
 				.max(50, 'Maksimalt 30 bokstaver'),
-			teamId: yup
-				.number()
-				.nullable()
-				.required('Du må velge hvilket team gruppen skal knyttes til'),
+			teamId: yup.number().nullable(),
+			// .required('Du må velge hvilket team gruppen skal knyttes til'),
 			hensikt: yup
 				.string()
 				.required('Gi en liten beskrivelse av hensikten med gruppen')
