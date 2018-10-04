@@ -39,5 +39,5 @@ fasitResources:
     propertyMap:
       agentName: freg.security.oidc.idp.navSts.clientId
       password: freg.security.oidc.idp.navSts.clientSecret
-      issuerUrl: freg.security.oidc.idp.navSts.issuerUrlcp
+      issuerUrl: freg.security.oidc.idp.navSts.issuerUrl
       jwksUrl: freg.security.oidc.idp.navSts.jwksUrl
