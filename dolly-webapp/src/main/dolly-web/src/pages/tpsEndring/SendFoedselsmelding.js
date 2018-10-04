@@ -9,6 +9,7 @@ import Knapp from 'nav-frontend-knapper'
 import * as yup from 'yup'
 import Loading from '~/components/loading/Loading'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
+import DisplayFormikState from '~/utils/DisplayFormikState'
 
 export default class SendFoedselsmelding extends PureComponent {
 	state = {
@@ -126,6 +127,7 @@ export default class SendFoedselsmelding extends PureComponent {
 										Opprett fødselsmelding
 									</Knapp>
 								</div>
+								{/* <DisplayFormikState {...props} /> */}
 							</Form>
 						)
 					}}
