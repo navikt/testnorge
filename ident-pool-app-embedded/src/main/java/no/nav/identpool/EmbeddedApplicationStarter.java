@@ -1,7 +1,6 @@
 package no.nav.identpool;
 
 import java.util.Map;
-import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
