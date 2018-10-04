@@ -3,7 +3,7 @@ import NavDatoInput from 'nav-datovelger'
 import cn from 'classnames'
 import _get from 'lodash/get'
 
-import 'nav-datovelger/dist/datovelger/styles/datovelger.css'
+// import 'nav-datovelger/dist/datovelger/styles/datovelger.css'
 import './Datepicker.less'
 
 export default class Datepicker extends Component {
