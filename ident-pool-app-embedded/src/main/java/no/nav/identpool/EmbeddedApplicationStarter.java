@@ -1,7 +1,6 @@
 package no.nav.identpool;
 
 import java.util.Map;
-import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -33,7 +32,6 @@ public class EmbeddedApplicationStarter {
                 .sources(FasitClientApplicationConfig.class)
                 .web(WebApplicationType.NONE)
                 .logStartupInfo(false)
-                .bannerMode(Banner.Mode.OFF)
                 .profiles("fasit")
                 .run(arguments);
     }

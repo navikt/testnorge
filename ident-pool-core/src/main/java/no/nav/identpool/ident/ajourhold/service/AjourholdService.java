@@ -29,7 +29,7 @@ public class AjourholdService {
 
     private void execute(AjourholdEntity ajourholdEntity) {
         try {
-            identService.checkCritcalAndGenerate();
+            identService.checkCriticalAndGenerate();
             ajourholdEntity.setStatus(BatchStatus.COMPLETED);
             ajourholdRepository.update(ajourholdEntity);
         } catch (Exception e) {

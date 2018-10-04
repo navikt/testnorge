@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
 import no.nav.freg.security.test.oidc.tools.OidcTestService;
 import no.nav.identpool.ident.ajourhold.mq.factory.ConnectionStrategyFactory;
+import no.nav.identpool.ident.ajourhold.util.PersonIdentifikatorUtil;
 import no.nav.identpool.ident.repository.IdentRepository;
 
 @RunWith(SpringRunner.class)
@@ -30,6 +31,8 @@ public abstract class ComponentTestbase {
     protected TestRestTemplate testRestTemplate;
     @Autowired
     private OidcTestService oidcTestService;
+
+
 
     protected HttpEntity lagHttpEntity(boolean withOidc) {
         HttpHeaders httpHeaders = new HttpHeaders();

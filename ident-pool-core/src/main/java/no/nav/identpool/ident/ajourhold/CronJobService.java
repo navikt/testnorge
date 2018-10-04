@@ -12,6 +12,7 @@ public class CronJobService {
 
     private final AjourholdService ajourholdService;
 
+    // kommenter vekk scheduled for lokalkjøring så man ikke ddos-er tps
     //    @Scheduled(fixedDelay = 60000)
     public void execute() {
         ajourholdService.startBatch();

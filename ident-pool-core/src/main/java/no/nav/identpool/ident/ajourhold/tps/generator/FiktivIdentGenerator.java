@@ -187,7 +187,7 @@ public class FiktivIdentGenerator {
     }
 
     private static boolean erKvinne(Character kjonn) {
-        return kjonn == 'K';
+        return Character.toUpperCase(kjonn) == 'K';
     }
 
     private static char lagTilfeldigKvinneEllerMann() {

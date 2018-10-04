@@ -7,17 +7,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-
 import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
-
-import com.google.common.collect.Lists;
-
 import org.springframework.stereotype.Service;
+import com.google.common.collect.Lists;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.identpool.ident.ajourhold.mq.QueueContext;
 import no.nav.identpool.ident.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
@@ -28,7 +24,7 @@ import no.nav.tps.ctg.m201.domain.TpsPersonData;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-class IdentMQService {
+public class IdentMQService {
 
     private final MessageQueueFactory messageQueueFactory;
 
