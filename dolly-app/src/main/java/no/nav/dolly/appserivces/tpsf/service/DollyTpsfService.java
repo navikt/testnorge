@@ -109,9 +109,7 @@ public class DollyTpsfService {
             sb.append(",(miljoer: ");
             Map<String, String> status = response.getStatus();
             for (Map.Entry<String, String> entry : status.entrySet()) {
-                if (entry.getValue().contains("00")) {
-                    sb.append(entry.getKey()).append(",");
-                }
+                sb.append(entry.getKey()).append(" ---> ").append(entry.getValue());
             }
 
             sb.append(")}");

@@ -150,7 +150,7 @@ public class DollyTpsfServiceTest {
 
         assertThat(bestillingProgress.getTpsfSuccessEnv().contains("u1"), is(true));
         assertThat(bestillingProgress.getTpsfSuccessEnv().contains("t2"), is(true));
-        assertThat(bestillingProgress.getTpsfSuccessEnv().contains("q3"), is(false));
+        assertThat(bestillingProgress.getTpsfSuccessEnv().contains("q3"), is(true));
         assertThat(bestillingProgress.getFeil(), is(nullValue()));
     }
 
@@ -183,7 +183,7 @@ public class DollyTpsfServiceTest {
 
         assertThat(bestillingProgressOK.getTpsfSuccessEnv().contains("u1"), is(true));
         assertThat(bestillingProgressOK.getTpsfSuccessEnv().contains("t2"), is(true));
-        assertThat(bestillingProgressOK.getTpsfSuccessEnv().contains("q3"), is(false));
+        assertThat(bestillingProgressOK.getTpsfSuccessEnv().contains("q3"), is(true));
         assertThat(bestillingProgressOK.getFeil(), is(nullValue()));
 
         assertThat(bestillingProgressFEIL.getTpsfSuccessEnv(), is(nullValue()));
