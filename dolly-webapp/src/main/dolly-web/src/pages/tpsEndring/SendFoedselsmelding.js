@@ -22,9 +22,13 @@ export default class SendFoedselsmelding extends PureComponent {
 		yup.object().shape({
 			identMor: yup
 				.string()
-				.max(11, 'Morindent må inneholde 11 sifre')
-				.required('Morindent er et påkrevd felt'),
-			identFar: yup.string().max(11, 'Indent må inneholde 11 sifre'),
+				.min(11, 'Mors indent må inneholde 11 sifre')
+				.max(11, 'Mors indent må inneholde 11 sifre')
+				.required('Mors indent er et påkrevd felt'),
+			identFar: yup
+				.string()
+				.min(11, 'Indent må inneholde 11 sifre')
+				.max(11, 'Indent må inneholde 11 sifre'),
 			kjonn: yup.string().required('Kjønn er et påkrevd felt'),
 			miljoe: yup.string().required('Miljø er et påkrevd felt'),
 			foedselsdato: yup.date().required('Dato er et påkrevd felt'),
