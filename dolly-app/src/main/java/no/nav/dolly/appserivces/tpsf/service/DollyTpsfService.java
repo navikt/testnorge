@@ -6,9 +6,9 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
-import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingService;
@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
@@ -85,8 +86,10 @@ public class DollyTpsfService {
                 identService.saveIdentTilGruppe(getHovedpersonAvBestillingsidenter(klareIdenter), testgruppe);
                 progress.setTpsfSuccessEnv(env);
             }
+        } catch (TpsfException e){
+            handleError(e, progress);
         } catch (Exception e) {
-            progress.setFeil(e.getMessage());
+            handleError(e, progress);
         }
 
         bestillingProgressRepository.save(progress);
@@ -122,5 +125,41 @@ public class DollyTpsfService {
         }
 
         return env;
+    }
+
+    private void handleError(Exception e, BestillingProgress progress){
+        StringBuilder sb = new StringBuilder();
+        sb.append(e.getMessage());
+        if(e.getCause() != null){
+            sb.append("  cause: " + e.getCause().getMessage());
+        }
+        sb.append("  localizedMsg: ").append(e.getLocalizedMessage());
+
+        if(e instanceof HttpClientErrorException){
+            String body = ((HttpClientErrorException) e).getResponseBodyAsString();
+            sb.append("   reponseBody: ").append(body);
+        }
+
+        String feil = sb.toString();
+        if(feil.length() > 4000){
+            feil = feil.substring(0, (MAX_LENGTH_VARCHAR2-10));
+            feil = feil + " END";
+        }
+
+        progress.setFeil(feil);
+    }
+
+    private void handleError(TpsfException e, BestillingProgress progress){
+        StringBuilder sb = new StringBuilder();
+        sb.append(e.getMessage()).append("  cause: " + e.getCause().getMessage());
+        sb.append("  localizedMsg: ").append(e.getLocalizedMessage());
+
+        String feil = sb.toString();
+        if(feil.length() > 4000){
+            feil = feil.substring(0, (MAX_LENGTH_VARCHAR2-10));
+            feil = feil + " END";
+        }
+
+        progress.setFeil(feil);
     }
 }
