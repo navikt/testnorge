@@ -24,6 +24,6 @@ public class IdentDistribusjonTest {
         }
 
         assertThat(sum, is(greaterThan(40000)));
-        assertThat(sum, is(lessThan(60000)));
+        assertThat(sum, is(lessThan(70000)));
     }
 }

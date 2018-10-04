@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,8 +44,8 @@ public class FiktivIdentGenerator {
     private static final int CATEGORY4_TIME_PERIOD_START = 1949;
     private static final int CATEGORY4_TIME_PERIOD_END = 1999;
 
-    private static final int[] KONTROLL_SIFFER_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
-    private static final int[] KONTROLL_SIFFER_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
+    private static final int[] KONTROLL_SIFFER_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
+    private static final int[] KONTROLL_SIFFER_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
 
     private static final SecureRandom randomNumberProvider = new SecureRandom();
 
@@ -164,7 +165,7 @@ public class FiktivIdentGenerator {
      * kontrollsiffer-2 = 11 - ((5*d + 4*d + 3*m + 2*m + 7*å + 6* å + 5*i + 4*i + 3*i + 2 *k1)  mod 11)
      * </pre>
      *
-     * @param fnrCharacters:              Fodselsnummer
+     * @param fnrCharacters: Fodselsnummer
      * @param formelMultiplierSifferListe Array med tallene som skal multipliseres med fodselsnummer i kontrollsifferformelen
      * @return Kontrollsiffer
      */

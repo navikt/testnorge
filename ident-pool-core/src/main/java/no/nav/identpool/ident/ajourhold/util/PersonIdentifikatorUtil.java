@@ -44,12 +44,13 @@ public final class PersonIdentifikatorUtil {
         digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C2);
 
         return digit != 10 && digit == Character.getNumericValue(personIdentifikator.charAt(10));
+
     }
 
     private static int getControlDigit(String fnr, int... sequence) {
         int digitsum = 0;
         for (int i = 0; i < sequence.length; ++i) {
-            digitsum += (fnr.charAt(i) - 48) * sequence[i];
+            digitsum += Character.getNumericValue(fnr.charAt(i)) * sequence[i];
         }
         digitsum = 11 - (digitsum % 11);
         return digitsum == 11 ? 0 : digitsum;

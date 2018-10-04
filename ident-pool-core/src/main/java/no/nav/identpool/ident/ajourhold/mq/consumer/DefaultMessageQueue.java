@@ -1,13 +1,5 @@
 package no.nav.identpool.ident.ajourhold.mq.consumer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -37,77 +29,37 @@ public class DefaultMessageQueue implements MessageQueue {
         this.connectionFactory = connectionFactory;
     }
 
-    public String sendMessage(String requestMessageContent) throws JMSException {
-        String[] array = new String[1];
-        sendMessages((ignored, s) -> array[0] = s, i -> false, requestMessageContent);
-        return array[0];
+    public String sendMessage(String requestMessage) throws JMSException {
+        return sendMessageConnection(requestMessage, RETRYCOUNT);
     }
 
-    public void sendMessages(
-            BiConsumer<Integer, String> consumer,
-            Function<Integer, Boolean> ignoreIndex,
-            String... requestMessages) throws JMSException {
-        List<String> messages = new ArrayList<>(requestMessages.length);
-        Collections.addAll(messages, requestMessages);
-        sendMessageConnection(consumer, ignoreIndex, messages, 0, RETRYCOUNT);
-    }
-
-    public void sendMessages(
-            BiConsumer<Integer, String> consumer,
-            Function<Integer, Boolean> ignoreIndex,
-            int startIndex,
-            int stopIndex,
-            String... requestMessages) throws JMSException {
-        List<String> messages = Arrays.stream(requestMessages, startIndex, stopIndex)
-                .collect(Collectors.toList());
-        sendMessageConnection(consumer, ignoreIndex, messages, 0, RETRYCOUNT);
-    }
-
-    private void sendMessageConnection(
-            BiConsumer<Integer, String> consumer,
-            Function<Integer, Boolean> ignoreIndex,
-            List<String> requestMessages,
-            int index, int retryCount) throws JMSException {
+    private String sendMessageConnection(String requestMessage, int retryCount) throws JMSException {
         try (Connection connection = connectionFactory.createConnection(username, password)) {
-
             connection.start();
-            sendMessageSession(consumer, ignoreIndex, requestMessages, connection, index, RETRYCOUNT);
+            return sendMessageSession(requestMessage, connection, RETRYCOUNT);
         } catch (JMSException e) {
             if (retryCount > 0) {
-                this.sendMessageConnection(consumer, ignoreIndex, requestMessages, index, retryCount - 1);
+                return this.sendMessageConnection(requestMessage, retryCount - 1);
             } else {
                 throw e;
             }
         }
     }
 
-    private void sendMessageSession(BiConsumer<Integer, String> consumer, Function<Integer, Boolean> ignoreIndex,
-            List<String> requestMessages, Connection connection, int initialIndex, int initialRetryCount) throws JMSException {
-        int retryCount = initialRetryCount;
-        int index = initialIndex;
+    private String sendMessageSession(String requestMessage, Connection connection, int retryCount) throws JMSException {
 
         try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
-
-            Iterator<String> iterator = requestMessages.iterator();
-            while (iterator.hasNext()) {
-                String message = iterator.next();
-                if (!ignoreIndex.apply(index)) {
-                    consumer.accept(index, sendMessage(message, session));
-                }
-                iterator.remove();
-                index += 1;
-                retryCount = RETRYCOUNT;
-            }
+            return sendMessageQueue(requestMessage, session);
         } catch (JMSException e) {
             if (retryCount > 0) {
-                this.sendMessageSession(consumer, ignoreIndex, requestMessages, connection, index, retryCount - 1);
+                return this.sendMessageSession(requestMessage, connection, retryCount - 1);
             } else {
                 throw e;
             }
         }
     }
 
-    private String sendMessage(String requestMessageContent, Session session) throws JMSException {
+    private String sendMessageQueue(String requestMessageContent, Session session) throws JMSException {
         Destination requestDestination = session.createQueue(requestQueueName);
         Destination responseDestination = session.createTemporaryQueue();
 
