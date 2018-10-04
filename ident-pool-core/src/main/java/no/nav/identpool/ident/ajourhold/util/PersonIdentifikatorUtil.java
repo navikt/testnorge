@@ -1,7 +1,6 @@
 package no.nav.identpool.ident.ajourhold.util;
 
 import java.time.LocalDate;
-import org.springframework.util.StringUtils;
 
 public final class PersonIdentifikatorUtil {
 
