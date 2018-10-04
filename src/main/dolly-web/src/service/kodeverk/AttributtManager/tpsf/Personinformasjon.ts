@@ -14,7 +14,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
 		format: Formatters.formatDate,
-		validation: yup.date()
+		validation: yup.date().required('Velg dato')
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,

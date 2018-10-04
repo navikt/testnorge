@@ -42,12 +42,13 @@ export const FormikDatepicker = props => {
 	const { field, form, ...restProps } = props
 
 	//NAV-Datepicker har ikke onBlur, så ved onChange er den både touched og changed
+	//NAV-Datepicker sender "undefined" når ingen verdi er satt, men formik støtter ikke undefined, så setter tom string istedet.
 	return (
 		<Datepicker
 			name={field.name}
 			value={field.value}
 			onChange={dato => {
-				form.setFieldValue(field.name, dato)
+				form.setFieldValue(field.name, dato || '')
 				form.setFieldTouched(field.name, true)
 			}}
 			error={_get(form.touched, field.name) && _get(form.errors, field.name)}
