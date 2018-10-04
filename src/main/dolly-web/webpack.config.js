@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
 const pkg = require('./package.json')
@@ -155,7 +156,18 @@ if (TARGET === 'build') {
 			path: path.resolve(__dirname, '.env.prod'),
 			systemvars: true
 		})
-	].concat(webpackConfig.plugins)
+	]
+		.concat(webpackConfig.plugins)
+		.concat([
+			new OptimizeCssAssetsPlugin({
+				assetNameRegExp: /\.css$/g,
+				cssProcessor: require('cssnano'),
+				cssProcessorPluginOptions: {
+					preset: ['default', { discardComments: { removeAll: true } }]
+				},
+				canPrint: true
+			})
+		])
 }
 
 module.exports = webpackConfig
