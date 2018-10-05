@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.ident.domain.Identtype;
@@ -30,11 +32,10 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void hentLedigFnr() throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
-                .addParameter("antall", "1")
-                .addParameter("identtype", "FNR");
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
+        String body = "{\"antall\":\"1\", \"identtype\":\"FNR\" }";
 
-        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), String[].class);
+        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
 
         assertThat(fnr.getBody(), is(notNullValue()));
         assertThat(fnr.getBody().length, is(1));
@@ -42,11 +43,10 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void hentLedigDnr() throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
-                .addParameter("antall", "1")
-                .addParameter("identtype", "DNR");
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
+        String body = "{\"antall\":\"1\", \"identtype\":\"DNR\" }";
 
-        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), String[].class);
+        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
 
         assertThat(fnr.getBody(), is(notNullValue()));
         assertThat(fnr.getBody().length, is(1));
@@ -54,11 +54,10 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void skalFeileNaarUgyldigIdenttypeBrukes() throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
-                .addParameter("antall", "1")
-                .addParameter("identtype", "buksestørrelse");
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
+        String body = "{\"antall\":\"1\", \"identtype\":\"buksestoerrelse\" }";
 
-        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiError.class);
+        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ApiError.class);
 
         assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
     }

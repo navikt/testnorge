@@ -1,9 +1,8 @@
 package no.nav.identpool.ident.repository;
 
+import org.springframework.stereotype.Service;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-
-import org.springframework.stereotype.Service;
 
 import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
@@ -30,6 +29,7 @@ public class IdentPredicateUtil {
         }
         if (hentIdenterRequest.getKjoenn() != null) {
             if (hentIdenterRequest.getKjoenn().equals(Kjoenn.MANN)) {
+                //todo: funker ikke, implementer kjønn-kolonne istedenfor.
                 booleanBuilder.and(queryIdentEntity.personidentifikator.matches(PERSONNUMMER_MANN));
             } else if (hentIdenterRequest.getKjoenn().equals(Kjoenn.KVINNE)) {
                 booleanBuilder.and(queryIdentEntity.personidentifikator.matches(PERSONNUMMER_KVINNE));

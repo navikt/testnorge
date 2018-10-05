@@ -120,4 +120,8 @@ public class IdentpoolService {
         }
         identRepository.save(identEntity);
     }
+
+//    private Identtype getPersonidentifikatorType(String personidentifikator) {
+//
+//    }
 }
