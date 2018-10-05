@@ -1,10 +1,15 @@
 import Request from '../Request'
 import store from '~/Store'
 var url = ''
+var baseUrl = '';
 
 export default class TpsfService {
 	static getTpsfUrl() {
 		url = store.getState().config.dollyApi.url + '/api/v1'
+	}
+
+	static getBaseUrl() {
+        baseUrl = store.getState().config.dollyApi.url;
 	}
 
 	static getTestbrukere(userArray) {
@@ -29,8 +34,10 @@ export default class TpsfService {
 	}
 
 	static getKontaktInformasjon(fnr, env) {
+		this.getBaseUrl();
 		const endpoint =
-			'https://tps-forvalteren-u2.nais.preprod.local:443/api/tps/kontaktinformasjon?fnr=' +
+			baseUrl +
+			'/api/tps/kontaktinformasjon?fnr=' +
 			fnr +
 			'&environment=' +
 			env
