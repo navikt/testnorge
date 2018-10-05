@@ -1,4 +1,6 @@
 server.port: 8080
+server.compression.enabled: true
+server.compression.mime-types: application/json,text/html,text/xml,text/plain,application/javascript,text/css
 
 APP_NAME: dolly
 APP_VERSION: ${application.version}
@@ -9,20 +11,20 @@ spring:
     driverClassName: oracle.jdbc.OracleDriver
     url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=d26dbfl023.test.local)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=DOLLYU)(INSTANCE_NAME=ccuf03)(UR=A)(SERVER=DEDICATED)))
     username: DOLLY_U
-    password:
+    ? password
 
 #### APP DB ####
-app.datasource.onsHosts:
+? app.datasource.onsHosts
 
 #### NEW FREG-SECURITY #####
 freg.security.oidc:
   idp:
     openAm:
-      clientId:
-      clientSecret:
-      hostUrl:
-      issuerUrl:
-      jwksUrl:
+      ? clientId
+      ? clientSecret
+      ? hostUrl
+      ? issuerUrl
+      ? jwksUrl
       loginUrl: ${freg.security.oidc.idp.openAm.hostUrl}/oauth2/authorize
       authorizationUrl: ${freg.security.oidc.idp.openAm.hostUrl}/oauth2/access_token
   auth:
@@ -33,8 +35,7 @@ freg.security.oidc:
       cookie-enabled: true
       header-enabled: false
       validation:
-          type: refreshing
-
+        type: refreshing
 
 providers:
   tpsf:
@@ -44,4 +45,3 @@ providers:
 
 ### CORS ###
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000
-
