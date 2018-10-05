@@ -33,9 +33,6 @@ public class FasitClient {
     public Map<String, Object> resolveFasitProperties() {
         Map<String, Object> properties = new HashMap<>();
 
-        // BaseUrl issuerBaseUrl = fasitService.find("security-token-service-issuer", BASE_URL, environmentName, applicationName, FSS, BaseUrl.class);
-        // properties.put("freg.security.oidc.idp.navsts.issuerUrl", issuerBaseUrl.getUrl());
-
         Credentials credentials = fasitService.find("orkestratorenCredentials", CREDENTIAL, environmentName, applicationName, FSS, Credentials.class);
         properties.put("spring.credentials.username", credentials.getUsername());
         properties.put("spring.credentials.password", fasitService.findSecret(credentials.getPasswordUrl()));

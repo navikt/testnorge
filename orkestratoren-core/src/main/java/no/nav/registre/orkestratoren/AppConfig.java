@@ -17,8 +17,6 @@ public class AppConfig {
     private String username;
     @Value("${spring.credentials.password}")
     private String password;
-    // @Value( "${tpsf.server.url}")
-    // private String tpsfServerUrl;
 
     @Bean
     public RestTemplate restTemplate() {
