@@ -31,7 +31,7 @@ const webpackConfig = {
 	output: {
 		filename: 'bundle.js',
 		publicPath: '/',
-		path: path.join(__dirname, 'dist')
+		path: path.join(__dirname, outputDir.development)
 	},
 	stats: 'minimal',
 	devServer: {
@@ -145,6 +145,7 @@ if (TARGET === 'build-dev') {
 // If production build
 if (TARGET === 'build') {
 	webpackConfig.devtool = 'none'
+	webpackConfig.stats = 'normal'
 	webpackConfig.output = {
 		path: path.join(__dirname, outputDir.production),
 		filename: 'bundle.[contenthash:8].js',
