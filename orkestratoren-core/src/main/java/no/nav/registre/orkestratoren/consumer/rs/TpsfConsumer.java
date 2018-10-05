@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class TpsfConsumer {
@@ -16,10 +16,11 @@ public class TpsfConsumer {
     @Value( "${tpsf.server.url}")
     private String tpsfServerUrl;
 
-    public ArrayList sendSkdMeldingTilTpfs(int skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
+    public List sendSkdMeldingTilTpsf(int skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
+        String url = tpsfServerUrl + "/api/v1/endringsmelding/skd/send/" + skdMeldingGruppeId;
 
-        return restTemplate.postForObject(tpsfServerUrl + "/api/v1/endringsmelding/skd/send/{skdMeldingGruppeId}",
+        return restTemplate.postForObject(url,
                 sendToTpsRequest,
-                ArrayList.class);
+                List.class);
     }
 }
