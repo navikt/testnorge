@@ -21,8 +21,9 @@ export default class SendDoedsmelding extends PureComponent {
 		yup.object().shape({
 			ident: yup
 				.string()
-				.max(11, 'Morindent må inneholde 11 sifre')
-				.required('Morindent er et påkrevd felt'),
+				.min(11, 'Ident må inneholde 11 sifre')
+				.max(11, 'Ident må inneholde 11 sifre')
+				.required('Ident er et påkrevd felt'),
 			handling: yup.string().required('Handling er et påkrevd felt'),
 			miljoe: yup.string().required('Miljø er et påkrevd felt'),
 			doedsdato: yup.date().required('Dato er et påkrevd felt')
