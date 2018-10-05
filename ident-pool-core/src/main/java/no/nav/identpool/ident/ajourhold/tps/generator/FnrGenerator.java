@@ -45,9 +45,6 @@ public final class FnrGenerator {
     }
 
     public static Map<LocalDate, List<String>> genererIdenterMap(LocalDate fodtEtter, LocalDate fodtFoer, Identtype type) {
-        if (fodtEtter.isAfter(fodtFoer) || fodtEtter.isEqual(fodtFoer)) {
-            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være eller dato til %s", fodtEtter, fodtFoer));
-        }
         int days = toIntExact(ChronoUnit.DAYS.between(fodtEtter, fodtFoer));
         Function<LocalDate, List<String>> numberGenerator = generatorMap.get(type);
         return IntStream.range(0, days)
@@ -96,14 +93,8 @@ public final class FnrGenerator {
 
     public static List<String> genererIdenter(PersonKriterier kriterier) {
         Set<String> identer = new HashSet<>(kriterier.getAntall());
-        if (kriterier.getFoedtEtter() == null) {
-            throw new IllegalArgumentException("Dato fra og med ikke oppgitt");
-        }
         LocalDate fodtEtter = kriterier.getFoedtEtter();
         LocalDate fodtFoer = kriterier.getFoedtFoer() == null ? fodtEtter.plusDays(1) : kriterier.getFoedtFoer();
-        if (fodtEtter.plusDays(1).isAfter(fodtFoer)) {
-            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være eller dato til %s", fodtEtter, fodtFoer));
-        }
         Random random = new Random();
         Kjoenn kjoenn = kriterier.getKjonn();
         int iteratorRange = getIteratorRange(kjoenn);

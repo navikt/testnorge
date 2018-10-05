@@ -32,11 +32,11 @@ public class IdentMQService {
 
     private final MessageQueueFactory messageQueueFactory;
 
-    public Map<String, Boolean> fnrsExists(List<String> fnr) {
-        return fnrsExists(QueueContext.getIncluded(), fnr);
+    public Map<String, Boolean> finnesITps(List<String> fnr) {
+        return finnesITps(QueueContext.getIncluded(), fnr);
     }
 
-    public Map<String, Boolean> fnrsExists(List<String> environments, List<String> fnrs) {
+    public Map<String, Boolean> finnesITps(List<String> environments, List<String> fnrs) {
         HashSet<String> nonexistent = new HashSet<>(fnrs);
         HashSet<String> exists = new HashSet<>();
         for (String environment : environments) {
