@@ -6,7 +6,6 @@ import BestillingStatus from './BestillingStatus/BestillingStatus'
 import Loading from '~/components/loading/Loading'
 import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
-import AddButton from '~/components/button/AddButton'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 
 import './Gruppe.less'
@@ -82,10 +81,10 @@ export default class Gruppe extends Component {
 				))}
 
 				<TestbrukerListeConnector
+					startBestilling={this.startBestilling}
 					testidenter={gruppe.testidenter}
 					editTestbruker={editTestbruker}
 				/>
-				<AddButton title="Legg til nye testpersoner" onClick={this.startBestilling} />
 			</div>
 		)
 	}
