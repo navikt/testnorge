@@ -21,7 +21,6 @@
     <modules>
         <module>orkestratoren-core</module>
         <module>orkestratoren-local</module>
-        <module>orkestratoren-nais</module>
     </modules>
 
     <properties>
