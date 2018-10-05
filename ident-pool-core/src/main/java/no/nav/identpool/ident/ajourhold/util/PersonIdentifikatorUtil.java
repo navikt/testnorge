@@ -2,10 +2,12 @@ package no.nav.identpool.ident.ajourhold.util;
 
 import java.time.LocalDate;
 
+import no.nav.identpool.ident.domain.Kjoenn;
+
 public final class PersonIdentifikatorUtil {
 
-    private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
-    private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
+    private static final int[] CONTROL_DIGIT_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
+    private static final int[] CONTROL_DIGIT_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
 
     private PersonIdentifikatorUtil() {
     }
@@ -38,7 +40,6 @@ public final class PersonIdentifikatorUtil {
         digit = getControlDigit(personIdentifikator, CONTROL_DIGIT_C2);
 
         return digit != 10 && digit == Character.getNumericValue(personIdentifikator.charAt(10));
-
     }
 
     private static int getControlDigit(String fnr, int... sequence) {
@@ -48,5 +49,13 @@ public final class PersonIdentifikatorUtil {
         }
         digitsum = 11 - (digitsum % 11);
         return digitsum == 11 ? 0 : digitsum;
+    }
+
+    public static Kjoenn getKjonn(String fnr) {
+        if (Character.getNumericValue(fnr.charAt(8)) % 2 == 0) {
+            return Kjoenn.KVINNE;
+        } else {
+            return Kjoenn.MANN;
+        }
     }
 }

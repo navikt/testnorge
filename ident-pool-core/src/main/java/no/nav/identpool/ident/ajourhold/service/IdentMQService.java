@@ -40,6 +40,9 @@ public class IdentMQService {
         HashSet<String> nonexistent = new HashSet<>(fnrs);
         HashSet<String> exists = new HashSet<>();
         for (String environment : environments) {
+            if (nonexistent.isEmpty()) {
+                break;
+            }
             try {
                 filterTpsQueue(environment, nonexistent, exists);
             } catch (JMSException e) {
@@ -53,7 +56,7 @@ public class IdentMQService {
         return filteredMap;
     }
 
-    private void filterTpsQueue(String environment, final HashSet<String> nonexistent, final HashSet<String> exists) throws JMSException {
+    private void filterTpsQueue(String environment, HashSet<String> nonexistent, HashSet<String> exists) throws JMSException {
 
         MessageQueue messageQueue;
         try {
@@ -61,9 +64,7 @@ public class IdentMQService {
         } catch (JMSException e) {
             log.warn(e.getMessage());
             messageQueue = messageQueueFactory.createMessageQueueIgnoreCache(environment);
-        }
-        if (nonexistent.isEmpty()) {
-            return;
+            messageQueue.ping();
         }
 
         Consumer<PersondataFraTpsM201.AFnr.EFnr> filterExisting = personData -> {

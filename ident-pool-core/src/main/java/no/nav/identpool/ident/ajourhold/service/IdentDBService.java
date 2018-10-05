@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -33,19 +31,12 @@ class IdentDBService {
 
     private LocalDate current;
 
-    private static IdentEntity createPinIdent(String fnr, Rekvireringsstatus status) {
-        return createIdent(fnr, status, Identtype.FNR);
-    }
-
-    private static IdentEntity createDnrIdent(String fnr, Rekvireringsstatus status) {
-        return createIdent(fnr, status, Identtype.DNR);
-    }
-
     private static IdentEntity createIdent(String fnr, Rekvireringsstatus status, Identtype type) {
         return IdentEntity.builder()
                 .finnesHosSkatt("0")
                 .personidentifikator(fnr)
                 .foedselsdato(PersonIdentifikatorUtil.toBirthdate(fnr))
+                .kjoenn(PersonIdentifikatorUtil.getKjonn(fnr))
                 .rekvireringsstatus(status)
                 .identtype(type)
                 .build();
@@ -56,38 +47,38 @@ class IdentDBService {
         int minYearMinus = 110;
         LocalDate minDate = LocalDate.of(current.getYear() - minYearMinus, 1, 1);
         while (minDate.isBefore(current)) {
-            checkAndGenerateForDate(minDate, this::checkCriticalForYearPin, FnrGenerator::genererIdenterMap, IdentDBService::createPinIdent);
-            checkAndGenerateForDate(minDate, this::checkCriticalForYearDnr, FnrGenerator::genererIdenterDnrMap, IdentDBService::createDnrIdent);
-            minDate = minDate.plusDays(1);
+            checkAndGenerateForDate(minDate, Identtype.FNR);
+            checkAndGenerateForDate(minDate, Identtype.DNR);
+            minDate = minDate.plusYears(1);
         }
     }
 
-    private void checkAndGenerateForDate(LocalDate date,
-            Function<Integer, Boolean> checkCritical,
-            BiFunction<LocalDate, LocalDate, Map<LocalDate, List<String>>> pinGenerator,
-            BiFunction<String, Rekvireringsstatus, IdentEntity> identCreator) {
+    private void checkAndGenerateForDate(LocalDate date, Identtype type) {
         for (int i = 0; i < 3; ++i) {
-            if (checkCritical.apply(date.getYear())) {
-                generateForYear(date.getYear(), pinGenerator, identCreator);
+            if (criticalForYear(date.getYear(), type)) {
+                generateForYear(date.getYear(), type);
             } else {
                 break;
             }
         }
     }
 
-    private void generateForYear(int year,
-            BiFunction<LocalDate, LocalDate, Map<LocalDate, List<String>>> pinGenerator,
-            BiFunction<String, Rekvireringsstatus, IdentEntity> identCreator) {
+    private void generateForYear(int year, Identtype type) {
+
         LocalDate firstDate = LocalDate.of(year, 1, 1);
         LocalDate lastDate = LocalDate.of(year, 12, 31);
         if (lastDate.isAfter(current)) {
             lastDate = LocalDate.of(year, current.getMonth(), current.getDayOfMonth());
         }
+        if (lastDate.equals(firstDate)) {
+            lastDate = lastDate.plusDays(1);
+        }
+
         int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year + 1) * 2;
-        Map<LocalDate, List<String>> pinMap = pinGenerator.apply(firstDate, lastDate.plusDays(1));
+        Map<LocalDate, List<String>> pinMap = FnrGenerator.genererIdenterMap(firstDate, lastDate, type);
 
         List<String> filtered = filterDatabse(antallPerDag, pinMap);
-        checkTpsAndStore(filtered, identCreator);
+        checkTpsAndStore(filtered, type);
     }
 
     private List<String> filterDatabse(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
@@ -106,34 +97,26 @@ class IdentDBService {
         return arrayList;
     }
 
-    private void checkTpsAndStore(List<String> filtered, BiFunction<String, Rekvireringsstatus, IdentEntity> identCreator) {
+    private void checkTpsAndStore(List<String> filtered, Identtype type) {
 
         Map<String, Boolean> identerIBruk = mqService.fnrsExists(filtered);
+
         storeIdenter(identerIBruk.entrySet().stream()
                         .filter(Map.Entry::getValue)
                         .map(Map.Entry::getKey)
                         .collect(Collectors.toList()),
-                Rekvireringsstatus.I_BRUK, identCreator);
+                Rekvireringsstatus.I_BRUK, type);
         storeIdenter(identerIBruk.entrySet().stream()
                         .filter(x -> !x.getValue())
                         .map(Map.Entry::getKey)
                         .collect(Collectors.toList()),
-                Rekvireringsstatus.LEDIG, identCreator);
+                Rekvireringsstatus.LEDIG, type);
     }
 
-    private void storeIdenter(List<String> pins, Rekvireringsstatus status, BiFunction<String, Rekvireringsstatus, IdentEntity> identCreator) {
-        identRepository.saveAll(pins
-                .stream()
-                .map(fnr -> identCreator.apply(fnr, status))
+    private void storeIdenter(List<String> pins, Rekvireringsstatus status, Identtype type) {
+        identRepository.saveAll(pins.stream()
+                .map(fnr -> createIdent(fnr, status, type))
                 .collect(Collectors.toList()));
-    }
-
-    private boolean checkCriticalForYearPin(int year) {
-        return criticalForYear(year, Identtype.FNR);
-    }
-
-    private boolean checkCriticalForYearDnr(int year) {
-        return criticalForYear(year, Identtype.DNR);
     }
 
     private boolean criticalForYear(int year, Identtype type) {

@@ -6,91 +6,82 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.springframework.stereotype.Service;
 
+import no.nav.identpool.ident.domain.Identtype;
+import no.nav.identpool.ident.domain.Kjoenn;
+
 @Service
-public class FnrGenerator {
+public final class FnrGenerator {
 
     private static final int[] CONTROL_DIGIT_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
     private static final int[] CONTROL_DIGIT_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
 
+    private static Map<Identtype, Function<LocalDate, List<String>>> generatorMap =
+            ImmutableMap.of(
+                    Identtype.FNR, FnrGenerator::generateIdentNumbers,
+                    Identtype.DNR, FnrGenerator::generateDNumbers);
+
+    private static Map<Identtype, Function<LocalDate, String>> numberFormatter =
+            ImmutableMap.of(
+                    Identtype.FNR, FnrGenerator::getFnrFormat,
+                    Identtype.DNR, FnrGenerator::getDnrFormat);
+
     private FnrGenerator() {
     }
 
-    public static List<String> genererIdenter(LocalDate date) {
-        return genererIdenter(date, date.plusDays(1));
-    }
-
-    public static List<String> genererIdenter(final LocalDate fom, final LocalDate to) {
-        return genererIdenterFunction(fom, to, FnrGenerator::generateDNumbers);
-    }
-
-    public static List<String> genererIdenterDnr(LocalDate date) {
-        return genererIdenterDnr(date, date.plusDays(1));
-    }
-
-    public static List<String> genererIdenterDnr(final LocalDate fom, final LocalDate to) {
-        return genererIdenterFunction(fom, to, FnrGenerator::generateIdentNumbers);
-    }
-
-    private static List<String> genererIdenterFunction(final LocalDate fom, final LocalDate to, Function<LocalDate, List<String>> numberGenerator) {
-        if (fom.isAfter(to) || fom.isEqual(to)) {
-            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være eller dato til %s", fom.toString(), to.toString()));
+    public static Map<LocalDate, List<String>> genererIdenterMap(LocalDate fodtEtter, LocalDate fodtFoer, Identtype type) {
+        if (fodtEtter.isAfter(fodtFoer) || fodtEtter.isEqual(fodtFoer)) {
+            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være eller dato til %s", fodtEtter, fodtFoer));
         }
-        int days = toIntExact(ChronoUnit.DAYS.between(fom, to));
-        ArrayList<String> list = new ArrayList<>(toIntExact(ChronoUnit.DAYS.between(fom, to) * 400));
-        IntStream.range(0, days)
-                .mapToObj(fom::plusDays)
-                .map(numberGenerator)
-                .forEach(list::addAll);
-        return list;
-    }
-
-    public static Map<LocalDate, List<String>> genererIdenterMap(final LocalDate fom, final LocalDate to) {
-        return genererIdenterMapFunction(fom, to, FnrGenerator::generateIdentNumbers);
-    }
-
-    public static Map<LocalDate, List<String>> genererIdenterDnrMap(final LocalDate fom, final LocalDate to) {
-        return genererIdenterMapFunction(fom, to, FnrGenerator::generateDNumbers);
-    }
-
-    private static Map<LocalDate, List<String>> genererIdenterMapFunction(final LocalDate fom, final LocalDate to, Function<LocalDate, List<String>> numberGenerator) {
-        if (fom.isAfter(to)) {
-            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være før eller lik dato til og med %s", fom.toString(), to.toString()));
-        }
-        int days = toIntExact(ChronoUnit.DAYS.between(fom, to));
+        int days = toIntExact(ChronoUnit.DAYS.between(fodtEtter, fodtFoer));
+        Function<LocalDate, List<String>> numberGenerator = generatorMap.get(type);
         return IntStream.range(0, days)
-                .mapToObj(fom::plusDays)
-                .collect(Collectors.toMap(i -> i, numberGenerator));
+                .mapToObj(fodtEtter::plusDays)
+                .collect(Collectors.toMap(
+                        i -> i,
+                        numberGenerator));
+    }
+
+    private static String getFnrFormat(LocalDate birthdate) {
+        return formatter.format(birthdate) + "%03d";
+    }
+
+    private static String getDnrFormat(LocalDate birthdate) {
+        String format = formatter.format(birthdate) + "%03d";
+        return (Character.getNumericValue(format.charAt(0)) + 4) + format.substring(1);
     }
 
     private static List<String> generateIdentNumbers(LocalDate birthdate) {
-        String dateFormat = formatter.format(birthdate) + "%03d";
-        return generateNumbers(birthdate, dateFormat);
+        return generateNumbers(birthdate, getFnrFormat(birthdate));
     }
 
     private static List<String> generateDNumbers(LocalDate birthdate) {
-        String format = formatter.format(birthdate) + "%03d";
-        final String dateFormat = (Character.getNumericValue(format.charAt(0)) + 4) + format.substring(1);
-        return generateNumbers(birthdate, dateFormat);
+        return generateNumbers(birthdate, getDnrFormat(birthdate));
     }
 
     private static List<String> generateNumbers(LocalDate date, String numberFormat) {
-        return getCategoryRange(date)
+        return getCategoryNumberStraemReverse(date)
                 .mapToObj(number -> generateFnr(String.format(numberFormat, number)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
-    private static IntStream getCategoryRange(LocalDate birthDate) {
+    private static IntStream getCategoryNumberStraemReverse(LocalDate birthDate) {
         int year = birthDate.getYear();
         if (year < 2000 && year > 1) {
             return IntStream.range(1, 500)
@@ -100,6 +91,83 @@ public class FnrGenerator {
                     .map(i -> 500 + (1000 - 1 - i));
         } else {
             throw new IllegalStateException(String.format("Fødelsår må være mellom 1 og 2039, fikk %d", year));
+        }
+    }
+
+    public static List<String> genererIdenter(PersonKriterier kriterier) {
+        Set<String> identer = new HashSet<>(kriterier.getAntall());
+        if (kriterier.getFoedtEtter() == null) {
+            throw new IllegalArgumentException("Dato fra og med ikke oppgitt");
+        }
+        LocalDate fodtEtter = kriterier.getFoedtEtter();
+        LocalDate fodtFoer = kriterier.getFoedtFoer() == null ? fodtEtter.plusDays(1) : kriterier.getFoedtFoer();
+        if (fodtEtter.plusDays(1).isAfter(fodtFoer)) {
+            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være eller dato til %s", fodtEtter, fodtFoer));
+        }
+        Random random = new Random();
+        Kjoenn kjoenn = kriterier.getKjonn();
+        int iteratorRange = getIteratorRange(kjoenn);
+        int numberOfDates = toIntExact(ChronoUnit.DAYS.between(kriterier.getFoedtEtter(), fodtFoer));
+        Function<LocalDate, String> numberFormat =
+                numberFormatter.getOrDefault(kriterier.getIdenttype(), numberFormatter.get(Identtype.FNR));
+        while (identer.size() < kriterier.getAntall()) {
+            LocalDate birthdate = kriterier.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
+            String format = numberFormat.apply(birthdate);
+            List<Integer> range = getCategoryRange(birthdate);
+            int categoryNumber = getCategoryNumber(range, kjoenn);
+            int size = identer.size();
+            for (int i = categoryNumber; identer.size() == size && i < range.get(1); i += iteratorRange) {
+                addFnr(generateFnr(String.format(format, i)), identer);
+            }
+            int startIndex = getStartIndex(range.get(0), kjoenn);
+            for (int i = startIndex; identer.size() == size && i < categoryNumber; i += iteratorRange) {
+                addFnr(generateFnr(String.format(format, i)), identer);
+            }
+            if (identer.size() == size) {
+                throw new IllegalArgumentException("Kan ikke finne antall fødselsnummere med angitte kriterier");
+            }
+        }
+        return new ArrayList<>(identer);
+    }
+
+    private static List<Integer> getCategoryRange(LocalDate birthDate) {
+        int year = birthDate.getYear();
+        if (year < 2000 && year > 1) {
+            return Arrays.asList(1, 499);
+        } else if (year >= 2000 && year < 2040) {
+            return Arrays.asList(500, 999);
+        } else {
+            throw new IllegalStateException(String.format("Fødelsår må være mellom 1 og 2039, fikk %d", year));
+        }
+    }
+
+    private static int getCategoryNumber(List<Integer> range, Kjoenn kjoenn) {
+        Random random = new Random();
+        int number = random.nextInt(range.get(1) - 1) + range.get(0);
+        if ((Kjoenn.KVINNE.equals(kjoenn) && number % 2 != 0) || (Kjoenn.MANN.equals(kjoenn) && number % 2 == 0)) {
+            number += 1;
+        }
+        return number;
+    }
+
+    private static int getStartIndex(int index, Kjoenn kjoenn) {
+        if ((index % 2 != 0 && Kjoenn.KVINNE.equals(kjoenn)) || (index % 2 == 0 && Kjoenn.MANN.equals(kjoenn))) {
+            return index + 1;
+        }
+        return index;
+    }
+
+    private static int getIteratorRange(Kjoenn kjoenn) {
+        if (kjoenn == null) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+
+    private static void addFnr(String fnr, Set<String> pinSet) {
+        if (fnr != null) {
+            pinSet.add(fnr);
         }
     }
 

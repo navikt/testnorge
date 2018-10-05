@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.ident.domain.Identtype;
+import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.repository.IdentEntity;
 
@@ -155,6 +156,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         assertThat(apiResponseEntity.getBody(), is(IdentEntity.builder()
                 .identtype(Identtype.FNR)
                 .personidentifikator(FNR_LEDIG)
+                .kjoenn(Kjoenn.MANN)
                 .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                 .finnesHosSkatt("0")
                 .foedselsdato(LocalDate.of(1980, 10, 10))
@@ -172,6 +174,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
                         .personidentifikator(FNR_LEDIG)
                         .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                         .finnesHosSkatt("0")
+                        .kjoenn(Kjoenn.MANN)
                         .foedselsdato(LocalDate.of(1980, 10, 10))
                         .build(),
                 IdentEntity.builder()
@@ -179,6 +182,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
                         .personidentifikator(DNR_LEDIG)
                         .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                         .finnesHosSkatt("0")
+                        .kjoenn(Kjoenn.MANN)
                         .foedselsdato(LocalDate.of(1980, 10, 20))
                         .build(),
                 IdentEntity.builder()
@@ -186,6 +190,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
                         .personidentifikator(FNR_IBRUK)
                         .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
                         .finnesHosSkatt("0")
+                        .kjoenn(Kjoenn.MANN)
                         .foedselsdato(LocalDate.of(1980, 10, 11))
                         .build(),
                 IdentEntity.builder()
@@ -193,6 +198,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
                         .personidentifikator("12108000366")
                         .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
                         .finnesHosSkatt("0")
+                        .kjoenn(Kjoenn.MANN)
                         .foedselsdato(LocalDate.of(1980, 10, 12))
                         .build()
         ));
