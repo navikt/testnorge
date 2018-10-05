@@ -41,7 +41,7 @@ export default class SendFoedselsmelding extends PureComponent {
 				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding(values)
 				const getKontaktInformasjonRes = await TpsfApi.getKontaktInformasjon(
 					createFoedselsmeldingRes.data.personId,
-					't0'
+                    values.miljoe
 				)
 
 				return this.setState({
