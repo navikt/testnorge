@@ -29,4 +29,10 @@ formatters.kjonnToStringBarn = (kjonn = '') => {
 	return _kjonn === 'm' ? 'Gutt' : 'Jente'
 }
 
+formatters.arrayToString = (array, separator = ',') => {
+	return array.reduce((accumulator, nextString) => {
+		return `${accumulator}${accumulator ? separator : ''} ${nextString.toUpperCase()}`
+	}, '')
+}
+
 export default formatters

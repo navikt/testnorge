@@ -15,6 +15,7 @@ import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
 import commonReducer from './ducks/common'
 import configReducer from './ducks/config'
+import bestillingStatusReducer from './ducks/bestillingStatus'
 import history from './history'
 
 const locationMiddleware = store => next => action => {
@@ -55,6 +56,7 @@ const configureReduxStore = history => {
 		loading: loadingReducer,
 		errors: errorsReducer,
 		common: commonReducer,
+		bestillingStatus: bestillingStatusReducer,
 		config: configReducer
 	})
 

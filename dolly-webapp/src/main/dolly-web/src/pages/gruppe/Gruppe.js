@@ -41,7 +41,8 @@ export default class Gruppe extends Component {
 			isFetching,
 			getGruppe,
 			deleteGruppe,
-			editTestbruker
+			editTestbruker,
+			getBestillingStatus
 		} = this.props
 
 		if (isFetching) return <Loading label="Laster grupper" panel />
