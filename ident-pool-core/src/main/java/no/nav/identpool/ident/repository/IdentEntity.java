@@ -21,6 +21,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import no.nav.identpool.ident.domain.Identtype;
+import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 
 @Data
@@ -58,6 +59,11 @@ public class IdentEntity {
     @NotNull
     @Column(name = "FOEDSELSDATO")
     private LocalDate foedselsdato;
+
+    @NotNull
+    @Column(name = "KJOENN")
+    @Enumerated(EnumType.STRING)
+    private Kjoenn kjoenn;
 
     @Column(name = "REKVIRERT_AV")
     private String rekvirertAv;

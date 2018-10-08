@@ -15,8 +15,8 @@ public class IdentDistribusjon {
     private static final double C5 = 10;
 
     public Integer antallPersonerPerDagPerAar(int year) {
-        double antallForAar = verdiFraDistribusjon(now().getYear() - year);
-        return (int) (Math.ceil(antallForAar / 365));
+        double antallForAar = verdiFraDistribusjon(now().getYear() - year + 1);
+        return (int) (Math.ceil(antallForAar / 365.0));
     }
 
     public Integer hentKritiskAntallForTidsintervall(Integer fraAar, Integer tomAar) {

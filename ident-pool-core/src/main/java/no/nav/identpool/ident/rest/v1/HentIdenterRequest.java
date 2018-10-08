@@ -29,4 +29,9 @@ public class HentIdenterRequest {
     public int getAntall() {
         return antall.getPageSize();
     }
+
+    public Pageable getPageable() {
+        return antall;
+    }
+
 }

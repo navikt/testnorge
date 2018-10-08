@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.ident.domain.Identtype;
+import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.repository.IdentEntity;
 
@@ -98,6 +99,7 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
         identRepository.save(
                 IdentEntity.builder()
                         .identtype(Identtype.FNR)
+                        .kjoenn(Kjoenn.MANN)
                         .personidentifikator(DNR)
                         .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                         .finnesHosSkatt("0")

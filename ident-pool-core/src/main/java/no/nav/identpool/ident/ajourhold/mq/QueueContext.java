@@ -1,6 +1,7 @@
 package no.nav.identpool.ident.ajourhold.mq;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,13 +29,19 @@ public class QueueContext {
     private final MessageQueueFactory queueFactory;
     @Value("#{'${mq.context.exclude}'.split(',')}")
     private String[] excluded;
+    @Value("#{'${mq.context.order}'.split(',')}")
+    private List<String> order;
 
-    private static void filterEnvironments(List<String> environmentList, List<String> excludedEnvironments, MessageQueueFactory queueFactory) {
+    private static void filterEnvironments(List<String> environmentList, List<String> excludedEnvironments, List<String> orderedList, MessageQueueFactory queueFactory) {
         List<String> filtered = environmentList.stream()
                 .filter(env -> QueueContext.filterOnQueue(env, queueFactory))
                 .collect(Collectors.toList());
 
         environmentList.removeAll(filtered);
+        environmentList.sort(Comparator.comparingInt(obj -> {
+            int index = orderedList.indexOf(obj);
+            return (index == -1) ? environmentList.size() : index;
+        }));
         QueueContext.environments = environmentList.toArray(new String[environmentList.size()]);
         excludedEnvironments.addAll(filtered);
         QueueContext.filteredEnvironments = filtered.toArray(new String[filtered.size()]);
@@ -64,7 +71,7 @@ public class QueueContext {
         environmentList.removeAll(excludedEnvironments);
         excludedEnvironments.retainAll(environmentList);
 
-        filterEnvironments(environmentList, excludedEnvironments, queueFactory);
+        filterEnvironments(environmentList, excludedEnvironments, order, queueFactory);
 
         logInfo("Failed to create Connection factories for the following enironments:  ",
                 filteredEnvironments);

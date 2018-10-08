@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.ident.domain.Identtype;
+import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.repository.IdentEntity;
 
@@ -30,6 +31,7 @@ public class LesInnholdComponentTest extends ComponentTestbase {
         identRepository.save(
                 IdentEntity.builder()
                         .identtype(IDENTTYPE)
+                        .kjoenn(Kjoenn.MANN)
                         .personidentifikator(PERSONIDENTIFIKATOR)
                         .rekvireringsstatus(REKVIRERINGSSTATUS)
                         .finnesHosSkatt(FINNES_HOS_SKATT)
@@ -45,6 +47,7 @@ public class LesInnholdComponentTest extends ComponentTestbase {
         assertThat(ident, is(notNullValue()));
         assertThat(ident.getPersonidentifikator(), is(PERSONIDENTIFIKATOR));
         assertThat(ident.getIdenttype(), is(IDENTTYPE));
+        assertThat(ident.getKjoenn(), is(Kjoenn.MANN));
         assertThat(ident.getRekvireringsstatus(), is(REKVIRERINGSSTATUS));
         assertThat(ident.getFinnesHosSkatt(), is(FINNES_HOS_SKATT));
         assertThat(ident.getFoedselsdato(), is(FOEDSELSDATO));
