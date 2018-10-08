@@ -17,6 +17,7 @@
 		"classnames": "^2.2.6",
 		"connected-react-router": "^4.3.0",
 		"date-fns": "^1.29.0",
+		"flat": "^4.1.0",
 		"font-awesome": "^4.7.0",
 		"formik": "^1.2.0",
 		"history": "^4.7.2",
