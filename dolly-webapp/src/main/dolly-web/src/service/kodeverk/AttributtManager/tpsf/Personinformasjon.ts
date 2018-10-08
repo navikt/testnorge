@@ -58,6 +58,17 @@ const AttributtListe: Attributt[] = [
 		validation: yup.string().required('Velg kjønn'),
 		format: Formatters.kjonnToString,
 		kanRedigeres: true
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'sivilstand',
+		label: 'Sivilstand',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		options: SelectOptionsManager('sivilstand'),
+		validation: yup.string().required('Velg sivilstand'),
+		kanRedigeres: true
 	}
 	// {
 	// 	hovedKategori: Kategorier.PersInfo,
