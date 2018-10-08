@@ -25,6 +25,6 @@ public class SigrunnControllerTest {
         RsSigrunnOpprettSkattegrunnlag grunn = new RsSigrunnOpprettSkattegrunnlag();
 
         controller.opprettInntekt(grunn);
-        verify(sigrunStubApiService).createInntektstuff(grunn);
+        verify(sigrunStubApiService).createSkattegrunnlag(grunn);
     }
 }

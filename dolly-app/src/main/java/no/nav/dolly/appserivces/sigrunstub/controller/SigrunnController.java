@@ -1,10 +1,8 @@
 package no.nav.dolly.appserivces.sigrunstub.controller;
 
-import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.appserivces.sigrunstub.restcom.SigrunStubApiService;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,8 +21,8 @@ public class SigrunnController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public List<RsGrunnlagResponse> opprettInntekt(@RequestBody RsSigrunnOpprettSkattegrunnlag createTeamRequest) {
-        return sigrunStubApiService.createInntektstuff(createTeamRequest);
+    public void opprettInntekt(@RequestBody RsSigrunnOpprettSkattegrunnlag createTeamRequest) {
+        sigrunStubApiService.createSkattegrunnlag(createTeamRequest);
     }
 
 }

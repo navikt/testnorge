@@ -1,24 +1,31 @@
 package no.nav.dolly.appserivces.sigrunstub.restcom;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
-import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
-import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
-import no.nav.dolly.exceptions.SigrunnStubException;
-import no.nav.dolly.properties.ProvidersProps;
-
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
+import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
+import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
+import no.nav.dolly.exceptions.SigrunnStubException;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @Service
 public class SigrunStubApiService {
@@ -32,22 +39,26 @@ public class SigrunStubApiService {
     @Autowired
     ProvidersProps providersProps;
 
-    public List<RsGrunnlagResponse> createInntektstuff(RsSigrunnOpprettSkattegrunnlag request) {
-        StringBuilder sbUrl = new StringBuilder().append(providersProps.getSigrun()).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
+    public void createSkattegrunnlag(RsSigrunnOpprettSkattegrunnlag request) {
+        StringBuilder sbUrl = new StringBuilder().append(providersProps.getSigrun().getUrl()).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
         try{
-            ResponseEntity<RsGrunnlagResponse[]> response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, new HttpEntity<>(request), RsGrunnlagResponse[].class);
-            return Arrays.asList(response.getBody());
-        } catch (HttpClientErrorException|HttpServerErrorException e) {
+
+            OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
+            String token = auth.getIdToken();
+            HttpHeaders header = new HttpHeaders();
+            header.set("Authorization", "Bearer " + token);
+            header.set("testdataEier", auth.getPrincipal());
+            HttpEntity entity = new HttpEntity(request, header);
+            restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, entity, String.class);
+        } catch (HttpClientErrorException e) {
             RestTemplateFailure rs = lesOgMapFeilmelding(e);
             throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());
         }
     }
 
-    private RestTemplateFailure lesOgMapFeilmelding(HttpStatusCodeException e){
-        try {
-            return objectMapper.readValue(e.getResponseBodyAsString(), RestTemplateFailure.class);
-        } catch (IOException ex){
-            throw e;
-        }
+    private RestTemplateFailure lesOgMapFeilmelding(HttpClientErrorException e){
+            RestTemplateFailure failure = new RestTemplateFailure();
+            failure.setMessage(e.getResponseBodyAsString());
+            return failure;
     }
 }
