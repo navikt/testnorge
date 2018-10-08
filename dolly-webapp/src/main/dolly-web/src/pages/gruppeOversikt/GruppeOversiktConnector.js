@@ -15,7 +15,7 @@ import {
 } from '~/ducks/gruppe'
 import { createLoadingSelector } from '~/ducks/loading'
 
-const loadingSelector = createLoadingSelector(getGrupper, getGrupperByTeamId, getGrupperByUserId)
+const loadingSelector = createLoadingSelector([getGrupper, getGrupperByTeamId, getGrupperByUserId])
 
 const mapStateToProps = state => {
 	return {
