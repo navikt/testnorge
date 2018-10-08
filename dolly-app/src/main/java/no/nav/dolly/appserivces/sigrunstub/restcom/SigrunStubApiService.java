@@ -1,27 +1,16 @@
 package no.nav.dolly.appserivces.sigrunstub.restcom;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
-import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.exceptions.SigrunnStubException;
 import no.nav.dolly.properties.ProvidersProps;
@@ -41,7 +30,7 @@ public class SigrunStubApiService {
 
     public void createSkattegrunnlag(RsSigrunnOpprettSkattegrunnlag request) {
         StringBuilder sbUrl = new StringBuilder().append(providersProps.getSigrun().getUrl()).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
-        try{
+        try {
 
             OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
             String token = auth.getIdToken();
@@ -56,9 +45,9 @@ public class SigrunStubApiService {
         }
     }
 
-    private RestTemplateFailure lesOgMapFeilmelding(HttpClientErrorException e){
-            RestTemplateFailure failure = new RestTemplateFailure();
-            failure.setMessage(e.getResponseBodyAsString());
-            return failure;
+    private RestTemplateFailure lesOgMapFeilmelding(HttpClientErrorException e) {
+        RestTemplateFailure failure = new RestTemplateFailure();
+        failure.setMessage(e.getResponseBodyAsString());
+        return failure;
     }
 }
