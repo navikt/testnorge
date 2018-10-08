@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 public final class PersonIdentifikatorUtil {
 
+    //todo: flytt til personidentifikatorValidatorUtil
+
     private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
     private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
 

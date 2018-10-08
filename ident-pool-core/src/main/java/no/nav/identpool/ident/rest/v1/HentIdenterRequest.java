@@ -26,4 +26,7 @@ public class HentIdenterRequest {
         this.antall = PageRequest.of(0, antall);
     }
 
+    public int getAntall() {
+        return antall.getPageSize();
+    }
 }

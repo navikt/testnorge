@@ -26,7 +26,7 @@ public class IdentpoolController {
     private final IdentpoolService identpoolService;
 
     @PostMapping
-    public List<String> rekvirer(@RequestBody HentIdenterRequest hentIdenterRequest) {
+    public List<String> rekvirer(@RequestBody HentIdenterRequest hentIdenterRequest) throws Exception{
         return identpoolService.finnIdenter(hentIdenterRequest);
     }
 
