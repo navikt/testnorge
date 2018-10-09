@@ -1,0 +1,57 @@
+package no.nav.dolly.kodeverk;
+
+import no.nav.dolly.exceptions.KodeverkException;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+
+import static no.nav.dolly.util.CallIdUtil.generateCallId;
+
+@Service
+public class KodeverkConsumer {
+
+    private static final String APP_BRUKERNAVN = "srvdolly";
+    private static final String HEADER_NAME_CONSUMER_ID = "Nav-Consumer-Id";
+    private static final String HEADER_NAME_CALL_ID = "Nav-Call-id";
+    private static final String EMPTY_BODY = "empty";
+    private RestTemplate restTemplate = new RestTemplate();
+    private String KODEVERK_URL_BASE = "/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger";
+
+    @Autowired
+    ProvidersProps providersProps;
+
+    public GetKodeverkKoderBetydningerResponse fetchKodeverkByName(String navn) {
+        String url = providersProps.getKodeverk().getUrl() + getKodeverksnavnUrl(navn) + getQueryParamsSpraakBokmaalAndEkskluderUgyldigTrue();
+        HttpEntity entity = buildKodeverkEntityForGET();
+
+        try {
+            ResponseEntity<GetKodeverkKoderBetydningerResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity, GetKodeverkKoderBetydningerResponse.class);
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new KodeverkException(e.getStatusCode(), e.getResponseBodyAsString());
+        }
+    }
+
+    private HttpEntity buildKodeverkEntityForGET(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HEADER_NAME_CONSUMER_ID, APP_BRUKERNAVN);
+        headers.set(HEADER_NAME_CALL_ID, generateCallId());
+        return new HttpEntity(EMPTY_BODY, headers);
+    }
+
+    private String getKodeverksnavnUrl(String kodeverksnavn) {
+        return KODEVERK_URL_BASE.replace("{kodeverksnavn}", kodeverksnavn);
+    }
+
+    private String getQueryParamsSpraakBokmaalAndEkskluderUgyldigTrue() {
+        return "?ekskluderUgyldige=true&spraak=nb";
+    }
+}

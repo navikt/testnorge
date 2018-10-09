@@ -30,6 +30,11 @@
         </dependency>
 
         <dependency>
+            <groupId>no.nav.tjenester</groupId>
+            <artifactId>kodeverk-api-v1</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>no.nav.dolly</groupId>
             <artifactId>dolly-domain</artifactId>
             <version>${project.version}</version>
