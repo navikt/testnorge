@@ -70,7 +70,10 @@ public class DollyTpsfService {
 
         } catch (Exception e) {
             //TODO Dette skal logges.
-            System.out.println("##### LAGE IDENTER FEILET ######  Error: " + e.getStackTrace());
+            System.out.println("##### LAGE IDENTER FEILET ######  Error: " + e.getMessage());
+            if(e instanceof HttpClientErrorException){
+                System.out.println("  Body: " + ((HttpClientErrorException) e).getResponseBodyAsString());
+            }
         } finally {
             bestilling.setFerdig(true);
             bestillingService.saveBestillingToDB(bestilling);
@@ -87,8 +90,6 @@ public class DollyTpsfService {
                 progress.setTpsfSuccessEnv(env);
             }
         } catch (TpsfException e){
-            handleError(e, progress);
-        } catch (Exception e) {
             handleError(e, progress);
         }
 
@@ -115,14 +116,7 @@ public class DollyTpsfService {
             sb.append(")}");
         }
 
-        String env = sb.toString();
-
-        if(env.length() > 4000){
-            env = env.substring(0, (MAX_LENGTH_VARCHAR2-10));
-            env = env + ".... END";
-        }
-
-        return env;
+        return sbToStringForDB(sb);
     }
 
     private void handleError(Exception e, BestillingProgress progress){
@@ -138,31 +132,16 @@ public class DollyTpsfService {
             sb.append("   reponseBody: ").append(body);
         }
 
+        progress.setFeil(sbToStringForDB(sb));
+    }
+
+    private String sbToStringForDB(StringBuilder sb){
         String feil = sb.toString();
         if(feil.length() > 4000){
             feil = feil.substring(0, (MAX_LENGTH_VARCHAR2-10));
             feil = feil + " END";
         }
-
-        progress.setFeil(feil);
+        return feil;
     }
 
-    private void handleError(TpsfException e, BestillingProgress progress){
-        StringBuilder sb = new StringBuilder();
-        sb.append(e.getMessage());
-
-        if(e.getCause() != null){
-            sb.append("  cause: ").append(e.getCause().getMessage());
-        }
-
-        sb.append("  localizedMsg: ").append(e.getLocalizedMessage());
-
-        String feil = sb.toString();
-        if(feil.length() > 4000){
-            feil = feil.substring(0, (MAX_LENGTH_VARCHAR2-10));
-            feil = feil + " END";
-        }
-
-        progress.setFeil(feil);
-    }
 }

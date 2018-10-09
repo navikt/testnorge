@@ -41,7 +41,7 @@ export default class SendFoedselsmelding extends PureComponent {
 				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding(values)
 				const getKontaktInformasjonRes = await TpsfApi.getKontaktInformasjon(
 					createFoedselsmeldingRes.data.personId,
-                    values.miljoe
+					values.miljoe
 				)
 
 				return this.setState({
@@ -57,10 +57,10 @@ export default class SendFoedselsmelding extends PureComponent {
 	_renderNyttBarn = person => {
 		return (
 			<Fragment>
-				<h2 className="success-message">
-					Gratulere, {person.personNavn.gjeldendePersonnavn} ble født!{' '}
-				</h2>
-				<h4>med ident {person.fodselsnummer}</h4>
+				<h3 className="success-message">
+					Gratulerer, {person.personNavn.gjeldendePersonnavn} med ident {person.fodselsnummer} ble
+					født!
+				</h3>
 			</Fragment>
 		)
 	}

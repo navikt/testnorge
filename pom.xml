@@ -11,7 +11,7 @@
 
 	<groupId>no.nav.dolly</groupId>
 	<artifactId>dolly</artifactId>
-	<version>test-271</version>
+	<version>test-280</version>
 	<packaging>pom</packaging>
 
 	<name>dolly</name>
@@ -35,6 +35,7 @@
 		<freg-security-oidc.version>3.0.5</freg-security-oidc.version>
 		<springfox-swagger2.version>2.4.0</springfox-swagger2.version>
 		<springfox-swagger-ui.version>2.4.0</springfox-swagger-ui.version>
+		<kodeverk.version>1.2</kodeverk.version>
 
         <ojdbc.version>12.2.0.1</ojdbc.version>
 		<sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**, **/dolly/testdata/builder/**</sonar.exclusions>
@@ -82,6 +83,11 @@
 				<version>${freg-security-oidc.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>no.nav.tjenester</groupId>
+				<artifactId>kodeverk-api-v1</artifactId>
+				<version>${kodeverk.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>io.springfox</groupId>
