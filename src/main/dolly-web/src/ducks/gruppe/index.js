@@ -1,5 +1,6 @@
 import { DollyApi } from '~/service/Api'
 import { LOCATION_CHANGE } from 'connected-react-router'
+import _get from 'lodash/get'
 import { createAction, handleActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 
@@ -86,4 +87,23 @@ export const listGrupper = ({ teamId = null } = {}) => async (dispatch, getState
 	} else {
 		return dispatch(getGrupper())
 	}
+}
+
+// Selector
+export const sokSelectorOversikt = (items, searchStr) => {
+	if (!items) return null
+	if (!searchStr) return items
+
+	const query = searchStr.toLowerCase()
+	return items.filter(item => {
+		const searchValues = [
+			_get(item, 'id').toString(),
+			_get(item, 'navn').toLowerCase(),
+			_get(item, 'hensikt').toLowerCase(),
+			_get(item, 'team.navn').toLowerCase(),
+			_get(item, 'testidenter', []).length.toString()
+		]
+
+		return searchValues.some(v => v.includes(query))
+	})
 }
