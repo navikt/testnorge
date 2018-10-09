@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Overskrift from '~/components/overskrift/Overskrift'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
+import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import Toolbar from '~/components/toolbar/Toolbar'
 import Knapp from 'nav-frontend-knapper'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
@@ -18,15 +19,14 @@ export default class Gruppe extends Component {
 
 		return (
 			<div className="oversikt-container">
-				<Toolbar title="Testpersoner">
+				<Toolbar title="Testpersoner" searchField={SearchFieldConnector}>
 					<Knapp type="hoved" onClick={startBestilling}>
 						Opprett personer
 					</Knapp>
 				</Toolbar>
 				{testidenter.length <= 0 ? (
 					<ContentContainer>
-						Det finnes ingen data i denne gruppen enda. Trykk på + knappen under for å starte en
-						bestilling.
+						Trykk på opprett personer-knappen under for å starte en bestilling.
 					</ContentContainer>
 				) : (
 					<Table>
