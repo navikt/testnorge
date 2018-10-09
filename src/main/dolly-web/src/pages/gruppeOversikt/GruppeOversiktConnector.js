@@ -10,37 +10,19 @@ import {
 	showCreateOrEditGroup,
 	getGrupper,
 	getGrupperByTeamId,
-	getGrupperByUserId
+	getGrupperByUserId,
+	sokSelectorOversikt
 } from '~/ducks/gruppe'
 import { createLoadingSelector } from '~/ducks/loading'
 
-const loadingSelector = createLoadingSelector(getGrupper, getGrupperByTeamId, getGrupperByUserId)
-
-const gruppeFiltering = (items, searchText) => {
-	if (!items) return null
-
-	if (!searchText) return items
-
-	const query = searchText.toLowerCase()
-	return items.filter(item => {
-		if (item.navn.toLowerCase().includes(query)) return true
-		if (item.team.navn.toLowerCase().includes(query)) return true
-
-		return false
-	})
-}
+const loadingSelector = createLoadingSelector([getGrupper, getGrupperByTeamId, getGrupperByUserId])
 
 const mapStateToProps = state => {
 	return {
 		isFetching: loadingSelector(state),
 		gruppeListe: _orderBy(
-			gruppeFiltering(state.gruppe.data, state.search),
-			gruppe => {
-				const value = gruppe[state.sort.id]
-				if (typeof value === 'string') return gruppe[state.sort.id].toLowerCase()
-
-				return gruppe[state.sort.id]
-			},
+			sokSelectorOversikt(state.gruppe.data, state.search),
+			state.sort.id,
 			state.sort.order
 		),
 		createOrUpdateId: state.gruppe.createOrUpdateId,
