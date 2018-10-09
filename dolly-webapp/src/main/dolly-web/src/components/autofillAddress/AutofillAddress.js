@@ -40,7 +40,18 @@ export default class AutofillAddress extends Component {
 	}
 
 	chooseType = type => {
-		this.setState({ type })
+		this.setState({ type, input: '' })
+	}
+
+	onInputChangeHandler = value => {
+		this.setState({ input: value })
+	}
+
+	placeHolderGenerator = () => {
+		const { type } = this.state
+		if (type === 'pnr') return 'Velg postnummer...'
+		if (type === 'knr') return 'Velg kommunenummer...'
+		return ''
 	}
 
 	onClickHandler = () => {
@@ -84,22 +95,28 @@ export default class AutofillAddress extends Component {
 								checked={type === 'random'}
 								label="Tilfeldig"
 								name="Tilfeldig"
-								onClick={() => this.chooseType('random')}
+								onChange={() => this.chooseType('random')}
 							/>
 							<Radio
 								checked={type === 'pnr'}
 								label="Postnummer"
 								name="Postnummer"
-								onClick={() => this.chooseType('pnr')}
+								onChange={() => this.chooseType('pnr')}
 							/>
 							<Radio
 								checked={type === 'knr'}
 								label="Kommunenummer"
 								name="Kommunenummer"
-								onClick={() => this.chooseType('knr')}
+								onChange={() => this.chooseType('knr')}
 							/>
 						</form>
-						<DollySelect disabled={type === 'random'} />
+						<DollySelect
+							name="generator-select"
+							label="Velg verdi"
+							placeholder={this.placeHolderGenerator()}
+							onChange={this.onInputChangeHandler}
+							disabled={type === 'random'}
+						/>
 						<Knapp
 							className="generate-address"
 							type="standard"
