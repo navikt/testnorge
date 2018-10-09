@@ -4,7 +4,7 @@ import { Radio } from 'nav-frontend-skjema'
 import Lukknapp from 'nav-frontend-lukknapp'
 import Modal from 'react-modal'
 import DollySelect from '~/components/fields/Select/Select'
-import { TpsfApi } from '~/service/Api'
+import { TpsfApi, DollyApi } from '~/service/Api'
 
 import './AutofillAddress.less'
 
@@ -17,7 +17,8 @@ const customStyles = {
 		marginRight: '-50%',
 		transform: 'translate(-50%, -50%)',
 		width: '25%',
-		minWidth: '500px'
+		minWidth: '500px',
+		overflow: 'inherit'
 	}
 }
 
@@ -30,6 +31,8 @@ export default class AutofillAddress extends Component {
 		type: 'random',
 		input: ''
 	}
+
+	componentDidMount() {}
 
 	open = () => {
 		this.setState({ modalOpen: true })
@@ -44,6 +47,7 @@ export default class AutofillAddress extends Component {
 	}
 
 	onInputChangeHandler = value => {
+		console.log(value)
 		this.setState({ input: value })
 	}
 
@@ -52,6 +56,19 @@ export default class AutofillAddress extends Component {
 		if (type === 'pnr') return 'Velg postnummer...'
 		if (type === 'knr') return 'Velg kommunenummer...'
 		return ''
+	}
+
+	loadOptionsSelector = () => {
+		const { type } = this.state
+		if (type === 'pnr') return () => this.fetchKodeverk('Postnummer')
+		if (type === 'knr') return () => this.fetchKodeverk('Kommuner')
+		return undefined
+	}
+
+	fetchKodeverk = kodeverkNavn => {
+		return DollyApi.getKodeverkByNavn(kodeverkNavn).then(res => {
+			return { options: res.data.koder }
+		})
 	}
 
 	onClickHandler = () => {
@@ -80,7 +97,14 @@ export default class AutofillAddress extends Component {
 	}
 
 	render() {
-		const { type } = this.state
+		const { type, input } = this.state
+
+		const selectProps = {
+			loadOptions: this.loadOptionsSelector(),
+			placeholder: this.placeHolderGenerator(),
+			disabled: type === 'random'
+		}
+
 		return (
 			<Fragment>
 				<Knapp type="standard" mini onClick={this.open}>
@@ -113,9 +137,9 @@ export default class AutofillAddress extends Component {
 						<DollySelect
 							name="generator-select"
 							label="Velg verdi"
-							placeholder={this.placeHolderGenerator()}
 							onChange={this.onInputChangeHandler}
-							disabled={type === 'random'}
+							value={input}
+							{...selectProps}
 						/>
 						<Knapp
 							className="generate-address"
