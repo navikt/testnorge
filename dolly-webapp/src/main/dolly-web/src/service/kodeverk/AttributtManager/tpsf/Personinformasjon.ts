@@ -43,7 +43,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Statsborgerskap',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		apiKodeverkId: 'statsborgerskap',
+		apiKodeverkId: 'StatsborgerskapFreg',
 		validation: yup.string().required('Krever et statsborgerskap'),
 		kanRedigeres: true
 	},
@@ -63,10 +63,10 @@ const AttributtListe: Attributt[] = [
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Diverse,
 		id: 'sivilstand',
-		label: 'Sivilstand',
+		label: 'Sivilstander',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		options: SelectOptionsManager('sivilstand'),
+		apiKodeverkId: 'Sivilstander',
 		validation: yup.string().required('Velg sivilstand'),
 		kanRedigeres: true
 	}
