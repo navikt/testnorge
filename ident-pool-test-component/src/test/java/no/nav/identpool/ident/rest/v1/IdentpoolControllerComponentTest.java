@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Arrays;
+import javax.ejb.Local;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.After;
 import org.junit.Before;
@@ -15,14 +16,15 @@ import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
+import no.nav.identpool.ident.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.ident.repository.IdentEntity;
+import no.nav.identpool.util.PersonidentifikatorUtil;
 
 public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
@@ -34,23 +36,54 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     @Test
     public void hentLedigFnr() throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
-        String body = "{\"antall\":\"1\", \"identtype\":\"FNR\" }";
+        String body = "{\"antall\":\"1\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\" }";
 
-        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
+        ResponseEntity<String[]> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
 
-        assertThat(fnr.getBody(), is(notNullValue()));
-        assertThat(fnr.getBody().length, is(1));
+        assertThat(identListe.getBody(), is(notNullValue()));
+        assertThat(PersonidentifikatorUtil.getPersonidentifikatorType(identListe.getBody()[0]), is(Identtype.FNR));
+        assertThat(identListe.getBody().length, is(1));
     }
 
     @Test
     public void hentLedigDnr() throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
-        String body = "{\"antall\":\"1\", \"identtype\":\"DNR\" }";
+        String body = "{\"antall\":\"1\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
 
-        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
+        ResponseEntity<String[]> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
 
-        assertThat(fnr.getBody(), is(notNullValue()));
-        assertThat(fnr.getBody().length, is(1));
+        assertThat(identListe.getBody(), is(notNullValue()));
+        assertThat(PersonidentifikatorUtil.getPersonidentifikatorType(identListe.getBody()[0]), is(Identtype.DNR));
+        assertThat(identListe.getBody().length, is(1));
+    }
+
+    @Test
+    public void hentLedigIdent() throws URISyntaxException {
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
+        String body = "{\"antall\":\"2\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\",\"foedtFoer\":\"1950-01-01\"}";
+
+        ResponseEntity<String[]> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
+
+        assertThat(identListe.getBody(), is(notNullValue()));
+        assertThat(identListe.getBody().length, is(2));
+
+        long countDb = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(
+                LocalDate.of(1900,1,1),
+                LocalDate.of(1950,1,1),
+                Identtype.FNR,
+                Rekvireringsstatus.I_BRUK);
+
+        assertThat(countDb, is(2L));
+    }
+
+    @Test
+    public void hentForMangeIdenterSomIkkeFinnesIDatabasen() throws URISyntaxException {
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
+        String body = "{\"antall\":\"200\", \"foedtEtter\":\"1900-01-01\"}";
+
+        ResponseEntity<ForFaaLedigeIdenterException> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ForFaaLedigeIdenterException.class);
+
+        assertThat(identListe.getStatusCode(), is(HttpStatus.SERVICE_UNAVAILABLE));
     }
 
     @Test

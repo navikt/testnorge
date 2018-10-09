@@ -1,8 +1,9 @@
 package no.nav.identpool.ident.rest.v1;
 
-import static no.nav.identpool.util.PersonidentifikatorValidatorUtil.valider;
+import static no.nav.identpool.util.PersonidentifikatorUtil.valider;
 
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +27,7 @@ public class IdentpoolController {
     private final IdentpoolService identpoolService;
 
     @PostMapping
-    public List<String> rekvirer(@RequestBody HentIdenterRequest hentIdenterRequest) throws Exception{
+    public List<String> rekvirer(@RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception{
         return identpoolService.finnIdenter(hentIdenterRequest);
     }
 

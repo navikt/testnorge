@@ -1,6 +1,6 @@
 package no.nav.identpool.ident.rest.v1;
 
-import static no.nav.identpool.util.PersonidentifikatorValidatorUtil.valider;
+import static no.nav.identpool.util.PersonidentifikatorUtil.valider;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

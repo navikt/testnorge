@@ -8,39 +8,27 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-
-import no.nav.identpool.ident.ajourhold.tps.generator.FnrGenerator;
+import no.nav.identpool.ident.ajourhold.tps.generator.IdentGenerator;
 import no.nav.identpool.ident.ajourhold.util.IdentDistribusjon;
-import no.nav.identpool.ident.ajourhold.util.PersonIdentifikatorUtil;
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.repository.IdentEntity;
 import no.nav.identpool.ident.repository.IdentRepository;
+import no.nav.identpool.ident.service.IdentMQService;
+import no.nav.identpool.util.PersonidentifikatorUtil;
 
 @Service
 @RequiredArgsConstructor
-class IdentDBService {
+public class IdentDBService {
 
     private final IdentMQService mqService;
     private final IdentRepository identRepository;
     private final IdentDistribusjon identDistribusjon;
 
     private LocalDate current;
-
-    private static IdentEntity createIdent(String fnr, Rekvireringsstatus status, Identtype type) {
-        return IdentEntity.builder()
-                .finnesHosSkatt("0")
-                .personidentifikator(fnr)
-                .foedselsdato(PersonIdentifikatorUtil.toBirthdate(fnr))
-                .kjoenn(PersonIdentifikatorUtil.getKjonn(fnr))
-                .rekvireringsstatus(status)
-                .identtype(type)
-                .build();
-    }
 
     void checkCriticalAndGenerate() {
         current = now();
@@ -75,13 +63,16 @@ class IdentDBService {
         }
 
         int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year + 1) * 2;
-        Map<LocalDate, List<String>> pinMap = FnrGenerator.genererIdenterMap(firstDate, lastDate, type);
+        Map<LocalDate, List<String>> pinMap = IdentGenerator.genererIdenterMap(firstDate, lastDate, type);
 
-        List<String> filtered = filterDatabse(antallPerDag, pinMap);
-        checkTpsAndStore(filtered, type);
+        List<String> filtered = filterDatabase(antallPerDag, pinMap);
+
+        Map<String, Boolean> identerIBruk = mqService.fnrsExists(filtered);
+
+        lagre(identerIBruk);
     }
 
-    private List<String> filterDatabse(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
+    private List<String> filterDatabase(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
         final List<String> arrayList = new ArrayList<>(antallPerDag * pinMap.size());
         pinMap.forEach((ignored, value) -> {
             ArrayList<String> local = new ArrayList<>(antallPerDag);
@@ -97,31 +88,40 @@ class IdentDBService {
         return arrayList;
     }
 
-    private void checkTpsAndStore(List<String> filtered, Identtype type) {
+    public void lagre(Map<String, Boolean> identerIBruk) {
 
-        Map<String, Boolean> identerIBruk = mqService.fnrsExists(filtered);
-
-        storeIdenter(identerIBruk.entrySet().stream()
+        lagreIdenter(identerIBruk.entrySet().stream()
                         .filter(Map.Entry::getValue)
                         .map(Map.Entry::getKey)
                         .collect(Collectors.toList()),
-                Rekvireringsstatus.I_BRUK, type);
-        storeIdenter(identerIBruk.entrySet().stream()
+                Rekvireringsstatus.I_BRUK);
+        lagreIdenter(identerIBruk.entrySet().stream()
                         .filter(x -> !x.getValue())
                         .map(Map.Entry::getKey)
                         .collect(Collectors.toList()),
-                Rekvireringsstatus.LEDIG, type);
+                Rekvireringsstatus.LEDIG);
     }
 
-    private void storeIdenter(List<String> pins, Rekvireringsstatus status, Identtype type) {
+    public void lagreIdenter(List<String> pins, Rekvireringsstatus status) {
         identRepository.saveAll(pins.stream()
-                .map(fnr -> createIdent(fnr, status, type))
+                .map(fnr -> createIdent(fnr, status, Integer.parseInt(fnr.substring(0, 1)) > 3 ? Identtype.DNR : Identtype.FNR))
                 .collect(Collectors.toList()));
+    }
+
+    private IdentEntity createIdent(String fnr, Rekvireringsstatus status, Identtype type) {
+        return IdentEntity.builder()
+                .finnesHosSkatt("0")
+                .personidentifikator(fnr)
+                .foedselsdato(PersonidentifikatorUtil.toBirthdate(fnr))
+                .kjoenn(PersonidentifikatorUtil.getKjonn(fnr))
+                .rekvireringsstatus(status)
+                .identtype(type)
+                .build();
     }
 
     private boolean criticalForYear(int year, Identtype type) {
         int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year);
-        int days = year == current.getYear() ? 365 - current.getDayOfYear() : 365;
+        int days = (year == current.getYear() ? 365 - current.getDayOfYear() : 365);
         long count = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(
                 LocalDate.of(year, 1, 1),
                 LocalDate.of(year + 1, 1, 1),

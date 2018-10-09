@@ -12,8 +12,7 @@ import no.nav.identpool.ident.ajourhold.mq.factory.ConnectionStrategyFactory;
 import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
 
 @Configuration
-@ComponentScan(basePackages = "no.nav.identpool")
-class ComponentTestConfig {
+@ComponentScan(basePackages = "no.nav.identpool") class ComponentTestConfig {
 
     @Bean
     RestTemplate restTemplate() {

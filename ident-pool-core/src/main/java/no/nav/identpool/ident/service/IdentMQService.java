@@ -1,4 +1,4 @@
-package no.nav.identpool.ident.ajourhold.service;
+package no.nav.identpool.ident.service;
 
 import java.io.StringReader;
 import java.util.ArrayList;
