@@ -45,9 +45,9 @@ export default class TpsfService {
 		return Request.post(endpoint, userData)
 	}
 
-	static generateAddress() {
+	static generateAddress(query) {
 		this.getTpsfUrl()
-		const endpoint = url + '/gyldigadresse/tilfeldig?maxAntall=1'
+		const endpoint = `${url}/gyldigadresse/tilfeldig?maxAntall=1${query}`
 		return Request.get(endpoint)
 	}
 }
