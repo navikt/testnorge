@@ -70,7 +70,6 @@ export default withFormik({
 		antall: yup
 			.number()
 			.min(1, 'Må minst opprette 1 testperson')
-			.positive("Må være et positivt tall")
 			// .max(5, 'Maks 5 personer i første omgang')
 			.required('Oppgi antall testbrukere'),
 		identtype: yup.string().required('Velg en identtype')
