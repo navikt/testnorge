@@ -26,13 +26,12 @@ Modal.setAppElement('#root')
 
 export default class AutofillAddress extends Component {
 	state = {
-		modalOpen: true,
+		modalOpen: false,
 		isFetching: false,
 		type: 'random',
-		input: ''
+		input: '',
+		status: ''
 	}
-
-	componentDidMount() {}
 
 	open = () => {
 		this.setState({ modalOpen: true })
@@ -47,7 +46,6 @@ export default class AutofillAddress extends Component {
 	}
 
 	onInputChangeHandler = value => {
-		console.log(value)
 		this.setState({ input: value })
 	}
 
@@ -71,32 +69,58 @@ export default class AutofillAddress extends Component {
 		})
 	}
 
+	setQueryString = () => {
+		const { input, type } = this.state
+		const value = input.value
+		switch (type) {
+			case 'pnr':
+				return `&postNr=${value}`
+			case 'knr':
+				return `&kommuneNr=${value}`
+			default:
+				return ''
+		}
+	}
+
 	onClickHandler = () => {
 		const { formikProps } = this.props
 
 		return this.setState({ isFetching: true }, async () => {
 			try {
-				const generateAddressResponse = await TpsfApi.generateAddress()
+				const generateAddressResponse = await TpsfApi.generateAddress(this.setQueryString())
 				const addressData = generateAddressResponse.data.response.data1.adrData
-				const { adrnavn, husnrfra, pnr, knr } = addressData
+				const count = parseInt(generateAddressResponse.data.response.data1.antallForekomster)
 
-				const newAddressObject = {
-					boadresse_gateadresse: adrnavn,
-					boadresse_husnummer: husnrfra,
-					boadresse_kommunenr: knr,
-					boadresse_postnr: pnr.toString()
+				let status = generateAddressResponse.data.response.status.utfyllendeMelding
+				let newAddressObject = {
+					boadresse_gateadresse: '',
+					boadresse_husnummer: '',
+					boadresse_kommunenr: '',
+					boadresse_postnr: ''
+				}
+
+				if (count > 0) {
+					const { adrnavn, husnrfra, pnr, knr } = addressData
+
+					newAddressObject = {
+						boadresse_gateadresse: adrnavn,
+						boadresse_husnummer: husnrfra,
+						boadresse_kommunenr: knr,
+						boadresse_postnr: pnr.toString()
+					}
+					status = ''
 				}
 
 				formikProps.setValues({ ...formikProps.values, ...newAddressObject })
 
-				return this.setState({ isFetching: false, modalOpen: false })
+				return this.setState({ isFetching: false, modalOpen: false, status })
 			} catch (err) {
 				return this.setState({ isFetching: false, modalOpen: false })
 			}
 		})
 	}
 
-	render() {
+	renderSelect = () => {
 		const { type, input } = this.state
 
 		const selectProps = {
@@ -106,10 +130,28 @@ export default class AutofillAddress extends Component {
 		}
 
 		return (
+			<DollySelect
+				key={type}
+				name="generator-select"
+				label="Velg verdi"
+				onChange={this.onInputChangeHandler}
+				value={input}
+				{...selectProps}
+			/>
+		)
+	}
+
+	render() {
+		const { type, status } = this.state
+
+		return (
 			<Fragment>
-				<Knapp type="standard" mini onClick={this.open}>
-					Generer gyldig adresse
-				</Knapp>
+				<div className="generate-address-create">
+					<Knapp type="standard" mini onClick={this.open}>
+						Generer gyldig adresse
+					</Knapp>
+					{status && <span className="generate-address-create_status">{status}</span>}
+				</div>
 
 				<Modal style={customStyles} isOpen={this.state.modalOpen}>
 					<div className="generate-address-container">
@@ -134,13 +176,7 @@ export default class AutofillAddress extends Component {
 								onChange={() => this.chooseType('knr')}
 							/>
 						</form>
-						<DollySelect
-							name="generator-select"
-							label="Velg verdi"
-							onChange={this.onInputChangeHandler}
-							value={input}
-							{...selectProps}
-						/>
+						{this.renderSelect()}
 						<Knapp
 							className="generate-address"
 							type="standard"
