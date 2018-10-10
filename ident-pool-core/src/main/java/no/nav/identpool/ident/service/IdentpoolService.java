@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import no.nav.identpool.ident.ajourhold.service.IdentDBService;
 import no.nav.identpool.ident.ajourhold.tps.generator.IdentGenerator;
-import no.nav.identpool.ident.ajourhold.tps.generator.PersonKriterier;
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
@@ -35,8 +34,8 @@ public class IdentpoolService {
     private final IdentMQService identMQService;
     private final IdentDBService identDBService;
 
-    private final static int MAKS_ANTALL_MANGLENDE_IDENTER = 80;
-    private final static int MAKS_ANTALL_KALL_MOT_TPS = 3;
+    private static final int MAKS_ANTALL_MANGLENDE_IDENTER = 80;
+    private static final int MAKS_ANTALL_KALL_MOT_TPS = 3;
 
     public List<String> finnIdenter(HentIdenterRequest hentIdenterRequest) throws ForFaaLedigeIdenterException {
 
@@ -175,16 +174,4 @@ public class IdentpoolService {
         }
         identRepository.save(identEntity);
     }
-
-    private IdentEntity createIdent(String fnr, Rekvireringsstatus status, Identtype type) {
-        return IdentEntity.builder()
-                .finnesHosSkatt("0")
-                .personidentifikator(fnr)
-                .foedselsdato(PersonidentifikatorUtil.toBirthdate(fnr))
-                .kjoenn(PersonidentifikatorUtil.getKjonn(fnr))
-                .rekvireringsstatus(status)
-                .identtype(type)
-                .build();
-    }
-
 }

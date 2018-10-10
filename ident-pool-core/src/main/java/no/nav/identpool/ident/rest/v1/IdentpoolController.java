@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.ident.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.ident.repository.IdentEntity;
 import no.nav.identpool.ident.service.IdentpoolService;
@@ -27,7 +26,7 @@ public class IdentpoolController {
     private final IdentpoolService identpoolService;
 
     @PostMapping
-    public List<String> rekvirer(@RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception{
+    public List<String> rekvirer(@RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
         return identpoolService.finnIdenter(hentIdenterRequest);
     }
 
@@ -35,7 +34,7 @@ public class IdentpoolController {
     public void markerBrukt(
             @RequestParam String personidentifikator,
             @RequestParam String bruker
-    ) throws IdentAlleredeIBrukException, UgyldigPersonidentifikatorException {
+    ) throws Exception {
         valider(personidentifikator);
         MarkerBruktRequest markerBruktRequest = MarkerBruktRequest.builder()
                 .personidentifikator(personidentifikator)
