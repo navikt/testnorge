@@ -4,37 +4,39 @@ import no.nav.dolly.domain.resultset.kodeverk.KodeAdjusted;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.tjenester.kodeverk.api.v1.Betydning;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
+/***
+ * Mapper fra Betydninger i Kodeverkapp til Kodeverkobjekter som er lett for frontend å bruke
+ * Tar nå kun første Betydningen den finner for en kode(value) siden man henter gyldig så vil det i fleste tilfeller gi 1 beskrivelse (?)
+ * Vurder om man skal ta en hensyn til flere Betydninger per kode etter hvert.
+ */
 @Service
 public class KodeverkMapper {
 
-    public KodeverkAdjusted mapBetydningToAdjustedKodeverk(String kodeverkNavn, Map<String, List<Betydning>> kodeMap){
-        KodeverkAdjusted kodeverk = new KodeverkAdjusted();
-        kodeverk.setKoder(new ArrayList<>());
-        kodeverk.setName(kodeverkNavn);
+    private static final String KODE_BOKMAAL = "nb";
 
-        for (Map.Entry<String, List<Betydning>> entry : kodeMap.entrySet()) {
+    public KodeverkAdjusted mapBetydningToAdjustedKodeverk(String kodeverkNavn, Optional<Map<String, List<Betydning>>> betydningerMap) {
+        KodeverkAdjusted kodeverkAdjusted = betydningerMap.map(this::extractKodeverkFromBetydninger).orElse(new KodeverkAdjusted());
+        kodeverkAdjusted.setName(kodeverkNavn);
+        return kodeverkAdjusted;
+    }
 
-            if(isNullOrEmpty(entry.getValue())){
-                continue;
-            }
+    private KodeverkAdjusted extractKodeverkFromBetydninger(Map<String, List<Betydning>> kodeMap) {
+        List<KodeAdjusted> koder = kodeMap.entrySet().stream()
+                .filter(e -> !isNullOrEmpty(e.getValue()))
+                .map(e -> KodeAdjusted.builder()
+                        .label(e.getKey() + " - " + e.getValue().get(0).getBeskrivelser().get(KODE_BOKMAAL).getTerm())
+                        .value(e.getKey())
+                        .build())
+                .collect(Collectors.toList());
 
-            Betydning betydning = entry.getValue().get(0);
-            String term = betydning.getBeskrivelser().get("nb").getTerm();
-            KodeAdjusted kode =  KodeAdjusted.builder()
-                    .label(entry.getKey() + " - " + term)
-                    .value(entry.getKey())
-                    .build();
-
-            kodeverk.getKoder().add(kode);
-        }
-
-        return kodeverk;
+        return KodeverkAdjusted.builder().koder(koder).build();
     }
 }
