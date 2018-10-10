@@ -40,6 +40,11 @@ fasitResources:
       propertyMap:
         url: providers.tpsf.url
 
+    - alias: kodeverk-host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.kodeverk.url
+
     - alias: dollyDB
       resourceType: DataSource
       propertyMap:
