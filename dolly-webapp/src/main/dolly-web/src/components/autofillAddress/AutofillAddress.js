@@ -24,17 +24,18 @@ const customStyles = {
 
 Modal.setAppElement('#root')
 
+const initialState = {
+	isFetching: false,
+	type: 'random',
+	input: '',
+	status: ''
+}
+
 export default class AutofillAddress extends Component {
-	state = {
-		modalOpen: false,
-		isFetching: false,
-		type: 'random',
-		input: '',
-		status: ''
-	}
+	state = { modalOpen: false, ...initialState }
 
 	open = () => {
-		this.setState({ modalOpen: true })
+		this.setState({ modalOpen: true, ...initialState })
 	}
 
 	close = () => {
@@ -153,11 +154,16 @@ export default class AutofillAddress extends Component {
 					{status && <span className="generate-address-create_status">{status}</span>}
 				</div>
 
-				<Modal style={customStyles} isOpen={this.state.modalOpen}>
+				<Modal
+					style={customStyles}
+					isOpen={this.state.modalOpen}
+					onRequestClose={this.close}
+					shouldCloseOnEsc
+				>
 					<div className="generate-address-container">
-						<Lukknapp onClick={this.close} />
 						<form className="generate-address-form">
 							<Radio
+								autoFocus
 								checked={type === 'random'}
 								label="Tilfeldig"
 								name="Tilfeldig"
@@ -187,6 +193,7 @@ export default class AutofillAddress extends Component {
 						>
 							Generer
 						</Knapp>
+						<Lukknapp onClick={this.close} />
 					</div>
 				</Modal>
 			</Fragment>
