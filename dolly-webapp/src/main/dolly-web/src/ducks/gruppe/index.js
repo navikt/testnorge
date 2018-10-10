@@ -1,6 +1,7 @@
 import { DollyApi } from '~/service/Api'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
+import _isNil from 'lodash/isNil'
 import { createAction, handleActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 
@@ -97,12 +98,14 @@ export const sokSelectorOversikt = (items, searchStr) => {
 	const query = searchStr.toLowerCase()
 	return items.filter(item => {
 		const searchValues = [
-			_get(item, 'id').toString(),
-			_get(item, 'navn').toLowerCase(),
-			_get(item, 'hensikt').toLowerCase(),
-			_get(item, 'team.navn').toLowerCase(),
-			_get(item, 'testidenter', []).length.toString()
+			_get(item, 'id'),
+			_get(item, 'navn'),
+			_get(item, 'hensikt'),
+			_get(item, 'team.navn'),
+			_get(item, 'testidenter', []).length
 		]
+			.filter(v => !_isNil(v))
+			.map(v => v.toString().toLowerCase())
 
 		return searchValues.some(v => v.includes(query))
 	})
