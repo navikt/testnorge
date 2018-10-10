@@ -59,14 +59,13 @@ public class IdentpoolService {
             List<String> genererteIdenter = IdentGenerator.genererIdenter(hentIdenterRequest);
 
             // filtrer vekk eksisterende
-            List<String> finnesAllerede = new ArrayList<>();
+            List<String> finnesIkkeAllerede = new ArrayList<>();
             for (String ident : genererteIdenter) {
                 if (!identRepository.existsByPersonidentifikator(ident)) {
-                    finnesAllerede.add(ident);
+                    finnesIkkeAllerede.add(ident);
                 }
             }
-
-            Map<String, Boolean> kontrollerteIdenter = identMQService.fnrsExists(finnesAllerede);
+            Map<String, Boolean> kontrollerteIdenter = identMQService.fnrsExists(finnesIkkeAllerede);
 
             identDBService.lagreIdenter(kontrollerteIdenter.entrySet().stream()
                     .filter(Map.Entry::getValue)
@@ -83,13 +82,10 @@ public class IdentpoolService {
         if (temp.size() >= antallManglendeIdenter) {
 
             identDBService.lagreIdenter(temp.subList(0, antallManglendeIdenter), I_BRUK);
-
             personidentifikatorList.addAll(temp.subList(0, antallManglendeIdenter));
-
             if (temp.size() > antallManglendeIdenter) {
                 identDBService.lagreIdenter(temp.subList(antallManglendeIdenter, temp.size()), LEDIG);
             }
-
         } else {
             throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
         }
