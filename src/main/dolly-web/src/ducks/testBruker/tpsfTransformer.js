@@ -67,11 +67,6 @@ const mapDataToDolly = i => {
 						id: 'alder',
 						label: 'Alder',
 						value: i.alder
-					},
-					{
-						id: 'opprettelsesdato',
-						label: 'Opprettelsesdato',
-						value: '09.10.2018'
 					}
 				]
 			}

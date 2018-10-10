@@ -54,7 +54,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Kjønn',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		options: SelectOptionsManager('kjonn'),
+		apiKodeverkId: 'Kj%C3%B8nnstyper',
 		validation: yup.string().required('Velg kjønn'),
 		format: Formatters.kjonnToString,
 		kanRedigeres: true
