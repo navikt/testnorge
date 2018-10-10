@@ -25,12 +25,12 @@ public class ProvidersProps {
     @Getter
     @Setter
     public class Sigrun {
-        String url;
+        private String url;
     }
 
     @Getter
     @Setter
     public class Kodeverk {
-        String url;
+        private String url;
     }
 }

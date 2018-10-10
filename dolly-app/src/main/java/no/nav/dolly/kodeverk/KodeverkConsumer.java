@@ -22,6 +22,7 @@ public class KodeverkConsumer {
     private static final String HEADER_NAME_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String HEADER_NAME_CALL_ID = "Nav-Call-id";
     private static final String EMPTY_BODY = "empty";
+    private static final String KODEVERK_URL_QUERY_PARAMS_EKSKLUDER_UGYLDIGE_SPRAAK_NB = "?ekskluderUgyldige=true&spraak=nb";
     private RestTemplate restTemplate = new RestTemplate();
     private String KODEVERK_URL_BASE = "/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger";
 
@@ -29,7 +30,7 @@ public class KodeverkConsumer {
     ProvidersProps providersProps;
 
     public GetKodeverkKoderBetydningerResponse fetchKodeverkByName(String navn) {
-        String url = providersProps.getKodeverk().getUrl() + getKodeverksnavnUrl(navn) + getQueryParamsSpraakBokmaalAndEkskluderUgyldigTrue();
+        String url = providersProps.getKodeverk().getUrl() + getKodeverksnavnUrl(navn) + KODEVERK_URL_QUERY_PARAMS_EKSKLUDER_UGYLDIGE_SPRAAK_NB;
         HttpEntity entity = buildKodeverkEntityForGET();
 
         try {
@@ -49,9 +50,5 @@ public class KodeverkConsumer {
 
     private String getKodeverksnavnUrl(String kodeverksnavn) {
         return KODEVERK_URL_BASE.replace("{kodeverksnavn}", kodeverksnavn);
-    }
-
-    private String getQueryParamsSpraakBokmaalAndEkskluderUgyldigTrue() {
-        return "?ekskluderUgyldige=true&spraak=nb";
     }
 }
