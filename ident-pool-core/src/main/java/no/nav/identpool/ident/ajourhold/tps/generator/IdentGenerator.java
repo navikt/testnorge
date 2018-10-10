@@ -34,7 +34,7 @@ public final class IdentGenerator {
 
     private static Map<Identtype, Function<LocalDate, List<String>>> generatorMap =
             ImmutableMap.of(
-                    Identtype.FNR, IdentGenerator::generateIdentNumbers,
+                    Identtype.FNR, IdentGenerator::generateFNumbers,
                     Identtype.DNR, IdentGenerator::generateDNumbers);
 
     private static Map<Identtype, Function<LocalDate, String>> numberFormatter =
@@ -77,7 +77,7 @@ public final class IdentGenerator {
         return format;
     }
 
-    private static List<String> generateIdentNumbers(LocalDate birthdate) {
+    private static List<String> generateFNumbers(LocalDate birthdate) {
         return generateNumbers(birthdate, getFnrFormat(birthdate));
     }
 
