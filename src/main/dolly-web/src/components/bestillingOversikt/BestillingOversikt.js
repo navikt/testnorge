@@ -8,7 +8,6 @@ import './BestillingOversikt.less'
 class BestillingOversikt extends PureComponent {
 	render() {
 		const { gruppe } = this.props
-		console.log(gruppe)
 		return (
 			<div className="bestilling-oversikt">
 				<h2>BESTILLINGER</h2>
@@ -28,9 +27,6 @@ class BestillingOversikt extends PureComponent {
 								header="MILJØER"
 								value={DataFormatter.arrayToString(bestilling.environments)}
 							/>
-							{/* <Knapp mini type="standard">
-								SE DETALJER
-							</Knapp> */}
 						</div>
 					)
 				})}

@@ -11,17 +11,23 @@ export default class Toolbar extends PureComponent {
 		searchField: PropTypes.func,
 		title: PropTypes.string
 	}
+	static defaultProps = {
+		toggleValues: [{ value: 'mine', label: 'Mine' }, { value: 'alle', label: 'Alle' }]
+	}
 
-	renderToggle = () => (
-		<ToggleGruppe onChange={this.props.toggleOnChange} name="toggler">
-			<ToggleKnapp value="mine" checked={this.props.toggleCurrent === 'mine'}>
-				Mine
-			</ToggleKnapp>
-			<ToggleKnapp value="alle" checked={this.props.toggleCurrent === 'alle'}>
-				Alle
-			</ToggleKnapp>
-		</ToggleGruppe>
-	)
+	renderToggle = () => {
+		const { toggleValues, toggleOnChange, toggleCurrent } = this.props
+
+		return (
+			<ToggleGruppe onChange={toggleOnChange} name="toggler">
+				{toggleValues.map(val => (
+					<ToggleKnapp key={val.value} value={val.value} checked={toggleCurrent === val.value}>
+						{val.label}
+					</ToggleKnapp>
+				))}
+			</ToggleGruppe>
+		)
+	}
 
 	render() {
 		const { title, toggleOnChange, children } = this.props

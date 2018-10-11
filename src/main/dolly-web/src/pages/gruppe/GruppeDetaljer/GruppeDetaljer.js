@@ -2,7 +2,6 @@ import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import ExpandButton from '~/components/button/ExpandButton'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import BestillingOversiktConnector from '~/components/bestillingOversikt/BestillingOversiktConnector'
 
 import './GruppeDetaljer.less'
 
@@ -12,8 +11,7 @@ export default class GruppeDetaljer extends PureComponent {
 	}
 
 	state = {
-		// TODO: BYTT TILBAKE TIL FALSE
-		expanded: true
+		expanded: false
 	}
 
 	toggleExpanded = () => this.setState({ expanded: !this.state.expanded })
@@ -31,12 +29,7 @@ export default class GruppeDetaljer extends PureComponent {
 						value={String(gruppe.testidenter.length)}
 					/>
 					<StaticValue header="SIST ENDRET" value={gruppe.datoEndret} />
-					{this.state.expanded && (
-						<Fragment>
-							<StaticValue header="HENSIKT" value={gruppe.hensikt} />
-							<BestillingOversiktConnector gruppe={gruppe} />
-						</Fragment>
-					)}
+					{this.state.expanded && <StaticValue header="HENSIKT" value={gruppe.hensikt} />}
 				</div>
 				<div className="gruppe-detaljer-chevron">
 					<ExpandButton onClick={this.toggleExpanded} expanded={this.state.expanded} />
