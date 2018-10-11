@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
@@ -37,26 +38,28 @@ public class IdentMQService {
     }
 
     public Map<String, Boolean> finnesITps(List<String> environments, List<String> fnrs) {
-        HashSet<String> nonexistent = new HashSet<>(fnrs);
-        HashSet<String> exists = new HashSet<>();
+        Map<String, Boolean> identer = fnrs.stream().collect(Collectors.toMap(fnr -> fnr, fnr -> Boolean.FALSE));
         for (String environment : environments) {
-            if (nonexistent.isEmpty()) {
-                break;
-            }
             try {
-                filterTpsQueue(environment, nonexistent, exists);
+                filterTpsQueue(environment, identer);
             } catch (JMSException e) {
                 throw new RuntimeException(e);
             }
         }
-
-        HashMap<String, Boolean> filteredMap = new HashMap<>();
-        nonexistent.forEach(fnr -> filteredMap.put(fnr, Boolean.FALSE));
-        exists.forEach(fnr -> filteredMap.put(fnr, Boolean.TRUE));
-        return filteredMap;
+        return identer;
     }
 
-    private void filterTpsQueue(String environment, HashSet<String> nonexistent, HashSet<String> exists) throws JMSException {
+    private void filterTpsQueue(String environment, Map<String, Boolean> identer) throws JMSException {
+
+        List<String> finnesIkke = identer.entrySet()
+                .stream()
+                .filter(entry -> !entry.getValue())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        if (finnesIkke.isEmpty()) {
+            return;
+        }
 
         MessageQueue messageQueue;
         try {
@@ -69,12 +72,11 @@ public class IdentMQService {
 
         Consumer<PersondataFraTpsM201.AFnr.EFnr> filterExisting = personData -> {
             if (personData.getSvarStatus() == null || "00".equals(personData.getSvarStatus().getReturStatus())) {
-                nonexistent.remove(personData.getFnr());
-                exists.add(personData.getFnr());
+                identer.put(personData.getFnr(), Boolean.TRUE);
             }
         };
 
-        for (List<String> list : Lists.partition(new ArrayList<>(nonexistent), 80)) {
+        for (List<String> list : Lists.partition(new ArrayList<>(finnesIkke), 80)) {
             String message = new NavnOpplysning(list).toXml();
             String response = messageQueue.sendMessage(message);
             TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);

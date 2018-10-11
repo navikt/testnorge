@@ -2,6 +2,7 @@ package no.nav.identpool.ident.ajourhold.tps.generator;
 
 import static java.lang.Math.toIntExact;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -11,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -30,6 +30,8 @@ public final class FnrGenerator {
     private static final int[] CONTROL_DIGIT_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
     private static final int[] CONTROL_DIGIT_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
+
+    private static SecureRandom random = new SecureRandom();
 
     private static Map<Identtype, Function<LocalDate, List<String>>> generatorMap =
             ImmutableMap.of(
@@ -95,7 +97,6 @@ public final class FnrGenerator {
         Set<String> identer = new HashSet<>(kriterier.getAntall());
         LocalDate fodtEtter = kriterier.getFoedtEtter();
         LocalDate fodtFoer = kriterier.getFoedtFoer() == null ? fodtEtter.plusDays(1) : kriterier.getFoedtFoer();
-        Random random = new Random();
         Kjoenn kjoenn = kriterier.getKjonn();
         int iteratorRange = getIteratorRange(kjoenn);
         int numberOfDates = toIntExact(ChronoUnit.DAYS.between(kriterier.getFoedtEtter(), fodtFoer));
@@ -133,7 +134,6 @@ public final class FnrGenerator {
     }
 
     private static int getCategoryNumber(List<Integer> range, Kjoenn kjoenn) {
-        Random random = new Random();
         int number = random.nextInt(range.get(1) - 1) + range.get(0);
         if ((Kjoenn.KVINNE.equals(kjoenn) && number % 2 != 0) || (Kjoenn.MANN.equals(kjoenn) && number % 2 == 0)) {
             number += 1;

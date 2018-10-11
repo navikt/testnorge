@@ -48,7 +48,7 @@ public class IdentpoolService {
         if (ident != null) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;
         } else {
-            boolean exists = identMQService.fnrsExists(Collections.singletonList(personidentifikator)).get(personidentifikator);
+            boolean exists = identMQService.finnesITps(Collections.singletonList(personidentifikator)).get(personidentifikator);
             Rekvireringsstatus status = exists ? I_BRUK : LEDIG;
             IdentEntity newIdentEntity = IdentEntity.builder()
                     .identtype(Integer.parseInt(personidentifikator.substring(0, 1)) > 3 ? Identtype.DNR : Identtype.FNR)
