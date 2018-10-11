@@ -59,18 +59,14 @@ public class IdentpoolService {
             List<String> genererteIdenter = IdentGenerator.genererIdenter(hentIdenterRequest);
 
             // filtrer vekk eksisterende
-            List<String> finnesIkkeAllerede = new ArrayList<>();
-            for (String ident : genererteIdenter) {
-                if (!identRepository.existsByPersonidentifikator(ident)) {
-                    finnesIkkeAllerede.add(ident);
-                }
-            }
+            List<String> finnesIkkeAllerede = genererteIdenter.stream().filter(ident -> !identRepository.existsByPersonidentifikator(ident)).collect(Collectors.toList());
+
             Map<String, Boolean> kontrollerteIdenter = identMQService.fnrsExists(finnesIkkeAllerede);
 
             identDBService.lagreIdenter(kontrollerteIdenter.entrySet().stream()
                     .filter(Map.Entry::getValue)
                     .map(Map.Entry::getKey)
-                    .collect(Collectors.toList()), I_BRUK);
+                    .collect(Collectors.toList()), I_BRUK, "TPS");
 
             temp.addAll(kontrollerteIdenter.entrySet().stream()
                     .filter(x -> !x.getValue())
@@ -81,16 +77,17 @@ public class IdentpoolService {
 
         if (temp.size() >= antallManglendeIdenter) {
 
-            identDBService.lagreIdenter(temp.subList(0, antallManglendeIdenter), I_BRUK);
+            identDBService.lagreIdenter(temp.subList(0, antallManglendeIdenter), I_BRUK, hentIdenterRequest.getRekvirertAv());
             personidentifikatorList.addAll(temp.subList(0, antallManglendeIdenter));
             if (temp.size() > antallManglendeIdenter) {
-                identDBService.lagreIdenter(temp.subList(antallManglendeIdenter, temp.size()), LEDIG);
+                identDBService.lagreIdenter(temp.subList(antallManglendeIdenter, temp.size()), LEDIG, null);
             }
         } else {
             throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
         }
 
         identEntities.forEach(i -> i.setRekvireringsstatus(I_BRUK));
+        identEntities.forEach(i -> i.setRekvirertAv(hentIdenterRequest.getRekvirertAv()));
         identRepository.saveAll(identEntities);
         return personidentifikatorList;
     }

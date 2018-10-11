@@ -26,6 +26,7 @@ public class HentIdenterRequest {
     private Kjoenn kjoenn;
     @NotNull
     private Pageable antall;
+    private String rekvirertAv;
 
     public void setAntall(int antall) {
         this.antall = PageRequest.of(0, antall);

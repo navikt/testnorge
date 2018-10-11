@@ -94,27 +94,28 @@ public class IdentDBService {
                         .filter(Map.Entry::getValue)
                         .map(Map.Entry::getKey)
                         .collect(Collectors.toList()),
-                Rekvireringsstatus.I_BRUK);
+                Rekvireringsstatus.I_BRUK, "TPS");
         lagreIdenter(identerIBruk.entrySet().stream()
                         .filter(x -> !x.getValue())
                         .map(Map.Entry::getKey)
                         .collect(Collectors.toList()),
-                Rekvireringsstatus.LEDIG);
+                Rekvireringsstatus.LEDIG, null);
     }
 
-    public void lagreIdenter(List<String> pins, Rekvireringsstatus status) {
+    public void lagreIdenter(List<String> pins, Rekvireringsstatus status, String rekvirertAv) {
         identRepository.saveAll(pins.stream()
-                .map(fnr -> createIdent(fnr, status, Integer.parseInt(fnr.substring(0, 1)) > 3 ? Identtype.DNR : Identtype.FNR))
+                .map(fnr -> createIdent(fnr, status, Integer.parseInt(fnr.substring(0, 1)) > 3 ? Identtype.DNR : Identtype.FNR, rekvirertAv))
                 .collect(Collectors.toList()));
     }
 
-    private IdentEntity createIdent(String fnr, Rekvireringsstatus status, Identtype type) {
+    private IdentEntity createIdent(String fnr, Rekvireringsstatus status, Identtype type, String rekvirertAv) {
         return IdentEntity.builder()
                 .finnesHosSkatt("0")
                 .personidentifikator(fnr)
                 .foedselsdato(PersonidentifikatorUtil.toBirthdate(fnr))
                 .kjoenn(PersonidentifikatorUtil.getKjonn(fnr))
                 .rekvireringsstatus(status)
+                .rekvirertAv(rekvirertAv)
                 .identtype(type)
                 .build();
     }
