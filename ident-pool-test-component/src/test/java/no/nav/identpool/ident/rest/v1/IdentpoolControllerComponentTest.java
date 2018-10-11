@@ -99,7 +99,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     public void markerIBrukPaaIdentAlleredeIbruk() throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk")
                 .addParameter("personidentifikator", FNR_IBRUK)
-                .addParameter("bruker", "TesterMcTestFace");
+                .addParameter("rekvirertAv", "TesterMcTestFace");
 
         ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiError.class);
 
@@ -113,7 +113,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk")
                 .addParameter("personidentifikator", FNR_LEDIG)
-                .addParameter("bruker", "TesterMcTestFace");
+                .addParameter("rekvirertAv", "TesterMcTestFace");
 
         ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiResponse.class);
 
@@ -128,7 +128,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk")
                 .addParameter("personidentifikator", NYTT_FNR_LEDIG)
-                .addParameter("bruker", "TesterMcTestFace");
+                .addParameter("rekvirertAv", "TesterMcTestFace");
 
         ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiResponse.class);
 
