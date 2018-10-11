@@ -177,6 +177,7 @@ public class TestgruppeService {
         return gruppeRepository.findAll();
     }
 
+    @Transactional
     public List<String> fetchIdenterByGruppeId(Long gruppeId) {
         return fetchTestgruppeById(gruppeId)
                 .getTestidenter()
