@@ -9,6 +9,6 @@ export default class ContentContainer extends PureComponent {
 	}
 
 	render() {
-		return <div tabIndex={0} className="content-container">{this.props.children}</div>
+		return <div className="content-container">{this.props.children}</div>
 	}
 }

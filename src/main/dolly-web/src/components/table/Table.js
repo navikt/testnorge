@@ -140,7 +140,7 @@ class TableColumn extends PureComponent {
 
 		const render = value ? value : children
 		return (
-			<div tabIndex={0} className={cssClass} {...restProps}>
+			<div className={cssClass} {...restProps}>
 				{render}
 				{/* {sortOrder && <Icon size={16} kind={iconKind} />} */}
 			</div>

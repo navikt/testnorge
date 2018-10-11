@@ -1,7 +1,7 @@
 import Request from '../Request'
 import store from '~/Store'
 var url = ''
-var baseUrl = '';
+var baseUrl = ''
 
 export default class TpsfService {
 	static getTpsfUrl() {
@@ -9,7 +9,7 @@ export default class TpsfService {
 	}
 
 	static getBaseUrl() {
-        baseUrl = store.getState().config.dollyApi.url;
+		baseUrl = store.getState().config.dollyApi.url
 	}
 
 	static getTestbrukere(userArray) {
@@ -34,13 +34,8 @@ export default class TpsfService {
 	}
 
 	static getKontaktInformasjon(fnr, env) {
-		this.getBaseUrl();
-		const endpoint =
-			baseUrl +
-			'/api/tps/kontaktinformasjon?fnr=' +
-			fnr +
-			'&environment=' +
-			env
+		this.getBaseUrl()
+		const endpoint = baseUrl + '/api/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
 		return Request.get(endpoint)
 	}
 
@@ -48,5 +43,11 @@ export default class TpsfService {
 		this.getTpsfUrl()
 		const endpoint = url + '/tpsmelding/doedsmelding'
 		return Request.post(endpoint, userData)
+	}
+
+	static generateAddress(query) {
+		this.getTpsfUrl()
+		const endpoint = `${url}/gyldigadresse/tilfeldig?maxAntall=1${query}`
+		return Request.get(endpoint)
 	}
 }

@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { ToggleGruppe, ToggleKnapp } from 'nav-frontend-skjema'
 import Overskrift from '~/components/overskrift/Overskrift'
 import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
 import Loading from '~/components/loading/Loading'
+import Toolbar from '~/components/toolbar/Toolbar'
+import Knapp from 'nav-frontend-knapper'
 import TeamListe from './TeamListe'
-import AddButton from '~/components/button/AddButton'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 
 export default class TeamOversikt extends Component {
@@ -32,17 +32,16 @@ export default class TeamOversikt extends Component {
 					<Overskrift label="Teams" />
 				</div>
 
-				<div className="flexbox--space">
-					<ToggleGruppe onChange={this.handleViewChange} name="toggleGruppe">
-						<ToggleKnapp value="mine" checked={visning === 'mine'} key="1">
-							Mine
-						</ToggleKnapp>
-						<ToggleKnapp value="alle" checked={visning === 'alle'} key="2">
-							Alle
-						</ToggleKnapp>
-					</ToggleGruppe>
-					<SearchFieldConnector />
-				</div>
+				<Toolbar
+					toggleOnChange={this.handleViewChange}
+					toggleCurrent={visning}
+					searchField={SearchFieldConnector}
+				>
+					<Knapp type="hoved" onClick={startOpprettTeam}>
+						Nytt team
+					</Knapp>
+				</Toolbar>
+
 				{visOpprettTeam && <RedigerTeamConnector />}
 				{fetching ? (
 					<Loading label="laster teams" panel />
@@ -56,8 +55,6 @@ export default class TeamOversikt extends Component {
 						deleteTeam={deleteTeam}
 					/>
 				)}
-
-				<AddButton title="Opprett nytt team" onClick={startOpprettTeam} />
 			</div>
 		)
 	}
