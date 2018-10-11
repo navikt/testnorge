@@ -4,9 +4,9 @@ import no.nav.dolly.domain.resultset.kodeverk.KodeAdjusted;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.tjenester.kodeverk.api.v1.Betydning;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -22,21 +22,23 @@ public class KodeverkMapper {
 
     private static final String KODE_BOKMAAL = "nb";
 
-    public KodeverkAdjusted mapBetydningToAdjustedKodeverk(String kodeverkNavn, Optional<Map<String, List<Betydning>>> betydningerMap) {
-        KodeverkAdjusted kodeverkAdjusted = betydningerMap.map(this::extractKodeverkFromBetydninger).orElse(new KodeverkAdjusted());
-        kodeverkAdjusted.setName(kodeverkNavn);
+    public KodeverkAdjusted mapBetydningToAdjustedKodeverk(String kodeverkNavn, Map<String, List<Betydning>> betydningerSortedByKoder) {
+        KodeverkAdjusted kodeverkAdjusted = KodeverkAdjusted.builder().name(kodeverkNavn).koder(new ArrayList<>()).build();
+
+        if(!isNullOrEmpty(betydningerSortedByKoder)){
+            kodeverkAdjusted.getKoder().addAll(extractKoderFromBetydninger(betydningerSortedByKoder));
+        }
+
         return kodeverkAdjusted;
     }
 
-    private KodeverkAdjusted extractKodeverkFromBetydninger(Map<String, List<Betydning>> kodeMap) {
-        List<KodeAdjusted> koder = kodeMap.entrySet().stream()
+    private List<KodeAdjusted> extractKoderFromBetydninger(Map<String, List<Betydning>> kodeMap) {
+        return kodeMap.entrySet().stream()
                 .filter(e -> !isNullOrEmpty(e.getValue()))
                 .map(e -> KodeAdjusted.builder()
                         .label(e.getKey() + " - " + e.getValue().get(0).getBeskrivelser().get(KODE_BOKMAAL).getTerm())
                         .value(e.getKey())
                         .build())
                 .collect(Collectors.toList());
-
-        return KodeverkAdjusted.builder().koder(koder).build();
     }
 }

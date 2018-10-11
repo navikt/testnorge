@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,11 +17,11 @@ public class RsBestillingProgress {
 
     private String ident;
 
-    private String tpsfSuccessEnv;
+    private List<String> tpsfSuccessEnv;
 
-    private String sigrunSuccessEnv;
+    private List<String> sigrunSuccessEnv;
 
-    private String aaregSuccessEnv;
+    private List<String> aaregSuccessEnv;
 
     private String feil;
 }
