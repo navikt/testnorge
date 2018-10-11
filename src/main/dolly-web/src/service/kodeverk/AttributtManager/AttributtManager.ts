@@ -3,6 +3,7 @@ import * as yup from 'yup'
 import { FormikValues } from 'formik'
 import AttributtListe from './Attributter'
 import { groupList, groupListByHovedKategori } from './GroupList'
+import DataFormatter from '~/utils/DataFormatter'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
 import _mapValues from 'lodash/mapValues'
@@ -119,9 +120,10 @@ export default class AttributtManager {
 	}
 
 	_initValueSelector = item => {
+		// TODO: avklaring: skal alle datofelter settes automatisk til dagens dato?
 		switch (item.inputType) {
 			case 'date':
-				return new Date()
+				return DataFormatter.formatDate(new Date())
 			default:
 				return ''
 		}
