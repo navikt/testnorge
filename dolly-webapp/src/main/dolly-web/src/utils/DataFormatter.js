@@ -1,4 +1,6 @@
-import dateFormatter from 'date-fns/format'
+import dateFnsFormat from 'date-fns/format'
+import dateFnsParse from 'date-fns/parse'
+import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
 
 const formatters = {}
 
@@ -12,9 +14,17 @@ formatters.formatIdentNr = ident => {
 }
 
 // Format date to readable string format
+// Date ---> String
 formatters.formatDate = date => {
 	if (!date) return date
-	return dateFormatter(date, 'DD.MM.YYYY')
+	return dateFnsFormat(date, defaultDateFormat, new Date())
+}
+
+// Format string to Date format
+// String ---> Date
+formatters.parseDate = date => {
+	if (!date) return date
+	return dateFnsParse(date, defaultDateFormat, new Date())
 }
 
 formatters.kjonnToString = (kjonn = '') => {
