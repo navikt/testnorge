@@ -3,7 +3,7 @@ export const NormalizeTeamListForDropdown = ({ data }) => ({
 })
 
 export const NormalizeKodeverkForDropdown = ({ data }) => ({
-	options: data.koder.map(kode => ({ value: kode.navn, label: kode.term }))
+	options: data.koder.map(kode => ({ value: kode.value, label: kode.label }))
 })
 
 export const NormalizeBrukerListForDropdown = (data, teamMembers) => {
