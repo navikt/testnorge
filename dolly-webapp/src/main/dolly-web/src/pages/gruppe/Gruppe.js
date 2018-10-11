@@ -6,7 +6,11 @@ import BestillingStatus from './BestillingStatus/BestillingStatus'
 import Loading from '~/components/loading/Loading'
 import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
+import BestillingListe from './BestillingListe/BestillingListe'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
+import Toolbar from '~/components/toolbar/Toolbar'
+import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
+import Knapp from 'nav-frontend-knapper'
 
 import './Gruppe.less'
 
@@ -18,7 +22,8 @@ export default class Gruppe extends Component {
 	}
 
 	state = {
-		redigerGruppe: false
+		redigerGruppe: false,
+		visning: 'best'
 	}
 
 	componentDidMount() {
@@ -32,6 +37,22 @@ export default class Gruppe extends Component {
 
 	toggleRedigerGruppe = () => this.setState({ redigerGruppe: !this.state.redigerGruppe })
 
+	toggleToolbar = e => {
+		const visning = e.target.value
+		this.setState({ visning })
+	}
+
+	renderList = gruppe => {
+		const { visning } = this.state
+		const { editTestbruker } = this.props
+
+		if (visning === 'best') return <BestillingListe bestillinger={gruppe.bestillinger} />
+
+		return (
+			<TestbrukerListeConnector testidenter={gruppe.testidenter} editTestbruker={editTestbruker} />
+		)
+	}
+
 	render() {
 		const {
 			gruppeArray,
@@ -40,7 +61,6 @@ export default class Gruppe extends Component {
 			isFetching,
 			getGruppe,
 			deleteGruppe,
-			editTestbruker,
 			getBestillingStatus
 		} = this.props
 
@@ -67,6 +87,11 @@ export default class Gruppe extends Component {
 			})
 		}
 
+		const toggleValues = [
+			{ value: 'test', label: `Testpersoner (${gruppe.testidenter.length})` },
+			{ value: 'best', label: `Bestillinger (${gruppe.bestillinger.length})` }
+		]
+
 		return (
 			<div id="gruppe-container">
 				<Overskrift label={gruppe.navn} actions={groupActions}>
@@ -81,11 +106,18 @@ export default class Gruppe extends Component {
 					<BestillingStatus key={bestilling.id} bestilling={bestilling} onGroupUpdate={getGruppe} />
 				))}
 
-				<TestbrukerListeConnector
-					startBestilling={this.startBestilling}
-					testidenter={gruppe.testidenter}
-					editTestbruker={editTestbruker}
-				/>
+				<Toolbar
+					searchField={SearchFieldConnector}
+					toggleOnChange={this.toggleToolbar}
+					toggleCurrent={this.state.visning}
+					toggleValues={toggleValues}
+				>
+					<Knapp type="hoved" onClick={this.startBestilling}>
+						Opprett personer
+					</Knapp>
+				</Toolbar>
+
+				{this.renderList(gruppe)}
 			</div>
 		)
 	}
