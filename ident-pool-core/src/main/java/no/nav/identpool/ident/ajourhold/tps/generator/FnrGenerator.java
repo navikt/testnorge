@@ -46,11 +46,14 @@ public final class FnrGenerator {
     private FnrGenerator() {
     }
 
-    public static Map<LocalDate, List<String>> genererIdenterMap(LocalDate fodtEtter, LocalDate fodtFoer, Identtype type) {
-        int days = toIntExact(ChronoUnit.DAYS.between(fodtEtter, fodtFoer));
+    public static Map<LocalDate, List<String>> genererIdenterMap(LocalDate foedtEtter, LocalDate foedtFoer, Identtype type) {
+        if (foedtEtter.isAfter(foedtFoer) || foedtEtter.isEqual(foedtFoer)) {
+            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være eller dato til %s", foedtEtter, foedtFoer));
+        }
+        int days = toIntExact(ChronoUnit.DAYS.between(foedtEtter, foedtFoer));
         Function<LocalDate, List<String>> numberGenerator = generatorMap.get(type);
         return IntStream.range(0, days)
-                .mapToObj(fodtEtter::plusDays)
+                .mapToObj(foedtEtter::plusDays)
                 .collect(Collectors.toMap(
                         i -> i,
                         numberGenerator));
@@ -95,11 +98,17 @@ public final class FnrGenerator {
 
     public static List<String> genererIdenter(PersonKriterier kriterier) {
         Set<String> identer = new HashSet<>(kriterier.getAntall());
-        LocalDate fodtEtter = kriterier.getFoedtEtter();
-        LocalDate fodtFoer = kriterier.getFoedtFoer() == null ? fodtEtter.plusDays(1) : kriterier.getFoedtFoer();
+        if (kriterier.getFoedtEtter() == null) {
+            throw new IllegalArgumentException("Dato fra og med ikke oppgitt");
+        }
+        LocalDate foedtEtter = kriterier.getFoedtEtter();
+        LocalDate foedtFoer = kriterier.getFoedtFoer() == null ? foedtEtter.plusDays(1) : kriterier.getFoedtFoer();
+        if (foedtEtter.plusDays(1).isAfter(foedtFoer)) {
+            throw new IllegalArgumentException(String.format("Dato fra og med %s, må være eller dato til %s", foedtEtter, foedtFoer));
+        }
         Kjoenn kjoenn = kriterier.getKjonn();
         int iteratorRange = getIteratorRange(kjoenn);
-        int numberOfDates = toIntExact(ChronoUnit.DAYS.between(kriterier.getFoedtEtter(), fodtFoer));
+        int numberOfDates = toIntExact(ChronoUnit.DAYS.between(kriterier.getFoedtEtter(), foedtFoer));
         Function<LocalDate, String> numberFormat =
                 numberFormatter.getOrDefault(kriterier.getIdenttype(), numberFormatter.get(Identtype.FNR));
         while (identer.size() < kriterier.getAntall()) {
