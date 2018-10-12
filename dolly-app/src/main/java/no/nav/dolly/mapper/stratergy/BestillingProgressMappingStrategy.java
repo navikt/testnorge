@@ -28,19 +28,19 @@ public class BestillingProgressMappingStrategy implements MappingStrategy{
                         rsProgress.setIdent(progress.getIdent());
                         rsProgress.setFeil(progress.getFeil());
 
-                        if(isNullOrEmpty(progress.getTpsfSuccessEnv())){
+                        if(!isNullOrEmpty(progress.getTpsfSuccessEnv())){
                             rsProgress.setTpsfSuccessEnv(
                                     new ArrayList<>(Arrays.asList(progress.getTpsfSuccessEnv().split(",")))
                             );
                         }
 
-                        if(isNullOrEmpty(progress.getSigrunSuccessEnv())){
+                        if(!isNullOrEmpty(progress.getSigrunSuccessEnv())){
                             rsProgress.setSigrunSuccessEnv(
                                     new ArrayList<>(Arrays.asList(progress.getSigrunSuccessEnv().split(",")))
                             );
                         }
 
-                        if(isNullOrEmpty(progress.getAaregSuccessEnv())){
+                        if(!isNullOrEmpty(progress.getAaregSuccessEnv())){
                             rsProgress.setAaregSuccessEnv(
                                    new ArrayList<>(Arrays.asList(progress.getAaregSuccessEnv().split(",")))
                             );

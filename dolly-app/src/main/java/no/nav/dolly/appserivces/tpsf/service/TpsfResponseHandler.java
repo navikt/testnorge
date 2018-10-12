@@ -8,12 +8,14 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+
 @Service
 public class TpsfResponseHandler {
 
     private static final int MAX_LENGTH_VARCHAR2 = 4000;
 
-    public String extractFeedbackTPS(List<SendSkdMeldingTilTpsResponse> responses) {
+    public String extractTPSFeedback(List<SendSkdMeldingTilTpsResponse> responses) {
         StringBuilder sb = new StringBuilder();
 
         for(SendSkdMeldingTilTpsResponse response : responses){
@@ -34,7 +36,7 @@ public class TpsfResponseHandler {
     public void handleError(Exception e, BestillingProgress progress){
         StringBuilder sb = new StringBuilder();
         sb.append(e.getMessage());
-        if(e.getCause() != null){
+        if(!isNullOrEmpty(e.getCause())){
             sb.append("  cause: ").append(e.getCause().getMessage());
         }
         sb.append("  localizedMsg: ").append(e.getLocalizedMessage());

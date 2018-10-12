@@ -81,7 +81,7 @@ public class DollyTpsfService {
     private void senderIdenterTilTPS(RsDollyBestillingsRequest request,  List<String> klareIdenter, Testgruppe testgruppe, BestillingProgress progress) {
         try {
             RsSkdMeldingResponse response = tpsfApiService.sendIdenterTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
-            String feedbackTps = tpsfResponseHandler.extractFeedbackTPS(response.getSendSkdMeldingTilTpsResponsene());
+            String feedbackTps = tpsfResponseHandler.extractTPSFeedback(response.getSendSkdMeldingTilTpsResponsene());
             log.info(feedbackTps);
 
             String hovedperson = getHovedpersonAvBestillingsidenter(klareIdenter);
