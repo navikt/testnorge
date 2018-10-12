@@ -5,8 +5,8 @@ import GruppeDetaljer from './GruppeDetaljer/GruppeDetaljer'
 import BestillingStatus from './BestillingStatus/BestillingStatus'
 import Loading from '~/components/loading/Loading'
 import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
+import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
-import BestillingListe from './BestillingListe/BestillingListe'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Toolbar from '~/components/toolbar/Toolbar'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
@@ -23,7 +23,7 @@ export default class Gruppe extends Component {
 
 	state = {
 		redigerGruppe: false,
-		visning: 'best'
+		visning: 'test'
 	}
 
 	componentDidMount() {
@@ -39,14 +39,15 @@ export default class Gruppe extends Component {
 
 	toggleToolbar = e => {
 		const visning = e.target.value
-		this.setState({ visning })
+		this.setState({ visning }, () => this.props.resetSearch())
 	}
 
 	renderList = gruppe => {
 		const { visning } = this.state
 		const { editTestbruker } = this.props
 
-		if (visning === 'best') return <BestillingListe bestillinger={gruppe.bestillinger} />
+		if (visning === 'best')
+			return <BestillingListeConnector bestillingListe={gruppe.bestillinger} />
 
 		return (
 			<TestbrukerListeConnector testidenter={gruppe.testidenter} editTestbruker={editTestbruker} />
