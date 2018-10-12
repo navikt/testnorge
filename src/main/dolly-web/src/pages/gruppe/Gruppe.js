@@ -21,9 +21,12 @@ export default class Gruppe extends Component {
 		createOrUpdateId: PropTypes.string
 	}
 
+	VISNING_TESTPERSONER = 'testpersoner'
+	VISNING_BESTILLING = 'bestilling'
+
 	state = {
 		redigerGruppe: false,
-		visning: 'test'
+		visning: this.VISNING_TESTPERSONER
 	}
 
 	componentDidMount() {
@@ -46,7 +49,7 @@ export default class Gruppe extends Component {
 		const { visning } = this.state
 		const { editTestbruker } = this.props
 
-		if (visning === 'best')
+		if (visning === this.VISNING_BESTILLING)
 			return <BestillingListeConnector bestillingListe={gruppe.bestillinger} />
 
 		return (
@@ -89,8 +92,8 @@ export default class Gruppe extends Component {
 		}
 
 		const toggleValues = [
-			{ value: 'test', label: `Testpersoner (${gruppe.testidenter.length})` },
-			{ value: 'best', label: `Bestillinger (${gruppe.bestillinger.length})` }
+			{ value: this.VISNING_TESTPERSONER, label: `Testpersoner (${gruppe.testidenter.length})` },
+			{ value: this.VISNING_BESTILLING, label: `Bestillinger (${gruppe.bestillinger.length})` }
 		]
 
 		return (
