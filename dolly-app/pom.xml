@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.dolly</groupId>
         <artifactId>dolly</artifactId>
-        <version>test-300</version>
+        <version>test-302</version>
     </parent>
 
     <artifactId>dolly-app</artifactId>
@@ -81,6 +81,11 @@
         <dependency>
             <groupId>no.nav.freg</groupId>
             <artifactId>freg-security-oidc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
         </dependency>
 
         <dependency>

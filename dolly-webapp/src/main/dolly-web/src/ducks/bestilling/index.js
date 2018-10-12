@@ -3,6 +3,7 @@ import { DollyApi } from '~/service/Api'
 import _xor from 'lodash/fp/xor'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
+import DataFormatter from '~/utils/DataFormatter'
 import { handleActions, createActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
@@ -109,16 +110,35 @@ const bestillingFormatter = bestillingState => {
 	//	final_values.tpsf.relasjoner.barn = [final_values.tpsf.relasjoner.barn]
 	//}
 
-	console.log('POSTING BESTILLING', final_values)
+	console.log('POSTING BESTILLING', final_values, AttributtListe)
 
 	return final_values
 }
 
 const getTpsfValues = (attributeList, values) => {
 	//TODO: Legg inn filter for datasource type så vi kun får TPSF verdier.
-	console.log(attributeList)
+	// console.log(attributeList)
 	return attributeList.reduce((accumulator, attribute) => {
-		return _set(accumulator, attribute.path || attribute.id, values[attribute.id])
+		let value = values[attribute.id]
+
+		const isDate = inputType => inputType === 'date'
+
+		// Convert to Date objects
+		if (isDate(attribute.inputType)) value = DataFormatter.parseDate(value)
+		// Do the same for Array values
+		if (attribute.items) {
+			const dateFields = attribute.items.filter(item => isDate(item.inputType))
+			value = value.map((item, idx) => {
+				return dateFields.reduce((acc, dateAttribute) => {
+					const pathId = dateAttribute.id
+					return Object.assign({}, acc, {
+						[pathId]: DataFormatter.parseDate(item[pathId])
+					})
+				}, item)
+			})
+		}
+
+		return _set(accumulator, attribute.path || attribute.id, value)
 	}, {})
 }
 

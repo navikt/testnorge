@@ -8,6 +8,7 @@ import no.nav.dolly.service.TeamService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,13 +35,13 @@ public class TeamControllerTest {
     @Test
     public void getTeams_hvisIdentTilstedetSaaHentesBasertPaaIdent() {
         String navident = "nav";
-        controller.getTeams(navident);
+        controller.getTeams(Optional.of(navident));
         verify(teamService).fetchTeamsByMedlemskapInTeams(navident);
     }
 
     @Test
     public void getTeams_hvisIdentErFravaerendeSaaHentAlleTeams() {
-        controller.getTeams(null);
+        controller.getTeams(Optional.empty());
         verify(teamRepository).findAll();
     }
 
