@@ -28,7 +28,6 @@
 	<properties>
 		<application.name>dolly</application.name>
 		<application.version>${project.version}</application.version>
-
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
@@ -37,7 +36,7 @@
 		<springfox-swagger2.version>2.4.0</springfox-swagger2.version>
 		<springfox-swagger-ui.version>2.4.0</springfox-swagger-ui.version>
 		<kodeverk.version>1.2</kodeverk.version>
-
+		<logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
         <ojdbc.version>12.2.0.1</ojdbc.version>
 		<sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**, **/dolly/testdata/builder/**</sonar.exclusions>
 	</properties>
@@ -88,6 +87,12 @@
 				<groupId>no.nav.tjenester</groupId>
 				<artifactId>kodeverk-api-v1</artifactId>
 				<version>${kodeverk.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.logstash.logback</groupId>
+				<artifactId>logstash-logback-encoder</artifactId>
+				<version>${logstash-logback-encoder.version}</version>
 			</dependency>
 
 			<dependency>

@@ -30,6 +30,11 @@
         </dependency>
 
         <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>no.nav.tjenester</groupId>
             <artifactId>kodeverk-api-v1</artifactId>
         </dependency>
