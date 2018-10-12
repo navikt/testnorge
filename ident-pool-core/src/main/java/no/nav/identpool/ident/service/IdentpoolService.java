@@ -158,7 +158,7 @@ public class IdentpoolService {
         } else {
             identEntity = IdentEntity.builder()
                     .identtype(Identtype.DNR)
-                    .kjoenn(Kjoenn.MANN)
+                    .kjoenn(PersonidentifikatorUtil.getKjonn(personidentifikator))
                     .personidentifikator(personidentifikator)
                     .foedselsdato(PersonidentifikatorUtil.toBirthdate(personidentifikator))
                     .rekvireringsstatus(I_BRUK)
