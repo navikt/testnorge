@@ -41,7 +41,7 @@ public class SigrunStubApiService {
             return Arrays.asList(response.getBody());
         } catch (HttpClientErrorException|HttpServerErrorException e) {
             RestTemplateFailure rs = lesOgMapFeilmelding(e);
-            log.error("Sigrun-Stub kall feilet mot url <" + sbUrl.toString() + "> grunnet " +  rs.getMessage());
+            log.error("Sigrun-Stub kall feilet mot url <{}> grunnet {}", sbUrl.toString(),  rs.getMessage());
             throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());
         }
     }

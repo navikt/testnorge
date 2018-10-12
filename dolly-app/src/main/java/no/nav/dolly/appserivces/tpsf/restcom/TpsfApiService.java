@@ -52,7 +52,7 @@ public class TpsfApiService {
             ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, request, Object.class);
             if (response.getBody().toString().contains("exception=")) {
                 RestTemplateFailure rs = objectMapper.convertValue(response.getBody(), RestTemplateFailure.class);
-                log.error("Tps-forvalteren kall feilet mot url <" + url + "> grunnet " +  rs.getMessage());
+                log.error("Tps-forvalteren kall feilet mot url <{}> grunnet {}", url, rs.getMessage());
                 throw new TpsfException("TPSF kall feilet med: " + rs.getMessage() + "\\r\\n Feil: " + rs.getError());
             }
             return response;

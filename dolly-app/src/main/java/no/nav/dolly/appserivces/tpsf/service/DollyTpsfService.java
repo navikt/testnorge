@@ -93,10 +93,10 @@ public class DollyTpsfService {
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);
                 progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
             } else {
-                log.warn("Person med ident: " + hovedperson + " ble ikke opprettet i TPS");
+                log.warn("Person med ident: {} ble ikke opprettet i TPS", hovedperson);
             }
         } catch (TpsfException e){
-            tpsfResponseHandler.handleError(e, progress);
+            tpsfResponseHandler.setErrorMessageToBestillingsProgress(e, progress);
         }
 
         bestillingProgressRepository.save(progress);
@@ -125,6 +125,6 @@ public class DollyTpsfService {
     }
 
     private boolean isInnvandringsmeldingPaaPerson(String personId, SendSkdMeldingTilTpsResponse r){
-        return r.getSkdmeldingstype() != null && INNVANDRINGS_MLD_NAVN.equals(r.getSkdmeldingstype().toLowerCase()) && personId.equals(r.getPersonId());
+        return r.getSkdmeldingstype() != null && INNVANDRINGS_MLD_NAVN.equalsIgnoreCase(r.getSkdmeldingstype()) && personId.equals(r.getPersonId());
     }
 }

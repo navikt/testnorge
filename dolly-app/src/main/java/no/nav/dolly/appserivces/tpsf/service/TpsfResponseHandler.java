@@ -33,7 +33,7 @@ public class TpsfResponseHandler {
         return sbToStringForDB(sb);
     }
 
-    public void handleError(Exception e, BestillingProgress progress){
+    public void setErrorMessageToBestillingsProgress(Exception e, BestillingProgress progress){
         StringBuilder sb = new StringBuilder();
         sb.append(e.getMessage());
         if(!isNullOrEmpty(e.getCause())){

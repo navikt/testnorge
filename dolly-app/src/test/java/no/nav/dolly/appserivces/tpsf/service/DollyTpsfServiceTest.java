@@ -43,6 +43,7 @@ public class DollyTpsfServiceTest {
 
     private static final String SUCCESS_CODE_TPS = "00";
     private static final String FAIL_CODE_TPS = "08";
+    private static final String INNVANDRING_CREATE_NAVN = "InnvandringCreate";
 
     private Map<String, String> status_SuccU1T2_FailQ3 = new HashMap<>();
     private RsDollyBestillingsRequest standardBestillingRequest_u1_t2_q3 = new RsDollyBestillingsRequest();
@@ -55,7 +56,6 @@ public class DollyTpsfServiceTest {
     private Long bestillingsId = 2l;
     private String standardHovedident = "10";
     private String standardFeilmelding = "feil";
-    private String innvandringCreateNavn = "InnvandringCreate";
     private String standardTpsFeedback = "feedback";
     List<String> standardIdenter = Arrays.asList(standardHovedident, "34", "56");
 
@@ -89,7 +89,7 @@ public class DollyTpsfServiceTest {
     @Before
     public void setup(){
         standarSendSkdResponse.setPersonId(standardHovedident);
-        standarSendSkdResponse.setSkdmeldingstype(innvandringCreateNavn);
+        standarSendSkdResponse.setSkdmeldingstype(INNVANDRING_CREATE_NAVN);
 
         standardNyBestilling.setId(bestillingsId);
         standardNyBestilling.setFerdig(false);
@@ -168,7 +168,7 @@ public class DollyTpsfServiceTest {
 
         verify(identService, times(1)).saveIdentTilGruppe(standardHovedident, standardGruppe);
         verify(bestillingProgressRepository, times(2)).save(argumentCaptor.capture());
-        verify(tpsfResponseHandler).handleError(any(TpsfException.class), any(BestillingProgress.class));
+        verify(tpsfResponseHandler).setErrorMessageToBestillingsProgress(any(TpsfException.class), any(BestillingProgress.class));
 
         List<BestillingProgress> bestillingProgresses = argumentCaptor.getAllValues();
         BestillingProgress bestillingProgressOK = bestillingProgresses.get(0);
@@ -194,6 +194,6 @@ public class DollyTpsfServiceTest {
         dollyTpsfService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
 
         verify(identService, never()).saveIdentTilGruppe(standardHovedident, standardGruppe);
-        verify(tpsfResponseHandler).handleError(any(TpsfException.class), any(BestillingProgress.class));
+        verify(tpsfResponseHandler).setErrorMessageToBestillingsProgress(any(TpsfException.class), any(BestillingProgress.class));
     }
 }
