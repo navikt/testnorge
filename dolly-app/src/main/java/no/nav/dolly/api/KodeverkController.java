@@ -5,7 +5,6 @@ import no.nav.dolly.kodeverk.KodeverkConsumer;
 import no.nav.dolly.kodeverk.KodeverkMapper;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +23,8 @@ public class KodeverkController {
     KodeverkConsumer kodeverkConsumer;
 
     @GetMapping("/{kodeverkNavn}")
-    public KodeverkAdjusted fetchKodeverk(@PathVariable("kodeverkNavn") String kodeverkNavn) {
+    public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
         GetKodeverkKoderBetydningerResponse response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
-        return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, Optional.ofNullable(response.getBetydninger()));
+        return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response.getBetydninger());
     }
 }
