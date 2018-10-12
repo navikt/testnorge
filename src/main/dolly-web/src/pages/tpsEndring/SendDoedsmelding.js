@@ -14,7 +14,9 @@ export default class SendDoedsmelding extends PureComponent {
 		isFetching: false,
 		errorMessage: null,
 		meldingSent: false,
-		handlingsType: null
+		handlingsType: null,
+		foundIdent: false,
+		environments: this.props.dropdownMiljoe
 	}
 
 	validation = () =>
@@ -52,6 +54,21 @@ export default class SendDoedsmelding extends PureComponent {
 		)
 	}
 
+
+	_onBlurTest = async (e) => {
+		var fnr = e.target.value.trim()
+		const displayMiljoerInDropdown = [{value: 'm6', label: 'M6'}]
+		console.log('onblur');
+		try {
+			const res = await TpsfApi.getMiljoerByFnr('test')
+
+			console.log(displayMiljoerInDropdown)
+			return this.setState({ environments: displayMiljoerInDropdown})
+		} catch(err) {console.log(err);}
+
+
+	}
+
 	_renderMeldingSent = () => {
 		var handling = ''
 		switch (this.state.handlingsType) {
@@ -68,9 +85,11 @@ export default class SendDoedsmelding extends PureComponent {
 		return <h3 className="success-message"> Dødsmelding {handling} </h3>
 	}
 
+	
+
 	render() {
 		let initialValues = {
-			ident: '',
+			ident: '15019609348',
 			handling: 'C',
 			doedsdato: '',
 			miljoe: ''
@@ -81,7 +100,8 @@ export default class SendDoedsmelding extends PureComponent {
 			{ value: 'U', label: 'Endre dødsdato' },
 			{ value: 'D', label: 'Annulere dødsdato' }
 		]
-
+		
+		console.log(this.state);
 		return (
 			<ContentContainer>
 				<Formik
@@ -89,12 +109,13 @@ export default class SendDoedsmelding extends PureComponent {
 					validationSchema={this.validation}
 					initialValues={initialValues}
 					render={props => {
+						console.log('informik', this.state);
 						const { values, touched, errors, dirty, isSubmitting } = props
 						return (
 							<Form autoComplete="off">
 								<h2>Send dødsmelding</h2>
 								<div className="tps-endring-foedselmelding-top">
-									<Field name="ident" label="IDENT" component={FormikInput} />
+									<Field name="ident" label="IDENT" component={FormikInput} onBlur={this._onBlurTest}/>
 									<Field
 										name="handling"
 										label="HANDLING"
@@ -105,7 +126,7 @@ export default class SendDoedsmelding extends PureComponent {
 									<Field
 										name="miljoe"
 										label="SEND TIL MILJØ"
-										options={this.props.dropdownMiljoe}
+										options={this.state.environments}
 										component={FormikDollySelect}
 									/>
 								</div>
