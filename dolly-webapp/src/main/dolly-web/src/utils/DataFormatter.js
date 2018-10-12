@@ -13,6 +13,10 @@ formatters.formatIdentNr = ident => {
 	return `${birth} ${personnummer}`
 }
 
+formatters.formatAlder = (alder, dodsdato) => {
+	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
+}
+
 // Format date to readable string format
 // Date ---> String
 formatters.formatDate = date => {
