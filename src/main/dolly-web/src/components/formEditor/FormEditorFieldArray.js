@@ -2,6 +2,9 @@ import React, { Fragment } from 'react'
 import { FieldArray } from 'formik'
 import { DollyApi } from '~/service/Api'
 import Button from '~/components/button/Button'
+import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
+
+const Attributt = new AttributtManager()
 
 const FormEditorFieldArray = ({ subKategori, items, id }, formikProps, renderFieldComponent) => {
 	const parentId = id
@@ -11,7 +14,9 @@ const FormEditorFieldArray = ({ subKategori, items, id }, formikProps, renderFie
 			<FieldArray
 				name={parentId}
 				render={arrayHelpers => {
-					const defs = items.reduce((prev, curr) => ({ ...prev, [curr.id]: '' }), {})
+					const defs = items.reduce((prev, curr) => {
+						return { ...prev, [curr.id]: Attributt.initValueSelector(curr) }
+					}, {})
 					const createDefaultObject = () => arrayHelpers.push({ ...defs })
 					return (
 						<Fragment>
