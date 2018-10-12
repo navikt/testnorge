@@ -30,6 +30,8 @@ import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 @Service
 public class DollyTpsfService {
 
+    private static final String INNVANDRINGS_MLD_NAVN = "innvandringcreate";
+
     @Autowired
     private TpsfResponseHandler tpsfResponseHandler;
 
@@ -89,7 +91,7 @@ public class DollyTpsfService {
 
             if(!isNullOrEmpty(successMiljoer)){
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);
-                progress.setTpsfSuccessEnv(String.join(",",successMiljoer));
+                progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
             } else {
                 log.warn("Person med ident: " + hovedperson + " ble ikke opprettet i TPS");
             }
@@ -107,10 +109,10 @@ public class DollyTpsfService {
     private List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response){
         List<String> successMiljoer = new ArrayList<>();
 
-        for(SendSkdMeldingTilTpsResponse r : response.getSendSkdMeldingTilTpsResponsene()){
+        for(SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()){
 
-            if("innvandringcreate".equals(r.getSkdmeldingstype().toLowerCase()) && hovedperson.equals(r.getPersonId())){
-                for (Map.Entry<String, String> entry : r.getStatus().entrySet()) {
+            if(isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)){
+                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
                     if((entry.getValue().contains("00"))){
                         successMiljoer.add(entry.getKey());
                     }
@@ -120,5 +122,9 @@ public class DollyTpsfService {
         }
 
         return successMiljoer;
+    }
+
+    private boolean isInnvandringsmeldingPaaPerson(String personId, SendSkdMeldingTilTpsResponse r){
+        return r.getSkdmeldingstype() != null && INNVANDRINGS_MLD_NAVN.equals(r.getSkdmeldingstype().toLowerCase()) && personId.equals(r.getPersonId());
     }
 }
