@@ -90,6 +90,7 @@ public class TestgruppeController {
     @PostMapping("/{gruppeId}/bestilling")
     public RsBestilling oppretteIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
         Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, request.getAntall(), request.getEnvironments());
+        
         dollyTpsfService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling.getId());
         return mapperFacade.map(bestilling, RsBestilling.class);
     }

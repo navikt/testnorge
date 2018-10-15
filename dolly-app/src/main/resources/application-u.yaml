@@ -1,0 +1,47 @@
+# H2 console at http://localhost:8080/h2-console
+server.port: 8080
+
+APP_NAME: dolly
+environment: localhost
+APP_VERSION: ${application.version}
+
+spring:
+  datasource:
+    driverClassName: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=d26dbfl023.test.local)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=DOLLYU)(INSTANCE_NAME=ccuf03)(UR=A)(SERVER=DEDICATED)))
+    username: DOLLY_U
+    password: aEB23semvzuAhsd
+
+#### NEW FREG-SECURITY #####
+freg.security.oidc:
+  idp:
+    openAm:
+      clientId: dolly-localhost
+      clientSecret: KLNebXvbi4-gSPMzWrlNK7LPT93voNjm
+      hostUrl: https://isso-t.adeo.no:443/isso
+      issuerUrl: https://isso-t.adeo.no:443/isso/oauth2
+      loginUrl: https://isso-t.adeo.no/isso/oauth2/authorize
+      authorizationUrl: https://isso-t.adeo.no/isso/oauth2/access_token
+      jwksUrl: https://isso-t.adeo.no/isso/oauth2/connect/jwk_uri
+  auth:
+    codeFlow:
+      enabled: true
+    idToken:
+      refresh-on-seconds-left: 300
+      cookie-enabled: true
+      header-enabled: false
+      validation:
+          type: refreshing
+
+
+providers:
+  tpsf:
+    url: https://tps-forvalteren-u2.nais.preprod.local
+    #url: http://localhost:8050
+  sigrun:
+    url: https://sigrun-skd-stub.nais.preprod.local
+  kodeverk:
+    url: https://kodeverk.nais.preprod.local
+
+### CORS ###
+dolly.security.cors.origins: http://localhost:3050,http://localhost:3000

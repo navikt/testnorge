@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -28,17 +29,17 @@ public class SigrunStubApiService {
     @Autowired
     ProvidersProps providersProps;
 
-    public void createSkattegrunnlag(RsSigrunnOpprettSkattegrunnlag request) {
+    public ResponseEntity<String> createSkattegrunnlag(RsSigrunnOpprettSkattegrunnlag request) {
         StringBuilder sbUrl = new StringBuilder().append(providersProps.getSigrun().getUrl()).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
         try {
-
             OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
             String token = auth.getIdToken();
             HttpHeaders header = new HttpHeaders();
             header.set("Authorization", "Bearer " + token);
             header.set("testdataEier", auth.getPrincipal());
             HttpEntity entity = new HttpEntity(request, header);
-            restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, entity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, entity, String.class);
+            return response;
         } catch (HttpClientErrorException e) {
             RestTemplateFailure rs = lesOgMapFeilmelding(e);
             throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());

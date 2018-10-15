@@ -1,6 +1,7 @@
 package no.nav.dolly.appserivces.tpsf.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
+@Slf4j
 @Service
 public class TpsfApiService {
 
@@ -50,10 +52,13 @@ public class TpsfApiService {
             ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, request, Object.class);
             if (response.getBody().toString().contains("exception=")) {
                 RestTemplateFailure rs = objectMapper.convertValue(response.getBody(), RestTemplateFailure.class);
+                log.error("Tps-forvalteren kall feilet mot url <" + url + "> grunnet " +  rs.getMessage());
                 throw new TpsfException("TPSF kall feilet med: " + rs.getMessage() + "\\r\\n Feil: " + rs.getError());
             }
             return response;
+
         } catch (HttpClientErrorException e){
+            log.error("Tps-forvalteren kall feilet mot url <" + url + "> grunnet " +  e.getMessage(), e);
             throw new TpsfException("TPSF kall feilet med: " + e.getMessage() + "\\r\\n Feil: " + e.getResponseBodyAsString());
         }
     }

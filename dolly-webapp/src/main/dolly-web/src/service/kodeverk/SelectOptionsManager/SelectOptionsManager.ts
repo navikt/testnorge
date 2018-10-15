@@ -9,6 +9,11 @@ const selectOptions = {
 		{ value: 'K', label: 'Jente' },
 		{ value: 'M', label: 'Gutt' }
 		//{ value: null, label: 'Tilfeldig' }
+	],
+	sivilstand: [
+		{ value: 'GIFT', label: 'GIFT' },
+		{ value: 'SKILT', label: 'SKILT' }
+		//{ value: null, label: 'Tilfeldig' }
 	]
 }
 
