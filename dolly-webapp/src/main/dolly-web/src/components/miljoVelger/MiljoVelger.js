@@ -48,7 +48,7 @@ export default class MiljoVelger extends Component {
 		const allDisabled = envs.some(f => f.disabled)
 		return (
 			<fieldset key={type} name={`Liste over ${type}-mijøer`}>
-				<h3>{type} miljøer</h3>
+				<h3>{type}-miljø</h3>
 				<div className="miljo-velger_checkboxes">{envs.map(env => this.renderCheckbox(env))}</div>
 				{!allDisabled && (
 					<div className="miljo-velger_buttons">
