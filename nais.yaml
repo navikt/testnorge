@@ -1,4 +1,4 @@
-name: orkestratoren
+name: testnorge-hodejegeren
 image: "docker.adeo.no:5000/registre/testnorge-hodejegeren"
 replicas:
   min: 1
@@ -22,7 +22,7 @@ prometheus:
 resources:
   requests:
     cpu: 0.5
-    memory: 512Mi
+    memory: 1024Mi
   limits:
     cpu: 1.5
-    memory: 1024Mi
+    memory: 2048Mi
