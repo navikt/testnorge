@@ -41,10 +41,7 @@ export default class SendDoedsmelding extends PureComponent {
 			},
 			async () => {
 				try {
-					await TpsfApi.createDoedsmelding({
-						...values,
-						doedsdato: DataFormatter.parseDate(values.doedsdato)
-					})
+					await TpsfApi.createDoedsmelding(values)
 					return this.setState({ meldingSent: true, isFetching: false })
 				} catch (err) {
 					this.setState({
