@@ -47,7 +47,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Postnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst fyll ut'),
+		validation: yup.string().required('Vennligst fyll ut.'),
 		kanRedigeres: true
 	},
 	{
@@ -59,7 +59,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Kommunenummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst fyll ut'),
+		validation: yup.string().required('Vennligst fyll ut.'),
 		kanRedigeres: true
 	},
 	{
