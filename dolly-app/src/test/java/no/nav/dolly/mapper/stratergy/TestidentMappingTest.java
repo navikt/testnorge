@@ -1,25 +1,22 @@
 package no.nav.dolly.mapper.stratergy;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.resultset.RsTestident;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
-import no.nav.dolly.testdata.builder.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.dolly.testdata.builder.BrukerBuilder;
+import no.nav.dolly.testdata.builder.TestgruppeBuilder;
+import no.nav.dolly.testdata.builder.TestidentBuilder;
 
 import java.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
 public class TestidentMappingTest {
 
     private MapperFacade mapper;
@@ -47,7 +44,5 @@ public class TestidentMappingTest {
         RsTestident rsTestident = mapper.map(testident, RsTestident.class);
 
         assertThat(rsTestident.getIdent(), is("1"));
-//        assertThat(rsTestident.getTestgruppe().getId(), is(2L));
-//        assertThat(rsTestident.getTestgruppe().getNavn(), is("gruppe"));
     }
 }

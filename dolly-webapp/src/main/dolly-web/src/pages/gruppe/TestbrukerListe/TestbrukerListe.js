@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Overskrift from '~/components/overskrift/Overskrift'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
@@ -16,11 +15,9 @@ export default class Gruppe extends Component {
 
 		return (
 			<div className="oversikt-container">
-				<Overskrift type="h2" label="Testpersoner" />
 				{testidenter.length <= 0 ? (
 					<ContentContainer>
-						Det finnes ingen data i denne gruppen enda. Trykk på + knappen under for å starte en
-						bestilling.
+						Trykk på opprett personer-knappen for å starte en bestilling.
 					</ContentContainer>
 				) : (
 					<Table>

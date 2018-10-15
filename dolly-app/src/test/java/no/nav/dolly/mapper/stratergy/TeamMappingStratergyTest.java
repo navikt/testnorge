@@ -1,16 +1,16 @@
 package no.nav.dolly.mapper.stratergy;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.testdata.builder.TestidentBuilder;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.dolly.testdata.builder.BrukerBuilder;
+import no.nav.dolly.testdata.builder.TeamBuilder;
+import no.nav.dolly.testdata.builder.TestgruppeBuilder;
+import no.nav.dolly.testdata.builder.TestidentBuilder;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -19,13 +19,10 @@ import java.util.List;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
 public class TeamMappingStratergyTest {
 
     private MapperFacade mapper;

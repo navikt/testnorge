@@ -1,9 +1,10 @@
 import React, { Component, Fragment } from 'react'
 import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
+import Toolbar from '~/components/toolbar/Toolbar'
+import Knapp from 'nav-frontend-knapper'
 import Loading from '~/components/loading/Loading'
 import LeggTilBruker from './LeggTilBruker/LeggTilBruker'
-import AddButton from '~/components/button/AddButton'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
 
@@ -58,7 +59,12 @@ class Team extends Component {
 
 				{visRedigerTeam && <RedigerTeamConnector team={team} />}
 
-				<Overskrift label="Medlemmer" type="h2" />
+				<Toolbar title="Medlemmer">
+					<Knapp type="hoved" onClick={this.openLeggTilBrukerHandler}>
+						Nytt medlem
+					</Knapp>
+				</Toolbar>
+
 				{teamFetching ? (
 					<Loading label="laster medlemmer" panel />
 				) : (
@@ -87,7 +93,6 @@ class Team extends Component {
 								</Table.Row>
 							))}
 						</Table>
-						<AddButton title="Legg til nytt medlem" onClick={this.openLeggTilBrukerHandler} />
 					</Fragment>
 				)}
 

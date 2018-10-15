@@ -1,4 +1,6 @@
 server.port: 8080
+server.compression.enabled: true
+server.compression.mime-types: application/json,text/html,text/xml,text/plain,application/javascript,text/css
 
 APP_NAME: dolly
 APP_VERSION: ${application.version}
@@ -12,18 +14,17 @@ spring:
     password: #secret
 
 #### APP DB ####
-app.datasource.onsHosts:
-
+? app.datasource.onsHosts
 
 #### NEW FREG-SECURITY #####
 freg.security.oidc:
   idp:
     openAm:
-      clientId:
-      clientSecret:
-      hostUrl:
-      issuerUrl:
-      jwksUrl:
+      ? clientId
+      ? clientSecret
+      ? hostUrl
+      ? issuerUrl
+      ? jwksUrl
       loginUrl: ${freg.security.oidc.idp.openAm.hostUrl}/oauth2/authorize
       authorizationUrl: ${freg.security.oidc.idp.openAm.hostUrl}/oauth2/access_token
   auth:
@@ -34,7 +35,7 @@ freg.security.oidc:
       cookie-enabled: true
       header-enabled: false
       validation:
-          type: refreshing
+        type: refreshing
 
 ### ABAC ###
 #no.nav.abac:
@@ -43,12 +44,10 @@ freg.security.oidc:
 #    username: ${dolly.username}
 #    password: ${dolly.password}
 
-
 providers:
   url:
     tpsf: http://localhost:8050
     sigrun: http://localhost:8040
 
 ### CORS ###
-dolly.security.cors.origins:
-
+? dolly.security.cors.origins

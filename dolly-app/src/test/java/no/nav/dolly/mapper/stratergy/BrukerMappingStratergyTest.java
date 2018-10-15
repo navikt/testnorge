@@ -1,17 +1,17 @@
 package no.nav.dolly.mapper.stratergy;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
-import no.nav.dolly.testdata.builder.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
+import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.dolly.testdata.builder.BrukerBuilder;
+import no.nav.dolly.testdata.builder.TeamBuilder;
+import no.nav.dolly.testdata.builder.TestgruppeBuilder;
+import no.nav.dolly.testdata.builder.TestidentBuilder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,14 +20,10 @@ import java.util.HashSet;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-
-@RunWith(MockitoJUnitRunner.class)
 public class BrukerMappingStratergyTest {
 
     private MapperFacade mapper;

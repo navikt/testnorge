@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { ToggleGruppe, ToggleKnapp } from 'nav-frontend-skjema'
 import Overskrift from '~/components/overskrift/Overskrift'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
+import Toolbar from '~/components/toolbar/Toolbar'
+import Knapp from 'nav-frontend-knapper'
 import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
-import AddButton from '~/components/button/AddButton'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 import './GruppeOversikt.less'
 
@@ -43,8 +43,7 @@ export default class GruppeOversikt extends PureComponent {
 			createGroup,
 			deleteGruppe,
 			setSort,
-			sort,
-			addFavorite
+			sort
 		} = this.props
 
 		return (
@@ -54,17 +53,15 @@ export default class GruppeOversikt extends PureComponent {
 					<ContentTooltip />
 				</div>
 
-				<div className="flexbox--space">
-					<ToggleGruppe onChange={this.byttVisning} name="toggleGruppe">
-						<ToggleKnapp value="mine" checked={visning === 'mine'} key="1">
-							Mine
-						</ToggleKnapp>
-						<ToggleKnapp value="alle" checked={visning === 'alle'} key="2">
-							Alle
-						</ToggleKnapp>
-					</ToggleGruppe>
-					<SearchFieldConnector />
-				</div>
+				<Toolbar
+					toggleOnChange={this.byttVisning}
+					toggleCurrent={visning}
+					searchField={SearchFieldConnector}
+				>
+					<Knapp type="hoved" onClick={createGroup}>
+						Ny gruppe
+					</Knapp>
+				</Toolbar>
 
 				{createOrUpdateId === -1 && <RedigerGruppeConnector />}
 
@@ -79,11 +76,8 @@ export default class GruppeOversikt extends PureComponent {
 						deleteGruppe={deleteGruppe}
 						setSort={setSort}
 						sort={sort}
-						addFavorite={addFavorite}
 					/>
 				)}
-
-				<AddButton title="Opprett ny gruppe" onClick={createGroup} />
 			</div>
 		)
 	}
