@@ -8,14 +8,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
@@ -50,7 +48,7 @@ public class KodeverkMapperTest {
         Betydning betydning2 = Betydning.builder().beskrivelser(beskrivelser2).build();
         betydninger.put(STANDARD_KODE_2, Arrays.asList(betydning2));
 
-        KodeverkAdjusted kodeverk = kodeverkMapper.mapBetydningToAdjustedKodeverk("navn", Optional.ofNullable(betydninger));
+        KodeverkAdjusted kodeverk = kodeverkMapper.mapBetydningToAdjustedKodeverk("navn", betydninger);
 
         assertThat(kodeverk.getKoder(), hasItem(both(
                 hasProperty("value", equalTo(STANDARD_KODE))).and(
@@ -67,17 +65,17 @@ public class KodeverkMapperTest {
 
     @Test
     public void mapBetydningToAdjustedKodeverk_tomListeAvBetydningerGirKodeverkadjustedMedTomListeAvKoder() {
-        KodeverkAdjusted kodeverk = kodeverkMapper.mapBetydningToAdjustedKodeverk(STANDARD_KODEVERK_NAVN, Optional.ofNullable(new HashMap<>()));
+        KodeverkAdjusted kodeverk = kodeverkMapper.mapBetydningToAdjustedKodeverk(STANDARD_KODEVERK_NAVN, new HashMap<>());
 
-        assertThat(kodeverk.getKoder().size(), is(0));
+        assertThat(kodeverk.getKoder().isEmpty(), is(true));
         assertThat(kodeverk.getName(), is(STANDARD_KODEVERK_NAVN));
     }
 
     @Test
-    public void mapBetydningToAdjustedKodeverk_nullVerdiForBetydningerGirKodeverkadjustedMedNullverdiForKoder() {
-        KodeverkAdjusted kodeverk = kodeverkMapper.mapBetydningToAdjustedKodeverk(STANDARD_KODEVERK_NAVN, Optional.ofNullable(null));
+    public void mapBetydningToAdjustedKodeverk_nullVerdiForBetydningerGirKodeverkadjustedMedTomListeAvKoder() {
+        KodeverkAdjusted kodeverk = kodeverkMapper.mapBetydningToAdjustedKodeverk(STANDARD_KODEVERK_NAVN, null);
 
-        assertThat(kodeverk.getKoder(), is(nullValue()));
+        assertThat(kodeverk.getKoder().isEmpty(), is(true));
         assertThat(kodeverk.getName(), is(STANDARD_KODEVERK_NAVN));
     }
 }

@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
-import Overskrift from '~/components/overskrift/Overskrift'
 import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
-import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
-import Toolbar from '~/components/toolbar/Toolbar'
-import Knapp from 'nav-frontend-knapper'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljer from '../PersonDetaljer/PersonDetaljer'
@@ -15,18 +11,13 @@ export default class Gruppe extends Component {
 	}
 
 	render() {
-		const { isFetching, testidenter, testbrukere, editTestbruker, startBestilling } = this.props
+		const { isFetching, testidenter, testbrukere, editTestbruker } = this.props
 
 		return (
 			<div className="oversikt-container">
-				<Toolbar title="Testpersoner" searchField={SearchFieldConnector}>
-					<Knapp type="hoved" onClick={startBestilling}>
-						Opprett personer
-					</Knapp>
-				</Toolbar>
 				{testidenter.length <= 0 ? (
 					<ContentContainer>
-						Trykk på opprett personer-knappen under for å starte en bestilling.
+						Trykk på opprett personer-knappen for å starte en bestilling.
 					</ContentContainer>
 				) : (
 					<Table>

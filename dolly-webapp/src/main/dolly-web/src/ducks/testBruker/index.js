@@ -4,13 +4,6 @@ import { createAction } from 'redux-actions'
 import tpsfTransformer from './tpsfTransformer'
 import _get from 'lodash/get'
 
-export const getInitialValuesSelector = (state, ownProps) => {
-	if (!state.testbruker.items) return null
-
-	console.log(state)
-	console.log(ownProps)
-}
-
 export const GET_TESTBRUKERE = createAction('GET_TESTBRUKERE', identArray =>
 	TpsfApi.getTestbrukere(identArray)
 )

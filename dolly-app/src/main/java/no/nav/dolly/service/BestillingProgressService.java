@@ -27,6 +27,7 @@ public class BestillingProgressService {
     }
 
     public List<BestillingProgress> fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(Long bestillingsId){
-        return repository.findBestillingProgressByBestillingId(bestillingsId);
+        List<BestillingProgress> progresses = repository.findBestillingProgressByBestillingId(bestillingsId);
+        return progresses;
     }
 }

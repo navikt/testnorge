@@ -1,6 +1,7 @@
 package no.nav.dolly.appserivces.sigrunstub.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.RsGrunnlagResponse;
 import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
@@ -20,6 +21,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Service
 public class SigrunStubApiService {
 
@@ -39,6 +41,7 @@ public class SigrunStubApiService {
             return Arrays.asList(response.getBody());
         } catch (HttpClientErrorException|HttpServerErrorException e) {
             RestTemplateFailure rs = lesOgMapFeilmelding(e);
+            log.error("Sigrun-Stub kall feilet mot url <{}> grunnet {}", sbUrl.toString(),  rs.getMessage());
             throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());
         }
     }

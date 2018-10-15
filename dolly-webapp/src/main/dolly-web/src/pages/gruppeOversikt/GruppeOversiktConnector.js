@@ -37,8 +37,7 @@ const mapDispatchToProps = dispatch => ({
 	editGroup: editId => dispatch(showCreateOrEditGroup(editId)),
 	settVisning: visning => dispatch(settVisning(visning)),
 	deleteGruppe: gruppeId => dispatch(deleteGruppe(gruppeId)),
-	setSort: sortObj => dispatch(setSort(sortObj)),
-	addFavorite: groupId => dispatch(addFavorite(groupId))
+	setSort: sortObj => dispatch(setSort(sortObj))
 })
 
 export default connect(

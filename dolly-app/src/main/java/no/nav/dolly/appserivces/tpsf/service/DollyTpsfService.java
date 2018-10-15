@@ -1,5 +1,6 @@
 package no.nav.dolly.appserivces.tpsf.service;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.appserivces.sigrunstub.restcom.SigrunStubApiService;
 import no.nav.dolly.appserivces.tpsf.restcom.TpsfApiService;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -8,140 +9,122 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
-import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
-//TODO Denne må refaktoreres til å bli mer ryddig.
+@Slf4j
 @Service
 public class DollyTpsfService {
 
-    private static final int MAX_LENGTH_VARCHAR2 = 4000;
+    private static final String INNVANDRINGS_MLD_NAVN = "innvandringcreate";
 
     @Autowired
-    TpsfApiService tpsfApiService;
+    private TpsfResponseHandler tpsfResponseHandler;
 
     @Autowired
-    TestgruppeService testgruppeService;
+    private TpsfApiService tpsfApiService;
 
     @Autowired
-    IdentService identService;
+    private TestgruppeService testgruppeService;
 
     @Autowired
-    SigrunStubApiService sigrunStubApiService;
+    private IdentService identService;
 
     @Autowired
-    IdentRepository identRepository;
+    private SigrunStubApiService sigrunStubApiService;
 
     @Autowired
-    BestillingProgressRepository bestillingProgressRepository;
+    private BestillingProgressRepository bestillingProgressRepository;
 
     @Autowired
-    BestillingService bestillingService;
+    private BestillingService bestillingService;
 
     @Async
-    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest request, Long bestillingsId) {
+    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingsRequest, Long bestillingsId) {
         Bestilling bestilling = bestillingService.fetchBestillingById(bestillingsId);
-        request.getTpsf().setEnvironments(request.getEnvironments());
+        Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
+
+        RsTpsfBestilling tpsfBestilling = bestillingsRequest.getTpsf();
+        tpsfBestilling.setEnvironments(bestillingsRequest.getEnvironments());
+        tpsfBestilling.setAntall(1);
 
         try {
-            request.getTpsf().setAntall(1);
-            for (int i = 0; i < request.getAntall(); i++) {
-                List<String> bestilteIdenter = tpsfApiService.opprettIdenterTpsf(request.getTpsf());
-                Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
-
+            for (int i = 0; i < bestillingsRequest.getAntall(); i++) {
+                List<String> bestilteIdenter = tpsfApiService.opprettIdenterTpsf(tpsfBestilling);
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
                 BestillingProgress progress = new BestillingProgress(bestillingsId, hovedPersonIdent);
-                senderIdenterTilTPS(request, bestilteIdenter, testgruppe, bestilling, progress);
-            }
 
-        } catch (Exception e) {
-            //TODO Dette skal logges.
-            System.out.println("##### LAGE IDENTER FEILET ######  Error: " + e.getMessage());
-            if(e instanceof HttpClientErrorException){
-                System.out.println("  Body: " + ((HttpClientErrorException) e).getResponseBodyAsString());
+                senderIdenterTilTPS(bestillingsRequest, bestilteIdenter, testgruppe, progress);
+
+                bestillingService.saveBestillingToDB(bestilling);
             }
+        } catch (Exception e) {
+            log.error("Bestilling med id <" + bestillingsId + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
         } finally {
             bestilling.setFerdig(true);
             bestillingService.saveBestillingToDB(bestilling);
         }
     }
 
-    private void senderIdenterTilTPS(RsDollyBestillingsRequest request,  List<String> klareIdenter, Testgruppe testgruppe, Bestilling bestilling, BestillingProgress progress) {
+    private void senderIdenterTilTPS(RsDollyBestillingsRequest request,  List<String> klareIdenter, Testgruppe testgruppe, BestillingProgress progress) {
         try {
             RsSkdMeldingResponse response = tpsfApiService.sendIdenterTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
-            String env = extractSuccessEnvTPS(response.getSendSkdMeldingTilTpsResponsene());
+            String feedbackTps = tpsfResponseHandler.extractTPSFeedback(response.getSendSkdMeldingTilTpsResponsene());
+            log.info(feedbackTps);
 
-            if (!isNullOrEmpty(env)) {
-                identService.saveIdentTilGruppe(getHovedpersonAvBestillingsidenter(klareIdenter), testgruppe);
-                progress.setTpsfSuccessEnv(env);
+            String hovedperson = getHovedpersonAvBestillingsidenter(klareIdenter);
+            List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
+
+            if(!isNullOrEmpty(successMiljoer)){
+                identService.saveIdentTilGruppe(hovedperson, testgruppe);
+                progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
+            } else {
+                log.warn("Person med ident: {} ble ikke opprettet i TPS", hovedperson);
             }
         } catch (TpsfException e){
-            handleError(e, progress);
+            tpsfResponseHandler.setErrorMessageToBestillingsProgress(e, progress);
         }
 
         bestillingProgressRepository.save(progress);
-        bestillingService.saveBestillingToDB(bestilling);
     }
 
     private String getHovedpersonAvBestillingsidenter(List<String> identer){
         return identer.get(0); //Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
     }
 
-    private String extractSuccessEnvTPS(List<SendSkdMeldingTilTpsResponse> responses) {
-        StringBuilder sb = new StringBuilder();
+    private List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response){
+        List<String> successMiljoer = new ArrayList<>();
 
-        for(SendSkdMeldingTilTpsResponse response : responses){
-            sb.append("{ (personId: ").append(response.getPersonId()).append(")");
-            sb.append(",(meldingstype: ").append(response.getSkdmeldingstype()).append(")");
-            sb.append(",(miljoer: ");
-            Map<String, String> status = response.getStatus();
-            for (Map.Entry<String, String> entry : status.entrySet()) {
-                sb.append(entry.getKey()).append(" ---> ").append(entry.getValue());
+        for(SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()){
+
+            if(isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)){
+                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
+                    if((entry.getValue().contains("00"))){
+                        successMiljoer.add(entry.getKey());
+                    }
+                }
             }
 
-            sb.append(")}");
         }
 
-        return sbToStringForDB(sb);
+        return successMiljoer;
     }
 
-    private void handleError(Exception e, BestillingProgress progress){
-        StringBuilder sb = new StringBuilder();
-        sb.append(e.getMessage());
-        if(e.getCause() != null){
-            sb.append("  cause: ").append(e.getCause().getMessage());
-        }
-        sb.append("  localizedMsg: ").append(e.getLocalizedMessage());
-
-        if(e instanceof HttpClientErrorException){
-            String body = ((HttpClientErrorException) e).getResponseBodyAsString();
-            sb.append("   reponseBody: ").append(body);
-        }
-
-        progress.setFeil(sbToStringForDB(sb));
+    private boolean isInnvandringsmeldingPaaPerson(String personId, SendSkdMeldingTilTpsResponse r){
+        return r.getSkdmeldingstype() != null && INNVANDRINGS_MLD_NAVN.equalsIgnoreCase(r.getSkdmeldingstype()) && personId.equals(r.getPersonId());
     }
-
-    private String sbToStringForDB(StringBuilder sb){
-        String feil = sb.toString();
-        if(feil.length() > 4000){
-            feil = feil.substring(0, (MAX_LENGTH_VARCHAR2-10));
-            feil = feil + " END";
-        }
-        return feil;
-    }
-
 }

@@ -13,16 +13,7 @@ export default class Liste extends PureComponent {
 	}
 
 	render() {
-		const {
-			items,
-			editId,
-			editGroup,
-			history,
-			deleteGruppe,
-			setSort,
-			sort,
-			addFavorite
-		} = this.props
+		const { items, editId, editGroup, history, deleteGruppe, setSort, sort } = this.props
 
 		if (!items || !items.length) {
 			return (
