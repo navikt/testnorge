@@ -1,6 +1,8 @@
 package no.nav.dolly.domain.jpa;
 
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,9 +12,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
 @Getter
@@ -45,7 +45,7 @@ public class BestillingProgress {
 
     private String feil;
 
-    public BestillingProgress(Long bestillingId, String ident) {
+    public BestillingProgress(Long bestillingId, String ident){
         this.ident = ident;
         this.bestillingId = bestillingId;
     }

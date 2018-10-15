@@ -1,4 +1,4 @@
-package no.nav.dolly.appservices.tpsf.errorhandling;
+package no.nav.dolly.appserivces.tpsf.errorhandling;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

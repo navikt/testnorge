@@ -1,7 +1,17 @@
 package no.nav.dolly.service;
 
-import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
+import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.GruppeRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,18 +27,8 @@ import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
-import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.GruppeRepository;
+import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 @Service
 public class TestgruppeService {
@@ -63,15 +63,15 @@ public class TestgruppeService {
         return gruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
     }
 
-    public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer) {
+    public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer){
         List<Testgruppe> grupper = gruppeRepository.findAllById(grupperIDer);
-        if (!isNullOrEmpty(grupper)) {
+        if(!isNullOrEmpty(grupper)){
             return grupper;
         }
-        throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
+        throw new NotFoundException("Finner ikke grupper basert på IDer : " +  grupperIDer);
     }
 
-    public RsTestgruppeMedErMedlemOgFavoritt rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(RsTestgruppe gruppe) {
+    public RsTestgruppeMedErMedlemOgFavoritt rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(RsTestgruppe gruppe){
         return new ArrayList<>(getRsTestgruppeMedErMedlem(new HashSet<>(Arrays.asList(gruppe)))).get(0);
     }
 
@@ -131,7 +131,7 @@ public class TestgruppeService {
     }
 
     @Transactional
-    public void slettGruppeById(Long gruppeId) {
+    public void slettGruppeById(Long gruppeId){
         gruppeRepository.deleteTestgruppeById(gruppeId);
     }
 
@@ -154,7 +154,7 @@ public class TestgruppeService {
         return mapperFacade.map(endretGruppe, RsTestgruppe.class);
     }
 
-    public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
+    public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId){
         Set<RsTestgruppe> grupper;
         if (!isNullOrEmpty(navIdent)) {
             grupper = fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navIdent);
@@ -175,15 +175,6 @@ public class TestgruppeService {
 
     public List<Testgruppe> fetchAlleTestgrupper() {
         return gruppeRepository.findAll();
-    }
-
-    @Transactional
-    public List<String> fetchIdenterByGruppeId(Long gruppeId) {
-        return fetchTestgruppeById(gruppeId)
-                .getTestidenter()
-                .stream()
-                .map(ident -> ident.getIdent())
-                .collect(Collectors.toList());
     }
 
 }

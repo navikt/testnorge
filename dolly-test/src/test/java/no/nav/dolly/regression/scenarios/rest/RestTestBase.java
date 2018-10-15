@@ -5,7 +5,6 @@ import no.nav.dolly.config.DollyObjectMapper;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.regression.InMememoryDbTestSetup;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
@@ -63,10 +62,10 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     public void after() {
         removeManyToManyRelationships();
 
-        identRepository.deleteAll();
         gruppeRepository.deleteAll();
         teamRepository.deleteAll();
         brukerRepository.deleteAll();
+        identRepository.deleteAll();
 
         bestillingProgressRepository.deleteAll();
         bestillingRepository.deleteAll();
@@ -82,7 +81,6 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
 
         List<Testgruppe> grupper = gruppeRepository.findAll();
         grupper.forEach(g -> g.setFavorisertAv(new HashSet<>()));
-        grupper.forEach(g -> g.setTestidenter(new HashSet<>()));
         gruppeRepository.saveAll(grupper);
     }
 
