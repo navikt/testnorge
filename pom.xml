@@ -20,6 +20,7 @@
 
     <modules>
         <module>hodejegeren-core</module>
+        <module>hodejegeren-local</module>
     </modules>
 
     <properties>
