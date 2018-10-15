@@ -1,0 +1,21 @@
+package no.nav.registre.hodejegeren.consumer;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest;
+
+@Component
+public class IdentPoolConsumer {
+    
+    @Value("${identpool.url}")
+    private String serverUrl;
+    
+    public List<String> hentNyeIdenter(HentIdenterRequest hentIdenterRequest) {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.postForObject(serverUrl + "/api/v1/identifikator", hentIdenterRequest, ArrayList.class);
+    }
+}
