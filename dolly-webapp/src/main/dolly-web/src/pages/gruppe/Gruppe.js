@@ -11,6 +11,7 @@ import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Toolbar from '~/components/toolbar/Toolbar'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import Knapp from 'nav-frontend-knapper'
+import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
 
 import './Gruppe.less'
 
@@ -65,7 +66,8 @@ export default class Gruppe extends Component {
 			isFetching,
 			getGruppe,
 			deleteGruppe,
-			getBestillingStatus
+			getBestillingStatus,
+			addFavorite
 		} = this.props
 
 		if (isFetching) return <Loading label="Laster grupper" panel />
@@ -82,13 +84,6 @@ export default class Gruppe extends Component {
 				icon: 'edit',
 				onClick: createGroup
 			})
-		} else {
-			groupActions.push({
-				icon: 'star',
-				onClick: () => {
-					alert('ikke implementert')
-				}
-			})
 		}
 
 		const toggleValues = [
@@ -100,6 +95,7 @@ export default class Gruppe extends Component {
 			<div id="gruppe-container">
 				<Overskrift label={gruppe.navn} actions={groupActions}>
 					{/* <ConfirmTooltip onClick={deleteGruppe} /> */}
+					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</Overskrift>
 
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
