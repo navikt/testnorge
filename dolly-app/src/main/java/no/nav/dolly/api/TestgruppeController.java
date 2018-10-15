@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.appserivces.tpsf.service.DollyTpsfService;
+import no.nav.dolly.appservices.tpsf.service.DollyTpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;

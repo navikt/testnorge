@@ -1,4 +1,4 @@
-package no.nav.dolly.appserivces.sigrunstub.restcom;
+package no.nav.dolly.appservices.sigrunstub.restcom;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

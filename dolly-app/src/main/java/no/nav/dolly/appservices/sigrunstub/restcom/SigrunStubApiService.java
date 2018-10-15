@@ -1,4 +1,4 @@
-package no.nav.dolly.appserivces.sigrunstub.restcom;
+package no.nav.dolly.appservices.sigrunstub.restcom;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
+import no.nav.dolly.appservices.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.exceptions.SigrunnStubException;
 import no.nav.dolly.properties.ProvidersProps;
@@ -32,6 +32,7 @@ public class SigrunStubApiService {
     ProvidersProps providersProps;
 
     public ResponseEntity<String> createSkattegrunnlag(RsSigrunnOpprettSkattegrunnlag request) {
+
         StringBuilder sbUrl = new StringBuilder().append(providersProps.getSigrun().getUrl()).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
         try {
             OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
@@ -40,8 +41,9 @@ public class SigrunStubApiService {
             header.set("Authorization", "Bearer " + token);
             header.set("testdataEier", auth.getPrincipal());
             HttpEntity entity = new HttpEntity(request, header);
-            ResponseEntity<String> response = restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, entity, String.class);
-            return response;
+
+            return restTemplate.exchange(sbUrl.toString(), HttpMethod.POST, entity, String.class);
+
         } catch (HttpClientErrorException e) {
             RestTemplateFailure rs = lesOgMapFeilmelding(e);
             log.error("Sigrun-Stub kall feilet mot url <{}> grunnet {}", sbUrl.toString(),  rs.getMessage());

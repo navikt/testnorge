@@ -1,4 +1,4 @@
-package no.nav.dolly.appserivces.tpsf.service;
+package no.nav.dolly.appservices.tpsf.service;
 
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 

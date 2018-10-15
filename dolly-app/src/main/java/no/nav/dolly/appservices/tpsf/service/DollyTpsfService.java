@@ -1,4 +1,4 @@
-package no.nav.dolly.appserivces.tpsf.service;
+package no.nav.dolly.appservices.tpsf.service;
 
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
@@ -12,8 +12,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.appserivces.sigrunstub.restcom.SigrunStubApiService;
-import no.nav.dolly.appserivces.tpsf.restcom.TpsfApiService;
+import no.nav.dolly.appservices.sigrunstub.restcom.SigrunStubApiService;
+import no.nav.dolly.appservices.tpsf.restcom.TpsfApiService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
