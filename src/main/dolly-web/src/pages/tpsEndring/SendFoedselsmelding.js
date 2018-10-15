@@ -41,7 +41,10 @@ export default class SendFoedselsmelding extends PureComponent {
 		console.log('test')
 		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, async () => {
 			try {
-				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding(values)
+				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding({
+					...values,
+					foedselsdato: DataFormatter.parseDate(values.foedselsdato)
+				})
 				const getKontaktInformasjonRes = await TpsfApi.getKontaktInformasjon(
 					createFoedselsmeldingRes.data.personId,
 					values.miljoe
