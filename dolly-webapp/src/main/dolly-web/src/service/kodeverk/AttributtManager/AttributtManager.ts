@@ -88,15 +88,15 @@ export default class AttributtManager {
 			if (!item.inputType) return prev
 
 			// Initvalue based on key-value
-			return this._setInitialValue(prev, item.id, values)
+			return this._setInitialValue(prev, item, values)
 		}, {})
 	}
-	_setInitialValue(currentObject, itemId, stateValues) {
-		let initialValue = ''
-		const fromState = _get(stateValues, itemId)
+	_setInitialValue(currentObject, item, stateValues) {
+		let initialValue = this.initValueSelector(item)
+		const fromState = _get(stateValues, item.id)
 		if (fromState) initialValue = fromState
 
-		return _set(currentObject, itemId, initialValue)
+		return _set(currentObject, item.id, initialValue)
 	}
 
 	_setInitialArrayValue(currentObject, itemId, stateValues, array) {
