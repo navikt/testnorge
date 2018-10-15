@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class Trigger {
+public class TriggerRequest {
     private int antallMeldinger;
     private List<String> miljoer;
     private List<String> aarsakskoder;

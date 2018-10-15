@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.orkestratoren.service.ConsumeTpsSyntPakken;
+import no.nav.registre.orkestratoren.service.TpsSyntPakkenConsumer;
 
 @Component
 @EnableScheduling
@@ -24,10 +24,10 @@ public class JobController {
     private List<String> aarsakskoder;
 
     @Autowired
-    private ConsumeTpsSyntPakken consumeTpsSyntPakken;
+    private TpsSyntPakkenConsumer tpsSyntPakkenConsumer;
 
     @Scheduled(cron = "${orkestratoren.cron:0 0 4 * * *}")
     public void execute() {
-        consumeTpsSyntPakken.produserOgSendSkdmeldingerTilTpsIMiljoer(miljoer, antallPersoner, aarsakskoder);
+        tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(miljoer, antallPersoner, aarsakskoder);
     }
 }

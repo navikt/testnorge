@@ -12,7 +12,7 @@ import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
 
 @Service
-public class ConsumeTpsSyntPakken {
+public class TpsSyntPakkenConsumer {
 
     @Autowired
     private TpsfConsumer tpsfConsumer;
