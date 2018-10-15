@@ -1,4 +1,4 @@
-name: orkestratoren
+name: testnorge-hodejegeren
 image: "docker.adeo.no:5000/registre/testnorge-hodejegeren"
 replicas:
   min: 1
