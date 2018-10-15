@@ -76,7 +76,7 @@ export default class AttributtVelger extends Component {
 				<Input
 					label="Søk attributter"
 					labelOffscreen
-					placeholder="Søk attributter"
+					placeholder="Søk etter egenskaper"
 					className="attributt-velger_search"
 					onChange={this.searchOnChange}
 				/>

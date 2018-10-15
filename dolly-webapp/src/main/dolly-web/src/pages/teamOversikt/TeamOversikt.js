@@ -7,6 +7,7 @@ import Toolbar from '~/components/toolbar/Toolbar'
 import Knapp from 'nav-frontend-knapper'
 import TeamListe from './TeamListe'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
@@ -28,8 +29,9 @@ export default class TeamOversikt extends Component {
 
 		return (
 			<div className="oversikt-container">
-				<div className="page-header flexbox--space">
+				<div className="page-header flexbox--align">
 					<Overskrift label="Teams" />
+					<ContentTooltip>Med teams kan du og kolleger dele testdatagrupper.</ContentTooltip>
 				</div>
 
 				<Toolbar
