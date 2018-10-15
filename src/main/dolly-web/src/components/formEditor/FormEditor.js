@@ -4,6 +4,7 @@ import { DollyApi } from '~/service/Api'
 import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
+import AutofillAddress from '~/components/autofillAddress/AutofillAddress'
 
 import './FormEditor.less'
 
@@ -22,6 +23,7 @@ export default class FormEditor extends PureComponent {
 
 	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
+		const isAdresse = items[0].id === 'boadresse'
 		return (
 			<div className="subkategori" key={uniqueId}>
 				{<h4>{subKategori.navn}</h4>}
@@ -33,6 +35,7 @@ export default class FormEditor extends PureComponent {
 								: this.renderFieldComponent(item)
 					)}
 				</div>
+				{isAdresse && <AutofillAddress formikProps={formikProps} />}
 			</div>
 		)
 	}

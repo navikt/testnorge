@@ -1,18 +1,9 @@
 import { connect } from 'react-redux'
 import TeamOversikt from './TeamOversikt'
-import { fetchTeams, actions } from '~/ducks/teams'
-
-const teamFiltering = (items, searchText) => {
-	if (!items) return null
-
-	if (!searchText) return items
-
-	const query = searchText.toLowerCase()
-	return items.filter(item => item.navn.toLowerCase().includes(query))
-}
+import { fetchTeams, actions, sokSelector } from '~/ducks/teams'
 
 const mapStateToProps = state => ({
-	teamListe: teamFiltering(state.teams.items, state.search),
+	teamListe: sokSelector(state.teams.items, state.search),
 	teams: state.teams
 })
 
