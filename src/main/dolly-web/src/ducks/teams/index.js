@@ -1,5 +1,7 @@
 import { DollyApi } from '~/service/Api'
 import { createActions, handleActions, combineActions } from 'redux-actions'
+import _get from 'lodash/get'
+import _isNil from 'lodash/isNil'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import success from '~/utils/SuccessAction'
 
@@ -103,4 +105,25 @@ export const fetchTeams = () => async (dispatch, getState) => {
 		currentVisning === 'mine' ? actions.api.getByUserId(currentBrukerId) : actions.api.get()
 
 	return dispatch(reqAction)
+}
+
+// Selector
+export const sokSelector = (items, searchStr) => {
+	if (!items) return null
+	if (!searchStr) return items
+
+	const query = searchStr.toLowerCase()
+	return items.filter(item => {
+		const searchValues = [
+			_get(item, 'id'),
+			_get(item, 'navn'),
+			_get(item, 'beskrivelse'),
+			_get(item, 'eierNavIdent'),
+			_get(item, 'medlemmer', []).length
+		]
+			.filter(v => !_isNil(v))
+			.map(v => v.toString().toLowerCase())
+
+		return searchValues.some(v => v.includes(query))
+	})
 }

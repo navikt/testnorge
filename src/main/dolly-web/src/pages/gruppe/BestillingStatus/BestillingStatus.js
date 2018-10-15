@@ -79,16 +79,19 @@ export default class BestillingStatus extends PureComponent {
 
 		// Percent
 		let percent = (100 / total) * antallKlare
+		let text = `Oppretter ${antallKlare + 1} av ${total}`
 
 		// To indicate progress hvis ingenting har skjedd enda
 		if (percent === 0) percent += 10
+
+		if (antallKlare === total) text = `ferdigstiller bestilling`
 
 		const title = percent === 100 ? 'FERDIG' : 'AKTIV BESTILLING'
 
 		return {
 			percent,
 			title,
-			text: `Oppretter ${antallKlare} av ${total}`
+			text
 		}
 	}
 

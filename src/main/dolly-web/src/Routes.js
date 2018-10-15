@@ -13,7 +13,7 @@ const GruppeBreadcrumb = props => <span>Gruppe #{props.match.params.gruppeId}</s
 const TeamBreadcrumb = props => <span>Team #{props.match.params.teamId}</span>
 
 const routes = [
-	{ path: '/', exact: true, breadcrumb: 'Hjem', component: GruppeOversikt },
+	{ path: '/', exact: true, breadcrumb: 'Testdatagrupper', component: GruppeOversikt },
 	{ path: '/profil', exact: true, breadcrumb: 'Min profil', component: Profil },
 	{ path: '/team', exact: true, breadcrumb: 'Team oversikt', component: TeamOversiktConnector },
 	{ path: '/team/:teamId', exact: true, breadcrumb: TeamBreadcrumb, component: TeamConnector },

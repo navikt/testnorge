@@ -13,18 +13,9 @@ export default class Liste extends PureComponent {
 	}
 
 	render() {
-		const {
-			items,
-			editId,
-			editGroup,
-			history,
-			deleteGruppe,
-			setSort,
-			sort,
-			addFavorite
-		} = this.props
+		const { items, editId, editGroup, history, deleteGruppe, setSort, sort } = this.props
 
-		if (!items) {
+		if (!items || !items.length) {
 			return (
 				<ContentContainer>
 					<p>Du har ingen testdatagrupper.</p>
@@ -34,7 +25,7 @@ export default class Liste extends PureComponent {
 						stjerneikonet, legger du testdatagruppen til som en favoritt. Den vil da dukke opp under
 						"Mine" testdatagrupper.
 					</p>
-					<p>For å opprette en ny testdatagruppe, trykk på legg til-knappen nedenfor.</p>
+					<p>For å opprette en ny testdatagruppe, trykk på "Ny gruppe" knappen over.</p>
 				</ContentContainer>
 			)
 		}
