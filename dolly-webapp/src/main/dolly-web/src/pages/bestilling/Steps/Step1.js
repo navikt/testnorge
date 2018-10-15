@@ -69,8 +69,8 @@ export default withFormik({
 	validationSchema: yup.object().shape({
 		antall: yup
 			.number()
+			.positive('Må være et positivt tall')
 			.min(1, 'Må minst opprette 1 testperson')
-			.positive("Må være et positivt tall")
 			// .max(5, 'Maks 5 personer i første omgang')
 			.required('Oppgi antall testbrukere'),
 		identtype: yup.string().required('Velg en identtype')
