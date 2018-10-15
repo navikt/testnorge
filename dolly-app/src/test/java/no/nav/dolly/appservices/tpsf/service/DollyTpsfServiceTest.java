@@ -1,11 +1,12 @@
-package no.nav.dolly.appserivces.tpsf.service;
+package no.nav.dolly.appservices.tpsf.service;
 
-import no.nav.dolly.appserivces.sigrunstub.restcom.SigrunStubApiService;
-import no.nav.dolly.appserivces.tpsf.restcom.TpsfApiService;
+import no.nav.dolly.appservices.sigrunstub.restcom.SigrunStubApiService;
+import no.nav.dolly.appservices.tpsf.restcom.TpsfApiService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
@@ -45,62 +46,73 @@ public class DollyTpsfServiceTest {
     private static final String FAIL_CODE_TPS = "08";
     private static final String INNVANDRING_CREATE_NAVN = "InnvandringCreate";
 
-    private Map<String, String> status_SuccU1T2_FailQ3 = new HashMap<>();
-    private RsDollyBestillingsRequest standardBestillingRequest_u1_t2_q3 = new RsDollyBestillingsRequest();
+    private Map<String, String> status_SuccU1T2_FailQ3;
+    private RsDollyBestillingsRequest standardBestillingRequest_u1_t2_q3;
     private RsTpsfBestilling tpsfReqEmpty = new RsTpsfBestilling();
     private TpsfException standardTpsfException = new TpsfException("feil");
-    private Bestilling standardNyBestilling = new Bestilling();
+    private Bestilling standardNyBestilling;
     private Testgruppe standardGruppe = new Testgruppe();
-    private SendSkdMeldingTilTpsResponse standarSendSkdResponse = new SendSkdMeldingTilTpsResponse();
+    private SendSkdMeldingTilTpsResponse standardSendSkdResponse;
     private Long standardGruppeId = 1L;
     private Long bestillingsId = 2l;
     private String standardHovedident = "10";
     private String standardFeilmelding = "feil";
     private String standardTpsFeedback = "feedback";
-    List<String> standardIdenter = Arrays.asList(standardHovedident, "34", "56");
+    private List<String> standardIdenter = Arrays.asList(standardHovedident, "34", "56");
 
     @Mock
-    IdentRepository identRepository;
+    private IdentRepository identRepository;
 
     @Mock
-    BestillingProgressRepository bestillingProgressRepository;
+    private BestillingProgressRepository bestillingProgressRepository;
 
     @Mock
-    TpsfApiService tpsfApiService;
+    private TpsfApiService tpsfApiService;
 
     @Mock
-    IdentService identService;
+    private IdentService identService;
 
     @Mock
-    TestgruppeService testgruppeService;
+    private TestgruppeService testgruppeService;
 
     @Mock
-    SigrunStubApiService sigrunStubApiService;
+    private SigrunStubApiService sigrunStubApiService;
 
     @Mock
-    BestillingService bestillingService;
+    private BestillingService bestillingService;
 
     @Mock
     TpsfResponseHandler tpsfResponseHandler;
 
     @InjectMocks
-    DollyTpsfService dollyTpsfService;
+    private DollyTpsfService dollyTpsfService;
+
+    @Mock
+    private RsSigrunnOpprettSkattegrunnlag rsSigrunnOpprettSkattegrunnlag;
+
+    @Mock
+    private SigrunResponseHandler sigrunResponseHandler;
 
     @Before
     public void setup(){
-        standarSendSkdResponse.setPersonId(standardHovedident);
-        standarSendSkdResponse.setSkdmeldingstype(INNVANDRING_CREATE_NAVN);
+        standardSendSkdResponse = new SendSkdMeldingTilTpsResponse();
+        standardSendSkdResponse.setPersonId(standardHovedident);
+        standardSendSkdResponse.setSkdmeldingstype(INNVANDRING_CREATE_NAVN);
 
+        standardNyBestilling = new Bestilling();
         standardNyBestilling.setId(bestillingsId);
         standardNyBestilling.setFerdig(false);
 
+        status_SuccU1T2_FailQ3 = new HashMap<>();
         status_SuccU1T2_FailQ3.put("u1", SUCCESS_CODE_TPS);
         status_SuccU1T2_FailQ3.put("t2", SUCCESS_CODE_TPS);
         status_SuccU1T2_FailQ3.put("q3", FAIL_CODE_TPS);
 
+        standardBestillingRequest_u1_t2_q3 = new RsDollyBestillingsRequest();
         standardBestillingRequest_u1_t2_q3.setEnvironments(Arrays.asList("u1", "t2", "q3"));
         standardBestillingRequest_u1_t2_q3.setAntall(1);
         standardBestillingRequest_u1_t2_q3.setTpsf(tpsfReqEmpty);
+        standardBestillingRequest_u1_t2_q3.setSigrunRequest(rsSigrunnOpprettSkattegrunnlag);
     }
 
     @Test
@@ -119,10 +131,10 @@ public class DollyTpsfServiceTest {
 
     @Test
     public void opprettPersonerByKriterierAsync_lagrerAlleMiljoeneSomErsuksessfulleSendtTilTPSTilBestilllingProgress(){
-        standarSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
+        standardSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
 
         RsSkdMeldingResponse skdMeldingResponse = new RsSkdMeldingResponse();
-        skdMeldingResponse.setSendSkdMeldingTilTpsResponsene(Arrays.asList(standarSendSkdResponse));
+        skdMeldingResponse.setSendSkdMeldingTilTpsResponsene(Arrays.asList(standardSendSkdResponse));
 
         when(tpsfApiService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
@@ -135,7 +147,7 @@ public class DollyTpsfServiceTest {
         ArgumentCaptor<BestillingProgress> argumentCaptor = ArgumentCaptor.forClass(BestillingProgress.class);
 
         verify(identService).saveIdentTilGruppe(standardHovedident, standardGruppe);
-        verify(bestillingProgressRepository).save(argumentCaptor.capture());
+        verify(bestillingProgressRepository, times(2)).save(argumentCaptor.capture());
 
         BestillingProgress bestillingProgress = argumentCaptor.getValue();
 
@@ -149,10 +161,10 @@ public class DollyTpsfServiceTest {
     public void opprettPersonerByKriterierAsync_hvisFlereIdenterBestillesOgEnFeilerOgEnOkSaaEtBestillingProgressObjMedFeilOgEtMedOk(){
         int bestiltAntallIdenter = 2;
         standardBestillingRequest_u1_t2_q3.setAntall(bestiltAntallIdenter);
-        standarSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
+        standardSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
 
         RsSkdMeldingResponse response = new RsSkdMeldingResponse();
-        response.setSendSkdMeldingTilTpsResponsene(Arrays.asList(standarSendSkdResponse));
+        response.setSendSkdMeldingTilTpsResponsene(Arrays.asList(standardSendSkdResponse));
 
         TpsfException tpsfException = new TpsfException(standardFeilmelding);
 
@@ -167,7 +179,7 @@ public class DollyTpsfServiceTest {
         ArgumentCaptor<BestillingProgress> argumentCaptor = ArgumentCaptor.forClass(BestillingProgress.class);
 
         verify(identService, times(1)).saveIdentTilGruppe(standardHovedident, standardGruppe);
-        verify(bestillingProgressRepository, times(2)).save(argumentCaptor.capture());
+        verify(bestillingProgressRepository, times(4)).save(argumentCaptor.capture());
         verify(tpsfResponseHandler).setErrorMessageToBestillingsProgress(any(TpsfException.class), any(BestillingProgress.class));
 
         List<BestillingProgress> bestillingProgresses = argumentCaptor.getAllValues();
@@ -180,10 +192,10 @@ public class DollyTpsfServiceTest {
 
     @Test
     public void opprettPersonerByKriterierAsync_lagrerFeilIProgressHvisSendingAvIdenterTilTpsMiljoFeiler() throws Exception {
-        standarSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
+        standardSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
 
         RsSkdMeldingResponse response = new RsSkdMeldingResponse();
-        response.setSendSkdMeldingTilTpsResponsene(Arrays.asList(standarSendSkdResponse));
+        response.setSendSkdMeldingTilTpsResponsene(Arrays.asList(standardSendSkdResponse));
         TpsfException tpsfException = new TpsfException(standardFeilmelding);
 
         when(tpsfApiService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
