@@ -11,12 +11,14 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.exceptions.SigrunnStubException;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
+@Slf4j
 @Service
 public class SigrunStubApiService {
 
@@ -42,6 +44,7 @@ public class SigrunStubApiService {
             return response;
         } catch (HttpClientErrorException e) {
             RestTemplateFailure rs = lesOgMapFeilmelding(e);
+            log.error("Sigrun-Stub kall feilet mot url <{}> grunnet {}", sbUrl.toString(),  rs.getMessage());
             throw new SigrunnStubException("Sigrun-Stub kall feilet med: " + rs.getMessage());
         }
     }

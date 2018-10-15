@@ -109,7 +109,7 @@ export default class AttributtManager {
 
 	_mapArrayToObjectWithEmptyValues = list => {
 		return list.reduce((accumulator, item) => {
-			return _set(accumulator, item.id, this._initValueSelector(item))
+			return _set(accumulator, item.id, this.initValueSelector(item))
 		}, {})
 	}
 
@@ -119,7 +119,7 @@ export default class AttributtManager {
 		}, {})
 	}
 
-	_initValueSelector = item => {
+	initValueSelector = item => {
 		// TODO: avklaring: skal alle datofelter settes automatisk til dagens dato?
 		switch (item.inputType) {
 			case 'date':

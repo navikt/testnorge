@@ -5,5 +5,4 @@ applicationPipeline {
     namespace = "u2"
     hasPerformanceTest = false
     hasSmoketests = false
-    isTestApplication = true
 }

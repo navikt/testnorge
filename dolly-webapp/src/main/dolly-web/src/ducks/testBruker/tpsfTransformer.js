@@ -33,7 +33,7 @@ const mapDataToDolly = i => {
 		idType: i.identtype,
 		navn: `${i.fornavn} ${i.etternavn}`,
 		kjonn: Formatters.kjonnToString(i.kjonn),
-		alder: i.alder,
+		alder: Formatters.formatAlder(i.alder, i.doedsdato),
 		data: [
 			{
 				header: 'Personlig informasjon',
@@ -66,7 +66,7 @@ const mapDataToDolly = i => {
 					{
 						id: 'alder',
 						label: 'Alder',
-						value: i.alder
+						value: Formatters.formatAlder(i.alder, i.doedsdato)
 					}
 				]
 			}

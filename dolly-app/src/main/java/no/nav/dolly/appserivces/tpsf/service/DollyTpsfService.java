@@ -31,11 +31,12 @@ import no.nav.dolly.service.TestgruppeService;
 @Service
 public class DollyTpsfService {
 
-    @Autowired
-    private TpsfResponseHandler tpsfResponseHandler;
+    private static final String INNVANDRINGS_MLD_NAVN = "innvandringcreate";
+
+    @Autowired SigrunResponseHandler sigrunResponseHandler;
 
     @Autowired
-    private SigrunResponseHandler sigrunResponseHandler;
+    private TpsfResponseHandler tpsfResponseHandler;
 
     @Autowired
     private TpsfApiService tpsfApiService;
@@ -103,10 +104,10 @@ public class DollyTpsfService {
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);
                 progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
             } else {
-                log.warn("Person med ident: " + hovedperson + " ble ikke opprettet i TPS");
+                log.warn("Person med ident: {} ble ikke opprettet i TPS", hovedperson);
             }
         } catch (TpsfException e) {
-            tpsfResponseHandler.handleError(e, progress);
+            tpsfResponseHandler.setErrorMessageToBestillingsProgress(e, progress);
         }
 
         bestillingProgressRepository.save(progress);
@@ -119,10 +120,10 @@ public class DollyTpsfService {
     private List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
         List<String> successMiljoer = new ArrayList<>();
 
-        for (SendSkdMeldingTilTpsResponse r : response.getSendSkdMeldingTilTpsResponsene()) {
+        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
 
-            if ("innvandringcreate".equals(r.getSkdmeldingstype().toLowerCase()) && hovedperson.equals(r.getPersonId())) {
-                for (Map.Entry<String, String> entry : r.getStatus().entrySet()) {
+            if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
+                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
                     if ((entry.getValue().contains("00"))) {
                         successMiljoer.add(entry.getKey());
                     }
@@ -132,5 +133,9 @@ public class DollyTpsfService {
         }
 
         return successMiljoer;
+    }
+
+    private boolean isInnvandringsmeldingPaaPerson(String personId, SendSkdMeldingTilTpsResponse r) {
+        return r.getSkdmeldingstype() != null && INNVANDRINGS_MLD_NAVN.equalsIgnoreCase(r.getSkdmeldingstype()) && personId.equals(r.getPersonId());
     }
 }

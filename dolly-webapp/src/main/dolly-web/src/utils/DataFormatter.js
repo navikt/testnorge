@@ -13,6 +13,10 @@ formatters.formatIdentNr = ident => {
 	return `${birth} ${personnummer}`
 }
 
+formatters.formatAlder = (alder, dodsdato) => {
+	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
+}
+
 // Format date to readable string format
 // Date ---> String
 formatters.formatDate = date => {
@@ -37,6 +41,12 @@ formatters.kjonnToStringBarn = (kjonn = '') => {
 	const _kjonn = kjonn.toLowerCase()
 	if (!['m', 'k'].includes(_kjonn)) return 'udefinert'
 	return _kjonn === 'm' ? 'Gutt' : 'Jente'
+}
+
+formatters.arrayToString = (array, separator = ',') => {
+	return array.reduce((accumulator, nextString) => {
+		return `${accumulator}${accumulator ? separator : ''} ${nextString.toUpperCase()}`
+	}, '')
 }
 
 export default formatters
