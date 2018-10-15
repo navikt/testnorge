@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(locations="classpath:application-test.properties")
-public class OrkestratorenApplicationTests {
+public class OrkestratorenApplicationTest {
 
 	@Test
 	public void contextLoads() {
