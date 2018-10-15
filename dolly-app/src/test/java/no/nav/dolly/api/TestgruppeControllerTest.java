@@ -1,7 +1,7 @@
 package no.nav.dolly.api;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.appserivces.tpsf.service.DollyTpsfService;
+import no.nav.dolly.appservices.tpsf.service.DollyTpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsBestilling;
