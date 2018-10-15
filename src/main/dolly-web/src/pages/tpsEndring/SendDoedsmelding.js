@@ -12,10 +12,11 @@ import Knapp from 'nav-frontend-knapper'
 export default class SendDoedsmelding extends PureComponent {
 	state = {
 		isFetching: false,
+		isFetchingMiljoer: false,
 		errorMessage: null,
 		meldingSent: false,
 		handlingsType: null,
-		foundIdent: false,
+		currentfnr: '',
 		environments: this.props.dropdownMiljoe
 	}
 
@@ -54,19 +55,32 @@ export default class SendDoedsmelding extends PureComponent {
 		)
 	}
 
-
-	_onBlurTest = async (e) => {
+	_inputHandleOnBlur = e => {
 		var fnr = e.target.value.trim()
-		const displayMiljoerInDropdown = [{value: 'm6', label: 'M6'}]
-		console.log('onblur');
-		try {
-			const res = await TpsfApi.getMiljoerByFnr('test')
 
-			console.log(displayMiljoerInDropdown)
-			return this.setState({ environments: displayMiljoerInDropdown})
-		} catch(err) {console.log(err);}
+		if (fnr.length === 11 && this.state.currentfnr !== fnr) {
+			this.setState({ isFetchingMiljoer: true }, async () => {
+				try {
+					const getMiljoerByFnrRes = await TpsfApi.getMiljoerByFnr(fnr)
+					const displayMiljoerInDropdown = []
 
+					getMiljoerByFnrRes.data.statusPaaIdenter[0].env.map(miljoe => {
+						displayMiljoerInDropdown.push({ value: miljoe, label: miljoe.toUpperCase() })
+					})
 
+					return this.setState({
+						environments: displayMiljoerInDropdown,
+						currentfnr: fnr,
+						isFetchingMiljoer: false
+					})
+				} catch (err) {
+					this.setState({ isFetchingMiljoer: false, currentfnr: fnr })
+				}
+			})
+		} else {
+			if (this.state.environments !== this.props.dropdownMiljoe)
+				this.setState({ environments: this.props.dropdownMiljoe, currentfnr: fnr })
+		}
 	}
 
 	_renderMeldingSent = () => {
@@ -85,11 +99,11 @@ export default class SendDoedsmelding extends PureComponent {
 		return <h3 className="success-message"> Dødsmelding {handling} </h3>
 	}
 
-	
-
 	render() {
+		const state = this.state
+
 		let initialValues = {
-			ident: '15019609348',
+			ident: '',
 			handling: 'C',
 			doedsdato: '',
 			miljoe: ''
@@ -100,8 +114,7 @@ export default class SendDoedsmelding extends PureComponent {
 			{ value: 'U', label: 'Endre dødsdato' },
 			{ value: 'D', label: 'Annulere dødsdato' }
 		]
-		
-		console.log(this.state);
+
 		return (
 			<ContentContainer>
 				<Formik
@@ -109,13 +122,17 @@ export default class SendDoedsmelding extends PureComponent {
 					validationSchema={this.validation}
 					initialValues={initialValues}
 					render={props => {
-						console.log('informik', this.state);
 						const { values, touched, errors, dirty, isSubmitting } = props
 						return (
 							<Form autoComplete="off">
 								<h2>Send dødsmelding</h2>
-								<div className="tps-endring-foedselmelding-top">
-									<Field name="ident" label="IDENT" component={FormikInput} onBlur={this._onBlurTest}/>
+								<div className="tps-endring-doedsmelding">
+									<Field
+										name="ident"
+										label="IDENT"
+										component={FormikInput}
+										onBlur={this._inputHandleOnBlur}
+									/>
 									<Field
 										name="handling"
 										label="HANDLING"
@@ -123,15 +140,26 @@ export default class SendDoedsmelding extends PureComponent {
 										component={FormikDollySelect}
 									/>
 									<Field name="doedsdato" label="DØDSDATO" component={FormikDatepicker} />
-									<Field
-										name="miljoe"
-										label="SEND TIL MILJØ"
-										options={this.state.environments}
-										component={FormikDollySelect}
-									/>
+
+									{state.isFetchingMiljoer ? (
+										<div className="skjemaelement loading-env-msg">
+											<Loading label="Laster inn miljøer for person" />
+										</div>
+									) : (
+										<Field
+											name="miljoe"
+											label="SEND TIL MILJØ"
+											options={state.environments}
+											component={FormikDollySelect}
+										/>
+									)}
 								</div>
 								<div className="knapp-container">
-									<Knapp type="hoved" htmlType="submit">
+									<Knapp
+										type="hoved"
+										htmlType="submit"
+										disabled={state.isFetchingMiljoer ? true : false}
+									>
 										Opprett dødsmelding
 									</Knapp>
 								</div>
