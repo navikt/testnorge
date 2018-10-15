@@ -1,4 +1,4 @@
-package no.nav.registre.hodejegeren.consumer.requests;
+package no.nav.registre.hodejegeren.skdmelding;
 
 import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonTypeName;

@@ -1,4 +1,4 @@
-package no.nav.registre.hodejegeren.consumer.requests;
+package no.nav.registre.hodejegeren.skdmelding;
 
 import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -20,9 +20,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public abstract class RsMeldingstype {
     
-    private Long id;
-    
-    private String beskrivelse;
     @Size(max = 1)
     private String transtype;
     @Size(max = 8)
@@ -33,5 +30,4 @@ public abstract class RsMeldingstype {
     private String aarsakskode;
     @Size(max = 6)
     private String sekvensnr;
-    
 }
