@@ -18,7 +18,7 @@ public class TpsfConsumer {
     private static String BASE_URL_SERVICE_ROUTINE = "api/v1/serviceroutine/";
     
     @Value("tpsf.url")
-    private String url;
+    private String serverUrl;
     @Value("tpsf.login.username")
     private String username;
     @Value("tpsf.login.password")
@@ -33,14 +33,14 @@ public class TpsfConsumer {
     }
     
     public Set<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskode, String transaksjonstype) {
-        return restTemplate.getForObject(url + BASE_URL_SKDMELDINGER + "identer/" + gruppeId, Set.class, aarsakskode, transaksjonstype);
+        return restTemplate.getForObject(serverUrl + BASE_URL_SKDMELDINGER + "identer/" + gruppeId, Set.class, aarsakskode, transaksjonstype);
     }
     
     public List<Long> saveSkdEndringsmeldingerInTPSF(Long gruppeId, List<RsMeldingstype> skdmeldinger) {
-        return restTemplate.postForObject(url + BASE_URL_SKDMELDINGER + "save/" + gruppeId, skdmeldinger, ArrayList.class);
+        return restTemplate.postForObject(serverUrl + BASE_URL_SKDMELDINGER + "save/" + gruppeId, skdmeldinger, ArrayList.class);
     }
     
     public String getInfoFromTpsServiceRoutine(String routineName, Map<String, Object> tpsRequestParameters) {
-        return restTemplate.getForObject(url + BASE_URL_SERVICE_ROUTINE + routineName, String.class, tpsRequestParameters);
+        return restTemplate.getForObject(serverUrl + BASE_URL_SERVICE_ROUTINE + routineName, String.class, tpsRequestParameters);
     }
 }
