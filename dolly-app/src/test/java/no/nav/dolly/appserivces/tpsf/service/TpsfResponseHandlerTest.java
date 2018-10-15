@@ -1,4 +1,4 @@
-package no.nav.dolly.appservices.tpsf.service;
+package no.nav.dolly.appserivces.tpsf.service;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;

@@ -38,6 +38,7 @@ export default class SendFoedselsmelding extends PureComponent {
 		})
 
 	_onSubmit = values => {
+		console.log('test')
 		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, async () => {
 			try {
 				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding({

@@ -1,14 +1,14 @@
-package no.nav.dolly.appservices.tpsf.service;
+package no.nav.dolly.appserivces.tpsf.service;
 
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 @Service
 public class TpsfResponseHandler {
@@ -18,7 +18,7 @@ public class TpsfResponseHandler {
     public String extractTPSFeedback(List<SendSkdMeldingTilTpsResponse> responses) {
         StringBuilder sb = new StringBuilder();
 
-        for (SendSkdMeldingTilTpsResponse response : responses) {
+        for(SendSkdMeldingTilTpsResponse response : responses){
             sb.append("{(personId: ").append(response.getPersonId()).append(")");
             sb.append(",(meldingstype: ").append(response.getSkdmeldingstype()).append(")");
             sb.append(",(miljoer: ");
@@ -33,15 +33,15 @@ public class TpsfResponseHandler {
         return sbToStringForDB(sb);
     }
 
-    public void setErrorMessageToBestillingsProgress(Exception e, BestillingProgress progress) {
+    public void setErrorMessageToBestillingsProgress(Exception e, BestillingProgress progress){
         StringBuilder sb = new StringBuilder();
         sb.append(e.getMessage());
-        if (!isNullOrEmpty(e.getCause())) {
+        if(!isNullOrEmpty(e.getCause())){
             sb.append("  cause: ").append(e.getCause().getMessage());
         }
         sb.append("  localizedMsg: ").append(e.getLocalizedMessage());
 
-        if (e instanceof HttpClientErrorException) {
+        if(e instanceof HttpClientErrorException){
             String body = ((HttpClientErrorException) e).getResponseBodyAsString();
             sb.append("   reponseBody: ").append(body);
         }
@@ -49,10 +49,10 @@ public class TpsfResponseHandler {
         progress.setFeil(sbToStringForDB(sb));
     }
 
-    private String sbToStringForDB(StringBuilder sb) {
+    private String sbToStringForDB(StringBuilder sb){
         String msg = sb.toString();
-        if (msg.length() > 4000) {
-            msg = msg.substring(0, (MAX_LENGTH_VARCHAR2 - 10));
+        if(msg.length() > 4000){
+            msg = msg.substring(0, (MAX_LENGTH_VARCHAR2-10));
             msg = msg + " END";
         }
         return msg;

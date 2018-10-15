@@ -1,5 +1,18 @@
 package no.nav.dolly.api;
 
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.appserivces.tpsf.service.DollyTpsfService;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.resultset.RsBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
+import no.nav.dolly.domain.resultset.RsTestident;
+import no.nav.dolly.service.BestillingService;
+import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.TestgruppeService;
+
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.appservices.tpsf.service.DollyTpsfService;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.RsBestilling;
-import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
-import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
-import no.nav.dolly.domain.resultset.RsTestident;
-import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.IdentService;
-import no.nav.dolly.service.TestgruppeService;
 
 @RestController
 @RequestMapping(value = "api/v1/gruppe")
@@ -82,7 +82,7 @@ public class TestgruppeController {
     }
 
     @DeleteMapping("/{gruppeId}")
-    public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
+    public void slettgruppe(@PathVariable("gruppeId") Long gruppeId){
         testgruppeService.slettGruppeById(gruppeId);
     }
 
@@ -90,13 +90,7 @@ public class TestgruppeController {
     @PostMapping("/{gruppeId}/bestilling")
     public RsBestilling oppretteIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
         Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, request.getAntall(), request.getEnvironments());
-        
         dollyTpsfService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling.getId());
         return mapperFacade.map(bestilling, RsBestilling.class);
-    }
-
-    @GetMapping("/{gruppeId}/identer")
-    public List<String> getIdentsByGroupId(@PathVariable("gruppeId") Long gruppeId) {
-        return testgruppeService.fetchIdenterByGruppeId(gruppeId);
     }
 }

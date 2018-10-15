@@ -1,8 +1,8 @@
-package no.nav.dolly.appservices.tpsf.restcom;
+package no.nav.dolly.appserivces.tpsf.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.appservices.tpsf.errorhandling.RestTemplateFailure;
+import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
