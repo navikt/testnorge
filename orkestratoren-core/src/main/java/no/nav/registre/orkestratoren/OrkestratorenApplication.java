@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class OrkestratorenApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(OrkestratorenApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(OrkestratorenApplication.class, args);
+    }
 }

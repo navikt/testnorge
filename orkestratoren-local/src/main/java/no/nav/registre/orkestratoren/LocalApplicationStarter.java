@@ -1,14 +1,15 @@
 package no.nav.registre.orkestratoren;
 
-import no.nav.registre.orkestratoren.fasit.FasitClient;
-import no.nav.registre.orkestratoren.fasit.FasitClientApplicationConfig;
+import java.util.Map;
+
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.util.Map;
+import no.nav.registre.orkestratoren.fasit.FasitClient;
+import no.nav.registre.orkestratoren.fasit.FasitClientApplicationConfig;
 
 @SpringBootApplication
 public class LocalApplicationStarter {

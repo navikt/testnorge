@@ -4,4 +4,5 @@ applicationPipeline {
     environment = "u6"
     hasPerformanceTest = false
     hasSmoketests = false
+    isTestApplication = true
 }

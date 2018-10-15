@@ -5,22 +5,26 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
+import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
 
 @Component
 public class TpsfConsumer {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplateTpsf;
 
-    @Value( "${tpsf.server.url}")
+    @Value("${tpsf.server.url}")
     private String tpsfServerUrl;
 
-    public List sendSkdMeldingTilTpsf(int skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
-        String url = tpsfServerUrl + "/api/v1/endringsmelding/skd/send/" + skdMeldingGruppeId;
+    @Value("${tpsf.send.url}")
+    private String tpsfSendUrl;
 
-        return restTemplate.postForObject(url,
+    public AvspillingResponse sendSkdMeldingTilTpsf(long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
+        String url = tpsfServerUrl + tpsfSendUrl + skdMeldingGruppeId;
+
+        return restTemplateTpsf.postForObject(url,
                 sendToTpsRequest,
-                List.class);
+                AvspillingResponse.class);
     }
 }
