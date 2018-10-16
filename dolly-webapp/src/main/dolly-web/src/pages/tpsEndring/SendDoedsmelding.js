@@ -23,11 +23,11 @@ export default class SendDoedsmelding extends PureComponent {
 		yup.object().shape({
 			ident: yup
 				.string()
-				.min(11, 'Ident må inneholde 11 sifre')
-				.max(11, 'Ident må inneholde 11 sifre')
-				.required('Ident er et påkrevd felt'),
-			handling: yup.string().required('Handling er et påkrevd felt'),
-			miljoe: yup.string().required('Miljø er et påkrevd felt'),
+				.min(11, 'Ident må inneholde 11 sifre.')
+				.max(11, 'Ident må inneholde 11 sifre.')
+				.required('Ident er et påkrevd felt.'),
+			handling: yup.string().required('Handling er et påkrevd felt.'),
+			miljoe: yup.string().required('Miljø er et påkrevd felt.'),
 			doedsdato: DateValidation
 		})
 
@@ -84,7 +84,7 @@ export default class SendDoedsmelding extends PureComponent {
 		const handlingOptions = [
 			{ value: 'C', label: 'Sette dødsdato' },
 			{ value: 'U', label: 'Endre dødsdato' },
-			{ value: 'D', label: 'Annulere dødsdato' }
+			{ value: 'D', label: 'Annullere dødsdato' }
 		]
 
 		return (
