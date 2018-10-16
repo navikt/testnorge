@@ -75,30 +75,40 @@ export default class SendDoedsmelding extends PureComponent {
 		var fnr = e.target.value.trim()
 
 		if (fnr.length === 11 && this.state.currentfnr !== fnr && !isNaN(fnr)) {
-			this.setState({ isFetchingMiljoer: true, showErrorMessageFoundIdent: false }, async () => {
-				try {
-					const getMiljoerByFnrRes = await TpsfApi.getMiljoerByFnr(fnr)
-					const res_environments = getMiljoerByFnrRes.data.statusPaaIdenter[0].env
+			this.setState(
+				{
+					isFetchingMiljoer: true,
+					environments: [],
+					showErrorMessageFoundIdent: false,
+					errorMessage: null,
+					meldingSent: false
+				},
+				async () => {
+					try {
+						const getMiljoerByFnrRes = await TpsfApi.getMiljoerByFnr(fnr)
+						const res_environments = getMiljoerByFnrRes.data.statusPaaIdenter[0].env
 
-					if (res_environments.length < 1) {
+						if (res_environments.length < 1) {
+							return this.setState({
+								currentfnr: fnr,
+								foundIdent: false,
+								isFetchingMiljoer: false,
+								showErrorMessageFoundIdent: true
+							})
+						}
+
+						const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)
 						return this.setState({
+							environments: displayEnvironmentsInDropdown,
 							currentfnr: fnr,
-							foundIdent: false,
-							isFetchingMiljoer: false,
-							showErrorMessageFoundIdent: true
+							foundIdent: true,
+							isFetchingMiljoer: false
 						})
+					} catch (err) {
+						this.setState({ isFetchingMiljoer: false, currentfnr: fnr })
 					}
-					const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)
-					return this.setState({
-						environments: displayEnvironmentsInDropdown,
-						currentfnr: fnr,
-						foundIdent: true,
-						isFetchingMiljoer: false
-					})
-				} catch (err) {
-					this.setState({ isFetchingMiljoer: false, currentfnr: fnr })
 				}
-			})
+			)
 		}
 	}
 
