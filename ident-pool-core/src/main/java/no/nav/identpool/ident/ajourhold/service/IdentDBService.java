@@ -70,12 +70,8 @@ class IdentDBService {
         if (lastDate.isAfter(current)) {
             lastDate = LocalDate.of(year, current.getMonth(), current.getDayOfMonth());
         }
-        if (lastDate.equals(firstDate)) {
-            lastDate = lastDate.plusDays(1);
-        }
-
         int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year + 1) * 2;
-        Map<LocalDate, List<String>> pinMap = FnrGenerator.genererIdenterMap(firstDate, lastDate, type);
+        Map<LocalDate, List<String>> pinMap = FnrGenerator.genererIdenterMap(firstDate, lastDate.plusDays(1), type);
 
         List<String> filtered = filterDatabse(antallPerDag, pinMap);
         checkTpsAndStore(filtered, type);
@@ -99,7 +95,7 @@ class IdentDBService {
 
     private void checkTpsAndStore(List<String> filtered, Identtype type) {
 
-        Map<String, Boolean> identerIBruk = mqService.fnrsExists(filtered);
+        Map<String, Boolean> identerIBruk = mqService.finnesITps(filtered);
 
         storeIdenter(identerIBruk.entrySet().stream()
                         .filter(Map.Entry::getValue)
