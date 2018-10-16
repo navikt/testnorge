@@ -7,6 +7,10 @@ import './SearchField.less'
 // Kopi av NAV, utvides for å kunne legge til ikoner
 // TODO: utvide med onChange etc. for å håndtere søk
 export default class SearchField extends PureComponent {
+	static defaultProps = {
+		placeholder: 'Hva leter du etter?'
+	}
+
 	onChangeHandler = e => this.props.setSearchText(e.target.value)
 
 	render() {
@@ -17,7 +21,7 @@ export default class SearchField extends PureComponent {
 						value={this.props.searchText}
 						id="searchfield-inputfield"
 						type="text"
-						placeholder="Hva leter du etter?"
+						placeholder={this.props.placeholder}
 						onChange={this.onChangeHandler}
 						aria-label="Search"
 					/>

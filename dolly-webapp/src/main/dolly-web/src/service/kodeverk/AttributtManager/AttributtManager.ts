@@ -120,6 +120,10 @@ export default class AttributtManager {
 	}
 
 	initValueSelector = item => {
+		// TODO: Åpne for defaultValue på Attributt?
+		if (item.id.includes('identtype')) {
+			return 'FNR'
+		}
 		// TODO: avklaring: skal alle datofelter settes automatisk til dagens dato?
 		switch (item.inputType) {
 			case 'date':

@@ -10,6 +10,8 @@ import * as yup from 'yup'
 import Loading from '~/components/loading/Loading'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DisplayFormikState from '~/utils/DisplayFormikState'
+import DataFormatter from '~/utils/DataFormatter'
+import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
 export default class SendFoedselsmelding extends PureComponent {
 	state = {
@@ -22,23 +24,27 @@ export default class SendFoedselsmelding extends PureComponent {
 		yup.object().shape({
 			identMor: yup
 				.string()
-				.min(11, 'Mors indent må inneholde 11 sifre')
-				.max(11, 'Mors indent må inneholde 11 sifre')
-				.required('Mors indent er et påkrevd felt'),
+				.min(11, 'Mors ident må inneholde 11 sifre.')
+				.max(11, 'Mors ident må inneholde 11 sifre.')
+				.required('Mors ident er et påkrevd felt.'),
 			identFar: yup
 				.string()
-				.min(11, 'Indent må inneholde 11 sifre')
-				.max(11, 'Indent må inneholde 11 sifre'),
-			kjonn: yup.string().required('Kjønn er et påkrevd felt'),
-			miljoe: yup.string().required('Miljø er et påkrevd felt'),
-			foedselsdato: yup.date().required('Dato er et påkrevd felt'),
-			adresseFra: yup.string().required('Adresse er et påkrevd felt')
+				.min(11, 'Ident må inneholde 11 sifre.')
+				.max(11, 'Ident må inneholde 11 sifre.'),
+			identtype: yup.string().required('Identtype er ett påkrevd felt.'),
+			kjonn: yup.string().required('Kjønn er et påkrevd felt.'),
+			miljoe: yup.string().required('Miljø er et påkrevd felt.'),
+			foedselsdato: DateValidation,
+			adresseFra: yup.string().required('Adresse er et påkrevd felt.')
 		})
 
 	_onSubmit = values => {
 		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, async () => {
 			try {
-				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding(values)
+				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding({
+					...values,
+					foedselsdato: DataFormatter.parseDate(values.foedselsdato)
+				})
 				const getKontaktInformasjonRes = await TpsfApi.getKontaktInformasjon(
 					createFoedselsmeldingRes.data.personId,
 					values.miljoe
