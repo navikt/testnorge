@@ -35,7 +35,7 @@ export default class TeamOversikt extends Component {
 				<Toolbar
 					toggleOnChange={this.handleViewChange}
 					toggleCurrent={visning}
-					searchField={SearchFieldConnector}
+					searchField={<SearchFieldConnector />}
 				>
 					<Knapp type="hoved" onClick={startOpprettTeam}>
 						Nytt team

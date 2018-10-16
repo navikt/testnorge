@@ -56,7 +56,7 @@ export default class GruppeOversikt extends PureComponent {
 				<Toolbar
 					toggleOnChange={this.byttVisning}
 					toggleCurrent={visning}
-					searchField={SearchFieldConnector}
+					searchField={<SearchFieldConnector />}
 				>
 					<Knapp type="hoved" onClick={createGroup}>
 						Ny gruppe
