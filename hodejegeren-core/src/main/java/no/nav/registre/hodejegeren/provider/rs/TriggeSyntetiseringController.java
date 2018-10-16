@@ -11,7 +11,7 @@ import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 @RestController
 public class TriggeSyntetiseringController {
     
-    @PostMapping("api/v1/generer")
+    @PostMapping("api/v1/syntetisering/generer")
     public List<String> genererSyntetiskeMeldingerOgLagreITpsf(@RequestBody GenereringsOrdreRequest ordreRequest) {
         return new ArrayList<>();
     }
