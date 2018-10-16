@@ -1,17 +1,27 @@
-package no.nav.identpool.ident.ajourhold.util;
+package no.nav.identpool.util;
 
 import java.time.LocalDate;
 
+import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Kjoenn;
+import no.nav.identpool.ident.exception.UgyldigPersonidentifikatorException;
 
-public final class PersonIdentifikatorUtil {
-
-    //todo: flytt til personidentifikatorValidatorUtil
+public final class PersonidentifikatorUtil {
 
     private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
     private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
 
-    private PersonIdentifikatorUtil() {
+    private PersonidentifikatorUtil() {
+    }
+
+    public static void valider(String personidentifikator) throws UgyldigPersonidentifikatorException {
+        if (!gyldigPersonidentifikator(personidentifikator)) {
+            throw new UgyldigPersonidentifikatorException("ugyldig personidentifikator");
+        }
+    }
+
+    public static Identtype getPersonidentifikatorType(String personidentifikator) {
+        return Integer.parseInt(personidentifikator.substring(0, 1)) > 3 ? Identtype.DNR : Identtype.FNR;
     }
 
     public static LocalDate toBirthdate(String personIdentifikator) {

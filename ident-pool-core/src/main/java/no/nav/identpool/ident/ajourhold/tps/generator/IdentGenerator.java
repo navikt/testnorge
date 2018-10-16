@@ -16,34 +16,33 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import com.google.common.collect.ImmutableMap;
-
 import org.springframework.stereotype.Service;
+import com.google.common.collect.ImmutableMap;
 
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Kjoenn;
+import no.nav.identpool.ident.rest.v1.HentIdenterRequest;
 
 @Service
-public final class FnrGenerator {
+public final class IdentGenerator {
 
-    private static final int[] CONTROL_DIGIT_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
-    private static final int[] CONTROL_DIGIT_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
+    private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
+    private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
 
     private static SecureRandom random = new SecureRandom();
 
     private static Map<Identtype, Function<LocalDate, List<String>>> generatorMap =
             ImmutableMap.of(
-                    Identtype.FNR, FnrGenerator::generateIdentNumbers,
-                    Identtype.DNR, FnrGenerator::generateDNumbers);
+                    Identtype.FNR, IdentGenerator::generateFNumbers,
+                    Identtype.DNR, IdentGenerator::generateDNumbers);
 
     private static Map<Identtype, Function<LocalDate, String>> numberFormatter =
             ImmutableMap.of(
-                    Identtype.FNR, FnrGenerator::getFnrFormat,
-                    Identtype.DNR, FnrGenerator::getDnrFormat);
+                    Identtype.FNR, IdentGenerator::getFnrFormat,
+                    Identtype.DNR, IdentGenerator::getDnrFormat);
 
-    private FnrGenerator() {
+    private IdentGenerator() {
     }
 
     public static Map<LocalDate, List<String>> genererIdenterMap(LocalDate foedtEtter, LocalDate foedtFoer, Identtype type) {
@@ -68,7 +67,15 @@ public final class FnrGenerator {
         return (Character.getNumericValue(format.charAt(0)) + 4) + format.substring(1);
     }
 
-    private static List<String> generateIdentNumbers(LocalDate birthdate) {
+    private static String randomFormat(LocalDate birthdate) {
+        String format = formatter.format(birthdate) + "%03d";
+        if (random.nextBoolean()) {
+            return (Character.getNumericValue(format.charAt(0)) + 4) + format.substring(1);
+        }
+        return format;
+    }
+
+    private static List<String> generateFNumbers(LocalDate birthdate) {
         return generateNumbers(birthdate, getFnrFormat(birthdate));
     }
 
@@ -96,7 +103,7 @@ public final class FnrGenerator {
         }
     }
 
-    public static List<String> genererIdenter(PersonKriterier kriterier) {
+    public static List<String> genererIdenter(HentIdenterRequest kriterier) {
         Set<String> identer = new HashSet<>(kriterier.getAntall());
         if (kriterier.getFoedtEtter() == null) {
             throw new IllegalArgumentException("Dato fra og med ikke oppgitt");
@@ -106,11 +113,13 @@ public final class FnrGenerator {
         if (foedtEtter.plusDays(1).isAfter(foedtFoer)) {
             throw new IllegalArgumentException(String.format("Dato fra og med %s, må være eller dato til %s", foedtEtter, foedtFoer));
         }
-        Kjoenn kjoenn = kriterier.getKjonn();
+
+        Kjoenn kjoenn = kriterier.getKjoenn();
+
         int iteratorRange = getIteratorRange(kjoenn);
         int numberOfDates = toIntExact(ChronoUnit.DAYS.between(kriterier.getFoedtEtter(), foedtFoer));
         Function<LocalDate, String> numberFormat =
-                numberFormatter.getOrDefault(kriterier.getIdenttype(), numberFormatter.get(Identtype.FNR));
+                numberFormatter.getOrDefault(kriterier.getIdenttype(), IdentGenerator::randomFormat);
         while (identer.size() < kriterier.getAntall()) {
             LocalDate birthdate = kriterier.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
             String format = numberFormat.apply(birthdate);

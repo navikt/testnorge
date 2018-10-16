@@ -4,8 +4,6 @@ import org.springframework.stereotype.Service;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
-import no.nav.identpool.ident.domain.Kjoenn;
-
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.rest.v1.HentIdenterRequest;
 

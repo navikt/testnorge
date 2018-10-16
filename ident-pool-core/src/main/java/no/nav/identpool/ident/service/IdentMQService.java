@@ -1,4 +1,4 @@
-package no.nav.identpool.ident.ajourhold.service;
+package no.nav.identpool.ident.service;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -6,17 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
 import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
-
-import com.google.common.collect.Lists;
-
 import org.springframework.stereotype.Service;
+import com.google.common.collect.Lists;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.identpool.ident.ajourhold.mq.QueueContext;
 import no.nav.identpool.ident.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
