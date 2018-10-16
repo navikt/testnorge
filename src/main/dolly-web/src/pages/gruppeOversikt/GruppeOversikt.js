@@ -8,7 +8,7 @@ import Knapp from 'nav-frontend-knapper'
 import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
-import './GruppeOversikt.less'
+import DollyHjelpetekst from '~/utils/DollyHjelpetekst'
 
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {
@@ -48,9 +48,11 @@ export default class GruppeOversikt extends PureComponent {
 
 		return (
 			<div className="oversikt-container">
-				<div className="page-header gruppe-oversikt-header">
+				<div className="page-header flexbox--align">
 					<Overskrift label="Testdatagrupper" />
-					<ContentTooltip />
+					<ContentTooltip>
+						<DollyHjelpetekst />
+					</ContentTooltip>
 				</div>
 
 				<Toolbar

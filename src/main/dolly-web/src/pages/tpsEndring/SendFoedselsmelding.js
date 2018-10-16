@@ -24,21 +24,21 @@ export default class SendFoedselsmelding extends PureComponent {
 		yup.object().shape({
 			identMor: yup
 				.string()
-				.min(11, 'Mors indent må inneholde 11 sifre')
-				.max(11, 'Mors indent må inneholde 11 sifre')
-				.required('Mors indent er et påkrevd felt'),
+				.min(11, 'Mors ident må inneholde 11 sifre.')
+				.max(11, 'Mors ident må inneholde 11 sifre.')
+				.required('Mors ident er et påkrevd felt.'),
 			identFar: yup
 				.string()
-				.min(11, 'Indent må inneholde 11 sifre')
-				.max(11, 'Indent må inneholde 11 sifre'),
-			kjonn: yup.string().required('Kjønn er et påkrevd felt'),
-			miljoe: yup.string().required('Miljø er et påkrevd felt'),
+				.min(11, 'Ident må inneholde 11 sifre.')
+				.max(11, 'Ident må inneholde 11 sifre.'),
+			identtype: yup.string().required('Identtype er ett påkrevd felt.'),
+			kjonn: yup.string().required('Kjønn er et påkrevd felt.'),
+			miljoe: yup.string().required('Miljø er et påkrevd felt.'),
 			foedselsdato: DateValidation,
-			adresseFra: yup.string().required('Adresse er et påkrevd felt')
+			adresseFra: yup.string().required('Adresse er et påkrevd felt.')
 		})
 
 	_onSubmit = values => {
-		console.log('test')
 		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, async () => {
 			try {
 				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding({
