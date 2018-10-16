@@ -14,6 +14,6 @@ import lombok.Setter;
 public class GenereringsOrdreRequest {
 
     private Long gruppeId;
-    private String eksisterendeIdenterIMiljoe;
-    private Map<String, String> antallMeldingerPerAarsakskode;
+    private String miljoe;
+    private Map<String, Integer> antallMeldingerPerAarsakskode;
 }
