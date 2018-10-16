@@ -19,9 +19,9 @@ public class TpsfConsumer {
     
     @Value("tpsf.url")
     private String serverUrl;
-    @Value("tpsf.login.username")
+    @Value("tpsf.credential.username")
     private String username;
-    @Value("tpsf.login.password")
+    @Value("tpsf.credential.password")
     private String password;
     
     private RestTemplate restTemplate;

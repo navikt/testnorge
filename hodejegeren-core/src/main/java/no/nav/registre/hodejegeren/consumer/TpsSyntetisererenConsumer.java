@@ -15,9 +15,9 @@ public class TpsSyntetisererenConsumer {
     
     @Value("tpssyntetisereren.url")
     private String serverUrl;
-    @Value("tpssyntetisereren.login.username")
+    @Value("tpssyntetisereren.credential.username")
     private String username;
-    @Value("tpssyntetisereren.login.password")
+    @Value("tpssyntetisereren.credential.password")
     private String password;
     
     private RestTemplate restTemplate;
