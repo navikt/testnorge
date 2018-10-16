@@ -1,12 +1,15 @@
 package no.nav.registre.hodejegeren.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 
 /**
  *  Hoved-service i Hodejegeren. Her blir Tps Synt. kalt. Den genererer syntetiske skdmeldinger og returnerer dem til hodejegeren. Hodejegeren
@@ -21,7 +24,11 @@ public class HodejegerService {
     private TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
     
     public List<Long> puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
-        //List<RsMeldingstype> Konsumer Syntetisereren - hent nye syntetiserte skdmeldinger
+        Map<String, List<RsMeldingstype>> syntetiserteMldPerAarsakskode = new HashMap<>();
+        final Map<String, Integer> antallMeldingerPerAarsakskode = genereringsOrdreRequest.getAntallMeldingerPerAarsakskode();
+        for (String aarsakskode: antallMeldingerPerAarsakskode.keySet()) {
+            syntetiserteMldPerAarsakskode.put(aarsakskode, tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(aarsakskode, antallMeldingerPerAarsakskode.get(aarsakskode)));
+        }
         //Valider skdmeldingene
         
         //Putt inn nye identer - konsumer ident-pool
