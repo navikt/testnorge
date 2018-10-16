@@ -15,9 +15,12 @@ import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.ident.domain.Identtype;
+import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.repository.IdentEntity;
 
@@ -30,11 +33,10 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void hentLedigFnr() throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
-                .addParameter("antall", "1")
-                .addParameter("identtype", "FNR");
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
+        String body = "{\"antall\":\"1\", \"identtype\":\"FNR\" }";
 
-        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), String[].class);
+        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
 
         assertThat(fnr.getBody(), is(notNullValue()));
         assertThat(fnr.getBody().length, is(1));
@@ -42,11 +44,10 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void hentLedigDnr() throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
-                .addParameter("antall", "1")
-                .addParameter("identtype", "DNR");
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
+        String body = "{\"antall\":\"1\", \"identtype\":\"DNR\" }";
 
-        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), String[].class);
+        ResponseEntity<String[]> fnr = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
 
         assertThat(fnr.getBody(), is(notNullValue()));
         assertThat(fnr.getBody().length, is(1));
@@ -54,11 +55,10 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void skalFeileNaarUgyldigIdenttypeBrukes() throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
-                .addParameter("antall", "1")
-                .addParameter("identtype", "buksestørrelse");
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
+        String body = "{\"antall\":\"1\", \"identtype\":\"buksestoerrelse\" }";
 
-        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiError.class);
+        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ApiError.class);
 
         assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
     }
@@ -155,6 +155,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         assertThat(apiResponseEntity.getBody(), is(IdentEntity.builder()
                 .identtype(Identtype.FNR)
                 .personidentifikator(FNR_LEDIG)
+                .kjoenn(Kjoenn.MANN)
                 .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                 .finnesHosSkatt("0")
                 .foedselsdato(LocalDate.of(1980, 10, 10))
@@ -172,6 +173,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
                         .personidentifikator(FNR_LEDIG)
                         .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                         .finnesHosSkatt("0")
+                        .kjoenn(Kjoenn.MANN)
                         .foedselsdato(LocalDate.of(1980, 10, 10))
                         .build(),
                 IdentEntity.builder()
@@ -179,6 +181,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
                         .personidentifikator(DNR_LEDIG)
                         .rekvireringsstatus(Rekvireringsstatus.LEDIG)
                         .finnesHosSkatt("0")
+                        .kjoenn(Kjoenn.MANN)
                         .foedselsdato(LocalDate.of(1980, 10, 20))
                         .build(),
                 IdentEntity.builder()
@@ -186,6 +189,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
                         .personidentifikator(FNR_IBRUK)
                         .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
                         .finnesHosSkatt("0")
+                        .kjoenn(Kjoenn.MANN)
                         .foedselsdato(LocalDate.of(1980, 10, 11))
                         .build(),
                 IdentEntity.builder()
@@ -193,6 +197,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
                         .personidentifikator("12108000366")
                         .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
                         .finnesHosSkatt("0")
+                        .kjoenn(Kjoenn.MANN)
                         .foedselsdato(LocalDate.of(1980, 10, 12))
                         .build()
         ));

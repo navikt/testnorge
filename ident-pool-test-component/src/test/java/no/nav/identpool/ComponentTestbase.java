@@ -12,12 +12,15 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
 import no.nav.freg.security.test.oidc.tools.OidcTestService;
 import no.nav.identpool.ident.ajourhold.mq.factory.ConnectionStrategyFactory;
 import no.nav.identpool.ident.ajourhold.util.PersonIdentifikatorUtil;
 import no.nav.identpool.ident.repository.IdentRepository;
+import no.nav.identpool.ident.rest.v1.HentIdenterRequest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ComponentTestConfig.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,6 +44,15 @@ public abstract class ComponentTestbase {
             httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + oidcTestService.createOidc(getJwtClaims()));
         }
         return new HttpEntity(httpHeaders);
+    }
+
+    protected HttpEntity lagHttpEntity(boolean withOidc, String body) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        if (withOidc) {
+            httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + oidcTestService.createOidc(getJwtClaims()));
+        }
+        return new HttpEntity<>(body, httpHeaders);
     }
 
     private JwtClaims getJwtClaims() {
