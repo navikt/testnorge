@@ -16,8 +16,10 @@ export default class SendDoedsmelding extends PureComponent {
 		errorMessage: null,
 		meldingSent: false,
 		handlingsType: null,
+		foundIdent: null,
+		showErrorMessageFoundIdent: false,
 		currentfnr: '',
-		environments: this.props.dropdownMiljoe
+		environments: []
 	}
 
 	validation = () =>
@@ -55,31 +57,43 @@ export default class SendDoedsmelding extends PureComponent {
 		)
 	}
 
-	_inputHandleOnBlur = e => {
+	fillEnvironmentDropdown(environments) {
+		const environmentsForDisplay = []
+		environments.map(env => {
+			environmentsForDisplay.push({ value: env, label: env.toUpperCase() })
+		})
+
+		return environmentsForDisplay
+	}
+
+	_handleOnBlurInput = e => {
 		var fnr = e.target.value.trim()
 
-		if (fnr.length === 11 && this.state.currentfnr !== fnr) {
-			this.setState({ isFetchingMiljoer: true }, async () => {
+		if (fnr.length === 11 && this.state.currentfnr !== fnr && !isNaN(fnr)) {
+			this.setState({ isFetchingMiljoer: true, showErrorMessageFoundIdent: false }, async () => {
 				try {
 					const getMiljoerByFnrRes = await TpsfApi.getMiljoerByFnr(fnr)
-					const displayMiljoerInDropdown = []
+					const res_environments = getMiljoerByFnrRes.data.statusPaaIdenter[0].env
 
-					getMiljoerByFnrRes.data.statusPaaIdenter[0].env.map(miljoe => {
-						displayMiljoerInDropdown.push({ value: miljoe, label: miljoe.toUpperCase() })
-					})
-
+					if (res_environments.length < 1) {
+						return this.setState({
+							currentfnr: fnr,
+							foundIdent: false,
+							isFetchingMiljoer: false,
+							showErrorMessageFoundIdent: true
+						})
+					}
+					const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)
 					return this.setState({
-						environments: displayMiljoerInDropdown,
+						environments: displayEnvironmentsInDropdown,
 						currentfnr: fnr,
+						foundIdent: true,
 						isFetchingMiljoer: false
 					})
 				} catch (err) {
 					this.setState({ isFetchingMiljoer: false, currentfnr: fnr })
 				}
 			})
-		} else {
-			if (this.state.environments !== this.props.dropdownMiljoe)
-				this.setState({ environments: this.props.dropdownMiljoe, currentfnr: fnr })
 		}
 	}
 
@@ -131,35 +145,32 @@ export default class SendDoedsmelding extends PureComponent {
 										name="ident"
 										label="IDENT"
 										component={FormikInput}
-										onBlur={this._inputHandleOnBlur}
+										onBlur={this._handleOnBlurInput}
 									/>
 									<Field
 										name="handling"
 										label="HANDLING"
 										options={handlingOptions}
 										component={FormikDollySelect}
+										disabled={state.foundIdent ? false : true}
 									/>
-									<Field name="doedsdato" label="DØDSDATO" component={FormikDatepicker} />
+									<Field
+										name="doedsdato"
+										label="DØDSDATO"
+										component={FormikDatepicker}
+										disabled={state.foundIdent ? false : true}
+									/>
 
-									{state.isFetchingMiljoer ? (
-										<div className="skjemaelement loading-env-msg">
-											<Loading label="Laster inn miljøer for person" />
-										</div>
-									) : (
-										<Field
-											name="miljoe"
-											label="SEND TIL MILJØ"
-											options={state.environments}
-											component={FormikDollySelect}
-										/>
-									)}
+									<Field
+										name="miljoe"
+										label="SEND TIL MILJØ"
+										options={state.environments}
+										component={FormikDollySelect}
+										disabled={state.foundIdent ? false : true}
+									/>
 								</div>
 								<div className="knapp-container">
-									<Knapp
-										type="hoved"
-										htmlType="submit"
-										disabled={state.isFetchingMiljoer ? true : false}
-									>
+									<Knapp type="hoved" htmlType="submit" disabled={state.foundIdent ? false : true}>
 										Opprett dødsmelding
 									</Knapp>
 								</div>
@@ -167,6 +178,12 @@ export default class SendDoedsmelding extends PureComponent {
 						)
 					}}
 				/>
+				{this.state.isFetchingMiljoer && <Loading label="Søker etter testbruker" />}
+				{this.state.showErrorMessageFoundIdent && (
+					<h3 className="error-message">
+						Finner ikke testperson med ident: {this.state.currentfnr}
+					</h3>
+				)}
 				{this.state.isFetching && <Loading label="Sender dødsmelding" />}
 				{this.state.errorMessage && (
 					<h4 className="error-message"> Feil: {this.state.errorMessage} </h4>
