@@ -45,6 +45,12 @@ export default class TpsfService {
 		return Request.post(endpoint, userData)
 	}
 
+	static getMiljoerByFnr(fnr) {
+		this.getTpsfUrl()
+		const endpoint = url + '/testdata/tpsStatus?identer=' + fnr
+		return Request.get(endpoint)
+	}
+
 	static generateAddress(query) {
 		this.getTpsfUrl()
 		const endpoint = `${url}/gyldigadresse/tilfeldig?maxAntall=1${query}`
