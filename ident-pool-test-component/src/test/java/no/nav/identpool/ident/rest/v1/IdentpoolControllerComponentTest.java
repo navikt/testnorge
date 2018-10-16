@@ -97,11 +97,10 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void markerIBrukPaaIdentAlleredeIbruk() throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk")
-                .addParameter("personidentifikator", FNR_IBRUK)
-                .addParameter("rekvirertAv", "TesterMcTestFace");
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk");
+        String body = "{\"personidentifikator\":\"" + FNR_IBRUK + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
 
-        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiError.class);
+        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ApiError.class);
 
         assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.GONE));
 
@@ -111,11 +110,10 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     public void markerEksisterendeLedigIdentIBruk() throws URISyntaxException {
         assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
 
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk")
-                .addParameter("personidentifikator", FNR_LEDIG)
-                .addParameter("rekvirertAv", "TesterMcTestFace");
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk");
+        String body = "{\"personidentifikator\":\"" + FNR_LEDIG + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
 
-        ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiResponse.class);
+        ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ApiResponse.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
@@ -126,11 +124,10 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     public void markerNyLedigIdentIBruk() throws URISyntaxException {
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
 
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk")
-                .addParameter("personidentifikator", NYTT_FNR_LEDIG)
-                .addParameter("rekvirertAv", "TesterMcTestFace");
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk");
+        String body = "{\"personidentifikator\":\"" + NYTT_FNR_LEDIG + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
 
-        ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false), ApiResponse.class);
+        ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ApiResponse.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));

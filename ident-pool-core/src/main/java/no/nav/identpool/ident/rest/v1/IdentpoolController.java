@@ -31,15 +31,8 @@ public class IdentpoolController {
     }
 
     @PostMapping("/bruk")
-    public void markerBrukt(
-            @RequestParam String personidentifikator,
-            @RequestParam String rekvirertAv
-    ) throws Exception {
-        valider(personidentifikator);
-        MarkerBruktRequest markerBruktRequest = MarkerBruktRequest.builder()
-                .personidentifikator(personidentifikator)
-                .bruker(rekvirertAv)
-                .build();
+    public void markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) throws Exception {
+        valider(markerBruktRequest.getPersonidentifikator());
         identpoolService.markerBrukt(markerBruktRequest);
     }
 
