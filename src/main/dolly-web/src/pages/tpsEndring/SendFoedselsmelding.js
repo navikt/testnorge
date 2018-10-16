@@ -89,6 +89,7 @@ export default class SendFoedselsmelding extends PureComponent {
 					isFetchingMiljoer: true,
 					environments: [],
 					showErrorMessageFoundIdent: false,
+					foundIdentMor: false,
 					errorMessage: null
 				},
 				async () => {
