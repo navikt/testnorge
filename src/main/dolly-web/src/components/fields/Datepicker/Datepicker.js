@@ -96,7 +96,7 @@ export default class Datepicker extends Component {
 	}
 
 	render() {
-		const { label, error, value } = this.props
+		const { label, error, value, disabled } = this.props
 
 		return (
 			<div className="dolly-datepicker" ref={node => (this.containerNode = node)}>
@@ -112,6 +112,7 @@ export default class Datepicker extends Component {
 					inputProps={{
 						onKeyUp: this.handleKeyUp,
 						onFocus: this.handleFocus,
+						disabled: disabled,
 						feil: this.state.active ? null : error,
 						label: label
 					}}
