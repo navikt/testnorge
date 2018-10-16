@@ -1,6 +1,6 @@
 package no.nav.registre.orkestratoren;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,20 +14,20 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenConsumer;
 @EnableScheduling
 public class JobController {
 
-    @Value("${orkestratoren.batch.miljoer}.split(',')")
-    private List<String> miljoer;
+    @Value("${orkestratoren.batch.miljoe}")
+    private String miljoe;
 
-    @Value("${orkestratoren.batch.antallSkdMeldinger:500}")
-    private int antallSkdMeldinger;
+    @Value("${orkestratoren.batch.skdMeldingGruppeId:500}")
+    private int skdMeldingGruppeId;
 
-    @Value("${orkestratoren.batch.aarsakskoder}.split(',')")
-    private List<String> aarsakskoder;
+    @Autowired
+    private Map<String, Integer> antallMeldingerPerAarsakskode;
 
     @Autowired
     private TpsSyntPakkenConsumer tpsSyntPakkenConsumer;
 
     @Scheduled(cron = "${orkestratoren.cron:0 0 4 * * *}")
     public void execute() {
-        tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(antallSkdMeldinger, miljoer, aarsakskoder);
+        tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerAarsakskode);
     }
 }

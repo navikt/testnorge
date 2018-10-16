@@ -10,17 +10,17 @@ import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenConsumer;
 
 @RestController
-@RequestMapping("/trigger")
-public class TriggerController {
+@RequestMapping("/syntetisering")
+public class SyntetiseringsController {
 
     @Autowired
     private TpsSyntPakkenConsumer tpsSyntPakkenConsumer;
 
-    @RequestMapping(value = "/opprettSkdMeldinger", method = RequestMethod.POST)
-    public AvspillingResponse opprettSkdMeldinger(@RequestBody TriggerRequest triggerRequest) {
+    @RequestMapping(value = "/tps/skdmeldinger/generer", method = RequestMethod.POST)
+    public AvspillingResponse opprettSkdMeldinger(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
 
-        return tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(triggerRequest.getAntallSkdMeldinger(),
-                triggerRequest.getMiljoer(),
-                triggerRequest.getAarsakskoder());
+        return tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getSkdMeldingGruppeId(),
+                syntetiserSkdmeldingerRequest.getMiljoe(),
+                syntetiserSkdmeldingerRequest.getAntallMeldingerPerAarsakskode());
     }
 }

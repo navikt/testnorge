@@ -2,12 +2,14 @@ package no.nav.registre.orkestratoren.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
 
@@ -17,20 +19,16 @@ public class TpsSyntPakkenConsumer {
     @Autowired
     private TpsfConsumer tpsfConsumer;
 
-    @Value("${skd.melding.miljo}")
-    private String environment;
+    @Autowired
+    private HodejegerenConsumer hodejegerenConsumer;
 
-    @Value("${skd.melding.gruppe.id}")
-    private Long skdMeldingGruppeId;
-
-    public AvspillingResponse produserOgSendSkdmeldingerTilTpsIMiljoer(int antallSkdMeldinger,
-            List<String> miljoer,
-            List<String> aarsakskoder) {
+    public AvspillingResponse produserOgSendSkdmeldingerTilTpsIMiljoer(long skdMeldingGruppeId,
+            String miljoe,
+            Map<String, Integer> antallMeldingerPerAarsakskode) {
 
         List<Long> ids = new ArrayList<>();
+        ids.addAll(hodejegerenConsumer.startSyntetisering(new GenereringsOrdreRequest(skdMeldingGruppeId, miljoe, antallMeldingerPerAarsakskode)));
 
-        SendToTpsRequest sendToTpsRequest = new SendToTpsRequest(environment, ids);
-
-        return tpsfConsumer.sendSkdMeldingTilTpsf(skdMeldingGruppeId, sendToTpsRequest);
+        return tpsfConsumer.sendSkdMeldingTilTpsf(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
     }
 }

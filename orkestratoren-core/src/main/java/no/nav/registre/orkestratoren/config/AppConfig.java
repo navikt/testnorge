@@ -1,5 +1,6 @@
-package no.nav.registre.orkestratoren;
+package no.nav.registre.orkestratoren.config;
 
+import no.nav.registre.orkestratoren.JobController;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
