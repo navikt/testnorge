@@ -29,27 +29,20 @@ public class IdentpoolController {
     private final IdentpoolService identpoolService;
 
     @PostMapping
-    @ApiOperation(value ="${api.identifikator.rekvirer.description}")
+    @ApiOperation(value = "${api.identifikator.rekvirer.description}")
     public List<String> rekvirer(@RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
         return identpoolService.finnIdenter(hentIdenterRequest);
     }
 
     @PostMapping("/bruk")
-    @ApiOperation(value ="${api.identifikator.bruk.description}")
-    public void markerBrukt(
-            @RequestParam String personidentifikator,
-            @RequestParam String rekvirertAv
-    ) throws Exception {
-        valider(personidentifikator);
-        MarkerBruktRequest markerBruktRequest = MarkerBruktRequest.builder()
-                .personidentifikator(personidentifikator)
-                .bruker(rekvirertAv)
-                .build();
+    @ApiOperation(value = "${api.identifikator.bruk.description}")
+    public void markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) throws Exception {
+        valider(markerBruktRequest.getPersonidentifikator());
         identpoolService.markerBrukt(markerBruktRequest);
     }
 
     @GetMapping("/ledig")
-    @ApiOperation(value ="${api.identifikator.ledig.description}")
+    @ApiOperation(value = "${api.identifikator.ledig.description}")
     public Boolean erLedig(
             @RequestParam String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
@@ -58,7 +51,7 @@ public class IdentpoolController {
     }
 
     @GetMapping
-    @ApiOperation(value ="${api.identifikator.les.description}")
+    @ApiOperation(value = "${api.identifikator.les.description}")
     public IdentEntity lesInnhold(@RequestParam(value = "personidentifikator") String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
         valider(personidentifikator);

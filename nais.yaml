@@ -27,6 +27,10 @@ resources:
     cpu: 500m
     memory: 512Mi
 fasitResources:
+  exposed:
+  - alias: ident-pool.rest-api
+    resourceType: restservice
+    path: /api
   used:
   - alias: "ident-poolDB"
     resourceType: datasource
