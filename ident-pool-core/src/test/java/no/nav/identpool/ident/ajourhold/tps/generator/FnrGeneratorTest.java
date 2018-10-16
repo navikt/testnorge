@@ -34,7 +34,7 @@ FnrGeneratorTest {
         int size = 100;
         List<String> menn = IdentGenerator.genererIdenter(
                 HentIdenterRequest.builder()
-                        .antall(PageRequest.of(0, size))
+                        .antall(size)
                         .identtype(Identtype.FNR)
                         .foedtEtter(localDate)
                         .kjoenn(Kjoenn.MANN)
@@ -48,7 +48,7 @@ FnrGeneratorTest {
 
         List<String> kvinner = IdentGenerator.genererIdenter(
                 HentIdenterRequest.builder()
-                        .antall(PageRequest.of(0, size))
+                        .antall(size)
                         .identtype(Identtype.FNR)
                         .foedtEtter(localDate)
                         .kjoenn(Kjoenn.KVINNE)
@@ -63,7 +63,7 @@ FnrGeneratorTest {
         List<String> people = IdentGenerator.genererIdenter(
                 HentIdenterRequest.builder()
                         .identtype(Identtype.DNR)
-                        .antall(PageRequest.of(0, size))
+                        .antall(size)
                         .foedtEtter(localDate)
                         .build());
         people.forEach(fnr -> assertTrue(PersonidentifikatorUtil.gyldigPersonidentifikator(fnr)));
@@ -78,7 +78,7 @@ FnrGeneratorTest {
         List<String> menn = IdentGenerator.genererIdenter(
                 HentIdenterRequest.builder()
                         .identtype(Identtype.DNR)
-                        .antall(PageRequest.of(0, size))
+                        .antall(size)
                         .foedtEtter(localDate)
                         .kjoenn(Kjoenn.MANN)
                         .build());
@@ -92,7 +92,7 @@ FnrGeneratorTest {
         List<String> kvinner = IdentGenerator.genererIdenter(
                 HentIdenterRequest.builder()
                         .identtype(Identtype.DNR)
-                        .antall(PageRequest.of(0, size))
+                        .antall(size)
                         .foedtEtter(localDate)
                         .kjoenn(Kjoenn.KVINNE)
                         .build());
@@ -106,7 +106,7 @@ FnrGeneratorTest {
         List<String> people = IdentGenerator.genererIdenter(
                 HentIdenterRequest.builder()
                         .identtype(Identtype.DNR)
-                        .antall(PageRequest.of(0, size))
+                        .antall(size)
                         .foedtEtter(localDate)
                         .build());
         people.forEach(fnr -> assertTrue(PersonidentifikatorUtil.gyldigPersonidentifikator(fnr)));
