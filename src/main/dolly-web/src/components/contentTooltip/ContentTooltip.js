@@ -4,16 +4,18 @@ import Tooltip from 'rc-tooltip'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
-import DollyHjelpetekst from '~/utils/DollyHjelpetekst'
 
 import './ContentTooltip.less'
 
 export default class ContentTooltip extends PureComponent {
+	static propTypes = {
+		children: PropTypes.node.isRequired
+	}
+
 	render() {
-		//TODO: STØTTE ANDRE TYPER CONTENT I TOOLTIP
 		return (
 			<HjelpeTekst className="content-tooltip" id="hjelpetekst" type="under-hoyre">
-				<DollyHjelpetekst />
+				{this.props.children}
 			</HjelpeTekst>
 		)
 	}

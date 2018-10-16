@@ -27,7 +27,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		options: SelectOptionsManager('identtype'),
-		validation: yup.string().required('Velg identtype')
+		validation: yup.string().required('Velg identtype.')
 	},
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
@@ -40,7 +40,7 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		options: SelectOptionsManager('kjonn'),
 		format: Formatters.kjonnToString,
-		validation: yup.string().required('Velg kjønn')
+		validation: yup.string().required('Velg kjønn.')
 	},
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
@@ -85,7 +85,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
 				options: SelectOptionsManager('identtype'),
-				validation: yup.string().required('Velg identtype')
+				validation: yup.string().required('Velg identtype.')
 			},
 			{
 				hovedKategori: Kategorier.FamilieRelasjoner,
@@ -98,7 +98,7 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Select,
 				options: SelectOptionsManager('kjonnBarn'),
 				format: Formatters.kjonnToStringBarn,
-				validation: yup.string().required('Velg kjønn')
+				validation: yup.string().required('Velg kjønn.')
 			},
 			{
 				hovedKategori: Kategorier.FamilieRelasjoner,

@@ -8,6 +8,8 @@ import { Formik, Form, Field } from 'formik'
 import { FormikInput } from '~/components/fields/Input/Input'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Knapp from 'nav-frontend-knapper'
+import DataFormatter from '~/utils/DataFormatter'
+import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
 export default class SendDoedsmelding extends PureComponent {
 	state = {
@@ -26,12 +28,12 @@ export default class SendDoedsmelding extends PureComponent {
 		yup.object().shape({
 			ident: yup
 				.string()
-				.min(11, 'Ident må inneholde 11 sifre')
-				.max(11, 'Ident må inneholde 11 sifre')
-				.required('Ident er et påkrevd felt'),
-			handling: yup.string().required('Handling er et påkrevd felt'),
-			miljoe: yup.string().required('Miljø er et påkrevd felt'),
-			doedsdato: yup.date().required('Dato er et påkrevd felt')
+				.min(11, 'Ident må inneholde 11 sifre.')
+				.max(11, 'Ident må inneholde 11 sifre.')
+				.required('Ident er et påkrevd felt.'),
+			handling: yup.string().required('Handling er et påkrevd felt.'),
+			miljoe: yup.string().required('Miljø er et påkrevd felt.'),
+			doedsdato: DateValidation
 		})
 
 	_onSubmit = values => {
@@ -44,7 +46,10 @@ export default class SendDoedsmelding extends PureComponent {
 			},
 			async () => {
 				try {
-					await TpsfApi.createDoedsmelding(values)
+					await TpsfApi.createDoedsmelding({
+						...values,
+						doedsdato: DataFormatter.parseDate(values.doedsdato)
+					})
 					return this.setState({ meldingSent: true, isFetching: false })
 				} catch (err) {
 					this.setState({
@@ -126,7 +131,7 @@ export default class SendDoedsmelding extends PureComponent {
 		const handlingOptions = [
 			{ value: 'C', label: 'Sette dødsdato' },
 			{ value: 'U', label: 'Endre dødsdato' },
-			{ value: 'D', label: 'Annulere dødsdato' }
+			{ value: 'D', label: 'Annullere dødsdato' }
 		]
 
 		return (
