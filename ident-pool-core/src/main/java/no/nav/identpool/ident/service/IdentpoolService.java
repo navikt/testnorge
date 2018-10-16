@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.identpool.ident.ajourhold.service.IdentDBService;
 import no.nav.identpool.ident.ajourhold.tps.generator.IdentGenerator;
 import no.nav.identpool.ident.domain.Identtype;
-import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.domain.Rekvireringsstatus;
 import no.nav.identpool.ident.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.ident.exception.IdentAlleredeIBrukException;
@@ -61,7 +60,7 @@ public class IdentpoolService {
             // filtrer vekk eksisterende
             List<String> finnesIkkeAllerede = genererteIdenter.stream().filter(ident -> !identRepository.existsByPersonidentifikator(ident)).collect(Collectors.toList());
 
-            Map<String, Boolean> kontrollerteIdenter = identMQService.fnrsExists(finnesIkkeAllerede);
+            Map<String, Boolean> kontrollerteIdenter = identMQService.finnesITps(finnesIkkeAllerede);
 
             identDBService.lagreIdenter(kontrollerteIdenter.entrySet().stream()
                     .filter(Map.Entry::getValue)
@@ -98,7 +97,7 @@ public class IdentpoolService {
         if (ident != null) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;
         } else {
-            boolean exists = identMQService.fnrsExists(Collections.singletonList(personidentifikator)).get(personidentifikator);
+            boolean exists = identMQService.finnesITps(Collections.singletonList(personidentifikator)).get(personidentifikator);
             Rekvireringsstatus status = exists ? I_BRUK : LEDIG;
             IdentEntity newIdentEntity = IdentEntity.builder()
                     .identtype(PersonidentifikatorUtil.getPersonidentifikatorType(personidentifikator))
@@ -159,7 +158,7 @@ public class IdentpoolService {
         } else {
             identEntity = IdentEntity.builder()
                     .identtype(Identtype.DNR)
-                    .kjoenn(Kjoenn.MANN)
+                    .kjoenn(PersonidentifikatorUtil.getKjonn(personidentifikator))
                     .personidentifikator(personidentifikator)
                     .foedselsdato(PersonidentifikatorUtil.toBirthdate(personidentifikator))
                     .rekvireringsstatus(I_BRUK)
