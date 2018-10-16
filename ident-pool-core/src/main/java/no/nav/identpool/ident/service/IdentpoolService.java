@@ -154,6 +154,7 @@ public class IdentpoolService {
         if (identEntity != null) {
             identEntity.setFinnesHosSkatt("1");
             identEntity.setRekvireringsstatus(I_BRUK);
+            identEntity.setRekvirertAv("DREK");
         } else {
             identEntity = IdentEntity.builder()
                     .identtype(Identtype.DNR)
@@ -161,6 +162,7 @@ public class IdentpoolService {
                     .personidentifikator(personidentifikator)
                     .foedselsdato(PersonidentifikatorUtil.toBirthdate(personidentifikator))
                     .rekvireringsstatus(I_BRUK)
+                    .rekvirertAv("DREK")
                     .finnesHosSkatt("1")
                     .build();
         }

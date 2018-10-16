@@ -41,6 +41,7 @@
         <freg-security-oidc.version>3.1.0</freg-security-oidc.version>
         <guava.version>18.0</guava.version>
         <tpsws-domain.version>1.58.1</tpsws-domain.version>
+        <swagger.version>2.8.0</swagger.version>
     </properties>
 
     <dependencies>
@@ -117,6 +118,11 @@
                 <groupId>no.nav.freg</groupId>
                 <artifactId>freg-security-oidc</artifactId>
                 <version>${freg-security-oidc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>0.9.11</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

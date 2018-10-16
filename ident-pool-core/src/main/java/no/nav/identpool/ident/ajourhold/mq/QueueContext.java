@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.jms.JMSException;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "generer.identer.enable", matchIfMissing = true)
 public class QueueContext {
 
     private static String[] environments = {};

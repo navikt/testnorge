@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,19 +26,19 @@ public class HentIdenterRequest {
     private LocalDate foedtFoer;
     private Kjoenn kjoenn;
     @NotNull
-    private Pageable antall;
+    private int antall;
     private String rekvirertAv;
 
-    public void setAntall(int antall) {
-        this.antall = PageRequest.of(0, antall);
-    }
-
     public int getAntall() {
-        return antall.getPageSize();
-    }
-
-    public Pageable getPageable() {
         return antall;
     }
 
+    public void setAntall(int antall) {
+        this.antall = antall;
+    }
+
+    @JsonIgnore
+    public Pageable getPageable() {
+        return PageRequest.of(0, antall);
+    }
 }
