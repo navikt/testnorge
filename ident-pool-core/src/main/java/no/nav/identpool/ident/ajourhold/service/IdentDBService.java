@@ -58,16 +58,12 @@ public class IdentDBService {
         if (lastDate.isAfter(current)) {
             lastDate = LocalDate.of(year, current.getMonth(), current.getDayOfMonth());
         }
-        if (lastDate.equals(firstDate)) {
-            lastDate = lastDate.plusDays(1);
-        }
-
         int antallPerDag = identDistribusjon.antallPersonerPerDagPerAar(year + 1) * 2;
         Map<LocalDate, List<String>> pinMap = IdentGenerator.genererIdenterMap(firstDate, lastDate, type);
 
         List<String> filtered = filterDatabase(antallPerDag, pinMap);
 
-        Map<String, Boolean> identerIBruk = mqService.fnrsExists(filtered);
+        Map<String, Boolean> identerIBruk = mqService.finnesITps(filtered);
 
         lagre(identerIBruk);
     }
