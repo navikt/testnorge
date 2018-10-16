@@ -5,6 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({ InternalController.class, JobController.class })
+@Import({ InternalController.class})
 public class AppConfig {
 }

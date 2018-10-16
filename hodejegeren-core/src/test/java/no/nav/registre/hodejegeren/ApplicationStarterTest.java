@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class HodejegerenApplicationTests {
+public class ApplicationStarterTest {
 
     @Test
     public void contextLoads() {
