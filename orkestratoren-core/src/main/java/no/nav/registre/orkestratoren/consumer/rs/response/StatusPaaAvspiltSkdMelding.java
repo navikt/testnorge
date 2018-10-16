@@ -6,7 +6,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class StatusPaaAvspiltSkdMelding {
     private String foedselsnummer;
     private Long sekvensnummer;

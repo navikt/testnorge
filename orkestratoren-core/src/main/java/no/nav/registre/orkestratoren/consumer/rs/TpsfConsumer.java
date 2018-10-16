@@ -18,10 +18,10 @@ public class TpsfConsumer {
     private String tpsfServerUrl;
 
     @Value("${tpsf.send.url}")
-    private String tpsfSendUrl;
+    private String tpsfBaseUrl;
 
     public AvspillingResponse sendSkdMeldingTilTpsf(long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
-        String url = tpsfServerUrl + tpsfSendUrl + skdMeldingGruppeId;
+        String url = tpsfServerUrl + tpsfBaseUrl + skdMeldingGruppeId;
 
         return restTemplateTpsf.postForObject(url,
                 sendToTpsRequest,

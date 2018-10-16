@@ -23,8 +23,8 @@ public class TpsSyntPakkenConsumer {
     @Value("${skd.melding.gruppe.id}")
     private Long skdMeldingGruppeId;
 
-    public AvspillingResponse produserOgSendSkdmeldingerTilTpsIMiljoer(List<String> miljoer,
-            int antallSkdMeldinger,
+    public AvspillingResponse produserOgSendSkdmeldingerTilTpsIMiljoer(int antallSkdMeldinger,
+            List<String> miljoer,
             List<String> aarsakskoder) {
 
         List<Long> ids = new ArrayList<>();

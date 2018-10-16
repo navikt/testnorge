@@ -19,7 +19,8 @@ public class TriggerController {
     @RequestMapping(value = "/opprettSkdMeldinger", method = RequestMethod.POST)
     public AvspillingResponse opprettSkdMeldinger(@RequestBody TriggerRequest triggerRequest) {
 
-        return tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(triggerRequest.getMiljoer(),
-                triggerRequest.getAntallMeldinger(), triggerRequest.getAarsakskoder());
+        return tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(triggerRequest.getAntallSkdMeldinger(),
+                triggerRequest.getMiljoer(),
+                triggerRequest.getAarsakskoder());
     }
 }

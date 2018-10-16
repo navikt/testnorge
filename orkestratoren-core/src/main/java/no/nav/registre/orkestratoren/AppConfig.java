@@ -14,24 +14,11 @@ import no.nav.registre.orkestratoren.provider.rs.InternalController;
 @Import({ InternalController.class, JobController.class, TpsfConsumer.class })
 public class AppConfig {
 
-    @Value("${orkestratoren.credentials.username}")
-    private String username;
-
-    @Value("${orkestratoren.credentials.password}")
-    private String password;
-
     @Value("${tpsf.credentials.username}")
     private String tpsfUsername;
 
     @Value("${tpsf.credentials.password}")
     private String tpsfPassword;
-
-    @Bean
-    public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
-        return restTemplate;
-    }
 
     @Bean
     public RestTemplate restTemplateTpsf() {

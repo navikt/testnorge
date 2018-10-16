@@ -17,8 +17,8 @@ public class JobController {
     @Value("${orkestratoren.batch.miljoer}.split(',')")
     private List<String> miljoer;
 
-    @Value("${orkestratoren.batch.opprettAntallPersoner:500}")
-    private int antallPersoner;
+    @Value("${orkestratoren.batch.antallSkdMeldinger:500}")
+    private int antallSkdMeldinger;
 
     @Value("${orkestratoren.batch.aarsakskoder}.split(',')")
     private List<String> aarsakskoder;
@@ -28,6 +28,6 @@ public class JobController {
 
     @Scheduled(cron = "${orkestratoren.cron:0 0 4 * * *}")
     public void execute() {
-        tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(miljoer, antallPersoner, aarsakskoder);
+        tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(antallSkdMeldinger, miljoer, aarsakskoder);
     }
 }
