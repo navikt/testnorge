@@ -2,6 +2,10 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import Table from '../Table'
 
+// Må mocke Store her, siden API bruker store direkte og den blir da en del av "*Connector.js" componenter
+// TODO: refaktorere direkte bruk av Store ut av API klassen
+jest.mock('~/Store.js', () => {})
+
 describe('Table component', () => {
 	describe('<Table />', () => {
 		it('should render a div wrapper with class', () => {
