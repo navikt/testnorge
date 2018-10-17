@@ -42,7 +42,8 @@ export default class SendDoedsmelding extends PureComponent {
 				isFetching: true,
 				meldingSent: false,
 				errorMessage: null,
-				handlingsType: values.handling
+				handlingsType: values.handling,
+				foundIdent: false
 			},
 			async () => {
 				try {
@@ -50,7 +51,7 @@ export default class SendDoedsmelding extends PureComponent {
 						...values,
 						doedsdato: DataFormatter.parseDate(values.doedsdato)
 					})
-					return this.setState({ meldingSent: true, isFetching: false })
+					return this.setState({ meldingSent: true, isFetching: false, foundIdent: true })
 				} catch (err) {
 					this.setState({
 						meldingSent: false,
@@ -63,12 +64,7 @@ export default class SendDoedsmelding extends PureComponent {
 	}
 
 	fillEnvironmentDropdown(environments) {
-		const environmentsForDisplay = []
-		environments.map(env => {
-			environmentsForDisplay.push({ value: env, label: env.toUpperCase() })
-		})
-
-		return environmentsForDisplay
+		return environments.map(env => ({ value: env, label: env.toUpperCase() }))
 	}
 
 	_handleOnBlurInput = e => {
@@ -129,7 +125,7 @@ export default class SendDoedsmelding extends PureComponent {
 	}
 
 	render() {
-		const state = this.state
+		const { foundIdent, environments } = this.state
 
 		let initialValues = {
 			ident: '',
@@ -167,25 +163,25 @@ export default class SendDoedsmelding extends PureComponent {
 										label="HANDLING"
 										options={handlingOptions}
 										component={FormikDollySelect}
-										disabled={state.foundIdent ? false : true}
+										disabled={foundIdent ? false : true}
 									/>
 									<Field
 										name="doedsdato"
 										label="DØDSDATO"
 										component={FormikDatepicker}
-										disabled={state.foundIdent ? false : true}
+										disabled={foundIdent ? false : true}
 									/>
 
 									<Field
 										name="miljoe"
 										label="SEND TIL MILJØ"
-										options={state.environments}
+										options={environments}
 										component={FormikDollySelect}
-										disabled={state.foundIdent ? false : true}
+										disabled={foundIdent ? false : true}
 									/>
 								</div>
 								<div className="knapp-container">
-									<Knapp type="hoved" htmlType="submit" disabled={state.foundIdent ? false : true}>
+									<Knapp type="hoved" htmlType="submit" disabled={foundIdent ? false : true}>
 										Opprett dødsmelding
 									</Knapp>
 								</div>
