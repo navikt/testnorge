@@ -26,12 +26,11 @@ formatters.formatDate = date => {
 
 // Format string to Date format
 // String ---> Date
-// IMPORTANT! Used only for datepicker that has default time 00:00:00, offset in timezone is added to correctly set time
 formatters.parseDate = date => {
 	if (!date) return date
-	const parsedDate = dateFnsParse(date, defaultDateFormat, new Date())
-	const offSett = parsedDate.getTimezoneOffset() * 60000
-	return new Date(parsedDate.getTime() - offSett)
+
+	const parts = date.split('.')
+	return new Date(Date.UTC(parts[2], parts[1] - 1, parts[0]))
 }
 
 formatters.kjonnToString = (kjonn = '') => {
