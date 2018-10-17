@@ -19,6 +19,7 @@ const loadingSelector = createLoadingSelector([getGrupper, getGrupperByTeamId, g
 
 const mapStateToProps = state => {
 	return {
+		searchActive: Boolean(state.search),
 		isFetching: loadingSelector(state),
 		gruppeListe: _orderBy(
 			sokSelectorOversikt(state.gruppe.data, state.search),

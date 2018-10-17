@@ -24,8 +24,17 @@ export default class TeamOversikt extends Component {
 	}
 
 	render() {
-		const { teamListe, teams, history, startOpprettTeam, startRedigerTeam, deleteTeam } = this.props
-		const { fetching, visning, visOpprettTeam, editTeamId } = teams
+		const {
+			teamListe,
+			teams,
+			history,
+			startOpprettTeam,
+			startRedigerTeam,
+			deleteTeam,
+			searchActive,
+			isFetching
+		} = this.props
+		const { visning, visOpprettTeam, editTeamId } = teams
 
 		return (
 			<div className="oversikt-container">
@@ -33,7 +42,6 @@ export default class TeamOversikt extends Component {
 					<Overskrift label="Teams" />
 					<ContentTooltip>Med teams kan du og kolleger dele testdatagrupper.</ContentTooltip>
 				</div>
-
 				<Toolbar
 					toggleOnChange={this.handleViewChange}
 					toggleCurrent={visning}
@@ -43,18 +51,17 @@ export default class TeamOversikt extends Component {
 						Nytt team
 					</Knapp>
 				</Toolbar>
-
 				{visOpprettTeam && <RedigerTeamConnector />}
-				{fetching ? (
+				{isFetching ? (
 					<Loading label="laster teams" panel />
 				) : (
 					<TeamListe
 						items={teamListe}
-						fetching={fetching}
 						history={history}
 						startRedigerTeam={startRedigerTeam}
 						editTeamId={editTeamId}
 						deleteTeam={deleteTeam}
+						searchActive={searchActive}
 					/>
 				)}
 			</div>

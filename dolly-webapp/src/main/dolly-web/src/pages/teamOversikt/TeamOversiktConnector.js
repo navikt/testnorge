@@ -1,8 +1,17 @@
 import { connect } from 'react-redux'
 import TeamOversikt from './TeamOversikt'
 import { fetchTeams, actions, sokSelector } from '~/ducks/teams'
+import { createLoadingSelector } from '~/ducks/loading'
+
+const loadingSelector = createLoadingSelector([
+	actions.api.get,
+	actions.api.getById,
+	actions.api.getByUserId
+])
 
 const mapStateToProps = state => ({
+	isFetching: loadingSelector(state),
+	searchActive: Boolean(state.search),
 	teamListe: sokSelector(state.teams.items, state.search),
 	teams: state.teams
 })

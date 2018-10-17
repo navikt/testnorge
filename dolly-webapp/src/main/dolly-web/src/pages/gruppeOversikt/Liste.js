@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
@@ -13,19 +13,34 @@ export default class Liste extends PureComponent {
 	}
 
 	render() {
-		const { items, editId, editGroup, history, deleteGruppe, setSort, sort } = this.props
+		const {
+			items,
+			editId,
+			editGroup,
+			history,
+			deleteGruppe,
+			setSort,
+			sort,
+			searchActive
+		} = this.props
 
 		if (!items || !items.length) {
 			return (
 				<ContentContainer>
-					<p>Du har ingen testdatagrupper.</p>
-					<p>
-						For å se alle testdatagrupper, trykk på "Alle". Her kan du søke etter en spesifikk
-						testdatagruppe eller se om det er noen som er relevante for deg. Hvis du trykker på
-						stjerneikonet, legger du testdatagruppen til som en favoritt. Den vil da dukke opp under
-						"Mine" testdatagrupper.
-					</p>
-					<p>For å opprette en ny testdatagruppe, trykk på "Ny gruppe" knappen over.</p>
+					{searchActive ? (
+						<p>Søket gav ingen resultater.</p>
+					) : (
+						<Fragment>
+							<p>Du har ingen testdatagrupper.</p>
+							<p>
+								For å se alle testdatagrupper, trykk på "Alle". Her kan du søke etter en spesifikk
+								testdatagruppe eller se om det er noen som er relevante for deg. Hvis du trykker på
+								stjerneikonet, legger du testdatagruppen til som en favoritt. Den vil da dukke opp
+								under "Mine" testdatagrupper.
+							</p>
+							<p>For å opprette en ny testdatagruppe, trykk på "Ny gruppe" knappen over.</p>
+						</Fragment>
+					)}
 				</ContentContainer>
 			)
 		}
