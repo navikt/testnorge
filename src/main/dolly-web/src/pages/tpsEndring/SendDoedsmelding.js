@@ -7,9 +7,9 @@ import React, { PureComponent } from 'react'
 import { Formik, Form, Field } from 'formik'
 import { FormikInput } from '~/components/fields/Input/Input'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
+import DateValidation from '~/components/fields/Datepicker/DateValidation'
 import Knapp from 'nav-frontend-knapper'
 import DataFormatter from '~/utils/DataFormatter'
-import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
 export default class SendDoedsmelding extends PureComponent {
 	state = {
