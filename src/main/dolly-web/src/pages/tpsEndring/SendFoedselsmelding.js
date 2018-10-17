@@ -85,7 +85,7 @@ export default class SendFoedselsmelding extends PureComponent {
 	}
 
 	_handleOnBlurInput = e => {
-		var fnr = e.target.value.trim()
+		let fnr = e.target.value.replace(/\s+/g, '')
 
 		if (fnr.length === 11 && this.state.currentFnrMor !== fnr && !isNaN(fnr)) {
 			this.setState(
