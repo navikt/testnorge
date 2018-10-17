@@ -1,11 +1,15 @@
 package no.nav.registre.hodejegeren.service;
 
-import static org.junit.Assert.*;
+import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.DNR;
+import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +31,9 @@ public class HodejegerServiceTest {
     @Mock
     private TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
     
+    @Mock
+    private NyeIdenterService nyeIdenterService;
+    
     @InjectMocks
     private HodejegerService hodejegerService;
     
@@ -35,16 +42,67 @@ public class HodejegerServiceTest {
         final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
         antallMeldingerPerAarsakskode.put("01", 3);
         antallMeldingerPerAarsakskode.put("02", 4);
-    
-        List<RsMeldingstype> treSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(),new RsMeldingstype1Felter());
-        List<RsMeldingstype> fireSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(),new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
-    
+        
+        List<RsMeldingstype> treSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
+        List<RsMeldingstype> fireSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
+        
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), eq(3))).thenReturn(treSkdmeldinger);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), eq(4))).thenReturn(fireSkdmeldinger);
         
         final List<Long> ids = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerAarsakskode));
-    
+        
         Mockito.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("01", 3);
         Mockito.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("02", 4);
+        
+        verify(nyeIdenterService, times(3)).settInnNyeIdenterITrans1Meldinger(eq(FNR), any());
+        verify(nyeIdenterService).settInnNyeIdenterITrans1Meldinger(DNR, null);
+    }
+    
+    @Test
+    public void sjekkAtNyeIdenterBlirKaltForRiktigeAarsakskoder() {
+        final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
+        antallMeldingerPerAarsakskode.put("01", 1);
+        antallMeldingerPerAarsakskode.put("02", 1);
+        antallMeldingerPerAarsakskode.put("39", 1);
+        antallMeldingerPerAarsakskode.put("91", 1);
+        
+        antallMeldingerPerAarsakskode.put("03", 1); //stikkprøve - aarsakskoder som ikke skal ha nye identer
+        antallMeldingerPerAarsakskode.put("04", 1); //stikkprøve - aarsakskoder som ikke skal ha nye identer
+        
+        List<RsMeldingstype> meldinger01 = Arrays.asList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger02 = Arrays.asList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger39 = Arrays.asList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger91 = Arrays.asList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger03 = Arrays.asList(new RsMeldingstype1Felter());
+        List<RsMeldingstype> meldinger04 = Arrays.asList(new RsMeldingstype1Felter());
+        
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("01", 1)).thenReturn(meldinger01);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("02", 1)).thenReturn(meldinger02);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("39", 1)).thenReturn(meldinger39);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("91", 1)).thenReturn(meldinger91);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("03", 1)).thenReturn(meldinger03);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("04", 1)).thenReturn(meldinger04);
+        
+        final String fodselsdato = "111111";
+        final String personnummer = "22222";
+        
+        when(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(any(), any())).thenAnswer(invocation -> {
+            List<RsMeldingstype> melding = invocation.getArgument(1);
+            ((RsMeldingstype1Felter) melding.get(0)).setFodselsdato(fodselsdato);
+            ((RsMeldingstype1Felter) melding.get(0)).setPersonnummer(personnummer);
+            return Arrays.asList(fodselsdato + personnummer);
+        });
+        
+        hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerAarsakskode));
+        
+        assertEquals(fodselsdato, ((RsMeldingstype1Felter) meldinger01.get(0)).getFodselsdato());
+        assertEquals(fodselsdato, ((RsMeldingstype1Felter) meldinger02.get(0)).getFodselsdato());
+        assertEquals(fodselsdato, ((RsMeldingstype1Felter) meldinger39.get(0)).getFodselsdato());
+        assertEquals(fodselsdato, ((RsMeldingstype1Felter) meldinger91.get(0)).getFodselsdato());
+        
+        assertNull(((RsMeldingstype1Felter) meldinger03.get(0)).getFodselsdato());
+        assertNull(((RsMeldingstype1Felter) meldinger03.get(0)).getPersonnummer());
+        assertNull(((RsMeldingstype1Felter) meldinger04.get(0)).getFodselsdato());
+        assertNull(((RsMeldingstype1Felter) meldinger04.get(0)).getPersonnummer());
     }
 }
