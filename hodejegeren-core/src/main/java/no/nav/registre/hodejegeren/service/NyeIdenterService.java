@@ -1,11 +1,6 @@
 package no.nav.registre.hodejegeren.service;
 
-import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.DNR;
-import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +18,15 @@ public class NyeIdenterService {
     @Autowired
     private IdentPoolConsumer identPoolConsumer;
     
-    public void settInnNyeIdenter(List<RsMeldingstype> request) {
-        settInnNyeIdenterIAktuelleMeldinger(FNR, request, Arrays.asList("01", "02", "39"));
-        settInnNyeIdenterIAktuelleMeldinger(DNR, request, Arrays.asList("91"));
-    }
-    
-    public List<String> settInnNyeIdenterIAktuelleMeldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> request, List<String> aarsakskoder) {
-        List<RsMeldingstype> aktuelleMeldinger = request.stream()
-                .filter(mld -> mld instanceof RsMeldingstype1Felter && aarsakskoder.contains(mld.getAarsakskode()))
-                .collect(Collectors.toList());
-        int antallNyeIdenter = aktuelleMeldinger.size();
+    public List<String> settInnNyeIdenterITrans1Meldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger) {
+        if (meldinger == null) {
+            return null;
+        }
+        int antallNyeIdenter = meldinger.size();
         List<String> identer = identPoolConsumer.hentNyeIdenter(HentIdenterRequest.builder().antall(antallNyeIdenter).identtype(identType).build());
         for (int i = 0; i < antallNyeIdenter; i++) {
-            ((RsMeldingstype1Felter) aktuelleMeldinger.get(i)).setFodselsdato(identer.get(i).substring(0, 6));
-            ((RsMeldingstype1Felter) aktuelleMeldinger.get(i)).setPersonnummer(identer.get(i).substring(6));
+            ((RsMeldingstype1Felter) meldinger.get(i)).setFodselsdato(identer.get(i).substring(0, 6));
+            ((RsMeldingstype1Felter) meldinger.get(i)).setPersonnummer(identer.get(i).substring(6));
         }
         return identer;
     }
