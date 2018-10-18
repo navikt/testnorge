@@ -4,9 +4,13 @@ import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.I
 import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +54,27 @@ public class HodejegerService {
         
         //putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
         
-        return tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteMldPerAarsakskode.values().stream().flatMap(List::stream).collect(Collectors.toList()));
+        final List<RsMeldingstype> alleMeldinger = sortereMeldingenePaaAarsakskode(syntetiserteMldPerAarsakskode);
+        return tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), alleMeldinger);
+    }
+    
+    private List<RsMeldingstype> sortereMeldingenePaaAarsakskode(Map<String, List<RsMeldingstype>> syntetiserteMldPerAarsakskode) {
+        final TreeMap<Integer, List<RsMeldingstype>> treeMap = new TreeMap<>();
+        treeMap.put(1, syntetiserteMldPerAarsakskode.getOrDefault("02", new ArrayList<>()));
+        treeMap.put(2, syntetiserteMldPerAarsakskode.getOrDefault("91", new ArrayList<>()));
+        treeMap.put(3, syntetiserteMldPerAarsakskode.getOrDefault("01", new ArrayList<>()));
+        treeMap.put(4, syntetiserteMldPerAarsakskode.getOrDefault("39", new ArrayList<>()));
+        
+        Set<String> aarsakskoderMidtIRekkefoelgen = new HashSet<>(syntetiserteMldPerAarsakskode.keySet());
+        aarsakskoderMidtIRekkefoelgen.removeAll(Arrays.asList("02", "91", "01", "39", "43", "32", "85"));
+        for (String aarsakskode : aarsakskoderMidtIRekkefoelgen) {
+            treeMap.put(treeMap.lastKey() + 1, syntetiserteMldPerAarsakskode.get(aarsakskode));
+        }
+        
+        treeMap.put(treeMap.lastKey() + 1, syntetiserteMldPerAarsakskode.getOrDefault("85", new ArrayList<>()));
+        treeMap.put(treeMap.lastKey() + 1, syntetiserteMldPerAarsakskode.getOrDefault("43", new ArrayList<>()));
+        treeMap.put(treeMap.lastKey() + 1, syntetiserteMldPerAarsakskode.getOrDefault("32", new ArrayList<>()));
+        
+        return treeMap.values().stream().flatMap(List::stream).collect(Collectors.toList());
     }
 }
