@@ -65,7 +65,7 @@ public class IdentMQService {
         }
 
         Consumer<PersondataFraTpsM201.AFnr.EFnr> filterExisting = personData -> {
-            if (personData.getSvarStatus() == null || "00".equals(personData.getSvarStatus().getReturStatus())) {
+            if (personData.getSvarStatus() == null || !"08".equals(personData.getSvarStatus().getReturStatus())) {
                 identer.put(personData.getFnr(), Boolean.TRUE);
             }
         };

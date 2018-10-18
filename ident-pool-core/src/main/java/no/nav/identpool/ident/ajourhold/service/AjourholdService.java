@@ -1,5 +1,7 @@
 package no.nav.identpool.ident.ajourhold.service;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.LocalDateTime;
 
 import javax.batch.runtime.BatchStatus;
@@ -18,6 +20,10 @@ public class AjourholdService {
     private final AjourholdRepository ajourholdRepository;
     private final IdentDBService identService;
 
+    private StringWriter writer = new StringWriter();
+    private PrintWriter printWriter= new PrintWriter(writer);
+
+
     public void startBatch() {
         AjourholdEntity entity = AjourholdEntity.builder()
                 .sistOppdatert(LocalDateTime.now())
@@ -33,7 +39,8 @@ public class AjourholdService {
             ajourholdEntity.setStatus(BatchStatus.COMPLETED);
             ajourholdRepository.update(ajourholdEntity);
         } catch (Exception e) {
-            ajourholdEntity.setFeilmelding(e.getMessage());
+            e.printStackTrace(printWriter);
+            ajourholdEntity.setFeilmelding(printWriter.toString());
             ajourholdEntity.setStatus(BatchStatus.FAILED);
             ajourholdRepository.update(ajourholdEntity);
             throw e;
