@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
+import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 
@@ -29,6 +31,9 @@ public class HodejegerService {
     @Autowired
     private NyeIdenterService nyeIdenterService;
     
+    @Autowired
+    private TpsfConsumer tpsfConsumer;
+    
     public List<Long> puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         Map<String, List<RsMeldingstype>> syntetiserteMldPerAarsakskode = new HashMap<>();
         final Map<String, Integer> antallMeldingerPerAarsakskode = genereringsOrdreRequest.getAntallMeldingerPerAarsakskode();
@@ -44,8 +49,7 @@ public class HodejegerService {
         nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteMldPerAarsakskode.get("91")));
         
         //putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
-        //lagre ferdige meldinger i tpsf skdendringsmeldinger
-        //returner tabell-id til de lagrede meldingene
-        return new ArrayList<>();
+        
+        return tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteMldPerAarsakskode.values().stream().flatMap(List::stream).collect(Collectors.toList()));
     }
 }

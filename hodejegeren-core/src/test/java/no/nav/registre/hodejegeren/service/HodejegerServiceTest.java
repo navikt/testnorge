@@ -15,12 +15,14 @@ import java.util.HashMap;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
+import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
@@ -34,14 +36,25 @@ public class HodejegerServiceTest {
     @Mock
     private NyeIdenterService nyeIdenterService;
     
+    @Mock
+    private TpsfConsumer tpsfConsumer;
+    
     @InjectMocks
     private HodejegerService hodejegerService;
     
+    /**
+     * Test-scenario: NÅR metoden puttIdenterIMeldingerOgLagre blir kalt med en map med årsakskoder og tilhørende antall meldinger,
+     * SÅ skal
+     * - TPS Syntetisereren konsumeres for å hente det rette antallet meldinger per årsakskode
+     * - nyeIdenterService kalles
+     * - alle meldingene lagres på korrekt gruppeId i TPSF - kaller TpsfConsumer
+     */
     @Test
     public void puttIdenterIMeldingerOgLagre() {
         final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
         antallMeldingerPerAarsakskode.put("01", 3);
         antallMeldingerPerAarsakskode.put("02", 4);
+        final long GRUPPE_ID = 123L;
         
         List<RsMeldingstype> treSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
         List<RsMeldingstype> fireSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
@@ -49,13 +62,19 @@ public class HodejegerServiceTest {
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), eq(3))).thenReturn(treSkdmeldinger);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), eq(4))).thenReturn(fireSkdmeldinger);
         
-        final List<Long> ids = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerAarsakskode));
+        final List<Long> ids = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(GRUPPE_ID, "t1", antallMeldingerPerAarsakskode));
         
         Mockito.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("01", 3);
         Mockito.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("02", 4);
         
         verify(nyeIdenterService, times(3)).settInnNyeIdenterITrans1Meldinger(eq(FNR), any());
         verify(nyeIdenterService).settInnNyeIdenterITrans1Meldinger(DNR, null);
+        
+        ArgumentCaptor<List<RsMeldingstype>> captor = ArgumentCaptor.forClass(List.class);
+        verify(tpsfConsumer).saveSkdEndringsmeldingerInTPSF(eq(GRUPPE_ID), captor.capture());
+        final List<RsMeldingstype> actualSavedSkdmeldinger = captor.getValue();
+        assertEquals(treSkdmeldinger, actualSavedSkdmeldinger.subList(0, 3));
+        assertEquals(fireSkdmeldinger, actualSavedSkdmeldinger.subList(3, 7));
     }
     
     @Test
