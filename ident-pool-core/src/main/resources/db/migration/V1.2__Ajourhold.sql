@@ -1,7 +1,7 @@
 CREATE TABLE AJOURHOLD (
   ID                    NUMBER          PRIMARY KEY,
   STATUS                VARCHAR2(255)   NOT NULL,
-  SISTOPPDATERT         DATE            ,
+  SISTOPPDATERT         TIMESTAMP       ,
   FEILMELDING           VARCHAR2(255)
 );
 

@@ -21,8 +21,7 @@ public class AjourholdService {
     private final IdentDBService identService;
 
     private StringWriter writer = new StringWriter();
-    private PrintWriter printWriter= new PrintWriter(writer);
-
+    private PrintWriter printWriter = new PrintWriter(writer);
 
     public void startBatch() {
         AjourholdEntity entity = AjourholdEntity.builder()
@@ -35,9 +34,13 @@ public class AjourholdService {
 
     private void run(AjourholdEntity ajourholdEntity) {
         try {
-            identService.checkCriticalAndGenerate();
-            ajourholdEntity.setStatus(BatchStatus.COMPLETED);
-            ajourholdRepository.update(ajourholdEntity);
+            int sjekketITps = identService.checkCriticalAndGenerate();
+            if (sjekketITps == 0) {
+                ajourholdRepository.delete(ajourholdEntity);
+            } else {
+                ajourholdEntity.setStatus(BatchStatus.COMPLETED);
+                ajourholdRepository.update(ajourholdEntity);
+            }
         } catch (Exception e) {
             e.printStackTrace(printWriter);
             ajourholdEntity.setFeilmelding(printWriter.toString());

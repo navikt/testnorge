@@ -1,16 +1,16 @@
 package no.nav.identpool.ident.ajourhold.service;
 
-import static java.time.LocalDate.now;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+
 import no.nav.identpool.ident.ajourhold.tps.generator.IdentGenerator;
 import no.nav.identpool.ident.ajourhold.util.IdentDistribusjon;
 import no.nav.identpool.ident.domain.Identtype;
@@ -30,8 +30,11 @@ public class IdentDBService {
 
     private LocalDate current;
 
-    void checkCriticalAndGenerate() {
-        current = now();
+    private int sjekketITps;
+
+    int checkCriticalAndGenerate() {
+        sjekketITps = 0;
+        current = LocalDate.now();
         int minYearMinus = 110;
         LocalDate minDate = LocalDate.of(current.getYear() - minYearMinus, 1, 1);
         while (minDate.isBefore(current)) {
@@ -39,6 +42,7 @@ public class IdentDBService {
             checkAndGenerateForDate(minDate, Identtype.DNR);
             minDate = minDate.plusYears(1);
         }
+        return sjekketITps;
     }
 
     private void checkAndGenerateForDate(LocalDate date, Identtype type) {
@@ -85,22 +89,24 @@ public class IdentDBService {
     }
 
     public void lagre(Map<String, Boolean> identerIBruk) {
+        List<String> rekvirert = identerIBruk.entrySet().stream()
+                .filter(Map.Entry::getValue)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        sjekketITps += rekvirert.size();
+        lagreIdenter(rekvirert, Rekvireringsstatus.I_BRUK, "TPS");
 
-        lagreIdenter(identerIBruk.entrySet().stream()
-                        .filter(Map.Entry::getValue)
-                        .map(Map.Entry::getKey)
-                        .collect(Collectors.toList()),
-                Rekvireringsstatus.I_BRUK, "TPS");
-        lagreIdenter(identerIBruk.entrySet().stream()
-                        .filter(x -> !x.getValue())
-                        .map(Map.Entry::getKey)
-                        .collect(Collectors.toList()),
-                Rekvireringsstatus.LEDIG, null);
+        List<String> ledig = identerIBruk.entrySet().stream()
+                .filter(x -> !x.getValue())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        sjekketITps += ledig.size();
+        lagreIdenter(ledig, Rekvireringsstatus.LEDIG, null);
     }
 
     public void lagreIdenter(List<String> pins, Rekvireringsstatus status, String rekvirertAv) {
         identRepository.saveAll(pins.stream()
-                .map(fnr -> createIdent(fnr, status, Integer.parseInt(fnr.substring(0, 1)) > 3 ? Identtype.DNR : Identtype.FNR, rekvirertAv))
+                .map(fnr -> createIdent(fnr, status, PersonidentifikatorUtil.getPersonidentifikatorType(fnr), rekvirertAv))
                 .collect(Collectors.toList()));
     }
 
