@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Funksjoner {
+public enum AarsakskoderTrans1 {
     TILDELING_DNUMMER("91"),
     INNVANDRING("02"),
     FOEDSELSMELDING("01"),
@@ -34,7 +34,6 @@ public enum Funksjoner {
     UREGISTRERT_PERSON("56"),
     ENDRING_DUF_NUMMER("81"),
     KORREKSJON_FAMILIEOPPLYSNINGER("98"),
-    KORREKSJON_FAMILIEOPPLYSNINGER_BARN("98"),
     SIVILSTANDSENDRING("85"),
     DOEDSMELDING("43"),
     UTVANDRING("32");
