@@ -3,8 +3,8 @@ package no.nav.identpool.ident.rest.v1;
 import static no.nav.identpool.util.PersonidentifikatorUtil.valider;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -23,10 +23,10 @@ public class FinnesHosSkattController {
     private final IdentpoolService identpoolService;
 
     @PostMapping
-    @ApiOperation(value ="${finnes.hos.skatt.description}")
+    @ApiOperation(value = "${finnes.hos.skatt.description}")
     @ApiImplicitParam(name = "Authorization", value = "\"Bearer\" + OIDC-token", required = true, dataType = "string", paramType = "header")
     public void finnesHosSkatt(
-            @RequestParam(value = "personidentifikator") String personidentifikator
+            @RequestBody String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
         valider(personidentifikator);
         identpoolService.registrerFinnesHosSkatt(personidentifikator);
