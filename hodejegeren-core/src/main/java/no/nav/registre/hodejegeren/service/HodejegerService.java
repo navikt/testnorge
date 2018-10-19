@@ -38,13 +38,16 @@ public class HodejegerService {
     @Autowired
     private TpsfConsumer tpsfConsumer;
     
+    @Autowired
+    private ValidationService validationService;
+    
     public List<Long> puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         Map<String, List<RsMeldingstype>> syntetiserteMldPerAarsakskode = new HashMap<>();
         final Map<String, Integer> antallMeldingerPerAarsakskode = genereringsOrdreRequest.getAntallMeldingerPerAarsakskode();
         for (String aarsakskode : antallMeldingerPerAarsakskode.keySet()) {
             syntetiserteMldPerAarsakskode.put(aarsakskode, tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(aarsakskode, antallMeldingerPerAarsakskode.get(aarsakskode)));
+            validationService.logAndRemoveInvalidMessages(syntetiserteMldPerAarsakskode.get(aarsakskode));
         }
-        //Valider skdmeldingene
         
         List<String> nyeIdenter = new ArrayList<>();
         nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("01"))); //Bør jeg sette en øvre aldersgrense? åpent søk vil

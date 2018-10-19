@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
@@ -39,6 +38,9 @@ public class HodejegerServiceTest {
     @Mock
     private TpsfConsumer tpsfConsumer;
     
+    @Mock
+    private ValidationService validationService;
+    
     @InjectMocks
     private HodejegerService hodejegerService;
     
@@ -46,6 +48,7 @@ public class HodejegerServiceTest {
      * Test-scenario: NÅR metoden puttIdenterIMeldingerOgLagre blir kalt med en map med årsakskoder og tilhørende antall meldinger,
      * SÅ skal
      * - TPS Syntetisereren konsumeres for å hente det rette antallet meldinger per årsakskode
+     * - Alle meldinger blir validert på skd-formatet: maksstørrelsen for hvert felt er oppfylt
      * - nyeIdenterService kalles
      * - alle meldingene lagres på korrekt gruppeId i TPSF - kaller TpsfConsumer
      */
@@ -64,8 +67,11 @@ public class HodejegerServiceTest {
         
         final List<Long> ids = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(GRUPPE_ID, "t1", antallMeldingerPerAarsakskode));
         
-        Mockito.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("01", 3);
-        Mockito.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("02", 4);
+        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("01", 3);
+        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("02", 4);
+        
+        verify(validationService).logAndRemoveInvalidMessages(treSkdmeldinger);
+        verify(validationService).logAndRemoveInvalidMessages(fireSkdmeldinger);
         
         verify(nyeIdenterService, times(3)).settInnNyeIdenterITrans1Meldinger(eq(FNR), any());
         verify(nyeIdenterService).settInnNyeIdenterITrans1Meldinger(DNR, null);
@@ -73,8 +79,8 @@ public class HodejegerServiceTest {
         ArgumentCaptor<List<RsMeldingstype>> captor = ArgumentCaptor.forClass(List.class);
         verify(tpsfConsumer).saveSkdEndringsmeldingerInTPSF(eq(GRUPPE_ID), captor.capture());
         final List<RsMeldingstype> actualSavedSkdmeldinger = captor.getValue();
-        assertEquals(treSkdmeldinger, actualSavedSkdmeldinger.subList(0, 3));
-        assertEquals(fireSkdmeldinger, actualSavedSkdmeldinger.subList(3, 7));
+        assertEquals(fireSkdmeldinger, actualSavedSkdmeldinger.subList(0, 4));
+        assertEquals(treSkdmeldinger, actualSavedSkdmeldinger.subList(4, 7));
     }
     
     @Test
