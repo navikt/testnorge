@@ -209,8 +209,6 @@ public class DollyTpsfServiceTest {
         verify(tpsfResponseHandler).setErrorMessageToBestillingsProgress(any(TpsfException.class), any(BestillingProgress.class));
     }
 
-    // sjekk at requests der sigrunReq er null går bra
-    // hent ut reqs, og se at sigrun ikke er der, og at det lagres(?)
     @Test
     public void opprettPersonerByKriterierAsync_sjekkAtIngenSigrunRequestIkkeGirNullPointException() {
         when(tpsfApiService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(standardIdenter);
