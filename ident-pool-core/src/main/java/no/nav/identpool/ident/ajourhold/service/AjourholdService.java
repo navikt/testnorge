@@ -1,7 +1,5 @@
 package no.nav.identpool.ident.ajourhold.service;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.time.LocalDateTime;
 
 import javax.batch.runtime.BatchStatus;
@@ -9,6 +7,7 @@ import javax.batch.runtime.BatchStatus;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import net.logstash.logback.encoder.org.apache.commons.lang.exception.ExceptionUtils;
 
 import no.nav.identpool.ident.ajourhold.repository.AjourholdEntity;
 import no.nav.identpool.ident.ajourhold.repository.AjourholdRepository;
@@ -20,10 +19,13 @@ public class AjourholdService {
     private final AjourholdRepository ajourholdRepository;
     private final IdentDBService identService;
 
-    private StringWriter writer = new StringWriter();
-    private PrintWriter printWriter = new PrintWriter(writer);
+    private int waitCounter = 0;
 
     public void startBatch() {
+        if (waitCounter > 0) {
+            waitCounter--;
+            return;
+        }
         AjourholdEntity entity = AjourholdEntity.builder()
                 .sistOppdatert(LocalDateTime.now())
                 .status(BatchStatus.STARTED)
@@ -42,8 +44,12 @@ public class AjourholdService {
                 ajourholdRepository.update(ajourholdEntity);
             }
         } catch (Exception e) {
-            e.printStackTrace(printWriter);
-            ajourholdEntity.setFeilmelding(printWriter.toString());
+            waitCounter = 10;
+            String exceptionString = ExceptionUtils.getFullStackTrace(e);
+            if (exceptionString.length() > 1023) {
+                exceptionString = exceptionString.substring(0, 1023);
+            }
+            ajourholdEntity.setFeilmelding(exceptionString);
             ajourholdEntity.setStatus(BatchStatus.FAILED);
             ajourholdRepository.update(ajourholdEntity);
             throw e;

@@ -42,6 +42,7 @@ public class IdentDBService {
             checkAndGenerateForDate(minDate, Identtype.DNR);
             minDate = minDate.plusYears(1);
         }
+
         return sjekketITps;
     }
 
@@ -58,7 +59,7 @@ public class IdentDBService {
     private void generateForYear(int year, Identtype type) {
 
         LocalDate firstDate = LocalDate.of(year, 1, 1);
-        LocalDate lastDate = LocalDate.of(year, 12, 31);
+        LocalDate lastDate = LocalDate.of(year + 1, 1, 1);
         if (lastDate.isAfter(current)) {
             lastDate = LocalDate.of(year, current.getMonth(), current.getDayOfMonth());
         }
