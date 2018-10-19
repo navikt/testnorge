@@ -69,7 +69,6 @@ public class IdentDBService {
         List<String> filtered = filterDatabase(antallPerDag, pinMap);
 
         Map<String, Boolean> identerIBruk = mqService.finnesITps(filtered);
-
         lagre(identerIBruk);
     }
 

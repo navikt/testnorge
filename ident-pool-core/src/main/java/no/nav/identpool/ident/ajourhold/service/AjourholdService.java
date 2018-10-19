@@ -7,6 +7,7 @@ import javax.batch.runtime.BatchStatus;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang.exception.ExceptionUtils;
 
 import no.nav.identpool.ident.ajourhold.repository.AjourholdEntity;
@@ -14,6 +15,7 @@ import no.nav.identpool.ident.ajourhold.repository.AjourholdRepository;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AjourholdService {
 
     private final AjourholdRepository ajourholdRepository;
@@ -52,7 +54,7 @@ public class AjourholdService {
             ajourholdEntity.setFeilmelding(exceptionString);
             ajourholdEntity.setStatus(BatchStatus.FAILED);
             ajourholdRepository.update(ajourholdEntity);
-            throw e;
+            log.warn(e.getMessage());
         }
     }
 }
