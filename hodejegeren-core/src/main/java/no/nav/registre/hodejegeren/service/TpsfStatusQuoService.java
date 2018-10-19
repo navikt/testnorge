@@ -43,7 +43,7 @@ public class TpsfStatusQuoService {
         case "25":
             //Annulere flytting
             break;
-        case "85":    //sivilstandsendring . Melding om enke/-mann/gjenlevende partner
+        case "85":    //SIVILSTANDSENDRING . Melding om enke/-mann/gjenlevende partner
             //        NY_DØDSMELDING eller GIFT
             break;
         case "11":
