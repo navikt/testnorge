@@ -1,7 +1,7 @@
-package no.nav.dolly.appserivces.tpsf.restcom;
+package no.nav.dolly.appservices.tpsf.restcom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.dolly.appserivces.tpsf.errorhandling.RestTemplateFailure;
+import no.nav.dolly.appservices.tpsf.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
