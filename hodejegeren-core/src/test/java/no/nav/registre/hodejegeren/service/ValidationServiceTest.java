@@ -18,7 +18,7 @@ public class ValidationServiceTest {
     ValidationService validator = new ValidationService();
     
     @Test
-    public void shouldValidate() {
+    public void shouldLogValidationOfInvalidMessage() {
         Logger logger = (Logger) LoggerFactory.getLogger(ValidationService.class);
         ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
         listAppender.start();
@@ -32,7 +32,7 @@ public class ValidationServiceTest {
         validator.logAndRemoveInvalidMessages(liste);
         
         assertEquals(1, listAppender.list.size());
-        assertTrue(listAppender.list.get(0).toString().contains("Valideringsfeil for melding med aarsakskode null. size must be between 0 and 2 for variabelen antallBarn=2421234."));
-        
+        assertTrue(listAppender.list.get(0).toString().contains("Valideringsfeil for melding med aarsakskode null."
+                + " size must be between 0 and 2 for variabelen antallBarn=2421234."));
     }
 }

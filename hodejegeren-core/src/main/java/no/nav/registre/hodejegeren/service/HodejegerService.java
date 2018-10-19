@@ -6,11 +6,8 @@ import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.I
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,42 +39,33 @@ public class HodejegerService {
     private ValidationService validationService;
     
     public List<Long> puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
-        Map<String, List<RsMeldingstype>> syntetiserteMldPerAarsakskode = new HashMap<>();
         final Map<String, Integer> antallMeldingerPerAarsakskode = genereringsOrdreRequest.getAntallMeldingerPerAarsakskode();
-        for (String aarsakskode : antallMeldingerPerAarsakskode.keySet()) {
+        final List<String> sorterteAarsakskoder = filtrerOgSorterBestilteAarsakskoder(antallMeldingerPerAarsakskode);
+        
+        List<Long> ids = new ArrayList<>();
+        Map<String, List<RsMeldingstype>> syntetiserteMldPerAarsakskode = new HashMap<>();
+        
+        for (String aarsakskode : sorterteAarsakskoder) {
             syntetiserteMldPerAarsakskode.put(aarsakskode, tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(aarsakskode, antallMeldingerPerAarsakskode.get(aarsakskode)));
             validationService.logAndRemoveInvalidMessages(syntetiserteMldPerAarsakskode.get(aarsakskode));
+            
+            List<String> nyeIdenter = new ArrayList<>();
+            nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("01"))); //Bør jeg sette en øvre aldersgrense? åpent søk vil
+            nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("02")));
+            nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("39")));
+            nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteMldPerAarsakskode.get("91")));
+            
+            //putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
+            
+            final List<RsMeldingstype> ferdigeMeldinger = syntetiserteMldPerAarsakskode.values().stream().flatMap(List::stream).collect(Collectors.toList());
+            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), ferdigeMeldinger));
         }
-        
-        List<String> nyeIdenter = new ArrayList<>();
-        nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("01"))); //Bør jeg sette en øvre aldersgrense? åpent søk vil
-        nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("02")));
-        nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("39")));
-        nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteMldPerAarsakskode.get("91")));
-        
-        //putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
-        
-        final List<RsMeldingstype> alleMeldinger = sortereMeldingenePaaAarsakskode(syntetiserteMldPerAarsakskode);
-        return tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), alleMeldinger);
+        return ids;
     }
     
-    private List<RsMeldingstype> sortereMeldingenePaaAarsakskode(Map<String, List<RsMeldingstype>> syntetiserteMldPerAarsakskode) {
-        final TreeMap<Integer, List<RsMeldingstype>> treeMap = new TreeMap<>();
-        treeMap.put(1, syntetiserteMldPerAarsakskode.getOrDefault("02", new ArrayList<>()));
-        treeMap.put(2, syntetiserteMldPerAarsakskode.getOrDefault("91", new ArrayList<>()));
-        treeMap.put(3, syntetiserteMldPerAarsakskode.getOrDefault("01", new ArrayList<>()));
-        treeMap.put(4, syntetiserteMldPerAarsakskode.getOrDefault("39", new ArrayList<>()));
-        
-        Set<String> aarsakskoderMidtIRekkefoelgen = new HashSet<>(syntetiserteMldPerAarsakskode.keySet());
-        aarsakskoderMidtIRekkefoelgen.removeAll(Arrays.asList("02", "91", "01", "39", "43", "32", "85"));
-        for (String aarsakskode : aarsakskoderMidtIRekkefoelgen) {
-            treeMap.put(treeMap.lastKey() + 1, syntetiserteMldPerAarsakskode.get(aarsakskode));
-        }
-        
-        treeMap.put(treeMap.lastKey() + 1, syntetiserteMldPerAarsakskode.getOrDefault("85", new ArrayList<>()));
-        treeMap.put(treeMap.lastKey() + 1, syntetiserteMldPerAarsakskode.getOrDefault("43", new ArrayList<>()));
-        treeMap.put(treeMap.lastKey() + 1, syntetiserteMldPerAarsakskode.getOrDefault("32", new ArrayList<>()));
-        
-        return treeMap.values().stream().flatMap(List::stream).collect(Collectors.toList());
+    private List<String> filtrerOgSorterBestilteAarsakskoder(Map<String, Integer> antallMeldingerPerAarsakskode) {
+        List<String> sorterteAarsakskoder = Arrays.asList(AarsakskoderTrans1.values()).stream().map(AarsakskoderTrans1::getAarsakskode).collect(Collectors.toList());
+        sorterteAarsakskoder.retainAll(antallMeldingerPerAarsakskode.keySet());
+        return sorterteAarsakskoder;
     }
 }
