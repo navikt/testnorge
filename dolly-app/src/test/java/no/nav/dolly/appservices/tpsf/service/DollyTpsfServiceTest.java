@@ -1,5 +1,27 @@
 package no.nav.dolly.appservices.tpsf.service;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import no.nav.dolly.appservices.sigrunstub.restcom.SigrunStubApiService;
 import no.nav.dolly.appservices.tpsf.restcom.TpsfApiService;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -16,28 +38,6 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DollyTpsfServiceTest {
@@ -94,7 +94,7 @@ public class DollyTpsfServiceTest {
     private SigrunResponseHandler sigrunResponseHandler;
 
     @Before
-    public void setup(){
+    public void setup() {
         standardSendSkdResponse = new SendSkdMeldingTilTpsResponse();
         standardSendSkdResponse.setPersonId(standardHovedident);
         standardSendSkdResponse.setSkdmeldingstype(INNVANDRING_CREATE_NAVN);
@@ -130,7 +130,7 @@ public class DollyTpsfServiceTest {
     }
 
     @Test
-    public void opprettPersonerByKriterierAsync_lagrerAlleMiljoeneSomErsuksessfulleSendtTilTPSTilBestilllingProgress(){
+    public void opprettPersonerByKriterierAsync_lagrerAlleMiljoeneSomErsuksessfulleSendtTilTPSTilBestilllingProgress() {
         standardSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
 
         RsSkdMeldingResponse skdMeldingResponse = new RsSkdMeldingResponse();
@@ -158,7 +158,7 @@ public class DollyTpsfServiceTest {
     }
 
     @Test
-    public void opprettPersonerByKriterierAsync_hvisFlereIdenterBestillesOgEnFeilerOgEnOkSaaEtBestillingProgressObjMedFeilOgEtMedOk(){
+    public void opprettPersonerByKriterierAsync_hvisFlereIdenterBestillesOgEnFeilerOgEnOkSaaEtBestillingProgressObjMedFeilOgEtMedOk() {
         int bestiltAntallIdenter = 2;
         standardBestillingRequest_u1_t2_q3.setAntall(bestiltAntallIdenter);
         standardSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
@@ -207,5 +207,19 @@ public class DollyTpsfServiceTest {
 
         verify(identService, never()).saveIdentTilGruppe(standardHovedident, standardGruppe);
         verify(tpsfResponseHandler).setErrorMessageToBestillingsProgress(any(TpsfException.class), any(BestillingProgress.class));
+    }
+
+    // sjekk at requests der sigrunReq er null går bra
+    // hent ut reqs, og se at sigrun ikke er der, og at det lagres(?)
+    @Test
+    public void opprettPersonerByKriterierAsync_sjekkAtIngenSigrunRequestIkkeGirNullPointException() {
+        when(tpsfApiService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(standardIdenter);
+        when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
+        when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
+        when(tpsfApiService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
+
+        standardBestillingRequest_u1_t2_q3.setSigrunRequest(null);
+        dollyTpsfService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
+        verify(sigrunResponseHandler, times(0)).extractResponse(any());
     }
 }

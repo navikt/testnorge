@@ -74,11 +74,14 @@ public class DollyTpsfService {
                 senderIdenterTilTPS(bestillingsRequest, bestilteIdenter, testgruppe, progress);
 
                 //Sigrun
-                bestillingsRequest.getSigrunRequest().setPersonidentifikator(hovedPersonIdent);
-                ResponseEntity<String> sigrunResponse = sigrunStubApiService.createSkattegrunnlag(bestillingsRequest.getSigrunRequest());
+                if (bestillingsRequest.getSigrunRequest() != null) {
+                    bestillingsRequest.getSigrunRequest().setPersonidentifikator(hovedPersonIdent);
+                    ResponseEntity<String> sigrunResponse = sigrunStubApiService.createSkattegrunnlag(bestillingsRequest.getSigrunRequest());
 
-                String response = sigrunResponseHandler.extractResponse(sigrunResponse);
-                progress.setSigrunSuccessEnv(response);
+                    String response = sigrunResponseHandler.extractResponse(sigrunResponse);
+                    progress.setSigrunSuccessEnv(response);
+                }
+
                 bestillingProgressRepository.save(progress);
 
                 bestillingService.saveBestillingToDB(bestilling);
