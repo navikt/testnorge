@@ -2,18 +2,15 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 import cn from 'classnames'
-import withBreadcrumbs from 'react-router-breadcrumbs-hoc'
-import routes from '~/Routes'
 import Version from '~/components/version/Version'
 
 import './Breadcrumb.less'
 
-class Breadcrumbs extends PureComponent {
+class Breadcrumb extends PureComponent {
 	isActive = bc => bc.props.match.url === bc.props.location.pathname
 
 	render() {
 		const { breadcrumbs } = this.props
-
 		return (
 			<nav aria-label="breadcrumb" className="breadcrumb">
 				<ol>
@@ -42,4 +39,4 @@ class Breadcrumbs extends PureComponent {
 	}
 }
 
-export default withBreadcrumbs(routes, { disableDefaults: true })(Breadcrumbs)
+export default Breadcrumb
