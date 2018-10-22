@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.Getter;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import org.springframework.stereotype.Service;
 
 @Service
 @Getter
@@ -44,9 +44,10 @@ public class TpsStatusQuoService {
     }
 
     public JsonNode getInfoOnRoutineName(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
-        if(rootCache == null) rootCache = new HashMap<>();
+        if (rootCache == null)
+            rootCache = new HashMap<>();
 
-        if(!rootCache.containsKey(routineName)) {
+        if (!rootCache.containsKey(routineName)) {
             rootCache.put(routineName, getInfoHelper(routineName, aksjonsKode, environment, fnr));
         }
         return rootCache.get(routineName);
@@ -142,6 +143,15 @@ public class TpsStatusQuoService {
         case "adresse":
         case "antallRelasjoner":
         case "endringsDato":
+        case "relasjon/adresseStatus":
+        case "relasjon/datoDo":
+        case "relasjon/etternavn:":
+        case "relasjon/fnrRelasjon":
+        case "relasjon/fornavn":
+        case "relasjon/kortnavn":
+        case "relasjon/mellomnavn":
+        case "relasjon/spesregType":
+        case "relasjon/typeRelasjon":
             routineName = "FS03-FDNUMMER-PERSRELA-O";
             break;
         }
