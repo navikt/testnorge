@@ -1,6 +1,6 @@
 package no.nav.registre.hodejegeren.consumer;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +36,7 @@ public class TpsfConsumer {
     }
     
     public List<Long> saveSkdEndringsmeldingerInTPSF(Long gruppeId, List<RsMeldingstype> skdmeldinger) {
-        return restTemplate.postForObject(serverUrl + BASE_URL_SKDMELDINGER + "save/" + gruppeId, skdmeldinger, ArrayList.class);
+        return Arrays.asList(restTemplate.postForObject(serverUrl + BASE_URL_SKDMELDINGER + "save/" + gruppeId, skdmeldinger, Long[].class));
     }
     
     public String getInfoFromTpsServiceRoutine(String routineName, Map<String, Object> tpsRequestParameters) {
