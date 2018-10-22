@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.assertj.core.util.Sets;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -21,15 +23,17 @@ public class GetIdenterByGroupIdScenarios extends TestgruppeTestCaseBase {
     public void getIdenterByGroupId_returnererAlleTestidenterIStringformat() throws Exception {
         Testgruppe g1 = gruppeRepository.findAll().get(0);
         Long gruppeId = g1.getId();
-        String ident1 = "1";
-        String ident2 = "2";
+        String ident1 = "10";
+        String ident2 = "20";
 
         Testident t1 = TestidentBuilder.builder().ident(ident1).testgruppe(g1).build().convertToRealTestident();
         Testident t2 = TestidentBuilder.builder().ident(ident2).testgruppe(g1).build().convertToRealTestident();
         Testident testident1 = identRepository.save(t1);
         Testident testident2 = identRepository.save(t2);
 
-        HashSet gruppe = new HashSet(Arrays.asList(testident1, testident2));
+        Set gruppe = Sets.newHashSet();
+        gruppe.add(testident1);
+        gruppe.add(testident2);
         g1.setTestidenter(gruppe);
         gruppeRepository.save(g1);
 

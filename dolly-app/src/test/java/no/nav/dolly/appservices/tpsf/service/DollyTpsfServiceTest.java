@@ -82,7 +82,7 @@ public class DollyTpsfServiceTest {
     private BestillingService bestillingService;
 
     @Mock
-    TpsfResponseHandler tpsfResponseHandler;
+    private TpsfResponseHandler tpsfResponseHandler;
 
     @InjectMocks
     private DollyTpsfService dollyTpsfService;
