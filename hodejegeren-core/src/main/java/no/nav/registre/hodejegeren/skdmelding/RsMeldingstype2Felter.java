@@ -15,6 +15,8 @@ import lombok.Setter;
 @JsonTypeName("t2")
 public class RsMeldingstype2Felter extends RsMeldingstype {
     
+    private final String meldingstype = "t2";
+    
     @Size(max = 11)
     private String fodselsnr;
     

@@ -17,6 +17,7 @@ import lombok.Setter;
 @Builder
 public class RsMeldingstype1Felter extends RsMeldingstype {
     
+    private final String meldingstype = "t1";
     @Size(max = 6)
     private String fodselsdato;
     @Size(max = 5)
