@@ -14,13 +14,6 @@ export default class AttributtManager {
 		return AttributtListe.filter(f => selectedIds.includes(f.parent || f.id))
 	}
 
-	listSelectedExcludingParent(selectedIds: string[]): Attributt[] {
-		return AttributtListe.filter(f => {
-			if (f.harBarn) return false
-			return selectedIds.includes(f.parent || f.id)
-		})
-	}
-
 	listAllExcludingChildren(): Attributt[] {
 		return AttributtListe.filter(f => !f.parent)
 	}
