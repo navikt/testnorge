@@ -31,9 +31,7 @@ public class GetIdenterByGroupIdScenarios extends TestgruppeTestCaseBase {
         Testident testident1 = identRepository.save(t1);
         Testident testident2 = identRepository.save(t2);
 
-        Set gruppe = Sets.newHashSet();
-        gruppe.add(testident1);
-        gruppe.add(testident2);
+        Set gruppe = Sets.newHashSet(Arrays.asList(testident1, testident2));
         g1.setTestidenter(gruppe);
         gruppeRepository.save(g1);
 
