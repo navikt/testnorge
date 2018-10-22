@@ -53,7 +53,6 @@ public class HodejegerServiceTest {
      * SÅ skal
      * - TPS Syntetisereren konsumeres for å hente det rette antallet meldinger per årsakskode
      * - Alle meldinger blir validert på skd-formatet: maksstørrelsen for hvert felt er oppfylt
-     * - nyeIdenterService kalles
      * - alle meldingene lagres på korrekt gruppeId i TPSF - kaller TpsfConsumer
      */
     @Test
@@ -77,18 +76,14 @@ public class HodejegerServiceTest {
         verify(validationService).logAndRemoveInvalidMessages(treSkdmeldinger);
         verify(validationService).logAndRemoveInvalidMessages(fireSkdmeldinger);
         
-        verify(nyeIdenterService, times(3)).settInnNyeIdenterITrans1Meldinger(eq(FNR), any());
-        verify(nyeIdenterService).settInnNyeIdenterITrans1Meldinger(DNR, null);
-        
         ArgumentCaptor<List<RsMeldingstype>> captor = ArgumentCaptor.forClass(List.class);
-        verify(tpsfConsumer).saveSkdEndringsmeldingerInTPSF(eq(GRUPPE_ID), captor.capture());
-        final List<RsMeldingstype> actualSavedSkdmeldinger = captor.getValue();
-        assertEquals(fireSkdmeldinger, actualSavedSkdmeldinger.subList(0, 4));
-        assertEquals(treSkdmeldinger, actualSavedSkdmeldinger.subList(4, 7));
+        verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(eq(GRUPPE_ID), captor.capture());
+        final List<List<RsMeldingstype>> actualSavedSkdmeldinger = captor.getAllValues();
+        assertEquals(fireSkdmeldinger, actualSavedSkdmeldinger.get(0));
+        assertEquals(treSkdmeldinger, actualSavedSkdmeldinger.get(1));
     }
     
     @Test
-    @Ignore("midlertidig - må fikses")
     public void sjekkAtNyeIdenterBlirKaltForRiktigeAarsakskoder() {
         final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
         antallMeldingerPerAarsakskode.put("01", 1);
@@ -110,14 +105,15 @@ public class HodejegerServiceTest {
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("02", 1)).thenReturn(meldinger02);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("39", 1)).thenReturn(meldinger39);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("91", 1)).thenReturn(meldinger91);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("03", 1)).thenReturn(meldinger03);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("04", 1)).thenReturn(meldinger04);
         
         final String fodselsdato = "111111";
         final String personnummer = "22222";
         
         when(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(any(), any())).thenAnswer(invocation -> {
             List<RsMeldingstype> melding = invocation.getArgument(1);
+            if (null == melding) {
+                return new ArrayList<>();
+            }
             ((RsMeldingstype1Felter) melding.get(0)).setFodselsdato(fodselsdato);
             ((RsMeldingstype1Felter) melding.get(0)).setPersonnummer(personnummer);
             return Arrays.asList(fodselsdato + personnummer);
