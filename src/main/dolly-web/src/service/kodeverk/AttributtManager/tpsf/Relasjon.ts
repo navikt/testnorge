@@ -71,7 +71,6 @@ const AttributtListe: Attributt[] = [
 		id: 'barn',
 		path: 'relasjoner.barn',
 		label: 'Har barn',
-		harBarn: true,
 		dataSource: DataSource.TPSF,
 		validation: yup.object(),
 		items: [

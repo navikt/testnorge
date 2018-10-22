@@ -43,7 +43,6 @@ export interface Attributt {
 	validation?: yup.MixedSchema
 	kanRedigeres?: boolean
 	parent?: string
-	harBarn?: boolean
 	items?: Attributt[]
 }
 

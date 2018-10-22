@@ -6,7 +6,6 @@ import { Formik, Form, Field, getIn } from 'formik'
 import { DollyApi } from '~/service/Api'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import Knapp from 'nav-frontend-knapper'
-import FormErrors from '~/components/formErrors/FormErrors'
 import * as yup from 'yup'
 import Table from '~/components/table/Table'
 import Loading from '~/components/loading/Loading'
@@ -69,7 +68,6 @@ export default class RedigerTeam extends PureComponent {
 								</Knapp>
 							</div>
 
-							{/* <FormErrors errors={errors} touched={touched} /> */}
 							{/* <DisplayFormikState {...props} /> */}
 						</Form>
 					)
