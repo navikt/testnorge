@@ -18,13 +18,13 @@ import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 public class TpsStatusQuoService {
 
     @Autowired
-    TpsfConsumer tpsfConsumer;
+    private TpsfConsumer tpsfConsumer;
 
-    private Map<String, JsonNode> rootCache;
+    private Map<String, JsonNode> tpsServiceRoutineCache;
 
     public Map<String, String> getStatusQuo(List<String> feltnavn, String aksjonsKode, String environment, String fnr) throws IOException {
         Map<String, String> personStatusQuo = new HashMap<>();
-        rootCache = new HashMap<>();
+        tpsServiceRoutineCache = new HashMap<>();
 
         for (String felt : feltnavn) {
             JsonNode root = feltnavnMapper(felt, aksjonsKode, environment, fnr);
@@ -44,13 +44,13 @@ public class TpsStatusQuoService {
     }
 
     public JsonNode getInfoOnRoutineName(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
-        if (rootCache == null)
-            rootCache = new HashMap<>();
+        if (tpsServiceRoutineCache == null)
+            tpsServiceRoutineCache = new HashMap<>();
 
-        if (!rootCache.containsKey(routineName)) {
-            rootCache.put(routineName, getInfoHelper(routineName, aksjonsKode, environment, fnr));
+        if (!tpsServiceRoutineCache.containsKey(routineName)) {
+            tpsServiceRoutineCache.put(routineName, getInfoHelper(routineName, aksjonsKode, environment, fnr));
         }
-        return rootCache.get(routineName);
+        return tpsServiceRoutineCache.get(routineName);
     }
 
     public JsonNode getInfoHelper(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {

@@ -62,13 +62,13 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        assertTrue(tpsStatusQuoService.getRootCache() == null);
+        assertTrue(tpsStatusQuoService.getTpsServiceRoutineCache() == null);
 
         tpsStatusQuoService.getInfoOnRoutineName(routineName, aksjonsKode, environment, fnr);
 
-        assertTrue(tpsStatusQuoService.getRootCache() != null);
-        assertTrue(tpsStatusQuoService.getRootCache().containsKey(routineName));
-        assertEquals(jsonNode, tpsStatusQuoService.getRootCache().get(routineName));
+        assertTrue(tpsStatusQuoService.getTpsServiceRoutineCache() != null);
+        assertTrue(tpsStatusQuoService.getTpsServiceRoutineCache().containsKey(routineName));
+        assertEquals(jsonNode, tpsStatusQuoService.getTpsServiceRoutineCache().get(routineName));
     }
 
     @Test
