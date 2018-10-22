@@ -17,16 +17,15 @@ public class TpsfConsumer {
     private static String BASE_URL_SKDMELDINGER = "api/v1/endringsmelding/skd/";
     private static String BASE_URL_SERVICE_ROUTINE = "api/v1/serviceroutine/";
     
-    @Value("tpsf.url")
+    @Value("${tpsf.url}")
     private String serverUrl;
-    @Value("tpsf.credential.username")
-    private String username;
-    @Value("tpsf.credential.password")
-    private String password;
     
     private RestTemplate restTemplate;
     
-    public TpsfConsumer() {
+    public TpsfConsumer(
+            @Value("${tpsf.credential.username}") String username,
+            @Value("${tpsf.credential.password}") String password
+    ) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
         this.restTemplate = restTemplate;
