@@ -1,7 +1,6 @@
 package no.nav.registre.hodejegeren.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -62,11 +61,11 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        assertTrue(tpsStatusQuoService.getTpsServiceRoutineCache() == null);
+        assertNull(tpsStatusQuoService.getTpsServiceRoutineCache());
 
         tpsStatusQuoService.getInfoOnRoutineName(routineName, aksjonsKode, environment, fnr);
 
-        assertTrue(tpsStatusQuoService.getTpsServiceRoutineCache() != null);
+        assertNotNull(tpsStatusQuoService.getTpsServiceRoutineCache());
         assertTrue(tpsStatusQuoService.getTpsServiceRoutineCache().containsKey(routineName));
         assertEquals(jsonNode, tpsStatusQuoService.getTpsServiceRoutineCache().get(routineName));
     }

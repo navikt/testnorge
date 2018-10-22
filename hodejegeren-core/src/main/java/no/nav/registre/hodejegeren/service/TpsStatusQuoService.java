@@ -23,7 +23,7 @@ public class TpsStatusQuoService {
     private Map<String, JsonNode> tpsServiceRoutineCache;
 
     public Map<String, String> getStatusQuo(List<String> feltnavn, String aksjonsKode, String environment, String fnr) throws IOException {
-        Map<String, String> personStatusQuo = new HashMap<>();
+        Map<String, String> personStatusQuo = new HashMap<>(feltnavn.size());
         tpsServiceRoutineCache = new HashMap<>();
 
         for (String felt : feltnavn) {
@@ -44,8 +44,7 @@ public class TpsStatusQuoService {
     }
 
     public JsonNode getInfoOnRoutineName(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
-        if (tpsServiceRoutineCache == null)
-            tpsServiceRoutineCache = new HashMap<>();
+        if (tpsServiceRoutineCache == null) tpsServiceRoutineCache = new HashMap<>();
 
         if (!tpsServiceRoutineCache.containsKey(routineName)) {
             tpsServiceRoutineCache.put(routineName, getInfoHelper(routineName, aksjonsKode, environment, fnr));
