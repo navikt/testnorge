@@ -44,7 +44,9 @@ export default class SendFoedselsmelding extends PureComponent {
 		})
 
 	_onSubmit = values => {
-		this.setState(
+		console.log(values)
+
+		/*this.setState(
 			{ isFetching: true, nyttBarn: null, errorMessage: null, foundIdentMor: false },
 			async () => {
 				try {
@@ -66,7 +68,7 @@ export default class SendFoedselsmelding extends PureComponent {
 					this.setState({ isFetching: false, errorMessage: err.response.data.message })
 				}
 			}
-		)
+		)*/
 	}
 
 	_renderNyttBarn = person => {

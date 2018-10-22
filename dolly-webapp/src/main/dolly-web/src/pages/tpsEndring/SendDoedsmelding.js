@@ -21,7 +21,9 @@ export default class SendDoedsmelding extends PureComponent {
 		foundIdent: null,
 		showErrorMessageFoundIdent: false,
 		currentfnr: '',
-		environments: []
+		environments: [],
+		environments_success: [],
+		environments_error: []
 	}
 
 	validation = () =>
@@ -32,11 +34,23 @@ export default class SendDoedsmelding extends PureComponent {
 				.max(11, 'Ident må inneholde 11 sifre.')
 				.required('Ident er et påkrevd felt.'),
 			handling: yup.string().required('Handling er et påkrevd felt.'),
-			miljoe: yup.string().required('Miljø er et påkrevd felt.'),
+			miljoer: yup.string().required('Miljø er et påkrevd felt.'),
 			doedsdato: DateValidation
 		})
 
-	_onSubmit = values => {
+	createRequestObjects(values_obj) {
+		const miljoer = values_obj.miljoer.map(env => {
+			return env.value
+		})
+
+		return { ...values_obj, miljoer: miljoer }
+	}
+
+	_onSubmit = (values, { resetForm }) => {
+		const request = this.createRequestObjects(values)
+		var success_envs = []
+		var error_envs = []
+
 		this.setState(
 			{
 				isFetching: true,
@@ -47,17 +61,31 @@ export default class SendDoedsmelding extends PureComponent {
 			},
 			async () => {
 				try {
-					await TpsfApi.createDoedsmelding({
-						...values,
+					let response = await TpsfApi.createDoedsmelding({
+						...request,
 						doedsdato: DataFormatter.parseDate(values.doedsdato)
 					})
-					return this.setState({ meldingSent: true, isFetching: false, foundIdent: true })
+					const status = response.data.status
+
+					Object.keys(status).map(key => {
+						if (status[key] === 'OK') success_envs = [...success_envs, key]
+						else error_envs = [...error_envs, key]
+					})
+
+					this.setState({
+						isFetching: false,
+						meldingSent: true,
+						environments_success: success_envs,
+						environments_error: error_envs
+					})
+					resetForm()
 				} catch (err) {
 					this.setState({
 						meldingSent: false,
 						errorMessage: err.response.data.message,
 						isFetching: false
 					})
+					resetForm()
 				}
 			}
 		)
@@ -70,14 +98,15 @@ export default class SendDoedsmelding extends PureComponent {
 	_handleOnBlurInput = e => {
 		let fnr = e.target.value.replace(/\s+/g, '')
 
-		if (fnr.length === 11 && this.state.currentfnr !== fnr && !isNaN(fnr)) {
+		if (fnr.length === 11 && !isNaN(fnr)) {
 			this.setState(
 				{
 					isFetchingMiljoer: true,
 					environments: [],
 					showErrorMessageFoundIdent: false,
 					errorMessage: null,
-					meldingSent: false
+					meldingSent: false,
+					foundIdent: false
 				},
 				async () => {
 					try {
@@ -124,6 +153,43 @@ export default class SendDoedsmelding extends PureComponent {
 		return <h3 className="success-message"> Dødsmelding {handling} </h3>
 	}
 
+	_renderResponseMessage = () => {
+		var handling = ''
+		var suksessMiljoer = ''
+		var feilMiljoer = ''
+
+		if (this.state.environments_success.length > 0)
+			suksessMiljoer = this.state.environments_success.join(', ')
+
+		if (this.state.environments_error.length > 0)
+			feilMiljoer = this.state.environments_error.join(', ')
+
+		switch (this.state.handlingsType) {
+			case 'C':
+				handling = 'sent'
+				break
+			case 'U':
+				handling = 'endret'
+				break
+			case 'D':
+				handling = 'annullert'
+				break
+		}
+		return (
+			<div>
+				{this.state.environments_success.length > 0 && (
+					<h3 className="success-message">
+						Dødsmelding {handling} i {suksessMiljoer}
+					</h3>
+				)}
+
+				{this.state.environments_error.length > 0 && (
+					<h3 className="error-message">Personen var allerede død i {feilMiljoer}</h3>
+				)}
+			</div>
+		)
+	}
+
 	render() {
 		const { foundIdent, environments } = this.state
 
@@ -131,7 +197,7 @@ export default class SendDoedsmelding extends PureComponent {
 			ident: '',
 			handling: 'C',
 			doedsdato: '',
-			miljoe: ''
+			miljoer: []
 		}
 
 		const handlingOptions = [
@@ -144,8 +210,10 @@ export default class SendDoedsmelding extends PureComponent {
 			<ContentContainer>
 				<Formik
 					onSubmit={this._onSubmit}
+					onReset={this.initialValues}
 					validationSchema={this.validation}
 					initialValues={initialValues}
+					enableReinitialize
 					render={props => {
 						const { values, touched, errors, dirty, isSubmitting } = props
 						return (
@@ -173,10 +241,11 @@ export default class SendDoedsmelding extends PureComponent {
 									/>
 
 									<Field
-										name="miljoe"
+										name="miljoer"
 										label="SEND TIL MILJØ"
 										options={environments}
 										component={FormikDollySelect}
+										multi={true}
 										disabled={foundIdent ? false : true}
 									/>
 								</div>
@@ -199,7 +268,7 @@ export default class SendDoedsmelding extends PureComponent {
 				{this.state.errorMessage && (
 					<h4 className="error-message"> Feil: {this.state.errorMessage} </h4>
 				)}
-				{this.state.meldingSent && this._renderMeldingSent()}
+				{this.state.meldingSent && this._renderResponseMessage()}
 			</ContentContainer>
 		)
 	}
