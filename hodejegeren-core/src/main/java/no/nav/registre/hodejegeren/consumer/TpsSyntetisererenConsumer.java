@@ -27,6 +27,6 @@ public class TpsSyntetisererenConsumer {
     }
     
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String aarsakskode, Integer antallMeldinger) {
-        return restTemplate.getForObject(serverUrl + "", new ArrayList<RsMeldingstype>().getClass(), antallMeldinger, aarsakskode);
+        return restTemplate.getForObject(serverUrl + "", ArrayList.class, antallMeldinger, aarsakskode);
     }
 }
