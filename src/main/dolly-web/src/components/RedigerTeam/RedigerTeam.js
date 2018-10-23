@@ -3,11 +3,9 @@ import PropTypes from 'prop-types'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { FormikInput } from '~/components/fields/Input/Input'
 import { Formik, Form, Field, getIn } from 'formik'
-import { DollyApi } from '~/service/Api'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import Knapp from 'nav-frontend-knapper'
 import * as yup from 'yup'
-import Table from '~/components/table/Table'
 import Loading from '~/components/loading/Loading'
 
 export default class RedigerTeam extends PureComponent {
@@ -33,12 +31,12 @@ export default class RedigerTeam extends PureComponent {
 		})
 
 	render() {
-		const { closeOpprettRedigerTeam, team, createOrUpdateFetching } = this.props
-		if (createOrUpdateFetching) {
+		const { closeOpprettRedigerTeam, team, teamIsUpdating } = this.props
+		if (teamIsUpdating) {
 			return (
-				<Table.Row>
+				<div className="opprett-tabellrad loading">
 					<Loading label="oppdaterer gruppe" />
-				</Table.Row>
+				</div>
 			)
 		}
 
@@ -46,7 +44,6 @@ export default class RedigerTeam extends PureComponent {
 			navn: getIn(team, 'navn', ''),
 			beskrivelse: getIn(team, 'beskrivelse', '')
 		}
-
 		return (
 			<Formik
 				initialValues={initialValues}
