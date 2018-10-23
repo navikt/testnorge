@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 
 /**
  * Hoved-service i Hodejegeren. Her blir Tps Synt. kalt. Den genererer syntetiske skdmeldinger og returnerer dem til hodejegeren. Hodejegeren
@@ -43,18 +42,17 @@ public class HodejegerService {
         List<Long> ids = new ArrayList<>();
         
         //        kall tpsfConsumer og hent tpsfstatsulistene
-        List<String> nyeIdenter = new ArrayList<>();
         
         for (String aarsakskode : sorterteAarsakskoder) {
             List syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(aarsakskode, antallMeldingerPerAarsakskode.get(aarsakskode));
             validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
             if (Arrays.asList("01", "02", "39").contains(aarsakskode)) {
-                nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger)); //Bør jeg sette en øvre aldersgrense? åpent søk vil
+                nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger); //Bør jeg sette en øvre aldersgrense? åpent søk vil
             }
             if ("91".equals(aarsakskode)) {
-                nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger));
+                nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger);
             }
-            plassereEksisterendeIdenterIMeldinger(nyeIdenter, syntetiserteSkdmeldinger);//putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
+            //putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
             
             ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
         }
@@ -65,8 +63,5 @@ public class HodejegerService {
         List<String> sorterteAarsakskoder = Arrays.asList(AarsakskoderTrans1.values()).stream().map(AarsakskoderTrans1::getAarsakskode).collect(Collectors.toList());
         sorterteAarsakskoder.retainAll(antallMeldingerPerAarsakskode.keySet());
         return sorterteAarsakskoder;
-    }
-    
-    private void plassereEksisterendeIdenterIMeldinger(List<String> nyeIdenter, List<RsMeldingstype> rsMeldingstypes) {
     }
 }
