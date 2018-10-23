@@ -45,6 +45,8 @@ public class HodejegerService {
         List<Long> ids = new ArrayList<>();
         Map<String, List<RsMeldingstype>> syntetiserteMldPerAarsakskode = new HashMap<>();
         
+//        kall tpsfConsumer og hent tpsfstatsulistene
+        
         for (String aarsakskode : sorterteAarsakskoder) {
             syntetiserteMldPerAarsakskode.put(aarsakskode, tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(aarsakskode, antallMeldingerPerAarsakskode.get(aarsakskode)));
             validationService.logAndRemoveInvalidMessages(syntetiserteMldPerAarsakskode.get(aarsakskode));
@@ -57,8 +59,7 @@ public class HodejegerService {
             
             //putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
             
-            final List<RsMeldingstype> ferdigeMeldinger = syntetiserteMldPerAarsakskode.values().stream().flatMap(List::stream).collect(Collectors.toList());
-            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), ferdigeMeldinger));
+            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteMldPerAarsakskode.get(aarsakskode)));
         }
         return ids;
     }
