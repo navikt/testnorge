@@ -1,9 +1,12 @@
 import { connect } from 'react-redux'
 import RedigerTeam from './RedigerTeam'
 import { actions } from '~/ducks/teams'
+import { createLoadingSelector } from '~/ducks/loading'
+
+const loadingSelector = createLoadingSelector(actions.api.update)
 
 const mapStateToProps = state => ({
-	createOrUpdateFetching: state.teams.createOrUpdateFetching
+	teamIsUpdating: loadingSelector(state)
 })
 
 const mapDispatchToProps = dispatch => ({
