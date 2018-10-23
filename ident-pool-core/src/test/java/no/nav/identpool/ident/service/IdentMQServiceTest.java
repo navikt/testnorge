@@ -49,7 +49,7 @@ public class IdentMQServiceTest {
     @Test
     public void finnesITps() throws JMSException {
         List<String> identer = IdentGenerator.genererIdenter(HentIdenterRequest.builder()
-                .antall(100).foedtEtter(LocalDate.now()).build());
+                .antall(160).foedtEtter(LocalDate.now()).build());
         TpsPersonData personData = new TpsPersonData();
         TpsSvarType tpsSvar = new TpsSvarType();
         PersondataFraTpsM201 fraTpsM201 = new PersondataFraTpsM201();
@@ -59,8 +59,14 @@ public class IdentMQServiceTest {
             PersondataFraTpsM201.AFnr.EFnr eFnr = new PersondataFraTpsM201.AFnr.EFnr();
             eFnr.setFnr(fnr);
             StatusFraTPSType status = new StatusFraTPSType();
-            eFnr.setSvarStatus(status);
-            status.setReturStatus(getSvarStatus());
+            String svarStatus = getSvarStatus();
+            if ("04".equals(svarStatus)) {
+                eFnr.setForespurtFnr(fnr);
+            }
+            if (svarStatus != null) {
+                eFnr.setSvarStatus(status);
+            }
+            status.setReturStatus(svarStatus);
             return eFnr;
         }).collect(Collectors.toList());
 
@@ -80,7 +86,7 @@ public class IdentMQServiceTest {
         IdentMQService identMQService = new IdentMQService(messageQueueFactory);
         Map<String, Boolean> identerFinnes = identMQService.finnesITps(Arrays.asList("t1", "t4"), identer);
         eFnrs.forEach(eFnr -> {
-            Boolean finnes = eFnr.getSvarStatus() != null && !"08".equals(eFnr.getSvarStatus().getReturStatus());
+            Boolean finnes = eFnr.getSvarStatus() == null || !"08".equals(eFnr.getSvarStatus().getReturStatus()) ;
             assertEquals(identerFinnes.get(eFnr.getFnr()), finnes);
         });
     }
