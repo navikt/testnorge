@@ -30,4 +30,6 @@ public abstract class RsMeldingstype {
     private String aarsakskode;
     @Size(max = 6)
     private String sekvensnr;
+    
+    public abstract String getMeldingstype();
 }

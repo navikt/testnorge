@@ -13,9 +13,9 @@ public class IdentPoolConsumer {
     
     @Value("${identpool.url}")
     private String serverUrl;
+    private RestTemplate restTemplate = new RestTemplate();
     
     public List<String> hentNyeIdenter(HentIdenterRequest hentIdenterRequest) {
-        RestTemplate restTemplate = new RestTemplate();
         return restTemplate.postForObject(serverUrl + "/api/v1/identifikator", hentIdenterRequest, ArrayList.class);
     }
 }

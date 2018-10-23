@@ -15,11 +15,8 @@ import lombok.Setter;
 @JsonTypeName("t2")
 public class RsMeldingstype2Felter extends RsMeldingstype {
     
-    private final String meldingstype = "t2";
-    
     @Size(max = 11)
     private String fodselsnr;
-    
     @Size(max = 6)
     private String barnFodsdato1;
     @Size(max = 5)
@@ -28,7 +25,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn1;
     @Size(max = 1)
     private String barnKjoenn1;
-
     @Size(max = 6)
     private String barnFodsdato2;
     @Size(max = 5)
@@ -37,7 +33,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn2;
     @Size(max = 1)
     private String barnKjoenn2;
-
     @Size(max = 6)
     private String barnFodsdato3;
     @Size(max = 5)
@@ -46,7 +41,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn3;
     @Size(max = 1)
     private String barnKjoenn3;
-
     @Size(max = 6)
     private String barnFodsdato4;
     @Size(max = 5)
@@ -55,7 +49,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn4;
     @Size(max = 1)
     private String barnKjoenn4;
-
     @Size(max = 6)
     private String barnFodsdato5;
     @Size(max = 5)
@@ -64,7 +57,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn5;
     @Size(max = 1)
     private String barnKjoenn5;
-
     @Size(max = 6)
     private String barnFodsdato6;
     @Size(max = 5)
@@ -73,7 +65,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn6;
     @Size(max = 1)
     private String barnKjoenn6;
-
     @Size(max = 6)
     private String barnFodsdato7;
     @Size(max = 5)
@@ -82,7 +73,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn7;
     @Size(max = 1)
     private String barnKjoenn7;
-
     @Size(max = 6)
     private String barnFodsdato8;
     @Size(max = 5)
@@ -91,7 +81,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn8;
     @Size(max = 1)
     private String barnKjoenn8;
-
     @Size(max = 6)
     private String barnFodsdato9;
     @Size(max = 5)
@@ -100,7 +89,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn9;
     @Size(max = 1)
     private String barnKjoenn9;
-
     @Size(max = 6)
     private String barnFodsdato10;
     @Size(max = 5)
@@ -109,7 +97,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn10;
     @Size(max = 1)
     private String barnKjoenn10;
-
     @Size(max = 6)
     private String barnFodsdato11;
     @Size(max = 5)
@@ -118,7 +105,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn11;
     @Size(max = 1)
     private String barnKjoenn11;
-
     @Size(max = 6)
     private String barnFodsdato12;
     @Size(max = 5)
@@ -127,7 +113,6 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn12;
     @Size(max = 1)
     private String barnKjoenn12;
-
     @Size(max = 6)
     private String barnFodsdato13;
     @Size(max = 5)
@@ -136,5 +121,10 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn13;
     @Size(max = 1)
     private String barnKjoenn13;
+    
+    @Override
+    public String getMeldingstype() {
+        return "t2";
+    }
     
 }

@@ -22,12 +22,11 @@ public class TpsSyntetisererenConsumer {
     private RestTemplate restTemplate;
     
     public TpsSyntetisererenConsumer() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
-        this.restTemplate = restTemplate;
+        this.restTemplate = new RestTemplate();
+        this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
     }
     
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String aarsakskode, Integer antallMeldinger) {
-        return restTemplate.getForObject(serverUrl + "", new ArrayList<RsMeldingstype>().getClass(), antallMeldinger, aarsakskode);
+        return restTemplate.getForObject(serverUrl + "", ArrayList.class, antallMeldinger, aarsakskode);
     }
 }

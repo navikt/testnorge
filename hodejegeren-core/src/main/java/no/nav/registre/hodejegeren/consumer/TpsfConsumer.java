@@ -23,8 +23,8 @@ public class TpsfConsumer {
     
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Long>>() {
     };
-    private static String BASE_PATH_SKDMELDINGER = "api/v1/endringsmelding/skd/";
-    private static String BASE_PATH_SERVICE_ROUTINE = "api/v1/serviceroutine/";
+    private static final String BASE_PATH_SKDMELDINGER = "api/v1/endringsmelding/skd/";
+    private static final String BASE_URL_SERVICE_ROUTINE = "api/v1/serviceroutine/";
     
     @Value("${tpsf.url}")
     private String serverUrl;
@@ -34,9 +34,8 @@ public class TpsfConsumer {
             @Value("${hodejegeren.ida.credential.username}") String username,
             @Value("${hodejegeren.ida.credential.password}") String password
     ) {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
-        this.restTemplate = restTemplate;
+        this.restTemplate = new RestTemplate();
+        this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
     }
     
     public Set<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskode, String transaksjonstype) {
