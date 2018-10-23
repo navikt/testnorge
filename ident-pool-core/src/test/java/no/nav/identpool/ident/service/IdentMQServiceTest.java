@@ -50,7 +50,6 @@ public class IdentMQServiceTest {
     public void finnesITps() throws JMSException {
         List<String> identer = IdentGenerator.genererIdenter(HentIdenterRequest.builder()
                 .antall(100).foedtEtter(LocalDate.now()).build());
-
         TpsPersonData personData = new TpsPersonData();
         TpsSvarType tpsSvar = new TpsSvarType();
         PersondataFraTpsM201 fraTpsM201 = new PersondataFraTpsM201();
