@@ -6,14 +6,16 @@ import BestillingDetaljer from './BestillingDetaljer/BestillingDetaljer'
 
 export default class BestillingListe extends PureComponent {
 	render() {
-		const { bestillinger } = this.props
+		const { bestillinger, searchActive } = this.props
 		if (!bestillinger) return null
 
 		return (
 			<div className="oversikt-container">
 				{bestillinger.length <= 0 ? (
 					<ContentContainer>
-						Trykk på opprett personer-knappen for å starte en bestilling.
+						{searchActive
+							? 'Søket gav ingen resultater.'
+							: 'Trykk på opprett personer-knappen for å starte en bestilling.'}
 					</ContentContainer>
 				) : (
 					<Table>

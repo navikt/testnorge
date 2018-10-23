@@ -69,6 +69,7 @@
 		"yup": "^0.25.1"
 	},
 	"devDependencies": {
+		"@types/jest": "^23.3.5",
 		"@types/yup": "^0.24.7",
 		"babel-core": "^6.26.3",
 		"babel-loader": "^7.1.4",
@@ -98,6 +99,7 @@
 		"redux-devtools-extension": "^2.13.2",
 		"redux-logger": "^3.0.6",
 		"style-loader": "^0.21.0",
+		"ts-jest": "^23.10.4",
 		"ts-loader": "^4.4.2",
 		"typescript": "2.9.2",
 		"webpack": "^4.10.2",
@@ -109,13 +111,5 @@
 		"semi": false,
 		"useTabs": true,
 		"printWidth": 100
-	},
-	"jest": {
-		"setupTestFrameworkScriptFile": "<rootDir>/testSetup.js",
-		"moduleNameMapper": {
-			"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-			"\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-			"~/(.*)$": "<rootDir>/src/$1"
-		}
 	}
 }

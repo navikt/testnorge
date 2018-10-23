@@ -1,6 +1,9 @@
 import { createAction } from 'redux-actions'
 import { createSelector } from 'reselect'
 import _filter from 'lodash/filter'
+import failure from '~/utils/FailureAction'
+
+import { actions as teamsActions } from '~/ducks/teams'
 
 export const clearAllErrors = createAction('ERRORS/CLEAR_ALL_ERRORS')
 
@@ -32,12 +35,17 @@ export default function errorReducer(state = initialState, action) {
 	// not a *_REQUEST / *_FAILURE actions, so we ignore them
 	if (!matches) return state
 
-	const [, requestName, requestState] = matches
+	const [requestNameFull, requestName, requestState] = matches
+	if (requestNameFull === failure(teamsActions.api.create)) {
+		if (payload.response.status === 500) {
+			payload.customMessage = 'Kan ikke opprette team. Teamnavn er allerede i bruk.'
+		}
+	}
 	return {
 		...state,
 		// Store errorMessage
 		// e.g. stores errorMessage when receiving GET_TODOS_FAILURE
 		//      else clear errorMessage when receiving GET_TODOS_REQUEST
-		[requestName]: requestState === 'FAILURE' ? payload.message : ''
+		[requestName]: requestState === 'FAILURE' ? payload.customMessage || payload.message : ''
 	}
 }

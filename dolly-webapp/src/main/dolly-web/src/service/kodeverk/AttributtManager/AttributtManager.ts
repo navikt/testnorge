@@ -14,13 +14,6 @@ export default class AttributtManager {
 		return AttributtListe.filter(f => selectedIds.includes(f.parent || f.id))
 	}
 
-	listSelectedExcludingParent(selectedIds: string[]): Attributt[] {
-		return AttributtListe.filter(f => {
-			if (f.harBarn) return false
-			return selectedIds.includes(f.parent || f.id)
-		})
-	}
-
 	listAllExcludingChildren(): Attributt[] {
 		return AttributtListe.filter(f => !f.parent)
 	}
@@ -120,6 +113,10 @@ export default class AttributtManager {
 	}
 
 	initValueSelector = item => {
+		// TODO: Åpne for defaultValue på Attributt?
+		if (item.id.includes('identtype')) {
+			return 'FNR'
+		}
 		// TODO: avklaring: skal alle datofelter settes automatisk til dagens dato?
 		switch (item.inputType) {
 			case 'date':

@@ -6,6 +6,7 @@ import { createLoadingSelector } from '~/ducks/loading'
 
 const loadingSelector = createLoadingSelector(GET_TESTBRUKERE)
 const mapStateToProps = state => ({
+	searchActive: Boolean(state.search),
 	testbrukere: sokSelector(tpsfTransformer(state.testbruker.items), state.search),
 	isFetching: loadingSelector(state)
 })
