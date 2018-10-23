@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/internal")
 public class InternalController {
-
+    
     @RequestMapping(value = "/isAlive", method = RequestMethod.GET)
     public String isAlive() {
         return "OK";
     }
-
+    
     @RequestMapping(value = "/isReady", method = RequestMethod.GET)
     public String isReady() {
         return "OK";

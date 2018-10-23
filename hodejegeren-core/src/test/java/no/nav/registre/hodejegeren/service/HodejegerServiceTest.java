@@ -1,7 +1,5 @@
 package no.nav.registre.hodejegeren.service;
 
-import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.DNR;
-import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;

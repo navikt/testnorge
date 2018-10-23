@@ -17,10 +17,6 @@ import lombok.Setter;
 @Builder
 public class RsMeldingstype1Felter extends RsMeldingstype {
     
-    public String getMeldingstype() {
-        return "t1";
-    }
-    
     @Size(max = 6)
     private String fodselsdato;
     @Size(max = 5)
@@ -299,5 +295,9 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     private String mandatTekst;
     @Size(max = 151)
     private String reserverFramtidigBruk;
+
+    public String getMeldingstype() {
+        return "t1";
+    }
     
 }
