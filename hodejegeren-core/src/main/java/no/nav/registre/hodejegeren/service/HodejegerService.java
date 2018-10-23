@@ -56,8 +56,8 @@ public class HodejegerService {
             nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("02")));
             nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("39")));
             nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteMldPerAarsakskode.get("91")));
-            
-            //putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
+    
+            plassereEksisterendeIdenterIMeldinger(nyeIdenter, syntetiserteMldPerAarsakskode.get(aarsakskode));//putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
             
             ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteMldPerAarsakskode.get(aarsakskode)));
         }
@@ -68,5 +68,8 @@ public class HodejegerService {
         List<String> sorterteAarsakskoder = Arrays.asList(AarsakskoderTrans1.values()).stream().map(AarsakskoderTrans1::getAarsakskode).collect(Collectors.toList());
         sorterteAarsakskoder.retainAll(antallMeldingerPerAarsakskode.keySet());
         return sorterteAarsakskoder;
+    }
+    
+    private void plassereEksisterendeIdenterIMeldinger(List<String> nyeIdenter, List<RsMeldingstype> rsMeldingstypes) {
     }
 }

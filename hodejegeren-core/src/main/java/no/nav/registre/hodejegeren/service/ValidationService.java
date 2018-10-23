@@ -41,7 +41,7 @@ public class ValidationService {
                     .append(violation.getMessage())
                     .append(" for variabelen ")
                     .append(violation.getPropertyPath().toString())
-                    .append("=").append(violation.getInvalidValue()).append(". ");
+                    .append('=').append(violation.getInvalidValue()).append(". ");
         }
         log.error(messageBuilder.toString());
     }
