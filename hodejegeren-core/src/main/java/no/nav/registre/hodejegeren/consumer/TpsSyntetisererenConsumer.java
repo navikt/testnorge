@@ -22,9 +22,8 @@ public class TpsSyntetisererenConsumer {
     private RestTemplate restTemplate;
     
     public TpsSyntetisererenConsumer() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
-        this.restTemplate = restTemplate;
+        this.restTemplate = new RestTemplate();
+        this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
     }
     
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String aarsakskode, Integer antallMeldinger) {

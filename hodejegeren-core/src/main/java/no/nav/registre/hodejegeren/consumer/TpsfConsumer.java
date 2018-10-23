@@ -30,9 +30,8 @@ public class TpsfConsumer {
             @Value("${hodejegeren.ida.credential.username}") String username,
             @Value("${hodejegeren.ida.credential.password}") String password
     ) {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
-        this.restTemplate = restTemplate;
+        this.restTemplate = new RestTemplate();
+        this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
     }
     
     public Set<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskode, String transaksjonstype) {
