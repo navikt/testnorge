@@ -5,7 +5,6 @@ import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.I
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,25 +40,23 @@ public class HodejegerService {
     public List<Long> puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         final Map<String, Integer> antallMeldingerPerAarsakskode = genereringsOrdreRequest.getAntallMeldingerPerAarsakskode();
         final List<String> sorterteAarsakskoder = filtrerOgSorterBestilteAarsakskoder(antallMeldingerPerAarsakskode);
-        
         List<Long> ids = new ArrayList<>();
-        Map<String, List<RsMeldingstype>> syntetiserteMldPerAarsakskode = new HashMap<>();
         
         //        kall tpsfConsumer og hent tpsfstatsulistene
         List<String> nyeIdenter = new ArrayList<>();
-
+        
         for (String aarsakskode : sorterteAarsakskoder) {
-            syntetiserteMldPerAarsakskode.put(aarsakskode, tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(aarsakskode, antallMeldingerPerAarsakskode.get(aarsakskode)));
-            validationService.logAndRemoveInvalidMessages(syntetiserteMldPerAarsakskode.get(aarsakskode));
+            List syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(aarsakskode, antallMeldingerPerAarsakskode.get(aarsakskode));
+            validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
+            if (Arrays.asList("01", "02", "39").contains(aarsakskode)) {
+                nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger)); //Bør jeg sette en øvre aldersgrense? åpent søk vil
+            }
+            if ("91".equals(aarsakskode)) {
+                nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger));
+            }
+            plassereEksisterendeIdenterIMeldinger(nyeIdenter, syntetiserteSkdmeldinger);//putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
             
-            nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("01"))); //Bør jeg sette en øvre aldersgrense? åpent søk vil
-            nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("02")));
-            nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("39")));
-            nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteMldPerAarsakskode.get("91")));
-    
-            plassereEksisterendeIdenterIMeldinger(nyeIdenter, syntetiserteMldPerAarsakskode.get(aarsakskode));//putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
-            
-            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteMldPerAarsakskode.get(aarsakskode)));
+            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
         }
         return ids;
     }
