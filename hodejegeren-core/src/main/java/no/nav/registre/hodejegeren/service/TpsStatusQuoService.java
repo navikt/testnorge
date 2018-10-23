@@ -40,11 +40,23 @@ public class TpsStatusQuoService {
     }
 
     public String extractStatusQuoInfoFromTps(JsonNode root, String felt) {
-        return root.findValue(felt).asText();
+        if (felt.contains("/")) {
+            String[] feltene = felt.split("/");
+
+            int i;
+            for (i = 0; i < feltene.length - 1; i++) {
+                root = root.findValue(feltene[i]);
+            }
+
+            return root.findValue(feltene[i]).asText();
+        } else {
+            return root.findValue(felt).asText();
+        }
     }
 
     public JsonNode getInfoOnRoutineName(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
-        if (tpsServiceRoutineCache == null) tpsServiceRoutineCache = new HashMap<>();
+        if (tpsServiceRoutineCache == null)
+            tpsServiceRoutineCache = new HashMap<>();
 
         if (!tpsServiceRoutineCache.containsKey(routineName)) {
             tpsServiceRoutineCache.put(routineName, getInfoHelper(routineName, aksjonsKode, environment, fnr));

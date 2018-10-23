@@ -2,6 +2,7 @@ package no.nav.registre.hodejegeren.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,8 @@ public class AarsakskodeTilFeltnavnMapperService {
         case ENDRING_KORREKSJON_FOEDESTED:
         case ENDRING_DUF_NUMMER:
         case FLYTTING_INNEN_KOMMUNEN:
+        case FOEDSELSMELDING:
+        case UREGISTRERT_PERSON:
             feltnavn.add("datoDo");
             feltnavn.add("statsborger");
             break;
@@ -57,19 +60,15 @@ public class AarsakskodeTilFeltnavnMapperService {
         case INNFLYTTING_ANNEN_KOMMUNE:
             feltnavn.add("datoDo");
             feltnavn.add("statsborger");
-            feltnavn.add("kommunenr");
-            feltnavn.add("tidligereKommunenr");
+            // feltnavn.add("KOMMUNENR");
             feltnavn.add("datoFlyttet");
-            feltnavn.add("boAdresse1");
-            feltnavn.add("postAdresse1");
-            feltnavn.add("boPoststed");
+            // FRA-KOMM-REGDATO
             break;
-        case FOEDSELSMELDING:
         case INNVANDRING:
-        case UREGISTRERT_PERSON:
         case TILDELING_DNUMMER:
-            feltnavn.add("");
-            break;
+            return new HashMap<>();
+        default:
+            return new HashMap<>();
         }
 
         return tpsStatusQuoService.getStatusQuo(feltnavn, aksjonsKode, environment, fnr);

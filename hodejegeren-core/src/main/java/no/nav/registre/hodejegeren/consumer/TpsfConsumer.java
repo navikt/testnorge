@@ -24,7 +24,7 @@ public class TpsfConsumer {
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Long>>() {
     };
     private static final String BASE_PATH_SKDMELDINGER = "api/v1/endringsmelding/skd/";
-    private static final String BASE_URL_SERVICE_ROUTINE = "api/v1/serviceroutine/";
+    private static final String BASE_PATH_SERVICE_ROUTINE = "api/v1/serviceroutine/";
     
     @Value("${tpsf.url}")
     private String serverUrl;
