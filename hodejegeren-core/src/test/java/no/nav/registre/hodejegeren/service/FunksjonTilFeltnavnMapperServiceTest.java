@@ -25,12 +25,12 @@ public class FunksjonTilFeltnavnMapperServiceTest {
 
     @Test
     public void mapFunksjonTilFeltnavn() throws IOException {
-        Funksjoner funksjon = Funksjoner.NAVNEENDRING_FOERSTE;
+        AarsakskoderTrans1 aarsakskoderTrans1 = AarsakskoderTrans1.NAVNEENDRING_FOERSTE;
         String aksjonsKode = "A0";
         String environment = "Q11";
         String fnr = "12345678901";
 
-        funksjonTilFeltnavnMapperService.mapFunksjonTilFeltnavn(funksjon, aksjonsKode, environment, fnr);
+        funksjonTilFeltnavnMapperService.mapFunksjonTilFeltnavn(aarsakskoderTrans1, aksjonsKode, environment, fnr);
 
         ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
         Mockito.verify(tpsStatusQuoService).getStatusQuo(captor.capture(), eq(aksjonsKode), eq(environment), eq(fnr));

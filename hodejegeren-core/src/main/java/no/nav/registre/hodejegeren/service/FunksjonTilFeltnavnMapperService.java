@@ -14,10 +14,10 @@ public class FunksjonTilFeltnavnMapperService {
     @Autowired
     TpsStatusQuoService tpsStatusQuoService;
 
-    public Map<String, String> mapFunksjonTilFeltnavn(Funksjoner funksjoner, String aksjonsKode, String environment, String fnr) throws IOException {
+    public Map<String, String> mapFunksjonTilFeltnavn(AarsakskoderTrans1 aarsakskoderTrans1, String aksjonsKode, String environment, String fnr) throws IOException {
         List<String> feltnavn = new ArrayList<>();
 
-        switch (funksjoner) {
+        switch (aarsakskoderTrans1) {
         case NAVNEENDRING_FOERSTE:
         case NAVNEENDRING_MELDING:
         case NAVNEENDRING_KORREKSJON:
@@ -66,7 +66,6 @@ public class FunksjonTilFeltnavnMapperService {
         case DOEDSMELDING:
         case UREGISTRERT_PERSON:
         case TILDELING_DNUMMER:
-        case KORREKSJON_FAMILIEOPPLYSNINGER_BARN:
             feltnavn.add("");
             break;
         }

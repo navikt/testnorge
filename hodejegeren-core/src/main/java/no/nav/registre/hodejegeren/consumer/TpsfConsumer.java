@@ -1,9 +1,13 @@
 package no.nav.registre.hodejegeren.consumer;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -20,7 +24,7 @@ public class TpsfConsumer {
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Long>>() {
     };
     private static String BASE_PATH_SKDMELDINGER = "api/v1/endringsmelding/skd/";
-    private static String BASE_URL_SERVICE_ROUTINE = "api/v1/serviceroutine/";
+    private static String BASE_PATH_SERVICE_ROUTINE = "api/v1/serviceroutine/";
     
     @Value("${tpsf.url}")
     private String serverUrl;
@@ -44,8 +48,10 @@ public class TpsfConsumer {
         RequestEntity postRequest = RequestEntity.post(url).body(skdmeldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
-    
-    public String getInfoFromTpsServiceRoutine(String routineName, Map<String, Object> tpsRequestParameters) {
-        return restTemplate.getForObject(serverUrl + BASE_URL_SERVICE_ROUTINE + routineName, String.class, tpsRequestParameters);
+
+    public JsonNode getTpsServiceRoutine(String routineName, Map<String, Object> tpsRequestParameters) throws IOException {
+        String response = restTemplate.getForObject(serverUrl + BASE_PATH_SERVICE_ROUTINE + routineName, String.class, tpsRequestParameters);
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readTree(response);
     }
 }
