@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.dolly.domain.resultset.RsTestident;
+import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
@@ -44,6 +45,9 @@ public class TestgruppeControllerTest {
 
     @Mock
     private BestillingService bestillingService;
+
+    @Mock
+    private BestillingProgressService bestillingProgressService;
 
     @InjectMocks
     private TestgruppeController controller;
