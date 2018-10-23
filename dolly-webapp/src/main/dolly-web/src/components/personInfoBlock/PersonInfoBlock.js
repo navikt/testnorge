@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 
@@ -31,8 +31,12 @@ export default class PersonInfoBlock extends PureComponent {
 	render() {
 		const { header, data, multiple } = this.props
 		if (multiple) {
-			return data.map((subBlock, idx) =>
-				this.renderPersonInfoBlock(subBlock.value, subBlock.label, idx)
+			return (
+				<Fragment>
+					{data.map((subBlock, idx) =>
+						this.renderPersonInfoBlock(subBlock.value, subBlock.label, idx)
+					)}
+				</Fragment>
 			)
 		}
 
