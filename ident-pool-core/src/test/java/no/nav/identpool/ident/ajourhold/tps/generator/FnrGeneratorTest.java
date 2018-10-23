@@ -6,18 +6,20 @@ import static junit.framework.TestCase.assertTrue;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+
 import com.google.common.collect.Ordering;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Kjoenn;
 import no.nav.identpool.ident.rest.v1.HentIdenterRequest;
 import no.nav.identpool.util.PersonidentifikatorUtil;
 
-public class
-FnrGeneratorTest {
+@RunWith(MockitoJUnitRunner.class)
+public class FnrGeneratorTest {
 
     @Test
     public void fnrGenererDescendingTest() {

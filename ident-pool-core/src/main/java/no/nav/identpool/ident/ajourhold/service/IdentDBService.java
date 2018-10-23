@@ -1,5 +1,7 @@
 package no.nav.identpool.ident.ajourhold.service;
 
+import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,7 +38,7 @@ public class IdentDBService {
         sjekketITps = 0;
         current = LocalDate.now();
         int minYearMinus = 110;
-        LocalDate minDate = LocalDate.of(current.getYear() - minYearMinus, 1, 1);
+        LocalDate minDate = current.minusYears(minYearMinus).with(firstDayOfYear());
         while (minDate.isBefore(current)) {
             checkAndGenerateForDate(minDate, Identtype.FNR);
             checkAndGenerateForDate(minDate, Identtype.DNR);
@@ -67,7 +69,6 @@ public class IdentDBService {
         Map<LocalDate, List<String>> pinMap = IdentGenerator.genererIdenterMap(firstDate, lastDate, type);
 
         List<String> filtered = filterDatabase(antallPerDag, pinMap);
-
         Map<String, Boolean> identerIBruk = mqService.finnesITps(filtered);
         lagre(identerIBruk);
     }
