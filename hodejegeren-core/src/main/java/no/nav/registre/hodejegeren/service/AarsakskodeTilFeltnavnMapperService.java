@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FunksjonTilFeltnavnMapperService {
+public class AarsakskodeTilFeltnavnMapperService {
 
     @Autowired
     TpsStatusQuoService tpsStatusQuoService;
 
-    public Map<String, String> mapFunksjonTilFeltnavn(AarsakskoderTrans1 aarsakskoderTrans1, String aksjonsKode, String environment, String fnr) throws IOException {
+    public Map<String, String> mapAarsakskodeTilFeltnavn(AarsakskoderTrans1 aarsakskoderTrans1, String aksjonsKode, String environment, String fnr) throws IOException {
         List<String> feltnavn = new ArrayList<>();
 
         switch (aarsakskoderTrans1) {
@@ -36,6 +36,7 @@ public class FunksjonTilFeltnavnMapperService {
         case ADRESSEENDRING_GAB:
         case ENDRING_KORREKSJON_FOEDESTED:
         case ENDRING_DUF_NUMMER:
+        case FLYTTING_INNEN_KOMMUNEN:
             feltnavn.add("datoDo");
             feltnavn.add("statsborger");
             break;
@@ -44,10 +45,13 @@ public class FunksjonTilFeltnavnMapperService {
         case SKILSMISSE:
         case SIVILSTANDSENDRING:
         case KORREKSJON_FAMILIEOPPLYSNINGER:
+        case DOEDSMELDING:
             feltnavn.add("datoDo");
             feltnavn.add("statsborger");
             feltnavn.add("sivilstand");
             feltnavn.add("datoSivilstand");
+            feltnavn.add("relasjon/fnrRelasjon");
+            feltnavn.add("relasjon/typeRelasjon");
             break;
         case ANNULERING_FLYTTING_ADRESSEENDRING:
         case INNFLYTTING_ANNEN_KOMMUNE:
@@ -62,8 +66,6 @@ public class FunksjonTilFeltnavnMapperService {
             break;
         case FOEDSELSMELDING:
         case INNVANDRING:
-        case FLYTTING_INNEN_KOMMUNEN:
-        case DOEDSMELDING:
         case UREGISTRERT_PERSON:
         case TILDELING_DNUMMER:
             feltnavn.add("");

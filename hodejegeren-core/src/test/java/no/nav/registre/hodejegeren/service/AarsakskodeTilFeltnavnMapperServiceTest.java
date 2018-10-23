@@ -16,9 +16,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FunksjonTilFeltnavnMapperServiceTest {
+public class AarsakskodeTilFeltnavnMapperServiceTest {
     @InjectMocks
-    private FunksjonTilFeltnavnMapperService funksjonTilFeltnavnMapperService;
+    private AarsakskodeTilFeltnavnMapperService aarsakskodeTilFeltnavnMapperService;
 
     @Mock
     private TpsStatusQuoService tpsStatusQuoService;
@@ -30,7 +30,7 @@ public class FunksjonTilFeltnavnMapperServiceTest {
         String environment = "Q11";
         String fnr = "12345678901";
 
-        funksjonTilFeltnavnMapperService.mapFunksjonTilFeltnavn(aarsakskoderTrans1, aksjonsKode, environment, fnr);
+        aarsakskodeTilFeltnavnMapperService.mapAarsakskodeTilFeltnavn(aarsakskoderTrans1, aksjonsKode, environment, fnr);
 
         ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
         Mockito.verify(tpsStatusQuoService).getStatusQuo(captor.capture(), eq(aksjonsKode), eq(environment), eq(fnr));
