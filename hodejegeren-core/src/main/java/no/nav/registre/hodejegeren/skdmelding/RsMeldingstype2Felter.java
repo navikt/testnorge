@@ -121,7 +121,8 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn13;
     @Size(max = 1)
     private String barnKjoenn13;
-
+    
+    @Override
     public String getMeldingstype() {
         return "t2";
     }

@@ -295,7 +295,8 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     private String mandatTekst;
     @Size(max = 151)
     private String reserverFramtidigBruk;
-
+    
+    @Override
     public String getMeldingstype() {
         return "t1";
     }
