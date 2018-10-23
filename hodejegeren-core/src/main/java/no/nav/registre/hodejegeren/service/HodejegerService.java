@@ -45,13 +45,13 @@ public class HodejegerService {
         List<Long> ids = new ArrayList<>();
         Map<String, List<RsMeldingstype>> syntetiserteMldPerAarsakskode = new HashMap<>();
         
-//        kall tpsfConsumer og hent tpsfstatsulistene
-        
+        //        kall tpsfConsumer og hent tpsfstatsulistene
+        List<String> nyeIdenter = new ArrayList<>();
+
         for (String aarsakskode : sorterteAarsakskoder) {
             syntetiserteMldPerAarsakskode.put(aarsakskode, tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(aarsakskode, antallMeldingerPerAarsakskode.get(aarsakskode)));
             validationService.logAndRemoveInvalidMessages(syntetiserteMldPerAarsakskode.get(aarsakskode));
             
-            List<String> nyeIdenter = new ArrayList<>();
             nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("01"))); //Bør jeg sette en øvre aldersgrense? åpent søk vil
             nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("02")));
             nyeIdenter.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteMldPerAarsakskode.get("39")));
