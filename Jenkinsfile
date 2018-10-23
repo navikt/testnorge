@@ -1,8 +1,8 @@
 applicationPipeline {
     applicationName = "dolly"
     javaVersion = "1.8"
-    environment = "u2"
-    namespace = "u2"
+    environment = "q1"
+    namespace = "default"
     hasPerformanceTest = false
     hasSmoketests = false
 }
