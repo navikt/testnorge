@@ -1,10 +1,9 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testident;
-
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
+
+import no.nav.dolly.domain.jpa.BestillingProgress;
 
 public interface BestillingProgressRepository extends CrudRepository<BestillingProgress, Long> {
 

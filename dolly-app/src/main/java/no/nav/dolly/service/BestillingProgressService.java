@@ -7,9 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
+
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -35,8 +35,8 @@ public class BestillingProgressService {
     }
 
     public List<BestillingProgress> fetchBestillingsProgressByIdentId(List<RsTestident> rsidenter) {
-        List<String> testidents = new ArrayList<>();
-        for (RsTestident ident : rsidenter){
+        List<String> testidents = new ArrayList<>(rsidenter.size());
+        for (RsTestident ident : rsidenter) {
             testidents.add(ident.getIdent());
         }
         return repository.findBestillingProgressByIdentIn(testidents);
