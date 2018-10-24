@@ -7,7 +7,7 @@ import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { AttributtManager } from '~/service/Kodeverk'
 import { Radio } from 'nav-frontend-skjema'
 import './AttributtVelger.less'
-
+import _ from 'lodash'
 export default class AttributtVelger extends Component {
 	static propTypes = {
 		onToggle: PropTypes.func.isRequired,
@@ -61,9 +61,24 @@ export default class AttributtVelger extends Component {
 
 	renderRadioButtons = items => (
 		<form className="attributt-velger_radiogruppe">
-			{items.map(item => <Radio key={item.id} label={item.label} name="he" />)}
+			{items.map(item => (
+				<Radio
+					key={item.id}
+					label={item.label}
+					name="he"
+					checked={this.props.selectedIds.includes(item.id)}
+					onChange={() => this.onChangeRadioGruppe(items, item)}
+				/>
+			))}
 		</form>
 	)
+
+	onChangeRadioGruppe = (items, selectedItem) => {
+		this.props.onToggle(selectedItem.id)
+		items.forEach(item => {
+			_.includes(this.props.selectedIds, item.id) && this.props.onToggle(item.id)
+		})
+	}
 
 	renderItem = item => (
 		<Checkbox
@@ -91,7 +106,6 @@ export default class AttributtVelger extends Component {
 
 				<div className="flexbox">
 					<div className="attributt-velger_panels">{this.renderPanels()}</div>
-
 					<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />
 				</div>
 			</div>

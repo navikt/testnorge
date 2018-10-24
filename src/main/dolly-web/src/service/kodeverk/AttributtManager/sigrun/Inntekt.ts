@@ -50,7 +50,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.Inntekter,
 		subKategori: SubKategorier.Inntekt,
-		id: 'beregnet skattgrunnlag',
+		id: 'beregnetskattgrunnlag',
 		path: 'inntekter.inntekt',
 		label: 'Beregnet skattegrunnlag',
 		dataSource: DataSource.SIGRUN,
@@ -90,7 +90,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.Inntekter,
 		subKategori: SubKategorier.Inntekt,
-		id: 'summert skattegrunnlag',
+		id: 'summertskattegrunnlag',
 		path: 'inntekter.inntekt',
 		label: 'Summert skattegrunnlag',
 		dataSource: DataSource.SIGRUN,
@@ -114,7 +114,10 @@ const AttributtListe: Attributt[] = [
 				label: 'Beløp',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
-				validation: yup.number().required('Oppgi en sum.')
+				validation: yup
+					.number()
+					.positive('Tast inn et gyldig beløp')
+					.required('Oppgi beløpet')
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
