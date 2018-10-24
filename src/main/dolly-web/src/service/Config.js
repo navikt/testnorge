@@ -16,6 +16,7 @@ const ConfigService = {
 		return Boolean(window.dollyConfig)
 	},
 	getDatesourceUrl(dataSource) {
+		if (!ConfigService.verifyConfig()) return undefined
 		const dollyConfig = window.dollyConfig
 		switch (dataSource) {
 			case 'tpsf':
