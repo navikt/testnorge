@@ -3,6 +3,7 @@ package no.nav.registre.hodejegeren.service;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class AarsakskodeTilFeltnavnMapperService {
 
+    private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
+    private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
+
     @Autowired
     TpsStatusQuoService tpsStatusQuoService;
 
     public Map<String, String> getStatusQuoFraAarsakskode(AarsakskoderTrans1 aarsakskode, String aksjonsKode, String environment, String fnr) throws IOException {
         Map<String, String> personStatusQuo = new HashMap<>();
+        List<String> feltnavn;
 
         switch (aarsakskode) {
         case NAVNEENDRING_FOERSTE:
@@ -39,7 +44,8 @@ public class AarsakskodeTilFeltnavnMapperService {
         case FLYTTING_INNEN_KOMMUNEN:
         case FOEDSELSMELDING:
         case UREGISTRERT_PERSON:
-            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger"), aksjonsKode, environment, fnr));
+            feltnavn = Arrays.asList("datoDo", "statsborger");
+            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, aksjonsKode, environment, fnr));
             break;
         case VIGSEL:
         case SEPERASJON:
@@ -47,13 +53,15 @@ public class AarsakskodeTilFeltnavnMapperService {
         case SIVILSTANDSENDRING:
         case KORREKSJON_FAMILIEOPPLYSNINGER:
         case DOEDSMELDING:
-            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger", "sivilstand", "datoSivilstand"), aksjonsKode, environment, fnr));
-            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSRELA-O", Arrays.asList("relasjon/fnrRelasjon", "relasjon/typeRelasjon"), aksjonsKode, environment, fnr));
+            feltnavn = Arrays.asList("datoDo", "statsborger", "sivilstand", "datoSivilstand");
+            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, aksjonsKode, environment, fnr));
+            feltnavn = Arrays.asList("relasjon/fnrRelasjon", "relasjon/typeRelasjon");
+            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSRELA, feltnavn, aksjonsKode, environment, fnr));
             break;
         case ANNULERING_FLYTTING_ADRESSEENDRING:
         case INNFLYTTING_ANNEN_KOMMUNE:
-            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger", "kommunenr", "datoFlyttet"), aksjonsKode, environment, fnr));
-            // FRA-KOMM-REGDATO
+            feltnavn = Arrays.asList("datoDo", "statsborger", "kommunenr", "datoFlyttet");
+            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, aksjonsKode, environment, fnr));
             break;
         case INNVANDRING:
         case TILDELING_DNUMMER:

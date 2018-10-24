@@ -23,13 +23,14 @@ public class AarsakskodeTilFeltnavnMapperServiceTest {
     @Mock
     private TpsStatusQuoService tpsStatusQuoService;
 
+    private String aksjonsKode = "A0";
+    private String environment = "Q11";
+    private String fnr = "12345678901";
+    private String routineName = "FS03-FDNUMMER-PERSDATA-O";
+
     @Test
     public void getStatusQuoFraAarsakskode() throws IOException {
         AarsakskoderTrans1 aarsakskoderTrans1 = AarsakskoderTrans1.NAVNEENDRING_FOERSTE;
-        String aksjonsKode = "A0";
-        String environment = "Q11";
-        String fnr = "12345678901";
-        String routineName = "FS03-FDNUMMER-PERSDATA-O";
 
         aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(aarsakskoderTrans1, aksjonsKode, environment, fnr);
 
