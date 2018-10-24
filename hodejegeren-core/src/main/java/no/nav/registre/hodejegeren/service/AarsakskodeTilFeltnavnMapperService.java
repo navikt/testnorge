@@ -64,6 +64,7 @@ public class AarsakskodeTilFeltnavnMapperService {
         case INNVANDRING:
         case TILDELING_DNUMMER:
         default:
+            break;
         }
 
         return feltnavn;

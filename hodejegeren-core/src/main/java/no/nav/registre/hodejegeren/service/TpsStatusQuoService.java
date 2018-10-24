@@ -164,6 +164,8 @@ public class TpsStatusQuoService {
         case "relasjon/typeRelasjon":
             routineName = "FS03-FDNUMMER-PERSRELA-O";
             break;
+        default:
+            break;
         }
 
         return getInfoOnRoutineName(routineName, aksjonsKode, environment, fnr);
