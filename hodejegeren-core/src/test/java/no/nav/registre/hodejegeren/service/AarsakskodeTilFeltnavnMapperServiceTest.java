@@ -17,6 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AarsakskodeTilFeltnavnMapperServiceTest {
+
     @InjectMocks
     private AarsakskodeTilFeltnavnMapperService aarsakskodeTilFeltnavnMapperService;
 
@@ -28,8 +29,12 @@ public class AarsakskodeTilFeltnavnMapperServiceTest {
     private String fnr = "12345678901";
     private String routineName = "FS03-FDNUMMER-PERSDATA-O";
 
+    /**
+     * Testscenario: HVIS et kall gjøres til getStatusQuoFraAarsakskode med en aarsakskode, skal riktig servicerutine og feltnavn
+     * bli sendt til getStatusQuo()
+     */
     @Test
-    public void getStatusQuoFraAarsakskode() throws IOException {
+    public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
         AarsakskoderTrans1 aarsakskoderTrans1 = AarsakskoderTrans1.NAVNEENDRING_FOERSTE;
 
         aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(aarsakskoderTrans1, aksjonsKode, environment, fnr);

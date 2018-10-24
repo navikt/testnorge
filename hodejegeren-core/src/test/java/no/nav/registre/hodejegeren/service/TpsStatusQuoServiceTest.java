@@ -6,8 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 
@@ -36,11 +37,15 @@ public class TpsStatusQuoServiceTest {
     private String aksjonsKode = "A0";
     private String environment = "Q11";
     private String fnr = "12345678901";
-    private String routineName = "FS03-FDNUMMER-PERSDATA-O";
-    private String jsonContent = "{\"response\":{\"data1\":{\"statsborgerskap\":\"NOR\",\"kjonn\":\"M\",\"fodselsnummerDetalj\":{\"fnrSystem\":\"\",\"fnrTidspunkt\":\"\",\"fnrSaksbehandler\":\"\"},\"bruker\":{\"sikkerhetsTiltak\":{\"sikrFom\":\"\",\"beskrSikkerhetsTiltak\":\"\",\"sikrTom\":\"\",\"opprettetSystem\":\"\",\"opprettetSaksbehandler\":\"\",\"opprettetTidspunkt\":\"\",\"typeSikkerhetsTiltak\":\"\"},\"NAVenhetDetalj\":{\"kodeNAVenhetBeskr\":\"FROGNER\",\"NAVenhetSaksbehandler\":\"AJOURHD\",\"datoNAVenhet\":\"2018-10-23\",\"NAVenhetTidspunkt\":\"2018-10-23\",\"NAVenhetSystem\":\"SKD\",\"kodeNAVenhet\":\"0312\"},\"umyndigDetalj\":{\"umyndigSaksbehandler\":\"\",\"umyndigSystem\":\"\",\"umyndigTidspunkt\":\"\"},\"diskresjonDetalj\":{\"diskresjonSaksbehandler\":\"\",\"diskresjonTidspunkt\":\"\",\"diskresjonSystem\":\"\",\"kodeDiskresjonBeskr\":\"\",\"datoDiskresjon\":\"\",\"kodeDiskresjon\":\"\"},\"postadresseNorgeNAV\":{\"beskrTypeAdresseNavNorge\":\"\",\"tilleggsLinje\":\"\",\"kommunenr\":\"\",\"husbokstav\":\"\",\"adrTidspunktReg\":\"\",\"datoFom\":\"\",\"kommuneNavn\":\"\",\"postboksnr\":\"\",\"poststed\":\"\",\"bolignr\":\"\",\"adrSaksbehandler\":\"\",\"datoTom\":\"\",\"postnr\":\"\",\"adrSystem\":\"\",\"gatekode\":\"\",\"husnr\":\"\",\"typeAdresseNavNorge\":\"\",\"beskrTypeTilleggsLinje\":\"\",\"typeTilleggsLinje\":\"\",\"gatenavn\":\"\",\"postboksAnlegg\":\"\",\"eiendomsnavn\":\"\"},\"datoUmyndiggjort\":\"\",\"bankkontoUtland\":{\"beskrBankValuta\":\"\",\"bankAdresse2\":\"\",\"bankAdresse1\":\"\",\"giroNrUtland\":\"\",\"regSaksbehandler\":\"\",\"bankLand\":\"\",\"bankValuta\":\"\",\"bankLandKode\":\"\",\"swiftKodeUtland\":\"\",\"regSystem\":\"\",\"bankNavnUtland\":\"\",\"iban\":\"\",\"regTidspunkt\":\"\",\"bankAdresse3\":\"\",\"bankKodeUtland\":\"\"},\"postadresseUtlandNAV\":{\"adresseType\":\"\",\"beskrAdrType\":\"\",\"adrSaksbehandler\":\"\",\"datoTom\":\"\",\"landKode\":\"\",\"adrTidspunktReg\":\"\",\"adrSystem\":\"\",\"datoFom\":\"\",\"land\":\"\",\"adresse3\":\"\",\"adresse1\":\"\",\"adresse2\":\"\"},\"relasjoner\":\"\",\"NAVenhet\":\"0312\"},\"sivilstand\":\"GIFT\",\"personstatusDetalj\":{\"kodePersonstatus\":\"BOSA\",\"psTidspunkt\":\"2018-10-23\",\"psSystem\":\"SKD\",\"datoPersonstatus\":\"2018-10-23\",\"kodePersonstatusBeskr\":\"Bosatt\",\"psSaksbehandler\":\"\"},\"fodselsdato\":\"1988-04-23\",\"datoDo\":\"\",\"bankkontoNorge\":{\"regSystem\":\"\",\"regSaksbehandler\":\"\",\"kontoNummer\":\"\",\"regTidspunkt\":\"\",\"banknavn\":\"\"},\"postAdresse\":{\"postLand\":\"\",\"postLandKode\":\"\",\"fullPostAdresse\":{\"adresseType\":\"\",\"landKode\":\"\",\"adrTidspunktReg\":\"\",\"datoFom\":\"\",\"adresse3\":\"\",\"adresse1\":\"\",\"adresse2\":\"\",\"poststed\":\"\",\"beskrAdrType\":\"\",\"adrSaksbehandler\":\"\",\"datoTom\":\"\",\"postnr\":\"\",\"adrSystem\":\"\",\"land\":\"\"},\"postAdresse2\":\"\",\"postAdresse1\":\"\",\"postPostnr\":\"\",\"postPoststed\":\"\",\"postAdresse3\":\"\"},\"fodestedDetalj\":{\"fodestedTidspunkt\":\"\",\"fodestedSystem\":\"\",\"fodestedSaksbehandler\":\"\"},\"identType\":\"FNR\",\"bostedsAdresse\":{\"boAdresse2\":\"\",\"boPoststed\":\"OSLO\",\"boAdresse1\":\"WALLDORFERSTRABE 1289\",\"boPostnr\":\"0264\",\"fullBostedsAdresse\":{\"adresseType\":\"OFFA\",\"offAdresse\":{\"bokstav\":\"\",\"husnr\":1289,\"gateNavn\":\"WALLDORFERSTRABE\"},\"kommunenr\":\"0301\",\"landKode\":\"NOR\",\"adrTidspunktReg\":\"2018-10-23\",\"datoFom\":\"1988-04-23\",\"kommuneNavn\":\"Oslo\",\"adresse1\":\"WALLDORFERSTRABE 1289\",\"tilleggsAdresseSKD\":\"\",\"adresse2\":\"\",\"tknr\":\"0312\",\"poststed\":\"OSLO\",\"bolignr\":\"\",\"beskrAdrType\":\"Offisiell adresse\",\"adrSaksbehandler\":\"AJOURHD\",\"datoTom\":\"\",\"matrAdresse\":{\"undernr\":\"\",\"gardsnr\":\"\",\"festenr\":\"\",\"mellomAdresse\":\"\",\"bruksnr\":\"\"},\"postnr\":\"0264\",\"adrSystem\":\"SKD\",\"tkNavn\":\"FROGNER\",\"land\":\"NORGE\"}},\"fodselsnummer\":23048801390,\"statsborgerskapDetalj\":{\"kodeStatsborgerskapBeskr\":\"NORGE\",\"sbSystem\":\"SKD\",\"sbTidspunkt\":\"2018-10-23\",\"kodeStatsborgerskap\":\"NOR\",\"sbSaksbehandler\":\"AJOURHD\",\"datoStatsborgerskap\":\"1988-04-23\"},\"datoDoDetalj\":{\"doSystem\":\"\",\"doSaksbehandler\":\"\",\"doTidspunkt\":\"\"},\"fodested\":\"\",\"personnavn\":{\"gjeldendePersonnavn\":\"HEST SMEKKER\",\"allePersonnavn\":{\"kortnavn\":\"HEST SMEKKER\",\"navnTidspunkt\":\"2018-10-23\",\"mellomnavn\":\"\",\"etternavn\":\"HEST\",\"navnSaksbehandler\":\"AJOURHD\",\"fornavn\":\"SMEKKER\",\"navnSystem\":\"SKD\"}},\"sivilstandDetalj\":{\"sivilstSaksbehandler\":\"AJOURHD\",\"kodeSivilstandBeskr\":\"Gift\",\"kodeSivilstand\":\"GIFT\",\"datoSivilstand\":\"2018-10-23\",\"sivilstTidspunkt\":\"2018-10-23\",\"sivilstSystem\":\"SKD\"}},\"status\":{\"kode\":\"00\",\"melding\":\" \",\"utfyllendeMelding\":\" \"},\"antallTotalt\":null}}";
+    private String routineName = "FS03-FDNUMMER-KERNINFO-O";
+    private URL jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
 
+    /**
+     * Testscenario: HVIS getStatusQuo blir kalt med et simpelt feltnavn, så skal den returnere servicerutine-feltets verdi i en
+     * map.
+     */
     @Test
-    public void getStatusQuo() throws IOException {
+    public void shouldGetStatusQuoForFeltnavn() throws IOException {
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
         List<String> feltNavn = new ArrayList<>();
@@ -54,8 +59,12 @@ public class TpsStatusQuoServiceTest {
         assertEquals("NOR", statusQuoValues.get("statsborgerskap"));
     }
 
+    /**
+     * Testscenario: HVIS getStatusQuo blir kalt med feltnavn på formen "felt1/felt2/.../feltX, så skal den returnere
+     * servicerutine-feltX sin verdi i en map.
+     */
     @Test
-    public void getStatusQuoPath() throws IOException {
+    public void shouldGetStatusQuoForFeltnavnPath() throws IOException {
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
         List<String> feltNavn = new ArrayList<>();
@@ -72,8 +81,12 @@ public class TpsStatusQuoServiceTest {
 
     }
 
+    /**
+     * Testscenario: HVIS getInfoOnRoutineName blir kalt skal metoden hente en rutine, og sørge for at innholdet rutinen caches.
+     * Hvis en cache ikke finnes, skal denne opprettes.
+     */
     @Test
-    public void getInfoOnRoutineName() throws IOException {
+    public void shouldUpdateCacheWithRoutine() throws IOException {
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
@@ -88,15 +101,7 @@ public class TpsStatusQuoServiceTest {
     }
 
     @Test
-    public void getInfoHelper() throws IOException {
-        List<String> feltnavn = new ArrayList<>();
-        feltnavn.add("sivilstand");
-
-        Map<String, Object> tpsRequestParameters = new HashMap<>();
-        tpsRequestParameters.put("aksjonsKode", aksjonsKode);
-        tpsRequestParameters.put("environment", environment);
-        tpsRequestParameters.put("fnr", fnr);
-
+    public void shouldHandleTpsRequestParameters() throws IOException {
         tpsStatusQuoService.getInfoHelper(routineName, aksjonsKode, environment, fnr);
 
         ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
