@@ -136,7 +136,7 @@ public class IdentpoolService {
         } else if (identEntity.getRekvireringsstatus().equals(I_BRUK)) {
             throw new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som brukt.");
         }
-        throw new IllegalStateException("Denne feilen skal ikke kunne forekomme.");
+        throw new IllegalStateException("Den etterspurte identen er ugyldig siden den hverken markert som i bruk eller ledig.");
     }
 
     public IdentEntity lesInnhold(String personidentifikator) {
