@@ -29,20 +29,20 @@ public class IdentpoolController {
     private final IdentpoolService identpoolService;
 
     @PostMapping
-    @ApiOperation(value = "${api.identifikator.rekvirer.description}")
+    @ApiOperation(value = "rekvirer nye test-identer")
     public List<String> rekvirer(@RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
         return identpoolService.finnIdenter(hentIdenterRequest);
     }
 
     @PostMapping("/bruk")
-    @ApiOperation(value = "${api.identifikator.bruk.description}")
+    @ApiOperation(value = "marker eksisterende og ledige identer som i bruk")
     public void markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) throws Exception {
         valider(markerBruktRequest.getPersonidentifikator());
         identpoolService.markerBrukt(markerBruktRequest);
     }
 
     @GetMapping("/ledig")
-    @ApiOperation(value = "${api.identifikator.ledig.description}")
+    @ApiOperation(value = "returnerer true eller false avhengig av om en ident er ledig eller ikke")
     public Boolean erLedig(
             @RequestParam String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
@@ -51,7 +51,7 @@ public class IdentpoolController {
     }
 
     @GetMapping
-    @ApiOperation(value = "${api.identifikator.les.description}")
+    @ApiOperation(value = "hent informasjon lagret på en test-ident")
     public IdentEntity lesInnhold(@RequestParam(value = "personidentifikator") String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
         valider(personidentifikator);
