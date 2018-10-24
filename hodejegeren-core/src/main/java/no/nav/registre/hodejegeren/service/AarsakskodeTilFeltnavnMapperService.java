@@ -57,7 +57,7 @@ public class AarsakskodeTilFeltnavnMapperService {
         case INNFLYTTING_ANNEN_KOMMUNE:
             feltnavn.add("datoDo");
             feltnavn.add("statsborger");
-            // feltnavn.add("KOMMUNENR");
+            feltnavn.add("kommunenr");
             feltnavn.add("datoFlyttet");
             // FRA-KOMM-REGDATO
             break;

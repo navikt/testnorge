@@ -55,7 +55,9 @@ public class TpsStatusQuoService {
     }
 
     public JsonNode getInfoOnRoutineName(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
-        if (tpsServiceRoutineCache == null) tpsServiceRoutineCache = new HashMap<>();
+        if (tpsServiceRoutineCache == null) {
+            tpsServiceRoutineCache = new HashMap<>();
+        }
 
         if (!tpsServiceRoutineCache.containsKey(routineName)) {
             tpsServiceRoutineCache.put(routineName, getInfoHelper(routineName, aksjonsKode, environment, fnr));
