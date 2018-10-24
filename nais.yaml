@@ -26,3 +26,15 @@ resources:
   limits:
     cpu: 1.5
     memory: 2048Mi
+fasitResources:
+  used:
+    - alias: "tps-forvalteren.rest-api"
+      resourceType: restservice
+    - alias: "ident-pool.rest-api"
+      resourceType: restservice
+    - alias: "tps-syntetisereren.rest-api"
+      resourceType: restservice
+  exposed:
+   - alias: testnorge-hodejegeren.rest-api
+     resourceType: restservice
+     path: /api
