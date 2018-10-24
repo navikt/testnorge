@@ -1,10 +1,7 @@
 package no.nav.registre.hodejegeren.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +12,7 @@ public class AarsakskodeTilFeltnavnMapperService {
     @Autowired
     TpsStatusQuoService tpsStatusQuoService;
 
-    public Map<String, String> mapAarsakskodeTilFeltnavn(AarsakskoderTrans1 aarsakskoderTrans1, String aksjonsKode, String environment, String fnr) throws IOException {
+    public List<String> mapAarsakskodeTilFeltnavn(AarsakskoderTrans1 aarsakskoderTrans1) {
         List<String> feltnavn = new ArrayList<>();
 
         switch (aarsakskoderTrans1) {
@@ -66,11 +63,9 @@ public class AarsakskodeTilFeltnavnMapperService {
             break;
         case INNVANDRING:
         case TILDELING_DNUMMER:
-            return new HashMap<>();
         default:
-            return new HashMap<>();
         }
 
-        return tpsStatusQuoService.getStatusQuo(feltnavn, aksjonsKode, environment, fnr);
+        return feltnavn;
     }
 }
