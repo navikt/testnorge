@@ -16,13 +16,12 @@
 		"axios": "^0.18.0",
 		"classnames": "^2.2.6",
 		"connected-react-router": "^4.3.0",
-		"date-fns": "^1.29.0",
+		"date-fns": "^2.0.0-alpha.21",
 		"font-awesome": "^4.7.0",
 		"formik": "^1.2.0",
 		"history": "^4.7.2",
 		"less": "^3.0.4",
 		"lodash": "^4.17.10",
-		"nav-datovelger": "^2.1.1",
 		"nav-frontend-alertstriper-style": "^0.2.34",
 		"nav-frontend-core": "^4.0.5",
 		"nav-frontend-ekspanderbartpanel-style": "^0.3.9",
@@ -51,6 +50,7 @@
 		"rc-progress": "^2.2.5",
 		"rc-tooltip": "^3.7.2",
 		"react": "^16.4.2",
+		"react-day-picker": "^7.2.4",
 		"react-dom": "^16.4.0",
 		"react-material-layout": "^1.1.7",
 		"react-modal": "^3.5.1",
@@ -69,6 +69,7 @@
 		"yup": "^0.25.1"
 	},
 	"devDependencies": {
+		"@types/jest": "^23.3.5",
 		"@types/yup": "^0.24.7",
 		"babel-core": "^6.26.3",
 		"babel-loader": "^7.1.4",
@@ -98,6 +99,7 @@
 		"redux-devtools-extension": "^2.13.2",
 		"redux-logger": "^3.0.6",
 		"style-loader": "^0.21.0",
+		"ts-jest": "^23.10.4",
 		"ts-loader": "^4.4.2",
 		"typescript": "2.9.2",
 		"webpack": "^4.10.2",
@@ -109,13 +111,5 @@
 		"semi": false,
 		"useTabs": true,
 		"printWidth": 100
-	},
-	"jest": {
-		"setupTestFrameworkScriptFile": "<rootDir>/testSetup.js",
-		"moduleNameMapper": {
-			"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-			"\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-			"~/(.*)$": "<rootDir>/src/$1"
-		}
 	}
 }

@@ -3,6 +3,7 @@ import * as yup from 'yup'
 import { FormikValues } from 'formik'
 import AttributtListe from './Attributter'
 import { groupList, groupListByHovedKategori } from './GroupList'
+import DataFormatter from '~/utils/DataFormatter'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
 import _mapValues from 'lodash/mapValues'
@@ -11,13 +12,6 @@ export default class AttributtManager {
 	// BASE FUNCTIONS
 	listAllSelected(selectedIds: string[]): Attributt[] {
 		return AttributtListe.filter(f => selectedIds.includes(f.parent || f.id))
-	}
-
-	listSelectedExcludingParent(selectedIds: string[]): Attributt[] {
-		return AttributtListe.filter(f => {
-			if (f.harBarn) return false
-			return selectedIds.includes(f.parent || f.id)
-		})
 	}
 
 	listAllExcludingChildren(): Attributt[] {
@@ -87,15 +81,15 @@ export default class AttributtManager {
 			if (!item.inputType) return prev
 
 			// Initvalue based on key-value
-			return this._setInitialValue(prev, item.id, values)
+			return this._setInitialValue(prev, item, values)
 		}, {})
 	}
-	_setInitialValue(currentObject, itemId, stateValues) {
-		let initialValue = ''
-		const fromState = _get(stateValues, itemId)
+	_setInitialValue(currentObject, item, stateValues) {
+		let initialValue = this.initValueSelector(item)
+		const fromState = _get(stateValues, item.id)
 		if (fromState) initialValue = fromState
 
-		return _set(currentObject, itemId, initialValue)
+		return _set(currentObject, item.id, initialValue)
 	}
 
 	_setInitialArrayValue(currentObject, itemId, stateValues, array) {
@@ -108,7 +102,7 @@ export default class AttributtManager {
 
 	_mapArrayToObjectWithEmptyValues = list => {
 		return list.reduce((accumulator, item) => {
-			return _set(accumulator, item.id, this._initValueSelector(item))
+			return _set(accumulator, item.id, this.initValueSelector(item))
 		}, {})
 	}
 
@@ -118,10 +112,15 @@ export default class AttributtManager {
 		}, {})
 	}
 
-	_initValueSelector = item => {
+	initValueSelector = item => {
+		// TODO: Åpne for defaultValue på Attributt?
+		if (item.id.includes('identtype')) {
+			return 'FNR'
+		}
+		// TODO: avklaring: skal alle datofelter settes automatisk til dagens dato?
 		switch (item.inputType) {
 			case 'date':
-				return new Date()
+				return DataFormatter.formatDate(new Date())
 			default:
 				return ''
 		}

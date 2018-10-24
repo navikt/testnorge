@@ -46,21 +46,26 @@
 
 .tps-endring-doedsmelding {
 	display: flex;
-
-	.doedsmelding-fields {
-		display: flex;
-		flex: 1;
-	}
+	justify-content: space-between;
 
 	.skjemaelement {
 		flex: 1;
 		margin-right: 15px;
 		flex-wrap: wrap;
+
+		.nav-datovelger__inputContainer {
+			display: flex;
+			flex: 1;
+			width: auto;
+		}
+
+		.dollyselect-input {
+			margin-bottom: 1px;
+		}
 	}
 
-	.knapp {
-		flex: 0;
-		height: 34.45px;
+	.loading-env-msg {
+		padding-top: 10px;
 	}
 }
 

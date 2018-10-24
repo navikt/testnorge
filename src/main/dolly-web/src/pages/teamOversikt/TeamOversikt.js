@@ -7,6 +7,7 @@ import Toolbar from '~/components/toolbar/Toolbar'
 import Knapp from 'nav-frontend-knapper'
 import TeamListe from './TeamListe'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
@@ -23,36 +24,44 @@ export default class TeamOversikt extends Component {
 	}
 
 	render() {
-		const { teamListe, teams, history, startOpprettTeam, startRedigerTeam, deleteTeam } = this.props
-		const { fetching, visning, visOpprettTeam, editTeamId } = teams
+		const {
+			teamListe,
+			teams,
+			history,
+			startOpprettTeam,
+			startRedigerTeam,
+			deleteTeam,
+			searchActive,
+			isFetching
+		} = this.props
+		const { visning, visOpprettTeam, editTeamId } = teams
 
 		return (
 			<div className="oversikt-container">
-				<div className="page-header flexbox--space">
+				<div className="page-header flexbox--align">
 					<Overskrift label="Teams" />
+					<ContentTooltip>Med teams kan du og kolleger dele testdatagrupper.</ContentTooltip>
 				</div>
-
 				<Toolbar
 					toggleOnChange={this.handleViewChange}
 					toggleCurrent={visning}
-					searchField={SearchFieldConnector}
+					searchField={<SearchFieldConnector />}
 				>
 					<Knapp type="hoved" onClick={startOpprettTeam}>
 						Nytt team
 					</Knapp>
 				</Toolbar>
-
 				{visOpprettTeam && <RedigerTeamConnector />}
-				{fetching ? (
+				{isFetching ? (
 					<Loading label="laster teams" panel />
 				) : (
 					<TeamListe
 						items={teamListe}
-						fetching={fetching}
 						history={history}
 						startRedigerTeam={startRedigerTeam}
 						editTeamId={editTeamId}
 						deleteTeam={deleteTeam}
+						searchActive={searchActive}
 					/>
 				)}
 			</div>

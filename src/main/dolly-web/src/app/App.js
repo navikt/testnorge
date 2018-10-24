@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Header from '~/components/header/Header'
 import Loading from '~/components/loading/Loading'
-import Breadcrumbs from '~/components/breadcrumb/Breadcrumb'
+import Breadcrumb from '~/components/breadcrumb/BreadcrumbWithHoc'
 import SplashscreenConnector from '~/components/splashscreen/SplashscreenConnector'
 import Toast from '~/components/toast/Toast'
 import routes from '~/Routes'
@@ -28,7 +28,7 @@ export default class App extends Component {
 		return (
 			<React.Fragment>
 				<Header brukerData={brukerData} />
-				<Breadcrumbs />
+				<Breadcrumb />
 				<main>
 					<Switch>
 						{routes.map((route, idx) => {

@@ -10,69 +10,162 @@ import * as yup from 'yup'
 import Loading from '~/components/loading/Loading'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DisplayFormikState from '~/utils/DisplayFormikState'
+import DataFormatter from '~/utils/DataFormatter'
+import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
 export default class SendFoedselsmelding extends PureComponent {
 	state = {
 		isFetching: false,
+		isFetchingMiljoer: false,
 		nyttBarn: null,
-		errorMessage: null
+		errorMessage: null,
+		foundIdentMor: null,
+		showErrorMessageFoundIdent: false,
+		currentFnrMor: '',
+		environments: [],
+		response_success: []
 	}
 
 	validation = () =>
 		yup.object().shape({
 			identMor: yup
 				.string()
-				.min(11, 'Mors indent må inneholde 11 sifre')
-				.max(11, 'Mors indent må inneholde 11 sifre')
-				.required('Mors indent er et påkrevd felt'),
+				.min(11, 'Mors ident må inneholde 11 sifre.')
+				.max(11, 'Mors ident må inneholde 11 sifre.')
+				.required('Mors ident er et påkrevd felt.'),
 			identFar: yup
 				.string()
-				.min(11, 'Indent må inneholde 11 sifre')
-				.max(11, 'Indent må inneholde 11 sifre'),
-			kjonn: yup.string().required('Kjønn er et påkrevd felt'),
-			miljoe: yup.string().required('Miljø er et påkrevd felt'),
-			foedselsdato: yup.date().required('Dato er et påkrevd felt'),
-			adresseFra: yup.string().required('Adresse er et påkrevd felt')
+				.min(11, 'Ident må inneholde 11 sifre.')
+				.max(11, 'Ident må inneholde 11 sifre.'),
+			identtype: yup.string().required('Identtype er ett påkrevd felt.'),
+			kjonn: yup.string().required('Kjønn er et påkrevd felt.'),
+			miljoer: yup.string().required('Miljø er et påkrevd felt.'),
+			foedselsdato: DateValidation,
+			adresseFra: yup.string().required('Adresse er et påkrevd felt.')
 		})
 
-	_onSubmit = values => {
-		this.setState({ isFetching: true, nyttBarn: null, errorMessage: null }, async () => {
-			try {
-				const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding(values)
-				const getKontaktInformasjonRes = await TpsfApi.getKontaktInformasjon(
-					createFoedselsmeldingRes.data.personId,
-					values.miljoe
-				)
+	createRequestObjects(values) {
+		const miljoer = values.miljoer.map(env => {
+			return env.value
+		})
 
-				return this.setState({
-					nyttBarn: getKontaktInformasjonRes.data.person,
-					isFetching: false
-				})
-			} catch (err) {
-				this.setState({ isFetching: false, errorMessage: err.response.data.message })
+		return { ...values, miljoer: miljoer }
+	}
+
+	_onSubmit = (values, { resetForm }) => {
+		const request = this.createRequestObjects(values)
+		var success_envs = []
+
+		this.setState(
+			{
+				isFetching: true,
+				nyttBarn: null,
+				errorMessage: null,
+				foundIdentMor: false,
+				response_success: []
+			},
+			async () => {
+				try {
+					const createFoedselsmeldingRes = await TpsfApi.createFoedselsmelding({
+						...request,
+						foedselsdato: DataFormatter.parseDate(values.foedselsdato)
+					})
+					const getKontaktInformasjonRes = await TpsfApi.getKontaktInformasjon(
+						createFoedselsmeldingRes.data.personId,
+						request.miljoer[0]
+					)
+					const status = createFoedselsmeldingRes.data.status
+					Object.keys(status).map(key => {
+						if (status[key] === 'OK') success_envs = [...success_envs, key]
+					})
+					resetForm()
+					return this.setState({
+						nyttBarn: getKontaktInformasjonRes.data.person,
+						isFetching: false,
+						response_success: success_envs
+					})
+				} catch (err) {
+					resetForm()
+					this.setState({
+						isFetching: false,
+						errorMessage: err.response.data.message
+					})
+				}
 			}
-		})
+		)
 	}
 
 	_renderNyttBarn = person => {
+		var suksessMiljoer = ''
+		if (this.state.response_success.length > 0)
+			suksessMiljoer = this.state.response_success.join(', ')
+
 		return (
 			<Fragment>
 				<h3 className="success-message">
 					Gratulerer, {person.personNavn.gjeldendePersonnavn} med ident {person.fodselsnummer} ble
-					født!
+					født i miljø {suksessMiljoer}!
 				</h3>
 			</Fragment>
 		)
 	}
 
+	fillEnvironmentDropdown(environments) {
+		return environments.map(env => ({ value: env, label: env.toUpperCase() }))
+	}
+
+	_handleOnBlurInput = e => {
+		let fnr = e.target.value.replace(/\s+/g, '')
+
+		if (fnr.length === 11 && !isNaN(fnr)) {
+			this.setState(
+				{
+					isFetchingMiljoer: true,
+					nyttBarn: null,
+					environments: [],
+					showErrorMessageFoundIdent: false,
+					foundIdentMor: false,
+					errorMessage: null
+				},
+				async () => {
+					try {
+						const getMiljoerByFnrRes = await TpsfApi.getMiljoerByFnr(fnr)
+						const res_environments = getMiljoerByFnrRes.data.statusPaaIdenter[0].env
+
+						if (res_environments.length < 1) {
+							return this.setState({
+								currentFnrMor: fnr,
+								foundIdentMor: false,
+								isFetchingMiljoer: false,
+								showErrorMessageFoundIdent: true
+							})
+						}
+
+						const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)
+						return this.setState({
+							environments: displayEnvironmentsInDropdown,
+							currentFnrMor: fnr,
+							foundIdentMor: true,
+							isFetchingMiljoer: false
+						})
+					} catch (err) {
+						this.setState({ isFetchingMiljoer: false, currentFnrMor: fnr })
+					}
+				}
+			)
+		}
+	}
+
 	render() {
+		const { environments, foundIdentMor } = this.state
+
 		let initialValues = {
 			identMor: '',
 			identFar: '',
 			identtype: 'FNR',
 			foedselsdato: '',
 			kjonn: '',
-			miljoe: 't0',
+			miljoer: [],
 			adresseFra: ''
 		}
 
@@ -86,38 +179,55 @@ export default class SendFoedselsmelding extends PureComponent {
 			<ContentContainer>
 				<Formik
 					onSubmit={this._onSubmit}
+					onReset={this.initialValues}
 					validationSchema={this.validation}
 					initialValues={initialValues}
+					enableReinitialize
 					render={props => {
 						const { values, touched, errors, dirty, isSubmitting } = props
 						return (
 							<Form autoComplete="off">
 								<h2>Send fødselsmelding</h2>
 								<div className="tps-endring-foedselmelding-top">
-									<Field name="identMor" label="MORS IDENT" component={FormikInput} />
-									<Field name="identFar" label="FARS IDENT" component={FormikInput} />
+									<Field
+										name="identMor"
+										label="MORS IDENT"
+										component={FormikInput}
+										onBlur={this._handleOnBlurInput}
+									/>
+									<Field
+										name="identFar"
+										label="FARS IDENT"
+										component={FormikInput}
+										disabled={foundIdentMor ? false : true}
+									/>
 									<Field
 										name="identtype"
 										label="BARNETS IDENTTYPE"
 										component={FormikDollySelect}
 										options={SelectOptionsManager('identtype')}
+										disabled={foundIdentMor ? false : true}
 									/>
 									<Field
 										name="foedselsdato"
 										label="BARNETS FØDSELSDATO"
 										component={FormikDatepicker}
+										disabled={foundIdentMor ? false : true}
 									/>
 									<Field
 										name="kjonn"
 										label="BARNETS KJØNN"
 										component={FormikDollySelect}
 										options={SelectOptionsManager('kjonnBarn')}
+										disabled={foundIdentMor ? false : true}
 									/>
 									<Field
-										name="miljoe"
+										name="miljoer"
 										label="SEND TIL MILJØ"
-										options={this.props.dropdownMiljoe}
+										options={environments}
 										component={FormikDollySelect}
+										multi={true}
+										disabled={foundIdentMor ? false : true}
 									/>
 								</div>
 								<div className="tps-endring-foedselmelding-bottom">
@@ -126,8 +236,9 @@ export default class SendFoedselsmelding extends PureComponent {
 										label="ADRESSE"
 										component={FormikDollySelect}
 										options={adresseOptions}
+										disabled={foundIdentMor ? false : true}
 									/>
-									<Knapp type="hoved" htmlType="submit">
+									<Knapp type="hoved" htmlType="submit" disabled={foundIdentMor ? false : true}>
 										Opprett fødselsmelding
 									</Knapp>
 								</div>
@@ -137,6 +248,12 @@ export default class SendFoedselsmelding extends PureComponent {
 					}}
 				/>
 				{this.state.isFetching && <Loading label="Sender fødselsmelding" />}
+				{this.state.isFetchingMiljoer && <Loading label="Søker etter testbruker" />}
+				{this.state.showErrorMessageFoundIdent && (
+					<h3 className="error-message">
+						Finner ikke testperson med ident: {this.state.currentFnrMor}
+					</h3>
+				)}
 				{this.state.errorMessage && (
 					<h4 className="error-message"> Feil: {this.state.errorMessage} </h4>
 				)}

@@ -5,12 +5,13 @@ import GruppeDetaljer from './GruppeDetaljer/GruppeDetaljer'
 import BestillingStatus from './BestillingStatus/BestillingStatus'
 import Loading from '~/components/loading/Loading'
 import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
+import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
-import BestillingListe from './BestillingListe/BestillingListe'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Toolbar from '~/components/toolbar/Toolbar'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import Knapp from 'nav-frontend-knapper'
+import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
 
 import './Gruppe.less'
 
@@ -21,9 +22,12 @@ export default class Gruppe extends Component {
 		createOrUpdateId: PropTypes.string
 	}
 
+	VISNING_TESTPERSONER = 'testpersoner'
+	VISNING_BESTILLING = 'bestilling'
+
 	state = {
 		redigerGruppe: false,
-		visning: 'best'
+		visning: this.VISNING_TESTPERSONER
 	}
 
 	componentDidMount() {
@@ -39,14 +43,20 @@ export default class Gruppe extends Component {
 
 	toggleToolbar = e => {
 		const visning = e.target.value
-		this.setState({ visning })
+		this.setState({ visning }, () => this.props.resetSearch())
+	}
+
+	searchfieldPlaceholderSelector = () => {
+		if (this.state.visning === this.VISNING_BESTILLING) return 'Søk i bestillinger'
+		return 'Søk etter testpersoner'
 	}
 
 	renderList = gruppe => {
 		const { visning } = this.state
 		const { editTestbruker } = this.props
 
-		if (visning === 'best') return <BestillingListe bestillinger={gruppe.bestillinger} />
+		if (visning === this.VISNING_BESTILLING)
+			return <BestillingListeConnector bestillingListe={gruppe.bestillinger} />
 
 		return (
 			<TestbrukerListeConnector testidenter={gruppe.testidenter} editTestbruker={editTestbruker} />
@@ -61,7 +71,8 @@ export default class Gruppe extends Component {
 			isFetching,
 			getGruppe,
 			deleteGruppe,
-			getBestillingStatus
+			getBestillingStatus,
+			addFavorite
 		} = this.props
 
 		if (isFetching) return <Loading label="Laster grupper" panel />
@@ -78,24 +89,18 @@ export default class Gruppe extends Component {
 				icon: 'edit',
 				onClick: createGroup
 			})
-		} else {
-			groupActions.push({
-				icon: 'star',
-				onClick: () => {
-					alert('ikke implementert')
-				}
-			})
 		}
 
 		const toggleValues = [
-			{ value: 'test', label: `Testpersoner (${gruppe.testidenter.length})` },
-			{ value: 'best', label: `Bestillinger (${gruppe.bestillinger.length})` }
+			{ value: this.VISNING_TESTPERSONER, label: `Testpersoner (${gruppe.testidenter.length})` },
+			{ value: this.VISNING_BESTILLING, label: `Bestillinger (${gruppe.bestillinger.length})` }
 		]
 
 		return (
 			<div id="gruppe-container">
 				<Overskrift label={gruppe.navn} actions={groupActions}>
 					{/* <ConfirmTooltip onClick={deleteGruppe} /> */}
+					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</Overskrift>
 
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
@@ -107,7 +112,7 @@ export default class Gruppe extends Component {
 				))}
 
 				<Toolbar
-					searchField={SearchFieldConnector}
+					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}
 					toggleOnChange={this.toggleToolbar}
 					toggleCurrent={this.state.visning}
 					toggleValues={toggleValues}

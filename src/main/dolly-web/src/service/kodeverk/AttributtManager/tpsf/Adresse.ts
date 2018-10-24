@@ -1,6 +1,6 @@
 import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource } from '../Types'
-import Formatters from '~/utils/DataFormatter'
+import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
 import * as yup from 'yup'
 
@@ -47,7 +47,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Postnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst fyll ut'),
+		validation: yup.string().required('Vennligst fyll ut.'),
 		kanRedigeres: true
 	},
 	{
@@ -59,7 +59,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Kommunenummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst fyll ut'),
+		validation: yup.string().required('Vennligst fyll ut.'),
 		kanRedigeres: true
 	},
 	{
@@ -71,8 +71,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Flyttedato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: yup.date().required('Vennligst fyll ut'),
-		format: Formatters.formatDate,
+		validation: DateValidation,
 		kanRedigeres: true
 	}
 
