@@ -6,13 +6,16 @@ import BestillingDetaljer from './BestillingDetaljer/BestillingDetaljer'
 
 export default class BestillingListe extends PureComponent {
 	render() {
-		const { bestillinger } = this.props
+		const { bestillinger, searchActive } = this.props
+		if (!bestillinger) return null
 
 		return (
 			<div className="oversikt-container">
 				{bestillinger.length <= 0 ? (
 					<ContentContainer>
-						Trykk på opprett personer-knappen for å starte en bestilling.
+						{searchActive
+							? 'Søket gav ingen resultater.'
+							: 'Trykk på opprett personer-knappen for å starte en bestilling.'}
 					</ContentContainer>
 				) : (
 					<Table>
@@ -27,18 +30,12 @@ export default class BestillingListe extends PureComponent {
 						{bestillinger &&
 							bestillinger.map((bestilling, idx) => {
 								return (
-									<Table.Row key={idx} expandComponent={<BestillingDetaljer />}>
-										<Table.Column width="15" value={bestilling.id.toString()} />
-										<Table.Column width="15" value={bestilling.antallIdenter.toString()} />
-										<Table.Column
-											width="20"
-											value={Formatters.formatDate(bestilling.sistOppdatert)}
-										/>
-										<Table.Column
-											width="30"
-											value={Formatters.arrayToString(bestilling.environments)}
-										/>
-										<Table.Column width="10" value={bestilling.ferdig ? 'Ferdig' : 'Pågår'} />
+									<Table.Row key={idx}>
+										<Table.Column width="15" value={bestilling.id} />
+										<Table.Column width="15" value={bestilling.antallIdenter} />
+										<Table.Column width="20" value={bestilling.sistOppdatert} />
+										<Table.Column width="30" value={bestilling.environments} />
+										<Table.Column width="10" value={bestilling.ferdig} />
 									</Table.Row>
 								)
 							})}

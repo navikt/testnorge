@@ -2,6 +2,7 @@ import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource } from '../Types'
 import Formatters from '~/utils/DataFormatter'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
+import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
 import * as yup from 'yup'
 
@@ -13,8 +14,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Født etter',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		format: Formatters.formatDate,
-		validation: yup.date().required('Velg dato')
+		validation: DateValidation
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -23,8 +23,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Født før',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		format: Formatters.formatDate,
-		validation: yup.date()
+		validation: DateValidation
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -33,8 +32,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Dødsdato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		format: Formatters.formatDate,
-		validation: yup.date()
+		validation: DateValidation
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -44,7 +42,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'StatsborgerskapFreg',
-		validation: yup.string().required('Krever et statsborgerskap'),
+		validation: yup.string().required('Krever et statsborgerskap.'),
 		kanRedigeres: true
 	},
 	{
@@ -55,7 +53,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Kj%C3%B8nnstyper',
-		validation: yup.string().required('Velg kjønn'),
+		validation: yup.string().required('Velg kjønn.'),
 		format: Formatters.kjonnToString,
 		kanRedigeres: true
 	},
@@ -67,7 +65,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Sivilstander',
-		validation: yup.string().required('Velg sivilstand'),
+		validation: yup.string().required('Velg sivilstand.'),
 		kanRedigeres: true
 	}
 	// {

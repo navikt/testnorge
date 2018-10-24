@@ -34,5 +34,4 @@ public class BestillingController {
         rsBestilling.setPersonStatus(progress);
         return rsBestilling;
     }
-
 }

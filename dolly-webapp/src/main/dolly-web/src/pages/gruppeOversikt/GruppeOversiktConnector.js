@@ -19,6 +19,7 @@ const loadingSelector = createLoadingSelector([getGrupper, getGrupperByTeamId, g
 
 const mapStateToProps = state => {
 	return {
+		searchActive: Boolean(state.search),
 		isFetching: loadingSelector(state),
 		gruppeListe: _orderBy(
 			sokSelectorOversikt(state.gruppe.data, state.search),
@@ -37,8 +38,7 @@ const mapDispatchToProps = dispatch => ({
 	editGroup: editId => dispatch(showCreateOrEditGroup(editId)),
 	settVisning: visning => dispatch(settVisning(visning)),
 	deleteGruppe: gruppeId => dispatch(deleteGruppe(gruppeId)),
-	setSort: sortObj => dispatch(setSort(sortObj)),
-	addFavorite: groupId => dispatch(addFavorite(groupId))
+	setSort: sortObj => dispatch(setSort(sortObj))
 })
 
 export default connect(

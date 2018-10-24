@@ -11,7 +11,7 @@
 
 	<groupId>no.nav.dolly</groupId>
 	<artifactId>dolly</artifactId>
-	<version>test-300</version>
+	<version>test-364</version>
 	<packaging>pom</packaging>
 
 	<name>dolly</name>
@@ -28,15 +28,15 @@
 	<properties>
 		<application.name>dolly</application.name>
 		<application.version>${project.version}</application.version>
-
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<freg-security-oidc.version>3.0.5</freg-security-oidc.version>
+		<freg-spring-boot-starters.version>2.0.0</freg-spring-boot-starters.version>
 		<springfox-swagger2.version>2.4.0</springfox-swagger2.version>
 		<springfox-swagger-ui.version>2.4.0</springfox-swagger-ui.version>
 		<kodeverk.version>1.2</kodeverk.version>
-
+		<logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
         <ojdbc.version>12.2.0.1</ojdbc.version>
 		<sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**, **/dolly/testdata/builder/**</sonar.exclusions>
 	</properties>
@@ -64,12 +64,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>no.nav.freg</groupId>
-			<artifactId>abac-spring</artifactId>
-			<version>1.4.3</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
@@ -84,9 +78,21 @@
 			</dependency>
 
 			<dependency>
+				<groupId>no.nav.freg</groupId>
+				<artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
+				<version>${freg-spring-boot-starters.version}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>no.nav.tjenester</groupId>
 				<artifactId>kodeverk-api-v1</artifactId>
 				<version>${kodeverk.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.logstash.logback</groupId>
+				<artifactId>logstash-logback-encoder</artifactId>
+				<version>${logstash-logback-encoder.version}</version>
 			</dependency>
 
 			<dependency>
