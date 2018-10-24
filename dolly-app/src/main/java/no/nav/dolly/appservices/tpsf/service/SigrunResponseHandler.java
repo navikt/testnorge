@@ -11,11 +11,11 @@ public class SigrunResponseHandler {
     private static final int REQUEST_OK = 200;
     private static final int REQUEST_CREATED = 201;
 
-    public String extractResponse(ResponseEntity<String> response){
-        if (response.getStatusCodeValue() == REQUEST_CREATED || response.getStatusCodeValue() == REQUEST_OK){
+    public String extractResponse(ResponseEntity<String> response) {
+        if (response.getStatusCodeValue() == REQUEST_CREATED || response.getStatusCodeValue() == REQUEST_OK) {
             return "Ok";
-        } else{
-            log.error(response.toString() + "failed");
+        } else {
+            log.error("{} failed", response.toString());
             return "Failed";
         }
     }

@@ -45,6 +45,11 @@ fasitResources:
       propertyMap:
         url: providers.kodeverk.url
 
+    - alias: sigrun-host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.sigrun.url
+
     - alias: dollyDB
       resourceType: DataSource
       propertyMap:
