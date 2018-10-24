@@ -6,12 +6,10 @@ import static no.nav.freg.fasit.utils.domain.Zone.FSS;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-
 import no.nav.freg.fasit.utils.FasitService;
 import no.nav.freg.fasit.utils.domain.QueueManager;
 

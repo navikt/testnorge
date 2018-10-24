@@ -7,15 +7,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.jms.JMSException;
-
-import com.ibm.mq.jms.MQQueueConnectionFactory;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import com.ibm.mq.jms.MQQueueConnectionFactory;
 
 import no.nav.identpool.ident.ajourhold.mq.strategy.ConnectionStrategy;
 

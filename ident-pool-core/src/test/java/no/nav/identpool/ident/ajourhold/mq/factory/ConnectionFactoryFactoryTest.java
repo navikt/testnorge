@@ -9,12 +9,11 @@ import static org.mockito.Mockito.verify;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-
-import com.ibm.mq.jms.MQQueueConnectionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import com.ibm.mq.jms.MQQueueConnectionFactory;
 
 import no.nav.identpool.ident.ajourhold.mq.strategy.ConnectionStrategy;
 

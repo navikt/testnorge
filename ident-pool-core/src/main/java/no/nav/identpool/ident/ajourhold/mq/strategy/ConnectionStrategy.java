@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ConnectionStrategy {
 
+    private static final Integer TRANSPORT_TYPE = 1;
     private final String queueManager;
     private final String hostName;
     private final Integer port;
     private final String channel;
-    private static final Integer TRANSPORT_TYPE = 1;
 
     public Integer getTransportType() {
         return TRANSPORT_TYPE;

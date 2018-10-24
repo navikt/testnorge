@@ -2,12 +2,10 @@ package no.nav.identpool.ident.ajourhold.mq.factory;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-
 import no.nav.identpool.ident.ajourhold.mq.consumer.DefaultMessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ident.ajourhold.mq.strategy.ConnectionStrategy;

@@ -2,12 +2,10 @@ package no.nav.identpool.ident.ajourhold.tps.xml.service;
 
 import java.util.Collection;
 import java.util.List;
-
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import lombok.Getter;
-
 import no.nav.identpool.ident.ajourhold.tps.xml.ServiceRutinenavn;
 import no.nav.identpool.ident.ajourhold.tps.xml.TpsServiceRutine;
 

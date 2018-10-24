@@ -1,15 +1,12 @@
 package no.nav.identpool.ident.ajourhold.service;
 
 import java.time.LocalDateTime;
-
 import javax.batch.runtime.BatchStatus;
-
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang.exception.ExceptionUtils;
-
 import no.nav.identpool.ident.ajourhold.repository.AjourholdEntity;
 import no.nav.identpool.ident.ajourhold.repository.AjourholdRepository;
 

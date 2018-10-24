@@ -8,11 +8,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-
 import no.nav.identpool.ident.ajourhold.tps.generator.IdentGenerator;
 import no.nav.identpool.ident.ajourhold.util.IdentDistribusjon;
 import no.nav.identpool.ident.domain.Identtype;

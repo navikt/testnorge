@@ -14,20 +14,17 @@ import no.nav.identpool.ident.ajourhold.mq.factory.MessageQueueFactory;
 @Configuration
 @ComponentScan(basePackages = "no.nav.identpool") class ComponentTestConfig {
 
+    @MockBean
+    CronJobService cronJobService;
+    @MockBean
+    ConnectionStrategyFactory connectionStrategyFactory;
+    @MockBean
+    MessageQueueFactory messageQueueFactory;
+    @MockBean
+    QueueContext queueContext;
+
     @Bean
     RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
-    @MockBean
-    CronJobService cronJobService;
-
-    @MockBean
-    ConnectionStrategyFactory connectionStrategyFactory;
-
-    @MockBean
-    MessageQueueFactory messageQueueFactory;
-
-    @MockBean
-    QueueContext queueContext;
 }

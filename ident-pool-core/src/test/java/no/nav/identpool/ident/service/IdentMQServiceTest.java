@@ -12,10 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -36,12 +34,12 @@ public class IdentMQServiceTest {
 
     public static String getSvarStatus() {
         switch (random.nextInt(4)) {
-            case 0:
-                return "00";
-            case 1:
-                return "04";
-            case 2:
-                return "08";
+        case 0:
+            return "00";
+        case 1:
+            return "04";
+        case 2:
+            return "08";
         }
         return null;
     }
@@ -86,7 +84,7 @@ public class IdentMQServiceTest {
         IdentMQService identMQService = new IdentMQService(messageQueueFactory);
         Map<String, Boolean> identerFinnes = identMQService.finnesITps(Arrays.asList("t1", "t4"), identer);
         eFnrs.forEach(eFnr -> {
-            Boolean finnes = eFnr.getSvarStatus() == null || !"08".equals(eFnr.getSvarStatus().getReturStatus()) ;
+            Boolean finnes = eFnr.getSvarStatus() == null || !"08".equals(eFnr.getSvarStatus().getReturStatus());
             assertEquals(identerFinnes.get(eFnr.getFnr()), finnes);
         });
     }

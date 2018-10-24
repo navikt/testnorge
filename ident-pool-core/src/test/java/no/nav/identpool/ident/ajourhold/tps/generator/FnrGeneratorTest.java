@@ -6,12 +6,10 @@ import static junit.framework.TestCase.assertTrue;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.Ordering;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import com.google.common.collect.Ordering;
 
 import no.nav.identpool.ident.domain.Identtype;
 import no.nav.identpool.ident.domain.Kjoenn;

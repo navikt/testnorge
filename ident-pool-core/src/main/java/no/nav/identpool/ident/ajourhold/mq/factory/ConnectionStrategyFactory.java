@@ -1,15 +1,12 @@
 package no.nav.identpool.ident.ajourhold.mq.factory;
 
 import java.util.concurrent.TimeUnit;
-
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import lombok.RequiredArgsConstructor;
-
 import no.nav.freg.fasit.utils.domain.QueueManager;
 import no.nav.identpool.ident.ajourhold.fasit.FasitClient;
 import no.nav.identpool.ident.ajourhold.mq.strategy.ConnectionStrategy;

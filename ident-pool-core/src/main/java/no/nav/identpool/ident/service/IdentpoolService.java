@@ -28,13 +28,12 @@ import no.nav.identpool.util.PersonidentifikatorUtil;
 @Service
 @RequiredArgsConstructor
 public class IdentpoolService {
+    private static final int MAKS_ANTALL_MANGLENDE_IDENTER = 80;
+    private static final int MAKS_ANTALL_KALL_MOT_TPS = 3;
     private final IdentRepository identRepository;
     private final IdentPredicateUtil identPredicateUtil;
     private final IdentMQService identMQService;
     private final IdentDBService identDBService;
-
-    private static final int MAKS_ANTALL_MANGLENDE_IDENTER = 80;
-    private static final int MAKS_ANTALL_KALL_MOT_TPS = 3;
 
     public List<String> finnIdenter(HentIdenterRequest hentIdenterRequest) throws ForFaaLedigeIdenterException {
 
