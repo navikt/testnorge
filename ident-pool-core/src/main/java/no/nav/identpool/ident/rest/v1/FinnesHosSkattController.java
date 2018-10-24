@@ -26,9 +26,9 @@ public class FinnesHosSkattController {
     @ApiOperation(value = "${finnes.hos.skatt.description}")
     @ApiImplicitParam(name = "Authorization", value = "\"Bearer\" + OIDC-token", required = true, dataType = "string", paramType = "header")
     public void finnesHosSkatt(
-            @RequestBody String personidentifikator
+            @RequestBody FinnesHosSkattRequest finnesHosSkattRequest
     ) throws UgyldigPersonidentifikatorException {
-        valider(personidentifikator);
-        identpoolService.registrerFinnesHosSkatt(personidentifikator);
+        valider(finnesHosSkattRequest.getDnr());
+        identpoolService.registrerFinnesHosSkatt(finnesHosSkattRequest.getDnr());
     }
 }

@@ -32,7 +32,7 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     public void registrerFinnesISkdUtenOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL).build();
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(false, DNR), ApiResponse.class);
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(false, new FinnesHosSkattRequest(DNR)), ApiResponse.class);
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.FORBIDDEN));
     }
 
@@ -40,7 +40,7 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     public void registrerFnrFinnesISkdMedGyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL).build();
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true, FNR), ApiResponse.class);
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true, new FinnesHosSkattRequest(FNR)), ApiResponse.class);
 
         //skal feile siden endepunktet kun skal ta DNR
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
@@ -50,7 +50,7 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     public void registrerFinnesISkdOgIdentpoolMedGyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL).build();
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true, DNR), ApiResponse.class);
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true, new FinnesHosSkattRequest(DNR)), ApiResponse.class);
 
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
 
@@ -62,7 +62,7 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     public void registrerFinnesISkdMenIkkeIIdentpoolMedGyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL).build();
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true, NYTT_DNR), ApiResponse.class);
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true, new FinnesHosSkattRequest(NYTT_DNR)), ApiResponse.class);
 
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
 

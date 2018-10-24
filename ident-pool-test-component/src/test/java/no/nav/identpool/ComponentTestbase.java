@@ -38,7 +38,7 @@ public abstract class ComponentTestbase {
         return new HttpEntity(httpHeaders);
     }
 
-    protected HttpEntity lagHttpEntity(boolean withOidc, String body) {
+    protected HttpEntity lagHttpEntity(boolean withOidc, Object body) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/json");
         if (withOidc) {
