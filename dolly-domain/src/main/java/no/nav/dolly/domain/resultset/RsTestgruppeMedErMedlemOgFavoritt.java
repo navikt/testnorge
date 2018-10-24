@@ -26,10 +26,17 @@ public class RsTestgruppeMedErMedlemOgFavoritt {
 	private List<RsBestilling> bestillinger = new ArrayList<>();
 
 	private RsTeamMedIdOgNavn team;
-	private Set<RsTestidentBestillingId> testidenter = new HashSet<>();
+	private Set<RsTestidentBestillingId> testidenter = getTestidenter();
 
 	private boolean erMedlemAvTeamSomEierGruppe;
 	private boolean favorittIGruppen;
+
+	private Set<RsTestidentBestillingId> getTestidenter(){
+		if (testidenter == null){
+			testidenter = new HashSet<>();
+		}
+		return testidenter;
+	}
 
 
 }
