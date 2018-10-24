@@ -49,7 +49,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(feltNavn, aksjonsKode, environment, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, aksjonsKode, environment, fnr);
 
         assertEquals(1, statusQuoValues.size());
         assertEquals("2018-10-15", statusQuoValues.get("datoDo"));
@@ -67,7 +67,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(feltNavn, aksjonsKode, environment, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, aksjonsKode, environment, fnr);
 
         assertEquals("EKTE", statusQuoValues.get("relasjon/typeRelasjon"));
         assertEquals("01065500791", statusQuoValues.get("relasjon/fnrRelasjon"));
@@ -85,7 +85,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(feltNavn, aksjonsKode, environment, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, aksjonsKode, environment, fnr);
 
         assertEquals("AJOURHD", statusQuoValues.get("bostedsAdresse/fullBostedsAdresse/adrSaksbehandler"));
         assertEquals("1289", statusQuoValues.get("bostedsAdresse/fullBostedsAdresse/offAdresse/husnr"));
