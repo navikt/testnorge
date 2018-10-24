@@ -5,7 +5,7 @@ import Input from '~/components/fields/Input/Input'
 import Utvalg from './Utvalg/Utvalg'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { AttributtManager } from '~/service/Kodeverk'
-
+import { Radio } from 'nav-frontend-skjema'
 import './AttributtVelger.less'
 
 export default class AttributtVelger extends Component {
@@ -50,12 +50,20 @@ export default class AttributtVelger extends Component {
 				{subKategori && <h3>{subKategori.navn}</h3>}
 				<fieldset name={subKategori.navn}>
 					<div className="attributt-velger_panelsubcontent">
-						{items.map(item => this.renderItem(item))}
+						{subKategori.singleChoice
+							? this.renderRadioButtons(items)
+							: items.map(item => this.renderItem(item))}
 					</div>
 				</fieldset>
 			</Fragment>
 		)
 	}
+
+	renderRadioButtons = items => (
+		<form className="attributt-velger_radiogruppe">
+			{items.map(item => <Radio key={item.id} label={item.label} name="he" />)}
+		</form>
+	)
 
 	renderItem = item => (
 		<Checkbox
