@@ -11,10 +11,12 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 
 @Service
 @Getter
+@Slf4j
 public class TpsStatusQuoService {
 
     @Autowired
@@ -30,10 +32,11 @@ public class TpsStatusQuoService {
             JsonNode root = getInfoOnRoutineName(routineName, aksjonsKode, environment, fnr);
 
             if (root == null) {
-                // error handling
+                log.info("Could not get routine " + routineName + " on fnr " + fnr);
+                throw new NullPointerException();
+            } else {
+                personStatusQuo.put(felt, extractStatusQuoInfoFromTps(root, felt));
             }
-
-            personStatusQuo.put(felt, extractStatusQuoInfoFromTps(root, felt));
         }
 
         return personStatusQuo;
