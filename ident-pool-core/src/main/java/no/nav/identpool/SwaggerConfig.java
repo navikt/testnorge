@@ -19,7 +19,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 @RequiredArgsConstructor
-@PropertySource("classpath:swagger.properties")
 public class SwaggerConfig {
 
     private final Environment environment;
