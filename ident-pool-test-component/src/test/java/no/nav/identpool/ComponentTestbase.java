@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
 import no.nav.freg.security.test.oidc.tools.OidcTestService;
-import no.nav.identpool.ident.repository.IdentRepository;
+import no.nav.identpool.repository.IdentRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ComponentTestConfig.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
