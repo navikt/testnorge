@@ -6,13 +6,13 @@ import Breadcrumb from '~/components/breadcrumb/BreadcrumbWithHoc'
 import SplashscreenConnector from '~/components/splashscreen/SplashscreenConnector'
 import Toast from '~/components/toast/Toast'
 import routes from '~/Routes'
+import ConfigService from '~/service/Config'
 
 import './App.less'
 
 export default class App extends Component {
 	componentDidMount() {
-		this.props.fetchDollyApiConfig()
-		this.props.fetchCurrentBruker()
+		ConfigService.fetchConfig().then(() => this.props.fetchCurrentBruker())
 	}
 
 	componentDidUpdate() {
