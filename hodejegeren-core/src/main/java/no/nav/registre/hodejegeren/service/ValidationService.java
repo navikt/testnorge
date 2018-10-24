@@ -15,8 +15,9 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 @Slf4j
 @Service
 public class ValidationService {
-
+    
     final Validator validator;
+    
     public ValidationService() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();

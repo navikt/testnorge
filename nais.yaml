@@ -30,6 +30,8 @@ fasitResources:
   used:
     - alias: "tps-forvalteren.rest-api"
       resourceType: restservice
+    - alias: "hodejegeren.ida.credential"
+      resourceType: credential
     - alias: "ident-pool.rest-api"
       resourceType: restservice
     - alias: "tps-syntetisereren.rest-api"
