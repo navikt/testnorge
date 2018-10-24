@@ -1,5 +1,4 @@
 import { Attributt, KategoriTypes, InputType, DataSource } from './Types'
-import * as yup from 'yup'
 
 import TpsfPersoninformasjon from './tpsf/Personinformasjon'
 import TpsfAdresse from './tpsf/Adresse'

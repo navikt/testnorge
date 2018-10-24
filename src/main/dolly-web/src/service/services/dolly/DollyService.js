@@ -118,4 +118,9 @@ export default class DollyService {
 	static getConfig() {
 		return Request.get(Endpoints.config())
 	}
+
+	// Inntekter
+	static addInntektSigrun() {
+		return Request.post(Endpoints.sigrun())
+	}
 }

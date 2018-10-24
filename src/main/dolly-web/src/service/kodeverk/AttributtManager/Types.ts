@@ -23,6 +23,7 @@ export interface Kategori {
 	navn: string
 	order: number
 	showInSummary?: boolean
+	singleChoice?: boolean
 }
 
 export interface KategoriTypes {
