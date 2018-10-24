@@ -15,11 +15,15 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 @Slf4j
 @Service
 public class ValidationService {
+
+    final Validator validator;
+    public ValidationService() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+        factory.close();
+    }
     
     public void logAndRemoveInvalidMessages(List<RsMeldingstype> meldinger) {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        final Validator validator = factory.getValidator();
-        
         List<RsMeldingstype> removeTheseMessages = new ArrayList<>();
         
         for (RsMeldingstype melding : meldinger) {
