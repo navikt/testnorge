@@ -23,7 +23,7 @@ public class TpsStatusQuoService {
     private Map<String, JsonNode> tpsServiceRoutineCache;
 
     public Map<String, String> getStatusQuo(String routineName, List<String> feltnavn, String aksjonsKode, String environment, String fnr) throws IOException {
-        Map<String, String> personStatusQuo = new HashMap<>();
+        Map<String, String> personStatusQuo = new HashMap<>(feltnavn.size());
         resetCache();
 
         for (String felt : feltnavn) {

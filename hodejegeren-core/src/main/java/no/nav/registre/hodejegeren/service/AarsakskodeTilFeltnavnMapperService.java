@@ -39,9 +39,7 @@ public class AarsakskodeTilFeltnavnMapperService {
         case FLYTTING_INNEN_KOMMUNEN:
         case FOEDSELSMELDING:
         case UREGISTRERT_PERSON:
-            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O",
-                    Arrays.asList("datoDo", "statsborger"),
-                    aksjonsKode, environment, fnr));
+            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger"), aksjonsKode, environment, fnr));
             break;
         case VIGSEL:
         case SEPERASJON:
@@ -49,18 +47,12 @@ public class AarsakskodeTilFeltnavnMapperService {
         case SIVILSTANDSENDRING:
         case KORREKSJON_FAMILIEOPPLYSNINGER:
         case DOEDSMELDING:
-            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O",
-                    Arrays.asList("datoDo", "statsborger", "sivilstand", "datoSivilstand"),
-                    aksjonsKode, environment, fnr));
-            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSRELA-O",
-                    Arrays.asList("relasjon/fnrRelasjon", "relasjon/typeRelasjon"),
-                    aksjonsKode, environment, fnr));
+            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger", "sivilstand", "datoSivilstand"), aksjonsKode, environment, fnr));
+            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSRELA-O", Arrays.asList("relasjon/fnrRelasjon", "relasjon/typeRelasjon"), aksjonsKode, environment, fnr));
             break;
         case ANNULERING_FLYTTING_ADRESSEENDRING:
         case INNFLYTTING_ANNEN_KOMMUNE:
-            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O",
-                    Arrays.asList("datoDo", "statsborger", "kommunenr", "datoFlyttet"),
-                    aksjonsKode, environment, fnr));
+            personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger", "kommunenr", "datoFlyttet"), aksjonsKode, environment, fnr));
             // FRA-KOMM-REGDATO
             break;
         case INNVANDRING:
