@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -46,7 +45,6 @@ public class TpsStatusQuoServiceTest {
      * map.
      */
     @Test
-    @Ignore
     public void shouldGetStatusQuoForFeltnavn() throws IOException {
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
