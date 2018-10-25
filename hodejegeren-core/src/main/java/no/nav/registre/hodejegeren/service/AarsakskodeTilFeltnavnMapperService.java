@@ -55,7 +55,7 @@ public class AarsakskodeTilFeltnavnMapperService {
         case DOEDSMELDING:
             feltnavn = Arrays.asList("datoDo", "statsborger", "sivilstand", "datoSivilstand");
             personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, aksjonsKode, environment, fnr));
-            feltnavn = Arrays.asList("relasjon/fnrRelasjon", "relasjon/typeRelasjon");
+            feltnavn = Arrays.asList("$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon");
             personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSRELA, feltnavn, aksjonsKode, environment, fnr));
             break;
         case ANNULERING_FLYTTING_ADRESSEENDRING:
