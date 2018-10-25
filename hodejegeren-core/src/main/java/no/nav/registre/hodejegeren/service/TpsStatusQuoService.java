@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONArray;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 
 @Service
@@ -43,15 +46,10 @@ public class TpsStatusQuoService {
     }
 
     public String extractStatusQuoInfoFromTps(JsonNode root, String felt) {
-        if (felt.contains("/")) {
-            String[] feltene = felt.split("/");
-
-            int i;
-            for (i = 0; i < feltene.length - 1; i++) {
-                root = root.findValue(feltene[i]);
-            }
-
-            return root.findValue(feltene[i]).asText();
+        if (felt.contains("$")) {
+            Object document = Configuration.defaultConfiguration().jsonProvider().parse(root.toString());
+            JSONArray jsonArray = JsonPath.read(document, felt);
+            return jsonArray.get(0).toString();
         } else {
             return root.findValue(felt).asText();
         }
