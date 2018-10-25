@@ -1,7 +1,6 @@
 import { TpsfApi } from '~/service/Api'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import { createAction } from 'redux-actions'
-import tpsfTransformer from './tpsfTransformer'
 import _get from 'lodash/get'
 
 export const GET_TESTBRUKERE = createAction('GET_TESTBRUKERE', identArray =>
@@ -33,8 +32,6 @@ export const sokSelector = (items, searchStr) => {
 
 	const query = searchStr.toLowerCase()
 	return items.filter(item => {
-		const searchValues = [_get(item, 'id').toString(), _get(item, 'navn').toLowerCase()]
-
-		return searchValues.some(v => v.includes(query))
+		return item.some(v => v.toLowerCase().includes(query))
 	})
 }
