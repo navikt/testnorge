@@ -26,9 +26,9 @@ public class FinnesHosSkattController {
     @ApiOperation(value = "tjeneste som DREK bruker for å markere at DNR er i bruk og at det eksisterer hos SKD")
     @ApiImplicitParam(name = "Authorization", value = "\"Bearer\" + OIDC-token", required = true, dataType = "string", paramType = "header")
     public void finnesHosSkatt(
-            @RequestBody FinnesHosSkattRequest finnesHosSkattRequest
+            @RequestBody IdentRequest identRequest
     ) throws UgyldigPersonidentifikatorException {
-        valider(finnesHosSkattRequest.getDnr());
-        identpoolService.registrerFinnesHosSkatt(finnesHosSkattRequest.getDnr());
+        valider(identRequest.getPersonidentifikator());
+        identpoolService.registrerFinnesHosSkatt(identRequest.getPersonidentifikator());
     }
 }

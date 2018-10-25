@@ -12,9 +12,11 @@ import org.apache.http.client.utils.URIBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
@@ -36,7 +38,11 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
         String body = "{\"antall\":\"1\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\" }";
 
-        ResponseEntity<String[]> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
+        ResponseEntity<String[]> identListe = testRestTemplate.exchange(
+                uriBuilder.build(),
+                HttpMethod.POST,
+                httpEntityBuilder.withBody(body).build(),
+                String[].class);
 
         assertThat(identListe.getBody(), is(notNullValue()));
         assertThat(PersonidentifikatorUtil.getPersonidentifikatorType(identListe.getBody()[0]), is(Identtype.FNR));
@@ -48,7 +54,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
         String body = "{\"antall\":\"1\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
 
-        ResponseEntity<String[]> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
+        ResponseEntity<String[]> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, httpEntityBuilder.withBody(body).build(), String[].class);
 
         assertThat(identListe.getBody(), is(notNullValue()));
         assertThat(PersonidentifikatorUtil.getPersonidentifikatorType(identListe.getBody()[0]), is(Identtype.DNR));
@@ -60,7 +66,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
         String body = "{\"antall\":\"3\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\",\"foedtFoer\":\"1950-01-01\"}";
 
-        ResponseEntity<String[]> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), String[].class);
+        ResponseEntity<String[]> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, httpEntityBuilder.withBody(body).build(), String[].class);
 
         assertThat(identListe.getBody(), is(notNullValue()));
         assertThat(identListe.getBody().length, is(3));
@@ -80,7 +86,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
         String body = "{\"antall\":\"200\", \"foedtEtter\":\"1900-01-01\"}";
 
-        ResponseEntity<ForFaaLedigeIdenterException> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ForFaaLedigeIdenterException.class);
+        ResponseEntity<ForFaaLedigeIdenterException> identListe = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, httpEntityBuilder.withBody(body).build(), ForFaaLedigeIdenterException.class);
 
         assertThat(identListe.getStatusCode(), is(HttpStatus.SERVICE_UNAVAILABLE));
     }
@@ -90,7 +96,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
         String body = "{\"antall\":\"1\", \"identtype\":\"buksestoerrelse\" }";
 
-        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ApiError.class);
+        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, httpEntityBuilder.withBody(body).build(), ApiError.class);
 
         assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
     }
@@ -100,7 +106,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk");
         String body = "{\"personidentifikator\":\"" + FNR_IBRUK + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
 
-        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ApiError.class);
+        ResponseEntity<ApiError> apiErrorResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, httpEntityBuilder.withBody(body).build(), ApiError.class);
 
         assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.GONE));
 
@@ -113,7 +119,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk");
         String body = "{\"personidentifikator\":\"" + FNR_LEDIG + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
 
-        ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ApiResponse.class);
+        ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, httpEntityBuilder.withBody(body).build(), ApiResponse.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
@@ -127,7 +133,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/bruk");
         String body = "{\"personidentifikator\":\"" + NYTT_FNR_LEDIG + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
 
-        ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, lagHttpEntity(false, body), ApiResponse.class);
+        ResponseEntity<ApiResponse> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.POST, httpEntityBuilder.withBody(body).build(), ApiResponse.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
@@ -137,10 +143,18 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void sjekkOmLedigIdentErLedig() throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig")
-                .addParameter("personidentifikator", FNR_LEDIG);
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig");
 
-        ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), Boolean.class);
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("personidentifikator", FNR_LEDIG);
+
+        HttpEntity httpEntity = httpEntityBuilder.withHeaders(headers).build();
+
+        ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(
+                uriBuilder.build(),
+                HttpMethod.GET,
+                httpEntity,
+                Boolean.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(apiResponseEntity.getBody(), is(true));
@@ -149,10 +163,18 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void sjekkOmUledigIdentErLedig() throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig")
-                .addParameter("personidentifikator", FNR_IBRUK);
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig");
 
-        ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), Boolean.class);
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("personidentifikator", FNR_IBRUK);
+
+        HttpEntity httpEntity = httpEntityBuilder.withHeaders(headers).build();
+
+        ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(
+                uriBuilder.build(),
+                HttpMethod.GET,
+                httpEntity,
+                Boolean.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(apiResponseEntity.getBody(), is(false));
@@ -163,10 +185,16 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     public void eksistererIkkeIDbOgLedigITps() throws URISyntaxException {
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
 
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig")
-                .addParameter("personidentifikator", NYTT_FNR_LEDIG);
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL + "/ledig");
 
-        ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), Boolean.class);
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("personidentifikator", NYTT_FNR_LEDIG);
+
+        ResponseEntity<Boolean> apiResponseEntity = testRestTemplate.exchange(
+                uriBuilder.build(),
+                HttpMethod.GET,
+                httpEntityBuilder.withHeaders(headers).build(),
+                Boolean.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(apiResponseEntity.getBody(), is(true));
@@ -175,10 +203,16 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     @Test
     public void lesIdenterTest() throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL)
-                .addParameter("personidentifikator", FNR_LEDIG);
+        URIBuilder uriBuilder = new URIBuilder(IDENT_V1_BASEURL);
 
-        ResponseEntity<IdentEntity> apiResponseEntity = testRestTemplate.exchange(uriBuilder.build(), HttpMethod.GET, lagHttpEntity(false), IdentEntity.class);
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("personidentifikator", FNR_LEDIG);
+
+        ResponseEntity<IdentEntity> apiResponseEntity = testRestTemplate.exchange(
+                uriBuilder.build(),
+                HttpMethod.GET,
+                httpEntityBuilder.withHeaders(headers).build(),
+                IdentEntity.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(apiResponseEntity.getBody(), is(IdentEntity.builder()

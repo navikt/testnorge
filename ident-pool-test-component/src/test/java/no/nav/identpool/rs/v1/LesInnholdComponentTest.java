@@ -11,6 +11,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
@@ -39,9 +40,17 @@ public class LesInnholdComponentTest extends ComponentTestbase {
                         .rekvirertAv(REKVIRERT_AV)
                         .build()
         );
-        URI url = new URIBuilder(IDENT_V1_BASEURL).addParameter("personidentifikator", PERSONIDENTIFIKATOR).build();
+        URI url = new URIBuilder(IDENT_V1_BASEURL).build();
 
-        ResponseEntity<IdentEntity> identEntityResponseEntity = testRestTemplate.exchange(url, HttpMethod.GET, lagHttpEntity(false), IdentEntity.class);
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("personidentifikator", PERSONIDENTIFIKATOR);
+
+        ResponseEntity<IdentEntity> identEntityResponseEntity = testRestTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                httpEntityBuilder.withHeaders(headers).build(),
+                IdentEntity.class);
+
         IdentEntity ident = identEntityResponseEntity.getBody();
 
         assertThat(ident, is(notNullValue()));

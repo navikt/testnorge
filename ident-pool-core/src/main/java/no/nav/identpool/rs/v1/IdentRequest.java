@@ -9,6 +9,6 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FinnesHosSkattRequest {
-    private String dnr;
+public class IdentRequest {
+    private String personidentifikator;
 }

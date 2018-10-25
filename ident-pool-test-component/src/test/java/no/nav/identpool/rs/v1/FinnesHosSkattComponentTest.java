@@ -32,7 +32,16 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     public void registrerFinnesISkdUtenOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL).build();
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(false, new FinnesHosSkattRequest(DNR)), ApiResponse.class);
+        HttpEntity httpEntity = httpEntityBuilder
+                .withBody(new IdentRequest(DNR))
+                .build();
+
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(
+                uri,
+                HttpMethod.POST,
+                httpEntity,
+                ApiResponse.class);
+
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.FORBIDDEN));
     }
 
@@ -40,7 +49,16 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     public void registrerFnrFinnesISkdMedGyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL).build();
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true, new FinnesHosSkattRequest(FNR)), ApiResponse.class);
+        HttpEntity httpEntity = httpEntityBuilder
+                .withOidcToken()
+                .withBody(new IdentRequest(FNR))
+                .build();
+
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(
+                uri,
+                HttpMethod.POST,
+                httpEntity,
+                ApiResponse.class);
 
         //skal feile siden endepunktet kun skal ta DNR
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
@@ -50,7 +68,16 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     public void registrerFinnesISkdOgIdentpoolMedGyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL).build();
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true, new FinnesHosSkattRequest(DNR)), ApiResponse.class);
+        HttpEntity httpEntity = httpEntityBuilder
+                .withOidcToken()
+                .withBody(new IdentRequest(DNR))
+                .build();
+
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(
+                uri,
+                HttpMethod.POST,
+                httpEntity,
+                ApiResponse.class);
 
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
 
@@ -62,7 +89,16 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
     public void registrerFinnesISkdMenIkkeIIdentpoolMedGyldigOidc() throws URISyntaxException {
         URI uri = new URIBuilder(FINNESHOSSKATT_V1_BASEURL).build();
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, lagHttpEntity(true, new FinnesHosSkattRequest(NYTT_DNR)), ApiResponse.class);
+        HttpEntity httpEntity = httpEntityBuilder
+                .withOidcToken()
+                .withBody(new IdentRequest(NYTT_DNR))
+                .build();
+
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(
+                uri,
+                HttpMethod.POST,
+                httpEntity,
+                ApiResponse.class);
 
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
 
@@ -78,7 +114,11 @@ public class FinnesHosSkattComponentTest extends ComponentTestbase {
         httpEntityWithInvalidToken.add(HttpHeaders.CONTENT_TYPE, "application/json");
         httpEntityWithInvalidToken.add(HttpHeaders.AUTHORIZATION, "Bearer eyJrawJEGxsdERasjdhIKKEjshjsdhETasnmbhfvTOKEN");
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(uri, HttpMethod.POST, new HttpEntity(DNR, httpEntityWithInvalidToken), ApiResponse.class);
+        ResponseEntity<ApiResponse> apiResponseResponseEntity = testRestTemplate.exchange(
+                uri,
+                HttpMethod.POST,
+                new HttpEntity<>(DNR, httpEntityWithInvalidToken),
+                ApiResponse.class);
 
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.FORBIDDEN));
     }

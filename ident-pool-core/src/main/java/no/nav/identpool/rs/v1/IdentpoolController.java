@@ -7,8 +7,8 @@ import javax.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -44,7 +44,7 @@ public class IdentpoolController {
     @GetMapping("/ledig")
     @ApiOperation(value = "returnerer true eller false avhengig av om en ident er ledig eller ikke")
     public Boolean erLedig(
-            @RequestParam String personidentifikator
+            @RequestHeader String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
         valider(personidentifikator);
         return identpoolService.erLedig(personidentifikator);
@@ -52,7 +52,8 @@ public class IdentpoolController {
 
     @GetMapping
     @ApiOperation(value = "hent informasjon lagret på en test-ident")
-    public IdentEntity lesInnhold(@RequestParam(value = "personidentifikator") String personidentifikator
+    public IdentEntity lesInnhold(
+            @RequestHeader String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
         valider(personidentifikator);
         return identpoolService.lesInnhold(personidentifikator);
