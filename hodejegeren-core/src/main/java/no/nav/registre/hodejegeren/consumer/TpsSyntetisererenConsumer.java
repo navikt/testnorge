@@ -11,12 +11,12 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 @Component
 public class TpsSyntetisererenConsumer {
     
-    @Value("tps-syntetisereren.rest-api.url")
+    @Value("${tps-syntetisereren.rest-api.url}")
     private String serverUrl;
     
     private RestTemplate restTemplate = new RestTemplate();
     
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String aarsakskode, Integer antallMeldinger) {
-        return restTemplate.getForObject(serverUrl + "/generer", ArrayList.class, antallMeldinger, aarsakskode);
+        return restTemplate.getForObject(serverUrl + "generate", ArrayList.class, antallMeldinger, aarsakskode);
     }
 }
