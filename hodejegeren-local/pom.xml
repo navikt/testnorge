@@ -16,7 +16,7 @@
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>hodejegeren-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
