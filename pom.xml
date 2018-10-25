@@ -21,6 +21,7 @@
 	<modules>
 		<module>hodejegeren-core</module>
 		<module>hodejegeren-local</module>
+		<module>hodejegeren-comptest</module>
 	</modules>
 
 	<properties>
