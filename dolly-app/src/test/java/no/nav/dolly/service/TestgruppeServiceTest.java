@@ -24,7 +24,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import ma.glasnost.orika.MapperFacade;
@@ -40,6 +42,7 @@ import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
@@ -256,6 +259,30 @@ public class TestgruppeServiceTest {
         testgruppeService.saveGruppeTilDB(new Testgruppe());
     }
 
+    @Test(expected = DollyFunctionalException.class)
+    public void saveGruppeTilDB_kasterDollyExceptionHvisDBConstraintErBrutt() throws Exception {
+        when(gruppeRepository.save(any())).thenThrow(NonTransientDataAccessException.class);
+        testgruppeService.saveGruppeTilDB(new Testgruppe());
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void saveGrupper_kasterExceptionHvisDBConstraintErBrutt() {
+        when(gruppeRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
+        testgruppeService.saveGrupper(new HashSet<>(Arrays.asList(new Testgruppe())));
+    }
+
+    @Test(expected = DollyFunctionalException.class)
+    public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt(){
+        when(gruppeRepository.saveAll(any())).thenThrow(NonTransientDataAccessException.class);
+        testgruppeService.saveGrupper(new HashSet<>(Arrays.asList(new Testgruppe())));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes(){
+        when(gruppeRepository.findAllById(Arrays.asList(anyLong()))).thenReturn(null);
+        testgruppeService.fetchGrupperByIdsIn(Arrays.asList(anyLong()));
+    }
+
     @Test(expected = NotFoundException.class)
     public void fetchIdenterByGruppeId_kasterException() {
         when(gruppeRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -283,7 +310,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void fetchIdenterByGroupId_sjekkTommeGrupper(){
+    public void fetchIdenterByGroupId_sjekkTommeGrupper() {
         long gruppeId = 1L;
         Testgruppe tg = TestgruppeBuilder.builder().id(gruppeId).testidenter(new HashSet<>()).build().convertToRealTestgruppe();
 
