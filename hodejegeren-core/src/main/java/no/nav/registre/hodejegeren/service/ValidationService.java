@@ -16,10 +16,15 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 @Service
 public class ValidationService {
     
-    public void logAndRemoveInvalidMessages(List<RsMeldingstype> meldinger) {
+    private Validator validator;
+    
+    public ValidationService() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        final Validator validator = factory.getValidator();
-        
+        validator = factory.getValidator();
+        factory.close();
+    }
+    
+    public void logAndRemoveInvalidMessages(List<RsMeldingstype> meldinger) {
         List<RsMeldingstype> removeTheseMessages = new ArrayList<>();
         
         for (RsMeldingstype melding : meldinger) {

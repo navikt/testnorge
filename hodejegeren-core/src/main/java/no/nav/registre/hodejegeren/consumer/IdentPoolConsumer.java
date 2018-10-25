@@ -11,11 +11,11 @@ import no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest;
 @Component
 public class IdentPoolConsumer {
     
-    @Value("${identpool.url}")
+    @Value("${ident-pool.rest-api.url}")
     private String serverUrl;
     private RestTemplate restTemplate = new RestTemplate();
     
     public List<String> hentNyeIdenter(HentIdenterRequest hentIdenterRequest) {
-        return restTemplate.postForObject(serverUrl + "/api/v1/identifikator", hentIdenterRequest, ArrayList.class);
+        return restTemplate.postForObject(serverUrl + "/v1/identifikator", hentIdenterRequest, ArrayList.class);
     }
 }
