@@ -31,7 +31,7 @@ public class IdentpoolController {
     @PostMapping
     @ApiOperation(value = "rekvirer nye test-identer")
     public List<String> rekvirer(@RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
-        return identpoolService.finnIdenter(hentIdenterRequest);
+        return identpoolService.rekvirer(hentIdenterRequest);
     }
 
     @PostMapping("/bruk")

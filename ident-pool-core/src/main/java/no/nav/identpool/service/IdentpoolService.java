@@ -35,7 +35,7 @@ public class IdentpoolService {
     private final IdentMQService identMQService;
     private final IdentDBService identDBService;
 
-    public List<String> finnIdenter(HentIdenterRequest hentIdenterRequest) throws ForFaaLedigeIdenterException {
+    public List<String> rekvirer(HentIdenterRequest hentIdenterRequest) throws ForFaaLedigeIdenterException {
 
         List<String> personidentifikatorList = new ArrayList<>();
 
@@ -51,6 +51,26 @@ public class IdentpoolService {
                     ", for å få opprettet identene i TPS, eller vent til ident-pool får generert flere.");
         }
 
+        List<String> temp = hentIdenterFraTps(hentIdenterRequest, antallManglendeIdenter);
+
+        if (temp.size() >= antallManglendeIdenter) {
+
+            identDBService.lagreIdenter(temp.subList(0, antallManglendeIdenter), I_BRUK, hentIdenterRequest.getRekvirertAv());
+            personidentifikatorList.addAll(temp.subList(0, antallManglendeIdenter));
+            if (temp.size() > antallManglendeIdenter) {
+                identDBService.lagreIdenter(temp.subList(antallManglendeIdenter, temp.size()), LEDIG, null);
+            }
+        } else {
+            throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
+        }
+
+        identEntities.forEach(i -> i.setRekvireringsstatus(I_BRUK));
+        identEntities.forEach(i -> i.setRekvirertAv(hentIdenterRequest.getRekvirertAv()));
+        identRepository.saveAll(identEntities);
+        return personidentifikatorList;
+    }
+
+    private List<String> hentIdenterFraTps(HentIdenterRequest hentIdenterRequest, int antallManglendeIdenter) {
         List<String> temp = new ArrayList<>();
         for (int i = 1; i < MAKS_ANTALL_KALL_MOT_TPS && antallManglendeIdenter != temp.size(); i++) {
 
@@ -72,22 +92,7 @@ public class IdentpoolService {
                     .collect(Collectors.toList())
             );
         }
-
-        if (temp.size() >= antallManglendeIdenter) {
-
-            identDBService.lagreIdenter(temp.subList(0, antallManglendeIdenter), I_BRUK, hentIdenterRequest.getRekvirertAv());
-            personidentifikatorList.addAll(temp.subList(0, antallManglendeIdenter));
-            if (temp.size() > antallManglendeIdenter) {
-                identDBService.lagreIdenter(temp.subList(antallManglendeIdenter, temp.size()), LEDIG, null);
-            }
-        } else {
-            throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
-        }
-
-        identEntities.forEach(i -> i.setRekvireringsstatus(I_BRUK));
-        identEntities.forEach(i -> i.setRekvirertAv(hentIdenterRequest.getRekvirertAv()));
-        identRepository.saveAll(identEntities);
-        return personidentifikatorList;
+        return temp;
     }
 
     public Boolean erLedig(String personidentifikator) {
