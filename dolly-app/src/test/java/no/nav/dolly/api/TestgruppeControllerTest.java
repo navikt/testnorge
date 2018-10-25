@@ -124,7 +124,14 @@ public class TestgruppeControllerTest {
     }
 
     @Test
+    public void slettgruppe_metodekall(){
+        controller.slettgruppe(anyLong());
+        verify(testgruppeService).slettGruppeById(anyLong());
+    }
+
+    @Test
     public void getIdentsByGroupId_hentIdenter() {
+        controller.getIdentsByGroupId(anyLong());
         verify(testgruppeService).fetchIdenterByGruppeId(anyLong());
     }
 }
