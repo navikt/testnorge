@@ -7,6 +7,7 @@ import DataFormatter from '~/utils/DataFormatter'
 import { handleActions, createActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
+import DataSourceMapper from './DateSourceMapper'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -87,19 +88,27 @@ export default handleActions(
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
 const bestillingFormatter = bestillingState => {
-	console.log(bestillingState)
 	const { attributeIds, antall, environments, identtype, values } = bestillingState
 	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
 
 	const final_values = {
 		antall: antall,
 		environments: environments,
-		tpsf: {
-			regdato: new Date(),
-			identtype: identtype,
-			...getTpsfValues(AttributtListe, values)
-		}
+		// tpsf: {
+		// 	regdato: new Date(),
+		// 	identtype: identtype,
+		// 	...formatTpsfValues(AttributtListe, values)
+		// },
+		// sigrunRequest: {
+		// 	// ...formatSigrunValues(AttributtListe, values)
+		// }
+
+		...getValues(AttributtListe, values)
 	}
+
+	// mandatory
+	final_values.tpsf.regdato = new Date()
+	final_values.tpsf.identtype = identtype
 
 	// TODO: SPECIAL HANDLING - Hva gjør vi her?
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
@@ -110,16 +119,16 @@ const bestillingFormatter = bestillingState => {
 	//	final_values.tpsf.relasjoner.barn = [final_values.tpsf.relasjoner.barn]
 	//}
 
-	console.log('POSTING BESTILLING', final_values, AttributtListe)
+	console.log('POSTING BESTILLING', final_values)
 
 	return final_values
 }
 
-const getTpsfValues = (attributeList, values) => {
-	//TODO: Legg inn filter for datasource type så vi kun får TPSF verdier.
-	// console.log(attributeList)
-	return attributeList.reduce((accumulator, attribute) => {
+const getValues = (attributeList, values) => {
+	var result
+	result = attributeList.reduce((accumulator, attribute) => {
 		let value = values[attribute.id]
+		const pathPrefix = DataSourceMapper(attribute.dataSource)
 
 		const isDate = inputType => inputType === 'date'
 
@@ -138,12 +147,91 @@ const getTpsfValues = (attributeList, values) => {
 			})
 		}
 
-		return _set(accumulator, attribute.path || attribute.id, value)
+		// TODO: SIGRUN har en annen format som ikke er lett å generaliseres. Suggestion: separate formatter for hver register?
+		if (pathPrefix == DataSourceMapper('SIGRUN')) {
+			console.log('SIGRUNN')
+
+			// value.forEach(item => {
+			// 	console.log('acc', accumulator)
+			// 	return (
+			// 		_set(accumulator, `${pathPrefix}.grunnlag`, [
+			// 			{ tekniskNavn: item.typeinntekt, verdi: item.beloep }
+			// 		]) &&
+			// _set(accumulator, `${pathPrefix}.inntektsaar`, '2017') &&
+			// 	_set(accumulator, `${pathPrefix}.tjeneste`, 'Beregnet skatt')
+			// 	)
+			// })
+
+			return (
+				_set(accumulator, `${pathPrefix}.grunnlag`, [
+					{ tekniskNavn: value[0].typeinntekt, verdi: value[0].beloep }
+				]) &&
+				_set(accumulator, `${pathPrefix}.inntektsaar`, '2017') &&
+				_set(accumulator, `${pathPrefix}.tjeneste`, 'Beregnet skatt')
+			)
+		} else {
+			// Tpsf
+			console.log('acc', accumulator)
+			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
+		}
+	}, {})
+
+	console.log(result)
+	return result
+}
+
+const formatTpsfValues = (attributeList, values) => {
+	//TODO : hvorfor ble denne tomt når en velger attribute fra sigrun i tillegg til tpsf
+	var result
+	result = attributeList.reduce((accumulator, attribute) => {
+		console.log('attributeliste: ', attributeList)
+		console.log('value: ', values)
+
+		if (attribute.dataSource === DataSource.TPSF) {
+			let value = values[attribute.id]
+
+			const isDate = inputType => inputType === 'date'
+
+			// Convert to Date objects
+			if (isDate(attribute.inputType)) value = DataFormatter.parseDate(value)
+			// Do the same for Array values
+			if (attribute.items) {
+				const dateFields = attribute.items.filter(item => isDate(item.inputType))
+				value = value.map((item, idx) => {
+					return dateFields.reduce((acc, dateAttribute) => {
+						const pathId = dateAttribute.id
+						return Object.assign({}, acc, {
+							[pathId]: DataFormatter.parseDate(item[pathId])
+						})
+					}, item)
+				})
+			}
+			console.log('result', result)
+
+			return _set(accumulator, attribute.path || attribute.id, value)
+		}
+	}, {})
+	console.log('result', result)
+	return result
+}
+
+const formatSigrunValues = (attributeList, values) => {
+	return attributeList.reduce((accumulator, attribute) => {
+		console.log('attributeliste: ', attributeList)
+		console.log('value: ', values)
+		if (attribute.dataSource === DataSource.SIGRUN) {
+			let value = values[attribute.id][0]
+			return (
+				_set(accumulator, 'grunnlag', [{ tekniskNavn: value.typeinntekt, verdi: value.beloep }]) &&
+				_set(accumulator, 'inntektsaar', '2017') &&
+				_set(accumulator, 'tjeneste', 'Beregnet skatt')
+			)
+		}
 	}, {})
 }
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { bestilling } = getState()
 	const values = bestillingFormatter(bestilling)
-	return dispatch(actions.postBestilling(gruppeId, values))
+	// return dispatch(actions.postBestilling(gruppeId, values))
 }

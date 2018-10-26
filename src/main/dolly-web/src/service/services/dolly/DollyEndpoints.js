@@ -93,10 +93,6 @@ class DollyEndpoints {
 	static config() {
 		return configBase
 	}
-
-	static sigrun() {
-		return `${uri}/sigrun`
-	}
 }
 
 export default DollyEndpoints
