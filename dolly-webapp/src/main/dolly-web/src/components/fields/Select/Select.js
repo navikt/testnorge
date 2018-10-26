@@ -49,6 +49,7 @@ export default class DollySelect extends PureComponent {
 							id={name}
 							name={name}
 							placeholder={placeholder}
+							closeOnSelect={this.props.multi ? false : true}
 							clearable
 							openOnFocus
 							{...this.translations}

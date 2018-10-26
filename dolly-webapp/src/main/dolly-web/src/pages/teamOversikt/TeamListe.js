@@ -2,10 +2,21 @@ import React, { Component, Fragment } from 'react'
 import Table from '~/components/table/Table'
 import Loading from '~/components/loading/Loading'
 import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
+import ContentContainer from '~/components/contentContainer/ContentContainer'
 
 class TeamListe extends Component {
 	render() {
-		const { items, history, startRedigerTeam, editTeamId, deleteTeam } = this.props
+		const { items, history, startRedigerTeam, editTeamId, deleteTeam, searchActive } = this.props
+		if (!items || !items.length) {
+			return (
+				<ContentContainer>
+					{searchActive
+						? 'Søket gav ingen resultater.'
+						: 'Du har ingen teams. Trykke på opprett knappen for å opprette ett nytt team.'}
+				</ContentContainer>
+			)
+		}
+
 		return (
 			<Table>
 				<Table.Header>

@@ -14,7 +14,6 @@ import sortReducer from './ducks/sort'
 import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
 import commonReducer from './ducks/common'
-import configReducer from './ducks/config'
 import bestillingStatusReducer from './ducks/bestillingStatus'
 import history from './history'
 
@@ -56,8 +55,7 @@ const configureReduxStore = history => {
 		loading: loadingReducer,
 		errors: errorsReducer,
 		common: commonReducer,
-		bestillingStatus: bestillingStatusReducer,
-		config: configReducer
+		bestillingStatus: bestillingStatusReducer
 	})
 
 	return createStore(

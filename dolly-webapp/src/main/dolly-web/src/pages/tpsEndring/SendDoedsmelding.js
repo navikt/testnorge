@@ -7,54 +7,134 @@ import React, { PureComponent } from 'react'
 import { Formik, Form, Field } from 'formik'
 import { FormikInput } from '~/components/fields/Input/Input'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
+import DateValidation from '~/components/fields/Datepicker/DateValidation'
 import Knapp from 'nav-frontend-knapper'
 import DataFormatter from '~/utils/DataFormatter'
-import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
 export default class SendDoedsmelding extends PureComponent {
 	state = {
 		isFetching: false,
+		isFetchingMiljoer: false,
 		errorMessage: null,
 		meldingSent: false,
-		handlingsType: null
+		handlingsType: null,
+		foundIdent: null,
+		showErrorMessageFoundIdent: false,
+		currentfnr: '',
+		environments: [],
+		environments_success: [],
+		environments_error: []
 	}
 
 	validation = () =>
 		yup.object().shape({
 			ident: yup
 				.string()
-				.min(11, 'Ident må inneholde 11 sifre')
-				.max(11, 'Ident må inneholde 11 sifre')
-				.required('Ident er et påkrevd felt'),
-			handling: yup.string().required('Handling er et påkrevd felt'),
-			miljoe: yup.string().required('Miljø er et påkrevd felt'),
+				.min(11, 'Ident må inneholde 11 sifre.')
+				.max(11, 'Ident må inneholde 11 sifre.')
+				.required('Ident er et påkrevd felt.'),
+			handling: yup.string().required('Handling er et påkrevd felt.'),
+			miljoer: yup.string().required('Miljø er et påkrevd felt.'),
 			doedsdato: DateValidation
 		})
 
-	_onSubmit = values => {
+	createRequestObjects(values_obj) {
+		const miljoer = values_obj.miljoer.map(env => {
+			return env.value
+		})
+
+		return { ...values_obj, miljoer: miljoer }
+	}
+
+	_onSubmit = (values, { resetForm }) => {
+		const request = this.createRequestObjects(values)
+		var success_envs = []
+		var error_envs = []
+
 		this.setState(
 			{
 				isFetching: true,
 				meldingSent: false,
 				errorMessage: null,
-				handlingsType: values.handling
+				handlingsType: values.handling,
+				foundIdent: false
 			},
 			async () => {
 				try {
-					await TpsfApi.createDoedsmelding({
-						...values,
+					let response = await TpsfApi.createDoedsmelding({
+						...request,
 						doedsdato: DataFormatter.parseDate(values.doedsdato)
 					})
-					return this.setState({ meldingSent: true, isFetching: false })
+					const status = response.data.status
+
+					Object.keys(status).map(key => {
+						if (status[key] === 'OK') success_envs = [...success_envs, key]
+						else error_envs = [...error_envs, key]
+					})
+
+					this.setState({
+						isFetching: false,
+						meldingSent: true,
+						environments_success: success_envs,
+						environments_error: error_envs
+					})
+					resetForm()
 				} catch (err) {
 					this.setState({
 						meldingSent: false,
 						errorMessage: err.response.data.message,
 						isFetching: false
 					})
+					resetForm()
 				}
 			}
 		)
+	}
+
+	fillEnvironmentDropdown(environments) {
+		return environments.map(env => ({ value: env, label: env.toUpperCase() }))
+	}
+
+	_handleOnBlurInput = e => {
+		let fnr = e.target.value.replace(/\s+/g, '')
+
+		if (fnr.length === 11 && !isNaN(fnr)) {
+			this.setState(
+				{
+					isFetchingMiljoer: true,
+					environments: [],
+					showErrorMessageFoundIdent: false,
+					errorMessage: null,
+					meldingSent: false,
+					foundIdent: false
+				},
+				async () => {
+					try {
+						const getMiljoerByFnrRes = await TpsfApi.getMiljoerByFnr(fnr)
+						const res_environments = getMiljoerByFnrRes.data.statusPaaIdenter[0].env
+
+						if (res_environments.length < 1) {
+							return this.setState({
+								currentfnr: fnr,
+								foundIdent: false,
+								isFetchingMiljoer: false,
+								showErrorMessageFoundIdent: true
+							})
+						}
+
+						const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)
+						return this.setState({
+							environments: displayEnvironmentsInDropdown,
+							currentfnr: fnr,
+							foundIdent: true,
+							isFetchingMiljoer: false
+						})
+					} catch (err) {
+						this.setState({ isFetchingMiljoer: false, currentfnr: fnr })
+					}
+				}
+			)
+		}
 	}
 
 	_renderMeldingSent = () => {
@@ -73,49 +153,104 @@ export default class SendDoedsmelding extends PureComponent {
 		return <h3 className="success-message"> Dødsmelding {handling} </h3>
 	}
 
+	_renderResponseMessage = () => {
+		var handling = ''
+		var suksessMiljoer = ''
+		var feilMiljoer = ''
+
+		if (this.state.environments_success.length > 0)
+			suksessMiljoer = this.state.environments_success.join(', ')
+
+		if (this.state.environments_error.length > 0)
+			feilMiljoer = this.state.environments_error.join(', ')
+
+		switch (this.state.handlingsType) {
+			case 'C':
+				handling = 'sent'
+				break
+			case 'U':
+				handling = 'endret'
+				break
+			case 'D':
+				handling = 'annullert'
+				break
+		}
+		return (
+			<div>
+				{this.state.environments_success.length > 0 && (
+					<h3 className="success-message">
+						Dødsmelding {handling} i {suksessMiljoer}
+					</h3>
+				)}
+
+				{this.state.environments_error.length > 0 && (
+					<h3 className="error-message">Personen var allerede død i {feilMiljoer}</h3>
+				)}
+			</div>
+		)
+	}
+
 	render() {
+		const { foundIdent, environments, handlingsType } = this.state
+
 		let initialValues = {
 			ident: '',
 			handling: 'C',
 			doedsdato: '',
-			miljoe: ''
+			miljoer: []
 		}
 
 		const handlingOptions = [
 			{ value: 'C', label: 'Sette dødsdato' },
 			{ value: 'U', label: 'Endre dødsdato' },
-			{ value: 'D', label: 'Annulere dødsdato' }
+			{ value: 'D', label: 'Annullere dødsdato' }
 		]
 
 		return (
 			<ContentContainer>
 				<Formik
 					onSubmit={this._onSubmit}
+					onReset={this.initialValues}
 					validationSchema={this.validation}
 					initialValues={initialValues}
+					enableReinitialize
 					render={props => {
 						const { values, touched, errors, dirty, isSubmitting } = props
 						return (
 							<Form autoComplete="off">
 								<h2>Send dødsmelding</h2>
-								<div className="tps-endring-foedselmelding-top">
-									<Field name="ident" label="IDENT" component={FormikInput} />
+								<div className="tps-endring-doedsmelding">
+									<Field
+										name="ident"
+										label="IDENT"
+										component={FormikInput}
+										onBlur={this._handleOnBlurInput}
+									/>
 									<Field
 										name="handling"
 										label="HANDLING"
 										options={handlingOptions}
 										component={FormikDollySelect}
+										disabled={foundIdent ? false : true}
 									/>
-									<Field name="doedsdato" label="DØDSDATO" component={FormikDatepicker} />
 									<Field
-										name="miljoe"
+										name="doedsdato"
+										label="DØDSDATO"
+										component={FormikDatepicker}
+										disabled={foundIdent ? false : true}
+									/>
+
+									<Field
+										name="miljoer"
 										label="SEND TIL MILJØ"
-										options={this.props.dropdownMiljoe}
+										options={environments}
 										component={FormikDollySelect}
+										multi={true}
+										disabled={foundIdent ? false : true}
 									/>
 								</div>
 								<div className="knapp-container">
-									<Knapp type="hoved" htmlType="submit">
+									<Knapp type="hoved" htmlType="submit" disabled={foundIdent ? false : true}>
 										Opprett dødsmelding
 									</Knapp>
 								</div>
@@ -123,11 +258,27 @@ export default class SendDoedsmelding extends PureComponent {
 						)
 					}}
 				/>
-				{this.state.isFetching && <Loading label="Sender dødsmelding" />}
+				{this.state.isFetchingMiljoer && <Loading label="Søker etter testbruker" />}
+				{this.state.showErrorMessageFoundIdent && (
+					<h3 className="error-message">
+						Finner ikke testperson med ident: {this.state.currentfnr}
+					</h3>
+				)}
+				{this.state.isFetching && (
+					<Loading
+						label={
+							handlingsType === 'D'
+								? 'Annulerer dødsmelding'
+								: handlingsType === 'U'
+									? 'Endrer dødsdato'
+									: 'Sender dødsmelding'
+						}
+					/>
+				)}
 				{this.state.errorMessage && (
 					<h4 className="error-message"> Feil: {this.state.errorMessage} </h4>
 				)}
-				{this.state.meldingSent && this._renderMeldingSent()}
+				{this.state.meldingSent && this._renderResponseMessage()}
 			</ContentContainer>
 		)
 	}

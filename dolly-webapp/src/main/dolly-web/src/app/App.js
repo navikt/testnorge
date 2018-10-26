@@ -2,17 +2,16 @@ import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Header from '~/components/header/Header'
 import Loading from '~/components/loading/Loading'
-import Breadcrumbs from '~/components/breadcrumb/Breadcrumb'
-import SplashscreenConnector from '~/components/splashscreen/SplashscreenConnector'
+import Breadcrumb from '~/components/breadcrumb/BreadcrumbWithHoc'
 import Toast from '~/components/toast/Toast'
 import routes from '~/Routes'
+import ConfigService from '~/service/Config'
 
 import './App.less'
 
 export default class App extends Component {
 	componentDidMount() {
-		this.props.fetchDollyApiConfig()
-		this.props.fetchCurrentBruker()
+		ConfigService.fetchConfig().then(() => this.props.fetchCurrentBruker())
 	}
 
 	componentDidUpdate() {
@@ -28,7 +27,7 @@ export default class App extends Component {
 		return (
 			<React.Fragment>
 				<Header brukerData={brukerData} />
-				<Breadcrumbs />
+				<Breadcrumb />
 				<main>
 					<Switch>
 						{routes.map((route, idx) => {

@@ -2,6 +2,19 @@ package no.nav.dolly.api;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,6 +37,7 @@ import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.dolly.domain.resultset.RsTestident;
+import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
@@ -45,6 +59,9 @@ public class TestgruppeControllerTest {
 
     @Mock
     private BestillingService bestillingService;
+
+    @Mock
+    private BestillingProgressService bestillingProgressService;
 
     @InjectMocks
     private TestgruppeController controller;

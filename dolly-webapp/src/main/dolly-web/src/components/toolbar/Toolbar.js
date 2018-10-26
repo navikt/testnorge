@@ -8,7 +8,7 @@ export default class Toolbar extends PureComponent {
 	static propTypes = {
 		toggleOnChange: PropTypes.func,
 		toggleCurrent: PropTypes.string,
-		searchField: PropTypes.func,
+		searchField: PropTypes.node,
 		title: PropTypes.string
 	}
 	static defaultProps = {
@@ -30,13 +30,12 @@ export default class Toolbar extends PureComponent {
 	}
 
 	render() {
-		const { title, toggleOnChange, children } = this.props
-		const SearchField = this.props.searchField
+		const { title, toggleOnChange, children, searchField } = this.props
 		return (
 			<div className="toolbar">
 				{title && <h2>{title}</h2>}
 				{toggleOnChange && this.renderToggle()}
-				{SearchField && <SearchField />}
+				{searchField}
 				<div className="toolbar--actions">{children}</div>
 			</div>
 		)

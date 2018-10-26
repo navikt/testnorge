@@ -46,6 +46,11 @@ export default class Gruppe extends Component {
 		this.setState({ visning }, () => this.props.resetSearch())
 	}
 
+	searchfieldPlaceholderSelector = () => {
+		if (this.state.visning === this.VISNING_BESTILLING) return 'Søk i bestillinger'
+		return 'Søk etter testpersoner'
+	}
+
 	renderList = gruppe => {
 		const { visning } = this.state
 		const { editTestbruker } = this.props
@@ -107,7 +112,7 @@ export default class Gruppe extends Component {
 				))}
 
 				<Toolbar
-					searchField={SearchFieldConnector}
+					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}
 					toggleOnChange={this.toggleToolbar}
 					toggleCurrent={this.state.visning}
 					toggleValues={toggleValues}
