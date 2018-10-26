@@ -34,7 +34,7 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     @Size(max = 50)
     private String mellomnavn;
     @Size(max = 50)
-    private String slekstnavnUgift;
+    private String slektsnavnUgift;
     @Size(max = 25)
     private String forkortetNavn;
     @Size(max = 8)
@@ -148,7 +148,7 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     @Size(max = 5)
     private String farsPersonnummer;
     @Size(max = 50)
-    private String farsFarsNavn;
+    private String farsNavn;
     @Size(max = 3)
     private String farsStatsbSkap;
     @Size(max = 11)
@@ -162,7 +162,7 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     @Size(max = 1)
     private String levendeDoed;
     @Size(max = 1)
-    private String kjonn;
+    private String kjoenn;
     @Size(max = 1)
     private String tildelingskode;
     @Size(max = 2)
@@ -295,6 +295,26 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     private String mandatTekst;
     @Size(max = 151)
     private String reserverFramtidigBruk;
+    
+    public String getSlekstnavnUgift() {
+        return slektsnavnUgift;
+    }
+    
+    public String getKjonn() {
+        return kjoenn;
+    }
+    
+    public String getFarsFarsNavn() {
+        return farsNavn;
+    }
+    
+    public void setmorsSivilstand(String morsSivilstand) {
+        this.morsSiviltilstand = morsSivilstand;
+    }
+    
+    public void setregdatoStatsb(String regdatoStatsb) {
+        this.statsborgerskapRegdato = regdatoStatsb;
+    }
     
     @Override
     public String getMeldingstype() {
