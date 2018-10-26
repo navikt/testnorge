@@ -150,7 +150,7 @@ export default class SendDoedsmelding extends PureComponent {
 				handling = 'annullert'
 				break
 		}
-		return <h3 className="success-message"> Dødsmelding {handling} </h3>
+		return <h3 className="tps-endring-success-message"> Dødsmelding {handling} </h3>
 	}
 
 	_renderResponseMessage = () => {
@@ -178,13 +178,15 @@ export default class SendDoedsmelding extends PureComponent {
 		return (
 			<div>
 				{this.state.environments_success.length > 0 && (
-					<h3 className="success-message">
+					<h3 className="tps-endring-success-message">
 						Dødsmelding {handling} i {suksessMiljoer}
 					</h3>
 				)}
 
 				{this.state.environments_error.length > 0 && (
-					<h3 className="error-message">Personen var allerede død i {feilMiljoer}</h3>
+					<h3 className="tps-endring-tps-endring-error-message">
+						Personen var allerede død i {feilMiljoer}
+					</h3>
 				)}
 			</div>
 		)
@@ -249,7 +251,7 @@ export default class SendDoedsmelding extends PureComponent {
 										disabled={foundIdent ? false : true}
 									/>
 								</div>
-								<div className="knapp-container">
+								<div className="tps-endring-knapp-container">
 									<Knapp type="hoved" htmlType="submit" disabled={foundIdent ? false : true}>
 										Opprett dødsmelding
 									</Knapp>
@@ -260,13 +262,13 @@ export default class SendDoedsmelding extends PureComponent {
 				/>
 				{this.state.isFetchingMiljoer && <Loading label="Søker etter testbruker" />}
 				{this.state.showErrorMessageFoundIdent && (
-					<h3 className="error-message">
+					<h3 className="tps-endring-tps-endring-error-message">
 						Finner ikke testperson med ident: {this.state.currentfnr}
 					</h3>
 				)}
 				{this.state.isFetching && <Loading label="Sender dødsmelding" />}
 				{this.state.errorMessage && (
-					<h4 className="error-message"> Feil: {this.state.errorMessage} </h4>
+					<h4 className="tps-endring-error-message"> Feil: {this.state.errorMessage} </h4>
 				)}
 				{this.state.meldingSent && this._renderResponseMessage()}
 			</ContentContainer>

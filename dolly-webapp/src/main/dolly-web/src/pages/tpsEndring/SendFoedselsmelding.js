@@ -72,7 +72,7 @@ export default class SendFoedselsmelding extends PureComponent {
 	_renderNyttBarn = person => {
 		return (
 			<Fragment>
-				<h3 className="success-message">
+				<h3 className="tps-endring-success-message">
 					Gratulerer, {person.personNavn.gjeldendePersonnavn} med ident {person.fodselsnummer} ble
 					født!
 				</h3>
@@ -145,7 +145,7 @@ export default class SendFoedselsmelding extends PureComponent {
 		]
 
 		return (
-			<ContentContainer>
+			<ContentContainer className="tps-endring-content-container">
 				<Formik
 					onSubmit={this._onSubmit}
 					validationSchema={this.validation}
@@ -216,12 +216,12 @@ export default class SendFoedselsmelding extends PureComponent {
 				{this.state.isFetching && <Loading label="Sender fødselsmelding" />}
 				{this.state.isFetchingMiljoer && <Loading label="Søker etter testbruker" />}
 				{this.state.showErrorMessageFoundIdent && (
-					<h3 className="error-message">
+					<h3 className="tps-endring-error-message">
 						Finner ikke testperson med ident: {this.state.currentFnrMor}
 					</h3>
 				)}
 				{this.state.errorMessage && (
-					<h4 className="error-message"> Feil: {this.state.errorMessage} </h4>
+					<h4 className="tps-endring-error-message"> Feil: {this.state.errorMessage} </h4>
 				)}
 				{this.state.nyttBarn && this._renderNyttBarn(this.state.nyttBarn)}
 			</ContentContainer>
