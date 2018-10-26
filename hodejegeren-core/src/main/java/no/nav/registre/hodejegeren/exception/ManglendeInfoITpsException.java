@@ -1,6 +1,6 @@
 package no.nav.registre.hodejegeren.exception;
 
-public class ManglendeInfoITpsException extends Exception {
+public class ManglendeInfoITpsException extends RuntimeException {
 
     public ManglendeInfoITpsException() {
         super();

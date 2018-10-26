@@ -1,16 +1,9 @@
 package no.nav.registre.hodejegeren.service;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
+import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,11 +13,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Resources;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TpsStatusQuoServiceTest {
@@ -103,7 +102,7 @@ public class TpsStatusQuoServiceTest {
 
     /**
      * Testscenario: HVIS getInfoOnRoutineName blir kalt skal metoden hente en rutine, og sørge for at innholdet rutinen caches.
-     * Hvis en cache ikke finnes, skal denne opprettes.
+     * Hvis en cache ikke finnes, skal denne opprettes. Cachen skal resettes når getStatusQuo kalles.
      */
     @Test
     public void shouldUpdateCacheWithRoutine() throws IOException {
@@ -118,6 +117,10 @@ public class TpsStatusQuoServiceTest {
         assertNotNull(tpsStatusQuoService.getTpsServiceRoutineCache());
         assertTrue(tpsStatusQuoService.getTpsServiceRoutineCache().containsKey(routineName));
         assertEquals(jsonNode, tpsStatusQuoService.getTpsServiceRoutineCache().get(routineName));
+
+        Map<String, JsonNode> cache = tpsStatusQuoService.getTpsServiceRoutineCache();
+        tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo"), aksjonsKode, environment, fnr);
+        assertNotEquals(cache, tpsStatusQuoService.getTpsServiceRoutineCache());
     }
 
     @Test
