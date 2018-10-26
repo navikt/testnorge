@@ -233,5 +233,5 @@ const formatSigrunValues = (attributeList, values) => {
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { bestilling } = getState()
 	const values = bestillingFormatter(bestilling)
-	// return dispatch(actions.postBestilling(gruppeId, values))
+	return dispatch(actions.postBestilling(gruppeId, values))
 }
