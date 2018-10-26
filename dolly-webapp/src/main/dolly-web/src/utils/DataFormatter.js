@@ -10,7 +10,7 @@ formatters.formatIdentNr = ident => {
 	if (!ident) return ident
 	const birth = ident.substring(0, 6)
 	const personnummer = ident.substring(6, 11)
-	return `${birth} ${personnummer}`
+	return `${birth}${personnummer}`
 }
 
 formatters.formatAlder = (alder, dodsdato) => {

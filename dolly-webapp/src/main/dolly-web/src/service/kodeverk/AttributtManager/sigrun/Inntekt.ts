@@ -52,7 +52,7 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Inntekt,
 				id: 'typeinntekt',
 				label: 'Type inntekt',
-				path: 'grunnlag.tekniskNavn',
+				path: 'tekniskNavn',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
 				apiKodeverkId: 'Beregnet skatt',
@@ -62,7 +62,7 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.Inntekt,
 				subKategori: SubKategorier.Inntekt,
-				path: 'grunnlag.verdi',
+				path: 'verdi',
 				id: 'beloep',
 				label: 'Beløp',
 				dataSource: DataSource.SIGRUN,
@@ -72,12 +72,12 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.Inntekt,
 				subKategori: SubKategorier.Inntekt,
-				id: 'aar',
+				id: 'inntektsaar',
 				label: 'År',
 				path: 'inntektsaar',
 				dataSource: DataSource.SIGRUN,
-				inputType: InputType.Date,
-				validation: DateValidation
+				inputType: InputType.Number,
+				validation: yup.number().required('Tast inn et gyldig år')
 			}
 		]
 	},
@@ -119,8 +119,8 @@ const AttributtListe: Attributt[] = [
 				id: 'År',
 				label: 'År',
 				dataSource: DataSource.SIGRUN,
-				inputType: InputType.Date,
-				validation: DateValidation
+				inputType: InputType.Number,
+				validation: yup.number().required('Tast inn et gyldig år')
 			}
 		]
 	}

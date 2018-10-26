@@ -51,7 +51,7 @@ const FormEditorFieldArray = ({ subKategori, items, id }, formikProps, renderFie
 									)
 								})
 							) : (
-								<span>Ingen barn lagt til</span>
+								<span>Ingen verdi lagt til</span>
 							)}
 						</Fragment>
 					)

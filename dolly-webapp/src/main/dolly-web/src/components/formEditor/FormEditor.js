@@ -26,7 +26,7 @@ export default class FormEditor extends PureComponent {
 		const isAdresse = items[0].id === 'boadresse'
 		return (
 			<div className="subkategori" key={uniqueId}>
-				{<h4>{subKategori.navn}</h4>}
+				{!items[0].items && <h4>{subKategori.navn}</h4>}
 				<div className="subkategori-field-group">
 					{items.map(
 						item =>
