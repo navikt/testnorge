@@ -8,6 +8,8 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -24,10 +26,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import ma.glasnost.orika.MapperFacade;
@@ -48,6 +48,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.RsBrukerBuilder;
+import no.nav.dolly.testdata.builder.RsOpprettTestgruppeBuilder;
 import no.nav.dolly.testdata.builder.RsTeamBuilder;
 import no.nav.dolly.testdata.builder.RsTestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
@@ -277,13 +278,13 @@ public class TestgruppeServiceTest {
     }
 
     @Test(expected = DollyFunctionalException.class)
-    public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt(){
+    public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt() {
         when(gruppeRepository.saveAll(any())).thenThrow(nonTransientDataAccessException);
         testgruppeService.saveGrupper(new HashSet<>(Arrays.asList(new Testgruppe())));
     }
 
     @Test(expected = NotFoundException.class)
-    public void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes(){
+    public void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes() {
         testgruppeService.fetchGrupperByIdsIn(Arrays.asList(anyLong()));
     }
 
@@ -322,5 +323,32 @@ public class TestgruppeServiceTest {
         List<String> identer = testgruppeService.fetchIdenterByGruppeId(gruppeId);
 
         assertThat(identer.size(), is(0));
+    }
+
+    @Test
+    public void oppdaterTestgruppe_test() {
+        long gruppeId = 1L;
+        long teamId = 2L;
+        String ident1 = "1";
+        String ident2 = "2";
+
+        Testident t1 = TestidentBuilder.builder().ident(ident1).build().convertToRealTestident();
+        Testident t2 = TestidentBuilder.builder().ident(ident2).build().convertToRealTestident();
+        HashSet gruppe = new HashSet();
+        gruppe.add(t1);
+        gruppe.add(t2);
+        Testgruppe tg = TestgruppeBuilder.builder().id(gruppeId).testidenter(gruppe).hensikt("ayylmao").build().convertToRealTestgruppe();
+
+        RsOpprettTestgruppe rsOpprettTestgruppe = RsOpprettTestgruppeBuilder.builder().hensikt("test").navn("navn").teamId(1L).build().convertToRealRsOpprettTestgruppe();
+
+        Team team = TeamBuilder.builder().navn("team").id(teamId).build().convertToRealTeam();
+
+        when(gruppeRepository.findById(anyLong())).thenReturn(Optional.of(tg));
+        when(brukerService.fetchBruker(anyString())).thenReturn(new Bruker("navIdent"));
+        //        when(teamService.fetchTeamById(anyLong())).thenReturn(team);
+        doReturn(team).when(teamService).fetchTeamById(anyLong());
+        when(mapperFacade.map(rsOpprettTestgruppe, Testgruppe.class)).thenReturn(tg);
+        testgruppeService.oppdaterTestgruppe(gruppeId, rsOpprettTestgruppe);
+        verify(gruppeRepository).save(tg);
     }
 }
