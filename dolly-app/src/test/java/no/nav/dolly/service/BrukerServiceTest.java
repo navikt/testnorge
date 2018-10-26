@@ -1,20 +1,17 @@
 package no.nav.dolly.service;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
-import no.nav.dolly.testdata.builder.RsBrukerBuilder;
-import no.nav.dolly.testdata.builder.RsTeamBuilder;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import static org.hamcrest.CoreMatchers.both;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,18 +23,25 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static org.hamcrest.CoreMatchers.both;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
+import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.testdata.builder.BrukerBuilder;
+import no.nav.dolly.testdata.builder.RsBrukerBuilder;
+import no.nav.dolly.testdata.builder.RsTeamBuilder;
+import no.nav.dolly.testdata.builder.TeamBuilder;
+import no.nav.dolly.testdata.builder.TestgruppeBuilder;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrukerServiceTest {
@@ -60,7 +64,7 @@ public class BrukerServiceTest {
     private BrukerService service;
 
     @Before
-    public void setup(){
+    public void setup() {
         SecurityContextHolder.getContext().setAuthentication(new OidcTokenAuthentication(navIdent, null, null, null));
     }
 
@@ -89,6 +93,19 @@ public class BrukerServiceTest {
     public void getBruker_KallerRepoHentBrukere() {
         service.fetchBrukere();
         verify(brukerRepository).findAll();
+    }
+
+    //funker ikke
+    @Test
+    public void fetchOrCreateBruker_saveKallesVedNotFoundException() {
+        service.fetchOrCreateBruker(null);
+        verify(brukerRepository).save(any());
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void saveBrukerTilDB_kasterExceptionNarDBConstrainBrytes() {
+        when(brukerRepository.save(any(Bruker.class))).thenThrow(DataIntegrityViolationException.class);
+        service.saveBrukerTilDB(new Bruker());
     }
 
     @Test
@@ -134,12 +151,11 @@ public class BrukerServiceTest {
         )));
     }
 
-
     @Test
-    public void leggTilFavoritter_medGrupperIDer(){
-        List<Long> ider = Arrays.asList(1l,2l);
+    public void leggTilFavoritter_medGrupperIDer() {
+        List<Long> ider = Arrays.asList(1l, 2l);
         Testgruppe g = TestgruppeBuilder.builder().navn("gruppe").hensikt("hen").build().convertToRealTestgruppe();
-        List<Testgruppe>  grupper = Arrays.asList(g);
+        List<Testgruppe> grupper = Arrays.asList(g);
         Bruker b = BrukerBuilder.builder().navIdent(navIdent).favoritter(new HashSet<>()).teams(new HashSet<>()).build().convertToRealBruker();
 
         when(gruppeService.fetchGrupperByIdsIn(ider)).thenReturn(grupper);
@@ -160,7 +176,7 @@ public class BrukerServiceTest {
     }
 
     @Test
-    public void fjernFavoritter_medGrupperIDer(){
+    public void fjernFavoritter_medGrupperIDer() {
         List<Long> ider = Arrays.asList(1l);
         Testgruppe g = TestgruppeBuilder.builder().navn("gruppe").hensikt("hen").build().convertToRealTestgruppe();
         Testgruppe g2 = TestgruppeBuilder.builder().navn("gruppe2").hensikt("hen2").build().convertToRealTestgruppe();

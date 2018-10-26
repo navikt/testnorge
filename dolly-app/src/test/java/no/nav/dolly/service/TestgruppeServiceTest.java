@@ -27,6 +27,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import ma.glasnost.orika.MapperFacade;
@@ -71,6 +72,9 @@ public class TestgruppeServiceTest {
     @Mock
     private MapperFacade mapperFacade;
 
+    @Mock
+    private NonTransientDataAccessException nonTransientDataAccessException;
+
     @InjectMocks
     private TestgruppeService testgruppeService;
 
@@ -79,6 +83,7 @@ public class TestgruppeServiceTest {
         SecurityContextHolder.getContext().setAuthentication(
                 new OidcTokenAuthentication(standardPrincipal, null, null, null)
         );
+        when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
     }
 
     @Test
@@ -261,7 +266,7 @@ public class TestgruppeServiceTest {
 
     @Test(expected = DollyFunctionalException.class)
     public void saveGruppeTilDB_kasterDollyExceptionHvisDBConstraintErBrutt() throws Exception {
-        when(gruppeRepository.save(any())).thenThrow(NonTransientDataAccessException.class);
+        when(gruppeRepository.save(any())).thenThrow(nonTransientDataAccessException);
         testgruppeService.saveGruppeTilDB(new Testgruppe());
     }
 
@@ -273,13 +278,12 @@ public class TestgruppeServiceTest {
 
     @Test(expected = DollyFunctionalException.class)
     public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt(){
-        when(gruppeRepository.saveAll(any())).thenThrow(NonTransientDataAccessException.class);
+        when(gruppeRepository.saveAll(any())).thenThrow(nonTransientDataAccessException);
         testgruppeService.saveGrupper(new HashSet<>(Arrays.asList(new Testgruppe())));
     }
 
     @Test(expected = NotFoundException.class)
     public void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes(){
-        when(gruppeRepository.findAllById(Arrays.asList(anyLong()))).thenReturn(null);
         testgruppeService.fetchGrupperByIdsIn(Arrays.asList(anyLong()));
     }
 

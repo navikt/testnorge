@@ -23,6 +23,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -94,5 +95,15 @@ public class IdentServiceTest {
 		assertThat(testident.getIdent(), is(STANDARD_IDENTER_1));
 		assertThat(testident.getTestgruppe(), is(standardGruppe));
 	}
+
+	@Test
+	public void slettTestidenter_kallesRiktigAntallGanger(){
+        RsTestident rsi1 = RsTestidentBuilder.builder().ident(STANDARD_IDENTER_1).build().convertToRealRsTestident();
+        RsTestident rsi2 = RsTestidentBuilder.builder().ident(STANDAR_IDENTER_2).build().convertToRealRsTestident();
+        List<RsTestident> rsTestidenter = Arrays.asList(rsi1, rsi2);
+
+//        verify(identRepository, times(2)).deleteTestidentByIdent();
+//        identService.slettTestidenter(rsTestidenter);
+    }
 	
 }
