@@ -1,17 +1,12 @@
 package no.nav.dolly.service;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.TeamRepository;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
-import no.nav.dolly.testdata.builder.RsBrukerBuilder;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,15 +19,24 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
+import no.nav.dolly.testdata.builder.BrukerBuilder;
+import no.nav.dolly.testdata.builder.RsBrukerBuilder;
+import no.nav.dolly.testdata.builder.TeamBuilder;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceTest {
@@ -53,12 +57,18 @@ public class TeamServiceTest {
     @Mock
     MapperFacade mapperFacade;
 
+    @Mock
+    private NonTransientDataAccessException nonTransientDataAccessException;
+
     @InjectMocks
     TeamService teamService;
 
     @Before
     public void setupMocks() {
-        SecurityContextHolder.getContext().setAuthentication(new OidcTokenAuthentication(currentBrukerIdent, null, null, null));
+        SecurityContextHolder.getContext().setAuthentication(
+                new OidcTokenAuthentication(currentBrukerIdent, null, null, null)
+        );
+        when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
     }
 
     @Test(expected = NotFoundException.class)
@@ -187,4 +197,15 @@ public class TeamServiceTest {
         return argumentCaptor.getValue();
     }
 
+    @Test(expected = ConstraintViolationException.class)
+    public void saveTeamToDB_DataIntegrityViolationExceptionCatches() {
+        when(teamRepository.save(any(Team.class))).thenThrow(DataIntegrityViolationException.class);
+        teamService.saveTeamToDB(new Team());
+    }
+
+    @Test(expected = DollyFunctionalException.class)
+    public void saveTeamToDB_kasterDollyExceptionHvisDBConstraintErBrutt() {
+        when(teamRepository.save(any(Team.class))).thenThrow(nonTransientDataAccessException);
+        teamService.saveTeamToDB(new Team());
+    }
 }

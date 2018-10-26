@@ -59,6 +59,12 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeServiceTest {
 
+    private static final long GROUP_ID = 1L;
+
+    private static final String IDENT_ONE = "1";
+
+    private static final String IDENT_TWO = "2";
+
     private String standardPrincipal = "princ";
 
     @Mock
@@ -253,10 +259,8 @@ public class TestgruppeServiceTest {
 
     @Test
     public void slettGruppeById_deleteBlirKaltMotRepoMedGittId() {
-        Long gruppeId = 1L;
-
-        testgruppeService.slettGruppeById(gruppeId);
-        verify(gruppeRepository).deleteTestgruppeById(gruppeId);
+        testgruppeService.slettGruppeById(GROUP_ID);
+        verify(gruppeRepository).deleteTestgruppeById(GROUP_ID);
     }
 
     @Test(expected = ConstraintViolationException.class)
@@ -296,48 +300,40 @@ public class TestgruppeServiceTest {
 
     @Test
     public void fetchIdenterByGruppeId_gruppeTilIdentString() {
-        long gruppeId = 1L;
-        String ident1 = "1";
-        String ident2 = "2";
-
-        Testident t1 = TestidentBuilder.builder().ident(ident1).build().convertToRealTestident();
-        Testident t2 = TestidentBuilder.builder().ident(ident2).build().convertToRealTestident();
+        Testident t1 = TestidentBuilder.builder().ident(IDENT_ONE).build().convertToRealTestident();
+        Testident t2 = TestidentBuilder.builder().ident(IDENT_TWO).build().convertToRealTestident();
         HashSet gruppe = new HashSet();
         gruppe.add(t1);
         gruppe.add(t2);
-        Testgruppe tg = TestgruppeBuilder.builder().id(gruppeId).testidenter(gruppe).build().convertToRealTestgruppe();
-        when(gruppeRepository.findById(gruppeId)).thenReturn(Optional.of(tg));
+        Testgruppe tg = TestgruppeBuilder.builder().id(GROUP_ID).testidenter(gruppe).build().convertToRealTestgruppe();
+        when(gruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(tg));
 
-        List<String> identer = testgruppeService.fetchIdenterByGruppeId(gruppeId);
-        assertThat(identer.contains(ident1), is(true));
-        assertThat(identer.contains(ident2), is(true));
+        List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
+        assertThat(identer.contains(IDENT_ONE), is(true));
+        assertThat(identer.contains(IDENT_TWO), is(true));
         assertThat(identer.size(), is(2));
     }
 
     @Test
     public void fetchIdenterByGroupId_sjekkTommeGrupper() {
-        long gruppeId = 1L;
-        Testgruppe tg = TestgruppeBuilder.builder().id(gruppeId).testidenter(new HashSet<>()).build().convertToRealTestgruppe();
+        Testgruppe tg = TestgruppeBuilder.builder().id(GROUP_ID).testidenter(new HashSet<>()).build().convertToRealTestgruppe();
 
-        when(gruppeRepository.findById(gruppeId)).thenReturn(Optional.of(tg));
-        List<String> identer = testgruppeService.fetchIdenterByGruppeId(gruppeId);
+        when(gruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(tg));
+        List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
 
         assertThat(identer.size(), is(0));
     }
 
     @Test
     public void oppdaterTestgruppe_sjekkAtDBKalles() {
-        long gruppeId = 1L;
         long teamId = 2L;
-        String ident1 = "1";
-        String ident2 = "2";
 
-        Testident t1 = TestidentBuilder.builder().ident(ident1).build().convertToRealTestident();
-        Testident t2 = TestidentBuilder.builder().ident(ident2).build().convertToRealTestident();
+        Testident t1 = TestidentBuilder.builder().ident(IDENT_ONE).build().convertToRealTestident();
+        Testident t2 = TestidentBuilder.builder().ident(IDENT_TWO).build().convertToRealTestident();
         HashSet gruppe = new HashSet();
         gruppe.add(t1);
         gruppe.add(t2);
-        Testgruppe tg = TestgruppeBuilder.builder().id(gruppeId).testidenter(gruppe).hensikt("ayylmao").build().convertToRealTestgruppe();
+        Testgruppe tg = TestgruppeBuilder.builder().id(GROUP_ID).testidenter(gruppe).hensikt("test").build().convertToRealTestgruppe();
 
         RsOpprettTestgruppe rsOpprettTestgruppe = RsOpprettTestgruppeBuilder.builder().hensikt("test").navn("navn").teamId(1L).build().convertToRealRsOpprettTestgruppe();
 
@@ -347,7 +343,7 @@ public class TestgruppeServiceTest {
         when(brukerService.fetchBruker(anyString())).thenReturn(new Bruker("navIdent"));
         doReturn(team).when(teamService).fetchTeamById(anyLong());
         when(mapperFacade.map(rsOpprettTestgruppe, Testgruppe.class)).thenReturn(tg);
-        testgruppeService.oppdaterTestgruppe(gruppeId, rsOpprettTestgruppe);
+        testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettTestgruppe);
         verify(gruppeRepository).save(tg);
     }
 }
