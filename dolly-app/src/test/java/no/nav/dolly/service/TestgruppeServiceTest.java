@@ -326,7 +326,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void oppdaterTestgruppe_test() {
+    public void oppdaterTestgruppe_sjekkAtDBKalles() {
         long gruppeId = 1L;
         long teamId = 2L;
         String ident1 = "1";
@@ -349,6 +349,5 @@ public class TestgruppeServiceTest {
         when(mapperFacade.map(rsOpprettTestgruppe, Testgruppe.class)).thenReturn(tg);
         testgruppeService.oppdaterTestgruppe(gruppeId, rsOpprettTestgruppe);
         verify(gruppeRepository).save(tg);
-        committest 
     }
 }
