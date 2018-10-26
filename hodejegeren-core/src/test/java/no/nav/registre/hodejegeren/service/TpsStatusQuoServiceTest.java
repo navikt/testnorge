@@ -113,13 +113,14 @@ public class TpsStatusQuoServiceTest {
 
         tpsStatusQuoService.getInfoOnRoutineName(routineName, aksjonsKode, environment, fnr);
 
-        assertNotNull(tpsStatusQuoService.getTpsServiceRoutineCache());
-        assertTrue(tpsStatusQuoService.getTpsServiceRoutineCache().containsKey(routineName));
-        assertEquals(jsonNode, tpsStatusQuoService.getTpsServiceRoutineCache().get(routineName));
+        Map<String, JsonNode> tpsServiceRoutineCache = tpsStatusQuoService.getTpsServiceRoutineCache();
 
-        Map<String, JsonNode> cache = tpsStatusQuoService.getTpsServiceRoutineCache();
+        assertNotNull(tpsServiceRoutineCache);
+        assertTrue(tpsServiceRoutineCache.containsKey(routineName));
+        assertEquals(jsonNode, tpsServiceRoutineCache.get(routineName));
+
         tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo"), aksjonsKode, environment, fnr);
-        assertNotEquals(cache, tpsStatusQuoService.getTpsServiceRoutineCache());
+        assertNotEquals(tpsServiceRoutineCache, tpsStatusQuoService.getTpsServiceRoutineCache());
     }
 
     @Test
