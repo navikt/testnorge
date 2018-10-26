@@ -1,4 +1,4 @@
-package no.nav.registre.hodejegeren;
+package no.nav.registre.hodejegeren.test;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 

@@ -1,4 +1,4 @@
-package no.nav.registre.hodejegeren.consumer;
+package no.nav.registre.hodejegeren.test.consumer;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -10,8 +10,9 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import no.nav.registre.hodejegeren.ApplicationTestBase;
-import no.nav.registre.hodejegeren.AssertionUtils;
+import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
+import no.nav.registre.hodejegeren.test.ApplicationTestBase;
+import no.nav.registre.hodejegeren.test.AssertionUtils;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
