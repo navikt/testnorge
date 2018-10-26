@@ -45,7 +45,7 @@ public class TpsStatusQuoServiceTest {
      * map.
      */
     @Test
-    public void shouldGetStatusQuoForFeltnavn() throws IOException, ManglendeInfoITpsException {
+    public void shouldGetStatusQuoForFeltnavn() throws IOException {
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
         List<String> feltNavn = new ArrayList<>();
@@ -64,7 +64,7 @@ public class TpsStatusQuoServiceTest {
      * korrekt spørring
      */
     @Test
-    public void shouldGetStatusQuoForFeltnavnRelasjon() throws IOException, ManglendeInfoITpsException {
+    public void shouldGetStatusQuoForFeltnavnRelasjon() throws IOException {
         JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("FS02-FDNUMMER-PERSRELA-O.json"));
 
         List<String> feltNavn = new ArrayList<>();
@@ -84,7 +84,7 @@ public class TpsStatusQuoServiceTest {
      * servicerutine-feltX sin verdi i en map.
      */
     @Test
-    public void shouldGetStatusQuoForFeltnavnPath() throws IOException, ManglendeInfoITpsException {
+    public void shouldGetStatusQuoForFeltnavnPath() throws IOException {
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
         List<String> feltNavn = new ArrayList<>();

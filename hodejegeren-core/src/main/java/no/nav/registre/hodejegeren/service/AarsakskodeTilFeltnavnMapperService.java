@@ -19,7 +19,7 @@ public class AarsakskodeTilFeltnavnMapperService {
     @Autowired
     TpsStatusQuoService tpsStatusQuoService;
 
-    public Map<String, String> getStatusQuoFraAarsakskode(AarsakskoderTrans1 aarsakskode, String aksjonsKode, String environment, String fnr) throws IOException, ManglendeInfoITpsException {
+    public Map<String, String> getStatusQuoFraAarsakskode(AarsakskoderTrans1 aarsakskode, String aksjonsKode, String environment, String fnr) throws IOException {
         Map<String, String> personStatusQuo = new HashMap<>();
         List<String> feltnavn;
 

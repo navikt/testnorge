@@ -35,7 +35,7 @@ public class AarsakskodeTilFeltnavnMapperServiceTest {
      * bli sendt til getStatusQuo()
      */
     @Test
-    public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException, ManglendeInfoITpsException {
+    public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
         AarsakskoderTrans1 aarsakskoderTrans1 = AarsakskoderTrans1.NAVNEENDRING_FOERSTE;
 
         aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(aarsakskoderTrans1, aksjonsKode, environment, fnr);
