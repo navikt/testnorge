@@ -1,6 +1,5 @@
 package no.nav.registre.hodejegeren.service;
 
-import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
