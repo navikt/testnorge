@@ -21,13 +21,6 @@
 	}
 }
 
-.knapp-container {
-	display: flex;
-	flex: 1;
-	justify-content: flex-end;
-	margin: 10px 10px 0 0;
-}
-
 .tps-endring-foedselmelding-bottom {
 	display: flex;
 	justify-content: space-between;
@@ -69,21 +62,23 @@
 	}
 }
 
-.content-container {
-	margin-bottom: 40px;
-}
-
-.loading-component {
-	padding-top: 20px;
-}
-
-.success-message {
-	color: @color-success;
-}
-.error-message {
-	color: @color-error;
-}
-
-.nav-datovelger {
-	width: 100%;
+.tps-endring {
+	&-content-container {
+		padding: 20px;
+		background-color: white;
+		margin-bottom: 10px;
+		margin-bottom: 40px;
+	}
+	&-success-message {
+		color: @color-success;
+	}
+	&-error-message {
+		color: @color-error;
+	}
+	&-knapp-container {
+		display: flex;
+		flex: 1;
+		justify-content: flex-end;
+		margin: 10px 10px 0 0;
+	}
 }
