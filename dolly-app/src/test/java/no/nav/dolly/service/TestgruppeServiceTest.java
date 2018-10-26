@@ -349,5 +349,6 @@ public class TestgruppeServiceTest {
         when(mapperFacade.map(rsOpprettTestgruppe, Testgruppe.class)).thenReturn(tg);
         testgruppeService.oppdaterTestgruppe(gruppeId, rsOpprettTestgruppe);
         verify(gruppeRepository).save(tg);
+        String a = "a";
     }
 }
