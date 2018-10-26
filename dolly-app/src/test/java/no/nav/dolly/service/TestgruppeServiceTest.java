@@ -345,10 +345,10 @@ public class TestgruppeServiceTest {
 
         when(gruppeRepository.findById(anyLong())).thenReturn(Optional.of(tg));
         when(brukerService.fetchBruker(anyString())).thenReturn(new Bruker("navIdent"));
-        //        when(teamService.fetchTeamById(anyLong())).thenReturn(team);
         doReturn(team).when(teamService).fetchTeamById(anyLong());
         when(mapperFacade.map(rsOpprettTestgruppe, Testgruppe.class)).thenReturn(tg);
         testgruppeService.oppdaterTestgruppe(gruppeId, rsOpprettTestgruppe);
         verify(gruppeRepository).save(tg);
+        committest 
     }
 }
