@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import java.io.IOException;
 import java.util.List;
 
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -34,7 +35,7 @@ public class AarsakskodeTilFeltnavnMapperServiceTest {
      * bli sendt til getStatusQuo()
      */
     @Test
-    public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
+    public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException, ManglendeInfoITpsException {
         AarsakskoderTrans1 aarsakskoderTrans1 = AarsakskoderTrans1.NAVNEENDRING_FOERSTE;
 
         aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(aarsakskoderTrans1, aksjonsKode, environment, fnr);

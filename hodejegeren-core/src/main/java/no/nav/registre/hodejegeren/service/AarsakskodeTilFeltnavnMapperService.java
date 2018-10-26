@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class AarsakskodeTilFeltnavnMapperService {
     @Autowired
     TpsStatusQuoService tpsStatusQuoService;
 
-    public Map<String, String> getStatusQuoFraAarsakskode(AarsakskoderTrans1 aarsakskode, String aksjonsKode, String environment, String fnr) throws IOException {
+    public Map<String, String> getStatusQuoFraAarsakskode(AarsakskoderTrans1 aarsakskode, String aksjonsKode, String environment, String fnr) throws IOException, ManglendeInfoITpsException {
         Map<String, String> personStatusQuo = new HashMap<>();
         List<String> feltnavn;
 

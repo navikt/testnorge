@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -45,7 +46,7 @@ public class TpsStatusQuoServiceTest {
      * map.
      */
     @Test
-    public void shouldGetStatusQuoForFeltnavn() throws IOException {
+    public void shouldGetStatusQuoForFeltnavn() throws IOException, ManglendeInfoITpsException {
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
         List<String> feltNavn = new ArrayList<>();
@@ -64,7 +65,7 @@ public class TpsStatusQuoServiceTest {
      * korrekt spørring
      */
     @Test
-    public void shouldGetStatusQuoForFeltnavnRelasjon() throws IOException {
+    public void shouldGetStatusQuoForFeltnavnRelasjon() throws IOException, ManglendeInfoITpsException {
         JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("FS02-FDNUMMER-PERSRELA-O.json"));
 
         List<String> feltNavn = new ArrayList<>();
@@ -84,7 +85,7 @@ public class TpsStatusQuoServiceTest {
      * servicerutine-feltX sin verdi i en map.
      */
     @Test
-    public void shouldGetStatusQuoForFeltnavnPath() throws IOException {
+    public void shouldGetStatusQuoForFeltnavnPath() throws IOException, ManglendeInfoITpsException {
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
         List<String> feltNavn = new ArrayList<>();
