@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class TpsStatusQuoService {
 
     private Map<String, JsonNode> tpsServiceRoutineCache;
 
-    public Map<String, String> getStatusQuo(String routineName, List<String> feltnavn, String aksjonsKode, String environment, String fnr) throws IOException {
+    public Map<String, String> getStatusQuo(String routineName, List<String> feltnavn, String aksjonsKode, String environment, String fnr) throws IOException, ManglendeInfoITpsException {
         Map<String, String> personStatusQuo = new HashMap<>(feltnavn.size());
         resetCache();
 
@@ -35,8 +36,11 @@ public class TpsStatusQuoService {
             JsonNode root = getInfoOnRoutineName(routineName, aksjonsKode, environment, fnr);
 
             if (root == null) {
-                log.info("Could not get routine " + routineName + " on fnr " + fnr);
-                throw new NullPointerException();
+                if(log.isInfoEnabled()) {
+                    log.info("Could not get routine {} on fnr {}", routineName, fnr);
+                }
+
+                throw new ManglendeInfoITpsException("Could not get routine " + routineName + " on fnr " + fnr);
             } else {
                 personStatusQuo.put(felt, extractStatusQuoInfoFromTps(root, felt));
             }
