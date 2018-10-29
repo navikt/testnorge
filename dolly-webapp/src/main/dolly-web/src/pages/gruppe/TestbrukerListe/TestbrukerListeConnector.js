@@ -1,13 +1,14 @@
 import { connect } from 'react-redux'
 import TestbrukerListe from './TestbrukerListe'
 import { GET_TESTBRUKERE, sokSelector } from '~/ducks/testBruker'
-import tpsfTransformer from '~/ducks/testBruker/tpsfTransformer'
+import DataMapper from '~/service/dataMapper'
 import { createLoadingSelector } from '~/ducks/loading'
 
 const loadingSelector = createLoadingSelector(GET_TESTBRUKERE)
 const mapStateToProps = state => ({
 	searchActive: Boolean(state.search),
-	testbrukere: sokSelector(tpsfTransformer(state.testbruker.items), state.search),
+	headers: DataMapper.getHeaders(),
+	testbrukere: sokSelector(DataMapper.getData(state), state.search),
 	isFetching: loadingSelector(state)
 })
 

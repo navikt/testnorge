@@ -193,7 +193,7 @@ export default class SendDoedsmelding extends PureComponent {
 	}
 
 	render() {
-		const { foundIdent, environments } = this.state
+		const { foundIdent, environments, handlingsType } = this.state
 
 		let initialValues = {
 			ident: '',
@@ -266,7 +266,17 @@ export default class SendDoedsmelding extends PureComponent {
 						Finner ikke testperson med ident: {this.state.currentfnr}
 					</h3>
 				)}
-				{this.state.isFetching && <Loading label="Sender dødsmelding" />}
+				{this.state.isFetching && (
+					<Loading
+						label={
+							handlingsType === 'D'
+								? 'Annulerer dødsmelding'
+								: handlingsType === 'U'
+									? 'Endrer dødsdato'
+									: 'Sender dødsmelding'
+						}
+					/>
+				)}
 				{this.state.errorMessage && (
 					<h4 className="tps-endring-error-message"> Feil: {this.state.errorMessage} </h4>
 				)}
