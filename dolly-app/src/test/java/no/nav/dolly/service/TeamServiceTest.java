@@ -12,7 +12,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -21,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import ma.glasnost.orika.MapperFacade;
@@ -40,7 +43,7 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceTest {
-    private String currentBrukerIdent = "nav1";
+    private static final String currentBrukerIdent = "nav1";
     private String navident2 = "nav2";
     private List<String> navidenter = Arrays.asList(currentBrukerIdent, navident2);
     private Optional<Team> tomOptional = Optional.empty();
@@ -63,12 +66,24 @@ public class TeamServiceTest {
     @InjectMocks
     TeamService teamService;
 
+    private static Authentication authentication;
+
     @Before
     public void setupMocks() {
+        when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityContextHolder.getContext().setAuthentication(
                 new OidcTokenAuthentication(currentBrukerIdent, null, null, null)
         );
-        when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     @Test(expected = NotFoundException.class)
