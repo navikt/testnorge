@@ -23,6 +23,7 @@ const AttributtListe: Attributt[] = [
 				path: 'tekniskNavn',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
+				size: 'large',
 				apiKodeverkId: 'Beregnet skatt',
 				validation: yup.string().required('Velg en type inntekt.')
 			},
@@ -65,6 +66,7 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Inntekt,
 				id: 'typeinntekt',
 				label: 'Type inntekt',
+				size: 'large',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
 				apiKodeverkId: 'Summert skattegrunnlag',

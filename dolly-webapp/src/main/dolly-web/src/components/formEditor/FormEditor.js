@@ -41,6 +41,7 @@ export default class FormEditor extends PureComponent {
 	}
 
 	renderFieldComponent = item => {
+		console.log('item', item)
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item)
@@ -51,6 +52,7 @@ export default class FormEditor extends PureComponent {
 				name={item.id}
 				label={item.label}
 				component={InputComponent}
+				size={item.size}
 				{...componentProps}
 			/>
 		)
