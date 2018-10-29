@@ -81,7 +81,7 @@ export default class Step3 extends PureComponent {
 			<StaticValue
 				key={item.id}
 				header={item.label}
-				value={_get(stateValues, item.id)}
+				value={_get(stateValues, item.id).toString()}
 				format={item.format}
 			/>
 		)

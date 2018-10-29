@@ -42,8 +42,8 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.Inntekter,
 		subKategori: SubKategorier.Inntekt,
-		id: 'beregnetskattgrunnlag',
-		label: 'Beregnet skattegrunnlag',
+		id: 'Beregnet skatt',
+		label: 'Beregnet skatt',
 		dataSource: DataSource.SIGRUN,
 		validation: yup.object(),
 		items: [
@@ -67,7 +67,11 @@ const AttributtListe: Attributt[] = [
 				label: 'Beløp',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
-				validation: yup.number().required('Oppgi en sum.')
+				validation: yup
+					.number()
+					.positive('Tast inn et gyldig beløp')
+					.min(1, 'efe')
+					.required('Oppgi beløpet')
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
@@ -84,7 +88,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.Inntekter,
 		subKategori: SubKategorier.Inntekt,
-		id: 'summertskattegrunnlag',
+		id: 'Summert skattegrunnlag',
 		path: 'inntekter.inntekt',
 		label: 'Summert skattegrunnlag',
 		dataSource: DataSource.SIGRUN,
@@ -104,19 +108,20 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.Inntekt,
 				subKategori: SubKategorier.Inntekt,
-				id: 'beløp',
+				id: 'beloep',
 				label: 'Beløp',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
 				validation: yup
 					.number()
 					.positive('Tast inn et gyldig beløp')
+					.min(1, 'efe')
 					.required('Oppgi beløpet')
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
 				subKategori: SubKategorier.Inntekt,
-				id: 'År',
+				id: 'inntektsaar',
 				label: 'År',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
