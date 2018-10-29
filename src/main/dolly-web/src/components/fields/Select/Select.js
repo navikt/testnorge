@@ -26,9 +26,10 @@ export default class DollySelect extends PureComponent {
 	})
 
 	render() {
-		const { name, label, placeholder, loadOptions, error, ...restProps } = this.props
+		const { name, label, placeholder, loadOptions, error, size, ...restProps } = this.props
+
 		return (
-			<div className={cn({ error: Boolean(error) }, 'skjemaelement dollyselect')}>
+			<div className={cn({ error: Boolean(error) }, size, 'skjemaelement dollyselect')}>
 				<label htmlFor={name} className="skjemaelement__label">
 					{label}{' '}
 				</label>
