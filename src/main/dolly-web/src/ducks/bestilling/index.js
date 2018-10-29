@@ -91,7 +91,7 @@ const bestillingFormatter = bestillingState => {
 	const { attributeIds, antall, environments, identtype, values } = bestillingState
 	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
 
-	const final_values = {
+	let final_values = {
 		antall: antall,
 		environments: environments,
 		// tpsf: {
@@ -107,7 +107,8 @@ const bestillingFormatter = bestillingState => {
 	}
 
 	// mandatory
-	final_values.tpsf.regdato = new Date()
+	final_values = _.set(final_values, 'tpsf.regdato', new Date())
+
 	final_values.tpsf.identtype = identtype
 
 	// TODO: SPECIAL HANDLING - Hva gjør vi her?
@@ -166,68 +167,17 @@ const getValues = (attributeList, values) => {
 				_set(accumulator, `${pathPrefix}.grunnlag`, [
 					{ tekniskNavn: value[0].typeinntekt, verdi: value[0].beloep }
 				]) &&
-				_set(accumulator, `${pathPrefix}.inntektsaar`, '2017') &&
-				_set(accumulator, `${pathPrefix}.tjeneste`, 'Beregnet skatt')
+				_set(accumulator, `${pathPrefix}.inntektsaar`, value[0].inntektsaar) &&
+				_set(accumulator, `${pathPrefix}.tjeneste`, attribute.id)
 			)
 		} else {
 			// Tpsf
-			console.log('acc', accumulator)
 			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 		}
 	}, {})
 
 	console.log(result)
 	return result
-}
-
-const formatTpsfValues = (attributeList, values) => {
-	//TODO : hvorfor ble denne tomt når en velger attribute fra sigrun i tillegg til tpsf
-	var result
-	result = attributeList.reduce((accumulator, attribute) => {
-		console.log('attributeliste: ', attributeList)
-		console.log('value: ', values)
-
-		if (attribute.dataSource === DataSource.TPSF) {
-			let value = values[attribute.id]
-
-			const isDate = inputType => inputType === 'date'
-
-			// Convert to Date objects
-			if (isDate(attribute.inputType)) value = DataFormatter.parseDate(value)
-			// Do the same for Array values
-			if (attribute.items) {
-				const dateFields = attribute.items.filter(item => isDate(item.inputType))
-				value = value.map((item, idx) => {
-					return dateFields.reduce((acc, dateAttribute) => {
-						const pathId = dateAttribute.id
-						return Object.assign({}, acc, {
-							[pathId]: DataFormatter.parseDate(item[pathId])
-						})
-					}, item)
-				})
-			}
-			console.log('result', result)
-
-			return _set(accumulator, attribute.path || attribute.id, value)
-		}
-	}, {})
-	console.log('result', result)
-	return result
-}
-
-const formatSigrunValues = (attributeList, values) => {
-	return attributeList.reduce((accumulator, attribute) => {
-		console.log('attributeliste: ', attributeList)
-		console.log('value: ', values)
-		if (attribute.dataSource === DataSource.SIGRUN) {
-			let value = values[attribute.id][0]
-			return (
-				_set(accumulator, 'grunnlag', [{ tekniskNavn: value.typeinntekt, verdi: value.beloep }]) &&
-				_set(accumulator, 'inntektsaar', '2017') &&
-				_set(accumulator, 'tjeneste', 'Beregnet skatt')
-			)
-		}
-	}, {})
 }
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
