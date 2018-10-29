@@ -1,9 +1,9 @@
 package no.nav.dolly.service;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingProgressRepository;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,10 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BestillingProgressRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingProgressServiceTest {
@@ -30,7 +29,7 @@ public class BestillingProgressServiceTest {
     private BestillingProgressService progressService;
 
     @Test(expected = NotFoundException.class)
-    public void bestillingProgressKasterExceptionHvisManIkkeFinnerProgress() throws Exception{
+    public void bestillingProgressKasterExceptionHvisManIkkeFinnerProgress() throws Exception {
         when(mockRepo.findBestillingProgressByBestillingId(any())).thenReturn(null);
         progressService.fetchBestillingProgressByBestillingsIdFromDB(null);
     }
@@ -44,7 +43,7 @@ public class BestillingProgressServiceTest {
     }
 
     @Test
-    public void hvisFetchProgressSomReturnererTomListeHvisIkkeFunnetIkkeFinnerObjektSåReturnerTomListe(){
+    public void hvisFetchProgressSomReturnererTomListeHvisIkkeFunnetIkkeFinnerObjektSåReturnerTomListe() {
         when(mockRepo.findBestillingProgressByBestillingId(1l)).thenReturn(new ArrayList<>());
         List<BestillingProgress> bes = progressService.fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(1l);
         assertThat(bes.isEmpty(), is(true));
