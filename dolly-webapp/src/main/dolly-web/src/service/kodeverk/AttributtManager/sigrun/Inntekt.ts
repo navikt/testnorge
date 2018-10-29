@@ -7,38 +7,6 @@ import DateValidation from '~/components/fields/Datepicker/DateValidation'
 import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
-	// {
-	// 	hovedKategori: Kategorier.Inntekter,
-	// 	subKategori: SubKategorier.Inntekt,
-	// 	id: 'inntekter',
-	// 	path: 'inntekter.inntekt',
-	// 	label: 'Kun inntektsbeløp',
-	// 	dataSource: DataSource.SIGRUN,
-	// 	validation: yup.object(),
-	// 	items: [
-	// 		{
-	// 			hovedKategori: Kategorier.Inntekt,
-	// 			subKategori: SubKategorier.Inntekt,
-	// 			id: 'beløp',
-	// 			label: 'Beløp',
-	// 			path: 'inntekt.belop',
-
-	// 			dataSource: DataSource.SIGRUN,
-	// 			inputType: InputType.Number,
-	// 			validation: yup.number().required('Oppgi en sum.')
-	// 		},
-	// 		{
-	// 			hovedKategori: Kategorier.Inntekt,
-	// 			subKategori: SubKategorier.Inntekt,
-	// 			path: 'inntekt.aar',
-	// 			id: 'År',
-	// 			label: 'År',
-	// 			dataSource: DataSource.SIGRUN,
-	// 			inputType: InputType.Date,
-	// 			validation: DateValidation
-	// 		}
-	// 	]
-	// },
 	{
 		hovedKategori: Kategorier.Inntekter,
 		subKategori: SubKategorier.Inntekt,
@@ -56,7 +24,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
 				apiKodeverkId: 'Beregnet skatt',
-				// options: [{ label: 'test', value: 'test' }],
 				validation: yup.string().required('Velg en type inntekt.')
 			},
 			{
@@ -101,7 +68,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
 				apiKodeverkId: 'Summert skattegrunnlag',
-				// options: [{ label: 'test', value: 'test' }],
 				validation: yup.string().required('Velg en type inntekt.')
 			},
 			{
