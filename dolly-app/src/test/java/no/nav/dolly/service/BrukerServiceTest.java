@@ -8,8 +8,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -95,7 +93,6 @@ public class BrukerServiceTest {
         verify(brukerRepository).findAll();
     }
 
-    //funker ikke
     @Test
     public void fetchOrCreateBruker_saveKallesVedNotFoundException() {
         service.fetchOrCreateBruker(null);
