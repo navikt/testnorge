@@ -7,13 +7,22 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 import java.util.Arrays;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import no.nav.registre.hodejegeren.ApplicationTestBase;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 
-public class GenererSyntetiskeMeldingerCompTest extends ApplicationTestBase {
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWireMock(port = 0)
+@ActiveProfiles("itest")
+public class GenererSyntetiskeMeldingerCompTest {
     
     @Autowired
     private TpsfConsumer tpsfConsumer;
