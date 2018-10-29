@@ -8,5 +8,5 @@ module.exports = {
 		'\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
 		'~/(.*)$': '<rootDir>/src/$1'
 	},
-	collectCoverageFrom: ['src/**/*.js']
+	collectCoverageFrom: ['src/**/*.js', '!src/**/*Connector.js']
 }
