@@ -69,8 +69,7 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Number,
 				validation: yup
 					.number()
-					.positive('Tast inn et gyldig beløp')
-					.min(1, 'efe')
+					.min(1, 'Tast inn et gyldig beløp')
 					.required('Oppgi beløpet')
 			},
 			{
@@ -114,8 +113,7 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Number,
 				validation: yup
 					.number()
-					.positive('Tast inn et gyldig beløp')
-					.min(1, 'efe')
+					.min(1, 'Tast inn et gyldig beløp')
 					.required('Oppgi beløpet')
 			},
 			{

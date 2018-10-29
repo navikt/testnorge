@@ -24,22 +24,34 @@ export default class DollyInput extends PureComponent {
 }
 
 export const FormikInput = props => {
-	const { field, form, error, ...restProps } = props
+	const { field, form, error, type, ...restProps } = props
 
 	// prevent undefined value, dette for å unngå at komponenten blir "controlled"
 	const initialValue = field.value || ''
+
+	const onChangeHandler = e => {
+		const value = e.target.value
+		if (type === 'number') {
+			e.target.value = value ? value : 0
+			return field.onChange(e)
+		}
+
+		return field.onChange(e)
+	}
 
 	return (
 		<DollyInput
 			name={field.name}
 			value={initialValue}
 			onChange={field.onChange}
+			onChange={onChangeHandler}
 			onBlur={field.onBlur}
 			feil={
 				_get(form.touched, field.name) && _get(form.errors, field.name)
 					? { feilmelding: _get(form.errors, field.name) }
 					: null
 			}
+			type={type}
 			{...restProps}
 		/>
 	)
