@@ -32,6 +32,7 @@ export interface KategoriTypes {
 
 export interface Attributt {
 	hovedKategori: Kategori
+	size?: String
 	subKategori: Kategori
 	id: string
 	path?: string
