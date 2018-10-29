@@ -1,7 +1,8 @@
-package no.nav.registre.hodejegeren.test;
+package no.nav.registre.hodejegeren.comptests;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 import java.util.Arrays;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import no.nav.registre.hodejegeren.ApplicationTestBase;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 
 public class GenererSyntetiskeMeldingerCompTest extends ApplicationTestBase {
@@ -35,7 +37,7 @@ public class GenererSyntetiskeMeldingerCompTest extends ApplicationTestBase {
     @Test
     public void shouldGenerereSyntetiserteMeldinger() {
         long gr = 123L;
-        tpsfStatic.stubFor(get(urlEqualTo("/api/v1/endringsmelding/skd/identer/123"))
+        stubFor(get(urlEqualTo("/tpsf/api/v1/endringsmelding/skd/identer/123"))
                 //                                .withQueryParam("aarsakskode",containing("1")) //getForObject sine urivariables blir visst ikke registrert i wiremock, så derfor fungerer ikke withQueryParam-sjekken.
                 //                .withQueryParam("transaksjonstype",equalTo("1"))
                 .withBasicAuth(username, password)

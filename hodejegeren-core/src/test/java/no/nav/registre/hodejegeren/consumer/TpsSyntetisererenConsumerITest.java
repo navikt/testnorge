@@ -1,22 +1,29 @@
-package no.nav.registre.hodejegeren.test.consumer;
+package no.nav.registre.hodejegeren.consumer;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
-import no.nav.registre.hodejegeren.test.ApplicationTestBase;
-import no.nav.registre.hodejegeren.test.AssertionUtils;
+import no.nav.registre.hodejegeren.comptests.AssertionUtils;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
-public class TpsSyntetisererenConsumerTest extends ApplicationTestBase {
+@RunWith(SpringRunner.class)
+@SpringBootTest(properties = "tps-syntetisereren.rest-api.url=http://localhost:${wiremock.server.port}/api",
+        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@AutoConfigureWireMock(port = 0)
+public class TpsSyntetisererenConsumerITest {
     
     @Autowired
     TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
@@ -27,7 +34,9 @@ public class TpsSyntetisererenConsumerTest extends ApplicationTestBase {
      */
     @Test
     public void shouldDeserialiseAllFieldsInTheResponse() throws InvocationTargetException, IllegalAccessException {
-        tpsSyntStatic.stubFor(get(urlEqualTo("/api/generate")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBodyFile("tpssynt/tpsSynt_NotNullFields_Response.json")));
+        stubFor(get(urlEqualTo("/api/generate"))
+                .willReturn(aResponse().withHeader("Content-Type", "application/json")
+                        .withBodyFile("tpssynt/tpsSynt_NotNullFields_Response.json")));
         
         List<RsMeldingstype> skdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("aa", 1);
         
