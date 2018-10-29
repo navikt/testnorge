@@ -3,6 +3,7 @@ import { DollyApi } from '~/service/Api'
 import _xor from 'lodash/fp/xor'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
+import _groupBy from 'lodash/groupBy'
 import DataFormatter from '~/utils/DataFormatter'
 import { handleActions, createActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
@@ -108,26 +109,19 @@ const bestillingFormatter = bestillingState => {
 
 	// mandatory
 	final_values = _.set(final_values, 'tpsf.regdato', new Date())
-
 	final_values.tpsf.identtype = identtype
 
 	// TODO: SPECIAL HANDLING - Hva gjør vi her?
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 	}
-
-	//if (_get(final_values, 'tpsf.relasjoner.barn')) {
-	//	final_values.tpsf.relasjoner.barn = [final_values.tpsf.relasjoner.barn]
-	//}
-
 	console.log('POSTING BESTILLING', final_values)
 
 	return final_values
 }
 
 const getValues = (attributeList, values) => {
-	var result
-	result = attributeList.reduce((accumulator, attribute) => {
+	return attributeList.reduce((accumulator, attribute) => {
 		let value = values[attribute.id]
 		const pathPrefix = DataSourceMapper(attribute.dataSource)
 
@@ -147,37 +141,30 @@ const getValues = (attributeList, values) => {
 				}, item)
 			})
 		}
-
-		// TODO: SIGRUN har en annen format som ikke er lett å generaliseres. Suggestion: separate formatter for hver register?
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
-			console.log('SIGRUNN')
+			const groupedByInntektsaar = _groupBy(value, 'inntektsaar')
+			const keys = Object.keys(groupedByInntektsaar)
+			const dataArr = keys.map(key => {
+				const current = groupedByInntektsaar[key]
 
-			// value.forEach(item => {
-			// 	console.log('acc', accumulator)
-			// 	return (
-			// 		_set(accumulator, `${pathPrefix}.grunnlag`, [
-			// 			{ tekniskNavn: item.typeinntekt, verdi: item.beloep }
-			// 		]) &&
-			// _set(accumulator, `${pathPrefix}.inntektsaar`, '2017') &&
-			// 	_set(accumulator, `${pathPrefix}.tjeneste`, 'Beregnet skatt')
-			// 	)
-			// })
+				return {
+					grunnlag: current.map(temp => ({
+						tekniskNavn: temp.typeinntekt,
+						verdi: temp.beloep
+					})),
+					inntektsaar: key,
+					tjeneste: attribute.id
+				}
+			})
 
-			return (
-				_set(accumulator, `${pathPrefix}.grunnlag`, [
-					{ tekniskNavn: value[0].typeinntekt, verdi: value[0].beloep }
-				]) &&
-				_set(accumulator, `${pathPrefix}.inntektsaar`, value[0].inntektsaar) &&
-				_set(accumulator, `${pathPrefix}.tjeneste`, attribute.id)
-			)
+			return {
+				sigrunRequest: dataArr
+			}
 		} else {
 			// Tpsf
 			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 		}
 	}, {})
-
-	console.log(result)
-	return result
 }
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
