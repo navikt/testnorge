@@ -1,6 +1,5 @@
 import { DollyApi } from '~/service/Api'
 import { createAction, handleActions, combineActions } from 'redux-actions'
-import Cookie from '~/utils/Cookie'
 import success from '~/utils/SuccessAction'
 
 export const getCurrentBruker = createAction('GET_CURRENT_BRUKER', DollyApi.getCurrentBruker)
@@ -30,15 +29,6 @@ export default handleActions(
 	},
 	initialState
 )
-
-export const fetchCurrentBruker = () => async dispatch => {
-	const { action } = await dispatch(getCurrentBruker())
-	// const brukerIdent = action.payload.data.navIdent
-
-	// if (!Cookie.hasItem(brukerIdent)) {
-	// 	dispatch(setSplashscreenStatus(true))
-	// }
-}
 
 export const setSplashscreenAccepted = () => (dispatch, getState) => {
 	const { navIdent } = getState().bruker.brukerData

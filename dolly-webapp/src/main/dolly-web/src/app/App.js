@@ -11,7 +11,7 @@ import './App.less'
 
 export default class App extends Component {
 	componentDidMount() {
-		ConfigService.fetchConfig().then(() => this.props.fetchCurrentBruker())
+		ConfigService.fetchConfig().then(() => this.props.getCurrentBruker())
 	}
 
 	componentDidUpdate() {
