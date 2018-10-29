@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
@@ -94,11 +94,11 @@ public class TestgruppeServiceTest {
         );
         when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
 
-        Testident t1 = TestidentBuilder.builder().ident(IDENT_ONE).build().convertToRealTestident();
-        Testident t2 = TestidentBuilder.builder().ident(IDENT_TWO).build().convertToRealTestident();
-        HashSet gruppe = new HashSet();
-        gruppe.add(t1);
-        gruppe.add(t2);
+        Set gruppe = Sets.newHashSet(
+                Arrays.asList(
+                        TestidentBuilder.builder().ident(IDENT_ONE).build().convertToRealTestident(),
+                        TestidentBuilder.builder().ident(IDENT_TWO).build().convertToRealTestident()
+                ));
         testGruppe = TestgruppeBuilder.builder().id(GROUP_ID).testidenter(gruppe).hensikt("test").build().convertToRealTestgruppe();
     }
 
