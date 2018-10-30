@@ -46,6 +46,7 @@ export interface Attributt {
 	kanRedigeres?: boolean
 	parent?: string
 	items?: Attributt[]
+	hasNoValue?: boolean
 }
 
 // Attributt grupper

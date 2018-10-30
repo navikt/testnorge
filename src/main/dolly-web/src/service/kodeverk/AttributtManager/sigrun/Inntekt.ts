@@ -10,6 +10,15 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.Inntekter,
 		subKategori: SubKategorier.Inntekt,
+		id: 'ikkeregister',
+		label: 'Ikke register',
+		dataSource: DataSource.SIGRUN,
+		validation: yup.object(),
+		hasNoValue: true
+	},
+	{
+		hovedKategori: Kategorier.Inntekter,
+		subKategori: SubKategorier.Inntekt,
 		id: 'Beregnet skatt',
 		label: 'Beregnet skatt',
 		dataSource: DataSource.SIGRUN,

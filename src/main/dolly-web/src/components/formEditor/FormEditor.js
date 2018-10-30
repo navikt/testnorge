@@ -10,13 +10,18 @@ import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
+		// !item.items[0].hasNoValue &&
 		return (
 			<Panel
 				key={hovedKategori.id}
 				heading={<h3>{hovedKategori.navn}</h3>}
 				startOpen={!closePanels}
 			>
-				{items.map((item, idx) => this.renderFieldContainer(item, idx, formikProps))}
+				{console.log('items', items)}
+				{items.map((item, idx) => {
+					console.log('item', !item.items[0].hasNoValue)
+					return this.renderFieldContainer(item, idx, formikProps)
+				})}
 			</Panel>
 		)
 	}
@@ -26,7 +31,7 @@ export default class FormEditor extends PureComponent {
 		const isAdresse = items[0].id === 'boadresse'
 		return (
 			<div className="subkategori" key={uniqueId}>
-				{!items[0].items && <h4>{subKategori.navn}</h4>}
+				{!items[0].items && !items[0].hasNoValue && <h4>{subKategori.navn}</h4>}
 				<div className="subkategori-field-group">
 					{items.map(
 						item =>
@@ -41,7 +46,6 @@ export default class FormEditor extends PureComponent {
 	}
 
 	renderFieldComponent = item => {
-		console.log('item', item)
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item)
@@ -87,8 +91,11 @@ export default class FormEditor extends PureComponent {
 	render() {
 		const { AttributtListe, FormikProps, ClosePanels } = this.props
 
-		return AttributtListe.map(hovedKategori =>
-			this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
+		return AttributtListe.map(
+			hovedKategori =>
+				// Ikke vis kategori som har default ikke-valgt radio button
+				!hovedKategori.items[0].items[0].hasNoValue &&
+				this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
 		)
 	}
 }
