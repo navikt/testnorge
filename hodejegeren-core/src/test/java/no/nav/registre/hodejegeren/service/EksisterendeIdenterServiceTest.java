@@ -121,7 +121,7 @@ public class EksisterendeIdenterServiceTest {
         statusQuo.put(FNR_RELASJON, "02020202020");
         when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("03030303030"))).thenReturn(statusQuo);
 
-        eksisterendeIdenterService.behandleSeperasjonSkilsmisseDoedsmelding(meldinger, identer, brukteIdenter, aarsakskode, aksjonskode, environment, meldingerPerAarsakskode);
+        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, aarsakskode, aksjonskode, environment, meldingerPerAarsakskode);
 
         Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), eq(aksjonskode), eq(environment), any());
     }

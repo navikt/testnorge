@@ -60,10 +60,12 @@ public class EksisterendeIdenterService {
                 break;
             case SEPERASJON:
             case SKILSMISSE:
-            case DOEDSMELDING:
-                behandleSeperasjonSkilsmisseDoedsmelding(meldinger, gifteIdenterINorge, brukteIdenterIDenneBolken, aarsakskode, aksjonskode, environment, antallMeldingerPerAarsakskode);
-                break;
             case SIVILSTANDSENDRING:
+                behandleSeperasjonSkilsmisse(meldinger, gifteIdenterINorge, brukteIdenterIDenneBolken, aarsakskode, aksjonskode, environment, antallMeldingerPerAarsakskode);
+                break;
+            case DOEDSMELDING:
+                behandleDoedsmelding(meldinger, levendeIdenterINorge, brukteIdenterIDenneBolken, aarsakskode, aksjonskode, environment, antallMeldingerPerAarsakskode);
+                break;
             case KORREKSJON_FAMILIEOPPLYSNINGER:
                 break;
             case INNVANDRING:
@@ -115,16 +117,20 @@ public class EksisterendeIdenterService {
 
             if (randomIdent1 != null && randomIdent2 != null) {
                 putFnrInnIMelding(meldinger.get(i), randomIdent1);
+                ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerFdato(randomIdent2.substring(0, 6));
+                ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerPnr(randomIdent2.substring(6));
 
-                putIdentInnINyMelding(meldinger, randomIdent2);
+                RsMeldingstype melding = putIdentInnINyMelding(meldinger, randomIdent2);
+                ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(randomIdent1.substring(0, 6));
+                ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(randomIdent1.substring(6));
 
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(randomIdent1, randomIdent2));
             }
         }
     }
 
-    public void behandleSeperasjonSkilsmisseDoedsmelding(List<RsMeldingstype> meldinger, List<String> gifteIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                                         String aarsakskode, String aksjonskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
+    public void behandleSeperasjonSkilsmisse(List<RsMeldingstype> meldinger, List<String> gifteIdenterINorge, List<String> brukteIdenterIDenneBolken,
+                                             String aarsakskode, String aksjonskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
         for (int i = 0; i < antallMeldingerPerAarsakskode.get(aarsakskode); i++) {
             if (meldinger.get(i) == null) {
                 // fant ikke gyldig skdmelding på index i
@@ -162,6 +168,65 @@ public class EksisterendeIdenterService {
                 } else {
                     // ulik sivilstand på identene
                 }
+            } else {
+                // fant ikke ident
+            }
+        }
+    }
+
+    public void behandleDoedsmelding(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
+                                     String aarsakskode, String aksjonskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
+        for (int i = 0; i < antallMeldingerPerAarsakskode.get(aarsakskode); i++) {
+
+            if (meldinger.get(i) == null) {
+                // fant ikke gyldig skdmelding på index i
+                continue;
+            }
+
+            Map<String, String> statusQuoFraAarsakskodeIdent = null, statusQuoFraAarsakskodeIdentPartner;
+            String randomIdent, randomIdentPartner;
+
+            do {
+                if (levendeIdenterINorge.size() <= 0) {
+                    randomIdent = null;
+                    break;
+                }
+                int randomIndex = rand.nextInt(levendeIdenterINorge.size());
+                randomIdent = levendeIdenterINorge.remove(randomIndex);
+                statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdent);
+            }
+            while (!statusQuoFraAarsakskodeIdent.get(DATO_DO).isEmpty() || (!statusQuoFraAarsakskodeIdent.get(STATSBORGER).equals("NORGE")));
+
+            if(statusQuoFraAarsakskodeIdent != null){
+                if (statusQuoFraAarsakskodeIdent.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())) {
+                    randomIdentPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
+
+                    statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdentPartner);
+
+                    if (statusQuoFraAarsakskodeIdentPartner.get(SIVILSTAND).equals(statusQuoFraAarsakskodeIdent.get(SIVILSTAND))) {
+                        if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(randomIdent)) {
+                            putFnrInnIMelding(meldinger.get(i), randomIdent);
+
+                            RsMeldingstype melding = new RsMeldingstype1Felter();
+                            melding.setAarsakskode(AarsakskoderTrans1.SIVILSTANDSENDRING.getAarsakskode());
+                            ((RsMeldingstype1Felter) melding).setFodselsdato(randomIdentPartner.substring(0, 6));
+                            ((RsMeldingstype1Felter) melding).setPersonnummer(randomIdentPartner.substring(6));
+                            ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode());
+                            meldinger.add(melding);
+
+                            oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(randomIdent, randomIdentPartner));
+                        } else {
+                            // personnummer i fnrRelasjon til partner matcher ikke
+                        }
+                    } else {
+                        // ulik sivilstand på identene
+                    }
+                } else {
+                    putFnrInnIMelding(meldinger.get(i), randomIdent);
+                    oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(randomIdent));
+                }
+            } else {
+                // fant ikke ident
             }
         }
     }
@@ -191,7 +256,6 @@ public class EksisterendeIdenterService {
 
             if (randomIdent != null) {
                 putFnrInnIMelding(meldinger.get(i), randomIdent);
-
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(randomIdent));
             }
         }
@@ -224,10 +288,11 @@ public class EksisterendeIdenterService {
         ((RsMeldingstype1Felter) melding).setPersonnummer(fnr.substring(6));
     }
 
-    private void putIdentInnINyMelding(List<RsMeldingstype> meldinger, String fnr) {
+    private RsMeldingstype putIdentInnINyMelding(List<RsMeldingstype> meldinger, String fnr) {
         RsMeldingstype rsMeldingstypeIdent = new RsMeldingstype1Felter();
         putFnrInnIMelding(rsMeldingstypeIdent, fnr);
         meldinger.add(rsMeldingstypeIdent);
+        return rsMeldingstypeIdent;
     }
 
     private void oppdaterBolk(List<String> brukteIdenterIDenneBolken, List<String> identer) {
