@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.util.*;
 
+import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -61,13 +62,13 @@ public class EksisterendeIdenterServiceTest {
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         statusQuo = new HashMap<>();
-        statusQuo.put("datoDo", "010203");
-        statusQuo.put("statsborger", "NOR");
+        statusQuo.put(DATO_DO, "010203");
+        statusQuo.put(STATSBORGER, "NORGE");
         when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("01010101010"))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put("datoDo", "");
-        statusQuo.put("statsborger", "NOR");
+        statusQuo.put(DATO_DO, "");
+        statusQuo.put(STATSBORGER, "NORGE");
         when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("02020202020"))).thenReturn(statusQuo);
 
         eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, aarsakskode, aksjonskode, environment, meldingerPerAarsakskode);
@@ -83,15 +84,15 @@ public class EksisterendeIdenterServiceTest {
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         statusQuo = new HashMap<>();
-        statusQuo.put("sivilstand", KoderForSivilstand.UGIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
         when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("01010101010"))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put("sivilstand", KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("02020202020"))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put("sivilstand", KoderForSivilstand.UGIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
         when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("03030303030"))).thenReturn(statusQuo);
 
         eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, aarsakskode, aksjonskode, environment, meldingerPerAarsakskode);
@@ -107,17 +108,17 @@ public class EksisterendeIdenterServiceTest {
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         statusQuo = new HashMap<>();
-        statusQuo.put("sivilstand", KoderForSivilstand.UGIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
         when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("01010101010"))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put("sivilstand", KoderForSivilstand.GIFT.getSivilstandKode());
-        statusQuo.put("relasjon/fnrRelasjon", "03030303030");
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(FNR_RELASJON, "03030303030");
         when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("02020202020"))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put("sivilstand", KoderForSivilstand.GIFT.getSivilstandKode());
-        statusQuo.put("relasjon/fnrRelasjon", "02020202020");
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(FNR_RELASJON, "02020202020");
         when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("03030303030"))).thenReturn(statusQuo);
 
         eksisterendeIdenterService.behandleSeperasjonSkilsmisseDoedsmelding(meldinger, identer, brukteIdenter, aarsakskode, aksjonskode, environment, meldingerPerAarsakskode);

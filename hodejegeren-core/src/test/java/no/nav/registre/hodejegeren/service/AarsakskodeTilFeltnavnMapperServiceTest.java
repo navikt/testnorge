@@ -11,6 +11,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.util.List;
 
+import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.DATO_DO;
+import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.STATSBORGER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
@@ -44,7 +46,7 @@ public class AarsakskodeTilFeltnavnMapperServiceTest {
         List<String> actualRequestParams = captor.getValue();
 
         assertEquals(2, actualRequestParams.size());
-        assertTrue(actualRequestParams.contains("datoDo"));
-        assertTrue(actualRequestParams.contains("statsborger"));
+        assertTrue(actualRequestParams.contains(DATO_DO));
+        assertTrue(actualRequestParams.contains(STATSBORGER));
     }
 }

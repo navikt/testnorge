@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.*;
+
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
@@ -49,6 +51,8 @@ public class EksisterendeIdenterService {
             case FLYTTING_INNEN_KOMMUNEN:
             case FOEDSELSMELDING:
             case UREGISTRERT_PERSON:
+            case ANNULERING_FLYTTING_ADRESSEENDRING:
+            case INNFLYTTING_ANNEN_KOMMUNE:
                 behandleGenerellAarsak(meldinger, levendeIdenterINorge, brukteIdenterIDenneBolken, aarsakskode, aksjonskode, environment, antallMeldingerPerAarsakskode);
                 break;
             case VIGSEL:
@@ -62,16 +66,12 @@ public class EksisterendeIdenterService {
             case SIVILSTANDSENDRING:
             case KORREKSJON_FAMILIEOPPLYSNINGER:
                 break;
-            case ANNULERING_FLYTTING_ADRESSEENDRING:
-            case INNFLYTTING_ANNEN_KOMMUNE:
-                break;
             case INNVANDRING:
             case TILDELING_DNUMMER:
                 break;
             default:
                 break;
         }
-
     }
 
     public void behandleVigsel(List<RsMeldingstype> meldinger, List<String> singleIdenterINorge, List<String> brukteIdenterIDenneBolken,
@@ -99,8 +99,8 @@ public class EksisterendeIdenterService {
                 randomIdent1 = singleIdenterINorge.remove(rand.nextInt(singleIdenterINorge.size())); // pass på remove
                 statusQuoFraAarsakskodeIdent1 = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdent1);
             }
-            while (statusQuoFraAarsakskodeIdent1.get("sivilstand").equals(KoderForSivilstand.GIFT.getSivilstandKode())
-                    || statusQuoFraAarsakskodeIdent1.get("sivilstand").equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
+            while (statusQuoFraAarsakskodeIdent1.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
+                    || statusQuoFraAarsakskodeIdent1.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
 
             do {
                 if (singleIdenterINorge.size() <= 0) {
@@ -110,8 +110,8 @@ public class EksisterendeIdenterService {
                 randomIdent2 = singleIdenterINorge.remove(rand.nextInt(singleIdenterINorge.size())); // pass på remove
                 statusQuoFraAarsakskodeIdent2 = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdent2);
             }
-            while (statusQuoFraAarsakskodeIdent2.get("sivilstand").equals(KoderForSivilstand.GIFT.getSivilstandKode())
-                    || statusQuoFraAarsakskodeIdent2.get("sivilstand").equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
+            while (statusQuoFraAarsakskodeIdent2.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
+                    || statusQuoFraAarsakskodeIdent2.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
 
             if (randomIdent1 != null && randomIdent2 != null) {
                 putFnrInnIMelding(meldinger.get(i), randomIdent1);
@@ -142,15 +142,15 @@ public class EksisterendeIdenterService {
                 randomIdent = gifteIdenterINorge.remove(rand.nextInt(gifteIdenterINorge.size())); // pass på remove
                 statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdent);
             }
-            while (!statusQuoFraAarsakskodeIdent.get("sivilstand").equals(KoderForSivilstand.GIFT.getSivilstandKode()));
+            while (!statusQuoFraAarsakskodeIdent.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode()));
 
             if (randomIdent != null && statusQuoFraAarsakskodeIdent != null) {
-                randomIdentPartner = statusQuoFraAarsakskodeIdent.get("relasjon/fnrRelasjon");
+                randomIdentPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
 
                 statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdentPartner);
 
-                if (statusQuoFraAarsakskodeIdentPartner.get("sivilstand").equals(statusQuoFraAarsakskodeIdent.get("sivilstand"))) {
-                    if (statusQuoFraAarsakskodeIdentPartner.get("relasjon/fnrRelasjon").equals(randomIdent)) {
+                if (statusQuoFraAarsakskodeIdentPartner.get(SIVILSTAND).equals(statusQuoFraAarsakskodeIdent.get(SIVILSTAND))) {
+                    if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(randomIdent)) {
                         putFnrInnIMelding(meldinger.get(i), randomIdent);
 
                         putIdentInnINyMelding(meldinger, randomIdentPartner);
@@ -187,7 +187,7 @@ public class EksisterendeIdenterService {
                 randomIdent = levendeIdenterINorge.remove(randomIndex);
                 statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdent);
             }
-            while (!statusQuoFraAarsakskodeIdent.get("datoDo").isEmpty() || (!statusQuoFraAarsakskodeIdent.get("statsborger").equals("NOR")));
+            while (!statusQuoFraAarsakskodeIdent.get(DATO_DO).isEmpty() || (!statusQuoFraAarsakskodeIdent.get(STATSBORGER).equals("NORGE")));
 
             if (randomIdent != null) {
                 putFnrInnIMelding(meldinger.get(i), randomIdent);

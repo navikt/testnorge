@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -48,14 +49,14 @@ public class TpsStatusQuoServiceTest {
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
         List<String> feltNavn = new ArrayList<>();
-        feltNavn.add("statsborgerskap");
+        feltNavn.add(STATSBORGERSKAP);
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
         Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, aksjonsKode, environment, fnr);
 
         assertEquals(1, statusQuoValues.size());
-        assertEquals("NOR", statusQuoValues.get("statsborgerskap"));
+        assertEquals("NOR", statusQuoValues.get(STATSBORGERSKAP));
     }
 
     /**
@@ -67,14 +68,14 @@ public class TpsStatusQuoServiceTest {
         JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("FS02-FDNUMMER-PERSRELA-O.json"));
 
         List<String> feltNavn = new ArrayList<>();
-        feltNavn.add("$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon");
+        feltNavn.add(FNR_RELASJON);
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
         Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, aksjonsKode, environment, fnr);
 
         assertEquals(1, statusQuoValues.size());
-        assertEquals("01065500791", statusQuoValues.get("$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon"));
+        assertEquals("01065500791", statusQuoValues.get(FNR_RELASJON));
 
     }
 
@@ -119,15 +120,13 @@ public class TpsStatusQuoServiceTest {
         assertTrue(tpsServiceRoutineCache.containsKey(routineName));
         assertEquals(jsonNode, tpsServiceRoutineCache.get(routineName));
 
-        tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo"), aksjonsKode, environment, fnr);
+        tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList(DATO_DO), aksjonsKode, environment, fnr);
         assertNotEquals(tpsServiceRoutineCache, tpsStatusQuoService.getTpsServiceRoutineCache());
     }
 
     @Test
     public void shouldHandleTpsRequestParameters() throws IOException {
         tpsStatusQuoService.getInfoHelper(routineName, aksjonsKode, environment, fnr);
-
-        System.out.print("hello");
 
         ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
         Mockito.verify(tpsfConsumer).getTpsServiceRoutine(eq(routineName), captor.capture());

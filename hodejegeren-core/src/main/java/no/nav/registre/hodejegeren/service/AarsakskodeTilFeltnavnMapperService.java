@@ -15,6 +15,15 @@ public class AarsakskodeTilFeltnavnMapperService {
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
 
+    public static final String DATO_DO = "datoDo";
+    public static final String STATSBORGER = "statsborger"; // lagret i persdata
+    public static final String STATSBORGERSKAP = "statsborgerskap"; // lagret i kerninfo
+    public static final String SIVILSTAND = "sivilstand";
+    public static final String DATO_SIVILSTAND = "datoSivilstand";
+    public static final String FNR_RELASJON = "$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon";
+    public static final String KOMMUNENR = "kommunenr";
+    public static final String DATO_FLYTTET = "datoFlyttet";
+
     @Autowired
     TpsStatusQuoService tpsStatusQuoService;
 
@@ -44,7 +53,7 @@ public class AarsakskodeTilFeltnavnMapperService {
             case FLYTTING_INNEN_KOMMUNEN:
             case FOEDSELSMELDING:
             case UREGISTRERT_PERSON:
-                feltnavn = Arrays.asList("datoDo", "statsborger");
+                feltnavn = Arrays.asList(DATO_DO, STATSBORGER);
                 personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, aksjonsKode, environment, fnr));
                 break;
             case VIGSEL:
@@ -53,14 +62,14 @@ public class AarsakskodeTilFeltnavnMapperService {
             case SIVILSTANDSENDRING:
             case KORREKSJON_FAMILIEOPPLYSNINGER:
             case DOEDSMELDING:
-                feltnavn = Arrays.asList("datoDo", "statsborger", "sivilstand", "datoSivilstand");
+                feltnavn = Arrays.asList(DATO_DO, STATSBORGER, SIVILSTAND, DATO_SIVILSTAND);
                 personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, aksjonsKode, environment, fnr));
-                feltnavn = Arrays.asList("$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon");
+                feltnavn = Arrays.asList(FNR_RELASJON);
                 personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSRELA, feltnavn, aksjonsKode, environment, fnr));
                 break;
             case ANNULERING_FLYTTING_ADRESSEENDRING:
             case INNFLYTTING_ANNEN_KOMMUNE:
-                feltnavn = Arrays.asList("datoDo", "statsborger", "kommunenr", "datoFlyttet");
+                feltnavn = Arrays.asList(DATO_DO, STATSBORGER, KOMMUNENR, DATO_FLYTTET);
                 personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, aksjonsKode, environment, fnr));
                 break;
             case INNVANDRING:
