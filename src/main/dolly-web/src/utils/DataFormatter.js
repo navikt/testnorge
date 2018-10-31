@@ -1,5 +1,7 @@
 import dateFnsFormat from 'date-fns/format'
 import dateFnsParse from 'date-fns/parse'
+import _startCase from 'lodash/startCase'
+
 import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
 
 const formatters = {}
@@ -51,6 +53,8 @@ formatters.arrayToString = (array, separator = ',') => {
 	}, '')
 }
 
-// TODO: formatter kodeverk id til lesbar label formatter
+formatters.camelCaseToLabel = camelCase => {
+	return _startCase(camelCase)
+}
 
 export default formatters
