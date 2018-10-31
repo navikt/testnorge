@@ -7,6 +7,8 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -189,14 +191,16 @@ public class EksisterendeIdenterService {
 
                             RsMeldingstype melding = new RsMeldingstype1Felter();
                             melding.setAarsakskode(AarsakskoderTrans1.SIVILSTANDSENDRING.getAarsakskode());
+                            melding.setMaskindato(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
+                            melding.setMaskintid(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
+
+                            ((RsMeldingstype1Felter) melding).setRegdatoSivilstand(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
                             ((RsMeldingstype1Felter) melding).setFodselsdato(identPartner.substring(0, 6));
                             ((RsMeldingstype1Felter) melding).setPersonnummer(identPartner.substring(6));
                             ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode());
-
-                            // ((RsMeldingstype1Felter) melding).setRegdatoSivilstand(now().format(new DateTimeFormatter("DDMMYY")));
-                            // referanseperson = 1;
-                            // maskinkode = samme;
-                            // ektefelle-partner fdato
+                            ((RsMeldingstype1Felter) melding).setPersonkode("1");
+                            ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
+                            ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
 
                             meldinger.add(melding);
 
