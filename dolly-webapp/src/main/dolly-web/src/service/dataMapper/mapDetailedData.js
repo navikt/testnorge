@@ -174,9 +174,7 @@ export default function mapDetailedData(tpsfData, sigrunData, bestillingData) {
 							id: 'grunnlag',
 							label: 'Grunnlag',
 							longLabel: true,
-							// value: data.grunnlag
-							value:
-								'Gjeldsreduksjon For Fast Eiendom I Utlandet UnntattBeskatning i Norge Etter Skatteavtale'
+							value: Formatters.camelCaseToLabel(data.grunnlag)
 						}
 					]
 				}
