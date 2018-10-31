@@ -13,6 +13,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.appservices.tpsf.service.DollyTpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -124,5 +138,17 @@ public class TestgruppeControllerTest {
         when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gId, ant, envir)).thenReturn(b);
         controller.oppretteIdentBestilling(gId, bes);
         verify(dollyTpsfService).opprettPersonerByKriterierAsync(gId, bes, 2l);
+    }
+
+    @Test
+    public void slettgruppe_metodekall(){
+        controller.slettgruppe(anyLong());
+        verify(testgruppeService).slettGruppeById(anyLong());
+    }
+
+    @Test
+    public void getIdentsByGroupId_hentIdenter() {
+        controller.getIdentsByGroupId(anyLong());
+        verify(testgruppeService).fetchIdenterByGruppeId(anyLong());
     }
 }

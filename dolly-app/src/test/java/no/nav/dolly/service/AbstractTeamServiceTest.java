@@ -1,33 +1,34 @@
 package no.nav.dolly.service;
 
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.TeamRepository;
-
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
+
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractTeamServiceTest {
 
-	@Mock
-	TeamRepository teamRepository;
-	
-	@Mock
-	BrukerRepository brukerRepository;
+    @Mock
+    TeamRepository teamRepository;
 
-	@InjectMocks
-	TeamService teamService;
+    @Mock
+    BrukerRepository brukerRepository;
 
-	Bruker eier;
-	Team team;
+    @InjectMocks
+    TeamService teamService;
 
-	@Before
-	public void setupTestdata() {
-//		eier = new Bruker("eierId");
-//		team = Team.builder().eier(eier).navn("teamnavn").datoOpprettet(LocalDate.now()).build();
-	}
+    Bruker eier;
+    Team team;
+
+    @Before
+    public void setupTestdata() {
+        //		eier = new Bruker("eierId");
+        //		team = Team.builder().eier(eier).navn("teamnavn").datoOpprettet(LocalDate.now()).build();
+    }
 }

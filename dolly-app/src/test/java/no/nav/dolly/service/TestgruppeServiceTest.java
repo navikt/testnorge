@@ -8,6 +8,8 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,13 +28,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
@@ -40,10 +43,12 @@ import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.RsBrukerBuilder;
+import no.nav.dolly.testdata.builder.RsOpprettTestgruppeBuilder;
 import no.nav.dolly.testdata.builder.RsTeamBuilder;
 import no.nav.dolly.testdata.builder.RsTestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
@@ -53,6 +58,12 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeServiceTest {
+
+    private static final long GROUP_ID = 1L;
+
+    private static final String IDENT_ONE = "1";
+
+    private static final String IDENT_TWO = "2";
 
     private String standardPrincipal = "princ";
 
@@ -68,14 +79,27 @@ public class TestgruppeServiceTest {
     @Mock
     private MapperFacade mapperFacade;
 
+    @Mock
+    private NonTransientDataAccessException nonTransientDataAccessException;
+
     @InjectMocks
     private TestgruppeService testgruppeService;
+
+    private Testgruppe testGruppe;
 
     @Before
     public void setup() {
         SecurityContextHolder.getContext().setAuthentication(
                 new OidcTokenAuthentication(standardPrincipal, null, null, null)
         );
+        when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
+
+        Set gruppe = Sets.newHashSet(
+                Arrays.asList(
+                        TestidentBuilder.builder().ident(IDENT_ONE).build().convertToRealTestident(),
+                        TestidentBuilder.builder().ident(IDENT_TWO).build().convertToRealTestident()
+                ));
+        testGruppe = TestgruppeBuilder.builder().id(GROUP_ID).testidenter(gruppe).hensikt("test").build().convertToRealTestgruppe();
     }
 
     @Test
@@ -244,16 +268,37 @@ public class TestgruppeServiceTest {
 
     @Test
     public void slettGruppeById_deleteBlirKaltMotRepoMedGittId() {
-        Long gruppeId = 1L;
-
-        testgruppeService.slettGruppeById(gruppeId);
-        verify(gruppeRepository).deleteTestgruppeById(gruppeId);
+        testgruppeService.slettGruppeById(GROUP_ID);
+        verify(gruppeRepository).deleteTestgruppeById(GROUP_ID);
     }
 
     @Test(expected = ConstraintViolationException.class)
     public void saveGruppeTilDB_kasterExceptionHvisDBConstraintErBrutt() {
         when(gruppeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
         testgruppeService.saveGruppeTilDB(new Testgruppe());
+    }
+
+    @Test(expected = DollyFunctionalException.class)
+    public void saveGruppeTilDB_kasterDollyExceptionHvisDBConstraintErBrutt() throws Exception {
+        when(gruppeRepository.save(any())).thenThrow(nonTransientDataAccessException);
+        testgruppeService.saveGruppeTilDB(new Testgruppe());
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void saveGrupper_kasterExceptionHvisDBConstraintErBrutt() {
+        when(gruppeRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
+        testgruppeService.saveGrupper(new HashSet<>(Arrays.asList(new Testgruppe())));
+    }
+
+    @Test(expected = DollyFunctionalException.class)
+    public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt() {
+        when(gruppeRepository.saveAll(any())).thenThrow(nonTransientDataAccessException);
+        testgruppeService.saveGrupper(new HashSet<>(Arrays.asList(new Testgruppe())));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes() {
+        testgruppeService.fetchGrupperByIdsIn(Arrays.asList(anyLong()));
     }
 
     @Test(expected = NotFoundException.class)
@@ -264,32 +309,37 @@ public class TestgruppeServiceTest {
 
     @Test
     public void fetchIdenterByGruppeId_gruppeTilIdentString() {
-        long gruppeId = 1L;
-        String ident1 = "1";
-        String ident2 = "2";
+        when(gruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(testGruppe));
 
-        Testident t1 = TestidentBuilder.builder().ident(ident1).build().convertToRealTestident();
-        Testident t2 = TestidentBuilder.builder().ident(ident2).build().convertToRealTestident();
-        HashSet gruppe = new HashSet();
-        gruppe.add(t1);
-        gruppe.add(t2);
-        Testgruppe tg = TestgruppeBuilder.builder().id(gruppeId).testidenter(gruppe).build().convertToRealTestgruppe();
-        when(gruppeRepository.findById(gruppeId)).thenReturn(Optional.of(tg));
-
-        List<String> identer = testgruppeService.fetchIdenterByGruppeId(gruppeId);
-        assertThat(identer.contains(ident1), is(true));
-        assertThat(identer.contains(ident2), is(true));
+        List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
+        assertThat(identer.contains(IDENT_ONE), is(true));
+        assertThat(identer.contains(IDENT_TWO), is(true));
         assertThat(identer.size(), is(2));
     }
 
     @Test
-    public void fetchIdenterByGroupId_sjekkTommeGrupper(){
-        long gruppeId = 1L;
-        Testgruppe tg = TestgruppeBuilder.builder().id(gruppeId).testidenter(new HashSet<>()).build().convertToRealTestgruppe();
+    public void fetchIdenterByGroupId_sjekkTommeGrupper() {
+        Testgruppe tg = TestgruppeBuilder.builder().id(GROUP_ID).testidenter(new HashSet<>()).build().convertToRealTestgruppe();
 
-        when(gruppeRepository.findById(gruppeId)).thenReturn(Optional.of(tg));
-        List<String> identer = testgruppeService.fetchIdenterByGruppeId(gruppeId);
+        when(gruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(tg));
+        List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
 
         assertThat(identer.size(), is(0));
+    }
+
+    @Test
+    public void oppdaterTestgruppe_sjekkAtDBKalles() {
+        long teamId = 2L;
+
+        RsOpprettTestgruppe rsOpprettTestgruppe = RsOpprettTestgruppeBuilder.builder().hensikt("test").navn("navn").teamId(1L).build().convertToRealRsOpprettTestgruppe();
+
+        Team team = TeamBuilder.builder().navn("team").id(teamId).build().convertToRealTeam();
+
+        when(gruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
+        when(brukerService.fetchBruker(anyString())).thenReturn(new Bruker("navIdent"));
+        doReturn(team).when(teamService).fetchTeamById(anyLong());
+        when(mapperFacade.map(rsOpprettTestgruppe, Testgruppe.class)).thenReturn(testGruppe);
+        testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettTestgruppe);
+        verify(gruppeRepository).save(testGruppe);
     }
 }

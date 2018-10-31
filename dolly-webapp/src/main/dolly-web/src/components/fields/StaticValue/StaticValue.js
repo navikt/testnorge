@@ -5,7 +5,7 @@ import './StaticValue.less'
 
 export default class StaticValue extends PureComponent {
 	static propTypes = {
-		header: PropTypes.string.isRequired, // Wraps headers around string (h1, h2)
+		header: PropTypes.string.isRequired,
 		value: PropTypes.string.isRequired,
 		format: PropTypes.func,
 		headerType: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4'])
