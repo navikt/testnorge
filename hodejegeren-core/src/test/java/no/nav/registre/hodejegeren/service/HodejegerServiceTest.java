@@ -41,6 +41,9 @@ public class HodejegerServiceTest {
     
     @Mock
     private ValidationService validationService;
+
+    @Mock
+    private EksisterendeIdenterService eksisterendeIdenterService;
     
     @InjectMocks
     private HodejegerService hodejegerService;

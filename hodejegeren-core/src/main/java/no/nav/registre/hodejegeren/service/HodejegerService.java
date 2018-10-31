@@ -102,8 +102,6 @@ public class HodejegerService {
                 nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger); //Bør jeg sette en øvre aldersgrense? åpent søk vil
             } else if (AarsakskoderTrans1.TILDELING_DNUMMER.getAarsakskode().equals(aarsakskode)) {
                 nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger);
-
-
             } else {
                 eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, aarsakskode, antallMeldingerPerAarsakskode);
             }
