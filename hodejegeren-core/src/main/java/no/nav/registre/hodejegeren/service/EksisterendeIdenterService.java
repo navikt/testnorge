@@ -2,6 +2,7 @@ package no.nav.registre.hodejegeren.service;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import static no.nav.registre.hodejegeren.service.HodejegerService.*;
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class EksisterendeIdenterService {
 
     @Autowired
@@ -268,7 +270,9 @@ public class EksisterendeIdenterService {
             statusQuoFraAarsakskode.putAll(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(
                     findEnumOfAarsakskode(aarsakskode), fnr));
         } catch (Exception e) {
-            e.printStackTrace();
+            if (log.isInfoEnabled()) {
+                log.info("Could not get status quo info on ident {} ", fnr);
+            }
         }
 
         return statusQuoFraAarsakskode;

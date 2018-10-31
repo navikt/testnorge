@@ -41,7 +41,7 @@ public class HodejegerService {
     @Autowired
     private ValidationService validationService;
 
-    public static final String transaksjonstype = "1";
+    public static final String TRANSAKSJONSTYPE = "1";
     public static final String AKSJONSKODE = "A0";
     public static final String ENVIRONMENT = "T1";
 
@@ -64,14 +64,14 @@ public class HodejegerService {
                         AarsakskoderTrans1.INNVANDRING.getAarsakskode(),
                         AarsakskoderTrans1.FOEDSELSNUMMERKORREKSJON.getAarsakskode(),
                         AarsakskoderTrans1.TILDELING_DNUMMER.getAarsakskode()),
-                transaksjonstype));
+                TRANSAKSJONSTYPE));
 
         List<String> doedeOgUtvandredeIdenter = new ArrayList<>();
         doedeOgUtvandredeIdenter.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
                 genereringsOrdreRequest.getGruppeId(), Arrays.asList(
                         AarsakskoderTrans1.DOEDSMELDING.getAarsakskode(),
                         AarsakskoderTrans1.UTVANDRING.getAarsakskode()),
-                transaksjonstype));
+                TRANSAKSJONSTYPE));
 
         List<String> levendeIdenterINorge = new ArrayList<>();
         levendeIdenterINorge.addAll(opprettedeIdenterITpsf);
@@ -82,7 +82,7 @@ public class HodejegerService {
         gifteIdenterINorge.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
                 genereringsOrdreRequest.getGruppeId(), Arrays.asList(
                         AarsakskoderTrans1.VIGSEL.getAarsakskode()),
-                transaksjonstype));
+                TRANSAKSJONSTYPE));
         gifteIdenterINorge.removeAll(doedeOgUtvandredeIdenter);
         listerMedIdenter.put(GIFTE_IDENTER_I_NORGE, gifteIdenterINorge);
 
