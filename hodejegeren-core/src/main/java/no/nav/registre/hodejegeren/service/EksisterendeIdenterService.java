@@ -9,7 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.function.Predicate;
 
 import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.*;
@@ -24,6 +28,7 @@ public class EksisterendeIdenterService {
     private AarsakskodeTilFeltnavnMapperService aarsakskodeTilFeltnavnMapperService;
 
     private static final String IDENT = "ident";
+    private static final String STATSBORGER_NORGE = "NORGE";
     private Random rand;
 
     public EksisterendeIdenterService(Random rand) {
@@ -139,7 +144,7 @@ public class EksisterendeIdenterService {
             Map<String, String> statusQuoFraAarsakskodeIdentPartner;
             String identPartner;
 
-            if (ident != null && statusQuoFraAarsakskodeIdent != null) {
+            if (ident != null) {
                 identPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
 
                 statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(aarsakskode, identPartner);
@@ -173,50 +178,46 @@ public class EksisterendeIdenterService {
             }
 
             Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, aarsakskode,
-                    (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals("NORGE"));
+                    (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
 
             String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
             Map<String, String> statusQuoFraAarsakskodeIdentPartner;
             String identPartner;
 
-            if (statusQuoFraAarsakskodeIdent != null) {
-                if (statusQuoFraAarsakskodeIdent.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())) {
-                    identPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
+            if (statusQuoFraAarsakskodeIdent.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())) {
+                identPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
 
-                    statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(aarsakskode, identPartner);
+                statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(aarsakskode, identPartner);
 
-                    if (statusQuoFraAarsakskodeIdentPartner.get(SIVILSTAND).equals(statusQuoFraAarsakskodeIdent.get(SIVILSTAND))) {
-                        if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(ident)) {
-                            putFnrInnIMelding(meldinger.get(i), ident);
+                if (statusQuoFraAarsakskodeIdentPartner.get(SIVILSTAND).equals(statusQuoFraAarsakskodeIdent.get(SIVILSTAND))) {
+                    if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(ident)) {
+                        putFnrInnIMelding(meldinger.get(i), ident);
 
-                            RsMeldingstype melding = new RsMeldingstype1Felter();
-                            melding.setAarsakskode(AarsakskoderTrans1.SIVILSTANDSENDRING.getAarsakskode());
-                            melding.setMaskindato(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
-                            melding.setMaskintid(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
+                        RsMeldingstype melding = new RsMeldingstype1Felter();
+                        melding.setAarsakskode(AarsakskoderTrans1.SIVILSTANDSENDRING.getAarsakskode());
+                        melding.setMaskindato(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
+                        melding.setMaskintid(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
 
-                            ((RsMeldingstype1Felter) melding).setRegdatoSivilstand(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
-                            ((RsMeldingstype1Felter) melding).setFodselsdato(identPartner.substring(0, 6));
-                            ((RsMeldingstype1Felter) melding).setPersonnummer(identPartner.substring(6));
-                            ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode());
-                            ((RsMeldingstype1Felter) melding).setPersonkode("1");
-                            ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
-                            ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
+                        ((RsMeldingstype1Felter) melding).setRegdatoSivilstand(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
+                        ((RsMeldingstype1Felter) melding).setFodselsdato(identPartner.substring(0, 6));
+                        ((RsMeldingstype1Felter) melding).setPersonnummer(identPartner.substring(6));
+                        ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode());
+                        ((RsMeldingstype1Felter) melding).setPersonkode("1");
+                        ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
+                        ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
 
-                            meldinger.add(melding);
+                        meldinger.add(melding);
 
-                            oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
-                        } else {
-                            // personnummer i fnrRelasjon til partner matcher ikke
-                        }
+                        oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                     } else {
-                        // ulik sivilstand på identene
+                        // personnummer i fnrRelasjon til partner matcher ikke
                     }
                 } else {
-                    putFnrInnIMelding(meldinger.get(i), ident);
-                    oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
+                    // ulik sivilstand på identene
                 }
             } else {
-                // fant ikke ident
+                putFnrInnIMelding(meldinger.get(i), ident);
+                oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
             }
         }
     }
@@ -232,7 +233,7 @@ public class EksisterendeIdenterService {
             }
 
             Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, aarsakskode,
-                    (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals("NORGE"));
+                    (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
 
             String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
 
@@ -247,7 +248,7 @@ public class EksisterendeIdenterService {
         Map<String, String> statusQuoFraAarsakskodeIdent = new HashMap<>();
         String randomIdent;
         do {
-            if (identer.size() <= 0) {
+            if (identer.isEmpty()) {
                 randomIdent = null;
                 break;
             }
@@ -295,8 +296,6 @@ public class EksisterendeIdenterService {
     }
 
     private void oppdaterBolk(List<String> brukteIdenterIDenneBolken, List<String> identer) {
-        for (String ident : identer) {
-            brukteIdenterIDenneBolken.add(ident);
-        }
+        brukteIdenterIDenneBolken.addAll(identer);
     }
 }

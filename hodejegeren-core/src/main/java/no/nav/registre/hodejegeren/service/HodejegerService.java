@@ -7,7 +7,11 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.DNR;
@@ -37,6 +41,7 @@ public class HodejegerService {
     @Autowired
     private ValidationService validationService;
 
+    public static final String transaksjonstype = "1";
     public static final String AKSJONSKODE = "A0";
     public static final String ENVIRONMENT = "T1";
 
@@ -49,7 +54,6 @@ public class HodejegerService {
         final Map<String, Integer> antallMeldingerPerAarsakskode = genereringsOrdreRequest.getAntallMeldingerPerAarsakskode();
         final List<String> sorterteAarsakskoder = filtrerOgSorterBestilteAarsakskoder(antallMeldingerPerAarsakskode);
         List<Long> ids = new ArrayList<>();
-        final String transaksjonstype = "1";
 
         Map<String, List<String>> listerMedIdenter = new HashMap<>();
 
