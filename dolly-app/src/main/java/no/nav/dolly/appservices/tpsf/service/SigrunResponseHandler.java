@@ -8,11 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class SigrunResponseHandler {
-    private static final int REQUEST_OK = 200;
-    private static final int REQUEST_CREATED = 201;
 
     public String extractResponse(ResponseEntity<String> response) {
-        if (response.getStatusCodeValue() == REQUEST_CREATED || response.getStatusCodeValue() == REQUEST_OK) {
+        boolean contains_badresponse = !response.getBody().contains("400"); //pga. hacken til sigrun-stub blir hver sigrunReq lagt i en strengliste i body for responsen hver req ga på sitt endepunkt.
+        if (contains_badresponse) {
             return "Ok";
         } else {
             log.error("{} failed", response.toString());

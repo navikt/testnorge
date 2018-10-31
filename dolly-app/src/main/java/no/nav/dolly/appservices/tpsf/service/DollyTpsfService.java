@@ -76,13 +76,13 @@ public class DollyTpsfService {
 
                 //Sigrun
                 if (bestillingsRequest.getSigrunRequest() != null) {
-                    for (RsSigrunnOpprettSkattegrunnlag r : bestillingsRequest.getSigrunRequest()) {
-                        r.setPersonidentifikator(hovedPersonIdent);
+                    for (RsSigrunnOpprettSkattegrunnlag request : bestillingsRequest.getSigrunRequest()) {
+                        request.setPersonidentifikator(hovedPersonIdent);
                     }
 
                     ResponseEntity<String> sigrunResponse = sigrunStubApiService.createSkattegrunnlag(bestillingsRequest.getSigrunRequest());
 
-                    String response = sigrunResponseHandler.extractResponse(sigrunResponse); //må endres
+                    String response = sigrunResponseHandler.extractResponse(sigrunResponse);
                     progress.setSigrunSuccessEnv(response);
                 }
 
