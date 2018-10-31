@@ -34,8 +34,6 @@ public class EksisterendeIdenterServiceTest {
     private List<String> identer;
     private List<String> brukteIdenter;
     private String aarsakskode;
-    private static final String aksjonskode = "A0";
-    private static final String environment = "T1";
     private Map<String, Integer> meldingerPerAarsakskode;
     private Map<String, String> statusQuo;
 
@@ -64,16 +62,16 @@ public class EksisterendeIdenterServiceTest {
         statusQuo = new HashMap<>();
         statusQuo.put(DATO_DO, "010203");
         statusQuo.put(STATSBORGER, "NORGE");
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("01010101010"))).thenReturn(statusQuo);
+        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq("01010101010"))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(DATO_DO, "");
         statusQuo.put(STATSBORGER, "NORGE");
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("02020202020"))).thenReturn(statusQuo);
+        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq("02020202020"))).thenReturn(statusQuo);
 
-        eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, aarsakskode, aksjonskode, environment, meldingerPerAarsakskode);
+        eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, aarsakskode, meldingerPerAarsakskode);
 
-        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), eq(aksjonskode), eq(environment), any());
+        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
     }
 
     @Test
@@ -85,19 +83,19 @@ public class EksisterendeIdenterServiceTest {
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("01010101010"))).thenReturn(statusQuo);
+        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq("01010101010"))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("02020202020"))).thenReturn(statusQuo);
+        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq("02020202020"))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("03030303030"))).thenReturn(statusQuo);
+        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq("03030303030"))).thenReturn(statusQuo);
 
-        eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, aarsakskode, aksjonskode, environment, meldingerPerAarsakskode);
+        eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, aarsakskode, meldingerPerAarsakskode);
 
-        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), eq(aksjonskode), eq(environment), any());
+        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
     }
 
     @Test
@@ -109,20 +107,20 @@ public class EksisterendeIdenterServiceTest {
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("01010101010"))).thenReturn(statusQuo);
+        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq("01010101010"))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         statusQuo.put(FNR_RELASJON, "03030303030");
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("02020202020"))).thenReturn(statusQuo);
+        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq("02020202020"))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         statusQuo.put(FNR_RELASJON, "02020202020");
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), any(), eq("03030303030"))).thenReturn(statusQuo);
+        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq("03030303030"))).thenReturn(statusQuo);
 
-        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, aarsakskode, aksjonskode, environment, meldingerPerAarsakskode);
+        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, aarsakskode, meldingerPerAarsakskode);
 
-        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), eq(aksjonskode), eq(environment), any());
+        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
     }
 }

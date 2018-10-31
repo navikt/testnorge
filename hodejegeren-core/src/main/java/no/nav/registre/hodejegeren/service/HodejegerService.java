@@ -7,10 +7,7 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.DNR;
@@ -40,14 +37,21 @@ public class HodejegerService {
     @Autowired
     private ValidationService validationService;
 
+    public static final String AKSJONSKODE = "A0";
+    public static final String ENVIRONMENT = "T1";
+
+    public static final String LEVENDE_IDENTER_I_NORGE = "levendeIdenterINorge";
+    public static final String GIFTE_IDENTER_I_NORGE = "gifteIdenterINorge";
+    public static final String SINGLE_IDENTER_I_NORGE = "singleIdenterINorge";
+    public static final String BRUKTE_IDENTER_I_DENNE_BOLKEN = "brukteIdenterIDenneBolken";
+
     public List<Long> puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         final Map<String, Integer> antallMeldingerPerAarsakskode = genereringsOrdreRequest.getAntallMeldingerPerAarsakskode();
         final List<String> sorterteAarsakskoder = filtrerOgSorterBestilteAarsakskoder(antallMeldingerPerAarsakskode);
         List<Long> ids = new ArrayList<>();
-
-        final String aksjonskode = "A0";
-        final String environment = "T1";
         final String transaksjonstype = "1";
+
+        Map<String, List<String>> listerMedIdenter = new HashMap<>();
 
         List<String> opprettedeIdenterITpsf = new ArrayList<>();
         opprettedeIdenterITpsf.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
@@ -68,6 +72,7 @@ public class HodejegerService {
         List<String> levendeIdenterINorge = new ArrayList<>();
         levendeIdenterINorge.addAll(opprettedeIdenterITpsf);
         levendeIdenterINorge.removeAll(doedeOgUtvandredeIdenter);
+        listerMedIdenter.put(LEVENDE_IDENTER_I_NORGE, levendeIdenterINorge);
 
         List<String> gifteIdenterINorge = new ArrayList<>();
         gifteIdenterINorge.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
@@ -75,12 +80,15 @@ public class HodejegerService {
                         AarsakskoderTrans1.VIGSEL.getAarsakskode()),
                 transaksjonstype));
         gifteIdenterINorge.removeAll(doedeOgUtvandredeIdenter);
+        listerMedIdenter.put(GIFTE_IDENTER_I_NORGE, gifteIdenterINorge);
 
         List<String> singleIdenterINorge = new ArrayList<>();
         singleIdenterINorge.addAll(levendeIdenterINorge);
         singleIdenterINorge.removeAll(gifteIdenterINorge);
+        listerMedIdenter.put(SINGLE_IDENTER_I_NORGE, singleIdenterINorge);
 
         List<String> brukteIdenterIDenneBolken = new ArrayList<>();
+        listerMedIdenter.put(BRUKTE_IDENTER_I_DENNE_BOLKEN, brukteIdenterIDenneBolken);
 
 
         for (String aarsakskode : sorterteAarsakskoder) {
@@ -97,8 +105,7 @@ public class HodejegerService {
 
 
             } else {
-                eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, levendeIdenterINorge, singleIdenterINorge, gifteIdenterINorge, brukteIdenterIDenneBolken,
-                       aarsakskode, aksjonskode, environment, antallMeldingerPerAarsakskode);
+                eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, aarsakskode, antallMeldingerPerAarsakskode);
             }
 
             ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));

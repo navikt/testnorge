@@ -34,8 +34,6 @@ public class TpsStatusQuoServiceTest {
     @Mock
     private TpsfConsumer tpsfConsumer;
 
-    private String aksjonsKode = "A0";
-    private String environment = "Q11";
     private String fnr = "12345678901";
     private String routineName = "FS03-FDNUMMER-KERNINFO-O";
     private URL jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
@@ -53,7 +51,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, aksjonsKode, environment, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, fnr);
 
         assertEquals(1, statusQuoValues.size());
         assertEquals("NOR", statusQuoValues.get(STATSBORGERSKAP));
@@ -72,7 +70,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, aksjonsKode, environment, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, fnr);
 
         assertEquals(1, statusQuoValues.size());
         assertEquals("01065500791", statusQuoValues.get(FNR_RELASJON));
@@ -93,7 +91,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, aksjonsKode, environment, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, fnr);
 
         assertEquals(2, statusQuoValues.size());
         assertEquals("AJOURHD", statusQuoValues.get("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler"));
@@ -106,6 +104,9 @@ public class TpsStatusQuoServiceTest {
      */
     @Test
     public void shouldUpdateCacheWithRoutine() throws IOException {
+        final String aksjonsKode = "A0";
+        final String environment = "Q11";
+
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
@@ -120,12 +121,15 @@ public class TpsStatusQuoServiceTest {
         assertTrue(tpsServiceRoutineCache.containsKey(routineName));
         assertEquals(jsonNode, tpsServiceRoutineCache.get(routineName));
 
-        tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList(DATO_DO), aksjonsKode, environment, fnr);
+        tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList(DATO_DO), fnr);
         assertNotEquals(tpsServiceRoutineCache, tpsStatusQuoService.getTpsServiceRoutineCache());
     }
 
     @Test
     public void shouldHandleTpsRequestParameters() throws IOException {
+        final String aksjonsKode = "A0";
+        final String environment = "Q11";
+
         tpsStatusQuoService.getInfoHelper(routineName, aksjonsKode, environment, fnr);
 
         ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);

@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.*;
+import static no.nav.registre.hodejegeren.service.HodejegerService.*;
 
 @Service
 @AllArgsConstructor
@@ -19,15 +21,16 @@ public class EksisterendeIdenterService {
     @Autowired
     private AarsakskodeTilFeltnavnMapperService aarsakskodeTilFeltnavnMapperService;
 
+    private static final String IDENT = "ident";
     private Random rand;
 
     public EksisterendeIdenterService(Random rand) {
         this.rand = rand;
     }
 
-    public void behandleEksisterendeIdenter(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> singleIdenterINorge,
-                                            List<String> gifteIdenterINorge, List<String> brukteIdenterIDenneBolken, String aarsakskode,
-                                            String aksjonskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
+    public void behandleEksisterendeIdenter(List<RsMeldingstype> meldinger, Map<String, List<String>> listerMedIdenter, String aarsakskode,
+                                            Map<String, Integer> antallMeldingerPerAarsakskode) {
+
         AarsakskoderTrans1 aarsakskodeEnum = findEnumOfAarsakskode(aarsakskode);
         switch (aarsakskodeEnum) {
             case NAVNEENDRING_FOERSTE:
@@ -53,18 +56,22 @@ public class EksisterendeIdenterService {
             case UREGISTRERT_PERSON:
             case ANNULERING_FLYTTING_ADRESSEENDRING:
             case INNFLYTTING_ANNEN_KOMMUNE:
-                behandleGenerellAarsak(meldinger, levendeIdenterINorge, brukteIdenterIDenneBolken, aarsakskode, aksjonskode, environment, antallMeldingerPerAarsakskode);
+                behandleGenerellAarsak(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                        aarsakskode, antallMeldingerPerAarsakskode);
                 break;
             case VIGSEL:
-                behandleVigsel(meldinger, singleIdenterINorge, brukteIdenterIDenneBolken, aarsakskode, aksjonskode, environment, antallMeldingerPerAarsakskode);
+                behandleVigsel(meldinger, listerMedIdenter.get(SINGLE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                        aarsakskode, antallMeldingerPerAarsakskode);
                 break;
             case SEPERASJON:
             case SKILSMISSE:
             case SIVILSTANDSENDRING:
-                behandleSeperasjonSkilsmisse(meldinger, gifteIdenterINorge, brukteIdenterIDenneBolken, aarsakskode, aksjonskode, environment, antallMeldingerPerAarsakskode);
+                behandleSeperasjonSkilsmisse(meldinger, listerMedIdenter.get(GIFTE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                        aarsakskode, antallMeldingerPerAarsakskode);
                 break;
             case DOEDSMELDING:
-                behandleDoedsmelding(meldinger, levendeIdenterINorge, brukteIdenterIDenneBolken, aarsakskode, aksjonskode, environment, antallMeldingerPerAarsakskode);
+                behandleDoedsmelding(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                        aarsakskode, antallMeldingerPerAarsakskode);
                 break;
             case KORREKSJON_FAMILIEOPPLYSNINGER:
                 break;
@@ -77,7 +84,7 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleVigsel(List<RsMeldingstype> meldinger, List<String> singleIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                               String aarsakskode, String aksjonskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
+                               String aarsakskode, Map<String, Integer> antallMeldingerPerAarsakskode) {
 
         for (int i = 0; i < antallMeldingerPerAarsakskode.get(aarsakskode); i++) {
             if (i >= singleIdenterINorge.size() - 2) {
@@ -90,78 +97,58 @@ public class EksisterendeIdenterService {
                 continue;
             }
 
-            Map<String, String> statusQuoFraAarsakskodeIdent1, statusQuoFraAarsakskodeIdent2;
-            String randomIdent1, randomIdent2;
+            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(singleIdenterINorge, aarsakskode,
+                    (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
+                            || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
 
-            do {
-                if (singleIdenterINorge.size() <= 0) {
-                    randomIdent1 = null;
-                    break;
-                }
-                randomIdent1 = singleIdenterINorge.remove(rand.nextInt(singleIdenterINorge.size())); // pass på remove
-                statusQuoFraAarsakskodeIdent1 = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdent1);
-            }
-            while (statusQuoFraAarsakskodeIdent1.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
-                    || statusQuoFraAarsakskodeIdent1.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
+            Map<String, String> statusQuoFraAarsakskodeIdentPartner = getIdentWithStatus(singleIdenterINorge, aarsakskode,
+                    (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
+                            || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
 
-            do {
-                if (singleIdenterINorge.size() <= 0) {
-                    randomIdent2 = null;
-                    break;
-                }
-                randomIdent2 = singleIdenterINorge.remove(rand.nextInt(singleIdenterINorge.size())); // pass på remove
-                statusQuoFraAarsakskodeIdent2 = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdent2);
-            }
-            while (statusQuoFraAarsakskodeIdent2.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
-                    || statusQuoFraAarsakskodeIdent2.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
+            String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
+            String identPartner = statusQuoFraAarsakskodeIdentPartner.get(IDENT);
 
-            if (randomIdent1 != null && randomIdent2 != null) {
-                putFnrInnIMelding(meldinger.get(i), randomIdent1);
-                ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerFdato(randomIdent2.substring(0, 6));
-                ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerPnr(randomIdent2.substring(6));
+            if (ident != null && identPartner != null) {
+                putFnrInnIMelding(meldinger.get(i), ident);
+                ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerFdato(identPartner.substring(0, 6));
+                ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerPnr(identPartner.substring(6));
 
-                RsMeldingstype melding = putIdentInnINyMelding(meldinger, randomIdent2);
-                ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(randomIdent1.substring(0, 6));
-                ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(randomIdent1.substring(6));
+                RsMeldingstype melding = putIdentInnINyMelding(meldinger, identPartner);
+                ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
+                ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
 
-                oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(randomIdent1, randomIdent2));
+                oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
             }
         }
     }
 
     public void behandleSeperasjonSkilsmisse(List<RsMeldingstype> meldinger, List<String> gifteIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                             String aarsakskode, String aksjonskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
+                                             String aarsakskode, Map<String, Integer> antallMeldingerPerAarsakskode) {
         for (int i = 0; i < antallMeldingerPerAarsakskode.get(aarsakskode); i++) {
             if (meldinger.get(i) == null) {
                 // fant ikke gyldig skdmelding på index i
                 continue;
             }
 
-            Map<String, String> statusQuoFraAarsakskodeIdent = null, statusQuoFraAarsakskodeIdentPartner;
-            String randomIdent, randomIdentPartner;
+            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(gifteIdenterINorge, aarsakskode,
+                    (Map<String, String> a) -> !a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode()));
 
-            do {
-                if (gifteIdenterINorge.size() <= 0) {
-                    randomIdent = null;
-                    break;
-                }
-                randomIdent = gifteIdenterINorge.remove(rand.nextInt(gifteIdenterINorge.size())); // pass på remove
-                statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdent);
-            }
-            while (!statusQuoFraAarsakskodeIdent.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode()));
+            String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
+            Map<String, String> statusQuoFraAarsakskodeIdentPartner;
+            String identPartner;
 
-            if (randomIdent != null && statusQuoFraAarsakskodeIdent != null) {
-                randomIdentPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
+            if (ident != null && statusQuoFraAarsakskodeIdent != null) {
+                identPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
 
-                statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdentPartner);
+                statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(aarsakskode, identPartner);
 
                 if (statusQuoFraAarsakskodeIdentPartner.get(SIVILSTAND).equals(statusQuoFraAarsakskodeIdent.get(SIVILSTAND))) {
-                    if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(randomIdent)) {
-                        putFnrInnIMelding(meldinger.get(i), randomIdent);
+                    if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(ident)) {
+                        putFnrInnIMelding(meldinger.get(i), ident);
 
-                        putIdentInnINyMelding(meldinger, randomIdentPartner);
+                        putIdentInnINyMelding(meldinger, identPartner);
 
-                        oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(randomIdent, randomIdentPartner));
+                        oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                     } else {
                         // personnummer i fnrRelasjon til partner matcher ikke
                     }
@@ -175,7 +162,7 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleDoedsmelding(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                     String aarsakskode, String aksjonskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
+                                     String aarsakskode, Map<String, Integer> antallMeldingerPerAarsakskode) {
         for (int i = 0; i < antallMeldingerPerAarsakskode.get(aarsakskode); i++) {
 
             if (meldinger.get(i) == null) {
@@ -183,38 +170,37 @@ public class EksisterendeIdenterService {
                 continue;
             }
 
-            Map<String, String> statusQuoFraAarsakskodeIdent = null, statusQuoFraAarsakskodeIdentPartner;
-            String randomIdent, randomIdentPartner;
+            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, aarsakskode,
+                    (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals("NORGE"));
 
-            do {
-                if (levendeIdenterINorge.size() <= 0) {
-                    randomIdent = null;
-                    break;
-                }
-                int randomIndex = rand.nextInt(levendeIdenterINorge.size());
-                randomIdent = levendeIdenterINorge.remove(randomIndex);
-                statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdent);
-            }
-            while (!statusQuoFraAarsakskodeIdent.get(DATO_DO).isEmpty() || (!statusQuoFraAarsakskodeIdent.get(STATSBORGER).equals("NORGE")));
+            String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
+            Map<String, String> statusQuoFraAarsakskodeIdentPartner;
+            String identPartner;
 
-            if(statusQuoFraAarsakskodeIdent != null){
+            if (statusQuoFraAarsakskodeIdent != null) {
                 if (statusQuoFraAarsakskodeIdent.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())) {
-                    randomIdentPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
+                    identPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
 
-                    statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdentPartner);
+                    statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(aarsakskode, identPartner);
 
                     if (statusQuoFraAarsakskodeIdentPartner.get(SIVILSTAND).equals(statusQuoFraAarsakskodeIdent.get(SIVILSTAND))) {
-                        if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(randomIdent)) {
-                            putFnrInnIMelding(meldinger.get(i), randomIdent);
+                        if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(ident)) {
+                            putFnrInnIMelding(meldinger.get(i), ident);
 
                             RsMeldingstype melding = new RsMeldingstype1Felter();
                             melding.setAarsakskode(AarsakskoderTrans1.SIVILSTANDSENDRING.getAarsakskode());
-                            ((RsMeldingstype1Felter) melding).setFodselsdato(randomIdentPartner.substring(0, 6));
-                            ((RsMeldingstype1Felter) melding).setPersonnummer(randomIdentPartner.substring(6));
+                            ((RsMeldingstype1Felter) melding).setFodselsdato(identPartner.substring(0, 6));
+                            ((RsMeldingstype1Felter) melding).setPersonnummer(identPartner.substring(6));
                             ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode());
+
+                            // ((RsMeldingstype1Felter) melding).setRegdatoSivilstand(now().format(new DateTimeFormatter("DDMMYY")));
+                            // referanseperson = 1;
+                            // maskinkode = samme;
+                            // ektefelle-partner fdato
+
                             meldinger.add(melding);
 
-                            oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(randomIdent, randomIdentPartner));
+                            oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                         } else {
                             // personnummer i fnrRelasjon til partner matcher ikke
                         }
@@ -222,8 +208,8 @@ public class EksisterendeIdenterService {
                         // ulik sivilstand på identene
                     }
                 } else {
-                    putFnrInnIMelding(meldinger.get(i), randomIdent);
-                    oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(randomIdent));
+                    putFnrInnIMelding(meldinger.get(i), ident);
+                    oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
                 }
             } else {
                 // fant ikke ident
@@ -231,8 +217,9 @@ public class EksisterendeIdenterService {
         }
     }
 
+
     public void behandleGenerellAarsak(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                       String aarsakskode, String aksjonskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
+                                       String aarsakskode, Map<String, Integer> antallMeldingerPerAarsakskode) {
         for (int i = 0; i < antallMeldingerPerAarsakskode.get(aarsakskode); i++) {
 
             if (meldinger.get(i) == null) {
@@ -240,33 +227,41 @@ public class EksisterendeIdenterService {
                 continue;
             }
 
-            Map<String, String> statusQuoFraAarsakskodeIdent;
-            String randomIdent;
+            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, aarsakskode,
+                    (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals("NORGE"));
 
-            do {
-                if (levendeIdenterINorge.size() <= 0) {
-                    randomIdent = null;
-                    break;
-                }
-                int randomIndex = rand.nextInt(levendeIdenterINorge.size());
-                randomIdent = levendeIdenterINorge.remove(randomIndex);
-                statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(aarsakskode, aksjonskode, environment, randomIdent);
-            }
-            while (!statusQuoFraAarsakskodeIdent.get(DATO_DO).isEmpty() || (!statusQuoFraAarsakskodeIdent.get(STATSBORGER).equals("NORGE")));
+            String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
 
-            if (randomIdent != null) {
-                putFnrInnIMelding(meldinger.get(i), randomIdent);
-                oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(randomIdent));
+            if (ident != null) {
+                putFnrInnIMelding(meldinger.get(i), ident);
+                oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
             }
         }
     }
 
-    private Map<String, String> getStatusQuoPaaIdent(String aarsakskode, String aksjonskode, String environment, String fnr) {
+    private Map<String, String> getIdentWithStatus(List<String> levendeIdenterINorge, String aarsakskode, Predicate<Map<String, String>> predicate) {
+        Map<String, String> statusQuoFraAarsakskodeIdent = new HashMap<>();
+        String randomIdent;
+        do {
+            if (levendeIdenterINorge.size() <= 0) {
+                randomIdent = null;
+                break;
+            }
+            int randomIndex = rand.nextInt(levendeIdenterINorge.size());
+            randomIdent = levendeIdenterINorge.remove(randomIndex); // pass på remove
+            statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(aarsakskode, randomIdent);
+        }
+        while (predicate.test(statusQuoFraAarsakskodeIdent));
+        statusQuoFraAarsakskodeIdent.put(IDENT, randomIdent);
+        return statusQuoFraAarsakskodeIdent;
+    }
+
+    private Map<String, String> getStatusQuoPaaIdent(String aarsakskode, String fnr) {
         Map<String, String> statusQuoFraAarsakskode = new HashMap<>();
 
         try {
             statusQuoFraAarsakskode.putAll(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(
-                    findEnumOfAarsakskode(aarsakskode), aksjonskode, environment, fnr));
+                    findEnumOfAarsakskode(aarsakskode), fnr));
         } catch (Exception e) {
             e.printStackTrace();
         }

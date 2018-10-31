@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.registre.hodejegeren.service.HodejegerService.AKSJONSKODE;
+import static no.nav.registre.hodejegeren.service.HodejegerService.ENVIRONMENT;
+
 @Service
 @Getter
 @Slf4j
@@ -26,12 +29,12 @@ public class TpsStatusQuoService {
 
     private Map<String, JsonNode> tpsServiceRoutineCache;
 
-    public Map<String, String> getStatusQuo(String routineName, List<String> feltnavn, String aksjonsKode, String environment, String fnr) throws IOException {
+    public Map<String, String> getStatusQuo(String routineName, List<String> feltnavn, String fnr) throws IOException {
         Map<String, String> personStatusQuo = new HashMap<>(feltnavn.size());
         resetCache();
 
         for (String felt : feltnavn) {
-            JsonNode root = getInfoOnRoutineName(routineName, aksjonsKode, environment, fnr);
+            JsonNode root = getInfoOnRoutineName(routineName, AKSJONSKODE, ENVIRONMENT, fnr);
 
             if (root == null) {
                 if (log.isInfoEnabled()) {

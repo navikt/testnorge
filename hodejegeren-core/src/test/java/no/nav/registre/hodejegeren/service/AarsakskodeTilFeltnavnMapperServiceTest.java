@@ -26,8 +26,6 @@ public class AarsakskodeTilFeltnavnMapperServiceTest {
     @Mock
     private TpsStatusQuoService tpsStatusQuoService;
 
-    private String aksjonsKode = "A0";
-    private String environment = "Q11";
     private String fnr = "12345678901";
     private String routineName = "FS03-FDNUMMER-PERSDATA-O";
 
@@ -39,10 +37,10 @@ public class AarsakskodeTilFeltnavnMapperServiceTest {
     public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
         AarsakskoderTrans1 aarsakskoderTrans1 = AarsakskoderTrans1.NAVNEENDRING_FOERSTE;
 
-        aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(aarsakskoderTrans1, aksjonsKode, environment, fnr);
+        aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(aarsakskoderTrans1, fnr);
 
         ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
-        Mockito.verify(tpsStatusQuoService).getStatusQuo(eq(routineName), captor.capture(), eq(aksjonsKode), eq(environment), eq(fnr));
+        Mockito.verify(tpsStatusQuoService).getStatusQuo(eq(routineName), captor.capture(), eq(fnr));
         List<String> actualRequestParams = captor.getValue();
 
         assertEquals(2, actualRequestParams.size());
