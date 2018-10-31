@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -75,7 +76,7 @@ public class EksisterendeIdenterServiceTest {
     }
 
     @Test
-    public void shouldFindUgiftPerson() throws IOException {
+    public void shouldFindUgiftPersonAndCreateVigselsmelding() throws IOException {
         aarsakskode = AarsakskoderTrans1.VIGSEL.getAarsakskode();
         meldingerPerAarsakskode.put(aarsakskode, 1);
 
@@ -96,10 +97,13 @@ public class EksisterendeIdenterServiceTest {
         eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, aarsakskode, meldingerPerAarsakskode);
 
         Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
+        assertEquals(2, meldinger.size());
+        assertEquals("030303", ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
+        assertEquals("010101", ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
     }
 
     @Test
-    public void shouldFindGiftPerson() throws IOException {
+    public void shouldFindGiftPersonAndCreateSkilsmissemelding() throws IOException {
         aarsakskode = AarsakskoderTrans1.SKILSMISSE.getAarsakskode();
         meldingerPerAarsakskode.put(aarsakskode, 1);
 
@@ -122,5 +126,33 @@ public class EksisterendeIdenterServiceTest {
         eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, aarsakskode, meldingerPerAarsakskode);
 
         Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
+        assertEquals(2, meldinger.size());
+    }
+
+    @Test
+    public void shouldFindPartnerOfDoedsmeldingIdent() throws IOException {
+        aarsakskode = AarsakskoderTrans1.DOEDSMELDING.getAarsakskode();
+        meldingerPerAarsakskode.put(aarsakskode, 1);
+
+        when(rand.nextInt(anyInt())).thenReturn(0);
+
+        statusQuo = new HashMap<>();
+        statusQuo.put(STATSBORGER, "NORGE");
+        statusQuo.put(DATO_DO, "");
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(FNR_RELASJON, "02020202020");
+        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq("01010101010"))).thenReturn(statusQuo);
+
+        statusQuo = new HashMap<>();
+        statusQuo.put(STATSBORGER, "NORGE");
+        statusQuo.put(DATO_DO, "");
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(FNR_RELASJON, "01010101010");
+        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq("02020202020"))).thenReturn(statusQuo);
+
+        eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, aarsakskode, meldingerPerAarsakskode);
+
+        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
+        assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 }
