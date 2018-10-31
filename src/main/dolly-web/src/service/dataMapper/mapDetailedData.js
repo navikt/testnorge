@@ -1,69 +1,72 @@
 import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
-export default function mapDetailedData(brukerData, bestillingData) {
-	let data = [
-		{
-			header: 'Personlig informasjon',
-			data: [
-				{
-					id: 'ident',
-					label: brukerData.identtype,
-					value: brukerData.ident
-				},
-				{
-					id: 'fornavn',
-					label: 'Fornavn',
-					value: brukerData.fornavn
-				},
-				{
-					id: 'mellomnavn',
-					label: 'Mellomnavn',
-					value: brukerData.mellomnavn
-				},
-				{
-					id: 'etternavn',
-					label: 'Etternavn',
-					value: brukerData.etternavn
-				},
-				{
-					id: 'kjonn',
-					label: 'Kjønn',
-					value: Formatters.kjonnToString(brukerData.kjonn)
-				},
-				{
-					id: 'alder',
-					label: 'Alder',
-					value: Formatters.formatAlder(brukerData.alder, brukerData.doedsdato)
-				},
-				{
-					id: 'miljoer',
-					label: 'Miljøer',
-					value: Formatters.arrayToString(bestillingData.environments)
-				}
-			]
-		}
-	]
+export default function mapDetailedData(tpsfData, sigrunData, bestillingData) {
+	let data
+	if (tpsfData) {
+		data = [
+			{
+				header: 'Personlig informasjon',
+				data: [
+					{
+						id: 'ident',
+						label: tpsfData.identtype,
+						value: tpsfData.ident
+					},
+					{
+						id: 'fornavn',
+						label: 'Fornavn',
+						value: tpsfData.fornavn
+					},
+					{
+						id: 'mellomnavn',
+						label: 'Mellomnavn',
+						value: tpsfData.mellomnavn
+					},
+					{
+						id: 'etternavn',
+						label: 'Etternavn',
+						value: tpsfData.etternavn
+					},
+					{
+						id: 'kjonn',
+						label: 'Kjønn',
+						value: Formatters.kjonnToString(tpsfData.kjonn)
+					},
+					{
+						id: 'alder',
+						label: 'Alder',
+						value: Formatters.formatAlder(tpsfData.alder, tpsfData.doedsdato)
+					},
+					{
+						id: 'miljoer',
+						label: 'Miljøer',
+						value: Formatters.arrayToString(bestillingData.environments)
+					}
+				]
+			}
+		]
+	}
 
-	if (brukerData.statsborgerskap) {
+	if (tpsfData.statsborgerskap) {
 		data.push({
 			header: 'Nasjonalitet',
 			data: [
 				{
 					id: 'innvandretFra',
 					label: 'Innvandret fra',
-					value: brukerData.innvandretFra
+					value: tpsfData.innvandretFra
 				},
 				{
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
-					value: brukerData.statsborgerskap
+					value: tpsfData.statsborgerskap
 				}
 			]
 		})
 	}
 
-	if (brukerData.boadresse) {
+	if (tpsfData.boadresse) {
 		data.push({
 			header: 'Bostedadresse',
 			data: [
@@ -71,40 +74,40 @@ export default function mapDetailedData(brukerData, bestillingData) {
 					parent: 'boadresse',
 					id: 'gateadresse',
 					label: 'Gatenavn',
-					value: brukerData.boadresse.gateadresse
+					value: tpsfData.boadresse.gateadresse
 				},
 				{
 					parent: 'boadresse',
 					id: 'husnummer',
 					label: 'Husnummer',
-					value: brukerData.boadresse.husnummer
+					value: tpsfData.boadresse.husnummer
 				},
 				{
 					parent: 'boadresse',
 					id: 'gatekode',
 					label: 'Gatekode',
-					value: brukerData.boadresse.gatekode
+					value: tpsfData.boadresse.gatekode
 				},
 				{
 					parent: 'boadresse',
 					id: 'postnr',
 					label: 'Postnummer',
-					value: brukerData.boadresse.postnr
+					value: tpsfData.boadresse.postnr
 				},
 				{
 					parent: 'boadresse',
 					id: 'flyttedato',
 					label: 'Flyttedato',
-					value: Formatters.formatDate(brukerData.boadresse.flyttedato)
+					value: Formatters.formatDate(tpsfData.boadresse.flyttedato)
 				}
 			]
 		})
 	}
-	if (brukerData.relasjoner.length) {
+	if (tpsfData.relasjoner.length) {
 		data.push({
 			header: 'Familierelasjoner',
 			multiple: true,
-			data: brukerData.relasjoner.map(relasjon => {
+			data: tpsfData.relasjoner.map(relasjon => {
 				return {
 					parent: 'relasjoner',
 					id: relasjon.id,
@@ -134,6 +137,46 @@ export default function mapDetailedData(brukerData, bestillingData) {
 							id: 'kjonn',
 							label: 'Kjønn',
 							value: Formatters.kjonnToString(relasjon.personRelasjonMed.kjonn)
+						}
+					]
+				}
+			})
+		})
+	}
+	if (sigrunData) {
+		data.push({
+			header: 'Inntekter',
+			multiple: true,
+			data: sigrunData.map(data => {
+				return {
+					parent: 'inntekter',
+					id: data.personidentifikator,
+					label: 'ja',
+					value: [
+						{
+							id: 'aar',
+							label: 'År',
+							value: data.inntektsaar
+						},
+						{
+							id: 'verdi',
+							label: 'Beløp',
+							value: data.verdi
+						},
+						,
+						{
+							id: 'tjeneste',
+							label: 'Tjeneste',
+							value: data.tjeneste
+						},
+
+						{
+							id: 'grunnlag',
+							label: 'Grunnlag',
+							longLabel: true,
+							// value: data.grunnlag
+							value:
+								'Gjeldsreduksjon For Fast Eiendom I Utlandet UnntattBeskatning i Norge Etter Skatteavtale'
 						}
 					]
 				}

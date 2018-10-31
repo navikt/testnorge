@@ -51,4 +51,6 @@ formatters.arrayToString = (array, separator = ',') => {
 	}, '')
 }
 
+// TODO: formatter kodeverk id til lesbar label formatter
+
 export default formatters

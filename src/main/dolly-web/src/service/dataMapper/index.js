@@ -20,9 +20,11 @@ const DataMapper = {
         */
 
 		const { gruppe, testbruker } = state
-		if (!testbruker.items) return null
 
-		return testbruker.items.map(i => {
+		// TODO: Refactor, testbrukerIsFetched
+		if (!testbruker.items || !testbruker.items.tpsf || !testbruker.items.sigrun) return null
+
+		return testbruker.items.tpsf.map(i => {
 			return [
 				i.ident,
 				i.identtype,
@@ -35,14 +37,19 @@ const DataMapper = {
 	},
 	getDetailedData(state, ownProps) {
 		const { gruppe, testbruker } = state
-		if (!testbruker.items) return null
+		if (!testbruker.items || !testbruker.items.tpsf || !testbruker.items.sigrun) return null
 
 		const bestillingId = _findBestillingId(gruppe, ownProps.personId)
 		const bestillingObj = gruppe.data[0].bestillinger.find(
 			bestilling => bestilling.id === bestillingId
 		)
-		const brukerData = testbruker.items.find(item => item.ident === ownProps.personId)
-		return mapDetailedData(brukerData, bestillingObj)
+		const tpsfData = testbruker.items.tpsf.find(item => item.ident === ownProps.personId)
+
+		let sigrunData = testbruker.items.sigrun.filter(
+			item => item.personidentifikator === ownProps.personId
+		)
+
+		return mapDetailedData(tpsfData, sigrunData, bestillingObj)
 	}
 }
 
