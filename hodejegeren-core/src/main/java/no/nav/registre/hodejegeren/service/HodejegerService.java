@@ -2,11 +2,16 @@ package no.nav.registre.hodejegeren.service;
 
 import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.DNR;
 import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
+import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
+import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
+import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
+import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,19 +42,19 @@ public class HodejegerService {
     private ValidationService validationService;
     
     public List<Long> puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
-        final Map<String, Integer> antallMeldingerPerAarsakskode = genereringsOrdreRequest.getAntallMeldingerPerAarsakskode();
-        final List<String> sorterteAarsakskoder = filtrerOgSorterBestilteAarsakskoder(antallMeldingerPerAarsakskode);
+        final Map<String, Integer> antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
+        final List<Endringskoder> sorterteEndringskoder = filtrerOgSorterBestilteEndringskoder(antallMeldingerPerEndringskode.keySet());
         List<Long> ids = new ArrayList<>();
         
         //        kall tpsfConsumer og hent tpsfstatsulistene
         
-        for (String aarsakskode : sorterteAarsakskoder) {
-            List syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(aarsakskode, antallMeldingerPerAarsakskode.get(aarsakskode));
+        for (Endringskoder endringskode : sorterteEndringskoder) {
+            List syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
             validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
-            if (Arrays.asList("01", "02", "39").contains(aarsakskode)) {
+            if (Arrays.asList(FOEDSELSMELDING, INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
                 nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger); //Bør jeg sette en øvre aldersgrense? åpent søk vil
             }
-            if ("91".equals(aarsakskode)) {
+            if (TILDELING_DNUMMER.equals(endringskode)) {
                 nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger);
             }
             //putt inn eksisterende identer i meldingene -  finn eksisterende identer, sjekk deres status quo, putt inn i meldingene
@@ -59,9 +64,8 @@ public class HodejegerService {
         return ids;
     }
     
-    private List<String> filtrerOgSorterBestilteAarsakskoder(Map<String, Integer> antallMeldingerPerAarsakskode) {
-        List<String> sorterteAarsakskoder = Arrays.asList(AarsakskoderTrans1.values()).stream().map(AarsakskoderTrans1::getAarsakskode).collect(Collectors.toList());
-        sorterteAarsakskoder.retainAll(antallMeldingerPerAarsakskode.keySet());
-        return sorterteAarsakskoder;
+    private List<Endringskoder> filtrerOgSorterBestilteEndringskoder(Set<String> endringskode) {
+        List<Endringskoder> sorterteEndringskoder = Arrays.asList(Endringskoder.values());
+        return sorterteEndringskoder.stream().filter(kode -> endringskode.contains(kode.getEndringskode())).collect(Collectors.toList());
     }
 }
