@@ -15,6 +15,7 @@ import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
 import commonReducer from './ducks/common'
 import bestillingStatusReducer from './ducks/bestillingStatus'
+import environmentsReducer from './ducks/environments'
 import history from './history'
 
 const locationMiddleware = store => next => action => {
@@ -55,7 +56,8 @@ const configureReduxStore = history => {
 		loading: loadingReducer,
 		errors: errorsReducer,
 		common: commonReducer,
-		bestillingStatus: bestillingStatusReducer
+		bestillingStatus: bestillingStatusReducer,
+		environments: environmentsReducer
 	})
 
 	return createStore(

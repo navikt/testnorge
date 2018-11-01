@@ -49,4 +49,9 @@ export default class TpsfService {
 		const endpoint = `${this.getTpsfUrl()}/gyldigadresse/tilfeldig?maxAntall=1${query}`
 		return Request.get(endpoint)
 	}
+
+	static getTilgjengligeMiljoer() {
+		const endpoint = `${this.getTpsfUrl()}/environments`
+		return Request.get(endpoint)
+	}
 }
