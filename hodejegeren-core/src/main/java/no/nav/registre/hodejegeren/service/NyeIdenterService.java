@@ -1,5 +1,6 @@
 package no.nav.registre.hodejegeren.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,11 @@ public class NyeIdenterService {
             return new ArrayList<>();
         }
         int antallNyeIdenter = meldinger.size();
-        List<String> identer = identPoolConsumer.hentNyeIdenter(HentIdenterRequest.builder().antall(antallNyeIdenter).identtype(identType).build());
+        HentIdenterRequest request = HentIdenterRequest.builder()
+                .antall(antallNyeIdenter)
+                .identtype(identType)
+                .foedtEtter(LocalDate.of(1900, 1, 1)).build();
+        List<String> identer = identPoolConsumer.hentNyeIdenter(request);
         for (int i = 0; i < antallNyeIdenter; i++) {
             ((RsMeldingstype1Felter) meldinger.get(i)).setFodselsdato(identer.get(i).substring(0, 6));
             ((RsMeldingstype1Felter) meldinger.get(i)).setPersonnummer(identer.get(i).substring(6));
