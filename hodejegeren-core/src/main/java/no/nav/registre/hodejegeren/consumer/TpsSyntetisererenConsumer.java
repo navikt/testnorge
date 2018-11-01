@@ -22,8 +22,8 @@ public class TpsSyntetisererenConsumer {
     
     private RestTemplate restTemplate = new RestTemplate();
     
-    public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String aarsakskode, Integer antallMeldinger) {
-        URI url = new UriTemplate(serverUrl + "/generate").expand(aarsakskode, antallMeldinger);
+    public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String endringskode, Integer antallMeldinger) {
+        URI url = new UriTemplate(serverUrl + "/generate").expand(endringskode, antallMeldinger);
         RequestEntity getRequest = RequestEntity.get(url).build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
