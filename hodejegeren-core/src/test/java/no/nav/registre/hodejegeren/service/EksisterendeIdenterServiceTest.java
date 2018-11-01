@@ -149,7 +149,10 @@ public class EksisterendeIdenterServiceTest {
     }
 
     private void opprettMultipleUgifteIdenterMock() throws IOException {
-        String fnrUmyndig = "10101051010";
+        LocalDate fodselsdato = LocalDate.now();
+        String year = String.valueOf(fodselsdato.getYear()).substring(2);
+
+        String fnrUmyndig = "1010" + year + "51010";
         identer.add(0, fnrUmyndig);
 
         statusQuo = new HashMap<>();
