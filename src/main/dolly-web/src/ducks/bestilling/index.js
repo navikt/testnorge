@@ -95,15 +95,6 @@ const bestillingFormatter = bestillingState => {
 	let final_values = {
 		antall: antall,
 		environments: environments,
-		// tpsf: {
-		// 	regdato: new Date(),
-		// 	identtype: identtype,
-		// 	...formatTpsfValues(AttributtListe, values)
-		// },
-		// sigrunRequest: {
-		// 	// ...formatSigrunValues(AttributtListe, values)
-		// }
-
 		...getValues(AttributtListe, values)
 	}
 

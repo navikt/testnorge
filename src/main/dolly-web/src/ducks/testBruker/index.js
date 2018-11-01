@@ -3,11 +3,6 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 import { createAction } from 'redux-actions'
 import _get from 'lodash/get'
 
-// export const GET_TESTBRUKERE_DATA = createAction('GET_TESTBRUKERE_DATA', identArray => {
-// 	return TpsfApi.getTestbrukere(identArray)
-// 	// SigrunApi.getTestbruker('17079226513')
-// })
-
 export const UPDATE_TESTBRUKER = createAction('UPDATE_TESTBRUKER', TpsfApi.updateTestbruker)
 
 const initialState = {

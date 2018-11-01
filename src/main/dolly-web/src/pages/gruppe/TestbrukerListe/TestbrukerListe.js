@@ -8,7 +8,7 @@ import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
 export default class Gruppe extends Component {
 	componentDidMount() {
 		if (this.props.testidenter.length) {
-			this.props.getTestbrukere()
+			this.props.getTPSFTestbrukere()
 			this.props.getSigrunTestbrukere()
 		}
 	}

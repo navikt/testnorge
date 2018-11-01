@@ -13,7 +13,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	getTestbrukere: () =>
+	getTPSFTestbrukere: () =>
 		dispatch(GET_TPSF_TESTBRUKERE(ownProps.testidenter.map(ident => ident.ident))),
 	getSigrunTestbrukere: () =>
 		dispatch(GET_SIGRUN_TESTBRUKERE(ownProps.testidenter.map(ident => ident.ident)))
