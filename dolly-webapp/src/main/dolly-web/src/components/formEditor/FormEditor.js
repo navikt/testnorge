@@ -17,9 +17,7 @@ export default class FormEditor extends PureComponent {
 				heading={<h3>{hovedKategori.navn}</h3>}
 				startOpen={!closePanels}
 			>
-				{console.log('items', items)}
 				{items.map((item, idx) => {
-					console.log('item', !item.items[0].hasNoValue)
 					return this.renderFieldContainer(item, idx, formikProps)
 				})}
 			</Panel>

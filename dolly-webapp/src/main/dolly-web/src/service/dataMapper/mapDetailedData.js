@@ -151,7 +151,7 @@ export default function mapDetailedData(tpsfData, sigrunData, bestillingData) {
 				return {
 					parent: 'inntekter',
 					id: data.personidentifikator,
-					label: 'ja',
+					label: data.inntektsaar,
 					value: [
 						{
 							id: 'aar',
