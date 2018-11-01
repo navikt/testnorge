@@ -22,10 +22,14 @@ export default class PersonInfoBlock extends PureComponent {
 
 				<div className={cssClassContent}>
 					{data.map((v, k) => {
+						const optionalClassName = cn('static-value', [
+							{ 'static-value_xlarge': v.width === 'xlarge' },
+							{ 'static-value_medium': v.width === 'medium' }
+						])
 						return (
 							v.value && (
 								<StaticValue
-									optionalClassName={v.longLabel ? 'static-value_double' : null}
+									optionalClassName={optionalClassName}
 									key={k}
 									header={v.label}
 									headerType="h4"
