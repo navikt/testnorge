@@ -11,6 +11,10 @@ import './Bestilling.less'
 export default class Bestilling extends PureComponent {
 	static propTypes = {}
 
+	componentDidMount() {
+		this.props.getEnvironments()
+	}
+
 	render() {
 		const {
 			values,
