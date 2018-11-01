@@ -1,5 +1,11 @@
 package no.nav.registre.hodejegeren.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
+
+import java.io.IOException;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -18,10 +24,10 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AarsakskodeTilFeltnavnMapperServiceTest {
+public class EndringskodeTilFeltnavnMapperServiceTest {
 
     @InjectMocks
-    private AarsakskodeTilFeltnavnMapperService aarsakskodeTilFeltnavnMapperService;
+    private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
 
     @Mock
     private TpsStatusQuoService tpsStatusQuoService;

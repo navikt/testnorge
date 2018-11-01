@@ -57,9 +57,9 @@ public class HodejegerServiceTest {
      */
     @Test
     public void puttIdenterIMeldingerOgLagre() {
-        final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
-        antallMeldingerPerAarsakskode.put("01", 3);
-        antallMeldingerPerAarsakskode.put("02", 4);
+        final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
+        antallMeldingerPerEndringskode.put("0110", 3);
+        antallMeldingerPerEndringskode.put("0211", 4);
         final long GRUPPE_ID = 123L;
         
         List<RsMeldingstype> treSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
@@ -68,10 +68,10 @@ public class HodejegerServiceTest {
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), eq(3))).thenReturn(treSkdmeldinger);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), eq(4))).thenReturn(fireSkdmeldinger);
         
-        final List<Long> ids = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(GRUPPE_ID, "t1", antallMeldingerPerAarsakskode));
+        final List<Long> ids = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(GRUPPE_ID, "t1", antallMeldingerPerEndringskode));
         
-        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("01", 3);
-        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("02", 4);
+        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("0110", 3);
+        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("0211", 4);
         
         verify(validationService).logAndRemoveInvalidMessages(treSkdmeldinger);
         verify(validationService).logAndRemoveInvalidMessages(fireSkdmeldinger);
@@ -86,13 +86,13 @@ public class HodejegerServiceTest {
     @Test
     public void sjekkAtNyeIdenterBlirKaltForRiktigeAarsakskoder() {
         final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
-        antallMeldingerPerAarsakskode.put("01", 1);
-        antallMeldingerPerAarsakskode.put("02", 1);
-        antallMeldingerPerAarsakskode.put("39", 1);
-        antallMeldingerPerAarsakskode.put("91", 1);
+        antallMeldingerPerAarsakskode.put("0110", 1);
+        antallMeldingerPerAarsakskode.put("0211", 1);
+        antallMeldingerPerAarsakskode.put("3910", 1);
+        antallMeldingerPerAarsakskode.put("9110", 1);
         
-        antallMeldingerPerAarsakskode.put("03", 1); //stikkprøve - aarsakskoder som ikke skal ha nye identer
-        antallMeldingerPerAarsakskode.put("04", 1); //stikkprøve - aarsakskoder som ikke skal ha nye identer
+        antallMeldingerPerAarsakskode.put("0310", 1); //stikkprøve - aarsakskoder som ikke skal ha nye identer
+        antallMeldingerPerAarsakskode.put("0410", 1); //stikkprøve - aarsakskoder som ikke skal ha nye identer
         
         List<RsMeldingstype> meldinger01 = Arrays.asList(new RsMeldingstype1Felter());
         List<RsMeldingstype> meldinger02 = Arrays.asList(new RsMeldingstype1Felter());
@@ -101,10 +101,10 @@ public class HodejegerServiceTest {
         List<RsMeldingstype> meldinger03 = Arrays.asList(new RsMeldingstype1Felter());
         List<RsMeldingstype> meldinger04 = Arrays.asList(new RsMeldingstype1Felter());
         
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("01", 1)).thenReturn(meldinger01);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("02", 1)).thenReturn(meldinger02);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("39", 1)).thenReturn(meldinger39);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("91", 1)).thenReturn(meldinger91);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("0110", 1)).thenReturn(meldinger01);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("0211", 1)).thenReturn(meldinger02);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("3910", 1)).thenReturn(meldinger39);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("9110", 1)).thenReturn(meldinger91);
         
         final String fodselsdato = "111111";
         final String personnummer = "22222";
@@ -134,7 +134,8 @@ public class HodejegerServiceTest {
     
     @Test
     public void shouldFiltrereOgSortereAarsakskodeneSomBestillesFraTpsSyntetisereren() {
-        List<String> requestedAarsakskoder = Arrays.asList("tull", "00", "0x", "100", "91", "51", "56", "81", "98", "85", "43", "32", "02", "01", "39", "06", "07", "10", "11", "14", "18");
+        List<String> requestedAarsakskoder = Arrays.asList("tull", "0010", "0x", "100", "9110", "5110", "5610", "8110", "9810",
+                "8510", "4310", "3210", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810");
         final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
         for (String requestedAarsakskode : requestedAarsakskoder) {
             antallMeldingerPerAarsakskode.put(requestedAarsakskode, 0);
@@ -145,7 +146,7 @@ public class HodejegerServiceTest {
         hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerAarsakskode));
         
         final InOrder inOrder = Mockito.inOrder(tpsSyntetisererenConsumer);
-        for (String aarsakskode : Arrays.asList("91", "02", "01", "39", "06", "07", "10", "11", "14", "18", "51", "56", "81", "98", "85", "43", "32")) {
+        for (String aarsakskode : Arrays.asList("9110", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810", "5110", "5610", "8110", "9810", "8510", "4310", "3210")) {
             inOrder.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(eq(aarsakskode), any());
         }
         inOrder.verifyNoMoreInteractions();

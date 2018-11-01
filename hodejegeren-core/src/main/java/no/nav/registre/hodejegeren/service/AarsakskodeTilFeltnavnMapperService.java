@@ -1,16 +1,3 @@
-package no.nav.registre.hodejegeren.service;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-@Service
-public class AarsakskodeTilFeltnavnMapperService {
 
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
