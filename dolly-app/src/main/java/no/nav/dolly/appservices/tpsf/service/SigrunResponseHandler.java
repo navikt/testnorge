@@ -10,12 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 public class SigrunResponseHandler {
 
     public String extractResponse(ResponseEntity<String> response) {
-        boolean contains_badresponse = !response.getBody().contains("400"); //pga. hacken til sigrun-stub blir hver sigrunReq lagt i en strengliste i body for responsen hver req ga på sitt endepunkt.
-        if (contains_badresponse) {
-            return "Ok";
-        } else {
-            log.error("{} failed", response.toString());
+        String responseBody = response.getBody();
+
+        if (responseBody == null || responseBody.contains("400")) {
             return "Failed";
+        } else {
+            return "Ok";
         }
     }
 }
