@@ -2,9 +2,9 @@ package no.nav.identpool.util;
 
 import java.time.LocalDate;
 
-import no.nav.identpool.ident.domain.Identtype;
-import no.nav.identpool.ident.domain.Kjoenn;
-import no.nav.identpool.ident.exception.UgyldigPersonidentifikatorException;
+import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.Kjoenn;
+import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 
 public final class PersonidentifikatorUtil {
 
