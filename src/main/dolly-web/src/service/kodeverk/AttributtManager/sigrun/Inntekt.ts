@@ -57,7 +57,11 @@ const AttributtListe: Attributt[] = [
 				path: 'inntektsaar',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
-				validation: yup.number().required('Tast inn et gyldig år')
+				validation: yup
+					.number()
+					.required('Tast inn et gyldig år')
+					// TODO: Henter inn gyldigFra fra kodeverk?
+					.min(2017, 'Inntektsår må være senere enn 2014')
 			}
 		]
 	},
@@ -100,7 +104,11 @@ const AttributtListe: Attributt[] = [
 				label: 'År',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
-				validation: yup.number().required('Tast inn et gyldig år')
+				validation: yup
+					.number()
+					.required('Tast inn et gyldig år')
+					// TODO: Henter inn gyldigFra fra kodeverk?
+					.min(2014, 'Inntektsår må være senere enn 2014')
 			}
 		]
 	}

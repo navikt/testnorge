@@ -15,7 +15,11 @@ export default class PersonInfoBlock extends PureComponent {
 			<div key={idx} className="person-info-block">
 				{/* {header && <h3>{header}</h3>} */}
 
-				<div className="person-info-block_content">
+				<div
+					className={
+						header ? 'person-info-block_content_bottom-border' : 'person-info-block_content'
+					}
+				>
 					{data.map((v, k) => {
 						return (
 							v.value && (

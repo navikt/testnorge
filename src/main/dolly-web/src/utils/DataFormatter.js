@@ -57,4 +57,7 @@ formatters.camelCaseToLabel = camelCase => {
 	return _startCase(camelCase)
 }
 
+formatters.kodeverkLabel = kodeverk => {
+	return kodeverk.substring(kodeverk.indexOf('-') + 1)
+}
 export default formatters
