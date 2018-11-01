@@ -15,10 +15,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AarsakskodeTilFeltnavnMapperServiceTest {
+public class EndringskodeTilFeltnavnMapperServiceTest {
     
     @InjectMocks
-    private AarsakskodeTilFeltnavnMapperService aarsakskodeTilFeltnavnMapperService;
+    private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
     
     @Mock
     private TpsStatusQuoService tpsStatusQuoService;
@@ -34,7 +34,7 @@ public class AarsakskodeTilFeltnavnMapperServiceTest {
      */
     @Test
     public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
-        aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(Endringskoder.NAVNEENDRING_FOERSTE, aksjonsKode, environment, fnr);
+        endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(Endringskoder.NAVNEENDRING_FOERSTE, aksjonsKode, environment, fnr);
         
         ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
         Mockito.verify(tpsStatusQuoService).getStatusQuo(eq(routineName), captor.capture(), eq(aksjonsKode), eq(environment), eq(fnr));
