@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AarsakskodeTilFeltnavnMapperService {
+public class EndringskodeTilFeltnavnMapperService {
     
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
