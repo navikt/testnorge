@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +18,6 @@ public class RsOpenAmResponse {
     private String miljoe;
     private String jira;
     private String status;
-    private int httpCode;
+    private HttpStatus httpCode;
     private String feilmelding;
 }

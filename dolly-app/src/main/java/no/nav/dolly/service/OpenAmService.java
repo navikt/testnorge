@@ -39,6 +39,7 @@ public class OpenAmService {
     private static final String ATTACHMENTS = "/attachments";
     private static final String BROWSE = "/browse";
 
+    private static final String FEIL = "FEIL";
     private static final String FEILMELDING = "En feil oppsto. Bestilling kan ikke utføres.";
     private static final String FEILMELDING_UKJENT_MILJOE = "Angitt miljø eksisterer ikke.";
 
@@ -57,15 +58,16 @@ public class OpenAmService {
             return RsOpenAmResponse.builder()
                     .miljoe(miljoe)
                     .status(attachmentResponse.getStatusCode().name())
+                    .httpCode(attachmentResponse.getStatusCode())
                     .jira(HttpStatus.OK.value() == attachmentResponse.getStatusCodeValue() ?
                             format("%s%s/%s", jiraConsumer.getBaseUrl(), BROWSE, createResponse.getBody().getKey()) : null)
                     .build();
         } catch (JiraException e) {
             return RsOpenAmResponse.builder()
                     .miljoe(miljoe)
-                    .status("FEIL")
+                    .status(FEIL)
                     .feilmelding(e.getStatusText())
-                    .httpCode(e.getRawStatusCode())
+                    .httpCode(e.getStatusCode())
                     .build();
         }
     }
@@ -92,8 +94,7 @@ public class OpenAmService {
             }
         }
         if (envId == null) {
-            log.error(FEILMELDING_UKJENT_MILJOE);
-            throw new JiraException(HttpStatus.INTERNAL_SERVER_ERROR, FEILMELDING_UKJENT_MILJOE);
+            throw new JiraException(HttpStatus.BAD_REQUEST, FEILMELDING_UKJENT_MILJOE);
         }
 
         String request = null;
