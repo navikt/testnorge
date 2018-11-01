@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import App from './App'
 import { clearAllErrors, applicationErrorSelector } from '~/ducks/errors'
-import { fetchCurrentBruker } from '~/ducks/bruker'
+import { getCurrentBruker } from '~/ducks/bruker'
 
 const mapStateToProps = state => ({
 	router: state.router, // Need to use this to tell mapStateToProps if url changes
@@ -13,7 +13,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	onRedirect: url => dispatch(push(url)),
-	fetchCurrentBruker: () => dispatch(fetchCurrentBruker()),
+	getCurrentBruker: () => dispatch(getCurrentBruker()),
 	clearAllErrors: () => dispatch(clearAllErrors())
 })
 

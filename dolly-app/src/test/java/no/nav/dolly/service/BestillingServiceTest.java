@@ -1,10 +1,10 @@
 package no.nav.dolly.service;
 
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingRepository;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,11 +18,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BestillingRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingServiceTest {
@@ -64,7 +64,7 @@ public class BestillingServiceTest {
     }
 
     @Test
-    public void fetchBestillingerByGruppeIdBlirKaltMedGittFunnetTestgruppeOgReturnererBestillinger(){
+    public void fetchBestillingerByGruppeIdBlirKaltMedGittFunnetTestgruppeOgReturnererBestillinger() {
         Testgruppe gruppe = Mockito.mock(Testgruppe.class);
         when(testgruppeService.fetchTestgruppeById(any())).thenReturn(gruppe);
 
@@ -73,7 +73,7 @@ public class BestillingServiceTest {
     }
 
     @Test
-    public void saveBestillingByGruppeIdAndAntallIdenterInkludererAlleMiljoerOgIdenterIBestilling(){
+    public void saveBestillingByGruppeIdAndAntallIdenterInkludererAlleMiljoerOgIdenterIBestilling() {
         long gruppeId = 1l;
         Testgruppe gruppe = Mockito.mock(Testgruppe.class);
         List<String> miljoer = Arrays.asList("a1", "b2", "c3", "d4");
