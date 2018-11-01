@@ -11,7 +11,8 @@ import './App.less'
 
 export default class App extends Component {
 	componentDidMount() {
-		ConfigService.fetchConfig().then(() => this.props.getCurrentBruker())
+		ConfigService.fetchConfig()
+		this.props.getCurrentBruker()
 	}
 
 	componentDidUpdate() {
@@ -22,6 +23,7 @@ export default class App extends Component {
 	render() {
 		const { brukerData, applicationError, clearAllErrors } = this.props
 
+		if (!ConfigService.verifyConfig()) return null
 		if (!brukerData) return <Loading label="laster dolly applikasjon" fullpage />
 
 		return (
