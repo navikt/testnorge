@@ -48,8 +48,10 @@ formatters.kjonnToStringBarn = (kjonn = '') => {
 }
 
 formatters.arrayToString = (array, separator = ',') => {
-	return array.reduce((accumulator, nextString) => {
-		return `${accumulator}${accumulator ? separator : ''} ${nextString.toUpperCase()}`
+	return array.reduce((accumulator, nextString, idx) => {
+		return `${accumulator}${accumulator ? separator : ''}${
+			idx === 0 ? '' : ' '
+		}${nextString.toUpperCase()}`
 	}, '')
 }
 
