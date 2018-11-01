@@ -36,7 +36,7 @@ import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 @ActiveProfiles("itest")
 public class GenererSyntetiskeMeldingerCompTest {
     
-    private List<String> expectedMeldingsIdsITpsf = Arrays.asList("120421016", "110156008");
+    private List<Long> expectedMeldingsIdsITpsf = Arrays.asList(120421016L, 110156008L);
     private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
     private long gruppeId = 123L;
     private Integer antallMeldinger = 2;
@@ -84,24 +84,25 @@ public class GenererSyntetiskeMeldingerCompTest {
     
     private void stubTpsSynt() {
         stubFor(get(urlPathEqualTo("/tpssynt/api/generate")) //?aarsakskode="+aarsakskodeFoedselsmelding+"&antallMeldinger="+antallMeldinger))
-                //                .withQueryParam("aarsakskode", equalTo(aarsakskodeFoedselsmelding)) //FIXME Vil ikke fungere! Hvorfor?
-                //                .withQueryParam("antallMeldinger", equalTo(antallMeldinger.toString()))
+                //.withQueryParam("aarsakskode", equalTo(aarsakskodeFoedselsmelding)) //FIXME Vil ikke fungere! Hvorfor? RestTemplate sine queryParams blir ikke registrert
+                //.withQueryParam("antallMeldinger", equalTo(antallMeldinger.toString()))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
                         .withBodyFile("comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json")));
     }
     
     private void stubTPSF(long gruppeId) {
-        stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/identer/" + gruppeId))
-                .withQueryParam("aarsakskode", containing("1")) //getForObject sine urivariables blir visst ikke registrert i wiremock, så derfor fungerer ikke withQueryParam-sjekken.
-                .withQueryParam("transaksjonstype", equalTo("1"))
-                .withBasicAuth(username, password)
-                .willReturn(okJson("[\n"
-                        + "  \"12042101557\",\n"
-                        + "  \"01015600248\"\n"
-                        + "]")));
+        //        stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/identer/" + gruppeId))
+        //                .withQueryParam("aarsakskode", containing("1")) //getForObject sine urivariables blir visst ikke registrert i wiremock, så derfor fungerer ikke withQueryParam-sjekken.
+        //                .withQueryParam("transaksjonstype", equalTo("1"))
+        //                .withBasicAuth(username, password)
+        //                .willReturn(okJson("[\n"
+        //                        + "  \"12042101557\",\n"
+        //                        + "  \"01015600248\"\n"
+        //                        + "]")));
         
-        stubFor(post("/tpsf/api/save/" + gruppeId)
+        stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
                 .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
+                .withBasicAuth(username, password)
                 .willReturn(okJson(expectedMeldingsIdsITpsf.toString())));
     }
     
