@@ -167,13 +167,14 @@ export default function mapDetailedData(tpsfData, sigrunData, bestillingData) {
 						{
 							id: 'tjeneste',
 							label: 'Tjeneste',
+							width: 'medium',
 							value: data.tjeneste
 						},
 
 						{
 							id: 'grunnlag',
 							label: 'Grunnlag',
-							longLabel: true,
+							width: 'xlarge',
 							value: Formatters.camelCaseToLabel(data.grunnlag)
 						}
 					]
