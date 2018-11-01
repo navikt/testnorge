@@ -8,8 +8,10 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -105,13 +107,21 @@ public class EksisterendeIdenterService {
                 continue;
             }
 
-            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(singleIdenterINorge, endringskode,
-                    (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
-                            || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
+            Map<String, String> statusQuoFraAarsakskodeIdent;
+            do {
+                statusQuoFraAarsakskodeIdent = getIdentWithStatus(singleIdenterINorge, endringskode,
+                        (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
+                                || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
+            }
+            while (ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(statusQuoFraAarsakskodeIdent.get(IDENT)), LocalDate.now()) < 18);
 
-            Map<String, String> statusQuoFraAarsakskodeIdentPartner = getIdentWithStatus(singleIdenterINorge, endringskode,
-                    (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
-                            || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
+            Map<String, String> statusQuoFraAarsakskodeIdentPartner;
+            do {
+                statusQuoFraAarsakskodeIdentPartner = getIdentWithStatus(singleIdenterINorge, endringskode,
+                        (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
+                                || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
+            }
+            while (ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(statusQuoFraAarsakskodeIdentPartner.get(IDENT)), LocalDate.now()) < 18);
 
             String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
             String identPartner = statusQuoFraAarsakskodeIdentPartner.get(IDENT);
@@ -291,5 +301,20 @@ public class EksisterendeIdenterService {
 
     private void oppdaterBolk(List<String> brukteIdenterIDenneBolken, List<String> identer) {
         brukteIdenterIDenneBolken.addAll(identer);
+    }
+
+    public LocalDate getFoedselsdatoFraFnr(String fnr) {
+        int fnrAarhundre = Integer.parseInt(fnr.substring(6, 9));
+        int day = Integer.parseInt(fnr.substring(0, 2));
+        int month = Integer.parseInt(fnr.substring(2, 4));
+        int year;
+
+        if (fnrAarhundre < 500) {
+            year = Integer.parseInt(19 + fnr.substring(4, 6));
+        } else {
+            year = Integer.parseInt(20 + fnr.substring(4, 6));
+        }
+
+        return LocalDate.of(year, month, day);
     }
 }

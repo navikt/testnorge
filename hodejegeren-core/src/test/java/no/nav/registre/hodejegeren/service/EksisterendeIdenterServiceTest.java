@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +81,7 @@ public class EksisterendeIdenterServiceTest {
     }
 
     @Test
-    public void shouldFindUgiftPersonAndCreateVigselsmelding() throws IOException {
+    public void shouldFindUgiftMyndigPersonAndCreateVigselsmelding() throws IOException {
         endringskode = Endringskoder.VIGSEL;
         meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
@@ -90,7 +91,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
 
-        Mockito.verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
+        Mockito.verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any());
         assertEquals(2, meldinger.size());
         assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
         assertEquals(fnr1.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
@@ -127,6 +128,14 @@ public class EksisterendeIdenterServiceTest {
         assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
+    @Test
+    public void shouldGetFoedselsdatoFromFnr() {
+        String fnr1 = "14041212345";
+        String fnr2 = "14041254321";
+        assertEquals(LocalDate.of(1912, 4, 14), eksisterendeIdenterService.getFoedselsdatoFraFnr(fnr1));
+        assertEquals(LocalDate.of(2012, 4, 14), eksisterendeIdenterService.getFoedselsdatoFraFnr(fnr2));
+    }
+
     private void opprettLevendeNordmennMock() throws IOException {
         statusQuo = new HashMap<>();
         statusQuo.put(DATO_DO, "010203");
@@ -140,6 +149,13 @@ public class EksisterendeIdenterServiceTest {
     }
 
     private void opprettMultipleUgifteIdenterMock() throws IOException {
+        String fnrUmyndig = "10101051010";
+        identer.add(0, fnrUmyndig);
+
+        statusQuo = new HashMap<>();
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnrUmyndig))).thenReturn(statusQuo);
+
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
