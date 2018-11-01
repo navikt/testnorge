@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.DNR;
 import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
+import static no.nav.registre.hodejegeren.service.Endringskoder.*;
 
 /**
  * Hoved-service i Hodejegeren. Her blir Tps Synt. kalt. Den genererer syntetiske skdmeldinger og returnerer dem til hodejegeren. Hodejegeren
@@ -61,17 +62,17 @@ public class HodejegerService {
         List<String> opprettedeIdenterITpsf = new ArrayList<>();
         opprettedeIdenterITpsf.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
                 genereringsOrdreRequest.getGruppeId(), Arrays.asList(
-                        AarsakskoderTrans1.FOEDSELSMELDING.getAarsakskode(),
-                        AarsakskoderTrans1.INNVANDRING.getAarsakskode(),
-                        AarsakskoderTrans1.FOEDSELSNUMMERKORREKSJON.getAarsakskode(),
-                        AarsakskoderTrans1.TILDELING_DNUMMER.getAarsakskode()),
+                        FOEDSELSMELDING.getAarsakskode(),
+                        INNVANDRING.getAarsakskode(),
+                        FOEDSELSNUMMERKORREKSJON.getAarsakskode(),
+                        TILDELING_DNUMMER.getAarsakskode()),
                 TRANSAKSJONSTYPE));
 
         List<String> doedeOgUtvandredeIdenter = new ArrayList<>();
         doedeOgUtvandredeIdenter.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
                 genereringsOrdreRequest.getGruppeId(), Arrays.asList(
-                        AarsakskoderTrans1.DOEDSMELDING.getAarsakskode(),
-                        AarsakskoderTrans1.UTVANDRING.getAarsakskode()),
+                        Endringskoder.DOEDSMELDING.getAarsakskode(),
+                        Endringskoder.UTVANDRING.getAarsakskode()),
                 TRANSAKSJONSTYPE));
 
         List<String> levendeIdenterINorge = new ArrayList<>();
@@ -82,7 +83,7 @@ public class HodejegerService {
         List<String> gifteIdenterINorge = new ArrayList<>();
         gifteIdenterINorge.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
                 genereringsOrdreRequest.getGruppeId(), Arrays.asList(
-                        AarsakskoderTrans1.VIGSEL.getAarsakskode()),
+                        Endringskoder.VIGSEL.getAarsakskode()),
                 TRANSAKSJONSTYPE));
         gifteIdenterINorge.removeAll(doedeOgUtvandredeIdenter);
         listerMedIdenter.put(GIFTE_IDENTER_I_NORGE, gifteIdenterINorge);
@@ -96,19 +97,16 @@ public class HodejegerService {
         listerMedIdenter.put(BRUKTE_IDENTER_I_DENNE_BOLKEN, brukteIdenterIDenneBolken);
 
 
-        for (String aarsakskode : sorterteAarsakskoder) {
-            List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(aarsakskode, antallMeldingerPerAarsakskode.get(aarsakskode));
+        for (Endringskoder endringskode : sorterteEndringskoder) {
+            List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
             validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
 
-            if (Arrays.asList(AarsakskoderTrans1.FOEDSELSMELDING.getAarsakskode(),
-                    AarsakskoderTrans1.INNVANDRING.getAarsakskode(),
-                    AarsakskoderTrans1.FOEDSELSNUMMERKORREKSJON.getAarsakskode())
-                    .contains(aarsakskode)) {
+            if (Arrays.asList(FOEDSELSMELDING, INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
                 nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger); //Bør jeg sette en øvre aldersgrense? åpent søk vil
-            } else if (AarsakskoderTrans1.TILDELING_DNUMMER.getAarsakskode().equals(aarsakskode)) {
+            } else if (TILDELING_DNUMMER.equals(endringskode)) {
                 nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger);
             } else {
-                eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, aarsakskode, antallMeldingerPerAarsakskode);
+                eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, antallMeldingerPerEndringskode);
             }
 
             ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
@@ -120,9 +118,8 @@ public class HodejegerService {
         return ids;
     }
 
-    private List<String> filtrerOgSorterBestilteAarsakskoder(Map<String, Integer> antallMeldingerPerAarsakskode) {
-        List<String> sorterteAarsakskoder = Arrays.asList(AarsakskoderTrans1.values()).stream().map(AarsakskoderTrans1::getAarsakskode).collect(Collectors.toList());
-        sorterteAarsakskoder.retainAll(antallMeldingerPerAarsakskode.keySet());
-        return sorterteAarsakskoder;
+    private List<Endringskoder> filtrerOgSorterBestilteEndringskoder(Set<String> endringskode) {
+        List<Endringskoder> sorterteEndringskoder = Arrays.asList(Endringskoder.values());
+        return sorterteEndringskoder.stream().filter(kode -> endringskode.contains(kode.getEndringskode())).collect(Collectors.toList());
     }
 }

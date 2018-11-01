@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.*;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

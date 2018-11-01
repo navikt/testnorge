@@ -1,11 +1,5 @@
 package no.nav.registre.hodejegeren.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-
-import java.io.IOException;
-import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -17,8 +11,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.util.List;
 
-import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.DATO_DO;
-import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.STATSBORGER;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
@@ -41,9 +35,9 @@ public class EndringskodeTilFeltnavnMapperServiceTest {
      */
     @Test
     public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
-        AarsakskoderTrans1 aarsakskoderTrans1 = AarsakskoderTrans1.NAVNEENDRING_FOERSTE;
+        Endringskoder endringskoder = Endringskoder.NAVNEENDRING_FOERSTE;
 
-        aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(aarsakskoderTrans1, fnr);
+        endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskoder, fnr);
 
         ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
         Mockito.verify(tpsStatusQuoService).getStatusQuo(eq(routineName), captor.capture(), eq(fnr));

@@ -11,9 +11,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-import static no.nav.registre.hodejegeren.service.AarsakskodeTilFeltnavnMapperService.*;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -23,7 +27,7 @@ import static org.mockito.Mockito.*;
 public class EksisterendeIdenterServiceTest {
 
     @Mock
-    AarsakskodeTilFeltnavnMapperService aarsakskodeTilFeltnavnMapperService;
+    EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
 
     @Mock
     Random rand;
@@ -34,8 +38,8 @@ public class EksisterendeIdenterServiceTest {
     private List<RsMeldingstype> meldinger;
     private List<String> identer;
     private List<String> brukteIdenter;
-    private String aarsakskode;
-    private Map<String, Integer> meldingerPerAarsakskode;
+    private Endringskoder endringskode;
+    private Map<String, Integer> meldingerPerEndringskode;
     private Map<String, String> statusQuo;
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
@@ -53,21 +57,21 @@ public class EksisterendeIdenterServiceTest {
 
         brukteIdenter = new ArrayList<>();
 
-        meldingerPerAarsakskode = new HashMap<>();
+        meldingerPerEndringskode = new HashMap<>();
     }
 
     @Test
     public void shouldFindLevendeNordmannAndUpdateBrukteIdenter() throws IOException {
-        aarsakskode = AarsakskoderTrans1.NAVNEENDRING_FOERSTE.getAarsakskode();
-        meldingerPerAarsakskode.put(aarsakskode, 1);
+        endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
+        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettLevendeNordmennMock();
 
-        eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, aarsakskode, meldingerPerAarsakskode);
+        eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
 
-        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
+        Mockito.verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
         assertEquals(1, meldinger.size());
         assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
 
@@ -77,16 +81,16 @@ public class EksisterendeIdenterServiceTest {
 
     @Test
     public void shouldFindUgiftPersonAndCreateVigselsmelding() throws IOException {
-        aarsakskode = AarsakskoderTrans1.VIGSEL.getAarsakskode();
-        meldingerPerAarsakskode.put(aarsakskode, 1);
+        endringskode = Endringskoder.VIGSEL;
+        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettMultipleUgifteIdenterMock();
 
-        eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, aarsakskode, meldingerPerAarsakskode);
+        eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
 
-        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
+        Mockito.verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
         assertEquals(2, meldinger.size());
         assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
         assertEquals(fnr1.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
@@ -95,31 +99,31 @@ public class EksisterendeIdenterServiceTest {
 
     @Test
     public void shouldFindGiftPersonAndCreateSkilsmissemelding() throws IOException {
-        aarsakskode = AarsakskoderTrans1.SKILSMISSE.getAarsakskode();
-        meldingerPerAarsakskode.put(aarsakskode, 1);
+        endringskode = Endringskoder.SKILSMISSE;
+        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettMultipleGifteIdenterMock();
 
-        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, aarsakskode, meldingerPerAarsakskode);
+        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
 
-        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
+        Mockito.verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
         assertEquals(2, meldinger.size());
     }
 
     @Test
     public void shouldFindPartnerOfDoedsmeldingIdent() throws IOException {
-        aarsakskode = AarsakskoderTrans1.DOEDSMELDING.getAarsakskode();
-        meldingerPerAarsakskode.put(aarsakskode, 1);
+        endringskode = Endringskoder.DOEDSMELDING;
+        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettEkteparMock();
 
-        eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, aarsakskode, meldingerPerAarsakskode);
+        eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
 
-        Mockito.verify(aarsakskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
+        Mockito.verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
         assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
@@ -127,42 +131,42 @@ public class EksisterendeIdenterServiceTest {
         statusQuo = new HashMap<>();
         statusQuo.put(DATO_DO, "010203");
         statusQuo.put(STATSBORGER, "NORGE");
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(DATO_DO, "");
         statusQuo.put(STATSBORGER, "NORGE");
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
     }
 
     private void opprettMultipleUgifteIdenterMock() throws IOException {
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr3))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr3))).thenReturn(statusQuo);
     }
 
     private void opprettMultipleGifteIdenterMock() throws IOException {
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         statusQuo.put(FNR_RELASJON, fnr3);
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         statusQuo.put(FNR_RELASJON, fnr2);
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr3))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr3))).thenReturn(statusQuo);
     }
 
     private void opprettEkteparMock() throws IOException {
@@ -171,13 +175,13 @@ public class EksisterendeIdenterServiceTest {
         statusQuo.put(DATO_DO, "");
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         statusQuo.put(FNR_RELASJON, fnr2);
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(STATSBORGER, "NORGE");
         statusQuo.put(DATO_DO, "");
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         statusQuo.put(FNR_RELASJON, fnr1);
-        when(aarsakskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
     }
 }
