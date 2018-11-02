@@ -47,6 +47,7 @@ export interface Attributt {
 	parent?: string
 	items?: Attributt[]
 	hasNoValue?: boolean
+	dependentOn?: string
 }
 
 // Attributt grupper

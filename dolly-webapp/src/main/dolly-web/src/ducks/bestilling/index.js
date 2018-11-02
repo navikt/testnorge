@@ -30,10 +30,10 @@ export const actions = createActions(
 )
 
 const initialState = {
+	antall: 1,
 	page: 0,
 	attributeIds: [],
 	environments: [],
-	antall: 0,
 	identtype: '',
 	values: {}
 }
@@ -144,7 +144,7 @@ const getValues = (attributeList, values) => {
 						verdi: temp.beloep
 					})),
 					inntektsaar: key,
-					tjeneste: attribute.id
+					tjeneste: 'Beregnet Skatt'
 				}
 			})
 

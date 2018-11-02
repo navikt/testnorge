@@ -5,6 +5,8 @@ import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
 import AutofillAddress from '~/components/autofillAddress/AutofillAddress'
+import _get from 'lodash/get'
+import _forOwn from 'lodash/forOwn'
 
 import './FormEditor.less'
 
@@ -27,6 +29,7 @@ export default class FormEditor extends PureComponent {
 	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = items[0].id === 'boadresse'
+
 		return (
 			<div className="subkategori" key={uniqueId}>
 				{!items[0].items && !items[0].hasNoValue && <h4>{subKategori.navn}</h4>}
@@ -35,7 +38,7 @@ export default class FormEditor extends PureComponent {
 						item =>
 							item.items
 								? FormEditorFieldArray(item, formikProps, this.renderFieldComponent)
-								: this.renderFieldComponent(item)
+								: this.renderFieldComponent(item, formikProps.values)
 					)}
 				</div>
 				{isAdresse && <AutofillAddress formikProps={formikProps} />}
@@ -43,14 +46,14 @@ export default class FormEditor extends PureComponent {
 		)
 	}
 
-	renderFieldComponent = item => {
+	renderFieldComponent = (item, valgteVerdier, parentObject) => {
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
-		const componentProps = this.extraComponentProps(item)
+		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 
 		return (
 			<Field
-				key={item.id}
+				key={item.key || item.id}
 				name={item.id}
 				label={item.label}
 				component={InputComponent}
@@ -60,9 +63,22 @@ export default class FormEditor extends PureComponent {
 		)
 	}
 
-	extraComponentProps = item => {
+	extraComponentProps = (item, valgteVerdier, parentObject) => {
 		switch (item.inputType) {
 			case 'select': {
+				if (item.dependentOn) {
+					if (parentObject) {
+						// Sjekk if item er avhengig av en valgt verdi
+						const { parentId, idx } = parentObject
+						const valgtVerdi = valgteVerdier[parentId][idx][item.dependentOn]
+						item.apiKodeverkId = valgtVerdi
+						// Override for force rerender av react select
+						item.key = valgtVerdi
+					} else {
+						// TODO: Implement når vi trenger avhengighet mellom flat attributter
+					}
+				}
+
 				if (item.apiKodeverkId) {
 					return {
 						loadOptions: () =>
@@ -88,6 +104,7 @@ export default class FormEditor extends PureComponent {
 
 	render() {
 		const { AttributtListe, FormikProps, ClosePanels } = this.props
+		// console.log('AttributtListe', FormikProps)
 
 		return AttributtListe.map(
 			hovedKategori =>

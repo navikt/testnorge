@@ -71,9 +71,8 @@ export const SubKategorier: KategoriTypes = {
 	},
 	Inntekt: {
 		id: 'inntekt',
-		navn: 'Register inntekt',
+		navn: 'Inntekt',
 		order: 30,
-		showInSummary: true,
-		singleChoice: true
+		showInSummary: true
 	}
 }
