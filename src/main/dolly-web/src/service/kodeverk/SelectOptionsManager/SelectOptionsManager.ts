@@ -14,6 +14,12 @@ const selectOptions = {
 		{ value: 'GIFT', label: 'GIFT' },
 		{ value: 'SKILT', label: 'SKILT' }
 		//{ value: null, label: 'Tilfeldig' }
+	],
+
+	// SIGRUN
+	inntektTjeneste: [
+		{ value: 'Beregnet skatt', label: 'Beregnet skatt' },
+		{ value: 'Summert skattegrunnlag', label: 'Summert skattegrunnlag' }
 	]
 }
 
