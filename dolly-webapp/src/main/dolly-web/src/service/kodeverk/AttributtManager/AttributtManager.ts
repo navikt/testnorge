@@ -121,6 +121,8 @@ export default class AttributtManager {
 		switch (item.inputType) {
 			case 'date':
 				return DataFormatter.formatDate(new Date())
+			case 'number':
+				return 0
 			default:
 				return ''
 		}

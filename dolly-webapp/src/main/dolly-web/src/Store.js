@@ -23,7 +23,7 @@ const locationMiddleware = store => next => action => {
 		const prevPath = store.getState().router.location.pathname
 		const nextPath = action.payload.location.pathname
 		if (prevPath === nextPath) {
-			console.log('cancel location change - same path')
+			// console.log('cancel location change - same path')
 			return false
 		}
 	}

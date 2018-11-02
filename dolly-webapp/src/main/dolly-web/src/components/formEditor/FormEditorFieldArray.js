@@ -39,7 +39,10 @@ const FormEditorFieldArray = ({ subKategori, items, id }, formikProps, renderFie
 														...item,
 														id: `${parentId}[${idx}]${item.id}`
 													}
-													return renderFieldComponent(fakeItem)
+													return renderFieldComponent(fakeItem, formikProps.values, {
+														parentId,
+														idx
+													})
 												})}
 												<Button
 													className="field-group-remove"
@@ -51,7 +54,7 @@ const FormEditorFieldArray = ({ subKategori, items, id }, formikProps, renderFie
 									)
 								})
 							) : (
-								<span>Ingen barn lagt til</span>
+								<span>Ingen verdi lagt til</span>
 							)}
 						</Fragment>
 					)
