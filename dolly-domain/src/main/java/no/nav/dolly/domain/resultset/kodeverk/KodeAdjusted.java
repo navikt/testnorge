@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.kodeverk;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,4 +16,6 @@ import lombok.Setter;
 public class KodeAdjusted {
     private String label;
     private String value;
+    private LocalDate gyldigFra;
+    private LocalDate gyldigTil;
 }
