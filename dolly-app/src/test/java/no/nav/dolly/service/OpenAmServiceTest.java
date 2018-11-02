@@ -1,5 +1,6 @@
 package no.nav.dolly.service;
 
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,8 +41,6 @@ public class OpenAmServiceTest {
     private static final String MILJOE1 = "t0";
     private static final String MILJOE2 = "t1";
 
-    private static final String FEIL = "FEIL";
-    private static final String OK = "OK";
     private static final String FEILMELDING1 = "En feil oppsto. Bestilling kan ikke utføres.";
     private static final String FEILMELDING2 = "Angitt miljø eksisterer ikke.";
 
@@ -75,23 +74,23 @@ public class OpenAmServiceTest {
     @Test
     public void opprettIdenterOK() {
         when(projectResponseEntity.getBody()).thenReturn(Project.builder()
-                .projects(Arrays.asList(Project.builder()
-                        .issuetypes(Arrays.asList(Issuetypes.builder()
+                .projects(singletonList(Project.builder()
+                        .issuetypes(singletonList(Issuetypes.builder()
                                 .fields(Fields.builder()
                                         .customfield_14811(Field.builder()
-                                                .allowedValues(Arrays.asList(AllowedValue.builder()
+                                                .allowedValues(singletonList(AllowedValue.builder()
                                                         .value(MILJOE1)
                                                         .id("1")
                                                         .build()))
                                                 .build())
                                         .project(Field.builder()
-                                                .allowedValues(Arrays.asList(AllowedValue.builder()
+                                                .allowedValues(singletonList(AllowedValue.builder()
                                                         .value("project1")
                                                         .id("1")
                                                         .build()))
                                                 .build())
                                         .issuetype(Field.builder()
-                                                .allowedValues(Arrays.asList(AllowedValue.builder()
+                                                .allowedValues(singletonList(AllowedValue.builder()
                                                         .value("issuetype1")
                                                         .id("1")
                                                         .build()))
@@ -125,8 +124,8 @@ public class OpenAmServiceTest {
     @Test
     public void opprettIdenterFeilerUfullstendigMetadata() {
         when(projectResponseEntity.getBody()).thenReturn(Project.builder()
-                .projects(Arrays.asList(Project.builder()
-                        .issuetypes(Arrays.asList(Issuetypes.builder()
+                .projects(singletonList(Project.builder()
+                        .issuetypes(singletonList(Issuetypes.builder()
                                 .fields(Fields.builder().build())
                                 .build()))
                         .build()))
@@ -144,8 +143,8 @@ public class OpenAmServiceTest {
     @Test
     public void opprettIdenterMetadataHarTommeFelter() {
         when(projectResponseEntity.getBody()).thenReturn(Project.builder()
-                .projects(Arrays.asList(Project.builder()
-                        .issuetypes(Arrays.asList(Issuetypes.builder()
+                .projects(singletonList(Project.builder()
+                        .issuetypes(singletonList(Issuetypes.builder()
                                 .fields(Fields.builder()
                                         .customfield_14811(Field.builder().build())
                                         .project(Field.builder().build())
@@ -167,23 +166,23 @@ public class OpenAmServiceTest {
     @Test
     public void opprettIdenterUgyldigMiljoe() {
         when(projectResponseEntity.getBody()).thenReturn(Project.builder()
-                .projects(Arrays.asList(Project.builder()
-                        .issuetypes(Arrays.asList(Issuetypes.builder()
+                .projects(singletonList(Project.builder()
+                        .issuetypes(singletonList(Issuetypes.builder()
                                 .fields(Fields.builder()
                                         .customfield_14811(Field.builder()
-                                                .allowedValues(Arrays.asList(AllowedValue.builder()
+                                                .allowedValues(singletonList(AllowedValue.builder()
                                                         .value(MILJOE2)
                                                         .id("1")
                                                         .build()))
                                                 .build())
                                         .project(Field.builder()
-                                                .allowedValues(Arrays.asList(AllowedValue.builder()
+                                                .allowedValues(singletonList(AllowedValue.builder()
                                                         .value("project1")
                                                         .id("1")
                                                         .build()))
                                                 .build())
                                         .issuetype(Field.builder()
-                                                .allowedValues(Arrays.asList(AllowedValue.builder()
+                                                .allowedValues(singletonList(AllowedValue.builder()
                                                         .value("issuetype1")
                                                         .id("1")
                                                         .build()))
@@ -208,7 +207,7 @@ public class OpenAmServiceTest {
         when(jiraConsumer.excuteRequest(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Project.class))).thenThrow(httpServerErrorException);
         when(httpServerErrorException.getStatusCode()).thenReturn(HttpStatus.UNAUTHORIZED);
 
-        RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(Arrays.asList(IDENT1, IDENT2), MILJOE1);
+        RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(singletonList(IDENT1, IDENT2), MILJOE1);
 
         verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
         assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.UNAUTHORIZED.value())));

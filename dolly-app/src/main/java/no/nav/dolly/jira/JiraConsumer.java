@@ -20,7 +20,8 @@ public class JiraConsumer {
     @Autowired
     private JiraProps jiraProps;
 
-    private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
 
     public <T> ResponseEntity<T> excuteRequest(String url, HttpMethod httpMethod, HttpEntity httpEntity, Class<T> responseClass) {
         return restTemplate.exchange(format("%s%s", getBaseUrl(), url), httpMethod, httpEntity, responseClass);
