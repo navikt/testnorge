@@ -103,20 +103,16 @@ public class EksisterendeIdenterService {
             }
 
             Map<String, String> statusQuoFraAarsakskodeIdent;
-            do {
-                statusQuoFraAarsakskodeIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
-                        (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
-                                || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
-            }
-            while (ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(statusQuoFraAarsakskodeIdent.get(IDENT)), LocalDate.now()) < 18);
+            statusQuoFraAarsakskodeIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
+                    (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
+                            || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode())
+                            || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
 
             Map<String, String> statusQuoFraAarsakskodeIdentPartner;
-            do {
-                statusQuoFraAarsakskodeIdentPartner = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
-                        (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
-                                || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
-            }
-            while (ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(statusQuoFraAarsakskodeIdentPartner.get(IDENT)), LocalDate.now()) < 18);
+            statusQuoFraAarsakskodeIdentPartner = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
+                    (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
+                            || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode())
+                            || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
 
             String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
             String identPartner = statusQuoFraAarsakskodeIdentPartner.get(IDENT);
@@ -246,9 +242,9 @@ public class EksisterendeIdenterService {
             int randomIndex = rand.nextInt(identer.size());
             randomIdent = identer.remove(randomIndex); // pass på remove
             statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
+            statusQuoFraAarsakskodeIdent.put(IDENT, randomIdent);
         }
         while (predicate.test(statusQuoFraAarsakskodeIdent));
-        statusQuoFraAarsakskodeIdent.put(IDENT, randomIdent);
         return statusQuoFraAarsakskodeIdent;
     }
 
