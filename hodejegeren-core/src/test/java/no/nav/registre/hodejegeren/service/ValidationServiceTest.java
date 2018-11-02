@@ -1,6 +1,7 @@
 package no.nav.registre.hodejegeren.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -34,5 +35,23 @@ public class ValidationServiceTest {
         assertEquals(1, listAppender.list.size());
         assertTrue(listAppender.list.get(0).toString().contains("Valideringsfeil for melding med aarsakskode null."
                 + " size must be between 0 and 2 for variabelen antallBarn=2421234."));
+    }
+    
+    /**
+     * Testscenario:
+     * Valideringen av syntetiske meldinger fra TPS Synt skal ignorere tomme meldinger (null) i responsen.
+     */
+    @Test
+    public void shouldRemoveNullMessages() {
+        RsMeldingstype1Felter melding1 = null;
+        RsMeldingstype1Felter melding2 = RsMeldingstype1Felter.builder().antallBarn("4").build();
+        
+        final ArrayList<RsMeldingstype> liste = new ArrayList<>();
+        liste.add(melding1);
+        liste.add(melding2);
+        validator.logAndRemoveInvalidMessages(liste);
+        
+        assertEquals(1, liste.size());
+        assertFalse(liste.contains(null));
     }
 }

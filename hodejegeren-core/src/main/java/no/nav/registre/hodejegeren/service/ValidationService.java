@@ -28,10 +28,14 @@ public class ValidationService {
         List<RsMeldingstype> removeTheseMessages = new ArrayList<>();
         
         for (RsMeldingstype melding : meldinger) {
-            final Set<ConstraintViolation<RsMeldingstype>> violations = validator.validate(melding);
-            if (!violations.isEmpty()) {
+            if (melding == null) {
                 removeTheseMessages.add(melding);
-                logValidation(melding, violations);
+            }else {
+                final Set<ConstraintViolation<RsMeldingstype>> violations = validator.validate(melding);
+                if (!violations.isEmpty()) {
+                    removeTheseMessages.add(melding);
+                    logValidation(melding, violations);
+                }
             }
         }
         meldinger.removeAll(removeTheseMessages);
