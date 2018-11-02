@@ -23,7 +23,6 @@ export default class SigrunService {
 		return Promise.all(promiseArr).then(resArr => {
 			let data = []
 			resArr.filter(res => res.data.length > 0).forEach(res => {
-				console.log(res)
 				data = data.concat(res.data)
 			})
 			return data

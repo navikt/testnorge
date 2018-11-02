@@ -39,7 +39,11 @@ const FormEditorFieldArray = ({ subKategori, items, id }, formikProps, renderFie
 														...item,
 														id: `${parentId}[${idx}]${item.id}`
 													}
-													return renderFieldComponent(fakeItem)
+													// console.log('s', idx)
+													return renderFieldComponent(fakeItem, formikProps.values, {
+														parentId,
+														idx
+													})
 												})}
 												<Button
 													className="field-group-remove"
