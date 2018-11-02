@@ -40,8 +40,8 @@ public class EksisterendeIdenterService {
         this.rand = rand;
     }
 
-    public void behandleEksisterendeIdenter(List<RsMeldingstype> meldinger, Map<String, List<String>> listerMedIdenter, Endringskoder endringskode,
-                                            String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
+    public void behandleEksisterendeIdenter(List<RsMeldingstype> meldinger, Map<String, List<String>> listerMedIdenter,
+                                            Endringskoder endringskode, String environment) {
 
         switch (endringskode) {
             case NAVNEENDRING_FOERSTE:
@@ -68,20 +68,20 @@ public class EksisterendeIdenterService {
             case ANNULERING_FLYTTING_ADRESSEENDRING:
             case INNFLYTTING_ANNEN_KOMMUNE:
                 behandleGenerellAarsak(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, environment, antallMeldingerPerAarsakskode);
+                        endringskode, environment);
                 break;
             case VIGSEL:
                 behandleVigsel(meldinger, listerMedIdenter.get(SINGLE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, environment, antallMeldingerPerAarsakskode);
+                        endringskode, environment);
                 break;
             case SEPERASJON:
             case SKILSMISSE:
                 behandleSeperasjonSkilsmisse(meldinger, listerMedIdenter.get(GIFTE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, environment, antallMeldingerPerAarsakskode);
+                        endringskode, environment);
                 break;
             case DOEDSMELDING:
                 behandleDoedsmelding(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, environment, antallMeldingerPerAarsakskode);
+                        endringskode, environment);
                 break;
             case KORREKSJON_FAMILIEOPPLYSNINGER:
                 break;
@@ -94,17 +94,12 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleVigsel(List<RsMeldingstype> meldinger, List<String> singleIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                               Endringskoder endringskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
+                               Endringskoder endringskode, String environment) {
 
-        for (int i = 0; i < antallMeldingerPerAarsakskode.get(endringskode.getEndringskode()); i++) {
+        for (int i = 0; i < meldinger.size(); i++) {
             if (i >= singleIdenterINorge.size() - 2) {
                 // ikke nok identer i singleIdenter-liste
                 break;
-            }
-
-            if (meldinger.get(i) == null) {
-                // fant ikke gyldig skdmelding på index i
-                continue;
             }
 
             Map<String, String> statusQuoFraAarsakskodeIdent;
@@ -141,13 +136,9 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleSeperasjonSkilsmisse(List<RsMeldingstype> meldinger, List<String> gifteIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                             Endringskoder endringskoder, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
-        for (int i = 0; i < antallMeldingerPerAarsakskode.get(endringskoder.getEndringskode()); i++) {
-            if (meldinger.get(i) == null) {
-                // fant ikke gyldig skdmelding på index i
-                continue;
-            }
-
+                                             Endringskoder endringskoder, String environment) {
+        int antallMeldingerFoerKjoering = meldinger.size();
+        for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
             Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(gifteIdenterINorge, endringskoder, environment,
                     (Map<String, String> a) -> !a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode()));
 
@@ -180,14 +171,9 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleDoedsmelding(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                     Endringskoder endringskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
-        for (int i = 0; i < antallMeldingerPerAarsakskode.get(endringskode.getEndringskode()); i++) {
-
-            if (meldinger.get(i) == null) {
-                // fant ikke gyldig skdmelding på index i
-                continue;
-            }
-
+                                     Endringskoder endringskode, String environment) {
+        int antallMeldingerFoerKjoering = meldinger.size();
+        for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
             Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
 
@@ -235,14 +221,8 @@ public class EksisterendeIdenterService {
 
 
     public void behandleGenerellAarsak(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                       Endringskoder endringskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
-        for (int i = 0; i < antallMeldingerPerAarsakskode.get(endringskode.getEndringskode()); i++) {
-
-            if (meldinger.get(i) == null) {
-                // fant ikke gyldig skdmelding på index i
-                continue;
-            }
-
+                                       Endringskoder endringskode, String environment) {
+        for (int i = 0; i < meldinger.size(); i++) {
             Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
 

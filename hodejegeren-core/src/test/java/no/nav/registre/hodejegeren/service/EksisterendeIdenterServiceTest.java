@@ -75,7 +75,7 @@ public class EksisterendeIdenterServiceTest {
 
         opprettLevendeNordmennMock();
 
-        eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, endringskode, environment, meldingerPerEndringskode);
+        eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, endringskode, environment);
 
         verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(1, meldinger.size());
@@ -99,7 +99,7 @@ public class EksisterendeIdenterServiceTest {
 
         opprettMultipleUgifteIdenterMock();
 
-        eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment, meldingerPerEndringskode);
+        eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment);
 
         verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
@@ -122,7 +122,7 @@ public class EksisterendeIdenterServiceTest {
 
         opprettMultipleGifteIdenterMock();
 
-        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, endringskode, environment, meldingerPerEndringskode);
+        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, endringskode, environment);
 
         verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
@@ -142,7 +142,7 @@ public class EksisterendeIdenterServiceTest {
 
         opprettEkteparMock();
 
-        eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, endringskode, environment, meldingerPerEndringskode);
+        eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, endringskode, environment);
 
         verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
