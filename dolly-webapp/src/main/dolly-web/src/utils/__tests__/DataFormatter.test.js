@@ -4,7 +4,7 @@ import { FORMERR } from 'dns'
 describe('DataFormatter.js', () => {
 	describe('formatIdentNr', () => {
 		const testNr = '12345612345'
-		const res = '123456 12345'
+		const res = '12345612345'
 
 		it('should format ident nr to correct format: ###### #####', () => {
 			expect(Formatter.formatIdentNr(testNr)).toBe(res)

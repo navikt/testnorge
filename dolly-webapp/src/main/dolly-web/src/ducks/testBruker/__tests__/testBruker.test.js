@@ -17,15 +17,31 @@ describe('testBrukerReducer', () => {
 		expect(testBruker({}, action)).toEqual(initialState)
 	})
 
-	it('should add items on success', () => {
+	it('should add tpsf items on success', () => {
 		const testdata = 'test'
 		const action = {
-			type: 'GET_TESTBRUKERE_SUCCESS',
+			type: 'GET_TPSF_TESTBRUKERE_SUCCESS',
 			payload: { data: testdata }
 		}
 
 		const res = {
-			items: testdata
+			items: {
+				tpsf: testdata
+			}
+		}
+
+		expect(testBruker({}, action)).toEqual(res)
+	})
+
+	it('should add sigrun items on success', () => {
+		const testdata = 'test'
+		const action = {
+			type: 'GET_SIGRUN_TESTBRUKERE_SUCCESS',
+			payload: testdata
+		}
+
+		const res = {
+			items: { sigrun: testdata }
 		}
 
 		expect(testBruker({}, action)).toEqual(res)
