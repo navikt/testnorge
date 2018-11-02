@@ -132,6 +132,7 @@ const getValues = (attributeList, values) => {
 				}, item)
 			})
 		}
+
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupedByInntektsaar = _groupBy(value, 'inntektsaar')
 			const keys = Object.keys(groupedByInntektsaar)
@@ -144,7 +145,7 @@ const getValues = (attributeList, values) => {
 						verdi: temp.beloep
 					})),
 					inntektsaar: key,
-					tjeneste: 'Beregnet Skatt'
+					tjeneste: current[0].tjeneste
 				}
 			})
 
@@ -161,5 +162,5 @@ const getValues = (attributeList, values) => {
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { bestilling } = getState()
 	const values = bestillingFormatter(bestilling)
-	return dispatch(actions.postBestilling(gruppeId, values))
+	// return dispatch(actions.postBestilling(gruppeId, values))
 }
