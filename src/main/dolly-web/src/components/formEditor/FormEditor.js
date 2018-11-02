@@ -5,14 +5,11 @@ import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
 import AutofillAddress from '~/components/autofillAddress/AutofillAddress'
-import _get from 'lodash/get'
-import _forOwn from 'lodash/forOwn'
 
 import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
-		// !item.items[0].hasNoValue &&
 		return (
 			<Panel
 				key={hovedKategori.id}
@@ -32,7 +29,7 @@ export default class FormEditor extends PureComponent {
 
 		return (
 			<div className="subkategori" key={uniqueId}>
-				{!items[0].items && !items[0].hasNoValue && <h4>{subKategori.navn}</h4>}
+				<h4>{subKategori.navn}</h4>
 				<div className="subkategori-field-group">
 					{items.map(
 						item =>
@@ -104,13 +101,10 @@ export default class FormEditor extends PureComponent {
 
 	render() {
 		const { AttributtListe, FormikProps, ClosePanels } = this.props
-		// console.log('AttributtListe', FormikProps)
 
-		return AttributtListe.map(
-			hovedKategori =>
-				// Ikke vis kategori som har default ikke-valgt radio button
-				!hovedKategori.items[0].items[0].hasNoValue &&
-				this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
+		return AttributtListe.map(hovedKategori =>
+			// Ikke vis kategori som har default ikke-valgt radio button
+			this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
 		)
 	}
 }

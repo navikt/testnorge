@@ -22,7 +22,7 @@ export default class StaticValue extends PureComponent {
 		if (format) _value = format(value)
 
 		return (
-			<div className={optionalClassName ? optionalClassName : 'static-value'}>
+			<div className={optionalClassName || 'static-value'}>
 				{React.createElement(headerType, null, [header])}
 				<span>{_value}</span>
 			</div>
