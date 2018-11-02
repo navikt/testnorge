@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -45,6 +46,7 @@ public class FoedselServiceTest {
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
+        assertEquals(levendeIdenterINorge.get(0), foedselService.findMoedre(1, levendeIdenterINorge).get(0));
         assertTrue(foedselService.findMoedre(1, levendeIdenterINorge).contains(levendeIdenterINorge.get(0)));
     }
 

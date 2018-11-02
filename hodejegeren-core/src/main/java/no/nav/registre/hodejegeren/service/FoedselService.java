@@ -1,5 +1,7 @@
 package no.nav.registre.hodejegeren.service;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import no.nav.registre.hodejegeren.consumer.IdentPoolConsumer;
 import no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Random;
 
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class FoedselService {
 
     @Autowired
@@ -20,6 +24,12 @@ public class FoedselService {
 
     @Autowired
     private EksisterendeIdenterService eksisterendeIdenterService;
+
+    private Random rand;
+
+    public FoedselService (Random rand) {
+        this.rand = rand;
+    }
 
     public List<String> behandleFoedselsmeldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge) {
         if (meldinger == null) {
@@ -48,7 +58,6 @@ public class FoedselService {
     }
 
     public List<String> findMoedre(int antallNyeIdenter, List<String> levendeIdenterINorge) {
-        Random rand = new Random();
         List<String> moedre = new ArrayList<>();
 
         for (int i = 0; i < antallNyeIdenter; i++) {
