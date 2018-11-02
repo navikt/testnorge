@@ -1,5 +1,7 @@
 import dateFnsFormat from 'date-fns/format'
 import dateFnsParse from 'date-fns/parse'
+import _startCase from 'lodash/startCase'
+
 import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
 
 const formatters = {}
@@ -10,7 +12,7 @@ formatters.formatIdentNr = ident => {
 	if (!ident) return ident
 	const birth = ident.substring(0, 6)
 	const personnummer = ident.substring(6, 11)
-	return `${birth} ${personnummer}`
+	return `${birth}${personnummer}`
 }
 
 formatters.formatAlder = (alder, dodsdato) => {
@@ -46,9 +48,18 @@ formatters.kjonnToStringBarn = (kjonn = '') => {
 }
 
 formatters.arrayToString = (array, separator = ',') => {
-	return array.reduce((accumulator, nextString) => {
-		return `${accumulator}${accumulator ? separator : ''} ${nextString.toUpperCase()}`
+	return array.reduce((accumulator, nextString, idx) => {
+		return `${accumulator}${accumulator ? separator : ''}${
+			idx === 0 ? '' : ' '
+		}${nextString.toUpperCase()}`
 	}, '')
 }
 
+formatters.camelCaseToLabel = camelCase => {
+	return _startCase(camelCase)
+}
+
+formatters.kodeverkLabel = kodeverk => {
+	return kodeverk.substring(kodeverk.indexOf('-') + 1)
+}
 export default formatters

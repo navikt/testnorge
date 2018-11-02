@@ -23,6 +23,7 @@ export interface Kategori {
 	navn: string
 	order: number
 	showInSummary?: boolean
+	singleChoice?: boolean
 }
 
 export interface KategoriTypes {
@@ -31,6 +32,7 @@ export interface KategoriTypes {
 
 export interface Attributt {
 	hovedKategori: Kategori
+	size?: String
 	subKategori: Kategori
 	id: string
 	path?: string
@@ -44,6 +46,7 @@ export interface Attributt {
 	kanRedigeres?: boolean
 	parent?: string
 	items?: Attributt[]
+	dependentOn?: string
 }
 
 // Attributt grupper

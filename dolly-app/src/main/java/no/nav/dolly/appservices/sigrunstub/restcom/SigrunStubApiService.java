@@ -1,5 +1,6 @@
 package no.nav.dolly.appservices.sigrunstub.restcom;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +23,7 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 @Service
 public class SigrunStubApiService {
 
-    private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/testdata/opprett";
+    private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/testdata/opprettBolk";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -33,7 +34,7 @@ public class SigrunStubApiService {
     @Autowired
     ProvidersProps providersProps;
 
-    public ResponseEntity<String> createSkattegrunnlag(RsSigrunnOpprettSkattegrunnlag request) {
+    public ResponseEntity<String> createSkattegrunnlag(List<RsSigrunnOpprettSkattegrunnlag> request) {
 
         StringBuilder sbUrl = new StringBuilder().append(providersProps.getSigrun().getUrl()).append(SIGRUN_STUB_OPPRETT_GRUNNLAG);
         try {

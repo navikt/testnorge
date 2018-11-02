@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +57,7 @@ public class SigrunStubApiServiceTest {
 
     @Test
     public void createSkattegrunnlag() {
-        sigrunStubApiService.createSkattegrunnlag(new RsSigrunnOpprettSkattegrunnlag());
+        sigrunStubApiService.createSkattegrunnlag(Arrays.asList(new RsSigrunnOpprettSkattegrunnlag()));
 
         ArgumentCaptor<HttpEntity> argCap = ArgumentCaptor.forClass(HttpEntity.class);
         verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argCap.capture(), eq(String.class));
@@ -71,6 +72,6 @@ public class SigrunStubApiServiceTest {
     public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() {
         HttpClientErrorException clientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST, "OK");
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class))).thenThrow(clientErrorException);
-        sigrunStubApiService.createSkattegrunnlag(new RsSigrunnOpprettSkattegrunnlag());
+        sigrunStubApiService.createSkattegrunnlag(Arrays.asList(new RsSigrunnOpprettSkattegrunnlag()));
     }
 }

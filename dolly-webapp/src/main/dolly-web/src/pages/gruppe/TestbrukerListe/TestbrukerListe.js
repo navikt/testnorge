@@ -3,15 +3,25 @@ import Loading from '~/components/loading/Loading'
 import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
-import PersonDetaljer from '../PersonDetaljer/PersonDetaljer'
+import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
 
 export default class Gruppe extends Component {
 	componentDidMount() {
-		if (this.props.testidenter.length) this.props.getTestbrukere()
+		if (this.props.testidenter.length) {
+			this.props.getTPSFTestbrukere()
+			this.props.getSigrunTestbrukere()
+		}
 	}
 
 	render() {
-		const { isFetching, testidenter, testbrukere, editTestbruker, searchActive } = this.props
+		const {
+			isFetching,
+			testidenter,
+			testbrukere,
+			headers,
+			editTestbruker,
+			searchActive
+		} = this.props
 
 		if (testidenter.length <= 0)
 			return (
@@ -28,11 +38,9 @@ export default class Gruppe extends Component {
 					) : (
 						<Table>
 							<Table.Header>
-								<Table.Column width="15" value="ID" />
-								<Table.Column width="15" value="ID-type" />
-								<Table.Column width="30" value="Navn" />
-								<Table.Column width="20" value="Kjønn" />
-								<Table.Column width="10" value="Alder" />
+								{headers.map((header, idx) => (
+									<Table.Column key={idx} width={header.width} value={header.label} />
+								))}
 							</Table.Header>
 
 							{isFetching ? (
@@ -40,17 +48,20 @@ export default class Gruppe extends Component {
 							) : (
 								testbrukere &&
 								testbrukere.map((bruker, idx) => {
+									// Note: idx=0 of bruker (data) is parsed to be ID
 									return (
 										<Table.Row
 											key={idx}
-											expandComponent={<PersonDetaljer brukerData={bruker.data} />}
+											expandComponent={<PersonDetaljerConnector personId={bruker[0]} />}
 											// editAction={() => editTestbruker(bruker.id)}
 										>
-											<Table.Column width="15" value={Formatters.formatIdentNr(bruker.id)} />
-											<Table.Column width="15" value={bruker.idType} />
-											<Table.Column width="30" value={bruker.navn} />
-											<Table.Column width="20" value={bruker.kjonn} />
-											<Table.Column width="10" value={bruker.alder} />
+											{bruker.map((dataCell, cellIdx) => (
+												<Table.Column
+													key={cellIdx}
+													width={headers[cellIdx].width}
+													value={dataCell}
+												/>
+											))}
 										</Table.Row>
 									)
 								})
