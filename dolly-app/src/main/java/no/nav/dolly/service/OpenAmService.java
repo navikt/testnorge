@@ -69,6 +69,7 @@ public class OpenAmService {
                     .httpCode(e.getStatusCode().value())
                     .build();
         } catch (HttpStatusCodeException e) {
+            log.error(e.getMessage(), e);
             return RsOpenAmResponse.builder()
                     .miljoe(miljoe)
                     .status(e.getStatusCode())

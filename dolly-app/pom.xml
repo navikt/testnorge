@@ -120,13 +120,11 @@
         <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
-            <version>1.5.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.vaadin.external.google</groupId>
             <artifactId>android-json</artifactId>
-            <version>0.0.20131108.vaadin1</version>
         </dependency>
     </dependencies>
 
