@@ -30,6 +30,7 @@ public class KodeverkMapperTest {
     private static final LocalDate STANDARD_GYLDIGTIL = LocalDate.of(1,1,2);
     private static final String STANDARD_KODEVERK_NAVN = "navn";
     private static final String KODE_BOKMAAL = "nb";
+    
     private KodeverkMapper kodeverkMapper = new KodeverkMapper();
     private Map<String, List<Betydning>> betydninger = new HashMap<>();
     private Map<String, Beskrivelse> beskrivelser = new HashMap<>();
