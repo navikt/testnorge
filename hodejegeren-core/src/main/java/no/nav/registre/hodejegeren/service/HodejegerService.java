@@ -38,6 +38,9 @@ public class HodejegerService {
     private EksisterendeIdenterService eksisterendeIdenterService;
 
     @Autowired
+    private FoedselService foedselService;
+
+    @Autowired
     private TpsfConsumer tpsfConsumer;
 
     @Autowired
@@ -101,8 +104,10 @@ public class HodejegerService {
             List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
             validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
 
-            if (Arrays.asList(FOEDSELSMELDING, INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
+            if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
                 nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger); //Bør jeg sette en øvre aldersgrense? åpent søk vil
+            } else if (FOEDSELSMELDING.equals(endringskode)) {
+                foedselService.behandleFoedselsmeldinger(FNR, syntetiserteSkdmeldinger, levendeIdenterINorge);
             } else if (TILDELING_DNUMMER.equals(endringskode)) {
                 nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger);
             } else {

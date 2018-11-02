@@ -304,12 +304,12 @@ public class EksisterendeIdenterService {
     }
 
     public LocalDate getFoedselsdatoFraFnr(String fnr) {
-        int fnrAarhundre = Integer.parseInt(fnr.substring(6, 9));
+        int pnrAarhundreKode = Integer.parseInt(fnr.substring(6, 9));
         int day = Integer.parseInt(fnr.substring(0, 2));
         int month = Integer.parseInt(fnr.substring(2, 4));
         int year;
 
-        if (fnrAarhundre < 500) {
+        if (pnrAarhundreKode < 500) {
             year = Integer.parseInt(19 + fnr.substring(4, 6));
         } else {
             year = Integer.parseInt(20 + fnr.substring(4, 6));

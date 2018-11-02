@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -28,13 +27,13 @@ import static org.mockito.Mockito.*;
 public class EksisterendeIdenterServiceTest {
 
     @Mock
-    EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
+    private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
 
     @Mock
-    Random rand;
+    private Random rand;
 
     @InjectMocks
-    EksisterendeIdenterService eksisterendeIdenterService;
+    private EksisterendeIdenterService eksisterendeIdenterService;
 
     private List<RsMeldingstype> meldinger;
     private List<String> identer;
@@ -72,7 +71,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
 
-        Mockito.verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
+        verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
         assertEquals(1, meldinger.size());
         assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
 
@@ -91,7 +90,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
 
-        Mockito.verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any());
+        verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any());
         assertEquals(2, meldinger.size());
         assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
         assertEquals(fnr1.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
@@ -109,7 +108,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
 
-        Mockito.verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
+        verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
         assertEquals(2, meldinger.size());
     }
 
@@ -124,7 +123,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
 
-        Mockito.verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
+        verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
         assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
