@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;

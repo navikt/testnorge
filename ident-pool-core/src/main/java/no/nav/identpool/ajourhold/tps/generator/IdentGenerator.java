@@ -99,7 +99,7 @@ public final class IdentGenerator {
             return IntStream.range(500, 1000)
                     .map(i -> 500 + (1000 - 1 - i));
         } else {
-            throw new IllegalStateException(String.format("Fødelsår må være mellom 1 og 2039, fikk %d", year));
+            throw new IllegalStateException(String.format("Fødelsår må være mellom 2 og 2039, fikk %d", year));
         }
     }
 

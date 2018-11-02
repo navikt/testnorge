@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class IdentDBService {
     private final IdentRepository identRepository;
     private final IdentDistribusjon identDistribusjon;
 
-    private LocalDate current;
+    LocalDate current;
 
     private int sjekketITps;
 
@@ -46,7 +47,7 @@ public class IdentDBService {
         return sjekketITps;
     }
 
-    private void checkAndGenerateForDate(LocalDate date, Identtype type) {
+    void checkAndGenerateForDate(LocalDate date, Identtype type) {
         for (int i = 0; i < 3; ++i) {
             if (criticalForYear(date.getYear(), type)) {
                 generateForYear(date.getYear(), type);
@@ -56,7 +57,7 @@ public class IdentDBService {
         }
     }
 
-    private void generateForYear(int year, Identtype type) {
+    void generateForYear(int year, Identtype type) {
 
         LocalDate firstDate = LocalDate.of(year, 1, 1);
         LocalDate lastDate = LocalDate.of(year + 1, 1, 1);
@@ -87,7 +88,7 @@ public class IdentDBService {
         return arrayList;
     }
 
-    public void lagre(Map<String, Boolean> identerIBruk) {
+    private void lagre(Map<String, Boolean> identerIBruk) {
         List<String> rekvirert = identerIBruk.entrySet().stream()
                 .filter(Map.Entry::getValue)
                 .map(Map.Entry::getKey)
