@@ -39,7 +39,6 @@ const FormEditorFieldArray = ({ subKategori, items, id }, formikProps, renderFie
 														...item,
 														id: `${parentId}[${idx}]${item.id}`
 													}
-													// console.log('s', idx)
 													return renderFieldComponent(fakeItem, formikProps.values, {
 														parentId,
 														idx
