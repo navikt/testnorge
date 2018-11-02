@@ -38,9 +38,8 @@ public class EksisterendeIdenterServiceTest {
     private List<RsMeldingstype> meldinger;
     private List<String> identer;
     private List<String> brukteIdenter;
-    private Endringskoder endringskode;
+    private String environment;
     private Map<String, Integer> meldingerPerEndringskode;
-    private Map<String, String> statusQuo;
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
     private String fnr3 = "03030303030";
@@ -57,21 +56,28 @@ public class EksisterendeIdenterServiceTest {
 
         brukteIdenter = new ArrayList<>();
 
+        environment = "t1";
+
         meldingerPerEndringskode = new HashMap<>();
     }
 
+    /**
+     * Testscenario: HVIS det skal opprettes melding for en årsak som ikke krever spesiell behandling, skal systemet
+     * i metoden {@link EksisterendeIdenterService#behandleGenerellAarsak}, finne en person som er i live og norsk
+     * statsborger. Systemet skal legge denne personen inn i listen av brukte identer.
+     */
     @Test
     public void shouldFindLevendeNordmannAndUpdateBrukteIdenter() throws IOException {
-        endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
+        Endringskoder endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
         meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettLevendeNordmennMock();
 
-        eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
+        eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, endringskode, environment, meldingerPerEndringskode);
 
-        verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
+        verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(1, meldinger.size());
         assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
 
@@ -79,51 +85,66 @@ public class EksisterendeIdenterServiceTest {
         assertEquals(fnr2, brukteIdenter.get(0));
     }
 
+    /**
+     * Testscenario: HVIS det skal opprettes vigselsmelding, skal systemet i metoden {@link EksisterendeIdenterService#behandleVigsel},
+     * finne to personer som er ugifte, og myndige, og legge vigselsmelding på disse, og påse at hver av identene legges inn
+     * som relasjon til den andre.
+     */
     @Test
     public void shouldFindUgiftMyndigPersonAndCreateVigselsmelding() throws IOException {
-        endringskode = Endringskoder.VIGSEL;
+        Endringskoder endringskode = Endringskoder.VIGSEL;
         meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettMultipleUgifteIdenterMock();
 
-        eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
+        eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment, meldingerPerEndringskode);
 
-        verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any());
+        verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
         assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
         assertEquals(fnr1.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
     }
 
 
+    /**
+     * Testscenario: HVIS det skal opprettes skilsmisse-/seperasjonsmelding, skal systemet i metoden
+     * {@link EksisterendeIdenterService#behandleSeperasjonSkilsmisse}, finne en gift person, og legge
+     * skilsmisse-/seperasjonsmelding på denne, og påse at tilsvarende melding legges på partner.
+     */
     @Test
     public void shouldFindGiftPersonAndCreateSkilsmissemelding() throws IOException {
-        endringskode = Endringskoder.SKILSMISSE;
+        Endringskoder endringskode = Endringskoder.SKILSMISSE;
         meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettMultipleGifteIdenterMock();
 
-        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
+        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, endringskode, environment, meldingerPerEndringskode);
 
-        verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any());
+        verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
     }
 
+    /**
+     * Testscenario: HVIS det skal opprettes dødsmelding, skal systemet i metoden {@link EksisterendeIdenterService#behandleDoedsmelding},
+     * finne en levende norsk statsborger, og legge dødsmelding på denne. Systemet skal i tilfeller der personen er gift,
+     * sette partner til enke/enkemann.
+     */
     @Test
-    public void shouldFindPartnerOfDoedsmeldingIdent() throws IOException {
-        endringskode = Endringskoder.DOEDSMELDING;
+    public void shouldFindPartnerOfDoedsmeldingIdentAndCreateSivilstandendringsmelding() throws IOException {
+        Endringskoder endringskode = Endringskoder.DOEDSMELDING;
         meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettEkteparMock();
 
-        eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, endringskode, meldingerPerEndringskode);
+        eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, endringskode, environment, meldingerPerEndringskode);
 
-        verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any());
+        verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
@@ -136,15 +157,15 @@ public class EksisterendeIdenterServiceTest {
     }
 
     private void opprettLevendeNordmennMock() throws IOException {
-        statusQuo = new HashMap<>();
+        Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(DATO_DO, "010203");
         statusQuo.put(STATSBORGER, "NORGE");
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(DATO_DO, "");
         statusQuo.put(STATSBORGER, "NORGE");
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), eq(fnr2))).thenReturn(statusQuo);
     }
 
     private void opprettMultipleUgifteIdenterMock() throws IOException {
@@ -154,52 +175,52 @@ public class EksisterendeIdenterServiceTest {
         String fnrUmyndig = "1010" + year + "51010";
         identer.add(0, fnrUmyndig);
 
-        statusQuo = new HashMap<>();
+        Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnrUmyndig))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnrUmyndig))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr3))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
     }
 
     private void opprettMultipleGifteIdenterMock() throws IOException {
-        statusQuo = new HashMap<>();
+        Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         statusQuo.put(FNR_RELASJON, fnr3);
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         statusQuo.put(FNR_RELASJON, fnr2);
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr3))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
     }
 
     private void opprettEkteparMock() throws IOException {
-        statusQuo = new HashMap<>();
+        Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(STATSBORGER, "NORGE");
         statusQuo.put(DATO_DO, "");
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         statusQuo.put(FNR_RELASJON, fnr2);
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr1))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(STATSBORGER, "NORGE");
         statusQuo.put(DATO_DO, "");
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
         statusQuo.put(FNR_RELASJON, fnr1);
-        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(fnr2))).thenReturn(statusQuo);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
     }
 }

@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FoedselServiceTest {
@@ -29,27 +28,34 @@ public class FoedselServiceTest {
     private IdentPoolConsumer identPoolConsumer;
 
     @Mock
-    private EksisterendeIdenterService eksisterendeIdenterService;
-
-    @Mock
     private Random rand;
 
     @InjectMocks
     private FoedselService foedselService;
 
+    /**
+     * Testscenario: HVIS det skal opprettes fødselsmelding, skal systemet i metoden {@link FoedselService#findMoedre},
+     * hente en eksisterende ident som kan være mor til barnet.
+     */
     @Test
     public void shouldFindEksisterendeIdent() {
         List<String> levendeIdenterINorge = new ArrayList<>();
         levendeIdenterINorge.add("01010101010");
         levendeIdenterINorge.add("02020202020");
         levendeIdenterINorge.add("03030303030");
+        int firstIdentIndexInList = 0;
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
-        assertEquals(levendeIdenterINorge.get(0), foedselService.findMoedre(1, levendeIdenterINorge).get(0));
-        assertTrue(foedselService.findMoedre(1, levendeIdenterINorge).contains(levendeIdenterINorge.get(0)));
+        List<String> potensielleMoedre = foedselService.findMoedre(1, levendeIdenterINorge);
+
+        assertEquals(levendeIdenterINorge.get(firstIdentIndexInList), potensielleMoedre.get(firstIdentIndexInList));
     }
 
+    /**
+     * Testscenario: Systemet skal opprette relasjonen fra barn til mor i metoden {@link FoedselService#behandleFoedselsmeldinger},
+     * påse at mor er eldre enn barn, og opprette barn til mor-relasjonen.
+     */
     @Test
     public void shouldFindChildForMother() {
         List<RsMeldingstype> meldinger;
@@ -58,16 +64,13 @@ public class FoedselServiceTest {
 
         List<String> levendeIdenterINorge = new ArrayList<>();
         levendeIdenterINorge.add("01010101010");
-        LocalDate morsFoedselsdato = LocalDate.of(1901, 01, 01);
 
         String barnFnr = "10101054321";
 
-        when(eksisterendeIdenterService.getFoedselsdatoFraFnr(any())).thenReturn(morsFoedselsdato);
-
         when(identPoolConsumer.hentNyeIdenter(any())).thenReturn(Arrays.asList(barnFnr));
 
-        assertTrue(foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge).contains(barnFnr));
+        List<String> opprettedeBarn = foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge);
 
-        verify(eksisterendeIdenterService, times(meldinger.size())).getFoedselsdatoFraFnr(any());
+        assertTrue(opprettedeBarn.contains(barnFnr));
     }
 }

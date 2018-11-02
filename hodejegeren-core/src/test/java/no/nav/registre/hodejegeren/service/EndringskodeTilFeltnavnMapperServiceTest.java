@@ -27,6 +27,7 @@ public class EndringskodeTilFeltnavnMapperServiceTest {
     private TpsStatusQuoService tpsStatusQuoService;
 
     private String fnr = "12345678901";
+    private String environment = "t1";
     private String routineName = "FS03-FDNUMMER-PERSDATA-O";
 
     /**
@@ -37,10 +38,10 @@ public class EndringskodeTilFeltnavnMapperServiceTest {
     public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
         Endringskoder endringskoder = Endringskoder.NAVNEENDRING_FOERSTE;
 
-        endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskoder, fnr);
+        endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskoder, environment, fnr);
 
         ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
-        Mockito.verify(tpsStatusQuoService).getStatusQuo(eq(routineName), captor.capture(), eq(fnr));
+        Mockito.verify(tpsStatusQuoService).getStatusQuo(eq(routineName), captor.capture(), eq(environment), eq(fnr));
         List<String> actualRequestParams = captor.getValue();
 
         assertEquals(2, actualRequestParams.size());

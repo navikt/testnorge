@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.getFoedselsdatoFraFnr;
+
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,9 +23,6 @@ public class FoedselService {
 
     @Autowired
     private IdentPoolConsumer identPoolConsumer;
-
-    @Autowired
-    private EksisterendeIdenterService eksisterendeIdenterService;
 
     private Random rand;
 
@@ -41,7 +40,7 @@ public class FoedselService {
 
         for (int i = 0; i < meldinger.size(); i++) {
             String morFnr = moedre.get(i);
-            LocalDate morFoedselsdato = eksisterendeIdenterService.getFoedselsdatoFraFnr(morFnr);
+            LocalDate morFoedselsdato = getFoedselsdatoFraFnr(morFnr);
 
             String barnFnr = identPoolConsumer.hentNyeIdenter(HentIdenterRequest.builder().foedtEtter(morFoedselsdato.plusYears(13)).antall(1).identtype(identType).build()).get(0);
 

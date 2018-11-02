@@ -27,7 +27,7 @@ public class EndringskodeTilFeltnavnMapperService {
     @Autowired
     TpsStatusQuoService tpsStatusQuoService;
 
-    public Map<String, String> getStatusQuoFraAarsakskode(Endringskoder endringskode, String fnr) throws IOException {
+    public Map<String, String> getStatusQuoFraAarsakskode(Endringskoder endringskode, String environment, String fnr) throws IOException {
         Map<String, String> personStatusQuo = new HashMap<>();
         List<String> feltnavn;
 
@@ -54,7 +54,7 @@ public class EndringskodeTilFeltnavnMapperService {
             case FOEDSELSMELDING:
             case UREGISTRERT_PERSON:
                 feltnavn = Arrays.asList("datoDo", "statsborger");
-                personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, fnr));
+                personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
                 break;
             case VIGSEL:
             case SEPERASJON:
@@ -63,14 +63,14 @@ public class EndringskodeTilFeltnavnMapperService {
             case KORREKSJON_FAMILIEOPPLYSNINGER:
             case DOEDSMELDING:
                 feltnavn = Arrays.asList("datoDo", "statsborger", "sivilstand", "datoSivilstand");
-                personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, fnr));
+                personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
                 feltnavn = Arrays.asList("$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon");
-                personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSRELA, feltnavn, fnr));
+                personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSRELA, feltnavn, environment, fnr));
                 break;
             case ANNULERING_FLYTTING_ADRESSEENDRING:
             case INNFLYTTING_ANNEN_KOMMUNE:
                 feltnavn = Arrays.asList("datoDo", "statsborger", "kommunenr", "datoFlyttet");
-                personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, fnr));
+                personStatusQuo.putAll(tpsStatusQuoService.getStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
                 break;
             case INNVANDRING:
             case TILDELING_DNUMMER:

@@ -37,6 +37,7 @@ public class TpsStatusQuoServiceTest {
     private String fnr = "12345678901";
     private String routineName = "FS03-FDNUMMER-KERNINFO-O";
     private URL jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
+    private String environment = "t1";
 
     /**
      * Testscenario: HVIS getStatusQuo blir kalt med et simpelt feltnavn, så skal den returnere servicerutine-feltets verdi i en
@@ -51,7 +52,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
 
         assertEquals(1, statusQuoValues.size());
         assertEquals("NOR", statusQuoValues.get(STATSBORGERSKAP));
@@ -70,7 +71,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
 
         assertEquals(1, statusQuoValues.size());
         assertEquals("01065500791", statusQuoValues.get(FNR_RELASJON));
@@ -91,7 +92,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
 
         assertEquals(2, statusQuoValues.size());
         assertEquals("AJOURHD", statusQuoValues.get("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler"));
@@ -121,10 +122,14 @@ public class TpsStatusQuoServiceTest {
         assertTrue(tpsServiceRoutineCache.containsKey(routineName));
         assertEquals(jsonNode, tpsServiceRoutineCache.get(routineName));
 
-        tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList(DATO_DO), fnr);
+        tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList(DATO_DO), environment, fnr);
         assertNotEquals(tpsServiceRoutineCache, tpsStatusQuoService.getTpsServiceRoutineCache());
     }
 
+    /**
+     * Tester at {@link TpsStatusQuoService#getInfoHelper} kaller serviceroutine-rest-endepunktet med de rette
+     * parametre i request.
+     */
     @Test
     public void shouldHandleTpsRequestParameters() throws IOException {
         final String aksjonsKode = "A0";

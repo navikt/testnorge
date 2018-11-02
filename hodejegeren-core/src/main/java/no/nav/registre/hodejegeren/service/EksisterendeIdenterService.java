@@ -40,7 +40,7 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleEksisterendeIdenter(List<RsMeldingstype> meldinger, Map<String, List<String>> listerMedIdenter, Endringskoder endringskode,
-                                            Map<String, Integer> antallMeldingerPerAarsakskode) {
+                                            String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
 
         switch (endringskode) {
             case NAVNEENDRING_FOERSTE:
@@ -67,21 +67,21 @@ public class EksisterendeIdenterService {
             case ANNULERING_FLYTTING_ADRESSEENDRING:
             case INNFLYTTING_ANNEN_KOMMUNE:
                 behandleGenerellAarsak(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, antallMeldingerPerAarsakskode);
+                        endringskode, environment, antallMeldingerPerAarsakskode);
                 break;
             case VIGSEL:
                 behandleVigsel(meldinger, listerMedIdenter.get(SINGLE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, antallMeldingerPerAarsakskode);
+                        endringskode, environment, antallMeldingerPerAarsakskode);
                 break;
             case SEPERASJON:
             case SKILSMISSE:
             case SIVILSTANDSENDRING:
                 behandleSeperasjonSkilsmisse(meldinger, listerMedIdenter.get(GIFTE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, antallMeldingerPerAarsakskode);
+                        endringskode, environment, antallMeldingerPerAarsakskode);
                 break;
             case DOEDSMELDING:
                 behandleDoedsmelding(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, antallMeldingerPerAarsakskode);
+                        endringskode, environment, antallMeldingerPerAarsakskode);
                 break;
             case KORREKSJON_FAMILIEOPPLYSNINGER:
                 break;
@@ -94,7 +94,7 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleVigsel(List<RsMeldingstype> meldinger, List<String> singleIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                               Endringskoder endringskode, Map<String, Integer> antallMeldingerPerAarsakskode) {
+                               Endringskoder endringskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
 
         for (int i = 0; i < antallMeldingerPerAarsakskode.get(endringskode.getEndringskode()); i++) {
             if (i >= singleIdenterINorge.size() - 2) {
@@ -109,7 +109,7 @@ public class EksisterendeIdenterService {
 
             Map<String, String> statusQuoFraAarsakskodeIdent;
             do {
-                statusQuoFraAarsakskodeIdent = getIdentWithStatus(singleIdenterINorge, endringskode,
+                statusQuoFraAarsakskodeIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
                         (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
                                 || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
             }
@@ -117,7 +117,7 @@ public class EksisterendeIdenterService {
 
             Map<String, String> statusQuoFraAarsakskodeIdentPartner;
             do {
-                statusQuoFraAarsakskodeIdentPartner = getIdentWithStatus(singleIdenterINorge, endringskode,
+                statusQuoFraAarsakskodeIdentPartner = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
                         (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
                                 || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode()));
             }
@@ -141,14 +141,14 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleSeperasjonSkilsmisse(List<RsMeldingstype> meldinger, List<String> gifteIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                             Endringskoder endringskoder, Map<String, Integer> antallMeldingerPerAarsakskode) {
+                                             Endringskoder endringskoder, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
         for (int i = 0; i < antallMeldingerPerAarsakskode.get(endringskoder.getEndringskode()); i++) {
             if (meldinger.get(i) == null) {
                 // fant ikke gyldig skdmelding på index i
                 continue;
             }
 
-            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(gifteIdenterINorge, endringskoder,
+            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(gifteIdenterINorge, endringskoder, environment,
                     (Map<String, String> a) -> !a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode()));
 
             String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
@@ -158,7 +158,7 @@ public class EksisterendeIdenterService {
             if (ident != null) {
                 identPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
 
-                statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(endringskoder, identPartner);
+                statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(endringskoder, environment, identPartner);
 
                 if (statusQuoFraAarsakskodeIdentPartner.get(SIVILSTAND).equals(statusQuoFraAarsakskodeIdent.get(SIVILSTAND))) {
                     if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(ident)) {
@@ -180,7 +180,7 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleDoedsmelding(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                     Endringskoder endringskode, Map<String, Integer> antallMeldingerPerAarsakskode) {
+                                     Endringskoder endringskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
         for (int i = 0; i < antallMeldingerPerAarsakskode.get(endringskode.getEndringskode()); i++) {
 
             if (meldinger.get(i) == null) {
@@ -188,7 +188,7 @@ public class EksisterendeIdenterService {
                 continue;
             }
 
-            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, endringskode,
+            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
 
             String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
@@ -198,7 +198,7 @@ public class EksisterendeIdenterService {
             if (statusQuoFraAarsakskodeIdent.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())) {
                 identPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
 
-                statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(endringskode, identPartner);
+                statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(endringskode, environment, identPartner);
 
                 if (statusQuoFraAarsakskodeIdentPartner.get(SIVILSTAND).equals(statusQuoFraAarsakskodeIdent.get(SIVILSTAND))) {
                     if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(ident)) {
@@ -235,7 +235,7 @@ public class EksisterendeIdenterService {
 
 
     public void behandleGenerellAarsak(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                       Endringskoder endringskode, Map<String, Integer> antallMeldingerPerAarsakskode) {
+                                       Endringskoder endringskode, String environment, Map<String, Integer> antallMeldingerPerAarsakskode) {
         for (int i = 0; i < antallMeldingerPerAarsakskode.get(endringskode.getEndringskode()); i++) {
 
             if (meldinger.get(i) == null) {
@@ -243,7 +243,7 @@ public class EksisterendeIdenterService {
                 continue;
             }
 
-            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, endringskode,
+            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
 
             String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
@@ -255,7 +255,7 @@ public class EksisterendeIdenterService {
         }
     }
 
-    private Map<String, String> getIdentWithStatus(List<String> identer, Endringskoder endringskode, Predicate<Map<String, String>> predicate) {
+    private Map<String, String> getIdentWithStatus(List<String> identer, Endringskoder endringskode, String environment, Predicate<Map<String, String>> predicate) {
         Map<String, String> statusQuoFraAarsakskodeIdent = new HashMap<>();
         String randomIdent;
         do {
@@ -265,19 +265,19 @@ public class EksisterendeIdenterService {
             }
             int randomIndex = rand.nextInt(identer.size());
             randomIdent = identer.remove(randomIndex); // pass på remove
-            statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(endringskode, randomIdent);
+            statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
         }
         while (predicate.test(statusQuoFraAarsakskodeIdent));
         statusQuoFraAarsakskodeIdent.put(IDENT, randomIdent);
         return statusQuoFraAarsakskodeIdent;
     }
 
-    private Map<String, String> getStatusQuoPaaIdent(Endringskoder endringskode, String fnr) {
+    private Map<String, String> getStatusQuoPaaIdent(Endringskoder endringskode, String environment, String fnr) {
         Map<String, String> statusQuoFraAarsakskode = new HashMap<>();
 
         try {
             statusQuoFraAarsakskode.putAll(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(
-                    endringskode, fnr));
+                    endringskode, environment, fnr));
         } catch (Exception e) {
             if (log.isInfoEnabled()) {
                 log.info("Could not get status quo info on ident {} ", fnr);
@@ -303,7 +303,7 @@ public class EksisterendeIdenterService {
         brukteIdenterIDenneBolken.addAll(identer);
     }
 
-    public LocalDate getFoedselsdatoFraFnr(String fnr) {
+    public static LocalDate getFoedselsdatoFraFnr(String fnr) {
         int pnrAarhundreKode = Integer.parseInt(fnr.substring(6, 9));
         int day = Integer.parseInt(fnr.substring(0, 2));
         int month = Integer.parseInt(fnr.substring(2, 4));

@@ -57,7 +57,7 @@ public class HodejegerServiceTest {
      * - alle meldingene lagres på korrekt gruppeId i TPSF - kaller TpsfConsumer
      */
     @Test
-    public void puttIdenterIMeldingerOgLagre() {
+    public void shouldPuttIdenterIMeldingerOgLagre() {
         final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 3);
         antallMeldingerPerEndringskode.put("0211", 4);
@@ -143,8 +143,11 @@ public class HodejegerServiceTest {
         assertNull(((RsMeldingstype1Felter) meldinger04.get(0)).getPersonnummer());
     }
 
+    /**
+     * Testscenario: Hodejegeren må filtrere bort endringskoder som hodejegeren for øyeblikket ikke har støtte for.
+     */
     @Test
-    public void shouldFiltrereOgSortereAarsakskodeneSomBestillesFraTpsSyntetisereren() {
+    public void shouldFiltrereAarsakskodeneSomBestillesFraTpsSyntetisereren() {
         List<String> requestedAarsakskoder = Arrays.asList("tull", "0010", "0x", "100", "9110", "5110", "5610", "8110", "9810",
                 "8510", "4310", "3210", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810");
         final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();

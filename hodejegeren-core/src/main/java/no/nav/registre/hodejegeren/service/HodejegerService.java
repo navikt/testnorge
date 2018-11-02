@@ -47,8 +47,6 @@ public class HodejegerService {
     private ValidationService validationService;
 
     public static final String TRANSAKSJONSTYPE = "1";
-    public static final String AKSJONSKODE = "A0";
-    public static final String ENVIRONMENT = "T1";
 
     public static final String LEVENDE_IDENTER_I_NORGE = "levendeIdenterINorge";
     public static final String GIFTE_IDENTER_I_NORGE = "gifteIdenterINorge";
@@ -60,6 +58,39 @@ public class HodejegerService {
         final List<Endringskoder> sorterteEndringskoder = filtrerOgSorterBestilteEndringskoder(antallMeldingerPerEndringskode.keySet());
         List<Long> ids = new ArrayList<>();
 
+        String environment = genereringsOrdreRequest.getMiljoe();
+
+        Map<String, List<String>> listerMedIdenter = createListerMedIdenter(genereringsOrdreRequest);
+
+        for (Endringskoder endringskode : sorterteEndringskoder) {
+            List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
+            validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
+
+            if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
+                nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger); //Bør jeg sette en øvre aldersgrense? åpent søk vil
+            } else if (FOEDSELSMELDING.equals(endringskode)) {
+                foedselService.behandleFoedselsmeldinger(FNR, syntetiserteSkdmeldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE));
+            } else if (TILDELING_DNUMMER.equals(endringskode)) {
+                nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger);
+            } else {
+                eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, environment, antallMeldingerPerEndringskode);
+            }
+
+            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
+
+            listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+            listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+            listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+        }
+        return ids;
+    }
+
+    private List<Endringskoder> filtrerOgSorterBestilteEndringskoder(Set<String> endringskode) {
+        List<Endringskoder> sorterteEndringskoder = Arrays.asList(Endringskoder.values());
+        return sorterteEndringskoder.stream().filter(kode -> endringskode.contains(kode.getEndringskode())).collect(Collectors.toList());
+    }
+
+    private Map<String, List<String>> createListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {
         Map<String, List<String>> listerMedIdenter = new HashMap<>();
 
         List<String> opprettedeIdenterITpsf = new ArrayList<>();
@@ -99,32 +130,6 @@ public class HodejegerService {
         List<String> brukteIdenterIDenneBolken = new ArrayList<>();
         listerMedIdenter.put(BRUKTE_IDENTER_I_DENNE_BOLKEN, brukteIdenterIDenneBolken);
 
-
-        for (Endringskoder endringskode : sorterteEndringskoder) {
-            List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
-            validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
-
-            if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
-                nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger); //Bør jeg sette en øvre aldersgrense? åpent søk vil
-            } else if (FOEDSELSMELDING.equals(endringskode)) {
-                foedselService.behandleFoedselsmeldinger(FNR, syntetiserteSkdmeldinger, levendeIdenterINorge);
-            } else if (TILDELING_DNUMMER.equals(endringskode)) {
-                nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger);
-            } else {
-                eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, antallMeldingerPerEndringskode);
-            }
-
-            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
-
-            gifteIdenterINorge.removeAll(brukteIdenterIDenneBolken);
-            singleIdenterINorge.removeAll(brukteIdenterIDenneBolken);
-            levendeIdenterINorge.removeAll(brukteIdenterIDenneBolken);
-        }
-        return ids;
-    }
-
-    private List<Endringskoder> filtrerOgSorterBestilteEndringskoder(Set<String> endringskode) {
-        List<Endringskoder> sorterteEndringskoder = Arrays.asList(Endringskoder.values());
-        return sorterteEndringskoder.stream().filter(kode -> endringskode.contains(kode.getEndringskode())).collect(Collectors.toList());
+        return listerMedIdenter;
     }
 }
