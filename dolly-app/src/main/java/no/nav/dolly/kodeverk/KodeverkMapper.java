@@ -1,8 +1,6 @@
 package no.nav.dolly.kodeverk;
 
-import no.nav.dolly.domain.resultset.kodeverk.KodeAdjusted;
-import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
-import no.nav.tjenester.kodeverk.api.v1.Betydning;
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +8,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+import no.nav.dolly.domain.resultset.kodeverk.KodeAdjusted;
+import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.tjenester.kodeverk.api.v1.Betydning;
 
 /***
  * Mapper fra Betydninger i Kodeverkapp til Kodeverkobjekter som er lett for frontend å bruke
@@ -25,7 +25,7 @@ public class KodeverkMapper {
     public KodeverkAdjusted mapBetydningToAdjustedKodeverk(String kodeverkNavn, Map<String, List<Betydning>> betydningerSortedByKoder) {
         KodeverkAdjusted kodeverkAdjusted = KodeverkAdjusted.builder().name(kodeverkNavn).koder(new ArrayList<>()).build();
 
-        if(!isNullOrEmpty(betydningerSortedByKoder)){
+        if (!isNullOrEmpty(betydningerSortedByKoder)) {
             kodeverkAdjusted.getKoder().addAll(extractKoderFromBetydninger(betydningerSortedByKoder));
         }
 
@@ -36,8 +36,10 @@ public class KodeverkMapper {
         return kodeMap.entrySet().stream()
                 .filter(e -> !isNullOrEmpty(e.getValue()))
                 .map(e -> KodeAdjusted.builder()
-                        .label(e.getKey() + " - " + e.getValue().get(0).getBeskrivelser().get(KODE_BOKMAAL).getTerm())
+                        .label(e.getValue().get(0).getBeskrivelser().get(KODE_BOKMAAL).getTerm())
                         .value(e.getKey())
+                        .gyldigFra(e.getValue().get(0).getGyldigFra())
+                        .gyldigTil(e.getValue().get(0).getGyldigTil())
                         .build())
                 .collect(Collectors.toList());
     }
