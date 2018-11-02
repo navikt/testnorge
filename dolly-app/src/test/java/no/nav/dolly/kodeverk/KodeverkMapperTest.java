@@ -1,8 +1,11 @@
 package no.nav.dolly.kodeverk;
 
-import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
-import no.nav.tjenester.kodeverk.api.v1.Beskrivelse;
-import no.nav.tjenester.kodeverk.api.v1.Betydning;
+import static org.hamcrest.CoreMatchers.both;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,12 +14,9 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.both;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.junit.Assert.assertThat;
+import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.tjenester.kodeverk.api.v1.Beskrivelse;
+import no.nav.tjenester.kodeverk.api.v1.Betydning;
 
 public class KodeverkMapperTest {
 
@@ -33,7 +33,7 @@ public class KodeverkMapperTest {
     private Betydning standardBetydning = Betydning.builder().beskrivelser(beskrivelser).build();
 
     @Before
-    public void setup(){
+    public void setup() {
         betydninger.put(STANDARD_KODE, Arrays.asList(standardBetydning));
         beskrivelser.put(KODE_BOKMAAL, standardBeskrivelse);
         standardBetydning.setBeskrivelser(beskrivelser);
