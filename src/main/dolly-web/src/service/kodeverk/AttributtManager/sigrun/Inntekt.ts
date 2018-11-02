@@ -64,7 +64,7 @@ const AttributtListe: Attributt[] = [
 					.integer('Ugyldig årstall')
 					.required('Tast inn et gyldig år')
 					// TODO: Henter inn gyldigFra fra kodeverk?
-					.min(2015, 'Inntektsår må være senere enn 2014')
+					.min(2017, 'Inntektsår må være senere enn 2014')
 					.max(9999, 'Inntektsår må være tidligere enn 9999')
 			}
 		]
