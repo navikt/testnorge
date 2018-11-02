@@ -102,27 +102,28 @@ public class EksisterendeIdenterService {
                 break;
             }
 
-            Map<String, String> statusQuoFraAarsakskodeIdent;
-            statusQuoFraAarsakskodeIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
+            Map<String, String> statusQuoIdent;
+            statusQuoIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
                             || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode())
                             || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
 
-            Map<String, String> statusQuoFraAarsakskodeIdentPartner;
-            statusQuoFraAarsakskodeIdentPartner = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
+            Map<String, String> statusQuoPartnerIdent;
+            statusQuoPartnerIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
                             || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode())
                             || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
 
-            String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
-            String identPartner = statusQuoFraAarsakskodeIdentPartner.get(IDENT);
+            String ident = statusQuoIdent.get(IDENT);
+            String identPartner = statusQuoPartnerIdent.get(IDENT);
 
             if (ident != null && identPartner != null) {
                 putFnrInnIMelding(meldinger.get(i), ident);
                 ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerFdato(identPartner.substring(0, 6));
                 ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerPnr(identPartner.substring(6));
 
-                RsMeldingstype melding = putIdentInnINyMelding(meldinger, identPartner);
+                RsMeldingstype melding = opprettKopiAvSkdMelding(identPartner);
+                meldinger.add(melding);
                 ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
                 ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
 
@@ -135,23 +136,24 @@ public class EksisterendeIdenterService {
                                              Endringskoder endringskoder, String environment) {
         int antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
-            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(gifteIdenterINorge, endringskoder, environment,
+            Map<String, String> statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskoder, environment,
                     (Map<String, String> a) -> !a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode()));
 
-            String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
-            Map<String, String> statusQuoFraAarsakskodeIdentPartner;
+            String ident = statusQuoIdent.get(IDENT);
+            Map<String, String> statusQuoPartnerIdent;
             String identPartner;
 
             if (ident != null) {
-                identPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
+                identPartner = statusQuoIdent.get(FNR_RELASJON);
 
-                statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(endringskoder, environment, identPartner);
+                statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskoder, environment, identPartner);
 
-                if (statusQuoFraAarsakskodeIdentPartner.get(SIVILSTAND).equals(statusQuoFraAarsakskodeIdent.get(SIVILSTAND))) {
-                    if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(ident)) {
+                if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))) {
+                    if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
                         putFnrInnIMelding(meldinger.get(i), ident);
 
-                        putIdentInnINyMelding(meldinger, identPartner);
+                        RsMeldingstype melding = opprettKopiAvSkdMelding(identPartner);
+                        meldinger.add(melding);
 
                         oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                     } else {
@@ -170,20 +172,20 @@ public class EksisterendeIdenterService {
                                      Endringskoder endringskode, String environment) {
         int antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
-            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
+            Map<String, String> statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
 
-            String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
-            Map<String, String> statusQuoFraAarsakskodeIdentPartner;
+            String ident = statusQuoIdent.get(IDENT);
+            Map<String, String> statusQuoPartnerIdent;
             String identPartner;
 
-            if (statusQuoFraAarsakskodeIdent.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())) {
-                identPartner = statusQuoFraAarsakskodeIdent.get(FNR_RELASJON);
+            if (statusQuoIdent.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())) {
+                identPartner = statusQuoIdent.get(FNR_RELASJON);
 
-                statusQuoFraAarsakskodeIdentPartner = getStatusQuoPaaIdent(endringskode, environment, identPartner);
+                statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
 
-                if (statusQuoFraAarsakskodeIdentPartner.get(SIVILSTAND).equals(statusQuoFraAarsakskodeIdent.get(SIVILSTAND))) {
-                    if (statusQuoFraAarsakskodeIdentPartner.get(FNR_RELASJON).equals(ident)) {
+                if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))) {
+                    if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
                         putFnrInnIMelding(meldinger.get(i), ident);
 
                         RsMeldingstype melding = new RsMeldingstype1Felter();
@@ -219,10 +221,10 @@ public class EksisterendeIdenterService {
     public void behandleGenerellAarsak(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
                                        Endringskoder endringskode, String environment) {
         for (int i = 0; i < meldinger.size(); i++) {
-            Map<String, String> statusQuoFraAarsakskodeIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
+            Map<String, String> statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
 
-            String ident = statusQuoFraAarsakskodeIdent.get(IDENT);
+            String ident = statusQuoIdent.get(IDENT);
 
             if (ident != null) {
                 putFnrInnIMelding(meldinger.get(i), ident);
@@ -268,10 +270,9 @@ public class EksisterendeIdenterService {
         ((RsMeldingstype1Felter) melding).setPersonnummer(fnr.substring(6));
     }
 
-    private RsMeldingstype putIdentInnINyMelding(List<RsMeldingstype> meldinger, String fnr) {
+    private RsMeldingstype opprettKopiAvSkdMelding(String fnr) {
         RsMeldingstype rsMeldingstypeIdent = new RsMeldingstype1Felter();
         putFnrInnIMelding(rsMeldingstypeIdent, fnr);
-        meldinger.add(rsMeldingstypeIdent);
         return rsMeldingstypeIdent;
     }
 
