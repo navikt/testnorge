@@ -37,7 +37,7 @@ public class FoedselService {
         }
 
         List<String> moedre = findMoedre(meldinger.size(), levendeIdenterINorge);
-        List<String> barn = new ArrayList<>();
+        List<String> barn = new ArrayList<>(meldinger.size());
 
         for (int i = 0; i < meldinger.size(); i++) {
             String morFnr = moedre.get(i);
@@ -58,7 +58,7 @@ public class FoedselService {
     }
 
     public List<String> findMoedre(int antallNyeIdenter, List<String> levendeIdenterINorge) {
-        List<String> moedre = new ArrayList<>();
+        List<String> moedre = new ArrayList<>(antallNyeIdenter);
 
         for (int i = 0; i < antallNyeIdenter; i++) {
             moedre.add(levendeIdenterINorge.get(rand.nextInt(levendeIdenterINorge.size())));
