@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import no.nav.dolly.domain.resultset.RsOpenAmRequest;
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.service.OpenAmService;
 
@@ -19,11 +20,11 @@ public class OpenAmController {
     @Autowired
     private OpenAmService openAmService;
 
-    @GetMapping ("/opprett")
-    public List<RsOpenAmResponse> opprettIdenter(@RequestParam("identliste") List<String> identliste, @RequestParam("miljoer") List<String> miljoer) {
-        List<RsOpenAmResponse> response = new ArrayList<>(miljoer.size());
-        for (String miljoe : miljoer) {
-            response.add(openAmService.opprettIdenter(identliste, miljoe));
+    @PostMapping
+    public List<RsOpenAmResponse> opprettIdenter(@RequestBody RsOpenAmRequest request) {
+        List<RsOpenAmResponse> response = new ArrayList<>(request.getMiljoer().size());
+        for (String miljoe : request.getMiljoer()) {
+            response.add(openAmService.opprettIdenter(request.getIdenter(), miljoe));
         }
         return response;
     }
