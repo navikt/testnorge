@@ -15,6 +15,7 @@ import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
 import commonReducer from './ducks/common'
 import bestillingStatusReducer from './ducks/bestillingStatus'
+import environmentsReducer from './ducks/environments'
 import history from './history'
 
 const locationMiddleware = store => next => action => {
@@ -22,7 +23,7 @@ const locationMiddleware = store => next => action => {
 		const prevPath = store.getState().router.location.pathname
 		const nextPath = action.payload.location.pathname
 		if (prevPath === nextPath) {
-			console.log('cancel location change - same path')
+			// console.log('cancel location change - same path')
 			return false
 		}
 	}
@@ -55,7 +56,8 @@ const configureReduxStore = history => {
 		loading: loadingReducer,
 		errors: errorsReducer,
 		common: commonReducer,
-		bestillingStatus: bestillingStatusReducer
+		bestillingStatus: bestillingStatusReducer,
+		environments: environmentsReducer
 	})
 
 	return createStore(

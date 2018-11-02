@@ -1,138 +1,113 @@
+import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
-/*
-    Transformer for TPSF-data.
-*/
-
-const TpsfTransformer = response => {
-	//return response.data.map(i => mapDataToDolly(i))
-	if (!response) return null
-	return response.map(i => mapDataToDolly(i))
-}
-
-const relasjonTranslator = relasjon => {
-	switch (relasjon) {
-		case 'EKTEFELLE':
-			return 'Partner'
-		case 'MOR':
-			return 'Mor'
-		case 'FAR':
-			return 'Far'
-		case 'BARN':
-		case 'FOEDSEL':
-			return 'Barn'
-		default:
-			return 'Ukjent relasjon'
-	}
-}
-
-const mapDataToDolly = i => {
-	let res = {
-		personId: i.personId,
-		id: i.ident,
-		idType: i.identtype,
-		navn: `${i.fornavn} ${i.etternavn}`,
-		kjonn: Formatters.kjonnToString(i.kjonn),
-		alder: Formatters.formatAlder(i.alder, i.doedsdato),
-		data: [
+export default function mapDetailedData(tpsfData, sigrunData, bestillingData) {
+	let data
+	if (tpsfData) {
+		data = [
 			{
 				header: 'Personlig informasjon',
 				data: [
 					{
 						id: 'ident',
-						label: i.identtype,
-						value: i.ident
+						label: tpsfData.identtype,
+						value: tpsfData.ident
 					},
 					{
 						id: 'fornavn',
 						label: 'Fornavn',
-						value: i.fornavn
+						value: tpsfData.fornavn
 					},
 					{
 						id: 'mellomnavn',
 						label: 'Mellomnavn',
-						value: i.mellomnavn
+						value: tpsfData.mellomnavn
 					},
 					{
 						id: 'etternavn',
 						label: 'Etternavn',
-						value: i.etternavn
+						value: tpsfData.etternavn
 					},
 					{
 						id: 'kjonn',
 						label: 'Kjønn',
-						value: Formatters.kjonnToString(i.kjonn)
+						value: Formatters.kjonnToString(tpsfData.kjonn)
 					},
 					{
 						id: 'alder',
 						label: 'Alder',
-						value: Formatters.formatAlder(i.alder, i.doedsdato)
+						value: Formatters.formatAlder(tpsfData.alder, tpsfData.doedsdato)
+					},
+					{
+						id: 'miljoer',
+						label: 'Miljøer',
+						value: Formatters.arrayToString(bestillingData.environments)
 					}
 				]
 			}
 		]
 	}
 
-	if (i.statsborgerskap) {
-		res.data.push({
+	if (tpsfData.statsborgerskap) {
+		data.push({
 			header: 'Nasjonalitet',
 			data: [
 				{
 					id: 'innvandretFra',
 					label: 'Innvandret fra',
-					value: i.innvandretFra
+					value: tpsfData.innvandretFra
 				},
 				{
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
-					value: i.statsborgerskap
+					value: tpsfData.statsborgerskap
 				}
 			]
 		})
 	}
 
-	if (i.boadresse) {
-		res.data.push({
+	if (tpsfData.boadresse) {
+		data.push({
 			header: 'Bostedadresse',
 			data: [
 				{
 					parent: 'boadresse',
 					id: 'gateadresse',
 					label: 'Gatenavn',
-					value: i.boadresse.gateadresse
+					value: tpsfData.boadresse.gateadresse
 				},
 				{
 					parent: 'boadresse',
 					id: 'husnummer',
 					label: 'Husnummer',
-					value: i.boadresse.husnummer
+					value: tpsfData.boadresse.husnummer
 				},
 				{
 					parent: 'boadresse',
 					id: 'gatekode',
 					label: 'Gatekode',
-					value: i.boadresse.gatekode
+					value: tpsfData.boadresse.gatekode
 				},
 				{
 					parent: 'boadresse',
 					id: 'postnr',
 					label: 'Postnummer',
-					value: i.boadresse.postnr
+					value: tpsfData.boadresse.postnr
 				},
 				{
 					parent: 'boadresse',
 					id: 'flyttedato',
 					label: 'Flyttedato',
-					value: Formatters.formatDate(i.boadresse.flyttedato)
+					value: Formatters.formatDate(tpsfData.boadresse.flyttedato)
 				}
 			]
 		})
 	}
-	if (i.relasjoner.length) {
-		res.data.push({
+	if (tpsfData.relasjoner.length) {
+		data.push({
 			header: 'Familierelasjoner',
 			multiple: true,
-			data: i.relasjoner.map(relasjon => {
+			data: tpsfData.relasjoner.map(relasjon => {
 				return {
 					parent: 'relasjoner',
 					id: relasjon.id,
@@ -168,8 +143,45 @@ const mapDataToDolly = i => {
 			})
 		})
 	}
+	if (sigrunData) {
+		data.push({
+			header: 'Inntekter',
+			multiple: true,
+			data: sigrunData.map(data => {
+				return {
+					parent: 'inntekter',
+					id: data.personidentifikator,
+					label: data.inntektsaar,
+					value: [
+						{
+							id: 'aar',
+							label: 'År',
+							value: data.inntektsaar
+						},
+						{
+							id: 'verdi',
+							label: 'Beløp',
+							value: data.verdi
+						},
+						,
+						{
+							id: 'tjeneste',
+							label: 'Tjeneste',
+							width: 'medium',
+							value: data.tjeneste
+						},
 
-	return res
+						{
+							id: 'grunnlag',
+							label: 'Grunnlag',
+							width: 'xlarge',
+							value: Formatters.camelCaseToLabel(data.grunnlag)
+						}
+					]
+				}
+			})
+		})
+	}
+
+	return data
 }
-
-export default TpsfTransformer

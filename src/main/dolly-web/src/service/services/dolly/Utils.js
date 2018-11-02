@@ -1,9 +1,14 @@
+import DataFormatter from '~/utils/DataFormatter'
+
 export const NormalizeTeamListForDropdown = ({ data }) => ({
 	options: data.map(team => ({ value: team.id, label: team.navn }))
 })
 
 export const NormalizeKodeverkForDropdown = ({ data }) => ({
-	options: data.koder.map(kode => ({ value: kode.value, label: kode.label }))
+	options: data.koder.map(kode => ({
+		value: kode.value,
+		label: DataFormatter.kodeverkLabel(kode.label)
+	}))
 })
 
 export const NormalizeBrukerListForDropdown = (data, teamMembers) => {

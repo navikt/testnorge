@@ -4,7 +4,7 @@ import * as yup from 'yup'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import Overskrift from '~/components/overskrift/Overskrift'
 import NavigationConnector from '../Navigation/NavigationConnector'
-import MiljoVelger from '~/components/miljoVelger/MiljoVelger'
+import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import { AttributtManager } from '~/service/Kodeverk'
 import { Formik, FieldArray, Field } from 'formik'
 import _get from 'lodash/get'
@@ -81,7 +81,7 @@ export default class Step3 extends PureComponent {
 			<StaticValue
 				key={item.id}
 				header={item.label}
-				value={_get(stateValues, item.id)}
+				value={_get(stateValues, item.id).toString()}
 				format={item.format}
 			/>
 		)
@@ -120,7 +120,7 @@ export default class Step3 extends PureComponent {
 								<FieldArray
 									name="environments"
 									render={arrayHelpers => (
-										<MiljoVelger
+										<MiljoVelgerConnector
 											heading="Hvilke testmiljø vil du opprette testpersonene i?"
 											arrayHelpers={arrayHelpers}
 											arrayValues={formikProps.values.environments}
