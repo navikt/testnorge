@@ -68,7 +68,11 @@ export default class MiljoVelger extends Component {
 
 	renderError = ({ name, form }) => {
 		if (form.touched[name] && form.errors[name]) {
-			return <span style={{ color: 'red' }}>{form.errors[name]}</span>
+			return (
+				<span className="miljo-velger_error" style={{ color: 'red' }}>
+					{form.errors[name]}
+				</span>
+			)
 		}
 		return false
 	}
