@@ -7,7 +7,6 @@ import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { AttributtManager } from '~/service/Kodeverk'
 import { Radio } from 'nav-frontend-skjema'
 import './AttributtVelger.less'
-import _ from 'lodash'
 export default class AttributtVelger extends Component {
 	static propTypes = {
 		onToggle: PropTypes.func.isRequired,
@@ -76,7 +75,7 @@ export default class AttributtVelger extends Component {
 	onChangeRadioGruppe = (items, selectedItem) => {
 		this.props.onToggle(selectedItem.id)
 		items.forEach(item => {
-			_.includes(this.props.selectedIds, item.id) && this.props.onToggle(item.id)
+			this.props.selectedIds.includes(item.id) && this.props.onToggle(item.id)
 		})
 	}
 
