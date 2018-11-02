@@ -98,6 +98,7 @@ public class OpenAmService {
         for (AllowedValue allowedValue : fields.getCustomfield_14811().getAllowedValues()) {
             if (miljoe.equals(allowedValue.getValue())) {
                 envId = allowedValue.getId();
+                break;
             }
         }
         if (envId == null) {
@@ -145,11 +146,10 @@ public class OpenAmService {
         File tempFile = null;
         try {
             tempFile = File.createTempFile(format("OpenAM-%s-", jiraResponse.getKey()), ".txt");
-            tempFile.deleteOnExit();
 
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile));
             for (String ident : identliste) {
-                bufferedWriter.write(format("%s;4;n;e;\n", ident));
+                bufferedWriter.write(format("%s;4;n;e;%n", ident));
             }
             bufferedWriter.close();
 
