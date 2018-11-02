@@ -2,6 +2,7 @@ import axios from 'axios'
 import config from '~/config'
 
 const instance = axios.create({ withCredentials: true })
+const instanceWithoutCredentials = axios.create()
 
 const debugLoading = resolvedValue => {
 	const DELAY_TIME = 300
@@ -16,8 +17,12 @@ const debugLoading = resolvedValue => {
 }
 
 export default class Request {
-	static get(url) {
-		return instance.get(url).then(debugLoading)
+	static get(url, config) {
+		return instance.get(url, config).then(debugLoading)
+	}
+
+	static getWithoutCredentials(url, config) {
+		return instanceWithoutCredentials.get(url, config).then(debugLoading)
 	}
 
 	static post(url, data) {

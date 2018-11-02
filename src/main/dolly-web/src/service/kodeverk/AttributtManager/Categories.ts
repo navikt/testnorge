@@ -16,6 +16,11 @@ export const Kategorier: KategoriTypes = {
 		id: 'familierelasjoner',
 		navn: 'Familierelasjoner',
 		order: 30
+	},
+	Inntekter: {
+		id: 'inntekt',
+		navn: 'Inntekter',
+		order: 40
 	}
 }
 
@@ -62,6 +67,12 @@ export const SubKategorier: KategoriTypes = {
 		id: 'barn',
 		navn: 'Barn',
 		order: 20,
+		showInSummary: true
+	},
+	Inntekt: {
+		id: 'inntekt',
+		navn: 'Inntekt',
+		order: 30,
 		showInSummary: true
 	}
 }
