@@ -149,7 +149,7 @@ public class HodejegerServiceTest {
     @Test
     public void shouldFiltrereAarsakskodeneSomBestillesFraTpsSyntetisereren() {
         List<String> requestedAarsakskoder = Arrays.asList("tull", "0010", "0x", "100", "9110", "5110", "5610", "8110", "9810",
-                "8510", "4310", "3210", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810");
+                "4310", "3210", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810");
         final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
         for (String requestedAarsakskode : requestedAarsakskoder) {
             antallMeldingerPerAarsakskode.put(requestedAarsakskode, 0);
@@ -160,7 +160,7 @@ public class HodejegerServiceTest {
         hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerAarsakskode));
 
         final InOrder inOrder = Mockito.inOrder(tpsSyntetisererenConsumer);
-        for (String aarsakskode : Arrays.asList("9110", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810", "5110", "5610", "8110", "9810", "8510", "4310", "3210")) {
+        for (String aarsakskode : Arrays.asList("9110", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810", "5110", "5610", "8110", "9810", "4310", "3210")) {
             inOrder.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(eq(aarsakskode), any());
         }
         inOrder.verifyNoMoreInteractions();

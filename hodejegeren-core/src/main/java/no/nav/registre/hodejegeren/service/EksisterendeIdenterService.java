@@ -33,6 +33,7 @@ public class EksisterendeIdenterService {
 
     private static final String IDENT = "ident";
     private static final String STATSBORGER_NORGE = "NORGE";
+    private static final String SIVILSTANDSENDRING_AARSAKSKODE = "85";
     private Random rand;
 
     public EksisterendeIdenterService(Random rand) {
@@ -75,7 +76,6 @@ public class EksisterendeIdenterService {
                 break;
             case SEPERASJON:
             case SKILSMISSE:
-            case SIVILSTANDSENDRING:
                 behandleSeperasjonSkilsmisse(meldinger, listerMedIdenter.get(GIFTE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
                         endringskode, environment, antallMeldingerPerAarsakskode);
                 break;
@@ -205,7 +205,7 @@ public class EksisterendeIdenterService {
                         putFnrInnIMelding(meldinger.get(i), ident);
 
                         RsMeldingstype melding = new RsMeldingstype1Felter();
-                        melding.setAarsakskode(Endringskoder.SIVILSTANDSENDRING.getAarsakskode());
+                        melding.setAarsakskode(SIVILSTANDSENDRING_AARSAKSKODE);
                         melding.setMaskindato(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
                         melding.setMaskintid(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
 

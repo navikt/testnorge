@@ -59,7 +59,6 @@ public class EndringskodeTilFeltnavnMapperService {
             case VIGSEL:
             case SEPERASJON:
             case SKILSMISSE:
-            case SIVILSTANDSENDRING:
             case KORREKSJON_FAMILIEOPPLYSNINGER:
             case DOEDSMELDING:
                 feltnavn = Arrays.asList("datoDo", "statsborger", "sivilstand", "datoSivilstand");
