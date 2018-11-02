@@ -99,7 +99,7 @@ const bestillingFormatter = bestillingState => {
 	}
 
 	// mandatory
-	final_values = _.set(final_values, 'tpsf.regdato', new Date())
+	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	final_values.tpsf.identtype = identtype
 
 	// TODO: SPECIAL HANDLING - Hva gjør vi her?
