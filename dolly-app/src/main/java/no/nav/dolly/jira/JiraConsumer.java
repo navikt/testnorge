@@ -3,7 +3,7 @@ package no.nav.dolly.jira;
 import static java.lang.String.format;
 
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,11 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import no.nav.dolly.properties.JiraProps;
+
 @Service
 public class JiraConsumer {
 
-    @Value("${jira.endpoint:https://jira.adeo.no}")
-    private String JIRA_BASE_URL;
+    @Autowired
+    private JiraProps jiraProps;
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -24,12 +26,12 @@ public class JiraConsumer {
         return restTemplate.exchange(format("%s%s", getBaseUrl(), url), httpMethod, httpEntity, responseClass);
     }
 
-    public static HttpHeaders createHttpHeaders(MediaType mediaType) {
+    public HttpHeaders createHttpHeaders(MediaType mediaType) {
         return createHttpHeaders(mediaType, null);
     }
 
-    public static HttpHeaders createHttpHeaders(MediaType mediaType, HttpHeaders httpHeaders) {
-        String plainCreds = "srvFregDolly:wudTENfn2uVd2EPh";
+    public HttpHeaders createHttpHeaders(MediaType mediaType, HttpHeaders httpHeaders) {
+        String plainCreds = format("%s:%s", jiraProps.getUsername(), jiraProps.getPassword());
         byte[] plainCredsBytes = plainCreds.getBytes();
         byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
         String base64Creds = new String(base64CredsBytes);
@@ -47,6 +49,6 @@ public class JiraConsumer {
     }
 
     public String getBaseUrl() {
-        return JIRA_BASE_URL;
+        return jiraProps.getHost();
     }
 }

@@ -16,8 +16,7 @@ import lombok.Setter;
 public class RsOpenAmResponse {
 
     private String miljoe;
-    private String jira;
-    private String status;
-    private HttpStatus httpCode;
-    private String feilmelding;
+    private int httpCode;
+    private HttpStatus status;
+    private String message;
 }

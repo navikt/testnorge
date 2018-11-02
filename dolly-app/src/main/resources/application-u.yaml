@@ -31,8 +31,7 @@ freg.security.oidc:
       cookie-enabled: true
       header-enabled: false
       validation:
-          type: refreshing
-
+        type: refreshing
 
 providers:
   tpsf:
@@ -42,6 +41,11 @@ providers:
     url: https://sigrun-skd-stub.nais.preprod.local
   kodeverk:
     url: https://kodeverk.nais.preprod.local
+
+jira:
+  host: https://jira.adeo.no
+  username: srvFregDolly
+  password: wudTENfn2uVd2EPh
 
 ### CORS ###
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000

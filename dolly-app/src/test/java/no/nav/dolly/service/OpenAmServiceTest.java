@@ -21,6 +21,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpServerErrorException;
 
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.jira.JiraConsumer;
@@ -58,6 +59,9 @@ public class OpenAmServiceTest {
 
     @Mock
     private ResponseEntity<String> stringResponseEntity;
+
+    @Mock
+    private HttpServerErrorException httpServerErrorException;
 
     @Before
     public void setup() {
@@ -100,8 +104,21 @@ public class OpenAmServiceTest {
         RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(Arrays.asList(IDENT1, IDENT2), MILJOE1);
 
         verify(jiraConsumer, times(3)).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
-        assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.OK)));
-        assertThat(openAmResponse.getStatus(), is(OK));
+        assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.OK.value())));
+        assertThat(openAmResponse.getStatus(), is(HttpStatus.OK));
+        assertThat(openAmResponse.getMiljoe(), is(equalTo(MILJOE1)));
+    }
+
+    @Test
+    public void opprettIdenterFeilerIngenMetadata() {
+        when(projectResponseEntity.getBody()).thenReturn(null);
+
+        RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(Arrays.asList(IDENT1, IDENT2), MILJOE1);
+
+        verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
+        assertThat(openAmResponse.getMessage(), is(equalTo(FEILMELDING1)));
+        assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value())));
+        assertThat(openAmResponse.getStatus(), is(HttpStatus.INTERNAL_SERVER_ERROR));
         assertThat(openAmResponse.getMiljoe(), is(equalTo(MILJOE1)));
     }
 
@@ -118,14 +135,14 @@ public class OpenAmServiceTest {
         RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(Arrays.asList(IDENT1, IDENT2), MILJOE1);
 
         verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
-        assertThat(openAmResponse.getFeilmelding(), is(equalTo(FEILMELDING1)));
-        assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.INTERNAL_SERVER_ERROR)));
-        assertThat(openAmResponse.getStatus(), is(FEIL));
+        assertThat(openAmResponse.getMessage(), is(equalTo(FEILMELDING1)));
+        assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value())));
+        assertThat(openAmResponse.getStatus(), is(HttpStatus.INTERNAL_SERVER_ERROR));
         assertThat(openAmResponse.getMiljoe(), is(equalTo(MILJOE1)));
     }
 
     @Test
-    public void opprettIdenterMiljoeMetadataHarTommeFelter() {
+    public void opprettIdenterMetadataHarTommeFelter() {
         when(projectResponseEntity.getBody()).thenReturn(Project.builder()
                 .projects(Arrays.asList(Project.builder()
                         .issuetypes(Arrays.asList(Issuetypes.builder()
@@ -141,14 +158,14 @@ public class OpenAmServiceTest {
         RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(Arrays.asList(IDENT1, IDENT2), MILJOE1);
 
         verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
-        assertThat(openAmResponse.getFeilmelding(), is(equalTo(FEILMELDING1)));
-        assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.INTERNAL_SERVER_ERROR)));
-        assertThat(openAmResponse.getStatus(), is(FEIL));
+        assertThat(openAmResponse.getMessage(), is(equalTo(FEILMELDING1)));
+        assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value())));
+        assertThat(openAmResponse.getStatus(), is(HttpStatus.INTERNAL_SERVER_ERROR));
         assertThat(openAmResponse.getMiljoe(), is(equalTo(MILJOE1)));
     }
 
     @Test
-    public void opprettIdenterMiljoeUgyldigMiljoe() {
+    public void opprettIdenterUgyldigMiljoe() {
         when(projectResponseEntity.getBody()).thenReturn(Project.builder()
                 .projects(Arrays.asList(Project.builder()
                         .issuetypes(Arrays.asList(Issuetypes.builder()
@@ -179,9 +196,23 @@ public class OpenAmServiceTest {
         RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(Arrays.asList(IDENT1, IDENT2), MILJOE1);
 
         verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
-        assertThat(openAmResponse.getFeilmelding(), is(equalTo(FEILMELDING2)));
-        assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.BAD_REQUEST)));
-        assertThat(openAmResponse.getStatus(), is(FEIL));
+        assertThat(openAmResponse.getMessage(), is(equalTo(FEILMELDING2)));
+        assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.BAD_REQUEST.value())));
+        assertThat(openAmResponse.getStatus(), is(HttpStatus.BAD_REQUEST));
+        assertThat(openAmResponse.getMiljoe(), is(equalTo(MILJOE1)));
+    }
+
+    @Test
+    public void opprettIdentThrowsHttpException() {
+
+        when(jiraConsumer.excuteRequest(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Project.class))).thenThrow(httpServerErrorException);
+        when(httpServerErrorException.getStatusCode()).thenReturn(HttpStatus.UNAUTHORIZED);
+
+        RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(Arrays.asList(IDENT1, IDENT2), MILJOE1);
+
+        verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
+        assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.UNAUTHORIZED.value())));
+        assertThat(openAmResponse.getStatus(), is(HttpStatus.UNAUTHORIZED));
         assertThat(openAmResponse.getMiljoe(), is(equalTo(MILJOE1)));
     }
 }
