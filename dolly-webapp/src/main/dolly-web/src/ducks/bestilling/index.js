@@ -134,28 +134,34 @@ const getValues = (attributeList, values) => {
 		}
 
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
-			const groupedByInntektsaar = _groupBy(value, 'inntektsaar')
-			const keys = Object.keys(groupedByInntektsaar)
-			const dataArr = keys.map(key => {
-				const current = groupedByInntektsaar[key]
+			console.log(value, 'value')
+			const groupByTjeneste = _groupBy(value, 'tjeneste')
+			let tjenester = Object.keys(groupByTjeneste)
+			console.log(tjenester, 'tjenester')
 
-				return {
-					grunnlag: current.map(temp => ({
-						tekniskNavn: temp.typeinntekt,
-						verdi: temp.beloep
-					})),
-					inntektsaar: key,
-					tjeneste: current[0].tjeneste
-				}
+			let dataArr = []
+
+			tjenester.forEach(tjeneste => {
+				const groupedByInntektsaar = _groupBy(groupByTjeneste[tjeneste], 'inntektsaar')
+				const keys = Object.keys(groupedByInntektsaar)
+
+				keys.forEach(key => {
+					const current = groupedByInntektsaar[key]
+					dataArr.push({
+						grunnlag: current.map(temp => ({
+							tekniskNavn: temp.typeinntekt,
+							verdi: temp.beloep
+						})),
+						inntektsaar: key,
+						tjeneste: tjeneste
+					})
+				})
 			})
 
-			return {
-				sigrunRequest: dataArr
-			}
-		} else {
-			// Tpsf
-			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
+			return _set(accumulator, 'sigrunRequest', dataArr)
 		}
+		// Tpsf
+		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
 }
 
