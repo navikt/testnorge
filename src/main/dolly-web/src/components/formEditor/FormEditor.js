@@ -26,14 +26,14 @@ export default class FormEditor extends PureComponent {
 	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = items[0].id === 'boadresse'
-
+		const isFieldarray = Boolean(items[0].items)
 		return (
 			<div className="subkategori" key={uniqueId}>
-				<h4>{subKategori.navn}</h4>
+				{!isFieldarray && <h4>{subKategori.navn}</h4>}
 				<div className="subkategori-field-group">
 					{items.map(
 						item =>
-							item.items
+							isFieldarray
 								? FormEditorFieldArray(item, formikProps, this.renderFieldComponent)
 								: this.renderFieldComponent(item, formikProps.values)
 					)}
