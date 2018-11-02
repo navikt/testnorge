@@ -17,6 +17,6 @@ public class RsDollyBestillingsRequest {
     private RsTpsfBestilling tpsf;
 
     /* Sigrunn */
-    private RsSigrunnOpprettSkattegrunnlag sigrunRequest;
+    private List<RsSigrunnOpprettSkattegrunnlag> sigrunRequest;
 
 }

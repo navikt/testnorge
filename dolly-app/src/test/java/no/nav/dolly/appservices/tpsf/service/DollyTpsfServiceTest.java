@@ -88,7 +88,7 @@ public class DollyTpsfServiceTest {
     private DollyTpsfService dollyTpsfService;
 
     @Mock
-    private RsSigrunnOpprettSkattegrunnlag rsSigrunnOpprettSkattegrunnlag;
+    private List<RsSigrunnOpprettSkattegrunnlag> rsSigrunnOpprettSkattegrunnlag;
 
     @Mock
     private SigrunResponseHandler sigrunResponseHandler;
@@ -112,7 +112,6 @@ public class DollyTpsfServiceTest {
         standardBestillingRequest_u1_t2_q3.setEnvironments(Arrays.asList("u1", "t2", "q3"));
         standardBestillingRequest_u1_t2_q3.setAntall(1);
         standardBestillingRequest_u1_t2_q3.setTpsf(tpsfReqEmpty);
-        standardBestillingRequest_u1_t2_q3.setSigrunRequest(rsSigrunnOpprettSkattegrunnlag);
     }
 
     @Test

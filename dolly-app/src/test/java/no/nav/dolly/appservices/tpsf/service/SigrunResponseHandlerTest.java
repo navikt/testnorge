@@ -16,14 +16,14 @@ public class SigrunResponseHandlerTest {
 
     @Test
     public void extractResponse_SjekkAtHttpOkReturnererOk() {
-        ResponseEntity<String> response = ResponseEntity.ok().build();
+        ResponseEntity<String> response = ResponseEntity.ok().body("[200,200]");
         String progressUpdate = sigrunResponseHandler.extractResponse(response);
         assertThat(progressUpdate, is("Ok"));
     }
 
     @Test
     public void extractResponse_SjekkAtAnnetEnnHttpOkGirFeil() {
-        ResponseEntity<String> response = ResponseEntity.badRequest().build();
+        ResponseEntity<String> response = ResponseEntity.ok().body("[200,400]");
         String progressUpdate = sigrunResponseHandler.extractResponse(response);
         assertThat(progressUpdate, not("Ok"));
     }

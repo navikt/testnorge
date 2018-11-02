@@ -18,6 +18,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
@@ -75,7 +76,10 @@ public class DollyTpsfService {
 
                 //Sigrun
                 if (bestillingsRequest.getSigrunRequest() != null) {
-                    bestillingsRequest.getSigrunRequest().setPersonidentifikator(hovedPersonIdent);
+                    for (RsSigrunnOpprettSkattegrunnlag request : bestillingsRequest.getSigrunRequest()) {
+                        request.setPersonidentifikator(hovedPersonIdent);
+                    }
+
                     ResponseEntity<String> sigrunResponse = sigrunStubApiService.createSkattegrunnlag(bestillingsRequest.getSigrunRequest());
 
                     String response = sigrunResponseHandler.extractResponse(sigrunResponse);
