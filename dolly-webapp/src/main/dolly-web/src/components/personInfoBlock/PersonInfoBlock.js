@@ -7,13 +7,12 @@ import './personInfoBlock.less'
 
 export default class PersonInfoBlock extends PureComponent {
 	static propTypes = {
-		header: PropTypes.string,
 		data: PropTypes.array
 	}
 
-	renderPersonInfoBlock = (data, header, idx) => {
+	renderPersonInfoBlock = (data, idx, bottomBorder) => {
 		const cssClassContent = cn('person-info-block_content', {
-			'person-info-block_content--bottom-border': header
+			'bottom-border': bottomBorder
 		})
 
 		return (
@@ -49,7 +48,7 @@ export default class PersonInfoBlock extends PureComponent {
 			return (
 				<Fragment>
 					{data.map((subBlock, idx) =>
-						this.renderPersonInfoBlock(subBlock.value, subBlock.label, idx)
+						this.renderPersonInfoBlock(subBlock.value, idx, idx !== data.length - 1)
 					)}
 				</Fragment>
 			)
