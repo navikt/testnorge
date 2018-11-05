@@ -4,7 +4,7 @@ import { createGruppe, deleteGruppe } from '~/ducks/gruppe'
 import { actions as teamActions } from '~/ducks/teams'
 import { actions as bestillingActions } from '~/ducks/bestilling'
 
-const redirectReducer = (state = null, action) => {
+export const redirectReducer = (state = null, action) => {
 	switch (action.type) {
 		case success(createGruppe):
 			return `/gruppe/${action.payload.data.id}`

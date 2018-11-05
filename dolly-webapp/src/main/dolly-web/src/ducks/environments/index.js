@@ -21,7 +21,7 @@ export default handleActions(
 	initialState
 )
 
-const _getEnvironmentsSortedByType = envArray => {
+export const _getEnvironmentsSortedByType = envArray => {
 	let sortedByType = envArray.reduce((prev, curr) => {
 		const label = curr.toUpperCase()
 		const envType = label.charAt(0)
