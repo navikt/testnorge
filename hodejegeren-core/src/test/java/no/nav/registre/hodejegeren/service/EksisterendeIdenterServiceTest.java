@@ -210,7 +210,7 @@ public class EksisterendeIdenterServiceTest {
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), eq(fnr2))).thenReturn(statusQuo);
     }
 
-    public void opprettIdenterMedManglendeFeltMock() throws IOException{
+    private void opprettIdenterMedManglendeFeltMock() throws IOException{
         Map<String, String> statusQuo = new HashMap<>();
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), eq(fnr1))).thenReturn(statusQuo);
 
