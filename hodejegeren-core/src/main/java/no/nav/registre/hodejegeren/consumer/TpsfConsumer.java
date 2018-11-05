@@ -28,6 +28,7 @@ public class TpsfConsumer {
     @Value("${tps-forvalteren.rest-api.url}")
     private String serverUrl;
     private RestTemplate restTemplate;
+    private ObjectMapper objectMapper = new ObjectMapper();
     
     public TpsfConsumer(
             @Value("${hodejegeren.ida.credential.username}") String username,
@@ -49,7 +50,6 @@ public class TpsfConsumer {
     
     public JsonNode getTpsServiceRoutine(String routineName, Map<String, Object> tpsRequestParameters) throws IOException {
         String response = restTemplate.getForObject(serverUrl + BASE_PATH_SERVICE_ROUTINE + routineName, String.class, tpsRequestParameters);
-        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readTree(response);
     }
 }
