@@ -92,6 +92,27 @@ public class EksisterendeIdenterServiceTest {
     }
 
     /**
+     * Testscenario: HVIS status quo på en ident inneholder felter uten verdi eller med null-verdier på felter som
+     * kreves i metoden, skal systemet velge en annen ident.
+     */
+    @Test
+    public void shouldHandleIdenterWithNullValuesInStatusQuoFields() throws IOException {
+        Endringskoder endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
+
+        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
+
+        when(rand.nextInt(anyInt())).thenReturn(0);
+
+        opprettIdenterMedManglendeFeltMock();
+
+        eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, endringskode, environment);
+
+        verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any(), any());
+        assertEquals(1, meldinger.size());
+        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+    }
+
+    /**
      * Testscenario: HVIS det skal opprettes vigselsmelding, skal systemet i metoden {@link EksisterendeIdenterService#behandleVigsel},
      * finne to personer som er ugifte, og myndige, og legge vigselsmelding på disse, og påse at hver av identene legges inn
      * som relasjon til den andre.
@@ -187,6 +208,18 @@ public class EksisterendeIdenterServiceTest {
         statusQuo.put(DATO_DO, "");
         statusQuo.put(STATSBORGER, "NORGE");
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), eq(fnr2))).thenReturn(statusQuo);
+    }
+
+    public void opprettIdenterMedManglendeFeltMock() throws IOException{
+        Map<String, String> statusQuo = new HashMap<>();
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), eq(fnr1))).thenReturn(statusQuo);
+
+        statusQuo.put(DATO_DO, "010203");
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), eq(fnr2))).thenReturn(statusQuo);
+
+        statusQuo = new HashMap<>();
+        statusQuo.put(STATSBORGER, "NORGE");
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), eq(fnr3))).thenReturn(statusQuo);
     }
 
     private void opprettMultipleUgifteIdenterMock() throws IOException {

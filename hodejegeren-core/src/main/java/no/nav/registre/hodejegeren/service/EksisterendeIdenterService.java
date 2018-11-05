@@ -99,7 +99,6 @@ public class EksisterendeIdenterService {
 
         for (int i = 0; i < meldinger.size(); i++) {
             if (i >= singleIdenterINorge.size() - 2) {
-                // ikke nok identer i singleIdenter-liste
                 if (log.isWarnEnabled()) {
                     log.warn("Kunne ikke finne ident for SkdMelding med meldingsnummer {}. For få identer i listen singleIdenterINorge."
                             , meldinger.get(i).getMeldingsnrHosTpsSynt());
