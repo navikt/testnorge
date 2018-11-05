@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName("t1")
-@Builder
+@Builder(toBuilder=true)
 public class RsMeldingstype1Felter extends RsMeldingstype {
     
     @Size(max = 6)
