@@ -175,14 +175,10 @@ public class EksisterendeIdenterServiceTest {
         assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
-    @Test
-    public void shouldGetFoedselsdatoFromFnr() {
-        String fnr1 = "14041212345";
-        String fnr2 = "14041254321";
-        assertEquals(LocalDate.of(1912, 4, 14), eksisterendeIdenterService.getFoedselsdatoFraFnr(fnr1));
-        assertEquals(LocalDate.of(2012, 4, 14), eksisterendeIdenterService.getFoedselsdatoFraFnr(fnr2));
-    }
-
+    /**
+     * Testscenario: HVIS det skal opprettes en vigselsmelding og det er for få ledige identer tilgjengelig, skal det
+     * skrives ut en melding til loggen.
+     */
     @Test
     public void shouldLogWarningForTooFewIdents() {
         Endringskoder endringskode = Endringskoder.VIGSEL;
@@ -198,6 +194,14 @@ public class EksisterendeIdenterServiceTest {
         assertTrue(listAppender.list.get(0).toString().contains("Kunne ikke finne ident for SkdMelding med meldingsnummer"));
     }
 
+    @Test
+    public void shouldGetFoedselsdatoFromFnr() {
+        String fnr1 = "14041212345";
+        String fnr2 = "14041254321";
+        assertEquals(LocalDate.of(1912, 4, 14), eksisterendeIdenterService.getFoedselsdatoFraFnr(fnr1));
+        assertEquals(LocalDate.of(2012, 4, 14), eksisterendeIdenterService.getFoedselsdatoFraFnr(fnr2));
+    }
+
     private void opprettLevendeNordmennMock() throws IOException {
         Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(DATO_DO, "010203");
@@ -210,7 +214,7 @@ public class EksisterendeIdenterServiceTest {
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), eq(fnr2))).thenReturn(statusQuo);
     }
 
-    private void opprettIdenterMedManglendeFeltMock() throws IOException{
+    private void opprettIdenterMedManglendeFeltMock() throws IOException {
         Map<String, String> statusQuo = new HashMap<>();
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), any(), eq(fnr1))).thenReturn(statusQuo);
 
