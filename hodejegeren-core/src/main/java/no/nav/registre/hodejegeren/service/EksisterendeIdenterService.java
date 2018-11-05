@@ -234,20 +234,16 @@ public class EksisterendeIdenterService {
     }
 
     private Map<String, String> getIdentWithStatus(List<String> identer, Endringskoder endringskode, String environment, Predicate<Map<String, String>> predicate) {
-        Map<String, String> statusQuoFraAarsakskodeIdent = new HashMap<>();
+        Map<String, String> statusQuoIdent;
         String randomIdent;
         do {
-            if (identer.isEmpty()) {
-                randomIdent = null;
-                break;
-            }
             int randomIndex = rand.nextInt(identer.size());
             randomIdent = identer.remove(randomIndex); // pass på remove
-            statusQuoFraAarsakskodeIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
-            statusQuoFraAarsakskodeIdent.put(IDENT, randomIdent);
+            statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
+            statusQuoIdent.put(IDENT, randomIdent);
         }
-        while (predicate.test(statusQuoFraAarsakskodeIdent));
-        return statusQuoFraAarsakskodeIdent;
+        while (predicate.test(statusQuoIdent));
+        return statusQuoIdent;
     }
 
     private Map<String, String> getStatusQuoPaaIdent(Endringskoder endringskode, String environment, String fnr) {
