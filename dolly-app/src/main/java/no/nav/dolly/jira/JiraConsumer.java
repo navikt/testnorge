@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.common.base.Charsets;
+
 import no.nav.dolly.properties.JiraProps;
 
 @Service
@@ -33,7 +35,7 @@ public class JiraConsumer {
 
     public HttpHeaders createHttpHeaders(MediaType mediaType, HttpHeaders httpHeaders) {
         String plainCreds = format("%s:%s", jiraProps.getUsername(), jiraProps.getPassword());
-        byte[] plainCredsBytes = plainCreds.getBytes();
+        byte[] plainCredsBytes = plainCreds.getBytes(Charsets.UTF_8);
         byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
         String base64Creds = new String(base64CredsBytes);
 

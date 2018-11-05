@@ -58,7 +58,8 @@ public class OpenAmService {
                     .miljoe(miljoe)
                     .status(attachmentResponse.getStatusCode())
                     .httpCode(attachmentResponse.getStatusCode().value())
-                    .message(HttpStatus.OK.value() == attachmentResponse.getStatusCodeValue() ?
+                    .message(HttpStatus.OK.value() == attachmentResponse.getStatusCodeValue() &&
+                            createResponse.getBody() != null ?
                             format("%s%s/%s", jiraConsumer.getBaseUrl(), BROWSE, createResponse.getBody().getKey()) : null)
                     .build();
         } catch (JiraException e) {
@@ -83,15 +84,20 @@ public class OpenAmService {
         LinkedMultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("file", new FileSystemResource(fileFromIdents(identliste, createResponse.getBody())));
 
-        return jiraConsumer.excuteRequest(
-                format("%s/%s%s", ISSUE_CREATE, createResponse.getBody().getKey(), ATTACHMENTS),
-                HttpMethod.POST, new HttpEntity<>(params, jiraConsumer.createHttpHeaders(MediaType.MULTIPART_FORM_DATA, createResponse.getHeaders())), String.class);
+        if (createResponse.getBody() != null) {
+            return jiraConsumer.excuteRequest(
+                    format("%s/%s%s", ISSUE_CREATE, createResponse.getBody().getKey(), ATTACHMENTS),
+                    HttpMethod.POST, new HttpEntity<>(params, jiraConsumer.createHttpHeaders(MediaType.MULTIPART_FORM_DATA, createResponse.getHeaders())), String.class);
+        } else {
+            log.error("Mottatt tom response body paa createIssue.");
+            throw new JiraException(HttpStatus.INTERNAL_SERVER_ERROR, FEILMELDING);
+        }
     }
 
     private ResponseEntity<JiraResponse> createIssue(String miljoe, Fields fields) {
         String envId = null;
 
-        if (fields == null || !isValid(fields.getCustomfield_14811()) || !isValid(fields.getProject()) || !isValid(fields.getIssuetype())) {
+        if (fields == null || isInvalid(fields.getCustomfield_14811()) || isInvalid(fields.getProject()) || isInvalid(fields.getIssuetype())) {
             log.error("En eller flere nødvendige felter i metadata er null.");
             throw new JiraException(HttpStatus.INTERNAL_SERVER_ERROR, FEILMELDING);
         }
@@ -126,8 +132,8 @@ public class OpenAmService {
                 new HttpEntity<>(request, jiraConsumer.createHttpHeaders(MediaType.APPLICATION_JSON)), JiraResponse.class);
     }
 
-    private boolean isValid(Field field) {
-        return field != null && !field.getAllowedValues().isEmpty();
+    private boolean isInvalid(Field field) {
+        return field == null || field.getAllowedValues().isEmpty();
     }
 
     private Fields readOpenAmMetadata() {
@@ -147,11 +153,11 @@ public class OpenAmService {
         try {
             tempFile = File.createTempFile(format("OpenAM-%s-", jiraResponse.getKey()), ".txt");
 
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile));
-            for (String ident : identliste) {
-                bufferedWriter.write(format("%s;4;n;e;%n", ident));
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile))) {
+                for (String ident : identliste) {
+                    bufferedWriter.write(format("%s;4;n;e;%n", ident));
+                }
             }
-            bufferedWriter.close();
 
         } catch (IOException e) {
             log.error(e.getMessage(), e);
