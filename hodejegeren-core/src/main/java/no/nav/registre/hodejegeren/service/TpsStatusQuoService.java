@@ -26,19 +26,19 @@ public class TpsStatusQuoService {
 
     private Map<String, JsonNode> tpsServiceRoutineCache;
 
-    public Map<String, String> getStatusQuo(String routineName, List<String> feltnavn, String aksjonsKode, String environment, String fnr) throws IOException {
+    public static final String AKSJONSKODE = "A0";
+
+    public Map<String, String> getStatusQuo(String routineName, List<String> feltnavn, String environment, String fnr) throws IOException {
         Map<String, String> personStatusQuo = new HashMap<>(feltnavn.size());
         resetCache();
 
         for (String felt : feltnavn) {
-            JsonNode root = getInfoOnRoutineName(routineName, aksjonsKode, environment, fnr);
+            JsonNode root = getInfoOnRoutineName(routineName, AKSJONSKODE, environment, fnr);
 
             if (root == null) {
-                if (log.isInfoEnabled()) {
-                    log.info("Could not get routine {} on fnr {}", routineName, fnr);
-                }
+                log.error("Fant ikke rutine {} på fnr {}", routineName, fnr);
 
-                throw new ManglendeInfoITpsException("Could not get routine " + routineName + " on fnr " + fnr);
+                throw new ManglendeInfoITpsException("Fant ikke rutine " + routineName + " på fnr " + fnr);
             } else {
                 personStatusQuo.put(felt, extractStatusQuoInfoFromTps(root, felt));
             }
