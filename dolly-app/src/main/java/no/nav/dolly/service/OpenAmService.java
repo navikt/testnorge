@@ -1,11 +1,13 @@
 package no.nav.dolly.service;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static java.lang.String.format;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,7 +86,7 @@ public class OpenAmService {
         LinkedMultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("file", new FileSystemResource(createIdentsFile(identliste)));
 
-        if (createResponse.getBody() != null) {
+        if (createResponse != null && createResponse.getBody() != null) {
             return jiraConsumer.excuteRequest(
                     format("%s/%s%s", ISSUE_CREATE, createResponse.getBody().getKey(), ATTACHMENTS),
                     HttpMethod.POST, new HttpEntity<>(params, jiraConsumer.createHttpHeaders(MediaType.MULTIPART_FORM_DATA, createResponse.getHeaders())), String.class);
@@ -140,7 +142,7 @@ public class OpenAmService {
         ResponseEntity<Project> metadata = jiraConsumer.excuteRequest(format("%s%s", ISSUE_CREATE, METADATA), HttpMethod.GET,
                 new HttpEntity<>("", jiraConsumer.createHttpHeaders(MediaType.APPLICATION_JSON)), Project.class);
 
-        if (metadata.getBody() != null && !metadata.getBody().getProjects().isEmpty() && !metadata.getBody().getProjects().get(0).getIssuetypes().isEmpty()) {
+        if (metadata != null && metadata.getBody() != null && isMetadataNotEmpty(metadata)) {
             return metadata.getBody().getProjects().get(0).getIssuetypes().get(0).getFields();
         } else {
             log.error("En eller flere nødvendige felter i metadata er null.");
@@ -148,14 +150,18 @@ public class OpenAmService {
         }
     }
 
+    private boolean isMetadataNotEmpty(ResponseEntity<Project> metadata) {
+        return !metadata.getBody().getProjects().isEmpty() && !metadata.getBody().getProjects().get(0).getIssuetypes().isEmpty();
+    }
+
     private File createIdentsFile(List<String> identliste) {
         File tempFile = null;
         try {
             tempFile = File.createTempFile("OpenAM-", ".txt");
 
-            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile))) {
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(tempFile), UTF_8)) {
                 for (String ident : identliste) {
-                    bufferedWriter.write(format("%s;4;n;e;%n", ident));
+                    writer.write(format("%s;4;n;e;%n", ident));
                 }
             }
 
