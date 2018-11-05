@@ -37,7 +37,7 @@ public class JiraConsumer {
         String plainCreds = format("%s:%s", jiraProps.getUsername(), jiraProps.getPassword());
         byte[] plainCredsBytes = plainCreds.getBytes(Charsets.UTF_8);
         byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
-        String base64Creds = new String(base64CredsBytes);
+        String base64Creds = new String(base64CredsBytes, Charsets.UTF_8);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic " + base64Creds);
