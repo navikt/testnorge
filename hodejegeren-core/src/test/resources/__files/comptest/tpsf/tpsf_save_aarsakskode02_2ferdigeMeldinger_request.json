@@ -25,6 +25,7 @@
     "datoSpesRegType": "20090522",
     "sivilstand": "0",
     "regdatoSivilstand": "00000000",
+    "ektefellePartnerFdato": null,
     "ektefellePartnerNavn": " ",
     "ektefellePartnerStatsb": "0 ",
     "regdatoAdr": "20150718",
@@ -140,14 +141,14 @@
     "vergeFnrDnr": null,
     "vergetype": null,
     "mandattype": null,
+    "ektefellePartnerPnr": null,
     "mandatTekst": null,
     "reserverFramtidigBruk": null,
-    "slekstnavnUgift": null,
     "meldingstype": "t1",
-    "ektefellePartnerFdato": null,
-    "ektefellePartnerPnr": null,
     "kjonn": " ",
-    "farsFarsNavn": " "
+    "farsFarsNavn": " ",
+    "statsborgerskapRegdato": "00000000",
+    "slekstnavnUgift": null
   },
   {
     "transtype": "1",
@@ -296,6 +297,7 @@
     "meldingstype": "t1",
     "ektefellePartnerFdato": null,
     "ektefellePartnerPnr": null,
+    "statsborgerskapRegdato": "00000000",
     "kjonn": " ",
     "farsFarsNavn": " "
   }
