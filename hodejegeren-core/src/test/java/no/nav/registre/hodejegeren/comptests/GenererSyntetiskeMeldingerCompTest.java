@@ -1,8 +1,6 @@
 package no.nav.registre.hodejegeren.comptests;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
@@ -40,7 +38,7 @@ public class GenererSyntetiskeMeldingerCompTest {
     private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
     private long gruppeId = 123L;
     private Integer antallMeldinger = 2;
-    private String aarsakskodeFoedselsmelding = "0211";
+    private String aarsakskodeInnvandringsmelding = "0211";
     
     @Autowired
     private TriggeSyntetiseringController triggeSyntetiseringController;
@@ -50,7 +48,8 @@ public class GenererSyntetiskeMeldingerCompTest {
     private String password;
     
     /**
-     * Komponenttest av følgende scenario: Happypath - test
+     * Komponenttest av følgende scenario: Happypath-test med 2 innvandringsmeldinger.
+     * <p>
      * Hodejegeren henter syntetiserte skdmelidnger fra TPS Syntetisereren, mater dem med identer og tilhørende info, og lagrer meldingene i TPSF.
      * (se løsningsbeskrivelse for hele prosedyren som testes i happypath: https://confluence.adeo.no/display/FEL/TPSF+Hodejegeren)
      * <p>
@@ -64,7 +63,7 @@ public class GenererSyntetiskeMeldingerCompTest {
     @Test
     public void shouldGenerereSyntetiserteMeldinger() {
         HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
-        antallMeldingerPerAarsakskode.put(aarsakskodeFoedselsmelding, antallMeldinger);
+        antallMeldingerPerAarsakskode.put(aarsakskodeInnvandringsmelding, antallMeldinger);
         
         stubTPSF(gruppeId);
         stubTpsSynt();
@@ -83,22 +82,18 @@ public class GenererSyntetiskeMeldingerCompTest {
     }
     
     private void stubTpsSynt() {
-        stubFor(get(urlPathEqualTo("/tpssynt/api/generate")) //?aarsakskode="+aarsakskodeFoedselsmelding+"&antallMeldinger="+antallMeldinger))
-                //.withQueryParam("aarsakskode", equalTo(aarsakskodeFoedselsmelding)) //FIXME Vil ikke fungere! Hvorfor? RestTemplate sine queryParams blir ikke registrert
-                //.withQueryParam("antallMeldinger", equalTo(antallMeldinger.toString()))
+        stubFor(get(urlPathEqualTo("/tpssynt/api/generate"))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
                         .withBodyFile("comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json")));
     }
     
     private void stubTPSF(long gruppeId) {
-        //        stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/identer/" + gruppeId))
-        //                .withQueryParam("aarsakskode", containing("1")) //getForObject sine urivariables blir visst ikke registrert i wiremock, så derfor fungerer ikke withQueryParam-sjekken.
-        //                .withQueryParam("transaksjonstype", equalTo("1"))
-        //                .withBasicAuth(username, password)
-        //                .willReturn(okJson("[\n"
-        //                        + "  \"12042101557\",\n"
-        //                        + "  \"01015600248\"\n"
-        //                        + "]")));
+        stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/identer/" + gruppeId))
+                .withBasicAuth(username, password)
+                .willReturn(okJson("[\n"
+                        + "  \"12042101557\",\n"
+                        + "  \"01015600248\"\n"
+                        + "]")));
         
         stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
                 .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
