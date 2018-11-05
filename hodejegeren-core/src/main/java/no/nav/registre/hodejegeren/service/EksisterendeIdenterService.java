@@ -188,20 +188,7 @@ public class EksisterendeIdenterService {
                     if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
                         putFnrInnIMelding(meldinger.get(i), ident);
 
-                        RsMeldingstype melding = new RsMeldingstype1Felter();
-                        melding.setAarsakskode(SIVILSTANDSENDRING_AARSAKSKODE);
-                        melding.setMaskindato(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
-                        melding.setMaskintid(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
-
-                        ((RsMeldingstype1Felter) melding).setRegdatoSivilstand(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
-                        ((RsMeldingstype1Felter) melding).setFodselsdato(identPartner.substring(0, 6));
-                        ((RsMeldingstype1Felter) melding).setPersonnummer(identPartner.substring(6));
-                        ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode());
-                        ((RsMeldingstype1Felter) melding).setPersonkode("1");
-                        ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
-                        ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
-
-                        meldinger.add(melding);
+                        meldinger.add(opprettSivilstandsendringsmelding(ident, identPartner));
 
                         oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                     } else {
@@ -270,6 +257,23 @@ public class EksisterendeIdenterService {
         RsMeldingstype rsMeldingstypeIdent = new RsMeldingstype1Felter();
         putFnrInnIMelding(rsMeldingstypeIdent, fnr);
         return rsMeldingstypeIdent;
+    }
+
+    private RsMeldingstype opprettSivilstandsendringsmelding(String ident, String identPartner) {
+        RsMeldingstype melding = new RsMeldingstype1Felter();
+        melding.setAarsakskode(SIVILSTANDSENDRING_AARSAKSKODE);
+        melding.setMaskindato(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
+        melding.setMaskintid(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
+
+        ((RsMeldingstype1Felter) melding).setRegdatoSivilstand(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
+        ((RsMeldingstype1Felter) melding).setFodselsdato(identPartner.substring(0, 6));
+        ((RsMeldingstype1Felter) melding).setPersonnummer(identPartner.substring(6));
+        ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode());
+        ((RsMeldingstype1Felter) melding).setPersonkode("1");
+        ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
+        ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
+
+        return melding;
     }
 
     private void oppdaterBolk(List<String> brukteIdenterIDenneBolken, List<String> identer) {
