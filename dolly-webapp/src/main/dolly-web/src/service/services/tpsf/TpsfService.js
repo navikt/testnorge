@@ -1,59 +1,57 @@
 import Request from '../Request'
-import store from '~/Store'
-var url = ''
-var baseUrl = ''
+import ConfigService from '~/service/Config'
 
 export default class TpsfService {
 	static getTpsfUrl() {
-		url = store.getState().config.dollyApi.url + '/api/v1'
+		return ConfigService.getDatesourceUrl('tpsf') + '/api/v1'
 	}
 
 	static getBaseUrl() {
-		baseUrl = store.getState().config.dollyApi.url
+		return ConfigService.getDatesourceUrl('tpsf')
 	}
 
 	static getTestbrukere(userArray) {
-		this.getTpsfUrl()
 		if (!userArray) return
 		const userString = userArray.join(',')
-		const endpoint = url + '/dolly/testdata/personerdata'
+		const endpoint = this.getTpsfUrl() + '/dolly/testdata/personerdata'
 
 		return Request.get(`${endpoint}?identer=${userString}`)
 	}
 
 	static updateTestbruker(userData) {
 		if (!userData) return
-		const endpoint = url + '/testdata/updatepersoner'
+		const endpoint = this.getTpsfUrl() + '/testdata/updatepersoner'
 		return Request.post(endpoint, [userData])
 	}
 
 	static createFoedselsmelding(userData) {
-		this.getTpsfUrl()
-		const endpoint = url + '/tpsmelding/foedselsmelding'
+		const endpoint = this.getTpsfUrl() + '/tpsmelding/foedselsmelding'
 		return Request.post(endpoint, userData)
 	}
 
 	static getKontaktInformasjon(fnr, env) {
-		this.getBaseUrl()
-		const endpoint = baseUrl + '/api/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
+		const endpoint =
+			this.getBaseUrl() + '/api/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
 		return Request.get(endpoint)
 	}
 
 	static createDoedsmelding(userData) {
-		this.getTpsfUrl()
-		const endpoint = url + '/tpsmelding/doedsmelding'
+		const endpoint = this.getTpsfUrl() + '/tpsmelding/doedsmelding'
 		return Request.post(endpoint, userData)
 	}
 
 	static getMiljoerByFnr(fnr) {
-		this.getTpsfUrl()
-		const endpoint = url + '/testdata/tpsStatus?identer=' + fnr
+		const endpoint = this.getTpsfUrl() + '/testdata/tpsStatus?identer=' + fnr
 		return Request.get(endpoint)
 	}
 
 	static generateAddress(query) {
-		this.getTpsfUrl()
-		const endpoint = `${url}/gyldigadresse/tilfeldig?maxAntall=1${query}`
+		const endpoint = `${this.getTpsfUrl()}/gyldigadresse/tilfeldig?maxAntall=1${query}`
+		return Request.get(endpoint)
+	}
+
+	static getTilgjengligeMiljoer() {
+		const endpoint = `${this.getTpsfUrl()}/environments`
 		return Request.get(endpoint)
 	}
 }

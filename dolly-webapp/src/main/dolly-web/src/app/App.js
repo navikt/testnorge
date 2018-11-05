@@ -3,7 +3,6 @@ import { Switch, Route } from 'react-router-dom'
 import Header from '~/components/header/Header'
 import Loading from '~/components/loading/Loading'
 import Breadcrumb from '~/components/breadcrumb/BreadcrumbWithHoc'
-import SplashscreenConnector from '~/components/splashscreen/SplashscreenConnector'
 import Toast from '~/components/toast/Toast'
 import routes from '~/Routes'
 
@@ -11,8 +10,8 @@ import './App.less'
 
 export default class App extends Component {
 	componentDidMount() {
-		this.props.fetchDollyApiConfig()
-		this.props.fetchCurrentBruker()
+		this.props.fetchConfig()
+		this.props.getCurrentBruker()
 	}
 
 	componentDidUpdate() {
@@ -21,8 +20,9 @@ export default class App extends Component {
 	}
 
 	render() {
-		const { brukerData, applicationError, clearAllErrors } = this.props
+		const { brukerData, applicationError, clearAllErrors, configReady } = this.props
 
+		if (!configReady) return null
 		if (!brukerData) return <Loading label="laster dolly applikasjon" fullpage />
 
 		return (

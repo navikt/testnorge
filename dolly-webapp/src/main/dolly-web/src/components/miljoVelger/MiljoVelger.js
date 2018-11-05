@@ -3,18 +3,12 @@ import PropTypes from 'prop-types'
 import _mapValues from 'lodash/mapValues'
 import LinkButton from '~/components/button/LinkButton/LinkButton'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
-import { EnvironmentManager } from '~/service/Kodeverk'
 
 import './MiljoVelger.less'
 
 export default class MiljoVelger extends Component {
 	static propTypes = {
 		heading: PropTypes.string
-	}
-
-	constructor(props) {
-		super(props)
-		this.Environments = new EnvironmentManager().getEnvironmentsSortedByType()
 	}
 
 	isChecked = id => this.props.arrayValues.includes(id)
@@ -45,6 +39,7 @@ export default class MiljoVelger extends Component {
 	}
 
 	renderEnvCategory = (envs, type) => {
+		if (!envs) return null
 		const allDisabled = envs.some(f => f.disabled)
 		return (
 			<fieldset key={type} name={`Liste over ${type}-mijøer`}>
@@ -73,20 +68,24 @@ export default class MiljoVelger extends Component {
 
 	renderError = ({ name, form }) => {
 		if (form.touched[name] && form.errors[name]) {
-			return <span style={{ color: 'red' }}>{form.errors[name]}</span>
+			return (
+				<span className="miljo-velger_error" style={{ color: 'red' }}>
+					{form.errors[name]}
+				</span>
+			)
 		}
 		return false
 	}
 
 	render() {
-		const { heading, arrayHelpers } = this.props
+		const { heading, arrayHelpers, environments } = this.props
+		if (!environments) return null
 
+		const order = ['U', 'T', 'Q']
 		return (
 			<div className="miljo-velger">
 				<h2>{heading}</h2>
-				{Object.keys(this.Environments).map(type =>
-					this.renderEnvCategory(this.Environments[type], type)
-				)}
+				{order.map(type => this.renderEnvCategory(environments[type], type))}
 				{this.renderError(arrayHelpers)}
 			</div>
 		)

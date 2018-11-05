@@ -16,7 +16,9 @@ export default class FormEditor extends PureComponent {
 				heading={<h3>{hovedKategori.navn}</h3>}
 				startOpen={!closePanels}
 			>
-				{items.map((item, idx) => this.renderFieldContainer(item, idx, formikProps))}
+				{items.map((item, idx) => {
+					return this.renderFieldContainer(item, idx, formikProps)
+				})}
 			</Panel>
 		)
 	}
@@ -24,15 +26,16 @@ export default class FormEditor extends PureComponent {
 	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = items[0].id === 'boadresse'
+		const isFieldarray = Boolean(items[0].items)
 		return (
 			<div className="subkategori" key={uniqueId}>
-				{<h4>{subKategori.navn}</h4>}
+				{!isFieldarray && <h4>{subKategori.navn}</h4>}
 				<div className="subkategori-field-group">
 					{items.map(
 						item =>
-							item.items
+							isFieldarray
 								? FormEditorFieldArray(item, formikProps, this.renderFieldComponent)
-								: this.renderFieldComponent(item)
+								: this.renderFieldComponent(item, formikProps.values)
 					)}
 				</div>
 				{isAdresse && <AutofillAddress formikProps={formikProps} />}
@@ -40,25 +43,39 @@ export default class FormEditor extends PureComponent {
 		)
 	}
 
-	renderFieldComponent = item => {
+	renderFieldComponent = (item, valgteVerdier, parentObject) => {
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
-		const componentProps = this.extraComponentProps(item)
+		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 
 		return (
 			<Field
-				key={item.id}
+				key={item.key || item.id}
 				name={item.id}
 				label={item.label}
 				component={InputComponent}
+				size={item.size}
 				{...componentProps}
 			/>
 		)
 	}
 
-	extraComponentProps = item => {
+	extraComponentProps = (item, valgteVerdier, parentObject) => {
 		switch (item.inputType) {
 			case 'select': {
+				if (item.dependentOn) {
+					if (parentObject) {
+						// Sjekk if item er avhengig av en valgt verdi
+						const { parentId, idx } = parentObject
+						const valgtVerdi = valgteVerdier[parentId][idx][item.dependentOn]
+						item.apiKodeverkId = valgtVerdi
+						// Override for force rerender av react select
+						item.key = valgtVerdi
+					} else {
+						// TODO: Implement når vi trenger avhengighet mellom flat attributter
+					}
+				}
+
 				if (item.apiKodeverkId) {
 					return {
 						loadOptions: () =>
@@ -86,6 +103,7 @@ export default class FormEditor extends PureComponent {
 		const { AttributtListe, FormikProps, ClosePanels } = this.props
 
 		return AttributtListe.map(hovedKategori =>
+			// Ikke vis kategori som har default ikke-valgt radio button
 			this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
 		)
 	}
