@@ -1,4 +1,4 @@
-package no.nav.dolly.jira.domain;
+package no.nav.dolly.domain.jira;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,15 +9,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AllowedValue {
+public class Issuetypes {
 
     private String self;
-    private String value;
     private String id;
-    private String key;
     private String description;
     private String iconUrl;
     private String name;
     private Boolean subtask;
-    private String avatarId;
+    private String expand;
+    private Fields fields;
 }

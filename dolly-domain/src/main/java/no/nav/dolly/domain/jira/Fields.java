@@ -1,4 +1,4 @@
-package no.nav.dolly.jira.domain;
+package no.nav.dolly.domain.jira;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
