@@ -21,9 +21,6 @@ public class NyeIdenterService {
     private IdentPoolConsumer identPoolConsumer;
     
     public List<String> settInnNyeIdenterITrans1Meldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger) {
-        if (meldinger == null) {
-            return new ArrayList<>();
-        }
         int antallNyeIdenter = meldinger.size();
         HentIdenterRequest request = HentIdenterRequest.builder()
                 .antall(antallNyeIdenter)
