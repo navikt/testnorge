@@ -26,15 +26,11 @@ public class FoedselService {
 
     private Random rand;
 
-    public FoedselService (Random rand) {
+    public FoedselService(Random rand) {
         this.rand = rand;
     }
 
     public List<String> behandleFoedselsmeldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge) {
-        if (meldinger == null) {
-            return new ArrayList<>();
-        }
-
         List<String> moedre = findMoedre(meldinger.size(), levendeIdenterINorge);
         List<String> barn = new ArrayList<>(meldinger.size());
 

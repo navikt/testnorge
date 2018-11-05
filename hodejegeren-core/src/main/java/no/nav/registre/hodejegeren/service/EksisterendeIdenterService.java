@@ -99,6 +99,10 @@ public class EksisterendeIdenterService {
         for (int i = 0; i < meldinger.size(); i++) {
             if (i >= singleIdenterINorge.size() - 2) {
                 // ikke nok identer i singleIdenter-liste
+                if (log.isWarnEnabled()) {
+                    log.warn("Kunne ikke finne ident for SkdMelding med meldingsnummer {}. For få identer i listen singleIdenterINorge."
+                            , meldinger.get(i).getMeldingsnrHosTpsSynt());
+                }
                 break;
             }
 
@@ -118,11 +122,11 @@ public class EksisterendeIdenterService {
             String identPartner = statusQuoPartnerIdent.get(IDENT);
 
             if (ident != null && identPartner != null) {
-                putFnrInnIMelding(meldinger.get(i), ident);
+                putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
                 ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerFdato(identPartner.substring(0, 6));
                 ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerPnr(identPartner.substring(6));
 
-                RsMeldingstype melding = opprettKopiAvSkdMelding(meldinger.get(i), identPartner);
+                RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
                 meldinger.add(melding);
                 ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
                 ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
@@ -136,6 +140,14 @@ public class EksisterendeIdenterService {
                                              Endringskoder endringskoder, String environment) {
         int antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
+            if (i >= gifteIdenterINorge.size() - 1) {
+                if (log.isWarnEnabled()) {
+                    log.warn("Kunne ikke finne ident for SkdMelding med meldingsnummer {}. For få identer i listen gifteIdenterINorge."
+                            , meldinger.get(i).getMeldingsnrHosTpsSynt());
+                }
+                break;
+            }
+
             Map<String, String> statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskoder, environment,
                     (Map<String, String> a) -> !a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode()));
 
@@ -150,9 +162,9 @@ public class EksisterendeIdenterService {
 
                 if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))) {
                     if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
-                        putFnrInnIMelding(meldinger.get(i), ident);
+                        putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
 
-                        RsMeldingstype melding = opprettKopiAvSkdMelding(meldinger.get(i), identPartner);
+                        RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
                         meldinger.add(melding);
 
                         oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
@@ -172,6 +184,14 @@ public class EksisterendeIdenterService {
                                      Endringskoder endringskode, String environment) {
         int antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
+            if (i >= levendeIdenterINorge.size() - 1) {
+                if (log.isWarnEnabled()) {
+                    log.warn("Kunne ikke finne ident for SkdMelding med meldingsnummer {}. For få identer i listen levendeIdenterINorge."
+                            , meldinger.get(i).getMeldingsnrHosTpsSynt());
+                }
+                break;
+            }
+
             Map<String, String> statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
 
@@ -186,7 +206,7 @@ public class EksisterendeIdenterService {
 
                 if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))) {
                     if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
-                        putFnrInnIMelding(meldinger.get(i), ident);
+                        putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
 
                         meldinger.add(opprettSivilstandsendringsmelding(ident, identPartner));
 
@@ -198,7 +218,7 @@ public class EksisterendeIdenterService {
                     // ulik sivilstand på identene
                 }
             } else {
-                putFnrInnIMelding(meldinger.get(i), ident);
+                putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
             }
         }
@@ -208,13 +228,21 @@ public class EksisterendeIdenterService {
     public void behandleGenerellAarsak(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
                                        Endringskoder endringskode, String environment) {
         for (int i = 0; i < meldinger.size(); i++) {
+            if (i >= levendeIdenterINorge.size() - 1) {
+                if (log.isWarnEnabled()) {
+                    log.warn("Kunne ikke finne ident for SkdMelding med meldingsnummer {}. For få identer i listen levendeIdenterINorge."
+                            , meldinger.get(i).getMeldingsnrHosTpsSynt());
+                }
+                break;
+            }
+
             Map<String, String> statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
 
             String ident = statusQuoIdent.get(IDENT);
 
             if (ident != null) {
-                putFnrInnIMelding(meldinger.get(i), ident);
+                putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
             }
         }
@@ -240,39 +268,37 @@ public class EksisterendeIdenterService {
             statusQuoFraAarsakskode.putAll(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(
                     endringskode, environment, fnr));
         } catch (Exception e) {
-            if (log.isInfoEnabled()) {
-                log.info("Could not get status quo info on ident {} ", fnr);
-            }
+            log.error("Could not get status quo info on ident {} ", fnr);
         }
 
         return statusQuoFraAarsakskode;
     }
 
-    private void putFnrInnIMelding(RsMeldingstype melding, String fnr) {
-        ((RsMeldingstype1Felter) melding).setFodselsdato(fnr.substring(0, 6));
-        ((RsMeldingstype1Felter) melding).setPersonnummer(fnr.substring(6));
+    private void putFnrInnIMelding(RsMeldingstype1Felter melding, String fnr) {
+        melding.setFodselsdato(fnr.substring(0, 6));
+        melding.setPersonnummer(fnr.substring(6));
     }
 
-    private RsMeldingstype opprettKopiAvSkdMelding(RsMeldingstype originalMelding, String fnr) {
-        RsMeldingstype rsMeldingstypeIdent = ((RsMeldingstype1Felter) originalMelding).toBuilder()
+    private RsMeldingstype1Felter opprettKopiAvSkdMelding(RsMeldingstype1Felter originalMelding, String fnr) {
+        RsMeldingstype1Felter rsMeldingstypeIdent = originalMelding.toBuilder()
                 .fodselsdato(fnr.substring(0, 6))
                 .personnummer(fnr.substring(6)).build();
         return rsMeldingstypeIdent;
     }
 
-    private RsMeldingstype opprettSivilstandsendringsmelding(String ident, String identPartner) {
-        RsMeldingstype melding = new RsMeldingstype1Felter();
+    private RsMeldingstype1Felter opprettSivilstandsendringsmelding(String ident, String identPartner) {
+        RsMeldingstype1Felter melding = new RsMeldingstype1Felter();
         melding.setAarsakskode(SIVILSTANDSENDRING_AARSAKSKODE);
         melding.setMaskindato(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
         melding.setMaskintid(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
 
-        ((RsMeldingstype1Felter) melding).setRegdatoSivilstand(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
-        ((RsMeldingstype1Felter) melding).setFodselsdato(identPartner.substring(0, 6));
-        ((RsMeldingstype1Felter) melding).setPersonnummer(identPartner.substring(6));
-        ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode());
-        ((RsMeldingstype1Felter) melding).setPersonkode("1");
-        ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
-        ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
+        melding.setRegdatoSivilstand(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
+        melding.setFodselsdato(identPartner.substring(0, 6));
+        melding.setPersonnummer(identPartner.substring(6));
+        melding.setSivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode());
+        melding.setPersonkode("1");
+        melding.setEktefellePartnerFdato(ident.substring(0, 6));
+        melding.setEktefellePartnerPnr(ident.substring(6));
 
         return melding;
     }

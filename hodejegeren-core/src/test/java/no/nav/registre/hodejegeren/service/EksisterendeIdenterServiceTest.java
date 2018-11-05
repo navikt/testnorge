@@ -1,5 +1,8 @@
 package no.nav.registre.hodejegeren.service;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 import org.junit.Before;
@@ -8,10 +11,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +24,7 @@ import java.util.Random;
 
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -154,6 +160,21 @@ public class EksisterendeIdenterServiceTest {
         String fnr2 = "14041254321";
         assertEquals(LocalDate.of(1912, 4, 14), eksisterendeIdenterService.getFoedselsdatoFraFnr(fnr1));
         assertEquals(LocalDate.of(2012, 4, 14), eksisterendeIdenterService.getFoedselsdatoFraFnr(fnr2));
+    }
+
+    @Test
+    public void shouldLogWarningForTooFewIdents() {
+        Endringskoder endringskode = Endringskoder.VIGSEL;
+
+        Logger logger = (Logger) LoggerFactory.getLogger(EksisterendeIdenterService.class);
+        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        listAppender.start();
+        logger.addAppender(listAppender);
+
+        eksisterendeIdenterService.behandleVigsel(meldinger, Arrays.asList("01010101010"), brukteIdenter, endringskode, environment);
+
+        assertEquals(1, listAppender.list.size());
+        assertTrue(listAppender.list.get(0).toString().contains("Kunne ikke finne ident for SkdMelding med meldingsnummer"));
     }
 
     private void opprettLevendeNordmennMock() throws IOException {
