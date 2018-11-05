@@ -5,10 +5,11 @@ import './StaticValue.less'
 
 export default class StaticValue extends PureComponent {
 	static propTypes = {
-		header: PropTypes.string.isRequired, // Wraps headers around string (h1, h2)
+		header: PropTypes.string.isRequired,
 		value: PropTypes.string.isRequired,
 		format: PropTypes.func,
-		headerType: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4'])
+		headerType: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4']),
+		optionalClassName: PropTypes.string
 	}
 
 	static defaultProps = {
@@ -16,12 +17,12 @@ export default class StaticValue extends PureComponent {
 	}
 
 	render() {
-		const { header, value, format, headerType } = this.props
+		const { header, value, format, headerType, optionalClassName } = this.props
 		let _value = value
 		if (format) _value = format(value)
 
 		return (
-			<div className="static-value">
+			<div className={optionalClassName || 'static-value'}>
 				{React.createElement(headerType, null, [header])}
 				<span>{_value}</span>
 			</div>

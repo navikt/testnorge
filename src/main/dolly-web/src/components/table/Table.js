@@ -82,6 +82,7 @@ class TableHeader extends PureComponent {
 		return (
 			<div tabIndex={0} className="dot-header" {...restProps}>
 				{children}
+				<div className="dot-column col10 dot-body-row-actioncolumn" />
 			</div>
 		)
 	}
