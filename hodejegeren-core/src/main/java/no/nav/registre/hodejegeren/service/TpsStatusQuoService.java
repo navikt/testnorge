@@ -36,11 +36,9 @@ public class TpsStatusQuoService {
             JsonNode root = getInfoOnRoutineName(routineName, AKSJONSKODE, environment, fnr);
 
             if (root == null) {
-                if (log.isInfoEnabled()) {
-                    log.info("Could not get routine {} on fnr {}", routineName, fnr);
-                }
+                log.error("Fant ikke rutine {} på fnr {}", routineName, fnr);
 
-                throw new ManglendeInfoITpsException("Could not get routine " + routineName + " on fnr " + fnr);
+                throw new ManglendeInfoITpsException("Fant ikke rutine " + routineName + " på fnr " + fnr);
             } else {
                 personStatusQuo.put(felt, extractStatusQuoInfoFromTps(root, felt));
             }

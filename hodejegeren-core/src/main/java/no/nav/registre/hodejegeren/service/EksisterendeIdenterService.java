@@ -8,6 +8,7 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -108,14 +109,14 @@ public class EksisterendeIdenterService {
 
             Map<String, String> statusQuoIdent;
             statusQuoIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
-                            || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode())
+                    (Map<String, String> a) -> KoderForSivilstand.GIFT.getSivilstandKode().equals(a.get(SIVILSTAND))
+                            || KoderForSivilstand.SEPARERT.getSivilstandKode().equals(a.get(SIVILSTAND))
                             || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
 
             Map<String, String> statusQuoPartnerIdent;
             statusQuoPartnerIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())
-                            || a.get(SIVILSTAND).equals(KoderForSivilstand.SEPARERT.getSivilstandKode())
+                    (Map<String, String> a) -> KoderForSivilstand.GIFT.getSivilstandKode().equals(a.get(SIVILSTAND))
+                            || KoderForSivilstand.SEPARERT.getSivilstandKode().equals(a.get(SIVILSTAND))
                             || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
 
             String ident = statusQuoIdent.get(IDENT);
@@ -149,7 +150,7 @@ public class EksisterendeIdenterService {
             }
 
             Map<String, String> statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskoder, environment,
-                    (Map<String, String> a) -> !a.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode()));
+                    (Map<String, String> a) -> !KoderForSivilstand.GIFT.getSivilstandKode().equals(a.get(SIVILSTAND)));
 
             String ident = statusQuoIdent.get(IDENT);
             Map<String, String> statusQuoPartnerIdent;
@@ -193,7 +194,7 @@ public class EksisterendeIdenterService {
             }
 
             Map<String, String> statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
+                    (Map<String, String> a) -> (a.get(DATO_DO) != null && !a.get(DATO_DO).isEmpty()) || !STATSBORGER_NORGE.equals(a.get(STATSBORGER)));
 
             String ident = statusQuoIdent.get(IDENT);
             Map<String, String> statusQuoPartnerIdent;
@@ -237,7 +238,7 @@ public class EksisterendeIdenterService {
             }
 
             Map<String, String> statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> !a.get(DATO_DO).isEmpty() || !a.get(STATSBORGER).equals(STATSBORGER_NORGE));
+                    (Map<String, String> a) -> (a.get(DATO_DO) != null && !a.get(DATO_DO).isEmpty()) || !STATSBORGER_NORGE.equals(a.get(STATSBORGER)));
 
             String ident = statusQuoIdent.get(IDENT);
 
@@ -253,7 +254,7 @@ public class EksisterendeIdenterService {
         String randomIdent;
         do {
             int randomIndex = rand.nextInt(identer.size());
-            randomIdent = identer.remove(randomIndex); // pass på remove
+            randomIdent = identer.remove(randomIndex);
             statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
             statusQuoIdent.put(IDENT, randomIdent);
         }
@@ -267,8 +268,8 @@ public class EksisterendeIdenterService {
         try {
             statusQuoFraAarsakskode.putAll(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(
                     endringskode, environment, fnr));
-        } catch (Exception e) {
-            log.error("Could not get status quo info on ident {} ", fnr);
+        } catch (IOException e) {
+            log.error("Kunne ikke finne status quo for ident {} ", fnr);
         }
 
         return statusQuoFraAarsakskode;
