@@ -312,6 +312,10 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
         this.morsSiviltilstand = morsSivilstand;
     }
     
+    public String getStatsborgerskapRegdato() {
+        return regdatoStatsb;
+    }
+    
     @Override
     public String getMeldingstype() {
         return "t1";
