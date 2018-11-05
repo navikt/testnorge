@@ -122,7 +122,7 @@ public class EksisterendeIdenterService {
                 ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerFdato(identPartner.substring(0, 6));
                 ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerPnr(identPartner.substring(6));
 
-                RsMeldingstype melding = opprettKopiAvSkdMelding(identPartner);
+                RsMeldingstype melding = opprettKopiAvSkdMelding(meldinger.get(i), identPartner);
                 meldinger.add(melding);
                 ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
                 ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
@@ -152,7 +152,7 @@ public class EksisterendeIdenterService {
                     if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
                         putFnrInnIMelding(meldinger.get(i), ident);
 
-                        RsMeldingstype melding = opprettKopiAvSkdMelding(identPartner);
+                        RsMeldingstype melding = opprettKopiAvSkdMelding(meldinger.get(i), identPartner);
                         meldinger.add(melding);
 
                         oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
@@ -253,9 +253,10 @@ public class EksisterendeIdenterService {
         ((RsMeldingstype1Felter) melding).setPersonnummer(fnr.substring(6));
     }
 
-    private RsMeldingstype opprettKopiAvSkdMelding(String fnr) {
-        RsMeldingstype rsMeldingstypeIdent = new RsMeldingstype1Felter();
-        putFnrInnIMelding(rsMeldingstypeIdent, fnr);
+    private RsMeldingstype opprettKopiAvSkdMelding(RsMeldingstype originalMelding, String fnr) {
+        RsMeldingstype rsMeldingstypeIdent = ((RsMeldingstype1Felter) originalMelding).toBuilder()
+                .fodselsdato(fnr.substring(0, 6))
+                .personnummer(fnr.substring(6)).build();
         return rsMeldingstypeIdent;
     }
 
