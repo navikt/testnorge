@@ -23,8 +23,10 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 @Service
 public class SigrunStubApiService {
 
-    private RestTemplate restTemplate = new RestTemplate();
     private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/testdata/opprettBolk";
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     ObjectMapper objectMapper;
