@@ -82,7 +82,7 @@ public class OpenAmService {
 
     private ResponseEntity<String> createAttachment(List<String> identliste, ResponseEntity<JiraResponse> createResponse) {
         LinkedMultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-        params.add("file", new FileSystemResource(fileFromIdents(identliste, createResponse.getBody())));
+        params.add("file", new FileSystemResource(createIdentsFile(identliste)));
 
         if (createResponse.getBody() != null) {
             return jiraConsumer.excuteRequest(
@@ -140,18 +140,18 @@ public class OpenAmService {
         ResponseEntity<Project> metadata = jiraConsumer.excuteRequest(format("%s%s", ISSUE_CREATE, METADATA), HttpMethod.GET,
                 new HttpEntity<>("", jiraConsumer.createHttpHeaders(MediaType.APPLICATION_JSON)), Project.class);
 
-        if (metadata.getBody() == null || metadata.getBody().getProjects().isEmpty() || metadata.getBody().getProjects().get(0).getIssuetypes().isEmpty()) {
+        if (metadata.getBody() != null && !metadata.getBody().getProjects().isEmpty() && !metadata.getBody().getProjects().get(0).getIssuetypes().isEmpty()) {
+            return metadata.getBody().getProjects().get(0).getIssuetypes().get(0).getFields();
+        } else {
             log.error("En eller flere nødvendige felter i metadata er null.");
             throw new JiraException(HttpStatus.INTERNAL_SERVER_ERROR, FEILMELDING);
         }
-
-        return metadata.getBody().getProjects().get(0).getIssuetypes().get(0).getFields();
     }
 
-    private File fileFromIdents(List<String> identliste, JiraResponse jiraResponse) {
+    private File createIdentsFile(List<String> identliste) {
         File tempFile = null;
         try {
-            tempFile = File.createTempFile(format("OpenAM-%s-", jiraResponse.getKey()), ".txt");
+            tempFile = File.createTempFile("OpenAM-", ".txt");
 
             try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile))) {
                 for (String ident : identliste) {
