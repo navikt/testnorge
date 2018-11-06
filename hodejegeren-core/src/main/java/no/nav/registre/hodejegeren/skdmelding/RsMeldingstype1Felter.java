@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName("t1")
-@Builder(toBuilder=true)
+@Builder(toBuilder = true)
 public class RsMeldingstype1Felter extends RsMeldingstype {
     
     @Size(max = 6)
@@ -168,7 +168,7 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     @Size(max = 2)
     private String foedselstype;
     @Size(max = 1)
-    private String morsSiviltilstand;
+    private String morsSivilstand;
     @Size(max = 1)
     private String ekteskPartnskNr;
     @Size(max = 1)
@@ -308,8 +308,8 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
         return farsNavn;
     }
     
-    public void setmorsSivilstand(String morsSivilstand) {
-        this.morsSiviltilstand = morsSivilstand;
+    public String getMorsSiviltilstand() {
+        return morsSivilstand;
     }
     
     public String getStatsborgerskapRegdato() {
