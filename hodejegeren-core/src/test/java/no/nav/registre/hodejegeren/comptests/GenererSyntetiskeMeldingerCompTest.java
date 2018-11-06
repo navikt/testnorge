@@ -8,6 +8,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static no.nav.registre.hodejegeren.service.Endringskoder.VIGSEL;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -60,6 +61,8 @@ public class GenererSyntetiskeMeldingerCompTest {
      * i det miljøet som angis av bestillingen/request.
      * Tilhørende felter må stemme overens med status quo i TPS på de eksisterende identer som mates inn i
      * de syntetiserte meldingene.
+     * <p>
+     * Testen tester f.o.m. RestController t.o.m. Consumer-klassene. Wiremock brukes.
      */
     @Test
     public void shouldGenerereSyntetiserteMeldinger() {
@@ -91,11 +94,34 @@ public class GenererSyntetiskeMeldingerCompTest {
     }
     
     private void stubTPSF(long gruppeId) {
+        //Hodejegeren henter alle identer i avspillergruppa hos TPSF:
         stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/identer/" + gruppeId))
+                .withQueryParam("aarsakskode", equalTo("01,02,39,91"))
+                .withQueryParam("transaksjonstype", equalTo("1"))
                 .withBasicAuth(username, password)
                 .willReturn(okJson("[\n"
                         + "  \"12042101557\",\n"
                         + "  \"01015600248\"\n"
+                        + "]")));
+        
+        //Hodejegeren henter liste med alle døde eller utvandrede identer i avspillergruppa hos TPSF:
+        stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/identer/" + gruppeId))
+                .withQueryParam("aarsakskode", equalTo("43,32"))
+                .withQueryParam("transaksjonstype", equalTo("1"))
+                .withBasicAuth(username, password)
+                .willReturn(okJson("[\n"
+                        + "  \"44444444444\",\n"
+                        + "  \"55555555555\"\n"
+                        + "]")));
+        
+        //Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
+        stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/identer/" + gruppeId))
+                .withQueryParam("aarsakskode", equalTo(VIGSEL.getAarsakskode()))
+                .withQueryParam("transaksjonstype", equalTo("1"))
+                .withBasicAuth(username, password)
+                .willReturn(okJson("[\n"
+                        + "  \"44444444444\",\n"
+                        + "  \"55555555555\"\n"
                         + "]")));
         
         stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
