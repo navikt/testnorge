@@ -32,6 +32,9 @@ public class HodejegerenConsumerTest {
     private int antallPerEndringskode = 1;
     private List<Long> expectedMeldingsIds;
 
+    /**
+     * Scenario: Tester happypath til {@link HodejegerenConsumer#startSyntetisering}
+     */
     @Test
     public void shouldStartSyntetisering() {
         HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();

@@ -37,6 +37,9 @@ public class TpsfConsumerTest {
     private Long expectedSekvensnummer;
     private String expectedStatus;
 
+    /**
+     * Scenario: Tester happypath til {@link TpsfConsumer#sendSkdMeldingTilTpsf}
+     */
     @Test
     public void shouldSendSkdMeldingTilTpsf() {
         ids = new ArrayList<>();

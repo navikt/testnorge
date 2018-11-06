@@ -2,9 +2,7 @@ package no.nav.registre.orkestratoren.provider.rs;
 
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -24,8 +22,12 @@ public class SyntetiseringsControllerTest {
     @Mock
     private TpsSyntPakkenConsumer tpsSyntPakkenConsumer;
 
+    /**
+     * Scenario: HVIS syntetiseringskontrolleren får et request om å oppretteSkdMeldinger, skal metoden kalle på
+     * {@link TpsSyntPakkenConsumer#produserOgSendSkdmeldingerTilTpsIMiljoer}
+     */
     @Test
-    public void opprettSkdMeldinger() {
+    public void shouldProduceAndSendSkdmeldingerToTpsIMiljoer() {
         long skdMeldingGruppeId = 100000445L;
 
         String miljoe = "t9";
