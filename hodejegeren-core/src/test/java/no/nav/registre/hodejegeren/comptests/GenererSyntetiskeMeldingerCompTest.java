@@ -1,6 +1,7 @@
 package no.nav.registre.hodejegeren.comptests;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
@@ -38,7 +39,7 @@ public class GenererSyntetiskeMeldingerCompTest {
     private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
     private long gruppeId = 123L;
     private Integer antallMeldinger = 2;
-    private String aarsakskodeInnvandringsmelding = "0211";
+    private String endringskodeInnvandringsmelding = "0211";
     
     @Autowired
     private TriggeSyntetiseringController triggeSyntetiseringController;
@@ -63,7 +64,7 @@ public class GenererSyntetiskeMeldingerCompTest {
     @Test
     public void shouldGenerereSyntetiserteMeldinger() {
         HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
-        antallMeldingerPerAarsakskode.put(aarsakskodeInnvandringsmelding, antallMeldinger);
+        antallMeldingerPerAarsakskode.put(endringskodeInnvandringsmelding, antallMeldinger);
         
         stubTPSF(gruppeId);
         stubTpsSynt();
@@ -83,6 +84,8 @@ public class GenererSyntetiskeMeldingerCompTest {
     
     private void stubTpsSynt() {
         stubFor(get(urlPathEqualTo("/tpssynt/api/generate"))
+                .withQueryParam("endringskode", equalTo(endringskodeInnvandringsmelding))
+                .withQueryParam("antallMeldinger", equalTo(antallMeldinger.toString()))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
                         .withBodyFile("comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json")));
     }
