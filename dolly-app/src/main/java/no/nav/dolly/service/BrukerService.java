@@ -61,11 +61,12 @@ public class BrukerService {
         return bruker;
     }
 
+    @Transactional
     public Bruker fetchOrCreateBruker(String navIdent) {
         try{
             return fetchBruker(navIdent);
         } catch (NotFoundException e){
-            return brukerRepository.save(new Bruker(navIdent));
+            return brukerRepository.save(new Bruker(navIdent.toUpperCase()));
         }
     }
 

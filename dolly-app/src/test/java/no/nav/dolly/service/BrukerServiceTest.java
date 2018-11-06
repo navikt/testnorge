@@ -95,7 +95,7 @@ public class BrukerServiceTest {
 
     @Test
     public void fetchOrCreateBruker_saveKallesVedNotFoundException() {
-        service.fetchOrCreateBruker(null);
+        service.fetchOrCreateBruker("tullestring");
         verify(brukerRepository).save(any());
     }
 
