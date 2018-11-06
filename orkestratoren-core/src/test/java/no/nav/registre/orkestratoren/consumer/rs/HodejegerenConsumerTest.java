@@ -1,7 +1,9 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,19 +27,36 @@ public class HodejegerenConsumerTest {
     private HodejegerenConsumer hodejegerenConsumer;
 
     private long gruppeId = 10L;
+    private String miljoe = "t9";
+    private String endringskode = "0110";
+    private int antallPerEndringskode = 1;
+    private List<Long> expectedMeldingsIds;
 
     @Test
     public void shouldStartSyntetisering() {
+        HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
+        antallMeldingerPerAarsakskode.put(endringskode, antallPerEndringskode);
+        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerAarsakskode);
+
+        expectedMeldingsIds = new ArrayList<>();
+        expectedMeldingsIds.add(120421016L);
+        expectedMeldingsIds.add(110156008L);
+
         stubHodejegerenConsumer();
 
-        HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
-        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, "t9", antallMeldingerPerAarsakskode);
-
         List<Long> ids = hodejegerenConsumer.startSyntetisering(ordreRequest);
+
+        assertEquals(expectedMeldingsIds.toString(), ids.toString());
     }
 
     public void stubHodejegerenConsumer() {
         stubFor(post(urlPathEqualTo("/api/v1/syntetisering/generer"))
-                .willReturn(ok()));
+                .withRequestBody(equalToJson(
+                        "{\"gruppeId\":" + gruppeId
+                                + ",\"miljoe\":\"" + miljoe
+                                + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode + "\":" + antallPerEndringskode + "}}"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[" + expectedMeldingsIds.get(0) + ", " + expectedMeldingsIds.get(1) + "]")));
     }
 }

@@ -7,13 +7,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class GenereringsOrdreRequest {
 
+    @NotNull
     private Long gruppeId;
+    @NotNull
     private String miljoe;
-    private Map<String, Integer> antallMeldingerPerAarsakskode;
+    @NotNull
+    private Map<String, Integer> antallMeldingerPerEndringskode;
 }
