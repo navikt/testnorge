@@ -48,14 +48,14 @@ public class AjourholdServiceTest {
     }
 
     @Test
-    public void successful() {
+    public void batchKjorer() {
         when(identDBService.checkCriticalAndGenerate()).thenReturn(1);
         ajourholdService.startBatch();
         assertThat(entity.getStatus(), is(BatchStatus.COMPLETED));
     }
 
     @Test
-    public void failed() {
+    public void batchFeiler() {
         String exception = "Unique exception";
         when(identDBService.checkCriticalAndGenerate()).thenThrow(new RuntimeException(exception));
         ajourholdService.startBatch();
@@ -67,7 +67,7 @@ public class AjourholdServiceTest {
     }
 
     @Test
-    public void deleted() {
+    public void batchKjorerMenGenerererIngenIdenter() {
         when(identDBService.checkCriticalAndGenerate()).thenReturn(0);
         ajourholdService.startBatch();
         verify(ajourholdRepository, times(1)).delete(any(AjourholdEntity.class));
