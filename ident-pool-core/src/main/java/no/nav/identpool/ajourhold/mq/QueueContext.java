@@ -27,9 +27,9 @@ public class QueueContext {
     private final FasitClient fasitClient;
     private final MessageQueueFactory queueFactory;
     @Value("#{'${mq.context.exclude}'.split(',')}")
-    private String[] excluded;
+    String[] excluded;
     @Value("#{'${mq.context.order}'.split(',')}")
-    private List<String> order;
+    List<String> order;
 
     private static void filterEnvironments(List<String> environmentList, List<String> excludedEnvironments, List<String> orderedList, MessageQueueFactory queueFactory) {
         List<String> filtered = environmentList.stream()
@@ -64,7 +64,7 @@ public class QueueContext {
     }
 
     @PostConstruct
-    private void init() {
+    void init() {
         List<String> environmentList = fasitClient.getAllEnvironments("t", "q");
         List<String> excludedEnvironments = Arrays.stream(excluded).collect(Collectors.toList());
         environmentList.removeAll(excludedEnvironments);
