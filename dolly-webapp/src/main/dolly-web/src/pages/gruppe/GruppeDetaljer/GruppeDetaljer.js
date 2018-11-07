@@ -29,7 +29,12 @@ export default class GruppeDetaljer extends PureComponent {
 						value={String(gruppe.testidenter.length)}
 					/>
 					<StaticValue header="SIST ENDRET" value={gruppe.datoEndret} />
-					{this.state.expanded && <StaticValue header="HENSIKT" value={gruppe.hensikt} />}
+					{this.state.expanded && (
+						<Fragment>
+							<StaticValue header="HENSIKT" value={gruppe.hensikt} />
+							<StaticValue header="SENDT TIL OPENAM" value={gruppe.openAmSent ? 'JA' : 'NEI'} />
+						</Fragment>
+					)}
 				</div>
 				<div className="gruppe-detaljer-chevron">
 					<ExpandButton onClick={this.toggleExpanded} expanded={this.state.expanded} />
