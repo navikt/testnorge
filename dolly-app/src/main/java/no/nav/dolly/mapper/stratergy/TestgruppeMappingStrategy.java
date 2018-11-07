@@ -1,15 +1,15 @@
 package no.nav.dolly.mapper.stratergy;
 
+import org.springframework.stereotype.Component;
+
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestident;
-
-import org.springframework.stereotype.Component;
+import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
 public class TestgruppeMappingStrategy implements MappingStrategy{
@@ -31,6 +31,7 @@ public class TestgruppeMappingStrategy implements MappingStrategy{
                         rsTeamMedIdOgNavn.setNavn(testgruppe.getTeamtilhoerighet().getNavn());
                         rsTeamMedIdOgNavn.setId(testgruppe.getTeamtilhoerighet().getId());
                         rsTestgruppe.setTeam(rsTeamMedIdOgNavn);
+                        rsTestgruppe.setOpenAmSent(testgruppe.getOpenAmSent());
                     }
                 })
                 .register();

@@ -1,8 +1,10 @@
 package no.nav.dolly.domain.jpa;
 
-import lombok.Getter;
-import lombok.Setter;
+import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,13 +15,11 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -64,6 +64,7 @@ public class Testgruppe {
 	@ManyToMany(mappedBy ="favoritter", fetch = FetchType.LAZY)
 	private Set<Bruker> favorisertAv = new HashSet<>();
 
-
+	@Column(name = "OPENAM_SENT")
+	private Boolean openAmSent;
 }
 
