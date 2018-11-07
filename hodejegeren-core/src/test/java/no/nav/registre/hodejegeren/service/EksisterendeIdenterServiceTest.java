@@ -129,13 +129,7 @@ public class EksisterendeIdenterServiceTest {
 
         opprettMultipleUgifteIdenterMock();
 
-        try {
-            eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment);
-        } catch (ManglerEksisterendeIdentException e) {
-            if (log.isInfoEnabled()) {
-                log.info(e.getMessage());
-            }
-        }
+        eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment);
 
         verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());

@@ -87,7 +87,7 @@ public class HodejegerService {
             }
         } catch (RuntimeException e) {
             log.warn(("--- Noe feilet under kjøring ---\r\n {}\r\n SkdMeldinger som er ferdig behandlet har følgende id-er i TPSF: {}")
-                    , (e.getMessage()), (ids));
+                    , e.getMessage(), ids);
             throw e;
         }
         return ids;

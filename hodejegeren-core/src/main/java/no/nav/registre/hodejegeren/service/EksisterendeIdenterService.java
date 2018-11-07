@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -111,6 +112,7 @@ public class EksisterendeIdenterService {
 
     public void behandleVigsel(List<RsMeldingstype> meldinger, List<String> singleIdenterINorge, List<String> brukteIdenterIDenneBolken,
                                Endringskoder endringskode, String environment) {
+        List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         for (int i = 0; i < meldinger.size(); i++) {
             if (i >= singleIdenterINorge.size() - 2) {
@@ -139,17 +141,20 @@ public class EksisterendeIdenterService {
                 ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerPnr(identPartner.substring(6));
 
                 RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
-                meldinger.add(melding);
+                meldingerForPartnere.add(melding);
                 ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
                 ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
 
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
             }
         }
+        meldinger.addAll(meldingerForPartnere);
     }
 
     public void behandleSeperasjonSkilsmisse(List<RsMeldingstype> meldinger, List<String> gifteIdenterINorge, List<String> brukteIdenterIDenneBolken,
                                              Endringskoder endringskoder, String environment) {
+        List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
+
         int antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
             if (i >= gifteIdenterINorge.size() - 1) {
@@ -174,7 +179,7 @@ public class EksisterendeIdenterService {
                         putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
 
                         RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
-                        meldinger.add(melding);
+                        meldingerForPartnere.add(melding);
 
                         oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                     } else {
@@ -187,10 +192,13 @@ public class EksisterendeIdenterService {
                 // fant ikke ident
             }
         }
+        meldinger.addAll(meldingerForPartnere);
     }
 
     public void behandleDoedsmelding(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
                                      Endringskoder endringskode, String environment) {
+        List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
+
         int antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
             if (i >= levendeIdenterINorge.size() - 1) {
@@ -214,7 +222,7 @@ public class EksisterendeIdenterService {
                     if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
                         putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
 
-                        meldinger.add(opprettSivilstandsendringsmelding(ident, identPartner));
+                        meldingerForPartnere.add(opprettSivilstandsendringsmelding(ident, identPartner));
 
                         oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                     } else {
@@ -228,6 +236,7 @@ public class EksisterendeIdenterService {
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
             }
         }
+        meldinger.addAll(meldingerForPartnere);
     }
 
     public void behandleGenerellAarsak(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
