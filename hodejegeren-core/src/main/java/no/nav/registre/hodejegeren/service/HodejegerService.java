@@ -86,12 +86,8 @@ public class HodejegerService {
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             }
         } catch (RuntimeException e) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("--- Noe feilet under kjøring ---\r\n");
-            sb.append(e.getMessage());
-            sb.append("SkdMeldinger som er ferdig behandlet har følgende id-er i TPSF: ");
-            sb.append(ids.toString());
-            log.warn(sb.toString());
+            log.warn(("--- Noe feilet under kjøring ---\r\n {}\r\n SkdMeldinger som er ferdig behandlet har følgende id-er i TPSF: {}")
+                    , (e.getMessage()), (ids));
             throw e;
         }
         return ids;
