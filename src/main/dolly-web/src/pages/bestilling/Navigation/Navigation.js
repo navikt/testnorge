@@ -29,12 +29,10 @@ export default class Navigation extends PureComponent {
 
 				<div className="step-navknapper--right">
 					{!isPage.first(currentPage) && (
-						<NavButton direction="backward" type="button" onClick={onClickPrevious} />
+						<NavButton direction="backward" onClick={onClickPrevious} />
 					)}
 
-					{!isPage.last(currentPage) && (
-						<NavButton direction="forward" type="button" onClick={onClickNext} />
-					)}
+					{!isPage.last(currentPage) && <NavButton direction="forward" onClick={onClickNext} />}
 
 					{isPage.last(currentPage) && (
 						<Knapp type="hoved" onClick={onClickNext} disabled={isSubmitting}>

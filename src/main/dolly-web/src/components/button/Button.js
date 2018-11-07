@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import Icon from '~/components/icon/Icon'
+import Knapp from 'nav-frontend-knapper'
 
 import './Button.less'
 
