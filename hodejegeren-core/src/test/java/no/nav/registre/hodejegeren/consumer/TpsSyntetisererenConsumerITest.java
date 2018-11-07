@@ -1,9 +1,8 @@
 package no.nav.registre.hodejegeren.consumer;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static no.nav.registre.hodejegeren.testutils.ResourceUtils.getResourceFileContent;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -11,24 +10,44 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
 
-import no.nav.registre.hodejegeren.comptests.AssertionUtils;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
+import no.nav.registre.hodejegeren.testutils.AssertionUtils;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(properties = "tps-syntetisereren.rest-api.url=http://localhost:${wiremock.server.port}/api",
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+@RestClientTest(TpsSyntetisererenConsumer.class)
 @ActiveProfiles("itest")
 public class TpsSyntetisererenConsumerITest {
     
     @Autowired
-    TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
+    private TpsSyntetisererenConsumer consumer;
+    @Autowired
+    private MockRestServiceServer server;
+    @Value("${tps-syntetisereren.rest-api.url}")
+    private String serverUrl;
+    
+    /**
+     * Tester om metoden bygger korrekt URI og queryParam når den konsumerer Tps Synt.
+     */
+    @Test
+    public void testRequestKonsumeringAvTpsSynt() {
+        String endringskode = "02";
+        int antallMeldinger = 1;
+        this.server.expect(requestToUriTemplate(serverUrl +
+                "/generate?endringskode={endringskode}&antallMeldinger={antall}", endringskode, antallMeldinger))
+                .andRespond(withSuccess("[null]", MediaType.APPLICATION_JSON));
+        
+        consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
+        
+        this.server.verify();
+    }
     
     /**
      * Tester at alle navnene i forventet responsmelding fra TPS Syntetisereren
@@ -36,11 +55,13 @@ public class TpsSyntetisererenConsumerITest {
      */
     @Test
     public void shouldDeserialiseAllFieldsInTheResponse() throws InvocationTargetException, IllegalAccessException {
-        stubFor(get(urlEqualTo("/api/generate?endringskode=aa&antallMeldinger=1"))
-                .willReturn(aResponse().withHeader("Content-Type", "application/json")
-                        .withBodyFile("tpssynt/tpsSynt_NotNullFields_Response.json")));
+        String endringskode = "02";
+        int antallMeldinger = 1;
+        this.server.expect(requestToUriTemplate(serverUrl +
+                "/generate?endringskode={endringskode}&antallMeldinger={antall}", endringskode, antallMeldinger))
+                .andRespond(withSuccess(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"), MediaType.APPLICATION_JSON));
         
-        List<RsMeldingstype> skdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("aa", 1);
+        List<RsMeldingstype> skdmeldinger = consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
         
         List<String> ignoredFields = Arrays.asList("getSaksid", "getEmbete", "getSakstype",
                 "getVedtaksdato", "getInternVergeid", "getVergeFnrDnr", "getVergetype",
