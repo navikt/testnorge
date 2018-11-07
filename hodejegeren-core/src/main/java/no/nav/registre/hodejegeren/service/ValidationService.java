@@ -30,7 +30,7 @@ public class ValidationService {
         for (RsMeldingstype melding : meldinger) {
             if (melding == null) {
                 removeTheseMessages.add(melding);
-            }else {
+            } else {
                 final Set<ConstraintViolation<RsMeldingstype>> violations = validator.validate(melding);
                 if (!violations.isEmpty()) {
                     removeTheseMessages.add(melding);

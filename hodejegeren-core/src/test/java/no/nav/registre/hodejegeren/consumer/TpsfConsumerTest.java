@@ -1,16 +1,21 @@
 package no.nav.registre.hodejegeren.consumer;
 
+import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.http.client.MockClientHttpResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,12 +35,35 @@ public class TpsfConsumerTest {
     
     /**
      * Tester om konsumenten bygger korrekt URI og queryParam.
+     * Og mottar et Set med String, med de rette elementene i.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void shouldSendCorrectRequestParametersAndgetIdenterFiltrertPaaAarsakskode() {
+        long gruppeId = 123L;
+        String transaksjonskode = "1";
+        Set<String> expectedIdenter = new HashSet<>();
+        expectedIdenter.add("12345678901");
+        expectedIdenter.add("12345678902");
+        
+        String expectedUri = serverUrl + "/v1/endringsmelding/skd/identer/{gruppeId}?"
+                + "aarsakskode={aarsakskode}&transaksjonstype={transaksjonstype}";
+        this.server.expect(requestToUriTemplate(expectedUri, gruppeId, "01,02", transaksjonskode))
+                .andRespond(withSuccess("[\"12345678901\",\"12345678902\"]", MediaType.APPLICATION_JSON));
+        
+        Set<String> identer = tpsfConsumer.getIdenterFiltrertPaaAarsakskode(gruppeId, Arrays.asList("01", "02"), transaksjonskode);
+        assertEquals(2, identer.size());
+        assertEquals(expectedIdenter, identer);
+    }
+    
+    /**
+     * Tester om konsumenten bygger korrekt URI og queryParam.
      *
      * @throws IOException
      */
     @Test
     public void shouldWriteProperRequestWhenGettingTpsServiceRoutine() throws IOException {
-        Map map = new HashMap();
         String aksjonskode = "A0";
         String environment = "env";
         String fnr = "bla";
