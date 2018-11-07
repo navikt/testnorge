@@ -11,6 +11,10 @@
 	&-input .Select .Select-control {
 		outline: 0;
 		border-radius: 4px;
+
+		.Select.is-disabled {
+			background-color: red;
+		}
 	}
 
 	&-input .Select.is-focused .Select-control {
@@ -22,6 +26,10 @@
 
 	.Select-control:hover {
 		border-color: @navGra40;
+	}
+
+	.Select-control .Select.is-disabled {
+		background-color: red;
 	}
 
 	.option-container {
