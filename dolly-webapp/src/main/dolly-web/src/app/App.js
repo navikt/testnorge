@@ -9,9 +9,9 @@ import routes from '~/Routes'
 import './App.less'
 
 export default class App extends Component {
-	componentDidMount() {
-		this.props.fetchConfig()
-		this.props.getCurrentBruker()
+	async componentDidMount() {
+		await this.props.fetchConfig()
+		await this.props.getCurrentBruker()
 	}
 
 	componentDidUpdate() {

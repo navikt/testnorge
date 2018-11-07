@@ -8,6 +8,7 @@ const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
 const configBase = `${uri}/config`
+const openamBase = `${uri}/openam`
 
 class DollyEndpoints {
 	static gruppe() {
@@ -92,6 +93,14 @@ class DollyEndpoints {
 
 	static config() {
 		return configBase
+	}
+
+	static openAm() {
+		return openamBase
+	}
+
+	static openAmGroupStatus(groupId, isSent = true) {
+		return `${openamBase}/gruppe/${groupId}?isOpenAmSent=${isSent}`
 	}
 }
 

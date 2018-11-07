@@ -1,0 +1,32 @@
+import openam from '../index'
+import { LOCATION_CHANGE } from 'connected-react-router'
+
+describe('openamReducer', () => {
+	const initialState = {
+		response: null
+	}
+
+	it('should set initial state', () => {
+		expect(openam(undefined, {})).toEqual(initialState)
+	})
+
+	it('should set initial state on request', () => {
+		const action = {
+			type: 'POST_OPEN_AM_REQUEST'
+		}
+		expect(openam({}, action)).toEqual(initialState)
+	})
+
+	it('should handle success', () => {
+		const testdata = 'testdata'
+		const action = {
+			type: 'POST_OPEN_AM_SUCCESS',
+			payload: testdata
+		}
+
+		const res = {
+			response: testdata
+		}
+		expect(openam({}, action)).toEqual(res)
+	})
+})
