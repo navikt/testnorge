@@ -3,18 +3,18 @@ package no.nav.registre.hodejegeren.consumer;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 
@@ -23,34 +23,37 @@ public class TpsfConsumer {
     
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Long>>() {
     };
-    private static final String BASE_PATH_SKDMELDINGER = "api/v1/endringsmelding/skd/";
-    private static final String BASE_PATH_SERVICE_ROUTINE = "api/v1/serviceroutine/";
     
-    @Value("${tps-forvalteren.rest-api.url}")
-    private String serverUrl;
     private RestTemplate restTemplate;
+    private ObjectMapper objectMapper = new ObjectMapper();
+    private UriTemplate uriTemplateSave;
+    private String urlGetIdenter;
+    private String urlServiceRoutine;
     
-    public TpsfConsumer(
+    public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
+            @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
             @Value("${hodejegeren.ida.credential.username}") String username,
             @Value("${hodejegeren.ida.credential.password}") String password
     ) {
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = restTemplateBuilder.build();
         this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
+        this.uriTemplateSave = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/save/{gruppeId}");
+        this.urlGetIdenter = serverUrl + "/v1/endringsmelding/skd/identer/{gruppeId}?aarsakskode={aarsakskode}&transaksjonstype={transaksjonstype}";
+        this.urlServiceRoutine = serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={environment}&fnr={fnr}";
     }
     
     public Set<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskode, String transaksjonstype) {
-        return restTemplate.getForObject(serverUrl + BASE_PATH_SKDMELDINGER + "identer/" + gruppeId, Set.class, aarsakskode, transaksjonstype);
+        return restTemplate.getForObject(urlGetIdenter, Set.class, gruppeId, StringUtils.join(aarsakskode, ','), transaksjonstype);
     }
     
     public List<Long> saveSkdEndringsmeldingerInTPSF(Long gruppeId, List<RsMeldingstype> skdmeldinger) {
-        URI url = new UriTemplate(serverUrl + BASE_PATH_SKDMELDINGER + "save/{gruppeId}").expand(gruppeId);
+        URI url = uriTemplateSave.expand(gruppeId);
         RequestEntity postRequest = RequestEntity.post(url).body(skdmeldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
-
-    public JsonNode getTpsServiceRoutine(String routineName, Map<String, Object> tpsRequestParameters) throws IOException {
-        String response = restTemplate.getForObject(serverUrl + BASE_PATH_SERVICE_ROUTINE + routineName, String.class, tpsRequestParameters);
-        ObjectMapper objectMapper = new ObjectMapper();
+    
+    public JsonNode getTpsServiceRoutine(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
+        String response = restTemplate.getForObject(urlServiceRoutine, String.class, routineName, aksjonsKode, environment, fnr);
         return objectMapper.readTree(response);
     }
 }

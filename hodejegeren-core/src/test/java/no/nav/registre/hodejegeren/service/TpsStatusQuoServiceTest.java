@@ -50,7 +50,7 @@ public class TpsStatusQuoServiceTest {
         List<String> feltNavn = new ArrayList<>();
         feltNavn.add(STATSBORGERSKAP);
 
-        when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
+        when(tpsfConsumer.getTpsServiceRoutine(any(), any(),any(),any())).thenReturn(jsonNode);
 
         Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
 
@@ -69,7 +69,7 @@ public class TpsStatusQuoServiceTest {
         List<String> feltNavn = new ArrayList<>();
         feltNavn.add(FNR_RELASJON);
 
-        when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
+        when(tpsfConsumer.getTpsServiceRoutine(any(), any(),any(),any())).thenReturn(jsonNode);
 
         Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
 
@@ -90,7 +90,7 @@ public class TpsStatusQuoServiceTest {
         feltNavn.add("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler");
         feltNavn.add("$..bostedsAdresse.fullBostedsAdresse.offAdresse.husnr");
 
-        when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
+        when(tpsfConsumer.getTpsServiceRoutine(any(), any(),any(),any())).thenReturn(jsonNode);
 
         Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
 
@@ -110,7 +110,7 @@ public class TpsStatusQuoServiceTest {
 
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
-        when(tpsfConsumer.getTpsServiceRoutine(any(), any())).thenReturn(jsonNode);
+        when(tpsfConsumer.getTpsServiceRoutine(any(), any(),any(),any())).thenReturn(jsonNode);
 
         assertNull(tpsStatusQuoService.getTpsServiceRoutineCache());
 
@@ -124,25 +124,5 @@ public class TpsStatusQuoServiceTest {
 
         tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList(DATO_DO), environment, fnr);
         assertNotEquals(tpsServiceRoutineCache, tpsStatusQuoService.getTpsServiceRoutineCache());
-    }
-
-    /**
-     * Tester at {@link TpsStatusQuoService#getInfoHelper} kaller serviceroutine-rest-endepunktet med de rette
-     * parametre i request.
-     */
-    @Test
-    public void shouldHandleTpsRequestParameters() throws IOException {
-        final String aksjonsKode = "A0";
-        final String environment = "Q11";
-
-        tpsStatusQuoService.getInfoHelper(routineName, aksjonsKode, environment, fnr);
-
-        ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
-        Mockito.verify(tpsfConsumer).getTpsServiceRoutine(eq(routineName), captor.capture());
-        Map<String, Object> actualRequestParams = captor.getValue();
-
-        assertEquals(aksjonsKode, actualRequestParams.get("aksjonsKode"));
-        assertEquals(environment, actualRequestParams.get("environment"));
-        assertEquals(fnr, actualRequestParams.get("fnr"));
     }
 }

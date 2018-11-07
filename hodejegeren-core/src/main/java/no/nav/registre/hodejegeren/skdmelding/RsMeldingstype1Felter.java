@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName("t1")
-@Builder(toBuilder=true)
+@Builder(toBuilder = true)
 public class RsMeldingstype1Felter extends RsMeldingstype {
     
     @Size(max = 6)
@@ -34,7 +34,7 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     @Size(max = 50)
     private String mellomnavn;
     @Size(max = 50)
-    private String slekstnavnUgift;
+    private String slektsnavnUgift;
     @Size(max = 25)
     private String forkortetNavn;
     @Size(max = 8)
@@ -148,7 +148,7 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     @Size(max = 5)
     private String farsPersonnummer;
     @Size(max = 50)
-    private String farsFarsNavn;
+    private String farsNavn;
     @Size(max = 3)
     private String farsStatsbSkap;
     @Size(max = 11)
@@ -162,13 +162,13 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     @Size(max = 1)
     private String levendeDoed;
     @Size(max = 1)
-    private String kjonn;
+    private String kjoenn;
     @Size(max = 1)
     private String tildelingskode;
     @Size(max = 2)
     private String foedselstype;
     @Size(max = 1)
-    private String morsSiviltilstand;
+    private String morsSivilstand;
     @Size(max = 1)
     private String ekteskPartnskNr;
     @Size(max = 1)
@@ -205,27 +205,27 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     private String vigselsdato;
     @Size(max = 1)
     private String medlKirken;
-    @Size(max = 6)
-    private String bolignr;
     @Size(max = 5)
-    private String dufId;
+    private String bolignr;
     @Size(max = 12)
-    private String brukerident;
+    private String dufId;
     @Size(max = 8)
+    private String brukerident;
+    @Size(max = 4)
     private String skolerets;
     @Size(max = 4)
     private String tkNr;
-    @Size(max = 4)
+    @Size(max = 40)
     private String dnrHjemlandsadresse1;
     @Size(max = 40)
     private String dnrHjemlandsadresse2;
     @Size(max = 40)
     private String dnrHjemlandsadresse3;
-    @Size(max = 40)
-    private String dnrHjemlandLandkode;
     @Size(max = 3)
-    private String dnrHjemlandRegDato;
+    private String dnrHjemlandLandkode;
     @Size(max = 8)
+    private String dnrHjemlandRegDato;
+    @Size(max = 1)
     private String dnrIdKontroll;
     @Size(max = 1)
     private String utvandringstype;
@@ -234,7 +234,7 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     @Size(max = 3)
     private String statsborgerskap;
     @Size(max = 8)
-    private String statsborgerskapRegdato;
+    private String regdatoStatsb;
     @Size(max = 3)
     private String statsborgerskap2;
     @Size(max = 8)
@@ -295,6 +295,26 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     private String mandatTekst;
     @Size(max = 151)
     private String reserverFramtidigBruk;
+    
+    public String getSlekstnavnUgift() {
+        return slektsnavnUgift;
+    }
+    
+    public String getKjonn() {
+        return kjoenn;
+    }
+    
+    public String getFarsFarsNavn() {
+        return farsNavn;
+    }
+    
+    public String getMorsSiviltilstand() {
+        return morsSivilstand;
+    }
+    
+    public String getStatsborgerskapRegdato() {
+        return regdatoStatsb;
+    }
     
     @Override
     public String getMeldingstype() {
