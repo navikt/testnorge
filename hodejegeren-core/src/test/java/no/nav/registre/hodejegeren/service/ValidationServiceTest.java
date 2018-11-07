@@ -44,11 +44,13 @@ public class ValidationServiceTest {
     @Test
     public void shouldRemoveNullMessages() {
         RsMeldingstype1Felter melding1 = null;
+        RsMeldingstype1Felter melding3 = null;
         RsMeldingstype1Felter melding2 = RsMeldingstype1Felter.builder().antallBarn("4").build();
         
         final ArrayList<RsMeldingstype> liste = new ArrayList<>();
         liste.add(melding1);
         liste.add(melding2);
+        liste.add(melding3);
         validator.logAndRemoveInvalidMessages(liste);
         
         assertEquals(1, liste.size());

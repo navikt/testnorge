@@ -1,6 +1,7 @@
 package no.nav.registre.hodejegeren.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -26,16 +27,13 @@ public class ValidationService {
     
     public void logAndRemoveInvalidMessages(List<RsMeldingstype> meldinger) {
         List<RsMeldingstype> removeTheseMessages = new ArrayList<>();
+        meldinger.removeAll(Collections.singleton(null));
         
         for (RsMeldingstype melding : meldinger) {
-            if (melding == null) {
+            final Set<ConstraintViolation<RsMeldingstype>> violations = validator.validate(melding);
+            if (!violations.isEmpty()) {
                 removeTheseMessages.add(melding);
-            } else {
-                final Set<ConstraintViolation<RsMeldingstype>> violations = validator.validate(melding);
-                if (!violations.isEmpty()) {
-                    removeTheseMessages.add(melding);
-                    logValidation(melding, violations);
-                }
+                logValidation(melding, violations);
             }
         }
         meldinger.removeAll(removeTheseMessages);

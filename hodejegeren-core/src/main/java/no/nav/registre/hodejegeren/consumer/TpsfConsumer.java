@@ -3,7 +3,6 @@ package no.nav.registre.hodejegeren.consumer;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -54,8 +52,8 @@ public class TpsfConsumer {
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
     
-    public JsonNode getTpsServiceRoutine(String routineName,String aksjonsKode,String environment,String fnr) throws IOException {
-        String response = restTemplate.getForObject(urlServiceRoutine, String.class, routineName,aksjonsKode,environment,fnr);
+    public JsonNode getTpsServiceRoutine(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
+        String response = restTemplate.getForObject(urlServiceRoutine, String.class, routineName, aksjonsKode, environment, fnr);
         return objectMapper.readTree(response);
     }
 }
