@@ -6,10 +6,8 @@ import com.google.common.io.Resources;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -22,7 +20,6 @@ import java.util.Map;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,7 +47,7 @@ public class TpsStatusQuoServiceTest {
         List<String> feltNavn = new ArrayList<>();
         feltNavn.add(STATSBORGERSKAP);
 
-        when(tpsfConsumer.getTpsServiceRoutine(any(), any(),any(),any())).thenReturn(jsonNode);
+        when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
         Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
 
@@ -69,7 +66,7 @@ public class TpsStatusQuoServiceTest {
         List<String> feltNavn = new ArrayList<>();
         feltNavn.add(FNR_RELASJON);
 
-        when(tpsfConsumer.getTpsServiceRoutine(any(), any(),any(),any())).thenReturn(jsonNode);
+        when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
         Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
 
@@ -90,7 +87,7 @@ public class TpsStatusQuoServiceTest {
         feltNavn.add("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler");
         feltNavn.add("$..bostedsAdresse.fullBostedsAdresse.offAdresse.husnr");
 
-        when(tpsfConsumer.getTpsServiceRoutine(any(), any(),any(),any())).thenReturn(jsonNode);
+        when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
         Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
 
@@ -110,7 +107,7 @@ public class TpsStatusQuoServiceTest {
 
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
 
-        when(tpsfConsumer.getTpsServiceRoutine(any(), any(),any(),any())).thenReturn(jsonNode);
+        when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
         assertNull(tpsStatusQuoService.getTpsServiceRoutineCache());
 

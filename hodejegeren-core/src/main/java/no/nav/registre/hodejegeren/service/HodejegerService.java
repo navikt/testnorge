@@ -5,6 +5,7 @@ import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,14 +80,28 @@ public class HodejegerService {
                     eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, environment);
                 }
 
-                ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
+                try {
+                    ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
+                } catch (Exception e) {
+                    log.warn("--- Noe feilet under lagring til TPSF ---\r\n {}\r\nEndringskode: {}\r\n"
+                            , e.getMessage(), endringskode.getEndringskode());
+                    if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
+                        StringBuilder message = new StringBuilder().append("Rekvirerte fødselsnummer i denne batchen:\r\n");
+                        for (RsMeldingstype rs : syntetiserteSkdmeldinger) {
+                            message.append(((RsMeldingstype1Felter) rs).getFodselsdato())
+                                    .append(((RsMeldingstype1Felter) rs).getPersonnummer())
+                                    .append("\r\n");
+                        }
+                        log.warn(message.toString());
+                    }
+                }
 
                 listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             }
         } catch (RuntimeException e) {
-            log.warn(("--- Noe feilet under kjøring ---\r\n {}\r\n SkdMeldinger som er ferdig behandlet har følgende id-er i TPSF: {}")
+            log.warn(("--- Noe feilet under kjøring ---\r\n {}\r\n Skdmeldinger som er ferdig behandlet har følgende id-er i TPSF: {}")
                     , e.getMessage(), ids);
             throw e;
         }
