@@ -3,10 +3,14 @@ package no.nav.registre.hodejegeren.service;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,6 +34,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
+@Slf4j
 public class EksisterendeIdenterServiceTest {
 
     @Mock
@@ -49,6 +54,9 @@ public class EksisterendeIdenterServiceTest {
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
     private String fnr3 = "03030303030";
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setUp() {
@@ -126,7 +134,13 @@ public class EksisterendeIdenterServiceTest {
 
         opprettMultipleUgifteIdenterMock();
 
-        eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment);
+        try {
+            eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment);
+        } catch (ManglerEksisterendeIdentException e) {
+            if (log.isInfoEnabled()) {
+                log.info(e.getMessage());
+            }
+        }
 
         verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
@@ -177,16 +191,24 @@ public class EksisterendeIdenterServiceTest {
 
     /**
      * Testscenario: HVIS det skal opprettes en vigselsmelding og det er for få ledige identer tilgjengelig, skal det
-     * skrives ut en melding til loggen.
+     * kastes en exception med beskrivende feilmelding som inneholder meldingsnummeret til meldingen som feilet.
      */
     @Test
-    public void shouldLogWarningForTooFewIdents() {
+    public void shouldThrowExceptionForTooFewIdents() {
+        String meldingsnummer = "123";
+
+        expectedException.expect(ManglerEksisterendeIdentException.class);
+        expectedException.expectMessage("Kunne ikke finne ident for SkdMelding med meldingsnummer "
+                + meldingsnummer + ". For få identer i listen singleIdenterINorge.");
+
         Endringskoder endringskode = Endringskoder.VIGSEL;
 
         Logger logger = (Logger) LoggerFactory.getLogger(EksisterendeIdenterService.class);
         ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
         listAppender.start();
         logger.addAppender(listAppender);
+
+        meldinger.get(0).setMeldingsnrHosTpsSynt(meldingsnummer);
 
         eksisterendeIdenterService.behandleVigsel(meldinger, Arrays.asList("01010101010"), brukteIdenter, endringskode, environment);
 
