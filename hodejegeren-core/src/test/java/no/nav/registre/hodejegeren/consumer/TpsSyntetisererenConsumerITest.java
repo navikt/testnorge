@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.registre.hodejegeren.comptests.AssertionUtils;
@@ -21,8 +22,9 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = "tps-syntetisereren.rest-api.url=http://localhost:${wiremock.server.port}/api",
-        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
+@ActiveProfiles("itest")
 public class TpsSyntetisererenConsumerITest {
     
     @Autowired
@@ -34,7 +36,7 @@ public class TpsSyntetisererenConsumerITest {
      */
     @Test
     public void shouldDeserialiseAllFieldsInTheResponse() throws InvocationTargetException, IllegalAccessException {
-        stubFor(get(urlEqualTo("/api/generate"))
+        stubFor(get(urlEqualTo("/api/generate?endringskode=aa&antallMeldinger=1"))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
                         .withBodyFile("tpssynt/tpsSynt_NotNullFields_Response.json")));
         
