@@ -80,13 +80,7 @@ public class HodejegerService {
                     eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, environment);
                 }
 
-                try {
-                    ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
-                } catch (Exception e) {
-                    log.warn("--- Noe feilet under lagring til TPSF ---\r\n {}\r\nEndringskode: {}\r\n"
-                            , e.getMessage(), endringskode.getEndringskode());
-                    loggFnrPaaRekvirerteIdenter(endringskode, syntetiserteSkdmeldinger);
-                }
+                lagreSkdEndringsmeldingerITpsfOgOppdaterIds(ids, endringskode, syntetiserteSkdmeldinger, genereringsOrdreRequest);
 
                 listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
@@ -105,15 +99,22 @@ public class HodejegerService {
         return sorterteEndringskoder.stream().filter(kode -> endringskode.contains(kode.getEndringskode())).collect(Collectors.toList());
     }
 
-    private void loggFnrPaaRekvirerteIdenter(Endringskoder endringskode, List<RsMeldingstype> syntetiserteSkdmeldinger) {
-        if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
-            StringBuilder message = new StringBuilder().append("Rekvirerte fødselsnummer i denne batchen:\r\n");
-            for (RsMeldingstype rs : syntetiserteSkdmeldinger) {
-                message.append(((RsMeldingstype1Felter) rs).getFodselsdato())
-                        .append(((RsMeldingstype1Felter) rs).getPersonnummer())
-                        .append("\r\n");
+    private void lagreSkdEndringsmeldingerITpsfOgOppdaterIds(List<Long> ids, Endringskoder endringskode,
+                                                             List<RsMeldingstype> syntetiserteSkdmeldinger, GenereringsOrdreRequest genereringsOrdreRequest) {
+        try {
+            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
+        } catch (Exception e) {
+            log.warn("--- Noe feilet under lagring til TPSF ---\r\n {}\r\nEndringskode: {}\r\n"
+                    , e.getMessage(), endringskode.getEndringskode());
+            if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
+                StringBuilder message = new StringBuilder().append("Rekvirerte fødselsnummer i denne batchen:\r\n");
+                for (RsMeldingstype rs : syntetiserteSkdmeldinger) {
+                    message.append(((RsMeldingstype1Felter) rs).getFodselsdato())
+                            .append(((RsMeldingstype1Felter) rs).getPersonnummer())
+                            .append("\r\n");
+                }
+                log.warn(message.toString());
             }
-            log.warn(message.toString());
         }
     }
 
