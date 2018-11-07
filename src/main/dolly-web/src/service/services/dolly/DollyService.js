@@ -118,4 +118,12 @@ export default class DollyService {
 	static getConfig() {
 		return Request.get(Endpoints.config())
 	}
+
+	static postOpenAm(body) {
+		return Request.post(Endpoints.openAm(), body)
+	}
+
+	static putOpenAmGroupStatus(groupId) {
+		return Request.put(Endpoints.openAmGroupStatus(groupId))
+	}
 }

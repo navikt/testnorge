@@ -10,10 +10,10 @@ describe('App.js', () => {
 	const fetchConfig = jest.fn()
 	const getCurrentBruker = jest.fn()
 
-	it('should call fetchConfig and getCurrentBruker on mount', () => {
+	it('should call fetchConfig and getCurrentBruker on mount', async () => {
 		const wrapper = shallow(<App fetchConfig={fetchConfig} getCurrentBruker={getCurrentBruker} />)
-		expect(fetchConfig).toBeCalled()
-		expect(getCurrentBruker).toBeCalled()
+		await expect(fetchConfig).toBeCalled()
+		await expect(getCurrentBruker).toBeCalled()
 	})
 
 	it('should render null when no config', () => {

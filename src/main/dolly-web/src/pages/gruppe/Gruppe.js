@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Overskrift from '~/components/overskrift/Overskrift'
 import GruppeDetaljer from './GruppeDetaljer/GruppeDetaljer'
@@ -6,6 +6,7 @@ import BestillingStatus from './BestillingStatus/BestillingStatus'
 import Loading from '~/components/loading/Loading'
 import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
+import SendOpenAmConnector from './SendOpenAm/SendOpenAmConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Toolbar from '~/components/toolbar/Toolbar'
@@ -95,12 +96,14 @@ export default class Gruppe extends Component {
 			{ value: this.VISNING_TESTPERSONER, label: `Testpersoner (${gruppe.testidenter.length})` },
 			{ value: this.VISNING_BESTILLING, label: `Bestillinger (${gruppe.bestillinger.length})` }
 		]
-
 		return (
 			<div id="gruppe-container">
 				<Overskrift label={gruppe.navn} actions={groupActions}>
 					{/* <ConfirmTooltip onClick={deleteGruppe} /> */}
 					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
+					<div className="pull-right">
+						<SendOpenAmConnector gruppe={gruppe} />
+					</div>
 				</Overskrift>
 
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
@@ -117,9 +120,11 @@ export default class Gruppe extends Component {
 					toggleCurrent={this.state.visning}
 					toggleValues={toggleValues}
 				>
-					<Knapp type="hoved" onClick={this.startBestilling}>
-						Opprett personer
-					</Knapp>
+					<Fragment>
+						<Knapp type="hoved" onClick={this.startBestilling}>
+							Opprett personer
+						</Knapp>
+					</Fragment>
 				</Toolbar>
 
 				{this.renderList(gruppe)}
