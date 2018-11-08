@@ -2,12 +2,12 @@ package no.nav.registre.orkestratoren.consumer.rs.requests;
 
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter

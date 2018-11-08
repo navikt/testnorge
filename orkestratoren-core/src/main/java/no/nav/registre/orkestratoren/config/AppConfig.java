@@ -1,6 +1,5 @@
 package no.nav.registre.orkestratoren.config;
 
-import no.nav.registre.orkestratoren.JobController;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.web.client.RestTemplate;
 
+import no.nav.registre.orkestratoren.JobController;
 import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
 import no.nav.registre.orkestratoren.provider.rs.InternalController;
 
