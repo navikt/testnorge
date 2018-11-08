@@ -1,8 +1,6 @@
 import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource } from '../Types'
-import Formatters from '~/utils/DataFormatter'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
-import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
 import * as yup from 'yup'
 
@@ -12,61 +10,32 @@ const AttributtListe: Attributt[] = [
 		subKategori: SubKategorier.Krr,
 		id: 'mobil',
 		label: 'Mobilnummer',
-		dataSource: DataSource.SIGRUN,
-		validation: yup.object(),
-		items: [
-			{
-				hovedKategori: Kategorier.Inntekt,
-				subKategori: SubKategorier.Inntekt,
-				id: 'mobil',
-				label: 'Mobilnummer',
-				path: 'mobilnummer',
-				dataSource: DataSource.SIGRUN,
-				inputType: InputType.Text,
-				validation: yup.string().required('Velg en type tjeneste.')
-			}
-		]
+		dataSource: DataSource.KRR,
+		inputType: InputType.Number,
+		validation: yup
+			.number()
+			.integer('Mobilnummer er ikke gyldig')
+			.min(10000, 'Mobilnummer er ikke gyldig')
+			.required('Vennligst oppgi mobilnummer')
 	},
 	{
 		hovedKategori: Kategorier.KontaktInfo,
 		subKategori: SubKategorier.Krr,
 		id: 'epost',
 		label: 'E-postadresse',
-		dataSource: DataSource.SIGRUN,
-		validation: yup.object(),
-		items: [
-			{
-				hovedKategori: Kategorier.Inntekt,
-				subKategori: SubKategorier.Inntekt,
-				id: 'epost',
-				label: 'E-postadresse',
-				path: 'epost',
-				dataSource: DataSource.SIGRUN,
-				inputType: InputType.Text,
-				validation: yup.string().required('Velg en type tjeneste.')
-			}
-		]
+		dataSource: DataSource.KRR,
+		inputType: InputType.Text,
+		validation: yup.string().email('Vennligst fyll ut')
 	},
 	{
 		hovedKategori: Kategorier.KontaktInfo,
 		subKategori: SubKategorier.Krr,
 		id: 'reservert',
+		dataSource: DataSource.KRR,
 		label: 'Reservert mot digitalkommmunikasjon',
-		dataSource: DataSource.SIGRUN,
-		validation: yup.object(),
-		items: [
-			{
-				hovedKategori: Kategorier.Inntekt,
-				subKategori: SubKategorier.Inntekt,
-				id: 'tjeneste',
-				label: 'Tjeneste',
-				path: 'tekniskNavn',
-				dataSource: DataSource.SIGRUN,
-				inputType: InputType.Text,
-				options: ['JA', 'NEI'],
-				validation: yup.string().required('Velg en type tjeneste.')
-			}
-		]
+		inputType: InputType.Select,
+		options: SelectOptionsManager('boolean'),
+		validation: yup.string().required('Vennligst velg en verdi')
 	}
 ]
 

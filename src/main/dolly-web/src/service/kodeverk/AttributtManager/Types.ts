@@ -10,7 +10,8 @@ export enum InputType {
 
 export enum DataSource {
 	TPSF = 'TPSF',
-	SIGRUN = 'SIGRUN'
+	SIGRUN = 'SIGRUN',
+	KRR = 'KRR'
 }
 
 export interface Options {
