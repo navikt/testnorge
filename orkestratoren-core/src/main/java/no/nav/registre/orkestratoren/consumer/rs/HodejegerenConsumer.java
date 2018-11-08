@@ -18,9 +18,8 @@ public class HodejegerenConsumer {
 
     private String url;
 
-    public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl,
-            @Value("${hodejegeren.base.path}") String hodejegerenBasePath) {
-        this.url = hodejegerenServerUrl + hodejegerenBasePath;
+    public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
+        this.url = hodejegerenServerUrl + "/v1/syntetisering/generer";
     }
 
     public List<Long> startSyntetisering(GenereringsOrdreRequest genereringsOrdreRequest) {
