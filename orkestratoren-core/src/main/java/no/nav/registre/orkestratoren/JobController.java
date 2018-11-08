@@ -14,7 +14,7 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenConsumer;
 @EnableScheduling
 public class JobController {
 
-    @Value("${orkestratoren.batch.miljoe}")
+    @Value("${orkestratoren.batch.miljoe:t9}")
     private String miljoe;
 
     @Value("${orkestratoren.batch.skdMeldingGruppeId:500}")
