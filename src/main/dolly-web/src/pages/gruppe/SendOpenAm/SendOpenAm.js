@@ -44,8 +44,9 @@ export default class SendOpenAm extends Component {
 		if (gruppe.openAmSent || openAmResponse) {
 			return (
 				<Fragment>
+					{openAmResponse && <span className="openam-status">Gruppen ble sendt!</span>}
 					<Knapp type="standard" onClick={this.open} spinner={openAmFetching} autoDisableVedSpinner>
-						SEND PÅ NYTT TIL OPENAM
+						Oppdater OpenAM
 					</Knapp>
 					<Modal
 						isOpen={modalOpen}
@@ -54,9 +55,10 @@ export default class SendOpenAm extends Component {
 						style={customStyles}
 					>
 						<div className="openam-modal">
-							<h1>Send til OpenAM</h1>
-							Dolly vil forsøke å sende alle testidenter til OpenAM på nytt. Dette kan føre til
-							duplikater hvis testidenten finnes fra før. Er du sikker på at du vil utføre dette?
+							<h1>Oppdater OpenAM</h1>
+							Gruppen er allerede sendt til OpenAM. Dolly vil forsøke å sende alle testidenter på
+							nytt. Dette kan føre til duplikater hvis testidenten allerede finnes i OpenAM. Er du
+							sikker på at du vil utføre dette?
 							<div className="openam-modal_buttons">
 								<Knapp autoFocus type="standard" onClick={this.close}>
 									Avbryt
