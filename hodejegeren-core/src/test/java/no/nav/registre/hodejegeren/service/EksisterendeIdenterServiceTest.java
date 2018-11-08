@@ -159,9 +159,10 @@ public class EksisterendeIdenterServiceTest {
     }
 
     /**
-     * Testscenario: HVIS det skal opprettes dødsmelding, skal systemet i metoden {@link EksisterendeIdenterService#behandleDoedsmelding},
-     * finne en levende norsk statsborger, og legge dødsmelding på denne. Systemet skal i tilfeller der personen er gift,
-     * sette partner til enke/enkemann.
+     * Testscenario: HVIS dødsmelding skal behandles av Hodejegeren, skal systemet i metoden {@link EksisterendeIdenterService#behandleDoedsmelding},
+     * finne en levende norsk statsborger, og legge dødsmelding på denne.
+     *
+     * Når dødsmelding registreres på en gift person, så vil Hodejegeren opprette en endringsmelding på sivilstand for å omregistrere ektefellen til enke/enkemann.
      */
     @Test
     public void shouldFindPartnerOfDoedsmeldingIdentAndCreateSivilstandendringsmelding() throws IOException {
@@ -175,6 +176,9 @@ public class EksisterendeIdenterServiceTest {
         eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, endringskode, environment);
 
         verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any(), any());
+        assertEquals(2,meldinger.size());
+        assertEquals(fnr1.substring(0,6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+        assertEquals(fnr2.substring(0,6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
         assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
