@@ -17,9 +17,8 @@ public class TpsfConsumer {
 
     private UriTemplate uriTemplate;
 
-    public TpsfConsumer(@Value("${tps-forvalteren.rest-api.url}") String tpsfServerUrl,
-                        @Value("${tpsf.base.path}") String tpsfBasePath) {
-        uriTemplate = new UriTemplate(tpsfServerUrl + tpsfBasePath + "{skdMeldingGruppeId}");
+    public TpsfConsumer(@Value("${tps-forvalteren.rest-api.url}") String tpsfServerUrl) {
+        uriTemplate = new UriTemplate(tpsfServerUrl + "/v1/endringsmelding/skd/send/{skdMeldingGruppeId}");
     }
 
     public AvspillingResponse sendSkdMeldingTilTpsf(Long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
