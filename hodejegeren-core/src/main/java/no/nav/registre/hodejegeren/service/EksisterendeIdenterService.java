@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype2Felter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -137,13 +139,11 @@ public class EksisterendeIdenterService {
 
             if (ident != null && identPartner != null) {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
-                ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerFdato(identPartner.substring(0, 6));
-                ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerPnr(identPartner.substring(6));
+                putEktefellePartnerFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
 
                 RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
+                putEktefellePartnerFnrInnIMelding(((RsMeldingstype1Felter) melding), ident);
                 meldingerForPartnere.add(melding);
-                ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
-                ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
 
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
             }
@@ -177,16 +177,16 @@ public class EksisterendeIdenterService {
                 if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))) {
                     if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
                         putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
-
+                        
                         RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
                         meldingerForPartnere.add(melding);
 
                         oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                     } else {
-                        // personnummer i fnrRelasjon til partner matcher ikke
+                        // personnummer i fnrRelasjon til partner matcher ikke TODO: Slå sammen med if-statementen om sivilstand
                     }
                 } else {
-                    // ulik sivilstand på identene
+                    // ulik sivilstand på identene TODO: loggføre og prøve med to nye personer.
                 }
             } else {
                 // fant ikke ident
@@ -194,7 +194,7 @@ public class EksisterendeIdenterService {
         }
         meldinger.addAll(meldingerForPartnere);
     }
-
+    
     public void behandleDoedsmelding(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
                                      Endringskoder endringskode, String environment) {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
@@ -289,12 +289,22 @@ public class EksisterendeIdenterService {
         melding.setFodselsdato(fnr.substring(0, 6));
         melding.setPersonnummer(fnr.substring(6));
     }
+    
+    private void putEktefellePartnerFnrInnIMelding(RsMeldingstype1Felter melding, String identPartner) {
+        melding.setEktefellePartnerFdato(identPartner.substring(0, 6));
+        melding.setEktefellePartnerPnr(identPartner.substring(6));
+    }
 
     private RsMeldingstype1Felter opprettKopiAvSkdMelding(RsMeldingstype1Felter originalMelding, String fnr) {
-        RsMeldingstype1Felter rsMeldingstypeIdent = originalMelding.toBuilder()
+        RsMeldingstype1Felter kopi = originalMelding.toBuilder()
                 .fodselsdato(fnr.substring(0, 6))
                 .personnummer(fnr.substring(6)).build();
-        return rsMeldingstypeIdent;
+        kopi.setTranstype(originalMelding.getTranstype());
+        kopi.setMaskindato(originalMelding.getMaskindato());
+        kopi.setMaskintid(originalMelding.getMaskintid());
+        kopi.setAarsakskode(originalMelding.getAarsakskode());
+        kopi.setSekvensnr(originalMelding.getSekvensnr());
+        return kopi;
     }
 
     private RsMeldingstype1Felter opprettSivilstandsendringsmelding(String ident, String identPartner) {

@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.*;
+import static no.nav.registre.hodejegeren.service.Endringskoder.SKILSMISSE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -45,7 +46,6 @@ public class EksisterendeIdenterServiceTest {
     private List<String> identer;
     private List<String> brukteIdenter;
     private String environment;
-    private Map<String, Integer> meldingerPerEndringskode;
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
     private String fnr3 = "03030303030";
@@ -67,7 +67,6 @@ public class EksisterendeIdenterServiceTest {
 
         environment = "t1";
 
-        meldingerPerEndringskode = new HashMap<>();
     }
 
     /**
@@ -78,7 +77,6 @@ public class EksisterendeIdenterServiceTest {
     @Test
     public void shouldFindLevendeNordmannAndUpdateBrukteIdenter() throws IOException {
         Endringskoder endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
-        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
@@ -102,8 +100,6 @@ public class EksisterendeIdenterServiceTest {
     public void shouldHandleIdenterWithNullValuesInStatusQuoFields() throws IOException {
         Endringskoder endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
 
-        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
-
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettIdenterMedManglendeFeltMock();
@@ -123,7 +119,6 @@ public class EksisterendeIdenterServiceTest {
     @Test
     public void shouldFindUgiftMyndigPersonAndCreateVigselsmelding() throws IOException {
         Endringskoder endringskode = Endringskoder.VIGSEL;
-        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
@@ -139,23 +134,25 @@ public class EksisterendeIdenterServiceTest {
 
 
     /**
-     * Testscenario: HVIS det skal opprettes skilsmisse-/seperasjonsmelding, skal systemet i metoden
-     * {@link EksisterendeIdenterService#behandleSeperasjonSkilsmisse}, finne en gift person, og legge
-     * skilsmisse-/seperasjonsmelding på denne, og påse at tilsvarende melding legges på partner.
+     * Testscenario: HVIS syntetisk skilsmisse-/seperasjonsmelding behandles, skal metoden
+     * {@link EksisterendeIdenterService#behandleSeperasjonSkilsmisse} finne en gift person og legge identifiserende informasjon for personen og personens partner på
+     * skilsmisse-/seperasjonsmeldingen. Deretter skal metoden opprette en tilsvarende skilsmisse-/seperasjonsmelding for partneren.
      */
     @Test
     public void shouldFindGiftPersonAndCreateSkilsmissemelding() throws IOException {
-        Endringskoder endringskode = Endringskoder.SKILSMISSE;
-        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
-
+        meldinger.get(0).setAarsakskode(SKILSMISSE.getAarsakskode());
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettMultipleGifteIdenterMock();
 
-        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, endringskode, environment);
+        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, SKILSMISSE, environment);
 
         verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
+        assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(0).getAarsakskode());
+        assertEquals(fnr2.substring(0,6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+        assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(1).getAarsakskode());
+        assertEquals(fnr3.substring(0,6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
     }
 
     /**
@@ -167,7 +164,6 @@ public class EksisterendeIdenterServiceTest {
     @Test
     public void shouldFindPartnerOfDoedsmeldingIdentAndCreateSivilstandendringsmelding() throws IOException {
         Endringskoder endringskode = Endringskoder.DOEDSMELDING;
-        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
