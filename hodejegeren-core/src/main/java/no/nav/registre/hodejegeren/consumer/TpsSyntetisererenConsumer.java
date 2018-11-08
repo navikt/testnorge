@@ -1,22 +1,36 @@
 package no.nav.registre.hodejegeren.consumer;
 
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 
 @Component
 public class TpsSyntetisererenConsumer {
     
-    @Value("tps-syntetisereren.rest-api.url")
-    private String serverUrl;
+    private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<List<RsMeldingstype>>() {
+    };
     
-    private RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate;
+    private UriTemplate uriTemplate;
     
-    public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String aarsakskode, Integer antallMeldinger) {
-        return restTemplate.getForObject(serverUrl + "/generer", ArrayList.class, antallMeldinger, aarsakskode);
+    public TpsSyntetisererenConsumer(RestTemplateBuilder restTemplateBuilder,
+            @Value("${tps-syntetisereren.rest-api.url}") String serverUrl
+    ) {
+        this.restTemplate = restTemplateBuilder.build();
+        this.uriTemplate = new UriTemplate(serverUrl + "/generate?endringskode={endringskode}&antallMeldinger={antall}");
+    }
+    
+    public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String endringskode, Integer antallMeldinger) {
+        URI url = uriTemplate.expand(endringskode, antallMeldinger);
+        RequestEntity getRequest = RequestEntity.get(url).build();
+        return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
 }

@@ -19,7 +19,7 @@ public class GenereringsOrdreRequest {
     private Long gruppeId;
     @NotNull
     private String miljoe;
-    @ApiModelProperty(value = "{\"aarsakskode1\":antallSkdmeldinger,\n\"aarsakskode2\":antallSkdmeldinger2 osv.}", required = true)
+    @ApiModelProperty(value = "{\"endringskode1\":antallSkdmeldinger,\n\"endringskode2\":antallSkdmeldinger2 osv.}", required = true)
     @NotNull
-    private Map<String, Integer> antallMeldingerPerAarsakskode;
+    private Map<String, Integer> antallMeldingerPerEndringskode;
 }
