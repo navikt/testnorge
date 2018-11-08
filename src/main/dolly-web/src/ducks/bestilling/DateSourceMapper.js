@@ -2,7 +2,8 @@ const DataSourceMapper = data => {
 	switch (data) {
 		case 'SIGRUN':
 			return 'sigrunRequest'
-		case 'TPSF':
+		case 'KRR':
+			return 'krrRequest'
 		default:
 			return 'tpsf'
 	}

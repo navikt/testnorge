@@ -160,6 +160,8 @@ const getValues = (attributeList, values) => {
 
 			return _set(accumulator, 'sigrunRequest', dataArr)
 		}
+
+		console.log(pathPrefix, 'pathPrefix')
 		// Tpsf
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
@@ -168,5 +170,5 @@ const getValues = (attributeList, values) => {
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { bestilling } = getState()
 	const values = bestillingFormatter(bestilling)
-	return dispatch(actions.postBestilling(gruppeId, values))
+	// return dispatch(actions.postBestilling(gruppeId, values))
 }
