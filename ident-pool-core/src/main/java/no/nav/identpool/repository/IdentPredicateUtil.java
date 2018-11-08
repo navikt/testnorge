@@ -11,6 +11,7 @@ import no.nav.identpool.rs.v1.HentIdenterRequest;
 public class IdentPredicateUtil {
 
     public Predicate lagPredicateFraRequest(HentIdenterRequest hentIdenterRequest) {
+        //TODO: Ikke sett denne før, hvordan virker dette?
         QIdentEntity queryIdentEntity = QIdentEntity.identEntity;
 
         BooleanBuilder booleanBuilder = new BooleanBuilder(queryIdentEntity.isNotNull());

@@ -29,13 +29,14 @@ public class HentIdenterRequest {
     private int antall;
     private String rekvirertAv;
 
-    public int getAntall() {
-        return antall;
-    }
-
-    public void setAntall(int antall) {
-        this.antall = antall;
-    }
+    //TODO: Hvorfor?
+//    public int getAntall() {
+//        return antall;
+//    }
+//
+//    public void setAntall(int antall) {
+//        this.antall = antall;
+//    }
 
     @JsonIgnore
     public Pageable getPageable() {

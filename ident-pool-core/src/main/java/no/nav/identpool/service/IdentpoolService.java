@@ -39,16 +39,19 @@ public class IdentpoolService {
 
         List<String> personidentifikatorList = new ArrayList<>();
 
-        Iterable<IdentEntity> identEntities = identRepository.findAll(identPredicateUtil.lagPredicateFraRequest(hentIdenterRequest), hentIdenterRequest.getPageable());
+        Iterable<IdentEntity> identEntities = identRepository.findAll(
+                identPredicateUtil.lagPredicateFraRequest(hentIdenterRequest),
+                hentIdenterRequest.getPageable()
+        );
 
         identEntities.forEach(i -> personidentifikatorList.add(i.getPersonidentifikator()));
 
         int antallManglendeIdenter = hentIdenterRequest.getAntall() - personidentifikatorList.size();
 
         if (antallManglendeIdenter > MAKS_ANTALL_MANGLENDE_IDENTER) {
-            throw new ForFaaLedigeIdenterException("Antall etterspurte identer er større enn tilgjengelig antall. Reduser antallet med " +
-                    (antallManglendeIdenter - MAKS_ANTALL_MANGLENDE_IDENTER) +
-                    ", for å få opprettet identene i TPS, eller vent til ident-pool får generert flere.");
+            String errMsg = "Antall etterspurte identer er større enn tilgjengelig antall. Reduser antallet med %s, " +
+                    "for å få opprettet identene i TPS, eller vent til ident-pool får generert flere.";
+            throw new ForFaaLedigeIdenterException(String.format(errMsg, (antallManglendeIdenter - MAKS_ANTALL_MANGLENDE_IDENTER)));
         }
 
         List<String> temp = hentIdenterFraTps(hentIdenterRequest, antallManglendeIdenter);
@@ -108,7 +111,7 @@ public class IdentpoolService {
                     .personidentifikator(personidentifikator)
                     .rekvireringsstatus(status)
                     .kjoenn(PersonidentifikatorUtil.getKjonn(personidentifikator))
-                    .finnesHosSkatt("0")
+                    .finnesHosSkatt(false)
                     .foedselsdato(PersonidentifikatorUtil.toBirthdate(personidentifikator))
                     .build();
             identRepository.save(newIdentEntity);
@@ -126,7 +129,7 @@ public class IdentpoolService {
                     .personidentifikator(personidentifikator)
                     .rekvireringsstatus(I_BRUK)
                     .rekvirertAv(markerBruktRequest.getBruker())
-                    .finnesHosSkatt("0")
+                    .finnesHosSkatt(false)
                     .kjoenn(PersonidentifikatorUtil.getKjonn(personidentifikator))
                     .foedselsdato(PersonidentifikatorUtil.toBirthdate(personidentifikator))
                     .build();
@@ -156,7 +159,7 @@ public class IdentpoolService {
 
         IdentEntity identEntity = identRepository.findTopByPersonidentifikator(personidentifikator);
         if (identEntity != null) {
-            identEntity.setFinnesHosSkatt("1");
+            identEntity.setFinnesHosSkatt(true);
             identEntity.setRekvireringsstatus(I_BRUK);
             identEntity.setRekvirertAv("DREK");
         } else {
@@ -167,7 +170,7 @@ public class IdentpoolService {
                     .foedselsdato(PersonidentifikatorUtil.toBirthdate(personidentifikator))
                     .rekvireringsstatus(I_BRUK)
                     .rekvirertAv("DREK")
-                    .finnesHosSkatt("1")
+                    .finnesHosSkatt(true)
                     .build();
         }
         identRepository.save(identEntity);

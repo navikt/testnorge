@@ -8,6 +8,7 @@ import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 
 public final class PersonidentifikatorUtil {
 
+    //FIXME Fix magic numbers
     private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
     private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
 

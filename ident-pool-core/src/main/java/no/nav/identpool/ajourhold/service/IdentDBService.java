@@ -112,7 +112,7 @@ public class IdentDBService {
 
     private IdentEntity createIdent(String fnr, Rekvireringsstatus status, Identtype type, String rekvirertAv) {
         return IdentEntity.builder()
-                .finnesHosSkatt("0")
+                .finnesHosSkatt(false)
                 .personidentifikator(fnr)
                 .foedselsdato(PersonidentifikatorUtil.toBirthdate(fnr))
                 .kjoenn(PersonidentifikatorUtil.getKjonn(fnr))

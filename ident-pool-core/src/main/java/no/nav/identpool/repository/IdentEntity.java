@@ -13,13 +13,16 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
+import org.hibernate.annotations.Type;
 
 @Data
 @Entity
@@ -49,9 +52,17 @@ public class IdentEntity {
     @Enumerated(EnumType.STRING)
     private Rekvireringsstatus rekvireringsstatus;
 
+    //TODO Endret til boolean, sjekke at dette ikke bryter noe uventet
+    @Getter(AccessLevel.NONE)
     @NotNull
+    @Type(type="true_false")
     @Column(name = "FINNES_HOS_SKATT")
-    private String finnesHosSkatt;
+    private boolean finnesHosSkatt;
+
+    //Override for prettier method name
+    public Boolean finnesHosSkatt() {
+        return this.finnesHosSkatt;
+    }
 
     @NotNull
     @Column(name = "FOEDSELSDATO")

@@ -28,6 +28,16 @@ public class IdentpoolController {
 
     private final IdentpoolService identpoolService;
 
+    //TODO: Nysgjerrig, hvorfor ikke /api/v1/identifikator/{ident} ?
+    @GetMapping
+    @ApiOperation(value = "hent informasjon lagret på en test-ident")
+    public IdentEntity lesInnhold(
+            @RequestHeader String personidentifikator
+    ) throws UgyldigPersonidentifikatorException {
+        valider(personidentifikator);
+        return identpoolService.lesInnhold(personidentifikator);
+    }
+
     @PostMapping
     @ApiOperation(value = "rekvirer nye test-identer")
     public List<String> rekvirer(@RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
@@ -48,14 +58,5 @@ public class IdentpoolController {
     ) throws UgyldigPersonidentifikatorException {
         valider(personidentifikator);
         return identpoolService.erLedig(personidentifikator);
-    }
-
-    @GetMapping
-    @ApiOperation(value = "hent informasjon lagret på en test-ident")
-    public IdentEntity lesInnhold(
-            @RequestHeader String personidentifikator
-    ) throws UgyldigPersonidentifikatorException {
-        valider(personidentifikator);
-        return identpoolService.lesInnhold(personidentifikator);
     }
 }
