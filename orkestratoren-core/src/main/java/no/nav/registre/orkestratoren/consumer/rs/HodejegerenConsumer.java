@@ -18,7 +18,7 @@ public class HodejegerenConsumer {
 
     private String url;
 
-    public HodejegerenConsumer(@Value("${hodejegeren.server.url}") String hodejegerenServerUrl,
+    public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl,
             @Value("${hodejegeren.base.path}") String hodejegerenBasePath) {
         this.url = hodejegerenServerUrl + hodejegerenBasePath;
     }

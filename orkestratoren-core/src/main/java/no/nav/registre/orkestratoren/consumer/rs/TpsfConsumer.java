@@ -17,7 +17,7 @@ public class TpsfConsumer {
 
     private UriTemplate uriTemplate;
 
-    public TpsfConsumer(@Value("${tpsf.server.url}") String tpsfServerUrl, @Value("${tpsf.base.path}") String tpsfBasePath) {
+    public TpsfConsumer(@Value("${tps-forvalteren.rest-api.url}") String tpsfServerUrl, @Value("${tpsf.base.path}") String tpsfBasePath) {
         uriTemplate = new UriTemplate(tpsfServerUrl + tpsfBasePath + "{skdMeldingGruppeId}");
     }
 
