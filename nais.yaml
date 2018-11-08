@@ -38,7 +38,7 @@ fasitResources:
       resourceType: restservice
   exposed:
    - alias: testnorge-hodejegeren.rest-api
-     description: På denne base-url finner du swagger-dokumentasjon av rest-tjenesten.
+     description: På denne base-url finner du swagger-dokumentasjon av REST-tjenesten.
      resourceType: restservice
-     environment:
+     env:
      path: /api
