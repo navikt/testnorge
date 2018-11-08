@@ -16,10 +16,14 @@ import lombok.Setter;
 public class GenereringsOrdreRequest {
     
     @NotNull
+    @ApiModelProperty(value = "Angir avspillergruppen i TPSF SKD-ENDRINGSMELDINGER som meldingene skal lagres i", required = true)
     private Long gruppeId;
+
     @NotNull
+    @ApiModelProperty(value = "Status på eksisterende identer i avspillergruppen blir hentet fra dette miljøet", required = true)
     private String miljoe;
-    @ApiModelProperty(value = "{\"endringskode1\":antallSkdmeldinger,\n\"endringskode2\":antallSkdmeldinger2 osv.}", required = true)
+
     @NotNull
+    @ApiModelProperty(value = "{\"endringskode1\":antallSkdmeldinger,\n\"endringskode2\":antallSkdmeldinger2 osv.}", required = true)
     private Map<String, Integer> antallMeldingerPerEndringskode;
 }
