@@ -31,6 +31,6 @@ fasitResources:
     - alias: "orkestratorensProperties"
       resourceType: applicationproperties
     - alias: "tps-forvalteren.rest-api"
-        resourceType: restservice
+      resourceType: restservice
     - alias: "testnorge-hodejegeren.rest-api"
-        resourceType: restservice
+      resourceType: restservice
