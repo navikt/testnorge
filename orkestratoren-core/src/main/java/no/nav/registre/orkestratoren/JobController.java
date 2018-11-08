@@ -21,13 +21,13 @@ public class JobController {
     private int skdMeldingGruppeId;
 
     @Autowired
-    private Map<String, Integer> antallMeldingerPerAarsakskode;
+    private Map<String, Integer> antallMeldingerPerEndringskode;
 
     @Autowired
     private TpsSyntPakkenConsumer tpsSyntPakkenConsumer;
 
     @Scheduled(cron = "${orkestratoren.cron:0 0 4 * * *}")
     public void execute() {
-        tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerAarsakskode);
+        tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
     }
 }

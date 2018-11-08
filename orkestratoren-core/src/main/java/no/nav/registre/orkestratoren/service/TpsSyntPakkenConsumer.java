@@ -24,11 +24,11 @@ public class TpsSyntPakkenConsumer {
 
     public AvspillingResponse produserOgSendSkdmeldingerTilTpsIMiljoer(long skdMeldingGruppeId,
             String miljoe,
-            Map<String, Integer> antallMeldingerPerAarsakskode) {
+            Map<String, Integer> antallMeldingerPerEndringskode) {
 
         List<Long> ids = new ArrayList<>();
-        ids.addAll(hodejegerenConsumer.startSyntetisering(new GenereringsOrdreRequest(skdMeldingGruppeId, miljoe, antallMeldingerPerAarsakskode)));
+        ids.addAll(hodejegerenConsumer.startSyntetisering(new GenereringsOrdreRequest(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode)));
 
-        return tpsfConsumer.sendSkdMeldingTilTpsf(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
+        return tpsfConsumer.sendSkdmeldingerTilTps(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
     }
 }

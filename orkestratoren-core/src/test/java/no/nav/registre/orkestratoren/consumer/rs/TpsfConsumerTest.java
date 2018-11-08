@@ -38,7 +38,7 @@ public class TpsfConsumerTest {
     private String expectedStatus;
 
     /**
-     * Scenario: Tester happypath til {@link TpsfConsumer#sendSkdMeldingTilTpsf}
+     * Scenario: Tester happypath til {@link TpsfConsumer#sendSkdmeldingerTilTps}
      */
     @Test
     public void shouldSendSkdMeldingTilTpsf() {
@@ -55,7 +55,7 @@ public class TpsfConsumerTest {
 
         stubTpsfConsumer();
 
-        AvspillingResponse response = tpsfConsumer.sendSkdMeldingTilTpsf(gruppeId, sendToTpsRequest);
+        AvspillingResponse response = tpsfConsumer.sendSkdmeldingerTilTps(gruppeId, sendToTpsRequest);
 
         assertEquals(expectedAntallSendte, response.getAntallSendte());
         assertEquals(expectedAntallFeilet, response.getAntallFeilet());

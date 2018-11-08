@@ -21,7 +21,7 @@ public class TpsfConsumer {
         uriTemplate = new UriTemplate(tpsfServerUrl + "/v1/endringsmelding/skd/send/{skdMeldingGruppeId}");
     }
 
-    public AvspillingResponse sendSkdMeldingTilTpsf(Long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
+    public AvspillingResponse sendSkdmeldingerTilTps(Long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
         String url = uriTemplate.expand(skdMeldingGruppeId).toString();
 
         return restTemplateTpsf.postForObject(url,
