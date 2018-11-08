@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
+import org.springframework.web.util.UriTemplate;
 
 @Component
 public class TpsfConsumer {
@@ -14,14 +15,14 @@ public class TpsfConsumer {
     @Autowired
     private RestTemplate restTemplateTpsf;
 
-    @Value("${tpsf.server.url}")
-    private String tpsfServerUrl;
+    private UriTemplate uriTemplate;
 
-    @Value("${tpsf.base.url}")
-    private String tpsfBaseUrl;
+    public TpsfConsumer(@Value("${tpsf.server.url}") String tpsfServerUrl, @Value("${tpsf.base.path}") String tpsfBasePath) {
+        uriTemplate = new UriTemplate(tpsfServerUrl + tpsfBasePath + "{skdMeldingGruppeId}");
+    }
 
     public AvspillingResponse sendSkdMeldingTilTpsf(Long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
-        String url = tpsfServerUrl + tpsfBaseUrl + skdMeldingGruppeId;
+        String url = uriTemplate.expand(skdMeldingGruppeId).toString();
 
         return restTemplateTpsf.postForObject(url,
                 sendToTpsRequest,

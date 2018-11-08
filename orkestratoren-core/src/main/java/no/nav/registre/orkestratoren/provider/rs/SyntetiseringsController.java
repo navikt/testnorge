@@ -21,6 +21,6 @@ public class SyntetiseringsController {
 
         return tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getSkdMeldingGruppeId(),
                 syntetiserSkdmeldingerRequest.getMiljoe(),
-                syntetiserSkdmeldingerRequest.getAntallMeldingerPerAarsakskode());
+                syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
     }
 }

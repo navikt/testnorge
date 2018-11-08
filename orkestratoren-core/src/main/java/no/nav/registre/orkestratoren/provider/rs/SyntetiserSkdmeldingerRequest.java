@@ -14,5 +14,5 @@ import lombok.Setter;
 public class SyntetiserSkdmeldingerRequest {
     private long skdMeldingGruppeId;
     private String miljoe;
-    private Map<String, Integer> antallMeldingerPerAarsakskode;
+    private Map<String, Integer> antallMeldingerPerEndringskode;
 }
