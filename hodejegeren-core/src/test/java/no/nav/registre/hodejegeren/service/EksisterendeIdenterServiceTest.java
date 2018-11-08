@@ -113,8 +113,10 @@ public class EksisterendeIdenterServiceTest {
 
     /**
      * Testscenario: HVIS det skal opprettes vigselsmelding, skal systemet i metoden {@link EksisterendeIdenterService#behandleVigsel},
-     * finne to personer som er ugifte, og myndige, og legge vigselsmelding på disse, og påse at hver av identene legges inn
-     * som relasjon til den andre.
+     * finne to personer som er ugifte og myndige, og legge vigselsmelding på disse, og påse at hver av identene legges inn
+     * som relasjon til den andre. Det opprettes en vigselsmelding for hver av personene.
+     *
+     * Personer må være minst 18 år (myndige) for å kunne settes på en vigselsmelding.
      */
     @Test
     public void shouldFindUgiftMyndigPersonAndCreateVigselsmelding() throws IOException {
@@ -122,7 +124,7 @@ public class EksisterendeIdenterServiceTest {
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
-        opprettMultipleUgifteIdenterMock();
+        opprettMultipleUgifteIdenterMock(); //fnr1,2 og 3 er myndige. fnr2 er gift. Resten er ugift.
 
         eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment);
 
