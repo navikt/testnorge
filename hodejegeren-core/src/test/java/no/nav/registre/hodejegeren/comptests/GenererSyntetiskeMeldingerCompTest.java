@@ -124,6 +124,7 @@ public class GenererSyntetiskeMeldingerCompTest {
                         + "  \"55555555555\"\n"
                         + "]")));
         
+        //Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
         stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
                 .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
                 .withBasicAuth(username, password)
