@@ -39,7 +39,7 @@ public class FoedselService {
 
         Iterator<RsMeldingstype> meldingIterator = meldinger.iterator();
         int i = 0;
-        while(meldingIterator.hasNext()) {
+        while (meldingIterator.hasNext()) {
             RsMeldingstype melding = meldingIterator.next();
 
             String morFnr = moedre.get(i++);

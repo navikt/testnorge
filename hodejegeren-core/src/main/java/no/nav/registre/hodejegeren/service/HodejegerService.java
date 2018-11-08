@@ -107,7 +107,7 @@ public class HodejegerService {
             log.warn("--- Noe feilet under lagring til TPSF ---\r\n {}\r\nEndringskode: {}\r\n"
                     , e.getMessage(), endringskode.getEndringskode());
             if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
-                StringBuilder message = new StringBuilder().append("Rekvirerte fødselsnummer i denne batchen:\r\n");
+                StringBuilder message = new StringBuilder().append("Rekvirerte fødselsnumre i denne batchen:\r\n");
                 for (RsMeldingstype rs : syntetiserteSkdmeldinger) {
                     message.append(((RsMeldingstype1Felter) rs).getFodselsdato())
                             .append(((RsMeldingstype1Felter) rs).getPersonnummer())

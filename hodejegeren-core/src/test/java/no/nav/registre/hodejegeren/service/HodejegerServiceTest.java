@@ -1,5 +1,8 @@
 package no.nav.registre.hodejegeren.service;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
@@ -13,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +25,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -85,15 +90,15 @@ public class HodejegerServiceTest {
     }
 
     @Test
-    public void sjekkAtNyeIdenterBlirKaltForRiktigeAarsakskoder() {
-        final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
-        antallMeldingerPerAarsakskode.put("0110", 1);
-        antallMeldingerPerAarsakskode.put("0211", 1);
-        antallMeldingerPerAarsakskode.put("3910", 1);
-        antallMeldingerPerAarsakskode.put("9110", 1);
+    public void sjekkAtNyeIdenterBlirKaltForRiktigeEndringskoder() {
+        final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
+        antallMeldingerPerEndringskode.put("0110", 1);
+        antallMeldingerPerEndringskode.put("0211", 1);
+        antallMeldingerPerEndringskode.put("3910", 1);
+        antallMeldingerPerEndringskode.put("9110", 1);
 
-        antallMeldingerPerAarsakskode.put("0310", 1); //stikkprøve - aarsakskoder som ikke skal ha nye identer
-        antallMeldingerPerAarsakskode.put("0410", 1); //stikkprøve - aarsakskoder som ikke skal ha nye identer
+        antallMeldingerPerEndringskode.put("0310", 1); //stikkprøve - endringskoder som ikke skal ha nye identer
+        antallMeldingerPerEndringskode.put("0410", 1); //stikkprøve - endringskoder som ikke skal ha nye identer
 
         List<RsMeldingstype> meldinger01 = Arrays.asList(new RsMeldingstype1Felter());
         List<RsMeldingstype> meldinger02 = Arrays.asList(new RsMeldingstype1Felter());
@@ -130,7 +135,7 @@ public class HodejegerServiceTest {
             return Arrays.asList(fodselsdato + personnummer);
         });
 
-        hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerAarsakskode));
+        hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
 
         assertEquals(fodselsdato, ((RsMeldingstype1Felter) meldinger01.get(0)).getFodselsdato());
         assertEquals(fodselsdato, ((RsMeldingstype1Felter) meldinger02.get(0)).getFodselsdato());
@@ -147,22 +152,48 @@ public class HodejegerServiceTest {
      * Testscenario: Hodejegeren må filtrere bort endringskoder som hodejegeren for øyeblikket ikke har støtte for.
      */
     @Test
-    public void shouldFiltrereAarsakskodeneSomBestillesFraTpsSyntetisereren() {
-        List<String> requestedAarsakskoder = Arrays.asList("tull", "0010", "0x", "100", "9110", "5110", "5610", "8110", "9810",
+    public void shouldFiltrereEndringskodeneSomBestillesFraTpsSyntetisereren() {
+        List<String> requestedEndringskoder = Arrays.asList("tull", "0010", "0x", "100", "9110", "5110", "5610", "8110", "9810",
                 "4310", "3210", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810");
-        final HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
-        for (String requestedAarsakskode : requestedAarsakskoder) {
-            antallMeldingerPerAarsakskode.put(requestedAarsakskode, 0);
+        final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
+        for (String requestedEndringskode : requestedEndringskoder) {
+            antallMeldingerPerEndringskode.put(requestedEndringskode, 0);
         }
 
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), any())).thenReturn(new ArrayList<>());
 
-        hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerAarsakskode));
+        hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
 
         final InOrder inOrder = Mockito.inOrder(tpsSyntetisererenConsumer);
-        for (String aarsakskode : Arrays.asList("9110", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810", "5110", "5610", "8110", "9810", "4310", "3210")) {
-            inOrder.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(eq(aarsakskode), any());
+        for (String endringskode : Arrays.asList("9110", "0211", "0110", "3910", "0610", "0710", "1010", "1110", "1410", "1810", "5110", "5610", "8110", "9810", "4310", "3210")) {
+            inOrder.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(eq(endringskode), any());
         }
         inOrder.verifyNoMoreInteractions();
+    }
+
+    /**
+     * Testscenario: HVIS kall til Tpsf gjennom {@link TpsfConsumer#saveSkdEndringsmeldingerInTPSF} feiler, og det
+     * kastes en exception, skal denne catches og feilen logges.
+     */
+    @Test
+    public void shouldCatchExceptionAndLogIfTpsfFails() {
+        final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
+        antallMeldingerPerEndringskode.put("0110", 2);
+        antallMeldingerPerEndringskode.put("0211", 2);
+
+        Logger logger = (Logger) LoggerFactory.getLogger(HodejegerService.class);
+        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        listAppender.start();
+        logger.addAppender(listAppender);
+
+        when(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(any(), any())).thenThrow(RuntimeException.class);
+
+        hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
+
+        verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(any(), any());
+
+        assertEquals(4, listAppender.list.size());
+        assertTrue(listAppender.list.get(0).toString().contains("Noe feilet under lagring til TPSF"));
+        assertTrue(listAppender.list.get(2).toString().contains("Noe feilet under lagring til TPSF"));
     }
 }
