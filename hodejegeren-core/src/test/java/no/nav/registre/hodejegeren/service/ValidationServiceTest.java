@@ -1,14 +1,13 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.testutils.Utils.testLoggingInClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
@@ -20,23 +19,20 @@ public class ValidationServiceTest {
     
     @Test
     public void shouldLogValidationOfInvalidMessage() {
-        Logger logger = (Logger) LoggerFactory.getLogger(ValidationService.class);
-        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-        listAppender.start();
-        logger.addAppender(listAppender);
-        
+        ListAppender<ILoggingEvent> listAppender = testLoggingInClass(ValidationService.class);
+
         RsMeldingstype1Felter melding1 = RsMeldingstype1Felter.builder().antallBarn("2421234").build();
         RsMeldingstype1Felter melding2 = RsMeldingstype1Felter.builder().antallBarn("4").build();
         final ArrayList<RsMeldingstype> liste = new ArrayList<>();
         liste.add(melding1);
         liste.add(melding2);
         validator.logAndRemoveInvalidMessages(liste);
-        
+
         assertEquals(1, listAppender.list.size());
         assertTrue(listAppender.list.get(0).toString().contains("Valideringsfeil for melding med aarsakskode null."
                 + " size must be between 0 and 2 for variabelen antallBarn=2421234."));
     }
-    
+
     /**
      * Testscenario:
      * Valideringen av syntetiske meldinger fra TPS Synt skal ignorere tomme meldinger (null) i responsen.
