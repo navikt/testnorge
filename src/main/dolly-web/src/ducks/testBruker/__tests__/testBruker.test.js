@@ -33,7 +33,7 @@ describe('testBrukerReducer', () => {
 		expect(testBruker({}, action)).toEqual(res)
 	})
 
-	it('should add sigrun items on success', () => {
+	it('should add sigrunStub items on success', () => {
 		const testdata = 'test'
 		const action = {
 			type: 'GET_SIGRUN_TESTBRUKERE_SUCCESS',
