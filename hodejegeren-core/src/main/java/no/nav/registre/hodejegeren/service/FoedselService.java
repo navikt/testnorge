@@ -1,24 +1,28 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.getFoedselsdatoFraFnr;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.consumer.IdentPoolConsumer;
 import no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.getFoedselsdatoFraFnr;
 
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class FoedselService {
 
     @Autowired
@@ -34,17 +38,26 @@ public class FoedselService {
         List<String> moedre = findMoedre(meldinger.size(), levendeIdenterINorge);
         List<String> barn = new ArrayList<>(meldinger.size());
 
-        for (int i = 0; i < meldinger.size(); i++) {
-            String morFnr = moedre.get(i);
+        Iterator<RsMeldingstype> meldingIterator = meldinger.iterator();
+        int i = 0;
+        while (meldingIterator.hasNext()) {
+            RsMeldingstype melding = meldingIterator.next();
+
+            String morFnr = moedre.get(i++);
             LocalDate morFoedselsdato = getFoedselsdatoFraFnr(morFnr);
 
-            String barnFnr = identPoolConsumer.hentNyeIdenter(HentIdenterRequest.builder().foedtEtter(morFoedselsdato.plusYears(13)).antall(1).identtype(identType).build()).get(0);
+            String barnFnr;
+            try {
+                barnFnr = identPoolConsumer.hentNyeIdenter(HentIdenterRequest.builder().foedtEtter(morFoedselsdato.plusYears(13)).antall(1).identtype(identType).build()).get(0);
+            } catch (RuntimeException e) {
+                log.warn("Kunne ikke finne barn til mor med fnr {} - Fjernet melding med meldingsnummer {}", morFnr, melding.getMeldingsnrHosTpsSynt());
+                meldingIterator.remove();
+                continue;
+            }
+            putFnrInnIMelding((RsMeldingstype1Felter) melding, barnFnr);
 
-            ((RsMeldingstype1Felter) meldinger.get(i)).setFodselsdato(barnFnr.substring(0, 6));
-            ((RsMeldingstype1Felter) meldinger.get(i)).setPersonnummer(barnFnr.substring(6));
-
-            ((RsMeldingstype1Felter) meldinger.get(i)).setMorsFodselsdato(morFnr.substring(0, 6));
-            ((RsMeldingstype1Felter) meldinger.get(i)).setMorsPersonnummer(morFnr.substring(6));
+            ((RsMeldingstype1Felter) melding).setMorsFodselsdato(morFnr.substring(0, 6));
+            ((RsMeldingstype1Felter) melding).setMorsPersonnummer(morFnr.substring(6));
 
             barn.add(barnFnr);
         }

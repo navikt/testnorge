@@ -1,9 +1,11 @@
 package no.nav.registre.hodejegeren.service;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.*;
  * Til slutt lagres skdmeldingene i TPSF databasen, i Skd-endringsmelding-tabellen.
  */
 @Service
+@Slf4j
 public class HodejegerService {
 
     @Autowired
@@ -62,25 +65,31 @@ public class HodejegerService {
 
         Map<String, List<String>> listerMedIdenter = createListerMedIdenter(genereringsOrdreRequest);
 
-        for (Endringskoder endringskode : sorterteEndringskoder) {
-            List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
-            validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
+        try {
+            for (Endringskoder endringskode : sorterteEndringskoder) {
+                List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
+                validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
 
-            if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
-                nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger);
-            } else if (TILDELING_DNUMMER.equals(endringskode)) {
-                nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger);
-            } else if (FOEDSELSMELDING.equals(endringskode)) {
-                foedselService.behandleFoedselsmeldinger(FNR, syntetiserteSkdmeldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE));
-            } else {
-                eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, environment);
+                if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
+                    nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger);
+                } else if (TILDELING_DNUMMER.equals(endringskode)) {
+                    nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger);
+                } else if (FOEDSELSMELDING.equals(endringskode)) {
+                    foedselService.behandleFoedselsmeldinger(FNR, syntetiserteSkdmeldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE));
+                } else {
+                    eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, environment);
+                }
+
+                lagreSkdEndringsmeldingerITpsfOgOppdaterIds(ids, endringskode, syntetiserteSkdmeldinger, genereringsOrdreRequest);
+
+                listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+                listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+                listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             }
-
-            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
-
-            listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
-            listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
-            listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+        } catch (RuntimeException e) {
+            log.warn(("--- Noe feilet under kjøring ---\r\n {}\r\n Skdmeldinger som er ferdig behandlet har følgende id-er i TPSF: {}")
+                    , e.getMessage(), ids);
+            throw e;
         }
         return ids;
     }
@@ -88,6 +97,25 @@ public class HodejegerService {
     private List<Endringskoder> filtrerOgSorterBestilteEndringskoder(Set<String> endringskode) {
         List<Endringskoder> sorterteEndringskoder = Arrays.asList(Endringskoder.values());
         return sorterteEndringskoder.stream().filter(kode -> endringskode.contains(kode.getEndringskode())).collect(Collectors.toList());
+    }
+
+    private void lagreSkdEndringsmeldingerITpsfOgOppdaterIds(List<Long> ids, Endringskoder endringskode,
+                                                             List<RsMeldingstype> syntetiserteSkdmeldinger, GenereringsOrdreRequest genereringsOrdreRequest) {
+        try {
+            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
+        } catch (Exception e) {
+            log.warn("--- Noe feilet under lagring til TPSF ---\r\n {}\r\nEndringskode: {}\r\n"
+                    , e.getMessage(), endringskode.getEndringskode());
+            if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
+                StringBuilder message = new StringBuilder().append("Rekvirerte fødselsnummer i denne batchen:\r\n");
+                for (RsMeldingstype rs : syntetiserteSkdmeldinger) {
+                    message.append(((RsMeldingstype1Felter) rs).getFodselsdato())
+                            .append(((RsMeldingstype1Felter) rs).getPersonnummer())
+                            .append("\r\n");
+                }
+                log.warn(message.toString());
+            }
+        }
     }
 
     private Map<String, List<String>> createListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {

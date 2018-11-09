@@ -1,5 +1,8 @@
 package no.nav.registre.hodejegeren.service;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import no.nav.registre.hodejegeren.consumer.IdentPoolConsumer;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
@@ -8,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,4 +78,36 @@ public class FoedselServiceTest {
 
         assertTrue(opprettedeBarn.contains(barnFnr));
     }
+
+    /**
+     * Scenario: HVIS identpool returnerer en exception, skal systemet logge feilen og fjerne den gjeldende skdmeldingen
+     */
+    @Test
+    public void shouldLogWarningAndRemoveMessage() {
+        List<RsMeldingstype> meldinger;
+        meldinger = new ArrayList<>();
+        meldinger.add(new RsMeldingstype1Felter());
+        meldinger.add(new RsMeldingstype1Felter());
+        meldinger.add(new RsMeldingstype1Felter());
+
+        List<String> levendeIdenterINorge = new ArrayList<>();
+        levendeIdenterINorge.add("01010101010");
+        levendeIdenterINorge.add("02020202020");
+        levendeIdenterINorge.add("03030303030");
+
+        Logger logger = (Logger) LoggerFactory.getLogger(FoedselService.class);
+        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        listAppender.start();
+        logger.addAppender(listAppender);
+
+        when(identPoolConsumer.hentNyeIdenter(any())).thenThrow(HttpClientErrorException.class);
+
+        List<String> opprettedeBarn = foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge);
+
+        assertEquals(0, opprettedeBarn.size());
+        assertEquals(0, meldinger.size());
+        assertEquals(3, listAppender.list.size());
+        assertTrue(listAppender.list.get(0).toString().contains("Kunne ikke finne barn til mor med fnr " + levendeIdenterINorge.get(0)));
+    }
 }
+

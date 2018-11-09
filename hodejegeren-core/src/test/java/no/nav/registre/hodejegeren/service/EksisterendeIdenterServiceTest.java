@@ -1,17 +1,19 @@
 package no.nav.registre.hodejegeren.service;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.LoggerFactory;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.FNR_RELASJON;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.SIVILSTAND;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
+import static no.nav.registre.hodejegeren.service.Endringskoder.SKILSMISSE;
+import static no.nav.registre.hodejegeren.testutils.Utils.testLoggingInClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,31 +23,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
 @RunWith(MockitoJUnitRunner.class)
+@Slf4j
 public class EksisterendeIdenterServiceTest {
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
     @Mock
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
-
     @Mock
     private Random rand;
-
     @InjectMocks
     private EksisterendeIdenterService eksisterendeIdenterService;
-
     private List<RsMeldingstype> meldinger;
     private List<String> identer;
     private List<String> brukteIdenter;
     private String environment;
-    private Map<String, Integer> meldingerPerEndringskode;
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
     private String fnr3 = "03030303030";
@@ -64,7 +73,6 @@ public class EksisterendeIdenterServiceTest {
 
         environment = "t1";
 
-        meldingerPerEndringskode = new HashMap<>();
     }
 
     /**
@@ -75,7 +83,6 @@ public class EksisterendeIdenterServiceTest {
     @Test
     public void shouldFindLevendeNordmannAndUpdateBrukteIdenter() throws IOException {
         Endringskoder endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
-        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
@@ -99,8 +106,6 @@ public class EksisterendeIdenterServiceTest {
     public void shouldHandleIdenterWithNullValuesInStatusQuoFields() throws IOException {
         Endringskoder endringskode = Endringskoder.NAVNEENDRING_FOERSTE;
 
-        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
-
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettIdenterMedManglendeFeltMock();
@@ -114,17 +119,18 @@ public class EksisterendeIdenterServiceTest {
 
     /**
      * Testscenario: HVIS det skal opprettes vigselsmelding, skal systemet i metoden {@link EksisterendeIdenterService#behandleVigsel},
-     * finne to personer som er ugifte, og myndige, og legge vigselsmelding på disse, og påse at hver av identene legges inn
-     * som relasjon til den andre.
+     * finne to personer som er ugifte og myndige, og legge vigselsmelding på disse, og påse at hver av identene legges inn
+     * som relasjon til den andre. Det opprettes en vigselsmelding for hver av personene.
+     * <p>
+     * Personer må være minst 18 år (myndige) for å kunne settes på en vigselsmelding.
      */
     @Test
     public void shouldFindUgiftMyndigPersonAndCreateVigselsmelding() throws IOException {
         Endringskoder endringskode = Endringskoder.VIGSEL;
-        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
-        opprettMultipleUgifteIdenterMock();
+        opprettMultipleUgifteIdenterMock(); //fnr1,2 og 3 er myndige. fnr2 er gift. Resten er ugift.
 
         eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment);
 
@@ -134,36 +140,84 @@ public class EksisterendeIdenterServiceTest {
         assertEquals(fnr1.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
     }
 
+    /**
+     * HVIS et ekte-/samboer-par skal legges til i skilsmisse/separasjonsmelding, MEN deres status quo i TPS ikke stemmer overens
+     * (ulik sivilstand eller ikke registrert gjensidig relasjon), SÅ skal avviket loggføres
+     * og et nytt ekte-/samboer-par blir fylt inn i meldingen i stedet.
+     */
+    @Test
+    public void shouldLogAndRetryWithNewCoupleIfTheirDataIsCorrupt() throws IOException {
+        ListAppender<ILoggingEvent> listAppender = testLoggingInClass(EksisterendeIdenterService.class);
+        when(rand.nextInt(anyInt())).thenReturn(0);
+
+        List<String> identerIRekkefølge = opprettEkteparMedKorruptDataMock(); //Første paret har data som feiler. Andre paret er fungerende og vanlig.
+
+        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identerIRekkefølge, brukteIdenter, SKILSMISSE, environment);
+
+        assertEquals(1, listAppender.list.size());
+        assertTrue(listAppender.list.get(0).toString().contains("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: "
+                + fnr1 + " og " + fnr2));
+        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+    }
+
+    private List<String> opprettEkteparMedKorruptDataMock() throws IOException {
+        //oppretter ektepar med korrupt data på nummer 2 av ektefellene.
+        Map<String, String> statusQuo = new HashMap<>();
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(FNR_RELASJON, fnr2);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
+
+        //fnr2 er feilregistrert i TPS til ugift sivilstand.
+        String fnr5 = "05050505050";
+        statusQuo = new HashMap<>();
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
+        statusQuo.put(FNR_RELASJON, fnr5);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
+
+        //Et fungerende ektepar
+        String fnr4 = "04040404040";
+        statusQuo = new HashMap<>();
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(FNR_RELASJON, fnr3);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr4))).thenReturn(statusQuo);
+        statusQuo = new HashMap<>();
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(FNR_RELASJON, fnr4);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
+        return new ArrayList(Arrays.asList(fnr1, fnr2, fnr3, fnr4));
+    }
 
     /**
-     * Testscenario: HVIS det skal opprettes skilsmisse-/seperasjonsmelding, skal systemet i metoden
-     * {@link EksisterendeIdenterService#behandleSeperasjonSkilsmisse}, finne en gift person, og legge
-     * skilsmisse-/seperasjonsmelding på denne, og påse at tilsvarende melding legges på partner.
+     * Testscenario: HVIS syntetisk skilsmisse-/seperasjonsmelding behandles, skal metoden
+     * {@link EksisterendeIdenterService#behandleSeperasjonSkilsmisse} finne en gift person og legge identifiserende informasjon for personen og personens partner på
+     * skilsmisse-/seperasjonsmeldingen. Deretter skal metoden opprette en tilsvarende skilsmisse-/seperasjonsmelding for partneren.
      */
     @Test
     public void shouldFindGiftPersonAndCreateSkilsmissemelding() throws IOException {
-        Endringskoder endringskode = Endringskoder.SKILSMISSE;
-        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
-
+        meldinger.get(0).setAarsakskode(SKILSMISSE.getAarsakskode());
         when(rand.nextInt(anyInt())).thenReturn(0);
 
         opprettMultipleGifteIdenterMock();
 
-        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, endringskode, environment);
+        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, SKILSMISSE, environment);
 
         verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
+        assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(0).getAarsakskode());
+        assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+        assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(1).getAarsakskode());
+        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
     }
 
     /**
-     * Testscenario: HVIS det skal opprettes dødsmelding, skal systemet i metoden {@link EksisterendeIdenterService#behandleDoedsmelding},
-     * finne en levende norsk statsborger, og legge dødsmelding på denne. Systemet skal i tilfeller der personen er gift,
-     * sette partner til enke/enkemann.
+     * Testscenario: HVIS dødsmelding skal behandles av Hodejegeren, skal systemet i metoden {@link EksisterendeIdenterService#behandleDoedsmelding},
+     * finne en levende norsk statsborger, og legge dødsmelding på denne.
+     * <p>
+     * Når dødsmelding registreres på en gift person, så vil Hodejegeren opprette en endringsmelding på sivilstand for å omregistrere ektefellen til enke/enkemann.
      */
     @Test
     public void shouldFindPartnerOfDoedsmeldingIdentAndCreateSivilstandendringsmelding() throws IOException {
         Endringskoder endringskode = Endringskoder.DOEDSMELDING;
-        meldingerPerEndringskode.put(endringskode.getEndringskode(), 1);
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
@@ -172,26 +226,29 @@ public class EksisterendeIdenterServiceTest {
         eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, endringskode, environment);
 
         verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any(), any());
+        assertEquals(2, meldinger.size());
+        assertEquals(fnr1.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+        assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
         assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
     /**
      * Testscenario: HVIS det skal opprettes en vigselsmelding og det er for få ledige identer tilgjengelig, skal det
-     * skrives ut en melding til loggen.
+     * kastes en exception med beskrivende feilmelding som inneholder meldingsnummeret til meldingen som feilet.
      */
     @Test
-    public void shouldLogWarningForTooFewIdents() {
+    public void shouldThrowExceptionForTooFewIdents() {
+        String meldingsnummer = "123";
+
+        expectedException.expect(ManglerEksisterendeIdentException.class);
+        expectedException.expectMessage("Kunne ikke finne ident for SkdMelding med meldingsnummer "
+                + meldingsnummer + ". For få identer i listen singleIdenterINorge.");
+
         Endringskoder endringskode = Endringskoder.VIGSEL;
 
-        Logger logger = (Logger) LoggerFactory.getLogger(EksisterendeIdenterService.class);
-        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-        listAppender.start();
-        logger.addAppender(listAppender);
+        meldinger.get(0).setMeldingsnrHosTpsSynt(meldingsnummer);
 
         eksisterendeIdenterService.behandleVigsel(meldinger, Arrays.asList("01010101010"), brukteIdenter, endringskode, environment);
-
-        assertEquals(1, listAppender.list.size());
-        assertTrue(listAppender.list.get(0).toString().contains("Kunne ikke finne ident for SkdMelding med meldingsnummer"));
     }
 
     @Test
