@@ -9,4 +9,7 @@ public class KodeverkException extends HttpClientErrorException {
         super(status, message);
     }
 
+    public KodeverkException(HttpStatus status, String message, Throwable throwable) {
+        this(status, message);
+    }
 }

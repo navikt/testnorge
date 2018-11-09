@@ -1,17 +1,7 @@
 package no.nav.dolly.service;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.TeamRepository;
+import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -23,8 +13,18 @@ import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
 
 //TODO Burde gjore at alle returnerer team istedenfor "json/POJO" representasjonen av de.
 
@@ -146,7 +146,7 @@ public class TeamService {
         try {
             return teamRepository.save(team);
         } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Team DB constraint er brutt! Kan ikke lagre Team. Error: " + e.getMessage());
+            throw new ConstraintViolationException("En Team DB constraint er brutt! Kan ikke lagre Team. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
             throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
         }
