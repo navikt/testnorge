@@ -39,14 +39,14 @@ public class TpsfService {
 
     public List<String> opprettIdenterTpsf(RsTpsfBestilling request) {
         ResponseEntity<Object> response = postToTpsf(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_BASE_URL, TPSF_OPPRETT_URL), new HttpEntity<>(request));
-        return objectMapper.convertValue(response.getBody(), List.class);
+        return response != null ? objectMapper.convertValue(response.getBody(), List.class) : null;
     }
 
     public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
         validateEnvironments(environments);
         String url = buildTpsfUrlFromEnvironmentsInput(environments);
         ResponseEntity<Object> response = postToTpsf(url, new HttpEntity<>(identer));
-        return objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class);
+        return response != null ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
     }
 
     private ResponseEntity<Object> postToTpsf(String url, HttpEntity request) {
