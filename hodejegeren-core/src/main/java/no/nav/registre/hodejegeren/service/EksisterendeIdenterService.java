@@ -8,6 +8,9 @@ import static no.nav.registre.hodejegeren.service.HodejegerService.BRUKTE_IDENTE
 import static no.nav.registre.hodejegeren.service.HodejegerService.GIFTE_IDENTER_I_NORGE;
 import static no.nav.registre.hodejegeren.service.HodejegerService.LEVENDE_IDENTER_I_NORGE;
 import static no.nav.registre.hodejegeren.service.HodejegerService.SINGLE_IDENTER_I_NORGE;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.opprettKopiAvSkdMelding;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putEktefellePartnerFnrInnIMelding;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -189,7 +192,7 @@ public class EksisterendeIdenterService {
 
                 } else {
                     log.warn("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: "
-                            + ident + " og " +identPartner);
+                            + ident + " og " + identPartner);
                     i--; //Prøver på nytt med et nytt par for samme melding
                 }
             } else {
@@ -287,28 +290,6 @@ public class EksisterendeIdenterService {
         }
 
         return statusQuoFraAarsakskode;
-    }
-
-    private void putFnrInnIMelding(RsMeldingstype1Felter melding, String fnr) {
-        melding.setFodselsdato(fnr.substring(0, 6));
-        melding.setPersonnummer(fnr.substring(6));
-    }
-
-    private void putEktefellePartnerFnrInnIMelding(RsMeldingstype1Felter melding, String identPartner) {
-        melding.setEktefellePartnerFdato(identPartner.substring(0, 6));
-        melding.setEktefellePartnerPnr(identPartner.substring(6));
-    }
-
-    private RsMeldingstype1Felter opprettKopiAvSkdMelding(RsMeldingstype1Felter originalMelding, String fnr) {
-        RsMeldingstype1Felter kopi = originalMelding.toBuilder()
-                .fodselsdato(fnr.substring(0, 6))
-                .personnummer(fnr.substring(6)).build();
-        kopi.setTranstype(originalMelding.getTranstype());
-        kopi.setMaskindato(originalMelding.getMaskindato());
-        kopi.setMaskintid(originalMelding.getMaskintid());
-        kopi.setAarsakskode(originalMelding.getAarsakskode());
-        kopi.setSekvensnr(originalMelding.getSekvensnr());
-        return kopi;
     }
 
     private RsMeldingstype1Felter opprettSivilstandsendringsmelding(String ident, String identPartner) {

@@ -1,5 +1,7 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
+
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,10 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
  */
 @Service
 public class NyeIdenterService {
-    
+
     @Autowired
     private IdentPoolConsumer identPoolConsumer;
-    
+
     public List<String> settInnNyeIdenterITrans1Meldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger) {
         int antallNyeIdenter = meldinger.size();
         HentIdenterRequest request = HentIdenterRequest.builder()
@@ -27,8 +29,7 @@ public class NyeIdenterService {
                 .foedtEtter(LocalDate.of(1900, 1, 1)).build();
         List<String> identer = identPoolConsumer.hentNyeIdenter(request);
         for (int i = 0; i < antallNyeIdenter; i++) {
-            ((RsMeldingstype1Felter) meldinger.get(i)).setFodselsdato(identer.get(i).substring(0, 6));
-            ((RsMeldingstype1Felter) meldinger.get(i)).setPersonnummer(identer.get(i).substring(6));
+            putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identer.get(i));
         }
         return identer;
     }
