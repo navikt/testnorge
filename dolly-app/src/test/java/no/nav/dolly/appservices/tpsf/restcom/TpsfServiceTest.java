@@ -28,14 +28,14 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
-import no.nav.dolly.bestilling.tpsf.TpsfApiService;
+import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TpsfApiServiceTest {
+public class TpsfServiceTest {
 
     private String url = "https://localhost:8080/api/v1/dolly/testdata/personer";
     private RsTpsfBestilling standardTpsfBestilling = new RsTpsfBestilling();
@@ -48,7 +48,7 @@ public class TpsfApiServiceTest {
     @Mock ProvidersProps providersProps;
 
     @InjectMocks
-    private TpsfApiService service;
+    private TpsfService service;
 
     @Before
     public void setup(){
