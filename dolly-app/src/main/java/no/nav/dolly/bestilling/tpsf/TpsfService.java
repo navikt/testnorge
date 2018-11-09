@@ -46,7 +46,7 @@ public class TpsfService {
         validateEnvironments(environments);
         String url = buildTpsfUrlFromEnvironmentsInput(environments);
         ResponseEntity<Object> response = postToTpsf(url, new HttpEntity<>(identer));
-        return response != null ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
+        return objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class);
     }
 
     private ResponseEntity<Object> postToTpsf(String url, HttpEntity request) {
