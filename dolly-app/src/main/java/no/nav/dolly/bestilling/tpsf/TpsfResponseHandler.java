@@ -22,14 +22,11 @@ public class TpsfResponseHandler {
         for (SendSkdMeldingTilTpsResponse response : responses) {
             sb.append("{(personId: ")
                     .append(response.getPersonId())
-                    .append(')');
-            sb.append(",(meldingstype: ")
+                    .append("),(meldingstype: ")
                     .append(response.getSkdmeldingstype())
-                    .append(')');
-            sb.append(",(miljoer: ");
+                    .append("),(miljoer: ");
             for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                sb
-                        .append('<')
+                sb.append('<')
                         .append(entry.getKey())
                         .append('=')
                         .append(entry.getValue().trim())

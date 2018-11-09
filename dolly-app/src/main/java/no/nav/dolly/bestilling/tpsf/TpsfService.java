@@ -39,7 +39,7 @@ public class TpsfService {
 
     public List<String> opprettIdenterTpsf(RsTpsfBestilling request) {
         ResponseEntity<Object> response = postToTpsf(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_BASE_URL, TPSF_OPPRETT_URL), new HttpEntity<>(request));
-        return response != null ? objectMapper.convertValue(response.getBody(), List.class) : null;
+        return objectMapper.convertValue(response.getBody(), List.class);
     }
 
     public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
