@@ -1,5 +1,16 @@
 package no.nav.dolly.service;
 
+import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
@@ -11,17 +22,6 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 
 @Service
 public class BrukerService {
@@ -46,7 +46,7 @@ public class BrukerService {
         try {
             return brukerRepository.save(b);
         } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Bruker DB constraint er brutt! Kan ikke lagre bruker. Error: " + e.getMessage());
+            throw new ConstraintViolationException("En Bruker DB constraint er brutt! Kan ikke lagre bruker. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
             throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
         }

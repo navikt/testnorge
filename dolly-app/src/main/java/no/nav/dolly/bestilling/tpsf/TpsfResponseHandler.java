@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.tpsf;
 
+import static java.lang.String.format;
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.util.List;
@@ -16,15 +17,23 @@ public class TpsfResponseHandler {
     private static final int MAX_LENGTH_VARCHAR2 = 4000;
 
     public String extractTPSFeedback(List<SendSkdMeldingTilTpsResponse> responses) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(50);
 
         for (SendSkdMeldingTilTpsResponse response : responses) {
-            sb.append("{(personId: ").append(response.getPersonId()).append(")");
-            sb.append(",(meldingstype: ").append(response.getSkdmeldingstype()).append(")");
+            sb.append("{(personId: ")
+                    .append(response.getPersonId())
+                    .append(')');
+            sb.append(",(meldingstype: ")
+                    .append(response.getSkdmeldingstype())
+                    .append(')');
             sb.append(",(miljoer: ");
-            Map<String, String> status = response.getStatus();
-            for (Map.Entry<String, String> entry : status.entrySet()) {
-                sb.append("<").append(entry.getKey()).append("=").append(entry.getValue().trim()).append(">,");
+            for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
+                sb
+                        .append('<')
+                        .append(entry.getKey())
+                        .append('=')
+                        .append(entry.getValue().trim())
+                        .append(">,");
             }
 
             sb.append(")}");
@@ -50,11 +59,6 @@ public class TpsfResponseHandler {
     }
 
     private String sbToStringForDB(StringBuilder sb) {
-        String msg = sb.toString();
-        if (msg.length() > 4000) {
-            msg = msg.substring(0, (MAX_LENGTH_VARCHAR2 - 10));
-            msg = msg + " END";
-        }
-        return msg;
+        return format("%s END", sb.substring(0, MAX_LENGTH_VARCHAR2 - 10));
     }
 }

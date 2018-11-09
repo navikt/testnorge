@@ -19,7 +19,7 @@ public class ProvidersProps {
 
     @Getter
     @Setter
-    public class Tpsf {
+    public static class Tpsf {
 
         private String url;
     }

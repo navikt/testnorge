@@ -52,7 +52,7 @@ public class TpsfService {
     private ResponseEntity<Object> postToTpsf(String url, HttpEntity request) {
         try {
             ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, request, Object.class);
-            if (response != null && response.getBody() != null && response.getBody().toString().contains("exception=")) {
+            if (isBodyNotNull(response) && response.getBody().toString().contains("exception=")) {
                 RestTemplateFailure rs = objectMapper.convertValue(response.getBody(), RestTemplateFailure.class);
                 log.error("Tps-forvalteren kall feilet mot url <{}> grunnet {}", url, rs.getMessage());
                 throw new TpsfException("TPSF kall feilet med: " + rs.getMessage() + "\\r\\n Feil: " + rs.getError());
@@ -61,8 +61,12 @@ public class TpsfService {
 
         } catch (HttpClientErrorException e) {
             log.error("Tps-forvalteren kall feilet mot url <" + url + "> grunnet " + e.getMessage(), e);
-            throw new TpsfException("TPSF kall feilet med: " + e.getMessage() + "\\r\\n Feil: " + e.getResponseBodyAsString());
+            throw new TpsfException("TPSF kall feilet med: " + e.getMessage() + "\\r\\n Feil: " + e.getResponseBodyAsString(), e);
         }
+    }
+
+    boolean isBodyNotNull(ResponseEntity<Object> response) {
+        return response != null && response.getBody() != null && response.getBody().toString() != null;
     }
 
     private void validateEnvironments(List<String> environments) {
@@ -74,7 +78,9 @@ public class TpsfService {
     private String buildTpsfUrlFromEnvironmentsInput(List<String> environments) {
         StringBuilder sb = new StringBuilder();
         sb.append(providersProps.getTpsf().getUrl()).append(TPSF_BASE_URL).append(TPSF_SEND_TPS_FLERE_URL).append("?environments=");
-        environments.forEach(env -> sb.append(env).append(","));
-        return sb.toString().substring(0, sb.length() - 1);
+        environments.forEach(env -> sb
+                .append(env)
+                .append(','));
+        return sb.substring(0, sb.length() - 1);
     }
 }
