@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.appservices.tpsf.service.DollyTpsfService;
+import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsBestilling;
@@ -46,7 +46,7 @@ public class TestgruppeController {
     private MapperFacade mapperFacade;
 
     @Autowired
-    private DollyTpsfService dollyTpsfService;
+    private DollyBestillingService dollyBestillingService;
 
     @Autowired
     private BestillingService bestillingService;
@@ -98,10 +98,10 @@ public class TestgruppeController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
-    public RsBestilling oppretteIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
+    public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
         Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, request.getAntall(), request.getEnvironments());
 
-        dollyTpsfService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling.getId());
+        dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling.getId());
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 

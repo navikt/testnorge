@@ -1,7 +1,8 @@
-package no.nav.dolly.appservices.tpsf.service;
+package no.nav.dolly.bestilling.service;
 
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,15 +13,19 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.appservices.sigrunstub.restcom.SigrunStubApiService;
-import no.nav.dolly.appservices.tpsf.restcom.TpsfApiService;
+import no.nav.dolly.bestilling.krrstub.KrrStubApiService;
+import no.nav.dolly.bestilling.krrstub.KrrstubResponseHandler;
+import no.nav.dolly.bestilling.sigrunstub.SigrunStubApiService;
+import no.nav.dolly.bestilling.sigrunstub.SigrunstubResponseHandler;
+import no.nav.dolly.bestilling.tpsf.TpsfApiService;
+import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
-import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -30,11 +35,9 @@ import no.nav.dolly.service.TestgruppeService;
 
 @Slf4j
 @Service
-public class DollyTpsfService {
+public class DollyBestillingService {
 
     private static final String INNVANDRINGS_MLD_NAVN = "innvandringcreate";
-
-    @Autowired SigrunResponseHandler sigrunResponseHandler;
 
     @Autowired
     private TpsfResponseHandler tpsfResponseHandler;
@@ -52,42 +55,53 @@ public class DollyTpsfService {
     private SigrunStubApiService sigrunStubApiService;
 
     @Autowired
+    private SigrunstubResponseHandler sigrunstubResponseHandler;
+
+    @Autowired
+    private KrrStubApiService krrStubApiService;
+
+    @Autowired
+    private KrrstubResponseHandler krrstubResponseHandler;
+
+    @Autowired
     private BestillingProgressRepository bestillingProgressRepository;
 
     @Autowired
     private BestillingService bestillingService;
 
     @Async
-    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingsRequest, Long bestillingsId) {
+    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingRequest, Long bestillingsId) {
         Bestilling bestilling = bestillingService.fetchBestillingById(bestillingsId);
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
-        RsTpsfBestilling tpsfBestilling = bestillingsRequest.getTpsf();
-        tpsfBestilling.setEnvironments(bestillingsRequest.getEnvironments());
+        RsTpsfBestilling tpsfBestilling = bestillingRequest.getTpsf();
+        tpsfBestilling.setEnvironments(bestillingRequest.getEnvironments());
         tpsfBestilling.setAntall(1);
 
         try {
-            for (int i = 0; i < bestillingsRequest.getAntall(); i++) {
+            for (int i = 0; i < bestillingRequest.getAntall(); i++) {
                 List<String> bestilteIdenter = tpsfApiService.opprettIdenterTpsf(tpsfBestilling);
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
                 BestillingProgress progress = new BestillingProgress(bestillingsId, hovedPersonIdent);
 
-                senderIdenterTilTPS(bestillingsRequest, bestilteIdenter, testgruppe, progress);
+                senderIdenterTilTPS(bestillingRequest, bestilteIdenter, testgruppe, progress);
 
-                //Sigrun
-                if (bestillingsRequest.getSigrunRequest() != null) {
-                    for (RsSigrunnOpprettSkattegrunnlag request : bestillingsRequest.getSigrunRequest()) {
+                if (bestillingRequest.getSigrunstub() != null) {
+                    for (RsOpprettSkattegrunnlag request : bestillingRequest.getSigrunstub()) {
                         request.setPersonidentifikator(hovedPersonIdent);
                     }
+                    ResponseEntity<String> sigrunResponse = sigrunStubApiService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
+                    progress.setSigrunstubStatus(sigrunstubResponseHandler.extractResponse(sigrunResponse));
+                }
 
-                    ResponseEntity<String> sigrunResponse = sigrunStubApiService.createSkattegrunnlag(bestillingsRequest.getSigrunRequest());
-
-                    String response = sigrunResponseHandler.extractResponse(sigrunResponse);
-                    progress.setSigrunSuccessEnv(response);
+                if (bestillingRequest.getKrrstub() != null) {
+                    bestillingRequest.getKrrstub().setIdent(hovedPersonIdent);
+                    bestillingRequest.getKrrstub().setGyldigFra(ZonedDateTime.now());
+                    ResponseEntity krrstubResponse = krrStubApiService.createDigitalKontaktdata(bestillingsId, bestillingRequest.getKrrstub());
+                    progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
                 }
 
                 bestillingProgressRepository.save(progress);
-
                 bestillingService.saveBestillingToDB(bestilling);
             }
         } catch (Exception e) {

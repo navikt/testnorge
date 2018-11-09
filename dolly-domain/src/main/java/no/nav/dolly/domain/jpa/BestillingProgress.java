@@ -37,11 +37,11 @@ public class BestillingProgress {
     @Column(name = "TPSF_SUCCESS_ENVIRONMENTS")
     private String tpsfSuccessEnv;
 
-    @Column(name = "SIGRUN_SUCCESS_ENVIRONMENTS")
-    private String sigrunSuccessEnv;
+    @Column(name = "SIGRUNSTUB_STATUS")
+    private String sigrunstubStatus;
 
-    @Column(name = "AAREG_SUCCESS_ENVIRONMENTS")
-    private String aaregSuccessEnv;
+    @Column(name = "KRRSTUB_STATUS")
+    private String krrstubStatus;
 
     private String feil;
 

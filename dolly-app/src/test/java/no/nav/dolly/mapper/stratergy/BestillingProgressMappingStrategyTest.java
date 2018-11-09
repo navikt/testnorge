@@ -1,16 +1,16 @@
 package no.nav.dolly.mapper.stratergy;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsBestillingProgress;
-import no.nav.dolly.mapper.utils.MapperTestUtils;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsBestillingProgress;
+import no.nav.dolly.mapper.utils.MapperTestUtils;
 
 public class BestillingProgressMappingStrategyTest {
 
@@ -26,20 +26,18 @@ public class BestillingProgressMappingStrategyTest {
         BestillingProgress progress = new BestillingProgress();
         progress.setFeil("feil");
         progress.setIdent("ident");
-        progress.setId(1l);
-        progress.setBestillingId(2l);
+        progress.setId(1L);
+        progress.setBestillingId(2L);
         progress.setTpsfSuccessEnv("u1,u2,t1,t10,q10,q11");
-        progress.setSigrunSuccessEnv(null);
-        progress.setAaregSuccessEnv(null);
 
         RsBestillingProgress rsProgress = mapper.map(progress, RsBestillingProgress.class);
 
-        assertThat(rsProgress.getId(), is(1l));
-        assertThat(rsProgress.getBestillingsId(), is(2l));
+        assertThat(rsProgress.getId(), is(1L));
+        assertThat(rsProgress.getBestillingsId(), is(2L));
         assertThat(rsProgress.getFeil(), is("feil"));
         assertThat(rsProgress.getIdent(), is("ident"));
-        assertThat(rsProgress.getAaregSuccessEnv(), is(nullValue()));
-        assertThat(rsProgress.getSigrunSuccessEnv(), is(nullValue()));
+        assertThat(rsProgress.getKrrstubStatus(), is(nullValue()));
+        assertThat(rsProgress.getSigrunstubStatus(), is(nullValue()));
 
         assertThat(rsProgress.getTpsfSuccessEnv().size(), is(6));
         assertThat(rsProgress.getTpsfSuccessEnv().get(0), is("u1"));
@@ -55,20 +53,18 @@ public class BestillingProgressMappingStrategyTest {
         BestillingProgress progress = new BestillingProgress();
         progress.setFeil("feil");
         progress.setIdent("ident");
-        progress.setId(1l);
-        progress.setBestillingId(2l);
+        progress.setId(1L);
+        progress.setBestillingId(2L);
         progress.setTpsfSuccessEnv(null);
-        progress.setSigrunSuccessEnv(null);
-        progress.setAaregSuccessEnv(null);
 
         RsBestillingProgress rsProgress = mapper.map(progress, RsBestillingProgress.class);
 
-        assertThat(rsProgress.getId(), is(1l));
-        assertThat(rsProgress.getBestillingsId(), is(2l));
+        assertThat(rsProgress.getId(), is(1L));
+        assertThat(rsProgress.getBestillingsId(), is(2L));
         assertThat(rsProgress.getFeil(), is("feil"));
         assertThat(rsProgress.getIdent(), is("ident"));
-        assertThat(rsProgress.getAaregSuccessEnv(), is(nullValue()));
-        assertThat(rsProgress.getSigrunSuccessEnv(), is(nullValue()));
+        assertThat(rsProgress.getKrrstubStatus(), is(nullValue()));
+        assertThat(rsProgress.getSigrunstubStatus(), is(nullValue()));
         assertThat(rsProgress.getTpsfSuccessEnv(), is(nullValue()));
     }
 }

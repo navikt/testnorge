@@ -1,4 +1,4 @@
-package no.nav.dolly.appservices.tpsf.restcom;
+package no.nav.dolly.bestilling.tpsf;
 
 import static java.lang.String.format;
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.appservices.tpsf.errorhandling.RestTemplateFailure;
+import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
@@ -52,7 +52,7 @@ public class TpsfApiService {
     private ResponseEntity<Object> postToTpsf(String url, HttpEntity request) {
         try {
             ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, request, Object.class);
-            if (response.getBody().toString().contains("exception=")) {
+            if (response.getBody() != null && response.getBody().toString().contains("exception=")) {
                 RestTemplateFailure rs = objectMapper.convertValue(response.getBody(), RestTemplateFailure.class);
                 log.error("Tps-forvalteren kall feilet mot url <{}> grunnet {}", url, rs.getMessage());
                 throw new TpsfException("TPSF kall feilet med: " + rs.getMessage() + "\\r\\n Feil: " + rs.getError());

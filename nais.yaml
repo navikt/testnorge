@@ -45,10 +45,15 @@ fasitResources:
     propertyMap:
       url: providers.kodeverk.url
 
-  - alias: sigrun-host
+  - alias: sigrunStub-host
     resourceType: baseurl
     propertyMap:
-      url: providers.sigrun.url
+      url: providers.sigrunStub.url
+
+  - alias: krrStub-host
+    resourceType: baseurl
+    propertyMap:
+      url: providers.krrStub.url
 
   - alias: jira.host
     resourceType: baseurl
