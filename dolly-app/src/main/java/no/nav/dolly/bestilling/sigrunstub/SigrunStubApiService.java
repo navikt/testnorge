@@ -49,7 +49,7 @@ public class SigrunStubApiService {
 
         } catch (HttpClientErrorException e) {
             log.error("SigrunStub kall feilet mot url <{}> grunnet {}", url,  e.getResponseBodyAsString());
-            throw new SigrunStubException("SigrunStub kall feilet med: " + e);
+            throw new SigrunStubException("SigrunStub kall feilet med: " + e, e);
         }
     }
 }

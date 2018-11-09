@@ -20,24 +20,28 @@ public class ProvidersProps {
     @Getter
     @Setter
     public class Tpsf {
+
         private String url;
     }
 
     @Getter
     @Setter
-    public class SigrunStub {
+    public static class SigrunStub {
+
         private String url;
     }
 
     @Getter
     @Setter
-    public class KrrStub {
+    public static class KrrStub {
+
         private String url;
     }
 
     @Getter
     @Setter
-    public class Kodeverk {
+    public static class Kodeverk {
+
         private String url;
     }
 }

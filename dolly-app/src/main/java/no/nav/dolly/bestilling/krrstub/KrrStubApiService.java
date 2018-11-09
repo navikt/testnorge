@@ -49,7 +49,7 @@ public class KrrStubApiService {
 
         } catch (HttpClientErrorException e) {
             log.error("KrrStub kall feilet mot url <{}> grunnet {}", url, e.getResponseBodyAsString());
-            throw new KrrStubException("KrrStub kall feilet med: " + e);
+            throw new KrrStubException("KrrStub kall feilet med: " + e, e);
         }
     }
 }
