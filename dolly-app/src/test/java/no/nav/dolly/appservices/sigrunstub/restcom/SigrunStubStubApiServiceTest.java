@@ -1,5 +1,6 @@
 package no.nav.dolly.appservices.sigrunstub.restcom;
 
+import static java.util.Collections.singletonList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -8,7 +9,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,13 +23,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.dolly.domain.resultset.RsSigrunnOpprettSkattegrunnlag;
-import no.nav.dolly.exceptions.SigrunnStubException;
+import no.nav.dolly.bestilling.sigrunstub.SigrunStubApiService;
+import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.exceptions.SigrunStubException;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SigrunStubApiServiceTest {
+public class SigrunStubStubApiServiceTest {
 
     private static final String standardPrincipal = "brukernavn";
     private static final String standardIdtoken = "idtoken";
@@ -46,9 +47,9 @@ public class SigrunStubApiServiceTest {
 
     @Before
     public void setup() {
-        ProvidersProps.Sigrun sigrun = new ProvidersProps().new Sigrun();
-        sigrun.setUrl("https://localhost:8080");
-        when(providersProps.getSigrun()).thenReturn(sigrun);
+        ProvidersProps.SigrunStub sigrunStub = new ProvidersProps().new SigrunStub();
+        sigrunStub.setUrl("https://localhost:8080");
+        when(providersProps.getSigrunStub()).thenReturn(sigrunStub);
 
         SecurityContextHolder.getContext().setAuthentication(
                 new OidcTokenAuthentication(standardPrincipal, null, standardIdtoken, null)
@@ -57,7 +58,7 @@ public class SigrunStubApiServiceTest {
 
     @Test
     public void createSkattegrunnlag() {
-        sigrunStubApiService.createSkattegrunnlag(Arrays.asList(new RsSigrunnOpprettSkattegrunnlag()));
+        sigrunStubApiService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
 
         ArgumentCaptor<HttpEntity> argCap = ArgumentCaptor.forClass(HttpEntity.class);
         verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argCap.capture(), eq(String.class));
@@ -68,10 +69,10 @@ public class SigrunStubApiServiceTest {
         assertThat(entity.getHeaders().getFirst("Authorization"), is("Bearer " + standardIdtoken));
     }
 
-    @Test(expected = SigrunnStubException.class)
+    @Test(expected = SigrunStubException.class)
     public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() {
         HttpClientErrorException clientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST, "OK");
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class))).thenThrow(clientErrorException);
-        sigrunStubApiService.createSkattegrunnlag(Arrays.asList(new RsSigrunnOpprettSkattegrunnlag()));
+        sigrunStubApiService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
     }
 }

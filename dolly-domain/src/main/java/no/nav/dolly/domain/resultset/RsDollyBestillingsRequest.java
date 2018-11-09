@@ -1,10 +1,12 @@
 package no.nav.dolly.domain.resultset;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
+import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +18,7 @@ public class RsDollyBestillingsRequest {
 
     private RsTpsfBestilling tpsf;
 
-    /* Sigrunn */
-    private List<RsSigrunnOpprettSkattegrunnlag> sigrunRequest;
+    private List<RsOpprettSkattegrunnlag> sigrunstub;
 
+    private RsDigitalKontaktdata krrstub;
 }

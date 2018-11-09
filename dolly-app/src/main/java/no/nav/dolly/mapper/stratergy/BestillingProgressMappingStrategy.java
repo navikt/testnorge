@@ -1,19 +1,17 @@
 package no.nav.dolly.mapper.stratergy;
 
-import ma.glasnost.orika.CustomMapper;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsBestilling;
-import no.nav.dolly.domain.resultset.RsBestillingProgress;
-import no.nav.dolly.mapper.MappingStrategy;
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.springframework.stereotype.Component;
 
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsBestillingProgress;
+import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
 public class BestillingProgressMappingStrategy implements MappingStrategy{
@@ -34,15 +32,15 @@ public class BestillingProgressMappingStrategy implements MappingStrategy{
                             );
                         }
 
-                        if(!isNullOrEmpty(progress.getSigrunSuccessEnv())){
-                            rsProgress.setSigrunSuccessEnv(
-                                    new ArrayList<>(Arrays.asList(progress.getSigrunSuccessEnv().split(",")))
+                        if(!isNullOrEmpty(progress.getSigrunstubStatus())){
+                            rsProgress.setSigrunstubStatus(
+                                    new ArrayList<>(Arrays.asList(progress.getSigrunstubStatus().split(",")))
                             );
                         }
 
-                        if(!isNullOrEmpty(progress.getAaregSuccessEnv())){
-                            rsProgress.setAaregSuccessEnv(
-                                   new ArrayList<>(Arrays.asList(progress.getAaregSuccessEnv().split(",")))
+                        if(!isNullOrEmpty(progress.getKrrstubStatus())){
+                            rsProgress.setKrrstubStatus(
+                                   new ArrayList<>(Arrays.asList(progress.getKrrstubStatus().split(",")))
                             );
                         }
                     }

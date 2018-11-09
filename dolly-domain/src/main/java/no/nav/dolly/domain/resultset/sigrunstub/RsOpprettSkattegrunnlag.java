@@ -1,17 +1,17 @@
-package no.nav.dolly.domain.resultset;
+package no.nav.dolly.domain.resultset.sigrunstub;
+
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
-public class RsSigrunnOpprettSkattegrunnlag {
+public class RsOpprettSkattegrunnlag {
 
     private String testdataEier;
     private String personidentifikator;
     private String inntektsaar;
     private String tjeneste;
-    private List<RsSigrunnKodeverknavnGrunnlag> grunnlag;
+    private List<RsKodeverknavnGrunnlag> grunnlag;
 }

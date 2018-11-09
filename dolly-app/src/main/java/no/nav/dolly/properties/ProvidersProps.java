@@ -1,10 +1,10 @@
 package no.nav.dolly.properties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -13,7 +13,8 @@ import org.springframework.context.annotation.Configuration;
 public class ProvidersProps {
 
     private Tpsf tpsf = new Tpsf();
-    private Sigrun sigrun = new Sigrun();
+    private SigrunStub sigrunStub = new SigrunStub();
+    private KrrStub krrStub = new KrrStub();
     private Kodeverk kodeverk = new Kodeverk();
 
     @Getter
@@ -24,7 +25,13 @@ public class ProvidersProps {
 
     @Getter
     @Setter
-    public class Sigrun {
+    public class SigrunStub {
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    public class KrrStub {
         private String url;
     }
 

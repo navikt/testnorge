@@ -1,11 +1,14 @@
 package no.nav.dolly.appservices.tpsf.restcom;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.dolly.appservices.tpsf.errorhandling.RestTemplateFailure;
-import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
-import no.nav.dolly.exceptions.TpsfException;
-import no.nav.dolly.properties.ProvidersProps;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,14 +25,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
+import no.nav.dolly.bestilling.tpsf.TpsfApiService;
+import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
+import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.properties.ProvidersProps;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TpsfApiServiceTest {
@@ -37,7 +40,7 @@ public class TpsfApiServiceTest {
     private String url = "https://localhost:8080/api/v1/dolly/testdata/personer";
     private RsTpsfBestilling standardTpsfBestilling = new RsTpsfBestilling();
     private String standardIdent = "123";
-    private List<String> standardIdenter = new ArrayList<>(Arrays.asList(standardIdent));
+    private List<String> standardIdenter = new ArrayList<>(singleton(standardIdent));
     private List<String> standardMiljoer_u1_t1 = Arrays.asList("u1", "t1");
 
     @Mock RestTemplate restTemplate;
@@ -66,7 +69,7 @@ public class TpsfApiServiceTest {
         ArgumentCaptor<HttpEntity> httpEntityCaptor = ArgumentCaptor.forClass(HttpEntity.class);
 
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
-        when(objectMapper.convertValue("body", List.class)).thenReturn(Arrays.asList("test"));
+        when(objectMapper.convertValue("body", List.class)).thenReturn(singletonList("test"));
 
         List<String> res = service.opprettIdenterTpsf(standardTpsfBestilling);
         verify(restTemplate).exchange(endpointCaptor.capture(), httpMethodCaptor.capture(), httpEntityCaptor.capture(), eq(Object.class));

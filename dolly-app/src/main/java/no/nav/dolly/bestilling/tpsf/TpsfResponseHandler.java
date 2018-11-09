@@ -1,4 +1,4 @@
-package no.nav.dolly.appservices.tpsf.service;
+package no.nav.dolly.bestilling.tpsf;
 
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 

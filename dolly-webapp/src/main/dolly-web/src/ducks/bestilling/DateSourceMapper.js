@@ -1,7 +1,7 @@
 const DataSourceMapper = data => {
 	switch (data) {
 		case 'SIGRUN':
-			return 'sigrunRequest'
+			return 'sigrunstub'
 		case 'TPSF':
 		default:
 			return 'tpsf'

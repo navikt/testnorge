@@ -37,8 +37,10 @@ providers:
   tpsf:
     url: https://tps-forvalteren-u2.nais.preprod.local
     #url: http://localhost:8050
-  sigrun:
+  sigrunstub:
     url: https://sigrun-skd-stub.nais.preprod.local
+  krrstub:
+    url: https://krr-stub.nais.preprod.local
   kodeverk:
     url: https://kodeverk.nais.preprod.local
 
