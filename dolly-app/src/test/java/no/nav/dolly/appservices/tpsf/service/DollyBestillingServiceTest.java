@@ -24,17 +24,15 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.dolly.bestilling.service.DollyBestillingService;
-import no.nav.dolly.bestilling.sigrunstub.SigrunStubApiService;
-import no.nav.dolly.bestilling.sigrunstub.SigrunstubResponseHandler;
-import no.nav.dolly.bestilling.tpsf.TpsfApiService;
+import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
+import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
-import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -71,16 +69,13 @@ public class DollyBestillingServiceTest {
     private BestillingProgressRepository bestillingProgressRepository;
 
     @Mock
-    private TpsfApiService tpsfApiService;
+    private TpsfService tpsfService;
 
     @Mock
     private IdentService identService;
 
     @Mock
     private TestgruppeService testgruppeService;
-
-    @Mock
-    private SigrunStubApiService sigrunStubApiService;
 
     @Mock
     private BestillingService bestillingService;
@@ -92,10 +87,7 @@ public class DollyBestillingServiceTest {
     private DollyBestillingService dollyBestillingService;
 
     @Mock
-    private List<RsOpprettSkattegrunnlag> rsOpprettSkattegrunnlag;
-
-    @Mock
-    private SigrunstubResponseHandler responseHandler;
+    private SigrunStubResponseHandler responseHandler;
 
     @Before
     public void setup() {
@@ -120,10 +112,10 @@ public class DollyBestillingServiceTest {
 
     @Test
     public void opprettPersonerByKriterierAsync_bestillingBlirSattFerdigNaarExceptionKastesUnderOppretting() {
-        when(tpsfApiService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(standardIdenter);
+        when(tpsfService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
         when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
-        when(tpsfApiService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
+        when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
         when(bestillingProgressRepository.save(any())).thenThrow(standardTpsfException);
 
         dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
@@ -139,10 +131,10 @@ public class DollyBestillingServiceTest {
         RsSkdMeldingResponse skdMeldingResponse = new RsSkdMeldingResponse();
         skdMeldingResponse.setSendSkdMeldingTilTpsResponsene(singletonList(standardSendSkdResponse));
 
-        when(tpsfApiService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
+        when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
         when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
-        when(tpsfApiService.sendIdenterTilTpsFraTPSF(any(), any())).thenReturn(skdMeldingResponse);
+        when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenReturn(skdMeldingResponse);
         when(tpsfResponseHandler.extractTPSFeedback(anyList())).thenReturn(standardTpsFeedback);
 
         dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
@@ -172,9 +164,9 @@ public class DollyBestillingServiceTest {
         TpsfException tpsfException = new TpsfException(standardFeilmelding);
 
         when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
-        when(tpsfApiService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
+        when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
-        when(tpsfApiService.sendIdenterTilTpsFraTPSF(any(), any())).thenReturn(response).thenThrow(tpsfException);
+        when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenReturn(response).thenThrow(tpsfException);
         when(tpsfResponseHandler.extractTPSFeedback(anyList())).thenReturn(standardTpsFeedback);
 
         dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
@@ -201,10 +193,10 @@ public class DollyBestillingServiceTest {
         response.setSendSkdMeldingTilTpsResponsene(singletonList(standardSendSkdResponse));
         TpsfException tpsfException = new TpsfException(standardFeilmelding);
 
-        when(tpsfApiService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
+        when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
         when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
-        when(tpsfApiService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(tpsfException);
+        when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(tpsfException);
 
         dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
 
@@ -214,10 +206,10 @@ public class DollyBestillingServiceTest {
 
     @Test
     public void opprettPersonerByKriterierAsync_sjekkAtIngenSigrunRequestIkkeGirNullPointException() {
-        when(tpsfApiService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(standardIdenter);
+        when(tpsfService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
         when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
-        when(tpsfApiService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
+        when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
 
         standardBestillingRequest_u1_t2_q3.setSigrunstub(null);
         dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);

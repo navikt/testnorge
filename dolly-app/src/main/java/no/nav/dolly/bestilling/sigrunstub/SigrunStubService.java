@@ -22,7 +22,7 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @Slf4j
 @Service
-public class SigrunStubApiService {
+public class SigrunStubService {
 
     private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/testdata/opprettBolk";
 
@@ -48,7 +48,7 @@ public class SigrunStubApiService {
             return restTemplate.exchange(url, HttpMethod.POST, new HttpEntity(request, header), String.class);
 
         } catch (HttpClientErrorException e) {
-            log.error("SigrunStub kall feilet mot url <{}> grunnet {}", url,  e.getResponseBodyAsString());
+            log.error("SigrunStub kall feilet mot url <{}> grunnet {}", url, e.getResponseBodyAsString());
             throw new SigrunStubException("SigrunStub kall feilet med: " + e, e);
         }
     }

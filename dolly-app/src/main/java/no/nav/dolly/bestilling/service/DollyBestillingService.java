@@ -13,11 +13,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.krrstub.KrrStubApiService;
-import no.nav.dolly.bestilling.krrstub.KrrstubResponseHandler;
-import no.nav.dolly.bestilling.sigrunstub.SigrunStubApiService;
-import no.nav.dolly.bestilling.sigrunstub.SigrunstubResponseHandler;
-import no.nav.dolly.bestilling.tpsf.TpsfApiService;
+import no.nav.dolly.bestilling.krrstub.KrrStubService;
+import no.nav.dolly.bestilling.krrstub.KrrStubResponseHandler;
+import no.nav.dolly.bestilling.sigrunstub.SigrunStubService;
+import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
+import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -43,7 +43,7 @@ public class DollyBestillingService {
     private TpsfResponseHandler tpsfResponseHandler;
 
     @Autowired
-    private TpsfApiService tpsfApiService;
+    private TpsfService tpsfService;
 
     @Autowired
     private TestgruppeService testgruppeService;
@@ -52,16 +52,16 @@ public class DollyBestillingService {
     private IdentService identService;
 
     @Autowired
-    private SigrunStubApiService sigrunStubApiService;
+    private SigrunStubService sigrunStubService;
 
     @Autowired
-    private SigrunstubResponseHandler sigrunstubResponseHandler;
+    private SigrunStubResponseHandler sigrunstubResponseHandler;
 
     @Autowired
-    private KrrStubApiService krrStubApiService;
+    private KrrStubService krrStubService;
 
     @Autowired
-    private KrrstubResponseHandler krrstubResponseHandler;
+    private KrrStubResponseHandler krrstubResponseHandler;
 
     @Autowired
     private BestillingProgressRepository bestillingProgressRepository;
@@ -80,7 +80,7 @@ public class DollyBestillingService {
 
         try {
             for (int i = 0; i < bestillingRequest.getAntall(); i++) {
-                List<String> bestilteIdenter = tpsfApiService.opprettIdenterTpsf(tpsfBestilling);
+                List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
                 BestillingProgress progress = new BestillingProgress(bestillingsId, hovedPersonIdent);
 
@@ -90,14 +90,14 @@ public class DollyBestillingService {
                     for (RsOpprettSkattegrunnlag request : bestillingRequest.getSigrunstub()) {
                         request.setPersonidentifikator(hovedPersonIdent);
                     }
-                    ResponseEntity<String> sigrunResponse = sigrunStubApiService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
+                    ResponseEntity<String> sigrunResponse = sigrunStubService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
                     progress.setSigrunstubStatus(sigrunstubResponseHandler.extractResponse(sigrunResponse));
                 }
 
                 if (bestillingRequest.getKrrstub() != null) {
                     bestillingRequest.getKrrstub().setIdent(hovedPersonIdent);
                     bestillingRequest.getKrrstub().setGyldigFra(ZonedDateTime.now());
-                    ResponseEntity krrstubResponse = krrStubApiService.createDigitalKontaktdata(bestillingsId, bestillingRequest.getKrrstub());
+                    ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, bestillingRequest.getKrrstub());
                     progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
                 }
 
@@ -114,7 +114,7 @@ public class DollyBestillingService {
 
     private void senderIdenterTilTPS(RsDollyBestillingsRequest request, List<String> klareIdenter, Testgruppe testgruppe, BestillingProgress progress) {
         try {
-            RsSkdMeldingResponse response = tpsfApiService.sendIdenterTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
+            RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
             String feedbackTps = tpsfResponseHandler.extractTPSFeedback(response.getSendSkdMeldingTilTpsResponsene());
             log.info(feedbackTps);
 

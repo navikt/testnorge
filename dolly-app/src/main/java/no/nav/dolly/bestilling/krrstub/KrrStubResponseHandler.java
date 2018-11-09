@@ -1,5 +1,6 @@
-package no.nav.dolly.bestilling.sigrunstub;
+package no.nav.dolly.bestilling.krrstub;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -7,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class SigrunstubResponseHandler {
+public class KrrStubResponseHandler {
 
     public String extractResponse(ResponseEntity<String> response) {
-        return response != null && response.getBody() != null && !response.getBody().contains("400") ? "OK" : "FAIL";
+        return response != null && HttpStatus.OK == response.getStatusCode() ? "OK" : "FAIL";
     }
 }

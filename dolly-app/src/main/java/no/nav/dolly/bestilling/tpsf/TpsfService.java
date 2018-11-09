@@ -22,7 +22,7 @@ import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Service
-public class TpsfApiService {
+public class TpsfService {
 
     private static final String TPSF_BASE_URL = "/api/v1/dolly/testdata";
     private static final String TPSF_OPPRETT_URL = "/personer";

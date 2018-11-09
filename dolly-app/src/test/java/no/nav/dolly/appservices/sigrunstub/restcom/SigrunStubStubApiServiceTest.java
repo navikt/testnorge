@@ -23,7 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.dolly.bestilling.sigrunstub.SigrunStubApiService;
+import no.nav.dolly.bestilling.sigrunstub.SigrunStubService;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.exceptions.SigrunStubException;
 import no.nav.dolly.properties.ProvidersProps;
@@ -43,11 +43,11 @@ public class SigrunStubStubApiServiceTest {
     private ProvidersProps providersProps;
 
     @InjectMocks
-    private SigrunStubApiService sigrunStubApiService;
+    private SigrunStubService sigrunStubService;
 
     @Before
     public void setup() {
-        ProvidersProps.SigrunStub sigrunStub = new ProvidersProps().new SigrunStub();
+        ProvidersProps.SigrunStub sigrunStub = new ProvidersProps.SigrunStub();
         sigrunStub.setUrl("https://localhost:8080");
         when(providersProps.getSigrunStub()).thenReturn(sigrunStub);
 
@@ -58,7 +58,7 @@ public class SigrunStubStubApiServiceTest {
 
     @Test
     public void createSkattegrunnlag() {
-        sigrunStubApiService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
+        sigrunStubService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
 
         ArgumentCaptor<HttpEntity> argCap = ArgumentCaptor.forClass(HttpEntity.class);
         verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argCap.capture(), eq(String.class));
@@ -73,6 +73,6 @@ public class SigrunStubStubApiServiceTest {
     public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() {
         HttpClientErrorException clientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST, "OK");
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class))).thenThrow(clientErrorException);
-        sigrunStubApiService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
+        sigrunStubService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
     }
 }

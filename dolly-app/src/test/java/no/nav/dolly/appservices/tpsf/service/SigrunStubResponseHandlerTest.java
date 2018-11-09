@@ -9,13 +9,13 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
-import no.nav.dolly.bestilling.sigrunstub.SigrunstubResponseHandler;
+import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SigrunStubResponseHandlerTest {
 
     @InjectMocks
-    private SigrunstubResponseHandler responseHandler;
+    private SigrunStubResponseHandler responseHandler;
 
     @Test
     public void extractResponse_SjekkAtHttpOkReturnererOk() {

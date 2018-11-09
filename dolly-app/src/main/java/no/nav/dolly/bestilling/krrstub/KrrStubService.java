@@ -22,7 +22,7 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @Slf4j
 @Service
-public class KrrStubApiService {
+public class KrrStubService {
 
     private static final String KRR_STUB_DIGITAL_KONTAKT = "/api/v1/kontaktinformasjon";
 

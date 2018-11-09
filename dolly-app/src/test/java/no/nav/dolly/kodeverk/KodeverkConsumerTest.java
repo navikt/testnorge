@@ -1,9 +1,13 @@
 package no.nav.dolly.kodeverk;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.dolly.exceptions.KodeverkException;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +16,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -20,15 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.notNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import no.nav.dolly.exceptions.KodeverkException;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KodeverkConsumerTest {
@@ -54,7 +51,7 @@ public class KodeverkConsumerTest {
 
     @Before
     public void setup(){
-        ProvidersProps.Kodeverk kodeverk = new ProvidersProps().new Kodeverk();
+        ProvidersProps.Kodeverk kodeverk = new ProvidersProps.Kodeverk();
         kodeverk.setUrl(KODEVERK_URL);
         when(providersProps.getKodeverk()).thenReturn(kodeverk);
     }
