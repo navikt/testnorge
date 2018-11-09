@@ -59,6 +59,6 @@ public class TpsfResponseHandler {
     }
 
     private String sbToStringForDB(StringBuilder sb) {
-        return format("%s END", sb.substring(0, MAX_LENGTH_VARCHAR2 - 10));
+        return format("%s END", sb.substring(0, sb.length() > MAX_LENGTH_VARCHAR2 ? MAX_LENGTH_VARCHAR2 - 10 : sb.length()));
     }
 }
