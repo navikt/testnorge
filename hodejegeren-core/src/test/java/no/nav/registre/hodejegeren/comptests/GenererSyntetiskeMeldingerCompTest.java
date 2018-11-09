@@ -9,6 +9,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.registre.hodejegeren.service.Endringskoder.VIGSEL;
+import static no.nav.registre.hodejegeren.testutils.ResourceUtils.getResourceFileContent;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -129,14 +130,5 @@ public class GenererSyntetiskeMeldingerCompTest {
                 .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
                 .withBasicAuth(username, password)
                 .willReturn(okJson(expectedMeldingsIdsITpsf.toString())));
-    }
-    
-    private String getResourceFileContent(String path) {
-        URL fileUrl = Resources.getResource(path);
-        try {
-            return Resources.toString(fileUrl, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
