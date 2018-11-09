@@ -52,7 +52,7 @@ public class TpsfServiceTest {
 
     @Before
     public void setup(){
-        ProvidersProps.Tpsf tpsf = new ProvidersProps().new Tpsf();
+        ProvidersProps.Tpsf tpsf = new ProvidersProps.Tpsf();
         tpsf.setUrl("https://localhost:8080");
         when(providersProps.getTpsf()).thenReturn(tpsf);
     }
