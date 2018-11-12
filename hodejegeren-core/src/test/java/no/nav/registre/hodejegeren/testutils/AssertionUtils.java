@@ -1,4 +1,4 @@
-package no.nav.registre.hodejegeren.comptests;
+package no.nav.registre.hodejegeren.testutils;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
