@@ -72,7 +72,8 @@ const webpackConfig = {
 			favicon: 'src/assets/favicon.ico',
 			inject: false,
 			template: require('html-webpack-template'),
-			appMountId: 'root'
+			appMountId: 'root',
+			lang: 'nb'
 		})
 	],
 	resolve: {

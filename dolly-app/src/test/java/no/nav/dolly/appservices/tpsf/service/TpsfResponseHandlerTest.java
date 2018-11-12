@@ -1,10 +1,10 @@
 package no.nav.dolly.appservices.tpsf.service;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
-import no.nav.dolly.exceptions.TpsfException;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
@@ -12,9 +12,10 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.exceptions.TpsfException;
 
 public class TpsfResponseHandlerTest {
 
@@ -43,7 +44,7 @@ public class TpsfResponseHandlerTest {
         standarSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
         standarSendSkdResponse.setPersonId(standardIdent);
 
-        String feedback = tpsfResponseHandler.extractTPSFeedback(Arrays.asList(standarSendSkdResponse));
+        String feedback = tpsfResponseHandler.extractTPSFeedback(singletonList(standarSendSkdResponse));
 
         assertThat(feedback.contains("personId: "+standardIdent), is(true));
         assertThat(feedback.contains("meldingstype: "+INNVANDRING_CREATE_NAVN), is(true));

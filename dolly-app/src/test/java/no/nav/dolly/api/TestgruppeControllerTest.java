@@ -1,25 +1,12 @@
 package no.nav.dolly.api;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
+import static java.util.Collections.singletonList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.appservices.tpsf.service.DollyTpsfService;
+import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsBestilling;
@@ -55,7 +42,7 @@ public class TestgruppeControllerTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private DollyTpsfService dollyTpsfService;
+    private DollyBestillingService dollyBestillingService;
 
     @Mock
     private BestillingService bestillingService;
@@ -78,7 +65,7 @@ public class TestgruppeControllerTest {
 
     @Test
     public void oppdaterTestgruppe() {
-        Long gId = 1l;
+        Long gId = 1L;
         RsOpprettTestgruppe gruppe = new RsOpprettTestgruppe();
         RsTestgruppe g = new RsTestgruppe();
         when(testgruppeService.oppdaterTestgruppe(gId, gruppe)).thenReturn(g);
@@ -89,21 +76,21 @@ public class TestgruppeControllerTest {
 
     @Test
     public void deleteTestident() {
-        List<RsTestident> testpersonIdentListe = Arrays.asList(new RsTestident());
+        List<RsTestident> testpersonIdentListe = singletonList(new RsTestident());
         controller.deleteTestident(testpersonIdentListe);
         verify(identService).slettTestidenter(testpersonIdentListe);
     }
 
     @Test
     public void getTestgruppe() {
-        Long gId = 1l;
+        Long gId = 1L;
         RsTestgruppe g = new RsTestgruppe();
         RsTestgruppeMedErMedlemOgFavoritt gMedMedlemFavo = new RsTestgruppeMedErMedlemOgFavoritt();
         Testgruppe testgruppe = new Testgruppe();
         Bestilling bestilling = new Bestilling();
         RsBestilling rsBestilling = new RsBestilling();
-        List<Bestilling> bestillinger = Arrays.asList(bestilling);
-        List<RsBestilling> rsBestillinger = Arrays.asList(rsBestilling);
+        List<Bestilling> bestillinger = singletonList(bestilling);
+        List<RsBestilling> rsBestillinger = singletonList(rsBestilling);
 
         when(testgruppeService.fetchTestgruppeById(gId)).thenReturn(testgruppe);
         when(mapperFacade.map(testgruppe, RsTestgruppe.class)).thenReturn(g);
@@ -118,26 +105,26 @@ public class TestgruppeControllerTest {
 
     @Test
     public void getTestgrupper() {
-        controller.getTestgrupper("nav", 1l);
-        verify(testgruppeService).getTestgruppeByNavidentOgTeamId("nav", 1l);
+        controller.getTestgrupper("nav", 1L);
+        verify(testgruppeService).getTestgruppeByNavidentOgTeamId("nav", 1L);
     }
 
     @Test
     public void oppretteIdentBestilling() {
-        Long gId = 1l;
+        Long gId = 1L;
 
         RsDollyBestillingsRequest bes = new RsDollyBestillingsRequest();
-        List<String> envir = Arrays.asList("u");
+        List<String> envir = singletonList("u");
         int ant = 1;
         bes.setEnvironments(envir);
         bes.setAntall(ant);
 
         Bestilling b = new Bestilling();
-        b.setId(2l);
+        b.setId(2L);
 
         when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gId, ant, envir)).thenReturn(b);
-        controller.oppretteIdentBestilling(gId, bes);
-        verify(dollyTpsfService).opprettPersonerByKriterierAsync(gId, bes, 2l);
+        controller.opprettIdentBestilling(gId, bes);
+        verify(dollyBestillingService).opprettPersonerByKriterierAsync(gId, bes, 2L);
     }
 
     @Test

@@ -3,7 +3,7 @@ import { push } from 'connected-react-router'
 import { UPDATE_TESTBRUKER } from '~/ducks/testBruker'
 import RedigerTestbruker from './RedigerTestbruker'
 
-// TODO: Reimplementere dette med nye testbruker state, inkludert sigrun
+// TODO: Reimplementere dette med nye testbruker state, inkludert sigrunStub
 const mapStateToProps = (state, ownProps) => {
 	return {
 		testbruker:

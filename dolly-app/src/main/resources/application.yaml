@@ -43,5 +43,6 @@ providers:
   sigrun:
     url: http://localhost:8040
 
+
 ### CORS ###
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000

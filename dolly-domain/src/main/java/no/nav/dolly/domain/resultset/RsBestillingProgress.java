@@ -1,10 +1,10 @@
 package no.nav.dolly.domain.resultset;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -19,9 +19,9 @@ public class RsBestillingProgress {
 
     private List<String> tpsfSuccessEnv;
 
-    private List<String> sigrunSuccessEnv;
+    private List<String> sigrunstubStatus;
 
-    private List<String> aaregSuccessEnv;
+    private List<String> krrstubStatus;
 
     private String feil;
 }

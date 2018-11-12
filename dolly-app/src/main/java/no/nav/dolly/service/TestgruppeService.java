@@ -114,7 +114,7 @@ public class TestgruppeService {
         try {
             return gruppeRepository.save(testgruppe);
         } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage());
+            throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
             throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
         }
@@ -124,9 +124,9 @@ public class TestgruppeService {
         try {
             return gruppeRepository.saveAll(testgrupper);
         } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage());
+            throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
+            throw new DollyFunctionalException(e.getRootCause() != null ? e.getRootCause().getMessage() : e.getMessage(), e);
         }
     }
 

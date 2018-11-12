@@ -28,7 +28,7 @@ public class IdentService {
         try {
             identRepository.saveAll(testidentList);
         } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Ident DB constraint er brutt! Kan ikke lagre Identer. Error: " + e.getMessage());
+            throw new ConstraintViolationException("En Ident DB constraint er brutt! Kan ikke lagre Identer. Error: " + e.getMessage(), e);
         }
     }
 

@@ -1,15 +1,15 @@
 package no.nav.dolly.domain.resultset;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -19,6 +19,7 @@ public class RsTestgruppeMedErMedlemOgFavoritt {
 	private String hensikt;
 	private String opprettetAvNavIdent;
 	private String sistEndretAvNavIdent;
+	private String openAmSent;
 
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate datoEndret;

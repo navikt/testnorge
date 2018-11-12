@@ -4,7 +4,7 @@ import cn from 'classnames'
 
 import './Icon.less'
 
-const iconList = [
+export const iconList = [
 	'trashcan',
 	'add-circle',
 	'remove-circle',
@@ -87,7 +87,7 @@ export default class Icon extends PureComponent {
 	}
 }
 
-class Chevron extends PureComponent {
+export class Chevron extends PureComponent {
 	static propTypes = {
 		direction: PropTypes.oneOf(['up', 'down', 'left', 'right'])
 	}

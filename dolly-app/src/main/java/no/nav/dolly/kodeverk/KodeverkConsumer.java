@@ -1,8 +1,6 @@
 package no.nav.dolly.kodeverk;
 
-import no.nav.dolly.exceptions.KodeverkException;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
+import static no.nav.dolly.util.CallIdUtil.generateCallId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -13,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import static no.nav.dolly.util.CallIdUtil.generateCallId;
+import no.nav.dolly.exceptions.KodeverkException;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
 @Service
 public class KodeverkConsumer {
@@ -23,8 +23,10 @@ public class KodeverkConsumer {
     private static final String HEADER_NAME_CALL_ID = "Nav-Call-id";
     private static final String EMPTY_BODY = "empty";
     private static final String KODEVERK_URL_QUERY_PARAMS_EKSKLUDER_UGYLDIGE_SPRAAK_NB = "?ekskluderUgyldige=true&spraak=nb";
-    private RestTemplate restTemplate = new RestTemplate();
-    private String KODEVERK_URL_BASE = "/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger";
+    private static final String KODEVERK_URL_BASE = "/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger";
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     ProvidersProps providersProps;
@@ -37,7 +39,7 @@ public class KodeverkConsumer {
             ResponseEntity<GetKodeverkKoderBetydningerResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity, GetKodeverkKoderBetydningerResponse.class);
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            throw new KodeverkException(e.getStatusCode(), e.getResponseBodyAsString());
+            throw new KodeverkException(e.getStatusCode(), e.getResponseBodyAsString(), e);
         }
     }
 

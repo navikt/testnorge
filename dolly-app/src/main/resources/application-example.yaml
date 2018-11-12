@@ -37,13 +37,6 @@ freg.security.oidc:
       validation:
         type: refreshing
 
-### ABAC ###
-#no.nav.abac:
-#  url: ${no.nav.abac.url}
-#  systemuser:
-#    username: ${dolly.username}
-#    password: ${dolly.password}
-
 providers:
   url:
     tpsf: http://localhost:8050
