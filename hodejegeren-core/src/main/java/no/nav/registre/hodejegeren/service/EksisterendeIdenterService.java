@@ -189,8 +189,8 @@ public class EksisterendeIdenterService {
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                 i++; //Neste melding
             } else {
-                log.warn("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: "
-                        + ident + " og " + identPartner);
+                log.warn("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: {} og {}",
+                        ident , identPartner);
                 //Prøver på nytt med å finne et nytt par for samme melding
             }
         }
