@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenConsumer;
 
@@ -16,6 +17,7 @@ public class SyntetiseringsController {
     @Autowired
     private TpsSyntPakkenConsumer tpsSyntPakkenConsumer;
 
+    @LogExceptions
     @RequestMapping(value = "/tps/skdmeldinger/generer", method = RequestMethod.POST)
     public AvspillingResponse opprettSkdMeldinger(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
 

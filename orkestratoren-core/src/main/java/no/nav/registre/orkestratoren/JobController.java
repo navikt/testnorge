@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenConsumer;
 
 @Component
@@ -18,7 +19,7 @@ public class JobController {
     private String miljoe;
 
     @Value("${orkestratoren.batch.skdMeldingGruppeId:500}")
-    private int skdMeldingGruppeId;
+    private Long skdMeldingGruppeId;
 
     @Autowired
     private Map<String, Integer> antallMeldingerPerEndringskode;
@@ -26,6 +27,7 @@ public class JobController {
     @Autowired
     private TpsSyntPakkenConsumer tpsSyntPakkenConsumer;
 
+    @LogExceptions
     @Scheduled(cron = "${orkestratoren.cron:0 0 4 * * *}")
     public void execute() {
         tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);

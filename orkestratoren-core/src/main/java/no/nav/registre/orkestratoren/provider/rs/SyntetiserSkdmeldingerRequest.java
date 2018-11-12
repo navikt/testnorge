@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SyntetiserSkdmeldingerRequest {
-    private long skdMeldingGruppeId;
+    private Long skdMeldingGruppeId;
     private String miljoe;
     private Map<String, Integer> antallMeldingerPerEndringskode;
 }

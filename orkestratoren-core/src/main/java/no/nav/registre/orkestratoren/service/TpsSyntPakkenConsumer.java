@@ -22,7 +22,7 @@ public class TpsSyntPakkenConsumer {
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
 
-    public AvspillingResponse produserOgSendSkdmeldingerTilTpsIMiljoer(long skdMeldingGruppeId,
+    public AvspillingResponse produserOgSendSkdmeldingerTilTpsIMiljoer(Long skdMeldingGruppeId,
             String miljoe,
             Map<String, Integer> antallMeldingerPerEndringskode) {
 
