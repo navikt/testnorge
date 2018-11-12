@@ -3,7 +3,11 @@ import { sokSelector } from '../'
 
 describe('testBrukerReducer', () => {
 	const initialState = {
-		items: null
+		items: {
+			tpsf: null,
+			sigrun: null,
+			krr: null
+		}
 	}
 	it('should return initial state', () => {
 		expect(testBruker(undefined, {})).toEqual(initialState)
@@ -35,16 +39,42 @@ describe('testBrukerReducer', () => {
 
 	it('should add sigrun items on success', () => {
 		const testdata = 'test'
+		const testident = 'a'
 		const action = {
-			type: 'GET_SIGRUN_TESTBRUKERE_SUCCESS',
-			payload: testdata
+			type: 'GET_SIGRUN_TESTBRUKER_SUCCESS',
+			payload: { data: testdata },
+			meta: { ident: testident }
 		}
 
 		const res = {
-			items: { sigrun: testdata }
+			items: { tpsf: null, sigrun: { [testident]: testdata }, krr: null }
 		}
 
-		expect(testBruker({}, action)).toEqual(res)
+		expect(testBruker(initialState, action)).toEqual(res)
+	})
+
+	it('should add krr items on success', () => {
+		const testident = 'a'
+		const testdata = {
+			ident: testident
+		}
+		const action = {
+			type: 'GET_KRR_TESTBRUKER_SUCCESS',
+			payload: { data: testdata },
+			meta: { ident: testident }
+		}
+
+		const res = {
+			items: {
+				tpsf: null,
+				sigrun: null,
+				krr: {
+					[testident]: testdata
+				}
+			}
+		}
+
+		expect(testBruker(initialState, action)).toEqual(res)
 	})
 
 	it('should update testbruker', () => {

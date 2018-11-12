@@ -20,7 +20,7 @@ const ConfigService = {
 		const dollyConfig = window.dollyConfig
 		switch (dataSource) {
 			case 'tpsf':
-				return dollyConfig.url
+				return dollyConfig.tpsfUrl
 			default:
 				return undefined
 		}

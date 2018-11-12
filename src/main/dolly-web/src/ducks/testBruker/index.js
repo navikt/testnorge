@@ -1,21 +1,42 @@
-import { TpsfApi, SigrunApi } from '~/service/Api'
+import { TpsfApi, SigrunApi, KrrApi } from '~/service/Api'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import { createAction } from 'redux-actions'
+import success from '~/utils/SuccessAction'
 import _get from 'lodash/get'
 
 export const UPDATE_TESTBRUKER = createAction('UPDATE_TESTBRUKER', TpsfApi.updateTestbruker)
 
 const initialState = {
-	items: null
+	items: {
+		tpsf: null,
+		sigrun: null,
+		krr: null
+	}
 }
 
 export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', identArray => {
 	return TpsfApi.getTestbrukere(identArray)
 })
 
-export const GET_SIGRUN_TESTBRUKERE = createAction('GET_SIGRUN_TESTBRUKERE', identArray => {
-	return SigrunApi.getTestbrukere(identArray)
-})
+export const GET_SIGRUN_TESTBRUKER = createAction(
+	'GET_SIGRUN_TESTBRUKER',
+	ident => {
+		return SigrunApi.getTestbruker(ident)
+	},
+	ident => ({
+		ident
+	})
+)
+
+export const GET_KRR_TESTBRUKER = createAction(
+	'GET_KRR_TESTBRUKER',
+	ident => {
+		return KrrApi.getTestbruker('02014600178', 'Z990651')
+	},
+	ident => ({
+		ident
+	})
+)
 
 export default function testbrukerReducer(state = initialState, action) {
 	switch (action.type) {
@@ -23,8 +44,22 @@ export default function testbrukerReducer(state = initialState, action) {
 			return initialState
 		case `${GET_TPSF_TESTBRUKERE}_SUCCESS`:
 			return { ...state, items: { ...state.items, tpsf: action.payload.data } }
-		case `${GET_SIGRUN_TESTBRUKERE}_SUCCESS`:
-			return { ...state, items: { ...state.items, sigrun: action.payload } }
+		case success(GET_SIGRUN_TESTBRUKER):
+			return {
+				...state,
+				items: {
+					...state.items,
+					sigrun: { ...state.items.sigrun, [action.meta.ident]: action.payload.data }
+				}
+			}
+		case success(GET_KRR_TESTBRUKER):
+			return {
+				...state,
+				items: {
+					...state.items,
+					krr: { ...state.items.krr, [action.meta.ident]: action.payload.data }
+				}
+			}
 		case `${UPDATE_TESTBRUKER}_SUCCESS`:
 			return state
 		default:
@@ -42,3 +77,5 @@ export const sokSelector = (items, searchStr) => {
 		return item.some(v => v.toLowerCase().includes(query))
 	})
 }
+
+// thunks
