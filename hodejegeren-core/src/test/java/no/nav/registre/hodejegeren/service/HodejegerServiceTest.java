@@ -1,6 +1,7 @@
 package no.nav.registre.hodejegeren.service;
 
 import static no.nav.registre.hodejegeren.service.Endringskoder.ENDRING_OPPHOLDSTILLATELSE;
+import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.testutils.Utils.testLoggingInClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -11,6 +12,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -192,11 +194,23 @@ public class HodejegerServiceTest {
             hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
             fail();
         } catch (RuntimeException e) {
-            assertEquals(1, listAppender.list.size());
+            assertEquals(2, listAppender.list.size());
             assertTrue(listAppender.list.get(0).toString().contains(testfeilmelding));
-            assertTrue(listAppender.list.get(0).toString()
-                    .contains("Skdmeldinger som er ferdig behandlet har følgende id-er i TPSF: " + ids.toString()));
+            assertTrue(listAppender.list.get(1).toString()
+                    .contains("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: " + ids.toString()));
         }
+    }
 
+    @Test
+    public void shouldvelgeKorrektBehandlingGittEndringskode() {
+        //TODO en slik test for hver av if-statements? eller blir dette mer å forvalte enn det gir av verdi? vi vet jo hva vi har kodet.
+        final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
+        antallMeldingerPerEndringskode.put(FOEDSELSMELDING.getEndringskode(), 3);
+
+        hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
+
+        verify(foedselService, times(1)).behandleFoedselsmeldinger(any(), any(), any());
+        verifyZeroInteractions(eksisterendeIdenterService);
+        verifyZeroInteractions(nyeIdenterService);
     }
 }

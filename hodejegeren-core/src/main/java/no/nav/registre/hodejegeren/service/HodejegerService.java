@@ -1,13 +1,11 @@
 package no.nav.registre.hodejegeren.service;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
-import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.DNR;
+import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
+import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
+import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
+import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
+import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,10 +14,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 
-import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.DNR;
-import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
-import static no.nav.registre.hodejegeren.service.Endringskoder.*;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
+import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
 /**
  * Hoved-service i Hodejegeren. Her blir Tps Synt. kalt. Den genererer syntetiske skdmeldinger og returnerer dem til hodejegeren. Hodejegeren
@@ -31,30 +35,23 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.*;
 @Slf4j
 public class HodejegerService {
 
-    @Autowired
-    private TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
-
-    @Autowired
-    private NyeIdenterService nyeIdenterService;
-
-    @Autowired
-    private EksisterendeIdenterService eksisterendeIdenterService;
-
-    @Autowired
-    private FoedselService foedselService;
-
-    @Autowired
-    private TpsfConsumer tpsfConsumer;
-
-    @Autowired
-    private ValidationService validationService;
-
     public static final String TRANSAKSJONSTYPE = "1";
-
     public static final String LEVENDE_IDENTER_I_NORGE = "levendeIdenterINorge";
     public static final String GIFTE_IDENTER_I_NORGE = "gifteIdenterINorge";
     public static final String SINGLE_IDENTER_I_NORGE = "singleIdenterINorge";
     public static final String BRUKTE_IDENTER_I_DENNE_BOLKEN = "brukteIdenterIDenneBolken";
+    @Autowired
+    private TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
+    @Autowired
+    private NyeIdenterService nyeIdenterService;
+    @Autowired
+    private EksisterendeIdenterService eksisterendeIdenterService;
+    @Autowired
+    private FoedselService foedselService;
+    @Autowired
+    private TpsfConsumer tpsfConsumer;
+    @Autowired
+    private ValidationService validationService;
 
     public List<Long> puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         final Map<String, Integer> antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
@@ -67,7 +64,8 @@ public class HodejegerService {
 
         try {
             for (Endringskoder endringskode : sorterteEndringskoder) {
-                List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
+                List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(),
+                        antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
                 validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
 
                 if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
@@ -86,9 +84,13 @@ public class HodejegerService {
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             }
+        } catch (HttpStatusCodeException e) {
+            log.warn(e.getMessage() + e.getResponseBodyAsString(), e);
+            log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
+            throw e;
         } catch (RuntimeException e) {
-            log.warn(("--- Noe feilet under kjøring ---\r\n {}\r\n Skdmeldinger som er ferdig behandlet har følgende id-er i TPSF: {}")
-                    , e.getMessage(), ids);
+            log.warn(e.getMessage(), e);
+            log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
             throw e;
         }
         return ids;
@@ -100,7 +102,7 @@ public class HodejegerService {
     }
 
     private void lagreSkdEndringsmeldingerITpsfOgOppdaterIds(List<Long> ids, Endringskoder endringskode,
-                                                             List<RsMeldingstype> syntetiserteSkdmeldinger, GenereringsOrdreRequest genereringsOrdreRequest) {
+            List<RsMeldingstype> syntetiserteSkdmeldinger, GenereringsOrdreRequest genereringsOrdreRequest) {
         try {
             ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
         } catch (Exception e) {

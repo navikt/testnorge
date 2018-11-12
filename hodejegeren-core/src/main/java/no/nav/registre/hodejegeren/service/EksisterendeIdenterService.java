@@ -43,13 +43,11 @@ public class EksisterendeIdenterService {
     private static final String IDENT = "ident";
     private static final String STATSBORGER_NORGE = "NORGE";
     private static final String SIVILSTANDSENDRING_AARSAKSKODE = "85";
+
     @Autowired
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
+    @Autowired
     private Random rand;
-
-    public EksisterendeIdenterService(Random rand) {
-        this.rand = rand;
-    }
 
     public static LocalDate getFoedselsdatoFraFnr(String fnr) {
         int pnrAarhundreKode = Integer.parseInt(fnr.substring(6, 9));
