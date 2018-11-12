@@ -57,8 +57,7 @@ export default class SendOpenAm extends Component {
 						<div className="openam-modal">
 							<h1>Oppdater OpenAM</h1>
 							Gruppen er allerede sendt til OpenAM. Dolly vil forsøke å sende alle testidenter på
-							nytt. Dette kan føre til duplikater hvis testidenten allerede finnes i OpenAM. Er du
-							sikker på at du vil utføre dette?
+							nytt. Er du sikker på at du vil utføre dette?
 							<div className="openam-modal_buttons">
 								<Knapp autoFocus type="standard" onClick={this.close}>
 									Avbryt
