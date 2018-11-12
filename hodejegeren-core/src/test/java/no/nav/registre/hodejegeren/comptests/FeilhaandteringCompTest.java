@@ -8,13 +8,20 @@ import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static no.nav.registre.hodejegeren.service.Endringskoder.NAVNEENDRING_FOERSTE;
 import static no.nav.registre.hodejegeren.service.Endringskoder.VIGSEL;
 import static no.nav.registre.hodejegeren.testutils.ResourceUtils.getResourceFileContent;
+import static no.nav.registre.hodejegeren.testutils.Utils.testLoggingInClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,58 +30,69 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpServerErrorException;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import no.nav.registre.hodejegeren.ApplicationStarter;
 import no.nav.registre.hodejegeren.provider.rs.TriggeSyntetiseringController;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
+import no.nav.registre.hodejegeren.service.HodejegerService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = { ApplicationTestConfig.class, ApplicationStarter.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("itest")
-public class GenererSyntetiskeMeldingerCompTest {
+public class FeilhaandteringCompTest {
 
-    private List<Long> expectedMeldingsIdsITpsf = Arrays.asList(120421016L, 110156008L);
+    String testfeilmelding = "testfeilmelding";
     private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
-    private long gruppeId = 123L;
+    private List<Long> expectedMeldingsIdsITpsf = Arrays.asList(120421016L, 110156008L);
     private Integer antallMeldinger = 2;
     private String endringskodeInnvandringsmelding = "0211";
-
+    private String t10 = "t10";
     @Autowired
     private TriggeSyntetiseringController triggeSyntetiseringController;
+    @Autowired
+    private Random randMock;
+
     @Value("${hodejegeren.ida.credential.username}")
     private String username;
     @Value("${hodejegeren.ida.credential.password}")
     private String password;
 
     /**
-     * Komponenttest av følgende scenario: Happypath-test med 2 innvandringsmeldinger.
+     * Hvis en Exception blir kastet som det ikke er spesiell behandling for, SÅ skal de database-idene til de skdmeldingene som allerede er persistert i TPSF,
+     * bli loggført før feilmeldingen kastes videre.
      * <p>
+     * Feilmeldingen som kastes i denne feilhåndteringstesten, er HttpServerErrorException fra et rest-kall mot TPSF service routine.
      * <p>
-     * Hodejegeren henter syntetiserte skdmeldinger fra TPS Syntetisereren, mater dem med identer og tilhørende info, og lagrer meldingene i TPSF.
-     * (se løsningsbeskrivelse for hele prosedyren som testes i happypath: https://confluence.adeo.no/display/FEL/TPSF+Hodejegeren)
-     * <p>
-     * HVIS endepunktet kalles med bestilling av et gitt antall syntetiserte skdmeldinger for et utvalg av årsakskoder, Så skal
-     * disse meldingene lagres i TPSF på endepunktet /v1/endringsmelding/skd/save/{gruppeId}, og id-ene til meldingene returneres.
-     * Meldingene skal bestå av gyldige identer (FNR/DNR) i tråd med meldingens felter og som være identer som stemmer overens med TPS
-     * i det miljøet som angis av bestillingen/request.
-     * Tilhørende felter må stemme overens med status quo i TPS på de eksisterende identer som mates inn i
-     * de syntetiserte meldingene.
-     * <p>
-     * Testen tester f.o.m. RestController t.o.m. Consumer-klassene. Wiremock brukes.
+     * Her vil første bolk med innvandringsmelding suksessfult lagres. Deretter vil det kastes feilmelding når eksisterende identer hentes fra TPS via TPSF for
+     * å behandle NAVNEENDRING_FOERSTE -meldingene.
      */
     @Test
-    public void shouldGenerereSyntetiserteMeldinger() {
+    public void generellFeilhaandtering() {
+        when(randMock.nextInt(anyInt())).thenReturn(0);
+        ListAppender<ILoggingEvent> listAppender = testLoggingInClass(HodejegerService.class);
         HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
         antallMeldingerPerAarsakskode.put(endringskodeInnvandringsmelding, antallMeldinger);
+        antallMeldingerPerAarsakskode.put(NAVNEENDRING_FOERSTE.getEndringskode(), antallMeldinger);
+        long gruppeId = 123L;
 
-        stubTPSF(gruppeId);
-        stubTpsSynt();
         stubIdentpool();
-
-        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, "t10", antallMeldingerPerAarsakskode);
-        List<Long> meldingsIderITpsf = triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
-
-        assertEquals(expectedMeldingsIdsITpsf, meldingsIderITpsf);
+        stubTPSF(gruppeId);
+        stubTpsSynt(endringskodeInnvandringsmelding, antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json");
+        stubTpsSynt(NAVNEENDRING_FOERSTE.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode06_2meldinger_Response.json");
+        try {
+            GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, t10, antallMeldingerPerAarsakskode);
+            triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
+            fail();
+        } catch (HttpServerErrorException e) {
+            assertEquals(2, listAppender.list.size());
+            assertTrue(listAppender.list.get(0).toString().contains(testfeilmelding));
+            assertTrue(listAppender.list.get(1).toString()
+                    .contains("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: " + expectedMeldingsIdsITpsf.toString()));
+        }
     }
 
     private void stubIdentpool() {
@@ -83,23 +101,31 @@ public class GenererSyntetiskeMeldingerCompTest {
                 .willReturn(okJson(expectedFnrFromIdentpool.toString())));
     }
 
-    private void stubTpsSynt() {
+    private void stubTpsSynt(String endringskode, Integer antallMeldinger, String responseBodyFile) {
         stubFor(get(urlPathEqualTo("/tpssynt/api/generate"))
-                .withQueryParam("endringskode", equalTo(endringskodeInnvandringsmelding))
+                .withQueryParam("endringskode", equalTo(endringskode))
                 .withQueryParam("antallMeldinger", equalTo(antallMeldinger.toString()))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
-                        .withBodyFile("comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json")));
+                        .withBodyFile(responseBodyFile)));
     }
 
     private void stubTPSF(long gruppeId) {
         //Hodejegeren henter alle identer i avspillergruppa hos TPSF:
-        stubTpsfFiltrerIdenterPaaAarsakskode(gruppeId, "01,02,39,91", "[\"12042101557\",\n\"01015600248\"\n]");
+        stubTpsfFiltrerIdenterPaaAarsakskode(gruppeId, "01,02,39,91",
+                "[\"01010101010\",\n\"02020202020\"\n,\"33333333333\",\n  \"44444444444\"\n,\n\"55555555555\",\n\"66666666666\"\n]");
 
         //Hodejegeren henter liste med alle døde eller utvandrede identer i avspillergruppa hos TPSF:
-        stubTpsfFiltrerIdenterPaaAarsakskode(gruppeId, "43,32", "[\n  \"44444444444\",\n  \"55555555555\"\n]");
+        stubTpsfFiltrerIdenterPaaAarsakskode(gruppeId, "43,32", "[\n  \"33333333333\",\n  \"44444444444\"\n]");
 
         //Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
-        stubTpsfFiltrerIdenterPaaAarsakskode(gruppeId, VIGSEL.getAarsakskode(), "[]");
+        stubTpsfFiltrerIdenterPaaAarsakskode(gruppeId, VIGSEL.getAarsakskode(), "[\n\"55555555555\",\n\"66666666666\"\n]");
+
+        stubFor(get(urlPathEqualTo("/tpsf/api/v1/serviceroutine/FS03-FDNUMMER-PERSDATA-O"))
+                .withQueryParam("aksjonsKode", equalTo("A0"))
+                .withQueryParam("environment", equalTo(t10))
+                .withQueryParam("fnr", equalTo("55555555555"))
+                .withBasicAuth(username, password)
+                .willReturn(aResponse().withStatus(500).withBody("{\"message\":\"" + testfeilmelding + "\"}")));
 
         //Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
         stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
