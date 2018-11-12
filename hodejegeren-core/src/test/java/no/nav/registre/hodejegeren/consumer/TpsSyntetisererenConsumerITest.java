@@ -38,7 +38,7 @@ public class TpsSyntetisererenConsumerITest {
      */
     @Test
     public void testRequestKonsumeringAvTpsSynt() {
-        String endringskode = "02";
+        String endringskode = "0211";
         int antallMeldinger = 1;
         this.server.expect(requestToUriTemplate(serverUrl +
                 "/generate?endringskode={endringskode}&antallMeldinger={antall}", endringskode, antallMeldinger))
@@ -55,7 +55,7 @@ public class TpsSyntetisererenConsumerITest {
      */
     @Test
     public void shouldDeserialiseAllFieldsInTheResponse() throws InvocationTargetException, IllegalAccessException {
-        String endringskode = "02";
+        String endringskode = "0211";
         int antallMeldinger = 1;
         this.server.expect(requestToUriTemplate(serverUrl +
                 "/generate?endringskode={endringskode}&antallMeldinger={antall}", endringskode, antallMeldinger))
