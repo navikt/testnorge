@@ -174,7 +174,7 @@ public class HodejegerServiceTest {
 
     /**
      * Testscenario: HVIS kall til Tpsf gjennom {@link TpsfConsumer#saveSkdEndringsmeldingerInTPSF} feiler, og det kastes en
-     * exception, skal denne catches og feilen logges.
+     * exception, skal denne catches og feilen og nye, rekvirerte identer som ikke blir lagret i TPSF logges.
      */
     @Test
     public void shouldCatchExceptionAndLogIfTpsfFails() {
