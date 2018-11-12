@@ -315,7 +315,11 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     public String getStatsborgerskapRegdato() {
         return regdatoStatsb;
     }
-    
+
+    public String getBeskrivelse() {
+        return "IDENT: " + fodselsdato + personnummer + "- AARSAKSKODE:" + getAarsakskode();
+    }
+
     @Override
     public String getMeldingstype() {
         return "t1";

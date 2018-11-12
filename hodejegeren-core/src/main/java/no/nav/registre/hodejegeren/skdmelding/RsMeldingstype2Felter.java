@@ -121,7 +121,11 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     private String barnNavn13;
     @Size(max = 1)
     private String barnKjoenn13;
-    
+
+    public String getBeskrivelse() {
+        return "IDENT: " + getFodselsnr() + "- AARSAKSKODE:" + getAarsakskode();
+    }
+
     @Override
     public String getMeldingstype() {
         return "t2";
