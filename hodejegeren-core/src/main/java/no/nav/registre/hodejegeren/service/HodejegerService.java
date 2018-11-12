@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -26,10 +27,10 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
 /**
- * Hoved-service i Hodejegeren. Her blir Tps Synt. kalt. Den genererer syntetiske skdmeldinger og returnerer dem til hodejegeren. Hodejegeren
- * finner nye identer i ident-pool og eksisterende identer TPS i angitt miljø som oppfyller kriterier for de ulike skdmeldingene (årsakskodene).
- * Disse identene fylles inn i skdmeldingene.
- * Til slutt lagres skdmeldingene i TPSF databasen, i Skd-endringsmelding-tabellen.
+ * Hoved-service i Hodejegeren. Her blir Tps Synt. kalt. Den genererer syntetiske skdmeldinger og returnerer dem til
+ * hodejegeren. Hodejegeren finner nye identer i ident-pool og eksisterende identer TPS i angitt miljø som oppfyller kriterier
+ * for de ulike skdmeldingene (årsakskodene). Disse identene fylles inn i skdmeldingene. Til slutt lagres skdmeldingene i TPSF
+ * databasen, i Skd-endringsmelding-tabellen.
  */
 @Service
 @Slf4j
@@ -106,10 +107,9 @@ public class HodejegerService {
         try {
             ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
         } catch (Exception e) {
-            log.warn("--- Noe feilet under lagring til TPSF ---\r\n {}\r\nEndringskode: {}\r\n"
-                    , e.getMessage(), endringskode.getEndringskode());
+            log.warn("--- Noe feilet under lagring til TPSF ---\r\n {}\r\nEndringskode: {}\r\n", e.getMessage(), endringskode.getEndringskode());
             if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
-                StringBuilder message = new StringBuilder().append("Rekvirerte fødselsnummer i denne batchen:\r\n");
+                StringBuilder message = new StringBuilder(100).append("Rekvirerte fødselsnumre i denne batchen:\r\n");
                 for (RsMeldingstype rs : syntetiserteSkdmeldinger) {
                     message.append(((RsMeldingstype1Felter) rs).getFodselsdato())
                             .append(((RsMeldingstype1Felter) rs).getPersonnummer())
