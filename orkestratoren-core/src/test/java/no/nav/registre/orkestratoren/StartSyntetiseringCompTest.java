@@ -65,8 +65,10 @@ public class StartSyntetiseringCompTest {
     }
 
     /**
-     * Scenario: Happypath Sjekker at systemet sender og mottar riktige verdier i post-requesten til hodejegeren og tpsf. Sjekker
-     * også at resultatet fra tpsf stemmer overens med det som er forventet.
+     * Scenario: Happypath Sjekker at systemet sender og mottar riktige verdier i post-requesten til hodejegeren og TPSF. Id-ene som
+     * returneres fra hodejegeren skal sendes videre til TPSF gjennom metoden
+     * {@link no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer#sendSkdmeldingerTilTps}. Testen sjekker også at resultatet fra
+     * TPSF stemmer overens med det som er forventet.
      */
     @Test
     public void shouldStartSyntetisering() {
