@@ -107,10 +107,10 @@ public class HodejegerService {
         try {
             ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
         } catch (Exception e) {
-            StringBuilder message = new StringBuilder(120).append("Noe feilet under lagring til TPSF: ");
-            message.append(e.getMessage());
-            message.append(" - Endringskode: ");
-            message.append(endringskode.getEndringskode());
+            StringBuilder message = new StringBuilder(120).append("Noe feilet under lagring til TPSF: ")
+                    .append(e.getMessage())
+                    .append(" - Endringskode: ")
+                    .append(endringskode.getEndringskode());
             if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
                 message.append(" - Rekvirerte fødselsnumre i denne batchen: ");
                 for (RsMeldingstype rs : syntetiserteSkdmeldinger) {
