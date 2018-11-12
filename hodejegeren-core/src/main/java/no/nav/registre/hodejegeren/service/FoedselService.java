@@ -1,5 +1,16 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.getFoedselsdatoFraFnr;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,16 +18,6 @@ import no.nav.registre.hodejegeren.consumer.IdentPoolConsumer;
 import no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-
-import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.getFoedselsdatoFraFnr;
 
 @Service
 @AllArgsConstructor
@@ -53,9 +54,7 @@ public class FoedselService {
                 meldingIterator.remove();
                 continue;
             }
-
-            ((RsMeldingstype1Felter) melding).setFodselsdato(barnFnr.substring(0, 6));
-            ((RsMeldingstype1Felter) melding).setPersonnummer(barnFnr.substring(6));
+            putFnrInnIMelding((RsMeldingstype1Felter) melding, barnFnr);
 
             ((RsMeldingstype1Felter) melding).setMorsFodselsdato(morFnr.substring(0, 6));
             ((RsMeldingstype1Felter) melding).setMorsPersonnummer(morFnr.substring(6));

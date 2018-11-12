@@ -20,8 +20,9 @@ public class TriggeSyntetiseringController {
     private HodejegerService hodejegerService;
     
     @LogExceptions
-    @ApiOperation(value = "Her bestilles genererering av syntetiske meldinger for nye og eksisterende identer, "
-            + "og at disse meldingene lagres i angitt gruppe i TPSF. Eksisterende identer hentes fra TPS i angitt miljø. ")
+    @ApiOperation(value = "Her bestilles genererering av syntetiske meldinger for nye og eksisterende identer. "
+            + "Disse meldingene lagres i angitt gruppe i TPSF. ",
+            notes = "Eksisterende identer hentes fra avspillergruppen og status quo på disse hentes fra TPS i angitt miljø. ")
     @PostMapping("api/v1/syntetisering/generer")
     public @ResponseStatus(HttpStatus.CREATED) List<Long> genererSyntetiskeMeldingerOgLagreITpsf(@RequestBody GenereringsOrdreRequest ordreRequest) {
         return hodejegerService.puttIdenterIMeldingerOgLagre(ordreRequest);

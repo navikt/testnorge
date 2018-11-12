@@ -1,13 +1,16 @@
 package no.nav.registre.hodejegeren.service;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.FNR_RELASJON;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.SIVILSTAND;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
+import static no.nav.registre.hodejegeren.service.HodejegerService.BRUKTE_IDENTER_I_DENNE_BOLKEN;
+import static no.nav.registre.hodejegeren.service.HodejegerService.GIFTE_IDENTER_I_NORGE;
+import static no.nav.registre.hodejegeren.service.HodejegerService.LEVENDE_IDENTER_I_NORGE;
+import static no.nav.registre.hodejegeren.service.HodejegerService.SINGLE_IDENTER_I_NORGE;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.opprettKopiAvSkdMelding;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putEktefellePartnerFnrInnIMelding;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,9 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.*;
-import static no.nav.registre.hodejegeren.service.HodejegerService.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
 @Service
 @AllArgsConstructor
@@ -58,7 +67,7 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleEksisterendeIdenter(List<RsMeldingstype> meldinger, Map<String, List<String>> listerMedIdenter,
-                                            Endringskoder endringskode, String environment) {
+            Endringskoder endringskode, String environment) {
 
         switch (endringskode) {
             case NAVNEENDRING_FOERSTE:
@@ -111,7 +120,7 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleVigsel(List<RsMeldingstype> meldinger, List<String> singleIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                               Endringskoder endringskode, String environment) {
+            Endringskoder endringskode, String environment) {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         for (int i = 0; i < meldinger.size(); i++) {
@@ -137,13 +146,11 @@ public class EksisterendeIdenterService {
 
             if (ident != null && identPartner != null) {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
-                ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerFdato(identPartner.substring(0, 6));
-                ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerPnr(identPartner.substring(6));
+                putEktefellePartnerFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
 
                 RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
+                putEktefellePartnerFnrInnIMelding(((RsMeldingstype1Felter) melding), ident);
                 meldingerForPartnere.add(melding);
-                ((RsMeldingstype1Felter) melding).setEktefellePartnerFdato(ident.substring(0, 6));
-                ((RsMeldingstype1Felter) melding).setEktefellePartnerPnr(ident.substring(6));
 
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
             }
@@ -152,14 +159,14 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleSeperasjonSkilsmisse(List<RsMeldingstype> meldinger, List<String> gifteIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                             Endringskoder endringskoder, String environment) {
+            Endringskoder endringskoder, String environment) {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         int antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
             if (i >= gifteIdenterINorge.size() - 1) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
-                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen gifteIdenterINorge.");
+                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen gifteIdenterINorge fra TPSF avspillergruppen.");
             }
 
             Map<String, String> statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskoder, environment,
@@ -174,19 +181,19 @@ public class EksisterendeIdenterService {
 
                 statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskoder, environment, identPartner);
 
-                if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))) {
-                    if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
-                        putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
+                if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))
+                        && statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
+                    putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
 
-                        RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
-                        meldingerForPartnere.add(melding);
+                    RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
+                    meldingerForPartnere.add(melding);
 
-                        oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
-                    } else {
-                        // personnummer i fnrRelasjon til partner matcher ikke
-                    }
+                    oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
+
                 } else {
-                    // ulik sivilstand på identene
+                    log.warn("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: "
+                            + ident + " og " + identPartner);
+                    i--; //Prøver på nytt med et nytt par for samme melding
                 }
             } else {
                 // fant ikke ident
@@ -196,7 +203,7 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleDoedsmelding(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                     Endringskoder endringskode, String environment) {
+            Endringskoder endringskode, String environment) {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         int antallMeldingerFoerKjoering = meldinger.size();
@@ -240,7 +247,7 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleGenerellAarsak(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
-                                       Endringskoder endringskode, String environment) {
+            Endringskoder endringskode, String environment) {
         for (int i = 0; i < meldinger.size(); i++) {
             if (i >= levendeIdenterINorge.size() - 1) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
@@ -283,18 +290,6 @@ public class EksisterendeIdenterService {
         }
 
         return statusQuoFraAarsakskode;
-    }
-
-    private void putFnrInnIMelding(RsMeldingstype1Felter melding, String fnr) {
-        melding.setFodselsdato(fnr.substring(0, 6));
-        melding.setPersonnummer(fnr.substring(6));
-    }
-
-    private RsMeldingstype1Felter opprettKopiAvSkdMelding(RsMeldingstype1Felter originalMelding, String fnr) {
-        RsMeldingstype1Felter rsMeldingstypeIdent = originalMelding.toBuilder()
-                .fodselsdato(fnr.substring(0, 6))
-                .personnummer(fnr.substring(6)).build();
-        return rsMeldingstypeIdent;
     }
 
     private RsMeldingstype1Felter opprettSivilstandsendringsmelding(String ident, String identPartner) {
