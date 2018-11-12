@@ -64,9 +64,9 @@ public class HodejegerServiceTest {
     private HodejegerService hodejegerService;
 
     /**
-     * Test-scenario: NÅR metoden puttIdenterIMeldingerOgLagre blir kalt med en map med endringskoder og tilhørende antall meldinger,
-     * SÅ skal - TPS Syntetisereren konsumeres for å hente det rette antallet meldinger per endringskode - Alle meldinger blir
-     * validert på skd-formatet: maksstørrelsen for hvert felt er oppfylt - alle meldingene lagres på korrekt gruppeId i TPSF -
+     * Test-scenario: NÅR metoden puttIdenterIMeldingerOgLagre blir kalt med en map med endringskoder og tilhørende antall
+     * meldinger, SÅ skal - TPS Syntetisereren konsumeres for å hente det rette antallet meldinger per endringskode - Alle meldinger
+     * blir validert på skd-formatet: maksstørrelsen for hvert felt er oppfylt - alle meldingene lagres på korrekt gruppeId i TPSF -
      * kaller TpsfConsumer
      */
     @Test

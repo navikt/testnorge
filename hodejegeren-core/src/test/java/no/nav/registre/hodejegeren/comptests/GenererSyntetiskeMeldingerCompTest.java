@@ -15,6 +15,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import no.nav.registre.hodejegeren.ApplicationStarter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ import no.nav.registre.hodejegeren.provider.rs.TriggeSyntetiseringController;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = { ApplicationTestConfig.class, ApplicationStarter.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("itest")
 public class GenererSyntetiskeMeldingerCompTest {
