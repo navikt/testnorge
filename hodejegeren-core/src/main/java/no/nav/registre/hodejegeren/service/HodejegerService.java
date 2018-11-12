@@ -117,6 +117,7 @@ public class HodejegerService {
                 }
                 log.warn(message.toString());
             }
+            throw e;
         }
     }
 

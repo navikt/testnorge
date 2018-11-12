@@ -194,15 +194,14 @@ public class HodejegerServiceTest {
         when(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(any(), any())).thenThrow(RuntimeException.class);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), anyInt())).thenReturn(Arrays.asList(melding));
 
-        hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
+        try {
+            hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
+        } catch (Exception e) {
+            verify(tpsfConsumer, times(1)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
 
-        verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
-
-        assertEquals(4, listAppender.list.size());
-        assertTrue(listAppender.list.get(0).toString().contains("Noe feilet under lagring til TPSF"));
-        assertTrue(listAppender.list.get(1).toString().contains("01010101010"));
-        assertTrue(listAppender.list.get(2).toString().contains("Noe feilet under lagring til TPSF"));
-        assertTrue(listAppender.list.get(3).toString().contains("01010101010"));
+            assertTrue(listAppender.list.get(0).toString().contains("Noe feilet under lagring til TPSF"));
+            assertTrue(listAppender.list.get(1).toString().contains("01010101010"));
+        }
     }
 
     /**
