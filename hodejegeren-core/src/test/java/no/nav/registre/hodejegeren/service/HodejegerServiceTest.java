@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -186,15 +187,22 @@ public class HodejegerServiceTest {
         listAppender.start();
         logger.addAppender(listAppender);
 
+        RsMeldingstype melding = new RsMeldingstype1Felter();
+        ((RsMeldingstype1Felter) melding).setFodselsdato("010101");
+        ((RsMeldingstype1Felter) melding).setPersonnummer("01010");
+
         when(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(any(), any())).thenThrow(RuntimeException.class);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), anyInt())).thenReturn(Arrays.asList(melding));
 
         hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
 
-        verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(any(), any());
+        verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
 
         assertEquals(4, listAppender.list.size());
         assertTrue(listAppender.list.get(0).toString().contains("Noe feilet under lagring til TPSF"));
+        assertTrue(listAppender.list.get(1).toString().contains("01010101010"));
         assertTrue(listAppender.list.get(2).toString().contains("Noe feilet under lagring til TPSF"));
+        assertTrue(listAppender.list.get(3).toString().contains("01010101010"));
     }
 
     /**
