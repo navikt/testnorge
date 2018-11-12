@@ -1,10 +1,12 @@
 import Request from '../Request'
 import axios from 'axios'
+import ConfigService from '~/service/Config'
 
 export default class SigrunService {
 	static getSigrunUrl() {
-		// TODO: Gjør dette dynamisk når backend har en dynamisk api request
-		return 'https://sigrun-skd-stub.nais.preprod.local'
+		const url =
+			ConfigService.getDatesourceUrl('sigrun') || 'https://sigrun-skd-stub.nais.preprod.local'
+		return url
 	}
 
 	static getTestbruker(ident) {

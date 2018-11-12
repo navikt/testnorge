@@ -21,6 +21,12 @@ const ConfigService = {
 		switch (dataSource) {
 			case 'tpsf':
 				return dollyConfig.tpsfUrl
+			case 'sigrun':
+				return dollyConfig.sigrunStubUrl
+			case 'krr':
+				return dollyConfig.krrStubUrl
+			case 'kodeverk':
+				return dollyConfig.kodeverkUrl
 			default:
 				return undefined
 		}
