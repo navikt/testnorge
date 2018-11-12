@@ -85,7 +85,7 @@ public class HodejegerService {
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             }
         } catch (HttpStatusCodeException e) {
-            log.warn(e.getMessage() + e.getResponseBodyAsString(), e);
+            log.warn(e.getResponseBodyAsString(), e);
             log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
             throw e;
         } catch (RuntimeException e) {

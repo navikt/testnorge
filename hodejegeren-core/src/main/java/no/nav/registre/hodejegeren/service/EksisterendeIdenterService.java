@@ -161,7 +161,8 @@ public class EksisterendeIdenterService {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         int antallMeldingerFoerKjoering = meldinger.size();
-        for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
+        int i = 0;
+        while (i < antallMeldingerFoerKjoering) {
             if (i >= gifteIdenterINorge.size() - 1) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen gifteIdenterINorge fra TPSF avspillergruppen.");
@@ -174,27 +175,23 @@ public class EksisterendeIdenterService {
             Map<String, String> statusQuoPartnerIdent;
             String identPartner;
 
-            if (ident != null) {
-                identPartner = statusQuoIdent.get(FNR_RELASJON);
+            identPartner = statusQuoIdent.get(FNR_RELASJON);
 
-                statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskoder, environment, identPartner);
+            statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskoder, environment, identPartner);
 
-                if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))
-                        && statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
-                    putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
+            if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))
+                    && statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
+                putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
 
-                    RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
-                    meldingerForPartnere.add(melding);
+                RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
+                meldingerForPartnere.add(melding);
 
-                    oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
-
-                } else {
-                    log.warn("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: "
-                            + ident + " og " + identPartner);
-                    i--; //Prøver på nytt med et nytt par for samme melding
-                }
+                oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
+                i++; //Neste melding
             } else {
-                // fant ikke ident
+                log.warn("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: "
+                        + ident + " og " + identPartner);
+                //Prøver på nytt med å finne et nytt par for samme melding
             }
         }
         meldinger.addAll(meldingerForPartnere);
