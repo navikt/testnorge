@@ -6,6 +6,7 @@ import { createLoadingSelector } from '~/ducks/loading'
 import { resetSearch } from '~/ducks/search'
 
 const loadingSelector = createLoadingSelector(getGruppe)
+
 const mapStateToProps = state => ({
 	isFetching: loadingSelector(state),
 	gruppeArray: state.gruppe.data,
