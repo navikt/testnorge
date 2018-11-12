@@ -55,7 +55,7 @@ export default class TestbrukerListe extends Component {
 											expandComponent={
 												<PersonDetaljerConnector personId={bruker[0]} username={username} />
 											}
-											// editAction={() => editTestbruker(bruker.id)}
+											editAction={() => editTestbruker(bruker[0])}
 										>
 											{bruker.map((dataCell, cellIdx) => (
 												<Table.Column
