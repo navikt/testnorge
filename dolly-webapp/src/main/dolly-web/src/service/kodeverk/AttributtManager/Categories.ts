@@ -12,15 +12,20 @@ export const Kategorier: KategoriTypes = {
 		navn: 'Adresser',
 		order: 20
 	},
+	KontaktInfo: {
+		id: 'kontaktInfo',
+		navn: 'Kontaktinformasjon og reservasjon',
+		order: 30
+	},
 	FamilieRelasjoner: {
 		id: 'familierelasjoner',
 		navn: 'Familierelasjoner',
-		order: 30
+		order: 40
 	},
 	Inntekter: {
 		id: 'inntekt',
 		navn: 'Inntekter',
-		order: 40
+		order: 50
 	}
 }
 
@@ -57,6 +62,12 @@ export const SubKategorier: KategoriTypes = {
 	// 	order: 30,
 	// 	multiple: true
 	// },
+	Krr: {
+		id: 'krr',
+		navn: 'Kontakt- og reservasjonsregisteret',
+		order: 10,
+		showInSummary: true
+	},
 	Partner: {
 		id: 'partner',
 		navn: 'Partner',

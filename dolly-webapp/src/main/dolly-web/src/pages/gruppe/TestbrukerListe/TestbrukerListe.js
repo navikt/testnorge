@@ -5,11 +5,10 @@ import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
 
-export default class Gruppe extends Component {
+export default class TestbrukerListe extends Component {
 	componentDidMount() {
 		if (this.props.testidenter.length) {
 			this.props.getTPSFTestbrukere()
-			this.props.getSigrunTestbrukere()
 		}
 	}
 
@@ -20,7 +19,8 @@ export default class Gruppe extends Component {
 			testbrukere,
 			headers,
 			editTestbruker,
-			searchActive
+			searchActive,
+			username
 		} = this.props
 
 		if (testidenter.length <= 0)
@@ -52,7 +52,9 @@ export default class Gruppe extends Component {
 									return (
 										<Table.Row
 											key={idx}
-											expandComponent={<PersonDetaljerConnector personId={bruker[0]} />}
+											expandComponent={
+												<PersonDetaljerConnector personId={bruker[0]} username={username} />
+											}
 											// editAction={() => editTestbruker(bruker.id)}
 										>
 											{bruker.map((dataCell, cellIdx) => (

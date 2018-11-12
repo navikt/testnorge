@@ -1,7 +1,7 @@
 import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
-export default function mapDetailedData(tpsfData, sigrunData, bestillingData) {
+export function mapTpsfData(tpsfData, bestillingData) {
 	let data
 	if (tpsfData) {
 		data = [
@@ -143,45 +143,47 @@ export default function mapDetailedData(tpsfData, sigrunData, bestillingData) {
 			})
 		})
 	}
-	if (sigrunData) {
-		data.push({
-			header: 'Inntekter',
-			multiple: true,
-			data: sigrunData.map(data => {
-				return {
-					parent: 'inntekter',
-					id: data.personidentifikator,
-					label: data.inntektsaar,
-					value: [
-						{
-							id: 'aar',
-							label: 'År',
-							value: data.inntektsaar
-						},
-						{
-							id: 'verdi',
-							label: 'Beløp',
-							value: data.verdi
-						},
-						,
-						{
-							id: 'tjeneste',
-							label: 'Tjeneste',
-							width: 'medium',
-							value: data.tjeneste
-						},
+	return data
+}
 
-						{
-							id: 'grunnlag',
-							label: 'Grunnlag',
-							width: 'xlarge',
-							value: Formatters.camelCaseToLabel(data.grunnlag)
-						}
-					]
-				}
-			})
+export function mapSigrunData(sigrunData) {
+	if (!sigrunData) return null
+
+	return {
+		header: 'Inntekter',
+		multiple: true,
+		data: sigrunData.map(data => {
+			return {
+				parent: 'inntekter',
+				id: data.personidentifikator,
+				label: data.inntektsaar,
+				value: [
+					{
+						id: 'aar',
+						label: 'År',
+						value: data.inntektsaar
+					},
+					{
+						id: 'verdi',
+						label: 'Beløp',
+						value: data.verdi
+					},
+					,
+					{
+						id: 'tjeneste',
+						label: 'Tjeneste',
+						width: 'medium',
+						value: data.tjeneste
+					},
+
+					{
+						id: 'grunnlag',
+						label: 'Grunnlag',
+						width: 'xlarge',
+						value: Formatters.camelCaseToLabel(data.grunnlag)
+					}
+				]
+			}
 		})
 	}
-
-	return data
 }

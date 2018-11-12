@@ -160,6 +160,8 @@ const getValues = (attributeList, values) => {
 
 			return _set(accumulator, 'sigrunstub', dataArr)
 		}
+
+		console.log(pathPrefix, 'pathPrefix')
 		// Tpsf
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})

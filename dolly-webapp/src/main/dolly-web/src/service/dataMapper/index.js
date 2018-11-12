@@ -1,6 +1,6 @@
 import { createHeader as c } from './Utils'
 import Formatters from '~/utils/DataFormatter'
-import mapDetailedData from './mapDetailedData'
+import { mapTpsfData, mapSigrunData } from './mapDetailedData'
 
 const DataMapper = {
 	getHeaders() {
@@ -22,7 +22,7 @@ const DataMapper = {
 		const { gruppe, testbruker } = state
 
 		// TODO: Refactor, testbrukerIsFetched
-		if (!testbruker.items || !testbruker.items.tpsf || !testbruker.items.sigrun) return null
+		if (!testbruker.items.tpsf) return null
 
 		return testbruker.items.tpsf.map(i => {
 			return [
@@ -37,19 +37,21 @@ const DataMapper = {
 	},
 	getDetailedData(state, ownProps) {
 		const { gruppe, testbruker } = state
+		const { personId } = ownProps
 		if (!testbruker.items || !testbruker.items.tpsf || !testbruker.items.sigrun) return null
 
 		const bestillingId = _findBestillingId(gruppe, ownProps.personId)
 		const bestillingObj = gruppe.data[0].bestillinger.find(
 			bestilling => bestilling.id === bestillingId
 		)
-		const tpsfData = testbruker.items.tpsf.find(item => item.ident === ownProps.personId)
+		const tpsfData = testbruker.items.tpsf.find(item => item.ident === personId)
+		let data = mapTpsfData(tpsfData, bestillingObj)
+		const sigrunData = testbruker.items.sigrun[personId]
+		if (sigrunData) {
+			data.push(mapSigrunData(sigrunData))
+		}
 
-		let sigrunData = testbruker.items.sigrun.filter(
-			item => item.personidentifikator === ownProps.personId
-		)
-
-		return mapDetailedData(tpsfData, sigrunData, bestillingObj)
+		return data
 	}
 }
 
