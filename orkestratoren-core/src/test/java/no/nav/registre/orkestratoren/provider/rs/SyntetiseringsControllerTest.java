@@ -33,7 +33,7 @@ public class SyntetiseringsControllerTest {
         String miljoe = "t9";
 
         Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
-        antallMeldingerPerEndringskode.put("01", 20);
+        antallMeldingerPerEndringskode.put("0110", 20);
 
         SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest = new SyntetiserSkdmeldingerRequest(skdMeldingGruppeId,
                 miljoe,
