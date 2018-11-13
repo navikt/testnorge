@@ -6,6 +6,8 @@ import { Formik } from 'formik'
 import FormEditor from '~/components/formEditor/FormEditor'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import Button from '~/components/button/Button'
+import _set from 'lodash/set'
+import DataFormatter from '~/utils/DataFormatter'
 
 import './RedigerTestbruker.less'
 
@@ -14,6 +16,8 @@ export default class RedigerTestbruker extends Component {
 		super()
 		this.AttributtManager = new AttributtManager()
 		this.AttributtListe = this.AttributtManager.listEditable()
+		this.AttributtListeFlat = this.AttributtManager.listEditableFlat()
+		this.Validations = this.AttributtManager.getValidationsForEdit()
 	}
 
 	componentDidMount() {
@@ -23,7 +27,13 @@ export default class RedigerTestbruker extends Component {
 	submit = values => {
 		const { testbruker, updateTestbruker, goBack } = this.props
 
-		updateTestbruker(_merge(testbruker, values))
+		const valuesMapped = this.AttributtListeFlat.reduce((prev, curr) => {
+			let currentValue = values[curr.id]
+			if (curr.inputType === 'date') currentValue = DataFormatter.parseDate(currentValue)
+			return _set(prev, curr.path || curr.id, currentValue)
+		}, {})
+
+		updateTestbruker(_merge(testbruker, valuesMapped))
 		goBack()
 	}
 
@@ -34,13 +44,11 @@ export default class RedigerTestbruker extends Component {
 
 		const initialValues = this.AttributtManager.getInitialValuesForEditableItems(testbruker)
 
-		// console.log('attributtliste', this.AttributtListe)
-		// console.log('iinit vals', initialValues)
-
 		return (
 			<Formik
 				onSubmit={this.submit}
 				initialValues={initialValues}
+				validationSchema={this.Validations}
 				render={formikProps => (
 					<div>
 						<h2>Rediger {`${testbruker.fornavn} ${testbruker.etternavn}`}</h2>
@@ -57,7 +65,7 @@ export default class RedigerTestbruker extends Component {
 								Lagre
 							</Knapp>
 						</div>
-						{/* <DisplayFormikState {...formikProps} /> */}
+						<DisplayFormikState {...formikProps} />
 					</div>
 				)}
 			/>

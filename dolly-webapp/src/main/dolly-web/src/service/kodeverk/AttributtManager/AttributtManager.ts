@@ -6,7 +6,6 @@ import { groupList, groupListByHovedKategori } from './GroupList'
 import DataFormatter from '~/utils/DataFormatter'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
-import _mapValues from 'lodash/mapValues'
 
 export default class AttributtManager {
 	// BASE FUNCTIONS
@@ -39,13 +38,38 @@ export default class AttributtManager {
 		return groupList(this.listAllSelected(selectedIds))
 	}
 
+	getValidations(selectedIds: string[]): yup.MixedSchema {
+		// Get all selected attributes that has validations
+		const list = this.listAllSelected(selectedIds).filter(s => s.validation)
+		return this._createValidationObject(list)
+	}
+
 	listEditable(): AttributtGruppe[] {
 		return groupList(AttributtListe.filter(attr => attr.kanRedigeres))
 	}
 
-	getValidations(selectedIds: string[]): yup.MixedSchema {
-		// Get all selected attributes that has validations
-		const list = this.listAllSelected(selectedIds).filter(s => s.validation)
+	listEditableFlat(): Attributt[] {
+		return AttributtListe.filter(attr => attr.kanRedigeres)
+	}
+
+	getValidationsForEdit(): yup.MixedSchema {
+		const list = this.listEditableFlat()
+		return this._createValidationObject(list)
+	}
+
+	getInitialValues(selectedIds: string[], values: object): FormikValues {
+		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
+	}
+
+	getInitialValuesForEditableItems(values: object): FormikValues {
+		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
+
+		return editableAttributes.reduce((prev, item) => {
+			return this._setInitialValueFromServer(prev, item, values)
+		}, {})
+	}
+
+	_createValidationObject(list: Attributt[]): yup.MixedSchema {
 		// Reduce to item.id and validation to create a validation object
 		const validationObject = list.reduce((accumulator, currentObject) => {
 			if (currentObject.items) {
@@ -60,16 +84,6 @@ export default class AttributtManager {
 		return yup.object().shape(validationObject)
 	}
 
-	getInitialValues(selectedIds: string[], values: object): FormikValues {
-		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
-	}
-
-	getInitialValuesForEditableItems(values: object): FormikValues {
-		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
-
-		return this._getListOfInitialValues(editableAttributes, values)
-	}
-
 	_getListOfInitialValues(list, values) {
 		return list.reduce((prev, item) => {
 			// Array
@@ -81,13 +95,23 @@ export default class AttributtManager {
 			if (!item.inputType) return prev
 
 			// Initvalue based on key-value
-			return this._setInitialValue(prev, item, values)
+			return this._setInitialValueFromState(prev, item, values)
 		}, {})
 	}
-	_setInitialValue(currentObject, item, stateValues) {
+	_setInitialValueFromState(currentObject, item, stateValues) {
 		let initialValue = this.initValueSelector(item)
 		const fromState = _get(stateValues, item.id)
 		if (fromState) initialValue = fromState
+
+		return _set(currentObject, item.id, initialValue)
+	}
+
+	_setInitialValueFromServer(currentObject, item, serverValues) {
+		let initialValue = this.initValueSelector(item)
+		const fromState = _get(serverValues, item.path || item.id)
+		if (fromState) initialValue = fromState
+
+		if (item.inputType === 'date') initialValue = DataFormatter.formatDate(initialValue)
 
 		return _set(currentObject, item.id, initialValue)
 	}

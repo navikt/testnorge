@@ -4,8 +4,6 @@ import { createAction } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import _get from 'lodash/get'
 
-export const UPDATE_TESTBRUKER = createAction('UPDATE_TESTBRUKER', TpsfApi.updateTestbruker)
-
 const initialState = {
 	items: {
 		tpsf: null,
@@ -13,6 +11,10 @@ const initialState = {
 		krr: null
 	}
 }
+
+export const UPDATE_TESTBRUKER = createAction('UPDATE_TESTBRUKER', userData => {
+	return TpsfApi.updateTestbruker(userData)
+})
 
 export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', identArray => {
 	return TpsfApi.getTestbrukere(identArray)
@@ -42,7 +44,7 @@ export default function testbrukerReducer(state = initialState, action) {
 	switch (action.type) {
 		case LOCATION_CHANGE:
 			return initialState
-		case `${GET_TPSF_TESTBRUKERE}_SUCCESS`:
+		case success(GET_TPSF_TESTBRUKERE):
 			return { ...state, items: { ...state.items, tpsf: action.payload.data } }
 		case success(GET_SIGRUN_TESTBRUKER):
 			return {
@@ -60,7 +62,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					krr: { ...state.items.krr, [action.meta.ident]: action.payload.data }
 				}
 			}
-		case `${UPDATE_TESTBRUKER}_SUCCESS`:
+		case success(UPDATE_TESTBRUKER):
 			return state
 		default:
 			return state
@@ -77,5 +79,3 @@ export const sokSelector = (items, searchStr) => {
 		return item.some(v => v.toLowerCase().includes(query))
 	})
 }
-
-// thunks
