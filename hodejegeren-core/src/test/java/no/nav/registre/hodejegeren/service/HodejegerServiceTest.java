@@ -200,7 +200,7 @@ public class HodejegerServiceTest {
             verify(tpsfConsumer, times(1)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
 
             assertTrue(listAppender.list.get(0).toString().contains("Noe feilet under lagring til TPSF"));
-            assertTrue(listAppender.list.get(1).toString().contains("01010101010"));
+            assertTrue(listAppender.list.get(0).toString().contains("01010101010"));
         }
     }
 
