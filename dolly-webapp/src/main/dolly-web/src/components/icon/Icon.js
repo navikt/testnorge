@@ -25,7 +25,8 @@ export const iconList = [
 	'arrow-up',
 	'arrow-down',
 	'arrow-circle-right',
-	'arrow-circle-left'
+	'arrow-circle-left',
+	'feedback-check-circle'
 ]
 
 export default class Icon extends PureComponent {
@@ -83,7 +84,15 @@ export default class Icon extends PureComponent {
 	c0-0.155,0.072-0.303,0.196-0.397l8.5-6.504c0.219-0.167,0.534-0.125,0.701,0.094c0.168,0.219,0.126,0.533-0.093,0.701l-7.98,6.106
 	l7.98,6.099C16.023,18.271,16.065,18.584,15.897,18.804z"/>
 		  </svg>)
-	   		}
+			 case ('feedback-check-circle'): return (<svg {...props} className={cn('svg-icon-feedback-check-circle', className)}
+			 focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
+			 <title>Pil ned</title>
+			 <g>
+			 	<circle className="circle" cx="12" cy="12" r="11.5"/>
+    			<path className="checkmark" d="M17,8.5l-7.5,7L7,13"/>
+				</g>
+			 </svg>)
+		}
 	}
 }
 

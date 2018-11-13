@@ -3,13 +3,15 @@ import PropTypes from 'prop-types'
 import { Line } from 'rc-progress'
 import { DollyApi } from '~/service/Api'
 import Loading from '~/components/loading/Loading'
-
+import BestillingProgress from './BestillingProgress'
+import Milj from './BestillingProgress'
 import './BestillingStatus.less'
+import MiljoeStatus from './MiljoeStatus'
 
 export default class BestillingStatus extends PureComponent {
 	static propTypes = {
-		bestilling: PropTypes.object.isRequired,
-		onGroupUpdate: PropTypes.func.isRequired
+		bestilling: PropTypes.object.isRequired
+		// onGroupUpdate: PropTypes.func.isRequired
 	}
 
 	constructor(props) {
@@ -68,7 +70,7 @@ export default class BestillingStatus extends PureComponent {
 		if (data.ferdig) {
 			setTimeout(() => {
 				// Update groups
-				this.props.onGroupUpdate()
+				// this.props.onGroupUpdate()
 			}, this.TIMEOUT_BEFORE_HIDE)
 		}
 	}
@@ -96,22 +98,18 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		if (this.state.ferdig) return false
+		// if (this.state.ferdig) return <MiljoeStatus />
 
 		const status = this.calculateStatus()
+		// const status = {
+		// 	percent: 40,
+		// 	title: 'Hei',
+		// 	text: 'pls'
+		// }
 
 		return (
 			<div className="bestilling-status">
-				<div className="flexbox--space">
-					<h5>
-						<Loading onlySpinner />
-						{status.title}
-					</h5>
-					<span>{status.text}</span>
-				</div>
-				<div className="rc-progress-wrapper">
-					<Line percent={status.percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
-				</div>
+				{this.state.ferdig ? <MiljoeStatus /> : <BestillingProgress status={status} />}
 			</div>
 		)
 	}
