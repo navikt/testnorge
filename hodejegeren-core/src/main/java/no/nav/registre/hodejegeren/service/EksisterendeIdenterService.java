@@ -77,7 +77,6 @@ public class EksisterendeIdenterService {
             case FARSKAP_MEDMORSKAP:
             case ENDRING_STATSBORGERSKAP_BIBEHOLD:
             case ENDRING_FAMILIENUMMER:
-            case FOEDSELSNUMMERKORREKSJON:
             case ENDRING_FORELDREANSVAR:
             case ENDRING_OPPHOLDSTILLATELSE:
             case ENDRING_POSTADRESSE_TILLEGGSADRESSE:
@@ -87,7 +86,6 @@ public class EksisterendeIdenterService {
             case ENDRING_KORREKSJON_FOEDESTED:
             case ENDRING_DUF_NUMMER:
             case FLYTTING_INNEN_KOMMUNEN:
-            case FOEDSELSMELDING:
             case UREGISTRERT_PERSON:
             case ANNULERING_FLYTTING_ADRESSEENDRING:
             case INNFLYTTING_ANNEN_KOMMUNE:
@@ -108,9 +106,6 @@ public class EksisterendeIdenterService {
                         endringskode, environment);
                 break;
             case KORREKSJON_FAMILIEOPPLYSNINGER:
-                break;
-            case INNVANDRING:
-            case TILDELING_DNUMMER:
                 break;
             default:
                 break;
