@@ -32,15 +32,15 @@ public class SyntetiseringsControllerTest {
 
         String miljoe = "t9";
 
-        Map<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
-        antallMeldingerPerAarsakskode.put("01", 20);
+        Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
+        antallMeldingerPerEndringskode.put("0110", 20);
 
         SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest = new SyntetiserSkdmeldingerRequest(skdMeldingGruppeId,
                 miljoe,
-                antallMeldingerPerAarsakskode);
+                antallMeldingerPerEndringskode);
 
         syntetiseringsController.opprettSkdMeldinger(syntetiserSkdmeldingerRequest);
 
-        verify(tpsSyntPakkenConsumer).produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerAarsakskode);
+        verify(tpsSyntPakkenConsumer).produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
     }
 }

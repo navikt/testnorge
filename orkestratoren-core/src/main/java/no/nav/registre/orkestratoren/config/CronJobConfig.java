@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CronJobConfig {
     @Bean
-    public Map<String, Integer> antallMeldingerPerAarsakskode() {
-        Map<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
-        return antallMeldingerPerAarsakskode;
+    public Map<String, Integer> antallMeldingerPerEndringskode() {
+        Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
+        return antallMeldingerPerEndringskode;
     }
 }

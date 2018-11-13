@@ -22,13 +22,13 @@ public class TpsSyntPakkenConsumer {
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
 
-    public AvspillingResponse produserOgSendSkdmeldingerTilTpsIMiljoer(long skdMeldingGruppeId,
+    public AvspillingResponse produserOgSendSkdmeldingerTilTpsIMiljoer(Long skdMeldingGruppeId,
             String miljoe,
-            Map<String, Integer> antallMeldingerPerAarsakskode) {
+            Map<String, Integer> antallMeldingerPerEndringskode) {
 
         List<Long> ids = new ArrayList<>();
-        ids.addAll(hodejegerenConsumer.startSyntetisering(new GenereringsOrdreRequest(skdMeldingGruppeId, miljoe, antallMeldingerPerAarsakskode)));
+        ids.addAll(hodejegerenConsumer.startSyntetisering(new GenereringsOrdreRequest(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode)));
 
-        return tpsfConsumer.sendSkdMeldingTilTpsf(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
+        return tpsfConsumer.sendSkdmeldingerTilTps(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
     }
 }

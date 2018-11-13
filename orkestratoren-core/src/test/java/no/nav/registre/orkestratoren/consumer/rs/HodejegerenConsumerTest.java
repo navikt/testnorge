@@ -37,9 +37,9 @@ public class HodejegerenConsumerTest {
      */
     @Test
     public void shouldStartSyntetisering() {
-        HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
-        antallMeldingerPerAarsakskode.put(endringskode, antallPerEndringskode);
-        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerAarsakskode);
+        HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
+        antallMeldingerPerEndringskode.put(endringskode, antallPerEndringskode);
+        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
 
         expectedMeldingsIds = new ArrayList<>();
         expectedMeldingsIds.add(120421016L);
