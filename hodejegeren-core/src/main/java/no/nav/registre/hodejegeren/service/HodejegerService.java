@@ -137,7 +137,7 @@ public class HodejegerService {
 
     private Map<String, List<String>> createListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {
         Map<String, List<String>> listerMedIdenter = new HashMap<>();
-        StringBuilder message = new StringBuilder(60).append("Antall identer i lister fra TPSF:");
+        StringBuilder message = new StringBuilder("Antall identer i lister fra TPSF:");
 
         List<String> opprettedeIdenterITpsf = new ArrayList<>();
         opprettedeIdenterITpsf.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
