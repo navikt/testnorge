@@ -137,6 +137,7 @@ public class HodejegerService {
 
     private Map<String, List<String>> createListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {
         Map<String, List<String>> listerMedIdenter = new HashMap<>();
+        StringBuilder message = new StringBuilder(60).append("Antall identer i lister fra TPSF:");
 
         List<String> opprettedeIdenterITpsf = new ArrayList<>();
         opprettedeIdenterITpsf.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
@@ -158,6 +159,7 @@ public class HodejegerService {
         levendeIdenterINorge.addAll(opprettedeIdenterITpsf);
         levendeIdenterINorge.removeAll(doedeOgUtvandredeIdenter);
         listerMedIdenter.put(LEVENDE_IDENTER_I_NORGE, levendeIdenterINorge);
+        message.append(" - ").append(LEVENDE_IDENTER_I_NORGE).append(": ").append(levendeIdenterINorge.size());
 
         List<String> gifteIdenterINorge = new ArrayList<>();
         gifteIdenterINorge.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
@@ -166,14 +168,18 @@ public class HodejegerService {
                 TRANSAKSJONSTYPE));
         gifteIdenterINorge.removeAll(doedeOgUtvandredeIdenter);
         listerMedIdenter.put(GIFTE_IDENTER_I_NORGE, gifteIdenterINorge);
+        message.append(" - ").append(GIFTE_IDENTER_I_NORGE).append(": ").append(gifteIdenterINorge.size());
 
         List<String> singleIdenterINorge = new ArrayList<>();
         singleIdenterINorge.addAll(levendeIdenterINorge);
         singleIdenterINorge.removeAll(gifteIdenterINorge);
         listerMedIdenter.put(SINGLE_IDENTER_I_NORGE, singleIdenterINorge);
+        message.append(" - ").append(SINGLE_IDENTER_I_NORGE).append(": ").append(singleIdenterINorge.size());
 
         List<String> brukteIdenterIDenneBolken = new ArrayList<>();
         listerMedIdenter.put(BRUKTE_IDENTER_I_DENNE_BOLKEN, brukteIdenterIDenneBolken);
+
+        log.info(message.toString());
 
         return listerMedIdenter;
     }

@@ -88,8 +88,8 @@ public class FeilhaandteringCompTest {
             triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
             fail();
         } catch (HttpServerErrorException e) {
-            assertEquals(2, listAppender.list.size());
-            assertTrue(listAppender.list.get(1).toString()
+            assertEquals(3, listAppender.list.size());
+            assertTrue(listAppender.list.toString()
                     .contains("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: " + expectedMeldingsIdsITpsf.toString()));
         }
     }

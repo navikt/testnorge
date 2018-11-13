@@ -199,8 +199,8 @@ public class HodejegerServiceTest {
         } catch (Exception e) {
             verify(tpsfConsumer, times(1)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
 
-            assertTrue(listAppender.list.get(0).toString().contains("Noe feilet under lagring til TPSF"));
-            assertTrue(listAppender.list.get(0).toString().contains("01010101010"));
+            assertTrue(listAppender.list.toString().contains("Noe feilet under lagring til TPSF"));
+            assertTrue(listAppender.list.toString().contains("01010101010"));
         }
     }
 
@@ -226,8 +226,8 @@ public class HodejegerServiceTest {
             hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
             fail();
         } catch (RuntimeException e) {
-            assertEquals(1, listAppender.list.size());
-            assertTrue(listAppender.list.get(0).toString()
+            assertEquals(2, listAppender.list.size());
+            assertTrue(listAppender.list.toString()
                     .contains("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: " + ids.toString()));
         }
     }
