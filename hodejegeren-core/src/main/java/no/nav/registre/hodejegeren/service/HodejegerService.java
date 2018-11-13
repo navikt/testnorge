@@ -89,7 +89,7 @@ public class HodejegerService {
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             }
         } catch (HttpStatusCodeException e) {
-            log.error(getMessageFromJson(e.getResponseBodyAsString()), e);
+            log.error(getMessageFromJson(e.getResponseBodyAsString()), e); //Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
             log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
             throw e;
         } catch (RuntimeException e) {
@@ -103,8 +103,7 @@ public class HodejegerService {
         try {
             return objectMapper.readTree(responseBody).findValue("message").asText();
         } catch (IOException e) {
-            log.warn("Fikk IOException i stedet for message fra response body.");
-            return null;
+            return responseBody;
         }
     }
 
