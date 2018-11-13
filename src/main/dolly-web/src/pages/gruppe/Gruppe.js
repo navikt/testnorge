@@ -105,15 +105,20 @@ export default class Gruppe extends Component {
 						<SendOpenAmConnector gruppe={gruppe} />
 					</div>
 				</Overskrift>
-
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
-
 				<GruppeDetaljer gruppe={gruppe} />
-
-				{gruppe.bestillinger.map(bestilling => (
+				{/* K{console.log(gruppe.bestillinger[0])}; */}
+				<BestillingStatus
+					key={gruppe.bestillinger[0]}
+					bestilling={gruppe.bestillinger[0]}
+					// onGroupUpdate={getGruppe}
+				/>
+				{
+					// TODO: Uncomment
+					/* {gruppe.bestillinger.map(bestilling => (
 					<BestillingStatus key={bestilling.id} bestilling={bestilling} onGroupUpdate={getGruppe} />
-				))}
-
+				))} */
+				}
 				<Toolbar
 					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}
 					toggleOnChange={this.toggleToolbar}
@@ -126,7 +131,6 @@ export default class Gruppe extends Component {
 						</Knapp>
 					</Fragment>
 				</Toolbar>
-
 				{this.renderList(gruppe)}
 			</div>
 		)
