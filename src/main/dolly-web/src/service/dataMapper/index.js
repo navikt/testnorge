@@ -58,7 +58,7 @@ const DataMapper = {
 const _findBestillingId = (gruppe, personId) => {
 	const identArray = gruppe.data[0].testidenter
 	const personObj = identArray.find(item => item.ident === personId)
-	return personObj.bestillingId
+	return personObj.bestillingId || ''
 }
 
 export default DataMapper

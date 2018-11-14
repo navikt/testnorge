@@ -9,7 +9,7 @@ export default class PersonDetaljer extends PureComponent {
 
 	componentDidMount() {
 		this.props.getSigrunTestbruker()
-		// this.props.getKrrTestbruker()
+		this.props.getKrrTestbruker()
 	}
 
 	render() {

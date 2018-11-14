@@ -8,7 +8,7 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	getKrrTestbruker: () => dispatch(GET_KRR_TESTBRUKER()),
+	getKrrTestbruker: () => dispatch(GET_KRR_TESTBRUKER(ownProps.personId)),
 	getSigrunTestbruker: () => dispatch(GET_SIGRUN_TESTBRUKER(ownProps.personId))
 })
 
