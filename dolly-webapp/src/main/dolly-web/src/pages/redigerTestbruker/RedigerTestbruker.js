@@ -21,11 +21,12 @@ export default class RedigerTestbruker extends Component {
 	}
 
 	componentDidMount() {
+		this.props.getGruppe()
 		this.props.getTestbruker()
 	}
 
 	submit = values => {
-		const { testbruker, updateTestbruker, goBack } = this.props
+		const { testbruker, testbrukerEnvironments, updateTestbruker, goBack } = this.props
 
 		const valuesMapped = this.AttributtListeFlat.reduce((prev, curr) => {
 			let currentValue = values[curr.id]
@@ -33,7 +34,12 @@ export default class RedigerTestbruker extends Component {
 			return _set(prev, curr.path || curr.id, currentValue)
 		}, {})
 
-		updateTestbruker(_merge(testbruker, valuesMapped))
+		const tpsData = {
+			identer: [testbruker.ident],
+			miljoer: testbrukerEnvironments
+		}
+
+		updateTestbruker(_merge(testbruker, valuesMapped), tpsData)
 		goBack()
 	}
 
@@ -65,7 +71,7 @@ export default class RedigerTestbruker extends Component {
 								Lagre
 							</Knapp>
 						</div>
-						<DisplayFormikState {...formikProps} />
+						{/* <DisplayFormikState {...formikProps} /> */}
 					</div>
 				)}
 			/>

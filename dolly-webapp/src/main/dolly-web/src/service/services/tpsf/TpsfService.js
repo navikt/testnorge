@@ -24,6 +24,12 @@ export default class TpsfService {
 		return Request.post(endpoint, [userData])
 	}
 
+	static sendToTps(data) {
+		if (!data) return
+		const endpoint = this.getTpsfUrl() + '/dolly/testdata/tilTpsFlere'
+		return Request.post(endpoint, data)
+	}
+
 	static createFoedselsmelding(userData) {
 		const endpoint = this.getTpsfUrl() + '/tpsmelding/foedselsmelding'
 		return Request.post(endpoint, userData)

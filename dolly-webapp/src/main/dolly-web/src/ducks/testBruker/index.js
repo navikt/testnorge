@@ -12,8 +12,16 @@ const initialState = {
 	}
 }
 
-export const UPDATE_TESTBRUKER = createAction('UPDATE_TESTBRUKER', userData => {
-	return TpsfApi.updateTestbruker(userData)
+export const UPDATE_TESTBRUKER = createAction('UPDATE_TESTBRUKER', async (userData, tpsData) => {
+	console.log(userData, tpsData)
+	const updateRes = await TpsfApi.updateTestbruker(userData)
+
+	if (updateRes.status === 200) {
+		const tpsRes = await TpsfApi.sendToTps(tpsData)
+		return updateRes
+	}
+	console.log('FEIL I SENDING TIL TPS')
+	return updateRes
 })
 
 export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', identArray => {
@@ -78,4 +86,18 @@ export const sokSelector = (items, searchStr) => {
 	return items.filter(item => {
 		return item.some(v => v.toLowerCase().includes(query))
 	})
+}
+
+export const findEnvironmentsForIdent = (state, ident) => {
+	const { gruppe } = state
+	if (!gruppe.data) return null
+
+	const identArray = gruppe.data[0].testidenter
+	const personObj = identArray.find(item => item.ident === ident)
+	if (!personObj) return null
+
+	const bestillingObj = gruppe.data[0].bestillinger.find(
+		bestilling => bestilling.id === personObj.bestillingId
+	)
+	return bestillingObj.environments
 }
