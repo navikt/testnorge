@@ -37,7 +37,7 @@ public class FoedselService {
     }
 
     public List<String> behandleFoedselsmeldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge) {
-        if(levendeIdenterINorge.size() == 0) {
+        if(levendeIdenterINorge.isEmpty()) {
             throw new ManglerEksisterendeIdentException("Kunne ikke finne mor til ident for SkdMelding med meldingsnummer "
                     + meldinger.get(0).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge.");
         }
