@@ -187,3 +187,34 @@ export function mapSigrunData(sigrunData) {
 		})
 	}
 }
+
+export function mapKrrData(krrData) {
+	if (!krrData) return null
+
+	console.log(krrData)
+	return {
+		header: 'Kontaktinformasjon og reservasjon',
+		multiple: true,
+		data: krrData.map(data => {
+			return {
+				value: [
+					{
+						id: 'mobil',
+						label: 'Mobilnummer',
+						value: data.mobil
+					},
+					{
+						id: 'epost',
+						label: 'Epost',
+						value: data.epost
+					},
+					{
+						id: 'reservert',
+						label: 'Reservert',
+						value: data.reservert ? 'JA' : 'NEI'
+					}
+				]
+			}
+		})
+	}
+}
