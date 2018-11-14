@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
@@ -43,9 +45,14 @@ public class TpsfServiceTest {
     private List<String> standardIdenter = new ArrayList<>(singleton(standardIdent));
     private List<String> standardMiljoer_u1_t1 = Arrays.asList("u1", "t1");
 
-    @Mock RestTemplate restTemplate;
-    @Mock ObjectMapper objectMapper;
-    @Mock ProvidersProps providersProps;
+    @Mock
+    private RestTemplate restTemplate;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private ProvidersProps providersProps;
 
     @InjectMocks
     private TpsfService service;
@@ -132,8 +139,7 @@ public class TpsfServiceTest {
         RsSkdMeldingResponse ressponse = service.sendIdenterTilTpsFraTPSF(standardIdenter, standardMiljoer_u1_t1);
         verify(restTemplate).exchange(endpointCaptor.capture(), httpMethodCaptor.capture(), httpEntityCaptor.capture(), eq(Object.class));
 
-        assertThat(endpointCaptor.getValue().contains("u1"), is(true));
-        assertThat(endpointCaptor.getValue().contains("t1"), is(true));
+        assertThat(((TpsfIdenterMiljoer) httpEntityCaptor.getValue().getBody()).getMiljoer(), Matchers.containsInAnyOrder("u1", "t1"));
         assertThat(ressponse, is(res));
     }
 }

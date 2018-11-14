@@ -19,18 +19,18 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubService;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
-import no.nav.dolly.exceptions.SigrunStubException;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SigrunStubStubApiServiceTest {
+public class SigrunStubStubServiceTest {
 
     private static final String standardPrincipal = "brukernavn";
     private static final String standardIdtoken = "idtoken";
@@ -69,10 +69,13 @@ public class SigrunStubStubApiServiceTest {
         assertThat(entity.getHeaders().getFirst("Authorization"), is("Bearer " + standardIdtoken));
     }
 
-    @Test(expected = SigrunStubException.class)
+    @Test
     public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() {
         HttpClientErrorException clientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST, "OK");
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class))).thenThrow(clientErrorException);
-        sigrunStubService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
+        ResponseEntity entity = sigrunStubService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
+
+        assertThat(entity.getStatusCode().value(), is(HttpStatus.BAD_REQUEST.value()));
+        assertThat(entity.getStatusCode().getReasonPhrase(), is(HttpStatus.BAD_REQUEST.getReasonPhrase()));
     }
 }
