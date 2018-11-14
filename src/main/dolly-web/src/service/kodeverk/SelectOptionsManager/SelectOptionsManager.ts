@@ -20,7 +20,9 @@ const selectOptions = {
 	inntektTjeneste: [
 		{ value: 'Beregnet skatt', label: 'Beregnet skatt' },
 		{ value: 'Summert skattegrunnlag', label: 'Summert skattegrunnlag' }
-	]
+	],
+
+	boolean: [{ value: 'JA', label: 'Ja' }, { value: 'NEI', label: 'Nei' }]
 }
 
 const SelectOptionsManager = attributeId => {
