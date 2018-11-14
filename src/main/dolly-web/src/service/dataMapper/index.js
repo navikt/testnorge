@@ -1,6 +1,6 @@
 import { createHeader as c } from './Utils'
 import Formatters from '~/utils/DataFormatter'
-import { mapTpsfData, mapSigrunData } from './mapDetailedData'
+import { mapTpsfData, mapSigrunData, mapKrrData } from './mapDetailedData'
 
 const DataMapper = {
 	getHeaders() {
@@ -47,8 +47,12 @@ const DataMapper = {
 		const tpsfData = testbruker.items.tpsf.find(item => item.ident === personId)
 		let data = mapTpsfData(tpsfData, bestillingObj)
 		const sigrunData = testbruker.items.sigrun[personId]
+		const krrData = testbruker.items.krr && testbruker.items.krr[personId]
 		if (sigrunData) {
 			data.push(mapSigrunData(sigrunData))
+		}
+		if (krrData) {
+			data.push(mapKrrData(krrData))
 		}
 
 		return data
