@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.consumer.IdentPoolConsumer;
 import no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest;
+import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
@@ -30,14 +30,11 @@ public class FoedselService {
     @Autowired
     private IdentPoolConsumer identPoolConsumer;
 
+    @Autowired
     private Random rand;
 
-    public FoedselService(Random rand) {
-        this.rand = rand;
-    }
-
     public List<String> behandleFoedselsmeldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge) {
-        if(levendeIdenterINorge.isEmpty()) {
+        if (levendeIdenterINorge.isEmpty()) {
             throw new ManglerEksisterendeIdentException("Kunne ikke finne mor til ident for SkdMelding med meldingsnummer "
                     + meldinger.get(0).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge.");
         }
