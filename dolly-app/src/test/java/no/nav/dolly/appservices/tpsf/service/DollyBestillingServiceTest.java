@@ -44,7 +44,7 @@ import no.nav.dolly.service.TestgruppeService;
 @RunWith(MockitoJUnitRunner.class)
 public class DollyBestillingServiceTest {
 
-    private static final String SUCCESS_CODE_TPS = "00";
+    private static final String SUCCESS_CODE_TPS = "OK";
     private static final String FAIL_CODE_TPS = "08";
     private static final String INNVANDRING_CREATE_NAVN = "InnvandringCreate";
 
