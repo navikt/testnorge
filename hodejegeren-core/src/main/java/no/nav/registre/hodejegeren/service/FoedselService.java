@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
+import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,11 @@ public class FoedselService {
     }
 
     public List<String> behandleFoedselsmeldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge) {
+        if(levendeIdenterINorge.isEmpty()) {
+            throw new ManglerEksisterendeIdentException("Kunne ikke finne mor til ident for SkdMelding med meldingsnummer "
+                    + meldinger.get(0).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge.");
+        }
+
         List<String> moedre = findMoedre(meldinger.size(), levendeIdenterINorge);
         List<String> barn = new ArrayList<>(meldinger.size());
 
