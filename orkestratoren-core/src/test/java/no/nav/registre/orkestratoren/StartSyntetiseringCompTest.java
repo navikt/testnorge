@@ -1,7 +1,13 @@
 package no.nav.registre.orkestratoren;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,12 +39,16 @@ public class StartSyntetiseringCompTest {
     @Autowired
     private SyntetiseringsController syntetiseringsController;
 
+    @Autowired
+    private JobController jobController;
+
     @Value("${tps-forvalteren.rest-api.url}")
     private String tpsfServerUrl;
 
     private Long gruppeId;
     private String miljoe;
-    private String endringskode;
+    private String endringskode1, endringskode2;
+    private int antallEndringskode1, antallEndringskode2;
     private Map<String, Integer> antallMeldingerPerEndringskode;
     private List<Long> expectedMeldingIds;
 
@@ -50,11 +60,14 @@ public class StartSyntetiseringCompTest {
 
     @Before
     public void setUp() {
-        this.gruppeId = 10L;
+        this.gruppeId = 100000445L;
         this.miljoe = "t9";
-        this.endringskode = "0110";
+        this.endringskode1 = "0110";
+        this.endringskode2 = "0211";
+        this.antallEndringskode1 = 10;
+        this.antallEndringskode2 = 20;
         this.antallMeldingerPerEndringskode = new HashMap<>();
-        this.antallMeldingerPerEndringskode.put(endringskode, 2);
+        this.antallMeldingerPerEndringskode.put(endringskode1, antallEndringskode1);
         this.expectedMeldingIds = new ArrayList<>(Arrays.asList(120421016L, 110156008L));
 
         this.expectedAntallSendte = 1;
@@ -87,11 +100,27 @@ public class StartSyntetiseringCompTest {
 
     }
 
+    /**
+     * Scenario: Tester at property-variablene blir henta riktig fra properties-fil når jobControlleren opprettes
+     */
+    @Test
+    public void shouldGetProperties() {
+        assertEquals(miljoe, jobController.getMiljoe());
+        assertEquals(gruppeId, jobController.getSkdMeldingGruppeId());
+
+        Map<String, Integer> testMap = new HashMap<>(jobController.getAntallMeldingerPerEndringskode());
+
+        assertTrue(testMap.containsKey(endringskode1));
+        assertEquals(antallEndringskode1, testMap.get(endringskode1).intValue());
+        assertTrue(testMap.containsKey(endringskode2));
+        assertEquals(antallEndringskode2, testMap.get(endringskode2).intValue());
+    }
+
     public void stubHodejegeren() {
         stubFor(post(urlPathEqualTo("/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson("{\"gruppeId\": " + gruppeId
                         + ", \"miljoe\": \"" + miljoe
-                        + "\", \"antallMeldingerPerEndringskode\": {\"" + endringskode + "\": " + antallMeldingerPerEndringskode.get(endringskode) + "}}"))
+                        + "\", \"antallMeldingerPerEndringskode\": {\"" + endringskode1 + "\": " + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.CREATED.value())
                         .withHeader("Content-Type", "application/json")

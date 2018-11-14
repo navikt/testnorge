@@ -2,6 +2,7 @@ package no.nav.registre.orkestratoren;
 
 import java.util.Map;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -13,15 +14,16 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenConsumer;
 
 @Component
 @EnableScheduling
+@Getter
 public class JobController {
 
-    @Value("${orkestratoren.batch.miljoe:t9}")
+    @Value("${orkestratoren.batch.miljoe}")
     private String miljoe;
 
-    @Value("${orkestratoren.batch.skdMeldingGruppeId:500}")
+    @Value("${orkestratoren.batch.skdMeldingGruppeId}")
     private Long skdMeldingGruppeId;
 
-    @Autowired
+    @Value("#{${orkestratoren.batch.antallMeldingerPerEndringskode}}")
     private Map<String, Integer> antallMeldingerPerEndringskode;
 
     @Autowired
