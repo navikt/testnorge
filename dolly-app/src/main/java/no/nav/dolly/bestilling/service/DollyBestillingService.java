@@ -156,7 +156,7 @@ public class DollyBestillingService {
 
             if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if ((entry.getValue().contains("00"))) {
+                    if ((entry.getValue().contains("OK"))) {
                         successMiljoer.add(entry.getKey());
                     }
                 }
