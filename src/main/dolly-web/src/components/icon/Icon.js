@@ -86,7 +86,7 @@ export default class Icon extends PureComponent {
 		  </svg>)
 			 case ('feedback-check-circle'): return (<svg {...props} className={cn('svg-icon-feedback-check-circle', className)}
 			 focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
-			 <title>Pil ned</title>
+			 <title>Checkmark-success</title>
 			 <g>
 			 	<circle className="circle" cx="12" cy="12" r="11.5"/>
     			<path className="checkmark" d="M17,8.5l-7.5,7L7,13"/>
