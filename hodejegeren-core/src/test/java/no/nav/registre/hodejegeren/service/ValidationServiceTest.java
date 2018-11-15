@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+
 import org.junit.Test;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -14,9 +15,9 @@ import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
 public class ValidationServiceTest {
-    
+
     ValidationService validator = new ValidationService();
-    
+
     @Test
     public void shouldLogValidationOfInvalidMessage() {
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(ValidationService.class);
@@ -26,7 +27,7 @@ public class ValidationServiceTest {
         final ArrayList<RsMeldingstype> liste = new ArrayList<>();
         liste.add(melding1);
         liste.add(melding2);
-        validator.logAndRemoveInvalidMessages(liste);
+        validator.logAndRemoveInvalidMessages(liste, Endringskoder.INNVANDRING);
 
         assertEquals(1, listAppender.list.size());
         assertTrue(listAppender.list.get(0).toString().contains("Valideringsfeil for melding med aarsakskode null."
@@ -34,21 +35,20 @@ public class ValidationServiceTest {
     }
 
     /**
-     * Testscenario:
-     * Valideringen av syntetiske meldinger fra TPS Synt skal ignorere tomme meldinger (null) i responsen.
+     * Testscenario: Valideringen av syntetiske meldinger fra TPS Synt skal ignorere tomme meldinger (null) i responsen.
      */
     @Test
     public void shouldRemoveNullMessages() {
         RsMeldingstype1Felter melding1 = null;
         RsMeldingstype1Felter melding3 = null;
         RsMeldingstype1Felter melding2 = RsMeldingstype1Felter.builder().antallBarn("4").build();
-        
+
         final ArrayList<RsMeldingstype> liste = new ArrayList<>();
         liste.add(melding1);
         liste.add(melding2);
         liste.add(melding3);
-        validator.logAndRemoveInvalidMessages(liste);
-        
+        validator.logAndRemoveInvalidMessages(liste, Endringskoder.INNVANDRING);
+
         assertEquals(1, liste.size());
         assertFalse(liste.contains(null));
     }
