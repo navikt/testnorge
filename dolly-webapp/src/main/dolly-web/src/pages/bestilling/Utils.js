@@ -1,5 +1,3 @@
-import { DollyApi } from '~/service/Api'
-
 export const isPage = {
 	first: page => page === 0,
 	second: page => page === 1,

@@ -73,6 +73,7 @@ export default class Gruppe extends Component {
 			getGruppe,
 			deleteGruppe,
 			getBestillingStatus,
+			bestillingStatus,
 			addFavorite
 		} = this.props
 
@@ -107,18 +108,21 @@ export default class Gruppe extends Component {
 				</Overskrift>
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
 				<GruppeDetaljer gruppe={gruppe} />
-				{/* K{console.log(gruppe.bestillinger[0])}; */}
-				<BestillingStatus
-					key={gruppe.bestillinger[0]}
-					bestilling={gruppe.bestillinger[0]}
-					// onGroupUpdate={getGruppe}
-				/>
-				{
-					// TODO: Uncomment
-					/* {gruppe.bestillinger.map(bestilling => (
-					<BestillingStatus key={bestilling.id} bestilling={bestilling} onGroupUpdate={getGruppe} />
-				))} */
-				}
+
+				{// Viser progressbar og bestillingsstatus
+				gruppe.bestillinger.map(
+					bestilling =>
+						!bestilling.ferdig && (
+							<BestillingStatus
+								key={bestilling.id}
+								bestilling={bestilling}
+								onGroupUpdate={getGruppe}
+								getBestillingStatus={getBestillingStatus}
+								bestillingStatus={bestillingStatus}
+							/>
+						)
+				)}
+
 				<Toolbar
 					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}
 					toggleOnChange={this.toggleToolbar}

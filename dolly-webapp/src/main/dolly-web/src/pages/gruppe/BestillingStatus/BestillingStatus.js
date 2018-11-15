@@ -4,9 +4,9 @@ import { Line } from 'rc-progress'
 import { DollyApi } from '~/service/Api'
 import Loading from '~/components/loading/Loading'
 import BestillingProgress from './BestillingProgress'
-import Milj from './BestillingProgress'
 import './BestillingStatus.less'
 import MiljoeStatus from './MiljoeStatus'
+import _find from 'lodash/find'
 
 export default class BestillingStatus extends PureComponent {
 	static propTypes = {
@@ -21,6 +21,7 @@ export default class BestillingStatus extends PureComponent {
 		this.TIMEOUT_BEFORE_HIDE = 2000
 
 		this.state = {
+			fetchedBestillingsData: false,
 			ferdig: props.bestilling.ferdig,
 			antallKlare: props.bestilling.personStatus.length,
 			sistOppdatert: props.bestilling.sistOppdatert
@@ -28,6 +29,7 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	componentDidMount() {
+		// this.props.getBestillingStatus('585')
 		if (!this.state.ferdig)
 			this.interval = setInterval(() => this.getBestillingStatus(), this.PULL_INTERVAL)
 	}
@@ -39,26 +41,42 @@ export default class BestillingStatus extends PureComponent {
 	stopPolling = () => clearInterval(this.interval)
 
 	getBestillingStatus = async () => {
-		// console.log('getBestillingStatus()')
-
 		const bestillingId = this.props.bestilling.id
 
 		try {
-			const { data } = await DollyApi.getBestillingStatus(bestillingId)
-			// console.log('res', data)
+			const data = await this.props.getBestillingStatus(bestillingId)
+			// console.log(data.value.data.ferdig, 'ee')
 
-			// Should we stop polling?
-			if (data.ferdig) this.stopPolling()
+			data.value.data.ferdig && this.stopPolling()
+			this.setState({ fetchedBestillingsData: data })
 
-			// Update state
-			this.updateStatus(data)
+			this.updateStatus(data.value.data)
 		} catch (error) {
 			console.log('error', error)
 		}
 	}
 
+	// getBestillingStatus = async () => {
+	// 	const bestillingId = this.props.bestilling.id
+
+	// 	try {
+	// 		const { data } = await this.props.getBestillingStatus('585')
+	// 		// console.log(this.props.bestillingStatus, 'ef')
+	// 		// console.log('res', data)
+
+	// 		// Should we stop polling?
+	// 		if (data.ferdig) this.stopPolling()
+
+	// 		// Update state
+	// 		this.updateStatus(data)
+	// 	} catch (error) {
+	// 		console.log('error', error)
+	// 	}
+	// }
+
 	updateStatus = data => {
-		// Setter alltid status til IKKE FERDIG, sånn at vi kan vise en kort melding som sier at prosessen er ferdig
+		// Setter alltid status til IKKE FERDIG, sånn at vi kan vise
+		// en kort melding som sier at prosessen er ferdig
 		let newState = {
 			ferdig: false,
 			antallKlare: data.personStatus.length,
@@ -70,7 +88,7 @@ export default class BestillingStatus extends PureComponent {
 		if (data.ferdig) {
 			setTimeout(() => {
 				// Update groups
-				// this.props.onGroupUpdate()
+				this.props.onGroupUpdate() // state.ferdig = true
 			}, this.TIMEOUT_BEFORE_HIDE)
 		}
 	}
@@ -98,18 +116,18 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		// if (this.state.ferdig) return <MiljoeStatus />
+		if (this.state.ferdig) return false
 
+		const { bestilling, bestillingStatus } = this.props
 		const status = this.calculateStatus()
-		// const status = {
-		// 	percent: 40,
-		// 	title: 'Hei',
-		// 	text: 'pls'
-		// }
 
 		return (
 			<div className="bestilling-status">
-				{this.state.ferdig ? <MiljoeStatus /> : <BestillingProgress status={status} />}
+				{this.state.ferdig ? (
+					<MiljoeStatus bestillingsData={_find(bestillingStatus, { id: bestilling.id })} />
+				) : (
+					<BestillingProgress status={status} />
+				)}
 			</div>
 		)
 	}
