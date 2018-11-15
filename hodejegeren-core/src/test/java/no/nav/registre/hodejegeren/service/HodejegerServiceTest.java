@@ -72,8 +72,8 @@ public class HodejegerServiceTest {
     @Test
     public void shouldPuttIdenterIMeldingerOgLagre() {
         final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
-        antallMeldingerPerEndringskode.put("0110", 3);
-        antallMeldingerPerEndringskode.put("0211", 4);
+        antallMeldingerPerEndringskode.put(Endringskoder.FOEDSELSMELDING.getEndringskode(), 3);
+        antallMeldingerPerEndringskode.put(Endringskoder.INNVANDRING.getEndringskode(), 4);
         final long GRUPPE_ID = 123L;
 
         List<RsMeldingstype> treSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
@@ -84,11 +84,11 @@ public class HodejegerServiceTest {
 
         final List<Long> ids = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(GRUPPE_ID, "t1", antallMeldingerPerEndringskode));
 
-        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("0110", 3);
-        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger("0211", 4);
+        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSMELDING.getEndringskode(), 3);
+        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 4);
 
-        verify(validationService).logAndRemoveInvalidMessages(treSkdmeldinger);
-        verify(validationService).logAndRemoveInvalidMessages(fireSkdmeldinger);
+        verify(validationService).logAndRemoveInvalidMessages(eq(treSkdmeldinger), any());
+        verify(validationService).logAndRemoveInvalidMessages(eq(fireSkdmeldinger), any());
 
         ArgumentCaptor<List<RsMeldingstype>> captor = ArgumentCaptor.forClass(List.class);
         verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(eq(GRUPPE_ID), captor.capture());
@@ -100,10 +100,10 @@ public class HodejegerServiceTest {
     @Test
     public void sjekkAtNyeIdenterBlirKaltForRiktigeEndringskoder() {
         final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
-        antallMeldingerPerEndringskode.put("0110", 1);
-        antallMeldingerPerEndringskode.put("0211", 1);
-        antallMeldingerPerEndringskode.put("3910", 1);
-        antallMeldingerPerEndringskode.put("9110", 1);
+        antallMeldingerPerEndringskode.put(Endringskoder.FOEDSELSMELDING.getEndringskode(), 1);
+        antallMeldingerPerEndringskode.put(Endringskoder.INNVANDRING.getEndringskode(), 1);
+        antallMeldingerPerEndringskode.put(Endringskoder.FOEDSELSNUMMERKORREKSJON.getEndringskode(), 1);
+        antallMeldingerPerEndringskode.put(Endringskoder.TILDELING_DNUMMER.getEndringskode(), 1);
 
         antallMeldingerPerEndringskode.put("0310", 1); // stikkprøve - endringskoder som ikke skal ha nye identer
         antallMeldingerPerEndringskode.put("0410", 1); // stikkprøve - endringskoder som ikke skal ha nye identer
@@ -115,10 +115,10 @@ public class HodejegerServiceTest {
         List<RsMeldingstype> meldinger03 = Arrays.asList(new RsMeldingstype1Felter());
         List<RsMeldingstype> meldinger04 = Arrays.asList(new RsMeldingstype1Felter());
 
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("0110", 1)).thenReturn(meldinger01);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("0211", 1)).thenReturn(meldinger02);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("3910", 1)).thenReturn(meldinger39);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger("9110", 1)).thenReturn(meldinger91);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSMELDING.getEndringskode(), 1)).thenReturn(meldinger01);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1)).thenReturn(meldinger02);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSNUMMERKORREKSJON.getEndringskode(), 1)).thenReturn(meldinger39);
+        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.TILDELING_DNUMMER.getEndringskode(), 1)).thenReturn(meldinger91);
 
         final String fodselsdato = "111111";
         final String personnummer = "22222";
@@ -179,8 +179,8 @@ public class HodejegerServiceTest {
     @Test
     public void shouldCatchExceptionAndLogIfTpsfFails() {
         final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
-        antallMeldingerPerEndringskode.put("0110", 2);
-        antallMeldingerPerEndringskode.put("0211", 2);
+        antallMeldingerPerEndringskode.put(Endringskoder.FOEDSELSMELDING.getEndringskode(), 2);
+        antallMeldingerPerEndringskode.put(Endringskoder.INNVANDRING.getEndringskode(), 2);
 
         Logger logger = (Logger) LoggerFactory.getLogger(HodejegerService.class);
         ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
@@ -213,7 +213,7 @@ public class HodejegerServiceTest {
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(HodejegerService.class);
         List<Long> ids = Arrays.asList(1L, 2L, 3L);
         final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
-        antallMeldingerPerEndringskode.put("2610", ids.size());
+        antallMeldingerPerEndringskode.put(Endringskoder.INNFLYTTING_ANNEN_KOMMUNE.getEndringskode(), ids.size());
         antallMeldingerPerEndringskode.put(ENDRING_OPPHOLDSTILLATELSE.getEndringskode(), 1);
 
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), any())).thenReturn(new ArrayList<>());

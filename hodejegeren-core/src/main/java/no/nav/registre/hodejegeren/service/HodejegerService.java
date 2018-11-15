@@ -70,7 +70,7 @@ public class HodejegerService {
             for (Endringskoder endringskode : sorterteEndringskoder) {
                 List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(),
                         antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
-                validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger);
+                validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger, endringskode);
 
                 if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
                     nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger);

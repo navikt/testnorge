@@ -4,31 +4,37 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.exception.TomResponsFraTpsSyntException;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 
 @Slf4j
 @Service
 public class ValidationService {
-    
+
     private Validator validator;
-    
+
     public ValidationService() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         factory.close();
     }
-    
-    public void logAndRemoveInvalidMessages(List<RsMeldingstype> meldinger) {
+
+    public void logAndRemoveInvalidMessages(List<RsMeldingstype> meldinger, Endringskoder endringskode) {
         List<RsMeldingstype> removeTheseMessages = new ArrayList<>();
         meldinger.removeAll(Collections.singleton(null));
-        
+        if (meldinger.isEmpty()) {
+            throw new TomResponsFraTpsSyntException("Fikk tom respons fra TPS-Synt for endringskode " + endringskode.getEndringskode());
+        }
+
         for (RsMeldingstype melding : meldinger) {
             final Set<ConstraintViolation<RsMeldingstype>> violations = validator.validate(melding);
             if (!violations.isEmpty()) {
@@ -38,7 +44,7 @@ public class ValidationService {
         }
         meldinger.removeAll(removeTheseMessages);
     }
-    
+
     private void logValidation(RsMeldingstype melding, Set<ConstraintViolation<RsMeldingstype>> violations) {
         StringBuilder messageBuilder = new StringBuilder()
                 .append("Valideringsfeil for melding med aarsakskode ")
