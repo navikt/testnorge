@@ -1,11 +1,17 @@
 package no.nav.registre.hodejegeren.service;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import no.nav.registre.hodejegeren.consumer.IdentPoolConsumer;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
+import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,17 +20,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
-import static no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest.IdentType.FNR;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import no.nav.registre.hodejegeren.consumer.IdentPoolConsumer;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FoedselServiceTest {
@@ -39,22 +40,23 @@ public class FoedselServiceTest {
     private FoedselService foedselService;
 
     /**
-     * Testscenario: HVIS det skal opprettes fødselsmelding, skal systemet i metoden {@link FoedselService#findMoedre},
-     * hente en eksisterende ident som kan være mor til barnet.
+     * Testscenario: HVIS det skal opprettes fødselsmelding, skal systemet i metoden {@link FoedselService#findMoedre}, hente en
+     * eksisterende ident som kan være mor til barnet. Identen skal være kvinne, hvilket betyr at det tredje nummeret i
+     * individsifferet skal være et partall.
      */
     @Test
     public void shouldFindEksisterendeIdent() {
         List<String> levendeIdenterINorge = new ArrayList<>();
+        levendeIdenterINorge.add("01010111111");
         levendeIdenterINorge.add("01010101010");
         levendeIdenterINorge.add("02020202020");
         levendeIdenterINorge.add("03030303030");
-        int firstIdentIndexInList = 0;
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
-        List<String> potensielleMoedre = foedselService.findMoedre(1, levendeIdenterINorge);
+        List<String> potensielleMoedre = foedselService.findMoedre(1, levendeIdenterINorge, "0");
 
-        assertEquals(levendeIdenterINorge.get(firstIdentIndexInList), potensielleMoedre.get(firstIdentIndexInList));
+        assertEquals(levendeIdenterINorge.get(1), potensielleMoedre.get(0));
     }
 
     /**
@@ -110,4 +112,3 @@ public class FoedselServiceTest {
         assertTrue(listAppender.list.get(0).toString().contains("Kunne ikke finne barn til mor med fnr " + levendeIdenterINorge.get(0)));
     }
 }
-
