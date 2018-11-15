@@ -191,7 +191,6 @@ export function mapSigrunData(sigrunData) {
 export function mapKrrData(krrData) {
 	if (!krrData) return null
 
-	console.log(krrData)
 	return {
 		header: 'Kontaktinformasjon og reservasjon',
 		multiple: true,
