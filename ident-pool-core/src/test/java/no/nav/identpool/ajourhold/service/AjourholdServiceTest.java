@@ -49,7 +49,7 @@ public class AjourholdServiceTest {
 
     @Test
     public void batchKjorer() {
-        when(identDBService.checkCriticalAndGenerate()).thenReturn(1);
+        when(identDBService.checkCriticalAndGenerate()).thenReturn(true);
         ajourholdService.startBatch();
         assertThat(entity.getStatus(), is(BatchStatus.COMPLETED));
     }
@@ -68,7 +68,7 @@ public class AjourholdServiceTest {
 
     @Test
     public void batchKjorerMenGenerererIngenIdenter() {
-        when(identDBService.checkCriticalAndGenerate()).thenReturn(0);
+        when(identDBService.checkCriticalAndGenerate()).thenReturn(false);
         ajourholdService.startBatch();
         verify(ajourholdRepository, times(1)).delete(any(AjourholdEntity.class));
     }

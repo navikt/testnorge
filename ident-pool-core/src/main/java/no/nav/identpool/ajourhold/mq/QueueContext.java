@@ -31,6 +31,24 @@ public class QueueContext {
     @Value("#{'${mq.context.order}'.split(',')}")
     List<String> order;
 
+    @PostConstruct
+    void init() {
+        List<String> environmentList = fasitClient.getAllEnvironments("t", "q");
+        List<String> excludedEnvironments = Arrays.stream(excluded).collect(Collectors.toList());
+        environmentList.removeAll(excludedEnvironments);
+        excludedEnvironments.retainAll(environmentList);
+
+        filterEnvironments(environmentList, excludedEnvironments, order, queueFactory);
+
+        logInfo("Failed to create Connection factories for the following environments:  ",
+                filteredEnvironments);
+
+        logInfo("Created connection factories for the following environments: ",
+                environments);
+
+        logInfo("Excluded environments: ", filteredEnvironments);
+    }
+
     private static void filterEnvironments(List<String> environmentList, List<String> excludedEnvironments, List<String> orderedList, MessageQueueFactory queueFactory) {
         List<String> filtered = environmentList.stream()
                 .filter(env -> QueueContext.filterOnQueue(env, queueFactory))
@@ -61,24 +79,6 @@ public class QueueContext {
 
     static List<String> getExcluded() {
         return Arrays.asList(filteredEnvironments);
-    }
-
-    @PostConstruct
-    void init() {
-        List<String> environmentList = fasitClient.getAllEnvironments("t", "q");
-        List<String> excludedEnvironments = Arrays.stream(excluded).collect(Collectors.toList());
-        environmentList.removeAll(excludedEnvironments);
-        excludedEnvironments.retainAll(environmentList);
-
-        filterEnvironments(environmentList, excludedEnvironments, order, queueFactory);
-
-        logInfo("Failed to create Connection factories for the following enironments:  ",
-                filteredEnvironments);
-
-        logInfo("Created connection factories for the following enironments: ",
-                environments);
-
-        logInfo("Exclueded enviroments: ", filteredEnvironments);
     }
 
     private void logInfo(String prefix, String... array) {

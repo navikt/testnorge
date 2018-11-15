@@ -29,15 +29,6 @@ public class HentIdenterRequest {
     private int antall;
     private String rekvirertAv;
 
-    //TODO: Hvorfor?
-//    public int getAntall() {
-//        return antall;
-//    }
-//
-//    public void setAntall(int antall) {
-//        this.antall = antall;
-//    }
-
     @JsonIgnore
     public Pageable getPageable() {
         return PageRequest.of(0, antall);

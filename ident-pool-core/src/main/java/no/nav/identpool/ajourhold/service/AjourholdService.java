@@ -35,12 +35,12 @@ public class AjourholdService {
 
     private void run(AjourholdEntity ajourholdEntity) {
         try {
-            int sjekketITps = identService.checkCriticalAndGenerate();
-            if (sjekketITps == 0) {
-                ajourholdRepository.delete(ajourholdEntity);
-            } else {
+            boolean newIdentsAdded = identService.checkCriticalAndGenerate();
+            if (newIdentsAdded) {
                 ajourholdEntity.setStatus(BatchStatus.COMPLETED);
                 ajourholdRepository.update(ajourholdEntity);
+            } else {
+                ajourholdRepository.delete(ajourholdEntity);
             }
         } catch (Exception e) {
             waitCounter = 10;

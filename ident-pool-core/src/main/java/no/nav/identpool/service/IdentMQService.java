@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
+
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 
@@ -32,7 +33,9 @@ public class IdentMQService {
     }
 
     public Map<String, Boolean> finnesITps(List<String> environments, List<String> fnrs) {
-        Map<String, Boolean> identer = fnrs.stream().collect(Collectors.toMap(fnr -> fnr, fnr -> Boolean.FALSE));
+        Map<String, Boolean> identer = fnrs.stream()
+                .collect(Collectors.toMap(fnr -> fnr, fnr -> Boolean.FALSE));
+
         for (String environment : environments) {
             try {
                 filterTpsQueue(environment, identer);
@@ -43,6 +46,7 @@ public class IdentMQService {
         return identer;
     }
 
+    //TODO Legg til litt dokumentasjon om hvorfor dette gjøres på denne måten.
     private void filterTpsQueue(String environment, Map<String, Boolean> identer) throws JMSException {
 
         List<String> finnesIkke = identer.entrySet()
@@ -66,8 +70,10 @@ public class IdentMQService {
 
         Consumer<PersondataFraTpsM201.AFnr.EFnr> filterExisting = personData -> {
             if (personData.getSvarStatus() == null || "00".equals(personData.getSvarStatus().getReturStatus())) {
+                //Finnes i TPS, I_BRUK
                 identer.put(personData.getFnr(), Boolean.TRUE);
             } else if ("04".equals(personData.getSvarStatus().getReturStatus())) {
+                //Noe har skjedd med fnr, I_BRUK
                 identer.put(personData.getForespurtFnr(), Boolean.TRUE);
             }
         };

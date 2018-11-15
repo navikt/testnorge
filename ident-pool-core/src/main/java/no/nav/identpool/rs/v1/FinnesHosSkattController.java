@@ -1,6 +1,6 @@
 package no.nav.identpool.rs.v1;
 
-import static no.nav.identpool.util.PersonidentifikatorUtil.valider;
+import static no.nav.identpool.util.PersonidentifikatorUtil.validate;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +28,7 @@ public class FinnesHosSkattController {
     public void finnesHosSkatt(
             @RequestBody IdentRequest identRequest
     ) throws UgyldigPersonidentifikatorException {
-        valider(identRequest.getPersonidentifikator());
+        validate(identRequest.getPersonidentifikator());
         identpoolService.registrerFinnesHosSkatt(identRequest.getPersonidentifikator());
     }
 }

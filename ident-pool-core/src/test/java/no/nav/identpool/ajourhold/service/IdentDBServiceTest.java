@@ -56,6 +56,7 @@ public class IdentDBServiceTest {
         });
     }
 
+    //FIXME Skrive om
     @Test
     public void identerBlirGenerertForHvertAar() {
         doNothing().when(identService).generateForYear(anyInt(), eq(Identtype.FNR));
@@ -81,7 +82,6 @@ public class IdentDBServiceTest {
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.FNR)));
         entities.forEach(entity -> assertThat(PersonidentifikatorUtil.getPersonidentifikatorType(entity.getPersonidentifikator()), is(Identtype.FNR)));
         entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG)));
-
     }
 
     @Test

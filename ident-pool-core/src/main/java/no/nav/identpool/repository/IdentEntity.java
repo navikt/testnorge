@@ -52,17 +52,11 @@ public class IdentEntity {
     @Enumerated(EnumType.STRING)
     private Rekvireringsstatus rekvireringsstatus;
 
-    //TODO Endret til boolean, sjekke at dette ikke bryter noe uventet
     @Getter(AccessLevel.NONE)
     @NotNull
     @Type(type="true_false")
     @Column(name = "FINNES_HOS_SKATT")
     private boolean finnesHosSkatt;
-
-    //Override for prettier method name
-    public Boolean finnesHosSkatt() {
-        return this.finnesHosSkatt;
-    }
 
     @NotNull
     @Column(name = "FOEDSELSDATO")
@@ -75,4 +69,10 @@ public class IdentEntity {
 
     @Column(name = "REKVIRERT_AV")
     private String rekvirertAv;
+
+
+    //Override for prettier method name
+    public Boolean finnesHosSkatt() {
+        return this.finnesHosSkatt;
+    }
 }

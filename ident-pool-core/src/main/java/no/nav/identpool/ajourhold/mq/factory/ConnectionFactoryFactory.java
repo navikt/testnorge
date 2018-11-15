@@ -3,6 +3,7 @@ package no.nav.identpool.ajourhold.mq.factory;
 import java.util.concurrent.TimeUnit;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+
 import org.springframework.stereotype.Component;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -16,7 +17,8 @@ import no.nav.identpool.ajourhold.mq.strategy.ConnectionStrategy;
  * This avoids instantiating new factories for every request, and dramatically improves performance.
  */
 @Component
-@Slf4j class ConnectionFactoryFactory {
+@Slf4j
+class ConnectionFactoryFactory {
 
     private static final long CACHE_HOURS_TO_LIVE = 6;
 

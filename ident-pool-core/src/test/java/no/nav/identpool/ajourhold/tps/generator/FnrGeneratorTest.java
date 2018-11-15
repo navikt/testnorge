@@ -1,5 +1,7 @@
 package no.nav.identpool.ajourhold.tps.generator;
 
+import static java.lang.Character.getNumericValue;
+import static java.lang.Integer.parseInt;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
@@ -14,10 +16,14 @@ import com.google.common.collect.Ordering;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.rs.v1.HentIdenterRequest;
-import no.nav.identpool.util.PersonidentifikatorUtil;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FnrGeneratorTest {
+
+    private static final int END_1900 = 499;
+    private static final int START_1900 = 0;
+
+    //TODO Test exceptions
 
     @Test
     public void fnrGenererDescendingTest() {
@@ -41,10 +47,8 @@ public class FnrGeneratorTest {
                         .build());
 
         assertEquals(menn.size(), size);
-        menn.forEach(fnr -> assertEquals(PersonidentifikatorUtil.getKjonn(fnr), Kjoenn.MANN));
-        menn.forEach(fnr -> assertEquals(PersonidentifikatorUtil.toBirthdate(fnr), localDate));
-        menn.forEach(fnr -> assertTrue(PersonidentifikatorUtil.gyldigPersonidentifikator(fnr)));
-        menn.forEach(fnr -> assertTrue(Character.getNumericValue(fnr.charAt(0)) < 4));
+        menn.forEach(fnr -> assertFnrValues(fnr, Kjoenn.MANN, localDate));
+
 
         List<String> kvinner = IdentGenerator.genererIdenter(
                 HentIdenterRequest.builder()
@@ -55,20 +59,7 @@ public class FnrGeneratorTest {
                         .build());
 
         assertEquals(kvinner.size(), size);
-        kvinner.forEach(fnr -> assertEquals(PersonidentifikatorUtil.getKjonn(fnr), Kjoenn.KVINNE));
-        kvinner.forEach(fnr -> assertEquals(PersonidentifikatorUtil.toBirthdate(fnr), localDate));
-        kvinner.forEach(fnr -> assertTrue(PersonidentifikatorUtil.gyldigPersonidentifikator(fnr)));
-        kvinner.forEach(fnr -> assertTrue(Character.getNumericValue(fnr.charAt(0)) < 4));
-
-        List<String> people = IdentGenerator.genererIdenter(
-                HentIdenterRequest.builder()
-                        .identtype(Identtype.DNR)
-                        .antall(size)
-                        .foedtEtter(localDate)
-                        .build());
-        people.forEach(fnr -> assertTrue(PersonidentifikatorUtil.gyldigPersonidentifikator(fnr)));
-        people.forEach(fnr -> assertEquals(PersonidentifikatorUtil.toBirthdate(fnr), localDate));
-        people.forEach(fnr -> assertTrue(Character.getNumericValue(fnr.charAt(0)) > 3));
+        kvinner.forEach(fnr -> assertFnrValues(fnr, Kjoenn.KVINNE, localDate));
     }
 
     @Test
@@ -84,10 +75,7 @@ public class FnrGeneratorTest {
                         .build());
 
         assertEquals(menn.size(), size);
-        menn.forEach(fnr -> assertEquals(PersonidentifikatorUtil.getKjonn(fnr), Kjoenn.MANN));
-        menn.forEach(fnr -> assertEquals(PersonidentifikatorUtil.toBirthdate(fnr), localDate));
-        menn.forEach(fnr -> assertTrue(PersonidentifikatorUtil.gyldigPersonidentifikator(fnr)));
-        menn.forEach(fnr -> assertTrue(Character.getNumericValue(fnr.charAt(0)) > 3));
+        menn.forEach(dnr -> assertDnrValues(dnr, Kjoenn.MANN, localDate));
 
         List<String> kvinner = IdentGenerator.genererIdenter(
                 HentIdenterRequest.builder()
@@ -98,19 +86,37 @@ public class FnrGeneratorTest {
                         .build());
 
         assertEquals(kvinner.size(), size);
-        kvinner.forEach(fnr -> assertEquals(PersonidentifikatorUtil.getKjonn(fnr), Kjoenn.KVINNE));
-        kvinner.forEach(fnr -> assertEquals(PersonidentifikatorUtil.toBirthdate(fnr), localDate));
-        kvinner.forEach(fnr -> assertTrue(PersonidentifikatorUtil.gyldigPersonidentifikator(fnr)));
-        kvinner.forEach(fnr -> assertTrue(Character.getNumericValue(fnr.charAt(0)) > 3));
+        kvinner.forEach(dnr -> assertDnrValues(dnr, Kjoenn.KVINNE, localDate));
+    }
 
-        List<String> people = IdentGenerator.genererIdenter(
-                HentIdenterRequest.builder()
-                        .identtype(Identtype.DNR)
-                        .antall(size)
-                        .foedtEtter(localDate)
-                        .build());
-        people.forEach(fnr -> assertTrue(PersonidentifikatorUtil.gyldigPersonidentifikator(fnr)));
-        people.forEach(fnr -> assertEquals(PersonidentifikatorUtil.toBirthdate(fnr), localDate));
-        people.forEach(fnr -> assertTrue(Character.getNumericValue(fnr.charAt(0)) > 3));
+    private void assertFnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
+        assertTrue(fnr.matches("\\d{11}"));
+        assertEquals(getKjoenn(fnr), expectedKjoenn);
+        assertEquals(getBirthdate(fnr, false), expectedDate);
+        assertTrue(getNumericValue(fnr.charAt(0)) < 4);
+    }
+
+    private void assertDnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
+        assertTrue(fnr.matches("\\d{11}"));
+        assertEquals(getKjoenn(fnr), expectedKjoenn);
+        assertEquals(getBirthdate(fnr, true), expectedDate);
+        assertTrue(getNumericValue(fnr.charAt(0)) > 3);
+    }
+
+    private Kjoenn getKjoenn(String fnr) {
+        return getNumericValue(fnr.charAt(8)) % 2 == 0 ? Kjoenn.KVINNE : Kjoenn.MANN;
+    }
+
+    private LocalDate getBirthdate(String fnr, boolean dnr) {
+        int day = parseInt(fnr.substring(0,2));
+        int month = parseInt(fnr.substring(2,4));
+        String year = fnr.substring(4,6);
+        int periode = parseInt(fnr.substring(6, 9));
+        String century = (periode >= START_1900 && periode <= END_1900) ? "19" : "20";
+        if (dnr) {
+            day = day - 40;
+        }
+
+        return LocalDate.of(parseInt(century + year), month, day);
     }
 }

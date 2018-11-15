@@ -58,10 +58,10 @@ public class IdentpoolService {
 
         if (temp.size() >= antallManglendeIdenter) {
 
-            identDBService.lagreIdenter(temp.subList(0, antallManglendeIdenter), I_BRUK, hentIdenterRequest.getRekvirertAv());
+            identDBService.saveIdents(temp.subList(0, antallManglendeIdenter), I_BRUK, hentIdenterRequest.getRekvirertAv());
             personidentifikatorList.addAll(temp.subList(0, antallManglendeIdenter));
             if (temp.size() > antallManglendeIdenter) {
-                identDBService.lagreIdenter(temp.subList(antallManglendeIdenter, temp.size()), LEDIG, null);
+                identDBService.saveIdents(temp.subList(antallManglendeIdenter, temp.size()), LEDIG, null);
             }
         } else {
             throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
@@ -84,7 +84,7 @@ public class IdentpoolService {
 
             Map<String, Boolean> kontrollerteIdenter = identMQService.finnesITps(finnesIkkeAllerede);
 
-            identDBService.lagreIdenter(kontrollerteIdenter.entrySet().stream()
+            identDBService.saveIdents(kontrollerteIdenter.entrySet().stream()
                     .filter(Map.Entry::getValue)
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList()), I_BRUK, "TPS");
@@ -98,8 +98,8 @@ public class IdentpoolService {
         return temp;
     }
 
+    //TODO Denne gjøre mer enn metodenavnet tilsier
     public Boolean erLedig(String personidentifikator) {
-
         IdentEntity ident = identRepository.findTopByPersonidentifikator(personidentifikator);
         if (ident != null) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;

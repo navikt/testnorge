@@ -1,6 +1,6 @@
 package no.nav.identpool.rs.v1;
 
-import static no.nav.identpool.util.PersonidentifikatorUtil.valider;
+import static no.nav.identpool.util.PersonidentifikatorUtil.validate;
 
 import java.util.List;
 import javax.validation.Valid;
@@ -28,13 +28,12 @@ public class IdentpoolController {
 
     private final IdentpoolService identpoolService;
 
-    //TODO: Nysgjerrig, hvorfor ikke /api/v1/identifikator/{ident} ?
     @GetMapping
     @ApiOperation(value = "hent informasjon lagret på en test-ident")
     public IdentEntity lesInnhold(
             @RequestHeader String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
-        valider(personidentifikator);
+        validate(personidentifikator);
         return identpoolService.lesInnhold(personidentifikator);
     }
 
@@ -47,7 +46,7 @@ public class IdentpoolController {
     @PostMapping("/bruk")
     @ApiOperation(value = "marker eksisterende og ledige identer som i bruk")
     public void markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) throws Exception {
-        valider(markerBruktRequest.getPersonidentifikator());
+        validate(markerBruktRequest.getPersonidentifikator());
         identpoolService.markerBrukt(markerBruktRequest);
     }
 
@@ -56,7 +55,7 @@ public class IdentpoolController {
     public Boolean erLedig(
             @RequestHeader String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
-        valider(personidentifikator);
+        validate(personidentifikator);
         return identpoolService.erLedig(personidentifikator);
     }
 }

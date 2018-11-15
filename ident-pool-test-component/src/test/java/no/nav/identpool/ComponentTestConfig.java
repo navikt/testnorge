@@ -12,7 +12,8 @@ import no.nav.identpool.ajourhold.mq.factory.ConnectionStrategyFactory;
 import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
 
 @Configuration
-@ComponentScan(basePackages = "no.nav.identpool") class ComponentTestConfig {
+@ComponentScan(basePackages = "no.nav.identpool")
+class ComponentTestConfig {
 
     @MockBean
     CronJobService cronJobService;

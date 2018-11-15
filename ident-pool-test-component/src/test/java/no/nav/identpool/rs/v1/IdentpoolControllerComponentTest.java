@@ -36,7 +36,6 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     private URI BRUK_URI;
     private URI LEDIG_URI;
 
-    //TODO: Laget flere funksjoner for å fjerne "støy" fra selve testen
     @Before
     public void populerDatabaseMedTestidenter() throws URISyntaxException {
         ROOT_URI = new URIBuilder(IDENT_V1_BASEURL).build();
@@ -121,7 +120,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
 
         ResponseEntity<ApiError> apiErrorResponseEntity = doPostRequest(BRUK_URI, createBodyEntity(body), ApiError.class);
 
-        assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.GONE));
+        assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.CONFLICT));
 
     }
 

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-//TODO: Stemmer det at denne ikke brukes som Idea påstår?
 @ControllerAdvice
 @RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class IdentpoolControllerAdvice {
