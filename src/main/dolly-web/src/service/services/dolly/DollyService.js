@@ -108,7 +108,6 @@ export default class DollyService {
 
 	// Bestilling
 	static getBestillingStatus(bestillingId) {
-		console.log('work')
 		return Request.get(Endpoints.bestillingStatus(bestillingId))
 	}
 

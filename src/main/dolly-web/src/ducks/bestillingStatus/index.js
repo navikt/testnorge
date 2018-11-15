@@ -9,6 +9,7 @@ export const getBestillingStatus = createAction(
 	'GET_BESTILLING_STATUS',
 	DollyApi.getBestillingStatus
 )
+const SET_BESTILLING_STATUS = 'SET_BESTILLING_STATUS'
 
 const initialState = {}
 
@@ -16,10 +17,21 @@ export default handleActions(
 	{
 		[success(getBestillingStatus)](state, action) {
 			return { ...state, [action.payload.data.id]: action.payload.data }
+		},
+		[SET_BESTILLING_STATUS](state, action) {
+			return { ...state, [action.bestillingId]: action.data }
 		}
 	},
 	initialState
 )
+
+// SET BESTILLING STATUS
+
+export const setBestillingStatus = (bestillingId, data) => ({
+	type: SET_BESTILLING_STATUS,
+	bestillingId,
+	data
+})
 
 // Selector + mapper
 export const sokSelector = (items, searchStr) => {
