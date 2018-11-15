@@ -40,8 +40,17 @@ export const GET_SIGRUN_TESTBRUKER = createAction(
 
 export const GET_KRR_TESTBRUKER = createAction(
 	'GET_KRR_TESTBRUKER',
-	ident => {
-		return KrrApi.getTestbruker('02014600178', 'Z990651')
+	async ident => {
+		try {
+			const res = await KrrApi.getTestbruker(ident)
+			console.log(res)
+		} catch (err) {
+			if (err.response && err.response.status === 404) {
+				console.log(err.response.data.melding)
+				return []
+			}
+			return err
+		}
 	},
 	ident => ({
 		ident

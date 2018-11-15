@@ -22,7 +22,7 @@ const selectOptions = {
 		{ value: 'Summert skattegrunnlag', label: 'Summert skattegrunnlag' }
 	],
 
-	boolean: [{ value: 'JA', label: 'Ja' }, { value: 'NEI', label: 'Nei' }]
+	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }]
 }
 
 const SelectOptionsManager = attributeId => {

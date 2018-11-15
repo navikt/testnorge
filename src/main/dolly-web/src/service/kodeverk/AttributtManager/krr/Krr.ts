@@ -11,12 +11,8 @@ const AttributtListe: Attributt[] = [
 		id: 'mobil',
 		label: 'Mobilnummer',
 		dataSource: DataSource.KRR,
-		inputType: InputType.Number,
-		validation: yup
-			.number()
-			.integer('Mobilnummer er ikke gyldig')
-			.min(10000, 'Mobilnummer er ikke gyldig')
-			.required('Vennligst oppgi mobilnummer')
+		inputType: InputType.Text,
+		validation: yup.string().required('Vennligst oppgi mobilnummer')
 	},
 	{
 		hovedKategori: Kategorier.KontaktInfo,
