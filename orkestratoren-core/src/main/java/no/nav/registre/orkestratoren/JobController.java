@@ -30,7 +30,7 @@ public class JobController {
     private TpsSyntPakkenConsumer tpsSyntPakkenConsumer;
 
     @LogExceptions
-    @Scheduled(cron = "${orkestratoren.cron:0 0 4 * * *}")
+    @Scheduled(cron = "${orkestratoren.cron:0 0 * * * *}")
     public void execute() {
         tpsSyntPakkenConsumer.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
     }
