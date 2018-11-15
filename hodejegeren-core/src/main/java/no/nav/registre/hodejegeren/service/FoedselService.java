@@ -39,7 +39,7 @@ public class FoedselService {
                     + meldinger.get(0).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge.");
         }
 
-        List<String> moedre = findMoedre(meldinger.size(), levendeIdenterINorge);
+        List<String> moedre = findMoedre(meldinger.size(), levendeIdenterINorge, meldinger.get(0).getMeldingsnrHosTpsSynt());
         List<String> barn = new ArrayList<>(meldinger.size());
 
         Iterator<RsMeldingstype> meldingIterator = meldinger.iterator();
@@ -69,11 +69,22 @@ public class FoedselService {
         return barn;
     }
 
-    public List<String> findMoedre(int antallNyeIdenter, List<String> levendeIdenterINorge) {
+    public List<String> findMoedre(int antallNyeIdenter, List<String> levendeIdenterINorge, String meldingsnrHosTpsSynt) {
         List<String> moedre = new ArrayList<>(antallNyeIdenter);
+        List<String> potensielleMoedre = new ArrayList<>(levendeIdenterINorge);
 
         for (int i = 0; i < antallNyeIdenter; i++) {
-            moedre.add(levendeIdenterINorge.get(rand.nextInt(levendeIdenterINorge.size())));
+            String randomIdent;
+            do {
+                if (potensielleMoedre.isEmpty()) {
+                    throw new ManglerEksisterendeIdentException("Kunne ikke finne mor til ident for SkdMelding med meldingsnummer "
+                            + meldingsnrHosTpsSynt + ". For få kvinner i listen levendeIdenterINorge.");
+                }
+                int randomIndex = rand.nextInt(levendeIdenterINorge.size());
+                randomIdent = potensielleMoedre.remove(randomIndex);
+            } while (!"02468".contains(String.valueOf(randomIdent.charAt(8)))); // kvinner har partall i posisjon 8 i FNR
+
+            moedre.add(randomIdent);
         }
 
         return moedre;
