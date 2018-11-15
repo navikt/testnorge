@@ -43,7 +43,7 @@ export const GET_KRR_TESTBRUKER = createAction(
 	async ident => {
 		try {
 			const res = await KrrApi.getTestbruker(ident)
-			console.log(res)
+			return res
 		} catch (err) {
 			if (err.response && err.response.status === 404) {
 				console.log(err.response.data.melding)
