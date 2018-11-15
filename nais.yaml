@@ -34,3 +34,5 @@ fasitResources:
       resourceType: restservice
     - alias: "orkestratorens.ida.credential"
       resourceType: credential
+    - alias: "orkestratorensProperties"
+      resourceType: applicationProperties
