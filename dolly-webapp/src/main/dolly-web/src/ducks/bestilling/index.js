@@ -134,10 +134,8 @@ const getValues = (attributeList, values) => {
 		}
 
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
-			console.log(value, 'value')
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
 			let tjenester = Object.keys(groupByTjeneste)
-			console.log(tjenester, 'tjenester')
 
 			let dataArr = []
 
@@ -158,9 +156,8 @@ const getValues = (attributeList, values) => {
 				})
 			})
 
-			return _set(accumulator, 'sigrunstub', dataArr)
+			return _set(accumulator, pathPrefix, dataArr)
 		}
-		// Tpsf
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
 }

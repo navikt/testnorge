@@ -2,7 +2,7 @@ import ConfigService from '../Config'
 
 describe('Config.js', () => {
 	const testUrl = 'test'
-	global.window = { dollyConfig: { url: testUrl } }
+	global.window = { dollyConfig: { tpsfUrl: testUrl } }
 	it('should verify if dollyConfig exist', () => {
 		expect(ConfigService.verifyConfig()).toBeTruthy()
 	})

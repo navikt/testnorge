@@ -66,7 +66,12 @@ export default class AutofillAddress extends Component {
 
 	fetchKodeverk = kodeverkNavn => {
 		return DollyApi.getKodeverkByNavn(kodeverkNavn).then(res => {
-			return { options: res.data.koder }
+			return {
+				options: res.data.koder.map(kode => ({
+					label: `${kode.value} - ${kode.label}`,
+					value: kode.value
+				}))
+			}
 		})
 	}
 
