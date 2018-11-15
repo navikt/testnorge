@@ -1,6 +1,7 @@
 package no.nav.registre.orkestratoren.fasit;
 
 import static no.nav.freg.fasit.utils.domain.ResourceType.CREDENTIAL;
+import static no.nav.freg.fasit.utils.domain.ResourceType.REST_SERVICE;
 import static no.nav.freg.fasit.utils.domain.Zone.FSS;
 
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import no.nav.freg.fasit.utils.FasitService;
 import no.nav.freg.fasit.utils.domain.Credentials;
+import no.nav.freg.fasit.utils.domain.RestService;
 
 @Component
 @Profile("fasit")
@@ -34,6 +36,8 @@ public class FasitClient {
         Credentials credentials = fasitService.find("orkestratorenCredentials", CREDENTIAL, environmentName, applicationName, FSS, Credentials.class);
         properties.put("orkestratoren.credentials.username", credentials.getUsername());
         properties.put("orkestratoren.credentials.password", fasitService.findSecret(credentials.getPasswordUrl()));
+        RestService hodejegeren = fasitService.find("testnorge-hodejegeren.rest-api", REST_SERVICE, environmentName, applicationName, FSS, RestService.class);
+        properties.put("testnorge-hodejegeren.rest-api.url", hodejegeren.getEndpointUrl());
 
         return properties;
     }
