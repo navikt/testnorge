@@ -1,18 +1,14 @@
 import { connect } from 'react-redux'
-import Gruppe from './Gruppe'
-import { getBestillingStatus } from '~/ducks/gruppe'
+import BestillingStatus from './BestillingStatus'
+import { setBestillingStatus } from '~/ducks/bestillingStatus'
 
-const loadingSelector = createLoadingSelector(getGruppe)
-
-const mapStateToProps = state => ({
-	isFetching: loadingSelector(state),
-	gruppeArray: state.gruppe.data,
-	createOrUpdateId: state.gruppe.createOrUpdateId
+const mapStateToProps = (state, ownProps) => ({
+	bestillingStatusObj: state.bestillingStatus[ownProps.bestilling.id]
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
-		getBestillingStatus: () => dispatch(getGruppe(getBestillingStatus))
+		setBestillingStatus: (id, data) => dispatch(setBestillingStatus(id, data))
 	}
 }
 

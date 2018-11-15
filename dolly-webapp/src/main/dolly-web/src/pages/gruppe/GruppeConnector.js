@@ -12,8 +12,7 @@ const loadingSelector = createLoadingSelector(getGruppe)
 const mapStateToProps = state => ({
 	isFetching: loadingSelector(state),
 	gruppeArray: state.gruppe.data,
-	createOrUpdateId: state.gruppe.createOrUpdateId,
-	bestillingStatus: state.bestillingStatus
+	createOrUpdateId: state.gruppe.createOrUpdateId
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -23,8 +22,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		deleteGruppe: () => dispatch(deleteGruppe(gruppeId)),
 		createGroup: () => dispatch(showCreateOrEditGroup(-1)),
 		editTestbruker: ident => dispatch(push(`/gruppe/${gruppeId}/testbruker/${ident}`)),
-		resetSearch: () => dispatch(resetSearch()),
-		getBestillingStatus: id => dispatch(getBestillingStatus(id))
+		resetSearch: () => dispatch(resetSearch())
 	}
 }
 
