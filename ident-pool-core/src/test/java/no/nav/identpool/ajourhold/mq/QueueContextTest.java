@@ -3,11 +3,11 @@ package no.nav.identpool.ajourhold.mq;
 import no.nav.identpool.ajourhold.fasit.FasitClient;
 import no.nav.identpool.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import no.nav.identpool.test.mockito.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 
 import javax.jms.JMSException;
@@ -23,8 +23,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class QueueContextTest {
+@ExtendWith(MockitoExtension.class)
+class QueueContextTest {
 
     @Mock
     private FasitClient fasitClient;
@@ -39,8 +39,8 @@ public class QueueContextTest {
 
     private QueueContext queueContext;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         reset(fasitClient, messageQueueFactory, messageQueue);
         queueContext = new QueueContext(fasitClient, messageQueueFactory);
         queueContext.excluded = new String[]{};
@@ -48,13 +48,13 @@ public class QueueContextTest {
     }
 
     @Test
-    public void queueContextInit() {
+    void queueContextInit() {
         queueContext.init();
         assertThat(controller.getQueueEnvironContext().getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
-    public void queueContextOrdered() throws JMSException {
+    void queueContextOrdered() throws JMSException {
         when(fasitClient.getAllEnvironments("t", "q")).thenReturn(new ArrayList<>(Arrays.asList("t6", "q9", "t1", "t7", "q8")));
         when(messageQueueFactory.createMessageQueue(anyString())).thenReturn(messageQueue);
         when(messageQueue.ping()).thenReturn(true);
@@ -68,7 +68,7 @@ public class QueueContextTest {
     }
 
     @Test
-    public void queueContextPingError() throws JMSException {
+    void queueContextPingError() throws JMSException {
         when(fasitClient.getAllEnvironments("t", "q")).thenReturn(new ArrayList<>(Arrays.asList("t6", "q9", "t1", "t7", "q8")));
         when(messageQueueFactory.createMessageQueue(anyString())).thenReturn(messageQueue);
         when(messageQueue.ping()).thenThrow(new JMSException(""));

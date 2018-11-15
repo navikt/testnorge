@@ -1,10 +1,12 @@
 package no.nav.identpool;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class LoadContextComponentTest extends ComponentTestbase {
+class LoadContextComponentTest extends ComponentTestbase {
+
+    //TODO
     @Test
-    public void loadApplicationContext() {
+    void loadApplicationContext() {
         //empty
     }
 }

@@ -11,9 +11,9 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -25,7 +25,7 @@ import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.repository.IdentEntity;
 import no.nav.identpool.util.PersonidentifikatorUtil;
 
-public class IdentpoolControllerComponentTest extends ComponentTestbase {
+class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     private static final String FNR_LEDIG = "10108000398";
     private static final String DNR_LEDIG = "50108000381";
@@ -36,8 +36,8 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     private URI BRUK_URI;
     private URI LEDIG_URI;
 
-    @Before
-    public void populerDatabaseMedTestidenter() throws URISyntaxException {
+    @BeforeEach
+    void populerDatabaseMedTestidenter() throws URISyntaxException {
         ROOT_URI = new URIBuilder(IDENT_V1_BASEURL).build();
         BRUK_URI = new URIBuilder(IDENT_V1_BASEURL + "/bruk").build();
         LEDIG_URI = new URIBuilder(IDENT_V1_BASEURL + "/ledig").build();
@@ -51,13 +51,13 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
         ));
     }
 
-    @After
-    public void clearDatabase() {
+    @AfterEach
+    void clearDatabase() {
         identRepository.deleteAll();
     }
 
     @Test
-    public void hentLedigFnr() {
+    void hentLedigFnr() {
         String body = "{\"antall\":\"1\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\" }";
 
         ResponseEntity<String[]> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), String[].class);
@@ -68,7 +68,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void hentLedigDnr() {
+    void hentLedigDnr() {
         String body = "{\"antall\":\"1\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
 
         ResponseEntity<String[]> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), String[].class);
@@ -79,7 +79,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void hentLedigIdent() {
+    void hentLedigIdent() {
         String body = "{\"antall\":\"3\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\",\"foedtFoer\":\"1950-01-01\"}";
 
         ResponseEntity<String[]> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), String[].class);
@@ -97,7 +97,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void hentForMangeIdenterSomIkkeFinnesIDatabasen() {
+    void hentForMangeIdenterSomIkkeFinnesIDatabasen() {
         String body = "{\"antall\":\"200\", \"foedtEtter\":\"1900-01-01\"}";
 
         ResponseEntity<ForFaaLedigeIdenterException> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), ForFaaLedigeIdenterException.class);
@@ -106,7 +106,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void skalFeileNaarUgyldigIdenttypeBrukes() {
+    void skalFeileNaarUgyldigIdenttypeBrukes() {
         String body = "{\"antall\":\"1\", \"identtype\":\"buksestoerrelse\" }";
 
         ResponseEntity<ApiError> apiErrorResponseEntity = doPostRequest(ROOT_URI, createBodyEntity(body), ApiError.class);
@@ -115,7 +115,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void markerIBrukPaaIdentAlleredeIbruk() {
+    void markerIBrukPaaIdentAlleredeIbruk() {
         String body = "{\"personidentifikator\":\"" + FNR_IBRUK + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
 
         ResponseEntity<ApiError> apiErrorResponseEntity = doPostRequest(BRUK_URI, createBodyEntity(body), ApiError.class);
@@ -125,7 +125,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void markerEksisterendeLedigIdentIBruk() {
+    void markerEksisterendeLedigIdentIBruk() {
         assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
 
         String body = "{\"personidentifikator\":\"" + FNR_LEDIG + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
@@ -138,7 +138,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void markerNyLedigIdentIBruk() {
+    void markerNyLedigIdentIBruk() {
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
 
         String body = "{\"personidentifikator\":\"" + NYTT_FNR_LEDIG + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
@@ -152,7 +152,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void sjekkOmLedigIdentErLedig() {
+    void sjekkOmLedigIdentErLedig() {
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("personidentifikator", FNR_LEDIG);
 
@@ -164,7 +164,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void sjekkOmUledigIdentErLedig() {
+    void sjekkOmUledigIdentErLedig() {
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("personidentifikator", FNR_IBRUK);
 
@@ -176,7 +176,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void eksistererIkkeIDbOgLedigITps() {
+    void eksistererIkkeIDbOgLedigITps() {
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("personidentifikator", NYTT_FNR_LEDIG);
@@ -189,7 +189,7 @@ public class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void lesIdenterTest() {
+    void lesIdenterTest() {
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("personidentifikator", FNR_LEDIG);
 

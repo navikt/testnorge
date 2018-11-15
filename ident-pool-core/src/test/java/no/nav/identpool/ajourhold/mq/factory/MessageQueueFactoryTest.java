@@ -8,18 +8,18 @@ import static org.mockito.Mockito.when;
 
 import javax.jms.JMSException;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import no.nav.identpool.test.mockito.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 
 import no.nav.identpool.ajourhold.mq.strategy.ConnectionStrategy;
 
-@RunWith(MockitoJUnitRunner.class)
-public class MessageQueueFactoryTest {
+@ExtendWith(MockitoExtension.class)
+class MessageQueueFactoryTest {
 
     private static final String environment = "T10";
 
@@ -29,14 +29,14 @@ public class MessageQueueFactoryTest {
     @Mock
     private ConnectionFactoryFactory connectionFactoryFactory;
 
-    @Before
-    public void before() throws JMSException {
+    @BeforeEach
+    void before() throws JMSException {
         when(connectionStrategyFactory.createConnectionStrategy(environment)).thenReturn(new ConnectionStrategy("", "", 100, ""));
         when(connectionFactoryFactory.createConnectionFactory(any(), anyBoolean())).thenReturn(new MQQueueConnectionFactory());
     }
 
     @Test
-    public void testCreateMessageQueue() throws JMSException {
+    void testCreateMessageQueue() throws JMSException {
         MessageQueueFactory messageQueueFactory = new MessageQueueFactory(connectionStrategyFactory, connectionFactoryFactory);
         ReflectionTestUtils.setField(messageQueueFactory, "tpsRequestQueue", "%s");
         messageQueueFactory.createMessageQueue(environment);

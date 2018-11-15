@@ -18,7 +18,8 @@ import no.nav.freg.security.oidc.idp.Idp;
 import no.nav.freg.security.oidc.idp.registry.IdpRegistry;
 import no.nav.freg.security.test.oidc.tools.RsaKey;
 
-@Configuration class SecurityTestConfig {
+@Configuration
+class SecurityTestConfig {
 
     static final String NAV_STS_ISSUER_URL = "http://navStsIssuerUrl";
 

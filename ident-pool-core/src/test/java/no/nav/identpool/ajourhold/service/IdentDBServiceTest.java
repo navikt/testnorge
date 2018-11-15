@@ -6,12 +6,12 @@ import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.repository.IdentEntity;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.service.IdentMQService;
+import no.nav.identpool.test.mockito.MockitoExtension;
 import no.nav.identpool.util.PersonidentifikatorUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import java.time.LocalDate;
@@ -26,8 +26,8 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class IdentDBServiceTest {
+@ExtendWith(MockitoExtension.class)
+class IdentDBServiceTest {
 
     @Mock
     private IdentMQService mqService;
@@ -42,8 +42,8 @@ public class IdentDBServiceTest {
 
     private List<IdentEntity> entities = new ArrayList<>();
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         entities.clear();
         identService = spy(new IdentDBService(mqService, identRepository, identDistribusjon));
         identService.current = LocalDate.now();
@@ -58,7 +58,7 @@ public class IdentDBServiceTest {
 
     //FIXME Skrive om
     @Test
-    public void identerBlirGenerertForHvertAar() {
+    void identerBlirGenerertForHvertAar() {
         doNothing().when(identService).generateForYear(anyInt(), eq(Identtype.FNR));
         doNothing().when(identService).generateForYear(anyInt(), eq(Identtype.DNR));
         identService.checkCriticalAndGenerate();
@@ -71,7 +71,7 @@ public class IdentDBServiceTest {
     }
 
     @Test
-    public void genererIdenterForAarHvorIngenErLedige() {
+    void genererIdenterForAarHvorIngenErLedige() {
         when(mqService.finnesITps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().collect(Collectors.toMap(Object::toString, pin -> Boolean.FALSE));
@@ -85,7 +85,7 @@ public class IdentDBServiceTest {
     }
 
     @Test
-    public void genererIdenterForAarHvorAlleErLedige() {
+    void genererIdenterForAarHvorAlleErLedige() {
         when(mqService.finnesITps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().collect(Collectors.toMap(Object::toString, pin -> Boolean.TRUE));
@@ -100,7 +100,7 @@ public class IdentDBServiceTest {
     }
 
     @Test
-    public void generererIdenterFraAarTilDatoMidtISammeAar() {
+    void generererIdenterFraAarTilDatoMidtISammeAar() {
         when(mqService.finnesITps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().collect(Collectors.toMap(Object::toString, pin -> Boolean.TRUE));

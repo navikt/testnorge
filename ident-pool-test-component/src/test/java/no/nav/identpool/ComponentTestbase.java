@@ -12,8 +12,8 @@ import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.repository.IdentEntity;
 import no.nav.identpool.rs.v1.IdentRequest;
 import org.jose4j.jwt.JwtClaims;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -21,7 +21,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -29,7 +29,7 @@ import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
 import no.nav.freg.security.test.oidc.tools.OidcTestService;
 import no.nav.identpool.repository.IdentRepository;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { ComponentTestConfig.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ComponentTestbase {
     protected static final String IDENT_V1_BASEURL = "/api/v1/identifikator";
@@ -44,7 +44,7 @@ public abstract class ComponentTestbase {
 
     private HttpEntityBuilder httpEntityBuilder;
 
-    @Before
+    @BeforeEach
     public void initEntityBuilder() {
         httpEntityBuilder = new HttpEntityBuilder();
     }

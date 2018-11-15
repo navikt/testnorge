@@ -1,7 +1,7 @@
 package no.nav.identpool.ajourhold.mq.factory;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -10,22 +10,22 @@ import static org.mockito.Mockito.verify;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import no.nav.identpool.test.mockito.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 
 import no.nav.identpool.ajourhold.mq.strategy.ConnectionStrategy;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ConnectionFactoryFactoryTest {
+@ExtendWith(MockitoExtension.class)
+class ConnectionFactoryFactoryTest {
 
     @Spy
     private ConnectionFactoryFactory connectionFactoryFactory;
 
     @Test
-    public void testCreateFactory() throws JMSException {
+    void testCreateFactory() throws JMSException {
 
         ConnectionStrategy connectionStrategy = new ConnectionStrategy("", "", 0, "");
 

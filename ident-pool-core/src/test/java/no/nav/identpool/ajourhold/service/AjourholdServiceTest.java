@@ -2,11 +2,11 @@ package no.nav.identpool.ajourhold.service;
 
 import no.nav.identpool.ajourhold.repository.AjourholdEntity;
 import no.nav.identpool.ajourhold.repository.AjourholdRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import no.nav.identpool.test.mockito.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import javax.batch.runtime.BatchStatus;
@@ -17,8 +17,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class AjourholdServiceTest {
+@ExtendWith(MockitoExtension.class)
+class AjourholdServiceTest {
 
     @Spy
     private AjourholdRepository ajourholdRepository;
@@ -29,8 +29,8 @@ public class AjourholdServiceTest {
 
     private AjourholdEntity entity;
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         identDBService = mock(IdentDBService.class);
 
         doAnswer((Answer<Void>) invocation -> {
@@ -43,19 +43,19 @@ public class AjourholdServiceTest {
         ajourholdService = new AjourholdService(ajourholdRepository, identDBService);
     }
 
-    public void copy(AjourholdEntity ajourholdEntity) {
+    void copy(AjourholdEntity ajourholdEntity) {
         this.entity = ajourholdEntity;
     }
 
     @Test
-    public void batchKjorer() {
+    void batchKjorer() {
         when(identDBService.checkCriticalAndGenerate()).thenReturn(true);
         ajourholdService.startBatch();
         assertThat(entity.getStatus(), is(BatchStatus.COMPLETED));
     }
 
     @Test
-    public void batchFeiler() {
+    void batchFeiler() {
         String exception = "Unique exception";
         when(identDBService.checkCriticalAndGenerate()).thenThrow(new RuntimeException(exception));
         ajourholdService.startBatch();
@@ -67,7 +67,7 @@ public class AjourholdServiceTest {
     }
 
     @Test
-    public void batchKjorerMenGenerererIngenIdenter() {
+    void batchKjorerMenGenerererIngenIdenter() {
         when(identDBService.checkCriticalAndGenerate()).thenReturn(false);
         ajourholdService.startBatch();
         verify(ajourholdRepository, times(1)).delete(any(AjourholdEntity.class));

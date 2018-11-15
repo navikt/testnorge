@@ -2,23 +2,24 @@ package no.nav.identpool.ajourhold.tps.generator;
 
 import static java.lang.Character.getNumericValue;
 import static java.lang.Integer.parseInt;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+
+import no.nav.identpool.test.mockito.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import com.google.common.collect.Ordering;
 
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.rs.v1.HentIdenterRequest;
 
-@RunWith(MockitoJUnitRunner.class)
-public class FnrGeneratorTest {
+@ExtendWith(MockitoExtension.class)
+class FnrGeneratorTest {
 
     private static final int END_1900 = 499;
     private static final int START_1900 = 0;
@@ -26,7 +27,7 @@ public class FnrGeneratorTest {
     //TODO Test exceptions
 
     @Test
-    public void fnrGenererDescendingTest() {
+    void fnrGenererDescendingTest() {
         // This test will stop working 1. Jan 2040 :(
         LocalDate localDate = LocalDate.now();
         Map<LocalDate, List<String>> pinMap = IdentGenerator.genererIdenterMap(localDate, localDate.plusDays(1), Identtype.FNR);
@@ -35,7 +36,7 @@ public class FnrGeneratorTest {
     }
 
     @Test
-    public void fnrGenererKjonnKriterier() {
+    void fnrGenererKjonnKriterier() {
         LocalDate localDate = LocalDate.now();
         int size = 100;
         List<String> menn = IdentGenerator.genererIdenter(
@@ -63,7 +64,7 @@ public class FnrGeneratorTest {
     }
 
     @Test
-    public void dnrGenererKjonnKriterier() {
+    void dnrGenererKjonnKriterier() {
         LocalDate localDate = LocalDate.now();
         int size = 100;
         List<String> menn = IdentGenerator.genererIdenter(

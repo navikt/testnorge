@@ -1,13 +1,14 @@
 package no.nav.identpool.ajourhold.tps.xml;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import no.nav.identpool.test.mockito.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(MockitoJUnitRunner.class)
-public class TpsMeldingerTest {
+@ExtendWith(MockitoExtension.class)
+class TpsMeldingerTest {
 
+    //TODO Skriv tester eller slett
     @Test
-    public void navnOpplysningTest() {
+    void navnOpplysningTest() {
     }
 }

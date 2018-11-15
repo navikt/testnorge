@@ -1,13 +1,14 @@
 package no.nav.identpool.service;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import no.nav.identpool.test.mockito.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(MockitoJUnitRunner.class)
-public class IdentpoolServiceTest {
+@ExtendWith(MockitoExtension.class)
+class IdentpoolServiceTest {
 
+    //TODO Skriv test eller slett
     @Test
-    public void test() {
+    void test() {
     }
 }

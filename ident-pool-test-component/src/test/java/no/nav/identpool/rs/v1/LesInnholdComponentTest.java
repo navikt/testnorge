@@ -9,8 +9,8 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 
@@ -20,7 +20,7 @@ import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.repository.IdentEntity;
 
-public class LesInnholdComponentTest extends ComponentTestbase {
+class LesInnholdComponentTest extends ComponentTestbase {
     private static final String PERSONIDENTIFIKATOR = "10108000398";
     private static final Identtype IDENTTYPE = Identtype.FNR;
     private static final Rekvireringsstatus REKVIRERINGSSTATUS = Rekvireringsstatus.I_BRUK;
@@ -28,8 +28,8 @@ public class LesInnholdComponentTest extends ComponentTestbase {
     private static final LocalDate FOEDSELSDATO = LocalDate.of(1980, 10, 10);
     private static final String REKVIRERT_AV = "RekvirererMcRekvirererface";
 
-    @Before
-    public void populerDatabaseMedTestidenter() {
+    @BeforeEach
+    void populerDatabaseMedTestidenter() {
         IdentEntity identEntity = createIdentEntity(Identtype.FNR, PERSONIDENTIFIKATOR, REKVIRERINGSSTATUS, 10);
         identEntity.setRekvirertAv(REKVIRERT_AV);
         identRepository.save(
@@ -38,7 +38,7 @@ public class LesInnholdComponentTest extends ComponentTestbase {
     }
 
     @Test
-    public void skalLeseInnholdIDatabase() throws URISyntaxException {
+    void skalLeseInnholdIDatabase() throws URISyntaxException {
         URI uri = new URIBuilder(IDENT_V1_BASEURL).build();
 
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();

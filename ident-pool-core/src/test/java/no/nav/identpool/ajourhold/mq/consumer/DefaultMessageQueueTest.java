@@ -1,23 +1,24 @@
 package no.nav.identpool.ajourhold.mq.consumer;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import no.nav.identpool.test.mockito.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 
 import javax.jms.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DefaultMessageQueueTest {
+@ExtendWith(MockitoExtension.class)
+class DefaultMessageQueueTest {
 
     @Mock
     private ConnectionFactory connectionFactory;
@@ -45,8 +46,8 @@ public class DefaultMessageQueueTest {
 
     private DefaultMessageQueue messageQueue;
 
-    @Before
-    public void init() throws JMSException {
+    @BeforeEach
+    void init() throws JMSException {
         messageQueue = new DefaultMessageQueue("", connectionFactory, "", "");
         when(connectionFactory.createConnection("", "")).thenReturn(connection);
         when(connection.createSession(false, Session.AUTO_ACKNOWLEDGE)).thenReturn(session);
@@ -62,36 +63,28 @@ public class DefaultMessageQueueTest {
     }
 
     @Test
-    public void ping() throws JMSException {
+    void ping() throws JMSException {
         assertThat(messageQueue.ping(), is(Boolean.TRUE));
     }
 
     @Test
-    public void send() throws JMSException {
+    void send() throws JMSException {
         assertThat(messageQueue.sendMessage(""), is("PING!"));
     }
 
-    @Test(expected = JMSException.class)
-    public void connectionError() throws JMSException {
-        try {
-            when(connectionFactory.createConnection("", "")).thenThrow(new JMSException("message"));
-            messageQueue.sendMessage("");
-        } catch (Exception e) {
-            assertThat(e.getMessage(), is("message"));
-            verify(connectionFactory, times(4)).createConnection("", "");
-            throw e;
-        }
+    @Test
+    void connectionError() throws JMSException {
+        when(connectionFactory.createConnection("", "")).thenThrow(new JMSException("message"));
+        JMSException thrown = assertThrows(JMSException.class, () -> messageQueue.sendMessage(""));
+        assertThat(thrown.getMessage(), is("message"));
+        verify(connectionFactory, times(4)).createConnection("", "");
     }
 
-    @Test(expected = JMSException.class)
-    public void sessionError() throws JMSException {
-        try {
-            when(connection.createSession(false, Session.AUTO_ACKNOWLEDGE)).thenThrow(new JMSException("message"));
-            messageQueue.sendMessage("");
-        } catch (Exception e) {
-            assertThat(e.getMessage(), is("message"));
-            verify(connectionFactory, times(4)).createConnection("", "");
-            throw e;
-        }
+    @Test
+    void sessionError() throws JMSException {
+        when(connection.createSession(false, Session.AUTO_ACKNOWLEDGE)).thenThrow(new JMSException("message"));
+        JMSException thrown = assertThrows(JMSException.class, () -> messageQueue.sendMessage(""));
+        assertThat(thrown.getMessage(), is("message"));
+        verify(connectionFactory, times(4)).createConnection("", "");
     }
 }

@@ -1,6 +1,6 @@
 package no.nav.identpool.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -14,9 +14,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+
+import no.nav.identpool.test.mockito.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.identpool.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
@@ -27,7 +28,7 @@ import no.nav.tps.ctg.m201.domain.StatusFraTPSType;
 import no.nav.tps.ctg.m201.domain.TpsPersonData;
 import no.nav.tps.ctg.m201.domain.TpsSvarType;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IdentMQServiceTest {
 
     private static SecureRandom random = new SecureRandom();

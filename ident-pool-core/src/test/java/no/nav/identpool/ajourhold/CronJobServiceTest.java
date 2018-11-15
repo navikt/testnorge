@@ -2,15 +2,15 @@ package no.nav.identpool.ajourhold;
 
 import no.nav.identpool.ajourhold.service.AjourholdService;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
-public class CronJobServiceTest {
+class CronJobServiceTest {
 
-    //TODO Test
+    //TODO Test bedre
     @Test
-    public void startJob() {
+    void startJob() {
         AjourholdService ajourholdService = mock(AjourholdService.class);
         doNothing().when(ajourholdService).startBatch();
         new CronJobService(ajourholdService).execute();
