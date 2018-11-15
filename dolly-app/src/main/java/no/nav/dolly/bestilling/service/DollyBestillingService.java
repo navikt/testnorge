@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.service;
 
-import static java.lang.String.format;
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.time.ZonedDateTime;
@@ -93,7 +92,7 @@ public class DollyBestillingService {
                         request.setPersonidentifikator(hovedPersonIdent);
                     }
                     ResponseEntity<String> sigrunResponse = sigrunStubService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
-                    progress.appendKrrstubStatus(toJsonObject(hovedPersonIdent, sigrunstubResponseHandler.extractResponse(sigrunResponse)));
+                    progress.setSigrunstubStatus(sigrunstubResponseHandler.extractResponse(sigrunResponse));
                 }
 
                 if (bestillingRequest.getKrrstub() != null) {
@@ -105,7 +104,7 @@ public class DollyBestillingService {
                             .reservert(bestillingRequest.getKrrstub().getReservert())
                             .build();
                     ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
-                    progress.appendKrrstubStatus(toJsonObject(hovedPersonIdent, krrstubResponseHandler.extractResponse(krrstubResponse)));
+                    progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
                 }
 
                 bestillingProgressRepository.save(progress);
@@ -117,10 +116,6 @@ public class DollyBestillingService {
             bestilling.setFerdig(true);
             bestillingService.saveBestillingToDB(bestilling);
         }
-    }
-
-    private String toJsonObject(String ident, String status) {
-        return (format("{%s,%s}", ident, status));
     }
 
     private void senderIdenterTilTPS(RsDollyBestillingsRequest request, List<String> klareIdenter, Testgruppe testgruppe, BestillingProgress progress) {
@@ -156,7 +151,7 @@ public class DollyBestillingService {
 
             if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if ((entry.getValue().contains("00"))) {
+                    if ((entry.getValue().contains("OK"))) {
                         successMiljoer.add(entry.getKey());
                     }
                 }

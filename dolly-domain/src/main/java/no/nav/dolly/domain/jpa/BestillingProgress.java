@@ -1,6 +1,5 @@
 package no.nav.dolly.domain.jpa;
 
-import static java.lang.String.format;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import javax.persistence.Column;
@@ -49,19 +48,5 @@ public class BestillingProgress {
     public BestillingProgress(Long bestillingId, String ident) {
         this.ident = ident;
         this.bestillingId = bestillingId;
-    }
-
-    public void appendKrrstubStatus(String jsonObject) {
-        if (krrstubStatus != null) {
-            krrstubStatus = format("%s,%s", krrstubStatus, jsonObject);
-        }
-        krrstubStatus = jsonObject;
-    }
-
-    public void appendSigrunstubStatus(String jsonObject) {
-        if (sigrunstubStatus != null) {
-            sigrunstubStatus = format("%s,%s", sigrunstubStatus, jsonObject);
-        }
-        sigrunstubStatus = jsonObject;
     }
 }
