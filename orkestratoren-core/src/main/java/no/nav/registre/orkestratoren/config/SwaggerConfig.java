@@ -1,5 +1,7 @@
 package no.nav.registre.orkestratoren.config;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,13 +30,17 @@ public class SwaggerConfig implements WebMvcConfigurer {
     
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
+              HashSet contentTypeJson = new HashSet(Arrays.asList("application/json"));
+              return new Docket(DocumentationType.SWAGGER_2)
                 .ignoredParameterTypes(ApiIgnore.class)
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.ant("/api/**"))
                 .build()
-                .apiInfo(apiInfo());
+                .apiInfo(apiInfo())
+                .produces(contentTypeJson)
+                .consumes(contentTypeJson)
+                .useDefaultResponseMessages(false);
     }
     
     private ApiInfo apiInfo() {
