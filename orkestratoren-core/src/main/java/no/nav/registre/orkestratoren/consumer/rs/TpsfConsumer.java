@@ -1,5 +1,8 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,9 +19,11 @@ public class TpsfConsumer {
     private RestTemplate restTemplateTpsf;
 
     private UriTemplate uriTemplate;
+    private String urlGetIdenter;
 
     public TpsfConsumer(@Value("${tps-forvalteren.rest-api.url}") String tpsfServerUrl) {
         uriTemplate = new UriTemplate(tpsfServerUrl + "/v1/endringsmelding/skd/send/{skdMeldingGruppeId}");
+        this.urlGetIdenter = tpsfServerUrl + "/v1/endringsmelding/skd/identer/{gruppeId}?aarsakskode={aarsakskode}&transaksjonstype={transaksjonstype}";
     }
 
     public AvspillingResponse sendSkdmeldingerTilTps(Long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
@@ -27,5 +32,9 @@ public class TpsfConsumer {
         return restTemplateTpsf.postForObject(url,
                 sendToTpsRequest,
                 AvspillingResponse.class);
+    }
+
+    public LinkedHashSet<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskode, String transaksjonstype) {
+        return restTemplateTpsf.getForObject(urlGetIdenter, LinkedHashSet.class, gruppeId, StringUtils.join(aarsakskode, ','), transaksjonstype);
     }
 }

@@ -3,7 +3,6 @@ package no.nav.registre.orkestratoren.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,7 @@ import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
 
 @Service
-public class TpsSyntPakkenConsumer {
+public class TpsSyntPakkenService {
 
     @Autowired
     private TpsfConsumer tpsfConsumer;
