@@ -6,11 +6,17 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RsTestgruppe {
 	private Long id;
 	private String navn;
@@ -23,5 +29,5 @@ public class RsTestgruppe {
 	private LocalDate datoEndret;
 
 	private RsTeamMedIdOgNavn team;
-	private Set<RsTestident> testidenter = new HashSet<>();
+	private Set<RsTestidentBestillingId> testidenter = new HashSet<>();
 }

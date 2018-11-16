@@ -1,12 +1,7 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.LocalAppStarter;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 import java.time.LocalDate;
 import org.junit.Test;
@@ -17,8 +12,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import no.nav.dolly.LocalAppStarter;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.testdata.builder.TeamBuilder;
+import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = LocalAppStarter.class)
@@ -40,7 +39,7 @@ public class TestGruppeRepository {
 
     @Test
     public void saveTestgruppeUtenIdenterOgUtenFavorisertAv() {
-        Bruker bruker = brukerRepository.save(BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker());
+        Bruker bruker = brukerRepository.save(Bruker.builder().navIdent("ident").build());
 
         Team team = teamRepository.save(TeamBuilder.builder()
                 .navn("team")

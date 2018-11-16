@@ -1,19 +1,5 @@
 package no.nav.dolly.regression.scenarios.rest.team;
 
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.test.web.servlet.MvcResult;
-
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -23,13 +9,26 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.test.web.servlet.MvcResult;
+
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.testdata.builder.TeamBuilder;
+
 public class GetTeamsScenarios extends TeamTestCaseBase {
 
     Bruker bruker2;
 
     @Before
     public void setupData(){
-        bruker2 = brukerRepository.save(BrukerBuilder.builder().navIdent("navident2").build().convertToRealBruker());
+        bruker2 = brukerRepository.save(Bruker.builder().navIdent("navident2").build());
 
         Team team2 = teamRepository.save(TeamBuilder.builder()
                 .navn("team2")
