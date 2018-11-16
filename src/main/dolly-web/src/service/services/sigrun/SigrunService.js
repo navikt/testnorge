@@ -4,9 +4,7 @@ import ConfigService from '~/service/Config'
 
 export default class SigrunService {
 	static getSigrunUrl() {
-		const url =
-			ConfigService.getDatesourceUrl('sigrun') || 'https://sigrun-skd-stub.nais.preprod.local'
-		return url
+		return ConfigService.getDatesourceUrl('sigrun') || 'https://sigrun-skd-stub.nais.preprod.local'
 	}
 
 	static getTestbruker(ident) {
