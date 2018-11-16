@@ -153,7 +153,6 @@ public class TestgruppeService {
 
         return mapperFacade.map(endretGruppe, RsTestgruppe.class);
     }
-
     public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
         Set<RsTestgruppe> grupper;
         if (!isNullOrEmpty(navIdent)) {

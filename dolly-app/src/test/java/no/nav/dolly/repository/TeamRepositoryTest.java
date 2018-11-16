@@ -1,12 +1,7 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.LocalAppStarter;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -20,8 +15,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import no.nav.dolly.LocalAppStarter;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.testdata.builder.TeamBuilder;
+import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = LocalAppStarter.class)
@@ -40,8 +39,8 @@ public class TeamRepositoryTest {
 
     @Test
     public void saveTeamWithoutGruppe() {
-        Bruker bruker = BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker();
-        Bruker brukerEier = BrukerBuilder.builder().navIdent("eier").build().convertToRealBruker();
+        Bruker bruker = Bruker.builder().navIdent("ident").build();
+        Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(Arrays.asList(bruker, brukerEier));
         List<Bruker> brukere = brukerRepository.findAll();
@@ -67,8 +66,8 @@ public class TeamRepositoryTest {
 
     @Test
     public void saveTeamWithGruppe() {
-        Bruker bruker = BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker();
-        Bruker brukerEier = BrukerBuilder.builder().navIdent("eier").build().convertToRealBruker();
+        Bruker bruker = Bruker.builder().navIdent("ident").build();
+        Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(Arrays.asList(bruker, brukerEier));
         List<Bruker> brukere = brukerRepository.findAll();
@@ -115,7 +114,7 @@ public class TeamRepositoryTest {
 
     @Test
     public void findTeamByEier() {
-        Bruker brukerEier = BrukerBuilder.builder().navIdent("eier").build().convertToRealBruker();
+        Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(Arrays.asList(brukerEier));
         List<Bruker> brukere = brukerRepository.findAll();
@@ -140,8 +139,8 @@ public class TeamRepositoryTest {
 
     @Test
     public void findFlereTeamsByMedlem() {
-        Bruker bruker = BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker();
-        Bruker brukerEier = BrukerBuilder.builder().navIdent("eier").build().convertToRealBruker();
+        Bruker bruker = Bruker.builder().navIdent("ident").build();
+        Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(Arrays.asList(bruker, brukerEier));
         List<Bruker> brukere = brukerRepository.findAll();

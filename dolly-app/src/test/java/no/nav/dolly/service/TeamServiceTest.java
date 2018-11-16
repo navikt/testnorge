@@ -36,7 +36,6 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.RsBrukerBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
@@ -105,7 +104,7 @@ public class TeamServiceTest {
         RsOpprettTeam rt = new RsOpprettTeam();
 
         Team t = TeamBuilder.builder().navn("t").medlemmer(new HashSet<>()).build().convertToRealTeam();
-        Bruker b1 = BrukerBuilder.builder().navIdent("nav1").build().convertToRealBruker();
+        Bruker b1 = Bruker.builder().navIdent("nav1").build();
 
         when(mapperFacade.map(rt, Team.class)).thenReturn(t);
         when(brukerService.fetchBruker(any())).thenReturn(b1);

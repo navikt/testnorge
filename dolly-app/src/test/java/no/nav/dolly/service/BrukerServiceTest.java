@@ -34,7 +34,6 @@ import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.RsBrukerBuilder;
 import no.nav.dolly.testdata.builder.RsTeamBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
@@ -109,7 +108,7 @@ public class BrukerServiceTest {
     public void getBrukerMedTeamsOgFavoritter_setterBrukerOgDensTeamIReturnertObjekt() {
         String navident = "navident";
 
-        Bruker bruker = BrukerBuilder.builder().navIdent(navident).build().convertToRealBruker();
+        Bruker bruker = Bruker.builder().navIdent(navident).build();
         RsBruker rsBruker = RsBrukerBuilder.builder().navIdent(navident).build().convertToRealRsBruker();
 
         Team team = TeamBuilder.builder().navn("navteam").eier(bruker).build().convertToRealTeam();
@@ -134,7 +133,7 @@ public class BrukerServiceTest {
         List<Testgruppe> gruppeList = Arrays.asList(gruppe);
 
         String navident = "navident";
-        Bruker bruker = BrukerBuilder.builder().navIdent(navident).favoritter(new HashSet<>()).build().convertToRealBruker();
+        Bruker bruker = Bruker.builder().navIdent(navident).favoritter(new HashSet<>()).build();
 
         when(brukerRepository.findBrukerByNavIdent(navident)).thenReturn(bruker);
         when(brukerRepository.save(bruker)).thenReturn(bruker);
@@ -153,7 +152,7 @@ public class BrukerServiceTest {
         List<Long> ider = Arrays.asList(1l, 2l);
         Testgruppe g = TestgruppeBuilder.builder().navn("gruppe").hensikt("hen").build().convertToRealTestgruppe();
         List<Testgruppe> grupper = Arrays.asList(g);
-        Bruker b = BrukerBuilder.builder().navIdent(navIdent).favoritter(new HashSet<>()).teams(new HashSet<>()).build().convertToRealBruker();
+        Bruker b = Bruker.builder().navIdent(navIdent).favoritter(new HashSet<>()).teams(new HashSet<>()).build();
 
         when(gruppeService.fetchGrupperByIdsIn(ider)).thenReturn(grupper);
         when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(b);
@@ -182,7 +181,7 @@ public class BrukerServiceTest {
         favoritter.add(g);
         favoritter.add(g2);
 
-        Bruker b = BrukerBuilder.builder().navIdent(navIdent).favoritter(favoritter).teams(new HashSet<>()).build().convertToRealBruker();
+        Bruker b = Bruker.builder().navIdent(navIdent).favoritter(favoritter).teams(new HashSet<>()).build();
         g.setFavorisertAv(new HashSet<>(Arrays.asList(b)));
         g2.setFavorisertAv(new HashSet<>(Arrays.asList(b)));
 

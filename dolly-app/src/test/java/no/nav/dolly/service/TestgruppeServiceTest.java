@@ -46,11 +46,9 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.RsBrukerBuilder;
 import no.nav.dolly.testdata.builder.RsOpprettTestgruppeBuilder;
 import no.nav.dolly.testdata.builder.RsTeamBuilder;
-import no.nav.dolly.testdata.builder.RsTestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
@@ -148,9 +146,9 @@ public class TestgruppeServiceTest {
 
     @Test
     public void fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker() {
-        RsTestgruppe tg1 = RsTestgruppeBuilder.builder().id(1l).build().convertToRealRsTestgruppe();
-        RsTestgruppe tg2 = RsTestgruppeBuilder.builder().id(2l).build().convertToRealRsTestgruppe();
-        RsTestgruppe tg3 = RsTestgruppeBuilder.builder().id(3l).build().convertToRealRsTestgruppe();
+        RsTestgruppe tg1 = RsTestgruppe.builder().id(1l).build();
+        RsTestgruppe tg2 = RsTestgruppe.builder().id(2l).build();
+        RsTestgruppe tg3 = RsTestgruppe.builder().id(3l).build();
 
         RsTeam t1 = RsTeamBuilder.builder()
                 .grupper(new HashSet<>(Arrays.asList(tg3)))
@@ -194,12 +192,11 @@ public class TestgruppeServiceTest {
         rsT.setId(1l);
         rsT.setNavn("team");
 
-        Bruker bruker = BrukerBuilder.builder()
+        Bruker bruker = Bruker.builder()
                 .favoritter(new HashSet(Arrays.asList(g1, g2)))
                 .teams(new HashSet<>(Arrays.asList(t1)))
                 .navIdent(standardPrincipal)
-                .build()
-                .convertToRealBruker();
+                .build();
 
         RsTestgruppeMedErMedlemOgFavoritt r = new RsTestgruppeMedErMedlemOgFavoritt();
         r.setId(1l);
@@ -234,12 +231,11 @@ public class TestgruppeServiceTest {
         rsT.setId(1l);
         rsT.setNavn("team");
 
-        Bruker bruker = BrukerBuilder.builder()
+        Bruker bruker = Bruker.builder()
                 .favoritter(new HashSet(Arrays.asList(g1, g2)))
                 .teams(new HashSet<>(Arrays.asList(t1)))
                 .navIdent(standardPrincipal)
-                .build()
-                .convertToRealBruker();
+                .build();
 
         RsTestgruppeMedErMedlemOgFavoritt r = new RsTestgruppeMedErMedlemOgFavoritt();
         r.setId(1l);
