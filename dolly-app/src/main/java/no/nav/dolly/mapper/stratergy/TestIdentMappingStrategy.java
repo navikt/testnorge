@@ -17,7 +17,8 @@ public class TestIdentMappingStrategy implements MappingStrategy  {
                 .customize(new CustomMapper<Testident, RsTestidentBestillingId>() {
                     @Override
                     public void mapAtoB(Testident testgruppe, RsTestidentBestillingId rsTestgruppeBestillingId, MappingContext context) {
-                        rsTestgruppeBestillingId.setBestillingId(testgruppe.getBestillingProgress().get(0).getBestillingId());
+                        rsTestgruppeBestillingId.setBestillingId(!testgruppe.getBestillingProgress().isEmpty() ?
+                                testgruppe.getBestillingProgress().get(0).getBestillingId() : null);
                     }
                 })
                 .byDefault()
