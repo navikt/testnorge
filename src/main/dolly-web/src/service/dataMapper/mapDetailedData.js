@@ -39,6 +39,11 @@ export function mapTpsfData(tpsfData, bestillingData) {
 						value: Formatters.formatAlder(tpsfData.alder, tpsfData.doedsdato)
 					},
 					{
+						id: 'sivilstand',
+						label: 'Sivilstand',
+						value: tpsfData.sivilstand
+					},
+					{
 						id: 'miljoer',
 						label: 'Miljøer',
 						value: Formatters.arrayToString(bestillingData.environments)
