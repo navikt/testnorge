@@ -7,8 +7,8 @@ import _get from 'lodash/get'
 const initialState = {
 	items: {
 		tpsf: null,
-		sigrun: null,
-		krr: null
+		sigrunstub: null,
+		krrstub: null
 	}
 }
 
@@ -68,7 +68,7 @@ export default function testbrukerReducer(state = initialState, action) {
 				...state,
 				items: {
 					...state.items,
-					sigrun: { ...state.items.sigrun, [action.meta.ident]: action.payload.data }
+					sigrunstub: { ...state.items.sigrunstub, [action.meta.ident]: action.payload.data }
 				}
 			}
 		case success(GET_KRR_TESTBRUKER):
@@ -76,7 +76,7 @@ export default function testbrukerReducer(state = initialState, action) {
 				...state,
 				items: {
 					...state.items,
-					krr: { ...state.items.krr, [action.meta.ident]: action.payload.data }
+					krrstub: { ...state.items.krrstub, [action.meta.ident]: action.payload.data }
 				}
 			}
 		case success(UPDATE_TESTBRUKER):
