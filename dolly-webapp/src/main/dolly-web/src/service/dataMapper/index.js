@@ -38,7 +38,7 @@ const DataMapper = {
 	getDetailedData(state, ownProps) {
 		const { gruppe, testbruker } = state
 		const { personId } = ownProps
-		if (!testbruker.items || !testbruker.items.tpsf || !testbruker.items.sigrun) return null
+		if (!testbruker.items || !testbruker.items.tpsf) return null
 
 		const bestillingId = _findBestillingId(gruppe, ownProps.personId)
 		const bestillingObj = gruppe.data[0].bestillinger.find(
@@ -46,8 +46,8 @@ const DataMapper = {
 		)
 		const tpsfData = testbruker.items.tpsf.find(item => item.ident === personId)
 		let data = mapTpsfData(tpsfData, bestillingObj)
-		const sigrunData = testbruker.items.sigrun[personId]
-		const krrData = testbruker.items.krr && testbruker.items.krr[personId]
+		const sigrunData = testbruker.items.sigrunstub && testbruker.items.sigrunstub[personId]
+		const krrData = testbruker.items.krrstub && testbruker.items.krrstub[personId]
 		if (sigrunData) {
 			data.push(mapSigrunData(sigrunData))
 		}

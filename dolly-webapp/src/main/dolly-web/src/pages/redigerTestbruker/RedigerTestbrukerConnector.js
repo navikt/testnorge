@@ -12,7 +12,7 @@ import RedigerTestbruker from './RedigerTestbruker'
 // TODO: Reimplementere dette med nye testbruker state, inkludert sigrunStub
 const mapStateToProps = (state, ownProps) => {
 	return {
-		testbruker: state.testbruker.items.tpsf && state.testbruker.items.tpsf[0],
+		testbruker: state.testbruker.items,
 		testbrukerEnvironments: findEnvironmentsForIdent(state, ownProps.match.params.ident)
 	}
 }

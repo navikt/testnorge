@@ -4,6 +4,7 @@ import { FormikValues } from 'formik'
 import AttributtListe from './Attributter'
 import { groupList, groupListByHovedKategori } from './GroupList'
 import DataFormatter from '~/utils/DataFormatter'
+import DataSourceMapper from '~/utils/DataSourceMapper'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
 
@@ -61,11 +62,14 @@ export default class AttributtManager {
 		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
 	}
 
-	getInitialValuesForEditableItems(values: object): FormikValues {
+	//TODO: Se om vi dette kan gjøres ryddigere, litt rotete pga tpsf er arr mens andre dataer er obj
+	getInitialValuesForEditableItems(values: object, ident: string): FormikValues {
 		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
-
 		return editableAttributes.reduce((prev, item) => {
-			return this._setInitialValueFromServer(prev, item, values)
+			console.log(item)
+			const dataSource = DataSourceMapper(item.dataSource)
+			const sourceValues = dataSource === 'tpsf' ? values[dataSource][0] : values[dataSource][ident]
+			return this._setInitialValueFromServer(prev, item, sourceValues)
 		}, {})
 	}
 

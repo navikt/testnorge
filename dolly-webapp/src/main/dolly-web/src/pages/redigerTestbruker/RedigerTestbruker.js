@@ -45,11 +45,17 @@ export default class RedigerTestbruker extends Component {
 	}
 
 	render() {
-		const { testbruker, goBack } = this.props
+		const { testbruker, goBack, match } = this.props
+		const { tpsf, sigrunstub, krrstub } = testbruker
 
-		if (!testbruker) return null
+		console.log(testbruker)
 
-		const initialValues = this.AttributtManager.getInitialValuesForEditableItems(testbruker)
+		if (!tpsf || !sigrunstub) return null
+
+		const initialValues = this.AttributtManager.getInitialValuesForEditableItems(
+			testbruker,
+			match.params.ident
+		)
 
 		return (
 			<Formik
@@ -72,7 +78,7 @@ export default class RedigerTestbruker extends Component {
 								Lagre
 							</Knapp>
 						</div>
-						<DisplayFormikState {...formikProps} />
+						{/* <DisplayFormikState {...formikProps} /> */}
 					</div>
 				)}
 			/>
