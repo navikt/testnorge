@@ -15,10 +15,10 @@ import no.nav.registre.orkestratoren.provider.rs.InternalController;
 @Import({ InternalController.class, JobController.class, TpsfConsumer.class })
 public class AppConfig {
 
-    @Value("${orkestratorens.ida.credential.username}")
+    @Value("${testnorges.ida.credential.tpsf.username}")
     private String tpsfUsername;
 
-    @Value("${orkestratorens.ida.credential.password}")
+    @Value("${testnorges.ida.credential.tpsf.password}")
     private String tpsfPassword;
 
     @Bean
