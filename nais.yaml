@@ -32,7 +32,7 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorge-hodejegeren.rest-api"
       resourceType: restservice
-    - alias: "orkestratorens.ida.credential"
+    - alias: "testnorges.ida.credential.tpsf"
       resourceType: credential
     - alias: "orkestratorensProperties"
       resourceType: applicationProperties
