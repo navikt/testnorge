@@ -19,9 +19,9 @@ public class RsBestillingProgress {
 
     private List<String> tpsfSuccessEnv;
 
-    private List<String> sigrunstubStatus;
+    private String sigrunstubStatus;
 
-    private List<String> krrstubStatus;
+    private String krrstubStatus;
 
     private String feil;
 }

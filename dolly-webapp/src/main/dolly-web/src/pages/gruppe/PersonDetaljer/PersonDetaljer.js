@@ -7,8 +7,15 @@ import './PersonDetaljer.less'
 export default class PersonDetaljer extends PureComponent {
 	static propTypes = {}
 
+	componentDidMount() {
+		this.props.getSigrunTestbruker()
+		this.props.getKrrTestbruker()
+	}
+
 	render() {
 		const { personData } = this.props
+
+		if (!personData) return null
 
 		return (
 			<div className="person-details">

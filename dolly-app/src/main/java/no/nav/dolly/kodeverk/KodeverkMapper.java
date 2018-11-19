@@ -3,6 +3,7 @@ package no.nav.dolly.kodeverk;
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class KodeverkMapper {
             kodeverkAdjusted.getKoder().addAll(extractKoderFromBetydninger(betydningerSortedByKoder));
         }
 
+        Collections.sort(kodeverkAdjusted.getKoder(), (kode1, kode2) -> kode1.getLabel().compareToIgnoreCase(kode2.getLabel()));
         return kodeverkAdjusted;
     }
 

@@ -25,7 +25,6 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.repository.IdentRepository;
-import no.nav.dolly.testdata.builder.RsTestidentBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,8 +53,8 @@ public class IdentServiceTest {
 
     @Test
     public void persisterTestidenter_kallerSavePaaAlleTestidenter() {
-        RsTestident rsi1 = RsTestidentBuilder.builder().ident(STANDARD_IDENTER_1).build().convertToRealRsTestident();
-        RsTestident rsi2 = RsTestidentBuilder.builder().ident(STANDAR_IDENTER_2).build().convertToRealRsTestident();
+        RsTestident rsi1 = RsTestident.builder().ident(STANDARD_IDENTER_1).build();
+        RsTestident rsi2 = RsTestident.builder().ident(STANDAR_IDENTER_2).build();
         List<RsTestident> rsTestidenter = Arrays.asList(rsi1, rsi2);
 
         Testident i1 = TestidentBuilder.builder().ident(STANDARD_IDENTER_1).build().convertToRealTestident();
@@ -72,8 +71,8 @@ public class IdentServiceTest {
     @Test(expected = ConstraintViolationException.class)
     public void persisterTestidenter_shouldThrowExceptionWhenADBConstraintIsBroken() {
 
-        RsTestident rsi1 = RsTestidentBuilder.builder().ident(STANDARD_IDENTER_1).build().convertToRealRsTestident();
-        RsTestident rsi2 = RsTestidentBuilder.builder().ident(STANDAR_IDENTER_2).build().convertToRealRsTestident();
+        RsTestident rsi1 = RsTestident.builder().ident(STANDARD_IDENTER_1).build();
+        RsTestident rsi2 = RsTestident.builder().ident(STANDAR_IDENTER_2).build();
         List<RsTestident> rsTestidenter = Arrays.asList(rsi1, rsi2);
 
         when(identRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
@@ -98,8 +97,8 @@ public class IdentServiceTest {
 
     @Test
     public void slettTestidenter_kallesRiktigAntallGanger() {
-        RsTestident rsi1 = RsTestidentBuilder.builder().ident(STANDARD_IDENTER_1).build().convertToRealRsTestident();
-        RsTestident rsi2 = RsTestidentBuilder.builder().ident(STANDAR_IDENTER_2).build().convertToRealRsTestident();
+        RsTestident rsi1 = RsTestident.builder().ident(STANDARD_IDENTER_1).build();
+        RsTestident rsi2 = RsTestident.builder().ident(STANDAR_IDENTER_2).build();
         List<RsTestident> rsTestidenter = Arrays.asList(rsi1, rsi2);
 
         identService.slettTestidenter(rsTestidenter);

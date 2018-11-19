@@ -2,9 +2,7 @@ package no.nav.dolly.domain.resultset;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
@@ -27,10 +25,8 @@ public class RsTestgruppeMedErMedlemOgFavoritt {
 	private List<RsBestilling> bestillinger = new ArrayList<>();
 
 	private RsTeamMedIdOgNavn team;
-	private Set<RsTestidentBestillingId> testidenter = new HashSet<>();
+	private List<RsTestidentBestillingId> testidenter = new ArrayList<>();
 
 	private boolean erMedlemAvTeamSomEierGruppe;
 	private boolean favorittIGruppen;
-
-
 }

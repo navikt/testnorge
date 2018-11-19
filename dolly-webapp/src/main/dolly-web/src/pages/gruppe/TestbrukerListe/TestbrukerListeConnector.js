@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import TestbrukerListe from './TestbrukerListe'
-import { GET_TPSF_TESTBRUKERE, GET_SIGRUN_TESTBRUKERE, sokSelector } from '~/ducks/testBruker'
+import { GET_TPSF_TESTBRUKERE, sokSelector } from '~/ducks/testBruker'
 import DataMapper from '~/service/dataMapper'
 import { createLoadingSelector } from '~/ducks/loading'
 
@@ -9,14 +9,13 @@ const mapStateToProps = state => ({
 	searchActive: Boolean(state.search),
 	headers: DataMapper.getHeaders(),
 	testbrukere: sokSelector(DataMapper.getData(state), state.search),
-	isFetching: loadingSelector(state)
+	isFetching: loadingSelector(state),
+	username: state.bruker.brukerData.navIdent
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	getTPSFTestbrukere: () =>
-		dispatch(GET_TPSF_TESTBRUKERE(ownProps.testidenter.map(ident => ident.ident))),
-	getSigrunTestbrukere: () =>
-		dispatch(GET_SIGRUN_TESTBRUKERE(ownProps.testidenter.map(ident => ident.ident)))
+		dispatch(GET_TPSF_TESTBRUKERE(ownProps.testidenter.map(ident => ident.ident)))
 })
 
 export default connect(

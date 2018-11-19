@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
@@ -38,18 +39,18 @@ public class TpsfService {
     ProvidersProps providersProps;
 
     public List<String> opprettIdenterTpsf(RsTpsfBestilling request) {
-        ResponseEntity<Object> response = postToTpsf(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_BASE_URL, TPSF_OPPRETT_URL), new HttpEntity<>(request));
+        ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, new HttpEntity<>(request));
         return objectMapper.convertValue(response.getBody(), List.class);
     }
 
     public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
         validateEnvironments(environments);
-        String url = buildTpsfUrlFromEnvironmentsInput(environments);
-        ResponseEntity<Object> response = postToTpsf(url, new HttpEntity<>(identer));
+        ResponseEntity<Object> response = postToTpsf(TPSF_SEND_TPS_FLERE_URL, new HttpEntity<>(new TpsfIdenterMiljoer(identer, environments)));
         return objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class);
     }
 
-    private ResponseEntity<Object> postToTpsf(String url, HttpEntity request) {
+    private ResponseEntity<Object> postToTpsf(String addtionalUrl, HttpEntity request) {
+        String url = format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_BASE_URL, addtionalUrl);
         try {
             ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, request, Object.class);
             if (isBodyNotNull(response) && response.getBody().toString().contains("exception=")) {
@@ -73,14 +74,5 @@ public class TpsfService {
         if (isNullOrEmpty(environments)) {
             throw new IllegalArgumentException("Ingen TPS miljoer er spesifisert for sending av testdata");
         }
-    }
-
-    private String buildTpsfUrlFromEnvironmentsInput(List<String> environments) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(providersProps.getTpsf().getUrl()).append(TPSF_BASE_URL).append(TPSF_SEND_TPS_FLERE_URL).append("?environments=");
-        environments.forEach(env -> sb
-                .append(env)
-                .append(','));
-        return sb.substring(0, sb.length() - 1);
     }
 }

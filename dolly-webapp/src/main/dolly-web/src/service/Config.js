@@ -25,8 +25,6 @@ const ConfigService = {
 				return dollyConfig.sigrunStubUrl
 			case 'krr':
 				return dollyConfig.krrStubUrl
-			case 'kodeverk':
-				return dollyConfig.kodeverkUrl
 			default:
 				return undefined
 		}
