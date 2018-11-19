@@ -9,7 +9,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AarsakskoderTrans1 {
-    TILDELING_DNUMMER("91"),
     INNVANDRING("02"),
     FOEDSELSMELDING("01"),
     FOEDSELSNUMMERKORREKSJON("39"),
