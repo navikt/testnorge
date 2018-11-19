@@ -14,6 +14,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Har inntekt',
 		dataSource: DataSource.SIGRUN,
 		validation: yup.object(),
+		kanRedigeres: true,
 		items: [
 			{
 				hovedKategori: Kategorier.Inntekt,
