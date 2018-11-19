@@ -62,13 +62,14 @@ export default class AttributtManager {
 		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
 	}
 
-	//TODO: Se om vi dette kan gjøres ryddigere, litt rotete pga tpsf er arr mens andre dataer er obj
+	//TODO: Se om vi dette kan gjøres ryddigere, litt rotete pga tpsf er array mens andre registre er object
 	getInitialValuesForEditableItems(values: object, ident: string): FormikValues {
 		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
 		return editableAttributes.reduce((prev, item) => {
 			console.log(item)
 			const dataSource = DataSourceMapper(item.dataSource)
 			const sourceValues = dataSource === 'tpsf' ? values[dataSource][0] : values[dataSource][ident]
+			console.log(sourceValues)
 			return this._setInitialValueFromServer(prev, item, sourceValues)
 		}, {})
 	}
@@ -119,6 +120,8 @@ export default class AttributtManager {
 
 		return _set(currentObject, item.id, initialValue)
 	}
+
+	_setInitialArrayValuesFromServer(currentObject, item, serverValues) {}
 
 	_setInitialArrayValue(currentObject, itemId, stateValues, array) {
 		let initialValue = array
