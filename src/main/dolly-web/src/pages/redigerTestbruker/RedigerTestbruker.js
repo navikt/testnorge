@@ -23,6 +23,7 @@ export default class RedigerTestbruker extends Component {
 	componentDidMount() {
 		this.props.getGruppe()
 		this.props.getTestbruker()
+		this.props.getSigrunTestbruker()
 	}
 
 	submit = values => {
@@ -71,7 +72,7 @@ export default class RedigerTestbruker extends Component {
 								Lagre
 							</Knapp>
 						</div>
-						{/* <DisplayFormikState {...formikProps} /> */}
+						<DisplayFormikState {...formikProps} />
 					</div>
 				)}
 			/>

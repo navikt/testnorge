@@ -3,6 +3,7 @@ import { push } from 'connected-react-router'
 import {
 	UPDATE_TESTBRUKER,
 	GET_TPSF_TESTBRUKERE,
+	GET_SIGRUN_TESTBRUKER,
 	findEnvironmentsForIdent
 } from '~/ducks/testBruker'
 import { getGruppe } from '~/ducks/gruppe'
@@ -19,6 +20,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getTestbruker: () => dispatch(GET_TPSF_TESTBRUKERE([ownProps.match.params.ident])),
+		getSigrunTestbruker: () => dispatch(GET_SIGRUN_TESTBRUKER(ownProps.match.params.ident)),
 		getGruppe: () => dispatch(getGruppe(ownProps.match.params.gruppeId)),
 		updateTestbruker: (userData, tpsData) => dispatch(UPDATE_TESTBRUKER(userData, tpsData)),
 		goBack: () => dispatch(push(`/gruppe/${ownProps.match.params.gruppeId}`))
