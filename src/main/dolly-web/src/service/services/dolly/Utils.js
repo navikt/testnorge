@@ -10,7 +10,7 @@ export const NormalizeTeamListForDropdown = ({ data }) => ({
 export const NormalizeKodeverkForDropdown = ({ data }) => ({
 	options: data.koder.filter(val => !_excludeList.includes(val.value)).map(kode => ({
 		value: kode.value,
-		label: DataFormatter.kodeverkLabel(kode.label)
+		label: kode.label
 	}))
 })
 
