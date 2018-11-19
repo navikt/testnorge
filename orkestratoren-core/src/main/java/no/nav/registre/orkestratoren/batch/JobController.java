@@ -35,12 +35,12 @@ public class JobController {
     @Autowired
     private ArenaInntektSyntPakkenService arenaInntektSyntPakkenService;
 
-    @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 * * * *}")
+    @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
         tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
     }
 
-    @Scheduled(cron = "${orkestratoren.arenabatch.cron:0 1 1 * * *}")
+    @Scheduled(cron = "${orkestratoren.arenabatch.cron:0 0 1 1 * *}")
     public void arenaInntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = SyntetiserInntektsmeldingRequest.builder()
                 .miljoe(miljoe)
