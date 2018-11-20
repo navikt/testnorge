@@ -9,7 +9,7 @@ import AutofillAddress from '~/components/autofillAddress/AutofillAddress'
 import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {
-	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
+	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels, editMode) => {
 		return (
 			<Panel
 				key={hovedKategori.id}
@@ -17,13 +17,13 @@ export default class FormEditor extends PureComponent {
 				startOpen={!closePanels}
 			>
 				{items.map((item, idx) => {
-					return this.renderFieldContainer(item, idx, formikProps)
+					return this.renderFieldContainer(item, idx, formikProps, editMode)
 				})}
 			</Panel>
 		)
 	}
 
-	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
+	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps, editMode) => {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
@@ -34,7 +34,7 @@ export default class FormEditor extends PureComponent {
 					{items.map(
 						item =>
 							isFieldarray
-								? FormEditorFieldArray(item, formikProps, this.renderFieldComponent)
+								? FormEditorFieldArray(item, formikProps, this.renderFieldComponent, editMode)
 								: this.renderFieldComponent(item, formikProps.values)
 					)}
 				</div>
@@ -100,11 +100,11 @@ export default class FormEditor extends PureComponent {
 	}
 
 	render() {
-		const { AttributtListe, FormikProps, ClosePanels } = this.props
+		const { AttributtListe, FormikProps, ClosePanels, editMode = false } = this.props
 
 		return AttributtListe.map(hovedKategori =>
 			// Ikke vis kategori som har default ikke-valgt radio button
-			this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
+			this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels, editMode)
 		)
 	}
 }

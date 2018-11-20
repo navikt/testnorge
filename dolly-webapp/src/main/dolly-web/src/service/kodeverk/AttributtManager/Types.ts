@@ -37,6 +37,7 @@ export interface Attributt {
 	subKategori: Kategori
 	id: string
 	path?: string
+	editPath?: string
 	label: string
 	dataSource: DataSource
 	inputType?: InputType
