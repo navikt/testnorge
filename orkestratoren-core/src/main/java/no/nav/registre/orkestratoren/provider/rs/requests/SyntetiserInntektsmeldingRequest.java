@@ -12,5 +12,4 @@ import lombok.Setter;
 public class SyntetiserInntektsmeldingRequest {
 
     private Long skdMeldingGruppeId;
-    private String miljoe;
 }

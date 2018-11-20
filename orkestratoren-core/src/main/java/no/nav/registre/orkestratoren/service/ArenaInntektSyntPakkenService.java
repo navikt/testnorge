@@ -26,7 +26,7 @@ public class ArenaInntektSyntPakkenService {
     public List<String> genererEnInntektsmeldingPerFnrIInntektstub(SyntetiserInntektsmeldingRequest request) {
         List<String> levendeNordmennFnr = opprettListenLevendeNordmenn(request.getSkdMeldingGruppeId());
         List<String> inntektsmldMottakere = levendeNordmennFnr.subList(0, levendeNordmennFnr.size() / 2);
-        arenaInntektSyntConsumer.genererEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere, request.getMiljoe());
+        arenaInntektSyntConsumer.genererEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere);
         return inntektsmldMottakere;
     }
 

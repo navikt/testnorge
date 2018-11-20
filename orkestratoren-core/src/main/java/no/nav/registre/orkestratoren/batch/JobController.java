@@ -20,7 +20,7 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 @Slf4j
 public class JobController {
 
-    @Value("${orkestratoren.batch.miljoe}")
+    @Value("${orkestratoren.batch.tps.miljoe}")
     private String miljoe;
 
     @Value("${orkestratoren.batch.skdMeldingGruppeId}")
@@ -43,7 +43,6 @@ public class JobController {
     @Scheduled(cron = "${orkestratoren.arenabatch.cron:0 0 1 1 * *}")
     public void arenaInntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = SyntetiserInntektsmeldingRequest.builder()
-                .miljoe(miljoe)
                 .skdMeldingGruppeId(skdMeldingGruppeId)
                 .build();
         List<String> levendeNordmennFnr = arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
