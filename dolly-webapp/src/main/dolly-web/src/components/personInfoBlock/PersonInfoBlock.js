@@ -10,14 +10,14 @@ export default class PersonInfoBlock extends PureComponent {
 		data: PropTypes.array
 	}
 
-	renderPersonInfoBlock = (data, idx, bottomBorder) => {
+	renderPersonInfoBlock = (data, header, idx, bottomBorder) => {
 		const cssClassContent = cn('person-info-block_content', {
 			'bottom-border': bottomBorder
 		})
 
 		return (
 			<div key={idx} className="person-info-block">
-				{/* {header && <h3>{header}</h3>} */}
+				{header && <h4 className="person-info-block_multiple">{header}</h4>}
 
 				<div className={cssClassContent}>
 					{data.map((v, k) => {
@@ -48,7 +48,7 @@ export default class PersonInfoBlock extends PureComponent {
 			return (
 				<Fragment>
 					{data.map((subBlock, idx) =>
-						this.renderPersonInfoBlock(subBlock.value, idx, idx !== data.length - 1)
+						this.renderPersonInfoBlock(subBlock.value, subBlock.label, idx, idx !== data.length - 1)
 					)}
 				</Fragment>
 			)
