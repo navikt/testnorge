@@ -66,10 +66,12 @@ export default class AttributtManager {
 	getInitialValuesForEditableItems(values: object, ident: string): FormikValues {
 		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
 		return editableAttributes.reduce((prev, item) => {
-			console.log(item)
 			const dataSource = DataSourceMapper(item.dataSource)
 			const sourceValues = dataSource === 'tpsf' ? values[dataSource][0] : values[dataSource][ident]
-			console.log(sourceValues)
+			if (item.items) {
+				return this._setInitialArrayValuesFromServer(prev, item, sourceValues)
+			}
+
 			return this._setInitialValueFromServer(prev, item, sourceValues)
 		}, {})
 	}
@@ -121,7 +123,18 @@ export default class AttributtManager {
 		return _set(currentObject, item.id, initialValue)
 	}
 
-	_setInitialArrayValuesFromServer(currentObject, item, serverValues) {}
+	_setInitialArrayValuesFromServer(currentObject, item, serverValues) {
+		// kanskje alle skal kunne redigeres
+		const itemArray = item.items
+		const editableAttributes = itemArray.filter(item => item.kanRedigeres)
+		const arrayValues = serverValues.map(valueObj => {
+			return editableAttributes.reduce((prev, curr) => {
+				const currentPath = curr.editPath || curr.path
+				return _set(prev, curr.id, valueObj[currentPath])
+			}, {})
+		})
+		return _set(currentObject, item.id, arrayValues)
+	}
 
 	_setInitialArrayValue(currentObject, itemId, stateValues, array) {
 		let initialValue = array

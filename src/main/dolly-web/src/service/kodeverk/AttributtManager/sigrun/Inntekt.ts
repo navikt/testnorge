@@ -22,10 +22,12 @@ const AttributtListe: Attributt[] = [
 				id: 'tjeneste',
 				label: 'Tjeneste',
 				path: 'tekniskNavn',
+				editPath: 'tjeneste',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
 				options: SelectOptionsManager('inntektTjeneste'),
-				validation: yup.string().required('Velg en type tjeneste.')
+				validation: yup.string().required('Velg en type tjeneste.'),
+				kanRedigeres: true
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
@@ -33,11 +35,13 @@ const AttributtListe: Attributt[] = [
 				id: 'typeinntekt',
 				label: 'Type inntekt',
 				path: 'tekniskNavn',
+				editPath: 'grunnlag',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
 				size: 'large',
 				dependentOn: 'tjeneste',
-				validation: yup.string().required('Velg en type inntekt.')
+				validation: yup.string().required('Velg en type inntekt.'),
+				kanRedigeres: true
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
@@ -50,7 +54,8 @@ const AttributtListe: Attributt[] = [
 				validation: yup
 					.number()
 					.min(1, 'Tast inn et gyldig beløp')
-					.required('Oppgi beløpet')
+					.required('Oppgi beløpet'),
+				kanRedigeres: true
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
@@ -66,59 +71,11 @@ const AttributtListe: Attributt[] = [
 					.required('Tast inn et gyldig år')
 					// TODO: Henter inn gyldigFra fra kodeverk?
 					.min(2017, 'Inntektsår må være senere enn 2016')
-					.max(9999, 'Inntektsår må være tidligere enn 9999')
+					.max(9999, 'Inntektsår må være tidligere enn 9999'),
+				kanRedigeres: true
 			}
 		]
 	}
-	// {
-	// 	hovedKategori: Kategorier.Inntekter,
-	// 	subKategori: SubKategorier.Inntekt,
-	// 	id: 'Summert skattegrunnlag',
-	// 	path: 'inntekter.inntekt',
-	// 	label: 'Summert skattegrunnlag',
-	// 	dataSource: DataSource.SIGRUN,
-	// 	validation: yup.object(),
-	// 	items: [
-	// 		{
-	// 			hovedKategori: Kategorier.Inntekt,
-	// 			subKategori: SubKategorier.Inntekt,
-	// 			id: 'typeinntekt',
-	// 			label: 'Type inntekt',
-	// 			size: 'large',
-	// 			dataSource: DataSource.SIGRUN,
-	// 			inputType: InputType.Select,
-	// 			apiKodeverkId: 'Summert skattegrunnlag',
-	// 			validation: yup.string().required('Velg en type inntekt.')
-	// 		},
-	// 		{
-	// 			hovedKategori: Kategorier.Inntekt,
-	// 			subKategori: SubKategorier.Inntekt,
-	// 			id: 'beloep',
-	// 			label: 'Beløp',
-	// 			dataSource: DataSource.SIGRUN,
-	// 			inputType: InputType.Number,
-	// 			validation: yup
-	// 				.number()
-	// 				.min(1, 'Tast inn et gyldig beløp')
-	// 				.required('Oppgi beløpet')
-	// 		},
-	// 		{
-	// 			hovedKategori: Kategorier.Inntekt,
-	// 			subKategori: SubKategorier.Inntekt,
-	// 			id: 'inntektsaar',
-	// 			label: 'År',
-	// 			dataSource: DataSource.SIGRUN,
-	// 			inputType: InputType.Number,
-	// 			validation: yup
-	// 				.number()
-	// 				.integer('Ugyldig årstall')
-	// 				.required('Tast inn et gyldig år')
-	// 				// TODO: Henter inn gyldigFra fra kodeverk?
-	// 				.min(2015, 'Inntektsår må være senere enn 2014')
-	// 				.max(9999, 'Inntektsår må være tidligere enn 9999')
-	// 		}
-	// 	]
-	// }
 ]
 
 export default AttributtListe

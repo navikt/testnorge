@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
-import _merge from 'lodash/merge'
 import Knapp from 'nav-frontend-knapper'
 import { AttributtManager } from '~/service/Kodeverk'
 import { Formik } from 'formik'
 import FormEditor from '~/components/formEditor/FormEditor'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import Button from '~/components/button/Button'
-import _set from 'lodash/set'
-import DataFormatter from '~/utils/DataFormatter'
 
 import './RedigerTestbruker.less'
 
@@ -27,28 +24,15 @@ export default class RedigerTestbruker extends Component {
 	}
 
 	submit = values => {
-		const { testbruker, testbrukerEnvironments, updateTestbruker, goBack } = this.props
+		const { updateTestbruker, goBack } = this.props
 
-		const valuesMapped = this.AttributtListeFlat.reduce((prev, curr) => {
-			let currentValue = values[curr.id]
-			if (curr.inputType === 'date') currentValue = DataFormatter.parseDate(currentValue)
-			return _set(prev, curr.path || curr.id, currentValue)
-		}, {})
-
-		const tpsData = {
-			identer: [testbruker.ident],
-			miljoer: testbrukerEnvironments
-		}
-
-		updateTestbruker(_merge(testbruker, valuesMapped), tpsData)
+		updateTestbruker(values, this.AttributtListeFlat)
 		goBack()
 	}
 
 	render() {
 		const { testbruker, goBack, match } = this.props
 		const { tpsf, sigrunstub, krrstub } = testbruker
-
-		console.log(testbruker)
 
 		if (!tpsf || !sigrunstub) return null
 
@@ -64,11 +48,12 @@ export default class RedigerTestbruker extends Component {
 				validationSchema={this.Validations}
 				render={formikProps => (
 					<div>
-						<h2>Rediger {`${testbruker.fornavn} ${testbruker.etternavn}`}</h2>
+						<h2>Rediger {`${tpsf[0].fornavn} ${tpsf[0].etternavn}`}</h2>
 						<FormEditor
 							AttributtListe={this.AttributtListe}
 							FormikProps={formikProps}
 							ClosePanels
+							editMode
 						/>
 						<div className="form-editor-knapper">
 							<Knapp type="standard" onClick={goBack}>

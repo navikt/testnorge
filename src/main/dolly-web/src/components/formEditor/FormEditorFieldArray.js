@@ -6,7 +6,12 @@ import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManag
 
 const Attributt = new AttributtManager()
 
-const FormEditorFieldArray = ({ subKategori, items, id }, formikProps, renderFieldComponent) => {
+const FormEditorFieldArray = (
+	{ subKategori, items, id },
+	formikProps,
+	renderFieldComponent,
+	editMode
+) => {
 	const parentId = id
 
 	return (
@@ -22,11 +27,13 @@ const FormEditorFieldArray = ({ subKategori, items, id }, formikProps, renderFie
 						<Fragment>
 							<h4>
 								{subKategori.navn}
-								<Button
-									className="field-group-add"
-									kind="add-circle"
-									onClick={createDefaultObject}
-								/>
+								{!editMode && (
+									<Button
+										className="field-group-add"
+										kind="add-circle"
+										onClick={createDefaultObject}
+									/>
+								)}
 							</h4>
 							{formikProps.values[parentId] && formikProps.values[parentId].length > 0 ? (
 								formikProps.values[parentId].map((faKey, idx) => {
@@ -44,11 +51,13 @@ const FormEditorFieldArray = ({ subKategori, items, id }, formikProps, renderFie
 														idx
 													})
 												})}
-												<Button
-													className="field-group-remove"
-													kind="remove-circle"
-													onClick={e => arrayHelpers.remove(idx)}
-												/>
+												{!editMode && (
+													<Button
+														className="field-group-remove"
+														kind="remove-circle"
+														onClick={e => arrayHelpers.remove(idx)}
+													/>
+												)}
 											</div>
 										</div>
 									)

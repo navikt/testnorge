@@ -25,6 +25,10 @@ export default class Request {
 		return instanceWithoutCredentials.get(url, config).then(debugLoading)
 	}
 
+	static postWithoutCredentials(url, data, config) {
+		return instanceWithoutCredentials.post(url, data, config).then(debugLoading)
+	}
+
 	static post(url, data) {
 		return instance.post(url, data).then(debugLoading)
 	}
