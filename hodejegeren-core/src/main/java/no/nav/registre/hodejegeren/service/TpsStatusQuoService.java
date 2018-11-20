@@ -28,7 +28,7 @@ public class TpsStatusQuoService {
     private TpsfConsumer tpsfConsumer;
     private Map<String, JsonNode> tpsServiceRoutineCache;
 
-    public Map<String, String> getStatusQuo(String routineName, List<String> feltnavn, String environment, String fnr) throws IOException {
+    public Map<String, String> hentStatusQuo(String routineName, List<String> feltnavn, String environment, String fnr) throws IOException {
         Map<String, String> personStatusQuo = new HashMap<>(feltnavn.size());
         resetCache();
 

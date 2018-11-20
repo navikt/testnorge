@@ -242,7 +242,7 @@ public class EksisterendeIdenterServiceTest {
 
         expectedException.expect(ManglerEksisterendeIdentException.class);
         expectedException.expectMessage("Kunne ikke finne ident for SkdMelding med meldingsnummer "
-                + meldingsnummer + ". For få identer i listen singleIdenterINorge.");
+                + meldingsnummer + ". For få identer i listen singleIdenterINorge fra TPSF avspillergruppen.");
 
         Endringskoder endringskode = Endringskoder.VIGSEL;
 

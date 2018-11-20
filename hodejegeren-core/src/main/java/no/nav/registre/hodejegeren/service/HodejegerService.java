@@ -64,7 +64,7 @@ public class HodejegerService {
 
         String environment = genereringsOrdreRequest.getMiljoe();
 
-        Map<String, List<String>> listerMedIdenter = createListerMedIdenter(genereringsOrdreRequest);
+        Map<String, List<String>> listerMedIdenter = opprettListerMedIdenter(genereringsOrdreRequest);
 
         try {
             for (Endringskoder endringskode : sorterteEndringskoder) {
@@ -134,7 +134,7 @@ public class HodejegerService {
         }
     }
 
-    private Map<String, List<String>> createListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {
+    private Map<String, List<String>> opprettListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {
         Map<String, List<String>> listerMedIdenter = new HashMap<>();
 
         List<String> opprettedeIdenterITpsf = new ArrayList<>();
