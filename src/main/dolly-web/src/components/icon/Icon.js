@@ -21,6 +21,7 @@ export const iconList = [
 	'file-new',
 	'team',
 	'info-circle',
+	'report-problem-circle',
 	'search',
 	'arrow-up',
 	'arrow-down',
@@ -70,7 +71,19 @@ export default class Icon extends PureComponent {
             case ('file-new'): return (<svg {...props} className={cn('svg-icon-file-new', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Maler</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M20.5 23.5h-17v-23h11l6 6zM14.5.5v6h6"/></g></svg>)
             case ('team'): return (<svg {...props} className={cn('svg-icon-team', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Team</title><g stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M4 6.609v1.391l-2.539.726c-.528.151-.961.724-.961 1.274v.5h5.5M7 6.578v1.422l2.538.726c.529.151.962.724.962 1.274v.5h-5.5"/><ellipse cx="5.5" cy="3.771" rx="3" ry="3.271"/><path d="M8.469 3.198c-.5.5-1.93.476-2.469-.527-1 1-2.625 1-3.434.429M17 6.609v1.391l-2.539.726c-.528.151-.961.724-.961 1.274v.5h5.5M20 6.594v1.406l2.538.726c.529.151.962.724.962 1.274v.5h-5.5"/><ellipse cx="18.5" cy="3.771" rx="3" ry="3.271"/><path d="M21.453 3.195c-.5.5-1.914.479-2.453-.524-1 1-2.625 1-3.434.429M10.5 19.609v1.391l-2.539.726c-.528.151-.961.724-.961 1.274v.5h5.5M13.5 19.609v1.391l2.538.726c.529.151.962.724.962 1.274v.5h-5.5"/><ellipse cx="12" cy="16.771" rx="3" ry="3.271"/><path d="M14.953 16.171c-.5.5-1.914.503-2.453-.5-1 1-2.625 1-3.434.429"/><path strokeLinecap="round" d="M4 12.5l2.5 2.5M20 12.5l-2.5 2.5"/></g></svg>)
             case ('info-circle'): return (<svg {...props} className={cn('svg-icon-info-circle', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Info</title><g><circle stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" cx="11.5" cy="12.5" r="11" fill="none"/><path stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none" d="M8.5 19.5h6M9.5 10.5h2v8.5"/><path stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" d="M11 6c-.277 0-.5.225-.5.5 0 .277.223.5.5.5.275 0 .5-.223.5-.5 0-.275-.225-.5-.5-.5z" fill="none"/></g></svg>)
-            case ('search'): return (<svg {...props} className={cn('svg-icon-search', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Søk</title><g stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><circle cx="8.5" cy="8.5" r="8"/><path strokeLinecap="round" d="M14.156 14.156l9.344 9.344"/></g></svg>)
+			case ('report-problem-circle'): return (
+				<svg {...props} className={cn('svg-icon-report-problem-circle', className)}
+				focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
+  <g fill="#258965">		   
+  <circle className="circle" cx="12" cy="12" r="8"/>
+
+  <path className="path" d="M11.696,0.996l-0.205,0.002c-3.08,0.054-5.979,1.299-8.162,3.506c-2.199,2.223-3.38,5.133-3.327,8.195
+			   C0.112,19.036,5.077,24,11.305,24l0.203-0.002c6.446-0.111,11.601-5.361,11.49-11.7C22.888,5.961,17.923,0.996,11.696,0.996z
+				M11,6.996c0-0.276,0.224-0.5,0.5-0.5c0.275,0,0.5,0.224,0.5,0.5v7c0,0.276-0.225,0.5-0.5,0.5c-0.276,0-0.5-0.224-0.5-0.5V6.996z
+				M11.518,18.496c-0.006,0-0.012,0-0.018,0c-0.545,0-0.991-0.436-1-0.982c-0.01-0.552,0.43-1.008,0.982-1.017
+			   c0.006,0,0.012-0.001,0.018-0.001c0.545,0,0.99,0.437,1,0.983C12.51,18.031,12.069,18.486,11.518,18.496z"/>
+		   </g></svg>)
+			case ('search'): return (<svg {...props} className={cn('svg-icon-search', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Søk</title><g stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><circle cx="8.5" cy="8.5" r="8"/><path strokeLinecap="round" d="M14.156 14.156l9.344 9.344"/></g></svg>)
             case ('arrow-up'): return (<svg {...props} className={cn('svg-arrow-up', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil opp</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M6.513 5.5l5-5 5 5M11.513.5v23"/></g></svg>)
             case ('arrow-down'): return (<svg {...props} className={cn('svg-arrow-down', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil ned</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M16.513 18.5l-5 5-5-5M11.513 23.5v-23"/></g></svg>)
 			case ('arrow-circle-right'): return (<svg {...props} className={cn('svg-arrow-circle-right', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Arrow up</title>

@@ -22,7 +22,8 @@ export default class BestillingStatus extends PureComponent {
 		this.state = {
 			ferdig: props.bestilling.ferdig,
 			antallKlare: props.bestilling.personStatus.length,
-			sistOppdatert: props.bestilling.sistOppdatert
+			sistOppdatert: props.bestilling.sistOppdatert,
+			isOpen: true
 		}
 	}
 
@@ -93,18 +94,34 @@ export default class BestillingStatus extends PureComponent {
 		}
 	}
 
-	render() {
-		const { bestilling, bestillingStatus, bestillingStatusObj } = this.props
+	_onCloseMiljoeStatus = bestillingStatusObj => {
+		this.setState({ isOpen: false })
 
-		if (this.state.ferdig && !bestillingStatusObj) return null
+		console.log(bestillingStatusObj, 'efef')
+		this.props.setBestillingStatus(bestillingStatusObj.id, { ...bestillingStatusObj, ny: false })
+	}
+
+	render() {
+		const { bestillingStatusObj } = this.props
+
+		if (
+			(this.state.ferdig && !bestillingStatusObj) ||
+			!this.state.isOpen ||
+			(bestillingStatusObj && !bestillingStatusObj.ny)
+		)
+			return null
 
 		const status = this.calculateStatus()
-
 		return (
 			<div className="bestilling-status">
 				{!this.state.ferdig && <BestillingProgress status={status} />}
 				{bestillingStatusObj &&
-					bestillingStatusObj.ny && <MiljoeStatus bestillingsData={bestillingStatusObj} />}
+					bestillingStatusObj.ny && (
+						<MiljoeStatus
+							bestillingsData={bestillingStatusObj}
+							onCloseButton={() => this._onCloseMiljoeStatus(bestillingStatusObj)}
+						/>
+					)}
 			</div>
 		)
 	}
