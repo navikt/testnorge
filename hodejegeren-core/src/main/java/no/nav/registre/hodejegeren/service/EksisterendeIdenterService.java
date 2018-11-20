@@ -119,7 +119,7 @@ public class EksisterendeIdenterService {
         for (int i = 0; i < meldinger.size(); i++) {
             if (i >= singleIdenterINorge.size() - 2) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
-                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen singleIdenterINorge.");
+                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen singleIdenterINorge fra TPSF avspillergruppen.");
             }
 
             Map<String, String> statusQuoIdent;
@@ -200,7 +200,7 @@ public class EksisterendeIdenterService {
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
             if (i >= levendeIdenterINorge.size() - 1) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
-                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge.");
+                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
             }
 
             Map<String, String> statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
@@ -241,7 +241,7 @@ public class EksisterendeIdenterService {
         for (int i = 0; i < meldinger.size(); i++) {
             if (i >= levendeIdenterINorge.size() - 1) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
-                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge.");
+                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
             }
 
             Map<String, String> statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,

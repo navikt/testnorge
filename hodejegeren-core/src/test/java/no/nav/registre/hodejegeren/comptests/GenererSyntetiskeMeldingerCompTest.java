@@ -43,9 +43,9 @@ public class GenererSyntetiskeMeldingerCompTest {
 
     @Autowired
     private TriggeSyntetiseringController triggeSyntetiseringController;
-    @Value("${hodejegeren.ida.credential.username}")
+    @Value("${testnorges.ida.credential.tpsf.username}")
     private String username;
-    @Value("${hodejegeren.ida.credential.password}")
+    @Value("${testnorges.ida.credential.tpsf.password}")
     private String password;
 
     /**

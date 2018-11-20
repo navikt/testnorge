@@ -32,7 +32,7 @@ public class EndringskodeTilFeltnavnMapperServiceTest {
 
     /**
      * Testscenario: HVIS et kall gjøres til getStatusQuoFraAarsakskode med en aarsakskode, skal riktig servicerutine og feltnavn
-     * bli sendt til getStatusQuo()
+     * bli sendt til hentStatusQuo()
      */
     @Test
     public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
@@ -41,7 +41,7 @@ public class EndringskodeTilFeltnavnMapperServiceTest {
         endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskoder, environment, fnr);
 
         ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
-        Mockito.verify(tpsStatusQuoService).getStatusQuo(eq(routineName), captor.capture(), eq(environment), eq(fnr));
+        Mockito.verify(tpsStatusQuoService).hentStatusQuo(eq(routineName), captor.capture(), eq(environment), eq(fnr));
         List<String> actualRequestParams = captor.getValue();
 
         assertEquals(2, actualRequestParams.size());

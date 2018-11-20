@@ -32,8 +32,8 @@ public class TpsfConsumer {
 
     public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
                         @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
-                        @Value("${hodejegeren.ida.credential.username}") String username,
-                        @Value("${hodejegeren.ida.credential.password}") String password
+                        @Value("${testnorges.ida.credential.tpsf.username}") String username,
+                        @Value("${testnorges.ida.credential.tpsf.password}") String password
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));

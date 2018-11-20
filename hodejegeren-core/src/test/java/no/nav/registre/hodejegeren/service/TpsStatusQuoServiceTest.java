@@ -37,7 +37,7 @@ public class TpsStatusQuoServiceTest {
     private String environment = "t1";
 
     /**
-     * Testscenario: HVIS getStatusQuo blir kalt med et simpelt feltnavn, så skal den returnere servicerutine-feltets verdi i en
+     * Testscenario: HVIS hentStatusQuo blir kalt med et simpelt feltnavn, så skal den returnere servicerutine-feltets verdi i en
      * map.
      */
     @Test
@@ -49,14 +49,14 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
 
         assertEquals(1, statusQuoValues.size());
         assertEquals("NOR", statusQuoValues.get(STATSBORGERSKAP));
     }
 
     /**
-     * Testscenario: HVIS getStatusQuo blir kalt med feltnavn som er avhengig av et annet felt, skal man få tilbake riktig felt gitt
+     * Testscenario: HVIS hentStatusQuo blir kalt med feltnavn som er avhengig av et annet felt, skal man få tilbake riktig felt gitt
      * korrekt spørring
      */
     @Test
@@ -68,7 +68,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
 
         assertEquals(1, statusQuoValues.size());
         assertEquals("01065500791", statusQuoValues.get(FNR_RELASJON));
@@ -76,7 +76,7 @@ public class TpsStatusQuoServiceTest {
     }
 
     /**
-     * Testscenario: HVIS getStatusQuo blir kalt med feltnavn på formen "felt1/felt2/.../feltX, så skal den returnere
+     * Testscenario: HVIS hentStatusQuo blir kalt med feltnavn på formen "felt1/felt2/.../feltX, så skal den returnere
      * servicerutine-feltX sin verdi i en map.
      */
     @Test
@@ -89,7 +89,7 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
-        Map<String, String> statusQuoValues = tpsStatusQuoService.getStatusQuo(routineName, feltNavn, environment, fnr);
+        Map<String, String> statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
 
         assertEquals(2, statusQuoValues.size());
         assertEquals("AJOURHD", statusQuoValues.get("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler"));
@@ -98,7 +98,7 @@ public class TpsStatusQuoServiceTest {
 
     /**
      * Testscenario: HVIS getInfoOnRoutineName blir kalt skal metoden hente en rutine, og sørge for at innholdet rutinen caches.
-     * Hvis en cache ikke finnes, skal denne opprettes. Cachen skal resettes når getStatusQuo kalles.
+     * Hvis en cache ikke finnes, skal denne opprettes. Cachen skal resettes når hentStatusQuo kalles.
      */
     @Test
     public void shouldUpdateCacheWithRoutine() throws IOException {
@@ -119,7 +119,7 @@ public class TpsStatusQuoServiceTest {
         assertTrue(tpsServiceRoutineCache.containsKey(routineName));
         assertEquals(jsonNode, tpsServiceRoutineCache.get(routineName));
 
-        tpsStatusQuoService.getStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList(DATO_DO), environment, fnr);
+        tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList(DATO_DO), environment, fnr);
         assertNotEquals(tpsServiceRoutineCache, tpsStatusQuoService.getTpsServiceRoutineCache());
     }
 }

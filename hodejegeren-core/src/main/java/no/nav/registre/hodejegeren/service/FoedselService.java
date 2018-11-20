@@ -82,7 +82,7 @@ public class FoedselService {
                 }
                 int randomIndex = rand.nextInt(levendeIdenterINorge.size());
                 randomIdent = potensielleMoedre.remove(randomIndex);
-            } while (!"02468".contains(String.valueOf(randomIdent.charAt(8)))); // kvinner har partall i posisjon 8 i FNR
+            } while (!"02468".contains(String.valueOf(randomIdent.charAt(8)))); // kvinner har partall på index 8 i FNR
 
             moedre.add(randomIdent);
         }
