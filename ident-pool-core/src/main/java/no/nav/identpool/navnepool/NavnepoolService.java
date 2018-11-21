@@ -1,6 +1,8 @@
 package no.nav.identpool.navnepool;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,14 @@ import no.nav.identpool.navnepool.domain.ValidFornavn;
 public class NavnepoolService {
 
     private final SecureRandom secureRandom;
+
+    public List<Navn> finnTilfeldigeNavn(Integer antall) {
+        List<Navn> navneliste = new ArrayList<>(antall);
+        for (int i = 0; i < antall; i++) {
+            navneliste.add(finnTilfeldigNavn());
+        }
+        return navneliste;
+    }
 
     public Navn finnTilfeldigNavn() {
         return new Navn(
