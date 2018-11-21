@@ -13,18 +13,19 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.krrstub.KrrStubService;
 import no.nav.dolly.bestilling.krrstub.KrrStubResponseHandler;
-import no.nav.dolly.bestilling.sigrunstub.SigrunStubService;
+import no.nav.dolly.bestilling.krrstub.KrrStubService;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
+import no.nav.dolly.bestilling.sigrunstub.SigrunStubService;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
+import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
@@ -95,9 +96,14 @@ public class DollyBestillingService {
                 }
 
                 if (bestillingRequest.getKrrstub() != null) {
-                    bestillingRequest.getKrrstub().setIdent(hovedPersonIdent);
-                    bestillingRequest.getKrrstub().setGyldigFra(ZonedDateTime.now());
-                    ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, bestillingRequest.getKrrstub());
+                    DigitalKontaktdataRequest digitalKontaktdataRequest = DigitalKontaktdataRequest.builder()
+                            .personident(hovedPersonIdent)
+                            .gyldigFra(ZonedDateTime.now())
+                            .epost(bestillingRequest.getKrrstub().getEpost())
+                            .mobil(bestillingRequest.getKrrstub().getMobil())
+                            .reservert(bestillingRequest.getKrrstub().getReservert())
+                            .build();
+                    ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
                     progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
                 }
 
@@ -145,7 +151,7 @@ public class DollyBestillingService {
 
             if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if ((entry.getValue().contains("00"))) {
+                    if ((entry.getValue().contains("OK"))) {
                         successMiljoer.add(entry.getKey());
                     }
                 }

@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 public class KrrStubResponseHandler {
 
     public String extractResponse(ResponseEntity<String> response) {
-        return response != null && HttpStatus.OK == response.getStatusCode() ? "OK" : "FAIL";
+        return response != null && (HttpStatus.OK == response.getStatusCode() ||
+                HttpStatus.CREATED == response.getStatusCode() ||
+                HttpStatus.ACCEPTED == response.getStatusCode()) ? "OK" : "FAIL";
     }
 }

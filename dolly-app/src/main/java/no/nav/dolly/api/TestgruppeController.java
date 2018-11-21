@@ -77,7 +77,7 @@ public class TestgruppeController {
         RsTestgruppe gruppe = mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppe.class);
         RsTestgruppeMedErMedlemOgFavoritt gruppeMedMedlemOgFav = testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
         List<BestillingProgress> bestillingProgresses = bestillingProgressService.fetchBestillingsProgressByIdentId(gruppe.getTestidenter().stream().collect(Collectors.toList()));
-        Set<RsTestidentBestillingId> rsTestidentBestillingId = mapperFacade.mapAsSet(bestillingProgresses, RsTestidentBestillingId.class);
+        List<RsTestidentBestillingId> rsTestidentBestillingId = mapperFacade.mapAsList(bestillingProgresses, RsTestidentBestillingId.class);
         gruppeMedMedlemOgFav.setTestidenter(rsTestidentBestillingId);
         gruppeMedMedlemOgFav.setBestillinger(mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestilling.class));
         return gruppeMedMedlemOgFav;

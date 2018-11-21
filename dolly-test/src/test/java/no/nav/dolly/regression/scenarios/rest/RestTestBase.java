@@ -1,18 +1,5 @@
 package no.nav.dolly.regression.scenarios.rest;
 
-import com.fasterxml.jackson.databind.JavaType;
-import no.nav.dolly.config.DollyObjectMapper;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
-import no.nav.dolly.regression.InMememoryDbTestSetup;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,6 +17,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import com.fasterxml.jackson.databind.JavaType;
+
+import no.nav.dolly.config.DollyObjectMapper;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.regression.InMememoryDbTestSetup;
+import no.nav.dolly.testdata.builder.TeamBuilder;
+import no.nav.dolly.testdata.builder.TestgruppeBuilder;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 public abstract class RestTestBase extends InMememoryDbTestSetup {
 
@@ -90,9 +88,9 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     public void setupBruker() {
         mvcMock = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
-        standardBruker = brukerRepository.save(BrukerBuilder.builder()
+        standardBruker = brukerRepository.save(Bruker.builder()
                 .navIdent(standardNavIdent)
-                .build().convertToRealBruker()
+                .build()
         );
 
         standardTeam = teamRepository.save(TeamBuilder.builder()

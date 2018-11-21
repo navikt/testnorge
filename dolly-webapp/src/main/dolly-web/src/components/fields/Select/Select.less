@@ -1,8 +1,13 @@
 @import '~react-select/less/select';
 @import (reference) '~lessVars';
 
+// override to make sure Select-dropdown is placed in front.
+.Select-menu-outer {
+	z-index: 3;
+}
+
 .dollyselect {
-	width: @default-input-size;
+	min-width: @default-input-size;
 
 	&.large {
 		width: @default-input-size-large;

@@ -1,22 +1,21 @@
 package no.nav.dolly.regression.scenarios.rest.team;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
-import no.nav.dolly.testdata.builder.RsTeamBuilder;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MvcResult;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MvcResult;
+
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.testdata.builder.RsTeamBuilder;
 
 public class OppdaterTeamScenarios extends TeamTestCaseBase{
 
@@ -25,7 +24,7 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
 
     @Test
     public void oppdaterBrukerMedAlleInputs() throws Exception {
-        Bruker nyEier = brukerRepository.save(BrukerBuilder.builder().navIdent("nyEier").build().convertToRealBruker());
+        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent("nyEier").build());
 
         Team teamSomSkalEndres = teamRepository.findAll().get(0);
 
@@ -58,7 +57,7 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
 
     @Test
     public void oppdaterTeamKunNavnOgBeskrivelseIBody() throws Exception {
-        Bruker nyEier = brukerRepository.save(BrukerBuilder.builder().navIdent("nyEier").build().convertToRealBruker());
+        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent("nyEier").build());
 
         Team teamSomSkalErEndret = teamRepository.findAll().get(0);
 

@@ -1,21 +1,20 @@
 package no.nav.dolly.mapper.stratergy;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.time.LocalDate;
+import org.junit.Before;
+import org.junit.Test;
+
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.testdata.builder.BrukerBuilder;
 import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
-
-import java.time.LocalDate;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 public class TestidentMappingTest {
 
@@ -28,7 +27,7 @@ public class TestidentMappingTest {
 
     @Test
     public void mapToRsTestidentIncludingTestgruppe(){
-        Bruker bruker = BrukerBuilder.builder().navIdent("ident").build().convertToRealBruker();
+        Bruker bruker = Bruker.builder().navIdent("ident").build();
 
         Testgruppe testgruppe = TestgruppeBuilder.builder()
                 .sistEndretAv(bruker)

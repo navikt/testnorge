@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
-import no.nav.dolly.exceptions.SigrunStubException;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
@@ -48,8 +47,8 @@ public class SigrunStubService {
             return restTemplate.exchange(url, HttpMethod.POST, new HttpEntity(request, header), String.class);
 
         } catch (HttpClientErrorException e) {
-            log.error("SigrunStub kall feilet mot url <{}> grunnet {}", url, e.getResponseBodyAsString());
-            throw new SigrunStubException("SigrunStub kall feilet med: " + e, e);
+            log.error("SigrunStub kall feilet mot url <{}> grunnet {}", url, e.getResponseBodyAsString(), e);
+            return new ResponseEntity(e.getStatusCode());
         }
     }
 }

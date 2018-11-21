@@ -14,7 +14,8 @@ import no.nav.dolly.domain.resultset.RsBestillingProgress;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
-public class BestillingProgressMappingStrategy implements MappingStrategy{
+public class BestillingProgressMappingStrategy implements MappingStrategy {
+
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(BestillingProgress.class, RsBestillingProgress.class)
@@ -26,21 +27,21 @@ public class BestillingProgressMappingStrategy implements MappingStrategy{
                         rsProgress.setIdent(progress.getIdent());
                         rsProgress.setFeil(progress.getFeil());
 
-                        if(!isNullOrEmpty(progress.getTpsfSuccessEnv())){
+                        if (!isNullOrEmpty(progress.getTpsfSuccessEnv())) {
                             rsProgress.setTpsfSuccessEnv(
                                     new ArrayList<>(Arrays.asList(progress.getTpsfSuccessEnv().split(",")))
                             );
                         }
 
-                        if(!isNullOrEmpty(progress.getSigrunstubStatus())){
+                        if (!isNullOrEmpty(progress.getSigrunstubStatus())) {
                             rsProgress.setSigrunstubStatus(
-                                    new ArrayList<>(Arrays.asList(progress.getSigrunstubStatus().split(",")))
+                                    progress.getSigrunstubStatus()
                             );
                         }
 
-                        if(!isNullOrEmpty(progress.getKrrstubStatus())){
+                        if (!isNullOrEmpty(progress.getKrrstubStatus())) {
                             rsProgress.setKrrstubStatus(
-                                   new ArrayList<>(Arrays.asList(progress.getKrrstubStatus().split(",")))
+                                    progress.getKrrstubStatus()
                             );
                         }
                     }
