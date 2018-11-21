@@ -22,6 +22,7 @@ export const iconList = [
 	'team',
 	'info-circle',
 	'report-problem-circle',
+	'report-problem-triangle',
 	'search',
 	'arrow-up',
 	'arrow-down',
@@ -75,14 +76,31 @@ export default class Icon extends PureComponent {
 				<svg {...props} className={cn('svg-icon-report-problem-circle', className)}
 				focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
   <g fill="#258965">		   
-  <circle className="circle" cx="12" cy="12" r="8"/>
+  			<circle className="circle" cx="12" cy="12" r="8"/>
 
-  <path className="path" d="M11.696,0.996l-0.205,0.002c-3.08,0.054-5.979,1.299-8.162,3.506c-2.199,2.223-3.38,5.133-3.327,8.195
+  			<path className="path" d="M11.696,0.996l-0.205,0.002c-3.08,0.054-5.979,1.299-8.162,3.506c-2.199,2.223-3.38,5.133-3.327,8.195
 			   C0.112,19.036,5.077,24,11.305,24l0.203-0.002c6.446-0.111,11.601-5.361,11.49-11.7C22.888,5.961,17.923,0.996,11.696,0.996z
 				M11,6.996c0-0.276,0.224-0.5,0.5-0.5c0.275,0,0.5,0.224,0.5,0.5v7c0,0.276-0.225,0.5-0.5,0.5c-0.276,0-0.5-0.224-0.5-0.5V6.996z
 				M11.518,18.496c-0.006,0-0.012,0-0.018,0c-0.545,0-0.991-0.436-1-0.982c-0.01-0.552,0.43-1.008,0.982-1.017
 			   c0.006,0,0.012-0.001,0.018-0.001c0.545,0,0.99,0.437,1,0.983C12.51,18.031,12.069,18.486,11.518,18.496z"/>
 		   </g></svg>)
+
+
+
+
+	case ('report-problem-triangle'): return (
+	<svg {...props} className={cn('svg-icon-report-problem-triangle', className)}
+				focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
+
+	 <path className="path" d="M22.906,23.196L11.947,1.276c-0.17-0.339-0.726-0.339-0.895,0l-11,22c-0.078,0.155-0.069,0.339,0.021,0.486S0.326,24,0.5,24
+    h22c0.003,0,0.006,0,0.01,0c0.275,0,0.5-0.224,0.5-0.5C23.01,23.386,22.971,23.28,22.906,23.196z M11,9.152
+    c0-0.276,0.224-0.5,0.5-0.5c0.275,0,0.5,0.224,0.5,0.5v7.653c0,0.275-0.225,0.5-0.5,0.5c-0.276,0-0.5-0.225-0.5-0.5V9.152z
+     M11.5,21.108c-0.529,0-0.957-0.428-0.957-0.956c0-0.527,0.428-0.957,0.957-0.957c0.527,0,0.956,0.43,0.956,0.957
+    C12.456,20.681,12.027,21.108,11.5,21.108z"/>
+
+   </svg>
+   )
+
 			case ('search'): return (<svg {...props} className={cn('svg-icon-search', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Søk</title><g stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><circle cx="8.5" cy="8.5" r="8"/><path strokeLinecap="round" d="M14.156 14.156l9.344 9.344"/></g></svg>)
             case ('arrow-up'): return (<svg {...props} className={cn('svg-arrow-up', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil opp</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M6.513 5.5l5-5 5 5M11.513.5v23"/></g></svg>)
             case ('arrow-down'): return (<svg {...props} className={cn('svg-arrow-down', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil ned</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M16.513 18.5l-5 5-5-5M11.513 23.5v-23"/></g></svg>)
@@ -97,7 +115,8 @@ export default class Icon extends PureComponent {
 	c0-0.155,0.072-0.303,0.196-0.397l8.5-6.504c0.219-0.167,0.534-0.125,0.701,0.094c0.168,0.219,0.126,0.533-0.093,0.701l-7.98,6.106
 	l7.98,6.099C16.023,18.271,16.065,18.584,15.897,18.804z"/>
 		  </svg>)
-			 case ('feedback-check-circle'): return (<svg {...props} className={cn('svg-icon-feedback-check-circle', className)}
+
+		  		 case ('feedback-check-circle'): return (<svg {...props} className={cn('svg-icon-feedback-check-circle', className)}
 			 focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
 			 <title>Checkmark-success</title>
 			 <g>

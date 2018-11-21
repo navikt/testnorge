@@ -5,7 +5,7 @@ import Button from '~/components/button/Button'
 
 export default class MiljoeStatus extends PureComponent {
 	_renderMiljoe = (env, key, status) => {
-		const iconKind = status == 'success' ? 'feedback-check-circle' : 'report-problem-circle'
+		const iconKind = status == 'success' ? 'feedback-check-circle' : 'report-problem-triangle'
 		return (
 			<div className={'miljoe'} key={key}>
 				<Icon size={'24px'} kind={iconKind} />
@@ -17,18 +17,23 @@ export default class MiljoeStatus extends PureComponent {
 	render() {
 		const bestillingsData = this.props.bestillingsData
 		console.log(this.props.bestillingsData, 'data')
-		const envs = bestillingsData.environments
-		const failedEnvs = ['t0']
+		let envs = bestillingsData.environments
+		let failedEnvs = []
+		console.log(envs, 'all envs original')
 
-		// bestillingsData.personStatus.foreach(person => {
-		// 	envs.forEach(env => {
-		// 		if (!person.tpsfSuccessEnv.includes(env)) {
-		// 			failedEnvs.push(env) && envs.splice(envs.indexOf(env), 1)
-		// 		}
-		// 	})
-		// })
+		bestillingsData.personStatus.forEach(person => {
+			envs.forEach(env => {
+				if (!person.tpsfSuccessEnv) {
+					// TODO: Bestilling failed. Render - bestilling failed. Vennligst prøv på nytt
+					failedEnvs = envs
+					envs = []
+				} else if (!person.tpsfSuccessEnv.includes(env)) {
+					failedEnvs.push(env) && envs.splice(envs.indexOf(env), 1)
+				}
+			})
+		})
 
-		console.log(envs, 'all envs')
+		console.log(envs, 'all envs after splice')
 		console.log(failedEnvs, 'failed envs')
 
 		return (
