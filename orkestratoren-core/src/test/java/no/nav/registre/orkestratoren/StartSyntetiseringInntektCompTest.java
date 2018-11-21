@@ -32,7 +32,7 @@ public class StartSyntetiseringInntektCompTest {
 
     String expectedFnrMedInntektsmelding = "11111111111";
     private long skdMeldingGruppeId = 123L;
-    private String miljoe = "t1";
+
     @Autowired
     private SyntetiseringsController syntetiseringsController;
     @Value("${testnorges.ida.credential.tpsf.username}")
