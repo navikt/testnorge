@@ -24,6 +24,7 @@ public final class PersonidentifikatorUtil {
     private static final int START_1900 = 0;
 
     //TODO Skriv apptest for controllere som bruker denne
+    //TODO 2 Kanskje flytte ut i en egen validator?
     public static void validate(String ident) throws UgyldigPersonidentifikatorException {
         notNull(ident, "Personidentifikator kan ikke være null");
         

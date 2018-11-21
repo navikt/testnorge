@@ -9,6 +9,7 @@ import lombok.Getter;
 import no.nav.identpool.ajourhold.tps.xml.ServiceRutinenavn;
 import no.nav.identpool.ajourhold.tps.xml.TpsServiceRutine;
 
+//TODO Denne ser ut til å skulle være en service basert på pakkenavn, men er ikke det. Blir brukt med new i IdentMQService
 @Getter
 public class NavnOpplysning extends TpsServiceRutine {
 

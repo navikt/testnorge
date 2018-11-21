@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+//TODO I denne pakken skader det ikke å se over en gang til for å se om det kan gjøres bedre
 @Slf4j
 @Getter
 @RequiredArgsConstructor

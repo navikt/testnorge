@@ -19,6 +19,7 @@ public class IdentDistribusjon {
         return (int) (Math.ceil(antallForAar / 365.0));
     }
 
+    //TODO Ubrukt metode, slett om den ikke er tenkt brukt
     public Integer hentKritiskAntallForTidsintervall(Integer fraAar, Integer tomAar) {
         return (int) (verdiFraDistribusjon(fraAar) + verdiFraDistribusjon(tomAar + 1)) * (tomAar + 1 - fraAar) / 2;
     }

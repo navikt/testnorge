@@ -4,11 +4,11 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
 
+import no.nav.tps.ctg.m201.domain.StatusFraTPSType;
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 
@@ -18,7 +18,6 @@ import no.nav.identpool.ajourhold.mq.QueueContext;
 import no.nav.identpool.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
 import no.nav.identpool.ajourhold.tps.xml.service.NavnOpplysning;
-import no.nav.tps.ctg.m201.domain.PersondataFraTpsM201;
 import no.nav.tps.ctg.m201.domain.TpsPersonData;
 
 @Slf4j
@@ -26,15 +25,22 @@ import no.nav.tps.ctg.m201.domain.TpsPersonData;
 @RequiredArgsConstructor
 public class IdentMQService {
 
+    private static final int MAX_SIZE_TPS_QUEUE = 80;
+    private static final String TPS_I_BRUK = "00";
+    private static final String TPS_ENDRET_I_BRUK = "04";
+
     private final MessageQueueFactory messageQueueFactory;
 
-    public Map<String, Boolean> finnesITps(List<String> fnr) {
-        return finnesITps(QueueContext.getIncluded(), fnr);
+    private MessageQueue messageQueue;
+
+
+    public Map<String, Boolean> checkInTps(List<String> fnr) {
+        return checkInTps(QueueContext.getIncluded(), fnr);
     }
 
-    public Map<String, Boolean> finnesITps(List<String> environments, List<String> fnrs) {
-        Map<String, Boolean> identer = fnrs.stream()
-                .collect(Collectors.toMap(fnr -> fnr, fnr -> Boolean.FALSE));
+    public Map<String, Boolean> checkInTps(List<String> environments, List<String> fnrs) {
+        //TODO Skurrer noe at denne sendes videre for manipulering. Burde heller bruke putAll med response fra filterTpsQueue
+        Map<String, Boolean> identer = populateDefaults(fnrs);
 
         for (String environment : environments) {
             try {
@@ -46,20 +52,29 @@ public class IdentMQService {
         return identer;
     }
 
-    //TODO Legg til litt dokumentasjon om hvorfor dette gjøres på denne måten.
-    private void filterTpsQueue(String environment, Map<String, Boolean> identer) throws JMSException {
+    private Map<String, Boolean> populateDefaults(List<String> fnrs) {
+        return fnrs.stream().collect(Collectors.toMap(fnr -> fnr, fnr -> Boolean.FALSE));
+    }
 
-        List<String> finnesIkke = identer.entrySet()
-                .stream()
-                .filter(entry -> !entry.getValue())
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+    private void filterTpsQueue(String environment, Map<String, Boolean> identer) throws JMSException {
+        //TODO Denne vil alltid være lik som List<String> fnrs som kommer inn i checkInTps
+        List<String> finnesIkke = filterNonExisting(identer);
 
         if (finnesIkke.isEmpty()) {
             return;
         }
+        initMq(environment);
 
-        MessageQueue messageQueue;
+        for (List<String> list : Lists.partition(new ArrayList<>(finnesIkke), MAX_SIZE_TPS_QUEUE)) {
+            TpsPersonData data = getFromTps(list);
+            if (data.getTpsSvar().getIngenReturData() != null) {
+                return;
+            }
+            updateIdents(data, identer);
+        }
+    }
+
+    private void initMq(String environment) throws JMSException {
         try {
             messageQueue = messageQueueFactory.createMessageQueue(environment);
         } catch (JMSException e) {
@@ -67,26 +82,35 @@ public class IdentMQService {
             messageQueue = messageQueueFactory.createMessageQueueIgnoreCache(environment);
             messageQueue.ping();
         }
+    }
 
-        Consumer<PersondataFraTpsM201.AFnr.EFnr> filterExisting = personData -> {
-            if (personData.getSvarStatus() == null || "00".equals(personData.getSvarStatus().getReturStatus())) {
-                //Finnes i TPS, I_BRUK
-                identer.put(personData.getFnr(), Boolean.TRUE);
-            } else if ("04".equals(personData.getSvarStatus().getReturStatus())) {
-                //Noe har skjedd med fnr, I_BRUK
-                identer.put(personData.getForespurtFnr(), Boolean.TRUE);
-            }
-        };
+    //TODO Denne burde ikke være nødvendig..
+    private List<String> filterNonExisting(Map<String, Boolean> identer) {
+        return identer.entrySet()
+                    .stream()
+                    .filter(entry -> !entry.getValue())
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+    }
 
-        for (List<String> list : Lists.partition(new ArrayList<>(finnesIkke), 80)) {
-            String message = new NavnOpplysning(list).toXml();
-            String response = messageQueue.sendMessage(message);
-            TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
-            if (data.getTpsSvar().getIngenReturData() != null) {
-                return;
-            }
-            data.getTpsSvar().getPersonDataM201().getAFnr().getEFnr().forEach(filterExisting);
-        }
+    private TpsPersonData getFromTps(List<String> list) throws JMSException {
+        String message = new NavnOpplysning(list).toXml();
+        String response = messageQueue.sendMessage(message);
+        return JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
+    }
+
+    private void updateIdents(TpsPersonData data, Map<String, Boolean> identer) {
+        data.getTpsSvar().getPersonDataM201().getAFnr().getEFnr()
+                .forEach(personData -> {
+                    StatusFraTPSType svarStatus = personData.getSvarStatus();
+                    if (svarStatus == null || TPS_I_BRUK.equals(svarStatus.getReturStatus())) {
+                        identer.put(personData.getFnr(), Boolean.TRUE);
+                    } else if (TPS_ENDRET_I_BRUK.equals(svarStatus.getReturStatus())) {
+                        identer.put(personData.getForespurtFnr(), Boolean.TRUE);
+                    }
+                    //TODO Får vi tilbake de som det ikke er treff og heller ikke i bruk så vi kan gjøre
+                    // identer.put(personData.getForespurtFnr(), Boolean.FALSE); for å støtte endringer tidligere i koden?
+                });
     }
 }
 

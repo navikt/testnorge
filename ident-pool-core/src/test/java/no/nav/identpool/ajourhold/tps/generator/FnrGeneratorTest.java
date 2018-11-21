@@ -16,13 +16,16 @@ import com.google.common.collect.Ordering;
 
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.rs.v1.HentIdenterRequest;
+import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 
 @ExtendWith(MockitoExtension.class)
 class FnrGeneratorTest {
 
     private static final int END_1900 = 499;
     private static final int START_1900 = 0;
+    private static final int GENERATE_SIZE = 100;
+
+    private LocalDate LOCAL_DATE = LocalDate.now();
 
     //TODO Test exceptions
 
@@ -37,57 +40,34 @@ class FnrGeneratorTest {
 
     @Test
     void fnrGenererKjonnKriterier() {
-        LocalDate localDate = LocalDate.now();
-        int size = 100;
-        List<String> menn = IdentGenerator.genererIdenter(
-                HentIdenterRequest.builder()
-                        .antall(size)
-                        .identtype(Identtype.FNR)
-                        .foedtEtter(localDate)
-                        .kjoenn(Kjoenn.MANN)
-                        .build());
+        List<String> menn = generateIdents(Identtype.FNR, Kjoenn.MANN);
+        List<String> kvinner = generateIdents(Identtype.FNR, Kjoenn.KVINNE);
 
-        assertEquals(menn.size(), size);
-        menn.forEach(fnr -> assertFnrValues(fnr, Kjoenn.MANN, localDate));
-
-
-        List<String> kvinner = IdentGenerator.genererIdenter(
-                HentIdenterRequest.builder()
-                        .antall(size)
-                        .identtype(Identtype.FNR)
-                        .foedtEtter(localDate)
-                        .kjoenn(Kjoenn.KVINNE)
-                        .build());
-
-        assertEquals(kvinner.size(), size);
-        kvinner.forEach(fnr -> assertFnrValues(fnr, Kjoenn.KVINNE, localDate));
+        assertEquals(menn.size(), GENERATE_SIZE);
+        menn.forEach(fnr -> assertFnrValues(fnr, Kjoenn.MANN, LOCAL_DATE));
+        assertEquals(kvinner.size(), GENERATE_SIZE);
+        kvinner.forEach(fnr -> assertFnrValues(fnr, Kjoenn.KVINNE, LOCAL_DATE));
     }
 
     @Test
     void dnrGenererKjonnKriterier() {
-        LocalDate localDate = LocalDate.now();
-        int size = 100;
-        List<String> menn = IdentGenerator.genererIdenter(
+        List<String> menn = generateIdents(Identtype.DNR, Kjoenn.MANN);
+        List<String> kvinner = generateIdents(Identtype.DNR, Kjoenn.KVINNE);
+
+        assertEquals(menn.size(), GENERATE_SIZE);
+        menn.forEach(dnr -> assertDnrValues(dnr, Kjoenn.MANN, LOCAL_DATE));
+        assertEquals(kvinner.size(), GENERATE_SIZE);
+        kvinner.forEach(dnr -> assertDnrValues(dnr, Kjoenn.KVINNE, LOCAL_DATE));
+    }
+
+    private List<String> generateIdents(Identtype identtype, Kjoenn kjoenn) {
+        return IdentGenerator.genererIdenter(
                 HentIdenterRequest.builder()
-                        .identtype(Identtype.DNR)
-                        .antall(size)
-                        .foedtEtter(localDate)
-                        .kjoenn(Kjoenn.MANN)
+                        .identtype(identtype)
+                        .antall(GENERATE_SIZE)
+                        .foedtEtter(LOCAL_DATE)
+                        .kjoenn(kjoenn)
                         .build());
-
-        assertEquals(menn.size(), size);
-        menn.forEach(dnr -> assertDnrValues(dnr, Kjoenn.MANN, localDate));
-
-        List<String> kvinner = IdentGenerator.genererIdenter(
-                HentIdenterRequest.builder()
-                        .identtype(Identtype.DNR)
-                        .antall(size)
-                        .foedtEtter(localDate)
-                        .kjoenn(Kjoenn.KVINNE)
-                        .build());
-
-        assertEquals(kvinner.size(), size);
-        kvinner.forEach(dnr -> assertDnrValues(dnr, Kjoenn.KVINNE, localDate));
     }
 
     private void assertFnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {

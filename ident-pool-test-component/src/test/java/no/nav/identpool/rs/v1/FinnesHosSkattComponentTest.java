@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import no.nav.identpool.rs.v1.support.ApiResponse;
+import no.nav.identpool.rs.v1.support.IdentRequest;
 import org.apache.http.client.utils.URIBuilder;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

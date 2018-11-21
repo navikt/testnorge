@@ -38,6 +38,7 @@ public class DefaultMessageQueue implements MessageQueue {
     }
 
     public boolean ping() throws JMSException {
+        //TODO Ikke bruk ! her, gir slik som return !queue.ping(); i QueueContext som ikke er logisk når du leser gjennom
         return !"".equals(this.sendMessage(PING_MESSAGE));
     }
 

@@ -1,4 +1,4 @@
-package no.nav.identpool.rs.v1;
+package no.nav.identpool.rs.v1.support;
 
 import java.time.LocalDate;
 import javax.validation.constraints.NotNull;

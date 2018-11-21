@@ -62,6 +62,7 @@ class DefaultMessageQueueTest {
         when(textMessage.getText()).thenReturn("PING!");
     }
 
+    //TODO Legge til @DisplayName rundt omkring
     @Test
     void ping() throws JMSException {
         assertThat(messageQueue.ping(), is(Boolean.TRUE));

@@ -11,7 +11,7 @@ import no.nav.identpool.ajourhold.service.AjourholdService;
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "generer.identer.enable", matchIfMissing = true)
 public class CronJobService {
-
+    //TODO Vurder å splitte ajourhold ut i egen modul for tydeligere skille
     private final AjourholdService ajourholdService;
 
     @Scheduled(fixedDelay = 60000)

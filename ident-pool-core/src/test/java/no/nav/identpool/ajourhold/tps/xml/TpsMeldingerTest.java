@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MockitoExtension.class)
 class TpsMeldingerTest {
 
-    //TODO Skriv tester eller slett
+    //TODO Skriv tester
     @Test
     void navnOpplysningTest() {
     }

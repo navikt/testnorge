@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "AJOURHOLD")
 public class AjourholdEntity {
-
+//TODO Samle sammen repository i en pakke
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ajourhold_seq")

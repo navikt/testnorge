@@ -1,14 +1,15 @@
 package no.nav.identpool.service;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
-import java.security.SecureRandom;
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,77 +17,92 @@ import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
 
 import no.nav.identpool.test.mockito.MockitoExtension;
+import no.nav.tps.ctg.m201.domain.PersondataFraTpsS201;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import no.nav.identpool.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
-import no.nav.identpool.ajourhold.tps.generator.IdentGenerator;
-import no.nav.identpool.rs.v1.HentIdenterRequest;
 import no.nav.tps.ctg.m201.domain.PersondataFraTpsM201;
-import no.nav.tps.ctg.m201.domain.StatusFraTPSType;
 import no.nav.tps.ctg.m201.domain.TpsPersonData;
-import no.nav.tps.ctg.m201.domain.TpsSvarType;
+import org.mockito.Mock;
+import org.springframework.core.io.ClassPathResource;
 
 @ExtendWith(MockitoExtension.class)
-public class IdentMQServiceTest {
+@DisplayName("Tester sjekking av identer mot TPS (MQ)")
+class IdentMQServiceTest {
 
-    private static SecureRandom random = new SecureRandom();
+    @Mock
+    private MessageQueueFactory messageQueueFactory;
 
-    public static String getSvarStatus() {
-        switch (random.nextInt(4)) {
-        case 0:
-            return "00";
-        case 1:
-            return "04";
-        case 2:
-            return "08";
-        }
-        return null;
+    @Mock
+    private MessageQueue messageQueue;
+
+    @Test
+    @DisplayName("Skal ta i bruk kø uten cache")
+    void shoudThrow() throws Exception {
+        TpsPersonData personData = JAXB.unmarshal(fetchTestXml(), TpsPersonData.class);
+        List<String> idents = extractIdents(personData);
+        mockMqError();
+        mockBackupMq(personData);
+
+        Map<String, Boolean> identerFinnes = sendToTps(idents);
+
+        assertResponseOk(personData, identerFinnes);
     }
 
     @Test
-    public void finnesITps() throws JMSException {
-        List<String> identer = IdentGenerator.genererIdenter(HentIdenterRequest.builder()
-                .antall(160).foedtEtter(LocalDate.now()).build());
-        TpsPersonData personData = new TpsPersonData();
-        TpsSvarType tpsSvar = new TpsSvarType();
-        PersondataFraTpsM201 fraTpsM201 = new PersondataFraTpsM201();
-        PersondataFraTpsM201.AFnr aFnr = new PersondataFraTpsM201.AFnr();
+    @DisplayName("Sjekker at mapping av om identer finnes i TPS går ok")
+    void finnesITps() throws Exception {
+        TpsPersonData personData = JAXB.unmarshal(fetchTestXml(), TpsPersonData.class);
+        List<String> idents = extractIdents(personData);
 
-        List<PersondataFraTpsM201.AFnr.EFnr> eFnrs = identer.stream().map(fnr -> {
-            PersondataFraTpsM201.AFnr.EFnr eFnr = new PersondataFraTpsM201.AFnr.EFnr();
-            eFnr.setFnr(fnr);
-            StatusFraTPSType status = new StatusFraTPSType();
-            String svarStatus = getSvarStatus();
-            if ("04".equals(svarStatus)) {
-                eFnr.setForespurtFnr(fnr);
-            }
-            if (svarStatus != null) {
-                eFnr.setSvarStatus(status);
-            }
-            status.setReturStatus(svarStatus);
-            return eFnr;
-        }).collect(Collectors.toList());
+        mockMqSuccess(personData);
 
-        aFnr.getEFnr().addAll(eFnrs);
-        fraTpsM201.setAFnr(aFnr);
-        tpsSvar.setPersonDataM201(fraTpsM201);
-        personData.setTpsSvar(tpsSvar);
+        Map<String, Boolean> identerFinnes = sendToTps(idents);
 
-        StringWriter stringWriter = new StringWriter();
-        JAXB.marshal(personData, stringWriter);
+        assertResponseOk(personData, identerFinnes);
+    }
 
-        MessageQueueFactory messageQueueFactory = mock(MessageQueueFactory.class);
-        MessageQueue messageQueue = mock(MessageQueue.class);
-        when(messageQueue.sendMessage(anyString())).thenReturn(stringWriter.toString());
-        when(messageQueueFactory.createMessageQueue(anyString())).thenReturn(messageQueue);
-
-        IdentMQService identMQService = new IdentMQService(messageQueueFactory);
-        Map<String, Boolean> identerFinnes = identMQService.finnesITps(Arrays.asList("t1", "t4"), identer);
+    private void assertResponseOk(TpsPersonData personData, Map<String, Boolean> identerFinnes) {
+        List<PersondataFraTpsM201.AFnr.EFnr> eFnrs = personData.getTpsSvar().getPersonDataM201().getAFnr().getEFnr();
         eFnrs.forEach(eFnr -> {
             Boolean finnes = eFnr.getSvarStatus() == null || !"08".equals(eFnr.getSvarStatus().getReturStatus());
             assertEquals(identerFinnes.get(eFnr.getFnr()), finnes);
         });
+    }
+
+    private Map<String, Boolean> sendToTps(List<String> idents) {
+        IdentMQService identMQService = new IdentMQService(messageQueueFactory);
+        return identMQService.checkInTps(asList("t1", "t4"), idents);
+    }
+
+    private List<String> extractIdents(TpsPersonData personData) {
+        return personData.getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
+                .map(PersondataFraTpsS201::getFnr)
+                .collect(Collectors.toList());
+    }
+
+    private void mockMqSuccess(TpsPersonData personData) throws JMSException {
+        StringWriter stringWriter = new StringWriter();
+        JAXB.marshal(personData, stringWriter);
+        when(messageQueue.sendMessage(anyString())).thenReturn(stringWriter.toString());
+        when(messageQueueFactory.createMessageQueue(anyString())).thenReturn(messageQueue);
+    }
+
+    private void mockMqError() throws JMSException {
+        when(messageQueueFactory.createMessageQueue(anyString())).thenThrow(new JMSException("JMS Error"));
+    }
+
+    private void mockBackupMq(TpsPersonData personData) throws JMSException {
+        StringWriter stringWriter = new StringWriter();
+        JAXB.marshal(personData, stringWriter);
+        when(messageQueue.sendMessage(anyString())).thenReturn(stringWriter.toString());
+        when(messageQueueFactory.createMessageQueueIgnoreCache(anyString())).thenReturn(messageQueue);
+    }
+
+    private static InputStream fetchTestXml() throws IOException {
+        return (new ClassPathResource("mq/persondataSuccess.xml")).getInputStream();
     }
 }

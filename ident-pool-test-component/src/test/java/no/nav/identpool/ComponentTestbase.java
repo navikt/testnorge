@@ -10,7 +10,7 @@ import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.repository.IdentEntity;
-import no.nav.identpool.rs.v1.IdentRequest;
+import no.nav.identpool.rs.v1.support.IdentRequest;
 import org.jose4j.jwt.JwtClaims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +21,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -29,6 +30,7 @@ import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
 import no.nav.freg.security.test.oidc.tools.OidcTestService;
 import no.nav.identpool.repository.IdentRepository;
 
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { ComponentTestConfig.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ComponentTestbase {
@@ -37,8 +39,10 @@ public abstract class ComponentTestbase {
 
     @Autowired
     protected IdentRepository identRepository;
+
     @Autowired
     private TestRestTemplate testRestTemplate;
+
     @Autowired
     private OidcTestService oidcTestService;
 

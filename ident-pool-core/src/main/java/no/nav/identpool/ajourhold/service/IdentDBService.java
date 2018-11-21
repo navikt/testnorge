@@ -81,7 +81,7 @@ public class IdentDBService {
 
     private void filterIdents(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
         List<String> filtered = filterAgainstDatabase(antallPerDag, pinMap);
-        Map<String, Boolean> identerIBruk = mqService.finnesITps(filtered);
+        Map<String, Boolean> identerIBruk = mqService.checkInTps(filtered);
 
         List<String> rekvirert = identerIBruk.entrySet().stream()
                 .filter(Map.Entry::getValue)

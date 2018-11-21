@@ -10,6 +10,8 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import no.nav.identpool.rs.v1.support.ApiError;
+import no.nav.identpool.rs.v1.support.ApiResponse;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

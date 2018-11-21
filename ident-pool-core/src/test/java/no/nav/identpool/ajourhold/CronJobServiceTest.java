@@ -8,7 +8,7 @@ import static org.mockito.Mockito.*;
 
 class CronJobServiceTest {
 
-    //TODO Test bedre
+    //TODO Ikke veldig stor verdi
     @Test
     void startJob() {
         AjourholdService ajourholdService = mock(AjourholdService.class);

@@ -21,8 +21,8 @@ import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.repository.IdentEntity;
 import no.nav.identpool.repository.IdentPredicateUtil;
 import no.nav.identpool.repository.IdentRepository;
-import no.nav.identpool.rs.v1.HentIdenterRequest;
-import no.nav.identpool.rs.v1.MarkerBruktRequest;
+import no.nav.identpool.rs.v1.support.HentIdenterRequest;
+import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import no.nav.identpool.util.PersonidentifikatorUtil;
 
 @Service
@@ -35,6 +35,7 @@ public class IdentpoolService {
     private final IdentMQService identMQService;
     private final IdentDBService identDBService;
 
+    //TODO Rydd og del opp litt mer
     public List<String> rekvirer(HentIdenterRequest hentIdenterRequest) throws ForFaaLedigeIdenterException {
 
         List<String> personidentifikatorList = new ArrayList<>();
@@ -82,7 +83,7 @@ public class IdentpoolService {
             // filtrer vekk eksisterende
             List<String> finnesIkkeAllerede = genererteIdenter.stream().filter(ident -> !identRepository.existsByPersonidentifikator(ident)).collect(Collectors.toList());
 
-            Map<String, Boolean> kontrollerteIdenter = identMQService.finnesITps(finnesIkkeAllerede);
+            Map<String, Boolean> kontrollerteIdenter = identMQService.checkInTps(finnesIkkeAllerede);
 
             identDBService.saveIdents(kontrollerteIdenter.entrySet().stream()
                     .filter(Map.Entry::getValue)
@@ -104,7 +105,7 @@ public class IdentpoolService {
         if (ident != null) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;
         } else {
-            boolean exists = identMQService.finnesITps(Collections.singletonList(personidentifikator)).get(personidentifikator);
+            boolean exists = identMQService.checkInTps(Collections.singletonList(personidentifikator)).get(personidentifikator);
             Rekvireringsstatus status = exists ? I_BRUK : LEDIG;
             IdentEntity newIdentEntity = IdentEntity.builder()
                     .identtype(PersonidentifikatorUtil.getPersonidentifikatorType(personidentifikator))

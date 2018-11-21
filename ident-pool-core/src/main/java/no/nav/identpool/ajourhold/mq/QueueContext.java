@@ -59,14 +59,15 @@ public class QueueContext {
             int index = orderedList.indexOf(obj);
             return (index == -1) ? environmentList.size() : index;
         }));
-        QueueContext.environments = environmentList.toArray(new String[environmentList.size()]);
+        QueueContext.environments = environmentList.toArray(new String[0]);
         excludedEnvironments.addAll(filtered);
-        QueueContext.filteredEnvironments = filtered.toArray(new String[filtered.size()]);
+        QueueContext.filteredEnvironments = filtered.toArray(new String[0]);
     }
 
     private static boolean filterOnQueue(String environ, MessageQueueFactory queueFactory) {
         try {
             MessageQueue queue = queueFactory.createMessageQueue(environ);
+            //TODO Se kommentar i DefaultMessageQueue
             return !queue.ping();
         } catch (JMSException e) {
             return true;

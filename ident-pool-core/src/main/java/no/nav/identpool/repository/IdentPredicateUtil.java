@@ -5,8 +5,9 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.rs.v1.HentIdenterRequest;
+import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 
+//TODO Denne hører ikke hjemme i denne pakken
 @Service
 public class IdentPredicateUtil {
 

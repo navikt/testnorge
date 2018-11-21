@@ -16,24 +16,28 @@ public class MessageQueueFactory {
 
     private final ConnectionStrategyFactory connectionStrategyFactory;
     private final ConnectionFactoryFactory connectionFactoryFactory;
+
     @Value("${TPS_FORESPORSEL_XML_O_QUEUENAME}")
     private String tpsRequestQueue;
+
     @Value("${mq.consumer.username}")
     private String messageQueueUsername;
+
     @Value("${mq.consumer.password}")
     private String messageQueuePassword;
 
     public MessageQueue createMessageQueue(String environment) throws JMSException {
-        String requestQueue = String.format(tpsRequestQueue, environment.toUpperCase());
-        ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment.toUpperCase());
-        ConnectionFactory connectionFactory = connectionFactoryFactory.createConnectionFactory(connectionStrategy, false);
-        return new DefaultMessageQueue(requestQueue, connectionFactory, messageQueueUsername, messageQueuePassword);
+        return getMessageQueue(environment, false);
     }
 
     public MessageQueue createMessageQueueIgnoreCache(String environment) throws JMSException {
+        return getMessageQueue(environment, true);
+    }
+
+    private MessageQueue getMessageQueue(String environment, boolean ignoreCache) throws JMSException {
         String requestQueue = String.format(tpsRequestQueue, environment.toUpperCase());
         ConnectionStrategy connectionStrategy = connectionStrategyFactory.createConnectionStrategy(environment.toUpperCase());
-        ConnectionFactory connectionFactory = connectionFactoryFactory.createConnectionFactory(connectionStrategy, true);
+        ConnectionFactory connectionFactory = connectionFactoryFactory.createConnectionFactory(connectionStrategy, ignoreCache);
         return new DefaultMessageQueue(requestQueue, connectionFactory, messageQueueUsername, messageQueuePassword);
     }
 }

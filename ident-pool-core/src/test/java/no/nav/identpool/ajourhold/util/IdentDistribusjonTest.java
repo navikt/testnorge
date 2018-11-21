@@ -13,6 +13,7 @@ class IdentDistribusjonTest {
 
     private IdentDistribusjon identDistribusjon = new IdentDistribusjon();
 
+    //TODO Sliter litt med å se verdien av denne testen ettersom mesteparten av kalkuleringen skjer i testen
     @Test
     void totaltAntallPersonerPerDagSkalSummereTilCa50000() {
         int sum = 0;

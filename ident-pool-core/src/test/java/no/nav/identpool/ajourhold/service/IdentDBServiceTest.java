@@ -72,7 +72,7 @@ class IdentDBServiceTest {
 
     @Test
     void genererIdenterForAarHvorIngenErLedige() {
-        when(mqService.finnesITps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
+        when(mqService.checkInTps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().collect(Collectors.toMap(Object::toString, pin -> Boolean.FALSE));
         });
@@ -86,7 +86,7 @@ class IdentDBServiceTest {
 
     @Test
     void genererIdenterForAarHvorAlleErLedige() {
-        when(mqService.finnesITps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
+        when(mqService.checkInTps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().collect(Collectors.toMap(Object::toString, pin -> Boolean.TRUE));
         });
@@ -101,7 +101,7 @@ class IdentDBServiceTest {
 
     @Test
     void generererIdenterFraAarTilDatoMidtISammeAar() {
-        when(mqService.finnesITps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
+        when(mqService.checkInTps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().collect(Collectors.toMap(Object::toString, pin -> Boolean.TRUE));
         });

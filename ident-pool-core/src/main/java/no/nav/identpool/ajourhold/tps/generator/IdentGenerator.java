@@ -23,11 +23,12 @@ import com.google.common.collect.ImmutableMap;
 
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.rs.v1.HentIdenterRequest;
+import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 
+//TODO Kan nok med fordel splittes opp i Service, Validator og Utils istedenfor en stor static
 public final class IdentGenerator {
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
     private static SecureRandom random = new SecureRandom();

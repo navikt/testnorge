@@ -4,6 +4,9 @@ import static no.nav.identpool.util.PersonidentifikatorUtil.validate;
 
 import java.util.List;
 import javax.validation.Valid;
+
+import no.nav.identpool.rs.v1.support.HentIdenterRequest;
+import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,14 +1,17 @@
-package no.nav.identpool.rs.v1;
+package no.nav.identpool.rs.v1.support;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class IdentRequest {
+@AllArgsConstructor
+public class MarkerBruktRequest {
     private String personidentifikator;
+    private String bruker;
 }

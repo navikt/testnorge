@@ -20,7 +20,9 @@ public class ConnectionStrategyFactory {
             CacheBuilder.newBuilder()
                     .expireAfterWrite(CACHE_HOURS_TO_LIVE, TimeUnit.HOURS)
                     .build();
+
     private final FasitClient fasitClient;
+
     @Value("${mq.channel.postfix}")
     private String channelPostfix;
 
