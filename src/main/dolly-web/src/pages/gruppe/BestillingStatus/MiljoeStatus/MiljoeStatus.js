@@ -15,33 +15,12 @@ export default class MiljoeStatus extends PureComponent {
 	}
 
 	render() {
-		const { envs, failedEnvs } = this.props.miljoeStatusObj
-		console.log(envs, failedEnvs, 'bro')
-		// console.log(this.props.bestillingsData, 'data')
-		// let envs = bestillingsData.environments.slice(0) // Clone array for å unngå mutering
-		// let failedEnvs = []
-
-		// console.log(envs, 'all envs original')
-
-		// // bestillingsData.personStatus.forEach(person => {
-		// // 	envs.forEach(env => {
-		// // 		if (!person.tpsfSuccessEnv) {
-		// // 			// TODO: Bestilling failed 100% fra Tpsf. Implement retry senere når maler er støttet
-		// // 			failedEnvs = envs
-		// // 			envs = []
-		// // 		} else if (!person.tpsfSuccessEnv.includes(env)) {
-		// // 			failedEnvs.push(env) && envs.splice(envs.indexOf(env), 1)
-		// // 		}
-		// // 	})
-		// // })
-
-		// console.log(envs, 'all envs after splice')
-		// console.log(failedEnvs, 'failed envs')
+		const { id, successEnvs, failedEnvs } = this.props.miljoeStatusObj
 
 		return (
 			<div className="miljoe-status">
 				<div className="status-header">
-					{/* <p>Bestilling #{bestillingsData.id}</p> */}
+					<p>Bestilling #{id}</p>
 					<h3>Status i miljøene</h3>
 					<div className="remove-button-container">
 						<Button kind="remove-circle" onClick={this.props.onCloseButton} />
@@ -49,7 +28,7 @@ export default class MiljoeStatus extends PureComponent {
 				</div>
 				<hr />
 				<div className={'miljoe-container'}>
-					{envs.map((env, i) => {
+					{successEnvs.map((env, i) => {
 						return this._renderMiljoe(env, i, 'success')
 					})}
 					{failedEnvs.map((env, i) => {
