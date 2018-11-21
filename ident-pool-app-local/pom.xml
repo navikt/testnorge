@@ -9,8 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>no.nav.ident-pool-embedded</groupId>
-    <artifactId>ident-pool-app-embedded</artifactId>
+    <artifactId>ident-pool-app-local</artifactId>
 
     <dependencies>
         <dependency>

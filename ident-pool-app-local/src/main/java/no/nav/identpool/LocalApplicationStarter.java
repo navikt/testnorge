@@ -10,7 +10,7 @@ import no.nav.identpool.fasit.FasitClient;
 import no.nav.identpool.fasit.FasitClientApplicationConfig;
 
 @Slf4j
-public class EmbeddedApplicationStarter {
+public class LocalApplicationStarter {
     public static void main(String[] args) {
         Map<String, Object> fasitProperties = resolveFasitProperties(args);
 
