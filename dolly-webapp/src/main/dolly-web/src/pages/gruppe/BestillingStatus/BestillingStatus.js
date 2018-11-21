@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import { Line } from 'rc-progress'
 import { DollyApi } from '~/service/Api'
 import Loading from '~/components/loading/Loading'
-
+import BestillingProgress from './BestillingProgress/BestillingProgress'
+import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
 import './BestillingStatus.less'
+import _find from 'lodash/find'
 
 export default class BestillingStatus extends PureComponent {
 	static propTypes = {
-		bestilling: PropTypes.object.isRequired,
-		onGroupUpdate: PropTypes.func.isRequired
+		bestilling: PropTypes.object.isRequired
 	}
 
 	constructor(props) {
@@ -21,7 +22,8 @@ export default class BestillingStatus extends PureComponent {
 		this.state = {
 			ferdig: props.bestilling.ferdig,
 			antallKlare: props.bestilling.personStatus.length,
-			sistOppdatert: props.bestilling.sistOppdatert
+			sistOppdatert: props.bestilling.sistOppdatert,
+			isOpen: true
 		}
 	}
 
@@ -37,18 +39,16 @@ export default class BestillingStatus extends PureComponent {
 	stopPolling = () => clearInterval(this.interval)
 
 	getBestillingStatus = async () => {
-		// console.log('getBestillingStatus()')
-
 		const bestillingId = this.props.bestilling.id
 
 		try {
 			const { data } = await DollyApi.getBestillingStatus(bestillingId)
-			// console.log('res', data)
+			if (data.ferdig) {
+				this.stopPolling()
+			}
 
-			// Should we stop polling?
-			if (data.ferdig) this.stopPolling()
+			console.log(data, 'data fra tpsf')
 
-			// Update state
 			this.updateStatus(data)
 		} catch (error) {
 			console.log('error', error)
@@ -56,19 +56,20 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	updateStatus = data => {
-		// Setter alltid status til IKKE FERDIG, sånn at vi kan vise en kort melding som sier at prosessen er ferdig
+		// Setter alltid status til IKKE FERDIG, sånn at vi kan vise
+		// en kort melding som sier at prosessen er ferdig
 		let newState = {
 			ferdig: false,
 			antallKlare: data.personStatus.length,
 			sistOppdatert: data.sistOppdatert
 		}
-
 		this.setState(newState)
 
 		if (data.ferdig) {
 			setTimeout(() => {
 				// Update groups
-				this.props.onGroupUpdate()
+				this.props.onGroupUpdate() // state.ferdig = true
+				this.props.setBestillingStatus(data.id, { ...data, ny: true })
 			}, this.TIMEOUT_BEFORE_HIDE)
 		}
 	}
@@ -95,23 +96,32 @@ export default class BestillingStatus extends PureComponent {
 		}
 	}
 
+	_onCloseMiljoeStatus = bestillingStatusObj => {
+		this.setState({ isOpen: false })
+		this.props.setBestillingStatus(bestillingStatusObj.id, { ...bestillingStatusObj, ny: false })
+	}
+
 	render() {
-		if (this.state.ferdig) return false
+		const { bestillingStatusObj, miljoeStatusObj } = this.props
+
+		if (
+			(this.state.ferdig && !bestillingStatusObj) ||
+			!this.state.isOpen ||
+			(bestillingStatusObj && !bestillingStatusObj.ny)
+		)
+			return null
 
 		const status = this.calculateStatus()
-
 		return (
 			<div className="bestilling-status">
-				<div className="flexbox--space">
-					<h5>
-						<Loading onlySpinner />
-						{status.title}
-					</h5>
-					<span>{status.text}</span>
-				</div>
-				<div className="rc-progress-wrapper">
-					<Line percent={status.percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
-				</div>
+				{!this.state.ferdig && <BestillingProgress status={status} />}
+				{bestillingStatusObj &&
+					bestillingStatusObj.ny && (
+						<MiljoeStatus
+							miljoeStatusObj={miljoeStatusObj}
+							onCloseButton={() => this._onCloseMiljoeStatus(bestillingStatusObj)}
+						/>
+					)}
 			</div>
 		)
 	}
