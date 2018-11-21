@@ -19,7 +19,7 @@ public class GeneratorController {
     private final NavnepoolService service;
 
     @GetMapping("/tilfeldig")
-    public List<Navn> get(@RequestParam Integer antall) {
+    public List<Navn> get(@RequestParam(required = false) Integer antall) {
         if (antall == null) {
             antall = 1;
         }
