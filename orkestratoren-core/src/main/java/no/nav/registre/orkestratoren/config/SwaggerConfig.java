@@ -24,14 +24,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig implements WebMvcConfigurer {
-    
+
     @Value("${application.version}")
     private String appVersion;
-    
+
     @Bean
     public Docket api() {
-              HashSet contentTypeJson = new HashSet(Arrays.asList("application/json"));
-              return new Docket(DocumentationType.SWAGGER_2)
+        HashSet contentTypeJson = new HashSet(Arrays.asList("application/json"));
+        return new Docket(DocumentationType.SWAGGER_2)
                 .ignoredParameterTypes(ApiIgnore.class)
                 .select()
                 .apis(RequestHandlerSelectors.any())
@@ -42,7 +42,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .consumes(contentTypeJson)
                 .useDefaultResponseMessages(false);
     }
-    
+
     private ApiInfo apiInfo() {
         return new ApiInfo(
                 "Orkestratoren",
@@ -55,7 +55,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 "https://opensource.org/licenses/super-strict-license"
         );
     }
-    
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/api").setViewName("redirect:/swagger-ui.html");
