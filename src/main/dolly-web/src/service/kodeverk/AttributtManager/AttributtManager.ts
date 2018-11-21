@@ -67,7 +67,11 @@ export default class AttributtManager {
 		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
 		return editableAttributes.reduce((prev, item) => {
 			const dataSource = DataSourceMapper(item.dataSource)
-			const sourceValues = dataSource === 'tpsf' ? values[dataSource][0] : values[dataSource][ident]
+			const sourceValues =
+				dataSource === 'tpsf'
+					? values[dataSource][0]
+					: values[dataSource] && values[dataSource][ident]
+
 			if (item.items) {
 				return this._setInitialArrayValuesFromServer(prev, item, sourceValues)
 			}

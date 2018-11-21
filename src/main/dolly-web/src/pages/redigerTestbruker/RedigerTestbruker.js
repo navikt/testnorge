@@ -21,6 +21,7 @@ export default class RedigerTestbruker extends Component {
 		this.props.getGruppe()
 		this.props.getTestbruker()
 		this.props.getSigrunTestbruker()
+		this.props.getKrrTestbruker()
 	}
 
 	submit = values => {
@@ -34,7 +35,7 @@ export default class RedigerTestbruker extends Component {
 		const { testbruker, goBack, match } = this.props
 		const { tpsf, sigrunstub, krrstub } = testbruker
 
-		if (!tpsf || !sigrunstub) return null
+		if (!tpsf || !sigrunstub || !krrstub) return null
 
 		const initialValues = this.AttributtManager.getInitialValuesForEditableItems(
 			testbruker,

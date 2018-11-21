@@ -2,11 +2,10 @@ import { TpsfApi, SigrunApi, KrrApi } from '~/service/Api'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import { createAction } from 'redux-actions'
 import success from '~/utils/SuccessAction'
-import DataFormatter from '~/utils/DataFormatter'
+import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
 import _get from 'lodash/get'
-import _set from 'lodash/set'
 import _merge from 'lodash/merge'
-import { array } from 'yup'
+import { mapIdentAndEnvironementForTps, mapValuesFromDataSource } from './utils'
 
 const initialState = {
 	items: {
@@ -49,7 +48,7 @@ export const GET_KRR_TESTBRUKER = createAction(
 		} catch (err) {
 			if (err.response && err.response.status === 404) {
 				console.log(err.response.data.melding)
-				return []
+				return null
 			}
 			return err
 		}
@@ -78,7 +77,10 @@ export default function testbrukerReducer(state = initialState, action) {
 				...state,
 				items: {
 					...state.items,
-					krrstub: { ...state.items.krrstub, [action.meta.ident]: action.payload.data }
+					krrstub: {
+						...state.items.krrstub,
+						[action.meta.ident]: action.payload && action.payload.data[0]
+					}
 				}
 			}
 		case actionTypes.UPDATE_TESTBRUKER_SUCCESS:
@@ -89,55 +91,54 @@ export default function testbrukerReducer(state = initialState, action) {
 }
 
 // Thunk
-export const updateTestbruker = (newValues, attributtListe, ident) => async (
-	dispatch,
-	getState
-) => {
+export const updateTestbruker = (values, attributtListe, ident) => async (dispatch, getState) => {
 	try {
 		dispatch(updateTestbrukerRequest())
 		const state = getState()
 		const { testbruker } = state
 
 		//TPSF
-		const tpsfAttributtListe = attributtListe.filter(item => item.dataSource === 'TPSF')
-		const tpsfMappedValues = tpsfAttributtListe.reduce((prev, curr) => {
-			let currentValue = newValues[curr.id]
-			if (curr.inputType === 'date') currentValue = DataFormatter.parseDate(currentValue)
-			return _set(prev, curr.editPath || curr.path || curr.id, currentValue)
-		}, {})
+		const tpsfBody = mapValuesFromDataSource(values, attributtListe, DataSource.TPSF)
+		const tpsfCurrentValues = testbruker.items.tpsf[0]
+		const sendToTpsBody = mapIdentAndEnvironementForTps(state, ident)
+		console.log(tpsfBody)
 
-		const tpsData = {
-			identer: [ident],
-			miljoer: findEnvironmentsForIdent(state, ident)
-		}
-		// const tpsfRes = await TpsfApi.updateTestbruker(
-		// 	_merge(testbruker.items.tpsf[0], tpsfMappedValues)
-		// )
-		// if (tpsfRes.status === 200) {
-		// 	const tpsRes = await TpsfApi.sendToTps(tpsData)
-		// }
-
-		// SIGRUN
-		const sigrunstubAtributtListe = attributtListe.filter(item => item.dataSource === 'SIGRUN')
-		const sigrunstubMappedValues = sigrunstubAtributtListe.map(attribute => {
-			const currentValues = newValues[attribute.id]
-			const items = attribute.items
-			if (items) {
-				const promises = currentValues.map(valueObject => {
-					const headerObject = items.reduce(
-						(prev, curr) => {
-							return _set(prev, curr.editPath || curr.path || curr.id, valueObject[curr.id])
-						},
-						{ personidentifikator: ident }
-					)
-					return SigrunApi.updateTestbruker(headerObject)
-				})
-				return Promise.all(promises)
+		const tpsfRequest = async () => {
+			const tpsfRes = await TpsfApi.updateTestbruker(_merge(tpsfCurrentValues, tpsfBody))
+			if (tpsfRes.status === 200) {
+				const sendToTpsRes = await TpsfApi.sendToTps(sendToTpsBody)
 			}
-			return null
+			return tpsfRes
+		}
+
+		//KRR-STUB
+		const krrstubBody = mapValuesFromDataSource(values, attributtListe, DataSource.KRR)
+		const krrstubPreviousValues = testbruker.items.krrstub[ident]
+		const krrStubRequest = KrrApi.updateTestbruker(
+			krrstubPreviousValues.id,
+			_merge(krrstubPreviousValues, krrstubBody)
+		)
+
+		//SIGRUN-STUB - multiple values
+		const sigrunstubAtributtListe = attributtListe.filter(
+			item => item.dataSource === DataSource.SIGRUN
+		)
+		const sigrunstubRequest = sigrunstubAtributtListe.map(attribute => {
+			const currentValues = values[attribute.id]
+			const items = attribute.items
+			const promises = currentValues.map(valueObject => {
+				const headerObject = items.reduce(
+					(prev, curr) => {
+						return _set(prev, curr.editPath || curr.path || curr.id, valueObject[curr.id])
+					},
+					{ personidentifikator: ident }
+				)
+				return SigrunApi.updateTestbruker(headerObject)
+			})
+			return Promise.all(promises)
 		})
 
-		const sigrunstubRes = await sigrunstubMappedValues
+		const updateRes = await Promise.all([tpsfRequest(), krrStubRequest, sigrunstubAtributtListe])
 
 		dispatch(updateTestbrukerSuccess())
 	} catch (error) {
@@ -155,18 +156,4 @@ export const sokSelector = (items, searchStr) => {
 	return items.filter(item => {
 		return item.some(v => v.toLowerCase().includes(query))
 	})
-}
-
-export const findEnvironmentsForIdent = (state, ident) => {
-	const { gruppe } = state
-	if (!gruppe.data) return null
-
-	const identArray = gruppe.data[0].testidenter
-	const personObj = identArray.find(item => item.ident === ident)
-	if (!personObj) return null
-
-	const bestillingObj = gruppe.data[0].bestillinger.find(
-		bestilling => bestilling.id === personObj.bestillingId
-	)
-	return bestillingObj.environments
 }
