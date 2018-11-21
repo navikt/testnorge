@@ -12,11 +12,12 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.VIGSEL;
 import static no.nav.registre.hodejegeren.testutils.ResourceUtils.getResourceFileContent;
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import no.nav.registre.hodejegeren.ApplicationStarter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import no.nav.registre.hodejegeren.ApplicationStarter;
 import no.nav.registre.hodejegeren.provider.rs.TriggeSyntetiseringController;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 
@@ -52,15 +54,15 @@ public class GenererSyntetiskeMeldingerCompTest {
      * Komponenttest av følgende scenario: Happypath-test med 2 innvandringsmeldinger.
      * <p>
      * <p>
-     * Hodejegeren henter syntetiserte skdmeldinger fra TPS Syntetisereren, mater dem med identer og tilhørende info, og lagrer meldingene i TPSF.
-     * (se løsningsbeskrivelse for hele prosedyren som testes i happypath: https://confluence.adeo.no/display/FEL/TPSF+Hodejegeren)
+     * Hodejegeren henter syntetiserte skdmeldinger fra TPS Syntetisereren, mater dem med identer og tilhørende info, og lagrer
+     * meldingene i TPSF. (se løsningsbeskrivelse for hele prosedyren som testes i happypath:
+     * https://confluence.adeo.no/display/FEL/TPSF+Hodejegeren)
      * <p>
      * HVIS endepunktet kalles med bestilling av et gitt antall syntetiserte skdmeldinger for et utvalg av årsakskoder, Så skal
      * disse meldingene lagres i TPSF på endepunktet /v1/endringsmelding/skd/save/{gruppeId}, og id-ene til meldingene returneres.
-     * Meldingene skal bestå av gyldige identer (FNR/DNR) i tråd med meldingens felter og som være identer som stemmer overens med TPS
-     * i det miljøet som angis av bestillingen/request.
-     * Tilhørende felter må stemme overens med status quo i TPS på de eksisterende identer som mates inn i
-     * de syntetiserte meldingene.
+     * Meldingene skal bestå av gyldige identer (FNR/DNR) i tråd med meldingens felter og som være identer som stemmer overens med
+     * TPS i det miljøet som angis av bestillingen/request. Tilhørende felter må stemme overens med status quo i TPS på de
+     * eksisterende identer som mates inn i de syntetiserte meldingene.
      * <p>
      * Testen tester f.o.m. RestController t.o.m. Consumer-klassene. Wiremock brukes.
      */
@@ -80,8 +82,15 @@ public class GenererSyntetiskeMeldingerCompTest {
     }
 
     private void stubIdentpool() {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         stubFor(post("/identpool/api/v1/identifikator")
-                .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/identpool/identpool_hent2Identer_request.json")))
+                .withRequestBody(equalToJson("{\n" +
+                        "  \"identtype\": \"FNR\",\n" +
+                        "  \"foedtEtter\": \"" + LocalDate.now().minusYears(90).format(formatter) + "\",\n" +
+                        "  \"foedtFoer\": null,\n" +
+                        "  \"kjoenn\": null,\n" +
+                        "  \"antall\": 2\n" +
+                        "}"))
                 .willReturn(okJson(expectedFnrFromIdentpool.toString())));
     }
 
@@ -94,16 +103,16 @@ public class GenererSyntetiskeMeldingerCompTest {
     }
 
     private void stubTPSF(long gruppeId) {
-        //Hodejegeren henter alle identer i avspillergruppa hos TPSF:
+        // Hodejegeren henter alle identer i avspillergruppa hos TPSF:
         stubTpsfFiltrerIdenterPaaAarsakskode(gruppeId, "01,02,39,91", "[\"12042101557\",\n\"01015600248\"\n]");
 
-        //Hodejegeren henter liste med alle døde eller utvandrede identer i avspillergruppa hos TPSF:
+        // Hodejegeren henter liste med alle døde eller utvandrede identer i avspillergruppa hos TPSF:
         stubTpsfFiltrerIdenterPaaAarsakskode(gruppeId, "43,32", "[\n  \"44444444444\",\n  \"55555555555\"\n]");
 
-        //Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
+        // Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubTpsfFiltrerIdenterPaaAarsakskode(gruppeId, VIGSEL.getAarsakskode(), "[]");
 
-        //Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
+        // Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
         stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
                 .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
                 .withBasicAuth(username, password)
