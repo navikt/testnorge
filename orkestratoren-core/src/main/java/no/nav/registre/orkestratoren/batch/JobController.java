@@ -20,7 +20,7 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 @Slf4j
 public class JobController {
 
-    @Value("${orkestratoren.batch.tps.miljoe}")
+    @Value("${orkestratoren.tpsbatch.miljoe}")
     private String miljoe;
 
     @Value("${orkestratoren.batch.skdMeldingGruppeId}")
