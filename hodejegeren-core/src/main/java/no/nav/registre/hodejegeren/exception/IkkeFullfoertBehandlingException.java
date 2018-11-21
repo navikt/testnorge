@@ -7,18 +7,12 @@ import lombok.Getter;
 @Getter
 public class IkkeFullfoertBehandlingException extends HodejegerenFunctionalException {
 
-    private List<Long> ids;
+    private final List<Long> ids;
+    private final Exception history;
 
-    public IkkeFullfoertBehandlingException() {
-        super();
-    }
-
-    public IkkeFullfoertBehandlingException(String s) {
-        super(s);
-    }
-
-    public IkkeFullfoertBehandlingException(String s, List<Long> ids) {
+    public IkkeFullfoertBehandlingException(String s, List<Long> ids, Exception history) {
         super(s);
         this.ids = ids;
+        this.history = history;
     }
 }
