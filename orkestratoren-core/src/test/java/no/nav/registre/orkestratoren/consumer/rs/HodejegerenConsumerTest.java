@@ -53,7 +53,7 @@ public class HodejegerenConsumerTest {
     }
 
     public void stubHodejegerenConsumer() {
-        stubFor(post(urlPathEqualTo("/api/v1/syntetisering/generer"))
+        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
                         "{\"gruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe
