@@ -15,31 +15,33 @@ export default class MiljoeStatus extends PureComponent {
 	}
 
 	render() {
-		const bestillingsData = this.props.bestillingsData
-		console.log(this.props.bestillingsData, 'data')
-		let envs = bestillingsData.environments
-		let failedEnvs = []
-		console.log(envs, 'all envs original')
+		const { envs, failedEnvs } = this.props.miljoeStatusObj
+		console.log(envs, failedEnvs, 'bro')
+		// console.log(this.props.bestillingsData, 'data')
+		// let envs = bestillingsData.environments.slice(0) // Clone array for å unngå mutering
+		// let failedEnvs = []
 
-		bestillingsData.personStatus.forEach(person => {
-			envs.forEach(env => {
-				if (!person.tpsfSuccessEnv) {
-					// TODO: Bestilling failed. Render - bestilling failed. Vennligst prøv på nytt
-					failedEnvs = envs
-					envs = []
-				} else if (!person.tpsfSuccessEnv.includes(env)) {
-					failedEnvs.push(env) && envs.splice(envs.indexOf(env), 1)
-				}
-			})
-		})
+		// console.log(envs, 'all envs original')
 
-		console.log(envs, 'all envs after splice')
-		console.log(failedEnvs, 'failed envs')
+		// // bestillingsData.personStatus.forEach(person => {
+		// // 	envs.forEach(env => {
+		// // 		if (!person.tpsfSuccessEnv) {
+		// // 			// TODO: Bestilling failed 100% fra Tpsf. Implement retry senere når maler er støttet
+		// // 			failedEnvs = envs
+		// // 			envs = []
+		// // 		} else if (!person.tpsfSuccessEnv.includes(env)) {
+		// // 			failedEnvs.push(env) && envs.splice(envs.indexOf(env), 1)
+		// // 		}
+		// // 	})
+		// // })
+
+		// console.log(envs, 'all envs after splice')
+		// console.log(failedEnvs, 'failed envs')
 
 		return (
 			<div className="miljoe-status">
 				<div className="status-header">
-					<p>Bestilling #{bestillingsData.id}</p>
+					{/* <p>Bestilling #{bestillingsData.id}</p> */}
 					<h3>Status i miljøene</h3>
 					<div className="remove-button-container">
 						<Button kind="remove-circle" onClick={this.props.onCloseButton} />

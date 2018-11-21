@@ -47,6 +47,8 @@ export default class BestillingStatus extends PureComponent {
 				this.stopPolling()
 			}
 
+			console.log(data, 'data fra tpsf')
+
 			this.updateStatus(data)
 		} catch (error) {
 			console.log('error', error)
@@ -96,13 +98,11 @@ export default class BestillingStatus extends PureComponent {
 
 	_onCloseMiljoeStatus = bestillingStatusObj => {
 		this.setState({ isOpen: false })
-
-		console.log(bestillingStatusObj, 'efef')
 		this.props.setBestillingStatus(bestillingStatusObj.id, { ...bestillingStatusObj, ny: false })
 	}
 
 	render() {
-		const { bestillingStatusObj } = this.props
+		const { bestillingStatusObj, miljoeStatusObj } = this.props
 
 		if (
 			(this.state.ferdig && !bestillingStatusObj) ||
@@ -118,7 +118,7 @@ export default class BestillingStatus extends PureComponent {
 				{bestillingStatusObj &&
 					bestillingStatusObj.ny && (
 						<MiljoeStatus
-							bestillingsData={bestillingStatusObj}
+							miljoeStatusObj={miljoeStatusObj}
 							onCloseButton={() => this._onCloseMiljoeStatus(bestillingStatusObj)}
 						/>
 					)}

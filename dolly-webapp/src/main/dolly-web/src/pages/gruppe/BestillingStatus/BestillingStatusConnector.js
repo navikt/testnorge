@@ -1,10 +1,14 @@
 import { connect } from 'react-redux'
 import BestillingStatus from './BestillingStatus'
-import { setBestillingStatus } from '~/ducks/bestillingStatus'
+import { setBestillingStatus, miljoStatusSelector } from '~/ducks/bestillingStatus'
 
-const mapStateToProps = (state, ownProps) => ({
-	bestillingStatusObj: state.bestillingStatus[ownProps.bestilling.id]
-})
+const mapStateToProps = (state, ownProps) => {
+	const bestillingStatusObj = state.bestillingStatus[ownProps.bestilling.id]
+	return {
+		bestillingStatusObj,
+		miljoeStatusObj: miljoStatusSelector(bestillingStatusObj)
+	}
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
