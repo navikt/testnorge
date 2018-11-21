@@ -29,7 +29,7 @@ public class FiktiveNavnControllerTest {
      * MockMvc og Mockito blir brukt.
      */
     @Test
-    public void shouldCallServiceWithAmount() throws Exception {
+    public void shouldCallServiceWithCorrectAmount() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(fiktiveNavnController).build();
         mockMvc.perform(get("/api/v1/fiktive-navn/tilfeldig"));
 

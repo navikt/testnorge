@@ -20,7 +20,7 @@ public class FiktiveNavnController {
     private final NavnepoolService service;
 
     @GetMapping("/tilfeldig")
-    public List<Navn> get(@RequestParam(required = false, defaultValue = "1") Integer antall) {
+    public List<Navn> get(@RequestParam(defaultValue = "1") Integer antall) {
         return service.finnTilfeldigeNavn(antall);
     }
 
