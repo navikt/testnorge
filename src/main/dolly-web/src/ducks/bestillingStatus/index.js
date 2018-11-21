@@ -57,6 +57,31 @@ export const sokSelector = (items, searchStr) => {
 	})
 }
 
+// Selector
+export const miljoStatusSelector = bestillingStatus => {
+	if (!bestillingStatus) return null
+
+	console.log(bestillingStatus, 'bestillingStatus')
+	let envs = bestillingStatus.environments.slice(0) // Clone array for å unngå mutering
+	let failedEnvs = []
+
+	console.log(envs, 'all envs original')
+
+	bestillingStatus.personStatus.forEach(person => {
+		envs.forEach(env => {
+			if (!person.tpsfSuccessEnv) {
+				// TODO: Bestilling failed 100% fra Tpsf. Implement retry senere når maler er støttet
+				failedEnvs = envs
+				envs = []
+			} else if (!person.tpsfSuccessEnv.includes(env)) {
+				failedEnvs.push(env) && envs.splice(envs.indexOf(env), 1)
+			}
+		})
+	})
+
+	return { envs, failedEnvs }
+}
+
 const mapItems = items => {
 	if (!items) return null
 	return items.map(item => {
