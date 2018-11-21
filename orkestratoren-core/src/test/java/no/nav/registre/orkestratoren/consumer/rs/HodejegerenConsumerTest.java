@@ -34,6 +34,8 @@ public class HodejegerenConsumerTest {
 
     /**
      * Scenario: Tester happypath til {@link HodejegerenConsumer#startSyntetisering}
+     * - forventer at metoden returnerer id-ene til de lagrede skdmeldingene i TPSF
+     * - forventer at metoden kaller hodejegeren med de rette parametrene (se stub)
      */
     @Test
     public void shouldStartSyntetisering() {
