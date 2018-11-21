@@ -1,5 +1,5 @@
 import bestillingStatus from '../index'
-import { sokSelector } from '../index'
+import { sokSelector, miljoStatusSelector } from '../index'
 
 describe('bestillingStatusReducer', () => {
 	it('should return initial state', () => {
@@ -54,4 +54,51 @@ describe('bestillingStatusReducer-sokSelector', () => {
 
 	expect(sokSelector(testitems, 'ferdig')).toEqual(res)
 	expect(sokSelector(null)).toEqual(null)
+})
+
+describe('bestillingStatusReducer-miljoStatusSelector', () => {
+	const testBestillingStatus = {
+		id: 1,
+		environments: ['t0', 't1'],
+		personStatus: [{ id: 0, tpsfSuccessEnv: ['t0'] }, { id: 1, tpsfSuccessEnv: ['t0'] }]
+	}
+
+	const res = {
+		id: 1,
+		successEnvs: ['t0'],
+		failedEnvs: ['t1']
+	}
+
+	const testBestillingStatus2 = {
+		id: 2,
+		environments: ['t0', 't1', 't2'],
+		personStatus: [{ id: 0, tpsfSuccessEnv: ['t0'] }, { id: 1, tpsfSuccessEnv: ['t0', 't2'] }]
+	}
+
+	const res2 = {
+		id: 2,
+		successEnvs: ['t0'],
+		failedEnvs: ['t1', 't2']
+	}
+
+	const testBestillingStatus3 = {
+		id: 3,
+		environments: ['t0', 't1', 't2', 'q0', 'u6'],
+		personStatus: [
+			{ id: 0, tpsfSuccessEnv: ['t0', 't2', 'q0', 'u6'] },
+			{ id: 1, tpsfSuccessEnv: ['t0', 't2', 'q0'] },
+			{ id: 3, tpsfSuccessEnv: ['t2', 'q0', 'u6'] }
+		]
+	}
+
+	const res3 = {
+		id: 3,
+		successEnvs: ['t2', 'q0'],
+		failedEnvs: ['t0', 't1', 'u6']
+	}
+
+	expect(miljoStatusSelector(testBestillingStatus)).toEqual(res)
+	expect(miljoStatusSelector(testBestillingStatus2)).toEqual(res2)
+	expect(miljoStatusSelector(testBestillingStatus3)).toEqual(res3)
+	expect(miljoStatusSelector(null)).toEqual(null)
 })

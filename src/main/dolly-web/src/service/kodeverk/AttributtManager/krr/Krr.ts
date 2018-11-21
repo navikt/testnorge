@@ -28,7 +28,7 @@ const AttributtListe: Attributt[] = [
 		subKategori: SubKategorier.Krr,
 		id: 'reservert',
 		dataSource: DataSource.KRR,
-		label: 'Reservert mot digitalkommmunikasjon',
+		label: 'Reservert mot digitalkommunikasjon',
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),
 		validation: yup.string().required('Vennligst velg en verdi')
