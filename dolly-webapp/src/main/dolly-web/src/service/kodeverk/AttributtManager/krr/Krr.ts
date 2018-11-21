@@ -12,7 +12,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Mobilnummer',
 		dataSource: DataSource.KRR,
 		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst oppgi mobilnummer')
+		validation: yup.string().required('Vennligst oppgi mobilnummer'),
+		kanRedigeres: true
 	},
 	{
 		hovedKategori: Kategorier.KontaktInfo,
@@ -21,7 +22,8 @@ const AttributtListe: Attributt[] = [
 		label: 'E-postadresse',
 		dataSource: DataSource.KRR,
 		inputType: InputType.Text,
-		validation: yup.string().email('Vennligst fyll ut')
+		validation: yup.string().email('Vennligst fyll ut'),
+		kanRedigeres: true
 	},
 	{
 		hovedKategori: Kategorier.KontaktInfo,
@@ -31,7 +33,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Reservert mot digitalkommmunikasjon',
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),
-		validation: yup.string().required('Vennligst velg en verdi')
+		validation: yup.string().required('Vennligst velg en verdi'),
+		kanRedigeres: true
 	}
 ]
 

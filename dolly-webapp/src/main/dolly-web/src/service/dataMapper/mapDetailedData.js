@@ -193,27 +193,22 @@ export function mapKrrData(krrData) {
 
 	return {
 		header: 'Kontaktinformasjon og reservasjon',
-		multiple: true,
-		data: krrData.map(data => {
-			return {
-				value: [
-					{
-						id: 'mobil',
-						label: 'Mobilnummer',
-						value: data.mobil
-					},
-					{
-						id: 'epost',
-						label: 'Epost',
-						value: data.epost
-					},
-					{
-						id: 'reservert',
-						label: 'Reservert',
-						value: data.reservert ? 'JA' : 'NEI'
-					}
-				]
+		data: [
+			{
+				id: 'mobil',
+				label: 'Mobilnummer',
+				value: krrData.mobil
+			},
+			{
+				id: 'epost',
+				label: 'Epost',
+				value: krrData.epost
+			},
+			{
+				id: 'reservert',
+				label: 'Reservert',
+				value: krrData.reservert ? 'JA' : 'NEI'
 			}
-		})
+		]
 	}
 }

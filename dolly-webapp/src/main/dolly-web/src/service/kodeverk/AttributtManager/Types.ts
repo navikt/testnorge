@@ -31,6 +31,13 @@ export interface KategoriTypes {
 	[key: string]: Kategori
 }
 
+export enum AttributtType {
+	Standard = 'standard', // kan bestilles og redigeres på
+	EditOnly = 'editOnly',
+	SelectionOnly = 'selectionOnly',
+	ReadOnly = 'readOnly' // skal bestilles, ikke editeres, men vises i editmode
+}
+
 export interface Attributt {
 	hovedKategori: Kategori
 	size?: String
