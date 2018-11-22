@@ -18,15 +18,15 @@ public class NavnepoolService {
 
     private final SecureRandom secureRandom;
 
-    public List<Navn> finnTilfeldigeNavn(Integer antall) {
+    public List<Navn> hentTilfeldigeNavn(Integer antall) {
         List<Navn> navneliste = new ArrayList<>(antall);
         for (int i = 0; i < antall; i++) {
-            navneliste.add(finnTilfeldigNavn());
+            navneliste.add(hentTilfeldigNavn());
         }
         return navneliste;
     }
 
-    public Navn finnTilfeldigNavn() {
+    public Navn hentTilfeldigNavn() {
         return new Navn(
                 ValidFornavn.getNavnList().get(secureRandom.nextInt(ValidFornavn.values().length)),
                 ValidEtternavn.getNavnList().get(secureRandom.nextInt(ValidEtternavn.values().length))

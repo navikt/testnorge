@@ -33,7 +33,7 @@ public class FiktiveNavnControllerTest {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(fiktiveNavnController).build();
         mockMvc.perform(get("/api/v1/fiktive-navn/tilfeldig"));
 
-        verify(service).finnTilfeldigeNavn(1);
+        verify(service).hentTilfeldigeNavn(1);
     }
 
 }
