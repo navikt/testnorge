@@ -29,7 +29,7 @@ const AttributtListe: Attributt[] = [
 				options: SelectOptionsManager('inntektTjeneste'),
 				validation: yup.string().required('Velg en type tjeneste.'),
 				kanRedigeres: true,
-				attributtType: AttributtType.SelectAndEdit
+				attributtType: AttributtType.SelectAndRead
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
@@ -44,7 +44,7 @@ const AttributtListe: Attributt[] = [
 				dependentOn: 'tjeneste',
 				validation: yup.string().required('Velg en type inntekt.'),
 				kanRedigeres: true,
-				attributtType: AttributtType.SelectAndEdit
+				attributtType: AttributtType.SelectAndRead
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
@@ -77,7 +77,7 @@ const AttributtListe: Attributt[] = [
 					.min(2017, 'Inntektsår må være senere enn 2016')
 					.max(9999, 'Inntektsår må være tidligere enn 9999'),
 				kanRedigeres: true,
-				attributtType: AttributtType.SelectAndEdit
+				attributtType: AttributtType.SelectAndRead
 			}
 		]
 	}

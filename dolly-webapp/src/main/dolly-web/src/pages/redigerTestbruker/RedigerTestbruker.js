@@ -25,7 +25,7 @@ export default class RedigerTestbruker extends Component {
 	submit = values => {
 		const { updateTestbruker, goBack } = this.props
 
-		updateTestbruker(values, this.AttributtManager.listEditableFlat(this._checkDataSources))
+		updateTestbruker(values, this.AttributtManager.listEditableFlat(this._checkDataSources()))
 		goBack()
 	}
 
@@ -33,8 +33,7 @@ export default class RedigerTestbruker extends Component {
 		const { testbruker, match } = this.props
 		const { sigrunstub, krrstub } = testbruker
 
-		const dataSources = []
-		dataSources.push(DataSource.TPSF)
+		const dataSources = [DataSource.TPSF]
 		if (sigrunstub[match.params.ident].length > 0) dataSources.push(DataSource.SIGRUN)
 		if (krrstub[match.params.ident]) dataSources.push(DataSource.KRR)
 
