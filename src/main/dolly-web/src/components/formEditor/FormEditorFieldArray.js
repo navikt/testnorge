@@ -39,7 +39,7 @@ const FormEditorFieldArray = (
 								formikProps.values[parentId].map((faKey, idx) => {
 									return (
 										<div key={idx}>
-											<div className="subkategori-field-group">
+											<div className="subkategori-field-group multi">
 												{items.map(item => {
 													// Add subKategori to ID
 													const fakeItem = {

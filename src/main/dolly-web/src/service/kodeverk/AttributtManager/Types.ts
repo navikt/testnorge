@@ -35,7 +35,7 @@ export enum AttributtType {
 	SelectAndEdit = 'selectAndEdit', // kan bestilles og redigeres på
 	EditOnly = 'editOnly', // kun redigering
 	SelectOnly = 'selectOnly', // kun bestilling
-	ReadOnly = 'readOnly' // skal bestilles, ikke editeres, men vises i editmode
+	SelectAndRead = 'selectAndRead' // skal bestilles, ikke editeres, men vises i editmode
 }
 
 export interface Attributt {

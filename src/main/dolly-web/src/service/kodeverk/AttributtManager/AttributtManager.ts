@@ -51,7 +51,6 @@ export default class AttributtManager {
 
 	//Edit attributes
 	listEditableFlat(dataSources: string[]): Attributt[] {
-		console.log(dataSources)
 		return AttributtListe.filter(attr => attr.kanRedigeres && dataSources.includes(attr.dataSource))
 	}
 
@@ -118,7 +117,7 @@ export default class AttributtManager {
 	_setInitialValueFromState(currentObject, item, stateValues) {
 		let initialValue = this.initValueSelector(item)
 		const fromState = _get(stateValues, item.id)
-		if (fromState) initialValue = fromState
+		if (fromState || fromState === false) initialValue = fromState
 
 		return _set(currentObject, item.id, initialValue)
 	}
@@ -126,7 +125,7 @@ export default class AttributtManager {
 	_setInitialValueFromServer(currentObject, item, serverValues) {
 		let initialValue = this.initValueSelector(item)
 		const fromState = _get(serverValues, item.path || item.id)
-		if (fromState) initialValue = fromState
+		if (fromState || fromState === false) initialValue = fromState
 
 		if (item.inputType === 'date') initialValue = DataFormatter.formatDate(initialValue)
 
@@ -149,7 +148,7 @@ export default class AttributtManager {
 	_setInitialArrayValue(currentObject, itemId, stateValues, array) {
 		let initialValue = array
 		const fromState = _get(stateValues, itemId)
-		if (fromState) initialValue = fromState
+		if (fromState || fromState === false) initialValue = fromState
 
 		return _set(currentObject, itemId, initialValue)
 	}

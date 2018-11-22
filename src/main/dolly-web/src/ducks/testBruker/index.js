@@ -4,6 +4,7 @@ import { createAction } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
 import _get from 'lodash/get'
+import _set from 'lodash/set'
 import _merge from 'lodash/merge'
 import { mapIdentAndEnvironementForTps, mapValuesFromDataSource } from './utils'
 
@@ -105,7 +106,6 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 		const tpsfBody = mapValuesFromDataSource(values, attributtListe, DataSource.TPSF)
 		const tpsfCurrentValues = testbruker.items.tpsf[0]
 		const sendToTpsBody = mapIdentAndEnvironementForTps(state, ident)
-		console.log(tpsfBody)
 
 		const tpsfRequest = async () => {
 			const tpsfRes = await TpsfApi.updateTestbruker(_merge(tpsfCurrentValues, tpsfBody))
@@ -115,34 +115,42 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 			return tpsfRes
 		}
 
+		const promiseList = [tpsfRequest()]
+
 		//KRR-STUB
-		const krrstubBody = mapValuesFromDataSource(values, attributtListe, DataSource.KRR)
 		const krrstubPreviousValues = testbruker.items.krrstub[ident]
-		const krrStubRequest = KrrApi.updateTestbruker(
-			krrstubPreviousValues.id,
-			_merge(krrstubPreviousValues, krrstubBody)
-		)
+		if (krrstubPreviousValues) {
+			const krrstubBody = mapValuesFromDataSource(values, attributtListe, DataSource.KRR)
+			const krrStubRequest = KrrApi.updateTestbruker(
+				krrstubPreviousValues.id,
+				_merge(krrstubPreviousValues, krrstubBody)
+			)
+			promiseList.push(krrStubRequest)
+		}
 
 		//SIGRUN-STUB - multiple values
 		const sigrunstubAtributtListe = attributtListe.filter(
 			item => item.dataSource === DataSource.SIGRUN
 		)
-		const sigrunstubRequest = sigrunstubAtributtListe.map(attribute => {
-			const currentValues = values[attribute.id]
-			const items = attribute.items
-			const promises = currentValues.map(valueObject => {
-				const headerObject = items.reduce(
-					(prev, curr) => {
-						return _set(prev, curr.editPath || curr.path || curr.id, valueObject[curr.id])
-					},
-					{ personidentifikator: ident }
-				)
-				return SigrunApi.updateTestbruker(headerObject)
+		if (sigrunstubAtributtListe.length > 0) {
+			const sigrunstubRequest = sigrunstubAtributtListe.map(attribute => {
+				const currentValues = values[attribute.id]
+				const items = attribute.items
+				const promises = currentValues.map(valueObject => {
+					const headerObject = items.reduce(
+						(prev, curr) => {
+							return _set(prev, curr.editPath || curr.path || curr.id, valueObject[curr.id])
+						},
+						{ personidentifikator: ident }
+					)
+					return SigrunApi.updateTestbruker(headerObject)
+				})
+				return Promise.all(promises)
 			})
-			return Promise.all(promises)
-		})
+			promiseList.push(sigrunstubRequest)
+		}
 
-		const updateRes = await Promise.all([tpsfRequest(), krrStubRequest, sigrunstubAtributtListe])
+		const updateRes = await Promise.all([promiseList])
 
 		dispatch(updateTestbrukerSuccess())
 	} catch (error) {
