@@ -10,6 +10,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.registre.hodejegeren.service.Endringskoder.VIGSEL;
 import static no.nav.registre.hodejegeren.testutils.ResourceUtils.getResourceFileContent;
+import static no.nav.registre.hodejegeren.testutils.StrSubstitutor.replace;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
@@ -17,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,14 +83,13 @@ public class GenererSyntetiskeMeldingerCompTest {
 
     private void stubIdentpool() {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+        HashMap<String, String> placeholderValues = new HashMap<>();
+        placeholderValues.put("foedtEtter", LocalDate.now().minusYears(90).format(formatter));
+
+        String path = "__files/comptest/identpool/identpool_hent2Identer_request.json";
         stubFor(post("/identpool/api/v1/identifikator")
-                .withRequestBody(equalToJson("{\n" +
-                        "  \"identtype\": \"FNR\",\n" +
-                        "  \"foedtEtter\": \"" + LocalDate.now().minusYears(90).format(formatter) + "\",\n" +
-                        "  \"foedtFoer\": null,\n" +
-                        "  \"kjoenn\": null,\n" +
-                        "  \"antall\": 2\n" +
-                        "}"))
+                .withRequestBody(equalToJson(replace(getResourceFileContent(path), placeholderValues)))
                 .willReturn(okJson(expectedFnrFromIdentpool.toString())));
     }
 

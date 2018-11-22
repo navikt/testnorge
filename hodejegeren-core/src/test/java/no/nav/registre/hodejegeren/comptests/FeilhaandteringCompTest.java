@@ -12,6 +12,7 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.NAVNEENDRING_FOERSTE;
 import static no.nav.registre.hodejegeren.service.Endringskoder.VIGSEL;
 import static no.nav.registre.hodejegeren.testutils.ResourceUtils.getResourceFileContent;
+import static no.nav.registre.hodejegeren.testutils.StrSubstitutor.replace;
 import static no.nav.registre.hodejegeren.testutils.Utils.testLoggingInClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
@@ -77,7 +75,7 @@ public class FeilhaandteringCompTest {
      * hentes fra TPS via TPSF for å behandle NAVNEENDRING_FOERSTE -meldingene.
      */
     @Test
-    public void generellFeilhaandtering() throws JsonProcessingException {
+    public void generellFeilhaandtering() {
         when(randMock.nextInt(anyInt())).thenReturn(0);
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(HodejegerService.class);
         HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
@@ -103,14 +101,13 @@ public class FeilhaandteringCompTest {
 
     private void stubIdentpool() {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+        HashMap<String, String> placeholderValues = new HashMap<>();
+        placeholderValues.put("foedtEtter", LocalDate.now().minusYears(90).format(formatter));
+
+        String path = "__files/comptest/identpool/identpool_hent2Identer_request.json";
         stubFor(post("/identpool/api/v1/identifikator")
-                .withRequestBody(equalToJson("{\n" +
-                        "  \"identtype\": \"FNR\",\n" +
-                        "  \"foedtEtter\": \"" + LocalDate.now().minusYears(90).format(formatter) + "\",\n" +
-                        "  \"foedtFoer\": null,\n" +
-                        "  \"kjoenn\": null,\n" +
-                        "  \"antall\": 2\n" +
-                        "}"))
+                .withRequestBody(equalToJson(replace(getResourceFileContent(path), placeholderValues)))
                 .willReturn(okJson(expectedFnrFromIdentpool.toString())));
     }
 
