@@ -12,7 +12,7 @@ public class ArenaInntektSyntConsumer {
     private String url;
 
     public ArenaInntektSyntConsumer(@Value("${synthdata-arena-inntekt.rest-api.url}") String baseUrl) {
-        this.url = baseUrl + "/v1/syntetisering/generer";
+        this.url = baseUrl + "/v1/generate";
         this.restTemplate = new RestTemplate();
     }
 
