@@ -1,12 +1,19 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,23 +36,40 @@ public class HodejegerenConsumerTest {
     private long gruppeId = 10L;
     private String miljoe = "t9";
     private String endringskode = "0110";
-    private int antallPerEndringskode = 1;
+    private int antallPerEndringskode = 2;
     private List<Long> expectedMeldingsIds;
+    private Map<String, Integer> antallMeldingerPerEndringskode;
+    private GenereringsOrdreRequest ordreRequest;
+
+    @Before
+    public void setUp() {
+        antallMeldingerPerEndringskode = new HashMap<>();
+        antallMeldingerPerEndringskode.put(endringskode, antallPerEndringskode);
+        ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
+        expectedMeldingsIds = new ArrayList<>();
+        expectedMeldingsIds.add(120421016L);
+        expectedMeldingsIds.add(110156008L);
+    }
 
     /**
      * Scenario: Tester happypath til {@link HodejegerenConsumer#startSyntetisering}
      */
     @Test
     public void shouldStartSyntetisering() {
-        HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
-        antallMeldingerPerEndringskode.put(endringskode, antallPerEndringskode);
-        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
-
-        expectedMeldingsIds = new ArrayList<>();
-        expectedMeldingsIds.add(120421016L);
-        expectedMeldingsIds.add(110156008L);
-
         stubHodejegerenConsumer();
+
+        List<Long> ids = hodejegerenConsumer.startSyntetisering(ordreRequest);
+
+        assertEquals(expectedMeldingsIds.toString(), ids.toString());
+    }
+
+    /**
+     * Scenario: HVIS hodejegeren returnerer et exception, skal metoden {@link HodejegerenConsumer#startSyntetisering} hente ut
+     * id-ene som ligger i exception og returnere disse slik at de kan lagres i TPS.
+     */
+    @Test
+    public void shouldReturnIdsWhenReceivingException() {
+        stubHodejegerenConsumerWithError();
 
         List<Long> ids = hodejegerenConsumer.startSyntetisering(ordreRequest);
 
@@ -61,5 +85,16 @@ public class HodejegerenConsumerTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[" + expectedMeldingsIds.get(0) + ", " + expectedMeldingsIds.get(1) + "]")));
+    }
+
+    public void stubHodejegerenConsumerWithError() {
+        stubFor(post(urlPathEqualTo("/api/v1/syntetisering/generer"))
+                .withRequestBody(equalToJson(
+                        "{\"gruppeId\":" + gruppeId
+                                + ",\"miljoe\":\"" + miljoe
+                                + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode + "\":" + antallPerEndringskode + "}}"))
+                .willReturn(aResponse()
+                        .withStatus(500)
+                        .withBody("{\"ids\": [" + expectedMeldingsIds.get(0) + ", " + expectedMeldingsIds.get(1) + "]}")));
     }
 }
