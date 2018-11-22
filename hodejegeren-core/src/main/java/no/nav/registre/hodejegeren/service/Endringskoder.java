@@ -43,13 +43,13 @@ public enum Endringskoder {
     KORREKSJON_FAMILIEOPPLYSNINGER("9810"),
     DOEDSMELDING("4310"),
     UTVANDRING("3210");
-    
+
     private String endringskode;
-    
+
     public String getAarsakskode() {
         return endringskode.substring(0, 2);
     }
-    
+
     public String getTranskode() {
         return endringskode.substring(2, 3);
     }
