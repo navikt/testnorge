@@ -3,12 +3,12 @@ package no.nav.registre.orkestratoren.consumer.rs;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -38,10 +38,14 @@ public class HodejegerenConsumer {
 
     public List<Long> startSyntetisering(GenereringsOrdreRequest genereringsOrdreRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(genereringsOrdreRequest);
-        List<Long> ids = new ArrayList<>();
+        ArrayList<Long> ids = new ArrayList<>();
         try {
-            ids.addAll(Objects.requireNonNull(restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody(),
-                    "Liste med ID-er fra Hodejegeren er null"));
+            ResponseEntity<List<Long>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
+            if (response != null && response.getBody() != null) {
+                ids.addAll(response.getBody());
+            } else {
+                log.error("Kunne ikke hente response body fra Hodejegeren: NullPointerException");
+            }
         } catch (HttpStatusCodeException e) {
             try {
                 JsonNode jsonNode = new ObjectMapper().readTree(e.getResponseBodyAsString()).get("ids");
@@ -49,8 +53,7 @@ public class HodejegerenConsumer {
                     ids.add(idNode.asLong());
                 }
             } catch (IOException ie) {
-                log.warn("Kunne ikke id-er fra innholdet i exception fra Hodejegeren");
-                ie.printStackTrace();
+                log.error("Kunne ikke id-er fra innholdet i exception fra Hodejegeren");
             }
         }
         return ids;
