@@ -5,8 +5,8 @@ describe('testBrukerReducer', () => {
 	const initialState = {
 		items: {
 			tpsf: null,
-			sigrun: null,
-			krr: null
+			sigrunstub: null,
+			krrstub: null
 		}
 	}
 	it('should return initial state', () => {
@@ -47,7 +47,7 @@ describe('testBrukerReducer', () => {
 		}
 
 		const res = {
-			items: { tpsf: null, sigrun: { [testident]: testdata }, krr: null }
+			items: { tpsf: null, sigrunstub: { [testident]: testdata }, krrstub: null }
 		}
 
 		expect(testBruker(initialState, action)).toEqual(res)
@@ -55,9 +55,8 @@ describe('testBrukerReducer', () => {
 
 	it('should add krr items on success', () => {
 		const testident = 'a'
-		const testdata = {
-			ident: testident
-		}
+		const testdata = [testident]
+
 		const action = {
 			type: 'GET_KRR_TESTBRUKER_SUCCESS',
 			payload: { data: testdata },
@@ -67,9 +66,9 @@ describe('testBrukerReducer', () => {
 		const res = {
 			items: {
 				tpsf: null,
-				sigrun: null,
-				krr: {
-					[testident]: testdata
+				sigrunstub: null,
+				krrstub: {
+					[testident]: testident
 				}
 			}
 		}
