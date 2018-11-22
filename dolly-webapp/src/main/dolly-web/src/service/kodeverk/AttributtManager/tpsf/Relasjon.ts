@@ -1,5 +1,5 @@
 import { Kategorier, SubKategorier } from '../Categories'
-import { Attributt, InputType, DataSource } from '../Types'
+import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import Formatters from '~/utils/DataFormatter'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
@@ -15,7 +15,8 @@ const AttributtListe: Attributt[] = [
 		path: 'relasjoner.partner',
 		label: 'Har partner',
 		dataSource: DataSource.TPSF,
-		validation: yup.object()
+		validation: yup.object(),
+		attributtType: AttributtType.SelectOnly
 	},
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
@@ -27,7 +28,8 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		options: SelectOptionsManager('identtype'),
-		validation: yup.string().required('Velg identtype.')
+		validation: yup.string().required('Velg identtype.'),
+		attributtType: AttributtType.SelectOnly
 	},
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
@@ -40,7 +42,8 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		options: SelectOptionsManager('kjonn'),
 		format: Formatters.kjonnToString,
-		validation: yup.string().required('Velg kjønn.')
+		validation: yup.string().required('Velg kjønn.'),
+		attributtType: AttributtType.SelectOnly
 	},
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
@@ -51,7 +54,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Født etter',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation
+		validation: DateValidation,
+		attributtType: AttributtType.SelectOnly
 	},
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
@@ -62,7 +66,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Født før',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation
+		validation: DateValidation,
+		attributtType: AttributtType.SelectOnly
 	},
 	// BARN
 	{
@@ -73,6 +78,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Har barn',
 		dataSource: DataSource.TPSF,
 		validation: yup.object(),
+		attributtType: AttributtType.SelectOnly,
 		items: [
 			{
 				hovedKategori: Kategorier.FamilieRelasjoner,
@@ -84,7 +90,8 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
 				options: SelectOptionsManager('identtype'),
-				validation: yup.string().required('Velg identtype.')
+				validation: yup.string().required('Velg identtype.'),
+				attributtType: AttributtType.SelectOnly
 			},
 			{
 				hovedKategori: Kategorier.FamilieRelasjoner,
@@ -97,7 +104,8 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Select,
 				options: SelectOptionsManager('kjonnBarn'),
 				format: Formatters.kjonnToStringBarn,
-				validation: yup.string().required('Velg kjønn.')
+				validation: yup.string().required('Velg kjønn.'),
+				attributtType: AttributtType.SelectOnly
 			},
 			{
 				hovedKategori: Kategorier.FamilieRelasjoner,
@@ -108,7 +116,8 @@ const AttributtListe: Attributt[] = [
 				label: 'Født etter',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Date,
-				validation: DateValidation
+				validation: DateValidation,
+				attributtType: AttributtType.SelectOnly
 			},
 			{
 				hovedKategori: Kategorier.FamilieRelasjoner,
@@ -119,7 +128,8 @@ const AttributtListe: Attributt[] = [
 				label: 'Født før',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Date,
-				validation: DateValidation
+				validation: DateValidation,
+				attributtType: AttributtType.SelectOnly
 			}
 		]
 	}

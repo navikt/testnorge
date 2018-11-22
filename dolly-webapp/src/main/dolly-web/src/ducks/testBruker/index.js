@@ -48,7 +48,8 @@ export const GET_KRR_TESTBRUKER = createAction(
 		} catch (err) {
 			if (err.response && err.response.status === 404) {
 				console.log(err.response.data.melding)
-				return null
+				//ERROR 404 betyr at det ikke finnes data for identen, fake opp datastruktur slik at reducer blir consistent
+				return { data: [null] }
 			}
 			return err
 		}
@@ -69,7 +70,10 @@ export default function testbrukerReducer(state = initialState, action) {
 				...state,
 				items: {
 					...state.items,
-					sigrunstub: { ...state.items.sigrunstub, [action.meta.ident]: action.payload.data }
+					sigrunstub: {
+						...state.items.sigrunstub,
+						[action.meta.ident]: action.payload && action.payload.data
+					}
 				}
 			}
 		case success(GET_KRR_TESTBRUKER):
