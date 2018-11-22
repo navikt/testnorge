@@ -32,9 +32,9 @@ export interface KategoriTypes {
 }
 
 export enum AttributtType {
-	Standard = 'standard', // kan bestilles og redigeres på
-	EditOnly = 'editOnly',
-	SelectionOnly = 'selectionOnly',
+	SelectAndEdit = 'selectAndEdit', // kan bestilles og redigeres på
+	EditOnly = 'editOnly', // kun redigering
+	SelectOnly = 'selectOnly', // kun bestilling
 	ReadOnly = 'readOnly' // skal bestilles, ikke editeres, men vises i editmode
 }
 
@@ -45,6 +45,7 @@ export interface Attributt {
 	id: string
 	path?: string
 	editPath?: string
+	attributtType: AttributtType
 	label: string
 	dataSource: DataSource
 	inputType?: InputType

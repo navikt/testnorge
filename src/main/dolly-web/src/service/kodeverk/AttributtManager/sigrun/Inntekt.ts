@@ -1,5 +1,5 @@
 import { Kategorier, SubKategorier } from '../Categories'
-import { Attributt, InputType, DataSource } from '../Types'
+import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import Formatters from '~/utils/DataFormatter'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
@@ -15,6 +15,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.SIGRUN,
 		validation: yup.object(),
 		kanRedigeres: true,
+		attributtType: AttributtType.SelectAndEdit,
 		items: [
 			{
 				hovedKategori: Kategorier.Inntekt,
@@ -27,7 +28,8 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Select,
 				options: SelectOptionsManager('inntektTjeneste'),
 				validation: yup.string().required('Velg en type tjeneste.'),
-				kanRedigeres: true
+				kanRedigeres: true,
+				attributtType: AttributtType.SelectAndEdit
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
@@ -41,7 +43,8 @@ const AttributtListe: Attributt[] = [
 				size: 'large',
 				dependentOn: 'tjeneste',
 				validation: yup.string().required('Velg en type inntekt.'),
-				kanRedigeres: true
+				kanRedigeres: true,
+				attributtType: AttributtType.SelectAndEdit
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
@@ -55,7 +58,8 @@ const AttributtListe: Attributt[] = [
 					.number()
 					.min(1, 'Tast inn et gyldig beløp')
 					.required('Oppgi beløpet'),
-				kanRedigeres: true
+				kanRedigeres: true,
+				attributtType: AttributtType.SelectAndEdit
 			},
 			{
 				hovedKategori: Kategorier.Inntekt,
@@ -72,7 +76,8 @@ const AttributtListe: Attributt[] = [
 					// TODO: Henter inn gyldigFra fra kodeverk?
 					.min(2017, 'Inntektsår må være senere enn 2016')
 					.max(9999, 'Inntektsår må være tidligere enn 9999'),
-				kanRedigeres: true
+				kanRedigeres: true,
+				attributtType: AttributtType.SelectAndEdit
 			}
 		]
 	}

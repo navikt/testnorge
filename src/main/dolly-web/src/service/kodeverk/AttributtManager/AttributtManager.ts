@@ -45,26 +45,32 @@ export default class AttributtManager {
 		return this._createValidationObject(list)
 	}
 
-	listEditable(): AttributtGruppe[] {
-		return groupList(AttributtListe.filter(attr => attr.kanRedigeres))
-	}
-
-	listEditableFlat(): Attributt[] {
-		return AttributtListe.filter(attr => attr.kanRedigeres)
-	}
-
-	getValidationsForEdit(): yup.MixedSchema {
-		const list = this.listEditableFlat()
-		return this._createValidationObject(list)
-	}
-
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
 		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
 	}
 
+	//Edit attributes
+	listEditableFlat(dataSources: string[]): Attributt[] {
+		console.log(dataSources)
+		return AttributtListe.filter(attr => attr.kanRedigeres && dataSources.includes(attr.dataSource))
+	}
+
+	listEditable(dataSources: string[]): AttributtGruppe[] {
+		return groupList(this.listEditableFlat(dataSources))
+	}
+
+	getValidationsForEdit(dataSources: string[]): yup.MixedSchema {
+		const list = this.listEditableFlat(dataSources)
+		return this._createValidationObject(list)
+	}
+
 	//TODO: Se om vi dette kan gjøres ryddigere, litt rotete pga tpsf er array mens andre registre er object
-	getInitialValuesForEditableItems(values: object, ident: string): FormikValues {
-		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
+	getInitialValuesForEditableItems(
+		values: object,
+		ident: string,
+		dataSources: string[]
+	): FormikValues {
+		const editableAttributes = this.listEditableFlat(dataSources)
 		return editableAttributes.reduce((prev, item) => {
 			const dataSource = DataSourceMapper(item.dataSource)
 			const sourceValues =
