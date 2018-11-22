@@ -1,6 +1,7 @@
 import React, { PureComponent, Fragment } from 'react'
 import { Field } from 'formik'
 import { DollyApi } from '~/service/Api'
+import { AttributtType } from '~/service/kodeverk/AttributtManager/Types'
 import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
@@ -34,7 +35,12 @@ export default class FormEditor extends PureComponent {
 					{items.map(
 						item =>
 							isFieldarray
-								? FormEditorFieldArray(item, formikProps, this.renderFieldComponent)
+								? FormEditorFieldArray(
+										item,
+										formikProps,
+										this.renderFieldComponent,
+										this.props.editMode
+								  )
 								: this.renderFieldComponent(item, formikProps.values)
 					)}
 				</div>
@@ -47,6 +53,21 @@ export default class FormEditor extends PureComponent {
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
+
+		if (this.props.editMode && AttributtType.SelectAndRead === item.attributtType) {
+			let valgtVerdi = valgteVerdier[item.id]
+			if (parentObject) {
+				const { parentId, idx } = parentObject
+				const itemIdParsed = item.id.substring(item.id.indexOf(']') + 1)
+				valgtVerdi = valgteVerdier[parentId][idx][itemIdParsed]
+			}
+			return (
+				<div className="skjemaelement" key={item.key || item.id}>
+					<label className="skjemaelement__label">{item.label}</label>
+					<div className="skjemaelement__staticvalue">{valgtVerdi}</div>
+				</div>
+			)
+		}
 
 		return (
 			<Field
@@ -100,7 +121,7 @@ export default class FormEditor extends PureComponent {
 	}
 
 	render() {
-		const { AttributtListe, FormikProps, ClosePanels } = this.props
+		const { AttributtListe, FormikProps, ClosePanels, editMode = false } = this.props
 
 		return AttributtListe.map(hovedKategori =>
 			// Ikke vis kategori som har default ikke-valgt radio button

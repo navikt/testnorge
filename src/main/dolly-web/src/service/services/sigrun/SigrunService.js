@@ -28,4 +28,12 @@ export default class SigrunService {
 			return data
 		})
 	}
+
+	static updateTestbruker(data) {
+		const endpoint = this.getSigrunUrl() + '/testdata/oppdater'
+
+		return Request.postWithoutCredentials(endpoint, null, {
+			headers: data
+		})
+	}
 }

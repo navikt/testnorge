@@ -5,10 +5,10 @@ import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _groupBy from 'lodash/groupBy'
 import DataFormatter from '~/utils/DataFormatter'
+import DataSourceMapper from '~/utils/DataSourceMapper'
 import { handleActions, createActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
-import DataSourceMapper from './DateSourceMapper'
 
 const AttributtManagerInstance = new AttributtManager()
 
