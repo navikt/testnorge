@@ -1,6 +1,6 @@
 {
   "identtype": "FNR",
-  "foedtEtter": "1900-01-01",
+  "foedtEtter": "${foedtEtter}",
   "foedtFoer": null,
   "kjoenn": null,
   "antall": 2

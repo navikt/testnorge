@@ -4,6 +4,7 @@ import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldinger
 
 import java.time.LocalDate;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class NyeIdenterService {
         HentIdenterRequest request = HentIdenterRequest.builder()
                 .antall(antallNyeIdenter)
                 .identtype(identType)
-                .foedtEtter(LocalDate.of(1900, 1, 1)).build();
+                .foedtEtter(LocalDate.now().minusYears(90)).build();
         List<String> identer = identPoolConsumer.hentNyeIdenter(request);
         for (int i = 0; i < antallNyeIdenter; i++) {
             putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identer.get(i));
