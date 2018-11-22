@@ -9,7 +9,7 @@ public class ManglerEksisterendeIdentException extends HodejegerenFunctionalExce
         super();
     }
 
-    public ManglerEksisterendeIdentException(String s) {
-        super(s);
+    public ManglerEksisterendeIdentException(String message) {
+        super(message);
     }
 }

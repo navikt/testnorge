@@ -9,7 +9,7 @@ public class TomResponsFraTpsSyntException extends HodejegerenFunctionalExceptio
         super();
     }
 
-    public TomResponsFraTpsSyntException(String s) {
-        super(s);
+    public TomResponsFraTpsSyntException(String message) {
+        super(message);
     }
 }

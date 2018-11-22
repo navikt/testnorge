@@ -6,8 +6,8 @@ public class ManglendeInfoITpsException extends RuntimeException {
         super();
     }
 
-    public ManglendeInfoITpsException(String s) {
-        super(s);
+    public ManglendeInfoITpsException(String message) {
+        super(message);
     }
 
 }
