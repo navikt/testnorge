@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react'
 import { Field } from 'formik'
+import _intersection from 'lodash/intersection'
 import { DollyApi } from '~/service/Api'
 import { AttributtType } from '~/service/kodeverk/AttributtManager/Types'
 import Panel from '~/components/panel/Panel'
@@ -11,11 +12,16 @@ import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
+		const { getAttributtListByHovedkategori } = this.props
+		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
+		const errorIds = Object.keys(formikProps.errors)
+		const errorsInHovedkategori = _intersection(hovedKategoriAttributes, errorIds)
 		return (
 			<Panel
 				key={hovedKategori.id}
 				heading={<h3>{hovedKategori.navn}</h3>}
 				startOpen={!closePanels}
+				errors={errorsInHovedkategori.length > 0}
 			>
 				{items.map((item, idx) => {
 					return this.renderFieldContainer(item, idx, formikProps)
@@ -121,7 +127,7 @@ export default class FormEditor extends PureComponent {
 	}
 
 	render() {
-		const { AttributtListe, FormikProps, ClosePanels, editMode = false } = this.props
+		const { AttributtListe, FormikProps, ClosePanels } = this.props
 
 		return AttributtListe.map(hovedKategori =>
 			// Ikke vis kategori som har default ikke-valgt radio button

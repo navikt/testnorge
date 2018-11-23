@@ -68,6 +68,9 @@ export default class RedigerTestbruker extends Component {
 							FormikProps={formikProps}
 							ClosePanels
 							editMode
+							getAttributtListByHovedkategori={
+								this.AttributtManager.getAttributtListByHovedkategori
+							}
 						/>
 						<div className="form-editor-knapper">
 							<Knapp type="standard" onClick={goBack}>
