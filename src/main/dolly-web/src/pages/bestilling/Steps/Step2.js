@@ -57,7 +57,13 @@ export default class Step2 extends PureComponent {
 					validationSchema={this.ValidationListe}
 					render={formikProps => (
 						<Fragment>
-							<FormEditor AttributtListe={this.AttributtListe} FormikProps={formikProps} />
+							<FormEditor
+								AttributtListe={this.AttributtListe}
+								FormikProps={formikProps}
+								getAttributtListByHovedkategori={
+									this.AttributtManager.getAttributtListByHovedkategori
+								}
+							/>
 							<NavigationConnector
 								onClickNext={formikProps.submitForm}
 								onClickPrevious={() => this.onClickPrevious(formikProps.values)}
