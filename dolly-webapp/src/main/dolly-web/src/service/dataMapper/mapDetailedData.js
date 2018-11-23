@@ -4,6 +4,7 @@ import Formatters from '~/utils/DataFormatter'
 export function mapTpsfData(tpsfData, bestillingData) {
 	let data
 	if (tpsfData) {
+		console.log(tpsfData, 'tpsfData')
 		data = [
 			{
 				header: 'Personlig informasjon',
@@ -47,6 +48,11 @@ export function mapTpsfData(tpsfData, bestillingData) {
 						id: 'miljoer',
 						label: 'Miljøer',
 						value: Formatters.arrayToString(bestillingData.environments)
+					},
+					{
+						id: 'spesreg',
+						label: 'Diskresjonskoder',
+						value: tpsfData.spesreg
 					}
 				]
 			}
