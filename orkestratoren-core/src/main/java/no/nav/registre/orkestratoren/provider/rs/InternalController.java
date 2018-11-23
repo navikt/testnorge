@@ -38,45 +38,24 @@ public class InternalController {
             if (!(restTemplate.getForEntity(HODEJEGEREN_IS_READY_URL, String.class).getStatusCode().equals(HttpStatus.OK))) {
                 nonAvailableResources.add("testnorge-hodejegeren is not ready");
             }
-        } catch (HttpStatusCodeException e) {
-            nonAvailableResources.add("HttpStatusCodeException when calling " + HODEJEGEREN_IS_READY_URL
-                    + " - status code: " + e.getStatusCode());
-        }
 
-        try {
             if (!(restTemplate.getForEntity(SYNTHDATA_TPS_IS_READY_URL, String.class).getStatusCode().equals(HttpStatus.OK))) {
                 nonAvailableResources.add("synthdata_tps is not ready");
             }
-        } catch (HttpStatusCodeException e) {
-            nonAvailableResources.add("HttpStatusCodeException when calling " + SYNTHDATA_TPS_IS_READY_URL
-                    + " - status code: " + e.getStatusCode());
-        }
 
-        try {
             if (!(restTemplate.getForEntity(SYNTHDATA_ARENA_IS_READY_URL, String.class).getStatusCode().equals(HttpStatus.OK))) {
                 nonAvailableResources.add("synthdata_arena is not ready");
             }
-        } catch (HttpStatusCodeException e) {
-            nonAvailableResources.add("HttpStatusCodeException when calling " + SYNTHDATA_ARENA_IS_READY_URL
-                    + " - status code: " + e.getStatusCode());
-        }
 
-        try {
             if (!(restTemplate.getForEntity(TPSF_IS_READY_URL, String.class).getStatusCode().equals(HttpStatus.OK))) {
                 nonAvailableResources.add("tps-forvalteren is not ready");
             }
-        } catch (HttpStatusCodeException e) {
-            nonAvailableResources.add("HttpStatusCodeException when calling " + TPSF_IS_READY_URL
-                    + " - status code: " + e.getStatusCode());
-        }
 
-        try {
             if (!(restTemplate.getForEntity(IDENTPOOL_IS_READY_URL, String.class).getStatusCode().equals(HttpStatus.OK))) {
                 nonAvailableResources.add("ident-pool is not ready");
             }
         } catch (HttpStatusCodeException e) {
-            nonAvailableResources.add("HttpStatusCodeException when calling " + IDENTPOOL_IS_READY_URL
-                    + " - status code: " + e.getStatusCode());
+            nonAvailableResources.add("HttpStatusCodeException when checking isReady. Status code: " + e.getStatusCode());
         }
 
         if (nonAvailableResources.isEmpty()) {
