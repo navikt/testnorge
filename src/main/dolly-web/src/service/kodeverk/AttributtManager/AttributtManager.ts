@@ -1,4 +1,4 @@
-import { AttributtGruppe, AttributtGruppeHovedKategori, Attributt } from './Types'
+import { AttributtGruppe, AttributtGruppeHovedKategori, Attributt, Kategori } from './Types'
 import * as yup from 'yup'
 import { FormikValues } from 'formik'
 import AttributtListe from './Attributter'
@@ -83,6 +83,12 @@ export default class AttributtManager {
 
 			return this._setInitialValueFromServer(prev, item, sourceValues)
 		}, {})
+	}
+
+	getAttributtListByHovedkategori(hovedkategori: Kategori): string[] {
+		return AttributtListe.filter(attr => attr.hovedKategori.id === hovedkategori.id).map(
+			attr => attr.id
+		)
 	}
 
 	_createValidationObject(list: Attributt[]): yup.MixedSchema {
