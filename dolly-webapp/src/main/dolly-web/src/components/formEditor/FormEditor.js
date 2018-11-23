@@ -15,13 +15,15 @@ export default class FormEditor extends PureComponent {
 		const { getAttributtListByHovedkategori } = this.props
 		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
 		const errorIds = Object.keys(formikProps.errors)
+		const touchedIds = Object.keys(formikProps.touched)
 		const errorsInHovedkategori = _intersection(hovedKategoriAttributes, errorIds)
+		const intersectTouchedAndError = _intersection(errorsInHovedkategori, touchedIds)
 		return (
 			<Panel
 				key={hovedKategori.id}
 				heading={<h3>{hovedKategori.navn}</h3>}
 				startOpen={!closePanels}
-				errors={errorsInHovedkategori.length > 0}
+				errors={intersectTouchedAndError.length > 0}
 			>
 				{items.map((item, idx) => {
 					return this.renderFieldContainer(item, idx, formikProps)
