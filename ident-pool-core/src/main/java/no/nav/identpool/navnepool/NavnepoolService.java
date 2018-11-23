@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,12 @@ import no.nav.identpool.navnepool.domain.ValidFornavn;
 @Service
 @RequiredArgsConstructor
 public class NavnepoolService {
+
+    @Autowired
+    private List<String> validFornavn;
+
+    @Autowired
+    private List<String> validEtternavn;
 
     private final SecureRandom secureRandom;
 
@@ -28,8 +35,8 @@ public class NavnepoolService {
 
     public Navn hentTilfeldigNavn() {
         return new Navn(
-                ValidFornavn.getNavnList().get(secureRandom.nextInt(ValidFornavn.values().length)),
-                ValidEtternavn.getNavnList().get(secureRandom.nextInt(ValidEtternavn.values().length))
+                validFornavn.get(secureRandom.nextInt(validFornavn.size())),
+                validEtternavn.get(secureRandom.nextInt(validEtternavn.size()))
         );
     }
 
