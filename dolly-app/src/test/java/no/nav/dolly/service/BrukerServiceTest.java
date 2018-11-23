@@ -43,7 +43,7 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 @RunWith(MockitoJUnitRunner.class)
 public class BrukerServiceTest {
 
-    private final static String navIdent = "bruker";
+    private final static String navIdent = "BRUKER";
 
     @Mock
     private BrukerRepository brukerRepository;
@@ -106,7 +106,7 @@ public class BrukerServiceTest {
 
     @Test
     public void getBrukerMedTeamsOgFavoritter_setterBrukerOgDensTeamIReturnertObjekt() {
-        String navident = "navident";
+        String navident = "NAVIDENT";
 
         Bruker bruker = Bruker.builder().navIdent(navident).build();
         RsBruker rsBruker = RsBrukerBuilder.builder().navIdent(navident).build().convertToRealRsBruker();
@@ -132,7 +132,7 @@ public class BrukerServiceTest {
         Testgruppe gruppe = TestgruppeBuilder.builder().navn("g1").hensikt("hen").build().convertToRealTestgruppe();
         List<Testgruppe> gruppeList = Arrays.asList(gruppe);
 
-        String navident = "navident";
+        String navident = "NAVIDENT";
         Bruker bruker = Bruker.builder().navIdent(navident).favoritter(new HashSet<>()).build();
 
         when(brukerRepository.findBrukerByNavIdent(navident)).thenReturn(bruker);

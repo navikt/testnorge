@@ -42,9 +42,9 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceTest {
-    private static final String currentBrukerIdent = "nav1";
-    private String navident2 = "nav2";
-    private List<String> navidenter = Arrays.asList(currentBrukerIdent, navident2);
+    private static final String CURRENT_BRUKER_IDENT = "NAV1";
+    private static final String NAVIDENT_2 = "nav2";
+    private List<String> navidenter = Arrays.asList(CURRENT_BRUKER_IDENT, NAVIDENT_2);
     private Optional<Team> tomOptional = Optional.empty();
 
     @Mock
@@ -63,7 +63,7 @@ public class TeamServiceTest {
     private NonTransientDataAccessException nonTransientDataAccessException;
 
     @InjectMocks
-    TeamService teamService;
+    private TeamService teamService;
 
     private static Authentication authentication;
 
@@ -76,8 +76,7 @@ public class TeamServiceTest {
     public static void beforeClass() {
         authentication = SecurityContextHolder.getContext().getAuthentication();
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(currentBrukerIdent, null, null, null)
-        );
+                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null));
     }
 
     @AfterClass
@@ -143,17 +142,17 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void fetchTeamOrOpprettBrukerteam_oppretterNyttTeamMedCurrentBrukerSomNavnHvisIngenTeamIdGitt() throws Exception {
+    public void fetchTeamOrOpprettBrukerteam_oppretterNyttTeamMedCurrentBrukerSomNavnHvisIngenTeamIdGitt() {
         when(teamRepository.findByNavn(anyString())).thenReturn(Optional.empty());
 
         teamService.fetchTeamOrOpprettBrukerteam(null);
         Team t = captureTheTeamSavedToRepo();
 
-        assertThat(t.getNavn(), is(currentBrukerIdent));
+        assertThat(t.getNavn(), is(CURRENT_BRUKER_IDENT));
     }
 
     @Test
-    public void fetchTeamOrOpprettBrukerteam_hvisTeamIdErGittProverAaFinneTeamMedId() throws Exception {
+    public void fetchTeamOrOpprettBrukerteam_hvisTeamIdErGittProverAaFinneTeamMedId() {
         when(teamRepository.findById(1l)).thenReturn(Optional.of(new Team()));
         teamService.fetchTeamOrOpprettBrukerteam(1l);
         verify(teamRepository).findById(1l);
@@ -183,14 +182,14 @@ public class TeamServiceTest {
     public void fjernMedlemmer_fjernerMedlemHvisMedlemHarSammeNavidentSominput() {
         Bruker b1 = new Bruker();
         Bruker b2 = new Bruker();
-        b1.setNavIdent(currentBrukerIdent);
-        b2.setNavIdent(navident2);
+        b1.setNavIdent(CURRENT_BRUKER_IDENT);
+        b2.setNavIdent(NAVIDENT_2);
 
         Team t = TeamBuilder.builder().navn("t").medlemmer(new HashSet<>(Arrays.asList(b1, b2))).build().convertToRealTeam();
 
         Optional<Team> opMedTeam = Optional.of(t);
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
-        teamService.fjernMedlemmer(1l, Arrays.asList(currentBrukerIdent));
+        teamService.fjernMedlemmer(1l, Arrays.asList(CURRENT_BRUKER_IDENT));
 
         Team savedTeam = captureTheTeamSavedToRepo();
 
