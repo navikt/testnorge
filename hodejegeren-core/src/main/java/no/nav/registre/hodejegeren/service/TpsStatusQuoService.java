@@ -59,9 +59,7 @@ public class TpsStatusQuoService {
             } else {
                 log.info("root.findValue(felt).asText(): " + root.findValue(felt).asText());
             }
-            String statusQuo = "";
-            statusQuo += root.findValue(felt).asText();
-            return statusQuo;
+            return root.findValue(felt).asText();
         }
     }
 
