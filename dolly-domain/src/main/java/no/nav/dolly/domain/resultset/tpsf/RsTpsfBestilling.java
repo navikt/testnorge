@@ -1,13 +1,12 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.RsAdresse;
 import no.nav.dolly.domain.resultset.RsPostadresse;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -21,9 +20,9 @@ public class RsTpsfBestilling {
 
     private String identtype;
 
-    private LocalDate foedtEtter;
+    private LocalDateTime foedtEtter;
 
-    private LocalDate foedtFoer;
+    private LocalDateTime foedtFoer;
 
     private boolean withAdresse;
 
@@ -34,6 +33,8 @@ public class RsTpsfBestilling {
     private String kjonn;
 
     private String statsborgerskap;
+
+    private LocalDateTime statsborgerskapRegdato;
 
     private String spesreg;
 
@@ -56,4 +57,8 @@ public class RsTpsfBestilling {
     private LocalDateTime sikkerhetsTiltakDatoTom;
 
     private String beskrSikkerhetsTiltak;
+
+    private String sprakKode;
+
+    private LocalDateTime datoSprak;
 }

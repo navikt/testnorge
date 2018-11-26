@@ -1,9 +1,9 @@
 package no.nav.dolly.appservices.tpsf.service;
 
 import static java.util.Collections.singletonList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.never;
@@ -116,12 +116,11 @@ public class DollyBestillingServiceTest {
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
         when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
-        when(bestillingProgressRepository.save(any())).thenThrow(standardTpsfException);
 
         dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
 
         assertThat(standardNyBestilling.isFerdig(), is(true));
-        verify(bestillingService).saveBestillingToDB(standardNyBestilling);
+        verify(bestillingService, times(2)).saveBestillingToDB(standardNyBestilling);
     }
 
     @Test

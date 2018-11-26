@@ -1,10 +1,9 @@
 package no.nav.dolly.security;
 
 
-import no.nav.freg.security.oidc.auth.common.HttpSecurityConfigurer;
-
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -14,7 +13,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import no.nav.freg.security.oidc.auth.common.HttpSecurityConfigurer;
+
 @Configuration
+@EnableCaching
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class RestSecurityConfig implements HttpSecurityConfigurer {

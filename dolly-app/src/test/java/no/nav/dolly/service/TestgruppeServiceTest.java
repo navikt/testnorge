@@ -58,12 +58,9 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 public class TestgruppeServiceTest {
 
     private static final long GROUP_ID = 1L;
-
     private static final String IDENT_ONE = "1";
-
     private static final String IDENT_TWO = "2";
-
-    private String standardPrincipal = "princ";
+    private static final String standardPrincipal = "PRINC";
 
     @Mock
     private GruppeRepository gruppeRepository;
