@@ -30,7 +30,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeld
 @ActiveProfiles("test")
 public class StartSyntetiseringInntektCompTest {
 
-    String expectedFnrMedInntektsmelding = "11111111111";
+    String expectedFnrMedInntektsmelding = "11111161111";
     private long skdMeldingGruppeId = 123L;
 
     @Autowired
@@ -60,7 +60,7 @@ public class StartSyntetiseringInntektCompTest {
     }
 
     private void stubInntektSynt() {
-        stubFor(post("/inntektsynt/api/v1/syntetisering/generer")
+        stubFor(post("/inntektsynt/api/v1/generate")
                 .withRequestBody(equalToJson("[\"" + expectedFnrMedInntektsmelding + "\"]"))
                 .willReturn(created()));
     }
