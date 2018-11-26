@@ -12,9 +12,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -113,8 +115,8 @@ public class BrukerServiceTest {
 
         Team team = TeamBuilder.builder().navn("navteam").eier(bruker).build().convertToRealTeam();
         RsTeam rsTeam = RsTeamBuilder.builder().navn("navteam").eierNavIdent(navident).build().convertToRealRsTeam();
-        Set teamSet = new HashSet(Arrays.asList(rsTeam));
-        List<Team> teamList = Arrays.asList(team);
+        Set teamSet = Sets.newHashSet(Collections.singletonList(rsTeam));
+        List<Team> teamList = Collections.singletonList(team);
 
         when(brukerRepository.findBrukerByNavIdent(navident)).thenReturn(bruker);
         when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
@@ -130,7 +132,7 @@ public class BrukerServiceTest {
     @Test
     public void addFavoritter_kallerSaveBrukerMedLagtTilFavoritter() {
         Testgruppe gruppe = TestgruppeBuilder.builder().navn("g1").hensikt("hen").build().convertToRealTestgruppe();
-        List<Testgruppe> gruppeList = Arrays.asList(gruppe);
+        List<Testgruppe> gruppeList = Collections.singletonList(gruppe);
 
         String navident = "NAVIDENT";
         Bruker bruker = Bruker.builder().navIdent(navident).favoritter(new HashSet<>()).build();
@@ -149,9 +151,9 @@ public class BrukerServiceTest {
 
     @Test
     public void leggTilFavoritter_medGrupperIDer() {
-        List<Long> ider = Arrays.asList(1l, 2l);
+        List<Long> ider = Arrays.asList(1L, 2L);
         Testgruppe g = TestgruppeBuilder.builder().navn("gruppe").hensikt("hen").build().convertToRealTestgruppe();
-        List<Testgruppe> grupper = Arrays.asList(g);
+        List<Testgruppe> grupper = Collections.singletonList(g);
         Bruker b = Bruker.builder().navIdent(navIdent).favoritter(new HashSet<>()).teams(new HashSet<>()).build();
 
         when(gruppeService.fetchGrupperByIdsIn(ider)).thenReturn(grupper);
@@ -173,17 +175,17 @@ public class BrukerServiceTest {
 
     @Test
     public void fjernFavoritter_medGrupperIDer() {
-        List<Long> ider = Arrays.asList(1l);
+        List<Long> ider = Collections.singletonList(1L);
         Testgruppe g = TestgruppeBuilder.builder().navn("gruppe").hensikt("hen").build().convertToRealTestgruppe();
         Testgruppe g2 = TestgruppeBuilder.builder().navn("gruppe2").hensikt("hen2").build().convertToRealTestgruppe();
-        List<Testgruppe> grupperSomSkalBort = Arrays.asList(g);
+        List<Testgruppe> grupperSomSkalBort = Collections.singletonList(g);
         Set<Testgruppe> favoritter = new HashSet<>();
         favoritter.add(g);
         favoritter.add(g2);
 
         Bruker b = Bruker.builder().navIdent(navIdent).favoritter(favoritter).teams(new HashSet<>()).build();
-        g.setFavorisertAv(new HashSet<>(Arrays.asList(b)));
-        g2.setFavorisertAv(new HashSet<>(Arrays.asList(b)));
+        g.setFavorisertAv(new HashSet<>(Collections.singletonList(b)));
+        g2.setFavorisertAv(new HashSet<>(Collections.singletonList(b)));
 
         when(gruppeService.fetchGrupperByIdsIn(ider)).thenReturn(grupperSomSkalBort);
         when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(b);
@@ -203,5 +205,4 @@ public class BrukerServiceTest {
 
         assertThat(g.getFavorisertAv().isEmpty(), is(true));
     }
-
 }
