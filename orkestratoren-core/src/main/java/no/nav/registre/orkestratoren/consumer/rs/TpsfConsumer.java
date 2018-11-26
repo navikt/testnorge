@@ -2,6 +2,7 @@ package no.nav.registre.orkestratoren.consumer.rs;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,7 @@ public class TpsfConsumer {
                 AvspillingResponse.class);
     }
 
-    public LinkedHashSet<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskoder, String transaksjonstype) {
+    public Set<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskoder, String transaksjonstype) {
         return restTemplateTpsf.getForObject(urlGetIdenter, LinkedHashSet.class, gruppeId, StringUtils.join(aarsakskoder, ','), transaksjonstype);
     }
 }
