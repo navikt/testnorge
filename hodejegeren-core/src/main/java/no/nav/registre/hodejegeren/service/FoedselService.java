@@ -73,18 +73,16 @@ public class FoedselService {
         List<String> moedre = new ArrayList<>(antallNyeIdenter);
         List<String> potensielleMoedre = new ArrayList<>(levendeIdenterINorge);
 
-        for (int i = 0; i < antallNyeIdenter; i++) {
-            String randomIdent;
-            do {
-                if (potensielleMoedre.isEmpty()) {
-                    throw new ManglerEksisterendeIdentException("Kunne ikke finne mor til ident for SkdMelding med meldingsnummer "
-                            + meldingsnrHosTpsSynt + ". For få kvinner i listen levendeIdenterINorge.");
-                }
-                int randomIndex = rand.nextInt(potensielleMoedre.size());
-                randomIdent = potensielleMoedre.remove(randomIndex);
-            } while (!"02468".contains(String.valueOf(randomIdent.charAt(8)))); // kvinner har partall på index 8 i FNR
+        potensielleMoedre.removeIf(potensiellMor -> !"02468".contains(String.valueOf(potensiellMor.charAt(8)))); // kvinner har partall på index 8 i FNR
 
-            moedre.add(randomIdent);
+        if (potensielleMoedre.isEmpty()) {
+            throw new ManglerEksisterendeIdentException("Kunne ikke finne mor til ident for SkdMelding med meldingsnummer "
+                    + meldingsnrHosTpsSynt + ". For få kvinner i listen levendeIdenterINorge.");
+        }
+
+        for (int i = 0; i < antallNyeIdenter; i++) {
+            int randomIndex = rand.nextInt(potensielleMoedre.size());
+            moedre.add(potensielleMoedre.get(randomIndex));
         }
 
         return moedre;
