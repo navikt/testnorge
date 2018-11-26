@@ -93,10 +93,12 @@ public class HodejegerService {
             }
         } catch (HttpStatusCodeException e) {
             log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
+            log.error(Arrays.toString(e.getStackTrace()));
             log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
             throw new IkkeFullfoertBehandlingException(e.getMessage() + " - Skdmeldinger som var ferdig behandlet før noe feilet, " +
                     "har følgende id-er i TPSF", e, ids);
         } catch (RuntimeException e) {
+            log.error(Arrays.toString(e.getStackTrace()));
             log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
             throw new IkkeFullfoertBehandlingException(e.getMessage() + " - Skdmeldinger som var ferdig behandlet før noe feilet, " +
                     "har følgende id-er i TPSF", e, ids);
