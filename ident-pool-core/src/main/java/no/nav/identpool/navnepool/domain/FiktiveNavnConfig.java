@@ -19,13 +19,6 @@ import lombok.Setter;
 @Configuration
 public class FiktiveNavnConfig {
 
-    @Setter
-    @Getter
-    static class TempNavn implements Serializable {
-
-        String fiktivnavn;
-    }
-
     public List<String> loadListFromCsvFile(String fileName) throws IOException {
         CsvMapper mapper = new CsvMapper();
         CsvSchema bootstrapSchema = mapper.typedSchemaFor(TempNavn.class).withoutHeader();
@@ -37,11 +30,18 @@ public class FiktiveNavnConfig {
 
     @Bean
     public List<String> validFornavn() throws IOException {
-        return loadListFromCsvFile("__files/navnepool/adjektiv (fornavn).csv");
+        return loadListFromCsvFile("navnepool/adjektiv (fornavn).csv");
     }
 
     @Bean
     public List<String> validEtternavn() throws IOException {
-        return loadListFromCsvFile("__files/navnepool/substantiv (etternavn).csv");
+        return loadListFromCsvFile("navnepool/substantiv (etternavn).csv");
+    }
+
+    @Setter
+    @Getter
+    static class TempNavn implements Serializable {
+
+        String fiktivnavn;
     }
 }

@@ -9,11 +9,10 @@ import org.junit.Test;
 public class FiktiveNavnConfigTest {
 
     @Test
-    public void asdf() throws IOException {
+    public void shouldloadListFromCsvFile() throws IOException {
         FiktiveNavnConfig c = new FiktiveNavnConfig();
-        List strings = c.loadListFromCsvFile("__files/navnepool/adjektiv (fornavn).csv");
+        List strings = c.loadListFromCsvFile("__files/navnepool/test.csv");
         assertTrue(strings.contains("aktiv"));
         assertTrue(strings.contains("aktpågivende"));
-        assertTrue(strings.contains("aktp�givende"));
     }
 }
