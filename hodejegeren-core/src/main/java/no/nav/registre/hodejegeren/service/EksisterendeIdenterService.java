@@ -117,7 +117,7 @@ public class EksisterendeIdenterService {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         for (int i = 0; i < meldinger.size(); i++) {
-            if (i >= singleIdenterINorge.size() - 2) {
+            if (i >= singleIdenterINorge.size() - 1) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen singleIdenterINorge fra TPSF avspillergruppen.");
             }
@@ -198,7 +198,7 @@ public class EksisterendeIdenterService {
 
         int antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
-            if (i >= levendeIdenterINorge.size() - 1) {
+            if (i >= levendeIdenterINorge.size()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
             }
@@ -239,7 +239,7 @@ public class EksisterendeIdenterService {
     public void behandleGenerellAarsak(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
             Endringskoder endringskode, String environment) {
         for (int i = 0; i < meldinger.size(); i++) {
-            if (i >= levendeIdenterINorge.size() - 1) {
+            if (i >= levendeIdenterINorge.size()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
             }
