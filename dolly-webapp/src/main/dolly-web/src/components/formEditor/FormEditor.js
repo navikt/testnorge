@@ -36,6 +36,7 @@ export default class FormEditor extends PureComponent {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
+
 		return (
 			<div className="subkategori" key={uniqueId}>
 				{!isFieldarray && <h4>{subKategori.navn}</h4>}
