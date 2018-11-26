@@ -53,12 +53,6 @@ public class TpsStatusQuoService {
             JSONArray jsonArray = JsonPath.read(document, felt);
             return jsonArray.get(0).toString();
         } else {
-            log.info("finding value for felt " + felt);
-            if(root == null) {
-                log.warn("root is null");
-            } else {
-                log.info("root.findValue(felt).asText(): " + root.findValue(felt).asText());
-            }
             return root.findValue(felt).asText();
         }
     }
