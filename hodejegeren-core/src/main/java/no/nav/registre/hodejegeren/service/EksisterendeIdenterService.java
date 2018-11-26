@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -117,7 +118,7 @@ public class EksisterendeIdenterService {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         for (int i = 0; i < meldinger.size(); i++) {
-            if (i >= singleIdenterINorge.size() - 2) {
+            if (i >= singleIdenterINorge.size() - 1) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen singleIdenterINorge fra TPSF avspillergruppen.");
             }
@@ -198,7 +199,7 @@ public class EksisterendeIdenterService {
 
         int antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
-            if (i >= levendeIdenterINorge.size() - 1) {
+            if (i >= levendeIdenterINorge.size()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
             }
@@ -239,7 +240,7 @@ public class EksisterendeIdenterService {
     public void behandleGenerellAarsak(List<RsMeldingstype> meldinger, List<String> levendeIdenterINorge, List<String> brukteIdenterIDenneBolken,
             Endringskoder endringskode, String environment) {
         for (int i = 0; i < meldinger.size(); i++) {
-            if (i >= levendeIdenterINorge.size() - 1) {
+            if (i >= levendeIdenterINorge.size()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
             }
@@ -256,10 +257,15 @@ public class EksisterendeIdenterService {
         }
     }
 
-    private Map<String, String> getIdentWithStatus(List<String> identer, Endringskoder endringskode, String environment, Predicate<Map<String, String>> predicate) {
+    private Map<String, String> getIdentWithStatus(List<String> identer, Endringskoder endringskode, String environment,
+            Predicate<Map<String, String>> predicate) {
         Map<String, String> statusQuoIdent;
         String randomIdent;
         do {
+            if (identer.size() <= 0) {
+                throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding. For få identer i " +
+                        "listen av identer fra TPSF avspillergruppen.");
+            }
             int randomIndex = rand.nextInt(identer.size());
             randomIdent = identer.remove(randomIndex);
             statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
