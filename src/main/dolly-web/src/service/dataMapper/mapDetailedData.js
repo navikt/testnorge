@@ -4,7 +4,6 @@ import Formatters from '~/utils/DataFormatter'
 export function mapTpsfData(tpsfData, bestillingData) {
 	let data
 	if (tpsfData) {
-		console.log(tpsfData, 'tpsfData')
 		data = [
 			{
 				header: 'Personlig informasjon',
