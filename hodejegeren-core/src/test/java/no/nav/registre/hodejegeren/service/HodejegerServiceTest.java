@@ -226,7 +226,7 @@ public class HodejegerServiceTest {
             hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
             fail();
         } catch (RuntimeException e) {
-            assertEquals(2, listAppender.list.size());
+            assertEquals(3, listAppender.list.size());
             assertTrue(listAppender.list.toString()
                     .contains("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: " + ids.toString()));
         }
