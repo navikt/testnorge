@@ -54,7 +54,7 @@ public class BrukerService {
     }
 
     public Bruker fetchBruker(String navIdent) {
-        Bruker bruker = brukerRepository.findBrukerByNavIdent(navIdent);
+        Bruker bruker = brukerRepository.findBrukerByNavIdent(navIdent.toUpperCase());
         if (bruker == null) {
             throw new NotFoundException("Bruker ikke funnet");
         }
