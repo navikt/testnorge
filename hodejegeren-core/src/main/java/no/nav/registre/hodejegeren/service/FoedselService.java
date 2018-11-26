@@ -80,7 +80,7 @@ public class FoedselService {
                     throw new ManglerEksisterendeIdentException("Kunne ikke finne mor til ident for SkdMelding med meldingsnummer "
                             + meldingsnrHosTpsSynt + ". For få kvinner i listen levendeIdenterINorge.");
                 }
-                int randomIndex = rand.nextInt(levendeIdenterINorge.size());
+                int randomIndex = rand.nextInt(potensielleMoedre.size());
                 randomIdent = potensielleMoedre.remove(randomIndex);
             } while (!"02468".contains(String.valueOf(randomIdent.charAt(8)))); // kvinner har partall på index 8 i FNR
 
