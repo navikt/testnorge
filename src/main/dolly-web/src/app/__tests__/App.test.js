@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, render } from 'enzyme'
 import App from '../App'
 
 import Header from '~/components/header/Header'
@@ -28,6 +28,17 @@ describe('App.js', () => {
 
 		expect(wrapper.find(Loading).exists()).toBeTruthy()
 	})
+
+	// TODO: Hvordan testes dette?
+	// let redirectTo = 'testUrl'
+	// const router = { location: { pathname: 'test' } }
+	// const onRedirect = jest.fn()
+	// it('should redirect when needed', () => {
+	// 	const wrapper = render(<App redirectTo={redirectTo} onRedirect={onRedirect} router={router} />)
+	// 	let redirectTo = 'testUrl2'
+
+	// 	expect(onRedirect).toBeCalled()
+	// })
 
 	it('should render main components', () => {
 		const testbrukerData = { id: 'test' }
