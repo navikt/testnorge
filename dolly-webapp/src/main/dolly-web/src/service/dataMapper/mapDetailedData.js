@@ -47,6 +47,11 @@ export function mapTpsfData(tpsfData, bestillingData) {
 						id: 'miljoer',
 						label: 'Miljøer',
 						value: Formatters.arrayToString(bestillingData.environments)
+					},
+					{
+						id: 'spesreg',
+						label: 'Diskresjonskoder',
+						value: tpsfData.spesreg
 					}
 				]
 			}

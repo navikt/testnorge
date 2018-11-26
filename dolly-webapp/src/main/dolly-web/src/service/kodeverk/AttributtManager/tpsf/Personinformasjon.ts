@@ -72,6 +72,18 @@ const AttributtListe: Attributt[] = [
 		validation: yup.string().required('Velg sivilstand.'),
 		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'spesreg',
+		label: 'Diskresjonskoder',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		apiKodeverkId: 'Diskresjonskoder',
+		validation: yup.string().required('Velg diskresjonskoder.'),
+		kanRedigeres: true,
+		attributtType: AttributtType.SelectAndEdit
 	}
 	// {
 	// 	hovedKategori: Kategorier.PersInfo,
