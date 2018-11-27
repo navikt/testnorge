@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.identpool.navnepool.domain.Navn;
-import no.nav.identpool.navnepool.domain.ValidEtternavn;
-import no.nav.identpool.navnepool.domain.ValidFornavn;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +34,8 @@ public class NavnepoolService {
     }
 
     public Boolean isValid(Navn navn) {
-        return ValidFornavn.getNavnList().contains(navn.getFornavn()) && ValidEtternavn.getNavnList().contains(navn.getEtternavn());
+        return !(navn.getFornavn() == null && navn.getEtternavn() == null)
+                && (navn.getFornavn() == null || validFornavn.contains(navn.getFornavn()))
+                && (navn.getEtternavn() == null || validEtternavn.contains(navn.getEtternavn()));
     }
 }

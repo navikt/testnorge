@@ -3,7 +3,6 @@ package no.nav.identpool.navnepool.controller;
 import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +29,7 @@ public class FiktiveNavnController {
     @ApiOperation("Validerer navn mot listen fra skatteetaten med fiktive navn. "
             + "Dette er adjektiv og substantiv som det ikke er lov å navngi sine barn med, i Norge anno 2018.")
     @GetMapping("/valider")
-    public Boolean validate(@RequestBody Navn navn) {
+    public Boolean validate(Navn navn) {
         return service.isValid(navn);
     }
 }
