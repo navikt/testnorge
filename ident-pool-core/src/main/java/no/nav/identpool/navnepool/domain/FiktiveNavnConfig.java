@@ -25,7 +25,7 @@ public class FiktiveNavnConfig {
         URL resource = Resources.getResource(fileName);
         MappingIterator<TempNavn> readValues =
                 mapper.readerFor(TempNavn.class).with(bootstrapSchema).readValues(resource);
-        return readValues.readAll().stream().flatMap(tempNavn -> Stream.of(tempNavn.getFiktivnavn())).collect(Collectors.toList());
+        return readValues.readAll().stream().flatMap(tempNavn -> Stream.of(tempNavn.getFiktivnavn().toUpperCase())).collect(Collectors.toList());
     }
 
     @Bean
