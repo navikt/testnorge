@@ -30,7 +30,13 @@ h1 {
 }
 
 // NAV skjema override
-.skjemaelement .skjemaelement__label {
-	font-size: 0.75em;
-	text-transform: uppercase;
+.skjemaelement {
+	.skjemaelement__label {
+		font-size: 0.75em;
+		text-transform: uppercase;
+	}
+	&__staticvalue {
+		padding: 0.45rem 0;
+		min-width: 200px;
+	}
 }

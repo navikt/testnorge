@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Overskrift from '~/components/overskrift/Overskrift'
 import GruppeDetaljer from './GruppeDetaljer/GruppeDetaljer'
-import BestillingStatus from './BestillingStatus/BestillingStatus'
+import BestillingStatusConnector from './BestillingStatus/BestillingStatusConnector'
 import Loading from '~/components/loading/Loading'
 import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
@@ -72,7 +72,6 @@ export default class Gruppe extends Component {
 			isFetching,
 			getGruppe,
 			deleteGruppe,
-			getBestillingStatus,
 			addFavorite
 		} = this.props
 
@@ -105,13 +104,16 @@ export default class Gruppe extends Component {
 						<SendOpenAmConnector gruppe={gruppe} />
 					</div>
 				</Overskrift>
-
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
-
 				<GruppeDetaljer gruppe={gruppe} />
 
-				{gruppe.bestillinger.map(bestilling => (
-					<BestillingStatus key={bestilling.id} bestilling={bestilling} onGroupUpdate={getGruppe} />
+				{// Viser progressbar og bestillingsstatus
+				gruppe.bestillinger.map(bestilling => (
+					<BestillingStatusConnector
+						key={bestilling.id}
+						bestilling={bestilling}
+						onGroupUpdate={getGruppe}
+					/>
 				))}
 
 				<Toolbar
@@ -126,7 +128,6 @@ export default class Gruppe extends Component {
 						</Knapp>
 					</Fragment>
 				</Toolbar>
-
 				{this.renderList(gruppe)}
 			</div>
 		)

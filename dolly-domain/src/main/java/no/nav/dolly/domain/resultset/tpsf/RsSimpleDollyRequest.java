@@ -1,9 +1,9 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import java.time.LocalDateTime;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -13,10 +13,21 @@ public class RsSimpleDollyRequest {
 
     private Character kjonn;
 
-    private LocalDate foedtEtter;
+    private LocalDateTime foedtEtter;
 
-    private LocalDate foedtFoer;
+    private LocalDateTime foedtFoer;
 
     private int antall;
 
+    private String sprakKode;
+
+    private LocalDateTime datoSprak;
+
+    private String spesreg;
+
+    private LocalDateTime spesregDato;
+
+    private String statsborgerskap;
+
+    private LocalDateTime statsborgerskapRegdato;
 }

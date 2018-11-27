@@ -1,5 +1,8 @@
 package no.nav.dolly.testdata.builder;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,10 +10,6 @@ import no.nav.dolly.domain.resultset.RsAdresse;
 import no.nav.dolly.domain.resultset.RsPostadresse;
 import no.nav.dolly.domain.resultset.tpsf.RsSimpleRelasjoner;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Builder
 @Getter
@@ -21,8 +20,8 @@ public class RsTpsfBestillingBuilder {
     private int antall;
     private RsSimpleRelasjoner relasjoner;
     private String identtype;
-    private LocalDate foedtEtter;
-    private LocalDate foedtFoer;
+    private LocalDateTime foedtEtter;
+    private LocalDateTime foedtFoer;
     private boolean withAdresse;
     private RsAdresse boadresse;
     private List<RsPostadresse> postadresse;

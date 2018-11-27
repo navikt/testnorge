@@ -2,8 +2,10 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import Gruppe from './Gruppe'
 import { getGruppe, showCreateOrEditGroup, deleteGruppe } from '~/ducks/gruppe'
+import { getBestillingStatus } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import { resetSearch } from '~/ducks/search'
+import bestillingStatus from '../../ducks/bestillingStatus'
 
 const loadingSelector = createLoadingSelector(getGruppe)
 

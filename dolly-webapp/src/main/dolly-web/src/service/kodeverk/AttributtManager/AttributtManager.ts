@@ -1,11 +1,13 @@
-import { AttributtGruppe, AttributtGruppeHovedKategori, Attributt } from './Types'
+import { AttributtGruppe, AttributtGruppeHovedKategori, Attributt, Kategori } from './Types'
 import * as yup from 'yup'
 import { FormikValues } from 'formik'
 import AttributtListe from './Attributter'
 import { groupList, groupListByHovedKategori } from './GroupList'
 import DataFormatter from '~/utils/DataFormatter'
+import DataSourceMapper from '~/utils/DataSourceMapper'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
+import { getAttributterForEditing, isAttributtEditable } from './AttributtHelpers'
 
 export default class AttributtManager {
 	// BASE FUNCTIONS
@@ -44,29 +46,53 @@ export default class AttributtManager {
 		return this._createValidationObject(list)
 	}
 
-	listEditable(): AttributtGruppe[] {
-		return groupList(AttributtListe.filter(attr => attr.kanRedigeres))
-	}
-
-	listEditableFlat(): Attributt[] {
-		return AttributtListe.filter(attr => attr.kanRedigeres)
-	}
-
-	getValidationsForEdit(): yup.MixedSchema {
-		const list = this.listEditableFlat()
-		return this._createValidationObject(list)
-	}
-
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
 		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
 	}
 
-	getInitialValuesForEditableItems(values: object): FormikValues {
-		const editableAttributes = AttributtListe.filter(attr => attr.kanRedigeres)
+	//Edit attributes
+	listEditableFlat(dataSources: string[]): Attributt[] {
+		return AttributtListe.filter(
+			attr => isAttributtEditable(attr) && dataSources.includes(attr.dataSource)
+		)
+	}
 
+	listEditable(dataSources: string[]): AttributtGruppe[] {
+		return groupList(this.listEditableFlat(dataSources))
+	}
+
+	getValidationsForEdit(dataSources: string[]): yup.MixedSchema {
+		const list = this.listEditableFlat(dataSources)
+		return this._createValidationObject(list)
+	}
+
+	//TODO: Se om vi dette kan gjøres ryddigere, litt rotete pga tpsf er array mens andre registre er object
+	getInitialValuesForEditableItems(
+		values: object,
+		ident: string,
+		dataSources: string[]
+	): FormikValues {
+		const editableAttributes = this.listEditableFlat(dataSources)
+		console.log(editableAttributes)
 		return editableAttributes.reduce((prev, item) => {
-			return this._setInitialValueFromServer(prev, item, values)
+			const dataSource = DataSourceMapper(item.dataSource)
+			const sourceValues =
+				dataSource === 'tpsf'
+					? values[dataSource][0]
+					: values[dataSource] && values[dataSource][ident]
+
+			if (item.items) {
+				return this._setInitialArrayValuesFromServer(prev, item, sourceValues)
+			}
+
+			return this._setInitialValueFromServer(prev, item, sourceValues)
 		}, {})
+	}
+
+	getAttributtListByHovedkategori(hovedkategori: Kategori): string[] {
+		return AttributtListe.filter(attr => attr.hovedKategori.id === hovedkategori.id).map(
+			attr => attr.id
+		)
 	}
 
 	_createValidationObject(list: Attributt[]): yup.MixedSchema {
@@ -101,7 +127,7 @@ export default class AttributtManager {
 	_setInitialValueFromState(currentObject, item, stateValues) {
 		let initialValue = this.initValueSelector(item)
 		const fromState = _get(stateValues, item.id)
-		if (fromState) initialValue = fromState
+		if (fromState || fromState === false) initialValue = fromState
 
 		return _set(currentObject, item.id, initialValue)
 	}
@@ -109,17 +135,31 @@ export default class AttributtManager {
 	_setInitialValueFromServer(currentObject, item, serverValues) {
 		let initialValue = this.initValueSelector(item)
 		const fromState = _get(serverValues, item.path || item.id)
-		if (fromState) initialValue = fromState
+		if (fromState || fromState === false) initialValue = fromState
 
 		if (item.inputType === 'date') initialValue = DataFormatter.formatDate(initialValue)
 
 		return _set(currentObject, item.id, initialValue)
 	}
 
+	_setInitialArrayValuesFromServer(currentObject, item, serverValues) {
+		// kanskje alle skal kunne redigeres
+		const itemArray = item.items
+		const editableAttributes = itemArray.filter(item => isAttributtEditable(item))
+		console.log(editableAttributes)
+		const arrayValues = serverValues.map(valueObj => {
+			return editableAttributes.reduce((prev, curr) => {
+				const currentPath = curr.editPath || curr.path
+				return _set(prev, curr.id, valueObj[currentPath])
+			}, {})
+		})
+		return _set(currentObject, item.id, arrayValues)
+	}
+
 	_setInitialArrayValue(currentObject, itemId, stateValues, array) {
 		let initialValue = array
 		const fromState = _get(stateValues, itemId)
-		if (fromState) initialValue = fromState
+		if (fromState || fromState === false) initialValue = fromState
 
 		return _set(currentObject, itemId, initialValue)
 	}

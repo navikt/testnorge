@@ -45,4 +45,9 @@ describe('Panel.js', () => {
 		const wrapper = shallow(<Panel startOpen>{childrenContent}</Panel>)
 		expect(wrapper.find('.panel-content').text()).toBe(childrenContent)
 	})
+
+	it('should render error in panel', () => {
+		const wrapper = shallow(<Panel errors />)
+		expect(wrapper.find('.panel-heading_error').exists()).toBeTruthy()
+	})
 })
