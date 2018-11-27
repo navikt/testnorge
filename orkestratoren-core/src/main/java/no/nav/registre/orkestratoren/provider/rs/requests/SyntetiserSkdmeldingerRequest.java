@@ -1,4 +1,4 @@
-package no.nav.registre.orkestratoren.provider.rs;
+package no.nav.registre.orkestratoren.provider.rs.requests;
 
 import java.util.Map;
 
@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class SyntetiserSkdmeldingerRequest {
+
     private Long skdMeldingGruppeId;
     private String miljoe;
     private Map<String, Integer> antallMeldingerPerEndringskode;

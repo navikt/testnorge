@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registre.orkestratoren.JobController;
+import no.nav.registre.orkestratoren.batch.JobController;
 import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
 import no.nav.registre.orkestratoren.provider.rs.InternalController;
 

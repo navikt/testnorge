@@ -53,6 +53,8 @@ public class HodejegerenConsumerTest {
 
     /**
      * Scenario: Tester happypath til {@link HodejegerenConsumer#startSyntetisering}
+     * - forventer at metoden returnerer id-ene til de lagrede skdmeldingene i TPSF
+     * - forventer at metoden kaller hodejegeren med de rette parametrene (se stub)
      */
     @Test
     public void shouldStartSyntetisering() {
@@ -77,7 +79,7 @@ public class HodejegerenConsumerTest {
     }
 
     public void stubHodejegerenConsumer() {
-        stubFor(post(urlPathEqualTo("/api/v1/syntetisering/generer"))
+        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
                         "{\"gruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe

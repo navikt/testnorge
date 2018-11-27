@@ -4,14 +4,14 @@ import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.registre.orkestratoren.service.TpsSyntPakkenConsumer;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
+import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringsControllerTest {
@@ -20,11 +20,11 @@ public class SyntetiseringsControllerTest {
     private SyntetiseringsController syntetiseringsController;
 
     @Mock
-    private TpsSyntPakkenConsumer tpsSyntPakkenConsumer;
+    private TpsSyntPakkenService tpsSyntPakkenService;
 
     /**
      * Scenario: HVIS syntetiseringskontrolleren får et request om å oppretteSkdMeldinger, skal metoden kalle på
-     * {@link TpsSyntPakkenConsumer#produserOgSendSkdmeldingerTilTpsIMiljoer}
+     * {@link TpsSyntPakkenService#produserOgSendSkdmeldingerTilTpsIMiljoer}
      */
     @Test
     public void shouldProduceAndSendSkdmeldingerToTpsIMiljoer() {
@@ -39,8 +39,8 @@ public class SyntetiseringsControllerTest {
                 miljoe,
                 antallMeldingerPerEndringskode);
 
-        syntetiseringsController.opprettSkdMeldinger(syntetiserSkdmeldingerRequest);
+        syntetiseringsController.opprettSkdMeldingerOgSendTilTps(syntetiserSkdmeldingerRequest);
 
-        verify(tpsSyntPakkenConsumer).produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
+        verify(tpsSyntPakkenService).produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
     }
 }

@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,15 +25,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import no.nav.registre.orkestratoren.batch.JobController;
 import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
-import no.nav.registre.orkestratoren.provider.rs.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.SyntetiseringsController;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("test")
-public class StartSyntetiseringCompTest {
+public class StartSyntetiseringTpsCompTest {
 
     @Autowired
     private SyntetiseringsController syntetiseringsController;
@@ -90,7 +90,7 @@ public class StartSyntetiseringCompTest {
 
         SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
 
-        AvspillingResponse avspillingResponse = syntetiseringsController.opprettSkdMeldinger(ordreRequest);
+        AvspillingResponse avspillingResponse = syntetiseringsController.opprettSkdMeldingerOgSendTilTps(ordreRequest);
 
         assertEquals(expectedAntallSendte, avspillingResponse.getAntallSendte());
         assertEquals(expectedAntallFeilet, avspillingResponse.getAntallFeilet());
@@ -117,7 +117,7 @@ public class StartSyntetiseringCompTest {
     }
 
     public void stubHodejegeren() {
-        stubFor(post(urlPathEqualTo("/api/v1/syntetisering/generer"))
+        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson("{\"gruppeId\": " + gruppeId
                         + ", \"miljoe\": \"" + miljoe
                         + "\", \"antallMeldingerPerEndringskode\": {\"" + endringskode1 + "\": " + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
@@ -128,7 +128,7 @@ public class StartSyntetiseringCompTest {
     }
 
     public void stubTPSF() {
-        stubFor(post(urlPathEqualTo("/api/v1/endringsmelding/skd/send/" + gruppeId))
+        stubFor(post(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))
                 .withRequestBody(equalToJson("{\"environment\": \"" + miljoe
                         + "\", \"ids\": [" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]}"))
                 .willReturn(ok()

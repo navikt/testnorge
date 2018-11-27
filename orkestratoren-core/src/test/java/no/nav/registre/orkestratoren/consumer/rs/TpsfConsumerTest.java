@@ -65,7 +65,7 @@ public class TpsfConsumerTest {
     }
 
     public void stubTpsfConsumer() {
-        stubFor(post(urlPathEqualTo("/api/v1/endringsmelding/skd/send/" + gruppeId))
+        stubFor(post(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))
                 .withRequestBody(equalToJson(
                         "{\"environment\":\"" + environment
                                 + "\",\"ids\":[" + ids.get(0) + ", " + ids.get(1) + "]}"))
