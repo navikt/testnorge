@@ -55,7 +55,7 @@ public class TpsSyntPakkenService {
                 avspillingResponse = new AvspillingResponse().addStatusFraFeilendeMeldinger(status);
             } else {
                 avspillingResponse = tpsfConsumer.sendSkdmeldingerTilTps(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
-                log.warn("Exception fra hodejegeren. Følgende id-er ble sendt til TPS: " + ids.toString());
+                log.warn("Exception fra hodejegeren. Følgende id-er ble sendt til TPS: {}", ids.toString());
             }
         }
         return avspillingResponse;
