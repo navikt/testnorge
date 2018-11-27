@@ -47,6 +47,11 @@ export function mapTpsfData(tpsfData, bestillingData) {
 						id: 'miljoer',
 						label: 'Miljøer',
 						value: Formatters.arrayToString(bestillingData.environments)
+					},
+					{
+						id: 'spesreg',
+						label: 'Diskresjonskoder',
+						value: tpsfData.spesreg
 					}
 				]
 			}
@@ -211,7 +216,7 @@ export function mapKrrData(krrData) {
 			},
 			{
 				id: 'reservert',
-				label: 'Reservert',
+				label: 'Reservert mot digitalkommunikasjon',
 				value: krrData.reservert ? 'JA' : 'NEI'
 			}
 		]

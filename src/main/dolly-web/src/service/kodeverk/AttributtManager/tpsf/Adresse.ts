@@ -25,7 +25,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
 		validation: yup.string().required('Vennligst fyll ut'),
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -38,7 +37,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
 		validation: yup.string().required('Vennligst fyll ut'),
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -51,7 +49,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
 		validation: yup.string().required('Vennligst fyll ut.'),
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -64,7 +61,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
 		validation: yup.string().required('Vennligst fyll ut.'),
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -77,7 +73,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
 		validation: DateValidation,
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
 	}
 

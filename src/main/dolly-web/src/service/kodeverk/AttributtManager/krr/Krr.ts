@@ -13,7 +13,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.KRR,
 		inputType: InputType.Text,
 		validation: yup.string().required('Vennligst oppgi mobilnummer'),
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -24,7 +23,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.KRR,
 		inputType: InputType.Text,
 		validation: yup.string().email('Vennligst fyll ut'),
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -36,7 +34,6 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),
 		validation: yup.string().required('Vennligst velg en verdi'),
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
 	}
 ]
