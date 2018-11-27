@@ -1,12 +1,18 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +35,27 @@ public class HodejegerenConsumerTest {
     private long gruppeId = 10L;
     private String miljoe = "t9";
     private String endringskode = "0110";
-    private int antallPerEndringskode = 1;
+    private int antallPerEndringskode = 2;
     private List<Long> expectedMeldingsIds;
+    private Map<String, Integer> antallMeldingerPerEndringskode;
+    private GenereringsOrdreRequest ordreRequest;
 
-    /**
-     * Scenario: Tester happypath til {@link HodejegerenConsumer#startSyntetisering}
-     * - forventer at metoden returnerer id-ene til de lagrede skdmeldingene i TPSF
-     * - forventer at metoden kaller hodejegeren med de rette parametrene (se stub)
-     */
-    @Test
-    public void shouldStartSyntetisering() {
-        HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
+    @Before
+    public void setUp() {
+        antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put(endringskode, antallPerEndringskode);
-        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
-
+        ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
         expectedMeldingsIds = new ArrayList<>();
         expectedMeldingsIds.add(120421016L);
         expectedMeldingsIds.add(110156008L);
+    }
 
+    /**
+     * Scenario: Tester happypath til {@link HodejegerenConsumer#startSyntetisering} - forventer at metoden returnerer id-ene til de
+     * lagrede skdmeldingene i TPSF - forventer at metoden kaller hodejegeren med de rette parametrene (se stub)
+     */
+    @Test
+    public void shouldStartSyntetisering() {
         stubHodejegerenConsumer();
 
         List<Long> ids = hodejegerenConsumer.startSyntetisering(ordreRequest);

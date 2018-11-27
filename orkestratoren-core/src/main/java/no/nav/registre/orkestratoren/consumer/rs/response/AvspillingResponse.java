@@ -20,7 +20,8 @@ public class AvspillingResponse {
         this.antallFeilet++;
     }
 
-    public void addStatusFraFeilendeMeldinger(StatusPaaAvspiltSkdMelding statusFraFeilendeMeldinger) {
+    public AvspillingResponse addStatusFraFeilendeMeldinger(StatusPaaAvspiltSkdMelding statusFraFeilendeMeldinger) {
         this.statusFraFeilendeMeldinger.add(statusFraFeilendeMeldinger);
+        return this;
     }
 }
