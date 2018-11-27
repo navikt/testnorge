@@ -7,6 +7,7 @@ import DataFormatter from '~/utils/DataFormatter'
 import DataSourceMapper from '~/utils/DataSourceMapper'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
+import { getAttributterForEditing, isAttributtEditable } from './AttributtHelpers'
 
 export default class AttributtManager {
 	// BASE FUNCTIONS
@@ -51,7 +52,9 @@ export default class AttributtManager {
 
 	//Edit attributes
 	listEditableFlat(dataSources: string[]): Attributt[] {
-		return AttributtListe.filter(attr => attr.kanRedigeres && dataSources.includes(attr.dataSource))
+		return AttributtListe.filter(
+			attr => isAttributtEditable(attr) && dataSources.includes(attr.dataSource)
+		)
 	}
 
 	listEditable(dataSources: string[]): AttributtGruppe[] {
@@ -70,6 +73,7 @@ export default class AttributtManager {
 		dataSources: string[]
 	): FormikValues {
 		const editableAttributes = this.listEditableFlat(dataSources)
+		console.log(editableAttributes)
 		return editableAttributes.reduce((prev, item) => {
 			const dataSource = DataSourceMapper(item.dataSource)
 			const sourceValues =
@@ -141,7 +145,8 @@ export default class AttributtManager {
 	_setInitialArrayValuesFromServer(currentObject, item, serverValues) {
 		// kanskje alle skal kunne redigeres
 		const itemArray = item.items
-		const editableAttributes = itemArray.filter(item => item.kanRedigeres)
+		const editableAttributes = itemArray.filter(item => isAttributtEditable(item))
+		console.log(editableAttributes)
 		const arrayValues = serverValues.map(valueObj => {
 			return editableAttributes.reduce((prev, curr) => {
 				const currentPath = curr.editPath || curr.path
