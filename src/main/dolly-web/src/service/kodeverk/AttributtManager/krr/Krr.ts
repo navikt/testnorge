@@ -1,5 +1,5 @@
 import { Kategorier, SubKategorier } from '../Categories'
-import { Attributt, InputType, DataSource } from '../Types'
+import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 
 import * as yup from 'yup'
@@ -12,7 +12,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Mobilnummer',
 		dataSource: DataSource.KRR,
 		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst oppgi mobilnummer')
+		validation: yup.string().required('Vennligst oppgi mobilnummer'),
+		attributtType: AttributtType.SelectAndEdit
 	},
 	{
 		hovedKategori: Kategorier.KontaktInfo,
@@ -21,17 +22,19 @@ const AttributtListe: Attributt[] = [
 		label: 'E-postadresse',
 		dataSource: DataSource.KRR,
 		inputType: InputType.Text,
-		validation: yup.string().email('Vennligst fyll ut')
+		validation: yup.string().email('Vennligst fyll ut'),
+		attributtType: AttributtType.SelectAndEdit
 	},
 	{
 		hovedKategori: Kategorier.KontaktInfo,
 		subKategori: SubKategorier.Krr,
 		id: 'reservert',
 		dataSource: DataSource.KRR,
-		label: 'Reservert mot digitalkommmunikasjon',
+		label: 'Reservert mot digitalkommunikasjon',
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),
-		validation: yup.string().required('Vennligst velg en verdi')
+		validation: yup.string().required('Vennligst velg en verdi'),
+		attributtType: AttributtType.SelectAndEdit
 	}
 ]
 

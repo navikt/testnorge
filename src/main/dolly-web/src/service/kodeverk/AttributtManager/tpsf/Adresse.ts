@@ -1,5 +1,5 @@
 import { Kategorier, SubKategorier } from '../Categories'
-import { Attributt, InputType, DataSource } from '../Types'
+import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
 import * as yup from 'yup'
@@ -12,7 +12,8 @@ const AttributtListe: Attributt[] = [
 		path: 'boadresse',
 		label: 'Har adresse',
 		dataSource: DataSource.TPSF,
-		validation: yup.object()
+		validation: yup.object(),
+		attributtType: AttributtType.SelectAndEdit
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -24,7 +25,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
 		validation: yup.string().required('Vennligst fyll ut'),
-		kanRedigeres: true
+		attributtType: AttributtType.SelectAndEdit
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -36,7 +37,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
 		validation: yup.string().required('Vennligst fyll ut'),
-		kanRedigeres: true
+		attributtType: AttributtType.SelectAndEdit
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -48,7 +49,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
 		validation: yup.string().required('Vennligst fyll ut.'),
-		kanRedigeres: true
+		attributtType: AttributtType.SelectAndEdit
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -60,7 +61,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
 		validation: yup.string().required('Vennligst fyll ut.'),
-		kanRedigeres: true
+		attributtType: AttributtType.SelectAndEdit
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -72,7 +73,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
 		validation: DateValidation,
-		kanRedigeres: true
+		attributtType: AttributtType.SelectAndEdit
 	}
 
 	// {

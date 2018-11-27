@@ -31,12 +31,21 @@ export interface KategoriTypes {
 	[key: string]: Kategori
 }
 
+export enum AttributtType {
+	SelectAndEdit = 'selectAndEdit', // kan bestilles og redigeres på
+	EditOnly = 'editOnly', // kun redigering
+	SelectOnly = 'selectOnly', // kun bestilling
+	SelectAndRead = 'selectAndRead' // skal bestilles, ikke editeres, men vises i editmode
+}
+
 export interface Attributt {
 	hovedKategori: Kategori
 	size?: String
 	subKategori: Kategori
 	id: string
 	path?: string
+	editPath?: string
+	attributtType: AttributtType
 	label: string
 	dataSource: DataSource
 	inputType?: InputType
@@ -44,7 +53,6 @@ export interface Attributt {
 	format?: Function
 	apiKodeverkId?: string
 	validation?: yup.MixedSchema
-	kanRedigeres?: boolean
 	parent?: string
 	items?: Attributt[]
 	dependentOn?: string

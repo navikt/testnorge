@@ -43,10 +43,6 @@ export default class DollyService {
 		return Request.put(Endpoints.gruppeIdenter(gruppeId, data))
 	}
 
-	static getBestillingStatus(gruppeId, data) {
-		return Request.get(Endpoints.gruppeBestillingStatus(gruppeId), data)
-	}
-
 	static createBestilling(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
 	}
