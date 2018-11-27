@@ -3,12 +3,9 @@ package no.nav.identpool.navnepool;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-
 import no.nav.identpool.navnepool.domain.Navn;
 import no.nav.identpool.navnepool.domain.ValidEtternavn;
 import no.nav.identpool.navnepool.domain.ValidFornavn;
@@ -17,11 +14,9 @@ import no.nav.identpool.navnepool.domain.ValidFornavn;
 @RequiredArgsConstructor
 public class NavnepoolService {
 
-    @Autowired
-    private List<String> validFornavn;
+    private final List<String> validFornavn;
 
-    @Autowired
-    private List<String> validEtternavn;
+    private final List<String> validEtternavn;
 
     private final SecureRandom secureRandom;
 
