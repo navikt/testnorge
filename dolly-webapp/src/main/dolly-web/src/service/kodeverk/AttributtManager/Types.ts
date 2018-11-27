@@ -53,7 +53,6 @@ export interface Attributt {
 	format?: Function
 	apiKodeverkId?: string
 	validation?: yup.MixedSchema
-	kanRedigeres?: boolean
 	parent?: string
 	items?: Attributt[]
 	dependentOn?: string

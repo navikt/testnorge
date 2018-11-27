@@ -46,7 +46,6 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'StatsborgerskapFreg',
 		validation: yup.string().required('Krever et statsborgerskap.'),
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -70,7 +69,6 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'Sivilstander',
 		validation: yup.string().required('Velg sivilstand.'),
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -82,8 +80,7 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'Diskresjonskoder',
 		validation: yup.string().required('Velg diskresjonskoder.'),
-		kanRedigeres: true,
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectOnly
 	}
 	// {
 	// 	hovedKategori: Kategorier.PersInfo,
