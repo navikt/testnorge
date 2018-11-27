@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -132,7 +131,7 @@ public class DollyBestillingService {
             String hovedperson = getHovedpersonAvBestillingsidenter(klareIdenter);
             List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
 
-            if (!isNullOrEmpty(successMiljoer)) {
+            if (!successMiljoer.isEmpty()) {
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);
                 progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
             } else {

@@ -53,11 +53,11 @@ public class Testgruppe {
 	@Column(name = "DATO_ENDRET", nullable = false)
 	private LocalDate datoEndret;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TILHOERER_TEAM", nullable = false)
 	private Team teamtilhoerighet;
 	
-	@OneToMany(mappedBy = "testgruppe")
+	@OneToMany(mappedBy = "testgruppe", fetch = FetchType.LAZY)
 	@Column(unique = true)
 	private Set<Testident> testidenter = new HashSet<>();
 

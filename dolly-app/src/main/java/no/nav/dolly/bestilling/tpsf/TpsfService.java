@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.tpsf;
 
 import static java.lang.String.format;
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+import static java.util.Objects.isNull;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,12 +66,12 @@ public class TpsfService {
         }
     }
 
-    boolean isBodyNotNull(ResponseEntity<Object> response) {
+    private boolean isBodyNotNull(ResponseEntity<Object> response) {
         return response != null && response.getBody() != null && response.getBody().toString() != null;
     }
 
     private void validateEnvironments(List<String> environments) {
-        if (isNullOrEmpty(environments)) {
+        if (!isNull(environments) && environments.isEmpty()) {
             throw new IllegalArgumentException("Ingen TPS miljoer er spesifisert for sending av testdata");
         }
     }

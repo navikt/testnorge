@@ -1,7 +1,8 @@
 package no.nav.dolly.service;
 
+import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class TestgruppeService {
 
     public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer) {
         List<Testgruppe> grupper = gruppeRepository.findAllById(grupperIDer);
-        if (!isNullOrEmpty(grupper)) {
+        if (!grupper.isEmpty()) {
             return grupper;
         }
         throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
@@ -126,7 +127,7 @@ public class TestgruppeService {
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(e.getRootCause() != null ? e.getRootCause().getMessage() : e.getMessage(), e);
+            throw new DollyFunctionalException(!isNull(e.getRootCause()) ? e.getRootCause().getMessage() : e.getMessage(), e);
         }
     }
 
@@ -153,19 +154,20 @@ public class TestgruppeService {
 
         return mapperFacade.map(endretGruppe, RsTestgruppe.class);
     }
+
     public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
         Set<RsTestgruppe> grupper;
-        if (!isNullOrEmpty(navIdent)) {
+        if (isNotBlank(navIdent)) {
             grupper = fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navIdent);
         } else {
             grupper = mapperFacade.mapAsSet(fetchAlleTestgrupper(), RsTestgruppe.class);
         }
 
-        if (!isNullOrEmpty(teamId)) {
+        if (!isNull(teamId)) {
             grupper = grupper.stream().filter(gruppe -> gruppe.getTeam().getId().toString().equals(teamId.toString())).collect(Collectors.toSet());
         }
 
-        if (!isNullOrEmpty(navIdent)) {
+        if (isNotBlank(navIdent)) {
             return getRsTestgruppeMedErMedlem(grupper, navIdent);
         }
 

@@ -86,8 +86,7 @@ public class TestgruppeController {
     @GetMapping
     public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgrupper(
             @RequestParam(name = "navIdent", required = false) String navIdent,
-            @RequestParam(name = "teamId", required = false) Long teamId
-    ) {
+            @RequestParam(name = "teamId", required = false) Long teamId) {
         return testgruppeService.getTestgruppeByNavidentOgTeamId(navIdent, teamId);
     }
 

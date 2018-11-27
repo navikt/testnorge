@@ -1,13 +1,14 @@
 package no.nav.dolly.mapper;
 
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
+import static java.util.Objects.isNull;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 
 @Configuration
 public class MapperFacadeConfig {
@@ -19,7 +20,7 @@ public class MapperFacadeConfig {
     MapperFacade mapperFacade() {
         DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 
-        if (mappingStrategies != null) {
+        if (!isNull(mappingStrategies)) {
             for (MappingStrategy mapper : mappingStrategies) {
                 mapper.register(mapperFactory);
             }
