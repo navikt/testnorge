@@ -216,7 +216,7 @@ export function mapKrrData(krrData) {
 			},
 			{
 				id: 'reservert',
-				label: 'Reservert',
+				label: 'Reservert mot digitalkommunikasjon',
 				value: krrData.reservert ? 'JA' : 'NEI'
 			}
 		]
