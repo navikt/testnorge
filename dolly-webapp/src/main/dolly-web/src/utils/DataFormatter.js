@@ -37,14 +37,14 @@ formatters.parseDate = date => {
 
 formatters.kjonnToString = (kjonn = '') => {
 	const _kjonn = kjonn.toLowerCase()
-	if (!['m', 'k'].includes(_kjonn)) return 'udefinert'
-	return _kjonn === 'm' ? 'Mann' : 'Kvinne'
+	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
+	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
 }
 
 formatters.kjonnToStringBarn = (kjonn = '') => {
 	const _kjonn = kjonn.toLowerCase()
-	if (!['m', 'k'].includes(_kjonn)) return 'udefinert'
-	return _kjonn === 'm' ? 'Gutt' : 'Jente'
+	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
+	return _kjonn === 'm' ? 'GUTT' : 'JENTE'
 }
 
 formatters.arrayToString = (array, separator = ',') => {

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.time.ZonedDateTime;
@@ -102,7 +103,7 @@ public class DollyBestillingService {
                             .gyldigFra(ZonedDateTime.now())
                             .epost(bestillingRequest.getKrrstub().getEpost())
                             .mobil(bestillingRequest.getKrrstub().getMobil())
-                            .reservert(bestillingRequest.getKrrstub().getReservert())
+                            .reservert(isNull(bestillingRequest.getKrrstub().getReservert()) ? false : bestillingRequest.getKrrstub().getReservert())
                             .build();
                     ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
                     progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
