@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +17,27 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/internal")
 public class InternalController {
 
-    private static final String HODEJEGEREN_IS_READY_URL = "https://testnorge-hodejegeren.nais.preprod.local/internal/isReady";
-    private static final String SYNTHDATA_TPS_IS_READY_URL = "https://synthdata-tps.nais.preprod.local/internal/isReady";
-    private static final String SYNTHDATA_ARENA_IS_READY_URL = "https://synthdata-arena-inntekt.nais.preprod.local/internal/isReady";
-    private static final String TPSF_IS_READY_URL = "https://tps-forvalteren.nais.preprod.local/internal/isReady";
-    private static final String IDENTPOOL_IS_READY_URL = "https://ident-pool.nais.preprod.local/internal/isReady";
+    private String hodejegerenIsReadyUrl;
+    private String synthdataTpsIsReadyUrl;
+    private String synthdataArenaIsReadyUrl;
+    private String tpsfIsReadyUrl;
+    private String identpoolIsReadyUrl;
 
     @Autowired
     private RestTemplate restTemplate;
+
+    public InternalController(
+            @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenBaseUrl,
+            @Value("${tps-syntetisereren.rest-api.url}") String synthdataTpsBaseUrl,
+            @Value("${synthdata-arena-inntekt.rest-api.url}") String synthdataArenaBaseUrl,
+            @Value("${tps-forvalteren.rest-api.url}") String tpsfBaseUrl,
+            @Value("${ident-pool.rest-api.url}") String identpoolBaseUrl) {
+        this.hodejegerenIsReadyUrl = hodejegerenBaseUrl.replaceAll("/api", "/internal/isReady");
+        this.synthdataTpsIsReadyUrl = synthdataTpsBaseUrl.replaceAll("/api", "/internal/isReady");
+        this.synthdataArenaIsReadyUrl = synthdataArenaBaseUrl.replaceAll("/api", "/internal/isReady");
+        this.tpsfIsReadyUrl = tpsfBaseUrl.replaceAll("/api", "/internal/isReady");
+        this.identpoolIsReadyUrl = identpoolBaseUrl.replaceAll("/api", "/internal/isReady");
+    }
 
     @RequestMapping(value = "/isAlive", method = RequestMethod.GET)
     public String isAlive() {
@@ -35,23 +49,23 @@ public class InternalController {
         List<String> nonAvailableResources = new ArrayList<>();
 
         try {
-            if (!(restTemplate.getForEntity(HODEJEGEREN_IS_READY_URL, String.class).getStatusCode().equals(HttpStatus.OK))) {
+            if (!(restTemplate.getForEntity(hodejegerenIsReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
                 nonAvailableResources.add("testnorge-hodejegeren is not ready");
             }
 
-            if (!(restTemplate.getForEntity(SYNTHDATA_TPS_IS_READY_URL, String.class).getStatusCode().equals(HttpStatus.OK))) {
+            if (!(restTemplate.getForEntity(synthdataTpsIsReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
                 nonAvailableResources.add("synthdata_tps is not ready");
             }
 
-            if (!(restTemplate.getForEntity(SYNTHDATA_ARENA_IS_READY_URL, String.class).getStatusCode().equals(HttpStatus.OK))) {
+            if (!(restTemplate.getForEntity(synthdataArenaIsReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
                 nonAvailableResources.add("synthdata_arena is not ready");
             }
 
-            if (!(restTemplate.getForEntity(TPSF_IS_READY_URL, String.class).getStatusCode().equals(HttpStatus.OK))) {
+            if (!(restTemplate.getForEntity(tpsfIsReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
                 nonAvailableResources.add("tps-forvalteren is not ready");
             }
 
-            if (!(restTemplate.getForEntity(IDENTPOOL_IS_READY_URL, String.class).getStatusCode().equals(HttpStatus.OK))) {
+            if (!(restTemplate.getForEntity(identpoolIsReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
                 nonAvailableResources.add("ident-pool is not ready");
             }
         } catch (HttpStatusCodeException e) {
