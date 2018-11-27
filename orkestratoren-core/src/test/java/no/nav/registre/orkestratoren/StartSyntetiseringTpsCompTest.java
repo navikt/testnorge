@@ -4,8 +4,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -14,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +27,7 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import no.nav.registre.orkestratoren.batch.JobController;
 import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
@@ -116,6 +120,25 @@ public class StartSyntetiseringTpsCompTest {
         assertEquals(antallEndringskode2, testMap.get(endringskode2).intValue());
     }
 
+    /**
+     * Scenario: HVIS hodejegeren returnerer et exception, skal metoden
+     * {@link no.nav.registre.orkestratoren.service.TpsSyntPakkenService#produserOgSendSkdmeldingerTilTpsIMiljoer} hente ut id-ene
+     * som ligger i exception og returnere disse slik at de kan lagres i TPS.
+     */
+    @Test(expected = HttpStatusCodeException.class)
+    public void shouldReturnIdsWhenReceivingException() {
+        stubHodejegerenWithError();
+        stubTPSF();
+
+        SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
+        syntetiseringsController.opprettSkdMeldingerOgSendTilTps(ordreRequest);
+
+        verify(postRequestedFor(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))
+                .withRequestBody(equalToJson(
+                        "{\"environment\" : \"" + miljoe
+                                + "\", \"ids\" : [" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]}")));
+    }
+
     public void stubHodejegeren() {
         stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson("{\"gruppeId\": " + gruppeId
@@ -125,6 +148,17 @@ public class StartSyntetiseringTpsCompTest {
                         .withStatus(HttpStatus.CREATED.value())
                         .withHeader("Content-Type", "application/json")
                         .withBody("[" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]")));
+    }
+
+    public void stubHodejegerenWithError() {
+        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
+                .withRequestBody(equalToJson(
+                        "{\"gruppeId\":" + gruppeId
+                                + ",\"miljoe\":\"" + miljoe
+                                + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode1 + "\":" + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
+                .willReturn(aResponse()
+                        .withStatus(500)
+                        .withBody("{\"ids\": [" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]}")));
     }
 
     public void stubTPSF() {
