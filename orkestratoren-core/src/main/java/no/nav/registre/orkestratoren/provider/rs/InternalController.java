@@ -50,34 +50,26 @@ public class InternalController {
     public ResponseEntity<?> isReady() {
         List<String> nonAvailableResources = new ArrayList<>();
 
-        try {
-            if (!(restTemplate.getForEntity(hodejegerenIsReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
-                nonAvailableResources.add("testnorge-hodejegeren is not ready");
-            }
-
-            if (!(restTemplate.getForEntity(synthdataTpsIsReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
-                nonAvailableResources.add("synthdata_tps is not ready");
-            }
-
-            if (!(restTemplate.getForEntity(synthdataArenaIsReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
-                nonAvailableResources.add("synthdata_arena is not ready");
-            }
-
-            if (!(restTemplate.getForEntity(tpsfIsReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
-                nonAvailableResources.add("tps-forvalteren is not ready");
-            }
-
-            if (!(restTemplate.getForEntity(identpoolIsReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
-                nonAvailableResources.add("ident-pool is not ready");
-            }
-        } catch (HttpStatusCodeException e) {
-            nonAvailableResources.add("HttpStatusCodeException when checking isReady. Status code: " + e.getStatusCode());
-        }
+        checkReadiness(hodejegerenIsReadyUrl, nonAvailableResources);
+        checkReadiness(synthdataTpsIsReadyUrl, nonAvailableResources);
+        checkReadiness(synthdataArenaIsReadyUrl, nonAvailableResources);
+        checkReadiness(tpsfIsReadyUrl, nonAvailableResources);
+        checkReadiness(identpoolIsReadyUrl, nonAvailableResources);
 
         if (nonAvailableResources.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return new ResponseEntity<>(nonAvailableResources, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private void checkReadiness(String isReadyUrl, List<String> nonAvailableResources) {
+        try {
+            if(!(restTemplate.getForEntity(isReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
+                nonAvailableResources.add(isReadyUrl + " is not ready");
+            }
+        } catch (HttpStatusCodeException e) {
+            nonAvailableResources.add("HttpStatusCodeException når " + isReadyUrl + " ble kalt. Statuskode: " + e.getStatusCode());
+        }
     }
 
     private String createIsReadyUrl(String baseUrl) throws MalformedURLException {
