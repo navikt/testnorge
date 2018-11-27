@@ -35,6 +35,7 @@ public class TpsSyntPakkenService {
             Map<String, Integer> antallMeldingerPerEndringskode) {
 
         List<Long> ids = new ArrayList<>();
+        AvspillingResponse avspillingResponse;
         try {
             ids.addAll(hodejegerenConsumer.startSyntetisering(new GenereringsOrdreRequest(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode)));
         } catch (HttpStatusCodeException e) {
@@ -51,10 +52,12 @@ public class TpsSyntPakkenService {
             if (ids.isEmpty()) {
                 StatusPaaAvspiltSkdMelding status = new StatusPaaAvspiltSkdMelding();
                 status.setStatus("Noe feilet i hodejegeren. Ingen id-er kan sendes til TPS.");
-                return new AvspillingResponse().addStatusFraFeilendeMeldinger(status);
+                avspillingResponse = new AvspillingResponse().addStatusFraFeilendeMeldinger(status);
             } else {
-                return tpsfConsumer.sendSkdmeldingerTilTps(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
+                avspillingResponse = tpsfConsumer.sendSkdmeldingerTilTps(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
+                log.warn("Exception fra hodejegeren. Følgende id-er ble sendt til TPS: " + ids.toString());
             }
         }
+        return avspillingResponse;
     }
 }

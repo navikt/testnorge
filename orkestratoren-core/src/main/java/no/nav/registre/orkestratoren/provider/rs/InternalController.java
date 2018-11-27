@@ -1,5 +1,7 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +33,12 @@ public class InternalController {
             @Value("${tps-syntetisereren.rest-api.url}") String synthdataTpsBaseUrl,
             @Value("${synthdata-arena-inntekt.rest-api.url}") String synthdataArenaBaseUrl,
             @Value("${tps-forvalteren.rest-api.url}") String tpsfBaseUrl,
-            @Value("${ident-pool.rest-api.url}") String identpoolBaseUrl) {
-        this.hodejegerenIsReadyUrl = hodejegerenBaseUrl.replaceAll("/api", "/internal/isReady");
-        this.synthdataTpsIsReadyUrl = synthdataTpsBaseUrl.replaceAll("/api", "/internal/isReady");
-        this.synthdataArenaIsReadyUrl = synthdataArenaBaseUrl.replaceAll("/api", "/internal/isReady");
-        this.tpsfIsReadyUrl = tpsfBaseUrl.replaceAll("/api", "/internal/isReady");
-        this.identpoolIsReadyUrl = identpoolBaseUrl.replaceAll("/api", "/internal/isReady");
+            @Value("${ident-pool.rest-api.url}") String identpoolBaseUrl) throws MalformedURLException {
+        this.hodejegerenIsReadyUrl = createIsReadyUrl(hodejegerenBaseUrl);
+        this.synthdataTpsIsReadyUrl = createIsReadyUrl(synthdataTpsBaseUrl);
+        this.synthdataArenaIsReadyUrl = createIsReadyUrl(synthdataArenaBaseUrl);
+        this.tpsfIsReadyUrl = createIsReadyUrl(tpsfBaseUrl);
+        this.identpoolIsReadyUrl = createIsReadyUrl(identpoolBaseUrl);
     }
 
     @RequestMapping(value = "/isAlive", method = RequestMethod.GET)
@@ -76,5 +78,10 @@ public class InternalController {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return new ResponseEntity<>(nonAvailableResources, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private String createIsReadyUrl(String baseUrl) throws MalformedURLException {
+        URL url = new URL(baseUrl);
+        return url.getProtocol() + "://" + url.getHost() + "/internal/isReady";
     }
 }

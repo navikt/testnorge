@@ -24,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
+import org.springframework.web.client.HttpStatusCodeException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,7 +55,7 @@ public class TpsSyntPakkenServiceTest {
      * Scenario: HVIS hodejegeren returnerer et exception, skal metoden {@link HodejegerenConsumer#startSyntetisering} hente ut
      * id-ene som ligger i exception og returnere disse slik at de kan lagres i TPS.
      */
-    @Test
+    @Test(expected = HttpStatusCodeException.class)
     public void shouldReturnIdsWhenReceivingException() {
         stubHodejegerenConsumerWithError();
         stubTpsfConsumer();
