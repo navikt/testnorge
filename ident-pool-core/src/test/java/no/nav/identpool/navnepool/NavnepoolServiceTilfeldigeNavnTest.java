@@ -16,7 +16,7 @@ import org.mockito.stubbing.Answer;
 import no.nav.identpool.navnepool.domain.Navn;
 
 @RunWith(MockitoJUnitRunner.class)
-public class NavnepoolServiceTest {
+public class NavnepoolServiceTilfeldigeNavnTest {
 
     private List<String> validFornavn = Arrays.asList("fornavn1", "fornavn2");
     private List<String> validEtternavn = Arrays.asList("etternavn1", "etternavn2", "etternavn3");
@@ -24,20 +24,6 @@ public class NavnepoolServiceTest {
     private SecureRandom randomMock;
 
     private NavnepoolService navnepoolService;
-    private Answer<Integer> answerIterationFornavn = new Answer<Integer>() {
-        private int i = 0;
-
-        @Override public Integer answer(InvocationOnMock invocation) throws Throwable {
-            return i++;
-        }
-    };
-    private Answer<Integer> answerIterationEtternavn = new Answer<Integer>() {
-        private int i = 0;
-
-        @Override public Integer answer(InvocationOnMock invocation) throws Throwable {
-            return i++;
-        }
-    };
 
     @Test
     public void shouldGetAListOfRandomNames() {
@@ -55,4 +41,20 @@ public class NavnepoolServiceTest {
         assertEquals(validEtternavn.get(0), tilfeldigeNavn.get(0).getEtternavn());
         assertEquals(validEtternavn.get(1), tilfeldigeNavn.get(1).getEtternavn());
     }
+
+    private Answer<Integer> answerIterationFornavn = new Answer<Integer>() {
+        private int i = 0;
+
+        @Override public Integer answer(InvocationOnMock invocation) throws Throwable {
+            return i++;
+        }
+    };
+
+    private Answer<Integer> answerIterationEtternavn = new Answer<Integer>() {
+        private int i = 0;
+
+        @Override public Integer answer(InvocationOnMock invocation) throws Throwable {
+            return i++;
+        }
+    };
 }
