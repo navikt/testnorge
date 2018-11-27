@@ -32,7 +32,14 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorge-hodejegeren.rest-api"
       resourceType: restservice
+    - alias: "synthdata-arena-inntekt.rest-api"
+      resourceType: restservice
     - alias: "testnorges.ida.credential.tpsf"
       resourceType: credential
     - alias: "orkestratorensProperties"
       resourceType: applicationProperties
+  exposed:
+   - alias: testnorge-orkestratoren.rest-api
+     description: På denne base-url finner du swagger-dokumentasjon av REST-tjenesten.
+     resourceType: restservice
+     path: /api
