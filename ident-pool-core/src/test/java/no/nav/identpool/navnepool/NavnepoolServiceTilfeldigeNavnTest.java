@@ -3,7 +3,6 @@ package no.nav.identpool.navnepool;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +22,7 @@ public class NavnepoolServiceTilfeldigeNavnTest {
 
     @Test
     public void shouldGetAListOfRandomNames() {
-        navnepoolService = new NavnepoolService(validFornavn, validEtternavn, new SecureRandom());
+        navnepoolService = new NavnepoolService(validFornavn, validEtternavn);
 
         int antallNavn = 2;
         List<Navn> tilfeldigeNavn = navnepoolService.hentTilfeldigeNavn(antallNavn);
@@ -32,6 +31,6 @@ public class NavnepoolServiceTilfeldigeNavnTest {
         List<String> tilfeldigeFornavn = tilfeldigeNavn.stream().map(Navn::getFornavn).collect(Collectors.toList());
         List<String> tilfeldigeEtternavn = tilfeldigeNavn.stream().map(Navn::getEtternavn).collect(Collectors.toList());
         assertTrue(validFornavn.containsAll(tilfeldigeFornavn));
-        assertTrue(validFornavn.containsAll(tilfeldigeEtternavn));
+        assertTrue(validEtternavn.containsAll(tilfeldigeEtternavn));
     }
 }

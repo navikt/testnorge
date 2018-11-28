@@ -16,7 +16,7 @@ public class NavnepoolService {
 
     private final List<String> validEtternavn;
 
-    private final SecureRandom secureRandom;
+    private SecureRandom secureRandom = new SecureRandom();
 
     public List<Navn> hentTilfeldigeNavn(Integer antall) {
         List<Navn> navneliste = new ArrayList<>(antall);

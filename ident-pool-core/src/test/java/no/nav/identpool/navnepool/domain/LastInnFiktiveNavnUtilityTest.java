@@ -1,12 +1,13 @@
 package no.nav.identpool.navnepool.domain;
 
+import static no.nav.identpool.navnepool.domain.LastInnFiktiveNavnUtility.loadListFromCsvFile;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
 import org.junit.Test;
 
-public class FiktiveNavnConfigTest {
+public class LastInnFiktiveNavnUtilityTest {
 
     /**
      * Tester at FiktiveNavnConfig#loadListFromCsvFile laster inn alle navn i csv-fil
@@ -17,8 +18,7 @@ public class FiktiveNavnConfigTest {
      */
     @Test
     public void shouldloadListFromCsvFile() throws IOException {
-        FiktiveNavnConfig c = new FiktiveNavnConfig();
-        List strings = c.loadListFromCsvFile("__files/navnepool/test.csv");
+        List strings = loadListFromCsvFile("__files/navnepool/test.csv");
         assertTrue(strings.contains("AKTIV"));
         assertTrue(strings.contains("AKTPÅGIVENDE"));
     }
