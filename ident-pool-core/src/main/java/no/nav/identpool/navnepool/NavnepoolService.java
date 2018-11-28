@@ -38,13 +38,13 @@ public class NavnepoolService {
     }
 
     /**
-     * Forklaring av NO-SONAR: Sonar foreslår Set i stedet for List.
+     * Forklaring av NOSONAR: Sonar foreslår Set i stedet for List.
      * Sonar tar ikke hensyn til at listene skal brukes med get i tjenesten hentTilfeldigNavn: validEtternavn.get(randomInt).
      * http://freg-sonar.adeo.no/coding_rules#rule_key=fb-contrib%3ADLC_DUBIOUS_LIST_COLLECTION
      */
     private boolean isFornavnOrEtternavnValid(Navn navn) {
-        return (navn.getFornavn() == null || validFornavn.contains(navn.getFornavn())) //NO-SONAR
-                && (navn.getEtternavn() == null || validEtternavn.contains(navn.getEtternavn()));//NO-SONAR
+        return (navn.getFornavn() == null || validFornavn.contains(navn.getFornavn())) //NOSONAR
+                && (navn.getEtternavn() == null || validEtternavn.contains(navn.getEtternavn()));//NOSONAR
     }
 
     private boolean areBothNotNull(Navn navn) {
