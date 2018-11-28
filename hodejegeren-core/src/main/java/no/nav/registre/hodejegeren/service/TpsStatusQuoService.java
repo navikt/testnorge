@@ -51,6 +51,9 @@ public class TpsStatusQuoService {
         if (felt.contains("$")) {
             Object document = Configuration.defaultConfiguration().jsonProvider().parse(root.toString());
             JSONArray jsonArray = JsonPath.read(document, felt);
+            log.info("root: {}", root.toString());
+            log.info("document: {}", document.toString());
+            log.info("jsonArray: {}", jsonArray.toString());
             return jsonArray.get(0).toString();
         } else {
             return root.findValue(felt).asText();
