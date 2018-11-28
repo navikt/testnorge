@@ -125,18 +125,20 @@ public class StartSyntetiseringTpsCompTest {
      * {@link no.nav.registre.orkestratoren.service.TpsSyntPakkenService#produserOgSendSkdmeldingerTilTpsIMiljoer} hente ut id-ene
      * som ligger i exception og returnere disse slik at de kan lagres i TPS.
      */
-    @Test(expected = HttpStatusCodeException.class)
+    @Test
     public void shouldReturnIdsWhenReceivingException() {
         stubHodejegerenWithError();
         stubTPSF();
 
         SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
-        syntetiseringsController.opprettSkdMeldingerOgSendTilTps(ordreRequest);
-
-        verify(postRequestedFor(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))
-                .withRequestBody(equalToJson(
-                        "{\"environment\" : \"" + miljoe
-                                + "\", \"ids\" : [" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]}")));
+        try {
+            syntetiseringsController.opprettSkdMeldingerOgSendTilTps(ordreRequest);
+        } catch (HttpStatusCodeException e) {
+            verify(postRequestedFor(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))
+                    .withRequestBody(equalToJson(
+                            "{\"environment\" : \"" + miljoe
+                                    + "\", \"ids\" : [" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]}")));
+        }
     }
 
     public void stubHodejegeren() {
