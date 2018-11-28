@@ -31,7 +31,7 @@ public class NavnepoolServiceValideringTest {
                 {fornavn1, etternavn1, true},
                 {null, etternavn1, true},
                 {fornavn1, null, true},
-                {null, null, new Boolean(false)},
+                {null, null, false},
                 {"tullenavn", "tullenavn", false}
     });
     }
@@ -40,6 +40,7 @@ public class NavnepoolServiceValideringTest {
     private static String etternavn1 = "etternavn1";
     private List<String> validFornavn = Arrays.asList(fornavn1, "fornavn2");
     private List<String> validEtternavn = Arrays.asList(etternavn1, "etternavn2", "etternavn3");
+
     @Mock
     private SecureRandom randomMock;
 

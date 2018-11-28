@@ -62,7 +62,7 @@ public class FiktiveNavnComponentTest {
     @Test
     public void validereNavn() {
         String tullenavn = "tullenavn";
-        assertTrue(!validFornavn.contains(tullenavn));
+        assertFalse(validFornavn.contains(tullenavn));
 
         Boolean validert = testRestTemplate.getForObject("/api/v1/fiktive-navn/valider?fornavn="+tullenavn, Boolean.class);
         assertFalse(validert);

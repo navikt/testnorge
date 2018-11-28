@@ -34,8 +34,15 @@ public class NavnepoolService {
     }
 
     public Boolean isValid(Navn navn) {
-        return !(navn.getFornavn() == null && navn.getEtternavn() == null)
-                && (navn.getFornavn() == null || validFornavn.contains(navn.getFornavn()))
+        return areBothNotNull(navn) && isFornavnOrEtternavnValid(navn);
+    }
+
+    private boolean isFornavnOrEtternavnValid(Navn navn) {
+        return (navn.getFornavn() == null || validFornavn.contains(navn.getFornavn()))
                 && (navn.getEtternavn() == null || validEtternavn.contains(navn.getEtternavn()));
+    }
+
+    private boolean areBothNotNull(Navn navn) {
+        return !(navn.getFornavn() == null && navn.getEtternavn() == null);
     }
 }
