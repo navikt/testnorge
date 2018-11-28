@@ -54,6 +54,16 @@ public class FiktiveNavnComponentTest {
     }
 
     /**
+     * Tester at service blir kalt med antall default antall navn som input NÅR REST-endepunktet blir kalt.
+     * Antall har default verdi 1.
+     */
+    @Test
+    public void hentEttTilfeldigNavn() {
+        List navneliste = testRestTemplate.getForObject("/api/v1/fiktive-navn/tilfeldig", List.class);
+        assertThat(navneliste.size(), is(1));
+    }
+
+    /**
      * Testscenario: når endepunktet valider blir kalt med navn, så skal den validere navnet opp mot gyldige lister av testnavn.
      * Her testes spesifikt at fornavn som ikke er i listen, ikke valideres.
      *
