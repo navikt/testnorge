@@ -1,8 +1,9 @@
 package no.nav.dolly.service;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,10 +23,10 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
+import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
+import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -72,24 +73,24 @@ public class TestgruppeService {
         throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
     }
 
-    public RsTestgruppeMedErMedlemOgFavoritt rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(RsTestgruppe gruppe) {
+    public RsTestgruppeUtvidet rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(RsTestgruppe gruppe) {
         return new ArrayList<>(getRsTestgruppeMedErMedlem(new HashSet<>(Arrays.asList(gruppe)))).get(0);
     }
 
-    public Set<RsTestgruppe> fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(String navIdent) {
-        RsBrukerMedTeamsOgFavoritter brukerinfo = brukerService.getBrukerMedTeamsOgFavoritter(navIdent);
-        Set<RsTestgruppe> testgrupper = brukerinfo.getBruker().getFavoritter();
-        brukerinfo.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
+    public Set<Testgruppe> fetchTestgrupperByNavIdent(String navIdent) {
+        BrukerMedTeamsOgFavoritter brukerMedTeamsOgFavoritter = brukerService.getBrukerMedTeamsOgFavoritter(navIdent);
+        Set<Testgruppe> testgrupper = brukerMedTeamsOgFavoritter.getBruker().getFavoritter();
+        brukerMedTeamsOgFavoritter.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
 
         return testgrupper;
     }
 
-    public Set<RsTestgruppeMedErMedlemOgFavoritt> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper) {
+    public Set<RsTestgruppeUtvidet> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper) {
         return getRsTestgruppeMedErMedlem(grupper, getLoggedInNavIdent());
     }
 
-    public Set<RsTestgruppeMedErMedlemOgFavoritt> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper, String navIdent) {
-        Set<RsTestgruppeMedErMedlemOgFavoritt> mfGrupper = mapperFacade.mapAsSet(grupper, RsTestgruppeMedErMedlemOgFavoritt.class);
+    public Set<RsTestgruppeUtvidet> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper, String navIdent) {
+        Set<RsTestgruppeUtvidet> mfGrupper = mapperFacade.mapAsSet(grupper, RsTestgruppeUtvidet.class);
 
         Bruker bruker = brukerService.fetchBruker(navIdent);
         Set<String> favoritterIDs = bruker.getFavoritter().stream().map(gruppe -> gruppe.getId().toString()).collect(Collectors.toSet());
@@ -97,12 +98,12 @@ public class TestgruppeService {
 
         mfGrupper = mfGrupper.stream()
                 .map(gruppe -> {
-                    RsTestgruppeMedErMedlemOgFavoritt g = gruppe;
+                    RsTestgruppeUtvidet g = gruppe;
                     g.setFavorittIGruppen(favoritterIDs.contains(gruppe.getId().toString()));
                     return g;
                 })
                 .map(gruppe -> {
-                    RsTestgruppeMedErMedlemOgFavoritt g = gruppe;
+                    RsTestgruppeUtvidet g = gruppe;
                     g.setErMedlemAvTeamSomEierGruppe(teamNames.contains(gruppe.getTeam().getNavn()));
                     return g;
                 })
@@ -155,27 +156,15 @@ public class TestgruppeService {
         return mapperFacade.map(endretGruppe, RsTestgruppe.class);
     }
 
-    public Set<RsTestgruppeMedErMedlemOgFavoritt> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
-        Set<RsTestgruppe> grupper;
-        if (isNotBlank(navIdent)) {
-            grupper = fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(navIdent);
+    public Set<RsTestgruppeUtvidet> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
+        Set<Testgruppe> grupper;
+        if (isNull(teamId)) {
+            grupper = isBlank(navIdent) ? newHashSet(gruppeRepository.findAll()) : fetchTestgrupperByNavIdent(navIdent);
         } else {
-            grupper = mapperFacade.mapAsSet(fetchAlleTestgrupper(), RsTestgruppe.class);
+            grupper = newHashSet(gruppeRepository.findAllByTeamtilhoerighet(Team.builder().id(teamId).build()));
         }
 
-        if (!isNull(teamId)) {
-            grupper = grupper.stream().filter(gruppe -> gruppe.getTeam().getId().toString().equals(teamId.toString())).collect(Collectors.toSet());
-        }
-
-        if (isNotBlank(navIdent)) {
-            return getRsTestgruppeMedErMedlem(grupper, navIdent);
-        }
-
-        return getRsTestgruppeMedErMedlem(grupper);
-    }
-
-    public List<Testgruppe> fetchAlleTestgrupper() {
-        return gruppeRepository.findAll();
+        return mapperFacade.mapAsSet(grupper, RsTestgruppeUtvidet.class);
     }
 
     @Transactional
@@ -186,5 +175,4 @@ public class TestgruppeService {
                 .map(ident -> ident.getIdent())
                 .collect(Collectors.toList());
     }
-
 }

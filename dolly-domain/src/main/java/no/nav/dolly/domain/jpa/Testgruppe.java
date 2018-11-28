@@ -3,7 +3,6 @@ package no.nav.dolly.domain.jpa;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,12 +17,18 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "T_GRUPPE")
 public class Testgruppe {
 	
@@ -53,16 +58,19 @@ public class Testgruppe {
 	@Column(name = "DATO_ENDRET", nullable = false)
 	private LocalDate datoEndret;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TILHOERER_TEAM", nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "TILHOERER_TEAM")
 	private Team teamtilhoerighet;
 	
 	@OneToMany(mappedBy = "testgruppe", fetch = FetchType.LAZY)
 	@Column(unique = true)
-	private Set<Testident> testidenter = new HashSet<>();
+	private Set<Testident> testidenter;
 
 	@ManyToMany(mappedBy ="favoritter", fetch = FetchType.LAZY)
-	private Set<Bruker> favorisertAv = new HashSet<>();
+	private Set<Bruker> favorisertAv;
+
+	@OneToMany(mappedBy = "gruppe", fetch = FetchType.LAZY)
+	private Set<Bestilling> bestillinger;
 
 	@Column(name = "OPENAM_SENT")
 	private Boolean openAmSent;

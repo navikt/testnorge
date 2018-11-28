@@ -1,9 +1,11 @@
 package no.nav.dolly.domain.jpa;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,20 +16,22 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Table(name = "T_TEAM")
+@Builder
 public class Team {
 
 	@Id
@@ -52,13 +56,13 @@ public class Team {
 	private Bruker eier;
 	
 	@OneToMany(mappedBy = "teamtilhoerighet")
-	private Set<Testgruppe> grupper = new HashSet<>();
+	private Set<Testgruppe> grupper;
 	
 	@ManyToMany
 	@JoinTable(name = "T_TEAM_MEDLEMMER",
 			joinColumns = @JoinColumn(name = "team_id"),
 			inverseJoinColumns = @JoinColumn(name = "bruker_id"))
-	private Set<Bruker> medlemmer = new HashSet<>();
+	private Set<Bruker> medlemmer;
 
 	public Team(String navn, Bruker eier){
 		this.navn = navn;

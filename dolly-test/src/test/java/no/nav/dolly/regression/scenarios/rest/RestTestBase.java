@@ -1,5 +1,8 @@
 package no.nav.dolly.regression.scenarios.rest;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Sets.newHashSet;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,8 +28,6 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.regression.InMememoryDbTestSetup;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 public abstract class RestTestBase extends InMememoryDbTestSetup {
@@ -93,23 +94,23 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
                 .build()
         );
 
-        standardTeam = teamRepository.save(TeamBuilder.builder()
+        standardTeam = teamRepository.save(Team.builder()
                 .eier(standardBruker)
                 .navn(standardTeamnavn)
                 .beskrivelse(standardTeamBesk)
                 .datoOpprettet(LocalDate.now())
-                .medlemmer(new HashSet<>(Arrays.asList(standardBruker)))
-                .build().convertToRealTeam()
+                .medlemmer(newHashSet(singletonList(standardBruker)))
+                .build()
         );
 
-        standardTestgruppe = gruppeRepository.save(TestgruppeBuilder.builder()
+        standardTestgruppe = gruppeRepository.save(Testgruppe.builder()
                 .navn(standardGruppenavn)
                 .hensikt(standardGruppeHensikt)
                 .opprettetAv(standardBruker)
                 .sistEndretAv(standardBruker)
                 .datoEndret(LocalDate.now())
                 .teamtilhoerighet(standardTeam)
-                .build().convertToRealTestgruppe()
+                .build()
         );
 
         standardBestilling_u6.setAntall(1);

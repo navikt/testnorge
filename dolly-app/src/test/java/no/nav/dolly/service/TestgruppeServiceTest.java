@@ -1,5 +1,8 @@
 package no.nav.dolly.service;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -13,12 +16,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,22 +36,15 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
+import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
-import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
-import no.nav.dolly.domain.resultset.RsTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
+import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
-import no.nav.dolly.testdata.builder.RsBrukerBuilder;
 import no.nav.dolly.testdata.builder.RsOpprettTestgruppeBuilder;
-import no.nav.dolly.testdata.builder.RsTeamBuilder;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
@@ -89,12 +83,12 @@ public class TestgruppeServiceTest {
         );
         when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
 
-        Set gruppe = Sets.newHashSet(
-                Arrays.asList(
+        Set gruppe = newHashSet(
+                asList(
                         TestidentBuilder.builder().ident(IDENT_ONE).build().convertToRealTestident(),
                         TestidentBuilder.builder().ident(IDENT_TWO).build().convertToRealTestident()
                 ));
-        testGruppe = TestgruppeBuilder.builder().id(GROUP_ID).testidenter(gruppe).hensikt("test").build().convertToRealTestgruppe();
+        testGruppe = Testgruppe.builder().id(GROUP_ID).testidenter(gruppe).hensikt("test").build();
     }
 
     @Test
@@ -127,7 +121,7 @@ public class TestgruppeServiceTest {
         Optional<Testgruppe> op = Optional.empty();
         when(gruppeRepository.findById(any())).thenReturn(op);
 
-        testgruppeService.fetchTestgruppeById(1l);
+        testgruppeService.fetchTestgruppeById(1L);
     }
 
     @Test
@@ -136,118 +130,114 @@ public class TestgruppeServiceTest {
         Optional<Testgruppe> op = Optional.of(g);
         when(gruppeRepository.findById(any())).thenReturn(op);
 
-        Testgruppe hentetGruppe = testgruppeService.fetchTestgruppeById(1l);
+        Testgruppe hentetGruppe = testgruppeService.fetchTestgruppeById(1L);
 
         assertThat(g, is(hentetGruppe));
     }
 
     @Test
     public void fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker() {
-        RsTestgruppe tg1 = RsTestgruppe.builder().id(1l).build();
-        RsTestgruppe tg2 = RsTestgruppe.builder().id(2l).build();
-        RsTestgruppe tg3 = RsTestgruppe.builder().id(3l).build();
+        Testgruppe tg1 = Testgruppe.builder().id(1L).build();
+        Testgruppe tg2 = Testgruppe.builder().id(2L).build();
+        Testgruppe tg3 = Testgruppe.builder().id(3L).build();
 
-        RsTeam t1 = RsTeamBuilder.builder()
-                .grupper(new HashSet<>(Arrays.asList(tg3)))
-                .build()
-                .convertToRealRsTeam();
+        Team t1 = Team.builder()
+                .grupper(newHashSet(singletonList(tg3)))
+                .build();
 
-        RsBruker rBruker = RsBrukerBuilder.builder()
-                .favoritter(new HashSet<>(Arrays.asList(tg1, tg2)))
+        Bruker bruker = Bruker.builder()
+                .favoritter(newHashSet(asList(tg1, tg2)))
                 .navIdent(standardPrincipal)
-                .build()
-                .convertToRealRsBruker();
+                .build();
 
-        RsBrukerMedTeamsOgFavoritter r = RsBrukerMedTeamsOgFavoritter.builder()
-                .teams(new HashSet<>(Arrays.asList(t1)))
-                .bruker(rBruker)
+        BrukerMedTeamsOgFavoritter r = BrukerMedTeamsOgFavoritter.builder()
+                .teams(singletonList(t1))
+                .bruker(bruker)
                 .build();
 
         when(brukerService.getBrukerMedTeamsOgFavoritter(any())).thenReturn(r);
 
-        Set<RsTestgruppe> grupper = testgruppeService.fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker(standardPrincipal);
+        Set<Testgruppe> grupper = testgruppeService.fetchTestgrupperByNavIdent(standardPrincipal);
 
-        assertThat(grupper, hasItem(hasProperty("id", equalTo(1l))));
-        assertThat(grupper, hasItem(hasProperty("id", equalTo(2l))));
-        assertThat(grupper, hasItem(hasProperty("id", equalTo(3l))));
+        assertThat(grupper, hasItem(hasProperty("id", equalTo(1L))));
+        assertThat(grupper, hasItem(hasProperty("id", equalTo(2L))));
+        assertThat(grupper, hasItem(hasProperty("id", equalTo(3L))));
     }
 
     @Test
     public void getRsTestgruppeMedErMedlem_happyPath() {
-        Testgruppe g1 = TestgruppeBuilder.builder().id(1l).build().convertToRealTestgruppe();
-        Testgruppe g2 = TestgruppeBuilder.builder().id(2l).build().convertToRealTestgruppe();
-        Testgruppe g3 = TestgruppeBuilder.builder().id(3l).build().convertToRealTestgruppe();
-        Testgruppe g4 = TestgruppeBuilder.builder().id(4l).build().convertToRealTestgruppe();
+        Testgruppe g1 = Testgruppe.builder().id(1L).build();
+        Testgruppe g2 = Testgruppe.builder().id(2L).build();
+        Testgruppe g3 = Testgruppe.builder().id(3L).build();
+        Testgruppe g4 = Testgruppe.builder().id(4L).build();
 
-        Team t1 = TeamBuilder.builder()
-                .grupper(new HashSet<>(Arrays.asList(g3)))
+        Team t1 = Team.builder()
+                .grupper(new HashSet<>(singletonList(g3)))
                 .navn("team")
-                .build()
-                .convertToRealTeam();
+                .build();
 
         RsTeamMedIdOgNavn rsT = new RsTeamMedIdOgNavn();
-        rsT.setId(1l);
+        rsT.setId(1L);
         rsT.setNavn("team");
 
         Bruker bruker = Bruker.builder()
-                .favoritter(new HashSet(Arrays.asList(g1, g2)))
-                .teams(new HashSet<>(Arrays.asList(t1)))
+                .favoritter(newHashSet(asList(g1, g2)))
+                .teams(newHashSet(singletonList(t1)))
                 .navIdent(standardPrincipal)
                 .build();
 
-        RsTestgruppeMedErMedlemOgFavoritt r = new RsTestgruppeMedErMedlemOgFavoritt();
-        r.setId(1l);
+        RsTestgruppeUtvidet r = new RsTestgruppeUtvidet();
+        r.setId(1L);
         r.setTeam(rsT);
 
-        HashSet gr = new HashSet(Arrays.asList(r));
+        HashSet gr = newHashSet(singletonList(r));
 
-        HashSet grupper = new HashSet(Arrays.asList(g4));
+        HashSet grupper = newHashSet(singletonList(g4));
 
-        when(mapperFacade.mapAsSet(grupper, RsTestgruppeMedErMedlemOgFavoritt.class)).thenReturn(gr);
+        when(mapperFacade.mapAsSet(grupper, RsTestgruppeUtvidet.class)).thenReturn(gr);
         when(brukerService.fetchBruker(standardPrincipal)).thenReturn(bruker);
 
         testgruppeService.getRsTestgruppeMedErMedlem(grupper);
 
-        verify(mapperFacade).mapAsSet(grupper, RsTestgruppeMedErMedlemOgFavoritt.class);
+        verify(mapperFacade).mapAsSet(grupper, RsTestgruppeUtvidet.class);
     }
 
     @Test
     public void getRsTestgruppeMedErMedlem_happyPathTwoArgs() {
-        Testgruppe g1 = TestgruppeBuilder.builder().id(1l).build().convertToRealTestgruppe();
-        Testgruppe g2 = TestgruppeBuilder.builder().id(2l).build().convertToRealTestgruppe();
-        Testgruppe g3 = TestgruppeBuilder.builder().id(3l).build().convertToRealTestgruppe();
-        Testgruppe g4 = TestgruppeBuilder.builder().id(4l).build().convertToRealTestgruppe();
+        Testgruppe g1 = Testgruppe.builder().id(1L).build();
+        Testgruppe g2 = Testgruppe.builder().id(2L).build();
+        Testgruppe g3 = Testgruppe.builder().id(3L).build();
+        Testgruppe g4 = Testgruppe.builder().id(4L).build();
 
-        Team t1 = TeamBuilder.builder()
-                .grupper(new HashSet<>(Arrays.asList(g3)))
+        Team t1 = Team.builder()
+                .grupper(newHashSet(singletonList(g3)))
                 .navn("team")
-                .build()
-                .convertToRealTeam();
+                .build();
 
         RsTeamMedIdOgNavn rsT = new RsTeamMedIdOgNavn();
-        rsT.setId(1l);
+        rsT.setId(1L);
         rsT.setNavn("team");
 
         Bruker bruker = Bruker.builder()
-                .favoritter(new HashSet(Arrays.asList(g1, g2)))
-                .teams(new HashSet<>(Arrays.asList(t1)))
+                .favoritter(newHashSet(asList(g1, g2)))
+                .teams(newHashSet(singletonList(t1)))
                 .navIdent(standardPrincipal)
                 .build();
 
-        RsTestgruppeMedErMedlemOgFavoritt r = new RsTestgruppeMedErMedlemOgFavoritt();
-        r.setId(1l);
+        RsTestgruppeUtvidet r = new RsTestgruppeUtvidet();
+        r.setId(1L);
         r.setTeam(rsT);
 
-        HashSet gr = new HashSet(Arrays.asList(r));
-        HashSet grupper = new HashSet(Arrays.asList(g4));
+        HashSet gr = newHashSet(singletonList(r));
+        HashSet grupper = newHashSet(singletonList(g4));
 
-        when(mapperFacade.mapAsSet(grupper, RsTestgruppeMedErMedlemOgFavoritt.class)).thenReturn(gr);
+        when(mapperFacade.mapAsSet(grupper, RsTestgruppeUtvidet.class)).thenReturn(gr);
         when(brukerService.fetchBruker(standardPrincipal)).thenReturn(bruker);
 
-        Set<RsTestgruppeMedErMedlemOgFavoritt> res = testgruppeService.getRsTestgruppeMedErMedlem(grupper, standardPrincipal);
+        Set<RsTestgruppeUtvidet> res = testgruppeService.getRsTestgruppeMedErMedlem(grupper, standardPrincipal);
 
         assertThat(res.size(), is(1));
-        assertThat(res, hasItem(hasProperty("id", equalTo(1l))));
+        assertThat(res, hasItem(hasProperty("id", equalTo(1L))));
     }
 
     @Test
@@ -280,18 +270,18 @@ public class TestgruppeServiceTest {
     @Test(expected = ConstraintViolationException.class)
     public void saveGrupper_kasterExceptionHvisDBConstraintErBrutt() {
         when(gruppeRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
-        testgruppeService.saveGrupper(new HashSet<>(Arrays.asList(new Testgruppe())));
+        testgruppeService.saveGrupper(newHashSet(singletonList(new Testgruppe())));
     }
 
     @Test(expected = DollyFunctionalException.class)
     public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt() {
         when(gruppeRepository.saveAll(any())).thenThrow(nonTransientDataAccessException);
-        testgruppeService.saveGrupper(new HashSet<>(Arrays.asList(new Testgruppe())));
+        testgruppeService.saveGrupper(newHashSet(singletonList(new Testgruppe())));
     }
 
     @Test(expected = NotFoundException.class)
     public void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes() {
-        testgruppeService.fetchGrupperByIdsIn(Arrays.asList(anyLong()));
+        testgruppeService.fetchGrupperByIdsIn(singletonList(anyLong()));
     }
 
     @Test(expected = NotFoundException.class)
@@ -312,7 +302,7 @@ public class TestgruppeServiceTest {
 
     @Test
     public void fetchIdenterByGroupId_sjekkTommeGrupper() {
-        Testgruppe tg = TestgruppeBuilder.builder().id(GROUP_ID).testidenter(new HashSet<>()).build().convertToRealTestgruppe();
+        Testgruppe tg = Testgruppe.builder().id(GROUP_ID).testidenter(new HashSet<>()).build();
 
         when(gruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(tg));
         List<String> identer = testgruppeService.fetchIdenterByGruppeId(GROUP_ID);
@@ -326,7 +316,7 @@ public class TestgruppeServiceTest {
 
         RsOpprettTestgruppe rsOpprettTestgruppe = RsOpprettTestgruppeBuilder.builder().hensikt("test").navn("navn").teamId(1L).build().convertToRealRsOpprettTestgruppe();
 
-        Team team = TeamBuilder.builder().navn("team").id(teamId).build().convertToRealTeam();
+        Team team = Team.builder().navn("team").id(teamId).build();
 
         when(gruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
         when(brukerService.fetchBruker(anyString())).thenReturn(new Bruker("navIdent"));

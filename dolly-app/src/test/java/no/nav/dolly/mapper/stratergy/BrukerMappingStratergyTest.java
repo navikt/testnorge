@@ -1,12 +1,12 @@
 package no.nav.dolly.mapper.stratergy;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +19,6 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 
 public class BrukerMappingStratergyTest {
@@ -36,19 +34,18 @@ public class BrukerMappingStratergyTest {
     public void testy(){
         Bruker bruker = Bruker.builder().navIdent("ident").build();
         Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
-        Set<Testident> identer = new HashSet<>(Arrays.asList(testident));
+        Set<Testident> identer = newHashSet(singletonList(testident));
 
-        Team team = TeamBuilder.builder()
+        Team team = Team.builder()
                 .navn("team")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(bruker)
                 .id(1L)
-                .medlemmer(new HashSet<>(Arrays.asList(bruker)))
+                .medlemmer(newHashSet(singletonList(bruker)))
                 .beskrivelse("besk")
-                .build()
-                .convertToRealTeam();
+                .build();
 
-        Testgruppe testgruppe = TestgruppeBuilder.builder()
+        Testgruppe testgruppe = Testgruppe.builder()
                 .sistEndretAv(bruker)
                 .datoEndret(LocalDate.of(2000, 1, 1))
                 .opprettetAv(bruker)
@@ -56,17 +53,16 @@ public class BrukerMappingStratergyTest {
                 .testidenter(identer)
                 .navn("gruppe")
                 .teamtilhoerighet(team)
-                .build()
-                .convertToRealTestgruppe();
+                .build();
 
-        bruker.setFavoritter(new HashSet<>(Arrays.asList(testgruppe)));
+        bruker.setFavoritter(newHashSet(singletonList(testgruppe)));
 
-        RsBruker rs = mapper.map(bruker, RsBruker.class);
+        RsBruker rsBruker = mapper.map(bruker, RsBruker.class);
 
-        ArrayList<RsTestgruppe> favoritterInBruker = new ArrayList(rs.getFavoritter());
+        ArrayList<RsTestgruppe> favoritterInBruker = new ArrayList(rsBruker.getFavoritter());
 
         assertThat(bruker.getNavIdent(), is("ident"));
-        assertThat(rs.getNavIdent(), is("ident"));
+        assertThat(rsBruker.getNavIdent(), is("ident"));
         assertThat(favoritterInBruker.get(0).getNavn(), is("gruppe"));
         assertThat(favoritterInBruker.get(0).getId(), is(2L));
         assertThat(favoritterInBruker.get(0).getTeam().getNavn(), is(team.getNavn()));
