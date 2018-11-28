@@ -48,10 +48,11 @@ public class TpsStatusQuoService {
     }
 
     public String extractStatusQuoInfoFromTps(JsonNode root, String felt) {
+        log.info("felt: {} - root: {}", felt, root.toString());
+        log.info(felt);
         if (felt.contains("$")) {
             Object document = Configuration.defaultConfiguration().jsonProvider().parse(root.toString());
             JSONArray jsonArray = JsonPath.read(document, felt);
-            log.info("root: {}", root.toString());
             log.info("document: {}", document.toString());
             log.info("jsonArray: {}", jsonArray.toString());
             return jsonArray.get(0).toString();
