@@ -14,8 +14,6 @@ import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldinger
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -298,7 +296,7 @@ public class EksisterendeIdenterService {
 
     private RsMeldingstype1Felter opprettSivilstandsendringsmelding(RsMeldingstype identMelding, String identPartner) {
         RsMeldingstype1Felter melding = RsMeldingstype1Felter.builder()
-                .regdatoSivilstand(((RsMeldingstype1Felter) identMelding).getRegdatoSivilstand())
+                .regdatoSivilstand(((RsMeldingstype1Felter) identMelding).getRegDato())
                 .fodselsdato(identPartner.substring(0, 6))
                 .personnummer(identPartner.substring(6))
                 .sivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKodeSKD())
@@ -311,6 +309,8 @@ public class EksisterendeIdenterService {
         melding.setMaskindato(identMelding.getMaskindato());
         melding.setMaskintid(identMelding.getMaskintid());
         melding.setRegDato(((RsMeldingstype1Felter) identMelding).getRegDato());
+        melding.setStatuskode("1");
+        melding.setTildelingskode("0");
 
         return melding;
     }
