@@ -166,7 +166,7 @@ public class EksisterendeIdenterService {
 
             Map<String, String> statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
-                            || !KoderForSivilstand.SEPARERT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND)));
+                            && !KoderForSivilstand.SEPARERT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND)));
 
             String ident = statusQuoIdent.get(IDENT);
             Map<String, String> statusQuoPartnerIdent;
