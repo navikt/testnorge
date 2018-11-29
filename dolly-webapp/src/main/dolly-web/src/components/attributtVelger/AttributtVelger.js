@@ -79,15 +79,17 @@ export default class AttributtVelger extends Component {
 		})
 	}
 
-	renderItem = item => (
-		<Checkbox
-			key={item.id}
-			label={item.label}
-			id={item.id}
-			checked={this.props.selectedIds.includes(item.id)}
-			onChange={e => this.props.onToggle(e.target.id)}
-		/>
-	)
+	renderItem = item => {
+		return (
+			<Checkbox
+				key={item.id}
+				label={item.label}
+				id={item.id}
+				checked={this.props.selectedIds.includes(item.id)}
+				onChange={e => this.props.onToggle(e.target.id)}
+			/>
+		)
+	}
 
 	renderEmptyResult = () => <p>Søket ga ingen treff</p>
 
