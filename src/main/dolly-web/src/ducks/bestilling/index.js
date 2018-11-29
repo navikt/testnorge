@@ -19,8 +19,8 @@ export const actions = createActions(
 			gruppeId => ({ gruppeId }) // Meta
 		]
 	},
-	// 'NEXT_PAGE',
-	// 'PREV_PAGE',
+	'NEXT_PAGE',
+	'PREV_PAGE',
 	'TOGGLE_ATTRIBUTE',
 	'UNCHECK_ALL_ATTRIBUTES',
 	'SET_ENVIRONMENTS',
@@ -40,14 +40,17 @@ const initialState = {
 
 export default handleActions(
 	{
-		// [actions.nextPage](state, action) {
-		// 	return { ...state, page: state.page + 1 }
-		// },
-		// [actions.prevPage](state, action) {
-		// 	return { ...state, page: state.page - 1 }
-		// },
+		[actions.nextPage](state, action) {
+			return { ...state, page: state.page + 1 }
+		},
+		[actions.prevPage](state, action) {
+			return { ...state, page: state.page - 1 }
+		},
 		[actions.toggleAttribute](state, action) {
-			return { ...state, attributeIds: _xor(state.attributeIds, [action.payload]) }
+			return {
+				...state,
+				attributeIds: _xor(state.attributeIds, [action.payload])
+			}
 		},
 		[actions.uncheckAllAttributes](state, action) {
 			return { ...state, attributeIds: [] }
