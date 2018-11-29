@@ -41,7 +41,7 @@ public abstract class ComponentTestbase {
     protected IdentRepository identRepository;
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
+    protected TestRestTemplate testRestTemplate;
 
     @Autowired
     private OidcTestService oidcTestService;
