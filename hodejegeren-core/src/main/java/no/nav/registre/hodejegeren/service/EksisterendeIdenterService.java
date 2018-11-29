@@ -277,7 +277,7 @@ public class EksisterendeIdenterService {
             int randomIndex = rand.nextInt(identer.size());
             randomIdent = identer.remove(randomIndex);
             statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
-            log.info("StatusQuoPaaIdent {} (sivilstand): {}",randomIdent, getStatusQuoPaaIdent(endringskode, environment, randomIdent).get(SIVILSTAND));
+            log.info("StatusQuoPaaIdent {} (sivilstand): {}",randomIdent, statusQuoIdent.get(SIVILSTAND));
             statusQuoIdent.put(IDENT, randomIdent);
         }
         while (predicate.test(statusQuoIdent));

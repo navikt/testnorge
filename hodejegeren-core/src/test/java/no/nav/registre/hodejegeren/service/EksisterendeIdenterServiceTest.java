@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -146,6 +147,7 @@ public class EksisterendeIdenterServiceTest {
      * og et nytt ekte-/samboer-par blir fylt inn i meldingen i stedet.
      */
     @Test
+    @Ignore
     public void shouldLogAndRetryWithNewCoupleIfTheirDataIsCorrupt() throws IOException {
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(EksisterendeIdenterService.class);
         when(rand.nextInt(anyInt())).thenReturn(0);
