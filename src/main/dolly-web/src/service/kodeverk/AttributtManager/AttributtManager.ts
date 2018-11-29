@@ -7,7 +7,7 @@ import DataFormatter from '~/utils/DataFormatter'
 import DataSourceMapper from '~/utils/DataSourceMapper'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
-import { getAttributterForEditing, isAttributtEditable } from './AttributtHelpers'
+import { isAttributtEditable } from './AttributtHelpers'
 
 export default class AttributtManager {
 	// BASE FUNCTIONS
@@ -93,6 +93,10 @@ export default class AttributtManager {
 		return AttributtListe.filter(attr => attr.hovedKategori.id === hovedkategori.id).map(
 			attr => attr.id
 		)
+	}
+
+	getAttributtById(attributtId: string): Attributt {
+		return AttributtListe.find(attr => attr.id === attributtId)
 	}
 
 	_createValidationObject(list: Attributt[]): yup.MixedSchema {

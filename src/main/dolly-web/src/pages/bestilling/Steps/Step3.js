@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import * as yup from 'yup'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import Overskrift from '~/components/overskrift/Overskrift'
 import NavigationConnector from '../Navigation/NavigationConnector'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
@@ -77,14 +78,18 @@ export default class Step3 extends PureComponent {
 
 		if (!item.inputType) return null
 
-		return (
-			<StaticValue
-				key={item.id}
-				header={item.label}
-				value={_get(stateValues, item.id).toString()}
-				format={item.format}
-			/>
-		)
+		const staticValueProps = {
+			key: item.id,
+			header: item.label,
+			value: _get(stateValues, item.id).toString(),
+			format: item.format
+		}
+
+		if (item.apiKodeverkId) {
+			return <KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
+		}
+
+		return <StaticValue {...staticValueProps} />
 	}
 
 	onClickPrevious = values => {
