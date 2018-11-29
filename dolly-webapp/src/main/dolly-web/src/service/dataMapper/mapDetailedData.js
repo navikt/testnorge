@@ -31,7 +31,7 @@ export function mapTpsfData(tpsfData, bestillingData) {
 					{
 						id: 'kjonn',
 						label: 'Kjønn',
-						value: Formatters.kjonnToString(tpsfData.kjonn)
+						value: tpsfData.kjonn
 					},
 					{
 						id: 'alder',
@@ -146,7 +146,7 @@ export function mapTpsfData(tpsfData, bestillingData) {
 						{
 							id: 'kjonn',
 							label: 'Kjønn',
-							value: Formatters.kjonnToString(relasjon.personRelasjonMed.kjonn)
+							value: relasjon.personRelasjonMed.kjonn
 						}
 					]
 				}
