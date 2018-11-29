@@ -165,25 +165,25 @@ public class EksisterendeIdenterServiceTest {
     private List<String> opprettEkteparMedKorruptDataMock() throws IOException {
         //oppretter ektepar med korrupt data på nummer 2 av ektefellene.
         Map<String, String> statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         //fnr2 er feilregistrert i TPS til ugift sivilstand.
         String fnr5 = "05050505050";
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr5);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         //Et fungerende ektepar
         String fnr4 = "04040404040";
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr3);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr4))).thenReturn(statusQuo);
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr4);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
         return new ArrayList(Arrays.asList(fnr1, fnr2, fnr3, fnr4));
@@ -231,7 +231,7 @@ public class EksisterendeIdenterServiceTest {
         assertEquals(2, meldinger.size());
         assertEquals(fnr1.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
         assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
-        assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
+        assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKodeSKD(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
     /**
@@ -293,34 +293,34 @@ public class EksisterendeIdenterServiceTest {
         identer.add(0, fnrUmyndig);
 
         Map<String, String> statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnrUmyndig))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
     }
 
     private void opprettMultipleGifteIdenterMock() throws IOException {
         Map<String, String> statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr3);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
     }
@@ -329,14 +329,14 @@ public class EksisterendeIdenterServiceTest {
         Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(STATSBORGER, "NORGE");
         statusQuo.put(DATO_DO, "");
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(STATSBORGER, "NORGE");
         statusQuo.put(DATO_DO, "");
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKode());
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr1);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
     }

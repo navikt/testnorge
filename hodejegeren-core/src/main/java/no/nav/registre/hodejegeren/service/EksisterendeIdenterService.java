@@ -125,14 +125,14 @@ public class EksisterendeIdenterService {
 
             Map<String, String> statusQuoIdent;
             statusQuoIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> KoderForSivilstand.GIFT.getSivilstandKode().equals(a.get(SIVILSTAND))
-                            || KoderForSivilstand.SEPARERT.getSivilstandKode().equals(a.get(SIVILSTAND))
+                    (Map<String, String> a) -> KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
+                            || KoderForSivilstand.SEPARERT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
                             || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
 
             Map<String, String> statusQuoPartnerIdent;
             statusQuoPartnerIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> KoderForSivilstand.GIFT.getSivilstandKode().equals(a.get(SIVILSTAND))
-                            || KoderForSivilstand.SEPARERT.getSivilstandKode().equals(a.get(SIVILSTAND))
+                    (Map<String, String> a) -> KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
+                            || KoderForSivilstand.SEPARERT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
                             || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
 
             String ident = statusQuoIdent.get(IDENT);
@@ -141,11 +141,11 @@ public class EksisterendeIdenterService {
             if (ident != null && identPartner != null) {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
                 putEktefellePartnerFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
-                ((RsMeldingstype1Felter) meldinger.get(i)).setSivilstand(KoderForSivilstand.GIFT.getSivilstandKode());
+                ((RsMeldingstype1Felter) meldinger.get(i)).setSivilstand(KoderForSivilstand.GIFT.getSivilstandKodeSKD());
 
                 RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
                 putEktefellePartnerFnrInnIMelding(((RsMeldingstype1Felter) melding), ident);
-                ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.GIFT.getSivilstandKode());
+                ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.GIFT.getSivilstandKodeSKD());
                 meldingerForPartnere.add(melding);
 
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
@@ -167,7 +167,7 @@ public class EksisterendeIdenterService {
             }
 
             Map<String, String> statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> !KoderForSivilstand.GIFT.getSivilstandKode().equals(a.get(SIVILSTAND)));
+                    (Map<String, String> a) -> !KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND)));
 
             String ident = statusQuoIdent.get(IDENT);
             Map<String, String> statusQuoPartnerIdent;
@@ -184,9 +184,9 @@ public class EksisterendeIdenterService {
                 RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
 
                 if (endringskode.getEndringskode().equals(Endringskoder.SEPERASJON.getEndringskode())) {
-                    ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.SEPARERT.getSivilstandKode());
+                    ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.SEPARERT.getSivilstandKodeSKD());
                 } else if(endringskode.getEndringskode().equals(Endringskoder.SKILSMISSE.getEndringskode())) {
-                    ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.SKILT.getSivilstandKode());
+                    ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.SKILT.getSivilstandKodeSKD());
                 }
                 meldingerForPartnere.add(melding);
 
@@ -219,7 +219,7 @@ public class EksisterendeIdenterService {
             Map<String, String> statusQuoPartnerIdent;
             String identPartner;
 
-            if (statusQuoIdent.get(SIVILSTAND).equals(KoderForSivilstand.GIFT.getSivilstandKode())) {
+            if (KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(statusQuoIdent.get(SIVILSTAND))) {
                 identPartner = statusQuoIdent.get(FNR_RELASJON);
 
                 statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
@@ -303,7 +303,7 @@ public class EksisterendeIdenterService {
                         .format(DateTimeFormatter.ofPattern("ddMMyy")))
                 .fodselsdato(identPartner.substring(0, 6))
                 .personnummer(identPartner.substring(6))
-                .sivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKode())
+                .sivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKodeSKD())
                 .personkode("1")
                 .ektefellePartnerFdato(ident.substring(0, 6))
                 .ektefellePartnerPnr(ident.substring(6))
