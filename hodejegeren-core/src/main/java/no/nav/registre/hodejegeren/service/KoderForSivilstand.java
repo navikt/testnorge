@@ -12,7 +12,7 @@ public enum KoderForSivilstand {
     UOPPGITT("0", "Uoppgitt"),
     UGIFT("1", "Ugift"),
     GIFT("2", "Gift"),
-    ENKE_ENKEMANN("3", "Enke"), // sjekk denne
+    ENKE_ENKEMANN("3", "Enke/-mann"),
     SKILT("4", "Skilt"),
     SEPARERT("5", "Separert"),
     REGISTRERT_PARTNER("6", "Registrert partner"), // sjekk denne

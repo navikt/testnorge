@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -77,9 +77,9 @@ public class EksisterendeIdenterServiceTest {
     }
 
     /**
-     * Testscenario: HVIS det skal opprettes melding for en årsak som ikke krever spesiell behandling, skal systemet
-     * i metoden {@link EksisterendeIdenterService#behandleGenerellAarsak}, finne en person som er i live og norsk
-     * statsborger. Systemet skal legge denne personen inn i listen av brukte identer.
+     * Testscenario: HVIS det skal opprettes melding for en årsak som ikke krever spesiell behandling, skal systemet i metoden
+     * {@link EksisterendeIdenterService#behandleGenerellAarsak}, finne en person som er i live og norsk statsborger. Systemet skal
+     * legge denne personen inn i listen av brukte identer.
      */
     @Test
     public void shouldFindLevendeNordmannAndUpdateBrukteIdenter() throws IOException {
@@ -100,8 +100,8 @@ public class EksisterendeIdenterServiceTest {
     }
 
     /**
-     * Testscenario: HVIS status quo på en ident inneholder felter uten verdi eller med null-verdier på felter som
-     * kreves i metoden, skal systemet velge en annen ident.
+     * Testscenario: HVIS status quo på en ident inneholder felter uten verdi eller med null-verdier på felter som kreves i metoden,
+     * skal systemet velge en annen ident.
      */
     @Test
     public void shouldHandleIdenterWithNullValuesInStatusQuoFields() throws IOException {
@@ -119,9 +119,10 @@ public class EksisterendeIdenterServiceTest {
     }
 
     /**
-     * Testscenario: HVIS det skal opprettes vigselsmelding, skal systemet i metoden {@link EksisterendeIdenterService#behandleVigsel},
-     * finne to personer som er ugifte og myndige, og legge vigselsmelding på disse, og påse at hver av identene legges inn
-     * som relasjon til den andre. Det opprettes en vigselsmelding for hver av personene.
+     * Testscenario: HVIS det skal opprettes vigselsmelding, skal systemet i metoden
+     * {@link EksisterendeIdenterService#behandleVigsel}, finne to personer som er ugifte og myndige, og legge vigselsmelding på
+     * disse, og påse at hver av identene legges inn som relasjon til den andre. Det opprettes en vigselsmelding for hver av
+     * personene.
      * <p>
      * Personer må være minst 18 år (myndige) for å kunne settes på en vigselsmelding.
      */
@@ -131,7 +132,7 @@ public class EksisterendeIdenterServiceTest {
 
         when(rand.nextInt(anyInt())).thenReturn(0);
 
-        opprettMultipleUgifteIdenterMock(); //fnr1,2 og 3 er myndige. fnr2 er gift. Resten er ugift.
+        opprettMultipleUgifteIdenterMock(); // fnr1,2 og 3 er myndige. fnr2 er gift. Resten er ugift.
 
         eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment);
 
@@ -143,16 +144,15 @@ public class EksisterendeIdenterServiceTest {
 
     /**
      * HVIS et ekte-/samboer-par skal legges til i skilsmisse/separasjonsmelding, MEN deres status quo i TPS ikke stemmer overens
-     * (ulik sivilstand eller ikke registrert gjensidig relasjon), SÅ skal avviket loggføres
-     * og et nytt ekte-/samboer-par blir fylt inn i meldingen i stedet.
+     * (ulik sivilstand eller ikke registrert gjensidig relasjon), SÅ skal avviket loggføres og et nytt ekte-/samboer-par blir fylt
+     * inn i meldingen i stedet.
      */
     @Test
-    @Ignore
     public void shouldLogAndRetryWithNewCoupleIfTheirDataIsCorrupt() throws IOException {
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(EksisterendeIdenterService.class);
         when(rand.nextInt(anyInt())).thenReturn(0);
 
-        List<String> identerIRekkefølge = opprettEkteparMedKorruptDataMock(); //Første paret har data som feiler. Andre paret er fungerende og vanlig.
+        List<String> identerIRekkefølge = opprettEkteparMedKorruptDataMock(); // Første paret har data som feiler. Andre paret er fungerende og vanlig.
 
         eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identerIRekkefølge, brukteIdenter, SKILSMISSE, environment);
 
@@ -163,20 +163,20 @@ public class EksisterendeIdenterServiceTest {
     }
 
     private List<String> opprettEkteparMedKorruptDataMock() throws IOException {
-        //oppretter ektepar med korrupt data på nummer 2 av ektefellene.
+        // oppretter ektepar med korrupt data på nummer 2 av ektefellene.
         Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
-        //fnr2 er feilregistrert i TPS til ugift sivilstand.
+        // fnr2 er feilregistrert i TPS til ugift sivilstand.
         String fnr5 = "05050505050";
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr5);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
-        //Et fungerende ektepar
+        // Et fungerende ektepar
         String fnr4 = "04040404040";
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
@@ -191,8 +191,9 @@ public class EksisterendeIdenterServiceTest {
 
     /**
      * Testscenario: HVIS syntetisk skilsmisse-/seperasjonsmelding behandles, skal metoden
-     * {@link EksisterendeIdenterService#behandleSeperasjonSkilsmisse} finne en gift person og legge identifiserende informasjon for personen og personens partner på
-     * skilsmisse-/seperasjonsmeldingen. Deretter skal metoden opprette en tilsvarende skilsmisse-/seperasjonsmelding for partneren.
+     * {@link EksisterendeIdenterService#behandleSeperasjonSkilsmisse} finne en gift person og legge identifiserende informasjon for
+     * personen og personens partner på skilsmisse-/seperasjonsmeldingen. Deretter skal metoden opprette en tilsvarende
+     * skilsmisse-/seperasjonsmelding for partneren.
      */
     @Test
     public void shouldFindGiftPersonAndCreateSkilsmissemelding() throws IOException {
@@ -212,10 +213,11 @@ public class EksisterendeIdenterServiceTest {
     }
 
     /**
-     * Testscenario: HVIS dødsmelding skal behandles av Hodejegeren, skal systemet i metoden {@link EksisterendeIdenterService#behandleDoedsmelding},
-     * finne en levende norsk statsborger, og legge dødsmelding på denne.
+     * Testscenario: HVIS dødsmelding skal behandles av Hodejegeren, skal systemet i metoden
+     * {@link EksisterendeIdenterService#behandleDoedsmelding}, finne en levende norsk statsborger, og legge dødsmelding på denne.
      * <p>
-     * Når dødsmelding registreres på en gift person, så vil Hodejegeren opprette en endringsmelding på sivilstand for å omregistrere ektefellen til enke/enkemann.
+     * Når dødsmelding registreres på en gift person, så vil Hodejegeren opprette en endringsmelding på sivilstand for å
+     * omregistrere ektefellen til enke/enkemann.
      */
     @Test
     public void shouldFindPartnerOfDoedsmeldingIdentAndCreateSivilstandendringsmelding() throws IOException {
@@ -235,8 +237,8 @@ public class EksisterendeIdenterServiceTest {
     }
 
     /**
-     * Testscenario: HVIS det skal opprettes en vigselsmelding og det er for få ledige identer tilgjengelig, skal det
-     * kastes en exception med beskrivende feilmelding som inneholder meldingsnummeret til meldingen som feilet.
+     * Testscenario: HVIS det skal opprettes en vigselsmelding og det er for få ledige identer tilgjengelig, skal det kastes en
+     * exception med beskrivende feilmelding som inneholder meldingsnummeret til meldingen som feilet.
      */
     @Test
     public void shouldThrowExceptionForTooFewIdents() {

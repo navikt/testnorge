@@ -228,7 +228,7 @@ public class EksisterendeIdenterService {
                     if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
                         putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
 
-                        meldingerForPartnere.add(opprettSivilstandsendringsmelding(ident, identPartner));
+                        meldingerForPartnere.add(opprettSivilstandsendringsmelding(meldinger.get(i), identPartner));
 
                         oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
                     } else {
@@ -277,7 +277,6 @@ public class EksisterendeIdenterService {
             int randomIndex = rand.nextInt(identer.size());
             randomIdent = identer.remove(randomIndex);
             statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
-            log.info("StatusQuoPaaIdent {} (sivilstand): {}",randomIdent, statusQuoIdent.get(SIVILSTAND));
             statusQuoIdent.put(IDENT, randomIdent);
         }
         while (predicate.test(statusQuoIdent));
@@ -297,21 +296,21 @@ public class EksisterendeIdenterService {
         return statusQuoFraAarsakskode;
     }
 
-    private RsMeldingstype1Felter opprettSivilstandsendringsmelding(String ident, String identPartner) {
+    private RsMeldingstype1Felter opprettSivilstandsendringsmelding(RsMeldingstype identMelding, String identPartner) {
         RsMeldingstype1Felter melding = RsMeldingstype1Felter.builder()
-                .regdatoSivilstand(LocalDateTime.now()
-                        .format(DateTimeFormatter.ofPattern("ddMMyy")))
+                .regdatoSivilstand(((RsMeldingstype1Felter) identMelding).getRegdatoSivilstand())
                 .fodselsdato(identPartner.substring(0, 6))
                 .personnummer(identPartner.substring(6))
                 .sivilstand(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKodeSKD())
                 .personkode("1")
-                .ektefellePartnerFdato(ident.substring(0, 6))
-                .ektefellePartnerPnr(ident.substring(6))
+                .ektefellePartnerFdato(((RsMeldingstype1Felter) identMelding).getFodselsdato())
+                .ektefellePartnerPnr(((RsMeldingstype1Felter) identMelding).getPersonnummer())
                 .build();
 
         melding.setAarsakskode(SIVILSTANDSENDRING_AARSAKSKODE);
-        melding.setMaskindato(LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyy")));
-        melding.setMaskintid(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HHmmss")));
+        melding.setMaskindato(identMelding.getMaskindato());
+        melding.setMaskintid(identMelding.getMaskintid());
+        melding.setRegDato(((RsMeldingstype1Felter) identMelding).getRegDato());
 
         return melding;
     }
