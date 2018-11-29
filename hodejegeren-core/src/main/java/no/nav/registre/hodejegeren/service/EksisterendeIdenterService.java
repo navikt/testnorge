@@ -141,9 +141,11 @@ public class EksisterendeIdenterService {
             if (ident != null && identPartner != null) {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
                 putEktefellePartnerFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
+                ((RsMeldingstype1Felter) meldinger.get(i)).setSivilstand(KoderForSivilstand.GIFT.getSivilstandKode());
 
                 RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
                 putEktefellePartnerFnrInnIMelding(((RsMeldingstype1Felter) melding), ident);
+                ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.GIFT.getSivilstandKode());
                 meldingerForPartnere.add(melding);
 
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
@@ -153,7 +155,7 @@ public class EksisterendeIdenterService {
     }
 
     public void behandleSeperasjonSkilsmisse(List<RsMeldingstype> meldinger, List<String> gifteIdenterINorge, List<String> brukteIdenterIDenneBolken,
-            Endringskoder endringskoder, String environment) {
+            Endringskoder endringskode, String environment) {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         int antallMeldingerFoerKjoering = meldinger.size();
@@ -164,7 +166,7 @@ public class EksisterendeIdenterService {
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen gifteIdenterINorge fra TPSF avspillergruppen.");
             }
 
-            Map<String, String> statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskoder, environment,
+            Map<String, String> statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !KoderForSivilstand.GIFT.getSivilstandKode().equals(a.get(SIVILSTAND)));
 
             String ident = statusQuoIdent.get(IDENT);
@@ -173,13 +175,19 @@ public class EksisterendeIdenterService {
 
             identPartner = statusQuoIdent.get(FNR_RELASJON);
 
-            statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskoder, environment, identPartner);
+            statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
 
             if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))
                     && statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
 
                 RsMeldingstype melding = opprettKopiAvSkdMelding((RsMeldingstype1Felter) meldinger.get(i), identPartner);
+
+                if (endringskode.getEndringskode().equals(Endringskoder.SEPERASJON.getEndringskode())) {
+                    ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.SEPARERT.getSivilstandKode());
+                } else if(endringskode.getEndringskode().equals(Endringskoder.SKILSMISSE.getEndringskode())) {
+                    ((RsMeldingstype1Felter) melding).setSivilstand(KoderForSivilstand.SKILT.getSivilstandKode());
+                }
                 meldingerForPartnere.add(melding);
 
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
