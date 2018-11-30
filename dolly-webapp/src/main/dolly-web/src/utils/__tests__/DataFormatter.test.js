@@ -1,5 +1,4 @@
 import Formatter from '../DataFormatter'
-import { FORMERR } from 'dns'
 
 describe('DataFormatter.js', () => {
 	describe('formatIdentNr', () => {
