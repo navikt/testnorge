@@ -7,7 +7,6 @@ import BestillingProgress from './BestillingProgress/BestillingProgress'
 import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
 import './BestillingStatus.less'
 import _find from 'lodash/find'
-
 export default class BestillingStatus extends PureComponent {
 	static propTypes = {
 		bestilling: PropTypes.object.isRequired
@@ -104,17 +103,18 @@ export default class BestillingStatus extends PureComponent {
 	render() {
 		const { bestillingStatusObj, miljoeStatusObj } = this.props
 
-		if (
-			(this.state.ferdig && !bestillingStatusObj) ||
-			!this.state.isOpen ||
-			(bestillingStatusObj && !bestillingStatusObj.ny)
-		)
-			return null
+		// if (
+		// 	(this.state.ferdig && !bestillingStatusObj) ||
+		// 	!this.state.isOpen ||
+		// 	(bestillingStatusObj && !bestillingStatusObj.ny)
+		// )
+		// 	return null
 
 		const status = this.calculateStatus()
 		return (
 			<div className="bestilling-status">
-				{!this.state.ferdig && <BestillingProgress status={status} />}
+				{/* {!this.state.ferdig && <BestillingProgress status={status} />} */}
+				<BestillingProgress status={status} failed />
 				{bestillingStatusObj &&
 					bestillingStatusObj.ny && (
 						<MiljoeStatus
