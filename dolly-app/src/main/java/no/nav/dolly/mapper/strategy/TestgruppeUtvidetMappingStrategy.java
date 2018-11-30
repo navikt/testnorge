@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.stratergy;
+package no.nav.dolly.mapper.strategy;
 
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 
@@ -27,10 +27,10 @@ public class TestgruppeUtvidetMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppeUtvidet testgruppeUtvidet, MappingContext context) {
                         testgruppeUtvidet.setOpprettetAvNavIdent(testgruppe.getOpprettetAv().getNavIdent());
                         testgruppeUtvidet.setSistEndretAvNavIdent(testgruppe.getSistEndretAv().getNavIdent());
-                        RsTeamMedIdOgNavn rsTeamMedIdOgNavn = new RsTeamMedIdOgNavn();
-                        rsTeamMedIdOgNavn.setNavn(testgruppe.getTeamtilhoerighet().getNavn());
-                        rsTeamMedIdOgNavn.setId(testgruppe.getTeamtilhoerighet().getId());
-                        testgruppeUtvidet.setTeam(rsTeamMedIdOgNavn);
+                        testgruppeUtvidet.setTeam(RsTeamMedIdOgNavn.builder()
+                                .navn(testgruppe.getTeamtilhoerighet().getNavn())
+                                .id(testgruppe.getTeamtilhoerighet().getId())
+                                .build());
                         testgruppeUtvidet.setAntallIdenter(testgruppe.getTestidenter().size());
                         testgruppeUtvidet.setTestidenter(mapperFacade.mapAsList(testgruppe.getTestidenter(), RsTestidentBestillingId.class));
                         testgruppeUtvidet.setBestillinger(mapperFacade.mapAsList(testgruppe.getBestillinger(), RsBestilling.class));

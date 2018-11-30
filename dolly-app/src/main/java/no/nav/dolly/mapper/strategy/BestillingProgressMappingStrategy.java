@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.stratergy;
+package no.nav.dolly.mapper.strategy;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 

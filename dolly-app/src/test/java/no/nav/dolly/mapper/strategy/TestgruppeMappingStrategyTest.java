@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.stratergy;
+package no.nav.dolly.mapper.strategy;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.util.Sets.newHashSet;
@@ -21,7 +21,7 @@ import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 
-public class TestgruppeMappingStratergyTest {
+public class TestgruppeMappingStrategyTest {
 
     private MapperFacade mapper;
 

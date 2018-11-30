@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.stratergy;
+package no.nav.dolly.mapper.strategy;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -21,7 +21,7 @@ import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 
-public class TeamMappingStratergyTest {
+public class TeamMappingStrategyTest {
 
     private MapperFacade mapper;
 

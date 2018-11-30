@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.stratergy;
+package no.nav.dolly.mapper.strategy;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -12,6 +12,8 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTestident;
+import no.nav.dolly.mapper.strategy.TeamMappingStrategy;
+import no.nav.dolly.mapper.strategy.TestgruppeMappingStrategy;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 

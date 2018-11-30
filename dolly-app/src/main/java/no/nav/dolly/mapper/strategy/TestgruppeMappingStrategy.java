@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.stratergy;
+package no.nav.dolly.mapper.strategy;
 
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
-public class TestgruppeMappingStrategy implements MappingStrategy{
+public class TestgruppeMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
@@ -22,10 +22,10 @@ public class TestgruppeMappingStrategy implements MappingStrategy{
                         rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
                         rsTestgruppe.setOpprettetAvNavIdent(testgruppe.getOpprettetAv().getNavIdent());
                         rsTestgruppe.setSistEndretAvNavIdent(testgruppe.getSistEndretAv().getNavIdent());
-                        RsTeamMedIdOgNavn rsTeamMedIdOgNavn = new RsTeamMedIdOgNavn();
-                        rsTeamMedIdOgNavn.setNavn(testgruppe.getTeamtilhoerighet().getNavn());
-                        rsTeamMedIdOgNavn.setId(testgruppe.getTeamtilhoerighet().getId());
-                        rsTestgruppe.setTeam(rsTeamMedIdOgNavn);
+                        rsTestgruppe.setTeam(RsTeamMedIdOgNavn.builder()
+                                .navn(testgruppe.getTeamtilhoerighet().getNavn())
+                                .id(testgruppe.getTeamtilhoerighet().getId())
+                                .build());
                     }
                 })
                 .byDefault()
