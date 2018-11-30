@@ -57,25 +57,25 @@ describe('DataFormatter.js', () => {
 
 	describe('kjonnToString', () => {
 		it('it should return Mann', () => {
-			expect(Formatter.kjonnToString('m')).toBe('Mann')
+			expect(Formatter.kjonnToString('m')).toBe('MANN')
 		})
 		it('it should return Kvinne', () => {
-			expect(Formatter.kjonnToString('k')).toBe('Kvinne')
+			expect(Formatter.kjonnToString('k')).toBe('KVINNE')
 		})
 		it('it should return udefinert because no match', () => {
-			expect(Formatter.kjonnToString('x')).toBe('udefinert')
+			expect(Formatter.kjonnToString('x')).toBe('UDEFINERT')
 		})
 	})
 
 	describe('kjonnToStringBarn', () => {
 		it('it should return Gutt', () => {
-			expect(Formatter.kjonnToStringBarn('m')).toBe('Gutt')
+			expect(Formatter.kjonnToStringBarn('m')).toBe('GUTT')
 		})
 		it('it should return Jente', () => {
-			expect(Formatter.kjonnToStringBarn('k')).toBe('Jente')
+			expect(Formatter.kjonnToStringBarn('k')).toBe('JENTE')
 		})
 		it('it should return udefinert because no match', () => {
-			expect(Formatter.kjonnToStringBarn('x')).toBe('udefinert')
+			expect(Formatter.kjonnToStringBarn('x')).toBe('UDEFINERT')
 		})
 	})
 
