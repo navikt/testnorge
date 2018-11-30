@@ -80,7 +80,7 @@ export default class RedigerTestbruker extends Component {
 								Lagre
 							</Knapp>
 						</div>
-						{/* <DisplayFormikState {...formikProps} /> */}
+						<DisplayFormikState {...formikProps} />
 					</div>
 				)}
 			/>
