@@ -210,6 +210,8 @@ public class EksisterendeIdenterServiceTest {
         assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
         assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(1).getAarsakskode());
         assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
+        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
+        assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
     }
 
     /**
