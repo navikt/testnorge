@@ -6,10 +6,7 @@ import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,7 +22,6 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -48,16 +44,17 @@ public class TestgruppeService {
     private MapperFacade mapperFacade;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
-        Team team = teamService.fetchTeamOrOpprettBrukerteam(rsTestgruppe.getTeamId());
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
 
-        Testgruppe gruppe = mapperFacade.map(rsTestgruppe, Testgruppe.class);
-        gruppe.setTeamtilhoerighet(team);
-        gruppe.setDatoEndret(LocalDate.now());
-        gruppe.setSistEndretAv(bruker);
-        gruppe.setOpprettetAv(bruker);
-
-        return saveGruppeTilDB(gruppe);
+        return saveGruppeTilDB(Testgruppe.builder()
+                .navn(rsTestgruppe.getNavn())
+                .hensikt(rsTestgruppe.getHensikt())
+                .teamtilhoerighet(teamService.fetchTeamOrOpprettBrukerteam(rsTestgruppe.getTeamId()))
+                .datoEndret(LocalDate.now())
+                .opprettetAv(bruker)
+                .sistEndretAv(bruker)
+                .build()
+        );
     }
 
     public Testgruppe fetchTestgruppeById(Long gruppeId) {
@@ -72,9 +69,6 @@ public class TestgruppeService {
         throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
     }
 
-    public RsTestgruppeUtvidet rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(RsTestgruppe gruppe) {
-        return new ArrayList<>(getRsTestgruppeMedErMedlem(new HashSet<>(Arrays.asList(gruppe)))).get(0);
-    }
 
     public Set<Testgruppe> fetchTestgrupperByNavIdent(String navIdent) {
         BrukerMedTeamsOgFavoritter brukerMedTeamsOgFavoritter = brukerService.getBrukerMedTeamsOgFavoritter(navIdent);
@@ -82,33 +76,6 @@ public class TestgruppeService {
         brukerMedTeamsOgFavoritter.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
 
         return testgrupper;
-    }
-
-    public Set<RsTestgruppeUtvidet> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper) {
-        return getRsTestgruppeMedErMedlem(grupper, getLoggedInNavIdent());
-    }
-
-    public Set<RsTestgruppeUtvidet> getRsTestgruppeMedErMedlem(Set<RsTestgruppe> grupper, String navIdent) {
-        Set<RsTestgruppeUtvidet> mfGrupper = mapperFacade.mapAsSet(grupper, RsTestgruppeUtvidet.class);
-
-        Bruker bruker = brukerService.fetchBruker(navIdent);
-        Set<String> favoritterIDs = bruker.getFavoritter().stream().map(gruppe -> gruppe.getId().toString()).collect(Collectors.toSet());
-        Set<String> teamNames = bruker.getTeams().stream().map(team -> team.getNavn()).collect(Collectors.toSet());
-
-        mfGrupper = mfGrupper.stream()
-                .map(gruppe -> {
-                    RsTestgruppeUtvidet g = gruppe;
-                    g.setFavorittIGruppen(favoritterIDs.contains(gruppe.getId().toString()));
-                    return g;
-                })
-                .map(gruppe -> {
-                    RsTestgruppeUtvidet g = gruppe;
-                    g.setErMedlemAvTeamSomEierGruppe(teamNames.contains(gruppe.getTeam().getNavn()));
-                    return g;
-                })
-                .collect(Collectors.toSet());
-
-        return mfGrupper;
     }
 
     public Testgruppe saveGruppeTilDB(Testgruppe testgruppe) {
@@ -136,21 +103,16 @@ public class TestgruppeService {
         gruppeRepository.deleteTestgruppeById(gruppeId);
     }
 
-    @Transactional
-    public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe testgruppe) {
-        Testgruppe savedGruppe = fetchTestgruppeById(gruppeId);
-        Testgruppe requestGruppe = mapperFacade.map(testgruppe, Testgruppe.class);
+    public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
+        Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
 
-        Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
-        Team team = teamService.fetchTeamById(testgruppe.getTeamId());
+        testgruppe.setHensikt(endreGruppe.getHensikt());
+        testgruppe.setNavn(endreGruppe.getNavn());
+        testgruppe.setSistEndretAv(brukerService.fetchBruker(getLoggedInNavIdent()));
+        testgruppe.setTeamtilhoerighet(teamService.fetchTeamById(endreGruppe.getTeamId()));
+        testgruppe.setDatoEndret(LocalDate.now());
 
-        savedGruppe.setHensikt(requestGruppe.getHensikt());
-        savedGruppe.setNavn(requestGruppe.getNavn());
-        savedGruppe.setSistEndretAv(bruker);
-        savedGruppe.setTeamtilhoerighet(team);
-        savedGruppe.setDatoEndret(LocalDate.now());
-
-        return saveGruppeTilDB(savedGruppe);
+        return saveGruppeTilDB(testgruppe);
     }
 
     public Set<RsTestgruppeUtvidet> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
