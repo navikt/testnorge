@@ -77,7 +77,7 @@ export default class FormEditor extends PureComponent {
 				header: item.label,
 				value: valgtVerdi,
 				headerType: 'label',
-				optionalClassName: 'skjemaelement'
+				optionalClassName: 'skjemaelement static'
 			}
 			if (item.apiKodeverkId) {
 				return <KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
