@@ -3,7 +3,6 @@ package no.nav.dolly.domain.jpa;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -68,6 +67,19 @@ public class Team {
 		this.navn = navn;
 		this.eier = eier;
 		this.datoOpprettet = LocalDate.now();
-		this.medlemmer = new HashSet<>(Arrays.asList(eier));
+	}
+
+	public Set<Testgruppe> getGrupper() {
+		if (grupper == null) {
+			grupper = new HashSet<>();
+		}
+		return grupper;
+	}
+
+	public Set<Bruker> getMedlemmer() {
+		if (medlemmer == null) {
+			medlemmer = new HashSet<>();
+		}
+		return medlemmer;
 	}
 }

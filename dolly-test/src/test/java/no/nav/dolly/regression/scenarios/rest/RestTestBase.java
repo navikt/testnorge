@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.JavaType;
 
@@ -53,7 +54,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     protected String standardTeamnavn = "team";
     protected String standardTeamBesk = "beskrivelse";
     protected String standardGruppenavn = "testgruppe";
-    protected String standardNavIdent = "ident";
+    protected String standardNavIdent = "IDENT";
     protected String standardGruppeHensikt = "hensikt";
 
     protected String standardPrincipal = standardNavIdent;

@@ -20,7 +20,7 @@ import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
-import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
+import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestident;
@@ -50,13 +50,12 @@ public class TestgruppeControllerTest {
     @Mock
     private BestillingService bestillingService;
 
-
     @InjectMocks
     private TestgruppeController controller;
 
     @Test
     public void opprettTestgruppe() {
-        RsOpprettTestgruppe gruppe = new RsOpprettTestgruppe();
+        RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
         RsTestgruppe g = new RsTestgruppe();
         when(testgruppeService.opprettTestgruppe(gruppe)).thenReturn(g);
 
@@ -67,7 +66,7 @@ public class TestgruppeControllerTest {
     @Test
     public void oppdaterTestgruppe() {
         Long gId = 1L;
-        RsOpprettTestgruppe gruppe = new RsOpprettTestgruppe();
+        RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
         RsTestgruppe g = new RsTestgruppe();
         when(testgruppeService.oppdaterTestgruppe(gId, gruppe)).thenReturn(g);
 
@@ -123,7 +122,7 @@ public class TestgruppeControllerTest {
     }
 
     @Test
-    public void slettgruppe_metodekall(){
+    public void slettgruppe_metodekall() {
         controller.slettgruppe(anyLong());
         verify(testgruppeService).slettGruppeById(anyLong());
     }

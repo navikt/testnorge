@@ -37,7 +37,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
-import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
+import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.exceptions.ConstraintViolationException;
@@ -93,7 +93,7 @@ public class TestgruppeServiceTest {
 
     @Test
     public void opprettTestgruppe_HappyPath() {
-        RsOpprettTestgruppe rsTestgruppe = Mockito.mock(RsOpprettTestgruppe.class);
+        RsOpprettEndreTestgruppe rsTestgruppe = Mockito.mock(RsOpprettEndreTestgruppe.class);
         Team team = Mockito.mock(Team.class);
         Bruker bruker = Mockito.mock(Bruker.class);
         Testgruppe gruppe = new Testgruppe();
@@ -314,7 +314,7 @@ public class TestgruppeServiceTest {
     public void oppdaterTestgruppe_sjekkAtDBKalles() {
         long teamId = 2L;
 
-        RsOpprettTestgruppe rsOpprettTestgruppe = RsOpprettTestgruppeBuilder.builder().hensikt("test").navn("navn").teamId(1L).build().convertToRealRsOpprettTestgruppe();
+        RsOpprettEndreTestgruppe rsOpprettTestgruppe = RsOpprettTestgruppeBuilder.builder().hensikt("test").navn("navn").teamId(1L).build().convertToRealRsOpprettTestgruppe();
 
         Team team = Team.builder().navn("team").id(teamId).build();
 

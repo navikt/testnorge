@@ -3,6 +3,7 @@ package no.nav.dolly.domain.jpa;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -74,5 +75,26 @@ public class Testgruppe {
 
 	@Column(name = "OPENAM_SENT")
 	private Boolean openAmSent;
+
+	public Set<Testident> getTestidenter() {
+		if (testidenter == null) {
+			testidenter = new HashSet<>();
+		}
+		return testidenter;
+	}
+
+	public Set<Bruker> getFavorisertAv() {
+		if (favorisertAv == null) {
+			favorisertAv = new HashSet<>();
+		}
+		return favorisertAv;
+	}
+
+	public Set<Bestilling> getBestillinger() {
+		if (bestillinger == null) {
+			bestillinger = new HashSet<>();
+		}
+		return bestillinger;
+	}
 }
 

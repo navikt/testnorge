@@ -24,7 +24,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
-import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
+import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.exceptions.ConstraintViolationException;
@@ -47,7 +47,7 @@ public class TestgruppeService {
     @Autowired
     private MapperFacade mapperFacade;
 
-    public RsTestgruppe opprettTestgruppe(RsOpprettTestgruppe rsTestgruppe) {
+    public RsTestgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Team team = teamService.fetchTeamOrOpprettBrukerteam(rsTestgruppe.getTeamId());
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
 
@@ -138,7 +138,7 @@ public class TestgruppeService {
     }
 
     @Transactional
-    public RsTestgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettTestgruppe testgruppe) {
+    public RsTestgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe testgruppe) {
         Testgruppe savedGruppe = fetchTestgruppeById(gruppeId);
         Testgruppe requestGruppe = mapperFacade.map(testgruppe, Testgruppe.class);
 
