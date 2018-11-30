@@ -47,8 +47,16 @@ export default class RedigerTestbruker extends Component {
 		if (!tpsf || !sigrunstub || !krrstub) return null
 
 		const dataSources = this._checkDataSources()
-		const attributtListe = this.AttributtManager.listEditable(dataSources)
-		const validations = this.AttributtManager.getValidationsForEdit(dataSources)
+		const attributtListe = this.AttributtManager.listEditable(
+			testbruker,
+			match.params.ident,
+			dataSources
+		)
+		const validations = this.AttributtManager.getValidationsForEdit(
+			testbruker,
+			match.params.ident,
+			dataSources
+		)
 		const initialValues = this.AttributtManager.getInitialValuesForEditableItems(
 			testbruker,
 			match.params.ident,

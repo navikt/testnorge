@@ -79,7 +79,7 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'Diskresjonskoder',
 		validation: yup.string().required('Velg diskresjonskoder.'),
-		attributtType: AttributtType.SelectOnly
+		attributtType: AttributtType.SelectAndEdit
 	}
 	// {
 	// 	hovedKategori: Kategorier.PersInfo,
