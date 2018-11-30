@@ -167,25 +167,9 @@ export default class AutofillAddress extends Component {
 				>
 					<div className="generate-address-container">
 						<form className="generate-address-form">
-							<Radio
-								autoFocus
-								checked={type === 'random'}
-								label="Tilfeldig"
-								name="Tilfeldig"
-								onChange={() => this.chooseType('random')}
-							/>
-							<Radio
-								checked={type === 'pnr'}
-								label="Postnummer"
-								name="Postnummer"
-								onChange={() => this.chooseType('pnr')}
-							/>
-							<Radio
-								checked={type === 'knr'}
-								label="Kommunenummer"
-								name="Kommunenummer"
-								onChange={() => this.chooseType('knr')}
-							/>
+							{this._renderRadioBtn(true, type, 'random', 'Tilfeldig')}
+							{this._renderRadioBtn(true, type, 'pnr', 'Postnummer')}
+							{this._renderRadioBtn(true, type, 'knr', 'Kommunenummer')}
 						</form>
 						{this.renderSelect()}
 						<Knapp
@@ -202,6 +186,18 @@ export default class AutofillAddress extends Component {
 					</div>
 				</Modal>
 			</Fragment>
+		)
+	}
+
+	_renderRadioBtn = (autoFocus, type, checkedType, label) => {
+		return (
+			<Radio
+				autoFocus={autoFocus ? autoFocus : false}
+				checked={type === checkedType}
+				label={label}
+				name={label}
+				onChange={() => this.chooseType(checkedType)}
+			/>
 		)
 	}
 }

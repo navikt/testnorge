@@ -47,7 +47,10 @@ export default handleActions(
 			return { ...state, page: state.page - 1 }
 		},
 		[actions.toggleAttribute](state, action) {
-			return { ...state, attributeIds: _xor(state.attributeIds, [action.payload]) }
+			return {
+				...state,
+				attributeIds: _xor(state.attributeIds, [action.payload])
+			}
 		},
 		[actions.uncheckAllAttributes](state, action) {
 			return { ...state, attributeIds: [] }
