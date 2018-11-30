@@ -13,11 +13,18 @@ const SET_BESTILLING_STATUS = 'SET_BESTILLING_STATUS'
 
 const initialState = {}
 
+export const cancelBestilling = createAction('CANCEL_BESTILLING', DollyApi.cancelBestilling)
+
 export default handleActions(
 	{
 		[success(getBestillingStatus)](state, action) {
 			return { ...state, [action.payload.data.id]: action.payload.data }
 		},
+
+		[success(cancelBestilling)](state, action) {
+			console.log('cancel bestilling')
+		},
+
 		[SET_BESTILLING_STATUS](state, action) {
 			return { ...state, [action.bestillingId]: action.data }
 		}
@@ -26,7 +33,6 @@ export default handleActions(
 )
 
 // SET BESTILLING STATUS
-
 export const setBestillingStatus = (bestillingId, data) => ({
 	type: SET_BESTILLING_STATUS,
 	bestillingId,
@@ -66,39 +72,44 @@ export const miljoStatusSelector = bestillingStatus => {
 	let successEnvs = []
 	let failedEnvs = []
 
-	// Tpsf-miljø
-	envs.forEach(env => {
+	if (bestillingStatus.personStatus.length != 0) {
+		// Tpsf-miljø
+		envs.forEach(env => {
+			bestillingStatus.personStatus.forEach(person => {
+				if (!person.tpsfSuccessEnv) {
+					// TODO: Bestilling failed 100% fra Tpsf. Implement retry senere når maler er støttet
+					failedEnvs = envs
+				} else if (!person.tpsfSuccessEnv.includes(env)) {
+					!failedEnvs.includes(env) && failedEnvs.push(env)
+				}
+			})
+		})
+
+		envs.forEach(env => {
+			!failedEnvs.includes(env) && successEnvs.push(env)
+		})
+
+		// Registre miljø status
+		// Plasseres i egen for-each for visuel plassering og mer lesbar kode
 		bestillingStatus.personStatus.forEach(person => {
-			if (!person.tpsfSuccessEnv) {
-				// TODO: Bestilling failed 100% fra Tpsf. Implement retry senere når maler er støttet
-				failedEnvs = envs
-			} else if (!person.tpsfSuccessEnv.includes(env)) {
-				!failedEnvs.includes(env) && failedEnvs.push(env)
+			// Krr-stub
+			if (person.krrstubStatus) {
+				person.krrstubStatus == 'OK'
+					? !successEnvs.includes('Krr-stub') && successEnvs.push('Krr-stub')
+					: !failedEnvs.includes('Krr-stub') && failedEnvs.push('Krr-stub')
+			}
+
+			// Sigrun-stub
+			if (person.sigrunstubStatus) {
+				person.sigrunstubStatus == 'OK'
+					? !successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')
+					: !failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
 			}
 		})
-	})
-
-	envs.forEach(env => {
-		!failedEnvs.includes(env) && successEnvs.push(env)
-	})
-
-	// Registre miljø status
-	// Plasseres i egen for-each for visuel plassering og mer lesbar kode
-	bestillingStatus.personStatus.forEach(person => {
-		// Krr-stub
-		if (person.krrstubStatus) {
-			person.krrstubStatus == 'OK'
-				? !successEnvs.includes('Krr-stub') && successEnvs.push('Krr-stub')
-				: !failedEnvs.includes('Krr-stub') && failedEnvs.push('Krr-stub')
-		}
-
-		// Sigrun-stub
-		if (person.sigrunstubStatus) {
-			person.sigrunstubStatus == 'OK'
-				? !successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')
-				: !failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
-		}
-	})
+	} else {
+		// Bestilling mislykkes
+		return false
+	}
 
 	return { id, successEnvs, failedEnvs }
 }

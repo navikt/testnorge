@@ -12,7 +12,7 @@ export default class BestillingProgress extends PureComponent {
 	}
 
 	render() {
-		const { status, failed } = this.props
+		const { status, failed, cancelBestilling } = this.props
 
 		return (
 			<Fragment>
@@ -26,7 +26,7 @@ export default class BestillingProgress extends PureComponent {
 				<div>
 					<Line percent={status.percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
 				</div>
-				{this.props.failed && (
+				{failed && (
 					<div className="cancel-container">
 						<div>
 							<Icon kind={'report-problem-circle'} />
@@ -34,7 +34,9 @@ export default class BestillingProgress extends PureComponent {
 								Dette tar lengre tid enn forventet. Noe kan ha gått galt med bestillingen din.
 							</h5>
 						</div>
-						<Knapp type="fare">AVBRYT BESTILLING</Knapp>
+						<Knapp type="fare" onClick={cancelBestilling}>
+							AVBRYT BESTILLING
+						</Knapp>
 					</div>
 				)}
 			</Fragment>
