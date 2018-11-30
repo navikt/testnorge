@@ -93,6 +93,7 @@ export default class FormEditor extends PureComponent {
 				component={InputComponent}
 				size={item.size}
 				{...componentProps}
+				{...item.inputTypeAttributes}
 			/>
 		)
 	}
