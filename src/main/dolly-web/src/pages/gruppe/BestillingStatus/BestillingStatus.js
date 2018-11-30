@@ -101,7 +101,7 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		const { bestillingStatusObj, miljoeStatusObj } = this.props
+		const { bestillingStatusObj, miljoeStatusObj, cancelBestilling } = this.props
 
 		// if (
 		// 	(this.state.ferdig && !bestillingStatusObj) ||
@@ -114,7 +114,7 @@ export default class BestillingStatus extends PureComponent {
 		return (
 			<div className="bestilling-status">
 				{/* {!this.state.ferdig && <BestillingProgress status={status} />} */}
-				<BestillingProgress status={status} failed />
+				<BestillingProgress status={status} failed cancelBestilling={cancelBestilling} />
 				{bestillingStatusObj &&
 					bestillingStatusObj.ny && (
 						<MiljoeStatus
