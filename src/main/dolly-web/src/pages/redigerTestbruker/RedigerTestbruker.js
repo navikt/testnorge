@@ -23,9 +23,16 @@ export default class RedigerTestbruker extends Component {
 	}
 
 	submit = values => {
-		const { updateTestbruker, goBack } = this.props
+		const { updateTestbruker, goBack, match, testbruker } = this.props
 
-		updateTestbruker(values, this.AttributtManager.listEditableFlat(this._checkDataSources()))
+		updateTestbruker(
+			values,
+			this.AttributtManager.listEditableFlat(
+				testbruker,
+				match.params.ident,
+				this._checkDataSources()
+			)
+		)
 		goBack()
 	}
 
