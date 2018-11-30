@@ -21,9 +21,9 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestident;
+import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -50,28 +50,33 @@ public class TestgruppeControllerTest {
     @Mock
     private BestillingService bestillingService;
 
+    @Mock
+    private GruppeRepository gruppeRepository;
+
+
     @InjectMocks
     private TestgruppeController controller;
 
     @Test
     public void opprettTestgruppe() {
         RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
-        RsTestgruppe g = new RsTestgruppe();
-        when(testgruppeService.opprettTestgruppe(gruppe)).thenReturn(g);
+        Testgruppe testgruppe = Testgruppe.builder().id(1L).build();
+        when(testgruppeService.opprettTestgruppe(gruppe)).thenReturn(testgruppe);
 
         controller.opprettTestgruppe(gruppe);
-        verify(testgruppeService).rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(g);
+        verify(testgruppeService).fetchTestgruppeById(1L);
     }
 
     @Test
     public void oppdaterTestgruppe() {
         Long gId = 1L;
         RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
-        RsTestgruppe g = new RsTestgruppe();
-        when(testgruppeService.oppdaterTestgruppe(gId, gruppe)).thenReturn(g);
+        Testgruppe testgruppe = new Testgruppe();
+        when(testgruppeService.oppdaterTestgruppe(gId, gruppe)).thenReturn(testgruppe);
 
         controller.oppdaterTestgruppe(gId, gruppe);
-        verify(testgruppeService).rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(g);
+
+        verify(testgruppeService).oppdaterTestgruppe(gId, gruppe);
     }
 
     @Test

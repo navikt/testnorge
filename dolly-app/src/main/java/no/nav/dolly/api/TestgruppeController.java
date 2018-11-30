@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.service.BestillingService;
@@ -51,14 +51,15 @@ public class TestgruppeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public RsTestgruppeUtvidet opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
-        RsTestgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
-        return testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
+        Testgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
+        return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
     }
 
+    @Transactional
     @PutMapping(value = "/{gruppeId}")
     public RsTestgruppeUtvidet oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
-        RsTestgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
-        return testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(gruppe);
+        Testgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
+        return mapperFacade.map(gruppe, RsTestgruppeUtvidet.class);
     }
 
     @PutMapping("/{gruppeId}/slettTestidenter")

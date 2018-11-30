@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -44,17 +43,19 @@ public class TeamService {
     @Autowired
     private MapperFacade mapperFacade;
 
-    @Transactional
-    public RsTeam opprettTeam(RsOpprettTeam rsTeam) {
+    public RsTeam opprettTeam(RsOpprettTeam opprettTeam) {
         Bruker currentBruker = brukerService.fetchBruker(getLoggedInNavIdent());
 
-        Team team = mapperFacade.map(rsTeam, Team.class);
-        team.setDatoOpprettet(LocalDate.now());
-        team.setEier(currentBruker);
-        team.setMedlemmer(newHashSet(singletonList(currentBruker)));
+        Team team = saveTeamToDB(Team.builder()
+                .navn(opprettTeam.getNavn())
+                .beskrivelse(opprettTeam.getBeskrivelse())
+                .datoOpprettet(LocalDate.now())
+                .eier(currentBruker)
+                .medlemmer(newHashSet(singletonList(currentBruker)))
+                .build()
+        );
 
-        Team savedTeam = saveTeamToDB(team);
-        return mapperFacade.map(savedTeam, RsTeam.class);
+        return mapperFacade.map(team, RsTeam.class);
     }
 
     public Team fetchTeamById(Long id) {
@@ -65,16 +66,15 @@ public class TeamService {
         return teamRepository.findByNavn(navn).orElseThrow(() -> new NotFoundException("Team ikke funnet for dette navnet: " + navn));
     }
 
-    @Transactional
     public Team fetchTeamOrOpprettBrukerteam(Long teamId) {
         if (isNull(teamId)) {
             try {
                 return fetchTeamByNavn(getLoggedInNavIdent());
             } catch (NotFoundException e) {
                 Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
-                Team t = new Team(getLoggedInNavIdent(), bruker);
-                brukerService.leggTilTeam(bruker, t);
-                return saveTeamToDB(t);
+                Team team = new Team(getLoggedInNavIdent(), bruker);
+                brukerService.leggTilTeam(bruker, team);
+                return saveTeamToDB(team);
             }
         } else {
             return fetchTeamById(teamId);
@@ -85,7 +85,6 @@ public class TeamService {
         teamRepository.deleteById(id);
     }
 
-    @Transactional
     public RsTeam addMedlemmer(Long teamId, List<RsBruker> navIdenter) {
         Team team = fetchTeamById(teamId);
         team.getMedlemmer().addAll(mapperFacade.mapAsList(navIdenter, Bruker.class));
@@ -94,7 +93,6 @@ public class TeamService {
         return mapperFacade.map(changedTeam, RsTeam.class);
     }
 
-    @Transactional
     public RsTeam addMedlemmerByNavidenter(Long teamId, List<String> navIdenter) {
         Team team = fetchTeamById(teamId);
         List<Bruker> brukere = brukerRepository.findByNavIdentIn(navIdenter);
@@ -105,7 +103,6 @@ public class TeamService {
         return mapperFacade.map(changedTeam, RsTeam.class);
     }
 
-    @Transactional
     public RsTeam fjernMedlemmer(Long teamId, List<String> navIdenter) {
         Team team = fetchTeamById(teamId);
         if (!isNull(team.getMedlemmer()) && !team.getMedlemmer().isEmpty()) {
@@ -116,23 +113,22 @@ public class TeamService {
         return mapperFacade.map(changedTeam, RsTeam.class);
     }
 
-    @Transactional
     public RsTeam updateTeamInfo(Long teamId, RsTeam teamRequest) {
         Team team = fetchTeamById(teamId);
 
         team.setNavn(teamRequest.getNavn());
         team.setBeskrivelse(teamRequest.getBeskrivelse());
 
-        if (!isNull(teamRequest.getMedlemmer()) && !teamRequest.getMedlemmer().isEmpty()) {
-            team.setMedlemmer(mapperFacade.mapAsSet(teamRequest.getMedlemmer(), Bruker.class));
+        if (!teamRequest.getMedlemmer().isEmpty()) {
+            team.getMedlemmer().addAll(mapperFacade.mapAsSet(teamRequest.getMedlemmer(), Bruker.class));
         }
 
         if (isNotBlank(teamRequest.getEierNavIdent())) {
             team.setEier(brukerService.fetchBruker(teamRequest.getEierNavIdent()));
         }
 
-        if (!isNull(teamRequest.getGrupper()) && !teamRequest.getGrupper().isEmpty()) {
-            team.setGrupper(mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class));
+        if (!teamRequest.getGrupper().isEmpty()) {
+            team.getGrupper().addAll(mapperFacade.mapAsSet(teamRequest.getGrupper(), Testgruppe.class));
         }
 
         Team endretTeam = saveTeamToDB(team);

@@ -102,10 +102,8 @@ public class TeamServiceTest {
     public void opprettTeam_oppretterTeamBasertPaaArgumentInputOgLeggerTilBrukerSomEierOgMedlem() {
         RsOpprettTeam rt = new RsOpprettTeam();
 
-        Team t = Team.builder().navn("t").medlemmer(new HashSet<>()).build();
         Bruker b1 = Bruker.builder().navIdent("nav1").build();
 
-        when(mapperFacade.map(rt, Team.class)).thenReturn(t);
         when(brukerService.fetchBruker(any())).thenReturn(b1);
 
         teamService.opprettTeam(rt);

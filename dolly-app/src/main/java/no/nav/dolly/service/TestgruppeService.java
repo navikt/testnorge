@@ -47,7 +47,7 @@ public class TestgruppeService {
     @Autowired
     private MapperFacade mapperFacade;
 
-    public RsTestgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
+    public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Team team = teamService.fetchTeamOrOpprettBrukerteam(rsTestgruppe.getTeamId());
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
 
@@ -57,8 +57,7 @@ public class TestgruppeService {
         gruppe.setSistEndretAv(bruker);
         gruppe.setOpprettetAv(bruker);
 
-        Testgruppe savedGruppe = saveGruppeTilDB(gruppe);
-        return mapperFacade.map(savedGruppe, RsTestgruppe.class);
+        return saveGruppeTilDB(gruppe);
     }
 
     public Testgruppe fetchTestgruppeById(Long gruppeId) {
@@ -138,7 +137,7 @@ public class TestgruppeService {
     }
 
     @Transactional
-    public RsTestgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe testgruppe) {
+    public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe testgruppe) {
         Testgruppe savedGruppe = fetchTestgruppeById(gruppeId);
         Testgruppe requestGruppe = mapperFacade.map(testgruppe, Testgruppe.class);
 
@@ -151,9 +150,7 @@ public class TestgruppeService {
         savedGruppe.setTeamtilhoerighet(team);
         savedGruppe.setDatoEndret(LocalDate.now());
 
-        Testgruppe endretGruppe = saveGruppeTilDB(savedGruppe);
-
-        return mapperFacade.map(endretGruppe, RsTestgruppe.class);
+        return saveGruppeTilDB(savedGruppe);
     }
 
     public Set<RsTestgruppeUtvidet> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
