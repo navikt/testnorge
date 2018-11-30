@@ -68,6 +68,9 @@ const AttributtListe: Attributt[] = [
 				path: 'inntektsaar',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
+				inputTypeAttributes: {
+					min: 0
+				},
 				validation: yup
 					.number()
 					.integer('Ugyldig årstall')
