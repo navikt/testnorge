@@ -51,9 +51,12 @@ const AttributtListe: Attributt[] = [
 				label: 'Beløp',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
+				inputTypeAttributes: {
+					min: 0
+				},
 				validation: yup
 					.number()
-					.min(1, 'Tast inn et gyldig beløp')
+					.min(0, 'Tast inn et gyldig beløp')
 					.required('Oppgi beløpet'),
 				attributtType: AttributtType.SelectAndEdit
 			},
