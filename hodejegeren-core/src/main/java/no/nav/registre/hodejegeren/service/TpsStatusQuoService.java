@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.exception.HodejegerenFunctionalException;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 
 @Service
@@ -57,12 +56,12 @@ public class TpsStatusQuoService {
             }
             return jsonArray.get(0).toString();
         } else {
-            log.info("Finner felt {} i node {}", felt, root);
-            String statusQuoFromTPS = root.findValue(felt).asText();
-            if(statusQuoFromTPS == null) {
+            JsonNode statusQuoFromTPS = root.findValue(felt);
+            if (statusQuoFromTPS == null) {
                 log.error("Kunne ikke finne status quo på person for felt {}. Utfyllende melding fra TPS: {}", felt, root.findValue("utfyllendeMelding").asText());
+                throw new ManglendeInfoITpsException("Kunne ikke finne status quo på person for felt " + felt + ". Utfyllende melding fra TPS: " + root.findValue("utfyllendeMelding").asText());
             }
-            return statusQuoFromTPS;
+            return statusQuoFromTPS.asText();
         }
     }
 
