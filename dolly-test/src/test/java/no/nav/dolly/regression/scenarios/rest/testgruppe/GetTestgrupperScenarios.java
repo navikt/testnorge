@@ -82,7 +82,7 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .build()
         );
 
-        brukerService.leggTilFavoritter(standardBruker.getNavIdent(), singletonList(testgruppe4));
+        brukerService.leggTilFavoritt(testgruppe4.getId());
 
         String url = endpointUrl + "?navIdent=" + standardBruker.getNavIdent();
         MvcResult mvcResult = mvcMock.perform(get(url))
