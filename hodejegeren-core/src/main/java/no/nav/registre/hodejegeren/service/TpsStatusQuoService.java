@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import no.nav.registre.hodejegeren.exception.HodejegerenFunctionalException;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 
 @Service
@@ -56,14 +57,11 @@ public class TpsStatusQuoService {
             }
             return jsonArray.get(0).toString();
         } else {
-            String verdiAvFelt;
-            try {
-                verdiAvFelt = root.findValue(felt).asText();
-            } catch (NullPointerException e) {
-                log.error("Kunne ikke finne status quo fra TPS på felt {} i json-node {}", felt, root);
-                throw e;
+            if (root == null) {
+                log.error("Root er null - Kunne ikke finne status quo fra TPS på felt {}", felt);
+                throw new HodejegerenFunctionalException("Kunne ikke finne status quo fra TPS");
             }
-            return verdiAvFelt;
+            return root.findValue(felt).asText();
         }
     }
 

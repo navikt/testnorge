@@ -58,10 +58,9 @@ public class TpsfConsumer {
 
     public JsonNode getTpsServiceRoutine(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
         String response = restTemplate.getForObject(urlServiceRoutine, String.class, routineName, aksjonsKode, environment, fnr);
-        if(response == null) {
+        if (response == null) {
             log.warn("Respons fra TPS er null for rutine {} på fnr {}", routineName, fnr);
-        }
-        else if(response.isEmpty()) {
+        } else if (response.isEmpty()) {
             log.warn("Respons fra TPS er tom for rutine {} på fnr {}", routineName, fnr);
         }
         return objectMapper.readTree(response);
