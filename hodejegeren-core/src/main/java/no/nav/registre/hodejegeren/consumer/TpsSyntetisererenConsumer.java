@@ -25,7 +25,7 @@ public class TpsSyntetisererenConsumer {
                                      @Value("${tps-syntetisereren.rest-api.url}") String serverUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.uriTemplate = new UriTemplate(serverUrl + "/generate?endringskode={endringskode}&antallMeldinger={antall}&service=orkestratoren");
+        this.uriTemplate = new UriTemplate(serverUrl + "/generate?endringskode={endringskode}&antallMeldinger={antall}&service=hodejegeren");
     }
 
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String endringskode, Integer antallMeldinger) {
