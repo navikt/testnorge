@@ -1,6 +1,6 @@
 package no.nav.dolly.mapper;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class MapperFacadeConfig {
     MapperFacade mapperFacade() {
         DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 
-        if (!isNull(mappingStrategies)) {
+        if (nonNull(mappingStrategies)) {
             for (MappingStrategy mapper : mappingStrategies) {
                 mapper.register(mapperFactory);
             }

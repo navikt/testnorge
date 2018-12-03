@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.tpsf;
 
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +71,7 @@ public class TpsfService {
     }
 
     private void validateEnvironments(List<String> environments) {
-        if (!isNull(environments) && environments.isEmpty()) {
+        if (nonNull(environments) && environments.isEmpty()) {
             throw new IllegalArgumentException("Ingen TPS miljoer er spesifisert for sending av testdata");
         }
     }

@@ -93,7 +93,7 @@ public class TestgruppeService {
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(!isNull(e.getRootCause()) ? e.getRootCause().getMessage() : e.getMessage(), e);
+            throw new DollyFunctionalException(e.getRootCause() != null ? e.getRootCause().getMessage() : e.getMessage(), e);
         }
     }
 

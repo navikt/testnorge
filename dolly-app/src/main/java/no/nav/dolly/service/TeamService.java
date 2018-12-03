@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -105,7 +106,7 @@ public class TeamService {
 
     public RsTeam fjernMedlemmer(Long teamId, List<String> navIdenter) {
         Team team = fetchTeamById(teamId);
-        if (!isNull(team.getMedlemmer()) && !team.getMedlemmer().isEmpty()) {
+        if (nonNull(team.getMedlemmer()) && !team.getMedlemmer().isEmpty()) {
             team.getMedlemmer().removeIf(medlem -> navIdenter.contains(medlem.getNavIdent()));
         }
 
