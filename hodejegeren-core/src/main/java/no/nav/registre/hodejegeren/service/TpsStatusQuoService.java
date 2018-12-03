@@ -56,7 +56,14 @@ public class TpsStatusQuoService {
             }
             return jsonArray.get(0).toString();
         } else {
-            return root.findValue(felt).asText();
+            String verdiAvFelt;
+            try {
+                verdiAvFelt = root.findValue(felt).asText();
+            } catch (NullPointerException e) {
+                log.error("Kunne ikke finne status quo fra TPS på felt {} i json-node {}", felt, root);
+                throw e;
+            }
+            return verdiAvFelt;
         }
     }
 
