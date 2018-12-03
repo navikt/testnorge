@@ -77,7 +77,7 @@ export const miljoStatusSelector = bestillingStatus => {
 		envs.forEach(env => {
 			bestillingStatus.personStatus.forEach(person => {
 				if (!person.tpsfSuccessEnv) {
-					// TODO: Bestilling failed 100% fra Tpsf. Implement retry senere når maler er støttet
+					// TODO: Bestilling failed 100% fra Tpsf. Implement retry-funksjonalitet når maler er støttet
 					failedEnvs = envs
 				} else if (!person.tpsfSuccessEnv.includes(env)) {
 					!failedEnvs.includes(env) && failedEnvs.push(env)
@@ -108,7 +108,9 @@ export const miljoStatusSelector = bestillingStatus => {
 		})
 	} else {
 		// Bestilling mislykkes
-		return false
+		failedEnvs = successEnvs
+		failedEnvs.push('Krr-stub')
+		failedEnvs.push('Sigrun-stub')
 	}
 
 	return { id, successEnvs, failedEnvs }

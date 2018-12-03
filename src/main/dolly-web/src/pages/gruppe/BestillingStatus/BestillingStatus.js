@@ -20,6 +20,9 @@ export default class BestillingStatus extends PureComponent {
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
+			lastUpdated: new Date(),
+			failureIntervalCounter: 0,
+			failed: false,
 			antallKlare: props.bestilling.personStatus.length,
 			sistOppdatert: props.bestilling.sistOppdatert,
 			isOpen: true
@@ -46,7 +49,7 @@ export default class BestillingStatus extends PureComponent {
 				this.stopPolling()
 			}
 
-			console.log(data, 'data fra tpsf')
+			// console.log(data, 'data fra tpsf')
 
 			this.updateStatus(data)
 		} catch (error) {
@@ -70,6 +73,19 @@ export default class BestillingStatus extends PureComponent {
 				this.props.onGroupUpdate() // state.ferdig = true
 				this.props.setBestillingStatus(data.id, { ...data, ny: true })
 			}, this.TIMEOUT_BEFORE_HIDE)
+		}
+
+		// TODO: Check if timestamp endrer seg (data.timestapm == this.state.timeStamp)
+		if (data) {
+			console.log(this.state.lastUpdated)
+			this.setState({ failureIntervalCounter: (this.state.failureIntervalCounter += 1) })
+			console.log(this.state.failureIntervalCounter)
+			// }
+
+			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
+			this.state.failureIntervalCounter == 5 && this.setState({ failed: true })
+		} else {
+			this.setState({ failureIntervalCounter: 0, failed: false })
 		}
 	}
 
@@ -103,18 +119,28 @@ export default class BestillingStatus extends PureComponent {
 	render() {
 		const { bestillingStatusObj, miljoeStatusObj, cancelBestilling } = this.props
 
-		// if (
-		// 	(this.state.ferdig && !bestillingStatusObj) ||
-		// 	!this.state.isOpen ||
-		// 	(bestillingStatusObj && !bestillingStatusObj.ny)
-		// )
-		// 	return null
+		if (
+			(this.state.ferdig && !bestillingStatusObj) ||
+			!this.state.isOpen ||
+			(bestillingStatusObj && !bestillingStatusObj.ny)
+		)
+			return null
 
 		const status = this.calculateStatus()
 		return (
 			<div className="bestilling-status">
-				{/* {!this.state.ferdig && <BestillingProgress status={status} />} */}
-				<BestillingProgress status={status} failed cancelBestilling={cancelBestilling} />
+				{!this.state.ferdig && (
+					<BestillingProgress
+						status={status}
+						failed={this.state.failed}
+						cancelBestilling={cancelBestilling}
+					/>
+				)}
+				{/* <BestillingProgress
+					status={status}
+					failed={this.state.failed}
+					cancelBestilling={cancelBestilling}
+				/> */}
 				{bestillingStatusObj &&
 					bestillingStatusObj.ny && (
 						<MiljoeStatus
