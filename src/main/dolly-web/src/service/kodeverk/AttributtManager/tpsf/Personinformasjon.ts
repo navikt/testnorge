@@ -80,6 +80,17 @@ const AttributtListe: Attributt[] = [
 		apiKodeverkId: 'Diskresjonskoder',
 		validation: yup.string().required('Velg diskresjonskoder.'),
 		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'sprakKode',
+		label: 'Språk',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		apiKodeverkId: 'Språk',
+		validation: yup.string().required('Velg språk.'),
+		attributtType: AttributtType.SelectAndEdit
 	}
 	// {
 	// 	hovedKategori: Kategorier.PersInfo,

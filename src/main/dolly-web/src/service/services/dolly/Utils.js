@@ -12,12 +12,15 @@ export const NormalizeTeamListForDropdown = ({ data }) => ({
 	options: data.map(team => ({ value: team.id, label: team.navn }))
 })
 
-export const NormalizeKodeverkForDropdown = ({ data }) => ({
-	options: data.koder.filter(val => !_excludeList.includes(val.value)).map(kode => ({
-		value: kode.value,
-		label: _mapperList[kode.value] ? _mapperList[kode.value] + kode.label : kode.label
-	}))
-})
+export const NormalizeKodeverkForDropdown = ({ data }) => {
+	console.log(data, 'data')
+	return {
+		options: data.koder.filter(val => !_excludeList.includes(val.value)).map(kode => ({
+			value: kode.value,
+			label: _mapperList[kode.value] ? _mapperList[kode.value] + kode.label : kode.label
+		}))
+	}
+}
 
 export const NormalizeBrukerListForDropdown = (data, teamMembers) => {
 	const options = data.reduce((filtered, bruker) => {
