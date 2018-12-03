@@ -3,9 +3,6 @@
     <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <customFields>{"log_type":"default"}</customFields>
-            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
-                <rootCauseFirst>true</rootCauseFirst>
-            </throwableConverter>
         </encoder>
     </appender>
 

@@ -57,10 +57,7 @@ public class TpsStatusQuoService {
             }
             return jsonArray.get(0).toString();
         } else {
-            if (root == null) {
-                log.error("Root er null - Kunne ikke finne status quo fra TPS på felt {}", felt);
-                throw new HodejegerenFunctionalException("Kunne ikke finne status quo fra TPS");
-            }
+            log.info("Finner felt {} i node {}", felt, root);
             return root.findValue(felt).asText();
         }
     }
