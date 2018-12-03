@@ -42,9 +42,7 @@ public class JobController {
 
     @Scheduled(cron = "${orkestratoren.arenabatch.cron:0 0 1 1 * *}")
     public void arenaInntektSyntBatch() {
-        SyntetiserInntektsmeldingRequest request = SyntetiserInntektsmeldingRequest.builder()
-                .skdMeldingGruppeId(skdMeldingGruppeId)
-                .build();
+        SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(skdMeldingGruppeId);
         List<String> levendeNordmennFnr = arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med {} meldinger.", levendeNordmennFnr.size());
     }
