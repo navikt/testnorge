@@ -274,7 +274,7 @@ public class EksisterendeIdenterService {
         Map<String, String> statusQuoIdent;
         String randomIdent;
         do {
-            if (identer.size() <= 0) {
+            if (identer.isEmpty()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding. For få identer i " +
                         "listen av identer fra TPSF avspillergruppen.");
             }

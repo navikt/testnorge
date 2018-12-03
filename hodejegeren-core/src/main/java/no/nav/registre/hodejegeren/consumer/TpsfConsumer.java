@@ -1,8 +1,10 @@
 package no.nav.registre.hodejegeren.consumer;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -13,12 +15,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-import java.util.Set;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 
 @Component
+@Slf4j
 public class TpsfConsumer {
 
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Long>>() {
@@ -54,6 +58,11 @@ public class TpsfConsumer {
 
     public JsonNode getTpsServiceRoutine(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
         String response = restTemplate.getForObject(urlServiceRoutine, String.class, routineName, aksjonsKode, environment, fnr);
+        if (response == null) {
+            log.warn("Respons fra TPS er null for rutine {} på fnr {}", routineName, fnr);
+        } else if (response.isEmpty()) {
+            log.warn("Respons fra TPS er tom for rutine {} på fnr {}", routineName, fnr);
+        }
         return objectMapper.readTree(response);
     }
 }
