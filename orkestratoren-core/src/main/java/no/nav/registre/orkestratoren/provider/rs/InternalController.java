@@ -4,9 +4,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,15 +24,15 @@ public class InternalController {
     private String tpsfIsReadyUrl;
     private String identpoolIsReadyUrl;
 
-    @Autowired
     private RestTemplate restTemplate;
 
-    public InternalController(
+    public InternalController(RestTemplateBuilder restTemplateBuilder,
             @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenBaseUrl,
             @Value("${tps-syntetisereren.rest-api.url}") String synthdataTpsBaseUrl,
             @Value("${synthdata-arena-inntekt.rest-api.url}") String synthdataArenaBaseUrl,
             @Value("${tps-forvalteren.rest-api.url}") String tpsfBaseUrl,
             @Value("${ident-pool.rest-api.url}") String identpoolBaseUrl) throws MalformedURLException {
+        this.restTemplate = restTemplateBuilder.build();
         this.hodejegerenIsReadyUrl = createIsReadyUrl(hodejegerenBaseUrl);
         this.synthdataTpsIsReadyUrl = createIsReadyUrl(synthdataTpsBaseUrl);
         this.synthdataArenaIsReadyUrl = createIsReadyUrl(synthdataArenaBaseUrl);
@@ -64,9 +63,7 @@ public class InternalController {
 
     private void checkReadiness(String isReadyUrl, List<String> nonAvailableResources) {
         try {
-            if(!(restTemplate.getForEntity(isReadyUrl, String.class).getStatusCode().equals(HttpStatus.OK))) {
-                nonAvailableResources.add(isReadyUrl + " is not ready");
-            }
+            restTemplate.getForEntity(isReadyUrl, String.class);
         } catch (HttpStatusCodeException e) {
             nonAvailableResources.add("HttpStatusCodeException når " + isReadyUrl + " ble kalt. Statuskode: " + e.getStatusCode());
         }
