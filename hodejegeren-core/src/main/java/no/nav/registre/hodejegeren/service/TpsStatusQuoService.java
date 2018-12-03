@@ -40,14 +40,14 @@ public class TpsStatusQuoService {
 
                 throw new ManglendeInfoITpsException("Fant ikke rutine " + routineName + " på fnr " + fnr);
             } else {
-                personStatusQuo.put(felt, extractStatusQuoInfoFromTps(root, felt));
+                personStatusQuo.put(felt, extractStatusQuoInfoFromTps(root, felt, fnr));
             }
         }
 
         return personStatusQuo;
     }
 
-    public String extractStatusQuoInfoFromTps(JsonNode root, String felt) {
+    public String extractStatusQuoInfoFromTps(JsonNode root, String felt, String fnr) {
         if (felt.contains("$")) {
             Object document = Configuration.defaultConfiguration().jsonProvider().parse(root.toString());
             JSONArray jsonArray = JsonPath.read(document, felt);
@@ -58,8 +58,8 @@ public class TpsStatusQuoService {
         } else {
             JsonNode statusQuoFromTPS = root.findValue(felt);
             if (statusQuoFromTPS == null) {
-                log.error("Kunne ikke finne status quo på person for felt {}. Utfyllende melding fra TPS: {}", felt, root.findValue("utfyllendeMelding").asText());
-                throw new ManglendeInfoITpsException("Kunne ikke finne status quo på person for felt " + felt + ". Utfyllende melding fra TPS: " + root.findValue("utfyllendeMelding").asText());
+                log.error("Kunne ikke finne status quo på person med fnr {} for felt \"{}\". Utfyllende melding fra TPS: {}", fnr, felt, root.findValue("utfyllendeMelding").asText());
+                throw new ManglendeInfoITpsException("Kunne ikke finne status quo på person med fnr " + fnr + " for felt \"" + felt + "\". Utfyllende melding fra TPS: " + root.findValue("utfyllendeMelding").asText());
             }
             return statusQuoFromTPS.asText();
         }
