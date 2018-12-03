@@ -58,7 +58,11 @@ public class TpsStatusQuoService {
             return jsonArray.get(0).toString();
         } else {
             log.info("Finner felt {} i node {}", felt, root);
-            return root.findValue(felt).asText();
+            String statusQuoFromTPS = root.findValue(felt).asText();
+            if(statusQuoFromTPS == null) {
+                log.error("Kunne ikke finne status quo på person for felt {}. Utfyllende melding fra TPS: {}", felt, root.findValue("utfyllendeMelding").asText());
+            }
+            return statusQuoFromTPS;
         }
     }
 
