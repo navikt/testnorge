@@ -1,5 +1,7 @@
 package no.nav.dolly.regression.scenarios.rest.testgruppe;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -11,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
+import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.service.BrukerService;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 
 public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
 
@@ -34,65 +33,63 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
     public void hentAlleTestgrupperTilknyttetBrukerIgjennomFavoritterOgTeammedlemskap() throws Exception {
         Bruker bruker2 = brukerRepository.save(Bruker.builder().navIdent("navident2").build());
 
-        Team team2 = teamRepository.save(TeamBuilder.builder()
+        Team team2 = teamRepository.save(Team.builder()
                 .navn("team2")
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk2")
                 .eier(bruker2)
-                .medlemmer(new HashSet<>(Arrays.asList(bruker2, standardBruker)))
-                .build().convertToRealTeam()
+                .medlemmer(newHashSet(Arrays.asList(bruker2, standardBruker)))
+                .build()
         );
 
-        Team team3 = teamRepository.save(TeamBuilder.builder()
+        Team team3 = teamRepository.save(Team.builder()
                 .navn("team3")
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk3")
                 .eier(bruker2)
-                .medlemmer(new HashSet<>(Arrays.asList(bruker2)))
-                .build().convertToRealTeam()
+                .medlemmer(newHashSet(singletonList(bruker2)))
+                .build()
         );
 
-        Testgruppe testgruppe2 = gruppeRepository.save(TestgruppeBuilder.builder()
+        Testgruppe testgruppe2 = gruppeRepository.save(Testgruppe.builder()
                 .navn("gruppe2")
                 .hensikt("hensikt2")
                 .opprettetAv(standardBruker)
                 .sistEndretAv(standardBruker)
                 .datoEndret(LocalDate.now())
                 .teamtilhoerighet(team2)
-                .build().convertToRealTestgruppe()
+                .build()
         );
 
-        Testgruppe testgruppe3 = gruppeRepository.save(TestgruppeBuilder.builder()
+        Testgruppe testgruppe3 = gruppeRepository.save(Testgruppe.builder()
                 .navn("gruppe3")
                 .hensikt("hensikt3")
                 .opprettetAv(bruker2)
                 .sistEndretAv(bruker2)
                 .datoEndret(LocalDate.now())
                 .teamtilhoerighet(team3)
-                .build().convertToRealTestgruppe()
+                .build()
         );
 
-        Testgruppe testgruppe4 = gruppeRepository.save(TestgruppeBuilder.builder()
+        Testgruppe testgruppe4 = gruppeRepository.save(Testgruppe.builder()
                 .navn("gruppe4")
                 .hensikt("hensikt4")
                 .opprettetAv(bruker2)
                 .sistEndretAv(bruker2)
                 .datoEndret(LocalDate.now())
                 .teamtilhoerighet(team3)
-                .build().convertToRealTestgruppe()
+                .build()
         );
 
-        brukerService.leggTilFavoritter(standardBruker.getNavIdent(), Arrays.asList(testgruppe4));
+        brukerService.leggTilFavoritt(testgruppe4.getId());
 
         String url = endpointUrl + "?navIdent=" + standardBruker.getNavIdent();
         MvcResult mvcResult = mvcMock.perform(get(url))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        Set<RsTestgruppeMedErMedlemOgFavoritt> resultat = convertMvcResultToSet(mvcResult, RsTestgruppeMedErMedlemOgFavoritt.class);
+        Set<RsTestgruppeUtvidet> resultat = convertMvcResultToSet(mvcResult, RsTestgruppeUtvidet.class);
 
-
-        /* ASSERT */
         assertThat(resultat.size(), is(3));
 
         assertThat(resultat, hasItem(both(
@@ -111,6 +108,5 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 hasProperty("hensikt", equalTo("hensikt4"))).and(
                 hasProperty("opprettetAvNavIdent", equalTo(bruker2.getNavIdent())))
         ));
-
     }
 }

@@ -19,12 +19,14 @@ import no.nav.dolly.testdata.builder.RsTeamBuilder;
 
 public class OppdaterTeamScenarios extends TeamTestCaseBase{
 
+    private static final String NAV_IDENT = "NYEIER";
+
     @Autowired
     MapperFacade mapperFacade;
 
     @Test
     public void oppdaterBrukerMedAlleInputs() throws Exception {
-        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent("nyEier").build());
+        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
 
         Team teamSomSkalEndres = teamRepository.findAll().get(0);
 
@@ -48,16 +50,16 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
 
         RsTeam resultat = convertMvcResultToObject(mvcResult, RsTeam.class);
 
-        assertThat(resultat.getEierNavIdent(), is("nyEier"));
+        assertThat(resultat.getEierNavIdent(), is(NAV_IDENT));
 
         teamSomSkalEndres = teamRepository.findById(teamSomSkalEndres.getId()).get();
 
-        assertThat(teamSomSkalEndres.getEier().getNavIdent(), is("nyEier"));
+        assertThat(teamSomSkalEndres.getEier().getNavIdent(), is(NAV_IDENT));
     }
 
     @Test
     public void oppdaterTeamKunNavnOgBeskrivelseIBody() throws Exception {
-        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent("nyEier").build());
+        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
 
         Team teamSomSkalErEndret = teamRepository.findAll().get(0);
 
@@ -86,5 +88,4 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
         assertThat(teamSomSkalErEndret.getNavn(), is("endretTeamNavn"));
         assertThat(teamSomSkalErEndret.getBeskrivelse(), is("endretTeam"));
     }
-
 }

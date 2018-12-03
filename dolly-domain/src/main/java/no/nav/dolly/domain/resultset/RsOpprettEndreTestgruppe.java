@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RsOpprettTestgruppe {
+public class RsOpprettEndreTestgruppe {
 	private Long teamId;
 	private String navn;
 	private String hensikt;

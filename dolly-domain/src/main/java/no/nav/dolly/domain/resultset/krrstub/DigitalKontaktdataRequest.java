@@ -13,7 +13,7 @@ public class DigitalKontaktdataRequest {
 
         private ZonedDateTime gyldigFra;
         private String personident;
-        private Boolean reservert;
+        private boolean reservert;
         private String mobil;
         private String epost;
 }

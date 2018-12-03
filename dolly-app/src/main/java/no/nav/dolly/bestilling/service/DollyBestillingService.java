@@ -1,8 +1,6 @@
 package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -103,7 +101,7 @@ public class DollyBestillingService {
                             .gyldigFra(ZonedDateTime.now())
                             .epost(bestillingRequest.getKrrstub().getEpost())
                             .mobil(bestillingRequest.getKrrstub().getMobil())
-                            .reservert(isNull(bestillingRequest.getKrrstub().getReservert()) ? false : bestillingRequest.getKrrstub().getReservert())
+                            .reservert(bestillingRequest.getKrrstub().isReservert())
                             .build();
                     ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
                     progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
@@ -133,7 +131,7 @@ public class DollyBestillingService {
             String hovedperson = getHovedpersonAvBestillingsidenter(klareIdenter);
             List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
 
-            if (!isNullOrEmpty(successMiljoer)) {
+            if (!successMiljoer.isEmpty()) {
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);
                 progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
             } else {

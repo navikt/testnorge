@@ -1,12 +1,12 @@
-package no.nav.dolly.mapper.stratergy;
+package no.nav.dolly.mapper.strategy;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,14 +16,12 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 
-public class BrukerMappingStratergyTest {
+public class TestgruppeMappingStrategyTest {
 
     private MapperFacade mapper;
 
@@ -33,22 +31,20 @@ public class BrukerMappingStratergyTest {
     }
 
     @Test
-    public void testy(){
+    public void mappingFromTesgruppeToRsTestgruppe(){
         Bruker bruker = Bruker.builder().navIdent("ident").build();
         Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
-        Set<Testident> identer = new HashSet<>(Arrays.asList(testident));
+        Set<Testident> identer = newHashSet(singletonList(testident));
 
-        Team team = TeamBuilder.builder()
+        Team team = Team.builder()
                 .navn("team")
-                .datoOpprettet(LocalDate.of(2000, 1, 1))
+                .datoOpprettet(LocalDate.now())
                 .eier(bruker)
                 .id(1L)
-                .medlemmer(new HashSet<>(Arrays.asList(bruker)))
                 .beskrivelse("besk")
-                .build()
-                .convertToRealTeam();
+                .build();
 
-        Testgruppe testgruppe = TestgruppeBuilder.builder()
+        Testgruppe testgruppe = Testgruppe.builder()
                 .sistEndretAv(bruker)
                 .datoEndret(LocalDate.of(2000, 1, 1))
                 .opprettetAv(bruker)
@@ -56,20 +52,22 @@ public class BrukerMappingStratergyTest {
                 .testidenter(identer)
                 .navn("gruppe")
                 .teamtilhoerighet(team)
-                .build()
-                .convertToRealTestgruppe();
+                .build();
 
-        bruker.setFavoritter(new HashSet<>(Arrays.asList(testgruppe)));
+        testident.setTestgruppe(testgruppe);
 
-        RsBruker rs = mapper.map(bruker, RsBruker.class);
+        List<RsTestident> rsIdenter = mapper.mapAsList(identer, RsTestident.class);
+        RsTestgruppe rs = mapper.map(testgruppe, RsTestgruppe.class);
 
-        ArrayList<RsTestgruppe> favoritterInBruker = new ArrayList(rs.getFavoritter());
+        assertThat(rs.getNavn(), is("gruppe"));
+//        assertThat(rs.getTestidenter().size(), is(1));
+        assertThat(rs.getDatoEndret().getYear(), is(2000));
+        assertThat(rs.getDatoEndret().getMonthValue(), is(1));
+        assertThat(rs.getDatoEndret().getDayOfMonth(), is(1));
+        assertThat(rs.getOpprettetAvNavIdent(), is(bruker.getNavIdent()));
+        assertThat(rs.getSistEndretAvNavIdent(), is(bruker.getNavIdent()));
 
-        assertThat(bruker.getNavIdent(), is("ident"));
-        assertThat(rs.getNavIdent(), is("ident"));
-        assertThat(favoritterInBruker.get(0).getNavn(), is("gruppe"));
-        assertThat(favoritterInBruker.get(0).getId(), is(2L));
-        assertThat(favoritterInBruker.get(0).getTeam().getNavn(), is(team.getNavn()));
-
+        assertThat(rsIdenter.size(), is(1));
+        assertThat(rsIdenter.get(0).getIdent(), is("1"));
     }
 }

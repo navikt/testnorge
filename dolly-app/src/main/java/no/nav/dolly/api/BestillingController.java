@@ -17,6 +17,7 @@ import no.nav.dolly.domain.resultset.RsBestillingProgress;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 
+@Transactional
 @RestController
 @RequestMapping(value = "/api/v1/bestilling", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BestillingController {
@@ -38,7 +39,6 @@ public class BestillingController {
         return rsBestilling;
     }
 
-    @Transactional
     @DeleteMapping("/stop/{bestillingId}")
     public RsBestilling stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
         Bestilling bestilling = bestillingService.fetchBestillingById(bestillingId);

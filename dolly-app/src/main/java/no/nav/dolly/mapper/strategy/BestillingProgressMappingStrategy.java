@@ -1,6 +1,6 @@
-package no.nav.dolly.mapper.stratergy;
+package no.nav.dolly.mapper.strategy;
 
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,19 +27,19 @@ public class BestillingProgressMappingStrategy implements MappingStrategy {
                         rsProgress.setIdent(progress.getIdent());
                         rsProgress.setFeil(progress.getFeil());
 
-                        if (!isNullOrEmpty(progress.getTpsfSuccessEnv())) {
+                        if (isNotBlank(progress.getTpsfSuccessEnv())) {
                             rsProgress.setTpsfSuccessEnv(
                                     new ArrayList<>(Arrays.asList(progress.getTpsfSuccessEnv().split(",")))
                             );
                         }
 
-                        if (!isNullOrEmpty(progress.getSigrunstubStatus())) {
+                        if (isNotBlank(progress.getSigrunstubStatus())) {
                             rsProgress.setSigrunstubStatus(
                                     progress.getSigrunstubStatus()
                             );
                         }
 
-                        if (!isNullOrEmpty(progress.getKrrstubStatus())) {
+                        if (isNotBlank(progress.getKrrstubStatus())) {
                             rsProgress.setKrrstubStatus(
                                     progress.getKrrstubStatus()
                             );
