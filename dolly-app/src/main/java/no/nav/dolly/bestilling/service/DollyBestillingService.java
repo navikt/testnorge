@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,8 @@ public class DollyBestillingService {
         tpsfBestilling.setAntall(1);
 
         try {
-            for (int i = 0; i < bestillingRequest.getAntall(); i++) {
+            int loopCount = 0;
+            while (!bestilling.isFerdig() && loopCount < bestillingRequest.getAntall()) {
                 List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
                 BestillingProgress progress = new BestillingProgress(bestillingsId, hovedPersonIdent);
@@ -108,7 +110,9 @@ public class DollyBestillingService {
                 }
 
                 bestillingProgressRepository.save(progress);
+                bestilling.setSistOppdatert(LocalDateTime.now());
                 bestillingService.saveBestillingToDB(bestilling);
+                loopCount++;
             }
         } catch (Exception e) {
             log.error("Bestilling med id <" + bestillingsId + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
