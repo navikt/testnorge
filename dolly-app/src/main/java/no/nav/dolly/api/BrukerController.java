@@ -20,8 +20,8 @@ import no.nav.dolly.domain.resultset.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.service.BrukerService;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
-@RestController
 @Transactional
+@RestController
 @RequestMapping(value = "/api/v1/bruker", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BrukerController {
 

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -98,7 +97,6 @@ public class TestgruppeService {
         }
     }
 
-    @Transactional
     public void slettGruppeById(Long gruppeId) {
         gruppeRepository.deleteTestgruppeById(gruppeId);
     }
@@ -126,7 +124,6 @@ public class TestgruppeService {
         return mapperFacade.mapAsSet(grupper, RsTestgruppeUtvidet.class);
     }
 
-    @Transactional
     public List<String> fetchIdenterByGruppeId(Long gruppeId) {
         return fetchTestgruppeById(gruppeId)
                 .getTestidenter()

@@ -20,8 +20,8 @@ public class RsTeam {
 	private LocalDate datoOpprettet;
 
 	private String eierNavIdent;
-	private Set<RsTestgruppe> grupper = new HashSet<>();
-	private Set<RsBruker> medlemmer = new HashSet<>();
+	private Set<RsTestgruppe> grupper;
+	private Set<RsBruker> medlemmer;
 
 	public Set<RsTestgruppe> getGrupper() {
 		if (grupper == null) {

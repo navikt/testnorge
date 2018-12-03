@@ -29,6 +29,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
 
+@Transactional
 @RestController
 @RequestMapping(value = "api/v1/gruppe")
 public class TestgruppeController {
@@ -55,7 +56,6 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
     }
 
-    @Transactional
     @PutMapping(value = "/{gruppeId}")
     public RsTestgruppeUtvidet oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
         Testgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
@@ -68,7 +68,6 @@ public class TestgruppeController {
     }
 
     @GetMapping("/{gruppeId}")
-    @Transactional
     public RsTestgruppeUtvidet getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
     }
