@@ -7,7 +7,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,7 +98,7 @@ public class TeamRepositoryTest {
 
         gruppeRepository.save(testgruppe);
 
-        foundTeam.setGrupper(new HashSet<>(singletonList(testgruppe)));
+        foundTeam.setGrupper(newHashSet(singletonList(testgruppe)));
         teamRepository.save(foundTeam);
 
         foundTeam = teamRepository.findAll().get(0);

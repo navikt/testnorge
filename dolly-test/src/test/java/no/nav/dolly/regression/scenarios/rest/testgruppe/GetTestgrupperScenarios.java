@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk2")
                 .eier(bruker2)
-                .medlemmer(new HashSet<>(Arrays.asList(bruker2, standardBruker)))
+                .medlemmer(newHashSet(Arrays.asList(bruker2, standardBruker)))
                 .build()
         );
 
@@ -91,8 +90,6 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
 
         Set<RsTestgruppeUtvidet> resultat = convertMvcResultToSet(mvcResult, RsTestgruppeUtvidet.class);
 
-
-        /* ASSERT */
         assertThat(resultat.size(), is(3));
 
         assertThat(resultat, hasItem(both(
