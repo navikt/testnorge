@@ -14,7 +14,6 @@ const AttributtListe: Attributt[] = [
 		label: 'Har inntekt',
 		dataSource: DataSource.SIGRUN,
 		validation: yup.object(),
-		kanRedigeres: true,
 		attributtType: AttributtType.SelectAndEdit,
 		items: [
 			{
@@ -28,7 +27,6 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Select,
 				options: SelectOptionsManager('inntektTjeneste'),
 				validation: yup.string().required('Velg en type tjeneste.'),
-				kanRedigeres: true,
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -43,7 +41,6 @@ const AttributtListe: Attributt[] = [
 				size: 'large',
 				dependentOn: 'tjeneste',
 				validation: yup.string().required('Velg en type inntekt.'),
-				kanRedigeres: true,
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -54,11 +51,13 @@ const AttributtListe: Attributt[] = [
 				label: 'Beløp',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
+				inputTypeAttributes: {
+					min: 0
+				},
 				validation: yup
 					.number()
-					.min(1, 'Tast inn et gyldig beløp')
+					.min(0, 'Tast inn et gyldig beløp')
 					.required('Oppgi beløpet'),
-				kanRedigeres: true,
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -69,6 +68,9 @@ const AttributtListe: Attributt[] = [
 				path: 'inntektsaar',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
+				inputTypeAttributes: {
+					min: 0
+				},
 				validation: yup
 					.number()
 					.integer('Ugyldig årstall')
@@ -76,7 +78,6 @@ const AttributtListe: Attributt[] = [
 					// TODO: Henter inn gyldigFra fra kodeverk?
 					.min(2017, 'Inntektsår må være senere enn 2016')
 					.max(9999, 'Inntektsår må være tidligere enn 9999'),
-				kanRedigeres: true,
 				attributtType: AttributtType.SelectAndRead
 			}
 		]

@@ -49,11 +49,11 @@ export interface Attributt {
 	label: string
 	dataSource: DataSource
 	inputType?: InputType
+	inputTypeAttributes?: object
 	options?: Options[]
 	format?: Function
 	apiKodeverkId?: string
 	validation?: yup.MixedSchema
-	kanRedigeres?: boolean
 	parent?: string
 	items?: Attributt[]
 	dependentOn?: string

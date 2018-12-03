@@ -1,11 +1,13 @@
 package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
+import static java.util.Objects.*;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -101,7 +103,7 @@ public class DollyBestillingService {
                             .gyldigFra(ZonedDateTime.now())
                             .epost(bestillingRequest.getKrrstub().getEpost())
                             .mobil(bestillingRequest.getKrrstub().getMobil())
-                            .reservert(bestillingRequest.getKrrstub().getReservert())
+                            .reservert(isNull(bestillingRequest.getKrrstub().getReservert()) ? false : bestillingRequest.getKrrstub().getReservert())
                             .build();
                     ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
                     progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
