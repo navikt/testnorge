@@ -106,11 +106,6 @@ export const miljoStatusSelector = bestillingStatus => {
 					: !failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
 			}
 		})
-	} else {
-		// Bestilling mislykkes
-		failedEnvs = successEnvs
-		failedEnvs.push('Krr-stub')
-		failedEnvs.push('Sigrun-stub')
 	}
 
 	return { id, successEnvs, failedEnvs }

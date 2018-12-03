@@ -83,7 +83,7 @@ export default class BestillingStatus extends PureComponent {
 			// }
 
 			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
-			this.state.failureIntervalCounter == 5 && this.setState({ failed: true })
+			this.state.failureIntervalCounter == 2 && this.setState({ failed: true })
 		} else {
 			this.setState({ failureIntervalCounter: 0, failed: false })
 		}
@@ -127,6 +127,8 @@ export default class BestillingStatus extends PureComponent {
 			return null
 
 		const status = this.calculateStatus()
+
+		console.log(bestillingStatusObj)
 		return (
 			<div className="bestilling-status">
 				{!this.state.ferdig && (
@@ -136,11 +138,6 @@ export default class BestillingStatus extends PureComponent {
 						cancelBestilling={cancelBestilling}
 					/>
 				)}
-				{/* <BestillingProgress
-					status={status}
-					failed={this.state.failed}
-					cancelBestilling={cancelBestilling}
-				/> */}
 				{bestillingStatusObj &&
 					bestillingStatusObj.ny && (
 						<MiljoeStatus

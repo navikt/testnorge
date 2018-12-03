@@ -12,7 +12,7 @@ export default class BestillingProgress extends PureComponent {
 	}
 
 	render() {
-		const { status, failed, cancelBestilling } = this.props
+		const { id, status, failed, cancelBestilling } = this.props
 
 		return (
 			<Fragment>
