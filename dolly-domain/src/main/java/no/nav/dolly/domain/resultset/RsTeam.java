@@ -1,8 +1,6 @@
 package no.nav.dolly.domain.resultset;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
@@ -20,20 +18,5 @@ public class RsTeam {
 	private LocalDate datoOpprettet;
 
 	private String eierNavIdent;
-	private Set<RsTestgruppe> grupper;
-	private Set<RsBruker> medlemmer;
-
-	public Set<RsTestgruppe> getGrupper() {
-		if (grupper == null) {
-			grupper = new HashSet<>();
-		}
-		return grupper;
-	}
-
-	public Set<RsBruker> getMedlemmer() {
-		if (medlemmer == null) {
-			medlemmer = new HashSet<>();
-		}
-		return medlemmer;
-	}
+	private Integer antallMedlemmer;
 }

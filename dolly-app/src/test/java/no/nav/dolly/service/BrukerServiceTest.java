@@ -36,7 +36,7 @@ import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.testdata.builder.RsTeamBuilder;
+import no.nav.dolly.testdata.builder.RsTeamUtvidetBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -111,7 +111,7 @@ public class BrukerServiceTest {
         Bruker rsBruker = Bruker.builder().navIdent(navident).build();
 
         Team team = Team.builder().navn("navteam").eier(bruker).build();
-        RsTeam rsTeam = RsTeamBuilder.builder().navn("navteam").eierNavIdent(navident).build().convertToRealRsTeam();
+        RsTeam rsTeam = RsTeamUtvidetBuilder.builder().navn("navteam").eierNavIdent(navident).build().convertToRealRsTeam();
         Set teamSet = newHashSet(singletonList(rsTeam));
         List<Team> teamList = singletonList(team);
 

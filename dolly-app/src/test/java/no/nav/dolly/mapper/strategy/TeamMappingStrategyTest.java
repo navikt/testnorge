@@ -18,6 +18,7 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 
@@ -74,7 +75,7 @@ public class TeamMappingStrategyTest {
         assertThat(rs.getBeskrivelse(), is("besk"));
         assertThat(rs.getEierNavIdent(), is("ident"));
 
-        List<RsTeam> rsList = mapper.mapAsList(asList(team, team2), RsTeam.class);
+        List<RsTeamUtvidet> rsList = mapper.mapAsList(asList(team, team2), RsTeamUtvidet.class);
 
         assertThat(rsList.get(0).getNavn(), is("team"));
         assertThat(rsList.get(0).getBeskrivelse(), is("besk"));

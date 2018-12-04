@@ -72,11 +72,11 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
     }
 
-    @GetMapping
+    @GetMapping // TODO endre til RsTestgruppe
     public Set<RsTestgruppeUtvidet> getTestgrupper(
             @RequestParam(name = "navIdent", required = false) String navIdent,
             @RequestParam(name = "teamId", required = false) Long teamId) {
-        return testgruppeService.getTestgruppeByNavidentOgTeamId(navIdent, teamId);
+        return mapperFacade.mapAsSet(testgruppeService.getTestgruppeByNavidentOgTeamId(navIdent, teamId), RsTestgruppeUtvidet.class);
     }
 
     @DeleteMapping("/{gruppeId}")

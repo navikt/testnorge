@@ -21,6 +21,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -44,7 +45,7 @@ public class TeamService {
     @Autowired
     private MapperFacade mapperFacade;
 
-    public RsTeam opprettTeam(RsOpprettTeam opprettTeam) {
+    public RsTeamUtvidet opprettTeam(RsOpprettTeam opprettTeam) {
         Bruker currentBruker = brukerService.fetchBruker(getLoggedInNavIdent());
 
         Team team = saveTeamToDB(Team.builder()
@@ -56,7 +57,7 @@ public class TeamService {
                 .build()
         );
 
-        return mapperFacade.map(team, RsTeam.class);
+        return mapperFacade.map(team, RsTeamUtvidet.class);
     }
 
     public Team fetchTeamById(Long id) {
@@ -94,27 +95,27 @@ public class TeamService {
         return mapperFacade.map(changedTeam, RsTeam.class);
     }
 
-    public RsTeam addMedlemmerByNavidenter(Long teamId, List<String> navIdenter) {
+    public RsTeamUtvidet addMedlemmerByNavidenter(Long teamId, List<String> navIdenter) {
         Team team = fetchTeamById(teamId);
         List<Bruker> brukere = brukerRepository.findByNavIdentIn(navIdenter);
 
         team.getMedlemmer().addAll(brukere);
 
         Team changedTeam = saveTeamToDB(team);
-        return mapperFacade.map(changedTeam, RsTeam.class);
+        return mapperFacade.map(changedTeam, RsTeamUtvidet.class);
     }
 
-    public RsTeam fjernMedlemmer(Long teamId, List<String> navIdenter) {
+    public RsTeamUtvidet fjernMedlemmer(Long teamId, List<String> navIdenter) {
         Team team = fetchTeamById(teamId);
         if (nonNull(team.getMedlemmer()) && !team.getMedlemmer().isEmpty()) {
             team.getMedlemmer().removeIf(medlem -> navIdenter.contains(medlem.getNavIdent()));
         }
 
         Team changedTeam = saveTeamToDB(team);
-        return mapperFacade.map(changedTeam, RsTeam.class);
+        return mapperFacade.map(changedTeam, RsTeamUtvidet.class);
     }
 
-    public RsTeam updateTeamInfo(Long teamId, RsTeam teamRequest) {
+    public RsTeamUtvidet updateTeamInfo(Long teamId, RsTeamUtvidet teamRequest) {
         Team team = fetchTeamById(teamId);
 
         team.setNavn(teamRequest.getNavn());
@@ -133,7 +134,7 @@ public class TeamService {
         }
 
         Team endretTeam = saveTeamToDB(team);
-        return mapperFacade.map(endretTeam, RsTeam.class);
+        return mapperFacade.map(endretTeam, RsTeamUtvidet.class);
     }
 
     public List<Team> fetchTeamsByMedlemskapInTeams(String navIdent) {
