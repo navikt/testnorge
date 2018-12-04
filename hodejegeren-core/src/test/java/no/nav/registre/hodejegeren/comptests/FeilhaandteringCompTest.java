@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +96,9 @@ public class FeilhaandteringCompTest {
             assertEquals(4, listAppender.list.size());
             assertTrue(listAppender.list.toString()
                     .contains("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: " + expectedMeldingsIdsITpsf.toString()));
-            assertEquals(expectedMeldingsIdsITpsf, e.getIds());
+            assertEquals(2, e.getIds().size());
+            assertTrue(e.getIds().contains(expectedMeldingsIdsITpsf.get(0)));
+            assertTrue(e.getIds().contains(expectedMeldingsIdsITpsf.get(1)));
         }
     }
 

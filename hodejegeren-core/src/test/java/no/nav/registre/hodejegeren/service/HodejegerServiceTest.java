@@ -197,7 +197,7 @@ public class HodejegerServiceTest {
         try {
             hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
         } catch (Exception e) {
-            verify(tpsfConsumer, times(1)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
+            verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
 
             assertTrue(listAppender.list.toString().contains("Noe feilet under lagring til TPSF"));
             assertTrue(listAppender.list.toString().contains("01010101010"));
