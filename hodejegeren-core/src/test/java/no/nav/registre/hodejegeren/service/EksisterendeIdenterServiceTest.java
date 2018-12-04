@@ -36,6 +36,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
@@ -59,6 +60,8 @@ public class EksisterendeIdenterServiceTest {
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
     private String fnr3 = "03030303030";
+    private String fnr4 = "04040404040";
+    private String fnr5 = "05050505050";
 
     @Before
     public void setUp() {
@@ -170,14 +173,12 @@ public class EksisterendeIdenterServiceTest {
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         // fnr2 er feilregistrert i TPS til ugift sivilstand.
-        String fnr5 = "05050505050";
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr5);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         // Et fungerende ektepar
-        String fnr4 = "04040404040";
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr3);
@@ -212,6 +213,32 @@ public class EksisterendeIdenterServiceTest {
         assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
         assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
         assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
+    }
+
+    /**
+     * Testscenario: HVIS metoden {@link EndringskodeTilFeltnavnMapperService#getStatusQuoFraAarsakskode} kaster
+     * {@link ManglendeInfoITpsException} ved behandling av en ident, skal metoden
+     * {@link EksisterendeIdenterService#checkValidStatusQuo} prøve å finne en ny ident, og be om status quo på denne. Antall forsøk
+     * er angitt i {@link EksisterendeIdenterService#ANTALL_FORSOEK_PER_AARSAK}
+     */
+    @Test()
+    public void shouldFindNewPersonWhenEncounteringStatusQuoError() throws IOException {
+        meldinger.get(0).setAarsakskode(SKILSMISSE.getAarsakskode());
+        when(rand.nextInt(anyInt())).thenReturn(0);
+
+        opprettMultipleGifteIdenterWithStatusQuoErrorMock();
+
+        eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, SKILSMISSE, environment);
+
+        verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any(), any());
+        assertEquals(2, meldinger.size());
+        assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(0).getAarsakskode());
+        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+        assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(1).getAarsakskode());
+        assertEquals(fnr4.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
+        assertEquals(fnr4.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
+        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
+
     }
 
     /**
@@ -327,6 +354,26 @@ public class EksisterendeIdenterServiceTest {
         statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
+    }
+
+    private void opprettMultipleGifteIdenterWithStatusQuoErrorMock() throws IOException {
+        identer.add(fnr4);
+
+        Map<String, String> statusQuo = new HashMap<>();
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
+
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenThrow(new ManglendeInfoITpsException());
+
+        statusQuo = new HashMap<>();
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(FNR_RELASJON, fnr4);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
+
+        statusQuo = new HashMap<>();
+        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(FNR_RELASJON, fnr3);
+        when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr4))).thenReturn(statusQuo);
     }
 
     private void opprettEkteparMock() throws IOException {

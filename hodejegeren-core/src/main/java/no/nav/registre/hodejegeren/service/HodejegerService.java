@@ -114,6 +114,11 @@ public class HodejegerService {
         }
     }
 
+    /**
+     * Metoden tar imot en liste med endringskoder, og sørger for at denne blir filtrert og sortert
+     * @param endringskode
+     * @return sortert liste over endringskoder. Sortert på rekkefølge gitt i enumklasse {@link Endringskoder}
+     */
     private List<Endringskoder> filtrerOgSorterBestilteEndringskoder(Set<String> endringskode) {
         List<Endringskoder> sorterteEndringskoder = Arrays.asList(Endringskoder.values());
         return sorterteEndringskoder.stream().filter(kode -> endringskode.contains(kode.getEndringskode())).collect(Collectors.toList());

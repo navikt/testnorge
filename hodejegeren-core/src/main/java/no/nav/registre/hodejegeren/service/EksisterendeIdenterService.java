@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
@@ -42,6 +43,7 @@ public class EksisterendeIdenterService {
     private static final String IDENT = "ident";
     private static final String STATSBORGER_NORGE = "NORGE";
     private static final String SIVILSTANDSENDRING_AARSAKSKODE = "85";
+    private static final int ANTALL_FORSOEK_PER_AARSAK = 3;
 
     @Autowired
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
@@ -271,19 +273,34 @@ public class EksisterendeIdenterService {
 
     private Map<String, String> getIdentWithStatus(List<String> identer, Endringskoder endringskode, String environment,
             Predicate<Map<String, String>> predicate) {
-        Map<String, String> statusQuoIdent;
-        String randomIdent;
+        Map<String, String> statusQuoIdent = new HashMap<>();
+        String randomIdent = "";
         do {
+            statusQuoIdent = checkValidStatusQuo(identer, statusQuoIdent, randomIdent, endringskode, environment);
+        } while (predicate.test(statusQuoIdent));
+        return statusQuoIdent;
+    }
+
+    private Map<String, String> checkValidStatusQuo(List<String> identer, Map<String, String> statusQuoIdent, String randomIdent, Endringskoder endringskode, String environment) {
+        int randomIndex;
+        for (int i = 1; i <= ANTALL_FORSOEK_PER_AARSAK; i++) {
             if (identer.isEmpty()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding. For få identer i " +
                         "listen av identer fra TPSF avspillergruppen.");
             }
-            int randomIndex = rand.nextInt(identer.size());
+            randomIndex = rand.nextInt(identer.size());
             randomIdent = identer.remove(randomIndex);
-            statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
-            statusQuoIdent.put(IDENT, randomIdent);
+            try {
+                statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
+                break;
+            } catch (ManglendeInfoITpsException e) {
+                if (i == ANTALL_FORSOEK_PER_AARSAK) {
+                    log.error("Kunne ikke finne ident med gyldig status quo i TPS etter {} forsøk.", i);
+                    throw e;
+                }
+            }
         }
-        while (predicate.test(statusQuoIdent));
+        statusQuoIdent.put(IDENT, randomIdent);
         return statusQuoIdent;
     }
 
