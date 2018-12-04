@@ -109,7 +109,7 @@ export default class Liste extends PureComponent {
 							<Table.Column width="20" value={gruppe.navn} />
 							<Table.Column width="15" value={gruppe.team.navn} />
 							<Table.Column width="20" value={gruppe.hensikt} />
-							<Table.Column width="20" value={gruppe.testidenter.length.toString()} />
+							<Table.Column width="20" value={gruppe.antallIdenter.toString()} />
 						</Table.Row>
 					)
 				})}
