@@ -1,11 +1,11 @@
 package no.nav.dolly.repository;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,6 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,38 +44,33 @@ public class TestidentRepositoryTest {
         Testident testident = TestidentBuilder.builder().ident("12345").build().convertToRealTestident();
         Bruker bruker = brukerRepository.save(Bruker.builder().navIdent("ident").build());
 
-        Team team = TeamBuilder.builder()
+        Team team = Team.builder()
                 .navn("team")
                 .datoOpprettet(LocalDate.now())
                 .eier(bruker)
                 .beskrivelse("besk")
-                .build()
-                .convertToRealTeam();
+                .build();
 
-        Testgruppe testgruppe = TestgruppeBuilder.builder()
+        Testgruppe testgruppe = Testgruppe.builder()
                 .sistEndretAv(bruker)
                 .datoEndret(LocalDate.of(2000, 1, 1))
                 .opprettetAv(bruker)
                 .navn("gruppe")
                 .hensikt("hensikt")
                 .teamtilhoerighet(team)
-                .testidenter(new HashSet<>(Arrays.asList(testident)))
-                .build()
-                .convertToRealTestgruppe();
+                .testidenter(newHashSet(singletonList(testident)))
+                .build();
 
-        team.setGrupper(new HashSet<>(Arrays.asList(testgruppe)));
+        team.setGrupper(newHashSet(singletonList(testgruppe)));
         testident.setTestgruppe(testgruppe);
 
         teamRepository.save(team);
         gruppeRepository.save(testgruppe);
         identRepository.save(testident);
 
-
         Testident ident = identRepository.findByIdent("12345");
 
         assertThat(ident.getIdent(), is("12345"));
         assertThat(ident.getTestgruppe().getNavn(), is("gruppe"));
-
     }
-
 }

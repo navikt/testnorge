@@ -35,7 +35,7 @@ export default class Icon extends PureComponent {
 	static propTypes = {
 		height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 		width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-		kind: PropTypes.oneOf(iconList).isRequired,
+		kind: PropTypes.oneOf(iconList),
 		size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 		style: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
 	}
@@ -46,7 +46,7 @@ export default class Icon extends PureComponent {
 
 	render() {
 		const { kind } = this.props
-
+		if (!kind) return null
 		return this.getIcon(kind)
 	}
 

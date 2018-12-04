@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.tpsf;
 
 import static java.lang.String.format;
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+import static java.util.Objects.nonNull;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +40,13 @@ public class TpsfService {
 
     public List<String> opprettIdenterTpsf(RsTpsfBestilling request) {
         ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, new HttpEntity<>(request));
-        return objectMapper.convertValue(response.getBody(), List.class);
+        return nonNull(response) ? objectMapper.convertValue(response.getBody(), List.class) : null;
     }
 
     public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
         validateEnvironments(environments);
         ResponseEntity<Object> response = postToTpsf(TPSF_SEND_TPS_FLERE_URL, new HttpEntity<>(new TpsfIdenterMiljoer(identer, environments)));
-        return objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class);
+        return nonNull(response) ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
     }
 
     private ResponseEntity<Object> postToTpsf(String addtionalUrl, HttpEntity request) {
@@ -66,12 +66,12 @@ public class TpsfService {
         }
     }
 
-    boolean isBodyNotNull(ResponseEntity<Object> response) {
+    private boolean isBodyNotNull(ResponseEntity<Object> response) {
         return response != null && response.getBody() != null && response.getBody().toString() != null;
     }
 
     private void validateEnvironments(List<String> environments) {
-        if (isNullOrEmpty(environments)) {
+        if (nonNull(environments) && environments.isEmpty()) {
             throw new IllegalArgumentException("Ingen TPS miljoer er spesifisert for sending av testdata");
         }
     }

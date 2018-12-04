@@ -1,9 +1,8 @@
 package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +81,8 @@ public class DollyBestillingService {
         tpsfBestilling.setAntall(1);
 
         try {
-            for (int i = 0; i < bestillingRequest.getAntall(); i++) {
+            int loopCount = 0;
+            while (!bestilling.isStoppet() && loopCount < bestillingRequest.getAntall()) {
                 List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
                 BestillingProgress progress = new BestillingProgress(bestillingsId, hovedPersonIdent);
@@ -103,14 +103,16 @@ public class DollyBestillingService {
                             .gyldigFra(ZonedDateTime.now())
                             .epost(bestillingRequest.getKrrstub().getEpost())
                             .mobil(bestillingRequest.getKrrstub().getMobil())
-                            .reservert(isNull(bestillingRequest.getKrrstub().getReservert()) ? false : bestillingRequest.getKrrstub().getReservert())
+                            .reservert(bestillingRequest.getKrrstub().isReservert())
                             .build();
                     ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
                     progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
                 }
 
                 bestillingProgressRepository.save(progress);
+                bestilling.setSistOppdatert(LocalDateTime.now());
                 bestillingService.saveBestillingToDB(bestilling);
+                loopCount++;
             }
         } catch (Exception e) {
             log.error("Bestilling med id <" + bestillingsId + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
@@ -133,7 +135,7 @@ public class DollyBestillingService {
             String hovedperson = getHovedpersonAvBestillingsidenter(klareIdenter);
             List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
 
-            if (!isNullOrEmpty(successMiljoer)) {
+            if (!successMiljoer.isEmpty()) {
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);
                 progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
             } else {

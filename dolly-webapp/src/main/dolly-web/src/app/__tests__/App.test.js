@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, render } from 'enzyme'
 import App from '../App'
 
 import Header from '~/components/header/Header'
@@ -28,6 +28,8 @@ describe('App.js', () => {
 
 		expect(wrapper.find(Loading).exists()).toBeTruthy()
 	})
+
+	// TODO:Test onRedirect
 
 	it('should render main components', () => {
 		const testbrukerData = { id: 'test' }

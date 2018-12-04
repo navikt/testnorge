@@ -16,8 +16,6 @@ import no.nav.dolly.LocalAppStarter;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = LocalAppStarter.class)
@@ -41,23 +39,22 @@ public class TestGruppeRepository {
     public void saveTestgruppeUtenIdenterOgUtenFavorisertAv() {
         Bruker bruker = brukerRepository.save(Bruker.builder().navIdent("ident").build());
 
-        Team team = teamRepository.save(TeamBuilder.builder()
+        Team team = teamRepository.save(Team.builder()
                 .navn("team")
                 .datoOpprettet(LocalDate.now())
                 .eier(bruker)
                 .beskrivelse("besk")
                 .build()
-                .convertToRealTeam());
+        );
 
-        Testgruppe testgruppe = TestgruppeBuilder.builder()
+        Testgruppe testgruppe = Testgruppe.builder()
                 .sistEndretAv(bruker)
                 .datoEndret(LocalDate.of(2000, 1, 1))
                 .opprettetAv(bruker)
                 .navn("gruppe")
                 .hensikt("hensikt")
                 .teamtilhoerighet(team)
-                .build()
-                .convertToRealTestgruppe();
+                .build();
 
         Testgruppe savedGruppe = gruppeRepository.save(testgruppe);
         Testgruppe foundGruppe = gruppeRepository.findById(savedGruppe.getId()).get();

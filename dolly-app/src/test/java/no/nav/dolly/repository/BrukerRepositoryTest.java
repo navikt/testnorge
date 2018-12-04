@@ -1,12 +1,12 @@
 package no.nav.dolly.repository;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +22,6 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -60,16 +58,15 @@ public class BrukerRepositoryTest {
 
         Bruker foundBruker = brukerRepository.findBrukerByNavIdent("nav");
 
-        Team team = TeamBuilder.builder()
+        Team team = Team.builder()
                 .navn("team")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(foundBruker)
-                .medlemmer(new HashSet<>(Arrays.asList(foundBruker)))
+                .medlemmer(newHashSet(singletonList(foundBruker)))
                 .beskrivelse("besk")
-                .build()
-                .convertToRealTeam();
+                .build();
 
-        foundBruker.setTeams(new HashSet<>(Arrays.asList(team)));
+        foundBruker.setTeams(newHashSet(singletonList(team)));
         teamRepository.save(team);
 
         foundBruker = brukerRepository.findBrukerByNavIdent("nav");
@@ -85,28 +82,26 @@ public class BrukerRepositoryTest {
     public void opprettBrukerOgSetTilTeamOgSetFavoritter() throws Exception{
         Bruker savedBruker = brukerRepository.save(Bruker.builder().navIdent("nav").build());
 
-        Team team = TeamBuilder.builder()
+        Team team = Team.builder()
                 .navn("team")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(savedBruker)
-                .medlemmer(new HashSet<>(Arrays.asList(savedBruker)))
+                .medlemmer(newHashSet(singletonList(savedBruker)))
                 .beskrivelse("besk")
-                .build()
-                .convertToRealTeam();
+                .build();
 
         Team savedTeam = teamRepository.save(team);
 
 
-        Testgruppe testgruppe = TestgruppeBuilder.builder()
+        Testgruppe testgruppe = Testgruppe.builder()
                 .sistEndretAv(savedBruker)
                 .datoEndret(LocalDate.of(2000, 1, 1))
                 .opprettetAv(savedBruker)
                 .teamtilhoerighet(savedTeam)
                 .hensikt("hensikt")
                 .navn("gruppe")
-                .favorisertAv(new HashSet<>(Arrays.asList(savedBruker)))
-                .build()
-                .convertToRealTestgruppe();
+                .favorisertAv(newHashSet(singletonList(savedBruker)))
+                .build();
 
         gruppeRepository.save(testgruppe);
 
@@ -116,7 +111,7 @@ public class BrukerRepositoryTest {
         testident.setTestgruppe(foundGruppe);
         identRepository.save(testident);
 
-        savedBruker.setFavoritter(new HashSet<>(Arrays.asList(testgruppe)));
+        savedBruker.setFavoritter(newHashSet(singletonList(testgruppe)));
         savedBruker = brukerRepository.save(savedBruker);
 
         Bruker foundByIdBruker = brukerRepository.findBrukerByNavIdent("nav");

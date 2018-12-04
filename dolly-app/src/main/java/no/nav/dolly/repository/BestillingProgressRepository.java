@@ -10,4 +10,6 @@ public interface BestillingProgressRepository extends CrudRepository<BestillingP
     List<BestillingProgress> findBestillingProgressByBestillingId(Long bestillingId);
 
     List<BestillingProgress> findBestillingProgressByIdentIn(List<String> identer);
+
+    void deleteByBestillingId(Long bestillingId);
 }

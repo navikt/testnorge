@@ -1,5 +1,6 @@
 package no.nav.dolly.api;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -18,12 +19,11 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
-import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
+import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestident;
+import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -45,33 +45,38 @@ public class TestgruppeControllerTest {
     private DollyBestillingService dollyBestillingService;
 
     @Mock
+    private BestillingProgressService bestillingProgressService;
+
+    @Mock
     private BestillingService bestillingService;
 
     @Mock
-    private BestillingProgressService bestillingProgressService;
+    private GruppeRepository gruppeRepository;
+
 
     @InjectMocks
     private TestgruppeController controller;
 
     @Test
     public void opprettTestgruppe() {
-        RsOpprettTestgruppe gruppe = new RsOpprettTestgruppe();
-        RsTestgruppe g = new RsTestgruppe();
-        when(testgruppeService.opprettTestgruppe(gruppe)).thenReturn(g);
+        RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
+        Testgruppe testgruppe = Testgruppe.builder().id(1L).build();
+        when(testgruppeService.opprettTestgruppe(gruppe)).thenReturn(testgruppe);
 
         controller.opprettTestgruppe(gruppe);
-        verify(testgruppeService).rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(g);
+        verify(testgruppeService).fetchTestgruppeById(1L);
     }
 
     @Test
     public void oppdaterTestgruppe() {
         Long gId = 1L;
-        RsOpprettTestgruppe gruppe = new RsOpprettTestgruppe();
-        RsTestgruppe g = new RsTestgruppe();
-        when(testgruppeService.oppdaterTestgruppe(gId, gruppe)).thenReturn(g);
+        RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
+        Testgruppe testgruppe = new Testgruppe();
+        when(testgruppeService.oppdaterTestgruppe(gId, gruppe)).thenReturn(testgruppe);
 
         controller.oppdaterTestgruppe(gId, gruppe);
-        verify(testgruppeService).rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(g);
+
+        verify(testgruppeService).oppdaterTestgruppe(gId, gruppe);
     }
 
     @Test
@@ -83,24 +88,16 @@ public class TestgruppeControllerTest {
 
     @Test
     public void getTestgruppe() {
-        Long gId = 1L;
-        RsTestgruppe g = new RsTestgruppe();
-        RsTestgruppeMedErMedlemOgFavoritt gMedMedlemFavo = new RsTestgruppeMedErMedlemOgFavoritt();
+        Long gruppeId = 1L;
+        RsTestgruppeUtvidet testgruppeUtvidet = new RsTestgruppeUtvidet();
         Testgruppe testgruppe = new Testgruppe();
-        Bestilling bestilling = new Bestilling();
-        RsBestilling rsBestilling = new RsBestilling();
-        List<Bestilling> bestillinger = singletonList(bestilling);
-        List<RsBestilling> rsBestillinger = singletonList(rsBestilling);
 
-        when(testgruppeService.fetchTestgruppeById(gId)).thenReturn(testgruppe);
-        when(mapperFacade.map(testgruppe, RsTestgruppe.class)).thenReturn(g);
-        when(testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(g)).thenReturn(gMedMedlemFavo);
-        when(bestillingService.fetchBestillingerByGruppeId(gId)).thenReturn(bestillinger);
-        when(mapperFacade.mapAsList(bestillinger, RsBestilling.class)).thenReturn(rsBestillinger);
+        when(testgruppeService.fetchTestgruppeById(gruppeId)).thenReturn(testgruppe);
+        when(mapperFacade.map(testgruppe, RsTestgruppeUtvidet.class)).thenReturn(testgruppeUtvidet);
 
-        RsTestgruppeMedErMedlemOgFavoritt res = controller.getTestgruppe(gId);
+        RsTestgruppeUtvidet result = controller.getTestgruppe(gruppeId);
 
-        assertThat(res.getBestillinger(), is(rsBestillinger));
+        assertThat(result.getBestillinger(), is(emptyList()));
     }
 
     @Test
@@ -111,24 +108,26 @@ public class TestgruppeControllerTest {
 
     @Test
     public void oppretteIdentBestilling() {
-        Long gId = 1L;
-
-        RsDollyBestillingsRequest bes = new RsDollyBestillingsRequest();
-        List<String> envir = singletonList("u");
+        Long gruppeId = 1L;
+        Long bestillingId = 2L;
         int ant = 1;
-        bes.setEnvironments(envir);
-        bes.setAntall(ant);
+        List<String> envir = singletonList("u");
 
-        Bestilling b = new Bestilling();
-        b.setId(2L);
+        RsDollyBestillingsRequest dollyBestillingsRequest = RsDollyBestillingsRequest.builder()
+                .environments(envir)
+                .antall(ant)
+                .build();
 
-        when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gId, ant, envir)).thenReturn(b);
-        controller.opprettIdentBestilling(gId, bes);
-        verify(dollyBestillingService).opprettPersonerByKriterierAsync(gId, bes, 2L);
+        Bestilling bestilling = Bestilling.builder().id(bestillingId).build();
+
+        when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, ant, envir)).thenReturn(bestilling);
+
+        controller.opprettIdentBestilling(gruppeId, dollyBestillingsRequest);
+        verify(dollyBestillingService).opprettPersonerByKriterierAsync(gruppeId, dollyBestillingsRequest, bestillingId);
     }
 
     @Test
-    public void slettgruppe_metodekall(){
+    public void slettgruppe_metodekall() {
         controller.slettgruppe(anyLong());
         verify(testgruppeService).slettGruppeById(anyLong());
     }

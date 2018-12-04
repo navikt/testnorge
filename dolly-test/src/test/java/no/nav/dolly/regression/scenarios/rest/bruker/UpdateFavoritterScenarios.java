@@ -1,19 +1,19 @@
 package no.nav.dolly.regression.scenarios.rest.bruker;
 
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsBrukerUpdateFavoritterReq;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import org.junit.Test;
-import org.springframework.test.web.servlet.MvcResult;
-
+import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.Test;
+import org.springframework.test.web.servlet.MvcResult;
+
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsBrukerUpdateFavoritterReq;
 
 public class UpdateFavoritterScenarios extends BrukerTestCaseBase {
 
@@ -38,7 +38,7 @@ public class UpdateFavoritterScenarios extends BrukerTestCaseBase {
     @Test
     public void fjernEnFavorittFraBruker() throws Exception {
         Bruker foerAddBruker = brukerRepository.findBrukerByNavIdent(standardNavIdent);
-        foerAddBruker.setFavoritter(new HashSet<>(Arrays.asList(standardTestgruppe)));
+        foerAddBruker.setFavoritter(newHashSet(singletonList(standardTestgruppe)));
         Bruker foerFjernBruker = brukerRepository.save(foerAddBruker);
         assertThat(foerFjernBruker.getFavoritter().size(), is(1));
 
@@ -57,5 +57,4 @@ public class UpdateFavoritterScenarios extends BrukerTestCaseBase {
         assertThat(res.getTeams().size(), is(1));
         assertThat(res.getFavoritter().size(), is(0));
     }
-
 }

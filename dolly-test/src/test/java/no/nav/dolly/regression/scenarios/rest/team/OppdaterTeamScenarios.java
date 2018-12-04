@@ -14,21 +14,23 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.testdata.builder.RsTeamBuilder;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.testdata.builder.RsTeamUtvidetBuilder;
 
 public class OppdaterTeamScenarios extends TeamTestCaseBase{
+
+    private static final String NAV_IDENT = "NYEIER";
 
     @Autowired
     MapperFacade mapperFacade;
 
     @Test
     public void oppdaterBrukerMedAlleInputs() throws Exception {
-        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent("nyEier").build());
+        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
 
         Team teamSomSkalEndres = teamRepository.findAll().get(0);
 
-        RsTeam request = RsTeamBuilder.builder()
+        RsTeamUtvidet request = RsTeamUtvidetBuilder.builder()
                 .id(teamSomSkalEndres.getId())
                 .eierNavIdent(nyEier.getNavIdent())
                 .beskrivelse("endretTeam")
@@ -46,22 +48,22 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
                 .andExpect(status().isOk())
                 .andReturn();
 
-        RsTeam resultat = convertMvcResultToObject(mvcResult, RsTeam.class);
+        RsTeamUtvidet resultat = convertMvcResultToObject(mvcResult, RsTeamUtvidet.class);
 
-        assertThat(resultat.getEierNavIdent(), is("nyEier"));
+        assertThat(resultat.getEierNavIdent(), is(NAV_IDENT));
 
         teamSomSkalEndres = teamRepository.findById(teamSomSkalEndres.getId()).get();
 
-        assertThat(teamSomSkalEndres.getEier().getNavIdent(), is("nyEier"));
+        assertThat(teamSomSkalEndres.getEier().getNavIdent(), is(NAV_IDENT));
     }
 
     @Test
     public void oppdaterTeamKunNavnOgBeskrivelseIBody() throws Exception {
-        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent("nyEier").build());
+        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
 
         Team teamSomSkalErEndret = teamRepository.findAll().get(0);
 
-        RsTeam request = RsTeamBuilder.builder()
+        RsTeamUtvidet request = RsTeamUtvidetBuilder.builder()
                 .beskrivelse("endretTeam")
                 .navn("endretTeamNavn")
                 .build()
@@ -75,7 +77,7 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
                 .andExpect(status().isOk())
                 .andReturn();
 
-        RsTeam response = convertMvcResultToObject(mvcResult, RsTeam.class);
+        RsTeamUtvidet response = convertMvcResultToObject(mvcResult, RsTeamUtvidet.class);
         teamSomSkalErEndret = teamRepository.findById(teamSomSkalErEndret.getId()).get();
 
         assertThat(response.getEierNavIdent(), is(standardNavIdent));
@@ -86,5 +88,4 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
         assertThat(teamSomSkalErEndret.getNavn(), is("endretTeamNavn"));
         assertThat(teamSomSkalErEndret.getBeskrivelse(), is("endretTeam"));
     }
-
 }

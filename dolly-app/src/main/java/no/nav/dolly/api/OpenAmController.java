@@ -23,6 +23,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.service.OpenAmService;
 
+@Transactional
 @RestController
 @RequestMapping(value = "/api/v1/openam", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OpenAmController {
@@ -42,7 +43,6 @@ public class OpenAmController {
         return response;
     }
 
-    @Transactional
     @PutMapping("/gruppe/{gruppeId}")
     public void oppdaterOpenAmSentStatus(@PathVariable(value = "gruppeId") Long gruppeId, @RequestParam Boolean isOpenAmSent) {
         Optional<Testgruppe> testgruppe = gruppeRepository.findById(gruppeId);
