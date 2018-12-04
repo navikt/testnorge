@@ -12,7 +12,7 @@ export const NormalizeTeamListForDropdown = ({ data }) => ({
 	options: data.map(team => ({ value: team.id, label: team.navn }))
 })
 
-// Special treatment for spraakvisning
+// Special function for spraakvisning
 const SortSpraakArray = data => {
 	const fav = ['ES', 'EN', 'NN', 'NB']
 	const koderArray = data.koder
@@ -20,7 +20,12 @@ const SortSpraakArray = data => {
 	fav.forEach(value => {
 		for (var i = 0; i < koderArray.length - 1; i++) {
 			const temp = koderArray[i]
-			value == temp.value && koderArray.splice(i, 1) && koderArray.unshift(temp)
+			// TODO: Fjern dette etter kodeverk har fjernet typo
+			if (value == temp.value) {
+				if (value == 'NB') temp.label = 'Norwegian, Bokmål'
+				if (value == 'NN') temp.label = 'Norwegian, Nynorsk'
+				koderArray.splice(i, 1) && koderArray.unshift(temp)
+			}
 		}
 	})
 	return koderArray
