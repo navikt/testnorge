@@ -1,12 +1,11 @@
 package no.nav.dolly.domain.resultset;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -18,7 +17,8 @@ public class RsBestilling {
     private boolean ferdig;
     private LocalDateTime sistOppdatert;
     private long gruppeId;
+    private boolean stoppet;
 
     private List<String> environments;
-    private List<RsBestillingProgress> personStatus = new ArrayList<>();
+    private List<RsBestillingProgress> personStatus;
 }

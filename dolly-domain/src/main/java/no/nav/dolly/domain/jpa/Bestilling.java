@@ -51,11 +51,14 @@ public class Bestilling {
     @Column(name = "ANTALL_IDENTER", nullable = false)
     private int antallIdenter;
 
-    @Column(name="SIST_OPPDATERT" , nullable = false)
+    @Column(name = "SIST_OPPDATERT", nullable = false)
     @UpdateTimestamp
     private LocalDateTime sistOppdatert;
 
-    public Bestilling(Testgruppe gruppe, int antallIdenter, LocalDateTime sistOppdatert, String miljoer){
+    @Column(name = "STOPPET")
+    private boolean stoppet;
+
+    public Bestilling(Testgruppe gruppe, int antallIdenter, LocalDateTime sistOppdatert, String miljoer) {
         this.gruppe = gruppe;
         this.antallIdenter = antallIdenter;
         this.sistOppdatert = sistOppdatert;

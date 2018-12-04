@@ -47,6 +47,7 @@ public class BestillingController {
     @DeleteMapping("/stop/{bestillingId}")
     public RsBestilling stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
         Bestilling bestilling = bestillingService.fetchBestillingById(bestillingId);
+        bestilling.setStoppet(true);
         bestilling.setFerdig(true);
         bestilling.setSistOppdatert(LocalDateTime.now());
         bestillingService.saveBestillingToDB(bestilling);

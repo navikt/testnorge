@@ -16,14 +16,11 @@ public class BestillingMappingStrategy implements MappingStrategy{
         factory.classMap(Bestilling.class, RsBestilling.class)
                 .customize(new CustomMapper<Bestilling, RsBestilling>() {
                     @Override public void mapAtoB(Bestilling bestilling, RsBestilling rsBestilling, MappingContext context) {
-                        rsBestilling.setId(bestilling.getId());
-                        rsBestilling.setAntallIdenter(bestilling.getAntallIdenter());
-                        rsBestilling.setFerdig(bestilling.isFerdig());
                         rsBestilling.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
-                        rsBestilling.setSistOppdatert(bestilling.getSistOppdatert());
                         rsBestilling.setGruppeId(bestilling.getGruppe().getId());
                     }
                 })
+                .byDefault()
                 .register();
     }
 }
