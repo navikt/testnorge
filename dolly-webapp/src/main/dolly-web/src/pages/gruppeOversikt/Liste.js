@@ -95,8 +95,6 @@ export default class Liste extends PureComponent {
 						navLink: () => history.push(`gruppe/${gruppe.id}`)
 					}
 
-					// console.log(gruppe, 'gruppe')
-
 					// Vise redigeringsknapp eller stjerne
 					if (gruppe.erMedlemAvTeamSomEierGruppe) {
 						rowProps.editAction = () => editGroup(gruppe.id)
