@@ -21,7 +21,7 @@ export default class BestillingStatus extends PureComponent {
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
-			antallKlare: props.bestilling.personStatus.length,
+			antallKlare: props.bestilling.personStatus ? props.bestilling.personStatus.length : 0,
 			sistOppdatert: props.bestilling.sistOppdatert,
 			isOpen: true
 		}
