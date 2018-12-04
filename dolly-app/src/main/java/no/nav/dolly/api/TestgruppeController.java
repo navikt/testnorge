@@ -23,6 +23,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.service.BestillingService;
@@ -72,11 +73,11 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
     }
 
-    @GetMapping // TODO endre til RsTestgruppe
-    public Set<RsTestgruppeUtvidet> getTestgrupper(
+    @GetMapping
+    public Set<RsTestgruppe> getTestgrupper(
             @RequestParam(name = "navIdent", required = false) String navIdent,
             @RequestParam(name = "teamId", required = false) Long teamId) {
-        return mapperFacade.mapAsSet(testgruppeService.getTestgruppeByNavidentOgTeamId(navIdent, teamId), RsTestgruppeUtvidet.class);
+        return mapperFacade.mapAsSet(testgruppeService.getTestgruppeByNavidentOgTeamId(navIdent, teamId), RsTestgruppe.class);
     }
 
     @DeleteMapping("/{gruppeId}")

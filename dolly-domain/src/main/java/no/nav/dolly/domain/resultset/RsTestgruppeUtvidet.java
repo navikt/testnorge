@@ -10,10 +10,24 @@ import lombok.Setter;
 @Setter
 public class RsTestgruppeUtvidet extends RsTestgruppe{
 
-	private List<RsBestilling> bestillinger = new ArrayList<>();
+	private List<RsBestilling> bestillinger;
 
-	private List<RsTestidentBestillingId> testidenter = new ArrayList<>();
+	private List<RsTestidentBestillingId> testidenter;
 
 	private boolean erMedlemAvTeamSomEierGruppe;
 	private boolean favorittIGruppen;
+
+	public List<RsBestilling> getBestillinger() {
+		if (bestillinger == null) {
+			bestillinger = new ArrayList<>();
+		}
+		return bestillinger;
+	}
+
+	public List<RsTestidentBestillingId> getTestidenter() {
+		if (testidenter == null) {
+			testidenter = new ArrayList<>();
+		}
+		return testidenter;
+	}
 }

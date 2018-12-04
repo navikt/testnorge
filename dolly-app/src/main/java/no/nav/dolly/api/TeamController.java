@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.service.TeamService;
@@ -36,11 +37,11 @@ public class TeamController {
 	@Autowired
 	private MapperFacade mapperFacade;
 
-    @GetMapping  // TODO endre til RsTeam
-    public List<RsTeamUtvidet> getTeams(@RequestParam("navIdent") Optional<String> navIdent){
+    @GetMapping
+    public List<RsTeam> getTeams(@RequestParam("navIdent") Optional<String> navIdent){
         return navIdent
-				.map(navId -> mapperFacade.mapAsList(teamService.fetchTeamsByMedlemskapInTeams(navId), RsTeamUtvidet.class))
-				.orElse(mapperFacade.mapAsList(teamRepository.findAll(), RsTeamUtvidet.class));
+				.map(navId -> mapperFacade.mapAsList(teamService.fetchTeamsByMedlemskapInTeams(navId), RsTeam.class))
+				.orElse(mapperFacade.mapAsList(teamRepository.findAll(), RsTeam.class));
     }
 
 	@ResponseStatus(HttpStatus.CREATED)
