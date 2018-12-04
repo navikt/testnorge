@@ -12,8 +12,24 @@ export const NormalizeTeamListForDropdown = ({ data }) => ({
 	options: data.map(team => ({ value: team.id, label: team.navn }))
 })
 
+// Special treatment for sort
+const SortSpraakArray = data => {
+	const fav = ['ES', 'EN', 'NN', 'NB']
+	const koderArray = data.koder
+	for (var i = 0; i < koderArray.length - 1; i++) {
+		const temp = koderArray[i]
+		fav.includes(temp.value) && koderArray.splice(i, 1) && koderArray.unshift(temp)
+	}
+
+	console.log(koderArray, 'result')
+
+	return koderArray
+}
+
 export const NormalizeKodeverkForDropdown = ({ data }) => {
 	console.log(data, 'data')
+	const sorterdArray = data.name == 'Språk' && SortSpraakArray(data)
+
 	return {
 		options: data.koder.filter(val => !_excludeList.includes(val.value)).map(kode => ({
 			value: kode.value,
