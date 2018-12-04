@@ -21,7 +21,6 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -113,7 +112,7 @@ public class TestgruppeService {
         return saveGruppeTilDB(testgruppe);
     }
 
-    public Set<RsTestgruppeUtvidet> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
+    public Set<Testgruppe> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
         Set<Testgruppe> grupper;
         if (isNull(teamId)) {
             grupper = isBlank(navIdent) ? newHashSet(gruppeRepository.findAll()) : fetchTestgrupperByNavIdent(navIdent);
@@ -121,7 +120,7 @@ public class TestgruppeService {
             grupper = newHashSet(gruppeRepository.findAllByTeamtilhoerighet(Team.builder().id(teamId).build()));
         }
 
-        return mapperFacade.mapAsSet(grupper, RsTestgruppeUtvidet.class);
+        return grupper;
     }
 
     public List<String> fetchIdenterByGruppeId(Long gruppeId) {

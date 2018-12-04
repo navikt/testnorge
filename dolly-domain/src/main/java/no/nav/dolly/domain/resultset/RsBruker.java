@@ -16,6 +16,20 @@ import lombok.Setter;
 @Builder
 public class RsBruker {
 	private String navIdent;
-	private Set<RsTeamMedIdOgNavn> teams = new HashSet<>();
-	private Set<RsTestgruppe> favoritter = new HashSet<>();
+	private Set<RsTeamMedIdOgNavn> teams;
+	private Set<RsTestgruppe> favoritter;
+
+	public Set<RsTeamMedIdOgNavn> getTeams() {
+		if (teams == null) {
+			teams = new HashSet<>();
+		}
+		return teams;
+	}
+
+	public Set<RsTestgruppe> getFavoritter() {
+		if (favoritter == null) {
+			favoritter = new HashSet<>();
+		}
+		return favoritter;
+	}
 }

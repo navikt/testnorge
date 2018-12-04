@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.service.TeamService;
 
@@ -45,7 +46,7 @@ public class TeamController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public RsTeam opprettTeam(@RequestBody RsOpprettTeam createTeamRequest) {
+	public RsTeamUtvidet opprettTeam(@RequestBody RsOpprettTeam createTeamRequest) {
 		return teamService.opprettTeam(createTeamRequest);
 	}
 
@@ -55,22 +56,22 @@ public class TeamController {
 	}
 
 	@GetMapping("/{teamId}")
-	public RsTeam fetchTeamById(@PathVariable("teamId") Long teamid){
-		return mapperFacade.map(teamService.fetchTeamById(teamid), RsTeam.class);
+	public RsTeamUtvidet fetchTeamById(@PathVariable("teamId") Long teamid){
+		return mapperFacade.map(teamService.fetchTeamById(teamid), RsTeamUtvidet.class);
 	}
 
 	@PutMapping("/{teamId}/leggTilMedlemmer")
-	public RsTeam addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
+	public RsTeamUtvidet addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
 		return teamService.addMedlemmerByNavidenter(teamId, navIdenter);
 	}
 
 	@PutMapping("/{teamId}/fjernMedlemmer")
-	public RsTeam fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
+	public RsTeamUtvidet fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
         return teamService.fjernMedlemmer(teamId, navIdenter);
     }
 
     @PutMapping("/{teamId}")
-    public RsTeam endreTeaminfo(@PathVariable("teamId") Long teamId , @RequestBody RsTeam createTeamRequest) {
+    public RsTeamUtvidet endreTeaminfo(@PathVariable("teamId") Long teamId , @RequestBody RsTeamUtvidet createTeamRequest) {
         return teamService.updateTeamInfo(teamId, createTeamRequest);
     }
 }

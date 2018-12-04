@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 
 public class GetTeamsScenarios extends TeamTestCaseBase {
 
@@ -58,7 +58,7 @@ public class GetTeamsScenarios extends TeamTestCaseBase {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        List<RsTeam> resultat = convertMvcResultToList(mvcResult, RsTeam.class);
+        List<RsTeamUtvidet> resultat = convertMvcResultToList(mvcResult, RsTeamUtvidet.class);
 
         assertThat(resultat.size(), is(2));
 
@@ -80,7 +80,7 @@ public class GetTeamsScenarios extends TeamTestCaseBase {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        List<RsTeam> resultat = convertMvcResultToList(mvcResult, RsTeam.class);
+        List<RsTeamUtvidet> resultat = convertMvcResultToList(mvcResult, RsTeamUtvidet.class);
 
         assertThat(resultat.size(), is(3));
 

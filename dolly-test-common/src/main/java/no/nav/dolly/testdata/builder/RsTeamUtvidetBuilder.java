@@ -1,19 +1,19 @@
 package no.nav.dolly.testdata.builder;
 
+import java.time.LocalDate;
+import java.util.Set;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
-
-import java.time.LocalDate;
-import java.util.Set;
 
 @Setter
 @Getter
 @Builder
-public class RsTeamBuilder {
+public class RsTeamUtvidetBuilder {
 	private Long id;
 	private String navn;
 	private String beskrivelse;
@@ -22,8 +22,8 @@ public class RsTeamBuilder {
 	private Set<RsBruker> medlemmer;
 	private Set<RsTestgruppe> grupper;
 
-	public RsTeam convertToRealRsTeam(){
-		RsTeam team = new RsTeam();
+	public RsTeamUtvidet convertToRealRsTeam(){
+		RsTeamUtvidet team = new RsTeamUtvidet();
 		team.setId(this.id);
 		team.setNavn(this.navn);
 		team.setBeskrivelse(this.beskrivelse);
@@ -34,5 +34,4 @@ public class RsTeamBuilder {
 
 		return team;
 	}
-
 }

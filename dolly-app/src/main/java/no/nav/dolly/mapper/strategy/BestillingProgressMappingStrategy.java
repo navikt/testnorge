@@ -22,10 +22,7 @@ public class BestillingProgressMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<BestillingProgress, RsBestillingProgress>() {
                     @Override
                     public void mapAtoB(BestillingProgress progress, RsBestillingProgress rsProgress, MappingContext context) {
-                        rsProgress.setId(progress.getId());
                         rsProgress.setBestillingsId(progress.getBestillingId());
-                        rsProgress.setIdent(progress.getIdent());
-                        rsProgress.setFeil(progress.getFeil());
 
                         if (isNotBlank(progress.getTpsfSuccessEnv())) {
                             rsProgress.setTpsfSuccessEnv(
@@ -46,6 +43,8 @@ public class BestillingProgressMappingStrategy implements MappingStrategy {
                         }
                     }
                 })
+                .exclude("tpsfSuccessEnv")
+                .byDefault()
                 .register();
     }
 }
