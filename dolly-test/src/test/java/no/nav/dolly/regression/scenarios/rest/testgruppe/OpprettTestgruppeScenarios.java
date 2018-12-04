@@ -19,7 +19,6 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.testdata.builder.RsOpprettTestgruppeBuilder;
 
-@Ignore
 public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
 
     @Test
@@ -50,6 +49,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
     }
 
     @Test
+    @Ignore
     public void opprettTestgruppeUtenAaSpesifisereTeamOgFaaSpesifisertTeamMedNavidentNavn() throws Exception {
         RsOpprettEndreTestgruppe rsOpprettTestgruppe = RsOpprettTestgruppeBuilder.builder()
                 .navn("mingruppe")
@@ -82,6 +82,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
     }
 
     @Test
+    @Ignore
     public void opprettTestgruppeUtenAaSpesifisereTeamOgTeamMedNavidentnavnAlleredeEksisterer() throws Exception {
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettTestgruppeBuilder.builder()
                 .navn("mingruppe")

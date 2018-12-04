@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
 import no.nav.dolly.domain.resultset.RsTeamMedMedlemmerUtenGrupper;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
 
@@ -22,6 +23,18 @@ public class TeamMappingStrategy implements MappingStrategy{
                 .customize(new CustomMapper<Team, RsTeam>() {
                     @Override
                     public void mapAtoB(Team team, RsTeam rsTeam, MappingContext context) {
+                        rsTeam.setAntallMedlemmer(team.getMedlemmer().size());
+                        rsTeam.setEierNavIdent(team.getEier().getNavIdent());
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(Team.class, RsTeamUtvidet.class)
+                .customize(new CustomMapper<Team, RsTeamUtvidet>() {
+                    @Override
+                    public void mapAtoB(Team team, RsTeamUtvidet rsTeam, MappingContext context) {
+                        rsTeam.setAntallMedlemmer(team.getMedlemmer().size());
                         rsTeam.setGrupper(mapperFacade.mapAsSet(team.getGrupper(), RsTestgruppe.class));
                         rsTeam.setEierNavIdent(team.getEier().getNavIdent());
                         rsTeam.setMedlemmer(mapperFacade.mapAsSet(team.getMedlemmer(), RsBruker.class));

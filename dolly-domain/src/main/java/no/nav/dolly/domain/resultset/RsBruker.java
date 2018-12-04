@@ -1,6 +1,5 @@
 package no.nav.dolly.domain.resultset;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +15,6 @@ import lombok.Setter;
 @Builder
 public class RsBruker {
 	private String navIdent;
-	private Set<RsTeamMedIdOgNavn> teams = new HashSet<>();
-	private Set<RsTestgruppe> favoritter = new HashSet<>();
+	private Set<RsTeamMedIdOgNavn> teams;
+	private Set<RsTestgruppe> favoritter;
 }

@@ -1,21 +1,21 @@
 package no.nav.dolly.regression.scenarios.rest.team;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeam;
-
-import java.util.List;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MvcResult;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MvcResult;
+
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 
 public class OpprettTeamScenarios extends TeamTestCaseBase{
 
@@ -37,7 +37,7 @@ public class OpprettTeamScenarios extends TeamTestCaseBase{
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        RsTeam resultat = convertMvcResultToObject(mvcResult, RsTeam.class);
+        RsTeamUtvidet resultat = convertMvcResultToObject(mvcResult, RsTeamUtvidet.class);
 
         List<Team> foundTeams = teamRepository.findTeamsByEier(standardBruker);
         Team opprettetTeam = foundTeams.get(1);
