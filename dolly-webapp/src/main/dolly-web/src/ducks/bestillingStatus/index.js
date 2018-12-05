@@ -21,10 +21,6 @@ export default handleActions(
 			return { ...state, [action.payload.data.id]: action.payload.data }
 		},
 
-		[success(cancelBestilling)](state, action) {
-			console.log('cancel bestilling')
-		},
-
 		[SET_BESTILLING_STATUS](state, action) {
 			return { ...state, [action.bestillingId]: action.data }
 		}
