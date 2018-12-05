@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.krrstub.KrrStubResponseHandler;
@@ -72,15 +74,17 @@ public class DollyBestillingService {
     private BestillingService bestillingService;
 
     @Async
+    @Transactional
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingRequest, Long bestillingsId) {
+
         Bestilling bestilling = bestillingService.fetchBestillingById(bestillingsId);
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
-        RsTpsfBestilling tpsfBestilling = bestillingRequest.getTpsf();
-        tpsfBestilling.setEnvironments(bestillingRequest.getEnvironments());
-        tpsfBestilling.setAntall(1);
-
         try {
+            RsTpsfBestilling tpsfBestilling = nonNull(bestillingRequest.getTpsf()) ? bestillingRequest.getTpsf() : new RsTpsfBestilling();
+            tpsfBestilling.setEnvironments(bestillingRequest.getEnvironments());
+            tpsfBestilling.setAntall(1);
+
             int loopCount = 0;
             while (!bestilling.isStoppet() && loopCount < bestillingRequest.getAntall()) {
                 List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);

@@ -30,7 +30,6 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
 
-@Transactional
 @RestController
 @RequestMapping(value = "api/v1/gruppe")
 public class TestgruppeController {
@@ -50,19 +49,22 @@ public class TestgruppeController {
     @Autowired
     private BestillingService bestillingService;
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public RsTestgruppeUtvidet opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
-        Testgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
-        return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
-    }
-
+    @Transactional
     @PutMapping(value = "/{gruppeId}")
     public RsTestgruppeUtvidet oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
         Testgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
         return mapperFacade.map(gruppe, RsTestgruppeUtvidet.class);
     }
 
+    @PostMapping
+    @Transactional
+    @ResponseStatus(HttpStatus.CREATED)
+    public RsTestgruppeUtvidet opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
+        Testgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
+        return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
+    }
+
+    @Transactional
     @PutMapping("/{gruppeId}/slettTestidenter")
     public void deleteTestident(@RequestBody List<RsTestident> testpersonIdentListe) {
         identService.slettTestidenter(testpersonIdentListe);
@@ -80,6 +82,7 @@ public class TestgruppeController {
         return mapperFacade.mapAsSet(testgruppeService.getTestgruppeByNavidentOgTeamId(navIdent, teamId), RsTestgruppe.class);
     }
 
+    @Transactional
     @DeleteMapping("/{gruppeId}")
     public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
         testgruppeService.slettGruppeById(gruppeId);
