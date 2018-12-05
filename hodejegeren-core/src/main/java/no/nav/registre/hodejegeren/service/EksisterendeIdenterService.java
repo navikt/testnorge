@@ -294,7 +294,7 @@ public class EksisterendeIdenterService {
                 statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
                 break;
             } catch (ManglendeInfoITpsException e) {
-                if (i == ANTALL_FORSOEK_PER_AARSAK) {
+                if (i >= ANTALL_FORSOEK_PER_AARSAK) {
                     log.error("Kunne ikke finne ident med gyldig status quo i TPS etter {} forsøk.", i);
                     throw e;
                 }

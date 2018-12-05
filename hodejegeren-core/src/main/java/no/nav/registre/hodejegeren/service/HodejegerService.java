@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.exception.IkkeFullfoertBehandlingException;
+import no.nav.registre.hodejegeren.exception.IkkeFullfoertBehandlingExceptionsContainer;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
@@ -68,7 +68,7 @@ public class HodejegerService {
         String environment = genereringsOrdreRequest.getMiljoe();
 
         Map<String, List<String>> listerMedIdenter = opprettListerMedIdenter(genereringsOrdreRequest);
-        IkkeFullfoertBehandlingException ikkeFullfoertBehandlingException = null;
+        IkkeFullfoertBehandlingExceptionsContainer ikkeFullfoertBehandlingExceptionsContainer = null;
 
         for (Endringskoder endringskode : sorterteEndringskoder) {
             try {
@@ -92,35 +92,29 @@ public class HodejegerService {
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             } catch (HttpStatusCodeException e) {
-                if (ikkeFullfoertBehandlingException == null) {
-                    ikkeFullfoertBehandlingException = new IkkeFullfoertBehandlingException(ids, e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
-                } else {
-                    ikkeFullfoertBehandlingException.addIds(ids);
-                    ikkeFullfoertBehandlingException.addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
+                if (ikkeFullfoertBehandlingExceptionsContainer == null) {
+                    ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
+                    ikkeFullfoertBehandlingExceptionsContainer.addIds(ids);
+                    ikkeFullfoertBehandlingExceptionsContainer.addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
+
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
                 log.error(Arrays.toString(e.getStackTrace()));
                 log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
-                // throw new IkkeFullfoertBehandlingException(e.getMessage() + " (HttpStatusCodeException) - Skdmeldinger som var ferdig
-                // behandlet før noe feilet, " +
-                // "har følgende id-er i TPSF", e, ids);
             } catch (RuntimeException e) {
-                if (ikkeFullfoertBehandlingException == null) {
-                    ikkeFullfoertBehandlingException = new IkkeFullfoertBehandlingException(ids, e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
-                } else {
-                    ikkeFullfoertBehandlingException.addIds(ids);
-                    ikkeFullfoertBehandlingException.addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode());
+                if (ikkeFullfoertBehandlingExceptionsContainer == null) {
+                    ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
+                    ikkeFullfoertBehandlingExceptionsContainer.addIds(ids);
+                    ikkeFullfoertBehandlingExceptionsContainer.addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode());
+
                 log.error(Arrays.toString(e.getStackTrace()));
                 log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
-                // throw new IkkeFullfoertBehandlingException(e.getMessage() + " (RuntimeException) - Skdmeldinger som var ferdig behandlet før
-                // noe feilet, " +
-                // "har følgende id-er i TPSF", e, ids);
             }
         }
 
-        if (ikkeFullfoertBehandlingException != null) {
-            throw ikkeFullfoertBehandlingException;
+        if (ikkeFullfoertBehandlingExceptionsContainer != null) {
+            throw ikkeFullfoertBehandlingExceptionsContainer;
         }
 
         return ids;
