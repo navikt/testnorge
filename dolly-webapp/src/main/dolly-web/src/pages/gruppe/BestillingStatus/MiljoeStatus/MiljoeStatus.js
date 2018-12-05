@@ -42,7 +42,7 @@ export default class MiljoeStatus extends PureComponent {
 	_renderFailureMessage = () => (
 		<Fragment>
 			<Icon kind={'report-problem-circle'} />
-			<div>Din bestilling ble ikke utført. Ingen testdata ble opprettet</div>
+			<p>Din bestilling ble ikke utført. Ingen testdata ble opprettet</p>
 		</Fragment>
 	)
 
