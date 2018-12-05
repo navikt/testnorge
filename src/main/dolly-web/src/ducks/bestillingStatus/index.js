@@ -69,7 +69,6 @@ export const miljoStatusSelector = bestillingStatus => {
 	let failedEnvs = []
 
 	if (bestillingStatus.personStatus.length != 0) {
-		// Tpsf-miljø
 		envs.forEach(env => {
 			bestillingStatus.personStatus.forEach(person => {
 				if (!person.tpsfSuccessEnv) {
@@ -88,14 +87,12 @@ export const miljoStatusSelector = bestillingStatus => {
 		// Registre miljø status
 		// Plasseres i egen for-each for visuel plassering og mer lesbar kode
 		bestillingStatus.personStatus.forEach(person => {
-			// Krr-stub
 			if (person.krrstubStatus) {
 				person.krrstubStatus == 'OK'
 					? !successEnvs.includes('Krr-stub') && successEnvs.push('Krr-stub')
 					: !failedEnvs.includes('Krr-stub') && failedEnvs.push('Krr-stub')
 			}
 
-			// Sigrun-stub
 			if (person.sigrunstubStatus) {
 				person.sigrunstubStatus == 'OK'
 					? !successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')

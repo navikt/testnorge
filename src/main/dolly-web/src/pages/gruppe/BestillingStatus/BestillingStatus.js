@@ -47,9 +47,6 @@ export default class BestillingStatus extends PureComponent {
 			if (data.ferdig) {
 				this.stopPolling()
 			}
-
-			// console.log(data, 'data fra tpsf')
-
 			this.updateStatus(data)
 		} catch (error) {
 			console.log('error', error)
