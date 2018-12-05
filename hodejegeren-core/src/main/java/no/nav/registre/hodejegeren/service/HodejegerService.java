@@ -15,11 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +43,8 @@ public class HodejegerService {
     public static final String GIFTE_IDENTER_I_NORGE = "gifteIdenterINorge";
     public static final String SINGLE_IDENTER_I_NORGE = "singleIdenterINorge";
     public static final String BRUKTE_IDENTER_I_DENNE_BOLKEN = "brukteIdenterIDenneBolken";
+    private static final String FEILMELDING_TEKST = "Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe {}): {}";
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
@@ -95,21 +95,21 @@ public class HodejegerService {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
-                    ikkeFullfoertBehandlingExceptionsContainer.addIds(ids);
-                    ikkeFullfoertBehandlingExceptionsContainer.addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids);
+                ikkeFullfoertBehandlingExceptionsContainer.addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
 
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
                 log.error(Arrays.toString(e.getStackTrace()));
-                log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             } catch (RuntimeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
-                    ikkeFullfoertBehandlingExceptionsContainer.addIds(ids);
-                    ikkeFullfoertBehandlingExceptionsContainer.addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode());
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids);
+                ikkeFullfoertBehandlingExceptionsContainer.addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode());
 
                 log.error(Arrays.toString(e.getStackTrace()));
-                log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             }
         }
 
@@ -130,6 +130,7 @@ public class HodejegerService {
 
     /**
      * Metoden tar imot en liste med endringskoder, og sørger for at denne blir filtrert og sortert
+     *
      * @param endringskode
      * @return sortert liste over endringskoder. Sortert på rekkefølge gitt i enumklasse {@link Endringskoder}
      */

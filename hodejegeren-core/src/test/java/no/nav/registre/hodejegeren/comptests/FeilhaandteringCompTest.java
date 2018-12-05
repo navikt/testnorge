@@ -94,7 +94,8 @@ public class FeilhaandteringCompTest {
         } catch (IkkeFullfoertBehandlingExceptionsContainer e) {
             assertEquals(4, listAppender.list.size());
             assertTrue(listAppender.list.toString()
-                    .contains("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: " + expectedMeldingsIdsITpsf.toString()));
+                    .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
+                            123, expectedMeldingsIdsITpsf.toString())));
             assertEquals(2, e.getIds().size());
             assertTrue(e.getIds().containsAll(expectedMeldingsIdsITpsf));
         }
