@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Line } from 'rc-progress'
 import { DollyApi } from '~/service/Api'
 import Loading from '~/components/loading/Loading'
 import BestillingProgress from './BestillingProgress/BestillingProgress'
 import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
 import './BestillingStatus.less'
 import _find from 'lodash/find'
+
 export default class BestillingStatus extends PureComponent {
 	static propTypes = {
 		bestilling: PropTypes.object.isRequired
@@ -20,7 +20,6 @@ export default class BestillingStatus extends PureComponent {
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
-			lastUpdated: new Date(),
 			failureIntervalCounter: 0,
 			failed: false,
 			antallKlare: props.bestilling.personStatus.length,
@@ -76,16 +75,21 @@ export default class BestillingStatus extends PureComponent {
 		}
 
 		// TODO: Check if timestamp endrer seg (data.timestapm == this.state.timeStamp)
-		if (data) {
-			console.log(this.state.lastUpdated)
+
+		const liveTimeStamp = new Date(data.sistOppdatert).getTime()
+		const oldTimeStamp = new Date(this.state.sistOppdatert).getTime()
+		// console.log(liveTimeStamp, 'sist oppdatert')
+		// console.log(oldTimeStamp, 'last updated')
+
+		if (liveTimeStamp == oldTimeStamp) {
+			// console.log(this.state.lastUpdated)
 			this.setState({ failureIntervalCounter: (this.state.failureIntervalCounter += 1) })
 			console.log(this.state.failureIntervalCounter)
-			// }
 
 			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
-			this.state.failureIntervalCounter == 2 && this.setState({ failed: true })
+			this.state.failureIntervalCounter == 5 && this.setState({ failed: true })
 		} else {
-			this.setState({ failureIntervalCounter: 0, failed: false })
+			this.setState({ sistOppdatert: data.sistOppdatert, failureIntervalCounter: 0, failed: false })
 		}
 	}
 
