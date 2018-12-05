@@ -113,7 +113,7 @@ const mapItems = items => {
 			antallIdenter: item.antallIdenter.toString(),
 			sistOppdatert: Formatters.formatDate(item.sistOppdatert),
 			environments: Formatters.arrayToString(item.environments),
-			ferdig: item.ferdig ? 'Ferdig' : 'Pågår'
+			ferdig: item.stoppet ? 'Stoppet' : item.ferdig ? 'Ferdig' : 'Pågår'
 		}
 	})
 }
