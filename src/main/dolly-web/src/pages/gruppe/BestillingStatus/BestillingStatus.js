@@ -74,14 +74,11 @@ export default class BestillingStatus extends PureComponent {
 			}, this.TIMEOUT_BEFORE_HIDE)
 		}
 
-		// TODO: Check if timestamp endrer seg (data.timestapm == this.state.timeStamp)
 		const liveTimeStamp = new Date(data.sistOppdatert).getTime()
 		const oldTimeStamp = new Date(this.state.sistOppdatert).getTime()
 
 		if (liveTimeStamp == oldTimeStamp) {
-			// console.log(this.state.lastUpdated)
 			this.setState({ failureIntervalCounter: (this.state.failureIntervalCounter += 1) })
-
 			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
 			this.state.failureIntervalCounter == 20 && this.setState({ failed: true })
 		} else {
