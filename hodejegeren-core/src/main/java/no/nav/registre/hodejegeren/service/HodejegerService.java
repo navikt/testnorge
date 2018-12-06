@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
@@ -63,7 +65,7 @@ public class HodejegerService {
     @Autowired
     private ValidationService validationService;
 
-    public List<Long> puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
+    public ResponseEntity puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         final Map<String, Integer> antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
         final List<Endringskoder> sorterteEndringskoder = filtrerOgSorterBestilteEndringskoder(antallMeldingerPerEndringskode.keySet());
         List<Long> ids = new ArrayList<>();
@@ -95,6 +97,7 @@ public class HodejegerService {
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             } catch (ManglendeInfoITpsException e) {
+                e.getClass().getName();
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
@@ -102,7 +105,7 @@ public class HodejegerService {
                         .addMessage(e.getMessage() + " (ManglendeInfoITPSException) - endringskode: " + endringskode.getEndringskode())
                         .addCause(e);
 
-                log.error(getMessageFromJson(e.getMessage()), e);
+                log.error(e.getMessage(), e);
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             } catch (HttpStatusCodeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
@@ -128,10 +131,10 @@ public class HodejegerService {
         }
 
         if (ikkeFullfoertBehandlingExceptionsContainer != null) {
-            throw ikkeFullfoertBehandlingExceptionsContainer;
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ikkeFullfoertBehandlingExceptionsContainer);
         }
 
-        return ids;
+        return ResponseEntity.status(HttpStatus.CREATED).body(ids);
     }
 
     private String getMessageFromJson(String responseBody) {

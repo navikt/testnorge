@@ -86,7 +86,8 @@ public class GenererSyntetiskeMeldingerCompTest {
         stubIdentpool();
 
         GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, "t10", antallMeldingerPerAarsakskode);
-        List<Long> meldingsIderITpsf = triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
+
+        List<Long> meldingsIderITpsf = (List<Long>) triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest).getBody();
 
         assertEquals(4, expectedMeldingsIdsITpsf.size());
         assertEquals(expectedMeldingsIdsITpsf, meldingsIderITpsf);
