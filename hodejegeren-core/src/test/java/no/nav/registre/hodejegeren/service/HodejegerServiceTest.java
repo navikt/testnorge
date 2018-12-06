@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -197,7 +196,7 @@ public class HodejegerServiceTest {
         try {
             hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
         } catch (Exception e) {
-            verify(tpsfConsumer, times(1)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
+            verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
 
             assertTrue(listAppender.list.toString().contains("Noe feilet under lagring til TPSF"));
             assertTrue(listAppender.list.toString().contains("01010101010"));
@@ -228,7 +227,7 @@ public class HodejegerServiceTest {
         } catch (RuntimeException e) {
             assertEquals(3, listAppender.list.size());
             assertTrue(listAppender.list.toString()
-                    .contains("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: " + ids.toString()));
+                    .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s", 123, ids.toString())));
         }
     }
 }

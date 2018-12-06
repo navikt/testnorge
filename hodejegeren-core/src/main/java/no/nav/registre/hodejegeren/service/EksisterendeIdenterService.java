@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
@@ -42,6 +42,7 @@ public class EksisterendeIdenterService {
     private static final String IDENT = "ident";
     private static final String STATSBORGER_NORGE = "NORGE";
     private static final String SIVILSTANDSENDRING_AARSAKSKODE = "85";
+    private static final int ANTALL_FORSOEK_PER_AARSAK = 3;
 
     @Autowired
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
@@ -184,7 +185,7 @@ public class EksisterendeIdenterService {
 
                 if (endringskode.getEndringskode().equals(Endringskoder.SEPERASJON.getEndringskode())) {
                     meldingPartner.setSivilstand(KoderForSivilstand.SEPARERT.getSivilstandKodeSKD());
-                } else if(endringskode.getEndringskode().equals(Endringskoder.SKILSMISSE.getEndringskode())) {
+                } else if (endringskode.getEndringskode().equals(Endringskoder.SKILSMISSE.getEndringskode())) {
                     meldingPartner.setSivilstand(KoderForSivilstand.SKILT.getSivilstandKodeSKD());
                 }
                 ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerFdato(meldingPartner.getFodselsdato());
@@ -198,7 +199,7 @@ public class EksisterendeIdenterService {
                 i++; //Neste melding
             } else {
                 log.warn("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: {} og {}",
-                        ident , identPartner);
+                        ident, identPartner);
                 //Prøver på nytt med å finne et nytt par for samme melding
             }
         }
@@ -272,18 +273,40 @@ public class EksisterendeIdenterService {
     private Map<String, String> getIdentWithStatus(List<String> identer, Endringskoder endringskode, String environment,
             Predicate<Map<String, String>> predicate) {
         Map<String, String> statusQuoIdent;
-        String randomIdent;
         do {
+            statusQuoIdent = findExistingPersonStatusInTps(identer, endringskode, environment);
+        } while (predicate.test(statusQuoIdent));
+        return statusQuoIdent;
+    }
+
+    /**
+     * Metoden prøver å hente ut statusQuo på identer.
+     * Den prøver inntil den finner noen som eksisterer i TPS (ikke kaster ManglerEksisterendeIdentException)
+     * eller antall forsøk overstiger et gitt antall.
+     */
+    private Map<String, String> findExistingPersonStatusInTps(List<String> identer, Endringskoder endringskode, String environment) {
+        Map<String, String> statusQuoIdent = new HashMap<>();
+        String randomIdent = "";
+        int randomIndex;
+
+        for (int i = 1; i <= ANTALL_FORSOEK_PER_AARSAK; i++) {
             if (identer.isEmpty()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding. For få identer i " +
                         "listen av identer fra TPSF avspillergruppen.");
             }
-            int randomIndex = rand.nextInt(identer.size());
+            randomIndex = rand.nextInt(identer.size());
             randomIdent = identer.remove(randomIndex);
-            statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
-            statusQuoIdent.put(IDENT, randomIdent);
+            try {
+                statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
+                break;
+            } catch (ManglendeInfoITpsException e) {
+                if (i >= ANTALL_FORSOEK_PER_AARSAK) {
+                    log.error("Kunne ikke finne ident med gyldig status quo i TPS etter {} forsøk.", i);
+                    throw e;
+                }
+            }
         }
-        while (predicate.test(statusQuoIdent));
+        statusQuoIdent.put(IDENT, randomIdent);
         return statusQuoIdent;
     }
 
