@@ -26,12 +26,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -87,17 +90,20 @@ public class FeilhaandteringCompTest {
         stubTPSF(gruppeId);
         stubTpsSynt(INNVANDRING.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json");
         stubTpsSynt(NAVNEENDRING_FOERSTE.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode06_2meldinger_Response.json");
-        try {
-            GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, t10, antallMeldingerPerAarsakskode);
-            triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
-            fail();
-        } catch (IkkeFullfoertBehandlingExceptionsContainer e) {
+
+        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, t10, antallMeldingerPerAarsakskode);
+        ResponseEntity response = triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
+
+        if (response.getStatusCode().equals(HttpStatus.CONFLICT)) {
+            IkkeFullfoertBehandlingExceptionsContainer exception = (IkkeFullfoertBehandlingExceptionsContainer) response.getBody();
             assertEquals(3, listAppender.list.size());
             assertTrue(listAppender.list.toString()
                     .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
                             123, expectedMeldingsIdsITpsf.toString())));
-            assertEquals(2, e.getIds().size());
-            assertTrue(e.getIds().containsAll(expectedMeldingsIdsITpsf));
+            assertEquals(2, (exception.getIds().size()));
+            assertTrue(exception.getIds().containsAll(expectedMeldingsIdsITpsf));
+        } else {
+            fail();
         }
     }
 

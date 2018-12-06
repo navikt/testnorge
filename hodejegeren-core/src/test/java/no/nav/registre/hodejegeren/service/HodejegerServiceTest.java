@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -28,12 +29,15 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import no.nav.registre.hodejegeren.exception.IkkeFullfoertBehandlingExceptionsContainer;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
@@ -81,7 +85,7 @@ public class HodejegerServiceTest {
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), eq(3))).thenReturn(treSkdmeldinger);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), eq(4))).thenReturn(fireSkdmeldinger);
 
-        final List<Long> ids = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(GRUPPE_ID, "t1", antallMeldingerPerEndringskode));
+        hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(GRUPPE_ID, "t1", antallMeldingerPerEndringskode));
 
         verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSMELDING.getEndringskode(), 3);
         verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 4);
@@ -221,13 +225,15 @@ public class HodejegerServiceTest {
                 .when(eksisterendeIdenterService).behandleEksisterendeIdenter(any(), any(), eq(ENDRING_OPPHOLDSTILLATELSE), any());
         when(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(any(), any())).thenReturn(ids);
 
-        try {
-            hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
-            fail();
-        } catch (RuntimeException e) {
+        ResponseEntity response = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
+
+        if (response.getStatusCode().equals(HttpStatus.CONFLICT)) {
+            IkkeFullfoertBehandlingExceptionsContainer exception = (IkkeFullfoertBehandlingExceptionsContainer) response.getBody();
             assertEquals(3, listAppender.list.size());
             assertTrue(listAppender.list.toString()
                     .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s", 123, ids.toString())));
+        } else {
+            fail();
         }
     }
 }

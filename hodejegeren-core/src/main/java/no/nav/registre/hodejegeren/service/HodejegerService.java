@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
@@ -63,7 +65,7 @@ public class HodejegerService {
     @Autowired
     private ValidationService validationService;
 
-    public List<Long> puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
+    public ResponseEntity puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         final Map<String, Integer> antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
         final List<Endringskoder> sorterteEndringskoder = filtrerOgSorterBestilteEndringskoder(antallMeldingerPerEndringskode.keySet());
         List<Long> ids = new ArrayList<>();
@@ -95,32 +97,20 @@ public class HodejegerService {
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             } catch (ManglendeInfoITpsException e) {
-                if (ikkeFullfoertBehandlingExceptionsContainer == null) {
-                    ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
-                }
-                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
-                        .addMessage(e.getMessage() + " (ManglendeInfoITPSException) - endringskode: " + endringskode.getEndringskode())
-                        .addCause(e);
+                ikkeFullfoertBehandlingExceptionsContainer = opprettOgFyllIkkeFullfoertBehandlingExceptionContainer(
+                        ikkeFullfoertBehandlingExceptionsContainer, e, ids, endringskode);
 
-                log.error(getMessageFromJson(e.getMessage()), e);
+                log.error(e.getMessage(), e);
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             } catch (HttpStatusCodeException e) {
-                if (ikkeFullfoertBehandlingExceptionsContainer == null) {
-                    ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
-                }
-                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
-                        .addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode())
-                        .addCause(e);
+                ikkeFullfoertBehandlingExceptionsContainer = opprettOgFyllIkkeFullfoertBehandlingExceptionContainer(
+                        ikkeFullfoertBehandlingExceptionsContainer, e, ids, endringskode);
 
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             } catch (RuntimeException e) {
-                if (ikkeFullfoertBehandlingExceptionsContainer == null) {
-                    ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
-                }
-                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
-                        .addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode())
-                        .addCause(e);
+                ikkeFullfoertBehandlingExceptionsContainer = opprettOgFyllIkkeFullfoertBehandlingExceptionContainer(
+                        ikkeFullfoertBehandlingExceptionsContainer, e, ids, endringskode);
 
                 log.error(e.getMessage(), e);
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
@@ -128,10 +118,10 @@ public class HodejegerService {
         }
 
         if (ikkeFullfoertBehandlingExceptionsContainer != null) {
-            throw ikkeFullfoertBehandlingExceptionsContainer;
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ikkeFullfoertBehandlingExceptionsContainer);
         }
 
-        return ids;
+        return ResponseEntity.status(HttpStatus.CREATED).body(ids);
     }
 
     private String getMessageFromJson(String responseBody) {
@@ -228,5 +218,19 @@ public class HodejegerService {
         log.info(message.toString());
 
         return listerMedIdenter;
+    }
+
+    private IkkeFullfoertBehandlingExceptionsContainer opprettOgFyllIkkeFullfoertBehandlingExceptionContainer(
+            IkkeFullfoertBehandlingExceptionsContainer ie,
+            Exception e,
+            List<Long> ids,
+            Endringskoder endringskode) {
+        if (ie == null) {
+            ie = new IkkeFullfoertBehandlingExceptionsContainer();
+        }
+        ie.addIds(ids)
+                .addMessage(e.getMessage() + " (" + e.getClass().getName() + " - endringskode: " + endringskode.getEndringskode())
+                .addCause(e);
+        return ie;
     }
 }
