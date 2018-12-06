@@ -25,14 +25,14 @@ import no.nav.registre.hodejegeren.testutils.AssertionUtils;
 @RestClientTest(TpsSyntetisererenConsumer.class)
 @ActiveProfiles("itest")
 public class TpsSyntetisererenConsumerITest {
-    
+
     @Autowired
     private TpsSyntetisererenConsumer consumer;
     @Autowired
     private MockRestServiceServer server;
     @Value("${tps-syntetisereren.rest-api.url}")
     private String serverUrl;
-    
+
     /**
      * Tester om metoden bygger korrekt URI og queryParam når den konsumerer Tps Synt.
      */
@@ -43,12 +43,12 @@ public class TpsSyntetisererenConsumerITest {
         this.server.expect(requestToUriTemplate(serverUrl +
                 "/generate?endringskode={endringskode}&antallMeldinger={antall}&service=hodejegeren", endringskode, antallMeldinger))
                 .andRespond(withSuccess("[null]", MediaType.APPLICATION_JSON));
-        
+
         consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
-        
+
         this.server.verify();
     }
-    
+
     /**
      * Tester at alle navnene i forventet responsmelding fra TPS Syntetisereren
      * blir med i java-objektet RsMeldingstype1Felter.
@@ -60,9 +60,9 @@ public class TpsSyntetisererenConsumerITest {
         this.server.expect(requestToUriTemplate(serverUrl +
                 "/generate?endringskode={endringskode}&antallMeldinger={antall}&service=hodejegeren", endringskode, antallMeldinger))
                 .andRespond(withSuccess(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"), MediaType.APPLICATION_JSON));
-        
+
         List<RsMeldingstype> skdmeldinger = consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
-        
+
         List<String> ignoredFields = Arrays.asList("getSaksid", "getEmbete", "getSakstype",
                 "getVedtaksdato", "getInternVergeid", "getVergeFnrDnr", "getVergetype",
                 "getMandattype", "getMandatTekst", "getReserverFramtidigBruk");

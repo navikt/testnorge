@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import no.nav.registre.hodejegeren.ApplicationStarter;
-import no.nav.registre.hodejegeren.exception.IkkeFullfoertBehandlingException;
+import no.nav.registre.hodejegeren.exception.IkkeFullfoertBehandlingExceptionsContainer;
 import no.nav.registre.hodejegeren.provider.rs.TriggeSyntetiseringController;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.hodejegeren.service.HodejegerService;
@@ -92,13 +91,13 @@ public class FeilhaandteringCompTest {
             GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, t10, antallMeldingerPerAarsakskode);
             triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
             fail();
-        } catch (IkkeFullfoertBehandlingException e) {
-            assertEquals(4, listAppender.list.size());
+        } catch (IkkeFullfoertBehandlingExceptionsContainer e) {
+            assertEquals(3, listAppender.list.size());
             assertTrue(listAppender.list.toString()
-                    .contains("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: " + expectedMeldingsIdsITpsf.toString()));
+                    .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
+                            123, expectedMeldingsIdsITpsf.toString())));
             assertEquals(2, e.getIds().size());
-            assertTrue(e.getIds().contains(expectedMeldingsIdsITpsf.get(0)));
-            assertTrue(e.getIds().contains(expectedMeldingsIdsITpsf.get(1)));
+            assertTrue(e.getIds().containsAll(expectedMeldingsIdsITpsf));
         }
     }
 

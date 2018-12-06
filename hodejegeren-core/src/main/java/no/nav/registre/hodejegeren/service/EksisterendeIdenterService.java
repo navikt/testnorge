@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -186,7 +185,7 @@ public class EksisterendeIdenterService {
 
                 if (endringskode.getEndringskode().equals(Endringskoder.SEPERASJON.getEndringskode())) {
                     meldingPartner.setSivilstand(KoderForSivilstand.SEPARERT.getSivilstandKodeSKD());
-                } else if(endringskode.getEndringskode().equals(Endringskoder.SKILSMISSE.getEndringskode())) {
+                } else if (endringskode.getEndringskode().equals(Endringskoder.SKILSMISSE.getEndringskode())) {
                     meldingPartner.setSivilstand(KoderForSivilstand.SKILT.getSivilstandKodeSKD());
                 }
                 ((RsMeldingstype1Felter) meldinger.get(i)).setEktefellePartnerFdato(meldingPartner.getFodselsdato());
@@ -200,7 +199,7 @@ public class EksisterendeIdenterService {
                 i++; //Neste melding
             } else {
                 log.warn("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: {} og {}",
-                        ident , identPartner);
+                        ident, identPartner);
                 //Prøver på nytt med å finne et nytt par for samme melding
             }
         }
@@ -273,16 +272,23 @@ public class EksisterendeIdenterService {
 
     private Map<String, String> getIdentWithStatus(List<String> identer, Endringskoder endringskode, String environment,
             Predicate<Map<String, String>> predicate) {
-        Map<String, String> statusQuoIdent = new HashMap<>();
-        String randomIdent = "";
+        Map<String, String> statusQuoIdent;
         do {
-            statusQuoIdent = checkValidStatusQuo(identer, statusQuoIdent, randomIdent, endringskode, environment);
+            statusQuoIdent = findExistingPersonStatusInTps(identer, endringskode, environment);
         } while (predicate.test(statusQuoIdent));
         return statusQuoIdent;
     }
 
-    private Map<String, String> checkValidStatusQuo(List<String> identer, Map<String, String> statusQuoIdent, String randomIdent, Endringskoder endringskode, String environment) {
+    /**
+     * Metoden prøver å hente ut statusQuo på identer.
+     * Den prøver inntil den finner noen som eksisterer i TPS (ikke kaster ManglerEksisterendeIdentException)
+     * eller antall forsøk overstiger et gitt antall.
+     */
+    private Map<String, String> findExistingPersonStatusInTps(List<String> identer, Endringskoder endringskode, String environment) {
+        Map<String, String> statusQuoIdent = new HashMap<>();
+        String randomIdent = "";
         int randomIndex;
+
         for (int i = 1; i <= ANTALL_FORSOEK_PER_AARSAK; i++) {
             if (identer.isEmpty()) {
                 throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding. For få identer i " +
@@ -294,7 +300,7 @@ public class EksisterendeIdenterService {
                 statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
                 break;
             } catch (ManglendeInfoITpsException e) {
-                if (i == ANTALL_FORSOEK_PER_AARSAK) {
+                if (i >= ANTALL_FORSOEK_PER_AARSAK) {
                     log.error("Kunne ikke finne ident med gyldig status quo i TPS etter {} forsøk.", i);
                     throw e;
                 }

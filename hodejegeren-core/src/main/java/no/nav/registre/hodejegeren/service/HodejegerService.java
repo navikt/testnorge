@@ -15,17 +15,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.exception.IkkeFullfoertBehandlingException;
+import no.nav.registre.hodejegeren.exception.IkkeFullfoertBehandlingExceptionsContainer;
 import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
@@ -45,6 +43,8 @@ public class HodejegerService {
     public static final String GIFTE_IDENTER_I_NORGE = "gifteIdenterINorge";
     public static final String SINGLE_IDENTER_I_NORGE = "singleIdenterINorge";
     public static final String BRUKTE_IDENTER_I_DENNE_BOLKEN = "brukteIdenterIDenneBolken";
+    private static final String FEILMELDING_TEKST = "Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe {}): {}";
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
@@ -68,7 +68,7 @@ public class HodejegerService {
         String environment = genereringsOrdreRequest.getMiljoe();
 
         Map<String, List<String>> listerMedIdenter = opprettListerMedIdenter(genereringsOrdreRequest);
-        IkkeFullfoertBehandlingException ikkeFullfoertBehandlingException = null;
+        IkkeFullfoertBehandlingExceptionsContainer ikkeFullfoertBehandlingExceptionsContainer = null;
 
         for (Endringskoder endringskode : sorterteEndringskoder) {
             try {
@@ -92,35 +92,30 @@ public class HodejegerService {
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             } catch (HttpStatusCodeException e) {
-                if (ikkeFullfoertBehandlingException == null) {
-                    ikkeFullfoertBehandlingException = new IkkeFullfoertBehandlingException(ids, e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
-                } else {
-                    ikkeFullfoertBehandlingException.addIds(ids);
-                    ikkeFullfoertBehandlingException.addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
+                if (ikkeFullfoertBehandlingExceptionsContainer == null) {
+                    ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
+                        .addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode())
+                        .addCause(e);
+
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                log.error(Arrays.toString(e.getStackTrace()));
-                log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
-                // throw new IkkeFullfoertBehandlingException(e.getMessage() + " (HttpStatusCodeException) - Skdmeldinger som var ferdig
-                // behandlet før noe feilet, " +
-                // "har følgende id-er i TPSF", e, ids);
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             } catch (RuntimeException e) {
-                if (ikkeFullfoertBehandlingException == null) {
-                    ikkeFullfoertBehandlingException = new IkkeFullfoertBehandlingException(ids, e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
-                } else {
-                    ikkeFullfoertBehandlingException.addIds(ids);
-                    ikkeFullfoertBehandlingException.addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode());
+                if (ikkeFullfoertBehandlingExceptionsContainer == null) {
+                    ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
-                log.error(Arrays.toString(e.getStackTrace()));
-                log.warn("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF: {}", ids);
-                // throw new IkkeFullfoertBehandlingException(e.getMessage() + " (RuntimeException) - Skdmeldinger som var ferdig behandlet før
-                // noe feilet, " +
-                // "har følgende id-er i TPSF", e, ids);
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
+                        .addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode())
+                        .addCause(e);
+
+                log.error(e.getMessage(), e);
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             }
         }
 
-        if (ikkeFullfoertBehandlingException != null) {
-            throw ikkeFullfoertBehandlingException;
+        if (ikkeFullfoertBehandlingExceptionsContainer != null) {
+            throw ikkeFullfoertBehandlingExceptionsContainer;
         }
 
         return ids;
@@ -136,6 +131,7 @@ public class HodejegerService {
 
     /**
      * Metoden tar imot en liste med endringskoder, og sørger for at denne blir filtrert og sortert
+     *
      * @param endringskode
      * @return sortert liste over endringskoder. Sortert på rekkefølge gitt i enumklasse {@link Endringskoder}
      */
