@@ -99,7 +99,6 @@ public class HodejegerService {
                 ikkeFullfoertBehandlingExceptionsContainer.addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
 
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                log.error(Arrays.toString(e.getStackTrace()));
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             } catch (RuntimeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
@@ -108,7 +107,7 @@ public class HodejegerService {
                 ikkeFullfoertBehandlingExceptionsContainer.addIds(ids);
                 ikkeFullfoertBehandlingExceptionsContainer.addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode());
 
-                log.error(Arrays.toString(e.getStackTrace()));
+                log.error(e.getMessage(), e);
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             }
         }
