@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class IkkeFullfoertBehandlingExceptionsContainer extends HodejegerenFunctionalException {
 
-    private final Set<Long> ids= new LinkedHashSet<>();
-    private final List<String> messages= new ArrayList<>();
-    private final List<Throwable> causes= new ArrayList<>();
+    private final Set<Long> ids = new LinkedHashSet<>();
+    private final List<String> messages = new ArrayList<>();
+    private final List<Throwable> causes = new ArrayList<>();
 
     public IkkeFullfoertBehandlingExceptionsContainer addIds(List<Long> ids) {
         this.ids.addAll(ids);
@@ -26,8 +26,9 @@ public class IkkeFullfoertBehandlingExceptionsContainer extends HodejegerenFunct
         return this;
     }
 
+    @Override
     public String getMessage() {
-        return "Messages: "+ getMessages().toString();
+        return String.format("Messages: %s", getMessages());
     }
 
     public IkkeFullfoertBehandlingExceptionsContainer addCause(Throwable e) {
