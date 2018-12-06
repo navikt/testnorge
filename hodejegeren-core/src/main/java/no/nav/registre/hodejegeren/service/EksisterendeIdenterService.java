@@ -301,8 +301,8 @@ public class EksisterendeIdenterService {
                 break;
             } catch (ManglendeInfoITpsException e) {
                 if (i >= ANTALL_FORSOEK_PER_AARSAK) {
-                    log.error("Kunne ikke finne ident med gyldig status quo i TPS etter {} forsøk.", i);
-                    throw e;
+                    throw new ManglendeInfoITpsException("Kunne ikke finne ident med gyldig status quo i TPS etter " + i + " forsøk. " +
+                            "Status på siste forsøk: " + e.getMessage());
                 }
             }
         }
