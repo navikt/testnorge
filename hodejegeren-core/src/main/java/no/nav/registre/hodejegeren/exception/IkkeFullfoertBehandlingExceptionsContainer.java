@@ -14,12 +14,24 @@ public class IkkeFullfoertBehandlingExceptionsContainer extends HodejegerenFunct
 
     private final Set<Long> ids= new LinkedHashSet<>();
     private final List<String> messages= new ArrayList<>();
+    private final List<Throwable> causes= new ArrayList<>();
 
-    public void addIds(List<Long> ids) {
+    public IkkeFullfoertBehandlingExceptionsContainer addIds(List<Long> ids) {
         this.ids.addAll(ids);
+        return this;
     }
 
-    public void addMessage(String message) {
+    public IkkeFullfoertBehandlingExceptionsContainer addMessage(String message) {
         this.messages.add(message);
+        return this;
+    }
+
+    public String getMessage() {
+        return "Messages: "+ getMessages().toString();
+    }
+
+    public IkkeFullfoertBehandlingExceptionsContainer addCause(Throwable e) {
+        this.causes.add(e);
+        return this;
     }
 }

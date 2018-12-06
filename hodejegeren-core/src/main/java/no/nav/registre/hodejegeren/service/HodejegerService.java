@@ -95,8 +95,9 @@ public class HodejegerService {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
-                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids);
-                ikkeFullfoertBehandlingExceptionsContainer.addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode());
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
+                        .addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode())
+                        .addCause(e);
 
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
@@ -104,8 +105,9 @@ public class HodejegerService {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
-                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids);
-                ikkeFullfoertBehandlingExceptionsContainer.addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode());
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
+                        .addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode())
+                        .addCause(e);
 
                 log.error(e.getMessage(), e);
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);

@@ -92,7 +92,7 @@ public class FeilhaandteringCompTest {
             triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
             fail();
         } catch (IkkeFullfoertBehandlingExceptionsContainer e) {
-            assertEquals(4, listAppender.list.size());
+            assertEquals(3, listAppender.list.size());
             assertTrue(listAppender.list.toString()
                     .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
                             123, expectedMeldingsIdsITpsf.toString())));
