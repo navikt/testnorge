@@ -4,50 +4,61 @@ import DataFormatter from '~/utils/DataFormatter'
 const _excludeList = ['NULL', 'GLAD']
 
 const _mapperList = {
-	SPFO: 'KODE 7 - ',
-	SPSF: 'KODE 6 - '
+	SPFO: 'KODE 7 - Sperret adresse, fortrolig',
+	SPSF: 'KODE 6 - Sperret adresse, strengt fortrolig'
 }
 
 export const NormalizeTeamListForDropdown = ({ data }) => ({
 	options: data.map(team => ({ value: team.id, label: team.navn }))
 })
 
-// Special function for spraakvisning
-const SortSpraakArray = data => {
-	const fav = ['ES', 'EN', 'NN', 'NB']
+// Specialbehov for modifisering og sortering av kodeverk
+export const SortKodeverkArray = data => {
 	const koderArray = data.koder
+	if (data.name == 'Språk') {
+		const spesKoder = ['ES', 'EN', 'NN', 'NB']
 
-	fav.forEach(value => {
-		for (var i = 0; i < koderArray.length - 1; i++) {
-			const temp = koderArray[i]
-			// TODO: Fjern dette etter kodeverk har fjernet typo
-			if (value == temp.value) {
-				if (value == 'NB') temp.label = 'Norwegian, Bokmål'
-				if (value == 'NN') temp.label = 'Norwegian, Nynorsk'
-				koderArray.splice(i, 1) && koderArray.unshift(temp)
+		spesKoder.forEach(value => {
+			for (var i = 0; i < koderArray.length - 1; i++) {
+				const temp = koderArray[i]
+				// TODO: Fjern dette etter kodeverk har fjernet typo
+				if (value == temp.value) {
+					if (value == 'NB') temp.label = 'Norwegian, Bokmål'
+					if (value == 'NN') temp.label = 'Norwegian, Nynorsk'
+					koderArray.splice(i, 1) && koderArray.unshift(temp)
+				}
 			}
-		}
-	})
+		})
+	}
+
+	if (data.name == 'Diskresjonskoder') {
+		const spesKoder = [
+			{ value: 'SPFO', label: 'KODE 7 - Sperret adresse, fortrolig' },
+			{ value: 'SPSF', label: 'KODE 6 - Sperret adresse, strengt fortrolig' }
+		]
+
+		spesKoder.forEach(kode => {
+			for (var i = 0; i < koderArray.length - 1; i++) {
+				const temp = koderArray[i]
+				if (kode.value == temp.value) {
+					console.log(temp, 'temp')
+					temp.label = kode.label
+					koderArray.splice(i, 1) && koderArray.unshift(temp)
+				}
+			}
+		})
+	}
+
 	return koderArray
 }
 
 export const NormalizeKodeverkForDropdown = ({ data }) => {
-	let sortedArray
-	data.name == 'Språk' ? (sortedArray = SortSpraakArray(data)) : null
-
-	if (sortedArray) {
-		return {
-			options: sortedArray.map(kode => ({
-				value: kode.value,
-				label: kode.label
-			}))
-		}
-	}
+	const sortedArray = SortKodeverkArray(data)
 
 	return {
-		options: data.koder.filter(val => !_excludeList.includes(val.value)).map(kode => ({
+		options: sortedArray.filter(val => !_excludeList.includes(val.value)).map(kode => ({
 			value: kode.value,
-			label: _mapperList[kode.value] ? _mapperList[kode.value] + kode.label : kode.label
+			label: kode.label
 		}))
 	}
 }

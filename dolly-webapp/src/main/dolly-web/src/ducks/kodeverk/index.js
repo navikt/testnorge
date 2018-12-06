@@ -1,6 +1,7 @@
 import { DollyApi } from '~/service/Api'
 import { createAction, handleActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
+import { SortKodeverkArray } from '~/service/services/dolly/Utils'
 
 export const getKodeverk = createAction(
 	'GET_KODEVERK',
@@ -32,7 +33,9 @@ export const fetchKodeverk = kodeverkNavn => (dispatch, getState) => {
 
 export const kodeverkLabelSelector = (state, kodeverkNavn, value) => {
 	const kodeverk = state.kodeverk[kodeverkNavn]
+
 	if (!kodeverk) return null
 
-	return kodeverk.koder.find(kode => kode.value === value)
+	const kodeArray = SortKodeverkArray(kodeverk)
+	return kodeArray.find(kode => kode.value === value)
 }
