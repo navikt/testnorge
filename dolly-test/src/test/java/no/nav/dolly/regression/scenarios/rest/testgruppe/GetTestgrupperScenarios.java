@@ -14,9 +14,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Set;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
@@ -24,14 +26,16 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.service.BrukerService;
 
+@Transactional
 public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
 
     @Autowired
     private BrukerService brukerService;
 
     @Test
+    @Ignore
     public void hentAlleTestgrupperTilknyttetBrukerIgjennomFavoritterOgTeammedlemskap() throws Exception {
-        Bruker bruker2 = brukerRepository.save(Bruker.builder().navIdent("navident2").build());
+        Bruker bruker2 = brukerRepository.save(Bruker.builder().navIdent(STANDARD_NAV_IDENT).build());
 
         Team team2 = teamRepository.save(Team.builder()
                 .navn("team2")
@@ -93,8 +97,8 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
         assertThat(resultat.size(), is(3));
 
         assertThat(resultat, hasItem(both(
-                hasProperty("navn", equalTo(standardGruppenavn))).and(
-                hasProperty("hensikt", equalTo(standardGruppeHensikt))).and(
+                hasProperty("navn", equalTo(STANDARD_GRUPPE_NAVN))).and(
+                hasProperty("hensikt", equalTo(STANDARD_GRUPPE_HENSIKT))).and(
                 hasProperty("opprettetAvNavIdent", equalTo(standardBruker.getNavIdent())))
                 ));
 

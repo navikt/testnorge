@@ -1,10 +1,14 @@
 package no.nav.dolly.mapper.strategy;
 
+import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
+
+import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
@@ -26,6 +30,19 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                                 .navn(testgruppe.getTeamtilhoerighet().getNavn())
                                 .id(testgruppe.getTeamtilhoerighet().getId())
                                 .build());
+                        rsTestgruppe.setErMedlemAvTeamSomEierGruppe(isMedlem(testgruppe.getTeamtilhoerighet().getMedlemmer()));
+                        rsTestgruppe.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
+                    }
+
+                    private boolean isMedlem(Set<Bruker> brukere) {
+                        boolean isMedlem = false;
+                        for (Bruker bruker : brukere) {
+                            if (getLoggedInNavIdent().equalsIgnoreCase(bruker.getNavIdent())) {
+                                isMedlem = true;
+                                break;
+                            }
+                        }
+                        return isMedlem;
                     }
                 })
                 .byDefault()

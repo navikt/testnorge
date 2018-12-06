@@ -79,7 +79,7 @@ public class BrukerService {
         Testgruppe grupper = gruppeService.fetchTestgruppeById(gruppeId);
 
         Bruker bruker = fetchBruker(getLoggedInNavIdent());
-        bruker.setFavoritter(newHashSet(grupper));
+        bruker.getFavoritter().addAll(newHashSet(grupper));
         return brukerRepository.save(bruker);
     }
 

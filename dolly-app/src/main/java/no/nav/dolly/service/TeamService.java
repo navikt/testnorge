@@ -138,7 +138,7 @@ public class TeamService {
     }
 
     public List<Team> fetchTeamsByMedlemskapInTeams(String navIdent) {
-        return teamRepository.findByMedlemmer_NavIdent(navIdent);
+        return teamRepository.findByMedlemmerNavIdent(navIdent);
     }
 
     public Team saveTeamToDB(Team team) {

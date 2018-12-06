@@ -30,14 +30,14 @@ public class UpdateFavoritterScenarios extends BrukerTestCaseBase {
 
         RsBruker responseBruker = convertMvcResultToObject(mvcResult, RsBruker.class);
 
-        assertThat(responseBruker.getNavIdent(), is(standardNavIdent));
+        assertThat(responseBruker.getNavIdent(), is(STANDARD_NAV_IDENT));
         assertThat(responseBruker.getTeams().size(), is(1));
         assertThat(responseBruker.getFavoritter().size(), is(1));
     }
 
     @Test
     public void fjernEnFavorittFraBruker() throws Exception {
-        Bruker foerAddBruker = brukerRepository.findBrukerByNavIdent(standardNavIdent);
+        Bruker foerAddBruker = brukerRepository.findBrukerByNavIdent(STANDARD_NAV_IDENT);
         foerAddBruker.setFavoritter(newHashSet(singletonList(standardTestgruppe)));
         Bruker foerFjernBruker = brukerRepository.save(foerAddBruker);
         assertThat(foerFjernBruker.getFavoritter().size(), is(1));
@@ -53,7 +53,7 @@ public class UpdateFavoritterScenarios extends BrukerTestCaseBase {
 
         RsBruker res = convertMvcResultToObject(mvcResult, RsBruker.class);
 
-        assertThat(res.getNavIdent(), is(standardNavIdent));
+        assertThat(res.getNavIdent(), is(STANDARD_NAV_IDENT));
         assertThat(res.getTeams().size(), is(1));
         assertThat(res.getFavoritter().size(), is(0));
     }

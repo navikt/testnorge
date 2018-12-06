@@ -42,7 +42,7 @@ public class OpprettTeamScenarios extends TeamTestCaseBase{
         List<Team> foundTeams = teamRepository.findTeamsByEier(standardBruker);
         Team opprettetTeam = foundTeams.get(1);
 
-        assertThat(resultat.getEierNavIdent(), is(standardNavIdent));
+        assertThat(resultat.getEierNavIdent(), is(STANDARD_NAV_IDENT));
         assertThat(resultat.getBeskrivelse(), is("testteam"));
         assertThat(resultat.getNavn(), is("opprettetTeam"));
 

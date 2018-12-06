@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -54,10 +55,10 @@ public class Team {
 	@JoinColumn(name = "EIER", nullable = false)
 	private Bruker eier;
 	
-	@OneToMany(mappedBy = "teamtilhoerighet")
+	@OneToMany(mappedBy = "teamtilhoerighet", fetch = FetchType.EAGER)
 	private Set<Testgruppe> grupper;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "T_TEAM_MEDLEMMER",
 			joinColumns = @JoinColumn(name = "team_id"),
 			inverseJoinColumns = @JoinColumn(name = "bruker_id"))

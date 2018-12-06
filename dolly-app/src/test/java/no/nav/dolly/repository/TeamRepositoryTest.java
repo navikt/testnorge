@@ -156,7 +156,7 @@ public class TeamRepositoryTest {
 
         teamRepository.saveAll(asList(teamONE, teamTWO));
 
-        List<Team> teams = teamRepository.findByMedlemmer_NavIdent(brukere.get(1).getNavIdent());
+        List<Team> teams = teamRepository.findByMedlemmerNavIdent(brukere.get(1).getNavIdent());
 
         assertThat(teams.size(), is(2));
 

@@ -14,9 +14,6 @@ public class RsTestgruppeUtvidet extends RsTestgruppe{
 
 	private List<RsTestidentBestillingId> testidenter;
 
-	private boolean erMedlemAvTeamSomEierGruppe;
-	private boolean favorittIGruppen;
-
 	public List<RsBestilling> getBestillinger() {
 		if (bestillinger == null) {
 			bestillinger = new ArrayList<>();

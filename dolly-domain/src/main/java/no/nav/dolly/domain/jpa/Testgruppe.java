@@ -60,7 +60,7 @@ public class Testgruppe {
 	private LocalDate datoEndret;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "TILHOERER_TEAM")
+	@JoinColumn(name = "TILHOERER_TEAM", nullable = false)
 	private Team teamtilhoerighet;
 	
 	@OneToMany(mappedBy = "testgruppe", fetch = FetchType.LAZY)

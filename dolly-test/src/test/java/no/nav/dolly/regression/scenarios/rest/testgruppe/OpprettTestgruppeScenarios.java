@@ -32,9 +32,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
                 .build()
                 .convertToRealRsOpprettTestgruppe();
 
-        String url = endpointUrl;
-
-        mvcMock.perform(post(url)
+        mvcMock.perform(post(endpointUrl)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(convertObjectToJson(rsOpprettEndreTestgruppe)))
                 .andExpect(status().isCreated())
@@ -45,7 +43,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
         assertThat(gruppe.getId(), is(notNullValue()));
         assertThat(gruppe.getNavn(), is("mingruppe"));
         assertThat(gruppe.getHensikt(), is("hensikt"));
-        assertThat(gruppe.getOpprettetAv().getNavIdent(), is(standardNavIdent));
+        assertThat(gruppe.getOpprettetAv().getNavIdent(), is(STANDARD_NAV_IDENT));
     }
 
     @Test
@@ -57,9 +55,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
                 .build()
                 .convertToRealRsOpprettTestgruppe();
 
-        String url = endpointUrl;
-
-        mvcMock.perform(post(url)
+        mvcMock.perform(post(endpointUrl)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(convertObjectToJson(rsOpprettTestgruppe)))
                 .andExpect(status().isCreated())
@@ -67,18 +63,18 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
 
         Testgruppe gruppe = gruppeRepository.findByNavn("mingruppe");
         Team teamG1 = teamTestRepository.findByIdFetchMedlemmerEagerly(gruppe.getTeamtilhoerighet().getId());
-        Bruker brukerG1 = brukerTestRepository.findByNavIdentTeamsEagerly(standardNavIdent);
+        Bruker brukerG1 = brukerTestRepository.findByNavIdentTeamsEagerly(STANDARD_NAV_IDENT);
 
         assertThat(gruppe.getId(), is(notNullValue()));
         assertThat(gruppe.getNavn(), is("mingruppe"));
         assertThat(gruppe.getHensikt(), is("hensikt"));
-        assertThat(gruppe.getTeamtilhoerighet().getNavn(), is(standardNavIdent));
-        assertThat(gruppe.getOpprettetAv().getNavIdent(), is(standardNavIdent));
+        assertThat(gruppe.getTeamtilhoerighet().getNavn(), is(STANDARD_NAV_IDENT));
+        assertThat(gruppe.getOpprettetAv().getNavIdent(), is(STANDARD_NAV_IDENT));
 
-        assertThat(teamG1.getMedlemmer(), hasItem(hasProperty("navIdent", equalTo(standardNavIdent))));
-        assertThat(teamG1.getEier().getNavIdent(), is(standardNavIdent));
+        assertThat(teamG1.getMedlemmer(), hasItem(hasProperty("navIdent", equalTo(STANDARD_NAV_IDENT))));
+        assertThat(teamG1.getEier().getNavIdent(), is(STANDARD_NAV_IDENT));
 
-        assertThat(brukerG1.getTeams(), hasItem(hasProperty("navn", equalTo(standardNavIdent))));
+        assertThat(brukerG1.getTeams(), hasItem(hasProperty("navn", equalTo(STANDARD_NAV_IDENT))));
     }
 
     @Test
@@ -117,15 +113,15 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
         assertThat(gruppe.getId(), is(notNullValue()));
         assertThat(gruppe.getNavn(), is("mingruppe"));
         assertThat(gruppe.getHensikt(), is("hensikt"));
-        assertThat(gruppe.getTeamtilhoerighet().getNavn(), is(standardNavIdent));
-        assertThat(gruppe.getOpprettetAv().getNavIdent(), is(standardNavIdent));
+        assertThat(gruppe.getTeamtilhoerighet().getNavn(), is(STANDARD_NAV_IDENT));
+        assertThat(gruppe.getOpprettetAv().getNavIdent(), is(STANDARD_NAV_IDENT));
 
-        assertThat(teamG1.getMedlemmer(), hasItem(hasProperty("navn", equalTo(standardNavIdent))));
+        assertThat(teamG1.getMedlemmer(), hasItem(hasProperty("navn", equalTo(STANDARD_NAV_IDENT))));
 
         assertThat(gruppe2.getId(), is(notNullValue()));
         assertThat(gruppe2.getNavn(), is("mingruppe2"));
         assertThat(gruppe2.getHensikt(), is("hensikt2"));
-        assertThat(gruppe2.getTeamtilhoerighet().getNavn(), is(standardNavIdent));
-        assertThat(gruppe2.getOpprettetAv().getNavIdent(), is(standardNavIdent));
+        assertThat(gruppe2.getTeamtilhoerighet().getNavn(), is(STANDARD_NAV_IDENT));
+        assertThat(gruppe2.getOpprettetAv().getNavIdent(), is(STANDARD_NAV_IDENT));
     }
 }

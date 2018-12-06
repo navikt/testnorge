@@ -63,13 +63,13 @@ public class GetTeamsScenarios extends TeamTestCaseBase {
         assertThat(resultat.size(), is(2));
 
         assertThat(resultat, hasItem(both(
-                hasProperty(teamPropNavn, equalTo(standardTeamnavn))).and(
-                hasProperty(teamPropEierIdent, equalTo(standardNavIdent)))
+                hasProperty(TEAM_PROP_NAVN, equalTo(STANDARD_TEAM_NAVN))).and(
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(STANDARD_NAV_IDENT)))
         ));
 
         assertThat(resultat, hasItem(both(
-                hasProperty(teamPropNavn, equalTo("team2"))).and(
-                hasProperty(teamPropEierIdent, equalTo(bruker2.getNavIdent())))
+                hasProperty(TEAM_PROP_NAVN, equalTo("team2"))).and(
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(bruker2.getNavIdent())))
         ));
     }
 
@@ -85,18 +85,18 @@ public class GetTeamsScenarios extends TeamTestCaseBase {
         assertThat(resultat.size(), is(3));
 
         assertThat(resultat, hasItem(both(
-                hasProperty(teamPropNavn, equalTo(standardTeamnavn))).and(
-                hasProperty(teamPropEierIdent, equalTo(standardNavIdent)))
+                hasProperty(TEAM_PROP_NAVN, equalTo(STANDARD_TEAM_NAVN))).and(
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(STANDARD_NAV_IDENT)))
         ));
 
         assertThat(resultat, hasItem(both(
-                hasProperty(teamPropNavn, equalTo("team2"))).and(
-                hasProperty(teamPropEierIdent, equalTo(bruker2.getNavIdent())))
+                hasProperty(TEAM_PROP_NAVN, equalTo("team2"))).and(
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(bruker2.getNavIdent())))
         ));
 
         assertThat(resultat, hasItem(both(
-                hasProperty(teamPropNavn, equalTo("team3"))).and(
-                hasProperty(teamPropEierIdent, equalTo(bruker2.getNavIdent())))
+                hasProperty(TEAM_PROP_NAVN, equalTo("team3"))).and(
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(bruker2.getNavIdent())))
         ));
     }
 }
