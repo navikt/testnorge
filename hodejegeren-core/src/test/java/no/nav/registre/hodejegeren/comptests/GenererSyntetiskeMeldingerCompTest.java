@@ -15,9 +15,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +40,7 @@ import no.nav.registre.hodejegeren.provider.rs.requests.GenereringsOrdreRequest;
 @ActiveProfiles("itest")
 public class GenererSyntetiskeMeldingerCompTest {
 
-    private List<Long> expectedMeldingsIdsITpsf = Arrays.asList(120421016L, 110156008L);
+    private List<Long> expectedMeldingsIdsITpsf = new ArrayList<>();
     private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
     private long gruppeId = 123L;
     private Integer antallMeldinger = 2;
@@ -49,6 +52,11 @@ public class GenererSyntetiskeMeldingerCompTest {
     private String username;
     @Value("${testnorges.ida.credential.tpsf.password}")
     private String password;
+
+    @Before
+    public void setUp() {
+        expectedMeldingsIdsITpsf.addAll(Arrays.asList(120421016L, 110156008L));
+    }
 
     /**
      * Komponenttest av følgende scenario: Happypath-test med 2 innvandringsmeldinger.
@@ -71,6 +79,8 @@ public class GenererSyntetiskeMeldingerCompTest {
         HashMap<String, Integer> antallMeldingerPerAarsakskode = new HashMap<>();
         antallMeldingerPerAarsakskode.put(endringskodeInnvandringsmelding, antallMeldinger);
 
+        expectedMeldingsIdsITpsf.addAll(Arrays.asList(120421017L, 110156009L));
+
         stubTPSF(gruppeId);
         stubTpsSynt();
         stubIdentpool();
@@ -78,6 +88,7 @@ public class GenererSyntetiskeMeldingerCompTest {
         GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, "t10", antallMeldingerPerAarsakskode);
         List<Long> meldingsIderITpsf = triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
 
+        assertEquals(4, expectedMeldingsIdsITpsf.size());
         assertEquals(expectedMeldingsIdsITpsf, meldingsIderITpsf);
     }
 
@@ -111,7 +122,7 @@ public class GenererSyntetiskeMeldingerCompTest {
         // Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubTpsfFiltrerIdenterPaaAarsakskode(gruppeId, VIGSEL.getAarsakskode(), "[]");
 
-        // Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
+        // Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur:
         stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
                 .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
                 .withBasicAuth(username, password)

@@ -1,5 +1,6 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.opprettStatsborgerendringsmelding;
 import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 
 import java.time.LocalDate;
@@ -31,6 +32,9 @@ public class NyeIdenterService {
         List<String> identer = identPoolConsumer.hentNyeIdenter(request);
         for (int i = 0; i < antallNyeIdenter; i++) {
             putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identer.get(i));
+            if (Endringskoder.INNVANDRING.getAarsakskode().equals(meldinger.get(i).getAarsakskode())) {
+                meldinger.add(opprettStatsborgerendringsmelding((RsMeldingstype1Felter) meldinger.get(i)));
+            }
         }
         return identer;
     }
