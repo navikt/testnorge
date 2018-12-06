@@ -97,20 +97,33 @@ public class HodejegerService {
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             } catch (ManglendeInfoITpsException e) {
-                ikkeFullfoertBehandlingExceptionsContainer = opprettOgFyllIkkeFullfoertBehandlingExceptionContainer(
-                        ikkeFullfoertBehandlingExceptionsContainer, e, ids, endringskode);
+                e.getClass().getName();
+                if (ikkeFullfoertBehandlingExceptionsContainer == null) {
+                    ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
+                }
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
+                        .addMessage(e.getMessage() + " (ManglendeInfoITPSException) - endringskode: " + endringskode.getEndringskode())
+                        .addCause(e);
 
                 log.error(e.getMessage(), e);
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             } catch (HttpStatusCodeException e) {
-                ikkeFullfoertBehandlingExceptionsContainer = opprettOgFyllIkkeFullfoertBehandlingExceptionContainer(
-                        ikkeFullfoertBehandlingExceptionsContainer, e, ids, endringskode);
+                if (ikkeFullfoertBehandlingExceptionsContainer == null) {
+                    ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
+                }
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
+                        .addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode())
+                        .addCause(e);
 
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
             } catch (RuntimeException e) {
-                ikkeFullfoertBehandlingExceptionsContainer = opprettOgFyllIkkeFullfoertBehandlingExceptionContainer(
-                        ikkeFullfoertBehandlingExceptionsContainer, e, ids, endringskode);
+                if (ikkeFullfoertBehandlingExceptionsContainer == null) {
+                    ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
+                }
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
+                        .addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode())
+                        .addCause(e);
 
                 log.error(e.getMessage(), e);
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
@@ -218,19 +231,5 @@ public class HodejegerService {
         log.info(message.toString());
 
         return listerMedIdenter;
-    }
-
-    private IkkeFullfoertBehandlingExceptionsContainer opprettOgFyllIkkeFullfoertBehandlingExceptionContainer(
-            IkkeFullfoertBehandlingExceptionsContainer ie,
-            Exception e,
-            List<Long> ids,
-            Endringskoder endringskode) {
-        if (ie == null) {
-            ie = new IkkeFullfoertBehandlingExceptionsContainer();
-        }
-        ie.addIds(ids)
-                .addMessage(e.getMessage() + " (" + e.getClass().getName() + " - endringskode: " + endringskode.getEndringskode())
-                .addCause(e);
-        return ie;
     }
 }

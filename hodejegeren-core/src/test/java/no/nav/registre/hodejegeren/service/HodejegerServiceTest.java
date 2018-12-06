@@ -5,7 +5,6 @@ import static no.nav.registre.hodejegeren.testutils.Utils.testLoggingInClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -227,13 +226,11 @@ public class HodejegerServiceTest {
 
         ResponseEntity response = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
 
-        if (response.getStatusCode().equals(HttpStatus.CONFLICT)) {
-            IkkeFullfoertBehandlingExceptionsContainer exception = (IkkeFullfoertBehandlingExceptionsContainer) response.getBody();
-            assertEquals(3, listAppender.list.size());
-            assertTrue(listAppender.list.toString()
-                    .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s", 123, ids.toString())));
-        } else {
-            fail();
-        }
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        IkkeFullfoertBehandlingExceptionsContainer exception = (IkkeFullfoertBehandlingExceptionsContainer) response.getBody();
+        assertEquals(3, listAppender.list.size());
+        assertTrue(listAppender.list.toString()
+                .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s", 123, ids.toString())));
+
     }
 }

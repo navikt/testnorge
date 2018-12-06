@@ -16,7 +16,6 @@ import static no.nav.registre.hodejegeren.testutils.StrSubstitutor.replace;
 import static no.nav.registre.hodejegeren.testutils.Utils.testLoggingInClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -94,17 +93,14 @@ public class FeilhaandteringCompTest {
         GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, t10, antallMeldingerPerAarsakskode);
         ResponseEntity response = triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
 
-        if (response.getStatusCode().equals(HttpStatus.CONFLICT)) {
-            IkkeFullfoertBehandlingExceptionsContainer exception = (IkkeFullfoertBehandlingExceptionsContainer) response.getBody();
-            assertEquals(3, listAppender.list.size());
-            assertTrue(listAppender.list.toString()
-                    .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
-                            123, expectedMeldingsIdsITpsf.toString())));
-            assertEquals(2, (exception.getIds().size()));
-            assertTrue(exception.getIds().containsAll(expectedMeldingsIdsITpsf));
-        } else {
-            fail();
-        }
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        IkkeFullfoertBehandlingExceptionsContainer exception = (IkkeFullfoertBehandlingExceptionsContainer) response.getBody();
+        assertEquals(3, listAppender.list.size());
+        assertTrue(listAppender.list.toString()
+                .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
+                        123, expectedMeldingsIdsITpsf.toString())));
+        assertEquals(2, (exception.getIds().size()));
+        assertTrue(exception.getIds().containsAll(expectedMeldingsIdsITpsf));
     }
 
     private void stubIdentpool() {
