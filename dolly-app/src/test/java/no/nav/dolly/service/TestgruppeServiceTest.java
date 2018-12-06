@@ -36,7 +36,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -143,15 +142,11 @@ public class TestgruppeServiceTest {
 
         Bruker bruker = Bruker.builder()
                 .favoritter(newHashSet(asList(tg1, tg2)))
+                .teams(newHashSet(singletonList(t1)))
                 .navIdent(standardPrincipal)
                 .build();
 
-        BrukerMedTeamsOgFavoritter r = BrukerMedTeamsOgFavoritter.builder()
-                .teams(singletonList(t1))
-                .bruker(bruker)
-                .build();
-
-        when(brukerService.getBrukerMedTeamsOgFavoritter(any())).thenReturn(r);
+        when(brukerService.fetchBruker(any())).thenReturn(bruker);
 
         Set<Testgruppe> grupper = testgruppeService.fetchTestgrupperByNavIdent(standardPrincipal);
 

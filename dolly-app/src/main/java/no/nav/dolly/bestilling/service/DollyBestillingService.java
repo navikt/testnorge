@@ -113,9 +113,11 @@ public class DollyBestillingService {
                     progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
                 }
 
-                bestillingProgressRepository.save(progress);
-                bestilling.setSistOppdatert(LocalDateTime.now());
-                bestillingService.saveBestillingToDB(bestilling);
+                if (!bestilling.isStoppet()) {
+                    bestillingProgressRepository.save(progress);
+                    bestilling.setSistOppdatert(LocalDateTime.now());
+                    bestillingService.saveBestillingToDB(bestilling);
+                }
                 loopCount++;
             }
         } catch (Exception e) {
