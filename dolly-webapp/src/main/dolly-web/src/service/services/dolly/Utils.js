@@ -41,7 +41,6 @@ export const SortKodeverkArray = data => {
 			for (var i = 0; i < koderArray.length - 1; i++) {
 				const temp = koderArray[i]
 				if (kode.value == temp.value) {
-					console.log(temp, 'temp')
 					temp.label = kode.label
 					koderArray.splice(i, 1) && koderArray.unshift(temp)
 				}
