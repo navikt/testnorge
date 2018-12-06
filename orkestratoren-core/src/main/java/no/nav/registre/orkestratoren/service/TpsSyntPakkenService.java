@@ -41,11 +41,16 @@ public class TpsSyntPakkenService {
         } catch (HttpStatusCodeException e) {
             try {
                 JsonNode jsonNode = new ObjectMapper().readTree(e.getResponseBodyAsString()).get("ids");
-                for (final JsonNode idNode : jsonNode) {
-                    ids.add(idNode.asLong());
+                if (jsonNode == null) {
+                    log.warn("Finner ikke id-er i response body til exception fra Hodejegeren - Body: {}", e.getResponseBodyAsString());
+                    ids = new ArrayList<>();
+                } else {
+                    for (final JsonNode idNode : jsonNode) {
+                        ids.add(idNode.asLong());
+                    }
                 }
             } catch (IOException ie) {
-                log.warn("Kunne ikke hente id-er fra innholdet i exception fra Hodejegeren");
+                log.warn("Kunne ikke deserialisere innholdet i exception fra Hodejegeren");
             }
             throw e;
         } finally {
