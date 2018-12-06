@@ -1,8 +1,11 @@
 package no.nav.registre.hodejegeren.service.utilities;
 
+import no.nav.registre.hodejegeren.service.Endringskoder;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
 public class RedigereSkdmeldingerUtility {
+
+    private static final String STATSBORGER_KODE_NORGE = "000";
 
     public static void putFnrInnIMelding(RsMeldingstype1Felter melding, String fnr) {
         melding.setFodselsdato(fnr.substring(0, 6));
@@ -24,5 +27,20 @@ public class RedigereSkdmeldingerUtility {
         kopi.setAarsakskode(originalMelding.getAarsakskode());
         kopi.setSekvensnr(originalMelding.getSekvensnr());
         return kopi;
+    }
+
+    public static RsMeldingstype1Felter opprettStatsborgerendringsmelding(RsMeldingstype1Felter innflyttingsMelding) {
+        RsMeldingstype1Felter endringAvStatsborgerskap = new RsMeldingstype1Felter().toBuilder()
+                .fodselsdato(innflyttingsMelding.getFodselsdato())
+                .personnummer(innflyttingsMelding.getPersonnummer())
+                .statuskode("1")
+                .tildelingskode("0")
+                .statsborgerskap(STATSBORGER_KODE_NORGE).build();
+        endringAvStatsborgerskap.setTranstype(innflyttingsMelding.getTranstype());
+        endringAvStatsborgerskap.setMaskindato(innflyttingsMelding.getMaskindato());
+        endringAvStatsborgerskap.setMaskintid(innflyttingsMelding.getMaskintid());
+        endringAvStatsborgerskap.setAarsakskode(Endringskoder.ENDRING_STATSBORGERSKAP_BIBEHOLD.getAarsakskode());
+        endringAvStatsborgerskap.setSekvensnr(innflyttingsMelding.getSekvensnr());
+        return endringAvStatsborgerskap;
     }
 }
