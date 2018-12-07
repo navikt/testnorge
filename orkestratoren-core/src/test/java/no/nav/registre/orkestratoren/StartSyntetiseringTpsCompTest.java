@@ -30,7 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import no.nav.registre.orkestratoren.batch.JobController;
-import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
+import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.orkestratoren.provider.rs.SyntetiseringsController;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 
@@ -94,13 +94,13 @@ public class StartSyntetiseringTpsCompTest {
 
         SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
 
-        AvspillingResponse avspillingResponse = syntetiseringsController.opprettSkdMeldingerOgSendTilTps(ordreRequest);
+        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = syntetiseringsController.opprettSkdMeldingerOgSendTilTps(ordreRequest);
 
-        assertEquals(expectedAntallSendte, avspillingResponse.getAntallSendte());
-        assertEquals(expectedAntallFeilet, avspillingResponse.getAntallFeilet());
-        assertEquals(expectedFoedselnummer, avspillingResponse.getStatusFraFeilendeMeldinger().get(0).getFoedselsnummer());
-        assertEquals(expectedSekvensnummer, avspillingResponse.getStatusFraFeilendeMeldinger().get(0).getSekvensnummer());
-        assertEquals(expectedStatus, avspillingResponse.getStatusFraFeilendeMeldinger().get(0).getStatus());
+        assertEquals(expectedAntallSendte, skdMeldingerTilTpsRespons.getAntallSendte());
+        assertEquals(expectedAntallFeilet, skdMeldingerTilTpsRespons.getAntallFeilet());
+        assertEquals(expectedFoedselnummer, skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger().get(0).getFoedselsnummer());
+        assertEquals(expectedSekvensnummer, skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger().get(0).getSekvensnummer());
+        assertEquals(expectedStatus, skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger().get(0).getStatus());
 
     }
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
-import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
+import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
@@ -26,7 +26,7 @@ public class SyntetiseringsController {
 
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
-    public AvspillingResponse opprettSkdMeldingerOgSendTilTps(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
+    public SkdMeldingerTilTpsRespons opprettSkdMeldingerOgSendTilTps(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
 
         return tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getSkdMeldingGruppeId(),
                 syntetiserSkdmeldingerRequest.getMiljoe(),
