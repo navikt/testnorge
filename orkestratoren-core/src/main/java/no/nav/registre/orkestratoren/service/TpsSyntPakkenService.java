@@ -2,6 +2,7 @@ package no.nav.registre.orkestratoren.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -39,19 +40,7 @@ public class TpsSyntPakkenService {
         try {
             ids.addAll(hodejegerenConsumer.startSyntetisering(new GenereringsOrdreRequest(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode)));
         } catch (HttpStatusCodeException e) {
-            try {
-                JsonNode jsonNode = new ObjectMapper().readTree(e.getResponseBodyAsString()).get("ids");
-                if (jsonNode == null) {
-                    log.warn("Finner ikke id-er i response body til exception fra Hodejegeren - Body: {}", e.getResponseBodyAsString());
-                    ids = new ArrayList<>();
-                } else {
-                    for (final JsonNode idNode : jsonNode) {
-                        ids.add(idNode.asLong());
-                    }
-                }
-            } catch (IOException ie) {
-                log.warn("Kunne ikke deserialisere innholdet i exception fra Hodejegeren");
-            }
+            ids.addAll(extractIdsFromResponseBody(e));
             throw e;
         } finally {
             if (ids.isEmpty()) {
@@ -65,5 +54,22 @@ public class TpsSyntPakkenService {
             }
         }
         return skdMeldingerTilTpsRespons;
+    }
+
+    private Collection<? extends Long> extractIdsFromResponseBody(HttpStatusCodeException e) {
+        List<Long> ids = new ArrayList<>();
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(e.getResponseBodyAsString()).get("ids");
+            if (jsonNode == null) {
+                log.warn("Finner ikke id-er i response body til exception fra Hodejegeren - Body: {}", e.getResponseBodyAsString());
+            } else {
+                for (final JsonNode idNode : jsonNode) {
+                    ids.add(idNode.asLong());
+                }
+            }
+        } catch (IOException ie) {
+            log.warn("Kunne ikke deserialisere innholdet i exception fra Hodejegeren");
+        }
+        return ids;
     }
 }
