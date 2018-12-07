@@ -79,6 +79,8 @@ public class FoedselServiceTest {
         List<String> opprettedeBarn = foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge);
 
         assertTrue(opprettedeBarn.contains(barnFnr));
+        assertEquals(barnFnr, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
+        assertEquals(levendeIdenterINorge.get(0), ((RsMeldingstype1Felter) meldinger.get(0)).getMorsFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getMorsPersonnummer());
     }
 
     /**
