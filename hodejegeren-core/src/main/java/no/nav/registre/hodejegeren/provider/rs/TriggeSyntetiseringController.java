@@ -21,7 +21,12 @@ public class TriggeSyntetiseringController {
 
     @LogExceptions
     @ApiOperation(value = "Her bestilles genererering av syntetiske meldinger for nye og eksisterende identer. "
-            + "Disse meldingene lagres i angitt gruppe i TPSF. ", notes = "Eksisterende identer hentes fra avspillergruppen og status quo på disse hentes fra TPS i angitt miljø. ")
+            + "Disse meldingene lagres i angitt gruppe i TPSF. ", notes = "Eksisterende identer hentes fra avspillergruppen og status quo på disse hentes fra TPS i angitt miljø. " +
+                    "\n\nSpesialbehandlinger: \n\n" +
+                    "\tVed bestilling av endringskode 0211, genereres tilhørende endringsmelding 3510.\n\n" +
+                    "\tVed bestilling av endringskode 1110, genereres tilhørende endringsmelding 1110 til partner.\n\n" +
+                    "\tVed bestilling av endringskode 1410, genereres tilhørende endringsmelding 1410 til partner.\n\n" +
+                    "\tVed bestilling av endringskode 1810, genereres tilhørende endringsmelding 1810 til partner.")
     @ApiResponses(value = { @ApiResponse(code = 201, message = "De opprettede skdmeldingene ble lagret på disse id-ene i TPSF") })
     @PostMapping("api/v1/syntetisering/generer")
     public ResponseEntity genererSyntetiskeMeldingerOgLagreITpsf(@RequestBody GenereringsOrdreRequest ordreRequest) {
