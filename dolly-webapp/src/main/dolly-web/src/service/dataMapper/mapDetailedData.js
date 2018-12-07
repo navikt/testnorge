@@ -44,6 +44,11 @@ export function mapTpsfData(tpsfData, bestillingData) {
 					value: tpsfData.sivilstand
 				},
 				{
+					id: 'sprakKode',
+					label: 'Språk',
+					value: tpsfData.sprakKode
+				},
+				{
 					id: 'miljoer',
 					label: 'Miljøer',
 					value: Formatters.arrayToString(bestillingData.environments)
