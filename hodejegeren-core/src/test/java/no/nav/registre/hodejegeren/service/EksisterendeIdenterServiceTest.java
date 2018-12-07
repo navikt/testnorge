@@ -5,6 +5,8 @@ import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperS
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.SIVILSTAND;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
 import static no.nav.registre.hodejegeren.service.Endringskoder.SKILSMISSE;
+import static no.nav.registre.hodejegeren.service.KoderForSivilstand.GIFT;
+import static no.nav.registre.hodejegeren.service.KoderForSivilstand.SKILT;
 import static no.nav.registre.hodejegeren.testutils.Utils.testLoggingInClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -96,7 +98,7 @@ public class EksisterendeIdenterServiceTest {
 
         verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(1, meldinger.size());
-        assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+        assertEquals(fnr2, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
 
         assertEquals(1, brukteIdenter.size());
         assertEquals(fnr2, brukteIdenter.get(0));
@@ -118,7 +120,7 @@ public class EksisterendeIdenterServiceTest {
 
         verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(1, meldinger.size());
-        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+        assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
     }
 
     /**
@@ -141,8 +143,12 @@ public class EksisterendeIdenterServiceTest {
 
         verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
-        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
-        assertEquals(fnr1.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
+        assertEquals(fnr1, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
+        assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(1)).getPersonnummer());
+        assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerPnr());
+        assertEquals(fnr1, ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato() + ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerPnr());
+        assertEquals(GIFT.getSivilstandKodeSKD(), ((RsMeldingstype1Felter) meldinger.get(0)).getSivilstand());
+        assertEquals(GIFT.getSivilstandKodeSKD(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
     /**
@@ -162,13 +168,13 @@ public class EksisterendeIdenterServiceTest {
         assertEquals(1, listAppender.list.size());
         assertTrue(listAppender.list.get(0).toString().contains("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: "
                 + fnr1 + " og " + fnr2));
-        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+        assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
     }
 
     private List<String> opprettEkteparMedKorruptDataMock() throws IOException {
         // oppretter ektepar med korrupt data på nummer 2 av ektefellene.
         Map<String, String> statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
@@ -180,11 +186,11 @@ public class EksisterendeIdenterServiceTest {
 
         // Et fungerende ektepar
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr3);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr4))).thenReturn(statusQuo);
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr4);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
         return new ArrayList(Arrays.asList(fnr1, fnr2, fnr3, fnr4));
@@ -208,18 +214,18 @@ public class EksisterendeIdenterServiceTest {
         verify(endringskodeTilFeltnavnMapperService, times(3)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
         assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(0).getAarsakskode());
-        assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+        assertEquals(fnr2, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
         assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(1).getAarsakskode());
-        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
-        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
-        assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
+        assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(1)).getPersonnummer());
+        assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerPnr());
+        assertEquals(SKILT.getSivilstandKodeSKD(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
     /**
      * Testscenario: HVIS metoden {@link EndringskodeTilFeltnavnMapperService#getStatusQuoFraAarsakskode} kaster
      * {@link ManglendeInfoITpsException} ved behandling av en ident, skal metoden
-     * {@link EksisterendeIdenterService#checkValidStatusQuo} prøve å finne en ny ident, og be om status quo på denne. Antall forsøk
-     * er angitt i {@link EksisterendeIdenterService#ANTALL_FORSOEK_PER_AARSAK}
+     * {@link EksisterendeIdenterService#findExistingPersonStatusInTps} prøve å finne en ny ident, og be om status quo på denne.
+     * Antall forsøk er angitt i {@link EksisterendeIdenterService#ANTALL_FORSOEK_PER_AARSAK}
      */
     @Test()
     public void shouldFindNewPersonWhenEncounteringStatusQuoError() throws IOException {
@@ -233,11 +239,11 @@ public class EksisterendeIdenterServiceTest {
         verify(endringskodeTilFeltnavnMapperService, times(4)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
         assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(0).getAarsakskode());
-        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
+        assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
         assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(1).getAarsakskode());
-        assertEquals(fnr4.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
-        assertEquals(fnr4.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato());
-        assertEquals(fnr3.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato());
+        assertEquals(fnr4, ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(1)).getPersonnummer());
+        assertEquals(fnr4, ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerFdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getEktefellePartnerPnr());
+        assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerFdato() + ((RsMeldingstype1Felter) meldinger.get(1)).getEktefellePartnerPnr());
 
     }
 
@@ -260,8 +266,9 @@ public class EksisterendeIdenterServiceTest {
 
         verify(endringskodeTilFeltnavnMapperService, times(2)).getStatusQuoFraAarsakskode(any(), any(), any());
         assertEquals(2, meldinger.size());
-        assertEquals(fnr1.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato());
-        assertEquals(fnr2.substring(0, 6), ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato());
+        assertEquals("8510", meldinger.get(1).getAarsakskode() + ((RsMeldingstype1Felter) meldinger.get(1)).getStatuskode() + ((RsMeldingstype1Felter) meldinger.get(1)).getTildelingskode());
+        assertEquals(fnr1, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
+        assertEquals(fnr2, ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(1)).getPersonnummer());
         assertEquals(KoderForSivilstand.ENKE_ENKEMANN.getSivilstandKodeSKD(), ((RsMeldingstype1Felter) meldinger.get(1)).getSivilstand());
     }
 
@@ -332,7 +339,7 @@ public class EksisterendeIdenterServiceTest {
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
@@ -346,12 +353,12 @@ public class EksisterendeIdenterServiceTest {
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr3);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
     }
@@ -366,12 +373,12 @@ public class EksisterendeIdenterServiceTest {
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenThrow(new ManglendeInfoITpsException());
 
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr4);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr3);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr4))).thenReturn(statusQuo);
     }
@@ -380,14 +387,14 @@ public class EksisterendeIdenterServiceTest {
         Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(STATSBORGER, "NORGE");
         statusQuo.put(DATO_DO, "");
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(STATSBORGER, "NORGE");
         statusQuo.put(DATO_DO, "");
-        statusQuo.put(SIVILSTAND, KoderForSivilstand.GIFT.getSivilstandKodeSKD());
+        statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr1);
         when(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(any(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
     }
