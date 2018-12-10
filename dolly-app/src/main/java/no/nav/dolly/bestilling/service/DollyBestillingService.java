@@ -124,7 +124,7 @@ public class DollyBestillingService {
             log.error("Bestilling med id <" + bestillingsId + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
             bestillingProgressRepository.save(BestillingProgress.builder()
                     .bestillingId(bestillingsId)
-                    .feil(format("FEIL: Bestilling kunne ikke utføres mot TPS. Svar: %s", e.getMessage()))
+                    .feil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()))
                     .build());
         } finally {
             bestilling.setFerdig(true);

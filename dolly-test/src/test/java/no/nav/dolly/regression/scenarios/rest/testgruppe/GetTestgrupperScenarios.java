@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Set;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
@@ -33,7 +32,6 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
     private BrukerService brukerService;
 
     @Test
-    @Ignore
     public void hentAlleTestgrupperTilknyttetBrukerIgjennomFavoritterOgTeammedlemskap() throws Exception {
         Bruker bruker2 = brukerRepository.save(Bruker.builder().navIdent(STANDARD_NAV_IDENT).build());
 
@@ -85,6 +83,8 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .build()
         );
 
+        brukerService.leggTilFavoritt(testgruppe2.getId());
+        brukerService.leggTilFavoritt(testgruppe3.getId());
         brukerService.leggTilFavoritt(testgruppe4.getId());
 
         String url = endpointUrl + "?navIdent=" + standardBruker.getNavIdent();

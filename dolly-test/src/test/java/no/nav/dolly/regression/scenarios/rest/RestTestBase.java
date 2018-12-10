@@ -5,8 +5,6 @@ import static org.assertj.core.util.Sets.newHashSet;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +51,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     protected Bruker standardBruker;
     protected Team standardTeam;
     protected RsDollyBestillingsRequest standardBestilling_u6 = new RsDollyBestillingsRequest();
-    protected List<String> standardEnvironments =  new ArrayList<>(Arrays.asList("u6"));
+    protected List<String> standardEnvironments = singletonList("u6");
 
 
     @After
