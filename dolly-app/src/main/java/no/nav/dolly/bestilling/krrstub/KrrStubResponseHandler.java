@@ -19,14 +19,17 @@ public class KrrStubResponseHandler {
     }
 
     private String unWrapError(ResponseEntity<Object> response) {
-        String krrFeil = format("%s (%s -- %s)", isNotNull(response) ? ((Map) response.getBody()).values().toArray()[0] : "",
-                response.getStatusCodeValue(), response.getStatusCode().getReasonPhrase());
-        log.error("Kall til KRR-stub feilet grunnet \"{}\"", krrFeil);
-        return format("FEIL: %s", krrFeil);
+        if (isNotNull(response)) {
+            String krrFeil = format("%s (%s -- %s)", ((Map) response.getBody()).values().toArray()[0],
+                    response.getStatusCodeValue(), response.getStatusCode().getReasonPhrase());
+            log.error("Kall til KRR-stub feilet grunnet \"{}\"", krrFeil);
+            return format("FEIL: %s", krrFeil);
+        }
+        return "FEIL";
     }
 
     private boolean isNotNull(ResponseEntity<Object> response) {
-        return nonNull(response) && nonNull(response.getBody()) && nonNull(((Map) response.getBody()).values());
+        return nonNull(response) && nonNull(response.getBody()) && !((Map) response.getBody()).values().isEmpty();
     }
 
     private static boolean isOkStatus(ResponseEntity<Object> response) {
