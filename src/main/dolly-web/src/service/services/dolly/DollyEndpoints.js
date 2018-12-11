@@ -102,6 +102,10 @@ class DollyEndpoints {
 	static openAmGroupStatus(groupId, isSent = true) {
 		return `${openamBase}/gruppe/${groupId}?isOpenAmSent=${isSent}`
 	}
+
+	static removeBestilling(bestillingId) {
+		return `${bestillingBase}/stop/${bestillingId}`
+	}
 }
 
 export default DollyEndpoints

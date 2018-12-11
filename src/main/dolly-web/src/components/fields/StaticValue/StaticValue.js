@@ -8,7 +8,7 @@ export default class StaticValue extends PureComponent {
 		header: PropTypes.string.isRequired,
 		value: PropTypes.string.isRequired,
 		format: PropTypes.func,
-		headerType: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4']),
+		headerType: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'label']),
 		optionalClassName: PropTypes.string
 	}
 

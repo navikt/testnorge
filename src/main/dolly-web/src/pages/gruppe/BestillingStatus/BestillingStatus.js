@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Line } from 'rc-progress'
 import { DollyApi } from '~/service/Api'
 import Loading from '~/components/loading/Loading'
 import BestillingProgress from './BestillingProgress/BestillingProgress'
@@ -21,7 +20,9 @@ export default class BestillingStatus extends PureComponent {
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
-			antallKlare: props.bestilling.personStatus.length,
+			antallKlare: props.bestilling.personStatus ? props.bestilling.personStatus.length : 0,
+			failureIntervalCounter: 0,
+			failed: false,
 			sistOppdatert: props.bestilling.sistOppdatert,
 			isOpen: true
 		}
@@ -46,9 +47,6 @@ export default class BestillingStatus extends PureComponent {
 			if (data.ferdig) {
 				this.stopPolling()
 			}
-
-			console.log(data, 'data fra tpsf')
-
 			this.updateStatus(data)
 		} catch (error) {
 			console.log('error', error)
@@ -71,6 +69,17 @@ export default class BestillingStatus extends PureComponent {
 				this.props.onGroupUpdate() // state.ferdig = true
 				this.props.setBestillingStatus(data.id, { ...data, ny: true })
 			}, this.TIMEOUT_BEFORE_HIDE)
+		}
+
+		const liveTimeStamp = new Date(data.sistOppdatert).getTime()
+		const oldTimeStamp = new Date(this.state.sistOppdatert).getTime()
+
+		if (liveTimeStamp == oldTimeStamp) {
+			this.setState({ failureIntervalCounter: (this.state.failureIntervalCounter += 1) })
+			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
+			this.state.failureIntervalCounter == 60 && this.setState({ failed: true })
+		} else {
+			this.setState({ sistOppdatert: data.sistOppdatert, failureIntervalCounter: 0, failed: false })
 		}
 	}
 
@@ -102,7 +111,7 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		const { bestillingStatusObj, miljoeStatusObj } = this.props
+		const { bestillingStatusObj, miljoeStatusObj, cancelBestilling } = this.props
 
 		if (
 			(this.state.ferdig && !bestillingStatusObj) ||
@@ -114,7 +123,13 @@ export default class BestillingStatus extends PureComponent {
 		const status = this.calculateStatus()
 		return (
 			<div className="bestilling-status">
-				{!this.state.ferdig && <BestillingProgress status={status} />}
+				{!this.state.ferdig && (
+					<BestillingProgress
+						status={status}
+						failed={this.state.failed}
+						cancelBestilling={cancelBestilling}
+					/>
+				)}
 				{bestillingStatusObj &&
 					bestillingStatusObj.ny && (
 						<MiljoeStatus

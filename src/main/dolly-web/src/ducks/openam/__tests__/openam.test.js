@@ -1,4 +1,4 @@
-import openam from '../index'
+import openam, { postOpenAm } from '../index'
 import { LOCATION_CHANGE } from 'connected-react-router'
 
 describe('openamReducer', () => {
