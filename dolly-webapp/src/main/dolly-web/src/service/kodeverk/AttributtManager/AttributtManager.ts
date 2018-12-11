@@ -1,4 +1,10 @@
-import { AttributtGruppe, AttributtGruppeHovedKategori, Attributt, Kategori } from './Types'
+import {
+	AttributtGruppe,
+	AttributtGruppeHovedKategori,
+	Attributt,
+	Kategori,
+	AttributtType
+} from './Types'
 import * as yup from 'yup'
 import { FormikValues } from 'formik'
 import AttributtListe from './Attributter'
@@ -7,7 +13,8 @@ import DataFormatter from '~/utils/DataFormatter'
 import DataSourceMapper from '~/utils/DataSourceMapper'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
-import { getAttributterForEditing, isAttributtEditable } from './AttributtHelpers'
+import _has from 'lodash/has'
+import { isAttributtEditable } from './AttributtHelpers'
 
 export default class AttributtManager {
 	// BASE FUNCTIONS
@@ -51,19 +58,34 @@ export default class AttributtManager {
 	}
 
 	//Edit attributes
-	listEditableFlat(dataSources: string[]): Attributt[] {
-		return AttributtListe.filter(
-			attr => isAttributtEditable(attr) && dataSources.includes(attr.dataSource)
-		)
+	listEditableFlat(values: object, ident: string, dataSources: string[]): Attributt[] {
+		return AttributtListe.filter(attr => {
+			// return early if attribute is not editable
+			if (!isAttributtEditable(attr)) return false
+
+			const { dataSource, path, id, editPath } = attr
+			// check for datasource
+			if (!dataSources.includes(dataSource)) return false
+
+			const dataSourceValues =
+				values[DataSourceMapper(dataSource)][0] || values[DataSourceMapper(dataSource)][ident]
+			// check for values
+			if (!dataSourceValues) return false
+
+			const dataPath = editPath || path || id
+			// check if value exists (not NULL)
+			return _get(dataSourceValues, dataPath) !== null
+		})
 	}
 
-	listEditable(dataSources: string[]): AttributtGruppe[] {
-		return groupList(this.listEditableFlat(dataSources))
+	listEditable(values: object, ident: string, dataSources: string[]): AttributtGruppe[] {
+		return groupList(this.listEditableFlat(values, ident, dataSources))
 	}
 
-	getValidationsForEdit(dataSources: string[]): yup.MixedSchema {
-		const list = this.listEditableFlat(dataSources)
-		return this._createValidationObject(list)
+	getValidationsForEdit(values: object, ident: string, dataSources: string[]): yup.MixedSchema {
+		// editable attributter, som kun er read skal ikke ha validering.
+		const list = this.listEditableFlat(values, ident, dataSources)
+		return this._createValidationObject(list, true)
 	}
 
 	//TODO: Se om vi dette kan gjøres ryddigere, litt rotete pga tpsf er array mens andre registre er object
@@ -72,8 +94,7 @@ export default class AttributtManager {
 		ident: string,
 		dataSources: string[]
 	): FormikValues {
-		const editableAttributes = this.listEditableFlat(dataSources)
-		console.log(editableAttributes)
+		const editableAttributes = this.listEditableFlat(values, ident, dataSources)
 		return editableAttributes.reduce((prev, item) => {
 			const dataSource = DataSourceMapper(item.dataSource)
 			const sourceValues =
@@ -95,11 +116,21 @@ export default class AttributtManager {
 		)
 	}
 
-	_createValidationObject(list: Attributt[]): yup.MixedSchema {
+	getAttributtById(attributtId: string): Attributt {
+		return AttributtListe.find(attr => attr.id === attributtId)
+	}
+
+	_createValidationObject(list: Attributt[], editMode = false): yup.MixedSchema {
 		// Reduce to item.id and validation to create a validation object
 		const validationObject = list.reduce((accumulator, currentObject) => {
 			if (currentObject.items) {
-				const mapItemsToObject = this._mapArrayToObjectWithValidation(currentObject.items)
+				let itemsToValidate = currentObject.items
+				if (editMode)
+					itemsToValidate = itemsToValidate.filter(
+						attr => attr.attributtType !== AttributtType.SelectAndRead
+					)
+				const mapItemsToObject = this._mapArrayToObjectWithValidation(itemsToValidate)
+
 				return {
 					...accumulator,
 					[currentObject.id]: yup.array().of(yup.object().shape(mapItemsToObject))
@@ -146,7 +177,6 @@ export default class AttributtManager {
 		// kanskje alle skal kunne redigeres
 		const itemArray = item.items
 		const editableAttributes = itemArray.filter(item => isAttributtEditable(item))
-		console.log(editableAttributes)
 		const arrayValues = serverValues.map(valueObj => {
 			return editableAttributes.reduce((prev, curr) => {
 				const currentPath = curr.editPath || curr.path

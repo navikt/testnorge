@@ -1,11 +1,13 @@
 package no.nav.dolly.domain.jpa;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -14,20 +16,22 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Table(name = "T_TEAM")
+@Builder
 public class Team {
 
 	@Id
@@ -51,19 +55,32 @@ public class Team {
 	@JoinColumn(name = "EIER", nullable = false)
 	private Bruker eier;
 	
-	@OneToMany(mappedBy = "teamtilhoerighet")
-	private Set<Testgruppe> grupper = new HashSet<>();
+	@OneToMany(mappedBy = "teamtilhoerighet", fetch = FetchType.EAGER)
+	private Set<Testgruppe> grupper;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "T_TEAM_MEDLEMMER",
 			joinColumns = @JoinColumn(name = "team_id"),
 			inverseJoinColumns = @JoinColumn(name = "bruker_id"))
-	private Set<Bruker> medlemmer = new HashSet<>();
+	private Set<Bruker> medlemmer;
 
 	public Team(String navn, Bruker eier){
 		this.navn = navn;
 		this.eier = eier;
 		this.datoOpprettet = LocalDate.now();
-		this.medlemmer = new HashSet<>(Arrays.asList(eier));
+	}
+
+	public Set<Testgruppe> getGrupper() {
+		if (grupper == null) {
+			grupper = new HashSet<>();
+		}
+		return grupper;
+	}
+
+	public Set<Bruker> getMedlemmer() {
+		if (medlemmer == null) {
+			medlemmer = new HashSet<>();
+		}
+		return medlemmer;
 	}
 }

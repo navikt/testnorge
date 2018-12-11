@@ -2,6 +2,7 @@ import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 
 import './personInfoBlock.less'
 
@@ -25,17 +26,26 @@ export default class PersonInfoBlock extends PureComponent {
 							{ 'static-value_xlarge': v.width === 'xlarge' },
 							{ 'static-value_medium': v.width === 'medium' }
 						])
-						return (
-							v.value && (
-								<StaticValue
-									optionalClassName={optionalClassName}
-									key={k}
-									header={v.label}
-									headerType="h4"
-									value={v.value || ''}
+						const staticValueProps = {
+							key: k,
+							optionalClassName: optionalClassName,
+							header: v.label,
+							headerType: 'h4',
+							value: v.value
+						}
+
+						// finn tilhørende attributt
+						const attributt = this.props.attributtManager.getAttributtById(v.id)
+
+						if (attributt && attributt.apiKodeverkId && v.value) {
+							return (
+								<KodeverkValueConnector
+									apiKodeverkId={attributt.apiKodeverkId}
+									{...staticValueProps}
 								/>
 							)
-						)
+						}
+						return v.value && <StaticValue {...staticValueProps} />
 					})}
 				</div>
 			</div>

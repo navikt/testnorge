@@ -41,7 +41,7 @@ class TeamListe extends Component {
 							<Table.Column width="20" value={team.navn} />
 							<Table.Column width="30" value={team.beskrivelse} />
 							<Table.Column width="20" value={team.eierNavIdent} />
-							<Table.Column width="10" value={team.medlemmer.length.toString()} />
+							<Table.Column width="10" value={team.antallMedlemmer} />
 						</Table.Row>
 					)
 				})}

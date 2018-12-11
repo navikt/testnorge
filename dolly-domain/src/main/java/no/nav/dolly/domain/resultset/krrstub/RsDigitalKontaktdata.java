@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class RsDigitalKontaktdata {
 
-        private Boolean reservert;
+        private boolean reservert;
         private String mobil;
         private String epost;
 }

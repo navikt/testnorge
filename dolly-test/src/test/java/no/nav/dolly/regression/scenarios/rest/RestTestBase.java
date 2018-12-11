@@ -1,9 +1,10 @@
 package no.nav.dolly.regression.scenarios.rest;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Sets.newHashSet;
+
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -25,8 +26,6 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.regression.InMememoryDbTestSetup;
-import no.nav.dolly.testdata.builder.TeamBuilder;
-import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 public abstract class RestTestBase extends InMememoryDbTestSetup {
@@ -34,28 +33,26 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     @Autowired(required = false)
     private WebApplicationContext webApplicationContext;
 
+    protected static final String TEAM_PROP_NAVN = "navn";
+    protected static final String TEAM_PROP_EIER_IDENT = "eierNavIdent";
+
+    protected static final String STANDARD_TEAM_NAVN = "team";
+    protected static final String STANDARD_TEAM_BESK = "beskrivelse";
+    protected static final String STANDARD_GRUPPE_NAVN = "testgruppe";
+    protected static final String STANDARD_NAV_IDENT = "IDENT";
+    protected static final String STANDARD_GRUPPE_HENSIKT = "hensikt";
+
+    protected static final String STANDARD_PRINCIPAL = STANDARD_NAV_IDENT;
+
     private static final DollyObjectMapper MAPPER = new DollyObjectMapper();
 
     protected MockMvc mvcMock;
-
-    protected final static String DATE_FORMAT = "yyyy-MM-dd";
-
-    protected String teamPropNavn = "navn";
-    protected String teamPropEierIdent = "eierNavIdent";
-
     protected Testgruppe standardTestgruppe;
     protected Bruker standardBruker;
     protected Team standardTeam;
     protected RsDollyBestillingsRequest standardBestilling_u6 = new RsDollyBestillingsRequest();
-    protected List<String> standardEnvironments =  new ArrayList<>(Arrays.asList("u6"));
+    protected List<String> standardEnvironments = singletonList("u6");
 
-    protected String standardTeamnavn = "team";
-    protected String standardTeamBesk = "beskrivelse";
-    protected String standardGruppenavn = "testgruppe";
-    protected String standardNavIdent = "ident";
-    protected String standardGruppeHensikt = "hensikt";
-
-    protected String standardPrincipal = standardNavIdent;
 
     @After
     public void after() {
@@ -89,27 +86,27 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
         mvcMock = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         standardBruker = brukerRepository.save(Bruker.builder()
-                .navIdent(standardNavIdent)
+                .navIdent(STANDARD_NAV_IDENT)
                 .build()
         );
 
-        standardTeam = teamRepository.save(TeamBuilder.builder()
+        standardTeam = teamRepository.save(Team.builder()
                 .eier(standardBruker)
-                .navn(standardTeamnavn)
-                .beskrivelse(standardTeamBesk)
+                .navn(STANDARD_TEAM_NAVN)
+                .beskrivelse(STANDARD_TEAM_BESK)
                 .datoOpprettet(LocalDate.now())
-                .medlemmer(new HashSet<>(Arrays.asList(standardBruker)))
-                .build().convertToRealTeam()
+                .medlemmer(newHashSet(singletonList(standardBruker)))
+                .build()
         );
 
-        standardTestgruppe = gruppeRepository.save(TestgruppeBuilder.builder()
-                .navn(standardGruppenavn)
-                .hensikt(standardGruppeHensikt)
+        standardTestgruppe = gruppeRepository.save(Testgruppe.builder()
+                .navn(STANDARD_GRUPPE_NAVN)
+                .hensikt(STANDARD_GRUPPE_HENSIKT)
                 .opprettetAv(standardBruker)
                 .sistEndretAv(standardBruker)
                 .datoEndret(LocalDate.now())
                 .teamtilhoerighet(standardTeam)
-                .build().convertToRealTestgruppe()
+                .build()
         );
 
         standardBestilling_u6.setAntall(1);
@@ -120,8 +117,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     }
 
     private OidcTokenAuthentication createTestOidcToken(){
-        OidcTokenAuthentication token = new OidcTokenAuthentication(standardPrincipal,null, null, null);
-        return token;
+        return new OidcTokenAuthentication(STANDARD_PRINCIPAL,null, null, null);
     }
 
     protected static String convertObjectToJson(Object object) throws IOException {

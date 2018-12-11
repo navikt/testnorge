@@ -19,15 +19,15 @@ public class SigrunStubResponseHandlerTest {
 
     @Test
     public void extractResponse_SjekkAtHttpOkReturnererOk() {
-        ResponseEntity<String> response = ResponseEntity.ok().body("[200,200]");
+        ResponseEntity<Object> response = ResponseEntity.ok().body("[200,200]");
         String progressUpdate = responseHandler.extractResponse(response);
         assertThat(progressUpdate, is("OK"));
     }
 
     @Test
     public void extractResponse_SjekkAtAnnetEnnHttpOkGirFeil() {
-        ResponseEntity<String> response = ResponseEntity.ok().body("[200,400]");
+        ResponseEntity<Object> response = ResponseEntity.badRequest().body("[200,400]");
         String progressUpdate = responseHandler.extractResponse(response);
-        assertThat(progressUpdate, is("FAIL"));
+        assertThat(progressUpdate, is("FEIL"));
     }
 }
