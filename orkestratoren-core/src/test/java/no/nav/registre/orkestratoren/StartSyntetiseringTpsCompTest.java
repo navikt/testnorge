@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -94,8 +94,10 @@ public class StartSyntetiseringTpsCompTest {
 
         SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
 
-        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = syntetiseringsController.opprettSkdMeldingerOgSendTilTps(ordreRequest);
+        ResponseEntity response = syntetiseringsController.opprettSkdMeldingerOgSendTilTps(ordreRequest);
 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = ((SkdMeldingerTilTpsRespons) response.getBody());
         assertEquals(expectedAntallSendte, skdMeldingerTilTpsRespons.getAntallSendte());
         assertEquals(expectedAntallFeilet, skdMeldingerTilTpsRespons.getAntallFeilet());
         assertEquals(expectedFoedselnummer, skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger().get(0).getFoedselsnummer());

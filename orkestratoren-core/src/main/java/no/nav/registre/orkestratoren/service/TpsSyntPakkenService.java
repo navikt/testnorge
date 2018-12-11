@@ -34,7 +34,7 @@ public class TpsSyntPakkenService {
             Map<String, Integer> antallMeldingerPerEndringskode) {
 
         List<Long> ids = new ArrayList<>();
-        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons;
+        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = null;
         try {
             ids.addAll(hodejegerenConsumer.startSyntetisering(new GenereringsOrdreRequest(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode)));
         } catch (HttpStatusCodeException e) {
@@ -43,12 +43,18 @@ public class TpsSyntPakkenService {
         } finally {
             if (ids.isEmpty()) {
                 StatusPaaAvspiltSkdMelding status = new StatusPaaAvspiltSkdMelding();
-                status.setStatus("Noe feilet i hodejegeren. Ingen id-er kan sendes til TPS.");
+                status.setStatus("Hodejegeren returnerte uten å ha lagret noen melding i TPSF. Ingen id-er å sende til TPS.");
                 skdMeldingerTilTpsRespons = new SkdMeldingerTilTpsRespons().addStatusFraFeilendeMeldinger(status);
             } else {
-                skdMeldingerTilTpsRespons = tpsfConsumer.sendSkdmeldingerTilTps(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
-                skdMeldingerTilTpsRespons.setTpsfIds(ids);
-                log.warn("Exception fra hodejegeren. Følgende id-er ble sendt til TPS: {}", ids.toString());
+                try {
+                    skdMeldingerTilTpsRespons = tpsfConsumer.sendSkdmeldingerTilTps(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
+                    skdMeldingerTilTpsRespons.setTpsfIds(ids);
+                    log.info("{} id-er ble sendt til TPS.", ids.size());
+                } catch (HttpStatusCodeException e) {
+                    log.error(e.getResponseBodyAsString(), e);
+                    log.warn("Noe feilet i TPSF-sendSkdmeldingerTilTps. "
+                            + "Følgende id-er ble lagret i TPSF avspillergruppe {}, men er trolig ikke sendt til TPS: {}", skdMeldingGruppeId, ids.toString());
+                }
             }
         }
         return skdMeldingerTilTpsRespons;

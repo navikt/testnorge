@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,11 @@ public class JobController {
 
     @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
-        tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
+        try {
+            tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
+        } catch (HttpStatusCodeException e) {
+            log.warn(e.getResponseBodyAsString(), e);
+        }
     }
 
     @Scheduled(cron = "${orkestratoren.arenabatch.cron:0 0 1 1 * *}")
