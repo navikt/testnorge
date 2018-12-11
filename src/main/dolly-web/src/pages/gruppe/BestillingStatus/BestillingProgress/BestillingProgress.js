@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import { Line } from 'rc-progress'
 import Loading from '~/components/loading/Loading'
 import './BestillingProgress.less'
-import Knapp from 'nav-frontend-knapper'
-import Icon from '~/components/icon/Icon'
 
 export default class BestillingProgress extends PureComponent {
 	static propTypes = {
@@ -12,7 +10,7 @@ export default class BestillingProgress extends PureComponent {
 	}
 
 	render() {
-		const { id, status, failed, cancelBestilling } = this.props
+		const { status } = this.props
 
 		return (
 			<Fragment>
@@ -23,22 +21,9 @@ export default class BestillingProgress extends PureComponent {
 					</h5>
 					<span>{status.text}</span>
 				</div>
-				<div>
+				<div className="rc-progress-wrapper">
 					<Line percent={status.percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
 				</div>
-				{failed && (
-					<div className="cancel-container">
-						<div>
-							<Icon kind={'report-problem-circle'} />
-							<h5 className="feil-status-text">
-								Dette tar lengre tid enn forventet. Noe kan ha gått galt med bestillingen din.
-							</h5>
-						</div>
-						<Knapp type="fare" onClick={cancelBestilling}>
-							AVBRYT BESTILLING
-						</Knapp>
-					</div>
-				)}
 			</Fragment>
 		)
 	}

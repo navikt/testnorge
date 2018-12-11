@@ -122,8 +122,4 @@ export default class DollyService {
 	static putOpenAmGroupStatus(groupId) {
 		return Request.put(Endpoints.openAmGroupStatus(groupId))
 	}
-
-	static cancelBestilling(bestillingId) {
-		return Request.delete(Endpoints.removeBestilling(bestillingId))
-	}
 }

@@ -7,8 +7,6 @@ import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
 import AutofillAddress from '~/components/autofillAddress/AutofillAddress'
-import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 
 import './FormEditor.less'
 
@@ -72,17 +70,12 @@ export default class FormEditor extends PureComponent {
 				const itemIdParsed = item.id.substring(item.id.indexOf(']') + 1)
 				valgtVerdi = valgteVerdier[parentId][idx][itemIdParsed]
 			}
-			const staticValueProps = {
-				key: item.key || item.id,
-				header: item.label,
-				value: valgtVerdi,
-				headerType: 'label',
-				optionalClassName: 'skjemaelement static'
-			}
-			if (item.apiKodeverkId) {
-				return <KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
-			}
-			return <StaticValue {...staticValueProps} />
+			return (
+				<div className="skjemaelement" key={item.key || item.id}>
+					<label className="skjemaelement__label">{item.label}</label>
+					<div className="skjemaelement__staticvalue">{valgtVerdi}</div>
+				</div>
+			)
 		}
 
 		return (
@@ -93,7 +86,6 @@ export default class FormEditor extends PureComponent {
 				component={InputComponent}
 				size={item.size}
 				{...componentProps}
-				{...item.inputTypeAttributes}
 			/>
 		)
 	}

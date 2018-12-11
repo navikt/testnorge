@@ -51,12 +51,9 @@ const AttributtListe: Attributt[] = [
 				label: 'Beløp',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
-				inputTypeAttributes: {
-					min: 0
-				},
 				validation: yup
 					.number()
-					.min(0, 'Tast inn et gyldig beløp')
+					.min(1, 'Tast inn et gyldig beløp')
 					.required('Oppgi beløpet'),
 				attributtType: AttributtType.SelectAndEdit
 			},
@@ -68,9 +65,6 @@ const AttributtListe: Attributt[] = [
 				path: 'inntektsaar',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Number,
-				inputTypeAttributes: {
-					min: 0
-				},
 				validation: yup
 					.number()
 					.integer('Ugyldig årstall')

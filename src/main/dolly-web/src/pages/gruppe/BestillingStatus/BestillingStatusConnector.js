@@ -1,10 +1,6 @@
 import { connect } from 'react-redux'
 import BestillingStatus from './BestillingStatus'
-import {
-	setBestillingStatus,
-	miljoStatusSelector,
-	cancelBestilling
-} from '~/ducks/bestillingStatus'
+import { setBestillingStatus, miljoStatusSelector } from '~/ducks/bestillingStatus'
 
 const mapStateToProps = (state, ownProps) => {
 	const bestillingStatusObj = state.bestillingStatus[ownProps.bestilling.id]
@@ -15,10 +11,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const bestillingId = ownProps.bestilling.id
 	return {
-		setBestillingStatus: (id, data) => dispatch(setBestillingStatus(id, data)),
-		cancelBestilling: () => dispatch(cancelBestilling(bestillingId))
+		setBestillingStatus: (id, data) => dispatch(setBestillingStatus(id, data))
 	}
 }
 

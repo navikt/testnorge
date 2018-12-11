@@ -23,16 +23,9 @@ export default class RedigerTestbruker extends Component {
 	}
 
 	submit = values => {
-		const { updateTestbruker, goBack, match, testbruker } = this.props
+		const { updateTestbruker, goBack } = this.props
 
-		updateTestbruker(
-			values,
-			this.AttributtManager.listEditableFlat(
-				testbruker,
-				match.params.ident,
-				this._checkDataSources()
-			)
-		)
+		updateTestbruker(values, this.AttributtManager.listEditableFlat(this._checkDataSources()))
 		goBack()
 	}
 
@@ -54,16 +47,8 @@ export default class RedigerTestbruker extends Component {
 		if (!tpsf || !sigrunstub || !krrstub) return null
 
 		const dataSources = this._checkDataSources()
-		const attributtListe = this.AttributtManager.listEditable(
-			testbruker,
-			match.params.ident,
-			dataSources
-		)
-		const validations = this.AttributtManager.getValidationsForEdit(
-			testbruker,
-			match.params.ident,
-			dataSources
-		)
+		const attributtListe = this.AttributtManager.listEditable(dataSources)
+		const validations = this.AttributtManager.getValidationsForEdit(dataSources)
 		const initialValues = this.AttributtManager.getInitialValuesForEditableItems(
 			testbruker,
 			match.params.ident,

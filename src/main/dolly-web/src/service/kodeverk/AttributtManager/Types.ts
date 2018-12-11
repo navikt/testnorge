@@ -49,7 +49,6 @@ export interface Attributt {
 	label: string
 	dataSource: DataSource
 	inputType?: InputType
-	inputTypeAttributes?: object
 	options?: Options[]
 	format?: Function
 	apiKodeverkId?: string

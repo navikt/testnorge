@@ -3,16 +3,12 @@ import { shallow } from 'enzyme'
 import PersonInfoBlock from '../PersonInfoBlock'
 
 describe('PersonInfoBlock.js', () => {
-	const attributtManager = {
-		getAttributtById: jest.fn()
-	}
-
 	describe('rendering single infonlock', () => {
 		const data = [
 			{ id: 'test', label: 'test', value: 'testdata' },
 			{ id: 'test2', label: 'test2', value: 'testdata2' }
 		]
-		const wrapper = shallow(<PersonInfoBlock data={data} attributtManager={attributtManager} />)
+		const wrapper = shallow(<PersonInfoBlock data={data} />)
 		it('should render infoblock', () => {
 			expect(wrapper.find('.person-info-block').exists()).toBeTruthy()
 		})
@@ -41,9 +37,7 @@ describe('PersonInfoBlock.js', () => {
 				]
 			}
 		]
-		const wrapper = shallow(
-			<PersonInfoBlock data={data} multiple attributtManager={attributtManager} />
-		)
+		const wrapper = shallow(<PersonInfoBlock data={data} multiple />)
 		it('should render multiple infoblocks', () => {
 			expect(wrapper.find('.person-info-block')).toHaveLength(data.length)
 		})
