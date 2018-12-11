@@ -21,7 +21,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubService;
@@ -30,7 +29,7 @@ import no.nav.dolly.properties.ProvidersProps;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SigrunStubStubServiceTest {
+public class SigrunStubServiceTest {
 
     private static final String standardPrincipal = "brukernavn";
     private static final String standardIdtoken = "idtoken";
@@ -61,7 +60,7 @@ public class SigrunStubStubServiceTest {
         sigrunStubService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
 
         ArgumentCaptor<HttpEntity> argCap = ArgumentCaptor.forClass(HttpEntity.class);
-        verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argCap.capture(), eq(String.class));
+        verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argCap.capture(), eq(Object.class));
 
         HttpEntity entity = argCap.getValue();
 
@@ -71,8 +70,8 @@ public class SigrunStubStubServiceTest {
 
     @Test
     public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() {
-        HttpClientErrorException clientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST, "OK");
-        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(String.class))).thenThrow(clientErrorException);
+
+        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ResponseEntity.badRequest().build());
         ResponseEntity entity = sigrunStubService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
 
         assertThat(entity.getStatusCode().value(), is(HttpStatus.BAD_REQUEST.value()));

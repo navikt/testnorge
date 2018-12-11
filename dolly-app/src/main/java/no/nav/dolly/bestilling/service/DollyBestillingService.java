@@ -4,7 +4,6 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.krrstub.KrrStubResponseHandler;
 import no.nav.dolly.bestilling.krrstub.KrrStubService;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
@@ -73,6 +73,9 @@ public class DollyBestillingService {
     @Autowired
     private BestillingService bestillingService;
 
+    @Autowired
+    private MapperFacade mapperFacade;
+
     @Async
     @Transactional
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingRequest, Long bestillingsId) {
@@ -91,24 +94,19 @@ public class DollyBestillingService {
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
                 BestillingProgress progress = new BestillingProgress(bestillingsId, hovedPersonIdent);
 
-                senderIdenterTilTPS(bestillingRequest, bestilteIdenter, testgruppe, progress);
+                sendIdenterTilTPS(bestillingRequest, bestilteIdenter, testgruppe, progress);
 
-                if (bestillingRequest.getSigrunstub() != null) {
+                if (nonNull(bestillingRequest.getSigrunstub())) {
                     for (RsOpprettSkattegrunnlag request : bestillingRequest.getSigrunstub()) {
                         request.setPersonidentifikator(hovedPersonIdent);
                     }
-                    ResponseEntity<String> sigrunResponse = sigrunStubService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
+                    ResponseEntity sigrunResponse = sigrunStubService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
                     progress.setSigrunstubStatus(sigrunstubResponseHandler.extractResponse(sigrunResponse));
                 }
 
-                if (bestillingRequest.getKrrstub() != null) {
-                    DigitalKontaktdataRequest digitalKontaktdataRequest = DigitalKontaktdataRequest.builder()
-                            .personident(hovedPersonIdent)
-                            .gyldigFra(ZonedDateTime.now())
-                            .epost(bestillingRequest.getKrrstub().getEpost())
-                            .mobil(bestillingRequest.getKrrstub().getMobil())
-                            .reservert(bestillingRequest.getKrrstub().isReservert())
-                            .build();
+                if (nonNull(bestillingRequest.getKrrstub())) {
+                    DigitalKontaktdataRequest digitalKontaktdataRequest = mapperFacade.map(bestillingRequest, DigitalKontaktdataRequest.class);
+                    digitalKontaktdataRequest.setPersonident(hovedPersonIdent);
                     ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
                     progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
                 }
@@ -132,7 +130,7 @@ public class DollyBestillingService {
         }
     }
 
-    private void senderIdenterTilTPS(RsDollyBestillingsRequest request, List<String> klareIdenter, Testgruppe testgruppe, BestillingProgress progress) {
+    private void sendIdenterTilTPS(RsDollyBestillingsRequest request, List<String> klareIdenter, Testgruppe testgruppe, BestillingProgress progress) {
         try {
             RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
             String feedbackTps = tpsfResponseHandler.extractTPSFeedback(response.getSendSkdMeldingTilTpsResponsene());

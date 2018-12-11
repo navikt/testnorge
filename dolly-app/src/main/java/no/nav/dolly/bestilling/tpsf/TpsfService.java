@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.tpsf;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,13 +55,13 @@ public class TpsfService {
         if (isBodyNotNull(response) && (response.getBody().toString().contains("error="))) {
             RestTemplateFailure rs = objectMapper.convertValue(response.getBody(), RestTemplateFailure.class);
             log.error("Tps-forvalteren kall feilet mot url <{}> grunnet {}", url, rs.getMessage());
-            throw new TpsfException(format("%s -- %s", rs.getMessage(), rs.getError()));
+            throw new TpsfException(format("%s -- (%s %s)", rs.getMessage(), rs.getStatus(), rs.getError()));
         }
         return response;
     }
 
     private static boolean isBodyNotNull(ResponseEntity<Object> response) {
-        return response != null && response.getBody() != null && response.getBody().toString() != null;
+        return nonNull(response) && nonNull(response.getBody()) && isNotBlank(response.getBody().toString());
     }
 
     private static void validateEnvironments(List<String> environments) {

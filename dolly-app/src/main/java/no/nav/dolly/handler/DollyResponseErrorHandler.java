@@ -6,16 +6,16 @@ import org.springframework.web.client.ResponseErrorHandler;
 
 public class DollyResponseErrorHandler implements ResponseErrorHandler {
 
-    @Override public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {
+    @Override public boolean hasError(ClientHttpResponse clientHttpResponse) {
         return false;
     }
 
     /**
-     * Disable default error handling which masks out cause
+     * Disable default error handling which masks out message
      * @param clientHttpResponse
      * @throws IOException
      */
-    @Override public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
+    @Override public void handleError(ClientHttpResponse clientHttpResponse) {
         //Implementation is intentionally blank
     }
 }
