@@ -18,18 +18,12 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "T_GRUPPE")
 public class Testgruppe {
 	
@@ -63,38 +57,14 @@ public class Testgruppe {
 	@JoinColumn(name = "TILHOERER_TEAM", nullable = false)
 	private Team teamtilhoerighet;
 	
-	@OneToMany(mappedBy = "testgruppe", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "testgruppe")
 	@Column(unique = true)
-	private Set<Testident> testidenter;
+	private Set<Testident> testidenter = new HashSet<>();
 
 	@ManyToMany(mappedBy ="favoritter", fetch = FetchType.LAZY)
-	private Set<Bruker> favorisertAv;
-
-	@OneToMany(mappedBy = "gruppe", fetch = FetchType.LAZY)
-	private Set<Bestilling> bestillinger;
+	private Set<Bruker> favorisertAv = new HashSet<>();
 
 	@Column(name = "OPENAM_SENT")
 	private Boolean openAmSent;
-
-	public Set<Testident> getTestidenter() {
-		if (testidenter == null) {
-			testidenter = new HashSet<>();
-		}
-		return testidenter;
-	}
-
-	public Set<Bruker> getFavorisertAv() {
-		if (favorisertAv == null) {
-			favorisertAv = new HashSet<>();
-		}
-		return favorisertAv;
-	}
-
-	public Set<Bestilling> getBestillinger() {
-		if (bestillinger == null) {
-			bestillinger = new HashSet<>();
-		}
-		return bestillinger;
-	}
 }
 

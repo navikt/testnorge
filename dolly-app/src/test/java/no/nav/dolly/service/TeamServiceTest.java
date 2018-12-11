@@ -9,11 +9,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.util.Sets;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,6 +36,8 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
+import no.nav.dolly.testdata.builder.RsBrukerBuilder;
+import no.nav.dolly.testdata.builder.TeamBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -87,14 +87,14 @@ public class TeamServiceTest {
     @Test(expected = NotFoundException.class)
     public void fetchTeamById_kasterExceptionHvisTeamIkkeFunnet() {
         when(teamRepository.findById(any())).thenReturn(tomOptional);
-        teamService.fetchTeamById(1L);
+        teamService.fetchTeamById(1l);
     }
 
     @Test
     public void fetchTeamById_girTeamHvisTeamFinnesIDB() {
         Optional<Team> opMedTeam = Optional.of(new Team());
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
-        Team t = teamService.fetchTeamById(1L);
+        Team t = teamService.fetchTeamById(1l);
         assertThat(t, is(notNullValue()));
     }
 
@@ -102,8 +102,10 @@ public class TeamServiceTest {
     public void opprettTeam_oppretterTeamBasertPaaArgumentInputOgLeggerTilBrukerSomEierOgMedlem() {
         RsOpprettTeam rt = new RsOpprettTeam();
 
+        Team t = TeamBuilder.builder().navn("t").medlemmer(new HashSet<>()).build().convertToRealTeam();
         Bruker b1 = Bruker.builder().navIdent("nav1").build();
 
+        when(mapperFacade.map(rt, Team.class)).thenReturn(t);
         when(brukerService.fetchBruker(any())).thenReturn(b1);
 
         teamService.opprettTeam(rt);
@@ -117,10 +119,10 @@ public class TeamServiceTest {
 
     @Test
     public void addMedlemmer_LeggerTilMedlemmerITeam() {
-        Team t = Team.builder().navn("t").medlemmer(new HashSet<>()).build();
+        Team t = TeamBuilder.builder().navn("t").medlemmer(new HashSet<>()).build().convertToRealTeam();
 
-        RsBruker rb1 = RsBruker.builder().navIdent("nav1").build();
-        RsBruker rb2 = RsBruker.builder().navIdent("nav2").build();
+        RsBruker rb1 = RsBrukerBuilder.builder().navIdent("nav1").build().convertToRealRsBruker();
+        RsBruker rb2 = RsBrukerBuilder.builder().navIdent("nav2").build().convertToRealRsBruker();
         List<RsBruker> inputBrukere = Arrays.asList(rb1, rb2);
 
         Bruker b1 = new Bruker();
@@ -132,7 +134,7 @@ public class TeamServiceTest {
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
         when(mapperFacade.mapAsList(inputBrukere, Bruker.class)).thenReturn(Arrays.asList(b1, b2));
 
-        teamService.addMedlemmer(1L, inputBrukere);
+        teamService.addMedlemmer(1l, inputBrukere);
 
         Team savedTeam = captureTheTeamSavedToRepo();
 
@@ -151,14 +153,14 @@ public class TeamServiceTest {
 
     @Test
     public void fetchTeamOrOpprettBrukerteam_hvisTeamIdErGittProverAaFinneTeamMedId() {
-        when(teamRepository.findById(1L)).thenReturn(Optional.of(new Team()));
-        teamService.fetchTeamOrOpprettBrukerteam(1L);
-        verify(teamRepository).findById(1L);
+        when(teamRepository.findById(1l)).thenReturn(Optional.of(new Team()));
+        teamService.fetchTeamOrOpprettBrukerteam(1l);
+        verify(teamRepository).findById(1l);
     }
 
     @Test
     public void addMedlemmerByNavidenter_BrukereBasertPaaIdenterBlirLagtTilITeam() {
-        Team t = Team.builder().navn("t").medlemmer(new HashSet<>()).build();
+        Team t = TeamBuilder.builder().navn("t").medlemmer(new HashSet<>()).build().convertToRealTeam();
 
         Bruker b1 = new Bruker();
         Bruker b2 = new Bruker();
@@ -169,7 +171,7 @@ public class TeamServiceTest {
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
         when(brukerRepository.findByNavIdentIn(navidenter)).thenReturn(Arrays.asList(b1, b2));
 
-        teamService.addMedlemmerByNavidenter(1L, navidenter);
+        teamService.addMedlemmerByNavidenter(1l, navidenter);
 
         Team savedTeam = captureTheTeamSavedToRepo();
 
@@ -183,11 +185,11 @@ public class TeamServiceTest {
         b1.setNavIdent(CURRENT_BRUKER_IDENT);
         b2.setNavIdent(NAVIDENT_2);
 
-        Team t = Team.builder().navn("t").medlemmer(Sets.newHashSet(Arrays.asList(b1, b2))).build();
+        Team t = TeamBuilder.builder().navn("t").medlemmer(new HashSet<>(Arrays.asList(b1, b2))).build().convertToRealTeam();
 
         Optional<Team> opMedTeam = Optional.of(t);
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
-        teamService.fjernMedlemmer(1L, Collections.singletonList(CURRENT_BRUKER_IDENT));
+        teamService.fjernMedlemmer(1l, Arrays.asList(CURRENT_BRUKER_IDENT));
 
         Team savedTeam = captureTheTeamSavedToRepo();
 
@@ -197,7 +199,7 @@ public class TeamServiceTest {
 
     @Test
     public void deleteTeam_KallerRepositoryDeleteTeam() {
-        Long id = 1L;
+        Long id = 1l;
         teamService.deleteTeam(id);
         verify(teamRepository).deleteById(id);
     }

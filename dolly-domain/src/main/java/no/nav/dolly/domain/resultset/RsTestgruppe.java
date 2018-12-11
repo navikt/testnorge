@@ -1,6 +1,8 @@
 package no.nav.dolly.domain.resultset;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
@@ -27,9 +29,5 @@ public class RsTestgruppe {
 	private LocalDate datoEndret;
 
 	private RsTeamMedIdOgNavn team;
-
-	private Integer antallIdenter;
-
-	private boolean erMedlemAvTeamSomEierGruppe;
-	private boolean favorittIGruppen;
+	private Set<RsTestidentBestillingId> testidenter = new HashSet<>();
 }

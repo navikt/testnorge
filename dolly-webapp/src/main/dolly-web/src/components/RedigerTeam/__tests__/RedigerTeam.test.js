@@ -32,8 +32,5 @@ describe('RedigerTeam.js', () => {
 		it('should render loading component when fetching', () => {
 			expect(wrapper.find('.loading').exists()).toBeTruthy()
 		})
-		it('should render loading component when fetching', () => {
-			expect(wrapper.find('.opprett-tabellrad').exists()).toBeTruthy()
-		})
 	})
 })

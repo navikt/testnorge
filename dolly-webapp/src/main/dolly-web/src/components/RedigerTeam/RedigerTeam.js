@@ -50,7 +50,7 @@ export default class RedigerTeam extends PureComponent {
 				validationSchema={this.validation}
 				onSubmit={this.onHandleSubmit}
 				render={props => {
-					// const { values, touched, errors, dirty, isSubmitting } = props
+					const { values, touched, errors, dirty, isSubmitting } = props
 					return (
 						<Form className="opprett-tabellrad" autoComplete="off">
 							<div className="fields">

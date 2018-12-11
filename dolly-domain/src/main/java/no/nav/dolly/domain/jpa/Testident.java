@@ -1,6 +1,5 @@
 package no.nav.dolly.domain.jpa;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,11 +28,4 @@ public class Testident {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "IDENT", referencedColumnName = "ident", insertable = false, updatable = false)
     private List<BestillingProgress> bestillingProgress;
-
-    public List<BestillingProgress> getBestillingProgress() {
-        if (bestillingProgress == null) {
-            bestillingProgress = new ArrayList<>();
-        }
-        return bestillingProgress;
-    }
 }

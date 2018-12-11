@@ -1,6 +1,10 @@
 package no.nav.dolly.api;
 
-import static org.mockito.Mockito.verify;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.repository.TeamRepository;
+import no.nav.dolly.service.TeamService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,11 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
-import no.nav.dolly.repository.TeamRepository;
-import no.nav.dolly.service.TeamService;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamControllerTest {
@@ -87,9 +87,9 @@ public class TeamControllerTest {
     @Test
     public void endreTeaminfo() {
         Long id = 1l;
-        RsTeamUtvidet team = new RsTeamUtvidet();
+        RsTeam t = new RsTeam();
 
-        controller.endreTeaminfo(1l, team);
-        verify(teamService).updateTeamInfo(id, team);
+        controller.endreTeaminfo(1l, t);
+        verify(teamService).updateTeamInfo(id, t);
     }
 }

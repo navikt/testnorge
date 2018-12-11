@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -26,9 +25,9 @@ public class BestillingService {
         return bestillingRepository.findById(bestillingsId).orElseThrow(() -> new NotFoundException("Fant ikke bestillingId"));
     }
 
-    public Bestilling saveBestillingToDB(Bestilling bestilling) {
+    public Bestilling saveBestillingToDB(Bestilling b) {
         try {
-            return bestillingRepository.save(bestilling);
+            return bestillingRepository.save(b);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("Kunne ikke lagre bestilling: " + e.getMessage(), e);
         }
@@ -38,14 +37,12 @@ public class BestillingService {
         return bestillingRepository.findBestillingByGruppe(testgruppeService.fetchTestgruppeById(gruppeId));
     }
 
-    @Transactional
-    // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Bestilling saveBestillingByGruppeIdAndAntallIdenter(Long gruppeId, int antallIdenter, List<String> miljoer) {
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
-        StringBuilder miljoeliste = new StringBuilder();
-        miljoer.forEach(miljoe -> miljoeliste
-                .append(miljoe)
+        StringBuilder sb = new StringBuilder();
+        miljoer.forEach(e -> sb
+                .append(e)
                 .append(','));
-        return saveBestillingToDB(new Bestilling(gruppe, antallIdenter, LocalDateTime.now(), miljoeliste.substring(0, miljoeliste.length() - 1)));
+        return saveBestillingToDB(new Bestilling(gruppe, antallIdenter, LocalDateTime.now(), sb.substring(0, sb.length() - 1)));
     }
 }

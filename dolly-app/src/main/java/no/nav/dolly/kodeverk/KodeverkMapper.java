@@ -1,7 +1,6 @@
 package no.nav.dolly.kodeverk;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class KodeverkMapper {
     public KodeverkAdjusted mapBetydningToAdjustedKodeverk(String kodeverkNavn, Map<String, List<Betydning>> betydningerSortedByKoder) {
         KodeverkAdjusted kodeverkAdjusted = KodeverkAdjusted.builder().name(kodeverkNavn).koder(new ArrayList<>()).build();
 
-        if (nonNull(betydningerSortedByKoder) && !betydningerSortedByKoder.isEmpty()) {
+        if (!isNullOrEmpty(betydningerSortedByKoder)) {
             kodeverkAdjusted.getKoder().addAll(extractKoderFromBetydninger(betydningerSortedByKoder));
         }
 
@@ -37,7 +36,7 @@ public class KodeverkMapper {
 
     private List<KodeAdjusted> extractKoderFromBetydninger(Map<String, List<Betydning>> kodeMap) {
         return kodeMap.entrySet().stream()
-                .filter(e -> nonNull(e.getValue()) && !e.getValue().isEmpty())
+                .filter(e -> !isNullOrEmpty(e.getValue()))
                 .map(e -> KodeAdjusted.builder()
                         .label(e.getValue().get(0).getBeskrivelser().get(KODE_BOKMAAL).getTerm())
                         .value(e.getKey())

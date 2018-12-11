@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.tpsf;
 
 import static java.lang.String.format;
-import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class TpsfResponseHandler {
     public void setErrorMessageToBestillingsProgress(Exception e, BestillingProgress progress) {
         StringBuilder sb = new StringBuilder();
         sb.append(e.getMessage());
-        if (nonNull(e.getCause())) {
+        if (!isNullOrEmpty(e.getCause())) {
             sb.append("  cause: ").append(e.getCause().getMessage());
         }
         sb.append("  localizedMsg: ").append(e.getLocalizedMessage());

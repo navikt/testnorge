@@ -20,6 +20,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.exceptions.KodeverkException;
@@ -31,14 +32,13 @@ public class KodeverkConsumerTest {
 
     private static final String KODEVERK_URL = "url";
     private static final String KODEVERK_NAVN = "name";
-    private static final String KODEVERK_QUERY_PARAM = "?ekskluderUgyldige=true&spraak=nb";
+    private static final String KODEVERK_BASE_URL = "/api/v1/kodeverk/name/koder/betydninger";
+    private static final String KODEVERK_QUERY_PARAM ="?ekskluderUgyldige=true&spraak=nb";
     private static final String HEADER_NAME_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String HEADER_NAME_CALL_ID = "Nav-Call-id";
 
     private GetKodeverkKoderBetydningerResponse standardKodeverkResponse = new GetKodeverkKoderBetydningerResponse();
     private ResponseEntity standardReponseEntity = new ResponseEntity(standardKodeverkResponse, HttpStatus.OK);
-    private ResponseEntity notFoundResponseEntity = new ResponseEntity(standardKodeverkResponse, HttpStatus.NOT_FOUND);
-    private ResponseEntity errorResponseEntity = new ResponseEntity(standardKodeverkResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 
     @Mock
     ProvidersProps providersProps;
@@ -50,7 +50,7 @@ public class KodeverkConsumerTest {
     KodeverkConsumer kodeverkConsumer;
 
     @Before
-    public void setup() {
+    public void setup(){
         ProvidersProps.Kodeverk kodeverk = new ProvidersProps.Kodeverk();
         kodeverk.setUrl(KODEVERK_URL);
         when(providersProps.getKodeverk()).thenReturn(kodeverk);
@@ -74,15 +74,21 @@ public class KodeverkConsumerTest {
 
     @Test(expected = KodeverkException.class)
     public void fetchKodeverkByName_kasterKodeverkexceptionHvisResttemplateGetKalletFeilerMotKodeverk() {
-        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(GetKodeverkKoderBetydningerResponse.class))).thenReturn(errorResponseEntity);
+        HttpClientErrorException errorEx = new HttpClientErrorException(HttpStatus.NOT_FOUND, "msg");
+        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(GetKodeverkKoderBetydningerResponse.class))).thenThrow(errorEx);
 
         kodeverkConsumer.fetchKodeverkByName(KODEVERK_NAVN);
     }
 
-    @Test(expected = KodeverkException.class)
+    @Test
     public void fetchKodeverkByName_kasterKodeverkExceptionOgGirStatusKodeNotFound() {
-        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(GetKodeverkKoderBetydningerResponse.class))).thenReturn(notFoundResponseEntity);
+        HttpClientErrorException errorEx = new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(GetKodeverkKoderBetydningerResponse.class))).thenThrow(errorEx);
 
-        kodeverkConsumer.fetchKodeverkByName(KODEVERK_NAVN);
+        try{
+            kodeverkConsumer.fetchKodeverkByName(KODEVERK_NAVN);
+        } catch (KodeverkException ex){
+            assertThat(ex.getStatusCode(), is(HttpStatus.NOT_FOUND));
+        }
     }
 }

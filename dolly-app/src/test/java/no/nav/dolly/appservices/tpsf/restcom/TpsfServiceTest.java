@@ -91,7 +91,7 @@ public class TpsfServiceTest {
 
     @Test(expected = TpsfException.class)
     public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException(){
-        Object s = "error=Feil";
+        Object s = "exception=Feil";
         ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
         RestTemplateFailure resExp = new RestTemplateFailure();
         resExp.setMessage("msg");
@@ -105,7 +105,7 @@ public class TpsfServiceTest {
 
     @Test(expected = TpsfException.class)
     public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException(){
-        Object s = "error=Feil";
+        Object s = "exception=Feil";
         ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
         RestTemplateFailure resExp = new RestTemplateFailure();
         resExp.setMessage("msg");
@@ -114,7 +114,7 @@ public class TpsfServiceTest {
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ob);
         when(objectMapper.convertValue(s, RestTemplateFailure.class)).thenReturn(resExp);
 
-        service.sendIdenterTilTpsFraTPSF(standardIdenter, standardMiljoer_u1_t1);
+        RsSkdMeldingResponse ressponse = service.sendIdenterTilTpsFraTPSF(standardIdenter, standardMiljoer_u1_t1);
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -1,10 +1,10 @@
 package no.nav.dolly.repository;
 
-import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
+
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GruppeRepository extends JpaRepository<Testgruppe, Long> {
 

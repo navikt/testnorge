@@ -1,10 +1,12 @@
 package no.nav.dolly.api;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
+import no.nav.dolly.domain.resultset.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.service.BrukerService;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,13 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
-import no.nav.dolly.domain.resultset.RsBrukerUpdateFavoritterReq;
-import no.nav.dolly.service.BrukerService;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrukerControllerTest {
@@ -74,7 +75,7 @@ public class BrukerControllerTest {
         RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
         req.setGruppeId(1l);
         controller.fjernFavoritt(req);
-        verify(brukerService).fjernFavoritt(anyLong());
+        verify(brukerService).fjernFavoritter(anyList());
     }
 
     @Test
@@ -82,6 +83,6 @@ public class BrukerControllerTest {
         RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
         req.setGruppeId(1l);
         controller.leggTilFavoritt(req);
-        verify(brukerService).leggTilFavoritt(anyLong());
+        verify(brukerService).leggTilFavoritter(anyList());
     }
 }

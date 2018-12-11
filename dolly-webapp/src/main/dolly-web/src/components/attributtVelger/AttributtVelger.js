@@ -102,6 +102,7 @@ export default class AttributtVelger extends Component {
 					className="attributt-velger_search"
 					onChange={this.searchOnChange}
 				/>
+
 				<div className="flexbox">
 					<div className="attributt-velger_panels">{this.renderPanels()}</div>
 					<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />

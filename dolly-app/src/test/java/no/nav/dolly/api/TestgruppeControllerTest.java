@@ -1,6 +1,5 @@
 package no.nav.dolly.api;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -19,11 +18,12 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
-import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
+import no.nav.dolly.domain.resultset.RsOpprettTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestgruppeMedErMedlemOgFavoritt;
 import no.nav.dolly.domain.resultset.RsTestident;
-import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -45,38 +45,33 @@ public class TestgruppeControllerTest {
     private DollyBestillingService dollyBestillingService;
 
     @Mock
-    private BestillingProgressService bestillingProgressService;
-
-    @Mock
     private BestillingService bestillingService;
 
     @Mock
-    private GruppeRepository gruppeRepository;
-
+    private BestillingProgressService bestillingProgressService;
 
     @InjectMocks
     private TestgruppeController controller;
 
     @Test
     public void opprettTestgruppe() {
-        RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
-        Testgruppe testgruppe = Testgruppe.builder().id(1L).build();
-        when(testgruppeService.opprettTestgruppe(gruppe)).thenReturn(testgruppe);
+        RsOpprettTestgruppe gruppe = new RsOpprettTestgruppe();
+        RsTestgruppe g = new RsTestgruppe();
+        when(testgruppeService.opprettTestgruppe(gruppe)).thenReturn(g);
 
         controller.opprettTestgruppe(gruppe);
-        verify(testgruppeService).fetchTestgruppeById(1L);
+        verify(testgruppeService).rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(g);
     }
 
     @Test
     public void oppdaterTestgruppe() {
         Long gId = 1L;
-        RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
-        Testgruppe testgruppe = new Testgruppe();
-        when(testgruppeService.oppdaterTestgruppe(gId, gruppe)).thenReturn(testgruppe);
+        RsOpprettTestgruppe gruppe = new RsOpprettTestgruppe();
+        RsTestgruppe g = new RsTestgruppe();
+        when(testgruppeService.oppdaterTestgruppe(gId, gruppe)).thenReturn(g);
 
         controller.oppdaterTestgruppe(gId, gruppe);
-
-        verify(testgruppeService).oppdaterTestgruppe(gId, gruppe);
+        verify(testgruppeService).rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(g);
     }
 
     @Test
@@ -88,16 +83,24 @@ public class TestgruppeControllerTest {
 
     @Test
     public void getTestgruppe() {
-        Long gruppeId = 1L;
-        RsTestgruppeUtvidet testgruppeUtvidet = new RsTestgruppeUtvidet();
+        Long gId = 1L;
+        RsTestgruppe g = new RsTestgruppe();
+        RsTestgruppeMedErMedlemOgFavoritt gMedMedlemFavo = new RsTestgruppeMedErMedlemOgFavoritt();
         Testgruppe testgruppe = new Testgruppe();
+        Bestilling bestilling = new Bestilling();
+        RsBestilling rsBestilling = new RsBestilling();
+        List<Bestilling> bestillinger = singletonList(bestilling);
+        List<RsBestilling> rsBestillinger = singletonList(rsBestilling);
 
-        when(testgruppeService.fetchTestgruppeById(gruppeId)).thenReturn(testgruppe);
-        when(mapperFacade.map(testgruppe, RsTestgruppeUtvidet.class)).thenReturn(testgruppeUtvidet);
+        when(testgruppeService.fetchTestgruppeById(gId)).thenReturn(testgruppe);
+        when(mapperFacade.map(testgruppe, RsTestgruppe.class)).thenReturn(g);
+        when(testgruppeService.rsTestgruppeToRsTestgruppeMedMedlemOgFavoritt(g)).thenReturn(gMedMedlemFavo);
+        when(bestillingService.fetchBestillingerByGruppeId(gId)).thenReturn(bestillinger);
+        when(mapperFacade.mapAsList(bestillinger, RsBestilling.class)).thenReturn(rsBestillinger);
 
-        RsTestgruppeUtvidet result = controller.getTestgruppe(gruppeId);
+        RsTestgruppeMedErMedlemOgFavoritt res = controller.getTestgruppe(gId);
 
-        assertThat(result.getBestillinger(), is(emptyList()));
+        assertThat(res.getBestillinger(), is(rsBestillinger));
     }
 
     @Test
@@ -108,26 +111,24 @@ public class TestgruppeControllerTest {
 
     @Test
     public void oppretteIdentBestilling() {
-        Long gruppeId = 1L;
-        Long bestillingId = 2L;
-        int ant = 1;
+        Long gId = 1L;
+
+        RsDollyBestillingsRequest bes = new RsDollyBestillingsRequest();
         List<String> envir = singletonList("u");
+        int ant = 1;
+        bes.setEnvironments(envir);
+        bes.setAntall(ant);
 
-        RsDollyBestillingsRequest dollyBestillingsRequest = RsDollyBestillingsRequest.builder()
-                .environments(envir)
-                .antall(ant)
-                .build();
+        Bestilling b = new Bestilling();
+        b.setId(2L);
 
-        Bestilling bestilling = Bestilling.builder().id(bestillingId).build();
-
-        when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, ant, envir)).thenReturn(bestilling);
-
-        controller.opprettIdentBestilling(gruppeId, dollyBestillingsRequest);
-        verify(dollyBestillingService).opprettPersonerByKriterierAsync(gruppeId, dollyBestillingsRequest, bestillingId);
+        when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gId, ant, envir)).thenReturn(b);
+        controller.opprettIdentBestilling(gId, bes);
+        verify(dollyBestillingService).opprettPersonerByKriterierAsync(gId, bes, 2L);
     }
 
     @Test
-    public void slettgruppe_metodekall() {
+    public void slettgruppe_metodekall(){
         controller.slettgruppe(anyLong());
         verify(testgruppeService).slettGruppeById(anyLong());
     }

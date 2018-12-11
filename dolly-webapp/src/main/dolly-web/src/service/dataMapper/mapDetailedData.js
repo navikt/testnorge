@@ -2,65 +2,61 @@ import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
 export function mapTpsfData(tpsfData, bestillingData) {
-	if (!tpsfData) return null
 	let data
-	data = [
-		{
-			header: 'Personlig informasjon',
-			data: [
-				{
-					id: 'ident',
-					label: tpsfData.identtype,
-					value: tpsfData.ident
-				},
-				{
-					id: 'fornavn',
-					label: 'Fornavn',
-					value: tpsfData.fornavn
-				},
-				{
-					id: 'mellomnavn',
-					label: 'Mellomnavn',
-					value: tpsfData.mellomnavn
-				},
-				{
-					id: 'etternavn',
-					label: 'Etternavn',
-					value: tpsfData.etternavn
-				},
-				{
-					id: 'kjonn',
-					label: 'Kjønn',
-					value: tpsfData.kjonn
-				},
-				{
-					id: 'alder',
-					label: 'Alder',
-					value: Formatters.formatAlder(tpsfData.alder, tpsfData.doedsdato)
-				},
-				{
-					id: 'sivilstand',
-					label: 'Sivilstand',
-					value: tpsfData.sivilstand
-				},
-				{
-					id: 'sprakKode',
-					label: 'Språk',
-					value: tpsfData.sprakKode
-				},
-				{
-					id: 'miljoer',
-					label: 'Miljøer',
-					value: Formatters.arrayToString(bestillingData.environments)
-				},
-				{
-					id: 'spesreg',
-					label: 'Diskresjonskoder',
-					value: tpsfData.spesreg
-				}
-			]
-		}
-	]
+	if (tpsfData) {
+		data = [
+			{
+				header: 'Personlig informasjon',
+				data: [
+					{
+						id: 'ident',
+						label: tpsfData.identtype,
+						value: tpsfData.ident
+					},
+					{
+						id: 'fornavn',
+						label: 'Fornavn',
+						value: tpsfData.fornavn
+					},
+					{
+						id: 'mellomnavn',
+						label: 'Mellomnavn',
+						value: tpsfData.mellomnavn
+					},
+					{
+						id: 'etternavn',
+						label: 'Etternavn',
+						value: tpsfData.etternavn
+					},
+					{
+						id: 'kjonn',
+						label: 'Kjønn',
+						value: Formatters.kjonnToString(tpsfData.kjonn)
+					},
+					{
+						id: 'alder',
+						label: 'Alder',
+						value: Formatters.formatAlder(tpsfData.alder, tpsfData.doedsdato)
+					},
+					{
+						id: 'sivilstand',
+						label: 'Sivilstand',
+						value: tpsfData.sivilstand
+					},
+					{
+						id: 'miljoer',
+						label: 'Miljøer',
+						value: Formatters.arrayToString(bestillingData.environments)
+					},
+					{
+						id: 'spesreg',
+						label: 'Diskresjonskoder',
+						value: tpsfData.spesreg
+					}
+				]
+			}
+		]
+	}
 
 	if (tpsfData.statsborgerskap) {
 		data.push({
@@ -150,7 +146,7 @@ export function mapTpsfData(tpsfData, bestillingData) {
 						{
 							id: 'kjonn',
 							label: 'Kjønn',
-							value: relasjon.personRelasjonMed.kjonn
+							value: Formatters.kjonnToString(relasjon.personRelasjonMed.kjonn)
 						}
 					]
 				}

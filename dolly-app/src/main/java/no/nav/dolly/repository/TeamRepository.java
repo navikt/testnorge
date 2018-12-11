@@ -1,11 +1,11 @@
 package no.nav.dolly.repository;
 
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
 	
@@ -17,5 +17,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
 	List<Team> findTeamsByEier(Bruker eier);
 
-	List<Team> findByMedlemmerNavIdent(String navIdent);
+	List<Team> findByMedlemmer_NavIdent(String navIdent);
+
 }

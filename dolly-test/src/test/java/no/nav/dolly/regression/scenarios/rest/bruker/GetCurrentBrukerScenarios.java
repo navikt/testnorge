@@ -22,6 +22,6 @@ public class GetCurrentBrukerScenarios extends BrukerTestCaseBase{
 
         RsBruker res = convertMvcResultToObject(mvcResult, RsBruker.class);
 
-        assertThat(res.getNavIdent(), is(STANDARD_NAV_IDENT));
+        assertThat(res.getNavIdent(), is(standardNavIdent));
     }
 }

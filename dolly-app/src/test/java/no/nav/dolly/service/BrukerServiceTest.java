@@ -1,22 +1,22 @@
 package no.nav.dolly.service;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,13 +30,16 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.testdata.builder.RsTeamUtvidetBuilder;
+import no.nav.dolly.testdata.builder.RsBrukerBuilder;
+import no.nav.dolly.testdata.builder.RsTeamBuilder;
+import no.nav.dolly.testdata.builder.TeamBuilder;
+import no.nav.dolly.testdata.builder.TestgruppeBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -108,37 +111,60 @@ public class BrukerServiceTest {
         String navident = "NAVIDENT";
 
         Bruker bruker = Bruker.builder().navIdent(navident).build();
-        Bruker rsBruker = Bruker.builder().navIdent(navident).build();
+        RsBruker rsBruker = RsBrukerBuilder.builder().navIdent(navident).build().convertToRealRsBruker();
 
-        Team team = Team.builder().navn("navteam").eier(bruker).build();
-        RsTeam rsTeam = RsTeamUtvidetBuilder.builder().navn("navteam").eierNavIdent(navident).build().convertToRealRsTeam();
-        Set teamSet = newHashSet(singletonList(rsTeam));
-        List<Team> teamList = singletonList(team);
+        Team team = TeamBuilder.builder().navn("navteam").eier(bruker).build().convertToRealTeam();
+        RsTeam rsTeam = RsTeamBuilder.builder().navn("navteam").eierNavIdent(navident).build().convertToRealRsTeam();
+        Set teamSet = Sets.newHashSet(Collections.singletonList(rsTeam));
+        List<Team> teamList = Collections.singletonList(team);
 
         when(brukerRepository.findBrukerByNavIdent(navident)).thenReturn(bruker);
+        when(mapperFacade.map(bruker, RsBruker.class)).thenReturn(rsBruker);
         when(teamService.fetchTeamsByMedlemskapInTeams(navident)).thenReturn(teamList);
+        when(mapperFacade.mapAsSet(teamList, RsTeam.class)).thenReturn(teamSet);
 
-        BrukerMedTeamsOgFavoritter res = service.getBrukerMedTeamsOgFavoritter(navident);
+        RsBrukerMedTeamsOgFavoritter res = service.getBrukerMedTeamsOgFavoritter(navident);
 
-        assertThat(res.getBruker(), is(bruker));
+        assertThat(res.getBruker(), is(rsBruker));
         assertThat(res.getTeams().size(), is(1));
     }
 
     @Test
-    public void leggTilFavoritter_medGrupperIDer() {
-        Long ID = 1L;
-        Testgruppe testgruppe = Testgruppe.builder().navn("gruppe").hensikt("hen").build();
-        Bruker bruker = Bruker.builder().navIdent(navIdent).favoritter(new HashSet<>()).teams(new HashSet<>()).build();
+    public void addFavoritter_kallerSaveBrukerMedLagtTilFavoritter() {
+        Testgruppe gruppe = TestgruppeBuilder.builder().navn("g1").hensikt("hen").build().convertToRealTestgruppe();
+        List<Testgruppe> gruppeList = Collections.singletonList(gruppe);
 
-        when(gruppeService.fetchTestgruppeById(ID)).thenReturn(testgruppe);
-        when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(bruker);
+        String navident = "NAVIDENT";
+        Bruker bruker = Bruker.builder().navIdent(navident).favoritter(new HashSet<>()).build();
+
+        when(brukerRepository.findBrukerByNavIdent(navident)).thenReturn(bruker);
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
-        Bruker hentetBruker = service.leggTilFavoritt(ID);
+        Bruker endretBruker = service.leggTilFavoritter(navident, gruppeList);
 
-        verify(brukerRepository).save(bruker);
+        assertThat(endretBruker.getFavoritter().size(), is(1));
+        assertThat(endretBruker.getFavoritter(), hasItem(both(
+                hasProperty("navn", equalTo("g1"))).and(
+                hasProperty("hensikt", equalTo("hen"))
+        )));
+    }
 
-        assertThat(hentetBruker, is(bruker));
+    @Test
+    public void leggTilFavoritter_medGrupperIDer() {
+        List<Long> ider = Arrays.asList(1L, 2L);
+        Testgruppe g = TestgruppeBuilder.builder().navn("gruppe").hensikt("hen").build().convertToRealTestgruppe();
+        List<Testgruppe> grupper = Collections.singletonList(g);
+        Bruker b = Bruker.builder().navIdent(navIdent).favoritter(new HashSet<>()).teams(new HashSet<>()).build();
+
+        when(gruppeService.fetchGrupperByIdsIn(ider)).thenReturn(grupper);
+        when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(b);
+        when(brukerRepository.save(b)).thenReturn(b);
+
+        Bruker hentetBruker = service.leggTilFavoritter(ider);
+
+        verify(brukerRepository).save(b);
+
+        assertThat(hentetBruker, is(b));
         assertThat(hentetBruker.getFavoritter().size(), is(1));
 
         assertThat(hentetBruker.getFavoritter(), hasItem(both(
@@ -149,24 +175,27 @@ public class BrukerServiceTest {
 
     @Test
     public void fjernFavoritter_medGrupperIDer() {
-        Long ID = 1L;
-        Testgruppe testgruppe = Testgruppe.builder().navn("gruppe").hensikt("hen").build();
-        Testgruppe testgruppe2 = Testgruppe.builder().navn("gruppe2").hensikt("hen2").build();
-        Set<Testgruppe> favoritter = newHashSet(asList(testgruppe, testgruppe2));
+        List<Long> ider = Collections.singletonList(1L);
+        Testgruppe g = TestgruppeBuilder.builder().navn("gruppe").hensikt("hen").build().convertToRealTestgruppe();
+        Testgruppe g2 = TestgruppeBuilder.builder().navn("gruppe2").hensikt("hen2").build().convertToRealTestgruppe();
+        List<Testgruppe> grupperSomSkalBort = Collections.singletonList(g);
+        Set<Testgruppe> favoritter = new HashSet<>();
+        favoritter.add(g);
+        favoritter.add(g2);
 
-        Bruker bruker = Bruker.builder().navIdent(navIdent).favoritter(favoritter).teams(new HashSet<>()).build();
-        testgruppe.setFavorisertAv(newHashSet(singletonList(bruker)));
-        testgruppe2.setFavorisertAv(newHashSet(singletonList(bruker)));
+        Bruker b = Bruker.builder().navIdent(navIdent).favoritter(favoritter).teams(new HashSet<>()).build();
+        g.setFavorisertAv(new HashSet<>(Collections.singletonList(b)));
+        g2.setFavorisertAv(new HashSet<>(Collections.singletonList(b)));
 
-        when(gruppeService.fetchTestgruppeById(ID)).thenReturn(testgruppe);
-        when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(bruker);
-        when(brukerRepository.save(bruker)).thenReturn(bruker);
+        when(gruppeService.fetchGrupperByIdsIn(ider)).thenReturn(grupperSomSkalBort);
+        when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(b);
+        when(brukerRepository.save(b)).thenReturn(b);
 
-        Bruker hentetBruker = service.fjernFavoritt(ID);
+        Bruker hentetBruker = service.fjernFavoritter(ider);
 
-        verify(brukerRepository).save(bruker);
+        verify(brukerRepository).save(b);
 
-        assertThat(hentetBruker, is(bruker));
+        assertThat(hentetBruker, is(b));
         assertThat(hentetBruker.getFavoritter().size(), is(1));
 
         assertThat(hentetBruker.getFavoritter(), hasItem(both(
@@ -174,6 +203,6 @@ public class BrukerServiceTest {
                 hasProperty("hensikt", equalTo("hen2"))
         )));
 
-        assertThat(testgruppe.getFavorisertAv().isEmpty(), is(true));
+        assertThat(g.getFavorisertAv().isEmpty(), is(true));
     }
 }

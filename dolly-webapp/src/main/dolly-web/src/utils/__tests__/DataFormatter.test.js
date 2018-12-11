@@ -1,4 +1,5 @@
 import Formatter from '../DataFormatter'
+import { FORMERR } from 'dns'
 
 describe('DataFormatter.js', () => {
 	describe('formatIdentNr', () => {
@@ -56,25 +57,25 @@ describe('DataFormatter.js', () => {
 
 	describe('kjonnToString', () => {
 		it('it should return Mann', () => {
-			expect(Formatter.kjonnToString('m')).toBe('MANN')
+			expect(Formatter.kjonnToString('m')).toBe('Mann')
 		})
 		it('it should return Kvinne', () => {
-			expect(Formatter.kjonnToString('k')).toBe('KVINNE')
+			expect(Formatter.kjonnToString('k')).toBe('Kvinne')
 		})
 		it('it should return udefinert because no match', () => {
-			expect(Formatter.kjonnToString('x')).toBe('UDEFINERT')
+			expect(Formatter.kjonnToString('x')).toBe('udefinert')
 		})
 	})
 
 	describe('kjonnToStringBarn', () => {
 		it('it should return Gutt', () => {
-			expect(Formatter.kjonnToStringBarn('m')).toBe('GUTT')
+			expect(Formatter.kjonnToStringBarn('m')).toBe('Gutt')
 		})
 		it('it should return Jente', () => {
-			expect(Formatter.kjonnToStringBarn('k')).toBe('JENTE')
+			expect(Formatter.kjonnToStringBarn('k')).toBe('Jente')
 		})
 		it('it should return udefinert because no match', () => {
-			expect(Formatter.kjonnToStringBarn('x')).toBe('UDEFINERT')
+			expect(Formatter.kjonnToStringBarn('x')).toBe('udefinert')
 		})
 	})
 

@@ -34,25 +34,11 @@ public class Bruker {
     private String navIdent;
 
     @ManyToMany(mappedBy = "medlemmer")
-    private Set<Team> teams;
+    private Set<Team> teams = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "T_BRUKER_FAVORITTER",
             joinColumns = @JoinColumn(name = "bruker_id"),
             inverseJoinColumns = @JoinColumn(name = "gruppe_id"))
-    private Set<Testgruppe> favoritter;
-
-    public Set<Team> getTeams() {
-        if (teams == null) {
-            teams = new HashSet<>();
-        }
-        return teams;
-    }
-
-    public Set<Testgruppe> getFavoritter() {
-        if (favoritter == null) {
-            favoritter = new HashSet<>();
-        }
-        return favoritter;
-    }
+    private Set<Testgruppe> favoritter = new HashSet<>();
 }

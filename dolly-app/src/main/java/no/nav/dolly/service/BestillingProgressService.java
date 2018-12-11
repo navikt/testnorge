@@ -1,6 +1,6 @@
 package no.nav.dolly.service;
 
-import static java.util.Objects.isNull;
+import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class BestillingProgressService {
     public List<BestillingProgress> fetchBestillingProgressByBestillingsIdFromDB(Long bestillingsId) {
         List<BestillingProgress> progress = repository.findBestillingProgressByBestillingId(bestillingsId);
 
-        if (isNull(progress) || progress.isEmpty()) {
+        if (isNullOrEmpty(progress)) {
             throw new NotFoundException("Kunne ikke finne bestillingsprogress med bestillingId=" + bestillingsId + ", i tabell T_BESTILLINGS_PROGRESS");
         }
 

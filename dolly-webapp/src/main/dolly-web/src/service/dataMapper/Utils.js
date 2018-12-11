@@ -14,7 +14,6 @@ export const relasjonTranslator = relasjon => {
 		case 'FAR':
 			return 'Far'
 		case 'BARN':
-			return 'Barn'
 		case 'FOEDSEL':
 			return 'Barn'
 		default:

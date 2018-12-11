@@ -1,20 +1,20 @@
 package no.nav.dolly.regression;
 
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import no.nav.dolly.regression.scenarios.testrepositories.BrukerTestRepository;
 import no.nav.dolly.regression.scenarios.testrepositories.GruppeTestRepository;
 import no.nav.dolly.regression.scenarios.testrepositories.TeamTestRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TeamRepository;
+import no.nav.dolly.repository.GruppeRepository;
+
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestConfig.class)
