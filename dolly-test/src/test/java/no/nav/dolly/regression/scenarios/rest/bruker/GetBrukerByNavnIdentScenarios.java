@@ -15,15 +15,15 @@ public class GetBrukerByNavnIdentScenarios extends BrukerTestCaseBase {
 
     @Test
     public void happyPath() throws Exception {
-        MvcResult mvcResult = mvcMock.perform(get(endpointUrl + "/" + standardNavIdent))
+        MvcResult mvcResult = mvcMock.perform(get(endpointUrl + "/" + STANDARD_NAV_IDENT))
                 .andExpect(status().isOk())
                 .andReturn();
 
         RsBrukerTeamAndGruppeIDs res = convertMvcResultToObject(mvcResult, RsBrukerTeamAndGruppeIDs.class);
 
-        assertThat(res.getNavIdent(), is(standardNavIdent));
+        assertThat(res.getNavIdent(), is(STANDARD_NAV_IDENT));
         assertThat(res.getTeams().size(), is(1));
-        assertThat(res.getTeams().get(0).getNavn(), is(standardTeamnavn));
+        assertThat(res.getTeams().get(0).getNavn(), is(STANDARD_TEAM_NAVN));
     }
 
     @Test

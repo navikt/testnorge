@@ -36,7 +36,6 @@ import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
-import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
@@ -51,7 +50,6 @@ public class DollyBestillingServiceTest {
     private Map<String, String> status_SuccU1T2_FailQ3;
     private RsDollyBestillingsRequest standardBestillingRequest_u1_t2_q3;
     private RsTpsfBestilling tpsfReqEmpty = new RsTpsfBestilling();
-    private TpsfException standardTpsfException = new TpsfException("feil");
     private Bestilling standardNyBestilling;
     private Testgruppe standardGruppe = new Testgruppe();
     private SendSkdMeldingTilTpsResponse standardSendSkdResponse;
@@ -61,9 +59,6 @@ public class DollyBestillingServiceTest {
     private String standardFeilmelding = "feil";
     private String standardTpsFeedback = "feedback";
     private List<String> standardIdenter = Arrays.asList(standardHovedident, "34", "56");
-
-    @Mock
-    private IdentRepository identRepository;
 
     @Mock
     private BestillingProgressRepository bestillingProgressRepository;

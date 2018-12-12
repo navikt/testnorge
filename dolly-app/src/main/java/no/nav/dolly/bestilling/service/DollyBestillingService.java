@@ -1,10 +1,9 @@
 package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static no.nav.dolly.util.UtilFunctions.isNullOrEmpty;
+import static java.util.Objects.nonNull;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.krrstub.KrrStubResponseHandler;
 import no.nav.dolly.bestilling.krrstub.KrrStubService;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
@@ -72,51 +73,56 @@ public class DollyBestillingService {
     @Autowired
     private BestillingService bestillingService;
 
+    @Autowired
+    private MapperFacade mapperFacade;
+
     @Async
+    @Transactional
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingRequest, Long bestillingsId) {
+
         Bestilling bestilling = bestillingService.fetchBestillingById(bestillingsId);
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
-        RsTpsfBestilling tpsfBestilling = bestillingRequest.getTpsf();
-        tpsfBestilling.setEnvironments(bestillingRequest.getEnvironments());
-        tpsfBestilling.setAntall(1);
-
         try {
-            for (int i = 0; i < bestillingRequest.getAntall(); i++) {
+            RsTpsfBestilling tpsfBestilling = nonNull(bestillingRequest.getTpsf()) ? bestillingRequest.getTpsf() : new RsTpsfBestilling();
+            tpsfBestilling.setEnvironments(bestillingRequest.getEnvironments());
+            tpsfBestilling.setAntall(1);
+
+            int loopCount = 0;
+            while (!bestilling.isStoppet() && loopCount < bestillingRequest.getAntall()) {
                 List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
                 BestillingProgress progress = new BestillingProgress(bestillingsId, hovedPersonIdent);
 
-                senderIdenterTilTPS(bestillingRequest, bestilteIdenter, testgruppe, progress);
+                sendIdenterTilTPS(bestillingRequest, bestilteIdenter, testgruppe, progress);
 
-                if (bestillingRequest.getSigrunstub() != null) {
+                if (nonNull(bestillingRequest.getSigrunstub())) {
                     for (RsOpprettSkattegrunnlag request : bestillingRequest.getSigrunstub()) {
                         request.setPersonidentifikator(hovedPersonIdent);
                     }
-                    ResponseEntity<String> sigrunResponse = sigrunStubService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
+                    ResponseEntity sigrunResponse = sigrunStubService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
                     progress.setSigrunstubStatus(sigrunstubResponseHandler.extractResponse(sigrunResponse));
                 }
 
-                if (bestillingRequest.getKrrstub() != null) {
-                    DigitalKontaktdataRequest digitalKontaktdataRequest = DigitalKontaktdataRequest.builder()
-                            .personident(hovedPersonIdent)
-                            .gyldigFra(ZonedDateTime.now())
-                            .epost(bestillingRequest.getKrrstub().getEpost())
-                            .mobil(bestillingRequest.getKrrstub().getMobil())
-                            .reservert(isNull(bestillingRequest.getKrrstub().getReservert()) ? false : bestillingRequest.getKrrstub().getReservert())
-                            .build();
+                if (nonNull(bestillingRequest.getKrrstub())) {
+                    DigitalKontaktdataRequest digitalKontaktdataRequest = mapperFacade.map(bestillingRequest, DigitalKontaktdataRequest.class);
+                    digitalKontaktdataRequest.setPersonident(hovedPersonIdent);
                     ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
                     progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
                 }
 
-                bestillingProgressRepository.save(progress);
-                bestillingService.saveBestillingToDB(bestilling);
+                if (!bestilling.isStoppet()) {
+                    bestillingProgressRepository.save(progress);
+                    bestilling.setSistOppdatert(LocalDateTime.now());
+                    bestillingService.saveBestillingToDB(bestilling);
+                }
+                loopCount++;
             }
         } catch (Exception e) {
             log.error("Bestilling med id <" + bestillingsId + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
             bestillingProgressRepository.save(BestillingProgress.builder()
                     .bestillingId(bestillingsId)
-                    .feil(format("FEIL: Bestilling kunne ikke utføres mot TPS. Svar: %s", e.getMessage()))
+                    .feil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()))
                     .build());
         } finally {
             bestilling.setFerdig(true);
@@ -124,7 +130,7 @@ public class DollyBestillingService {
         }
     }
 
-    private void senderIdenterTilTPS(RsDollyBestillingsRequest request, List<String> klareIdenter, Testgruppe testgruppe, BestillingProgress progress) {
+    private void sendIdenterTilTPS(RsDollyBestillingsRequest request, List<String> klareIdenter, Testgruppe testgruppe, BestillingProgress progress) {
         try {
             RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
             String feedbackTps = tpsfResponseHandler.extractTPSFeedback(response.getSendSkdMeldingTilTpsResponsene());
@@ -133,7 +139,7 @@ public class DollyBestillingService {
             String hovedperson = getHovedpersonAvBestillingsidenter(klareIdenter);
             List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
 
-            if (!isNullOrEmpty(successMiljoer)) {
+            if (!successMiljoer.isEmpty()) {
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);
                 progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
             } else {

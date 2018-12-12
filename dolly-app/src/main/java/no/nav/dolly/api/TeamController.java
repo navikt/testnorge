@@ -1,15 +1,10 @@
 package no.nav.dolly.api;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.repository.TeamRepository;
-import no.nav.dolly.service.TeamService;
-
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.repository.TeamRepository;
+import no.nav.dolly.service.TeamService;
+
+@Transactional
 @RestController
 @RequestMapping(value = "api/v1/team")
 public class TeamController {
@@ -43,7 +46,7 @@ public class TeamController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
-	public RsTeam opprettTeam(@RequestBody RsOpprettTeam createTeamRequest) {
+	public RsTeamUtvidet opprettTeam(@RequestBody RsOpprettTeam createTeamRequest) {
 		return teamService.opprettTeam(createTeamRequest);
 	}
 
@@ -53,22 +56,22 @@ public class TeamController {
 	}
 
 	@GetMapping("/{teamId}")
-	public RsTeam fetchTeamById(@PathVariable("teamId") Long teamid){
-		return mapperFacade.map(teamService.fetchTeamById(teamid), RsTeam.class);
+	public RsTeamUtvidet fetchTeamById(@PathVariable("teamId") Long teamid){
+		return mapperFacade.map(teamService.fetchTeamById(teamid), RsTeamUtvidet.class);
 	}
 
 	@PutMapping("/{teamId}/leggTilMedlemmer")
-	public RsTeam addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
+	public RsTeamUtvidet addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
 		return teamService.addMedlemmerByNavidenter(teamId, navIdenter);
 	}
 
 	@PutMapping("/{teamId}/fjernMedlemmer")
-	public RsTeam fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
+	public RsTeamUtvidet fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
         return teamService.fjernMedlemmer(teamId, navIdenter);
     }
 
     @PutMapping("/{teamId}")
-    public RsTeam endreTeaminfo(@PathVariable("teamId") Long teamId , @RequestBody RsTeam createTeamRequest) {
+    public RsTeamUtvidet endreTeaminfo(@PathVariable("teamId") Long teamId , @RequestBody RsTeamUtvidet createTeamRequest) {
         return teamService.updateTeamInfo(teamId, createTeamRequest);
     }
 }

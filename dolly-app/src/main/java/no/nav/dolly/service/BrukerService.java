@@ -1,23 +1,20 @@
 package no.nav.dolly.service;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
 import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsBrukerMedTeamsOgFavoritter;
-import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -50,7 +47,6 @@ public class BrukerService {
         } catch (NonTransientDataAccessException e) {
             throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
         }
-
     }
 
     public Bruker fetchBruker(String navIdent) {
@@ -61,7 +57,6 @@ public class BrukerService {
         return bruker;
     }
 
-    @Transactional
     public Bruker fetchOrCreateBruker(String navIdent) {
         try{
             return fetchBruker(navIdent);
@@ -70,56 +65,38 @@ public class BrukerService {
         }
     }
 
-    public RsBrukerMedTeamsOgFavoritter getBrukerMedTeamsOgFavoritter(String navIdent) {
+    public BrukerMedTeamsOgFavoritter getBrukerMedTeamsOgFavoritter(String navIdent) {
         Bruker bruker = fetchBruker(navIdent);
         List<Team> teams = teamService.fetchTeamsByMedlemskapInTeams(navIdent);
 
-        RsBruker rsBruker = mapperFacade.map(bruker, RsBruker.class);
-        Set<RsTeam> rsTeams = mapperFacade.mapAsSet(teams, RsTeam.class);
-
-        return RsBrukerMedTeamsOgFavoritter.builder()
-                .bruker(rsBruker)
-                .teams(rsTeams)
+        return BrukerMedTeamsOgFavoritter.builder()
+                .bruker(bruker)
+                .teams(teams)
                 .build();
     }
 
-    @Transactional
-    public Bruker leggTilFavoritter(Collection<Long> gruppeIDer){
-        String navIdent = getLoggedInNavIdent();
-        List<Testgruppe> grupper = gruppeService.fetchGrupperByIdsIn(gruppeIDer);
+    public Bruker leggTilFavoritt(Long gruppeId){
+        Testgruppe grupper = gruppeService.fetchTestgruppeById(gruppeId);
 
-        return leggTilFavoritter(navIdent, grupper);
-    }
-
-    @Transactional
-    public Bruker leggTilFavoritter(String navident, Collection<Testgruppe> grupper){
-        Bruker bruker = fetchBruker(navident);
-        bruker.getFavoritter().addAll(grupper);
+        Bruker bruker = fetchBruker(getLoggedInNavIdent());
+        bruker.getFavoritter().addAll(newHashSet(grupper));
         return brukerRepository.save(bruker);
     }
 
-    @Transactional
-    public Bruker fjernFavoritter(Collection<Long> gruppeIDer){
-        String navIdent = getLoggedInNavIdent();
-        List<Testgruppe> grupper = gruppeService.fetchGrupperByIdsIn(gruppeIDer);
+    public Bruker fjernFavoritt(Long gruppeIDer){
+        Testgruppe testgruppe = gruppeService.fetchTestgruppeById(gruppeIDer);
 
-        return fjernFavoritter(navIdent, grupper);
+        Bruker bruker = fetchBruker(getLoggedInNavIdent());
+        bruker.getFavoritter().remove(testgruppe);
+        testgruppe.getFavorisertAv().remove(bruker);
+
+        gruppeService.saveGruppeTilDB(testgruppe);
+        return brukerRepository.save(bruker);
     }
 
-    @Transactional
     public Bruker leggTilTeam(Bruker b, Team t){
         b.getTeams().add(t);
         return saveBrukerTilDB(b);
-    }
-
-    @Transactional
-    public Bruker fjernFavoritter(String navident, Collection<Testgruppe> grupper){
-        Bruker bruker = fetchBruker(navident);
-        bruker.getFavoritter().removeAll(grupper);
-        grupper.forEach(g ->  g.getFavorisertAv().remove(bruker));
-        Bruker lagretBruker = brukerRepository.save(bruker);
-        gruppeService.saveGrupper(grupper);
-        return lagretBruker;
     }
 
     public List<Bruker> fetchBrukere() {

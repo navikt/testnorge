@@ -84,7 +84,7 @@ export default function testbrukerReducer(state = initialState, action) {
 					...state.items,
 					krrstub: {
 						...state.items.krrstub,
-						[action.meta.ident]: action.payload && action.payload.data[0]
+						[action.meta.ident]: action.payload.data && action.payload.data[0]
 					}
 				}
 			}

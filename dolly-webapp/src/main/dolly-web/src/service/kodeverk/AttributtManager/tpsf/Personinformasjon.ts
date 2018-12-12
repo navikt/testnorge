@@ -55,9 +55,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Kjønn',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		apiKodeverkId: 'Kj%C3%B8nnstyper',
+		apiKodeverkId: 'Kjønnstyper',
 		validation: yup.string().required('Velg kjønn.'),
-		format: Formatters.kjonnToString,
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -80,7 +79,18 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'Diskresjonskoder',
 		validation: yup.string().required('Velg diskresjonskoder.'),
-		attributtType: AttributtType.SelectOnly
+		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'sprakKode',
+		label: 'Språk',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		apiKodeverkId: 'Språk',
+		validation: yup.string().required('Velg språk.'),
+		attributtType: AttributtType.SelectAndEdit
 	}
 	// {
 	// 	hovedKategori: Kategorier.PersInfo,

@@ -1,5 +1,7 @@
 package no.nav.dolly.regression.scenarios.rest.team;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -19,33 +21,32 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.testdata.builder.TeamBuilder;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 
 public class GetTeamsScenarios extends TeamTestCaseBase {
 
-    Bruker bruker2;
+    private Bruker bruker2;
 
     @Before
     public void setupData(){
         bruker2 = brukerRepository.save(Bruker.builder().navIdent("navident2").build());
 
-        Team team2 = teamRepository.save(TeamBuilder.builder()
+        Team team2 = teamRepository.save(Team.builder()
                 .navn("team2")
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk2")
                 .eier(bruker2)
                 .medlemmer(new HashSet<>(Arrays.asList(bruker2, standardBruker)))
-                .build().convertToRealTeam()
+                .build()
         );
 
-        Team team3 = teamRepository.save(TeamBuilder.builder()
+        Team team3 = teamRepository.save(Team.builder()
                 .navn("team3")
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk3")
                 .eier(bruker2)
-                .medlemmer(new HashSet<>(Arrays.asList(bruker2)))
-                .build().convertToRealTeam()
+                .medlemmer(newHashSet(singletonList(bruker2)))
+                .build()
         );
     }
 
@@ -57,46 +58,45 @@ public class GetTeamsScenarios extends TeamTestCaseBase {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        List<RsTeam> resultat = convertMvcResultToList(mvcResult, RsTeam.class);
+        List<RsTeamUtvidet> resultat = convertMvcResultToList(mvcResult, RsTeamUtvidet.class);
 
         assertThat(resultat.size(), is(2));
 
         assertThat(resultat, hasItem(both(
-                hasProperty(teamPropNavn, equalTo(standardTeamnavn))).and(
-                hasProperty(teamPropEierIdent, equalTo(standardNavIdent)))
+                hasProperty(TEAM_PROP_NAVN, equalTo(STANDARD_TEAM_NAVN))).and(
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(STANDARD_NAV_IDENT)))
         ));
 
         assertThat(resultat, hasItem(both(
-                hasProperty(teamPropNavn, equalTo("team2"))).and(
-                hasProperty(teamPropEierIdent, equalTo(bruker2.getNavIdent())))
+                hasProperty(TEAM_PROP_NAVN, equalTo("team2"))).and(
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(bruker2.getNavIdent())))
         ));
     }
 
     @Test
     public void hentAlleTeamsIBasen() throws Exception {
-        String url = endpointUrl;
 
-        MvcResult mvcResult = mvcMock.perform(get(url))
+        MvcResult mvcResult = mvcMock.perform(get(endpointUrl))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        List<RsTeam> resultat = convertMvcResultToList(mvcResult, RsTeam.class);
+        List<RsTeamUtvidet> resultat = convertMvcResultToList(mvcResult, RsTeamUtvidet.class);
 
         assertThat(resultat.size(), is(3));
 
         assertThat(resultat, hasItem(both(
-                hasProperty(teamPropNavn, equalTo(standardTeamnavn))).and(
-                hasProperty(teamPropEierIdent, equalTo(standardNavIdent)))
+                hasProperty(TEAM_PROP_NAVN, equalTo(STANDARD_TEAM_NAVN))).and(
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(STANDARD_NAV_IDENT)))
         ));
 
         assertThat(resultat, hasItem(both(
-                hasProperty(teamPropNavn, equalTo("team2"))).and(
-                hasProperty(teamPropEierIdent, equalTo(bruker2.getNavIdent())))
+                hasProperty(TEAM_PROP_NAVN, equalTo("team2"))).and(
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(bruker2.getNavIdent())))
         ));
 
         assertThat(resultat, hasItem(both(
-                hasProperty(teamPropNavn, equalTo("team3"))).and(
-                hasProperty(teamPropEierIdent, equalTo(bruker2.getNavIdent())))
+                hasProperty(TEAM_PROP_NAVN, equalTo("team3"))).and(
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(bruker2.getNavIdent())))
         ));
     }
 }
