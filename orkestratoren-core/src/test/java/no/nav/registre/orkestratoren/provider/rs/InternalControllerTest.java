@@ -33,10 +33,8 @@ public class InternalControllerTest {
     @Test
     public void shouldReturnNotReady() {
         this.server.expect(requestTo("https://dummyUrl.hodejegeren/internal/isReady")).andRespond(withServerError());
-        this.server.expect(requestTo("https://dummyUrl.tps.synt/internal/isReady")).andRespond(withServerError());
         this.server.expect(requestTo("https://dummyUrl.inntekt.synt/internal/isReady")).andRespond(withServerError());
         this.server.expect(requestTo("https://dummyUrl.tpsf/internal/isReady")).andRespond(withSuccess());
-        this.server.expect(requestTo("https://dummyUrl.identpool/internal/isReady")).andRespond(withSuccess());
 
         ResponseEntity<?> ready = controller.isReady();
 
@@ -48,17 +46,15 @@ public class InternalControllerTest {
      * Hvis alle av orkestratorens avhengigheter er klare til å motta kall og returnerer httpstatus OK fra isReady,
      * så skal orkestratorens isReady-endepunkt returnere http-status OK.
      */
+    @Test
     public void shouldReturnReady() {
         this.server.expect(requestTo("https://dummyUrl.hodejegeren/internal/isReady")).andRespond(withSuccess());
-        this.server.expect(requestTo("https://dummyUrl.tps.synt/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.inntekt.synt/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.tpsf/internal/isReady")).andRespond(withSuccess());
-        this.server.expect(requestTo("https://dummyUrl.identpool/internal/isReady")).andRespond(withSuccess());
 
         ResponseEntity<?> ready = controller.isReady();
 
         assertEquals(HttpStatus.OK, ready.getStatusCode());
         this.server.verify();
-
     }
 }
