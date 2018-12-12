@@ -51,16 +51,14 @@ describe('FormEditor.js', () => {
 			/>
 		)
 		const attribute = AttributtManagerInstance.listAllSelected(['inntekt'])
-		const values = {
-			tjeneste: ''
-		}
-		// chosen attribute: tjeneste
+		// chosen attribute: tjeneste (has ApiKodeverk)
 		const rendered = shallow(
-			wrapperEditMode.instance().renderFieldComponent(attribute[0].items[0], values)
+			wrapperEditMode.instance().renderFieldComponent(attribute[0].items[0], {
+				tjeneste: ''
+			})
 		)
-
-		expect(rendered.find('.skjemaelement').exists()).toBeTruthy()
-		expect(rendered.find('.skjemaelement__staticvalue').exists()).toBeTruthy()
+		// rendrer enten staticvalue eller kodeverkValue
+		expect(rendered).toHaveLength(1)
 	})
 
 	it('should call extraComponentProps and return extra prop "loadOptions"', () => {

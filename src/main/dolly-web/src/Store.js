@@ -17,6 +17,7 @@ import commonReducer from './ducks/common'
 import bestillingStatusReducer from './ducks/bestillingStatus'
 import environmentsReducer from './ducks/environments'
 import openamReducer from './ducks/openam'
+import kodeverkReducer from './ducks/kodeverk'
 import history from './history'
 
 const locationMiddleware = store => next => action => {
@@ -59,7 +60,8 @@ const configureReduxStore = history => {
 		common: commonReducer,
 		bestillingStatus: bestillingStatusReducer,
 		environments: environmentsReducer,
-		openam: openamReducer
+		openam: openamReducer,
+		kodeverk: kodeverkReducer
 	})
 
 	return createStore(

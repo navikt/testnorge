@@ -44,6 +44,7 @@ class Step1 extends Component {
 						label="Antall personer"
 						className="input-num-person"
 						type="number"
+						min="0"
 						component={FormikInput}
 					/>
 				</div>
