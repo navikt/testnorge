@@ -56,6 +56,5 @@ public class InternalControllerTest {
 
         assertEquals(HttpStatus.OK, ready.getStatusCode());
         this.server.verify();
-
     }
 }
