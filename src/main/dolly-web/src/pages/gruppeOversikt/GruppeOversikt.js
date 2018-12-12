@@ -8,6 +8,7 @@ import Knapp from 'nav-frontend-knapper'
 import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
+import Pagination from '~/components/pagination/Pagination'
 
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {
@@ -45,7 +46,7 @@ export default class GruppeOversikt extends PureComponent {
 			sort,
 			searchActive
 		} = this.props
-
+		console.log('isfetch: ', isFetching)
 		return (
 			<div className="oversikt-container">
 				<div className="page-header flexbox--align">
@@ -70,15 +71,20 @@ export default class GruppeOversikt extends PureComponent {
 				{isFetching ? (
 					<Loading label="laster grupper" panel />
 				) : (
-					<Liste
+					<Pagination
 						items={gruppeListe}
-						editId={createOrUpdateId}
-						editGroup={editGroup}
-						history={history}
-						deleteGruppe={deleteGruppe}
-						setSort={setSort}
-						sort={sort}
-						searchActive={searchActive}
+						render={items => (
+							<Liste
+								items={items}
+								editId={createOrUpdateId}
+								editGroup={editGroup}
+								history={history}
+								deleteGruppe={deleteGruppe}
+								setSort={setSort}
+								sort={sort}
+								searchActive={searchActive}
+							/>
+						)}
 					/>
 				)}
 			</div>
