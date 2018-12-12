@@ -46,6 +46,7 @@ public class InternalControllerTest {
      * Hvis alle av orkestratorens avhengigheter er klare til å motta kall og returnerer httpstatus OK fra isReady,
      * så skal orkestratorens isReady-endepunkt returnere http-status OK.
      */
+    @Test
     public void shouldReturnReady() {
         this.server.expect(requestTo("https://dummyUrl.hodejegeren/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.inntekt.synt/internal/isReady")).andRespond(withSuccess());
