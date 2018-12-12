@@ -46,7 +46,7 @@ export default class GruppeOversikt extends PureComponent {
 			sort,
 			searchActive
 		} = this.props
-		console.log('isfetch: ', isFetching)
+
 		return (
 			<div className="oversikt-container">
 				<div className="page-header flexbox--align">
