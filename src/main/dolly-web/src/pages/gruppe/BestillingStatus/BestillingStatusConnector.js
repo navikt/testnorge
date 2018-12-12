@@ -5,12 +5,15 @@ import {
 	miljoStatusSelector,
 	cancelBestilling
 } from '~/ducks/bestillingStatus'
+import { createLoadingSelector } from '~/ducks/loading'
 
+const loadingSelector = createLoadingSelector(cancelBestilling)
 const mapStateToProps = (state, ownProps) => {
 	const bestillingStatusObj = state.bestillingStatus[ownProps.bestilling.id]
 	return {
 		bestillingStatusObj,
-		miljoeStatusObj: miljoStatusSelector(bestillingStatusObj)
+		miljoeStatusObj: miljoStatusSelector(bestillingStatusObj),
+		isCanceling: loadingSelector(state)
 	}
 }
 

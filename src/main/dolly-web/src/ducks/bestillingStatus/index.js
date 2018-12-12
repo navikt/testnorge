@@ -13,14 +13,19 @@ const SET_BESTILLING_STATUS = 'SET_BESTILLING_STATUS'
 
 const initialState = {}
 
-export const cancelBestilling = createAction('CANCEL_BESTILLING', DollyApi.cancelBestilling)
-
+export const cancelBestilling = createAction('CANCEL_BESTILLING', async id => {
+	let res = await DollyApi.cancelBestilling(id)
+	return { ...res, data: { ...res.data, ny: true } }
+})
 export default handleActions(
 	{
 		[success(getBestillingStatus)](state, action) {
 			return { ...state, [action.payload.data.id]: action.payload.data }
 		},
 
+		[success(cancelBestilling)](state, action) {
+			return { ...state, [action.payload.data.id]: action.payload.data }
+		},
 		[SET_BESTILLING_STATUS](state, action) {
 			return { ...state, [action.bestillingId]: action.data }
 		}
