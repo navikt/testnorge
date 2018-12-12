@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
-import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
+import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -55,7 +55,7 @@ public class TpsfConsumerTest {
 
         stubTpsfConsumer();
 
-        AvspillingResponse response = tpsfConsumer.sendSkdmeldingerTilTps(gruppeId, sendToTpsRequest);
+        SkdMeldingerTilTpsRespons response = tpsfConsumer.sendSkdmeldingerTilTps(gruppeId, sendToTpsRequest);
 
         assertEquals(expectedAntallSendte, response.getAntallSendte());
         assertEquals(expectedAntallFeilet, response.getAntallFeilet());

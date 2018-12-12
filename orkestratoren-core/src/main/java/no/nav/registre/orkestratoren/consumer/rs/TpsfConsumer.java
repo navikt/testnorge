@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
-import no.nav.registre.orkestratoren.consumer.rs.response.AvspillingResponse;
+import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 
 @Component
 public class TpsfConsumer {
@@ -27,12 +27,12 @@ public class TpsfConsumer {
         this.urlGetIdenter = tpsfServerUrl + "/v1/endringsmelding/skd/identer/{gruppeId}?aarsakskode={aarsakskoder}&transaksjonstype={transaksjonstype}";
     }
 
-    public AvspillingResponse sendSkdmeldingerTilTps(Long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
+    public SkdMeldingerTilTpsRespons sendSkdmeldingerTilTps(Long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
         String url = uriTemplate.expand(skdMeldingGruppeId).toString();
 
         return restTemplateTpsf.postForObject(url,
                 sendToTpsRequest,
-                AvspillingResponse.class);
+                SkdMeldingerTilTpsRespons.class);
     }
 
     public Set<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskoder, String transaksjonstype) {

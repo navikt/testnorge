@@ -29,7 +29,7 @@ public class TpsSyntPakkenServiceTest {
 
     /**
      * Testscenario: Dersom hodejegeren kaster feilmelding og varsler at Ids for lagrede meldinger i TPSF er tom,
-     * så skal ikke endepunktet sendToTps hos TPSF kalles.
+     * så skal ikke hodejegeren kalle på endepunktet sendToTps hos TPSF.
      * <p>
      * Flere scenarier for denne metoden dekkes av komponenttesten {@link no.nav.registre.orkestratoren.StartSyntetiseringTpsCompTest}
      */
@@ -43,5 +43,4 @@ public class TpsSyntPakkenServiceTest {
             verifyZeroInteractions(tpsfConsumer);
         }
     }
-
 }
