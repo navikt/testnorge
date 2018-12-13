@@ -120,13 +120,10 @@ public class DollyBestillingService {
             }
         } catch (Exception e) {
             log.error("Bestilling med id <" + bestillingsId + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
-            bestillingProgressRepository.save(BestillingProgress.builder()
-                    .bestillingId(bestillingsId)
-                    .feil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()))
-                    .build());
+            bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()));
         } finally {
-            bestilling.setFerdig(true);
             bestillingService.saveBestillingToDB(bestilling);
+            bestilling.setFerdig(true);
         }
     }
 
@@ -138,11 +135,14 @@ public class DollyBestillingService {
 
             String hovedperson = getHovedpersonAvBestillingsidenter(klareIdenter);
             List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
+            List<String> failureMiljoer = extraxtFailureMiljoForHovedperson(hovedperson, response);
 
             if (!successMiljoer.isEmpty()) {
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);
                 progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
-            } else {
+            }
+            if (!failureMiljoer.isEmpty()) {
+                progress.setFeil(String.join(",", failureMiljoer));
                 log.warn("Person med ident: {} ble ikke opprettet i TPS", hovedperson);
             }
         } catch (TpsfException e) {
@@ -172,6 +172,24 @@ public class DollyBestillingService {
         }
 
         return successMiljoer;
+    }
+
+    private List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
+        List<String> failure = new ArrayList<>();
+
+        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
+
+            if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
+                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
+                    if (!(entry.getValue().contains("OK"))) {
+                            failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("^(08)(;08%)*", "FEIL: ")));
+                    }
+                }
+            }
+
+        }
+
+        return failure;
     }
 
     private boolean isInnvandringsmeldingPaaPerson(String personId, SendSkdMeldingTilTpsResponse r) {
