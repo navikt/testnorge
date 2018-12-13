@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.krrstub;
 
 import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class KrrStubService {
             log.error("KrrStub kall feilet mot url <{}> grunnet {}", url, e.getResponseBodyAsString(), e);
 
             try {
-                Envelope failure = objectMapper.readValue(e.getResponseBodyAsString().getBytes("UTF-8"), Envelope.class);
+                Envelope failure = objectMapper.readValue(e.getResponseBodyAsString().getBytes(UTF_8), Envelope.class);
                 throw new TpsfException(format("%s -- (%s %s)", failure.getMelding(), e.getStatusCode(), e.getStatusText()), e);
             } catch (IOException e1) {
                 log.error(e1.getMessage(), e1);
@@ -66,7 +67,7 @@ public class KrrStubService {
 
     @Getter
     @Setter
-    private class Envelope {
+    private static class Envelope {
         private String melding;
     }
 }

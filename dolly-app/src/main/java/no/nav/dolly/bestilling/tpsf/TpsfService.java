@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.tpsf;
 
 import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -67,7 +68,7 @@ public class TpsfService {
         } catch (HttpServerErrorException | HttpClientErrorException e) {
             log.error("Tps-forvalteren kall feilet mot url <{}> grunnet {}", url, e.getMessage());
             try {
-                RestTemplateFailure failure = objectMapper.readValue(e.getResponseBodyAsString().getBytes("UTF-8"), RestTemplateFailure.class);
+                RestTemplateFailure failure = objectMapper.readValue(e.getResponseBodyAsString().getBytes(UTF_8), RestTemplateFailure.class);
                 throw new TpsfException(format("%s -- (%s %s)", failure.getMessage(), failure.getStatus(), failure.getError()), e);
             } catch (IOException e1) {
                 log.error(e1.getMessage(), e1);
