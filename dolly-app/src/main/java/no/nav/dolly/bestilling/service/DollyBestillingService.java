@@ -89,7 +89,7 @@ public class DollyBestillingService {
             tpsfBestilling.setAntall(1);
 
             int loopCount = 0;
-            while (!bestilling.isStoppet() && loopCount < bestillingRequest.getAntall()) {
+            while (!bestillingService.isStoppet(bestillingsId) && loopCount < bestillingRequest.getAntall()) {
                 List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
                 BestillingProgress progress = new BestillingProgress(bestillingsId, hovedPersonIdent);
