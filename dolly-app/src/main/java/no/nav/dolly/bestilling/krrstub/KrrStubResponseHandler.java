@@ -3,17 +3,12 @@ package no.nav.dolly.bestilling.krrstub;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class KrrStubResponseHandler {
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     public String extractResponse(ResponseEntity<Object> response) {
         return nonNull(response) && isOkStatus(response) ? "OK" : unWrapError(response);
