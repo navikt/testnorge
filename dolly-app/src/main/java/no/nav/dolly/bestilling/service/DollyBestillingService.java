@@ -111,7 +111,7 @@ public class DollyBestillingService {
                     progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
                 }
 
-                if (!bestilling.isStoppet()) {
+                if (!bestillingService.isStoppet(bestillingsId)) {
                     bestillingProgressRepository.save(progress);
                     bestilling.setSistOppdatert(LocalDateTime.now());
                     bestillingService.saveBestillingToDB(bestilling);
@@ -122,8 +122,12 @@ public class DollyBestillingService {
             log.error("Bestilling med id <" + bestillingsId + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
             bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()));
         } finally {
-            bestillingService.saveBestillingToDB(bestilling);
+            if (bestillingService.isStoppet(bestillingsId)) {
+                identService.slettTestidenter(bestilling.getId());
+                bestilling.setStoppet(true);
+            }
             bestilling.setFerdig(true);
+            bestillingService.saveBestillingToDB(bestilling);
         }
     }
 
@@ -182,7 +186,7 @@ public class DollyBestillingService {
             if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
                     if (!(entry.getValue().contains("OK"))) {
-                            failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("^(08)(;08%)*", "FEIL: ")));
+                            failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("^(08)(;08%)*", "FEIL: ").trim()));
                     }
                 }
             }
