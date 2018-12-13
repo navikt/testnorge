@@ -52,6 +52,11 @@ public class EksisterendeIdenterService {
     public static LocalDate getFoedselsdatoFraFnr(String fnr) {
         int pnrAarhundreKode = Integer.parseInt(fnr.substring(6, 9));
         int day = Integer.parseInt(fnr.substring(0, 2));
+
+        if(day > 31) { // For d-nummer legges det til 4 på det første sifferet i fnr
+            day -= 40;
+        }
+
         int month = Integer.parseInt(fnr.substring(2, 4));
         int year;
 
