@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import ReactPaginate from 'react-paginate'
+import _isEqual from 'lodash/isEqual'
 import Icon from '~/components/icon/Icon'
 
 import './Pagination.less'
@@ -15,7 +16,9 @@ export default class Pagination extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if (prevProps.items !== this.props.items) this.setState({ currentPage: 0 })
+		if (!_isEqual(prevProps.items, this.props.items)) {
+			this.setState({ currentPage: 0 })
+		}
 	}
 
 	_pageChangeHandler = e => {
