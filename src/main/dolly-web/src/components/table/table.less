@@ -110,13 +110,18 @@
 		&-columns {
 			position: relative;
 			display: flex;
-			flex-grow: 1;
 			align-items: center;
-			padding: @rowPadding;
-
+			flex-grow: 1;
 			// .dot-column:last-child {
 
 			// }
+
+			&-maincontent {
+				padding: @rowPadding;
+				display: flex;
+				flex-grow: 1;
+				align-items: center;
+			}
 		}
 
 		&-expand-icon {
