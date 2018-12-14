@@ -58,6 +58,9 @@ public class Bestilling {
     @Column(name = "STOPPET")
     private boolean stoppet;
 
+    @Column(name = "FEIL")
+    private String feil;
+
     public Bestilling(Testgruppe gruppe, int antallIdenter, LocalDateTime sistOppdatert, String miljoer) {
         this.gruppe = gruppe;
         this.antallIdenter = antallIdenter;

@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,12 +38,18 @@ public class SigrunStubService {
 
         String url = format("%s%s", providersProps.getSigrunStub().getUrl(), SIGRUN_STUB_OPPRETT_GRUNNLAG);
 
-        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-        String token = auth.getIdToken();
-        HttpHeaders header = new HttpHeaders();
-        header.set("Authorization", "Bearer " + token);
-        header.set("testdataEier", auth.getPrincipal());
+        try {
+            OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
+            String token = auth.getIdToken();
+            HttpHeaders header = new HttpHeaders();
+            header.set("Authorization", "Bearer " + token);
+            header.set("testdataEier", auth.getPrincipal());
 
-        return restTemplate.exchange(url, HttpMethod.POST, new HttpEntity(request, header), Object.class);
+            return restTemplate.exchange(url, HttpMethod.POST, new HttpEntity(request, header), Object.class);
+
+        } catch (HttpClientErrorException e) {
+            log.error("SigrunStub kall feilet mot url <{}> grunnet {}", url, e.getResponseBodyAsString(), e);
+            return new ResponseEntity(e.getResponseBodyAsString(), e.getStatusCode());
+        }
     }
 }
