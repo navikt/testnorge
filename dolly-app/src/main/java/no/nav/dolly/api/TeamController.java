@@ -3,6 +3,8 @@ package no.nav.dolly.api;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,6 +39,7 @@ public class TeamController {
 	@Autowired
 	private MapperFacade mapperFacade;
 
+	@Cacheable("team")
     @GetMapping
     public List<RsTeam> getTeams(@RequestParam("navIdent") Optional<String> navIdent){
         return navIdent
@@ -44,32 +47,38 @@ public class TeamController {
 				.orElse(mapperFacade.mapAsList(teamRepository.findAll(), RsTeam.class));
     }
 
+	@CacheEvict(value = "team",allEntries = true)
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public RsTeamUtvidet opprettTeam(@RequestBody RsOpprettTeam createTeamRequest) {
 		return teamService.opprettTeam(createTeamRequest);
 	}
 
+	@CacheEvict(value = "team",allEntries = true)
 	@DeleteMapping("/{teamId}")
 	public void deleteTeam(@PathVariable("teamId") Long teamId){
 		teamService.deleteTeam(teamId);
 	}
 
+	@Cacheable("team")
 	@GetMapping("/{teamId}")
 	public RsTeamUtvidet fetchTeamById(@PathVariable("teamId") Long teamid){
 		return mapperFacade.map(teamService.fetchTeamById(teamid), RsTeamUtvidet.class);
 	}
 
+	@CacheEvict(value = "team",allEntries = true)
 	@PutMapping("/{teamId}/leggTilMedlemmer")
 	public RsTeamUtvidet addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
 		return teamService.addMedlemmerByNavidenter(teamId, navIdenter);
 	}
 
+	@CacheEvict(value = "team",allEntries = true)
 	@PutMapping("/{teamId}/fjernMedlemmer")
 	public RsTeamUtvidet fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
         return teamService.fjernMedlemmer(teamId, navIdenter);
     }
 
+	@CacheEvict(value = "team",allEntries = true)
     @PutMapping("/{teamId}")
     public RsTeamUtvidet endreTeaminfo(@PathVariable("teamId") Long teamId , @RequestBody RsTeamUtvidet createTeamRequest) {
         return teamService.updateTeamInfo(teamId, createTeamRequest);

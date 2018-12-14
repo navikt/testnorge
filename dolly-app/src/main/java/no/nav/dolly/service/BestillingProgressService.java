@@ -2,13 +2,11 @@ package no.nav.dolly.service;
 
 import static java.util.Objects.isNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 
@@ -30,13 +28,5 @@ public class BestillingProgressService {
 
     public List<BestillingProgress> fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(Long bestillingsId) {
         return repository.findBestillingProgressByBestillingId(bestillingsId);
-    }
-
-    public List<BestillingProgress> fetchBestillingsProgressByIdentId(List<RsTestident> rsidenter) {
-        List<String> testidents = new ArrayList<>(rsidenter.size());
-        for (RsTestident ident : rsidenter) {
-            testidents.add(ident.getIdent());
-        }
-        return repository.findBestillingProgressByIdentIn(testidents);
     }
 }

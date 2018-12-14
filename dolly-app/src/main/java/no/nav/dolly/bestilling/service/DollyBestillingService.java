@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -76,6 +77,9 @@ public class DollyBestillingService {
     @Autowired
     private MapperFacade mapperFacade;
 
+    @Autowired
+    private CacheManager cacheManager;
+
     @Async
     @Transactional
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingRequest, Long bestillingsId) {
@@ -117,6 +121,7 @@ public class DollyBestillingService {
                     bestillingService.saveBestillingToDB(bestilling);
                 }
                 loopCount++;
+                cacheManager.getCache("gruppe").clear();
             }
         } catch (Exception e) {
             log.error("Bestilling med id <" + bestillingsId + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
