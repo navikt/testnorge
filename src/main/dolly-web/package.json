@@ -56,6 +56,7 @@
 		"react-dom": "^16.4.0",
 		"react-material-layout": "^1.1.7",
 		"react-modal": "^3.5.1",
+		"react-paginate": "^6.0.0",
 		"react-redux": "^5.0.7",
 		"react-router-breadcrumbs-hoc": "^2.1.4",
 		"react-router-dom": "^4.2.2",

@@ -28,7 +28,9 @@ export const iconList = [
 	'arrow-down',
 	'arrow-circle-right',
 	'arrow-circle-left',
-	'feedback-check-circle'
+	'feedback-check-circle',
+	'arrow-left',
+	'arrow-right'
 ]
 
 export default class Icon extends PureComponent {
@@ -72,6 +74,8 @@ export default class Icon extends PureComponent {
             case ('file-new'): return (<svg {...props} className={cn('svg-icon-file-new', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Maler</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M20.5 23.5h-17v-23h11l6 6zM14.5.5v6h6"/></g></svg>)
             case ('team'): return (<svg {...props} className={cn('svg-icon-team', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Team</title><g stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M4 6.609v1.391l-2.539.726c-.528.151-.961.724-.961 1.274v.5h5.5M7 6.578v1.422l2.538.726c.529.151.962.724.962 1.274v.5h-5.5"/><ellipse cx="5.5" cy="3.771" rx="3" ry="3.271"/><path d="M8.469 3.198c-.5.5-1.93.476-2.469-.527-1 1-2.625 1-3.434.429M17 6.609v1.391l-2.539.726c-.528.151-.961.724-.961 1.274v.5h5.5M20 6.594v1.406l2.538.726c.529.151.962.724.962 1.274v.5h-5.5"/><ellipse cx="18.5" cy="3.771" rx="3" ry="3.271"/><path d="M21.453 3.195c-.5.5-1.914.479-2.453-.524-1 1-2.625 1-3.434.429M10.5 19.609v1.391l-2.539.726c-.528.151-.961.724-.961 1.274v.5h5.5M13.5 19.609v1.391l2.538.726c.529.151.962.724.962 1.274v.5h-5.5"/><ellipse cx="12" cy="16.771" rx="3" ry="3.271"/><path d="M14.953 16.171c-.5.5-1.914.503-2.453-.5-1 1-2.625 1-3.434.429"/><path strokeLinecap="round" d="M4 12.5l2.5 2.5M20 12.5l-2.5 2.5"/></g></svg>)
             case ('info-circle'): return (<svg {...props} className={cn('svg-icon-info-circle', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Info</title><g><circle stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" cx="11.5" cy="12.5" r="11" fill="none"/><path stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none" d="M8.5 19.5h6M9.5 10.5h2v8.5"/><path stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" d="M11 6c-.277 0-.5.225-.5.5 0 .277.223.5.5.5.275 0 .5-.223.5-.5 0-.275-.225-.5-.5-.5z" fill="none"/></g></svg>)
+            case ('arrow-left'): return (<svg {...props} className={cn('svg-icon-arrow-left', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil venstre</title><path fill="#3e3832" d="M21.746,0.064c-0.156-0.088-0.349-0.084-0.504,0.008l-19,11.5C2.091,11.663,2,11.825,2,12s0.091,0.337,0.241,0.428l19,11.5  C21.321,23.976,21.41,24,21.5,24c0.084,0,0.169-0.021,0.246-0.064C21.903,23.847,22,23.681,22,23.5v-23  C22,0.319,21.903,0.153,21.746,0.064z"/></svg>)
+            case ('arrow-right'): return (<svg {...props} className={cn('svg-icon-arrow-right', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil høyre</title><path fill="#3e3832" d="M21.759,11.577L2.786,0.077C2.631-0.017,2.439-0.02,2.281,0.069C2.124,0.158,2.027,0.324,2.027,0.505v23  c0,0.181,0.097,0.347,0.254,0.436c0.077,0.043,0.161,0.064,0.246,0.064c0.09,0,0.18-0.024,0.259-0.072l18.973-11.5  C21.909,12.342,22,12.18,22,12.005S21.909,11.668,21.759,11.577z"/></svg>)
 			case ('report-problem-circle'): return (
 				<svg {...props} className={cn('svg-icon-report-problem-circle', className)}
 				focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
