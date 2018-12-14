@@ -4,7 +4,7 @@ import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
-import Pagination from '~/components/pagination/Pagination'
+import PaginationConnector from '~/components/pagination/PaginationConnector'
 
 export default class TestbrukerListe extends Component {
 	componentDidMount() {
@@ -34,7 +34,7 @@ export default class TestbrukerListe extends Component {
 		if (!testbrukerListe) return null
 
 		return (
-			<Pagination
+			<PaginationConnector
 				items={testbrukerListe}
 				render={testbrukere => {
 					return (

@@ -13,7 +13,7 @@ import Toolbar from '~/components/toolbar/Toolbar'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import Knapp from 'nav-frontend-knapper'
 import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
-import Pagination from '~/components/pagination/Pagination'
+import PaginationConnector from '~/components/pagination/PaginationConnector'
 
 import './Gruppe.less'
 
@@ -59,7 +59,7 @@ export default class Gruppe extends Component {
 
 		if (visning === this.VISNING_BESTILLING) {
 			return (
-				<Pagination
+				<PaginationConnector
 					items={gruppe.bestillinger}
 					render={items => <BestillingListeConnector bestillingListe={gruppe.bestillinger} />}
 				/>
