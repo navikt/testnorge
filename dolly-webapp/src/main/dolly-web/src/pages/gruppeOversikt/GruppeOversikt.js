@@ -8,7 +8,7 @@ import Knapp from 'nav-frontend-knapper'
 import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
-import Pagination from '~/components/pagination/Pagination'
+import PaginationConnector from '~/components/pagination/PaginationConnector'
 
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {
@@ -71,7 +71,7 @@ export default class GruppeOversikt extends PureComponent {
 				{isFetching ? (
 					<Loading label="laster grupper" panel />
 				) : (
-					<Pagination
+					<PaginationConnector
 						items={gruppeListe}
 						render={items => (
 							<Liste

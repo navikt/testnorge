@@ -8,7 +8,7 @@ import Knapp from 'nav-frontend-knapper'
 import TeamListe from './TeamListe'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
-import Pagination from '~/components/pagination/Pagination'
+import PaginationConnector from '~/components/pagination/PaginationConnector'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
@@ -56,7 +56,7 @@ export default class TeamOversikt extends Component {
 				{isFetching ? (
 					<Loading label="laster teams" panel />
 				) : (
-					<Pagination
+					<PaginationConnector
 						items={teamListe}
 						render={items => (
 							<TeamListe

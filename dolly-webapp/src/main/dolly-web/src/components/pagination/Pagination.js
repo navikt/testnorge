@@ -1,11 +1,10 @@
 import React, { Component, Fragment } from 'react'
 import ReactPaginate from 'react-paginate'
-import _isEqual from 'lodash/isEqual'
 import Icon from '~/components/icon/Icon'
 
 import './Pagination.less'
 
-const ITEM_PER_PAGE = 8
+const ITEM_PER_PAGE = 10
 
 export default class Pagination extends Component {
 	constructor(props) {
@@ -16,9 +15,7 @@ export default class Pagination extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if (!_isEqual(prevProps.items, this.props.items)) {
-			this.setState({ currentPage: 0 })
-		}
+		if (prevProps.search !== this.props.search) return this.setState({ currentPage: 0 })
 	}
 
 	_pageChangeHandler = e => {
@@ -49,26 +46,29 @@ export default class Pagination extends Component {
 		const itemCount = this.props.items.length
 		const renderPagination = itemCount > ITEM_PER_PAGE
 
+		const paginationComponent = (
+			<div className="pagination-wrapper">
+				<span className="pagination-label">
+					Viser {startIndex}-{lastIndex > itemCount ? itemCount : lastIndex} av {itemCount}
+				</span>
+				<ReactPaginate
+					containerClassName="pagination-container"
+					forcePage={this.state.currentPage}
+					pageCount={pageCount}
+					pageRangeDisplayed={2}
+					marginPagesDisplayed={1}
+					onPageChange={this._pageChangeHandler}
+					previousLabel={<Icon kind="arrow-left" />}
+					nextLabel={<Icon kind="arrow-right" />}
+				/>
+			</div>
+		)
+
 		return (
 			<Fragment>
-				{renderPagination && (
-					<div className="pagination-wrapper">
-						<span className="pagination-label">
-							Viser {startIndex}-{lastIndex > itemCount ? itemCount : lastIndex} av {itemCount}
-						</span>
-						<ReactPaginate
-							containerClassName="pagination-container"
-							forcePage={this.state.currentPage}
-							pageCount={pageCount}
-							pageRangeDisplayed={2}
-							marginPagesDisplayed={1}
-							onPageChange={this._pageChangeHandler}
-							previousLabel={<Icon kind="arrow-left" />}
-							nextLabel={<Icon kind="arrow-right" />}
-						/>
-					</div>
-				)}
+				{renderPagination && paginationComponent}
 				{this.props.render(itemsToRender)}
+				{renderPagination && paginationComponent}
 			</Fragment>
 		)
 	}
