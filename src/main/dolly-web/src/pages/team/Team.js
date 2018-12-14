@@ -54,7 +54,7 @@ class Team extends Component {
 		return (
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
-					{/* <ConfirmTooltip onClick={deleteTeam} /> */}
+					<ConfirmTooltip onClick={deleteTeam} />
 				</Overskrift>
 
 				{visRedigerTeam && <RedigerTeamConnector team={team} />}
