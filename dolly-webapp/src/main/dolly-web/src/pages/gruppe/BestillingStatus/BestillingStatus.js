@@ -6,6 +6,7 @@ import BestillingProgress from './BestillingProgress/BestillingProgress'
 import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
 import './BestillingStatus.less'
 import _find from 'lodash/find'
+import ContentContainer from '~/components/contentContainer/ContentContainer'
 
 export default class BestillingStatus extends PureComponent {
 	static propTypes = {
@@ -24,7 +25,8 @@ export default class BestillingStatus extends PureComponent {
 			failureIntervalCounter: 0,
 			failed: false,
 			sistOppdatert: props.bestilling.sistOppdatert,
-			isOpen: true
+			isOpen: true,
+			showCancelLoadingMsg: false
 		}
 	}
 
@@ -77,7 +79,7 @@ export default class BestillingStatus extends PureComponent {
 		if (liveTimeStamp == oldTimeStamp) {
 			this.setState({ failureIntervalCounter: (this.state.failureIntervalCounter += 1) })
 			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
-			this.state.failureIntervalCounter == 60 && this.setState({ failed: true })
+			this.state.failureIntervalCounter == 2 && this.setState({ failed: true })
 		} else {
 			this.setState({ sistOppdatert: data.sistOppdatert, failureIntervalCounter: 0, failed: false })
 		}
@@ -94,7 +96,7 @@ export default class BestillingStatus extends PureComponent {
 		// To indicate progress hvis ingenting har skjedd enda
 		if (percent === 0) percent += 10
 
-		if (antallKlare === total) text = `ferdigstiller bestilling`
+		if (antallKlare === total) text = `Ferdigstiller bestilling`
 
 		const title = percent === 100 ? 'FERDIG' : 'AKTIV BESTILLING'
 
@@ -110,9 +112,22 @@ export default class BestillingStatus extends PureComponent {
 		this.props.setBestillingStatus(bestillingStatusObj.id, { ...bestillingStatusObj, ny: false })
 	}
 
-	render() {
-		const { bestillingStatusObj, miljoeStatusObj, cancelBestilling } = this.props
+	_onCancelBtn = () => {
+		this.setState({ ferdig: true, showCancelLoadingMsg: true }, () => {
+			this.props.cancelBestilling()
+			this.stopPolling()
+		})
+	}
 
+	render() {
+		const { bestillingStatusObj, miljoeStatusObj, isCanceling, cancelBestilling } = this.props
+		if (isCanceling && this.state.showCancelLoadingMsg) {
+			return (
+				<ContentContainer className="loading-content-container">
+					<Loading label="AVBRYTER BESTILLING" />
+				</ContentContainer>
+			)
+		}
 		if (
 			(this.state.ferdig && !bestillingStatusObj) ||
 			!this.state.isOpen ||
@@ -127,7 +142,7 @@ export default class BestillingStatus extends PureComponent {
 					<BestillingProgress
 						status={status}
 						failed={this.state.failed}
-						cancelBestilling={cancelBestilling}
+						cancelBestilling={this._onCancelBtn}
 					/>
 				)}
 				{bestillingStatusObj &&
