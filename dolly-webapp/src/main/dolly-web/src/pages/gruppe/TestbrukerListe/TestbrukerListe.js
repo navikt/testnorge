@@ -4,6 +4,7 @@ import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
+import Pagination from '~/components/pagination/Pagination'
 
 export default class TestbrukerListe extends Component {
 	componentDidMount() {
@@ -16,7 +17,7 @@ export default class TestbrukerListe extends Component {
 		const {
 			isFetching,
 			testidenter,
-			testbrukere,
+			testbrukerListe,
 			headers,
 			editTestbruker,
 			searchActive,
@@ -30,48 +31,57 @@ export default class TestbrukerListe extends Component {
 				</ContentContainer>
 			)
 
-		return (
-			<div className="oversikt-container">
-				<Fragment>
-					{testbrukere && testbrukere.length <= 0 && searchActive ? (
-						<ContentContainer>Søket gav ingen resultater.</ContentContainer>
-					) : (
-						<Table>
-							<Table.Header>
-								{headers.map((header, idx) => (
-									<Table.Column key={idx} width={header.width} value={header.label} />
-								))}
-							</Table.Header>
+		if (!testbrukerListe) return null
 
-							{isFetching ? (
-								<Loading label="laster testbrukere" panel />
-							) : (
-								testbrukere &&
-								testbrukere.map((bruker, idx) => {
-									// Note: idx=0 of bruker (data) is parsed to be ID
-									return (
-										<Table.Row
-											key={idx}
-											expandComponent={
-												<PersonDetaljerConnector personId={bruker[0]} username={username} />
-											}
-											editAction={() => editTestbruker(bruker[0])}
-										>
-											{bruker.map((dataCell, cellIdx) => (
-												<Table.Column
-													key={cellIdx}
-													width={headers[cellIdx].width}
-													value={dataCell}
-												/>
+		return (
+			<Pagination
+				items={testbrukerListe}
+				render={testbrukere => {
+					return (
+						<div className="oversikt-container">
+							<Fragment>
+								{testbrukere && testbrukere.length <= 0 && searchActive ? (
+									<ContentContainer>Søket gav ingen resultater.</ContentContainer>
+								) : (
+									<Table>
+										<Table.Header>
+											{headers.map((header, idx) => (
+												<Table.Column key={idx} width={header.width} value={header.label} />
 											))}
-										</Table.Row>
-									)
-								})
-							)}
-						</Table>
-					)}
-				</Fragment>
-			</div>
+										</Table.Header>
+
+										{isFetching ? (
+											<Loading label="laster testbrukere" panel />
+										) : (
+											testbrukere &&
+											testbrukere.map((bruker, idx) => {
+												// Note: idx=0 of bruker (data) is parsed to be ID
+												return (
+													<Table.Row
+														key={idx}
+														expandComponent={
+															<PersonDetaljerConnector personId={bruker[0]} username={username} />
+														}
+														editAction={() => editTestbruker(bruker[0])}
+													>
+														{bruker.map((dataCell, cellIdx) => (
+															<Table.Column
+																key={cellIdx}
+																width={headers[cellIdx].width}
+																value={dataCell}
+															/>
+														))}
+													</Table.Row>
+												)
+											})
+										)}
+									</Table>
+								)}
+							</Fragment>
+						</div>
+					)
+				}}
+			/>
 		)
 	}
 }

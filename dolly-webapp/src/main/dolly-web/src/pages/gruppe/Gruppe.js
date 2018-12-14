@@ -13,6 +13,7 @@ import Toolbar from '~/components/toolbar/Toolbar'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import Knapp from 'nav-frontend-knapper'
 import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
+import Pagination from '~/components/pagination/Pagination'
 
 import './Gruppe.less'
 
@@ -56,9 +57,16 @@ export default class Gruppe extends Component {
 		const { visning } = this.state
 		const { editTestbruker } = this.props
 
-		if (visning === this.VISNING_BESTILLING)
-			return <BestillingListeConnector bestillingListe={gruppe.bestillinger} />
-
+		if (visning === this.VISNING_BESTILLING) {
+			return (
+				<Pagination
+					items={gruppe.bestillinger}
+					render={items => <BestillingListeConnector bestillingListe={gruppe.bestillinger} />}
+				/>
+			)
+		}
+		// !!! Pagination is is applied on TestbrukerListe because we fetch "testbrukere" from TPSF.
+		// !!! Therefore pagination is applied to data from TPSF and not DOLLY.
 		return (
 			<TestbrukerListeConnector testidenter={gruppe.testidenter} editTestbruker={editTestbruker} />
 		)
