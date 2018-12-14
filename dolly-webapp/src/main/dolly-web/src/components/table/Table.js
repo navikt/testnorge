@@ -53,13 +53,15 @@ class TableRow extends PureComponent {
 
 		return (
 			<div tabIndex={0} className={rowClass}>
-				<div className={columnsClass} {...rowProps}>
-					{children}
-					<Table.Column className="dot-body-row-expand-icon">
-						{expandComponent && (
-							<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
-						)}
-					</Table.Column>
+				<div className={columnsClass}>
+					<div className="dot-body-row-columns-maincontent" {...rowProps}>
+						{children}
+						<Table.Column className="dot-body-row-expand-icon">
+							{expandComponent && (
+								<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
+							)}
+						</Table.Column>
+					</div>
 					<div className="dot-body-row-actioncolumn">
 						{deleteAction && <ConfirmTooltip onClick={deleteAction} />}
 						{editAction && <Button kind="edit" onClick={editAction} />}
