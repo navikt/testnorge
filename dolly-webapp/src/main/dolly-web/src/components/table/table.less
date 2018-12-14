@@ -93,6 +93,7 @@
 		flex-direction: column;
 		background-color: white;
 		margin-bottom: 10px;
+		min-height: 60px;
 		border: 1px solid white; // prevent jumping
 
 		// TODO: Skal vi beholde markant border
@@ -107,21 +108,32 @@
 		}
 
 		&-columns {
+			position: relative;
 			display: flex;
 			flex-grow: 1;
 			align-items: center;
 			padding: @rowPadding;
 
-			.dot-column:last-child {
-				justify-content: flex-end;
-				display: flex;
-				padding-right: 5px;
-			}
+			// .dot-column:last-child {
+
+			// }
+		}
+
+		&-expand-icon {
+			justify-content: flex-end;
+			display: flex;
+			padding-right: 5px;
 		}
 
 		&-actioncolumn {
-			flex-grow: 1;
+			position: absolute;
+			display: flex;
+			height: 100%;
+			right: -130px;
+			top: 0;
+			min-width: 120px;
 			outline: none;
+			-webkit-appearance: none;
 		}
 
 		&-expandcomponent {
@@ -131,5 +143,15 @@
 		&:hover {
 			border-color: @color-lightblue;
 		}
+	}
+
+	.test {
+		outline: none;
+		position: absolute;
+		display: flex;
+		height: 100%;
+		right: -130px;
+		top: 0;
+		min-width: 120px;
 	}
 }
