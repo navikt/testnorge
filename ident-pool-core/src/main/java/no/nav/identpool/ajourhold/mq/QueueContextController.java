@@ -17,10 +17,10 @@ public class QueueContextController {
     //TODO Hvem skal bruke dette?
     @GetMapping(value = "env", produces = "text/plain")
     public ResponseEntity<String> getQueueEnvironContext() {
-        String builder = "Included: "
-                + QueueContext.getIncluded()
-                + "\r\n\r\nExcluded: "
-                + QueueContext.getExcluded();
+        String builder = "Successful: "
+                + QueueContext.getSuccessfulEnvs()
+                + "\r\n\r\nFailed: "
+                + QueueContext.getFailedEnvs();
         return ResponseEntity.ok(builder);
     }
 }

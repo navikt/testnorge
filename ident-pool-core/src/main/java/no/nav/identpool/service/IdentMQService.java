@@ -35,7 +35,7 @@ public class IdentMQService {
 
 
     public Map<String, Boolean> checkInTps(List<String> fnr) {
-        return checkInTps(QueueContext.getIncluded(), fnr);
+        return checkInTps(QueueContext.getSuccessfulEnvs(), fnr);
     }
 
     public Map<String, Boolean> checkInTps(List<String> environments, List<String> fnrs) {
@@ -80,7 +80,7 @@ public class IdentMQService {
         } catch (JMSException e) {
             log.warn(e.getMessage());
             messageQueue = messageQueueFactory.createMessageQueueIgnoreCache(environment);
-            messageQueue.ping();
+            messageQueue.ping(); //Make sure it's alive
         }
     }
 

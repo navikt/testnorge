@@ -6,5 +6,5 @@ public interface MessageQueue {
 
     String sendMessage(String requestMessageContent) throws JMSException;
 
-    boolean ping() throws JMSException;
+    void ping() throws JMSException;
 }

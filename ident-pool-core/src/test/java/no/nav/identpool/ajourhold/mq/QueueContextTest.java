@@ -8,18 +8,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.http.HttpStatus;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.jms.JMSException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
@@ -35,50 +35,39 @@ class QueueContextTest {
     @Mock
     private MessageQueue messageQueue;
 
-    private QueueContextController controller = new QueueContextController();
-
     private QueueContext queueContext;
 
     @BeforeEach
     void init() {
         reset(fasitClient, messageQueueFactory, messageQueue);
-        queueContext = new QueueContext(fasitClient, messageQueueFactory);
-        queueContext.excluded = new String[]{};
-        queueContext.order = Collections.emptyList();
-    }
-
-    @Test
-    void queueContextInit() {
-        queueContext.init();
-        assertThat(controller.getQueueEnvironContext().getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
     void queueContextOrdered() throws JMSException {
         when(fasitClient.getAllEnvironments("t", "q")).thenReturn(new ArrayList<>(Arrays.asList("t6", "q9", "t1", "t7", "q8")));
         when(messageQueueFactory.createMessageQueue(anyString())).thenReturn(messageQueue);
-        when(messageQueue.ping()).thenReturn(true);
 
-        QueueContext queueContext = new QueueContext(fasitClient, messageQueueFactory);
-        queueContext.excluded = new String[]{"t7", "q9"};
-        queueContext.order = Arrays.asList("t1", "t6", "t7");
-        queueContext.init();
-        assertThat(QueueContext.getIncluded(), contains("t1", "t6", "q8"));
-        assertThat(QueueContext.getExcluded().size(), is(0));
+        createQueueContext();
+        assertThat(QueueContext.getSuccessfulEnvs(), contains("t1", "t6", "q8"));
+        assertThat(QueueContext.getFailedEnvs().size(), is(0));
     }
 
     @Test
     void queueContextPingError() throws JMSException {
         when(fasitClient.getAllEnvironments("t", "q")).thenReturn(new ArrayList<>(Arrays.asList("t6", "q9", "t1", "t7", "q8")));
         when(messageQueueFactory.createMessageQueue(anyString())).thenReturn(messageQueue);
-        when(messageQueue.ping()).thenThrow(new JMSException(""));
+        doThrow(new JMSException("")).when(messageQueue).ping();
 
-        QueueContext queueContext = new QueueContext(fasitClient, messageQueueFactory);
-        queueContext.excluded = new String[]{"t7", "q9"};
-        queueContext.order = Arrays.asList("t1", "t6", "t7");
+        createQueueContext();
+
+        assertThat(QueueContext.getSuccessfulEnvs().size(), is(0));
+        assertThat(QueueContext.getFailedEnvs().size(), is(3));
+        assertThat(QueueContext.getFailedEnvs(), containsInAnyOrder("t1", "q8", "t6"));
+    }
+
+    private void createQueueContext() {
+        queueContext = new QueueContext(fasitClient, messageQueueFactory);
+        ReflectionTestUtils.setField(queueContext, "excluded", Arrays.asList("t7", "q9"));
         queueContext.init();
-        assertThat(QueueContext.getIncluded().size(), is(0));
-        assertThat(QueueContext.getExcluded(), containsInAnyOrder("t1", "q8", "t6"));
-        assertThat(QueueContext.getExcluded().size(), is(3));
     }
 }

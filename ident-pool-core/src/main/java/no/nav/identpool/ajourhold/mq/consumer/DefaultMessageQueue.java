@@ -33,13 +33,13 @@ public class DefaultMessageQueue implements MessageQueue {
         this.connectionFactory = connectionFactory;
     }
 
+    //TODO Skriv om under..
     public String sendMessage(String requestMessage) throws JMSException {
         return sendMessageConnection(requestMessage, RETRYCOUNT);
     }
 
-    public boolean ping() throws JMSException {
-        //TODO Ikke bruk ! her, gir slik som return !queue.ping(); i QueueContext som ikke er logisk når du leser gjennom
-        return !"".equals(this.sendMessage(PING_MESSAGE));
+    public void ping() throws JMSException {
+        this.sendMessage(PING_MESSAGE);
     }
 
     private String sendMessageConnection(String requestMessage, int retryCount) throws JMSException {
