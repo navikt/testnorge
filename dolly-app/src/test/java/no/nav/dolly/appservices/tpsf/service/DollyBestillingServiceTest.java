@@ -5,6 +5,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,6 +23,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
@@ -83,6 +87,12 @@ public class DollyBestillingServiceTest {
     @Mock
     private SigrunStubResponseHandler responseHandler;
 
+    @Mock
+    private CacheManager cacheManager;
+
+    @Mock
+    private Cache cache;
+
     @Before
     public void setup() {
         standardSendSkdResponse = new SendSkdMeldingTilTpsResponse();
@@ -102,6 +112,9 @@ public class DollyBestillingServiceTest {
         standardBestillingRequest_u1_t2_q3.setEnvironments(Arrays.asList("u1", "t2", "q3"));
         standardBestillingRequest_u1_t2_q3.setAntall(1);
         standardBestillingRequest_u1_t2_q3.setTpsf(tpsfReqEmpty);
+
+        when(bestillingService.isStoppet(anyLong())).thenReturn(false);
+        when(cacheManager.getCache(anyString())).thenReturn(cache);
     }
 
     @Test

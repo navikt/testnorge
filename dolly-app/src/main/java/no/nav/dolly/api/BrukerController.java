@@ -2,6 +2,8 @@ package no.nav.dolly.api;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,11 +33,13 @@ public class BrukerController {
     @Autowired
     private MapperFacade mapperFacade;
 
+    @Cacheable("bruker")
     @GetMapping("/{navIdent}")
     public RsBrukerTeamAndGruppeIDs getBrukerByNavIdent(@PathVariable("navIdent") String navIdent) {
         Bruker bruker = brukerService.fetchBruker(navIdent);
         return mapperFacade.map(bruker, RsBrukerTeamAndGruppeIDs.class);
     }
+
 
     @GetMapping("/current")
     public RsBruker getCurrentBruker() {
@@ -44,16 +48,19 @@ public class BrukerController {
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
+    @Cacheable("bruker")
     @GetMapping
     public List<RsBrukerTeamAndGruppeIDs> getAllBrukere() {
         return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerTeamAndGruppeIDs.class);
     }
 
+    @CacheEvict(value = "bruker", allEntries = true)
     @PutMapping("/leggTilFavoritt")
     public RsBruker leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.leggTilFavoritt(request.getGruppeId()), RsBruker.class);
     }
 
+    @CacheEvict(value = "bruker", allEntries = true)
     @PutMapping("/fjernFavoritt")
     public RsBruker fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.fjernFavoritt(request.getGruppeId()), RsBruker.class);
