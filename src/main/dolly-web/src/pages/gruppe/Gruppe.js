@@ -103,14 +103,17 @@ export default class Gruppe extends Component {
 			{ value: this.VISNING_TESTPERSONER, label: `Testpersoner (${gruppe.testidenter.length})` },
 			{ value: this.VISNING_BESTILLING, label: `Bestillinger (${gruppe.bestillinger.length})` }
 		]
+
 		return (
 			<div id="gruppe-container">
 				<Overskrift label={gruppe.navn} actions={groupActions}>
 					{/* <ConfirmTooltip onClick={deleteGruppe} /> */}
 					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
-					<div className="pull-right">
-						<SendOpenAmConnector gruppe={gruppe} />
-					</div>
+					{gruppe.antallIdenter > 0 && (
+						<div className="pull-right">
+							<SendOpenAmConnector gruppe={gruppe} />
+						</div>
+					)}
 				</Overskrift>
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
 				<GruppeDetaljer gruppe={gruppe} />
