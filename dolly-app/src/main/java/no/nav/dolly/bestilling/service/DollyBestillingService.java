@@ -100,28 +100,19 @@ public class DollyBestillingService {
 
                 sendIdenterTilTPS(bestillingRequest, bestilteIdenter, testgruppe, progress);
 
-                if (nonNull(bestillingRequest.getSigrunstub())) {
-                    for (RsOpprettSkattegrunnlag request : bestillingRequest.getSigrunstub()) {
-                        request.setPersonidentifikator(hovedPersonIdent);
-                    }
-                    ResponseEntity sigrunResponse = sigrunStubService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
-                    progress.setSigrunstubStatus(sigrunstubResponseHandler.extractResponse(sigrunResponse));
-                }
+                handleSigrunstub(bestillingRequest, hovedPersonIdent, progress);
 
-                if (nonNull(bestillingRequest.getKrrstub())) {
-                    DigitalKontaktdataRequest digitalKontaktdataRequest = mapperFacade.map(bestillingRequest, DigitalKontaktdataRequest.class);
-                    digitalKontaktdataRequest.setPersonident(hovedPersonIdent);
-                    ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
-                    progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
-                }
+                handleKrrstub(bestillingRequest, bestillingsId, hovedPersonIdent, progress);
 
                 if (!bestillingService.isStoppet(bestillingsId)) {
                     bestillingProgressRepository.save(progress);
                     bestilling.setSistOppdatert(LocalDateTime.now());
                     bestillingService.saveBestillingToDB(bestilling);
                 }
+                if (nonNull(cacheManager.getCache("gruppe"))) {
+                    cacheManager.getCache("gruppe").clear();
+                }
                 loopCount++;
-                cacheManager.getCache("gruppe").clear();
             }
         } catch (Exception e) {
             log.error("Bestilling med id <" + bestillingsId + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
@@ -159,6 +150,25 @@ public class DollyBestillingService {
         }
 
         bestillingProgressRepository.save(progress);
+    }
+
+    private void handleKrrstub(RsDollyBestillingsRequest bestillingRequest, Long bestillingsId, String hovedPersonIdent, BestillingProgress progress) {
+        if (nonNull(bestillingRequest.getKrrstub())) {
+            DigitalKontaktdataRequest digitalKontaktdataRequest = mapperFacade.map(bestillingRequest, DigitalKontaktdataRequest.class);
+            digitalKontaktdataRequest.setPersonident(hovedPersonIdent);
+            ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
+            progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
+        }
+    }
+
+    private void handleSigrunstub(RsDollyBestillingsRequest bestillingRequest, String hovedPersonIdent, BestillingProgress progress) {
+        if (nonNull(bestillingRequest.getSigrunstub())) {
+            for (RsOpprettSkattegrunnlag request : bestillingRequest.getSigrunstub()) {
+                request.setPersonidentifikator(hovedPersonIdent);
+            }
+            ResponseEntity sigrunResponse = sigrunStubService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
+            progress.setSigrunstubStatus(sigrunstubResponseHandler.extractResponse(sigrunResponse));
+        }
     }
 
     private String getHovedpersonAvBestillingsidenter(List<String> identer) {
