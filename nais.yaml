@@ -1,4 +1,5 @@
 name: testnorge-hodejegeren
+team: registre
 image: "docker.adeo.no:5000/registre/testnorge-hodejegeren"
 replicas:
   min: 1
