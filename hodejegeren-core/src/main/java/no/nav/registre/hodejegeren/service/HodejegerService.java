@@ -106,7 +106,7 @@ public class HodejegerService {
                         .addCause(e);
 
                 log.error(e.getMessage(), e);
-                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), ids);
             } catch (HttpStatusCodeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
@@ -116,7 +116,7 @@ public class HodejegerService {
                         .addCause(e);
 
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), ids);
             } catch (RuntimeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
@@ -126,7 +126,7 @@ public class HodejegerService {
                         .addCause(e);
 
                 log.error(e.getMessage(), e);
-                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getGruppeId(), ids);
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), ids);
             }
         }
 
@@ -159,7 +159,7 @@ public class HodejegerService {
     private void lagreSkdEndringsmeldingerITpsfOgOppdaterIds(List<Long> ids, Endringskoder endringskode,
             List<RsMeldingstype> syntetiserteSkdmeldinger, GenereringsOrdreRequest genereringsOrdreRequest) {
         try {
-            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getGruppeId(), syntetiserteSkdmeldinger));
+            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getSkdMeldingGruppeId(), syntetiserteSkdmeldinger));
         } catch (Exception e) {
             StringBuilder message = new StringBuilder(120).append("Noe feilet under lagring til TPSF: ")
                     .append(e.getMessage())
@@ -183,7 +183,7 @@ public class HodejegerService {
 
         List<String> opprettedeIdenterITpsf = new ArrayList<>();
         opprettedeIdenterITpsf.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                genereringsOrdreRequest.getGruppeId(), Arrays.asList(
+                genereringsOrdreRequest.getSkdMeldingGruppeId(), Arrays.asList(
                         FOEDSELSMELDING.getAarsakskode(),
                         INNVANDRING.getAarsakskode(),
                         FOEDSELSNUMMERKORREKSJON.getAarsakskode(),
@@ -192,7 +192,7 @@ public class HodejegerService {
 
         List<String> doedeOgUtvandredeIdenter = new ArrayList<>();
         doedeOgUtvandredeIdenter.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                genereringsOrdreRequest.getGruppeId(), Arrays.asList(
+                genereringsOrdreRequest.getSkdMeldingGruppeId(), Arrays.asList(
                         Endringskoder.DOEDSMELDING.getAarsakskode(),
                         Endringskoder.UTVANDRING.getAarsakskode()),
                 TRANSAKSJONSTYPE));
@@ -208,7 +208,7 @@ public class HodejegerService {
 
         List<String> gifteIdenterINorge = new ArrayList<>();
         gifteIdenterINorge.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                genereringsOrdreRequest.getGruppeId(), Arrays.asList(
+                genereringsOrdreRequest.getSkdMeldingGruppeId(), Arrays.asList(
                         Endringskoder.VIGSEL.getAarsakskode()),
                 TRANSAKSJONSTYPE));
         gifteIdenterINorge.removeAll(doedeOgUtvandredeIdenter);

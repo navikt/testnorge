@@ -17,7 +17,7 @@ public class GenereringsOrdreRequest {
     
     @NotNull
     @ApiModelProperty(value = "Angir avspillergruppen i TPSF SKD-ENDRINGSMELDINGER som meldingene skal lagres i", required = true)
-    private Long gruppeId;
+    private Long skdMeldingGruppeId;
 
     @NotNull
     @ApiModelProperty(value = "Status på eksisterende identer i avspillergruppen blir hentet fra dette miljøet", required = true)

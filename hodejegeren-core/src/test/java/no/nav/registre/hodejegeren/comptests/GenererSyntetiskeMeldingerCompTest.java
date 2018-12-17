@@ -67,7 +67,7 @@ public class GenererSyntetiskeMeldingerCompTest {
      * https://confluence.adeo.no/display/FEL/TPSF+Hodejegeren)
      * <p>
      * HVIS endepunktet kalles med bestilling av et gitt antall syntetiserte skdmeldinger for et utvalg av årsakskoder, Så skal
-     * disse meldingene lagres i TPSF på endepunktet /v1/endringsmelding/skd/save/{gruppeId}, og id-ene til meldingene returneres.
+     * disse meldingene lagres i TPSF på endepunktet /v1/endringsmelding/skd/save/{skdMeldingGruppeId}, og id-ene til meldingene returneres.
      * Meldingene skal bestå av gyldige identer (FNR/DNR) i tråd med meldingens felter og som være identer som stemmer overens med
      * TPS i det miljøet som angis av bestillingen/request. Tilhørende felter må stemme overens med status quo i TPS på de
      * eksisterende identer som mates inn i de syntetiserte meldingene.
