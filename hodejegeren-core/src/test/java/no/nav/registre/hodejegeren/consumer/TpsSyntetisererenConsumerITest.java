@@ -40,8 +40,8 @@ public class TpsSyntetisererenConsumerITest {
     public void testRequestKonsumeringAvTpsSynt() {
         String endringskode = "0211";
         int antallMeldinger = 1;
-        this.server.expect(requestToUriTemplate(serverUrl +
-                "/generate?endringskode={endringskode}&antallMeldinger={antall}&service=hodejegeren", endringskode, antallMeldinger))
+
+        this.server.expect(requestToUriTemplate(serverUrl + "/generate?endringskode={endringskode}&antallMeldinger={antall}&service=hodejegeren", endringskode, antallMeldinger))
                 .andRespond(withSuccess("[null]", MediaType.APPLICATION_JSON));
 
         consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
