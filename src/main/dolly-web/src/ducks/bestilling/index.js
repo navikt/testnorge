@@ -15,7 +15,11 @@ const AttributtManagerInstance = new AttributtManager()
 export const actions = createActions(
 	{
 		POST_BESTILLING: [
-			(gruppeId, values) => DollyApi.createBestilling(gruppeId, values), // Payload
+			async (gruppeId, values) => {
+				const res = await DollyApi.createBestilling(gruppeId, values) // Payload
+				// console.log(res, 'res')
+				return { ...res, data: { ...res.data, ny: true } }
+			},
 			gruppeId => ({ gruppeId }) // Meta
 		]
 	},
@@ -77,6 +81,7 @@ export default handleActions(
 				page: (state.page += action.payload.goBack ? -1 : 1)
 			}
 		},
+
 		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestilling))](
 			state,
 			action
