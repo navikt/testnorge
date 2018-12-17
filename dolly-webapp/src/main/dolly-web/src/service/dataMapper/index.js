@@ -48,7 +48,8 @@ const DataMapper = {
 		let data = mapTpsfData(tpsfData, bestillingObj)
 		const sigrunData = testbruker.items.sigrunstub && testbruker.items.sigrunstub[personId]
 		const krrData = testbruker.items.krrstub && testbruker.items.krrstub[personId]
-		if (sigrunData) {
+
+		if (sigrunData && sigrunData.length > 0) {
 			data.push(mapSigrunData(sigrunData))
 		}
 		if (krrData) {
