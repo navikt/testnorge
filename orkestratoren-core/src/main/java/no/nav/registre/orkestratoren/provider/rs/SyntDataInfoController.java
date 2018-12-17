@@ -21,7 +21,7 @@ public class SyntDataInfoController {
 
     @ApiOperation(value = "Endepunktet returnerer samtlige FNR på levende nordmenn i "
             + "skdavspillergruppa i TPSF som orkestratorens tps-batch arbeider på. ",
-            notes = "Se fasit-ressursen orkestratorProperties for gruppeId-en. ")
+            notes = "Se fasit-ressursen orkestratorProperties for skdMeldingenes gruppeId i TPSF. ")
     @GetMapping("fnr/levende-nordmenn")
     public List<String> hentAlleLevendeNordmennFraTpsf() {
         return syntDataInfoService.opprettListenLevendeNordmenn(tpsBatchGruppeId);

@@ -145,7 +145,7 @@ public class StartSyntetiseringTpsCompTest {
 
     public void stubHodejegeren() {
         stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
-                .withRequestBody(equalToJson("{\"gruppeId\": " + gruppeId
+                .withRequestBody(equalToJson("{\"skdMeldingGruppeId\": " + gruppeId
                         + ", \"miljoe\": \"" + miljoe
                         + "\", \"antallMeldingerPerEndringskode\": {\"" + endringskode1 + "\": " + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
                 .willReturn(aResponse()
@@ -157,7 +157,7 @@ public class StartSyntetiseringTpsCompTest {
     public void stubHodejegerenWithError() {
         stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
-                        "{\"gruppeId\":" + gruppeId
+                        "{\"skdMeldingGruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe
                                 + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode1 + "\":" + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
                 .willReturn(aResponse()

@@ -24,7 +24,7 @@ public class TpsfConsumer {
 
     public TpsfConsumer(@Value("${tps-forvalteren.rest-api.url}") String tpsfServerUrl) {
         uriTemplate = new UriTemplate(tpsfServerUrl + "/v1/endringsmelding/skd/send/{skdMeldingGruppeId}");
-        this.urlGetIdenter = tpsfServerUrl + "/v1/endringsmelding/skd/identer/{gruppeId}?aarsakskode={aarsakskoder}&transaksjonstype={transaksjonstype}";
+        this.urlGetIdenter = tpsfServerUrl + "/v1/endringsmelding/skd/identer/{skdMeldingGruppeId}?aarsakskode={aarsakskoder}&transaksjonstype={transaksjonstype}";
     }
 
     public SkdMeldingerTilTpsRespons sendSkdmeldingerTilTps(Long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
@@ -35,7 +35,7 @@ public class TpsfConsumer {
                 SkdMeldingerTilTpsRespons.class);
     }
 
-    public Set<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskoder, String transaksjonstype) {
-        return restTemplateTpsf.getForObject(urlGetIdenter, LinkedHashSet.class, gruppeId, StringUtils.join(aarsakskoder, ','), transaksjonstype);
+    public Set<String> getIdenterFiltrertPaaAarsakskode(Long skdMeldingGruppeId, List<String> aarsakskoder, String transaksjonstype) {
+        return restTemplateTpsf.getForObject(urlGetIdenter, LinkedHashSet.class, skdMeldingGruppeId, StringUtils.join(aarsakskoder, ','), transaksjonstype);
     }
 }
