@@ -44,4 +44,8 @@ public class IdentService {
     public void slettTestidenter(List<RsTestident> personIdentSet) {
         personIdentSet.forEach(testident -> identRepository.deleteTestidentByIdent(testident.getIdent()));
     }
+
+    public int slettTestidenter(Long bestillingId) {
+        return identRepository.deleteTestidentsByBestillingId(bestillingId);
+    }
 }

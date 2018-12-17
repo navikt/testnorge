@@ -19,6 +19,7 @@ public class RsBestilling {
     private LocalDateTime sistOppdatert;
     private long gruppeId;
     private boolean stoppet;
+    private String feil;
     private List<String> environments;
     private List<RsBestillingProgress> personStatus;
 

@@ -9,8 +9,12 @@ import static org.junit.Assert.assertThat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -21,10 +25,27 @@ import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 public class TeamMappingStrategyTest {
 
+    private static final String CURRENT_BRUKER_IDENT = "NAV1";
+
     private MapperFacade mapper;
+
+    private static Authentication authentication;
+
+    @BeforeClass
+    public static void beforeClass() {
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityContextHolder.getContext().setAuthentication(
+                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null, null));
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 
     @Before
     public void setUpHappyPath() {
