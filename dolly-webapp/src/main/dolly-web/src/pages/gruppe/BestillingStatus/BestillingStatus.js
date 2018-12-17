@@ -69,7 +69,7 @@ export default class BestillingStatus extends PureComponent {
 			setTimeout(() => {
 				// Update groups
 				this.props.onGroupUpdate() // state.ferdig = true
-				this.props.setBestillingStatus(data.id, { ...data, ny: true })
+				// this.props.setBestillingStatus(data.id, { ...data, ny: true })
 			}, this.TIMEOUT_BEFORE_HIDE)
 		}
 

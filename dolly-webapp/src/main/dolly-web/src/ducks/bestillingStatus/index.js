@@ -4,6 +4,7 @@ import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import Formatters from '~/utils/DataFormatter'
 import success from '~/utils/SuccessAction'
+import { actions as bestillingActions } from '~/ducks/bestilling'
 
 export const getBestillingStatus = createAction(
 	'GET_BESTILLING_STATUS',
@@ -23,9 +24,14 @@ export default handleActions(
 			return { ...state, [action.payload.data.id]: action.payload.data }
 		},
 
+		[success(bestillingActions.postBestilling)](state, action) {
+			return { ...state, [action.payload.data.id]: action.payload.data }
+		},
+
 		[success(cancelBestilling)](state, action) {
 			return { ...state, [action.payload.data.id]: action.payload.data }
 		},
+
 		[SET_BESTILLING_STATUS](state, action) {
 			return { ...state, [action.bestillingId]: action.data }
 		}
