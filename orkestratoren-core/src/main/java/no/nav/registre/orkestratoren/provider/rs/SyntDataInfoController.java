@@ -1,6 +1,6 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
-import java.util.LinkedHashSet;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +21,10 @@ public class SyntDataInfoController {
 
     @ApiOperation(value = "Endepunktet returnerer samtlige FNR på levende nordmenn i "
             + "skdavspillergruppa i TPSF som orkestratorens tps-batch arbeider på. ",
-            notes = "Se fasit-ressursen orkestratorProperties for gruppeId-en.")
+            notes = "Se fasit-ressursen orkestratorProperties for gruppeId-en. "
+                    + "Rekkefølgen og innholdet i lista er bevart fra TPSF-endepunktet.")
     @GetMapping("fnr/levende-nordmenn")
-    public LinkedHashSet<String> hentAlleLevendeNordmennFraTpsf() {
-        return new LinkedHashSet(syntDataInfoService.opprettListenLevendeNordmenn(tpsBatchGruppeId));
+    public List<String> hentAlleLevendeNordmennFraTpsf() {
+        return syntDataInfoService.opprettListenLevendeNordmenn(tpsBatchGruppeId);
     }
 }
