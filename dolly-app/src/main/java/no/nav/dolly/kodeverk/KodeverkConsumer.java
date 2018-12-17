@@ -1,15 +1,14 @@
 package no.nav.dolly.kodeverk;
 
-import static java.lang.String.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.exceptions.KodeverkException;
@@ -36,11 +35,11 @@ public class KodeverkConsumer {
         String url = providersProps.getKodeverk().getUrl() + getKodeverksnavnUrl(navn) + KODEVERK_URL_QUERY_PARAMS_EKSKLUDER_UGYLDIGE_SPRAAK_NB;
         HttpEntity entity = buildKodeverkEntityForGET();
 
-        ResponseEntity<GetKodeverkKoderBetydningerResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity, GetKodeverkKoderBetydningerResponse.class);
-        if (HttpStatus.OK.value() == response.getStatusCodeValue()) {
+        try {
+            ResponseEntity<GetKodeverkKoderBetydningerResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity, GetKodeverkKoderBetydningerResponse.class);
             return response.getBody();
-        } else {
-            throw new KodeverkException(response.getStatusCode(), response.getStatusCode().getReasonPhrase());
+        } catch (HttpClientErrorException e) {
+            throw new KodeverkException(e.getStatusCode(), e.getResponseBodyAsString(), e);
         }
     }
 
