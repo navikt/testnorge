@@ -47,27 +47,26 @@ const configureReduxStore = history => {
 		allMiddleware.push(logger)
 	}
 
-	const rootReducer = combineReducers({
-		bestilling: bestillingReducer,
-		gruppe: gruppeReducer,
-		teams: teamsReducer,
-		bruker: brukerReducer,
-		testbruker: testbrukerReducer,
-		search: searchReducer,
-		sort: sortReducer,
-		loading: loadingReducer,
-		errors: errorsReducer,
-		common: commonReducer,
-		bestillingStatus: bestillingStatusReducer,
-		environments: environmentsReducer,
-		openam: openamReducer,
-		kodeverk: kodeverkReducer
-	})
+	const rootReducer = history =>
+		combineReducers({
+			router: connectRouter(history),
+			bestilling: bestillingReducer,
+			gruppe: gruppeReducer,
+			teams: teamsReducer,
+			bruker: brukerReducer,
+			testbruker: testbrukerReducer,
+			search: searchReducer,
+			sort: sortReducer,
+			loading: loadingReducer,
+			errors: errorsReducer,
+			common: commonReducer,
+			bestillingStatus: bestillingStatusReducer,
+			environments: environmentsReducer,
+			openam: openamReducer,
+			kodeverk: kodeverkReducer
+		})
 
-	return createStore(
-		connectRouter(history)(rootReducer),
-		composeWithDevTools(applyMiddleware(...allMiddleware))
-	)
+	return createStore(rootReducer(history), composeWithDevTools(applyMiddleware(...allMiddleware)))
 }
 
 export default configureReduxStore(history)
