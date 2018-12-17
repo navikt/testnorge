@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import ReactPaginate from 'react-paginate'
 import Icon from '~/components/icon/Icon'
+import Select from 'react-select'
 
 import './Pagination.less'
 
