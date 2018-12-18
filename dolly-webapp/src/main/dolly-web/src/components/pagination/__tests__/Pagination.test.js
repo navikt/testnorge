@@ -23,9 +23,8 @@ describe('Pagination.js', () => {
 		expect(wrapper.find('.test-comp'))
 	})
 
-	it('should render pagination label with correct text', () => {
-		const expectedText = 'Viser 1-8 av 15'
-		expect(wrapper.find('.pagination-label').text()).toBe(expectedText)
+	it('should render pagination label twice', () => {
+		expect(wrapper.find('.pagination-label')).toHaveLength(2)
 	})
 
 	const instance = wrapper.instance()
@@ -35,7 +34,7 @@ describe('Pagination.js', () => {
 	})
 
 	it('should calculate items to render', () => {
-		const expectedData = [1, 2, 3, 4, 5, 6, 7, 8]
+		const expectedData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 		expect(instance._calculateItemsToRender()).toEqual(expectedData)
 	})
 
@@ -47,7 +46,7 @@ describe('Pagination.js', () => {
 		instance._pageChangeHandler({ selected: 1 })
 		expect(wrapper.state().currentPage).toEqual(1)
 
-		const expectedData = [9, 10, 11, 12, 13, 14, 15]
+		const expectedData = [11, 12, 13, 14, 15]
 		expect(instance._calculateItemsToRender()).toEqual(expectedData)
 	})
 
@@ -56,7 +55,7 @@ describe('Pagination.js', () => {
 		wrapper.setState({ currentPage: 1 })
 		expect(wrapper.state().currentPage).toEqual(1)
 
-		wrapper.setProps({ items: newItems })
+		wrapper.setProps({ search: 'test' })
 
 		expect(wrapper.state().currentPage).toEqual(0)
 	})
