@@ -97,8 +97,8 @@ export default class Liste extends PureComponent {
 
 					// Vise redigeringsknapp eller stjerne
 					if (gruppe.erMedlemAvTeamSomEierGruppe) {
-						rowProps.editAction = () => editGroup(gruppe.id)
-						rowProps.deleteAction = () => deleteGruppe(gruppe.id)
+						// rowProps.editAction = () => editGroup(gruppe.id)
+						// rowProps.deleteAction = () => deleteGruppe(gruppe.id)
 					} else {
 						rowProps.groupId = gruppe.id
 					}
