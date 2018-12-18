@@ -113,7 +113,7 @@ class Team extends Component {
 							<Table.Row
 								key={gruppe.id}
 								navLink={() => history.push(`/gruppe/${gruppe.id}`)}
-								deleteAction={() => {}}
+								// deleteAction={() => {}}
 							>
 								<Table.Column width="15" value={gruppe.id.toString()} />
 								<Table.Column width="20" value={gruppe.navn} />
