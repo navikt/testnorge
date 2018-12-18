@@ -12,10 +12,10 @@ export default class TpsfService {
 
 	static getTestbrukere(userArray) {
 		if (!userArray) return
-		const userString = userArray.join(',')
-		const endpoint = this.getTpsfUrl() + '/dolly/testdata/personerdata'
+		const endpoint = this.getTpsfUrl() + '/dolly/testdata/hentpersoner'
 
-		return Request.get(`${endpoint}?identer=${userString}`)
+		// Må bruke post post pga maxString-limit på en GET-request
+		return Request.post(endpoint, userArray)
 	}
 
 	static updateTestbruker(userData) {
