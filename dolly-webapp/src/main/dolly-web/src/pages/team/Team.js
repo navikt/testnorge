@@ -106,7 +106,7 @@ class Team extends Component {
 							<Table.Column width="15" value="ID" />
 							<Table.Column width="20" value="Navn" />
 							<Table.Column width="15" value="Team" />
-							<Table.Column width="50" value="Hensikt" />
+							<Table.Column width="40" value="Hensikt" />
 						</Table.Header>
 
 						{grupper.map(gruppe => (
