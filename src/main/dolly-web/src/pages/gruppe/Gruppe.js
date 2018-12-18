@@ -61,7 +61,7 @@ export default class Gruppe extends Component {
 			return (
 				<PaginationConnector
 					items={gruppe.bestillinger}
-					render={items => <BestillingListeConnector bestillingListe={gruppe.bestillinger} />}
+					render={items => <BestillingListeConnector bestillingListe={items} />}
 				/>
 			)
 		}
