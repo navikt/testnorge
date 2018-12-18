@@ -3,7 +3,7 @@ import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import BestillingDetaljer from './BestillingDetaljer/BestillingDetaljer'
-import PaginationConnector from '~/components/Pagination/PaginationConnector'
+import PaginationConnector from '~/components/pagination/PaginationConnector'
 
 export default class BestillingListe extends PureComponent {
 	render() {
