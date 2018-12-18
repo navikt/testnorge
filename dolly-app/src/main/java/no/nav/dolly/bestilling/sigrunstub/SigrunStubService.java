@@ -34,9 +34,10 @@ public class SigrunStubService {
     @Autowired
     ProvidersProps providersProps;
 
-    public ResponseEntity<String> createSkattegrunnlag(List<RsOpprettSkattegrunnlag> request) {
+    public ResponseEntity<Object> createSkattegrunnlag(List<RsOpprettSkattegrunnlag> request) {
 
         String url = format("%s%s", providersProps.getSigrunStub().getUrl(), SIGRUN_STUB_OPPRETT_GRUNNLAG);
+
         try {
             OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
             String token = auth.getIdToken();
@@ -44,11 +45,11 @@ public class SigrunStubService {
             header.set("Authorization", "Bearer " + token);
             header.set("testdataEier", auth.getPrincipal());
 
-            return restTemplate.exchange(url, HttpMethod.POST, new HttpEntity(request, header), String.class);
+            return restTemplate.exchange(url, HttpMethod.POST, new HttpEntity(request, header), Object.class);
 
         } catch (HttpClientErrorException e) {
             log.error("SigrunStub kall feilet mot url <{}> grunnet {}", url, e.getResponseBodyAsString(), e);
-            return new ResponseEntity(e.getStatusCode());
+            return new ResponseEntity(e.getResponseBodyAsString(), e.getStatusCode());
         }
     }
 }

@@ -2,16 +2,21 @@ package no.nav.dolly.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BestillingKontrollRepository;
+import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.IdentRepository;
 
 @Service
 public class BestillingService {
@@ -21,6 +26,15 @@ public class BestillingService {
 
     @Autowired
     private TestgruppeService testgruppeService;
+
+    @Autowired
+    private BestillingKontrollRepository bestillingKontrollRepository;
+
+    @Autowired
+    private IdentRepository identRepository;
+
+    @Autowired
+    private BestillingProgressRepository bestillingProgressRepository;
 
     public Bestilling fetchBestillingById(Long bestillingsId) {
         return bestillingRepository.findById(bestillingsId).orElseThrow(() -> new NotFoundException("Fant ikke bestillingId"));
@@ -36,6 +50,29 @@ public class BestillingService {
 
     public List<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
         return bestillingRepository.findBestillingByGruppe(testgruppeService.fetchTestgruppeById(gruppeId));
+    }
+
+    public Bestilling cancelBestilling(Long bestillingId) {
+        Optional<BestillingKontroll> bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
+        if (!bestillingKontroll.isPresent()) {
+            bestillingKontrollRepository.save(BestillingKontroll.builder()
+                    .bestillingId(bestillingId)
+                    .stoppet(true)
+                    .build());
+        }
+
+        Bestilling bestilling = fetchBestillingById(bestillingId);
+        bestilling.setStoppet(true);
+        bestilling.setFerdig(true);
+        bestilling.setSistOppdatert(LocalDateTime.now());
+        saveBestillingToDB(bestilling);
+        identRepository.deleteTestidentsByBestillingId(bestillingId);
+        bestillingProgressRepository.deleteByBestillingId(bestillingId);
+        return bestilling;
+    }
+
+    public boolean isStoppet(Long bestillingId) {
+        return bestillingKontrollRepository.findByBestillingId(bestillingId).orElse(BestillingKontroll.builder().stoppet(false).build()).isStoppet();
     }
 
     @Transactional

@@ -43,7 +43,7 @@ public class KodeverkConsumer {
         }
     }
 
-    private HttpEntity buildKodeverkEntityForGET(){
+    private HttpEntity buildKodeverkEntityForGET() {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HEADER_NAME_CONSUMER_ID, APP_BRUKERNAVN);
         headers.set(HEADER_NAME_CALL_ID, generateCallId());

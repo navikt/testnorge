@@ -8,7 +8,7 @@ const loadingSelector = createLoadingSelector(GET_TPSF_TESTBRUKERE)
 const mapStateToProps = state => ({
 	searchActive: Boolean(state.search),
 	headers: DataMapper.getHeaders(),
-	testbrukere: sokSelector(DataMapper.getData(state), state.search),
+	testbrukerListe: sokSelector(DataMapper.getData(state), state.search),
 	isFetching: loadingSelector(state),
 	username: state.bruker.brukerData.navIdent
 })
