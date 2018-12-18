@@ -14,7 +14,7 @@ export default class TpsfService {
 		if (!userArray) return
 		const endpoint = this.getTpsfUrl() + '/dolly/testdata/hentpersoner'
 
-		// Må bruke post post pga maxString-limit på en GET-request
+		// Må bruke post-request pga maxString-limit på en GET-request
 		return Request.post(endpoint, userArray)
 	}
 
