@@ -20,7 +20,7 @@ const options = [
 export default function ItemCountSelect({ value, onChangeHandler }) {
 	return (
 		<div className="pagination-itemcount">
-			Antall elementer i tabell
+			Antall elementer i listen
 			<Select
 				id="item-count"
 				name="item-count"
