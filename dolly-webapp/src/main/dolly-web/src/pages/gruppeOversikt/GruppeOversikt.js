@@ -8,7 +8,7 @@ import Knapp from 'nav-frontend-knapper'
 import Liste from './Liste'
 import Loading from '~/components/loading/Loading'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
-import PaginationConnector from '~/components/pagination/PaginationConnector'
+import PaginationConnector from '~/components/Pagination/PaginationConnector'
 
 export default class GruppeOversikt extends PureComponent {
 	static propTypes = {

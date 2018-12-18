@@ -4,7 +4,7 @@ import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
-import PaginationConnector from '~/components/pagination/PaginationConnector'
+import PaginationConnector from '~/components/Pagination/PaginationConnector'
 
 export default class TestbrukerListe extends Component {
 	componentDidMount() {
