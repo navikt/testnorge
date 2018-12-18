@@ -70,7 +70,8 @@ public class TpsStatusQuoService {
         }
 
         if (!tpsServiceRoutineCache.containsKey(routineName)) {
-            tpsServiceRoutineCache.put(routineName, tpsfConsumer.getTpsServiceRoutine(routineName, aksjonsKode, environment, fnr));
+            JsonNode response = tpsfConsumer.getTpsServiceRoutine(routineName, aksjonsKode, environment, fnr);
+            tpsServiceRoutineCache.put(routineName, response);
         }
         return tpsServiceRoutineCache.get(routineName);
     }
