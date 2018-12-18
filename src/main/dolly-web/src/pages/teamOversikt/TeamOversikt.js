@@ -8,7 +8,7 @@ import Knapp from 'nav-frontend-knapper'
 import TeamListe from './TeamListe'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
-import PaginationConnector from '~/components/pagination/PaginationConnector'
+import PaginationConnector from '~/components/Pagination/PaginationConnector'
 
 export default class TeamOversikt extends Component {
 	static propTypes = {
