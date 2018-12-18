@@ -161,7 +161,7 @@ export function mapTpsfData(tpsfData, bestillingData) {
 }
 
 export function mapSigrunData(sigrunData) {
-	if (!sigrunData) return null
+	if (!sigrunData || sigrunData.length === 0) return null
 
 	return {
 		header: 'Inntekter',
