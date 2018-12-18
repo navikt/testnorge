@@ -1,4 +1,5 @@
 name: orkestratoren
+team: registre
 image: "docker.adeo.no:5000/registre/orkestratoren"
 replicas:
   min: 1

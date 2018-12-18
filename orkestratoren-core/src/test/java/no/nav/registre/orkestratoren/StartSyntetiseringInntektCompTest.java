@@ -30,7 +30,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeld
 @ActiveProfiles("test")
 public class StartSyntetiseringInntektCompTest {
 
-    String expectedFnrMedInntektsmelding = "11111161111";
+    String expectedFnrMedInntektsmelding = "11110061111";
     private long skdMeldingGruppeId = 123L;
 
     @Autowired
