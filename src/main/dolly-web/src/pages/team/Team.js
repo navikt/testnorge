@@ -7,6 +7,7 @@ import Loading from '~/components/loading/Loading'
 import LeggTilBruker from './LeggTilBruker/LeggTilBruker'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
+import PaginationConnector from '~/components/Pagination/PaginationConnector'
 
 class Team extends Component {
 	state = {
