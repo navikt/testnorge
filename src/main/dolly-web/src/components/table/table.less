@@ -90,6 +90,8 @@
 
 	.dot-body-row {
 		display: flex;
+		position: relative;
+
 		flex-direction: column;
 		background-color: white;
 		margin-bottom: 10px;
@@ -108,7 +110,6 @@
 		}
 
 		&-columns {
-			position: relative;
 			display: flex;
 			align-items: center;
 			flex-grow: 1;
@@ -130,16 +131,16 @@
 			padding-right: 5px;
 		}
 
-		&-actioncolumn {
-			position: absolute;
-			display: flex;
-			height: 100%;
-			right: -130px;
-			top: 0;
-			min-width: 120px;
-			outline: none;
-			-webkit-appearance: none;
-		}
+		// &-actioncolumn {
+		// 	position: absolute;
+		// 	display: flex;
+		// 	height: 100%;
+		// 	right: -130px;
+		// 	top: 0;
+		// 	min-width: 120px;
+		// 	outline: none;
+		// 	-webkit-appearance: none;
+		// }
 
 		&-expandcomponent {
 			margin: 0px 20px 10px;
@@ -150,13 +151,18 @@
 		}
 	}
 
-	.test {
-		outline: none;
+	.action-column {
 		position: absolute;
 		display: flex;
 		height: 100%;
-		right: -130px;
+		right: -110px;
 		top: 0;
-		min-width: 120px;
+		min-width: 100px;
+		outline: 0;
+		-webkit-appearance: none;
+		&:focus {
+			outline: none;
+			outline: 0;
+		}
 	}
 }
