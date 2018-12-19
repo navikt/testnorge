@@ -15,7 +15,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -38,7 +37,7 @@ public class TestgruppeService {
     private TeamService teamService;
 
     @Autowired
-    private MapperFacade mapperFacade;
+    private IdentService identService;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
@@ -65,7 +64,6 @@ public class TestgruppeService {
         }
         throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
     }
-
 
     public Set<Testgruppe> fetchTestgrupperByNavIdent(String navIdent) {
         Bruker bruker = brukerService.fetchBruker(navIdent);
@@ -95,8 +93,15 @@ public class TestgruppeService {
         }
     }
 
-    public void slettGruppeById(Long gruppeId) {
-        gruppeRepository.deleteTestgruppeById(gruppeId);
+    public int slettGruppeById(Long gruppeId) {
+        identService.slettTestidenterByGruppeId(gruppeId);
+        return gruppeRepository.deleteTestgruppeById(gruppeId);
+    }
+
+    public int slettGruppeByTeamId(Long teamId) {
+        identService.slettTestidenterByTeamId(teamId);
+        brukerService.sletteBrukerFavoritterByTeamId(teamId);
+        return gruppeRepository.deleteTestgruppeByTeamtilhoerighetId(teamId);
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {

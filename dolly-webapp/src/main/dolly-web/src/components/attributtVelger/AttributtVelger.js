@@ -31,9 +31,19 @@ export default class AttributtVelger extends Component {
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }) => {
+		const { uncheckAttributeArray, checkAttributeArray } = this.props
 		const name = hovedKategori.navn
+		const hovedKategoriItems = this.AttributtManager.getParentAttributtListByHovedkategori(
+			hovedKategori
+		)
 		return (
-			<Panel key={name} heading={<h2>{name}</h2>} startOpen>
+			<Panel
+				key={name}
+				heading={<h2>{name}</h2>}
+				startOpen
+				checkAttributeArray={() => checkAttributeArray(hovedKategoriItems)}
+				uncheckAttributeArray={() => uncheckAttributeArray(hovedKategoriItems)}
+			>
 				<fieldset name={name}>
 					<div className="attributt-velger_panelcontent">
 						{items.map((subKategori, idx) => this.renderSubKategori(subKategori, idx))}

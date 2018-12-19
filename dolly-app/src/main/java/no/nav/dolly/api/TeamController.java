@@ -1,5 +1,7 @@
 package no.nav.dolly.api;
 
+import static java.lang.String.format;
+
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.service.TeamService;
 
@@ -57,7 +60,9 @@ public class TeamController {
     @CacheEvict(value = "team", allEntries = true)
     @DeleteMapping("/{teamId}")
     public void deleteTeam(@PathVariable("teamId") Long teamId) {
-        teamService.deleteTeam(teamId);
+        if (teamService.deleteTeam(teamId) == 0) {
+            throw new NotFoundException(format("Team med id %d ble ikke funnet.", teamId));
+        }
     }
 
     @Cacheable("team")
@@ -76,6 +81,12 @@ public class TeamController {
     @PutMapping("/{teamId}/fjernMedlemmer")
     public RsTeamUtvidet fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
         return teamService.fjernMedlemmer(teamId, navIdenter);
+    }
+
+    @CacheEvict(value = "team", allEntries = true)
+    @DeleteMapping("/{teamId}/deleteMedlem")
+    public RsTeamUtvidet deleteMedlemfraTeam(@PathVariable("teamId") Long teamId, @RequestParam String navIdent) {
+        return teamService.slettMedlem(teamId, navIdent);
     }
 
     @CacheEvict(value = "team", allEntries = true)
