@@ -38,6 +38,9 @@ public class TestgruppeService {
     private TeamService teamService;
 
     @Autowired
+    private IdentService identService;
+
+    @Autowired
     private MapperFacade mapperFacade;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
@@ -95,8 +98,15 @@ public class TestgruppeService {
         }
     }
 
-    public void slettGruppeById(Long gruppeId) {
-        gruppeRepository.deleteTestgruppeById(gruppeId);
+    public int slettGruppeById(Long gruppeId) {
+        identService.slettTestidenterByGruppeId(gruppeId);
+        return gruppeRepository.deleteTestgruppeById(gruppeId);
+    }
+
+    public int slettGruppeByTeamId(Long teamId) {
+        identService.slettTestidenterByTeamId(teamId);
+        brukerService.sletteBrukerFavoritterByTeamId(teamId);
+        return gruppeRepository.deleteTestgruppeByTeamtilhoerighetId(teamId);
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {

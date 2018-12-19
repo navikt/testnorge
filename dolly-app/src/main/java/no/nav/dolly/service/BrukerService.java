@@ -102,4 +102,8 @@ public class BrukerService {
     public List<Bruker> fetchBrukere() {
         return brukerRepository.findAll();
     }
+
+    public int sletteBrukerFavoritterByTeamId(Long teamId) {
+        return brukerRepository.deleteBrukerFavoritterById(teamId);
+    }
 }
