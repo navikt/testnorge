@@ -1,5 +1,11 @@
 package no.nav.dolly.service;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -8,12 +14,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.util.Sets;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,6 +36,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -42,25 +46,30 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceTest {
+
     private static final String CURRENT_BRUKER_IDENT = "NAV1";
     private static final String NAVIDENT_2 = "nav2";
-    private List<String> navidenter = Arrays.asList(CURRENT_BRUKER_IDENT, NAVIDENT_2);
-    private Optional<Team> tomOptional = Optional.empty();
+    private static final Long TEAM_ID = 11L;
+    private static final List<String> navidenter = asList(CURRENT_BRUKER_IDENT, NAVIDENT_2);
+    private static final Optional<Team> tomOptional = empty();
 
     @Mock
-    TeamRepository teamRepository;
+    private TeamRepository teamRepository;
 
     @Mock
-    BrukerRepository brukerRepository;
+    private BrukerRepository brukerRepository;
 
     @Mock
-    BrukerService brukerService;
+    private BrukerService brukerService;
 
     @Mock
-    MapperFacade mapperFacade;
+    private MapperFacade mapperFacade;
 
     @Mock
     private NonTransientDataAccessException nonTransientDataAccessException;
+
+    @Mock
+    private TestgruppeService testgruppeService;
 
     @InjectMocks
     private TeamService teamService;
@@ -92,7 +101,7 @@ public class TeamServiceTest {
 
     @Test
     public void fetchTeamById_girTeamHvisTeamFinnesIDB() {
-        Optional<Team> opMedTeam = Optional.of(new Team());
+        Optional<Team> opMedTeam = of(new Team());
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
         Team t = teamService.fetchTeamById(1L);
         assertThat(t, is(notNullValue()));
@@ -121,16 +130,16 @@ public class TeamServiceTest {
 
         RsBruker rb1 = RsBruker.builder().navIdent("nav1").build();
         RsBruker rb2 = RsBruker.builder().navIdent("nav2").build();
-        List<RsBruker> inputBrukere = Arrays.asList(rb1, rb2);
+        List<RsBruker> inputBrukere = asList(rb1, rb2);
 
         Bruker b1 = new Bruker();
         Bruker b2 = new Bruker();
         b1.setNavIdent("nav1");
         b2.setNavIdent("nav2");
 
-        Optional<Team> opMedTeam = Optional.of(t);
+        Optional<Team> opMedTeam = of(t);
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
-        when(mapperFacade.mapAsList(inputBrukere, Bruker.class)).thenReturn(Arrays.asList(b1, b2));
+        when(mapperFacade.mapAsList(inputBrukere, Bruker.class)).thenReturn(asList(b1, b2));
 
         teamService.addMedlemmer(1L, inputBrukere);
 
@@ -141,7 +150,7 @@ public class TeamServiceTest {
 
     @Test
     public void fetchTeamOrOpprettBrukerteam_oppretterNyttTeamMedCurrentBrukerSomNavnHvisIngenTeamIdGitt() {
-        when(teamRepository.findByNavn(anyString())).thenReturn(Optional.empty());
+        when(teamRepository.findByNavn(anyString())).thenReturn(empty());
 
         teamService.fetchTeamOrOpprettBrukerteam(null);
         Team t = captureTheTeamSavedToRepo();
@@ -151,7 +160,7 @@ public class TeamServiceTest {
 
     @Test
     public void fetchTeamOrOpprettBrukerteam_hvisTeamIdErGittProverAaFinneTeamMedId() {
-        when(teamRepository.findById(1L)).thenReturn(Optional.of(new Team()));
+        when(teamRepository.findById(1L)).thenReturn(of(new Team()));
         teamService.fetchTeamOrOpprettBrukerteam(1L);
         verify(teamRepository).findById(1L);
     }
@@ -165,9 +174,9 @@ public class TeamServiceTest {
         b1.setNavIdent("nav1");
         b2.setNavIdent("nav2");
 
-        Optional<Team> opMedTeam = Optional.of(t);
+        Optional<Team> opMedTeam = of(t);
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
-        when(brukerRepository.findByNavIdentIn(navidenter)).thenReturn(Arrays.asList(b1, b2));
+        when(brukerRepository.findByNavIdentIn(navidenter)).thenReturn(asList(b1, b2));
 
         teamService.addMedlemmerByNavidenter(1L, navidenter);
 
@@ -177,17 +186,15 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void fjernMedlemmer_fjernerMedlemHvisMedlemHarSammeNavidentSominput() {
-        Bruker b1 = new Bruker();
-        Bruker b2 = new Bruker();
-        b1.setNavIdent(CURRENT_BRUKER_IDENT);
-        b2.setNavIdent(NAVIDENT_2);
+    public void fjernMedlemmerHvisMedlemHarSammeNavidentSomInput() {
+        Bruker b1 = Bruker.builder().navIdent(CURRENT_BRUKER_IDENT).build();
+        Bruker b2 = Bruker.builder().navIdent(NAVIDENT_2).build();
 
-        Team t = Team.builder().navn("t").medlemmer(Sets.newHashSet(Arrays.asList(b1, b2))).build();
+        Team team = Team.builder().navn("t").medlemmer(newHashSet(asList(b1, b2))).build();
 
-        Optional<Team> opMedTeam = Optional.of(t);
+        Optional<Team> opMedTeam = of(team);
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
-        teamService.fjernMedlemmer(1L, Collections.singletonList(CURRENT_BRUKER_IDENT));
+        teamService.fjernMedlemmer(TEAM_ID, singletonList(CURRENT_BRUKER_IDENT));
 
         Team savedTeam = captureTheTeamSavedToRepo();
 
@@ -195,11 +202,38 @@ public class TeamServiceTest {
         assertThat(savedTeam.getMedlemmer().contains(b2), is(true));
     }
 
+    @Test(expected = NotFoundException.class)
+    public void slettMedlemNotFound() {
+        teamService.slettMedlem(TEAM_ID, CURRENT_BRUKER_IDENT);
+    }
+
+    @Test
+    public void slettMedlemDeleteOk() {
+        when(teamRepository.findById(TEAM_ID)).thenReturn(Optional.of(
+                Team.builder().medlemmer(newHashSet(singleton(Bruker.builder().navIdent(CURRENT_BRUKER_IDENT).build()))).build()));
+        teamService.slettMedlem(TEAM_ID, CURRENT_BRUKER_IDENT);
+        verify(teamRepository).save(any(Team.class));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void updateTeamNotFound() {
+        teamService.updateTeamInfo(TEAM_ID, RsTeamUtvidet.builder().medlemmer(newHashSet(singleton(RsBruker.builder().navIdent(CURRENT_BRUKER_IDENT).build()))).build());
+    }
+
+    @Test
+    public void updateTeamOk() {
+        Team team = Team.builder().medlemmer(newHashSet(singleton(Bruker.builder().navIdent(CURRENT_BRUKER_IDENT).build()))).build();
+        when(teamRepository.findById(TEAM_ID)).thenReturn(Optional.of(team));
+        when(teamRepository.save(team)).thenReturn(team);
+        teamService.updateTeamInfo(TEAM_ID, RsTeamUtvidet.builder().medlemmer(newHashSet(singleton(RsBruker.builder().navIdent(CURRENT_BRUKER_IDENT).build()))).build());
+        verify(teamRepository).save(team);
+    }
+
     @Test
     public void deleteTeam_KallerRepositoryDeleteTeam() {
-        Long id = 1L;
-        teamService.deleteTeam(id);
-        verify(teamRepository).deleteById(id);
+        teamService.deleteTeam(TEAM_ID);
+        verify(testgruppeService).slettGruppeByTeamId(TEAM_ID);
+        verify(teamRepository).deleteTeamById(TEAM_ID);
     }
 
     private Team captureTheTeamSavedToRepo() {

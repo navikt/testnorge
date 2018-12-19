@@ -18,4 +18,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 	List<Team> findTeamsByEier(Bruker eier);
 
 	List<Team> findByMedlemmerNavIdent(String navIdent);
+
+	int deleteTeamById(Long id);
 }
