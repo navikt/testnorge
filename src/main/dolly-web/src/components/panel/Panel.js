@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import cn from 'classnames'
 import ExpandButton from '~/components/button/ExpandButton'
 import Icon from '~/components/icon/Icon'
+import Checkbox from '~/components/fields/Checkbox/Checkbox'
+import LinkButton from '~/components/button/LinkButton/LinkButton'
 
 import './Panel.less'
 
@@ -27,7 +29,15 @@ export default class Panel extends Component {
 	toggle = event => this.setState({ open: !this.state.open })
 
 	render() {
-		const { forceOpen, heading, content, children, errors } = this.props
+		const {
+			forceOpen,
+			heading,
+			content,
+			children,
+			errors,
+			checkAttributeArray,
+			uncheckAttributeArray
+		} = this.props
 
 		const panelIsOpen = forceOpen || this.state.open
 
@@ -39,14 +49,20 @@ export default class Panel extends Component {
 
 		return (
 			<div className={panelClass}>
-				<div className="panel-heading" onClick={this.toggle}>
+				<div className="panel-heading">
 					{heading}
 					{errors && (
 						<div className="panel-heading_error">
 							<Icon kind="report-problem-triangle" />Feil i felter
 						</div>
 					)}
-					<ExpandButton expanded={panelIsOpen} onClick={this.toggle} />
+					<span className="panel-heading_buttons">
+						{checkAttributeArray && <LinkButton text="Velg alle" onClick={checkAttributeArray} />}
+						{uncheckAttributeArray && (
+							<LinkButton text="Fjern alle" onClick={uncheckAttributeArray} />
+						)}
+						<ExpandButton expanded={panelIsOpen} onClick={this.toggle} />
+					</span>
 				</div>
 				{panelIsOpen && <div className="panel-content">{renderContent}</div>}
 			</div>
