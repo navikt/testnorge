@@ -7,6 +7,7 @@ import Loading from '~/components/loading/Loading'
 import LeggTilBruker from './LeggTilBruker/LeggTilBruker'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
+import PaginationConnector from '~/components/pagination/PaginationConnector'
 
 class Team extends Component {
 	state = {
@@ -54,7 +55,7 @@ class Team extends Component {
 		return (
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
-					{/* <ConfirmTooltip onClick={deleteTeam} /> */}
+					<ConfirmTooltip onClick={deleteTeam} />
 				</Overskrift>
 
 				{visRedigerTeam && <RedigerTeamConnector team={team} />}
@@ -77,22 +78,27 @@ class Team extends Component {
 								addMember={addMember}
 							/>
 						)}
-						<Table>
-							<Table.Header>
-								<Table.Column width="30" value="Navn" />
-								<Table.Column width="20" value="Rolle" />
-							</Table.Header>
+						<PaginationConnector
+							items={team.medlemmer}
+							render={items => (
+								<Table>
+									<Table.Header>
+										<Table.Column width="30" value="Navn" />
+										<Table.Column width="20" value="Rolle" />
+									</Table.Header>
 
-							{team.medlemmer.map(medlem => (
-								<Table.Row
-									key={medlem.navIdent}
-									deleteAction={() => removeMember([medlem.navIdent])}
-								>
-									<Table.Column width="30" value={medlem.navIdent} />
-									<Table.Column width="10" value="Utvikler" />
-								</Table.Row>
-							))}
-						</Table>
+									{items.map(medlem => (
+										<Table.Row
+											key={medlem.navIdent}
+											deleteAction={() => removeMember([medlem.navIdent])}
+										>
+											<Table.Column width="30" value={medlem.navIdent} />
+											<Table.Column width="10" value="Utvikler" />
+										</Table.Row>
+									))}
+								</Table>
+							)}
+						/>
 					</Fragment>
 				)}
 
@@ -101,27 +107,32 @@ class Team extends Component {
 				{grupperFetching ? (
 					<Loading label="laster grupper" panel />
 				) : (
-					<Table>
-						<Table.Header>
-							<Table.Column width="15" value="ID" />
-							<Table.Column width="20" value="Navn" />
-							<Table.Column width="15" value="Team" />
-							<Table.Column width="50" value="Hensikt" />
-						</Table.Header>
+					<PaginationConnector
+						items={grupper}
+						render={items => (
+							<Table>
+								<Table.Header>
+									<Table.Column width="15" value="ID" />
+									<Table.Column width="20" value="Navn" />
+									<Table.Column width="15" value="Team" />
+									<Table.Column width="40" value="Hensikt" />
+								</Table.Header>
 
-						{grupper.map(gruppe => (
-							<Table.Row
-								key={gruppe.id}
-								navLink={() => history.push(`/gruppe/${gruppe.id}`)}
-								deleteAction={() => {}}
-							>
-								<Table.Column width="15" value={gruppe.id.toString()} />
-								<Table.Column width="20" value={gruppe.navn} />
-								<Table.Column width="15" value={gruppe.team.navn} />
-								<Table.Column width="40" value={gruppe.hensikt} />
-							</Table.Row>
-						))}
-					</Table>
+								{items.map(gruppe => (
+									<Table.Row
+										key={gruppe.id}
+										navLink={() => history.push(`/gruppe/${gruppe.id}`)}
+										// deleteAction={() => {}}
+									>
+										<Table.Column width="15" value={gruppe.id.toString()} />
+										<Table.Column width="20" value={gruppe.navn} />
+										<Table.Column width="15" value={gruppe.team.navn} />
+										<Table.Column width="40" value={gruppe.hensikt} />
+									</Table.Row>
+								))}
+							</Table>
+						)}
+					/>
 				)}
 			</div>
 		)

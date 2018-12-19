@@ -1,5 +1,7 @@
 package no.nav.dolly.api;
 
+import static java.lang.String.*;
+
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestident;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
@@ -75,6 +78,15 @@ public class TestgruppeController {
         identService.slettTestidenter(testpersonIdentListe);
     }
 
+    @CacheEvict(value = "gruppe", allEntries = true)
+    @Transactional
+    @DeleteMapping("/{gruppeId}/slettTestident")
+    public void deleteTestident(@RequestParam String ident) {
+        if (identService.slettTestident(ident) == 0) {
+            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
+        }
+    }
+
     @Cacheable("gruppe")
     @GetMapping("/{gruppeId}")
     public RsTestgruppeUtvidet getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
@@ -93,7 +105,9 @@ public class TestgruppeController {
     @Transactional
     @DeleteMapping("/{gruppeId}")
     public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
-        testgruppeService.slettGruppeById(gruppeId);
+        if (testgruppeService.slettGruppeById(gruppeId) == 0) {
+            throw new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId));
+        }
     }
 
     @CacheEvict(value = "gruppe", allEntries = true)

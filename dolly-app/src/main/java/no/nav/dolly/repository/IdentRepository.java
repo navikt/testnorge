@@ -18,5 +18,13 @@ public interface IdentRepository extends CrudRepository<Testident, String> {
             + "where bp.bestillingId = :bestillingId)")
     int deleteTestidentsByBestillingId(@Param("bestillingId") Long bestillingId);
 
-    void deleteTestidentByIdent(String testident);
+    @Modifying
+    int deleteTestidentByIdent(String testident);
+
+    @Modifying
+    int deleteTestidentByTestgruppeId(Long gruppeId);
+
+    @Modifying
+    @Query(value = "delete from T_TEST_IDENT ti where ti.tilhoerer_gruppe in (select tg.id from T_GRUPPE tg where tg.tilhoerer_team=:teamId)", nativeQuery = true)
+    int deleteTestidentByTestgruppeTeamtilhoerighetId(@Param("teamId") Long teamId);
 }

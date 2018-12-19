@@ -31,57 +31,60 @@ export default class TestbrukerListe extends Component {
 				</ContentContainer>
 			)
 
-		if (!testbrukerListe) return null
-
 		return (
-			<PaginationConnector
-				items={testbrukerListe}
-				render={testbrukere => {
-					return (
-						<div className="oversikt-container">
-							<Fragment>
-								{testbrukere && testbrukere.length <= 0 && searchActive ? (
-									<ContentContainer>Søket gav ingen resultater.</ContentContainer>
-								) : (
-									<Table>
-										<Table.Header>
-											{headers.map((header, idx) => (
-												<Table.Column key={idx} width={header.width} value={header.label} />
-											))}
-										</Table.Header>
-
-										{isFetching ? (
-											<Loading label="laster testbrukere" panel />
+			<Fragment>
+				{isFetching || !testbrukerListe ? (
+					<Loading label="laster testbrukere" panel />
+				) : (
+					<PaginationConnector
+						items={testbrukerListe}
+						render={testbrukere => {
+							return (
+								<div className="oversikt-container">
+									<Fragment>
+										{testbrukere && testbrukere.length <= 0 && searchActive ? (
+											<ContentContainer>Søket gav ingen resultater.</ContentContainer>
 										) : (
-											testbrukere &&
-											testbrukere.map((bruker, idx) => {
-												// Note: idx=0 of bruker (data) is parsed to be ID
-												return (
-													<Table.Row
-														key={idx}
-														expandComponent={
-															<PersonDetaljerConnector personId={bruker[0]} username={username} />
-														}
-														editAction={() => editTestbruker(bruker[0])}
-													>
-														{bruker.map((dataCell, cellIdx) => (
-															<Table.Column
-																key={cellIdx}
-																width={headers[cellIdx].width}
-																value={dataCell}
-															/>
-														))}
-													</Table.Row>
-												)
-											})
+											<Table>
+												<Table.Header>
+													{headers.map((header, idx) => (
+														<Table.Column key={idx} width={header.width} value={header.label} />
+													))}
+												</Table.Header>
+
+												{testbrukere &&
+													testbrukere.map((bruker, idx) => {
+														// Note: idx=0 of bruker (data) is parsed to be ID
+														return (
+															<Table.Row
+																key={bruker[0]}
+																expandComponent={
+																	<PersonDetaljerConnector
+																		personId={bruker[0]}
+																		username={username}
+																	/>
+																}
+																editAction={() => editTestbruker(bruker[0])}
+															>
+																{bruker.map((dataCell, cellIdx) => (
+																	<Table.Column
+																		key={cellIdx}
+																		width={headers[cellIdx].width}
+																		value={dataCell}
+																	/>
+																))}
+															</Table.Row>
+														)
+													})}
+											</Table>
 										)}
-									</Table>
-								)}
-							</Fragment>
-						</div>
-					)
-				}}
-			/>
+									</Fragment>
+								</div>
+							)
+						}}
+					/>
+				)}
+			</Fragment>
 		)
 	}
 }

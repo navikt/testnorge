@@ -13,6 +13,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,13 +27,11 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -49,6 +48,7 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 public class TestgruppeServiceTest {
 
     private static final long GROUP_ID = 1L;
+    private static final long TEAM_ID = 1L;
     private static final String IDENT_ONE = "1";
     private static final String IDENT_TWO = "2";
     private static final String standardPrincipal = "PRINC";
@@ -63,7 +63,7 @@ public class TestgruppeServiceTest {
     private TeamService teamService;
 
     @Mock
-    private MapperFacade mapperFacade;
+    private IdentService identService;
 
     @Mock
     private NonTransientDataAccessException nonTransientDataAccessException;
@@ -90,11 +90,9 @@ public class TestgruppeServiceTest {
 
     @Test
     public void opprettTestgruppe_HappyPath() {
-        RsOpprettEndreTestgruppe rsTestgruppe = Mockito.mock(RsOpprettEndreTestgruppe.class);
-        Team team = Mockito.mock(Team.class);
-        Bruker bruker = Mockito.mock(Bruker.class);
-        Testgruppe gruppe = new Testgruppe();
-        Testgruppe savedGruppe = Mockito.mock(Testgruppe.class);
+        RsOpprettEndreTestgruppe rsTestgruppe = mock(RsOpprettEndreTestgruppe.class);
+        Team team = mock(Team.class);
+        Bruker bruker = mock(Bruker.class);
 
         when(teamService.fetchTeamOrOpprettBrukerteam(any())).thenReturn(team);
         when(brukerService.fetchBruker(standardPrincipal)).thenReturn(bruker);
@@ -121,7 +119,7 @@ public class TestgruppeServiceTest {
 
     @Test
     public void fetchTestgruppeById_ReturnererGruppeHvisGruppeMedIdFinnes() throws Exception {
-        Testgruppe g = Mockito.mock(Testgruppe.class);
+        Testgruppe g = mock(Testgruppe.class);
         Optional<Testgruppe> op = Optional.of(g);
         when(gruppeRepository.findById(any())).thenReturn(op);
 
@@ -238,5 +236,26 @@ public class TestgruppeServiceTest {
         doReturn(team).when(teamService).fetchTeamById(anyLong());
         testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettEndreTestgruppe);
         verify(gruppeRepository).save(testGruppe);
+    }
+
+    @Test
+    public void slettGruppeByTeamId() {
+
+        testgruppeService.slettGruppeByTeamId(TEAM_ID);
+        verify(identService).slettTestidenterByTeamId(TEAM_ID);
+        verify(brukerService).sletteBrukerFavoritterByTeamId(TEAM_ID);
+        verify(gruppeRepository).deleteTestgruppeByTeamtilhoerighetId(TEAM_ID);
+    }
+
+    @Test
+    public void getTestgruppeByNavidentOgTeamId() {
+        testgruppeService.getTestgruppeByNavidentOgTeamId(IDENT_ONE, TEAM_ID);
+        verify(gruppeRepository).findAllByTeamtilhoerighet(any(Team.class));
+    }
+
+    @Test
+    public void getTestgrupper() {
+        testgruppeService.getTestgruppeByNavidentOgTeamId(null, null);
+        verify(gruppeRepository).findAll();
     }
 }

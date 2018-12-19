@@ -23,14 +23,15 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestident;
-import no.nav.dolly.repository.GruppeRepository;
-import no.nav.dolly.service.BestillingProgressService;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeControllerTest {
+
+    private static final String IDENT = "12345678901";
 
     @Mock
     private TestgruppeService testgruppeService;
@@ -45,14 +46,7 @@ public class TestgruppeControllerTest {
     private DollyBestillingService dollyBestillingService;
 
     @Mock
-    private BestillingProgressService bestillingProgressService;
-
-    @Mock
     private BestillingService bestillingService;
-
-    @Mock
-    private GruppeRepository gruppeRepository;
-
 
     @InjectMocks
     private TestgruppeController controller;
@@ -80,10 +74,22 @@ public class TestgruppeControllerTest {
     }
 
     @Test
-    public void deleteTestident() {
+    public void deleteTestidenter() {
         List<RsTestident> testpersonIdentListe = singletonList(new RsTestident());
         controller.deleteTestident(testpersonIdentListe);
         verify(identService).slettTestidenter(testpersonIdentListe);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void deleteTestIdentNotFound() {
+        controller.deleteTestident(IDENT);
+    }
+
+    @Test
+    public void deleteTestIdentFound() {
+        when(identService.slettTestident(IDENT)).thenReturn(1);
+        controller.deleteTestident(IDENT);
+        verify(identService).slettTestident(IDENT);
     }
 
     @Test
@@ -126,8 +132,15 @@ public class TestgruppeControllerTest {
         verify(dollyBestillingService).opprettPersonerByKriterierAsync(gruppeId, dollyBestillingsRequest, bestillingId);
     }
 
+    @Test(expected = NotFoundException.class)
+    public void slettGruppeIdNotFound() {
+        controller.slettgruppe(anyLong());
+        verify(testgruppeService).slettGruppeById(anyLong());
+    }
+
     @Test
-    public void slettgruppe_metodekall() {
+    public void slettGruppeIdFound() {
+        when(testgruppeService.slettGruppeById(anyLong())).thenReturn(1);
         controller.slettgruppe(anyLong());
         verify(testgruppeService).slettGruppeById(anyLong());
     }
