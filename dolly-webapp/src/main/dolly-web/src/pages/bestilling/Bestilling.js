@@ -25,6 +25,8 @@ export default class Bestilling extends PureComponent {
 			startBestilling,
 			toggleAttribute,
 			uncheckAllAttributes,
+			checkAttributeArray,
+			uncheckAttributeArray,
 			setValues,
 			setEnvironments,
 			sendBestilling,
@@ -52,6 +54,8 @@ export default class Bestilling extends PureComponent {
 						startBestilling={startBestilling}
 						toggleAttributeSelection={toggleAttribute}
 						uncheckAllAttributes={uncheckAllAttributes}
+						checkAttributeArray={checkAttributeArray}
+						uncheckAttributeArray={uncheckAttributeArray}
 					/>
 				)}
 
