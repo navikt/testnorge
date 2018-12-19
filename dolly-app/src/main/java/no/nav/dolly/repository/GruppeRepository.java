@@ -9,6 +9,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 
 public interface GruppeRepository extends JpaRepository<Testgruppe, Long> {
 
+	@Modifying
 	Testgruppe save(Testgruppe testgruppe);
 
 	List<Testgruppe> findAll();
