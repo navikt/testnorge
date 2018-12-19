@@ -43,6 +43,7 @@ import no.nav.dolly.service.TestgruppeService;
 public class DollyBestillingService {
 
     private static final String INNVANDRINGS_MLD_NAVN = "innvandringcreate";
+    private static final String CACHE_GRUPPE = "gruppe";
 
     @Autowired
     private TpsfResponseHandler tpsfResponseHandler;
@@ -109,9 +110,7 @@ public class DollyBestillingService {
                     bestilling.setSistOppdatert(LocalDateTime.now());
                     bestillingService.saveBestillingToDB(bestilling);
                 }
-                if (nonNull(cacheManager.getCache("gruppe"))) {
-                    cacheManager.getCache("gruppe").clear();
-                }
+                clearCache();
                 loopCount++;
             }
         } catch (Exception e) {
@@ -124,6 +123,13 @@ public class DollyBestillingService {
             }
             bestilling.setFerdig(true);
             bestillingService.saveBestillingToDB(bestilling);
+            clearCache();
+        }
+    }
+
+    private void clearCache() {
+        if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
+            cacheManager.getCache(CACHE_GRUPPE).clear();
         }
     }
 
