@@ -101,7 +101,7 @@ export default class Gruppe extends Component {
 		return (
 			<div id="gruppe-container">
 				<Overskrift label={gruppe.navn} actions={groupActions}>
-					{/* <ConfirmTooltip onClick={deleteGruppe} /> */}
+					<ConfirmTooltip message={'Vil du slette denne testdatagruppen?'} onClick={deleteGruppe} />
 					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 					{gruppe.antallIdenter > 0 && (
 						<div className="pull-right">
