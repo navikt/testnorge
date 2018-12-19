@@ -52,10 +52,21 @@ class Team extends Component {
 			}
 		]
 
+		console.log(grupper, 'gruope')
+
 		return (
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
-					<ConfirmTooltip onClick={deleteTeam} />
+					<ConfirmTooltip
+						message={
+							grupper.length > 0
+								? 'Å slette dette teamet vil føre til sletting av ' +
+								  grupper.length +
+								  ' testdatagrupper . Er du sikker på dette?'
+								: 'Vil du slette dette teamet?'
+						}
+						onClick={deleteTeam}
+					/>
 				</Overskrift>
 
 				{visRedigerTeam && <RedigerTeamConnector team={team} />}
