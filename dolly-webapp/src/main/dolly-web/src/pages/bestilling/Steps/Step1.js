@@ -24,7 +24,13 @@ class Step1 extends Component {
 		animateScroll.scrollToTop({ duration: 250 })
 	}
 	render() {
-		const { selectedAttributeIds, toggleAttributeSelection, uncheckAllAttributes } = this.props
+		const {
+			selectedAttributeIds,
+			toggleAttributeSelection,
+			uncheckAllAttributes,
+			checkAttributeArray,
+			uncheckAttributeArray
+		} = this.props
 
 		return (
 			<div className="bestilling-step1">
@@ -52,6 +58,8 @@ class Step1 extends Component {
 				<AttributtVelger
 					onToggle={toggleAttributeSelection}
 					uncheckAllAttributes={uncheckAllAttributes}
+					checkAttributeArray={checkAttributeArray}
+					uncheckAttributeArray={uncheckAttributeArray}
 					selectedIds={selectedAttributeIds}
 				/>
 
