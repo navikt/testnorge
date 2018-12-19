@@ -10,6 +10,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 
 public interface BrukerRepository extends CrudRepository<Bruker, Long> {
 
+    @Modifying
     Bruker save(Bruker bruker);
 
     Bruker findBrukerByNavIdent(String navIdent);
