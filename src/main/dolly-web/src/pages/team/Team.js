@@ -55,7 +55,7 @@ class Team extends Component {
 		return (
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
-					{/* <ConfirmTooltip onClick={deleteTeam} /> */}
+					<ConfirmTooltip onClick={deleteTeam} />
 				</Overskrift>
 
 				{visRedigerTeam && <RedigerTeamConnector team={team} />}
@@ -115,14 +115,14 @@ class Team extends Component {
 									<Table.Column width="15" value="ID" />
 									<Table.Column width="20" value="Navn" />
 									<Table.Column width="15" value="Team" />
-									<Table.Column width="50" value="Hensikt" />
+									<Table.Column width="40" value="Hensikt" />
 								</Table.Header>
 
 								{items.map(gruppe => (
 									<Table.Row
 										key={gruppe.id}
 										navLink={() => history.push(`/gruppe/${gruppe.id}`)}
-										deleteAction={() => {}}
+										// deleteAction={() => {}}
 									>
 										<Table.Column width="15" value={gruppe.id.toString()} />
 										<Table.Column width="20" value={gruppe.navn} />
