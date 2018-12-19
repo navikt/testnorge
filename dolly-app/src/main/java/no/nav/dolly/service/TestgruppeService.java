@@ -15,7 +15,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -39,9 +38,6 @@ public class TestgruppeService {
 
     @Autowired
     private IdentService identService;
-
-    @Autowired
-    private MapperFacade mapperFacade;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
@@ -68,7 +64,6 @@ public class TestgruppeService {
         }
         throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
     }
-
 
     public Set<Testgruppe> fetchTestgrupperByNavIdent(String navIdent) {
         Bruker bruker = brukerService.fetchBruker(navIdent);
