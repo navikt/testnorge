@@ -19,7 +19,6 @@ export const actions = createActions(
 		POST_BESTILLING: [
 			async (gruppeId, values) => {
 				const res = await DollyApi.createBestilling(gruppeId, values) // Payload
-				// console.log(res, 'res')
 				return { ...res, data: { ...res.data, ny: true } }
 			},
 			gruppeId => ({ gruppeId }) // Meta
