@@ -52,17 +52,21 @@ class TableRow extends PureComponent {
 		})
 
 		return (
-			<div tabIndex={0} className={rowClass}>
-				<div className={columnsClass} {...rowProps}>
-					{children}
-					<Table.Column className="dot-body-row-actioncolumn">
-						{editAction && <Button kind="edit" onClick={editAction} />}
-						{/* {deleteAction && <ConfirmTooltip onClick={deleteAction} />} */}
-						{groupId && <FavoriteButtonConnector groupId={groupId} />}
-						{expandComponent && (
-							<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
-						)}
-					</Table.Column>
+			<div className={rowClass}>
+				<div tabIndex={0} className={columnsClass}>
+					<div className="dot-body-row-columns-maincontent" {...rowProps}>
+						{children}
+						<Table.Column className="dot-body-row-expand-icon">
+							{expandComponent && (
+								<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
+							)}
+						</Table.Column>
+					</div>
+				</div>
+				<div className="action-column">
+					{deleteAction && <ConfirmTooltip onClick={deleteAction} />}
+					{editAction && <Button kind="edit" onClick={editAction} />}
+					{/* {groupId && <FavoriteButtonConnector groupId={groupId} />} */}
 				</div>
 				{this.state.expanded && (
 					<div className="dot-body-row-expandcomponent">{expandComponent}</div>

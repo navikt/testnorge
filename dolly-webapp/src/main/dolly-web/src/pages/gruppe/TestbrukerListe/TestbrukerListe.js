@@ -58,7 +58,7 @@ export default class TestbrukerListe extends Component {
 												// Note: idx=0 of bruker (data) is parsed to be ID
 												return (
 													<Table.Row
-														key={idx}
+														key={bruker[0]}
 														expandComponent={
 															<PersonDetaljerConnector personId={bruker[0]} username={username} />
 														}
