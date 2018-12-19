@@ -19,7 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
-import no.nav.identpool.repository.IdentEntity;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.service.IdentpoolService;
 
 @Slf4j
@@ -33,7 +33,7 @@ public class IdentpoolController {
 
     @GetMapping
     @ApiOperation(value = "hent informasjon lagret på en test-ident")
-    public IdentEntity lesInnhold(
+    public Ident lesInnhold(
             @RequestHeader String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
         validate(personidentifikator);

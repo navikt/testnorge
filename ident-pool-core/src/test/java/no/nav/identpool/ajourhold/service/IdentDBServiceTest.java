@@ -1,9 +1,9 @@
 package no.nav.identpool.ajourhold.service;
 
 import no.nav.identpool.ajourhold.util.IdentDistribusjon;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.repository.IdentEntity;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.service.IdentMQService;
 import no.nav.identpool.test.mockito.MockitoExtension;
@@ -40,7 +40,7 @@ class IdentDBServiceTest {
 
     private IdentDBService identService;
 
-    private List<IdentEntity> entities = new ArrayList<>();
+    private List<Ident> entities = new ArrayList<>();
 
     @BeforeEach
     void init() {
@@ -50,7 +50,7 @@ class IdentDBServiceTest {
         when(identDistribusjon.antallPersonerPerDagPerAar(anyInt())).thenReturn(3);
 
         when(identRepository.saveAll(anyIterable())).thenAnswer((Answer<Void>) invocationOnMock -> {
-            List<IdentEntity> pins = invocationOnMock.getArgument(0);
+            List<Ident> pins = invocationOnMock.getArgument(0);
             entities.addAll(pins);
             return null;
         });
@@ -72,7 +72,7 @@ class IdentDBServiceTest {
 
     @Test
     void genererIdenterForAarHvorIngenErLedige() {
-        when(mqService.checkInTps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
+        when(mqService.checkIdentsInTps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().collect(Collectors.toMap(Object::toString, pin -> Boolean.FALSE));
         });
@@ -86,7 +86,7 @@ class IdentDBServiceTest {
 
     @Test
     void genererIdenterForAarHvorAlleErLedige() {
-        when(mqService.checkInTps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
+        when(mqService.checkIdentsInTps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().collect(Collectors.toMap(Object::toString, pin -> Boolean.TRUE));
         });
@@ -101,7 +101,7 @@ class IdentDBServiceTest {
 
     @Test
     void generererIdenterFraAarTilDatoMidtISammeAar() {
-        when(mqService.checkInTps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
+        when(mqService.checkIdentsInTps(anyList())).thenAnswer((Answer<Map<String, Boolean>>) invocationOnMock -> {
             List<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().collect(Collectors.toMap(Object::toString, pin -> Boolean.TRUE));
         });

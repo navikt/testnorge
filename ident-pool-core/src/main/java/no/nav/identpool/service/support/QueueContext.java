@@ -1,4 +1,4 @@
-package no.nav.identpool.ajourhold.mq;
+package no.nav.identpool.service.support;
 
 import static java.lang.Integer.parseInt;
 

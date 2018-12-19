@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.rs.v1.support.ApiError;
 import no.nav.identpool.rs.v1.support.ApiResponse;
 import org.apache.http.client.utils.URIBuilder;
@@ -24,7 +25,6 @@ import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
-import no.nav.identpool.repository.IdentEntity;
 import no.nav.identpool.util.PersonidentifikatorUtil;
 
 class IdentpoolControllerComponentTest extends ComponentTestbase {
@@ -195,10 +195,10 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("personidentifikator", FNR_LEDIG);
 
-        ResponseEntity<IdentEntity> apiResponseEntity = doGetRequest(ROOT_URI, createHeaderEntity(headers), IdentEntity.class);
+        ResponseEntity<Ident> apiResponseEntity = doGetRequest(ROOT_URI, createHeaderEntity(headers), Ident.class);
 
         assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
-        IdentEntity expected = createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10);
+        Ident expected = createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10);
         assertThat(apiResponseEntity.getBody(), is(expected));
     }
 }

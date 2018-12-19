@@ -1,4 +1,4 @@
-package no.nav.identpool.ajourhold.repository;
+package no.nav.identpool.domain;
 
 import java.time.LocalDateTime;
 import javax.batch.runtime.BatchStatus;
@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "AJOURHOLD")
 public class AjourholdEntity {
-//TODO Samle sammen repository i en pakke
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ajourhold_seq")

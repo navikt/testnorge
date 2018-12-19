@@ -1,20 +1,20 @@
 package no.nav.identpool.service;
 
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
 
+import no.nav.identpool.service.support.QueueContext;
 import no.nav.tps.ctg.m201.domain.StatusFraTPSType;
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.ajourhold.mq.QueueContext;
 import no.nav.identpool.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
 import no.nav.identpool.ajourhold.tps.xml.service.NavnOpplysning;
@@ -33,44 +33,34 @@ public class IdentMQService {
 
     private MessageQueue messageQueue;
 
+    private Map<String, Boolean> idents = new HashMap<>();
 
-    public Map<String, Boolean> checkInTps(List<String> fnr) {
-        return checkInTps(QueueContext.getSuccessfulEnvs(), fnr);
-    }
-
-    public Map<String, Boolean> checkInTps(List<String> environments, List<String> fnrs) {
-        //TODO Skurrer noe at denne sendes videre for manipulering. Burde heller bruke putAll med response fra filterTpsQueue
-        Map<String, Boolean> identer = populateDefaults(fnrs);
+    public Map<String, Boolean> checkIdentsInTps(List<String> fnrs) {
+        List<String> environments = QueueContext.getSuccessfulEnvs();
+        idents = populateDefaults(fnrs);
 
         for (String environment : environments) {
-            try {
-                filterTpsQueue(environment, identer);
-            } catch (JMSException e) {
-                throw new RuntimeException(e);
+            List<String> nonExisting = filterNonExisting();
+            if (nonExisting.isEmpty()) {
+                break;
             }
+            checkInEnvironment(environment, nonExisting);
         }
-        return identer;
+        return idents;
     }
 
-    private Map<String, Boolean> populateDefaults(List<String> fnrs) {
-        return fnrs.stream().collect(Collectors.toMap(fnr -> fnr, fnr -> Boolean.FALSE));
-    }
-
-    private void filterTpsQueue(String environment, Map<String, Boolean> identer) throws JMSException {
-        //TODO Denne vil alltid være lik som List<String> fnrs som kommer inn i checkInTps
-        List<String> finnesIkke = filterNonExisting(identer);
-
-        if (finnesIkke.isEmpty()) {
-            return;
-        }
-        initMq(environment);
-
-        for (List<String> list : Lists.partition(new ArrayList<>(finnesIkke), MAX_SIZE_TPS_QUEUE)) {
-            TpsPersonData data = getFromTps(list);
-            if (data.getTpsSvar().getIngenReturData() != null) {
-                return;
+    private void checkInEnvironment(String environment, List<String> nonExisting) {
+        try {
+            initMq(environment);
+            for (List<String> list : Lists.partition(nonExisting, MAX_SIZE_TPS_QUEUE)) {
+                String response = messageQueue.sendMessage(new NavnOpplysning(list).toXml());
+                TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
+                if (data.getTpsSvar().getIngenReturData() == null) {
+                    updateIdents(data);
+                }
             }
-            updateIdents(data, identer);
+        } catch (JMSException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -84,33 +74,28 @@ public class IdentMQService {
         }
     }
 
-    //TODO Denne burde ikke være nødvendig..
-    private List<String> filterNonExisting(Map<String, Boolean> identer) {
-        return identer.entrySet()
-                    .stream()
-                    .filter(entry -> !entry.getValue())
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-    }
-
-    private TpsPersonData getFromTps(List<String> list) throws JMSException {
-        String message = new NavnOpplysning(list).toXml();
-        String response = messageQueue.sendMessage(message);
-        return JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
-    }
-
-    private void updateIdents(TpsPersonData data, Map<String, Boolean> identer) {
+    private void updateIdents(TpsPersonData data) {
         data.getTpsSvar().getPersonDataM201().getAFnr().getEFnr()
                 .forEach(personData -> {
                     StatusFraTPSType svarStatus = personData.getSvarStatus();
                     if (svarStatus == null || TPS_I_BRUK.equals(svarStatus.getReturStatus())) {
-                        identer.put(personData.getFnr(), Boolean.TRUE);
+                        idents.put(personData.getFnr(), Boolean.TRUE);
                     } else if (TPS_ENDRET_I_BRUK.equals(svarStatus.getReturStatus())) {
-                        identer.put(personData.getForespurtFnr(), Boolean.TRUE);
+                        idents.put(personData.getForespurtFnr(), Boolean.TRUE);
                     }
-                    //TODO Får vi tilbake de som det ikke er treff og heller ikke i bruk så vi kan gjøre
-                    // identer.put(personData.getForespurtFnr(), Boolean.FALSE); for å støtte endringer tidligere i koden?
                 });
     }
+
+    private Map<String, Boolean> populateDefaults(List<String> fnrs) {
+        return fnrs.stream().collect(Collectors.toMap(fnr -> fnr, fnr -> Boolean.FALSE));
+    }
+
+    private List<String> filterNonExisting() {
+        return idents.entrySet().stream()
+                .filter(entry -> !entry.getValue())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
 }
 

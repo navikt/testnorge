@@ -18,7 +18,7 @@ import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.repository.IdentEntity;
+import no.nav.identpool.domain.Ident;
 
 class LesInnholdComponentTest extends ComponentTestbase {
     private static final String PERSONIDENTIFIKATOR = "10108000398";
@@ -30,10 +30,10 @@ class LesInnholdComponentTest extends ComponentTestbase {
 
     @BeforeEach
     void populerDatabaseMedTestidenter() {
-        IdentEntity identEntity = createIdentEntity(Identtype.FNR, PERSONIDENTIFIKATOR, REKVIRERINGSSTATUS, 10);
-        identEntity.setRekvirertAv(REKVIRERT_AV);
+        Ident ident = createIdentEntity(Identtype.FNR, PERSONIDENTIFIKATOR, REKVIRERINGSSTATUS, 10);
+        ident.setRekvirertAv(REKVIRERT_AV);
         identRepository.save(
-                identEntity
+                ident
         );
     }
 
@@ -44,9 +44,9 @@ class LesInnholdComponentTest extends ComponentTestbase {
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("personidentifikator", PERSONIDENTIFIKATOR);
 
-        ResponseEntity<IdentEntity> identEntityResponseEntity = doGetRequest(uri, createHeaderEntity(headers), IdentEntity.class);
+        ResponseEntity<Ident> identEntityResponseEntity = doGetRequest(uri, createHeaderEntity(headers), Ident.class);
 
-        IdentEntity ident = identEntityResponseEntity.getBody();
+        Ident ident = identEntityResponseEntity.getBody();
 
         assertThat(ident, is(notNullValue()));
         assertThat(ident.getPersonidentifikator(), is(PERSONIDENTIFIKATOR));

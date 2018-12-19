@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang.exception.ExceptionUtils;
-import no.nav.identpool.ajourhold.repository.AjourholdEntity;
-import no.nav.identpool.ajourhold.repository.AjourholdRepository;
+import no.nav.identpool.domain.AjourholdEntity;
+import no.nav.identpool.repository.AjourholdRepository;
 
 @Service
 @RequiredArgsConstructor

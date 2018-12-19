@@ -1,4 +1,4 @@
-package no.nav.identpool.ajourhold.mq;
+package no.nav.identpool.service.support;
 
 import no.nav.identpool.ajourhold.fasit.FasitClient;
 import no.nav.identpool.ajourhold.mq.consumer.MessageQueue;
@@ -10,10 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.jms.JMSException;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,6 +18,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
+
+import javax.jms.JMSException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @ExtendWith(MockitoExtension.class)
 class QueueContextTest {
@@ -34,8 +34,6 @@ class QueueContextTest {
 
     @Mock
     private MessageQueue messageQueue;
-
-    private QueueContext queueContext;
 
     @BeforeEach
     void init() {
@@ -66,7 +64,7 @@ class QueueContextTest {
     }
 
     private void createQueueContext() {
-        queueContext = new QueueContext(fasitClient, messageQueueFactory);
+        QueueContext queueContext = new QueueContext(fasitClient, messageQueueFactory);
         ReflectionTestUtils.setField(queueContext, "excluded", Arrays.asList("t7", "q9"));
         queueContext.init();
     }

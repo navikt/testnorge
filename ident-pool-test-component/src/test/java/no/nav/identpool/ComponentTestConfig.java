@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.identpool.ajourhold.CronJobService;
 import no.nav.identpool.ajourhold.mq.factory.ConnectionStrategyFactory;
 import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
-import no.nav.identpool.ajourhold.mq.QueueContext;
+import no.nav.identpool.service.support.QueueContext;
 
 @Configuration
 @ComponentScan(basePackages = "no.nav.identpool")

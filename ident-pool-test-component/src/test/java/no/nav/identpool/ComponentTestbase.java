@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.repository.IdentEntity;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.rs.v1.support.IdentRequest;
 import org.jose4j.jwt.JwtClaims;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,8 +53,8 @@ public abstract class ComponentTestbase {
         httpEntityBuilder = new HttpEntityBuilder();
     }
 
-    protected IdentEntity createIdentEntity(Identtype identtype, String ident, Rekvireringsstatus rekvireringsstatus, int day) {
-        return IdentEntity.builder()
+    protected Ident createIdentEntity(Identtype identtype, String ident, Rekvireringsstatus rekvireringsstatus, int day) {
+        return Ident.builder()
                 .identtype(identtype)
                 .personidentifikator(ident)
                 .rekvireringsstatus(rekvireringsstatus)

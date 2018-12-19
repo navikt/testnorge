@@ -1,5 +1,6 @@
-package no.nav.identpool.ajourhold.mq;
+package no.nav.identpool.rs.v1;
 
+import no.nav.identpool.service.support.QueueContext;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

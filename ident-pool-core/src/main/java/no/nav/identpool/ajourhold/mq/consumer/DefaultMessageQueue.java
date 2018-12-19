@@ -8,12 +8,14 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.wmq.v6.jms.internal.JMSC;
+import org.springframework.retry.annotation.Retryable;
 
 public class DefaultMessageQueue implements MessageQueue {
 
-    private static final int RETRYCOUNT = 3;
+    private static final int MAX_RETRIES = 4;
     private static final long DEFAULT_TIMEOUT = 5000;
     private static final String PING_MESSAGE =
             "<?service version=\"1.0\" encoding=\"ISO-8859-1\"?><tpsPersonData xmlns=\"http://www.rtv.no/NamespaceTPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
@@ -33,38 +35,26 @@ public class DefaultMessageQueue implements MessageQueue {
         this.connectionFactory = connectionFactory;
     }
 
-    //TODO Skriv om under..
-    public String sendMessage(String requestMessage) throws JMSException {
-        return sendMessageConnection(requestMessage, RETRYCOUNT);
-    }
-
     public void ping() throws JMSException {
         this.sendMessage(PING_MESSAGE);
     }
 
-    private String sendMessageConnection(String requestMessage, int retryCount) throws JMSException {
+    public String sendMessage(String requestMessage) throws JMSException {
+        return sendMessageConnection(requestMessage);
+    }
+
+    @Retryable(value = JMSException.class, maxAttempts = MAX_RETRIES)
+    private String sendMessageConnection(String requestMessage) throws JMSException {
         try (Connection connection = connectionFactory.createConnection(username, password)) {
             connection.start();
-            return sendMessageSession(requestMessage, connection, RETRYCOUNT);
-        } catch (JMSException e) {
-            if (retryCount > 0) {
-                return this.sendMessageConnection(requestMessage, retryCount - 1);
-            } else {
-                throw e;
-            }
+            return sendMessageSession(requestMessage, connection);
         }
     }
 
-    private String sendMessageSession(String requestMessage, Connection connection, int retryCount) throws JMSException {
-
+    @Retryable(value = JMSException.class, maxAttempts = MAX_RETRIES)
+    private String sendMessageSession(String requestMessage, Connection connection) throws JMSException {
         try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
             return sendMessageQueue(requestMessage, session);
-        } catch (JMSException e) {
-            if (retryCount > 0) {
-                return this.sendMessageSession(requestMessage, connection, retryCount - 1);
-            } else {
-                throw e;
-            }
         }
     }
 

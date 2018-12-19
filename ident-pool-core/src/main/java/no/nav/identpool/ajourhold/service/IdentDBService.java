@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import no.nav.identpool.domain.Ident;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,6 @@ import no.nav.identpool.ajourhold.tps.generator.IdentGenerator;
 import no.nav.identpool.ajourhold.util.IdentDistribusjon;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.repository.IdentEntity;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.service.IdentMQService;
 import no.nav.identpool.util.PersonidentifikatorUtil;
@@ -81,7 +81,7 @@ public class IdentDBService {
 
     private void filterIdents(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
         List<String> filtered = filterAgainstDatabase(antallPerDag, pinMap);
-        Map<String, Boolean> identerIBruk = mqService.checkInTps(filtered);
+        Map<String, Boolean> identerIBruk = mqService.checkIdentsInTps(filtered);
 
         List<String> rekvirert = identerIBruk.entrySet().stream()
                 .filter(Map.Entry::getValue)
@@ -123,8 +123,8 @@ public class IdentDBService {
         return arrayList;
     }
 
-    private IdentEntity createIdent(String fnr, Rekvireringsstatus status, Identtype type, String rekvirertAv) {
-        return IdentEntity.builder()
+    private Ident createIdent(String fnr, Rekvireringsstatus status, Identtype type, String rekvirertAv) {
+        return Ident.builder()
                 .finnesHosSkatt(false)
                 .personidentifikator(fnr)
                 .foedselsdato(toBirthdate(fnr))
