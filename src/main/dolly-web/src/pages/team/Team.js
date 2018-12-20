@@ -96,7 +96,7 @@ class Team extends Component {
 										<Table.Column width="30" value="Navn" />
 										<Table.Column width="20" value="Rolle" />
 									</Table.Header>
-									<TransitionGroup className="example" component={null}>
+									<TransitionGroup component={null}>
 										{items.map(medlem => (
 											<CSSTransition key={medlem.navIdent} timeout={1000} classNames="fade">
 												<Table.Row
