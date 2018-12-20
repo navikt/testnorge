@@ -2,10 +2,12 @@ package no.nav.registre.orkestratoren.provider.rs;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpStatusCodeException;
 
@@ -41,6 +43,7 @@ public class SyntetiseringsController {
 
     @LogExceptions
     @PostMapping(value = "/arena/inntekt/generer")
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
     public List<String> opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest request) {
         return arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
     }
