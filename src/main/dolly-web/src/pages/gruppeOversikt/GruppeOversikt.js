@@ -49,7 +49,7 @@ export default class GruppeOversikt extends PureComponent {
 
 		return (
 			<div className="oversikt-container">
-				<div className="page-header flexbox--align">
+				<div className="page-header flexbox--align-center--justify-start">
 					<Overskrift label="Testdatagrupper" />
 					<ContentTooltip>
 						Testdatagruppen inneholder alle testpersonene dine (FNR/DNR).
