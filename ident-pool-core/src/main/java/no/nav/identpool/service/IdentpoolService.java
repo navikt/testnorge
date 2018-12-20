@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.identpool.ajourhold.service.IdentDBService;
-import no.nav.identpool.ajourhold.tps.generator.IdentGenerator;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
@@ -31,10 +30,12 @@ import no.nav.identpool.util.PersonidentifikatorUtil;
 public class IdentpoolService {
     private static final int MAKS_ANTALL_MANGLENDE_IDENTER = 80;
     private static final int MAKS_ANTALL_KALL_MOT_TPS = 3;
+
     private final IdentRepository identRepository;
     private final IdentPredicateUtil identPredicateUtil;
     private final IdentMQService identMQService;
     private final IdentDBService identDBService;
+    private final IdentGeneratorService identGeneratorService;
 
     //TODO Rydd og del opp litt mer
     public List<String> rekvirer(HentIdenterRequest hentIdenterRequest) throws ForFaaLedigeIdenterException {
@@ -79,7 +80,7 @@ public class IdentpoolService {
         List<String> temp = new ArrayList<>();
         for (int i = 1; i < MAKS_ANTALL_KALL_MOT_TPS && antallManglendeIdenter != temp.size(); i++) {
 
-            List<String> genererteIdenter = IdentGenerator.genererIdenter(hentIdenterRequest);
+            List<String> genererteIdenter = identGeneratorService.genererIdenter(hentIdenterRequest);
 
             // filtrer vekk eksisterende
             List<String> finnesIkkeAllerede = genererteIdenter.stream().filter(ident -> !identRepository.existsByPersonidentifikator(ident)).collect(Collectors.toList());

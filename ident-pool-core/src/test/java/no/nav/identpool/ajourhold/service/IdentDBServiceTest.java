@@ -1,5 +1,6 @@
 package no.nav.identpool.ajourhold.service;
 
+import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.ajourhold.util.IdentDistribusjon;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
@@ -38,6 +39,7 @@ class IdentDBServiceTest {
     @Mock
     private IdentDistribusjon identDistribusjon;
 
+
     private IdentDBService identService;
 
     private List<Ident> entities = new ArrayList<>();
@@ -45,7 +47,7 @@ class IdentDBServiceTest {
     @BeforeEach
     void init() {
         entities.clear();
-        identService = spy(new IdentDBService(mqService, identRepository, identDistribusjon));
+        identService = spy(new IdentDBService(mqService, identRepository, identDistribusjon, new IdentGeneratorService()));
         identService.current = LocalDate.now();
         when(identDistribusjon.antallPersonerPerDagPerAar(anyInt())).thenReturn(3);
 

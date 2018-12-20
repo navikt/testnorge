@@ -1,4 +1,4 @@
-package no.nav.identpool.navnepool.domain;
+package no.nav.identpool.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

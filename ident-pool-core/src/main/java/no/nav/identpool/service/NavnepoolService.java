@@ -1,4 +1,4 @@
-package no.nav.identpool.navnepool;
+package no.nav.identpool.service;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.identpool.navnepool.domain.Navn;
+import no.nav.identpool.domain.Navn;
 
 @Service
 @RequiredArgsConstructor

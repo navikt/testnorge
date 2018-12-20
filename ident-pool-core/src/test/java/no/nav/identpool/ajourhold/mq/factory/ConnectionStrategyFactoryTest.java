@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 
 import no.nav.freg.fasit.utils.domain.QueueManager;
-import no.nav.identpool.ajourhold.fasit.FasitClient;
+import no.nav.identpool.fasit.FasitClient;
 import no.nav.identpool.ajourhold.mq.strategy.ConnectionStrategy;
 
 @ExtendWith(MockitoExtension.class)

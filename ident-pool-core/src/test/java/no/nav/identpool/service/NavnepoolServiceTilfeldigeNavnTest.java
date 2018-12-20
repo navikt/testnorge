@@ -1,4 +1,4 @@
-package no.nav.identpool.navnepool;
+package no.nav.identpool.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,9 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import no.nav.identpool.service.NavnepoolService;
 import org.junit.jupiter.api.Test;
 
-import no.nav.identpool.navnepool.domain.Navn;
+import no.nav.identpool.domain.Navn;
 
 class NavnepoolServiceTilfeldigeNavnTest {
 

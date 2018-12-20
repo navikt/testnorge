@@ -1,6 +1,6 @@
-package no.nav.identpool.navnepool.domain;
+package no.nav.identpool;
 
-import static no.nav.identpool.navnepool.domain.LastInnFiktiveNavnUtility.loadListFromCsvFile;
+import static no.nav.identpool.util.LastInnFiktiveNavnUtil.loadListFromCsvFile;
 
 import java.io.IOException;
 import java.util.List;

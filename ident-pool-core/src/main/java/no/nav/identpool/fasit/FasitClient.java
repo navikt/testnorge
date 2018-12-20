@@ -1,4 +1,4 @@
-package no.nav.identpool.ajourhold.fasit;
+package no.nav.identpool.fasit;
 
 import static no.nav.freg.fasit.utils.domain.ResourceType.QUEUE_MANAGER;
 import static no.nav.freg.fasit.utils.domain.Zone.FSS;
@@ -18,6 +18,7 @@ import no.nav.freg.fasit.utils.domain.QueueManager;
 public class FasitClient {
 
     private final FasitService fasitReadService;
+
     @Value("${application.name}")
     private String applicationName;
 

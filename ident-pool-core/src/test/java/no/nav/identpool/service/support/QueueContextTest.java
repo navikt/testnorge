@@ -1,6 +1,6 @@
 package no.nav.identpool.service.support;
 
-import no.nav.identpool.ajourhold.fasit.FasitClient;
+import no.nav.identpool.fasit.FasitClient;
 import no.nav.identpool.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
 import no.nav.identpool.test.mockito.MockitoExtension;

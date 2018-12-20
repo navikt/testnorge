@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.ajourhold.mq.consumer.MessageQueue;
 import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
-import no.nav.identpool.ajourhold.tps.xml.service.NavnOpplysning;
+import no.nav.identpool.ajourhold.tps.xml.NavnOpplysning;
 import no.nav.tps.ctg.m201.domain.TpsPersonData;
 
 @Slf4j

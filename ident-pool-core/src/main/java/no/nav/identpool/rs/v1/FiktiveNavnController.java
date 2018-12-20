@@ -1,4 +1,4 @@
-package no.nav.identpool.navnepool.controller;
+package no.nav.identpool.rs.v1;
 
 import java.util.List;
 import org.springframework.http.MediaType;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import no.nav.identpool.navnepool.NavnepoolService;
-import no.nav.identpool.navnepool.domain.Navn;
+import no.nav.identpool.service.NavnepoolService;
+import no.nav.identpool.domain.Navn;
 
 @RestController
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package no.nav.identpool.navnepool.domain;
+package no.nav.identpool.util;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -14,7 +14,7 @@ import com.google.common.io.Resources;
 import lombok.Getter;
 import lombok.Setter;
 
-public class LastInnFiktiveNavnUtility {
+public final class LastInnFiktiveNavnUtil {
 
     public static List<String> loadListFromCsvFile(String fileName) throws IOException {
         CsvMapper mapper = new CsvMapper();
@@ -28,7 +28,6 @@ public class LastInnFiktiveNavnUtility {
     @Setter
     @Getter
     private static class TempNavn implements Serializable {
-
         String fiktivnavn;
     }
 }

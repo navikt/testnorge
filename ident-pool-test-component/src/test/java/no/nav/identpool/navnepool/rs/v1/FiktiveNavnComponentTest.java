@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
-import no.nav.identpool.navnepool.domain.Navn;
+import no.nav.identpool.domain.Navn;
 
 class FiktiveNavnComponentTest extends ComponentTestbase {
 

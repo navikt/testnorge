@@ -1,4 +1,4 @@
-package no.nav.identpool.ajourhold.fasit;
+package no.nav.identpool.fasit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;

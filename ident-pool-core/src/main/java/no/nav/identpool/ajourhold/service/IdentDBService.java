@@ -15,7 +15,7 @@ import no.nav.identpool.domain.Ident;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.identpool.ajourhold.tps.generator.IdentGenerator;
+import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.ajourhold.util.IdentDistribusjon;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
@@ -30,6 +30,7 @@ public class IdentDBService {
     private final IdentMQService mqService;
     private final IdentRepository identRepository;
     private final IdentDistribusjon identDistribusjon;
+    private final IdentGeneratorService identGeneratorService;
 
     LocalDate current;
 
@@ -74,7 +75,7 @@ public class IdentDBService {
             lastDate = LocalDate.of(year, current.getMonth(), current.getDayOfMonth());
         }
 
-        Map<LocalDate, List<String>> pinMap = IdentGenerator.genererIdenterMap(firstDate, lastDate, type);
+        Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type);
 
         filterIdents(antallPerDag, pinMap);
     }
