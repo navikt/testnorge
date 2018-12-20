@@ -5,6 +5,7 @@ import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Formatters from '~/utils/DataFormatter'
 import PersonDetaljerConnector from '../PersonDetaljer/PersonDetaljerConnector'
 import PaginationConnector from '~/components/pagination/PaginationConnector'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
 export default class TestbrukerListe extends Component {
 	componentDidMount() {
@@ -52,30 +53,34 @@ export default class TestbrukerListe extends Component {
 													))}
 												</Table.Header>
 
-												{testbrukere &&
-													testbrukere.map((bruker, idx) => {
-														// Note: idx=0 of bruker (data) is parsed to be ID
-														return (
-															<Table.Row
-																key={bruker[0]}
-																expandComponent={
-																	<PersonDetaljerConnector
-																		personId={bruker[0]}
-																		username={username}
-																		editAction={() => editTestbruker(bruker[0])}
-																	/>
-																}
-															>
-																{bruker.map((dataCell, cellIdx) => (
-																	<Table.Column
-																		key={cellIdx}
-																		width={headers[cellIdx].width}
-																		value={dataCell}
-																	/>
-																))}
-															</Table.Row>
-														)
-													})}
+												<TransitionGroup component={null}>
+													{testbrukere &&
+														testbrukere.map((bruker, idx) => {
+															// Note: idx=0 of bruker (data) is parsed to be ID
+															return (
+																<CSSTransition key={bruker[0]} timeout={1000} classNames="fade">
+																	<Table.Row
+																		key={bruker[0]}
+																		expandComponent={
+																			<PersonDetaljerConnector
+																				personId={bruker[0]}
+																				username={username}
+																				editAction={() => editTestbruker(bruker[0])}
+																			/>
+																		}
+																	>
+																		{bruker.map((dataCell, cellIdx) => (
+																			<Table.Column
+																				key={cellIdx}
+																				width={headers[cellIdx].width}
+																				value={dataCell}
+																			/>
+																		))}
+																	</Table.Row>
+																</CSSTransition>
+															)
+														})}
+												</TransitionGroup>
 											</Table>
 										)}
 									</Fragment>

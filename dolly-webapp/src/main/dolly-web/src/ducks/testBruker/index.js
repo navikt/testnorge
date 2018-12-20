@@ -76,7 +76,6 @@ export default function testbrukerReducer(state = initialState, action) {
 		case success(GET_TPSF_TESTBRUKERE):
 			return { ...state, items: { ...state.items, tpsf: action.payload.data } }
 		case success(FRIGJOER_TESTBRUKER):
-			console.log('skjer')
 			return {
 				...state,
 				items: {
