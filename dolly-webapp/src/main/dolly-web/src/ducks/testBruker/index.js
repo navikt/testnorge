@@ -7,6 +7,7 @@ import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _merge from 'lodash/merge'
 import { mapIdentAndEnvironementForTps, mapValuesFromDataSource } from './utils'
+import { DollyApi } from '~/service/Api'
 
 const initialState = {
 	items: {
@@ -60,12 +61,30 @@ export const GET_KRR_TESTBRUKER = createAction(
 	})
 )
 
+export const FRIGJOER_TESTBRUKER = createAction(
+	'FRIGJOER_TESTBRUKER',
+	identId => DollyApi.deleteTestIdent(identId),
+	ident => ({
+		ident
+	})
+)
+
 export default function testbrukerReducer(state = initialState, action) {
 	switch (action.type) {
 		case LOCATION_CHANGE:
 			return initialState
 		case success(GET_TPSF_TESTBRUKERE):
 			return { ...state, items: { ...state.items, tpsf: action.payload.data } }
+		case success(FRIGJOER_TESTBRUKER):
+			console.log('skjer')
+			return {
+				...state,
+				items: {
+					...state.items,
+					tpsf: state.items.tpsf.filter(item => item.ident !== action.meta.ident)
+				}
+			}
+
 		case success(GET_SIGRUN_TESTBRUKER):
 			return {
 				...state,
