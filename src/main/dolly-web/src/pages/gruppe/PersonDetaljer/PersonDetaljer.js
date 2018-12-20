@@ -2,13 +2,17 @@ import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import PersonInfoBlock from '~/components/personInfoBlock/PersonInfoBlock'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
+import Button from '~/components/button/Button'
+import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 
 import './PersonDetaljer.less'
 
 const AttributtManagerInstance = new AttributtManager()
 
 export default class PersonDetaljer extends PureComponent {
-	static propTypes = {}
+	static propTypes = {
+		editAction: PropTypes.func
+	}
 
 	componentDidMount() {
 		this.props.getSigrunTestbruker()
@@ -16,7 +20,7 @@ export default class PersonDetaljer extends PureComponent {
 	}
 
 	render() {
-		const { personData } = this.props
+		const { personData, editAction, frigjoerTestbruker } = this.props
 
 		if (!personData) return null
 
@@ -36,6 +40,17 @@ export default class PersonDetaljer extends PureComponent {
 						</div>
 					)
 				})}
+				<div className="flexbox--align-center--justify-end">
+					<Button onClick={editAction} className="flexbox--align-center" kind="edit">
+						REDIGER
+					</Button>
+					<ConfirmTooltip
+						className="flexbox--align-center"
+						message="Er du sikker på at du vil frigjøre denne testidenten fra testdatagruppen?"
+						label="FRIGJØR"
+						onClick={frigjoerTestbruker}
+					/>
+				</div>
 			</div>
 		)
 	}

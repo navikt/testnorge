@@ -15,9 +15,25 @@
 		justify-content: space-between;
 	}
 
-	&--align {
+	&--align-center {
+		display: flex;
+		align-items: center;
+	}
+
+	&--justify-center {
+		display: flex;
+		justify-content: center;
+	}
+
+	&--align-center--justify-start {
 		display: flex;
 		justify-content: flex-start;
+		align-items: center;
+	}
+
+	&--align-center--justify-end {
+		display: flex;
+		justify-content: flex-end;
 		align-items: center;
 	}
 }

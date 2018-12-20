@@ -39,7 +39,7 @@ export default class TeamOversikt extends Component {
 
 		return (
 			<div className="oversikt-container">
-				<div className="page-header flexbox--align">
+				<div className="page-header flexbox--align-center--justify-start">
 					<Overskrift label="Teams" />
 					<ContentTooltip>Med teams kan du og kolleger dele testdatagrupper.</ContentTooltip>
 				</div>
