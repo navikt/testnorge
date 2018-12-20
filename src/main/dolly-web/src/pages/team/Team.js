@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
 import Toolbar from '~/components/toolbar/Toolbar'
@@ -52,8 +53,6 @@ class Team extends Component {
 			}
 		]
 
-		console.log(grupper, 'gruope')
-
 		return (
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
@@ -97,16 +96,19 @@ class Team extends Component {
 										<Table.Column width="30" value="Navn" />
 										<Table.Column width="20" value="Rolle" />
 									</Table.Header>
-
-									{items.map(medlem => (
-										<Table.Row
-											key={medlem.navIdent}
-											deleteAction={() => removeMember([medlem.navIdent])}
-										>
-											<Table.Column width="30" value={medlem.navIdent} />
-											<Table.Column width="10" value="Utvikler" />
-										</Table.Row>
-									))}
+									<TransitionGroup className="example" component={null}>
+										{items.map(medlem => (
+											<CSSTransition key={medlem.navIdent} timeout={1000} classNames="fade">
+												<Table.Row
+													key={medlem.navIdent}
+													deleteAction={() => removeMember([medlem.navIdent])}
+												>
+													<Table.Column width="30" value={medlem.navIdent} />
+													<Table.Column width="10" value="Utvikler" />
+												</Table.Row>
+											</CSSTransition>
+										))}
+									</TransitionGroup>
 								</Table>
 							)}
 						/>
