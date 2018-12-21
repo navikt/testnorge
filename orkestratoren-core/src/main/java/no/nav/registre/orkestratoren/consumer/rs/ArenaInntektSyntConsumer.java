@@ -37,7 +37,7 @@ public class ArenaInntektSyntConsumer {
         try {
             genererEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere);
             log.info("synth-arena-inntekt har fullført bestillingen som ble sendt {}. "
-                    + "Antall inntektsmeldinger opprettet i inntekts-stub: {} ", inntektsmldMottakere.size());
+                    + "Antall inntektsmeldinger opprettet i inntekts-stub: {} ", bestillingstidspunktet, inntektsmldMottakere.size());
         } catch (HttpStatusCodeException e) {
             StringBuilder feilmelding = new StringBuilder(200)
                     .append("synth-arena-inntekt returnerte feilmeldingen ")
