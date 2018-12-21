@@ -1,11 +1,15 @@
 package no.nav.identpool.util;
 
 import static java.lang.Character.getNumericValue;
-import static no.nav.identpool.util.PersonidentifikatorUtil.generateFnr;
+import static no.nav.identpool.util.PersonidentUtil.generateFnr;
+import static no.nav.identpool.util.PersonidentUtil.getKjonn;
+import static no.nav.identpool.util.PersonidentUtil.toBirthdate;
 
 import com.google.common.collect.ImmutableMap;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
+import no.nav.identpool.domain.Rekvireringsstatus;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -63,6 +67,19 @@ public final class IdentGeneratorUtil {
         return index;
     }
 
+    public static Ident createIdent(String fnr, Rekvireringsstatus status, String rekvirertAv) {
+        Identtype identtype = PersonidentUtil.getPersonidentifikatorType(fnr);
+        return Ident.builder()
+                .finnesHosSkatt(false)
+                .personidentifikator(fnr)
+                .foedselsdato(toBirthdate(fnr))
+                .kjoenn(getKjonn(fnr))
+                .rekvireringsstatus(status)
+                .rekvirertAv(rekvirertAv)
+                .identtype(identtype)
+                .build();
+    }
+
     private static List<String> generateFNumbers(LocalDate birthdate) {
         return generateNumbers(birthdate, getFnrFormat(birthdate));
     }
@@ -87,8 +104,6 @@ public final class IdentGeneratorUtil {
         return (getNumericValue(format.charAt(0)) + 4) + format.substring(1);
     }
 
-    //TODO Category brukes om flere ting, gi mer forklarende navn
-    //TODO Magic numbers
     private static IntStream getCategoryNumberStreamReverse(LocalDate birthDate) {
         int year = birthDate.getYear();
         if (year < 2000 && year > 1) {
@@ -101,4 +116,6 @@ public final class IdentGeneratorUtil {
             throw new IllegalStateException(String.format("Fødelsår må være mellom 2 og 2039, fikk %d", year));
         }
     }
+
+    private IdentGeneratorUtil() {}
 }

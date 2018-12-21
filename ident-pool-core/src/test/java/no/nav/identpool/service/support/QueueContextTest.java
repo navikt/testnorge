@@ -1,8 +1,8 @@
 package no.nav.identpool.service.support;
 
 import no.nav.identpool.fasit.FasitClient;
-import no.nav.identpool.ajourhold.mq.consumer.MessageQueue;
-import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
+import no.nav.identpool.mq.consumer.MessageQueue;
+import no.nav.identpool.mq.factory.MessageQueueFactory;
 import no.nav.identpool.test.mockito.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

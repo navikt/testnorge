@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.fasit.FasitClient;
-import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
+import no.nav.identpool.mq.factory.MessageQueueFactory;
 
 @Slf4j
 @Component

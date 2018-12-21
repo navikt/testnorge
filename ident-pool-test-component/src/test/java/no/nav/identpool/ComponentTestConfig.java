@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.identpool.ajourhold.CronJobService;
-import no.nav.identpool.ajourhold.mq.factory.ConnectionStrategyFactory;
-import no.nav.identpool.ajourhold.mq.factory.MessageQueueFactory;
+import no.nav.identpool.mq.factory.ConnectionStrategyFactory;
+import no.nav.identpool.mq.factory.MessageQueueFactory;
 import no.nav.identpool.service.support.QueueContext;
 
 @Configuration

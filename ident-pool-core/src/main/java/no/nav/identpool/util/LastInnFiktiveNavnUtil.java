@@ -30,4 +30,6 @@ public final class LastInnFiktiveNavnUtil {
     private static class TempNavn implements Serializable {
         String fiktivnavn;
     }
+
+    private LastInnFiktiveNavnUtil() {}
 }

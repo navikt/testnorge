@@ -6,7 +6,7 @@ import static no.nav.identpool.util.IdentGeneratorUtil.getGenderNumber;
 import static no.nav.identpool.util.IdentGeneratorUtil.getYearRange;
 import static no.nav.identpool.util.IdentGeneratorUtil.getStartIndex;
 import static no.nav.identpool.util.IdentGeneratorUtil.numberFormatter;
-import static no.nav.identpool.util.PersonidentifikatorUtil.generateFnr;
+import static no.nav.identpool.util.PersonidentUtil.generateFnr;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;

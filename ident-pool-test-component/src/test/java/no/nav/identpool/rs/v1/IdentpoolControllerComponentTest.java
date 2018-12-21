@@ -25,7 +25,7 @@ import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
-import no.nav.identpool.util.PersonidentifikatorUtil;
+import no.nav.identpool.util.PersonidentUtil;
 
 class IdentpoolControllerComponentTest extends ComponentTestbase {
 
@@ -65,19 +65,19 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
         ResponseEntity<String[]> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), String[].class);
 
         assertThat(identListe.getBody(), is(notNullValue()));
-        assertThat(PersonidentifikatorUtil.getPersonidentifikatorType(identListe.getBody()[0]), is(Identtype.FNR));
+        assertThat(PersonidentUtil.getPersonidentifikatorType(identListe.getBody()[0]), is(Identtype.FNR));
         assertThat(identListe.getBody().length, is(1));
     }
 
     @Test
     void hentLedigDnr() {
-        String body = "{\"antall\":\"1\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
+        String body = "{\"antall\":\"2\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
 
         ResponseEntity<String[]> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), String[].class);
 
         assertThat(identListe.getBody(), is(notNullValue()));
-        assertThat(PersonidentifikatorUtil.getPersonidentifikatorType(identListe.getBody()[0]), is(Identtype.DNR));
-        assertThat(identListe.getBody().length, is(1));
+        assertThat(PersonidentUtil.getPersonidentifikatorType(identListe.getBody()[0]), is(Identtype.DNR));
+        assertThat(identListe.getBody().length, is(2));
     }
 
     @Test

@@ -5,16 +5,19 @@ import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import no.nav.identpool.domain.Ident;
-import no.nav.identpool.domain.IdentPredicateUtil;
+import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.util.IdentGeneratorUtil;
+import no.nav.identpool.util.IdentPredicateUtil;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.identpool.ajourhold.service.IdentDBService;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
@@ -23,7 +26,7 @@ import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
-import no.nav.identpool.util.PersonidentifikatorUtil;
+import no.nav.identpool.util.PersonidentUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -32,90 +35,68 @@ public class IdentpoolService {
     private static final int MAKS_ANTALL_KALL_MOT_TPS = 3;
 
     private final IdentRepository identRepository;
-    private final IdentPredicateUtil identPredicateUtil;
-    private final IdentMQService identMQService;
-    private final IdentDBService identDBService;
+    private final IdentTpsService identTpsService;
     private final IdentGeneratorService identGeneratorService;
 
     //TODO Rydd og del opp litt mer
-    public List<String> rekvirer(HentIdenterRequest hentIdenterRequest) throws ForFaaLedigeIdenterException {
-
-        List<String> personidentifikatorList = new ArrayList<>();
-
+    public List<String> rekvirer(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
         Iterable<Ident> identEntities = identRepository.findAll(
-                identPredicateUtil.lagPredicateFraRequest(hentIdenterRequest),
-                hentIdenterRequest.getPageable()
+                IdentPredicateUtil.lagPredicateFraRequest(request),
+                request.getPageable()
         );
 
-        identEntities.forEach(i -> personidentifikatorList.add(i.getPersonidentifikator()));
+        List<String> identList = StreamSupport.stream(identEntities.spliterator(), false)
+                .map(Ident::getPersonidentifikator)
+                .collect(Collectors.toList());
 
-        int antallManglendeIdenter = hentIdenterRequest.getAntall() - personidentifikatorList.size();
 
-        if (antallManglendeIdenter > MAKS_ANTALL_MANGLENDE_IDENTER) {
+        int missingIdentCount = request.getAntall() - identList.size();
+
+        if (missingIdentCount > MAKS_ANTALL_MANGLENDE_IDENTER) {
             String errMsg = "Antall etterspurte identer er større enn tilgjengelig antall. Reduser antallet med %s, " +
-                    "for å få opprettet identene i TPS, eller vent til ident-pool får generert flere.";
-            throw new ForFaaLedigeIdenterException(String.format(errMsg, (antallManglendeIdenter - MAKS_ANTALL_MANGLENDE_IDENTER)));
+                    "for å få opprettet identene i TPS.";
+            throw new ForFaaLedigeIdenterException(String.format(errMsg, (missingIdentCount - MAKS_ANTALL_MANGLENDE_IDENTER)));
         }
 
-        List<String> temp = hentIdenterFraTps(hentIdenterRequest, antallManglendeIdenter);
+        if (missingIdentCount > 0) {
+            List<String> newIdents = hentIdenterFraTps(request);
+            if (newIdents.size() >= missingIdentCount) {
 
-        if (temp.size() >= antallManglendeIdenter) {
-
-            identDBService.saveIdents(temp.subList(0, antallManglendeIdenter), I_BRUK, hentIdenterRequest.getRekvirertAv());
-            personidentifikatorList.addAll(temp.subList(0, antallManglendeIdenter));
-            if (temp.size() > antallManglendeIdenter) {
-                identDBService.saveIdents(temp.subList(antallManglendeIdenter, temp.size()), LEDIG, null);
+                saveIdents(newIdents.subList(0, missingIdentCount), I_BRUK, request.getRekvirertAv());
+                identList.addAll(newIdents.subList(0, missingIdentCount));
+                if (newIdents.size() > missingIdentCount) {
+                    saveIdents(newIdents.subList(missingIdentCount, newIdents.size()), LEDIG, null);
+                }
+            } else {
+                throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
             }
-        } else {
-            throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
         }
 
-        identEntities.forEach(i -> i.setRekvireringsstatus(I_BRUK));
-        identEntities.forEach(i -> i.setRekvirertAv(hentIdenterRequest.getRekvirertAv()));
+
+        //Sier at request har tatt disse i bruk
+        identEntities.forEach(i -> {
+            i.setRekvireringsstatus(I_BRUK);
+            i.setRekvirertAv(request.getRekvirertAv());
+        });
         identRepository.saveAll(identEntities);
-        return personidentifikatorList;
+
+        return identList;
     }
 
-    private List<String> hentIdenterFraTps(HentIdenterRequest hentIdenterRequest, int antallManglendeIdenter) {
-        List<String> temp = new ArrayList<>();
-        for (int i = 1; i < MAKS_ANTALL_KALL_MOT_TPS && antallManglendeIdenter != temp.size(); i++) {
-
-            List<String> genererteIdenter = identGeneratorService.genererIdenter(hentIdenterRequest);
-
-            // filtrer vekk eksisterende
-            List<String> finnesIkkeAllerede = genererteIdenter.stream().filter(ident -> !identRepository.existsByPersonidentifikator(ident)).collect(Collectors.toList());
-
-            Map<String, Boolean> kontrollerteIdenter = identMQService.checkIdentsInTps(finnesIkkeAllerede);
-
-            identDBService.saveIdents(kontrollerteIdenter.entrySet().stream()
-                    .filter(Map.Entry::getValue)
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList()), I_BRUK, "TPS");
-
-            temp.addAll(kontrollerteIdenter.entrySet().stream()
-                    .filter(x -> !x.getValue())
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList())
-            );
-        }
-        return temp;
-    }
-
-    //TODO Denne gjøre mer enn metodenavnet tilsier
     public Boolean erLedig(String personidentifikator) {
         Ident ident = identRepository.findTopByPersonidentifikator(personidentifikator);
         if (ident != null) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;
         } else {
-            boolean exists = identMQService.checkIdentsInTps(Collections.singletonList(personidentifikator)).get(personidentifikator);
+            boolean exists = identTpsService.checkIdentsInTps(Collections.singletonList(personidentifikator)).isEmpty();
             Rekvireringsstatus status = exists ? I_BRUK : LEDIG;
             Ident newIdent = Ident.builder()
-                    .identtype(PersonidentifikatorUtil.getPersonidentifikatorType(personidentifikator))
+                    .identtype(PersonidentUtil.getPersonidentifikatorType(personidentifikator))
                     .personidentifikator(personidentifikator)
                     .rekvireringsstatus(status)
-                    .kjoenn(PersonidentifikatorUtil.getKjonn(personidentifikator))
+                    .kjoenn(PersonidentUtil.getKjonn(personidentifikator))
                     .finnesHosSkatt(false)
-                    .foedselsdato(PersonidentifikatorUtil.toBirthdate(personidentifikator))
+                    .foedselsdato(PersonidentUtil.toBirthdate(personidentifikator))
                     .build();
             identRepository.save(newIdent);
             return !exists;
@@ -128,13 +109,13 @@ public class IdentpoolService {
             String personidentifikator = markerBruktRequest.getPersonidentifikator();
 
             Ident newIdent = Ident.builder()
-                    .identtype(PersonidentifikatorUtil.getPersonidentifikatorType(personidentifikator))
+                    .identtype(PersonidentUtil.getPersonidentifikatorType(personidentifikator))
                     .personidentifikator(personidentifikator)
                     .rekvireringsstatus(I_BRUK)
                     .rekvirertAv(markerBruktRequest.getBruker())
                     .finnesHosSkatt(false)
-                    .kjoenn(PersonidentifikatorUtil.getKjonn(personidentifikator))
-                    .foedselsdato(PersonidentifikatorUtil.toBirthdate(personidentifikator))
+                    .kjoenn(PersonidentUtil.getKjonn(personidentifikator))
+                    .foedselsdato(PersonidentUtil.toBirthdate(personidentifikator))
                     .build();
             identRepository.save(newIdent);
             return;
@@ -145,7 +126,7 @@ public class IdentpoolService {
             identRepository.save(ident);
             return;
         } else if (ident.getRekvireringsstatus().equals(I_BRUK)) {
-            throw new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som brukt.");
+            throw new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som i bruk.");
         }
         throw new IllegalStateException("Den etterspurte identen er ugyldig siden den hverken markert som i bruk eller ledig.");
     }
@@ -156,7 +137,7 @@ public class IdentpoolService {
 
     public void registrerFinnesHosSkatt(String personidentifikator) throws UgyldigPersonidentifikatorException {
 
-        if (!PersonidentifikatorUtil.getPersonidentifikatorType(personidentifikator).equals(Identtype.DNR)) {
+        if (!PersonidentUtil.getPersonidentifikatorType(personidentifikator).equals(Identtype.DNR)) {
             throw new UgyldigPersonidentifikatorException("personidentifikatoren er ikke et DNR");
         }
 
@@ -168,14 +149,47 @@ public class IdentpoolService {
         } else {
             ident = Ident.builder()
                     .identtype(Identtype.DNR)
-                    .kjoenn(PersonidentifikatorUtil.getKjonn(personidentifikator))
+                    .kjoenn(PersonidentUtil.getKjonn(personidentifikator))
                     .personidentifikator(personidentifikator)
-                    .foedselsdato(PersonidentifikatorUtil.toBirthdate(personidentifikator))
+                    .foedselsdato(PersonidentUtil.toBirthdate(personidentifikator))
                     .rekvireringsstatus(I_BRUK)
                     .rekvirertAv("DREK")
                     .finnesHosSkatt(true)
                     .build();
         }
         identRepository.save(ident);
+    }
+
+    private List<String> hentIdenterFraTps(HentIdenterRequest request) {
+        Set<String> temp = new HashSet<>();
+        for (int i = 1; i < MAKS_ANTALL_KALL_MOT_TPS && temp.size() < request.getAntall(); i++) {
+
+            List<String> genererteIdenter = identGeneratorService.genererIdenter(request);
+
+            // filtrer vekk eksisterende
+            List<String> finnesIkkeAllerede = genererteIdenter.stream()
+                    .filter(ident -> !identRepository.existsByPersonidentifikator(ident))
+                    .collect(Collectors.toList());
+
+            Set<TpsStatus> kontrollerteIdenter = identTpsService.checkIdentsInTps(finnesIkkeAllerede);
+
+            saveIdents(kontrollerteIdenter.stream()
+                    .filter(TpsStatus::isInUse)
+                    .map(TpsStatus::getIdent)
+                    .collect(Collectors.toList()), I_BRUK, "TPS");
+
+            temp.addAll(kontrollerteIdenter.stream()
+                    .filter(x -> !x.isInUse())
+                    .map(TpsStatus::getIdent)
+                    .collect(Collectors.toList())
+            );
+        }
+        return new ArrayList<>(temp);
+    }
+
+    private void saveIdents(List<String> pins, Rekvireringsstatus status, String rekvirertAv) {
+        identRepository.saveAll(pins.stream()
+                .map(fnr -> IdentGeneratorUtil.createIdent(fnr, status, rekvirertAv))
+                .collect(Collectors.toList()));
     }
 }
