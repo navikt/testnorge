@@ -12,9 +12,9 @@ public interface GruppeRepository extends JpaRepository<Testgruppe, Long> {
 	@Modifying
 	Testgruppe save(Testgruppe testgruppe);
 
-	List<Testgruppe> findAll();
+	List<Testgruppe> findAllByOrderByNavn();
 
-	List<Testgruppe> findAllByTeamtilhoerighet(Team team);
+	List<Testgruppe> findAllByTeamtilhoerighetOrderByNavn(Team team);
 
 	Testgruppe findByNavn(String navn);
 

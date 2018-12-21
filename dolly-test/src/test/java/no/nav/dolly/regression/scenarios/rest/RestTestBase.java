@@ -75,7 +75,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
         });
         brukerRepository.saveAll(brukere);
 
-        List<Testgruppe> grupper = gruppeRepository.findAll();
+        List<Testgruppe> grupper = gruppeRepository.findAllByOrderByNavn();
         grupper.forEach(g -> g.setFavorisertAv(new HashSet<>()));
         grupper.forEach(g -> g.setTestidenter(new HashSet<>()));
         gruppeRepository.saveAll(grupper);

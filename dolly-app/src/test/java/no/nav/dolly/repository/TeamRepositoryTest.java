@@ -102,7 +102,7 @@ public class TeamRepositoryTest {
         teamRepository.save(foundTeam);
 
         foundTeam = teamRepository.findAll().get(0);
-        Testgruppe foundTestgruppe = gruppeRepository.findAll().get(0);
+        Testgruppe foundTestgruppe = gruppeRepository.findAllByOrderByNavn().get(0);
 
         assertThat(foundTeam.getGrupper().contains(foundTestgruppe), is(true));
         assertThat(foundTestgruppe.getTeamtilhoerighet(), is(foundTeam));

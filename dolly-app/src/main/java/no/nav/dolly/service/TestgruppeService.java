@@ -119,9 +119,9 @@ public class TestgruppeService {
     public Set<Testgruppe> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
         Set<Testgruppe> grupper;
         if (isNull(teamId)) {
-            grupper = isBlank(navIdent) ? newHashSet(gruppeRepository.findAll()) : fetchTestgrupperByNavIdent(navIdent);
+            grupper = isBlank(navIdent) ? newHashSet(gruppeRepository.findAllByOrderByNavn()) : fetchTestgrupperByNavIdent(navIdent);
         } else {
-            grupper = newHashSet(gruppeRepository.findAllByTeamtilhoerighet(Team.builder().id(teamId).build()));
+            grupper = newHashSet(gruppeRepository.findAllByTeamtilhoerighetOrderByNavn(Team.builder().id(teamId).build()));
         }
 
         return grupper;
