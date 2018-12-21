@@ -1,8 +1,9 @@
 package no.nav.dolly.api;
 
-import static java.lang.String.format;
+import static java.lang.String.*;
 
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -94,10 +95,10 @@ public class TestgruppeController {
 
     @Cacheable("gruppe")
     @GetMapping
-    public List<RsTestgruppe> getTestgrupper(
+    public Set<RsTestgruppe> getTestgrupper(
             @RequestParam(name = "navIdent", required = false) String navIdent,
             @RequestParam(name = "teamId", required = false) Long teamId) {
-        return mapperFacade.mapAsList(testgruppeService.getTestgruppeByNavidentOgTeamId(navIdent, teamId), RsTestgruppe.class);
+        return mapperFacade.mapAsSet(testgruppeService.getTestgruppeByNavidentOgTeamId(navIdent, teamId), RsTestgruppe.class);
     }
 
     @CacheEvict(value = "gruppe", allEntries = true)

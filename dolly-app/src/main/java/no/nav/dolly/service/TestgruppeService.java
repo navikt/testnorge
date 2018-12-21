@@ -1,13 +1,12 @@
 package no.nav.dolly.service;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,16 +65,12 @@ public class TestgruppeService {
         throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
     }
 
-    public List<Testgruppe> fetchTestgrupperByNavIdent(String navIdent) {
+    public Set<Testgruppe> fetchTestgrupperByNavIdent(String navIdent) {
         Bruker bruker = brukerService.fetchBruker(navIdent);
         Set<Testgruppe> testgrupper = bruker.getFavoritter();
         bruker.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
-        testgrupper.addAll(gruppeRepository.findAllByOpprettetAvOrderByNavn(bruker));
 
-        List<Testgruppe> unikeTestgrupper = new ArrayList(testgrupper);
-        Collections.sort(unikeTestgrupper,(Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));
-
-        return unikeTestgrupper;
+        return testgrupper;
     }
 
     public Testgruppe saveGruppeTilDB(Testgruppe testgruppe) {
@@ -122,12 +117,12 @@ public class TestgruppeService {
         return saveGruppeTilDB(testgruppe);
     }
 
-    public List<Testgruppe> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
-        List<Testgruppe> grupper;
+    public Set<Testgruppe> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
+        Set<Testgruppe> grupper;
         if (isNull(teamId)) {
-            grupper = isBlank(navIdent) ? gruppeRepository.findAllByOrderByNavn() : fetchTestgrupperByNavIdent(navIdent);
+            grupper = isBlank(navIdent) ? newHashSet(gruppeRepository.findAllByOrderByNavn()) : fetchTestgrupperByNavIdent(navIdent);
         } else {
-            grupper = gruppeRepository.findAllByTeamtilhoerighetOrderByNavn(Team.builder().id(teamId).build());
+            grupper = newHashSet(gruppeRepository.findAllByTeamtilhoerighetOrderByNavn(Team.builder().id(teamId).build()));
         }
 
         return grupper;
