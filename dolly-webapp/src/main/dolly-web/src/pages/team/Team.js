@@ -39,7 +39,8 @@ class Team extends Component {
 			removeMember,
 			deleteTeam,
 			startRedigerTeam,
-			visRedigerTeam
+			visRedigerTeam,
+			isCreateDelete
 		} = this.props
 
 		if (!team || !grupper) return null
@@ -98,7 +99,11 @@ class Team extends Component {
 									</Table.Header>
 									<TransitionGroup component={null}>
 										{items.map(medlem => (
-											<CSSTransition key={medlem.navIdent} timeout={1000} classNames="fade">
+											<CSSTransition
+												key={medlem.navIdent}
+												timeout={isCreateDelete ? 2000 : 1}
+												classNames="fade"
+											>
 												<Table.Row
 													key={medlem.navIdent}
 													deleteAction={() => removeMember([medlem.navIdent])}
