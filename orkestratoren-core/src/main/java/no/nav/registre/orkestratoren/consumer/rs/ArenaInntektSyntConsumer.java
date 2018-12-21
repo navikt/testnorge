@@ -30,17 +30,20 @@ public class ArenaInntektSyntConsumer {
 
     @Async
     public void asyncBestillEnInntektsmeldingPerFnrIInntektstub(List<String> inntektsmldMottakere) {
+        if (inntektsmldMottakere == null) {
+            return;
+        }
         LocalDateTime bestillingstidspunktet = LocalDateTime.now();
         try {
             genererEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere);
             log.info("synth-arena-inntekt har fullført bestillingen som ble sendt {}. "
-                    + "Antall inntektsmeldinger opprettet i inntekts-stub: {} ", bestillingstidspunktet, inntektsmldMottakere.size());
+                    + "Antall inntektsmeldinger opprettet i inntekts-stub: {} ", inntektsmldMottakere.size());
         } catch (HttpStatusCodeException e) {
-            StringBuilder feilmelding = new StringBuilder();
-            feilmelding.append("synth-arena-inntekt returnerte feilmeldingen ");
-            feilmelding.append(getMessageFromJson(e.getResponseBodyAsString()));
-            feilmelding.append(". Bestillingen ble sendt ");
-            feilmelding.append(bestillingstidspunktet);
+            StringBuilder feilmelding = new StringBuilder(200)
+                    .append("synth-arena-inntekt returnerte feilmeldingen ")
+                    .append(getMessageFromJson(e.getResponseBodyAsString()))
+                    .append(". Bestillingen ble sendt ")
+                    .append(bestillingstidspunktet);
             log.error(feilmelding.toString(), e);
         }
     }
