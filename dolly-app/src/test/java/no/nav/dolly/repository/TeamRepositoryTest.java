@@ -42,7 +42,7 @@ public class TeamRepositoryTest {
         Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(asList(bruker, brukerEier));
-        List<Bruker> brukere = brukerRepository.findAllByOrderByTeams();
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
 
         Team team = Team.builder()
                 .navn("team")
@@ -68,7 +68,7 @@ public class TeamRepositoryTest {
         Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(asList(bruker, brukerEier));
-        List<Bruker> brukere = brukerRepository.findAllByOrderByTeams();
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
 
         Team team = Team.builder()
                 .navn("team")
@@ -113,7 +113,7 @@ public class TeamRepositoryTest {
         Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(singletonList(brukerEier));
-        List<Bruker> brukere = brukerRepository.findAllByOrderByTeams();
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
 
         Team team = Team.builder()
                 .navn("team")
@@ -138,7 +138,7 @@ public class TeamRepositoryTest {
         Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(asList(bruker, brukerEier));
-        List<Bruker> brukere = brukerRepository.findAllByOrderByTeams();
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
 
         Team teamONE = Team.builder()
                 .navn("teamONE")

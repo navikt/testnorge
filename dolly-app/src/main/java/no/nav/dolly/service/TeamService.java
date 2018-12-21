@@ -102,7 +102,7 @@ public class TeamService {
 
     public RsTeamUtvidet addMedlemmerByNavidenter(Long teamId, List<String> navIdenter) {
         Team team = fetchTeamById(teamId);
-        List<Bruker> brukere = brukerRepository.findByNavIdentInOrderByTeams(navIdenter);
+        List<Bruker> brukere = brukerRepository.findByNavIdentInOrderByNavIdent(navIdenter);
 
         team.getMedlemmer().addAll(brukere);
 
