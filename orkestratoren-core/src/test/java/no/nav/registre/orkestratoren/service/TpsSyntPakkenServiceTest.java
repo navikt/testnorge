@@ -1,20 +1,22 @@
 package no.nav.registre.orkestratoren.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-
-import no.nav.registre.orkestratoren.exceptions.NestedHttpStatusCodeException;
+import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
+import no.nav.registre.orkestratoren.exceptions.HttpStatusCodeExceptionContainer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpServerErrorException;
 
-import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TpsSyntPakkenServiceTest {
@@ -26,7 +28,7 @@ public class TpsSyntPakkenServiceTest {
     @InjectMocks
     private TpsSyntPakkenService tpsSyntPakkenService;
     @Mock
-    private NestedHttpStatusCodeException httpStatusCodeException;
+    private HttpStatusCodeExceptionContainer httpStatusCodeException;
 
     /**
      * Testscenario: Dersom hodejegeren kaster feilmelding og varsler at Ids for lagrede meldinger i TPSF er tom,
@@ -34,14 +36,28 @@ public class TpsSyntPakkenServiceTest {
      * <p>
      * Flere scenarier for denne metoden dekkes av komponenttesten {@link no.nav.registre.orkestratoren.StartSyntetiseringTpsCompTest}
      */
-    @Test(expected = NestedHttpStatusCodeException.class)
+    @Test(expected = HttpStatusCodeExceptionContainer.class)
     public void shouldNotCallTpsfIfIdsIsEmpty() {
-        when(httpStatusCodeException.getResponseBodyAsString()).thenReturn("{\"ids\":[]}");
+        //        when(httpStatusCodeException.getResponseBodyAsString()).thenReturn("{\"ids\":[]}");
         when(hodejegerenConsumer.startSyntetisering(any())).thenThrow(httpStatusCodeException);
         try {
             tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(123L, "u6", new HashMap<>());
         } finally {
             verifyZeroInteractions(tpsfConsumer);
         }
+    }
+
+    @Test(expected = HttpStatusCodeExceptionContainer.class)
+    public void serverErrorFromTpsfTest() {
+        when(hodejegerenConsumer.startSyntetisering(any())).thenReturn(new ArrayList<Long>() {{
+            add(1L);
+            add(2L);
+            add(3L);
+            add(4L);
+        }});
+
+        when(tpsfConsumer.sendSkdmeldingerTilTps(any(), any())).thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(123L, "u6", new HashMap<>());
     }
 }

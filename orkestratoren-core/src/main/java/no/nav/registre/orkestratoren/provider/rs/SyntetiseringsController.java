@@ -2,7 +2,7 @@ package no.nav.registre.orkestratoren.provider.rs;
 
 import java.util.List;
 
-import no.nav.registre.orkestratoren.exceptions.NestedHttpStatusCodeException;
+import no.nav.registre.orkestratoren.exceptions.HttpStatusCodeExceptionContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,8 +35,8 @@ public class SyntetiseringsController {
                     syntetiserSkdmeldingerRequest.getMiljoe(),
                     syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
             return ResponseEntity.ok(skdMeldingerTilTpsRespons);
-        } catch (NestedHttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        } catch (HttpStatusCodeExceptionContainer e) {
+            return ResponseEntity.status(e.getGeneralStatusCode()).body(e.toString());
         }
     }
 
