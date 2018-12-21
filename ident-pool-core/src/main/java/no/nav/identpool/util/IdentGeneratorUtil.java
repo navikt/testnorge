@@ -68,7 +68,7 @@ public final class IdentGeneratorUtil {
     }
 
     public static Ident createIdent(String fnr, Rekvireringsstatus status, String rekvirertAv) {
-        Identtype identtype = PersonidentUtil.getPersonidentifikatorType(fnr);
+        Identtype identtype = PersonidentUtil.getIdentType(fnr);
         return Ident.builder()
                 .finnesHosSkatt(false)
                 .personidentifikator(fnr)

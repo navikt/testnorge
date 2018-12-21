@@ -1,22 +1,38 @@
 package no.nav.identpool.service;
 
+import static no.nav.identpool.util.LastInnFiktiveNavnUtil.loadListFromCsvFile;
+
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.identpool.domain.Navn;
 
+import javax.annotation.PostConstruct;
+
 @Service
-@RequiredArgsConstructor
 public class NavnepoolService {
 
-    private final List<String> validFornavn;
+    @Value("${navnepool.fornavn.file}")
+    private String fornavnFile;
 
-    private final List<String> validEtternavn;
+    @Value("${navnepool.etternavn.file}")
+    private String etternavnFile;
+
+    private List<String> validFornavn;
+    private List<String> validEtternavn;
 
     private SecureRandom secureRandom = new SecureRandom();
+
+    @PostConstruct
+    private void initNames() throws IOException {
+        validFornavn = loadListFromCsvFile(fornavnFile);
+        validEtternavn = loadListFromCsvFile(etternavnFile);
+    }
 
     public List<Navn> hentTilfeldigeNavn(Integer antall) {
         List<Navn> navneliste = new ArrayList<>(antall);
@@ -26,7 +42,7 @@ public class NavnepoolService {
         return navneliste;
     }
 
-    public Navn hentTilfeldigNavn() {
+    private Navn hentTilfeldigNavn() {
         return new Navn(
                 validFornavn.get(secureRandom.nextInt(validFornavn.size())),
                 validEtternavn.get(secureRandom.nextInt(validEtternavn.size()))

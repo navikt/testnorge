@@ -1,28 +1,20 @@
-package no.nav.identpool.navnepool.rs.v1;
+package no.nav.identpool.rs.v1;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.identpool.ComponentTestbase;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import no.nav.identpool.domain.Navn;
 
 class FiktiveNavnComponentTest extends ComponentTestbase {
-
-    @Autowired
-    private List<String> validFornavn;
-    @Autowired
-    private List<String> validEtternavn;
 
     /**
      * Testscenario: NÅR endepunktet fiktive-navn/tilfeldig og forespør et gitt antall navn, så skal responsen
@@ -36,10 +28,6 @@ class FiktiveNavnComponentTest extends ComponentTestbase {
         List<Navn> navneliste = testRestTemplate.exchange(httpEntity, new ParameterizedTypeReference<List<Navn>>(){}).getBody();
 
         assertThat(navneliste.size(), is(3));
-        List<String> responseFornavn = navneliste.stream().map(Navn::getFornavn).collect(Collectors.toList());
-        List<String> responseEtternavn = navneliste.stream().map(Navn::getEtternavn).collect(Collectors.toList());
-        assertTrue(validFornavn.containsAll(responseFornavn));
-        assertTrue(validEtternavn.containsAll(responseEtternavn));
     }
 
     /**
@@ -63,7 +51,6 @@ class FiktiveNavnComponentTest extends ComponentTestbase {
         String tullenavn = "tullenavn";
         Boolean validert = doGetRequest(URI.create("/api/v1/fiktive-navn/valider?fornavn="+tullenavn), createBodyEntity(""), Boolean.class).getBody();
 
-        assertFalse(validFornavn.contains(tullenavn));
         assertFalse(validert);
     }
 }

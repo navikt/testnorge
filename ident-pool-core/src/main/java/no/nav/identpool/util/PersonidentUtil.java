@@ -33,7 +33,7 @@ public final class PersonidentUtil {
         }
     }
 
-    public static Identtype getPersonidentifikatorType(String ident) {
+    public static Identtype getIdentType(String ident) {
         return parseInt(ident.substring(0, 1)) > 3 ? DNR : Identtype.FNR;
     }
 
@@ -42,7 +42,7 @@ public final class PersonidentUtil {
         int month = parseInt(ident.substring(2, 4));
         int day = parseInt(ident.substring(0, 2));
 
-        if (DNR.equals(getPersonidentifikatorType(ident))) {
+        if (DNR.equals(getIdentType(ident))) {
             day = day - 40;
         }
 

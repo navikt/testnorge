@@ -7,20 +7,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.identpool.service.NavnepoolService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import no.nav.identpool.domain.Navn;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class NavnepoolServiceTilfeldigeNavnTest {
 
     private List<String> validFornavn = Arrays.asList("fornavn1", "fornavn2");
     private List<String> validEtternavn = Arrays.asList("etternavn1", "etternavn2", "etternavn3");
 
+    private NavnepoolService navnepoolService = new NavnepoolService();
+
+    @BeforeEach
+    void setup() {
+        ReflectionTestUtils.setField(navnepoolService, "validFornavn", validFornavn);
+        ReflectionTestUtils.setField(navnepoolService, "validEtternavn", validEtternavn);
+    }
+
     @Test
     void shouldGetAListOfRandomNames() {
-        NavnepoolService navnepoolService = new NavnepoolService(validFornavn, validEtternavn);
-
         int antallNavn = 2;
         List<Navn> tilfeldigeNavn = navnepoolService.hentTilfeldigeNavn(antallNavn);
 

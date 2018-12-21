@@ -11,7 +11,7 @@ import java.util.List;
 class LastInnFiktiveNavnUtilTest {
 
     @Test
-    @DisplayName("Tester at FiktiveNavnConfig#loadListFromCsvFile laster inn alle navn i csv-fil\n" +
+    @DisplayName("Tester at FiktiveNavnService#loadListFromCsvFile laster inn alle navn i csv-fil\n" +
             " og returnerer dem i liste. Navnene skal være på blokkbokstav (fordi TPS krever\n" +
             " blokkbokstaver i konsumentenes SKDmeldinger)")
     void shouldloadListFromCsvFile() throws IOException {

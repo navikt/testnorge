@@ -1,10 +1,11 @@
-package no.nav.identpool.util;
+package no.nav.identpool.ajourhold;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 
+import no.nav.identpool.ajourhold.IdentDistribusjonUtil;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

@@ -37,21 +37,19 @@
     </distributionManagement>
 
     <properties>
-        <maven.install.skip>true</maven.install.skip>
-        <maven.deploy.skip>true</maven.deploy.skip>
-        <logstash.logback.encoder.version>4.11</logstash.logback.encoder.version>
+        <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
         <ojdbc.version>11.2.0.3</ojdbc.version>
-        <mq.jms.version>7.1</mq.jms.version>
-        <mq.jmqi.version>7.1.0.0</mq.jmqi.version>
+        <mq-jms.version>7.1</mq-jms.version>
+        <mq-jmqi.version>7.1.0.0</mq-jmqi.version>
         <dhbcore.version>DH610-GOLD</dhbcore.version>
         <javaee.version>7.0</javaee.version>
-        <fasit.util.version>2.1.1-SNAPSHOT</fasit.util.version>
+        <fasit-util.version>2.1.1-SNAPSHOT</fasit-util.version>
         <guava.version>23.0</guava.version>
         <jackson.version>2.9.6</jackson.version>
         <woodstox.version>4.4.1</woodstox.version>
-        <woodstox.core.version>5.0.3</woodstox.core.version>
+        <woodstox-core.version>5.0.3</woodstox-core.version>
         <javassist.version>3.22.0-GA</javassist.version>
-        <fasit-util.version>2.1.1-SNAPSHOT</fasit-util.version> <!-->UPGRADE WHEN AVAILABLE<-->
+        <fasit-util.version>3.1.2</fasit-util.version>
         <freg-security-oidc.version>3.1.0</freg-security-oidc.version>
         <guava.version>18.0</guava.version>
         <tpsws-domain.version>1.58.1</tpsws-domain.version>
@@ -82,12 +80,12 @@
             <dependency>
                 <groupId>com.ibm</groupId>
                 <artifactId>mqjms</artifactId>
-                <version>${mq.jms.version}</version>
+                <version>${mq-jms.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.ibm.mq</groupId>
                 <artifactId>jmqi</artifactId>
-                <version>${mq.jmqi.version}</version>
+                <version>${mq-jmqi.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.ibm.disthub2</groupId>
@@ -102,7 +100,7 @@
             <dependency>
                 <groupId>no.nav.freg</groupId>
                 <artifactId>fasit-util</artifactId>
-                <version>${fasit.util.version}</version>
+                <version>${fasit-util.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.javassist</groupId>
@@ -132,7 +130,7 @@
             <dependency>
                 <groupId>com.fasterxml.woodstox</groupId>
                 <artifactId>woodstox-core</artifactId>
-                <version>${woodstox.core.version}</version>
+                <version>${woodstox-core.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.ident-pool</groupId>

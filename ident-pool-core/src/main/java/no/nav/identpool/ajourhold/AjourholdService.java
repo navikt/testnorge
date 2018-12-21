@@ -9,7 +9,6 @@ import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.service.IdentTpsService;
-import no.nav.identpool.util.IdentDistribusjonUtil;
 import no.nav.identpool.util.IdentGeneratorUtil;
 import org.springframework.stereotype.Service;
 

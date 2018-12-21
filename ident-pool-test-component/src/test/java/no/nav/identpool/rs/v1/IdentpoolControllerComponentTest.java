@@ -65,7 +65,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
         ResponseEntity<String[]> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), String[].class);
 
         assertThat(identListe.getBody(), is(notNullValue()));
-        assertThat(PersonidentUtil.getPersonidentifikatorType(identListe.getBody()[0]), is(Identtype.FNR));
+        assertThat(PersonidentUtil.getIdentType(identListe.getBody()[0]), is(Identtype.FNR));
         assertThat(identListe.getBody().length, is(1));
     }
 
@@ -76,7 +76,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
         ResponseEntity<String[]> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), String[].class);
 
         assertThat(identListe.getBody(), is(notNullValue()));
-        assertThat(PersonidentUtil.getPersonidentifikatorType(identListe.getBody()[0]), is(Identtype.DNR));
+        assertThat(PersonidentUtil.getIdentType(identListe.getBody()[0]), is(Identtype.DNR));
         assertThat(identListe.getBody().length, is(2));
     }
 

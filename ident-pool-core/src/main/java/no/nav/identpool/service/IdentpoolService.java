@@ -2,6 +2,7 @@ package no.nav.identpool.service;
 
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
+import static no.nav.identpool.util.PersonidentUtil.getIdentType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +39,6 @@ public class IdentpoolService {
     private final IdentTpsService identTpsService;
     private final IdentGeneratorService identGeneratorService;
 
-    //TODO Rydd og del opp litt mer
     public List<String> rekvirer(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
         Iterable<Ident> identEntities = identRepository.findAll(
                 IdentPredicateUtil.lagPredicateFraRequest(request),
@@ -91,7 +91,7 @@ public class IdentpoolService {
             boolean exists = identTpsService.checkIdentsInTps(Collections.singletonList(personidentifikator)).isEmpty();
             Rekvireringsstatus status = exists ? I_BRUK : LEDIG;
             Ident newIdent = Ident.builder()
-                    .identtype(PersonidentUtil.getPersonidentifikatorType(personidentifikator))
+                    .identtype(getIdentType(personidentifikator))
                     .personidentifikator(personidentifikator)
                     .rekvireringsstatus(status)
                     .kjoenn(PersonidentUtil.getKjonn(personidentifikator))
@@ -109,7 +109,7 @@ public class IdentpoolService {
             String personidentifikator = markerBruktRequest.getPersonidentifikator();
 
             Ident newIdent = Ident.builder()
-                    .identtype(PersonidentUtil.getPersonidentifikatorType(personidentifikator))
+                    .identtype(getIdentType(personidentifikator))
                     .personidentifikator(personidentifikator)
                     .rekvireringsstatus(I_BRUK)
                     .rekvirertAv(markerBruktRequest.getBruker())
@@ -137,7 +137,7 @@ public class IdentpoolService {
 
     public void registrerFinnesHosSkatt(String personidentifikator) throws UgyldigPersonidentifikatorException {
 
-        if (!PersonidentUtil.getPersonidentifikatorType(personidentifikator).equals(Identtype.DNR)) {
+        if (Identtype.FNR.equals(getIdentType(personidentifikator))) {
             throw new UgyldigPersonidentifikatorException("personidentifikatoren er ikke et DNR");
         }
 
@@ -147,15 +147,8 @@ public class IdentpoolService {
             ident.setRekvireringsstatus(I_BRUK);
             ident.setRekvirertAv("DREK");
         } else {
-            ident = Ident.builder()
-                    .identtype(Identtype.DNR)
-                    .kjoenn(PersonidentUtil.getKjonn(personidentifikator))
-                    .personidentifikator(personidentifikator)
-                    .foedselsdato(PersonidentUtil.toBirthdate(personidentifikator))
-                    .rekvireringsstatus(I_BRUK)
-                    .rekvirertAv("DREK")
-                    .finnesHosSkatt(true)
-                    .build();
+            ident = IdentGeneratorUtil.createIdent(personidentifikator, I_BRUK, "DREK");
+            ident.setFinnesHosSkatt(true);
         }
         identRepository.save(ident);
     }

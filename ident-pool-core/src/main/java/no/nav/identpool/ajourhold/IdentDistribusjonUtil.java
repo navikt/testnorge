@@ -1,4 +1,4 @@
-package no.nav.identpool.util;
+package no.nav.identpool.ajourhold;
 
 import static java.time.LocalDate.now;
 
