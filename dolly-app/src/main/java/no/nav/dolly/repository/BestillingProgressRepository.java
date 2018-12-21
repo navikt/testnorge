@@ -8,7 +8,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 
 public interface BestillingProgressRepository extends CrudRepository<BestillingProgress, Long> {
 
-    List<BestillingProgress> findBestillingProgressByBestillingId(Long bestillingId);
+    List<BestillingProgress> findBestillingProgressByBestillingIdOrderByBestillingId(Long bestillingId);
 
     @Modifying
     void deleteByBestillingId(Long bestillingId);
