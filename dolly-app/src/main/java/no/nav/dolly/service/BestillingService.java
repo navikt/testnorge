@@ -49,7 +49,7 @@ public class BestillingService {
     }
 
     public List<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
-        return bestillingRepository.findBestillingByGruppe(testgruppeService.fetchTestgruppeById(gruppeId));
+        return bestillingRepository.findBestillingByGruppeOrderByGruppe(testgruppeService.fetchTestgruppeById(gruppeId));
     }
 
     public Bestilling cancelBestilling(Long bestillingId) {
