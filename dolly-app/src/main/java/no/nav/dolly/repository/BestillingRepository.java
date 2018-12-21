@@ -8,5 +8,5 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 
 public interface BestillingRepository extends JpaRepository<Bestilling, Long> {
 
-    List<Bestilling> findBestillingByGruppeOrderByGruppe(Testgruppe gruppe);
+    List<Bestilling> findBestillingByGruppeOrderById(Testgruppe gruppe);
 }
