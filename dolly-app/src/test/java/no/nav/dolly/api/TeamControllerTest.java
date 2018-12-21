@@ -47,7 +47,7 @@ public class TeamControllerTest {
     @Test
     public void getTeams_hvisIdentErFravaerendeSaaHentAlleTeams() {
         controller.getTeams(Optional.empty());
-        verify(teamRepository).findAll();
+        verify(teamRepository).findAllByOrderByNavn();
     }
 
     @Test

@@ -58,7 +58,7 @@ public class TestGruppeRepository {
 
         Testgruppe savedGruppe = gruppeRepository.save(testgruppe);
         Testgruppe foundGruppe = gruppeRepository.findById(savedGruppe.getId()).get();
-        Team foundTeam = teamRepository.findAll().get(0);
+        Team foundTeam = teamRepository.findAllByOrderByNavn().get(0);
 
         assertThat(foundGruppe.getNavn(), is("gruppe"));
         assertThat(foundGruppe.getTeamtilhoerighet().getNavn(), is("team"));

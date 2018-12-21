@@ -39,7 +39,7 @@ public class OpprettTeamScenarios extends TeamTestCaseBase{
 
         RsTeamUtvidet resultat = convertMvcResultToObject(mvcResult, RsTeamUtvidet.class);
 
-        List<Team> foundTeams = teamRepository.findTeamsByEier(standardBruker);
+        List<Team> foundTeams = teamRepository.findTeamsByEierOrderByNavn(standardBruker);
         Team opprettetTeam = foundTeams.get(1);
 
         assertThat(resultat.getEierNavIdent(), is(STANDARD_NAV_IDENT));

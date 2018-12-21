@@ -47,7 +47,7 @@ public class TeamController {
     public List<RsTeam> getTeams(@RequestParam("navIdent") Optional<String> navIdent) {
         return navIdent
                 .map(navId -> mapperFacade.mapAsList(teamService.fetchTeamsByMedlemskapInTeams(navId), RsTeam.class))
-                .orElse(mapperFacade.mapAsList(teamRepository.findAll(), RsTeam.class));
+                .orElse(mapperFacade.mapAsList(teamRepository.findAllByOrderByNavn(), RsTeam.class));
     }
 
     @CacheEvict(value = "team", allEntries = true)
