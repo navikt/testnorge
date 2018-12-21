@@ -33,8 +33,6 @@ class IdentGeneratorServiceTest {
 
     private IdentGeneratorService identGeneratorService = new IdentGeneratorService();
 
-    //TODO Test exceptions
-
     @Test
     @DisplayName("Skal feile når FOM og TOM dato er like")
     void shouldThrowEqualDates() {

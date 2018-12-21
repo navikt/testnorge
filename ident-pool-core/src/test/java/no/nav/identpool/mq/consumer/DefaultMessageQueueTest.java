@@ -72,8 +72,6 @@ class DefaultMessageQueueTest {
         when(textMessage.getText()).thenReturn("PING!");
     }
 
-    //TODO Legge til @DisplayName rundt omkring
-    //TODO Skrive bedre test
     @Test
     @DisplayName("Ping skal ikke kaste exception")
     void ping() throws JMSException {
@@ -81,23 +79,24 @@ class DefaultMessageQueueTest {
     }
 
     @Test
+    @DisplayName("Skal sende melding uten feil")
     void send() throws JMSException {
         assertThat(messageQueue.sendMessage(""), is("PING!"));
     }
 
     @Test
+    @DisplayName("Skal feile når connection ikke blir opprettet")
     void connectionError() throws JMSException {
         when(connectionFactory.createConnection("", "")).thenThrow(new JMSException("message"));
         JMSException thrown = assertThrows(JMSException.class, () -> messageQueue.sendMessage(""));
         assertThat(thrown.getMessage(), is("message"));
-//        verify(connectionFactory, times(4)).createConnection("", "");
     }
 
     @Test
+    @DisplayName("Skal feile når session ikke blir opprettet")
     void sessionError() throws JMSException {
         when(connection.createSession(false, Session.AUTO_ACKNOWLEDGE)).thenThrow(new JMSException("message"));
         JMSException thrown = assertThrows(JMSException.class, () -> messageQueue.sendMessage(""));
         assertThat(thrown.getMessage(), is("message"));
-//        verify(connectionFactory, times(4)).createConnection("", "");
     }
 }

@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @ConditionalOnProperty(name = "generer.identer.enable", matchIfMissing = true)
 public class QueueContextController {
 
-    //TODO Hvem skal bruke dette?
     @GetMapping(value = "env", produces = "text/plain")
     public ResponseEntity<String> getQueueEnvironContext() {
         String builder = "Successful: "

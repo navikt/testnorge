@@ -60,7 +60,6 @@ class AjourholdServiceTest {
         });
     }
 
-    //FIXME Skrive om
     @Test
     void identerBlirGenerertForHvertAar() {
         doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.FNR));
