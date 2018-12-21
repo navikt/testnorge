@@ -65,7 +65,7 @@ public class TpsSyntPakkenService {
                 httpStatusCodeExceptionContainer.addFeilmeldingBeskrivelse(MessageFormatter.format(MULIG_LAGRET_MEN_KANSKJE_IKKE_SENDT_MELDING, skdMeldingGruppeId, ids.toString()).getMessage());
             }
         }
-        if (httpStatusCodeExceptionContainer.getNestedExceptions().isEmpty()) {
+        if (!httpStatusCodeExceptionContainer.getNestedExceptions().isEmpty()) {
             throw httpStatusCodeExceptionContainer;
         }
         return skdMeldingerTilTpsRespons;

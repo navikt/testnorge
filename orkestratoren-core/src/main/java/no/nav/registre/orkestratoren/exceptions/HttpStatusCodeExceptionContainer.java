@@ -46,7 +46,7 @@ public class HttpStatusCodeExceptionContainer extends RuntimeException {
         Optional<HttpStatusCodeException> exception = nestedExceptions.stream().filter(e -> e.getStatusCode().is4xxClientError()).findFirst();
         if (exception.isPresent()) {
             status =  exception.get().getStatusCode();
-        } else if (nestedExceptions.isEmpty()) {
+        } else if (!nestedExceptions.isEmpty()) {
             status = nestedExceptions.get(0).getStatusCode();
         }
         return status;
