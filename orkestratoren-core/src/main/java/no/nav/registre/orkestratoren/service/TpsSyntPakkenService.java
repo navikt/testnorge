@@ -46,28 +46,27 @@ public class TpsSyntPakkenService {
         } catch (HttpStatusCodeException e) {
             ids.addAll(extractIdsFromResponseBody(e));
             httpStatusCodeExceptionContainer.addException(e);
-        } finally {
-            if (ids.isEmpty()) {
-                StatusPaaAvspiltSkdMelding status = new StatusPaaAvspiltSkdMelding();
-                status.setStatus("Hodejegeren returnerte uten å ha lagret noen melding i TPSF. Ingen id-er å sende til TPS.");
-                skdMeldingerTilTpsRespons = new SkdMeldingerTilTpsRespons().addStatusFraFeilendeMeldinger(status);
-            } else {
-                try {
-                    skdMeldingerTilTpsRespons = tpsfConsumer.sendSkdmeldingerTilTps(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
-                    skdMeldingerTilTpsRespons.setTpsfIds(ids);
-                    log.info("{} id-er ble sendt til TPS.", ids.size());
-                } catch (HttpStatusCodeException e) {
-                    if (e.getStatusCode().is5xxServerError()) {
-                        log.error(e.getResponseBodyAsString(), e);
-                    }
-                    log.warn(MULIG_LAGRET_MEN_KANSKJE_IKKE_SENDT_MELDING, skdMeldingGruppeId, ids.toString());
-                    httpStatusCodeExceptionContainer.addException(e);
-                    httpStatusCodeExceptionContainer.addFeilmeldingBeskrivelse(MessageFormatter.format(MULIG_LAGRET_MEN_KANSKJE_IKKE_SENDT_MELDING, skdMeldingGruppeId, ids.toString()).getMessage());
+        }
+        if (ids.isEmpty()) {
+            StatusPaaAvspiltSkdMelding status = new StatusPaaAvspiltSkdMelding();
+            status.setStatus("Hodejegeren returnerte uten å ha lagret noen melding i TPSF. Ingen id-er å sende til TPS.");
+            skdMeldingerTilTpsRespons = new SkdMeldingerTilTpsRespons().addStatusFraFeilendeMeldinger(status);
+        } else {
+            try {
+                skdMeldingerTilTpsRespons = tpsfConsumer.sendSkdmeldingerTilTps(skdMeldingGruppeId, new SendToTpsRequest(miljoe, ids));
+                skdMeldingerTilTpsRespons.setTpsfIds(ids);
+                log.info("{} id-er ble sendt til TPS.", ids.size());
+            } catch (HttpStatusCodeException e) {
+                if (e.getStatusCode().is5xxServerError()) {
+                    log.error(e.getResponseBodyAsString(), e);
                 }
+                log.warn(MULIG_LAGRET_MEN_KANSKJE_IKKE_SENDT_MELDING, skdMeldingGruppeId, ids.toString());
+                httpStatusCodeExceptionContainer.addException(e);
+                httpStatusCodeExceptionContainer.addFeilmeldingBeskrivelse(MessageFormatter.format(MULIG_LAGRET_MEN_KANSKJE_IKKE_SENDT_MELDING, skdMeldingGruppeId, ids.toString()).getMessage());
             }
-            if (httpStatusCodeExceptionContainer.getNestedExceptions().size() != 0) {
-                throw httpStatusCodeExceptionContainer;
-            }
+        }
+        if (httpStatusCodeExceptionContainer.getNestedExceptions().isEmpty()) {
+            throw httpStatusCodeExceptionContainer;
         }
         return skdMeldingerTilTpsRespons;
     }

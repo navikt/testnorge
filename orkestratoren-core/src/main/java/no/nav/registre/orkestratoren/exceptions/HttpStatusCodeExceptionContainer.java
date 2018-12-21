@@ -14,8 +14,8 @@ import java.util.Optional;
 @NoArgsConstructor
 public class HttpStatusCodeExceptionContainer extends RuntimeException {
 
-    List<HttpStatusCodeException> nestedExceptions = new ArrayList<>();
-    List<String> feilmeldingBeskrivelser = new ArrayList<>();
+    final List<HttpStatusCodeException> nestedExceptions = new ArrayList<>();
+    final List<String> feilmeldingBeskrivelser = new ArrayList<>();
 
     public void addException(HttpStatusCodeException e) {
         nestedExceptions.add(e);
@@ -46,7 +46,7 @@ public class HttpStatusCodeExceptionContainer extends RuntimeException {
         Optional<HttpStatusCodeException> exception = nestedExceptions.stream().filter(e -> e.getStatusCode().is4xxClientError()).findFirst();
         if (exception.isPresent()) {
             status =  exception.get().getStatusCode();
-        } else if (nestedExceptions.size() != 0) {
+        } else if (nestedExceptions.isEmpty()) {
             status = nestedExceptions.get(0).getStatusCode();
         }
         return status;
