@@ -176,7 +176,7 @@ public class TeamServiceTest {
 
         Optional<Team> opMedTeam = of(t);
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
-        when(brukerRepository.findByNavIdentIn(navidenter)).thenReturn(asList(b1, b2));
+        when(brukerRepository.findByNavIdentInOrderByTeams(navidenter)).thenReturn(asList(b1, b2));
 
         teamService.addMedlemmerByNavidenter(1L, navidenter);
 

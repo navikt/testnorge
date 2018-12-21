@@ -15,9 +15,9 @@ public interface BrukerRepository extends CrudRepository<Bruker, Long> {
 
     Bruker findBrukerByNavIdent(String navIdent);
 
-    List<Bruker> findByNavIdentIn(List<String> navIdenter);
+    List<Bruker> findByNavIdentInOrderByTeams(List<String> navIdenter);
 
-    List<Bruker> findAll();
+    List<Bruker> findAllByOrderByTeams();
 
     @Modifying
     @Query(value = "delete from T_BRUKER_FAVORITTER where gruppe_id in (select id from t_gruppe where TILHOERER_TEAM = :gruppeId)", nativeQuery = true)

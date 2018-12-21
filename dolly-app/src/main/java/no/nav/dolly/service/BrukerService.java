@@ -100,7 +100,7 @@ public class BrukerService {
     }
 
     public List<Bruker> fetchBrukere() {
-        return brukerRepository.findAll();
+        return brukerRepository.findAllByOrderByTeams();
     }
 
     public int sletteBrukerFavoritterByTeamId(Long teamId) {
