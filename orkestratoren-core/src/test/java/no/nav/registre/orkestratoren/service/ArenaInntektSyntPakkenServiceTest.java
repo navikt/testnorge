@@ -52,6 +52,6 @@ public class ArenaInntektSyntPakkenServiceTest {
         assertEquals(1, inntektsmldMottakere.size());
         assertEquals(personOver13Aar, inntektsmldMottakere.get(0)); //blant første halvpart av FNR-lista er det kun element 0 som er over 13 år
 
-        verify(arenaInntektSyntConsumer).genererEnInntektsmeldingPerFnrIInntektstub(eq(Arrays.asList(personOver13Aar)));
+        verify(arenaInntektSyntConsumer).asyncBestillEnInntektsmeldingPerFnrIInntektstub(eq(Arrays.asList(personOver13Aar)));
     }
 }
