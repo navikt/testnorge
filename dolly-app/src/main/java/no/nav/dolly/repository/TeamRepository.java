@@ -15,11 +15,11 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
 	Optional<Team> findByNavn(String navn);
 
-	List<Team> findAll();
+	List<Team> findAllByOrderByNavn();
 
-	List<Team> findTeamsByEier(Bruker eier);
+	List<Team> findTeamsByEierOrderByNavn(Bruker eier);
 
-	List<Team> findByMedlemmerNavIdent(String navIdent);
+	List<Team> findByMedlemmerNavIdentOrderByNavn(String navIdent);
 
 	@Modifying
 	int deleteTeamById(Long id);

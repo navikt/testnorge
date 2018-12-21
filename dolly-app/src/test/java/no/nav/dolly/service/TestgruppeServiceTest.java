@@ -250,12 +250,12 @@ public class TestgruppeServiceTest {
     @Test
     public void getTestgruppeByNavidentOgTeamId() {
         testgruppeService.getTestgruppeByNavidentOgTeamId(IDENT_ONE, TEAM_ID);
-        verify(gruppeRepository).findAllByTeamtilhoerighet(any(Team.class));
+        verify(gruppeRepository).findAllByTeamtilhoerighetOrderByNavn(any(Team.class));
     }
 
     @Test
     public void getTestgrupper() {
         testgruppeService.getTestgruppeByNavidentOgTeamId(null, null);
-        verify(gruppeRepository).findAll();
+        verify(gruppeRepository).findAllByOrderByNavn();
     }
 }

@@ -28,7 +28,7 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
     public void oppdaterBrukerMedAlleInputs() throws Exception {
         Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
 
-        Team teamSomSkalEndres = teamRepository.findAll().get(0);
+        Team teamSomSkalEndres = teamRepository.findAllByOrderByNavn().get(0);
 
         RsTeamUtvidet request = RsTeamUtvidetBuilder.builder()
                 .id(teamSomSkalEndres.getId())
@@ -61,7 +61,7 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
     public void oppdaterTeamKunNavnOgBeskrivelseIBody() throws Exception {
         Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
 
-        Team teamSomSkalErEndret = teamRepository.findAll().get(0);
+        Team teamSomSkalErEndret = teamRepository.findAllByOrderByNavn().get(0);
 
         RsTeamUtvidet request = RsTeamUtvidetBuilder.builder()
                 .beskrivelse("endretTeam")

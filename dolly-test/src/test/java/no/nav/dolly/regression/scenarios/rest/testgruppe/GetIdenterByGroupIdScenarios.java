@@ -20,7 +20,7 @@ public class GetIdenterByGroupIdScenarios extends TestgruppeTestCaseBase {
 
     @Test
     public void getIdenterByGroupId_returnererAlleTestidenterIStringformat() throws Exception {
-        Testgruppe testgruppe = gruppeRepository.findAll().get(0);
+        Testgruppe testgruppe = gruppeRepository.findAllByOrderByNavn().get(0);
         Long gruppeId = testgruppe.getId();
         String ident1 = "10";
         String ident2 = "20";
@@ -48,7 +48,7 @@ public class GetIdenterByGroupIdScenarios extends TestgruppeTestCaseBase {
 
     @Test
     public void getIdenterByGroupId_handtererTommeGrupper() throws Exception {
-        Testgruppe g1 = gruppeRepository.findAll().get(0);
+        Testgruppe g1 = gruppeRepository.findAllByOrderByNavn().get(0);
         Long gruppeId = g1.getId();
 
         String url = endpointUrl + "/" + gruppeId + "/identer";

@@ -68,14 +68,14 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     }
 
     private void removeManyToManyRelationships(){
-        List<Bruker> brukere = brukerRepository.findAll();
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
         brukere.forEach(b -> {
             b.setFavoritter(new HashSet<>());
             b.setTeams(new HashSet<>());
         });
         brukerRepository.saveAll(brukere);
 
-        List<Testgruppe> grupper = gruppeRepository.findAll();
+        List<Testgruppe> grupper = gruppeRepository.findAllByOrderByNavn();
         grupper.forEach(g -> g.setFavorisertAv(new HashSet<>()));
         grupper.forEach(g -> g.setTestidenter(new HashSet<>()));
         gruppeRepository.saveAll(grupper);
