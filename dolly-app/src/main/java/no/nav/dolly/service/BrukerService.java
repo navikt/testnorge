@@ -104,6 +104,10 @@ public class BrukerService {
     }
 
     public int sletteBrukerFavoritterByTeamId(Long teamId) {
-        return brukerRepository.deleteBrukerFavoritterById(teamId);
+        return brukerRepository.deleteBrukerFavoritterByTeamId(teamId);
+    }
+
+    public int sletteBrukerFavoritterByGroupId(Long groupId) {
+        return brukerRepository.deleteBrukerFavoritterByGroupId(groupId);
     }
 }

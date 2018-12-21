@@ -95,6 +95,7 @@ public class TestgruppeService {
 
     public int slettGruppeById(Long gruppeId) {
         identService.slettTestidenterByGruppeId(gruppeId);
+        brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         return gruppeRepository.deleteTestgruppeById(gruppeId);
     }
 

@@ -20,6 +20,10 @@ public interface BrukerRepository extends CrudRepository<Bruker, Long> {
     List<Bruker> findAllByOrderByNavIdent();
 
     @Modifying
-    @Query(value = "delete from T_BRUKER_FAVORITTER where gruppe_id in (select id from t_gruppe where TILHOERER_TEAM = :gruppeId)", nativeQuery = true)
-    int deleteBrukerFavoritterById(@Param("gruppeId") Long gruppeId);
+    @Query(value = "delete from T_BRUKER_FAVORITTER where gruppe_id in (select id from t_gruppe where TILHOERER_TEAM = :teamId)", nativeQuery = true)
+    int deleteBrukerFavoritterByTeamId(@Param("teamId") Long teamId);
+
+    @Modifying
+    @Query(value = "delete from T_BRUKER_FAVORITTER where gruppe_id = :groupId", nativeQuery = true)
+    int deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
 }

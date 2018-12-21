@@ -165,6 +165,7 @@ public class TestgruppeServiceTest {
     @Test
     public void slettGruppeById_deleteBlirKaltMotRepoMedGittId() {
         testgruppeService.slettGruppeById(GROUP_ID);
+        verify(brukerService).sletteBrukerFavoritterByGroupId(TEAM_ID);
         verify(gruppeRepository).deleteTestgruppeById(GROUP_ID);
     }
 
