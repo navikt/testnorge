@@ -48,7 +48,7 @@ import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 public class TestgruppeServiceTest {
 
     private static final long GROUP_ID = 1L;
-    private static final long TEAM_ID = 1L;
+    private static final long TEAM_ID = 11L;
     private static final String IDENT_ONE = "1";
     private static final String IDENT_TWO = "2";
     private static final String standardPrincipal = "PRINC";
@@ -165,7 +165,7 @@ public class TestgruppeServiceTest {
     @Test
     public void slettGruppeById_deleteBlirKaltMotRepoMedGittId() {
         testgruppeService.slettGruppeById(GROUP_ID);
-        verify(brukerService).sletteBrukerFavoritterByGroupId(TEAM_ID);
+        verify(brukerService).sletteBrukerFavoritterByGroupId(GROUP_ID);
         verify(gruppeRepository).deleteTestgruppeById(GROUP_ID);
     }
 
