@@ -130,9 +130,9 @@ public class TestgruppeServiceTest {
 
     @Test
     public void fetchTestgrupperByTeammedlemskapAndFavoritterOfBruker() {
-        Testgruppe tg1 = Testgruppe.builder().id(1L).build();
-        Testgruppe tg2 = Testgruppe.builder().id(2L).build();
-        Testgruppe tg3 = Testgruppe.builder().id(3L).build();
+        Testgruppe tg1 = Testgruppe.builder().id(1L).navn("test1").build();
+        Testgruppe tg2 = Testgruppe.builder().id(2L).navn("test2").build();
+        Testgruppe tg3 = Testgruppe.builder().id(3L).navn("test3").build();
 
         Team t1 = Team.builder()
                 .grupper(newHashSet(singletonList(tg3)))
@@ -146,7 +146,7 @@ public class TestgruppeServiceTest {
 
         when(brukerService.fetchBruker(any())).thenReturn(bruker);
 
-        Set<Testgruppe> grupper = testgruppeService.fetchTestgrupperByNavIdent(standardPrincipal);
+        List<Testgruppe> grupper = testgruppeService.fetchTestgrupperByNavIdent(standardPrincipal);
 
         assertThat(grupper, hasItem(hasProperty("id", equalTo(1L))));
         assertThat(grupper, hasItem(hasProperty("id", equalTo(2L))));
