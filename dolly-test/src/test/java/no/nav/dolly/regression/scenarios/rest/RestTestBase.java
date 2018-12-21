@@ -68,7 +68,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     }
 
     private void removeManyToManyRelationships(){
-        List<Bruker> brukere = brukerRepository.findAllByOrderOrderByNavIdent();
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
         brukere.forEach(b -> {
             b.setFavoritter(new HashSet<>());
             b.setTeams(new HashSet<>());
