@@ -5,12 +5,13 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+
+import no.nav.registre.orkestratoren.exceptions.NestedHttpStatusCodeException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
@@ -25,7 +26,7 @@ public class TpsSyntPakkenServiceTest {
     @InjectMocks
     private TpsSyntPakkenService tpsSyntPakkenService;
     @Mock
-    private HttpStatusCodeException httpStatusCodeException;
+    private NestedHttpStatusCodeException httpStatusCodeException;
 
     /**
      * Testscenario: Dersom hodejegeren kaster feilmelding og varsler at Ids for lagrede meldinger i TPSF er tom,
@@ -33,7 +34,7 @@ public class TpsSyntPakkenServiceTest {
      * <p>
      * Flere scenarier for denne metoden dekkes av komponenttesten {@link no.nav.registre.orkestratoren.StartSyntetiseringTpsCompTest}
      */
-    @Test(expected = HttpStatusCodeException.class)
+    @Test(expected = NestedHttpStatusCodeException.class)
     public void shouldNotCallTpsfIfIdsIsEmpty() {
         when(httpStatusCodeException.getResponseBodyAsString()).thenReturn("{\"ids\":[]}");
         when(hodejegerenConsumer.startSyntetisering(any())).thenThrow(httpStatusCodeException);

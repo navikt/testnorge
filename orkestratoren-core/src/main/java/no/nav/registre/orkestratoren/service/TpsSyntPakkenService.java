@@ -1,16 +1,7 @@
 package no.nav.registre.orkestratoren.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
@@ -18,6 +9,16 @@ import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreReques
 import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.orkestratoren.consumer.rs.response.StatusPaaAvspiltSkdMelding;
+import no.nav.registre.orkestratoren.exceptions.NestedHttpStatusCodeException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -35,11 +36,13 @@ public class TpsSyntPakkenService {
 
         List<Long> ids = new ArrayList<>();
         SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = null;
+        NestedHttpStatusCodeException nestedHttpStatusCodeException = null;
         try {
             ids.addAll(hodejegerenConsumer.startSyntetisering(new GenereringsOrdreRequest(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode)));
         } catch (HttpStatusCodeException e) {
             ids.addAll(extractIdsFromResponseBody(e));
-            throw e;
+            nestedHttpStatusCodeException = new NestedHttpStatusCodeException(e);
+            throw nestedHttpStatusCodeException;
         } finally {
             if (ids.isEmpty()) {
                 StatusPaaAvspiltSkdMelding status = new StatusPaaAvspiltSkdMelding();
@@ -54,6 +57,9 @@ public class TpsSyntPakkenService {
                     log.error(e.getResponseBodyAsString(), e);
                     log.warn("Noe feilet i TPSF-sendSkdmeldingerTilTps. "
                             + "Følgende id-er ble lagret i TPSF avspillergruppe {}, men er trolig ikke sendt til TPS: {}", skdMeldingGruppeId, ids.toString());
+                    if (nestedHttpStatusCodeException != null) {
+                        nestedHttpStatusCodeException.addException(e);
+                    }
                 }
             }
         }
