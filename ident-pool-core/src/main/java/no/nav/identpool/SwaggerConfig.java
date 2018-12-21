@@ -1,37 +1,45 @@
 package no.nav.identpool;
 
-import static springfox.documentation.builders.PathSelectors.regex;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import com.google.common.base.Predicate;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.Collections;
+import java.util.HashSet;
+
 @Configuration
 @EnableSwagger2
 @RequiredArgsConstructor
-public class SwaggerConfig {
+public class SwaggerConfig implements WebMvcConfigurer {
 
     private final Environment environment;
 
     @Bean
-    public Docket personFeedApi() {
+    public Docket api() {
+        HashSet<String> contentTypeJson = new HashSet<>(Collections.singletonList("application/json"));
         return new Docket(DocumentationType.SWAGGER_2)
                 .groupName("ident-pool")
                 .apiInfo(apiInfo())
-                .tags(new Tag("identifikator", "Endepunkter for å rekvirere test-identer"),
+                .tags(new Tag("identifikator", "Endepunkter for test-identer"),
+                        new Tag("fiktive navn", "Endepunkter for fiktive navn"),
                         new Tag("finnes hos skatt", "DREK sitt endepunkt for rekvirering av DNR fra SKD"))
                 .select()
-                .paths(path())
-                .build();
+                .paths(PathSelectors.ant("/api/**"))
+                .build()
+                .produces(contentTypeJson)
+                .consumes(contentTypeJson)
+                .useDefaultResponseMessages(false);
     }
 
     private ApiInfo apiInfo() {
@@ -42,7 +50,8 @@ public class SwaggerConfig {
                 .build();
     }
 
-    private Predicate<String> path() {
-        return regex("/api.*");
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/api").setViewName("redirect:/swagger-ui.html");
     }
 }

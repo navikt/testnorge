@@ -1,6 +1,8 @@
 package no.nav.identpool.rs.v1;
 
 import java.util.List;
+
+import io.swagger.annotations.Api;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,7 @@ import no.nav.identpool.service.NavnepoolService;
 import no.nav.identpool.domain.Navn;
 
 @RestController
+@Api(tags = { "fiktive navn" })
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/fiktive-navn", produces = MediaType.APPLICATION_JSON_VALUE)
 public class FiktiveNavnController {
