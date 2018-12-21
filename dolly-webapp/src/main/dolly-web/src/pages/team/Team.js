@@ -50,6 +50,7 @@ class Team extends Component {
 		const teamActions = [
 			{
 				icon: 'edit',
+				label: 'REDIGER',
 				onClick: startRedigerTeam
 			}
 		]
@@ -58,6 +59,8 @@ class Team extends Component {
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
 					<ConfirmTooltip
+						label="SLETT"
+						className="flexbox--align-center"
 						message={
 							grupper.length > 0
 								? 'Å slette dette teamet vil føre til sletting av ' +
