@@ -36,8 +36,11 @@ public class ArenaInntektSyntConsumer {
         LocalDateTime bestillingstidspunktet = LocalDateTime.now();
         try {
             genererEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere);
-            log.info("synth-arena-inntekt har fullført bestillingen som ble sendt {}. "
-                    + "Antall inntektsmeldinger opprettet i inntekts-stub: {} ", bestillingstidspunktet, inntektsmldMottakere.size());
+            if (log.isInfoEnabled()) {
+                log.info("synth-arena-inntekt har fullført bestillingen som ble sendt {}. "
+                                + "Antall inntektsmeldinger opprettet i inntekts-stub: {} ",
+                        bestillingstidspunktet, inntektsmldMottakere.size());
+            }
         } catch (HttpStatusCodeException e) {
             StringBuilder feilmelding = new StringBuilder(200)
                     .append("synth-arena-inntekt returnerte feilmeldingen ")
