@@ -53,7 +53,7 @@ public class BestillingService {
     }
 
     public Bestilling cancelBestilling(Long bestillingId) {
-        Optional<BestillingKontroll> bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
+        Optional<BestillingKontroll> bestillingKontroll = bestillingKontrollRepository.findByBestillingIdOrderByBestillingId(bestillingId);
         if (!bestillingKontroll.isPresent()) {
             bestillingKontrollRepository.save(BestillingKontroll.builder()
                     .bestillingId(bestillingId)
@@ -72,7 +72,7 @@ public class BestillingService {
     }
 
     public boolean isStoppet(Long bestillingId) {
-        return bestillingKontrollRepository.findByBestillingId(bestillingId).orElse(BestillingKontroll.builder().stoppet(false).build()).isStoppet();
+        return bestillingKontrollRepository.findByBestillingIdOrderByBestillingId(bestillingId).orElse(BestillingKontroll.builder().stoppet(false).build()).isStoppet();
     }
 
     @Transactional
