@@ -17,21 +17,16 @@ export default class ContentTooltip extends PureComponent {
 	}
 
 	_handleOnClick = () => {
-		console.log('hei')
 		this.setState({ isOpen: !this.state.isOpen })
-		console.log('stae', this.state.isOpen)
 	}
 	render() {
 		return (
-			// <HjelpeTekst className="content-tooltip" id="hjelpetekst" type="under-hoyre">
-			// 	{this.props.children}
-			// </HjelpeTekst>
 			<div className="flexbox--align-center" onClick={this._handleOnClick}>
 				<div className="hjelpetekst">
 					{this._renderHjelpeIkon()}
 					{this.state.isOpen && this._renderHjelpeTekst()}
 				</div>
-				<p className="clickable-text-small">Hjelp</p>
+				<p className="clickable-text-small">Info</p>
 			</div>
 		)
 	}
