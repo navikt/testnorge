@@ -1,3 +1,5 @@
+@import (reference) '~lessVars';
+
 .offscreen {
 	position: absolute;
 	left: -10000px;
@@ -52,6 +54,17 @@
 	&-active {
 		opacity: 0.01;
 		transition: opacity 1500ms ease-in;
+	}
+}
+
+// TEKST
+.clickable-text {
+	color: @navBla;
+	cursor: pointer;
+	&-small {
+		cursor: pointer;
+		color: @navBla;
+		font-size: 0.9rem;
 	}
 }
 
