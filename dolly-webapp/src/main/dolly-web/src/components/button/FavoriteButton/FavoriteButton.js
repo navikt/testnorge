@@ -18,21 +18,9 @@ class FavoriteButton extends PureComponent {
 				kind={isFavorite ? 'star-filled' : 'star'}
 				onClick={isFavorite ? removeFavorite : addFavorite}
 			>
-				{isFavorite ? 'FJERN FAVORITT' : 'FAVORISER'}
+				{isFavorite ? 'FJERN' : 'FAVORISER'}
 			</Button>
 		)
-
-		// return (
-		// 	<Button
-		// 		className="flexbox--align-center"
-		// 		title="Legg til som favoritt"
-		// 		kind="star"
-		// 		onClick={addFavorite}
-		// 		className={className}
-		// 	>
-		// 		FAVORISER
-		// 	</Button>
-		// )
 	}
 }
 
