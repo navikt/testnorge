@@ -20,11 +20,13 @@ export default class ContentTooltip extends PureComponent {
 		this.setState({ isOpen: !this.state.isOpen })
 	}
 	render() {
+		const { children } = this.props
+
 		return (
 			<div className="flexbox--align-center" onClick={this._handleOnClick}>
 				<div className="hjelpetekst">
 					{this._renderHjelpeIkon()}
-					{this.state.isOpen && this._renderHjelpeTekst()}
+					{this.state.isOpen && this._renderHjelpeTekst(children)}
 				</div>
 				<p className="clickable-text-small">Info</p>
 			</div>
@@ -79,7 +81,7 @@ export default class ContentTooltip extends PureComponent {
 		</button>
 	)
 
-	_renderHjelpeTekst = () => (
+	_renderHjelpeTekst = children => (
 		<div
 			tabIndex="-1"
 			id="tooltip-hjelpetekst"
@@ -87,7 +89,7 @@ export default class ContentTooltip extends PureComponent {
 			className="hjelpetekst__tooltip content-tooltip hjelpetekst__tooltip--under"
 		>
 			<div className="hjelpetekst__tekst">
-				<p className="typo-normal">Testdatagruppen inneholder alle testpersonene dine (FNR/DNR).</p>
+				<p className="typo-normal">{children}</p>
 			</div>
 			<button
 				className="lukknapp lukknapp--hvit"
