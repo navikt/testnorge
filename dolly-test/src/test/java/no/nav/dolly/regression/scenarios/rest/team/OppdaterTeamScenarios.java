@@ -17,7 +17,7 @@ import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.testdata.builder.RsTeamUtvidetBuilder;
 
-public class OppdaterTeamScenarios extends TeamTestCaseBase{
+public class OppdaterTeamScenarios extends TeamTestCaseBase {
 
     private static final String NAV_IDENT = "NYEIER";
 
@@ -35,7 +35,7 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
                 .eierNavIdent(nyEier.getNavIdent())
                 .beskrivelse("endretTeam")
                 .navn("endretTeamNavn")
-                .medlemmer(mapperFacade.mapAsSet(standardTeam.getMedlemmer(),RsBruker.class))
+                .medlemmer(mapperFacade.mapAsList(standardTeam.getMedlemmer(), RsBruker.class))
                 .datoOpprettet(standardTeam.getDatoOpprettet())
                 .build()
                 .convertToRealRsTeam();

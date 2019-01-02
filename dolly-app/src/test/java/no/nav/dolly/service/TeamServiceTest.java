@@ -1,11 +1,10 @@
 package no.nav.dolly.service;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -14,7 +13,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.junit.AfterClass;
@@ -126,7 +124,7 @@ public class TeamServiceTest {
 
     @Test
     public void addMedlemmer_LeggerTilMedlemmerITeam() {
-        Team t = Team.builder().navn("t").medlemmer(new HashSet<>()).build();
+        Team t = Team.builder().navn("t").build();
 
         RsBruker rb1 = RsBruker.builder().navIdent("nav1").build();
         RsBruker rb2 = RsBruker.builder().navIdent("nav2").build();
@@ -167,7 +165,7 @@ public class TeamServiceTest {
 
     @Test
     public void addMedlemmerByNavidenter_BrukereBasertPaaIdenterBlirLagtTilITeam() {
-        Team t = Team.builder().navn("t").medlemmer(new HashSet<>()).build();
+        Team t = Team.builder().navn("t").build();
 
         Bruker b1 = new Bruker();
         Bruker b2 = new Bruker();
@@ -190,7 +188,7 @@ public class TeamServiceTest {
         Bruker b1 = Bruker.builder().navIdent(CURRENT_BRUKER_IDENT).build();
         Bruker b2 = Bruker.builder().navIdent(NAVIDENT_2).build();
 
-        Team team = Team.builder().navn("t").medlemmer(newHashSet(asList(b1, b2))).build();
+        Team team = Team.builder().navn("t").medlemmer(newArrayList(b1, b2)).build();
 
         Optional<Team> opMedTeam = of(team);
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
@@ -209,23 +207,28 @@ public class TeamServiceTest {
 
     @Test
     public void slettMedlemDeleteOk() {
-        when(teamRepository.findById(TEAM_ID)).thenReturn(Optional.of(
-                Team.builder().medlemmer(newHashSet(singleton(Bruker.builder().navIdent(CURRENT_BRUKER_IDENT).build()))).build()));
+        when(teamRepository.findById(TEAM_ID)).thenReturn(of(
+                Team.builder()
+                        .id(TEAM_ID)
+                        .medlemmer(newArrayList(Bruker.builder()
+                                .navIdent(CURRENT_BRUKER_IDENT)
+                                .build()))
+                        .build()));
         teamService.slettMedlem(TEAM_ID, CURRENT_BRUKER_IDENT);
         verify(teamRepository).save(any(Team.class));
     }
 
     @Test(expected = NotFoundException.class)
     public void updateTeamNotFound() {
-        teamService.updateTeamInfo(TEAM_ID, RsTeamUtvidet.builder().medlemmer(newHashSet(singleton(RsBruker.builder().navIdent(CURRENT_BRUKER_IDENT).build()))).build());
+        teamService.updateTeamInfo(TEAM_ID, RsTeamUtvidet.builder().medlemmer(singletonList(RsBruker.builder().navIdent(CURRENT_BRUKER_IDENT).build())).build());
     }
 
     @Test
     public void updateTeamOk() {
-        Team team = Team.builder().medlemmer(newHashSet(singleton(Bruker.builder().navIdent(CURRENT_BRUKER_IDENT).build()))).build();
+        Team team = Team.builder().medlemmer(singletonList(Bruker.builder().navIdent(CURRENT_BRUKER_IDENT).build())).build();
         when(teamRepository.findById(TEAM_ID)).thenReturn(Optional.of(team));
         when(teamRepository.save(team)).thenReturn(team);
-        teamService.updateTeamInfo(TEAM_ID, RsTeamUtvidet.builder().medlemmer(newHashSet(singleton(RsBruker.builder().navIdent(CURRENT_BRUKER_IDENT).build()))).build());
+        teamService.updateTeamInfo(TEAM_ID, RsTeamUtvidet.builder().medlemmer(singletonList(RsBruker.builder().navIdent(CURRENT_BRUKER_IDENT).build())).build());
         verify(teamRepository).save(team);
     }
 

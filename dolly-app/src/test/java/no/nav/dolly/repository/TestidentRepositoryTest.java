@@ -1,7 +1,7 @@
 package no.nav.dolly.repository;
 
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -58,10 +58,10 @@ public class TestidentRepositoryTest {
                 .navn("gruppe")
                 .hensikt("hensikt")
                 .teamtilhoerighet(team)
-                .testidenter(newHashSet(singletonList(testident)))
+                .testidenter(singleton(testident))
                 .build();
 
-        team.setGrupper(newHashSet(singletonList(testgruppe)));
+        team.setGrupper(singletonList(testgruppe));
         testident.setTestgruppe(testgruppe);
 
         teamRepository.save(team);

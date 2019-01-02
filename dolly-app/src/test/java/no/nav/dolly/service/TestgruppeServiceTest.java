@@ -135,7 +135,7 @@ public class TestgruppeServiceTest {
         Testgruppe tg3 = Testgruppe.builder().id(3L).navn("test3").build();
 
         Team t1 = Team.builder()
-                .grupper(newHashSet(singletonList(tg3)))
+                .grupper(singletonList(tg3))
                 .build();
 
         Bruker bruker = Bruker.builder()

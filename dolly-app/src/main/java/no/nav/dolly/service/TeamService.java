@@ -1,15 +1,16 @@
 package no.nav.dolly.service;
 
-import static com.google.common.collect.Sets.newHashSet;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
@@ -57,7 +58,7 @@ public class TeamService {
                 .beskrivelse(opprettTeam.getBeskrivelse())
                 .datoOpprettet(LocalDate.now())
                 .eier(currentBruker)
-                .medlemmer(newHashSet(singletonList(currentBruker)))
+                .medlemmer(newArrayList(currentBruker))
                 .build()
         );
 
@@ -65,7 +66,13 @@ public class TeamService {
     }
 
     public Team fetchTeamById(Long id) {
-        return teamRepository.findById(id).orElseThrow(() -> new NotFoundException("Team ikke funnet for denne IDen: " + id));
+        Optional<Team> team = teamRepository.findById(id);
+        if (!team.isPresent()) {
+            throw new NotFoundException("Team ikke funnet for denne IDen: " + id);
+        }
+
+        Collections.sort(team.get().getMedlemmer(), (Bruker br1, Bruker br2) -> br1.getNavIdent().compareToIgnoreCase(br2.getNavIdent()));
+        return team.get();
     }
 
     private Team fetchTeamByNavn(String navn) {
@@ -122,20 +129,20 @@ public class TeamService {
 
     public RsTeamUtvidet slettMedlem(Long teamId, String navIdent) {
         Team team = fetchTeamById(teamId);
-        Bruker bruker = null;
+        boolean found = false;
         Iterator<Bruker> brukerIterator = team.getMedlemmer().iterator();
         while (brukerIterator.hasNext()) {
             Bruker bruker1 = brukerIterator.next();
             if (bruker1.getNavIdent().equalsIgnoreCase(navIdent)) {
-                bruker = bruker1;
+                brukerIterator.remove();
+                found = true;
                 break;
             }
         }
 
-        if (isNull(bruker)) {
+        if (!found) {
             throw new NotFoundException(format("Bruker med ident %s ble ikke funnet.", navIdent));
         }
-        team.getMedlemmer().remove(bruker);
 
         Team changedTeam = saveTeamToDB(team);
         return mapperFacade.map(changedTeam, RsTeamUtvidet.class);

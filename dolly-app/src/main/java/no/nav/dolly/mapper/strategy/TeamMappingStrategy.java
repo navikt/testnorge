@@ -35,9 +35,9 @@ public class TeamMappingStrategy implements MappingStrategy{
                     @Override
                     public void mapAtoB(Team team, RsTeamUtvidet rsTeam, MappingContext context) {
                         rsTeam.setAntallMedlemmer(team.getMedlemmer().size());
-                        rsTeam.setGrupper(mapperFacade.mapAsSet(team.getGrupper(), RsTestgruppe.class));
+                        rsTeam.setGrupper(mapperFacade.mapAsList(team.getGrupper(), RsTestgruppe.class));
                         rsTeam.setEierNavIdent(team.getEier().getNavIdent());
-                        rsTeam.setMedlemmer(mapperFacade.mapAsSet(team.getMedlemmer(), RsBruker.class));
+                        rsTeam.setMedlemmer(mapperFacade.mapAsList(team.getMedlemmer(), RsBruker.class));
                     }
                 })
                 .byDefault()
