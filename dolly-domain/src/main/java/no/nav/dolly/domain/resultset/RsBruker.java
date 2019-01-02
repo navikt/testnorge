@@ -1,7 +1,7 @@
 package no.nav.dolly.domain.resultset;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,19 +16,19 @@ import lombok.Setter;
 @Builder
 public class RsBruker {
 	private String navIdent;
-	private Set<RsTeamMedIdOgNavn> teams;
-	private Set<RsTestgruppe> favoritter;
+	private List<RsTeamMedIdOgNavn> teams;
+	private List<RsTestgruppe> favoritter;
 
-	public Set<RsTeamMedIdOgNavn> getTeams() {
+	public List<RsTeamMedIdOgNavn> getTeams() {
 		if (teams == null) {
-			teams = new HashSet<>();
+			teams = new ArrayList<>();
 		}
 		return teams;
 	}
 
-	public Set<RsTestgruppe> getFavoritter() {
+	public List<RsTestgruppe> getFavoritter() {
 		if (favoritter == null) {
-			favoritter = new HashSet<>();
+			favoritter = new ArrayList<>();
 		}
 		return favoritter;
 	}

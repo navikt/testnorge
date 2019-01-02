@@ -22,7 +22,8 @@ export default class TestbrukerListe extends Component {
 			headers,
 			editTestbruker,
 			searchActive,
-			username
+			username,
+			isDeleting
 		} = this.props
 
 		if (testidenter.length <= 0)
@@ -58,7 +59,11 @@ export default class TestbrukerListe extends Component {
 														testbrukere.map((bruker, idx) => {
 															// Note: idx=0 of bruker (data) is parsed to be ID
 															return (
-																<CSSTransition key={bruker[0]} timeout={1000} classNames="fade">
+																<CSSTransition
+																	key={bruker[0]}
+																	timeout={isDeleting ? 2000 : 1}
+																	classNames="fade"
+																>
 																	<Table.Row
 																		key={bruker[0]}
 																		expandComponent={

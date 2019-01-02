@@ -64,7 +64,13 @@ class TableRow extends PureComponent {
 					</div>
 				</div>
 				<div className="action-column">
-					{deleteAction && <ConfirmTooltip onClick={deleteAction} />}
+					{deleteAction && (
+						<ConfirmTooltip
+							label="SLETT"
+							className="flexbox--align-center"
+							onClick={deleteAction}
+						/>
+					)}
 					{editAction && <Button kind="edit" onClick={editAction} />}
 					{groupId && <FavoriteButtonConnector groupId={groupId} />}
 				</div>

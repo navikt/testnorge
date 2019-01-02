@@ -1,5 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
@@ -55,14 +56,14 @@ public class BrukerMappingStrategyTest {
     public void testy(){
         Bruker bruker = Bruker.builder().navIdent("ident").build();
         Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
-        Set<Testident> identer = newHashSet(singletonList(testident));
+        Set<Testident> identer = singleton(testident);
 
         Team team = Team.builder()
                 .navn("team")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(bruker)
                 .id(1L)
-                .medlemmer(newHashSet(singletonList(bruker)))
+                .medlemmer(singletonList(bruker))
                 .beskrivelse("besk")
                 .build();
 

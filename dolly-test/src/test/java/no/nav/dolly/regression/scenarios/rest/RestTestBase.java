@@ -1,7 +1,6 @@
 package no.nav.dolly.regression.scenarios.rest;
 
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -95,7 +94,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
                 .navn(STANDARD_TEAM_NAVN)
                 .beskrivelse(STANDARD_TEAM_BESK)
                 .datoOpprettet(LocalDate.now())
-                .medlemmer(newHashSet(singletonList(standardBruker)))
+                .medlemmer(singletonList(standardBruker))
                 .build()
         );
 

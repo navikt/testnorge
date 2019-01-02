@@ -62,7 +62,7 @@ public class BrukerRepositoryTest {
                 .navn("team")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(foundBruker)
-                .medlemmer(newHashSet(singletonList(foundBruker)))
+                .medlemmer(singletonList(foundBruker))
                 .beskrivelse("besk")
                 .build();
 
@@ -86,7 +86,7 @@ public class BrukerRepositoryTest {
                 .navn("team")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(savedBruker)
-                .medlemmer(newHashSet(singletonList(savedBruker)))
+                .medlemmer(singletonList(savedBruker))
                 .beskrivelse("besk")
                 .build();
 

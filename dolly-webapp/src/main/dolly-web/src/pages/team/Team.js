@@ -39,7 +39,8 @@ class Team extends Component {
 			removeMember,
 			deleteTeam,
 			startRedigerTeam,
-			visRedigerTeam
+			visRedigerTeam,
+			isCreateDelete
 		} = this.props
 
 		if (!team || !grupper) return null
@@ -49,6 +50,7 @@ class Team extends Component {
 		const teamActions = [
 			{
 				icon: 'edit',
+				label: 'REDIGER',
 				onClick: startRedigerTeam
 			}
 		]
@@ -57,6 +59,8 @@ class Team extends Component {
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
 					<ConfirmTooltip
+						label="SLETT"
+						className="flexbox--align-center"
 						message={
 							grupper.length > 0
 								? 'Å slette dette teamet vil føre til sletting av ' +
@@ -98,7 +102,11 @@ class Team extends Component {
 									</Table.Header>
 									<TransitionGroup component={null}>
 										{items.map(medlem => (
-											<CSSTransition key={medlem.navIdent} timeout={1000} classNames="fade">
+											<CSSTransition
+												key={medlem.navIdent}
+												timeout={isCreateDelete ? 2000 : 1}
+												classNames="fade"
+											>
 												<Table.Row
 													key={medlem.navIdent}
 													deleteAction={() => removeMember([medlem.navIdent])}

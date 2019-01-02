@@ -89,6 +89,7 @@ export default class Gruppe extends Component {
 		if (gruppe.erMedlemAvTeamSomEierGruppe) {
 			groupActions.push({
 				icon: 'edit',
+				label: 'REDIGER',
 				onClick: createGroup
 			})
 		}
@@ -101,7 +102,12 @@ export default class Gruppe extends Component {
 		return (
 			<div id="gruppe-container">
 				<Overskrift label={gruppe.navn} actions={groupActions}>
-					<ConfirmTooltip message={'Vil du slette denne testdatagruppen?'} onClick={deleteGruppe} />
+					<ConfirmTooltip
+						label="SLETT"
+						className="flexbox--align-center"
+						message={'Vil du slette denne testdatagruppen?'}
+						onClick={deleteGruppe}
+					/>
 					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 					{gruppe.antallIdenter > 0 && (
 						<div className="pull-right">
