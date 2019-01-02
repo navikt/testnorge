@@ -69,17 +69,6 @@ class TableRow extends PureComponent {
 				{this.state.expanded && (
 					<div className="dot-body-row-expandcomponent">{expandComponent}</div>
 				)}
-				{/* <div className="action-column">
-					{deleteAction && (
-						<ConfirmTooltip
-							label="SLETT"
-							className="flexbox--align-center"
-							onClick={deleteAction}
-						/>
-					)}
-					{editAction && <Button kind="edit" onClick={editAction} />}
-					{groupId && <FavoriteButtonConnector groupId={groupId} />}
-				</div> */}
 			</div>
 		)
 	}
@@ -92,10 +81,10 @@ class TableHeader extends PureComponent {
 
 	render() {
 		const { children, ...restProps } = this.props
+		// console.log(action, 'hei')
 		return (
 			<div tabIndex={0} className="dot-header" {...restProps}>
 				{children}
-				<div className="dot-column col10 dot-body-row-actioncolumn" />
 			</div>
 		)
 	}

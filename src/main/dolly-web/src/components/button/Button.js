@@ -23,21 +23,14 @@ export default class Button extends PureComponent {
 	}
 
 	render() {
-		const { kind, children, className, type = 'button', title, onMouseEnter } = this.props
+		const { kind, children, className, type = 'button', title } = this.props
 
 		const cssClass = cn('dolly-button', className)
 
 		return (
-			<button
-				onMouseEnter={onMouseEnter}
-				onMouseLeave={onMouseEnter}
-				type={type}
-				className={cssClass}
-				onClick={this.onClickHandler}
-				title={title}
-			>
+			<button type={type} className={cssClass} onClick={this.onClickHandler} title={title}>
 				{kind && <Icon kind={kind} />}
-				{children && children}
+				{children && <p> {children}</p>}
 			</button>
 		)
 	}

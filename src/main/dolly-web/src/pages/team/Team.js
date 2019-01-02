@@ -99,6 +99,7 @@ class Team extends Component {
 									<Table.Header>
 										<Table.Column width="30" value="Navn" />
 										<Table.Column width="20" value="Rolle" />
+										<Table.Column width="50" value="Slett" />
 									</Table.Header>
 									<TransitionGroup component={null}>
 										{items.map(medlem => (
