@@ -49,7 +49,7 @@ public class AjourholdService {
     void checkAndGenerateForDate(LocalDate date, Identtype type) {
         int maxRuns = 3;
         int runs = 0;
-        while (criticalForYear(date.getYear(), type) && runs < maxRuns) {
+        while (runs < maxRuns && criticalForYear(date.getYear(), type)) {
             generateForYear(date.getYear(), type);
             runs++;
         }

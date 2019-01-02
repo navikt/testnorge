@@ -40,9 +40,11 @@ public class QueueContext {
 
         filterEnvironments(allEnvs, queueFactory);
 
-        log.info("Excluded environments based on config: " + String.join(", ", excluded));
-        log.info("Created Connection factories for the following environments: " + String.join(", ", successEnvs));
-        log.info("Failed to create Connection factories for the following environments: " + String.join(", ", failedEnvs));
+        if (log.isInfoEnabled()) {
+            log.info("Excluded environments based on config: {}", String.join(", ", excluded));
+            log.info("Created Connection factories for the following environments: {}", String.join(", ", successEnvs));
+            log.info("Failed to create Connection factories for the following environments: {}", String.join(", ", failedEnvs));
+        }
     }
 
     public static List<String> getSuccessfulEnvs() {

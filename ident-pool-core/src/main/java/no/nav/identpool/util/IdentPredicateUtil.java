@@ -9,6 +9,8 @@ import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 
 public final class IdentPredicateUtil {
 
+    private IdentPredicateUtil() {}
+
     public static Predicate lagPredicateFraRequest(HentIdenterRequest hentIdenterRequest) {
         QIdent qIdent = QIdent.ident;
 
@@ -29,5 +31,4 @@ public final class IdentPredicateUtil {
         return booleanBuilder;
     }
 
-    private IdentPredicateUtil() {}
 }

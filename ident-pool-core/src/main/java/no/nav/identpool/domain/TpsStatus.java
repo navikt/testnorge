@@ -10,14 +10,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TpsStatus {
+    private static final int PRIME = 31;
+
     private String ident;
     private boolean inUse;
 
     @Override
     public int hashCode() {
-        final int prime = 31;
         int result = 1;
-        result = prime * result + ((ident == null) ? 0 : ident.hashCode());
+        result = PRIME * result + ((ident == null) ? 0 : ident.hashCode());
         return result;
     }
 

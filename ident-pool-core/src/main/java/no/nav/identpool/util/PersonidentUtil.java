@@ -23,6 +23,8 @@ public final class PersonidentUtil {
     private static final int END_1900 = 499;
     private static final int START_1900 = 0;
 
+    private PersonidentUtil() {}
+
     public static void validate(String ident) throws UgyldigPersonidentifikatorException {
         notNull(ident, "Personidentifikator kan ikke være null");
         
@@ -95,5 +97,4 @@ public final class PersonidentUtil {
         }
     }
 
-    private PersonidentUtil() {}
 }

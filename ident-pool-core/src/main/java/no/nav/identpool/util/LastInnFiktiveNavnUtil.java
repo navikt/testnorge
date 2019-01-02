@@ -16,6 +16,8 @@ import lombok.Setter;
 
 public final class LastInnFiktiveNavnUtil {
 
+    private LastInnFiktiveNavnUtil() {}
+
     public static List<String> loadListFromCsvFile(String fileName) throws IOException {
         CsvMapper mapper = new CsvMapper();
         CsvSchema bootstrapSchema = mapper.typedSchemaFor(TempNavn.class).withoutHeader();
@@ -31,5 +33,4 @@ public final class LastInnFiktiveNavnUtil {
         String fiktivnavn;
     }
 
-    private LastInnFiktiveNavnUtil() {}
 }
