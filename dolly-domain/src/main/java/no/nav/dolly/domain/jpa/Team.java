@@ -3,8 +3,8 @@ package no.nav.dolly.domain.jpa;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -56,13 +56,13 @@ public class Team {
 	private Bruker eier;
 	
 	@OneToMany(mappedBy = "teamtilhoerighet", fetch = FetchType.EAGER)
-	private Set<Testgruppe> grupper;
+	private List<Testgruppe> grupper;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "T_TEAM_MEDLEMMER",
 			joinColumns = @JoinColumn(name = "team_id"),
 			inverseJoinColumns = @JoinColumn(name = "bruker_id"))
-	private Set<Bruker> medlemmer;
+	private List<Bruker> medlemmer;
 
 	public Team(String navn, Bruker eier){
 		this.navn = navn;
@@ -70,16 +70,16 @@ public class Team {
 		this.datoOpprettet = LocalDate.now();
 	}
 
-	public Set<Testgruppe> getGrupper() {
+	public List<Testgruppe> getGrupper() {
 		if (grupper == null) {
-			grupper = new HashSet<>();
+			grupper = new ArrayList<>();
 		}
 		return grupper;
 	}
 
-	public Set<Bruker> getMedlemmer() {
+	public List<Bruker> getMedlemmer() {
 		if (medlemmer == null) {
-			medlemmer = new HashSet<>();
+			medlemmer = new ArrayList<>();
 		}
 		return medlemmer;
 	}

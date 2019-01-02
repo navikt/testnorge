@@ -1,7 +1,7 @@
 package no.nav.dolly.regression.scenarios.rest.team;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -12,8 +12,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +34,7 @@ public class GetTeamsScenarios extends TeamTestCaseBase {
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk2")
                 .eier(bruker2)
-                .medlemmer(new HashSet<>(Arrays.asList(bruker2, standardBruker)))
+                .medlemmer(asList(bruker2, standardBruker))
                 .build()
         );
 
@@ -45,7 +43,7 @@ public class GetTeamsScenarios extends TeamTestCaseBase {
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk3")
                 .eier(bruker2)
-                .medlemmer(newHashSet(singletonList(bruker2)))
+                .medlemmer(singletonList(bruker2))
                 .build()
         );
     }

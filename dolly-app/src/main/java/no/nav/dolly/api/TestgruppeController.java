@@ -61,7 +61,7 @@ public class TestgruppeController {
         return mapperFacade.map(gruppe, RsTestgruppeUtvidet.class);
     }
 
-    @CacheEvict(value = "gruppe", allEntries = true)
+    @CacheEvict(value = { "gruppe", "team" }, allEntries = true)
     @PostMapping
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)

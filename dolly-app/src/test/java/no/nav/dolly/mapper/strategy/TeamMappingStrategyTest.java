@@ -73,9 +73,9 @@ public class TeamMappingStrategyTest {
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(bruker)
                 .id(1L)
-                .medlemmer(newHashSet(singletonList(brukerEier)))
+                .medlemmer(singletonList(brukerEier))
                 .beskrivelse("besk")
-                .grupper(newHashSet(singletonList(testgruppe)))
+                .grupper(singletonList(testgruppe))
                 .build();
 
         Team team2 = Team.builder()
@@ -83,9 +83,9 @@ public class TeamMappingStrategyTest {
                 .datoOpprettet(LocalDate.of(2010, 1 , 1))
                 .eier(bruker)
                 .id(2L)
-                .medlemmer(newHashSet(asList(brukerEier, bruker)))
+                .medlemmer(asList(brukerEier, bruker))
                 .beskrivelse("besk2")
-                .grupper(newHashSet(singletonList(testgruppe)))
+                .grupper(singletonList(testgruppe))
                 .build();
 
         testgruppe.setTeamtilhoerighet(team);

@@ -1,7 +1,7 @@
 package no.nav.dolly.testdata.builder;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -19,8 +19,8 @@ public class RsTeamUtvidetBuilder {
 	private String beskrivelse;
 	private LocalDate datoOpprettet;
 	private String eierNavIdent;
-	private Set<RsBruker> medlemmer;
-	private Set<RsTestgruppe> grupper;
+	private List<RsBruker> medlemmer;
+	private List<RsTestgruppe> grupper;
 
 	public RsTeamUtvidet convertToRealRsTeam(){
 		RsTeamUtvidet team = new RsTeamUtvidet();
