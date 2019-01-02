@@ -55,10 +55,10 @@ public class Team {
 	@JoinColumn(name = "EIER", nullable = false)
 	private Bruker eier;
 	
-	@OneToMany(mappedBy = "teamtilhoerighet", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "teamtilhoerighet", fetch = FetchType.LAZY)
 	private List<Testgruppe> grupper;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "T_TEAM_MEDLEMMER",
 			joinColumns = @JoinColumn(name = "team_id"),
 			inverseJoinColumns = @JoinColumn(name = "bruker_id"))
