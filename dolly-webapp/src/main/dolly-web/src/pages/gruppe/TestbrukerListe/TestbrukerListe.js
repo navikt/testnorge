@@ -52,6 +52,7 @@ export default class TestbrukerListe extends Component {
 													{headers.map((header, idx) => (
 														<Table.Column key={idx} width={header.width} value={header.label} />
 													))}
+													<Table.Column width="10" value="" />
 												</Table.Header>
 
 												<TransitionGroup component={null}>

@@ -24,6 +24,7 @@ class TeamListe extends Component {
 					<Table.Column width="30" value="Beskrivelse" />
 					<Table.Column width="20" value="Eier" />
 					<Table.Column width="20" value="Personer" />
+					<Table.Column width="10" value="" />
 				</Table.Header>
 
 				{items.map(team => {

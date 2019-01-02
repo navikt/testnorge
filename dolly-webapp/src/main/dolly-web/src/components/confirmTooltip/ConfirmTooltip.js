@@ -58,7 +58,7 @@ export default class ConfirmTooltip extends Component {
 					children
 				) : (
 					<Button className={className} kind="trashcan">
-						{label}{' '}
+						{label}
 					</Button>
 				)}
 			</Tooltip>

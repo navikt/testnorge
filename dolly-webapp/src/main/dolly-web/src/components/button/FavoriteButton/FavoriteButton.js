@@ -10,15 +10,16 @@ class FavoriteButton extends PureComponent {
 	}
 
 	render() {
-		const { isFavorite, addFavorite, removeFavorite, className } = this.props
+		const { isFavorite, hideLabel, addFavorite, removeFavorite, className } = this.props
 		return (
 			<Button
 				className="flexbox--align-center"
 				title={isFavorite ? 'Fjern fra favoritter' : 'Legg til som favoritt'}
 				kind={isFavorite ? 'star-filled' : 'star'}
 				onClick={isFavorite ? removeFavorite : addFavorite}
+				onMouseEnter={this._handleOnMouseHover}
 			>
-				{isFavorite ? 'FJERN' : 'FAVORISER'}
+				{!hideLabel && <p>{isFavorite ? 'FJERN FAVORITT' : 'FAVORISER'}</p>}
 			</Button>
 		)
 	}
