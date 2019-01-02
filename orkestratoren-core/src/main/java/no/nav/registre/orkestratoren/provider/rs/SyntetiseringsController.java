@@ -1,13 +1,14 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
 import java.util.List;
+
+import no.nav.registre.orkestratoren.exceptions.HttpStatusCodeExceptionContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
@@ -34,8 +35,8 @@ public class SyntetiseringsController {
                     syntetiserSkdmeldingerRequest.getMiljoe(),
                     syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
             return ResponseEntity.ok(skdMeldingerTilTpsRespons);
-        } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        } catch (HttpStatusCodeExceptionContainer e) {
+            return ResponseEntity.status(e.getGeneralStatusCode()).body(e.toString());
         }
     }
 
