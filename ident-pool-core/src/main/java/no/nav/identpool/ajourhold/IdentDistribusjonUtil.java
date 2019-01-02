@@ -11,6 +11,8 @@ public final class IdentDistribusjonUtil {
     private static final double C4 = 2;
     private static final double C5 = 10;
 
+    private IdentDistribusjonUtil() {}
+
     public static Integer antallPersonerPerDagPerAar(int year) {
         double antallForAar = verdiFraDistribusjon(now().getYear() - year + 1);
         return (int) (Math.ceil(antallForAar / 365.0));
@@ -22,5 +24,4 @@ public final class IdentDistribusjonUtil {
 
     }
 
-    private IdentDistribusjonUtil() {}
 }

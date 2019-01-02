@@ -26,8 +26,6 @@ public final class IdentGeneratorUtil {
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
     private static SecureRandom random = new SecureRandom();
 
-    private IdentGeneratorUtil() {}
-
     public static final Map<Identtype, Function<LocalDate, List<String>>> generatorMap =
             ImmutableMap.of(
                     Identtype.FNR, IdentGeneratorUtil::generateFNumbers,
@@ -37,6 +35,8 @@ public final class IdentGeneratorUtil {
             ImmutableMap.of(
                     Identtype.FNR, IdentGeneratorUtil::getFnrFormat,
                     Identtype.DNR, IdentGeneratorUtil::getDnrFormat);
+
+    private IdentGeneratorUtil() {}
 
     public static String randomFormat(LocalDate birthdate) {
         String format = getFnrFormat(birthdate);
