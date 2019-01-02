@@ -57,7 +57,7 @@ export default class ConfirmTooltip extends Component {
 				{children ? (
 					children
 				) : (
-					<Button className={className} kind="trashcan" onMouseEnter={this._handleOnMouseHover}>
+					<Button className={className} kind="trashcan">
 						{label}
 					</Button>
 				)}

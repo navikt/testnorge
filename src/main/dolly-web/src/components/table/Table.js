@@ -81,7 +81,6 @@ class TableHeader extends PureComponent {
 
 	render() {
 		const { children, ...restProps } = this.props
-		// console.log(action, 'hei')
 		return (
 			<div tabIndex={0} className="dot-header" {...restProps}>
 				{children}
