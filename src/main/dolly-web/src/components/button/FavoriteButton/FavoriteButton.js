@@ -9,18 +9,33 @@ class FavoriteButton extends PureComponent {
 		removeFavorite: PropTypes.func
 	}
 
+	state = {
+		isHovering: false
+	}
+
 	render() {
-		const { isFavorite, addFavorite, removeFavorite, className } = this.props
+		const { isFavorite, hideLabel, addFavorite, removeFavorite, className } = this.props
+		const { isHovering } = this.state
+
 		return (
 			<Button
 				className="flexbox--align-center"
 				title={isFavorite ? 'Fjern fra favoritter' : 'Legg til som favoritt'}
 				kind={isFavorite ? 'star-filled' : 'star'}
 				onClick={isFavorite ? removeFavorite : addFavorite}
+				onMouseEnter={this._handleOnMouseHover}
 			>
-				{isFavorite ? 'FJERN' : 'FAVORISER'}
+				{hideLabel ? (
+					isHovering && <p>{isFavorite ? 'FJERN FAVORITT' : 'FAVORISER'}</p>
+				) : (
+					<p>{isFavorite ? 'FJERN FAVORITT' : 'FAVORISER'}</p>
+				)}
 			</Button>
 		)
+	}
+
+	_handleOnMouseHover = () => {
+		this.setState({ isHovering: !this.state.isHovering })
 	}
 }
 

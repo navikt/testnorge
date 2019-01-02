@@ -18,7 +18,8 @@ export default class ConfirmTooltip extends Component {
 	}
 
 	state = {
-		visible: false
+		visible: false,
+		isHovering: false
 	}
 
 	onVisibleChangeHandler = visible => {
@@ -57,11 +58,15 @@ export default class ConfirmTooltip extends Component {
 				{children ? (
 					children
 				) : (
-					<Button className={className} kind="trashcan">
-						{label}{' '}
+					<Button className={className} kind="trashcan" onMouseEnter={this._handleOnMouseHover}>
+						{label ? label : this.state.isHovering && 'SLETT'}
 					</Button>
 				)}
 			</Tooltip>
 		)
+	}
+
+	_handleOnMouseHover = () => {
+		this.setState({ isHovering: !this.state.isHovering })
 	}
 }
