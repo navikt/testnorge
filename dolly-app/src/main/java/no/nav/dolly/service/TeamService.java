@@ -1,7 +1,7 @@
 package no.nav.dolly.service;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -58,7 +58,7 @@ public class TeamService {
                 .beskrivelse(opprettTeam.getBeskrivelse())
                 .datoOpprettet(LocalDate.now())
                 .eier(currentBruker)
-                .medlemmer(singletonList(currentBruker))
+                .medlemmer(newArrayList(currentBruker))
                 .build()
         );
 
