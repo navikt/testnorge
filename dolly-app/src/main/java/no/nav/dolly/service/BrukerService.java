@@ -94,9 +94,10 @@ public class BrukerService {
         return brukerRepository.save(bruker);
     }
 
-    public Bruker leggTilTeam(Bruker b, Team t){
-        b.getTeams().add(t);
-        return saveBrukerTilDB(b);
+    public Bruker leggTilTeam(Bruker bruker, Team team){
+        team.getMedlemmer().add(bruker);
+        bruker.getTeams().add(team);
+        return saveBrukerTilDB(bruker);
     }
 
     public List<Bruker> fetchBrukere() {
