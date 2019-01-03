@@ -58,6 +58,11 @@ public class FoedselService {
                 meldingIterator.remove();
                 continue;
             }
+
+            if (barnFnr.length() != 11) { // TODO - Fjerne denne når feilen med tomme fnr er oppdaget/fikset
+                log.error("behandleFoedselsmeldinger: Feil på fnr {} fra ident-pool. Fnr har en lengde på {}", barnFnr, barnFnr.length());
+            }
+
             putFnrInnIMelding((RsMeldingstype1Felter) melding, barnFnr);
 
             ((RsMeldingstype1Felter) melding).setMorsFodselsdato(morFnr.substring(0, 6));
