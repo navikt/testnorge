@@ -1,6 +1,7 @@
 package no.nav.dolly.api;
 
 import static java.lang.String.format;
+import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class TeamController {
     @Autowired
     private MapperFacade mapperFacade;
 
-    @Cacheable("team")
+    @Cacheable(CACHE_TEAM)
     @GetMapping
     public List<RsTeam> getTeams(@RequestParam("navIdent") Optional<String> navIdent) {
         return navIdent
@@ -50,14 +51,14 @@ public class TeamController {
                 .orElse(mapperFacade.mapAsList(teamRepository.findAllByOrderByNavn(), RsTeam.class));
     }
 
-    @CacheEvict(value = "team", allEntries = true)
+    @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public RsTeamUtvidet opprettTeam(@RequestBody RsOpprettTeam createTeamRequest) {
         return teamService.opprettTeam(createTeamRequest);
     }
 
-    @CacheEvict(value = "team", allEntries = true)
+    @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @DeleteMapping("/{teamId}")
     public void deleteTeam(@PathVariable("teamId") Long teamId) {
         if (teamService.deleteTeam(teamId) == 0) {
@@ -65,31 +66,31 @@ public class TeamController {
         }
     }
 
-    @Cacheable("team")
+    @Cacheable(CACHE_TEAM)
     @GetMapping("/{teamId}")
     public RsTeamUtvidet fetchTeamById(@PathVariable("teamId") Long teamid) {
         return mapperFacade.map(teamService.fetchTeamById(teamid), RsTeamUtvidet.class);
     }
 
-    @CacheEvict(value = "team", allEntries = true)
+    @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @PutMapping("/{teamId}/leggTilMedlemmer")
     public RsTeamUtvidet addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
         return teamService.addMedlemmerByNavidenter(teamId, navIdenter);
     }
 
-    @CacheEvict(value = "team", allEntries = true)
+    @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @PutMapping("/{teamId}/fjernMedlemmer")
     public RsTeamUtvidet fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
         return teamService.fjernMedlemmer(teamId, navIdenter);
     }
 
-    @CacheEvict(value = "team", allEntries = true)
+    @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @DeleteMapping("/{teamId}/deleteMedlem")
     public RsTeamUtvidet deleteMedlemfraTeam(@PathVariable("teamId") Long teamId, @RequestParam String navIdent) {
         return teamService.slettMedlem(teamId, navIdent);
     }
 
-    @CacheEvict(value = "team", allEntries = true)
+    @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @PutMapping("/{teamId}")
     public RsTeamUtvidet endreTeaminfo(@PathVariable("teamId") Long teamId, @RequestBody RsTeamUtvidet createTeamRequest) {
         return teamService.updateTeamInfo(teamId, createTeamRequest);

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,7 +44,6 @@ import no.nav.dolly.service.TestgruppeService;
 public class DollyBestillingService {
 
     private static final String INNVANDRINGS_MLD_NAVN = "innvandringcreate";
-    private static final String CACHE_GRUPPE = "gruppe";
 
     @Autowired
     private TpsfResponseHandler tpsfResponseHandler;
@@ -207,7 +207,7 @@ public class DollyBestillingService {
             if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
                     if (!(entry.getValue().contains("OK"))) {
-                            failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("^(08)(;08%)*", "FEIL: ").trim()));
+                        failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("^(08)(;08%)*", "FEIL: ").trim()));
                     }
                 }
             }
