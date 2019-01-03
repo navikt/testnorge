@@ -29,6 +29,7 @@ export default class BestillingListe extends PureComponent {
 									<Table.Column width="20" value="Sist oppdatert" />
 									<Table.Column width="30" value="Miljø" />
 									<Table.Column width="10" value="Status" />
+									<Table.Column width="10" />
 								</Table.Header>
 
 								{items &&
