@@ -52,27 +52,19 @@ class TableRow extends PureComponent {
 		})
 
 		return (
-			<div className={rowClass}>
-				<div tabIndex={0} className={columnsClass}>
-					<div className="dot-body-row-columns-maincontent" {...rowProps}>
-						{children}
-						<Table.Column className="dot-body-row-expand-icon">
-							{expandComponent && (
-								<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
-							)}
-						</Table.Column>
-					</div>
-				</div>
-				<div className="action-column">
-					{deleteAction && (
-						<ConfirmTooltip
-							label="SLETT"
-							className="flexbox--align-center"
-							onClick={deleteAction}
-						/>
-					)}
-					{editAction && <Button kind="edit" onClick={editAction} />}
-					{groupId && <FavoriteButtonConnector groupId={groupId} />}
+			<div tabIndex={0} className={rowClass}>
+				<div className={columnsClass} {...rowProps}>
+					{children}
+					<Table.Column className="dot-body-row-actioncolumn">
+						{/* {editAction && <Button kind="edit" onClick={editAction} />} */}
+						{deleteAction && (
+							<ConfirmTooltip className="flexbox--align-center" onClick={deleteAction} />
+						)}{' '}
+						{groupId && <FavoriteButtonConnector hideLabel={true} groupId={groupId} />}
+						{expandComponent && (
+							<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
+						)}
+					</Table.Column>
 				</div>
 				{this.state.expanded && (
 					<div className="dot-body-row-expandcomponent">{expandComponent}</div>
@@ -92,7 +84,6 @@ class TableHeader extends PureComponent {
 		return (
 			<div tabIndex={0} className="dot-header" {...restProps}>
 				{children}
-				<div className="dot-column col10 dot-body-row-actioncolumn" />
 			</div>
 		)
 	}

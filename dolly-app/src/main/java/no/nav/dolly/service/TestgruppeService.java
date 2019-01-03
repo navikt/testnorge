@@ -70,7 +70,6 @@ public class TestgruppeService {
         Bruker bruker = brukerService.fetchBruker(navIdent);
         Set<Testgruppe> testgrupper = bruker.getFavoritter();
         bruker.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
-        testgrupper.addAll(gruppeRepository.findAllByOpprettetAvOrderByNavn(bruker));
 
         List<Testgruppe> unikeTestgrupper = new ArrayList(testgrupper);
         Collections.sort(unikeTestgrupper,(Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));

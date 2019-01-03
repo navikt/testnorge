@@ -40,7 +40,6 @@ public class BrukerController {
         return mapperFacade.map(bruker, RsBrukerTeamAndGruppeIDs.class);
     }
 
-
     @GetMapping("/current")
     public RsBruker getCurrentBruker() {
         OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
@@ -54,13 +53,13 @@ public class BrukerController {
         return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerTeamAndGruppeIDs.class);
     }
 
-    @CacheEvict(value = "bruker", allEntries = true)
+    @CacheEvict(value = { "bruker", "gruppe" }, allEntries = true)
     @PutMapping("/leggTilFavoritt")
     public RsBruker leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.leggTilFavoritt(request.getGruppeId()), RsBruker.class);
     }
 
-    @CacheEvict(value = "bruker", allEntries = true)
+    @CacheEvict(value = { "bruker", "gruppe" }, allEntries = true)
     @PutMapping("/fjernFavoritt")
     public RsBruker fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.fjernFavoritt(request.getGruppeId()), RsBruker.class);
