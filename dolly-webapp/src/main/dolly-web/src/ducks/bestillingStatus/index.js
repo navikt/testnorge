@@ -49,7 +49,6 @@ export const setBestillingStatus = (bestillingId, data) => ({
 // Selector + mapper
 export const sokSelector = (items, searchStr) => {
 	if (!items) return null
-	console.log(items)
 	const mappedItems = mapItems(items)
 
 	if (!searchStr) return mappedItems

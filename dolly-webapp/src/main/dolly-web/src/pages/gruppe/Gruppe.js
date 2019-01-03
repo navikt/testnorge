@@ -44,6 +44,7 @@ export default class Gruppe extends Component {
 
 	toggleToolbar = e => {
 		const visning = e.target.value
+		visning === this.VISNING_BESTILLING && this.props.getGruppe()
 		this.setState({ visning }, () => this.props.resetSearch())
 	}
 
@@ -57,6 +58,9 @@ export default class Gruppe extends Component {
 		const { editTestbruker } = this.props
 
 		if (visning === this.VISNING_BESTILLING) {
+			if (this.props.isFetching) {
+				return <Loading label="Laster bestillinger" panel />
+			}
 			return <BestillingListeConnector bestillingListe={gruppe.bestillinger} />
 		}
 		// !!! Pagination is is applied on TestbrukerListe because we fetch "testbrukere" from TPSF.
@@ -77,7 +81,8 @@ export default class Gruppe extends Component {
 			addFavorite
 		} = this.props
 
-		if (isFetching) return <Loading label="Laster grupper" panel />
+		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
+			return <Loading label="Laster grupper" panel />
 
 		if (!gruppeArray) return null
 
