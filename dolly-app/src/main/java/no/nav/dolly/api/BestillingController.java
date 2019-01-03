@@ -1,7 +1,10 @@
 package no.nav.dolly.api;
 
+import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +42,7 @@ public class BestillingController {
         return rsBestilling;
     }
 
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     public RsBestilling stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
         Bestilling bestilling = bestillingService.cancelBestilling(bestillingId);
