@@ -44,7 +44,6 @@ export default class Gruppe extends Component {
 
 	toggleToolbar = e => {
 		const visning = e.target.value
-		console.log(visning, 'visning')
 		visning === this.VISNING_BESTILLING && this.props.getGruppe()
 		this.setState({ visning }, () => this.props.resetSearch())
 	}
