@@ -45,7 +45,6 @@ public class DollyBestillingService {
 
     private static final String INNVANDRINGS_MLD_NAVN = "innvandringcreate";
 
-
     @Autowired
     private TpsfResponseHandler tpsfResponseHandler;
 
@@ -208,7 +207,7 @@ public class DollyBestillingService {
             if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
                     if (!(entry.getValue().contains("OK"))) {
-                            failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("^(08)(;08%)*", "FEIL: ").trim()));
+                        failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("^(08)(;08%)*", "FEIL: ").trim()));
                     }
                 }
             }
