@@ -253,7 +253,7 @@ public class HodejegerService {
             }
             if (ids.get(i + 1) == ids.get(i) + 1) {
                 if(!rangeStarted) {
-                    rangeToAdd = new StringBuilder(ids.get(i) + " - ");
+                    rangeToAdd = new StringBuilder(ids.get(i).toString()).append(" - ");
                     rangeStarted = true;
                 }
             } else {
