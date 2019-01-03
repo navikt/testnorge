@@ -18,6 +18,7 @@ export default class BestillingStatus extends PureComponent {
 
 		this.PULL_INTERVAL = 1000
 		this.TIMEOUT_BEFORE_HIDE = 2000
+		this.TIME_BEFORE_WARNING_MESSAGE = 60
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
@@ -80,7 +81,8 @@ export default class BestillingStatus extends PureComponent {
 		if (liveTimeStamp == oldTimeStamp) {
 			this.setState({ failureIntervalCounter: (this.state.failureIntervalCounter += 1) })
 			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
-			this.state.failureIntervalCounter == 60 && this.setState({ failed: true })
+			this.state.failureIntervalCounter == this.TIME_BEFORE_WARNING_MESSAGE &&
+				this.setState({ failed: true })
 		} else {
 			this.setState({ sistOppdatert: data.sistOppdatert, failureIntervalCounter: 0, failed: false })
 		}
@@ -129,7 +131,6 @@ export default class BestillingStatus extends PureComponent {
 			bestilling
 		} = this.props
 
-		console.log(bestilling)
 		if (isCanceling && this.state.showCancelLoadingMsg) {
 			return (
 				<ContentContainer className="loading-content-container">
