@@ -102,11 +102,10 @@ public class HodejegerService {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
                 ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
-                        .addMessage(e.getMessage() + " (ManglendeInfoITPSException) - endringskode: " + endringskode.getEndringskode())
-                        .addCause(e);
+                        .addMessage(e.getMessage() + " (ManglendeInfoITPSException) - endringskode: " + endringskode.getEndringskode());
 
                 log.error(e.getMessage(), e);
-                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), ids);
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), createListOfRangesFromIds(ids));
             } catch (HttpStatusCodeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
@@ -116,7 +115,7 @@ public class HodejegerService {
                         .addCause(e);
 
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), ids);
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), createListOfRangesFromIds(ids));
             } catch (RuntimeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
@@ -126,7 +125,7 @@ public class HodejegerService {
                         .addCause(e);
 
                 log.error(e.getMessage(), e);
-                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), ids);
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), createListOfRangesFromIds(ids));
             }
         }
 
@@ -231,5 +230,42 @@ public class HodejegerService {
         log.info(message.toString());
 
         return listerMedIdenter;
+    }
+
+    /**
+     * Metoden tar inn en liste av id-er og oppretter en ny liste der inkrementerende id-er er skrevet som range for å spare plass
+     * (f.eks vil 1, 2, 3 skrives som 1 - 3)
+     */
+    private List<String> createListOfRangesFromIds(List<Long> ids) {
+        List<String> idsWithRange = new ArrayList<>();
+        boolean rangeStarted = false;
+        StringBuilder rangeToAdd = new StringBuilder();
+
+        for (int i = 0; i < ids.size(); i++) {
+            if (i >= ids.size() - 1) {
+                if(rangeStarted) {
+                    rangeToAdd.append(ids.get(i));
+                    idsWithRange.add(rangeToAdd.toString());
+                } else {
+                    idsWithRange.add(ids.get(i).toString());
+                }
+                break;
+            }
+            if (ids.get(i + 1) == ids.get(i) + 1) {
+                if(!rangeStarted) {
+                    rangeToAdd = new StringBuilder(ids.get(i).toString()).append(" - ");
+                    rangeStarted = true;
+                }
+            } else {
+                if(rangeStarted) {
+                    rangeToAdd.append(ids.get(i));
+                    idsWithRange.add(rangeToAdd.toString());
+                    rangeStarted = false;
+                } else {
+                    idsWithRange.add(ids.get(i).toString());
+                }
+            }
+        }
+        return idsWithRange;
     }
 }

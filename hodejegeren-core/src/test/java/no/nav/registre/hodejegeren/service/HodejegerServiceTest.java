@@ -2,6 +2,10 @@ package no.nav.registre.hodejegeren.service;
 
 import static no.nav.registre.hodejegeren.service.Endringskoder.ENDRING_OPPHOLDSTILLATELSE;
 import static no.nav.registre.hodejegeren.testutils.Utils.testLoggingInClass;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -208,12 +212,13 @@ public class HodejegerServiceTest {
 
     /**
      * Testscenario: HVIS RuntimeException blir kastet som det ikke finnes spesifikk behandling for, SÅ skal database-id-ene hos
-     * TPSF for de allerede lagrede skdmeldingene loggføres og feilmeldingen kastes videre
+     * TPSF for de allerede lagrede skdmeldingene loggføres og feilmeldingen kastes videre. Idene i loggingen skal skrives med range
+     * for å spare plass
      */
     @Test
-    public void generellFeilhaandteringBurdeLoggfoereLagredeSkdmeldingenesId() {
+    public void generellFeilhaandteringBurdeLoggfoereLagredeSkdmeldingenesIdMedRange() {
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(HodejegerService.class);
-        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+        List<Long> ids = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 8L, 10L, 11L, 13L, 14L, 15L, 17L, 18L);
         final HashMap<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put(Endringskoder.INNFLYTTING_ANNEN_KOMMUNE.getEndringskode(), ids.size());
         antallMeldingerPerEndringskode.put(ENDRING_OPPHOLDSTILLATELSE.getEndringskode(), 1);
@@ -226,11 +231,10 @@ public class HodejegerServiceTest {
 
         ResponseEntity response = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
 
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertThat(response.getStatusCode(), is(equalTo(HttpStatus.CONFLICT)));
         IkkeFullfoertBehandlingExceptionsContainer exception = (IkkeFullfoertBehandlingExceptionsContainer) response.getBody();
-        assertEquals(3, listAppender.list.size());
-        assertTrue(listAppender.list.toString()
-                .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s", 123, ids.toString())));
-
+        assertThat(listAppender.list.size(), is(equalTo(3)));
+        assertThat(listAppender.list.toString(), containsString(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
+                123, "[1 - 6, 8, 10 - 11, 13 - 15, 17 - 18]")));
     }
 }
