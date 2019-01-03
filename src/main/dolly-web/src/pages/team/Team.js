@@ -105,12 +105,13 @@ class Team extends Component {
 										{items.map(medlem => (
 											<CSSTransition
 												key={medlem.navIdent}
-												timeout={isCreateDelete ? 2000 : 1}
+												timeout={isCreateDelete ? 500 : 1}
 												classNames="fade"
 											>
 												<Table.Row
 													key={medlem.navIdent}
 													deleteAction={() => removeMember([medlem.navIdent])}
+													deleteMessage={'Vil du slette ' + medlem.navIdent + ' fra dette teamet?'}
 												>
 													<Table.Column width="30" value={medlem.navIdent} />
 													<Table.Column width="10" value="Utvikler" />

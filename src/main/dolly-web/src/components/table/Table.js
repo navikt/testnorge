@@ -33,6 +33,7 @@ class TableRow extends PureComponent {
 			expandComponent,
 			editAction,
 			deleteAction,
+			deleteMessage,
 			navLink,
 			groupId,
 			...restProps
@@ -58,7 +59,11 @@ class TableRow extends PureComponent {
 					<Table.Column className="dot-body-row-actioncolumn">
 						{/* {editAction && <Button kind="edit" onClick={editAction} />} */}
 						{deleteAction && (
-							<ConfirmTooltip className="flexbox--align-center" onClick={deleteAction} />
+							<ConfirmTooltip
+								className="flexbox--align-center"
+								onClick={deleteAction}
+								message={deleteMessage ? deleteMessage : 'SLETT?'}
+							/>
 						)}{' '}
 						{groupId && <FavoriteButtonConnector hideLabel={true} groupId={groupId} />}
 						{expandComponent && (
