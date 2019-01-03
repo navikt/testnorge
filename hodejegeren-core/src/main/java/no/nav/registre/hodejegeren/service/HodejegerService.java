@@ -97,34 +97,30 @@ public class HodejegerService {
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
             } catch (ManglendeInfoITpsException e) {
-                List<String> idsWithRange = createListOfRangesFromIds(ids);
                 e.getClass().getName();
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
-                ikkeFullfoertBehandlingExceptionsContainer.addIds(idsWithRange)
-                        .addMessage(e.getMessage() + " (ManglendeInfoITPSException) - endringskode: " + endringskode.getEndringskode())
-                        .addCause(e);
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
+                        .addMessage(e.getMessage() + " (ManglendeInfoITPSException) - endringskode: " + endringskode.getEndringskode());
 
                 log.error(e.getMessage(), e);
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), createListOfRangesFromIds(ids));
             } catch (HttpStatusCodeException e) {
-                List<String> idsWithRange = createListOfRangesFromIds(ids);
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
-                ikkeFullfoertBehandlingExceptionsContainer.addIds(idsWithRange)
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
                         .addMessage(e.getMessage() + " (HttpStatusCodeException) - endringskode: " + endringskode.getEndringskode())
                         .addCause(e);
 
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
                 log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), createListOfRangesFromIds(ids));
             } catch (RuntimeException e) {
-                List<String> idsWithRange = createListOfRangesFromIds(ids);
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
                 }
-                ikkeFullfoertBehandlingExceptionsContainer.addIds(idsWithRange)
+                ikkeFullfoertBehandlingExceptionsContainer.addIds(ids)
                         .addMessage(e.getMessage() + " (RuntimeException) - endringskode: " + endringskode.getEndringskode())
                         .addCause(e);
 
@@ -242,23 +238,32 @@ public class HodejegerService {
      */
     private List<String> createListOfRangesFromIds(List<Long> ids) {
         List<String> idsWithRange = new ArrayList<>();
+        boolean rangeStarted = false;
+        StringBuilder rangeToAdd = new StringBuilder();
+
         for (int i = 0; i < ids.size(); i++) {
             if (i >= ids.size() - 1) {
-                idsWithRange.add(ids.get(i).toString());
+                if(rangeStarted) {
+                    rangeToAdd.append(ids.get(i));
+                    idsWithRange.add(rangeToAdd.toString());
+                } else {
+                    idsWithRange.add(ids.get(i).toString());
+                }
                 break;
             }
             if (ids.get(i + 1) == ids.get(i) + 1) {
-                String rangeToAdd = ids.get(i) + " - ";
-                while (ids.get(i + 1) == ids.get(i) + 1) {
-                    i++;
-                    if (i >= ids.size() - 1) {
-                        break;
-                    }
+                if(!rangeStarted) {
+                    rangeToAdd = new StringBuilder(ids.get(i) + " - ");
+                    rangeStarted = true;
                 }
-                rangeToAdd += ids.get(i);
-                idsWithRange.add(rangeToAdd);
             } else {
-                idsWithRange.add(ids.get(i).toString());
+                if(rangeStarted) {
+                    rangeToAdd.append(ids.get(i));
+                    idsWithRange.add(rangeToAdd.toString());
+                    rangeStarted = false;
+                } else {
+                    idsWithRange.add(ids.get(i).toString());
+                }
             }
         }
         return idsWithRange;

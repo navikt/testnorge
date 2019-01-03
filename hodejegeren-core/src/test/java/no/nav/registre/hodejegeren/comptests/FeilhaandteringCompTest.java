@@ -14,11 +14,8 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.VIGSEL;
 import static no.nav.registre.hodejegeren.testutils.ResourceUtils.getResourceFileContent;
 import static no.nav.registre.hodejegeren.testutils.StrSubstitutor.replace;
 import static no.nav.registre.hodejegeren.testutils.Utils.testLoggingInClass;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -56,7 +53,7 @@ public class FeilhaandteringCompTest {
 
     String testfeilmelding = "testfeilmelding";
     private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
-    private List<String> expectedMeldingsIdsITpsf = Arrays.asList("120421016", "110156008");
+    private List<Long> expectedMeldingsIdsITpsf = Arrays.asList(120421016L, 110156008L);
     private Integer antallMeldinger = 2;
     private String t10 = "t10";
     @Autowired
@@ -96,13 +93,14 @@ public class FeilhaandteringCompTest {
         GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, t10, antallMeldingerPerAarsakskode);
         ResponseEntity response = triggeSyntetiseringController.genererSyntetiskeMeldingerOgLagreITpsf(ordreRequest);
 
-        assertThat(response.getStatusCode(), is(equalTo(HttpStatus.CONFLICT)));
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         IkkeFullfoertBehandlingExceptionsContainer exception = (IkkeFullfoertBehandlingExceptionsContainer) response.getBody();
-        assertThat(listAppender.list.size(), is(equalTo(3)));
-        assertThat(listAppender.list.toString(), containsString(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
-                123, expectedMeldingsIdsITpsf.toString())));
-        assertThat((exception.getIds().size()), is(equalTo(2)));
-        assertEquals(expectedMeldingsIdsITpsf, exception.getIds());
+        assertEquals(3, listAppender.list.size());
+        assertTrue(listAppender.list.toString()
+                .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
+                        123, expectedMeldingsIdsITpsf.toString())));
+        assertEquals(2, (exception.getIds().size()));
+        assertTrue(exception.getIds().containsAll(expectedMeldingsIdsITpsf));
     }
 
     private void stubIdentpool() {

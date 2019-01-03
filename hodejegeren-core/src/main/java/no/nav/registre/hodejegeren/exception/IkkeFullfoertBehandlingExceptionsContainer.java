@@ -1,7 +1,9 @@
 package no.nav.registre.hodejegeren.exception;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,12 +12,12 @@ import lombok.NoArgsConstructor;
 @Getter
 public class IkkeFullfoertBehandlingExceptionsContainer extends HodejegerenFunctionalException {
 
-    private final List<String> ids = new ArrayList<>();
+    private final Set<Long> ids = new LinkedHashSet<>();
     private final List<String> messages = new ArrayList<>();
     private final List<Throwable> causes = new ArrayList<>();
 
-    public IkkeFullfoertBehandlingExceptionsContainer addIds(List<String> idsWithRange) {
-        this.ids.addAll(idsWithRange);
+    public IkkeFullfoertBehandlingExceptionsContainer addIds(List<Long> ids) {
+        this.ids.addAll(ids);
         return this;
     }
 
