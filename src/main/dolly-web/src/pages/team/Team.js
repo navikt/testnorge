@@ -59,7 +59,7 @@ class Team extends Component {
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
 					<ConfirmTooltip
-						label="Vil du slette Z124345 fra dette teamet?"
+						label="SLETT"
 						className="flexbox--align-center"
 						message={
 							grupper.length > 0
