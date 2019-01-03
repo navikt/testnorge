@@ -105,7 +105,7 @@ class Team extends Component {
 										{items.map(medlem => (
 											<CSSTransition
 												key={medlem.navIdent}
-												timeout={isCreateDelete ? 2000 : 1}
+												timeout={isCreateDelete ? 500 : 1}
 												classNames="fade"
 											>
 												<Table.Row
