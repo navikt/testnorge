@@ -59,7 +59,7 @@ class Team extends Component {
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
 					<ConfirmTooltip
-						label="SLETT"
+						label="Vil du slette Z124345 fra dette teamet?"
 						className="flexbox--align-center"
 						message={
 							grupper.length > 0
@@ -111,6 +111,7 @@ class Team extends Component {
 												<Table.Row
 													key={medlem.navIdent}
 													deleteAction={() => removeMember([medlem.navIdent])}
+													deleteMessage={'Vil du slette ' + medlem.navIdent + ' fra dette teamet?'}
 												>
 													<Table.Column width="30" value={medlem.navIdent} />
 													<Table.Column width="10" value="Utvikler" />
