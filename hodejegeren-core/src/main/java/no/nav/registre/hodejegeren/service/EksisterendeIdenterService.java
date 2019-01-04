@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +54,7 @@ public class EksisterendeIdenterService {
         int pnrAarhundreKode = Integer.parseInt(fnr.substring(6, 9));
         int day = Integer.parseInt(fnr.substring(0, 2));
 
-        if(day > 31) { // For d-nummer legges det til 4 på det første sifferet i fnr
+        if (day > 31) { // For d-nummer legges det til 4 på det første sifferet i fnr
             day -= 40;
         }
 
@@ -73,47 +74,47 @@ public class EksisterendeIdenterService {
             Endringskoder endringskode, String environment) {
 
         switch (endringskode) {
-            case NAVNEENDRING_FOERSTE:
-            case NAVNEENDRING_MELDING:
-            case NAVNEENDRING_KORREKSJON:
-            case ADRESSEENDRING_UTEN_FLYTTING:
-            case ADRESSEKORREKSJON:
-            case UTVANDRING:
-            case FARSKAP_MEDMORSKAP:
-            case ENDRING_STATSBORGERSKAP_BIBEHOLD:
-            case ENDRING_FAMILIENUMMER:
-            case ENDRING_FORELDREANSVAR:
-            case ENDRING_OPPHOLDSTILLATELSE:
-            case ENDRING_POSTADRESSE_TILLEGGSADRESSE:
-            case ENDRING_POSTNUMMER_SKOLE_VALG_GRUNNKRETS:
-            case KOMMUNEREGULERING:
-            case ADRESSEENDRING_GAB:
-            case ENDRING_KORREKSJON_FOEDESTED:
-            case ENDRING_DUF_NUMMER:
-            case FLYTTING_INNEN_KOMMUNEN:
-            case UREGISTRERT_PERSON:
-            case ANNULERING_FLYTTING_ADRESSEENDRING:
-            case INNFLYTTING_ANNEN_KOMMUNE:
-                behandleGenerellAarsak(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, environment);
-                break;
-            case VIGSEL:
-                behandleVigsel(meldinger, listerMedIdenter.get(SINGLE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, environment);
-                break;
-            case SEPERASJON:
-            case SKILSMISSE:
-                behandleSeperasjonSkilsmisse(meldinger, listerMedIdenter.get(GIFTE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, environment);
-                break;
-            case DOEDSMELDING:
-                behandleDoedsmelding(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                        endringskode, environment);
-                break;
-            case KORREKSJON_FAMILIEOPPLYSNINGER:
-                break;
-            default:
-                break;
+        case NAVNEENDRING_FOERSTE:
+        case NAVNEENDRING_MELDING:
+        case NAVNEENDRING_KORREKSJON:
+        case ADRESSEENDRING_UTEN_FLYTTING:
+        case ADRESSEKORREKSJON:
+        case UTVANDRING:
+        case FARSKAP_MEDMORSKAP:
+        case ENDRING_STATSBORGERSKAP_BIBEHOLD:
+        case ENDRING_FAMILIENUMMER:
+        case ENDRING_FORELDREANSVAR:
+        case ENDRING_OPPHOLDSTILLATELSE:
+        case ENDRING_POSTADRESSE_TILLEGGSADRESSE:
+        case ENDRING_POSTNUMMER_SKOLE_VALG_GRUNNKRETS:
+        case KOMMUNEREGULERING:
+        case ADRESSEENDRING_GAB:
+        case ENDRING_KORREKSJON_FOEDESTED:
+        case ENDRING_DUF_NUMMER:
+        case FLYTTING_INNEN_KOMMUNEN:
+        case UREGISTRERT_PERSON:
+        case ANNULERING_FLYTTING_ADRESSEENDRING:
+        case INNFLYTTING_ANNEN_KOMMUNE:
+            behandleGenerellAarsak(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                    endringskode, environment);
+            break;
+        case VIGSEL:
+            behandleVigsel(meldinger, listerMedIdenter.get(SINGLE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                    endringskode, environment);
+            break;
+        case SEPERASJON:
+        case SKILSMISSE:
+            behandleSeperasjonSkilsmisse(meldinger, listerMedIdenter.get(GIFTE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                    endringskode, environment);
+            break;
+        case DOEDSMELDING:
+            behandleDoedsmelding(meldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE), listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                    endringskode, environment);
+            break;
+        case KORREKSJON_FAMILIEOPPLYSNINGER:
+            break;
+        default:
+            break;
         }
     }
 
@@ -204,11 +205,11 @@ public class EksisterendeIdenterService {
                 meldingerForPartnere.add(meldingPartner);
 
                 oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
-                i++; //Neste melding
+                i++; // Neste melding
             } else {
                 log.warn("Korrupte data i TPS - personnummeret eller sivilstanden stemmer ikke for personene med fødselsnumrene: {} og {}",
                         ident, identPartner);
-                //Prøver på nytt med å finne et nytt par for samme melding
+                // Prøver på nytt med å finne et nytt par for samme melding
             }
         }
         meldinger.addAll(meldingerForPartnere);
@@ -236,23 +237,26 @@ public class EksisterendeIdenterService {
                 identPartner = statusQuoIdent.get(FNR_RELASJON);
 
                 if (identPartner.length() != 11) { // TODO - Fjerne denne når feilen med tomme fnr er oppdaget/fikset
-                    log.error("behandleDoedsmelding: Feil på fnr {} fra FNR_RELASJON. Fnr har en lengde på {}", identPartner, identPartner.length());
-                }
-
-                statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
-
-                if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))) {
-                    if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
-                        putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
-
-                        meldingerForPartnere.add(opprettSivilstandsendringsmelding(meldinger.get(i), identPartner));
-
-                        oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
-                    } else {
-                        // personnummer i fnrRelasjon til partner matcher ikke
-                    }
+                    log.warn("behandleDoedsmelding: Feil på fnr {} fra FNR_RELASJON. Fnr har en lengde på {}. Hopper over sivilstandendringsmelding på partner.",
+                            identPartner, identPartner.length());
+                    putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
+                    oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident));
                 } else {
-                    // ulik sivilstand på identene
+                    statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
+
+                    if (statusQuoPartnerIdent.get(SIVILSTAND).equals(statusQuoIdent.get(SIVILSTAND))) {
+                        if (statusQuoPartnerIdent.get(FNR_RELASJON).equals(ident)) {
+                            putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
+
+                            meldingerForPartnere.add(opprettSivilstandsendringsmelding(meldinger.get(i), identPartner));
+
+                            oppdaterBolk(brukteIdenterIDenneBolken, Arrays.asList(ident, identPartner));
+                        } else {
+                            // personnummer i fnrRelasjon til partner matcher ikke
+                        }
+                    } else {
+                        // ulik sivilstand på identene
+                    }
                 }
             } else {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
@@ -292,9 +296,8 @@ public class EksisterendeIdenterService {
     }
 
     /**
-     * Metoden prøver å hente ut statusQuo på identer.
-     * Den prøver inntil den finner noen som eksisterer i TPS (ikke kaster ManglerEksisterendeIdentException)
-     * eller antall forsøk overstiger et gitt antall.
+     * Metoden prøver å hente ut statusQuo på identer. Den prøver inntil den finner noen som eksisterer i TPS (ikke kaster
+     * ManglerEksisterendeIdentException) eller antall forsøk overstiger et gitt antall.
      */
     private Map<String, String> findExistingPersonStatusInTps(List<String> identer, Endringskoder endringskode, String environment) {
         Map<String, String> statusQuoIdent = new HashMap<>();
