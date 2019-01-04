@@ -62,7 +62,7 @@ export default class BestillingStatus extends PureComponent {
 		// en kort melding som sier at prosessen er ferdig
 		let newState = {
 			ferdig: false,
-			antallKlare: data.personStatus.length,
+			antallKlare: data.personStatus ? data.personStatus.length : 0,
 			sistOppdatert: data.sistOppdatert
 		}
 		this.setState(newState)
