@@ -38,7 +38,7 @@ public class SyntetiseringsController {
                     syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
             return ResponseEntity.ok(skdMeldingerTilTpsRespons);
         } catch (HttpStatusCodeExceptionContainer e) {
-            return ResponseEntity.status(e.getGeneralStatusCode()).body(e.toString());
+            return ResponseEntity.status(e.getGeneralStatusCode()).body(e.getResponseBodyAsString());
         }
     }
 
