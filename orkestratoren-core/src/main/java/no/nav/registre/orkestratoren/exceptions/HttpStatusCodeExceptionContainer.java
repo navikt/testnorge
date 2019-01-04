@@ -1,6 +1,7 @@
 package no.nav.registre.orkestratoren.exceptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class HttpStatusCodeExceptionContainer extends RuntimeException {
     public String getResponseBodyAsString() {
         StringBuilder formatert = new StringBuilder();
         for (HttpStatusCodeException e : nestedExceptions) {
-            formatert.append(e.getMessage()).append(e.getResponseBodyAsString()).append(System.lineSeparator());
+            formatert.append(e.getMessage()).append(System.lineSeparator()).append(Arrays.toString(e.getStackTrace())).append(System.lineSeparator());
         }
 
         formatert.append("FEILMELDINGER").append(System.lineSeparator());
