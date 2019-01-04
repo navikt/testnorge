@@ -18,13 +18,7 @@ export default class PersonInfoBlock extends PureComponent {
 			return (
 				<Fragment>
 					{data.map((subBlock, idx) =>
-						this.renderPersonInfoBlock(
-							subBlock.apiKodeverkId,
-							subBlock.value,
-							subBlock.label,
-							idx,
-							idx !== data.length - 1
-						)
+						this.renderPersonInfoBlock(subBlock.value, subBlock.label, idx, idx !== data.length - 1)
 					)}
 				</Fragment>
 			)
