@@ -49,7 +49,8 @@ public class JobController {
         } catch (HttpStatusCodeException e) {
             ids.addAll(extractIdsFromResponseBody(e));
             if (!ids.isEmpty()) {
-                log.warn("tpsSyntBatch: Noe feilet i produserOfSendSkdmeldingerTilTpsIMiljoer for gruppe {}. Følgende id-er ble returnert: {}", skdMeldingGruppeId, createListOfRangesFromIds(ids));
+                log.warn("tpsSyntBatch: Noe feilet i produserOfSendSkdmeldingerTilTpsIMiljoer for gruppe {}. Følgende id-er ble returnert: {}. {} {}",
+                        skdMeldingGruppeId, createListOfRangesFromIds(ids), e.getResponseBodyAsString(), e);
             } else {
                 log.warn(e.getResponseBodyAsString(), e);
             }

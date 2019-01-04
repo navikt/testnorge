@@ -2,7 +2,9 @@ package no.nav.registre.orkestratoren.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.web.client.HttpStatusCodeException;
@@ -11,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.orkestratoren.exceptions.HttpStatusCodeExceptionContainer;
 
 @Slf4j
 public class ExceptionUtils {
@@ -30,6 +33,16 @@ public class ExceptionUtils {
             log.warn("Kunne ikke deserialisere innholdet i exception fra Hodejegeren");
         }
         return ids;
+    }
+
+    public static void filterStackTraceOnNavSpecificItems(HttpStatusCodeExceptionContainer exceptionContainer) {
+        Iterator<HttpStatusCodeException> httpStatusCodeExceptionIterator = exceptionContainer.getNestedExceptions().iterator();
+        while (httpStatusCodeExceptionIterator.hasNext()) {
+            HttpStatusCodeException exception = httpStatusCodeExceptionIterator.next();
+            List<StackTraceElement> stackTraceElements = new ArrayList<>(Arrays.asList(exception.getStackTrace()));
+            stackTraceElements.removeIf(stackTraceElement -> !stackTraceElement.getClassName().contains("no.nav"));
+            exception.setStackTrace(stackTraceElements.toArray(new StackTraceElement[0]));
+        }
     }
 
     /**
