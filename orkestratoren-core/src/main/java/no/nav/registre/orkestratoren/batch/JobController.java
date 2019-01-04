@@ -1,7 +1,12 @@
 package no.nav.registre.orkestratoren.batch;
 
+import static no.nav.registre.orkestratoren.utils.ExceptionUtils.createListOfRangesFromIds;
+import static no.nav.registre.orkestratoren.utils.ExceptionUtils.extractIdsFromResponseBody;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -38,10 +43,16 @@ public class JobController {
 
     @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
+        List<Long> ids = new ArrayList<>();
         try {
             tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
         } catch (HttpStatusCodeException e) {
-            log.warn(e.getResponseBodyAsString(), e);
+            ids.addAll(extractIdsFromResponseBody(e));
+            if (!ids.isEmpty()) {
+                log.warn("tpsSyntBatch: Noe feilet i produserOfSendSkdmeldingerTilTpsIMiljoer for gruppe {}. Følgende id-er ble returnert: {}", skdMeldingGruppeId, createListOfRangesFromIds(ids));
+            } else {
+                log.warn(e.getResponseBodyAsString(), e);
+            }
         }
     }
 
