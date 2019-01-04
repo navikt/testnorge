@@ -1,7 +1,17 @@
 package no.nav.registre.orkestratoren.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static no.nav.registre.orkestratoren.utils.ExceptionUtils.createListOfRangesFromIds;
+import static no.nav.registre.orkestratoren.utils.ExceptionUtils.extractIdsFromResponseBody;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.helpers.MessageFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
@@ -10,16 +20,6 @@ import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.orkestratoren.consumer.rs.response.StatusPaaAvspiltSkdMelding;
 import no.nav.registre.orkestratoren.exceptions.HttpStatusCodeExceptionContainer;
-import org.slf4j.helpers.MessageFormatter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -60,7 +60,7 @@ public class TpsSyntPakkenService {
                 if (e.getStatusCode().is5xxServerError()) {
                     log.error(e.getResponseBodyAsString(), e);
                 }
-                log.warn(MULIG_LAGRET_MEN_KANSKJE_IKKE_SENDT_MELDING, skdMeldingGruppeId, ids.toString());
+                log.warn(MULIG_LAGRET_MEN_KANSKJE_IKKE_SENDT_MELDING, skdMeldingGruppeId, createListOfRangesFromIds(ids));
                 httpStatusCodeExceptionContainer.addException(e);
                 httpStatusCodeExceptionContainer.addFeilmeldingBeskrivelse(MessageFormatter.format(MULIG_LAGRET_MEN_KANSKJE_IKKE_SENDT_MELDING, skdMeldingGruppeId, ids.toString()).getMessage());
             }
@@ -69,22 +69,5 @@ public class TpsSyntPakkenService {
             throw httpStatusCodeExceptionContainer;
         }
         return skdMeldingerTilTpsRespons;
-    }
-
-    private Collection<? extends Long> extractIdsFromResponseBody(HttpStatusCodeException e) {
-        List<Long> ids = new ArrayList<>();
-        try {
-            JsonNode jsonNode = new ObjectMapper().readTree(e.getResponseBodyAsString()).get("ids");
-            if (jsonNode == null) {
-                log.warn("Finner ikke id-er i response body til exception fra Hodejegeren - Body: {}", e.getResponseBodyAsString());
-            } else {
-                for (final JsonNode idNode : jsonNode) {
-                    ids.add(idNode.asLong());
-                }
-            }
-        } catch (IOException ie) {
-            log.warn("Kunne ikke deserialisere innholdet i exception fra Hodejegeren");
-        }
-        return ids;
     }
 }
