@@ -58,7 +58,7 @@ export default class PersonInfoBlock extends PureComponent {
 
 						// Spesiell tilfelle for gtVerdi
 						const apiKodeverkId = v.apiKodeverkId ? v.apiKodeverkId : null
-						console.log(apiKodeverkId)
+
 						// finn tilhørende attributt
 						const attributt = this.props.attributtManager.getAttributtById(v.id)
 
@@ -69,10 +69,15 @@ export default class PersonInfoBlock extends PureComponent {
 									{...staticValueProps}
 								/>
 							)
-						} else if (apiKodeverkId) {
-							console.log(apiKodeverkId, 'hei')
-							return <KodeverkValueConnector apiKodeverkId={apiKodeverkId} {...staticValueProps} />
 						}
+
+						// else if (apiKodeverkId) {
+						// 	console.log(apiKodeverkId, 'hei')
+						// 	console.log(v, 'v')
+						// 	return (
+						// 		<KodeverkValueConnector apiKodeverkId={apiKodeverkId} key={k} value={v.value} />
+						// 	)
+						// }
 						return v.value && <StaticValue {...staticValueProps} />
 					})}
 				</div>
