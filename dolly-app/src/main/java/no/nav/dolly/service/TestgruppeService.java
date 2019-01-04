@@ -1,12 +1,13 @@
 package no.nav.dolly.service;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,7 +16,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -38,7 +38,7 @@ public class TestgruppeService {
     private TeamService teamService;
 
     @Autowired
-    private MapperFacade mapperFacade;
+    private IdentService identService;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
@@ -66,13 +66,15 @@ public class TestgruppeService {
         throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
     }
 
-
-    public Set<Testgruppe> fetchTestgrupperByNavIdent(String navIdent) {
+    public List<Testgruppe> fetchTestgrupperByNavIdent(String navIdent) {
         Bruker bruker = brukerService.fetchBruker(navIdent);
         Set<Testgruppe> testgrupper = bruker.getFavoritter();
         bruker.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
 
-        return testgrupper;
+        List<Testgruppe> unikeTestgrupper = new ArrayList(testgrupper);
+        Collections.sort(unikeTestgrupper,(Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));
+
+        return unikeTestgrupper;
     }
 
     public Testgruppe saveGruppeTilDB(Testgruppe testgruppe) {
@@ -95,8 +97,16 @@ public class TestgruppeService {
         }
     }
 
-    public void slettGruppeById(Long gruppeId) {
-        gruppeRepository.deleteTestgruppeById(gruppeId);
+    public int slettGruppeById(Long gruppeId) {
+        identService.slettTestidenterByGruppeId(gruppeId);
+        brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
+        return gruppeRepository.deleteTestgruppeById(gruppeId);
+    }
+
+    public int slettGruppeByTeamId(Long teamId) {
+        identService.slettTestidenterByTeamId(teamId);
+        brukerService.sletteBrukerFavoritterByTeamId(teamId);
+        return gruppeRepository.deleteTestgruppeByTeamtilhoerighetId(teamId);
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
@@ -111,12 +121,12 @@ public class TestgruppeService {
         return saveGruppeTilDB(testgruppe);
     }
 
-    public Set<Testgruppe> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
-        Set<Testgruppe> grupper;
+    public List<Testgruppe> getTestgruppeByNavidentOgTeamId(String navIdent, Long teamId) {
+        List<Testgruppe> grupper;
         if (isNull(teamId)) {
-            grupper = isBlank(navIdent) ? newHashSet(gruppeRepository.findAll()) : fetchTestgrupperByNavIdent(navIdent);
+            grupper = isBlank(navIdent) ? gruppeRepository.findAllByOrderByNavn() : fetchTestgrupperByNavIdent(navIdent);
         } else {
-            grupper = newHashSet(gruppeRepository.findAllByTeamtilhoerighet(Team.builder().id(teamId).build()));
+            grupper = gruppeRepository.findAllByTeamtilhoerighetOrderByNavn(Team.builder().id(teamId).build());
         }
 
         return grupper;

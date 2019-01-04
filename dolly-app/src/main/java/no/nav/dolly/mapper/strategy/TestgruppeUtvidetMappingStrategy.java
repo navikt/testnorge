@@ -2,7 +2,7 @@ package no.nav.dolly.mapper.strategy;
 
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 
-import java.util.Set;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
@@ -38,7 +38,7 @@ public class TestgruppeUtvidetMappingStrategy implements MappingStrategy {
                         testgruppeUtvidet.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
                     }
 
-                    private boolean isMedlem(Set<Bruker> brukere) {
+                    private boolean isMedlem(List<Bruker> brukere) {
                         boolean isMedlem = false;
                         for (Bruker bruker : brukere) {
                             if (getLoggedInNavIdent().equalsIgnoreCase(bruker.getNavIdent())) {

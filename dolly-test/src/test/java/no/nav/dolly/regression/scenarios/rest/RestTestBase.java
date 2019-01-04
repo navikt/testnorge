@@ -1,7 +1,6 @@
 package no.nav.dolly.regression.scenarios.rest;
 
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -68,14 +67,14 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     }
 
     private void removeManyToManyRelationships(){
-        List<Bruker> brukere = brukerRepository.findAll();
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
         brukere.forEach(b -> {
             b.setFavoritter(new HashSet<>());
             b.setTeams(new HashSet<>());
         });
         brukerRepository.saveAll(brukere);
 
-        List<Testgruppe> grupper = gruppeRepository.findAll();
+        List<Testgruppe> grupper = gruppeRepository.findAllByOrderByNavn();
         grupper.forEach(g -> g.setFavorisertAv(new HashSet<>()));
         grupper.forEach(g -> g.setTestidenter(new HashSet<>()));
         gruppeRepository.saveAll(grupper);
@@ -95,7 +94,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
                 .navn(STANDARD_TEAM_NAVN)
                 .beskrivelse(STANDARD_TEAM_BESK)
                 .datoOpprettet(LocalDate.now())
-                .medlemmer(newHashSet(singletonList(standardBruker)))
+                .medlemmer(singletonList(standardBruker))
                 .build()
         );
 

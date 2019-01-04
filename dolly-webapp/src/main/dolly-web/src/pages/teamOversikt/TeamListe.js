@@ -24,6 +24,7 @@ class TeamListe extends Component {
 					<Table.Column width="30" value="Beskrivelse" />
 					<Table.Column width="20" value="Eier" />
 					<Table.Column width="20" value="Personer" />
+					<Table.Column width="10" value="" />
 				</Table.Header>
 
 				{items.map(team => {
@@ -35,13 +36,13 @@ class TeamListe extends Component {
 						<Table.Row
 							key={team.id}
 							navLink={() => history.push(`team/${team.id}`)}
-							editAction={() => startRedigerTeam(team.id)}
-							deleteAction={() => deleteTeam(team.id)}
+							// editAction={() => startRedigerTeam(team.id)}
+							// deleteAction={() => deleteTeam(team.id)}
 						>
 							<Table.Column width="20" value={team.navn} />
 							<Table.Column width="30" value={team.beskrivelse} />
 							<Table.Column width="20" value={team.eierNavIdent} />
-							<Table.Column width="10" value={team.antallMedlemmer} />
+							<Table.Column width="10" value={team.antallMedlemmer.toString()} />
 						</Table.Row>
 					)
 				})}

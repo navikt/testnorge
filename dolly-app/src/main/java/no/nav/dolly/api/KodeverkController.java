@@ -1,5 +1,7 @@
 package no.nav.dolly.api;
 
+import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -23,7 +25,7 @@ public class KodeverkController {
     @Autowired
     KodeverkConsumer kodeverkConsumer;
 
-    @Cacheable("kodeverk")
+    @Cacheable(CACHE_KODEVERK)
     @GetMapping("/{kodeverkNavn}")
     public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
         GetKodeverkKoderBetydningerResponse response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);

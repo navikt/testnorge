@@ -11,6 +11,21 @@ export default class PersonInfoBlock extends PureComponent {
 		data: PropTypes.array
 	}
 
+	render() {
+		const { header, data, multiple } = this.props
+		if (multiple) {
+			return (
+				<Fragment>
+					{data.map((subBlock, idx) =>
+						this.renderPersonInfoBlock(subBlock.value, subBlock.label, idx, idx !== data.length - 1)
+					)}
+				</Fragment>
+			)
+		}
+
+		return this.renderPersonInfoBlock(data)
+	}
+
 	renderPersonInfoBlock = (data, header, idx, bottomBorder) => {
 		const cssClassContent = cn('person-info-block_content', {
 			'bottom-border': bottomBorder
@@ -50,20 +65,5 @@ export default class PersonInfoBlock extends PureComponent {
 				</div>
 			</div>
 		)
-	}
-
-	render() {
-		const { header, data, multiple } = this.props
-		if (multiple) {
-			return (
-				<Fragment>
-					{data.map((subBlock, idx) =>
-						this.renderPersonInfoBlock(subBlock.value, subBlock.label, idx, idx !== data.length - 1)
-					)}
-				</Fragment>
-			)
-		}
-
-		return this.renderPersonInfoBlock(data)
 	}
 }

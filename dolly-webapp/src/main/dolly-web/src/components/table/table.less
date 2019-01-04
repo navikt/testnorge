@@ -86,6 +86,12 @@
 				cursor: pointer;
 			}
 		}
+
+		.dot-column:last-child {
+			padding-right: 5px;
+			justify-content: flex-end;
+			display: flex;
+		}
 	}
 
 	.dot-body-row {
@@ -93,6 +99,7 @@
 		flex-direction: column;
 		background-color: white;
 		margin-bottom: 10px;
+		min-height: 60px;
 		border: 1px solid white; // prevent jumping
 
 		// TODO: Skal vi beholde markant border
@@ -122,6 +129,7 @@
 		&-actioncolumn {
 			flex-grow: 1;
 			outline: none;
+			text-align: end;
 		}
 
 		&-expandcomponent {

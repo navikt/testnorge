@@ -9,6 +9,7 @@ import { FormikInput } from '~/components/fields/Input/Input'
 import { Field, withFormik } from 'formik'
 import { animateScroll } from 'react-scroll'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 class Step1 extends Component {
 	static propTypes = {
@@ -24,7 +25,13 @@ class Step1 extends Component {
 		animateScroll.scrollToTop({ duration: 250 })
 	}
 	render() {
-		const { selectedAttributeIds, toggleAttributeSelection, uncheckAllAttributes } = this.props
+		const {
+			selectedAttributeIds,
+			toggleAttributeSelection,
+			uncheckAllAttributes,
+			checkAttributeArray,
+			uncheckAttributeArray
+		} = this.props
 
 		return (
 			<div className="bestilling-step1">
@@ -47,11 +54,29 @@ class Step1 extends Component {
 						min="0"
 						component={FormikInput}
 					/>
+					<ContentTooltip>
+						<span>
+							Fødselsnummer er et ellevesifret registreringsnummer som tildeles av den norske stat
+							til alle landets innbyggere. Nummeret skiller enkeltpersoner fra hverandre, men kan
+							ikke brukes til å autentisere at en person er den de påstår de er. Fødselsnummer ble
+							innført i 1964 og administreres av Skatteetaten. Alle som er bosatt i Norge og innført
+							i Det sentrale folkeregisteret har enten et fødselsnummer eller et D-nummer.
+						</span>
+						<br />
+						<a
+							style={{ color: 'lightblue' }}
+							href="https://no.wikipedia.org/wiki/F%C3%B8dselsnummer"
+						>
+							Les mer
+						</a>
+					</ContentTooltip>
 				</div>
 
 				<AttributtVelger
 					onToggle={toggleAttributeSelection}
 					uncheckAllAttributes={uncheckAllAttributes}
+					checkAttributeArray={checkAttributeArray}
+					uncheckAttributeArray={uncheckAttributeArray}
 					selectedIds={selectedAttributeIds}
 				/>
 

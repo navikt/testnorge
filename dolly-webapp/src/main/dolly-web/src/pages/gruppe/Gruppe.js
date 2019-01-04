@@ -13,7 +13,6 @@ import Toolbar from '~/components/toolbar/Toolbar'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import Knapp from 'nav-frontend-knapper'
 import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
-import PaginationConnector from '~/components/pagination/PaginationConnector'
 
 import './Gruppe.less'
 
@@ -45,6 +44,7 @@ export default class Gruppe extends Component {
 
 	toggleToolbar = e => {
 		const visning = e.target.value
+		visning === this.VISNING_BESTILLING && this.props.getGruppe()
 		this.setState({ visning }, () => this.props.resetSearch())
 	}
 
@@ -58,12 +58,10 @@ export default class Gruppe extends Component {
 		const { editTestbruker } = this.props
 
 		if (visning === this.VISNING_BESTILLING) {
-			return (
-				<PaginationConnector
-					items={gruppe.bestillinger}
-					render={items => <BestillingListeConnector bestillingListe={gruppe.bestillinger} />}
-				/>
-			)
+			if (this.props.isFetching) {
+				return <Loading label="Laster bestillinger" panel />
+			}
+			return <BestillingListeConnector bestillingListe={gruppe.bestillinger} />
 		}
 		// !!! Pagination is is applied on TestbrukerListe because we fetch "testbrukere" from TPSF.
 		// !!! Therefore pagination is applied to data from TPSF and not DOLLY.
@@ -83,7 +81,8 @@ export default class Gruppe extends Component {
 			addFavorite
 		} = this.props
 
-		if (isFetching) return <Loading label="Laster grupper" panel />
+		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
+			return <Loading label="Laster grupper" panel />
 
 		if (!gruppeArray) return null
 
@@ -95,6 +94,7 @@ export default class Gruppe extends Component {
 		if (gruppe.erMedlemAvTeamSomEierGruppe) {
 			groupActions.push({
 				icon: 'edit',
+				label: 'REDIGER',
 				onClick: createGroup
 			})
 		}
@@ -107,7 +107,12 @@ export default class Gruppe extends Component {
 		return (
 			<div id="gruppe-container">
 				<Overskrift label={gruppe.navn} actions={groupActions}>
-					{/* <ConfirmTooltip onClick={deleteGruppe} /> */}
+					<ConfirmTooltip
+						label="SLETT"
+						className="flexbox--align-center"
+						message={'Vil du slette denne testdatagruppen?'}
+						onClick={deleteGruppe}
+					/>
 					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 					{gruppe.antallIdenter > 0 && (
 						<div className="pull-right">

@@ -23,7 +23,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
 
     @Test
     public void opprettTestgruppeBasertPaaCurrentBruker() throws Exception {
-        Team team = teamRepository.findAll().get(0);
+        Team team = teamRepository.findAllByOrderByNavn().get(0);
 
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettTestgruppeBuilder.builder()
                 .navn("mingruppe")

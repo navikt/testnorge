@@ -106,6 +106,10 @@ class DollyEndpoints {
 	static removeBestilling(bestillingId) {
 		return `${bestillingBase}/stop/${bestillingId}`
 	}
+
+	static removeTestIdent(identId) {
+		return `${groupBase}/{gruppeId}/slettTestident?ident=${identId}`
+	}
 }
 
 export default DollyEndpoints

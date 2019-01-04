@@ -94,12 +94,21 @@ public class BrukerService {
         return brukerRepository.save(bruker);
     }
 
-    public Bruker leggTilTeam(Bruker b, Team t){
-        b.getTeams().add(t);
-        return saveBrukerTilDB(b);
+    public Bruker leggTilTeam(Bruker bruker, Team team){
+        team.getMedlemmer().add(bruker);
+        bruker.getTeams().add(team);
+        return saveBrukerTilDB(bruker);
     }
 
     public List<Bruker> fetchBrukere() {
-        return brukerRepository.findAll();
+        return brukerRepository.findAllByOrderByNavIdent();
+    }
+
+    public int sletteBrukerFavoritterByTeamId(Long teamId) {
+        return brukerRepository.deleteBrukerFavoritterByTeamId(teamId);
+    }
+
+    public int sletteBrukerFavoritterByGroupId(Long groupId) {
+        return brukerRepository.deleteBrukerFavoritterByGroupId(groupId);
     }
 }

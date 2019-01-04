@@ -4,6 +4,8 @@ import _xor from 'lodash/fp/xor'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _groupBy from 'lodash/groupBy'
+import _union from 'lodash/union'
+import _difference from 'lodash/difference'
 import DataFormatter from '~/utils/DataFormatter'
 import DataSourceMapper from '~/utils/DataSourceMapper'
 import { handleActions, createActions, combineActions } from 'redux-actions'
@@ -15,7 +17,10 @@ const AttributtManagerInstance = new AttributtManager()
 export const actions = createActions(
 	{
 		POST_BESTILLING: [
-			(gruppeId, values) => DollyApi.createBestilling(gruppeId, values), // Payload
+			async (gruppeId, values) => {
+				const res = await DollyApi.createBestilling(gruppeId, values) // Payload
+				return { ...res, data: { ...res.data, ny: true } }
+			},
 			gruppeId => ({ gruppeId }) // Meta
 		]
 	},
@@ -23,6 +28,8 @@ export const actions = createActions(
 	'PREV_PAGE',
 	'TOGGLE_ATTRIBUTE',
 	'UNCHECK_ALL_ATTRIBUTES',
+	'CHECK_ATTRIBUTE_ARRAY',
+	'UNCHECK_ATTRIBUTE_ARRAY',
 	'SET_ENVIRONMENTS',
 	'SET_VALUES',
 	'START_BESTILLING',
@@ -55,6 +62,12 @@ export default handleActions(
 		[actions.uncheckAllAttributes](state, action) {
 			return { ...state, attributeIds: [] }
 		},
+		[actions.checkAttributeArray](state, action) {
+			return { ...state, attributeIds: _union(state.attributeIds, action.payload) }
+		},
+		[actions.uncheckAttributeArray](state, action) {
+			return { ...state, attributeIds: _difference(state.attributeIds, action.payload) }
+		},
 		[actions.startBestilling](state, action) {
 			return {
 				...state,
@@ -77,6 +90,7 @@ export default handleActions(
 				page: (state.page += action.payload.goBack ? -1 : 1)
 			}
 		},
+
 		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestilling))](
 			state,
 			action

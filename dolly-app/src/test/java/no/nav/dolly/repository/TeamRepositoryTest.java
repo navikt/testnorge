@@ -2,7 +2,7 @@ package no.nav.dolly.repository;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -42,19 +42,19 @@ public class TeamRepositoryTest {
         Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(asList(bruker, brukerEier));
-        List<Bruker> brukere = brukerRepository.findAll();
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
 
         Team team = Team.builder()
                 .navn("team")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(brukere.get(0))
-                .medlemmer(newHashSet(singletonList(brukere.get(1))))
+                .medlemmer(singletonList(brukere.get(1)))
                 .beskrivelse("besk")
                 .build();
 
         teamRepository.save(team);
 
-        Team foundTeam = teamRepository.findAll().get(0);
+        Team foundTeam = teamRepository.findAllByOrderByNavn().get(0);
 
         assertThat(foundTeam.getNavn(), is("team"));
         assertThat(foundTeam.getEier().getNavIdent(), is("eier"));
@@ -67,19 +67,19 @@ public class TeamRepositoryTest {
         Bruker bruker = Bruker.builder().navIdent("ident").build();
         Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
-        brukerRepository.saveAll(asList(bruker, brukerEier));
-        List<Bruker> brukere = brukerRepository.findAll();
+        brukerRepository.saveAll(newArrayList(bruker, brukerEier));
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
 
         Team team = Team.builder()
                 .navn("team")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(brukere.get(0))
-                .medlemmer(newHashSet(singletonList(brukere.get(1))))
+                .medlemmer(newArrayList(brukere.get(1)))
                 .beskrivelse("besk")
                 .build();
 
         teamRepository.save(team);
-        Team foundTeam = teamRepository.findAll().get(0);
+        Team foundTeam = teamRepository.findAllByOrderByNavn().get(0);
 
         assertThat(foundTeam.getNavn(), is("team"));
         assertThat(foundTeam.getEier().getNavIdent(), is("eier"));
@@ -98,11 +98,11 @@ public class TeamRepositoryTest {
 
         gruppeRepository.save(testgruppe);
 
-        foundTeam.setGrupper(newHashSet(singletonList(testgruppe)));
+        foundTeam.setGrupper(newArrayList(testgruppe));
         teamRepository.save(foundTeam);
 
-        foundTeam = teamRepository.findAll().get(0);
-        Testgruppe foundTestgruppe = gruppeRepository.findAll().get(0);
+        foundTeam = teamRepository.findAllByOrderByNavn().get(0);
+        Testgruppe foundTestgruppe = gruppeRepository.findAllByOrderByNavn().get(0);
 
         assertThat(foundTeam.getGrupper().contains(foundTestgruppe), is(true));
         assertThat(foundTestgruppe.getTeamtilhoerighet(), is(foundTeam));
@@ -113,19 +113,19 @@ public class TeamRepositoryTest {
         Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(singletonList(brukerEier));
-        List<Bruker> brukere = brukerRepository.findAll();
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
 
         Team team = Team.builder()
                 .navn("team")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(brukere.get(0))
-                .medlemmer(newHashSet(singletonList(brukere.get(0))))
+                .medlemmer(singletonList(brukere.get(0)))
                 .beskrivelse("besk")
                 .build();
 
         teamRepository.save(team);
 
-        List<Team> teamByBruker = teamRepository.findTeamsByEier(brukere.get(0));
+        List<Team> teamByBruker = teamRepository.findTeamsByEierOrderByNavn(brukere.get(0));
 
         assertThat(teamByBruker.get(0).getNavn(), is("team"));
         assertThat(teamByBruker.get(0).getBeskrivelse(), is("besk"));
@@ -138,25 +138,25 @@ public class TeamRepositoryTest {
         Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
         brukerRepository.saveAll(asList(bruker, brukerEier));
-        List<Bruker> brukere = brukerRepository.findAll();
+        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
 
         Team teamONE = Team.builder()
                 .navn("teamONE")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(brukere.get(0))
-                .medlemmer(newHashSet(singletonList(brukere.get(1))))
+                .medlemmer(singletonList(brukere.get(1)))
                 .build();
 
         Team teamTWO = Team.builder()
                 .navn("teamTWO")
                 .datoOpprettet(LocalDate.of(2002, 2, 2))
                 .eier(brukere.get(0))
-                .medlemmer(newHashSet(asList(brukere.get(1), brukere.get(0))))
+                .medlemmer(asList(brukere.get(1), brukere.get(0)))
                 .build();
 
         teamRepository.saveAll(asList(teamONE, teamTWO));
 
-        List<Team> teams = teamRepository.findByMedlemmerNavIdent(brukere.get(1).getNavIdent());
+        List<Team> teams = teamRepository.findByMedlemmerNavIdentOrderByNavn(brukere.get(1).getNavIdent());
 
         assertThat(teams.size(), is(2));
 

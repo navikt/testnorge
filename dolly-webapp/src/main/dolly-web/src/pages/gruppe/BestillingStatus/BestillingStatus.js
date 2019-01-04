@@ -18,6 +18,7 @@ export default class BestillingStatus extends PureComponent {
 
 		this.PULL_INTERVAL = 1000
 		this.TIMEOUT_BEFORE_HIDE = 2000
+		this.TIME_BEFORE_WARNING_MESSAGE = 60
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
@@ -31,8 +32,9 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	componentDidMount() {
-		if (!this.state.ferdig)
+		if (!this.state.ferdig) {
 			this.interval = setInterval(() => this.getBestillingStatus(), this.PULL_INTERVAL)
+		}
 	}
 
 	componentWillUnmount() {
@@ -79,7 +81,8 @@ export default class BestillingStatus extends PureComponent {
 		if (liveTimeStamp == oldTimeStamp) {
 			this.setState({ failureIntervalCounter: (this.state.failureIntervalCounter += 1) })
 			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
-			this.state.failureIntervalCounter == 60 && this.setState({ failed: true })
+			this.state.failureIntervalCounter == this.TIME_BEFORE_WARNING_MESSAGE &&
+				this.setState({ failed: true })
 		} else {
 			this.setState({ sistOppdatert: data.sistOppdatert, failureIntervalCounter: 0, failed: false })
 		}
@@ -120,7 +123,14 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		const { bestillingStatusObj, miljoeStatusObj, isCanceling, cancelBestilling } = this.props
+		const {
+			bestillingStatusObj,
+			miljoeStatusObj,
+			isCanceling,
+			cancelBestilling,
+			bestilling
+		} = this.props
+
 		if (isCanceling && this.state.showCancelLoadingMsg) {
 			return (
 				<ContentContainer className="loading-content-container">
@@ -128,6 +138,7 @@ export default class BestillingStatus extends PureComponent {
 				</ContentContainer>
 			)
 		}
+
 		if (
 			(this.state.ferdig && !bestillingStatusObj) ||
 			!this.state.isOpen ||
@@ -138,20 +149,21 @@ export default class BestillingStatus extends PureComponent {
 		const status = this.calculateStatus()
 		return (
 			<div className="bestilling-status">
-				{!this.state.ferdig && (
+				{!this.state.ferdig ? (
 					<BestillingProgress
 						status={status}
 						failed={this.state.failed}
 						cancelBestilling={this._onCancelBtn}
 					/>
-				)}
-				{bestillingStatusObj &&
+				) : (
+					bestillingStatusObj &&
 					bestillingStatusObj.ny && (
 						<MiljoeStatus
 							miljoeStatusObj={miljoeStatusObj}
 							onCloseButton={() => this._onCloseMiljoeStatus(bestillingStatusObj)}
 						/>
-					)}
+					)
+				)}
 			</div>
 		)
 	}

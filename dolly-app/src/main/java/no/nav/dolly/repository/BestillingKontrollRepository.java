@@ -7,5 +7,5 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 
 public interface BestillingKontrollRepository extends CrudRepository<BestillingKontroll, Long> {
 
-    Optional<BestillingKontroll> findByBestillingId(Long bestillingId);
+    Optional<BestillingKontroll> findByBestillingIdOrderByBestillingId(Long bestillingId);
 }

@@ -88,7 +88,7 @@ public class BrukerServiceTest {
     @Test
     public void getBruker_KallerRepoHentBrukere() {
         service.fetchBrukere();
-        verify(brukerRepository).findAll();
+        verify(brukerRepository).findAllByOrderByNavIdent();
     }
 
     @Test

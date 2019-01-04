@@ -1,3 +1,5 @@
+@import (reference) '~lessVars';
+
 .offscreen {
 	position: absolute;
 	left: -10000px;
@@ -15,10 +17,54 @@
 		justify-content: space-between;
 	}
 
-	&--align {
+	&--align-center {
+		display: flex;
+		align-items: center;
+	}
+
+	&--justify-center {
+		display: flex;
+		justify-content: center;
+	}
+
+	&--align-center--justify-start {
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
+	}
+
+	&--align-center--justify-end {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	}
+}
+
+.fade-enter {
+	opacity: 0.01;
+
+	&-active {
+		opacity: 1;
+		transition: opacity 500ms ease-in;
+	}
+}
+
+.fade-exit {
+	opacity: 1;
+	&-active {
+		opacity: 0.01;
+		transition: opacity 400ms ease-in;
+	}
+}
+
+// TEKST
+.clickable-text {
+	color: @navBla;
+	cursor: pointer;
+	&-small {
+		cursor: pointer;
+		color: @navBla;
+		font-size: 0.9rem;
 	}
 }
 

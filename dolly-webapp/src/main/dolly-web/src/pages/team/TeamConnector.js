@@ -6,6 +6,10 @@ import Team from './Team'
 
 const teamLoadingSelector = createLoadingSelector(actions.api.getById)
 const grupperLoadingSelector = createLoadingSelector('TODO')
+const createRemoveSelector = createLoadingSelector([
+	actions.api.addTeamMember,
+	actions.api.removeTeamMember
+])
 
 const mapStateToProps = (state, ownProps) => {
 	const { teamId } = ownProps.match.params
@@ -15,7 +19,8 @@ const mapStateToProps = (state, ownProps) => {
 		teamIsFetching: teamLoadingSelector(state),
 		visRedigerTeam: state.teams.editTeamId === teamId.toString(),
 		grupper: state.gruppe.data,
-		grupperIsFetching: grupperLoadingSelector(state)
+		grupperIsFetching: grupperLoadingSelector(state),
+		isCreateDelete: createRemoveSelector(state)
 	}
 }
 

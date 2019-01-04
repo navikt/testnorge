@@ -1,8 +1,9 @@
 package no.nav.dolly.api;
 
+import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Test;
@@ -14,11 +15,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.dolly.service.TeamService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamControllerTest {
+
+    private static final Long TEAM_ID = 11L;
+    private static final String NAV_IDENT = "Z999999";
 
     @Mock
     private TeamService teamService;
@@ -42,7 +47,7 @@ public class TeamControllerTest {
     @Test
     public void getTeams_hvisIdentErFravaerendeSaaHentAlleTeams() {
         controller.getTeams(Optional.empty());
-        verify(teamRepository).findAll();
+        verify(teamRepository).findAllByOrderByNavn();
     }
 
     @Test
@@ -52,44 +57,60 @@ public class TeamControllerTest {
         verify(teamService).opprettTeam(res);
     }
 
+    @Test(expected = NotFoundException.class)
+    public void deleteTeamNotFound() {
+        controller.deleteTeam(TEAM_ID);
+        verify(teamService).deleteTeam(TEAM_ID);
+    }
+
     @Test
     public void deleteTeam() {
-        Long id = 1l;
-        controller.deleteTeam(id);
-        verify(teamService).deleteTeam(id);
+        when(teamService.deleteTeam(TEAM_ID)).thenReturn(1);
+        controller.deleteTeam(TEAM_ID);
+        verify(teamService).deleteTeam(TEAM_ID);
     }
 
     @Test
     public void fetchTeamById() {
-        Long id = 1l;
-        controller.fetchTeamById(id);
-        verify(teamService).fetchTeamById(id);
+
+        controller.fetchTeamById(TEAM_ID);
+        verify(teamService).fetchTeamById(TEAM_ID);
     }
 
     @Test
     public void addBrukereSomTeamMedlemmerByNavidenter() {
-        Long id = 1l;
-        List<String> navidenter = Arrays.asList("test");
+        List<String> navidenter = singletonList("test");
 
-        controller.addBrukereSomTeamMedlemmerByNavidenter(id, navidenter);
-        verify(teamService).addMedlemmerByNavidenter(id, navidenter);
+        controller.addBrukereSomTeamMedlemmerByNavidenter(TEAM_ID, navidenter);
+        verify(teamService).addMedlemmerByNavidenter(TEAM_ID, navidenter);
     }
 
     @Test
     public void fjernBrukerefraTeam() {
-        Long id = 1l;
-        List<String> navidenter = Arrays.asList("test");
+        List<String> navidenter = singletonList("test");
 
-        controller.fjernBrukerefraTeam(id, navidenter);
-        verify(teamService).fjernMedlemmer(id, navidenter);
+        controller.fjernBrukerefraTeam(TEAM_ID, navidenter);
+        verify(teamService).fjernMedlemmer(TEAM_ID, navidenter);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void slettMedlemFraTeamNotFound() {
+        when(teamService.slettMedlem(TEAM_ID, NAV_IDENT)).thenThrow(NotFoundException.class);
+        controller.deleteMedlemfraTeam(TEAM_ID, NAV_IDENT);
+    }
+
+    @Test
+    public void slettMedlemFraTeamOK() {
+        when(teamService.slettMedlem(TEAM_ID, NAV_IDENT)).thenReturn(new RsTeamUtvidet());
+        controller.deleteMedlemfraTeam(TEAM_ID, NAV_IDENT);
+        verify(teamService).slettMedlem(TEAM_ID, NAV_IDENT);
     }
 
     @Test
     public void endreTeaminfo() {
-        Long id = 1l;
         RsTeamUtvidet team = new RsTeamUtvidet();
 
-        controller.endreTeaminfo(1l, team);
-        verify(teamService).updateTeamInfo(id, team);
+        controller.endreTeaminfo(TEAM_ID, team);
+        verify(teamService).updateTeamInfo(TEAM_ID, team);
     }
 }

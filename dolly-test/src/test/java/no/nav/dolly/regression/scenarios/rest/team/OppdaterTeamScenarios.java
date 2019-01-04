@@ -17,7 +17,7 @@ import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.testdata.builder.RsTeamUtvidetBuilder;
 
-public class OppdaterTeamScenarios extends TeamTestCaseBase{
+public class OppdaterTeamScenarios extends TeamTestCaseBase {
 
     private static final String NAV_IDENT = "NYEIER";
 
@@ -28,14 +28,14 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
     public void oppdaterBrukerMedAlleInputs() throws Exception {
         Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
 
-        Team teamSomSkalEndres = teamRepository.findAll().get(0);
+        Team teamSomSkalEndres = teamRepository.findAllByOrderByNavn().get(0);
 
         RsTeamUtvidet request = RsTeamUtvidetBuilder.builder()
                 .id(teamSomSkalEndres.getId())
                 .eierNavIdent(nyEier.getNavIdent())
                 .beskrivelse("endretTeam")
                 .navn("endretTeamNavn")
-                .medlemmer(mapperFacade.mapAsSet(standardTeam.getMedlemmer(),RsBruker.class))
+                .medlemmer(mapperFacade.mapAsList(standardTeam.getMedlemmer(), RsBruker.class))
                 .datoOpprettet(standardTeam.getDatoOpprettet())
                 .build()
                 .convertToRealRsTeam();
@@ -61,7 +61,7 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase{
     public void oppdaterTeamKunNavnOgBeskrivelseIBody() throws Exception {
         Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
 
-        Team teamSomSkalErEndret = teamRepository.findAll().get(0);
+        Team teamSomSkalErEndret = teamRepository.findAllByOrderByNavn().get(0);
 
         RsTeamUtvidet request = RsTeamUtvidetBuilder.builder()
                 .beskrivelse("endretTeam")
