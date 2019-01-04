@@ -36,12 +36,18 @@ public class ExceptionUtils {
     }
 
     public static void filterStackTraceOnNavSpecificItems(HttpStatusCodeExceptionContainer exceptionContainer) {
+        StackTraceElement[] outerStackTraceElements = exceptionContainer.getStackTrace();
+        if (outerStackTraceElements != null && outerStackTraceElements.length != 0) {
+            List<StackTraceElement> stackTraceElements = new ArrayList<>(Arrays.asList(outerStackTraceElements));
+            stackTraceElements.removeIf(stackTraceElement -> !stackTraceElement.getClassName().contains("no.nav"));
+            exceptionContainer.setStackTrace(stackTraceElements.toArray(new StackTraceElement[0])); // NOSONAR - Sonar tror det er raskere å definere str. på array her
+        }
         Iterator<HttpStatusCodeException> httpStatusCodeExceptionIterator = exceptionContainer.getNestedExceptions().iterator();
         while (httpStatusCodeExceptionIterator.hasNext()) {
             HttpStatusCodeException exception = httpStatusCodeExceptionIterator.next();
             List<StackTraceElement> stackTraceElements = new ArrayList<>(Arrays.asList(exception.getStackTrace()));
             stackTraceElements.removeIf(stackTraceElement -> !stackTraceElement.getClassName().contains("no.nav"));
-            exception.setStackTrace(stackTraceElements.toArray(new StackTraceElement[0])); //NOSONAR - Sonar tror det er raskere å definere str. på array her
+            exception.setStackTrace(stackTraceElements.toArray(new StackTraceElement[0])); // NOSONAR - Sonar tror det er raskere å definere str. på array her
         }
     }
 
