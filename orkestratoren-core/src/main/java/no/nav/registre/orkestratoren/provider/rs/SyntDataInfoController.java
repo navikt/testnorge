@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.service.SyntDataInfoService;
 
 @RestController
@@ -19,6 +20,7 @@ public class SyntDataInfoController {
     @Value("${orkestratoren.batch.skdMeldingGruppeId}")
     private Long tpsBatchGruppeId;
 
+    @LogExceptions
     @ApiOperation(value = "Endepunktet returnerer samtlige FNR på levende nordmenn i "
             + "skdavspillergruppa i TPSF som orkestratorens tps-batch arbeider på. ",
             notes = "Se fasit-ressursen orkestratorProperties for skdMeldingenes gruppeId i TPSF. ")

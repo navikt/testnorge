@@ -27,7 +27,7 @@ public class ArenaInntektSyntPakkenService {
         inntektsmldMottakere.addAll(levendeNordmennFnr.subList(0, levendeNordmennFnr.size() / 2));
         inntektsmldMottakere.removeIf(fnr -> getFoedselsdatoFraFnr(fnr).isAfter(LocalDate.now().minusYears(13)));//Mottakere av inntektsmeldinger må være minst 13 år
         if (!inntektsmldMottakere.isEmpty()) {
-            arenaInntektSyntConsumer.genererEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere);
+            arenaInntektSyntConsumer.asyncBestillEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere);
         }
         return inntektsmldMottakere;
     }
