@@ -35,7 +35,7 @@ export default class ConfirmTooltip extends Component {
 	}
 
 	render() {
-		const { message, children } = this.props
+		const { message, children, label, className } = this.props
 		const content = (
 			<div className="tooltip-content" onClick={this.stopPropagation}>
 				<div>{message}</div>
@@ -54,7 +54,13 @@ export default class ConfirmTooltip extends Component {
 				trigger={['click']}
 				onVisibleChange={this.onVisibleChangeHandler}
 			>
-				{children ? children : <Button kind="trashcan" />}
+				{children ? (
+					children
+				) : (
+					<Button className={className} kind="trashcan">
+						{label}
+					</Button>
+				)}
 			</Tooltip>
 		)
 	}

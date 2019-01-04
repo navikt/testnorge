@@ -116,6 +116,12 @@ export default class AttributtManager {
 		)
 	}
 
+	getParentAttributtListByHovedkategori(hovedkategori: Kategori): string[] {
+		return AttributtListe.filter(
+			attr => attr.hovedKategori.id === hovedkategori.id && !attr.parent
+		).map(attr => attr.id)
+	}
+
 	getAttributtById(attributtId: string): Attributt {
 		return AttributtListe.find(attr => attr.id === attributtId)
 	}

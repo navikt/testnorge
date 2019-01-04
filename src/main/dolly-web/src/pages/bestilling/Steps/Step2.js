@@ -7,6 +7,8 @@ import { Formik } from 'formik'
 import { AttributtManager } from '~/service/Kodeverk'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import FormEditor from '~/components/formEditor/FormEditor'
+import ContentContainer from '~/components/contentContainer/ContentContainer'
+import Icon from '~/components/icon/Icon'
 
 export default class Step2 extends PureComponent {
 	static propTypes = {
@@ -38,32 +40,38 @@ export default class Step2 extends PureComponent {
 	}
 
 	render() {
-		const { identtype, antall } = this.props
+		const { identtype, antall, selectedAttributeIds } = this.props
 
 		return (
 			<div className="bestilling-step2">
 				<div className="content-header">
 					<Overskrift label="Velg verdier" />
 				</div>
-
 				<div className="grunnoppsett">
 					<StaticValue header="TYPE" value={identtype} />
 					<StaticValue header="ANTALL PERSONER" value={antall.toString()} />
 				</div>
-
 				<Formik
 					onSubmit={this.submit}
 					initialValues={this.InitialValues}
 					validationSchema={this.ValidationListe}
 					render={formikProps => (
 						<Fragment>
-							<FormEditor
-								AttributtListe={this.AttributtListe}
-								FormikProps={formikProps}
-								getAttributtListByHovedkategori={
-									this.AttributtManager.getAttributtListByHovedkategori
-								}
-							/>
+							{selectedAttributeIds.length === 0 ? (
+								<ContentContainer className="">
+									<Icon kind="report-problem-circle" />Du har valgt ingen attributter. Dolly vil
+									opprette testpersoner med tilfeldige verdier.
+								</ContentContainer>
+							) : (
+								<FormEditor
+									AttributtListe={this.AttributtListe}
+									FormikProps={formikProps}
+									getAttributtListByHovedkategori={
+										this.AttributtManager.getAttributtListByHovedkategori
+									}
+								/>
+							)}
+
 							<NavigationConnector
 								onClickNext={formikProps.submitForm}
 								onClickPrevious={() => this.onClickPrevious(formikProps.values)}

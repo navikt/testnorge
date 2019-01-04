@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Overskrift from '~/components/overskrift/Overskrift'
 import Table from '~/components/table/Table'
 import Toolbar from '~/components/toolbar/Toolbar'
@@ -7,6 +8,7 @@ import Loading from '~/components/loading/Loading'
 import LeggTilBruker from './LeggTilBruker/LeggTilBruker'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import RedigerTeamConnector from '~/components/RedigerTeam/RedigerTeamConnector'
+import PaginationConnector from '~/components/pagination/PaginationConnector'
 
 class Team extends Component {
 	state = {
@@ -37,7 +39,8 @@ class Team extends Component {
 			removeMember,
 			deleteTeam,
 			startRedigerTeam,
-			visRedigerTeam
+			visRedigerTeam,
+			isCreateDelete
 		} = this.props
 
 		if (!team || !grupper) return null
@@ -47,6 +50,7 @@ class Team extends Component {
 		const teamActions = [
 			{
 				icon: 'edit',
+				label: 'REDIGER',
 				onClick: startRedigerTeam
 			}
 		]
@@ -54,7 +58,18 @@ class Team extends Component {
 		return (
 			<div className="oversikt-container">
 				<Overskrift label={team.navn} actions={teamActions}>
-					{/* <ConfirmTooltip onClick={deleteTeam} /> */}
+					<ConfirmTooltip
+						label="SLETT"
+						className="flexbox--align-center"
+						message={
+							grupper.length > 0
+								? 'Å slette dette teamet vil føre til sletting av ' +
+								  grupper.length +
+								  ' testdatagrupper . Er du sikker på dette?'
+								: 'Vil du slette dette teamet?'
+						}
+						onClick={deleteTeam}
+					/>
 				</Overskrift>
 
 				{visRedigerTeam && <RedigerTeamConnector team={team} />}
@@ -77,22 +92,36 @@ class Team extends Component {
 								addMember={addMember}
 							/>
 						)}
-						<Table>
-							<Table.Header>
-								<Table.Column width="30" value="Navn" />
-								<Table.Column width="20" value="Rolle" />
-							</Table.Header>
-
-							{team.medlemmer.map(medlem => (
-								<Table.Row
-									key={medlem.navIdent}
-									deleteAction={() => removeMember([medlem.navIdent])}
-								>
-									<Table.Column width="30" value={medlem.navIdent} />
-									<Table.Column width="10" value="Utvikler" />
-								</Table.Row>
-							))}
-						</Table>
+						<PaginationConnector
+							items={team.medlemmer}
+							render={items => (
+								<Table>
+									<Table.Header>
+										<Table.Column width="30" value="Navn" />
+										<Table.Column width="20" value="Rolle" />
+										<Table.Column width="50" value="Slett" />
+									</Table.Header>
+									<TransitionGroup component={null}>
+										{items.map(medlem => (
+											<CSSTransition
+												key={medlem.navIdent}
+												timeout={isCreateDelete ? 500 : 1}
+												classNames="fade"
+											>
+												<Table.Row
+													key={medlem.navIdent}
+													deleteAction={() => removeMember([medlem.navIdent])}
+													deleteMessage={'Vil du slette ' + medlem.navIdent + ' fra dette teamet?'}
+												>
+													<Table.Column width="30" value={medlem.navIdent} />
+													<Table.Column width="10" value="Utvikler" />
+												</Table.Row>
+											</CSSTransition>
+										))}
+									</TransitionGroup>
+								</Table>
+							)}
+						/>
 					</Fragment>
 				)}
 
@@ -101,27 +130,32 @@ class Team extends Component {
 				{grupperFetching ? (
 					<Loading label="laster grupper" panel />
 				) : (
-					<Table>
-						<Table.Header>
-							<Table.Column width="15" value="ID" />
-							<Table.Column width="20" value="Navn" />
-							<Table.Column width="15" value="Team" />
-							<Table.Column width="50" value="Hensikt" />
-						</Table.Header>
+					<PaginationConnector
+						items={grupper}
+						render={items => (
+							<Table>
+								<Table.Header>
+									<Table.Column width="15" value="ID" />
+									<Table.Column width="20" value="Navn" />
+									<Table.Column width="15" value="Team" />
+									<Table.Column width="40" value="Hensikt" />
+								</Table.Header>
 
-						{grupper.map(gruppe => (
-							<Table.Row
-								key={gruppe.id}
-								navLink={() => history.push(`/gruppe/${gruppe.id}`)}
-								deleteAction={() => {}}
-							>
-								<Table.Column width="15" value={gruppe.id.toString()} />
-								<Table.Column width="20" value={gruppe.navn} />
-								<Table.Column width="15" value={gruppe.team.navn} />
-								<Table.Column width="40" value={gruppe.hensikt} />
-							</Table.Row>
-						))}
-					</Table>
+								{items.map(gruppe => (
+									<Table.Row
+										key={gruppe.id}
+										navLink={() => history.push(`/gruppe/${gruppe.id}`)}
+										// deleteAction={() => {}}
+									>
+										<Table.Column width="15" value={gruppe.id.toString()} />
+										<Table.Column width="20" value={gruppe.navn} />
+										<Table.Column width="15" value={gruppe.team.navn} />
+										<Table.Column width="40" value={gruppe.hensikt} />
+									</Table.Row>
+								))}
+							</Table>
+						)}
+					/>
 				)}
 			</div>
 		)

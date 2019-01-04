@@ -1,16 +1,26 @@
 @import (reference) '~lessVars';
 
 .dolly-button {
+	font-weight: 600;
+	font-size: 0.8rem;
+
 	border: none;
 	border-bottom: 1px solid transparent;
 	background: none;
-	font-size: 24px;
 	color: @color-lightblue;
 	cursor: pointer;
 	padding: 5px;
-	vertical-align: middle;
 
 	&:hover {
 		border-color: @color-lightblue;
+	}
+	svg {
+		fill: @color-lightblue;
+		margin: 0;
+	}
+
+	p {
+		margin: 0;
+		padding-left: 5px;
 	}
 }

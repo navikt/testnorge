@@ -34,12 +34,6 @@ describe('Panel.js', () => {
 		expect(wrapper.hasClass('panel-open')).toBe(true)
 	})
 
-	it('should toggle open state when panel heading is clicked', () => {
-		const wrapper = shallow(<Panel />)
-		wrapper.find('.panel-heading').simulate('click')
-		expect(wrapper.state().open).toBe(true)
-	})
-
 	it('should render children if specified', () => {
 		const childrenContent = 'TestChildrenContent'
 		const wrapper = shallow(<Panel startOpen>{childrenContent}</Panel>)

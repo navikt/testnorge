@@ -51,8 +51,8 @@ export default class Liste extends PureComponent {
 		}
 
 		return (
-			<Table>
-				<Table.Header>
+			<Table action="Favoritt">
+				<Table.Header action="Favoritt">
 					<Table.Column
 						width="15"
 						value="ID"
@@ -82,6 +82,7 @@ export default class Liste extends PureComponent {
 						{...baseProps}
 					/>
 					<Table.Column width="20" value="Personer" />
+					<Table.Column width="10" value="Favoritt" />
 				</Table.Header>
 
 				{items.map(gruppe => {
@@ -97,8 +98,8 @@ export default class Liste extends PureComponent {
 
 					// Vise redigeringsknapp eller stjerne
 					if (gruppe.erMedlemAvTeamSomEierGruppe) {
-						rowProps.editAction = () => editGroup(gruppe.id)
-						rowProps.deleteAction = () => deleteGruppe(gruppe.id)
+						// rowProps.editAction = () => editGroup(gruppe.id)
+						// rowProps.deleteAction = () => deleteGruppe(gruppe.id)
 					} else {
 						rowProps.groupId = gruppe.id
 					}

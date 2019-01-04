@@ -33,6 +33,7 @@ class TableRow extends PureComponent {
 			expandComponent,
 			editAction,
 			deleteAction,
+			deleteMessage,
 			navLink,
 			groupId,
 			...restProps
@@ -56,9 +57,15 @@ class TableRow extends PureComponent {
 				<div className={columnsClass} {...rowProps}>
 					{children}
 					<Table.Column className="dot-body-row-actioncolumn">
-						{editAction && <Button kind="edit" onClick={editAction} />}
-						{/* {deleteAction && <ConfirmTooltip onClick={deleteAction} />} */}
-						{groupId && <FavoriteButtonConnector groupId={groupId} />}
+						{/* {editAction && <Button kind="edit" onClick={editAction} />} */}
+						{deleteAction && (
+							<ConfirmTooltip
+								className="flexbox--align-center"
+								onClick={deleteAction}
+								message={deleteMessage ? deleteMessage : 'SLETT?'}
+							/>
+						)}{' '}
+						{groupId && <FavoriteButtonConnector hideLabel={true} groupId={groupId} />}
 						{expandComponent && (
 							<ExpandButton expanded={this.state.expanded} onClick={this.onRowClick} />
 						)}
@@ -82,7 +89,6 @@ class TableHeader extends PureComponent {
 		return (
 			<div tabIndex={0} className="dot-header" {...restProps}>
 				{children}
-				<div className="dot-column col10 dot-body-row-actioncolumn" />
 			</div>
 		)
 	}
