@@ -1,14 +1,16 @@
 package no.nav.registre.orkestratoren.exceptions;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpStatusCodeException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpStatusCodeException;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -45,7 +47,7 @@ public class HttpStatusCodeExceptionContainer extends RuntimeException {
         HttpStatus status = null;
         Optional<HttpStatusCodeException> exception = nestedExceptions.stream().filter(e -> e.getStatusCode().is4xxClientError()).findFirst();
         if (exception.isPresent()) {
-            status =  exception.get().getStatusCode();
+            status = exception.get().getStatusCode();
         } else if (!nestedExceptions.isEmpty()) {
             status = nestedExceptions.get(0).getStatusCode();
         }
