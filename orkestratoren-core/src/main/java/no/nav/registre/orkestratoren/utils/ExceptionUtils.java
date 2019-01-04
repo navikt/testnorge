@@ -41,7 +41,7 @@ public class ExceptionUtils {
             HttpStatusCodeException exception = httpStatusCodeExceptionIterator.next();
             List<StackTraceElement> stackTraceElements = new ArrayList<>(Arrays.asList(exception.getStackTrace()));
             stackTraceElements.removeIf(stackTraceElement -> !stackTraceElement.getClassName().contains("no.nav"));
-            exception.setStackTrace(stackTraceElements.toArray(new StackTraceElement[0]));
+            exception.setStackTrace(stackTraceElements.toArray(new StackTraceElement[0])); //NOSONAR - Sonar tror det er raskere å definere str. på array her
         }
     }
 
