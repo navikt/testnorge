@@ -1,5 +1,10 @@
 package no.nav.registre.orkestratoren.exceptions;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -7,10 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HttpStatusCodeExceptionContainerTest {
@@ -54,14 +55,15 @@ public class HttpStatusCodeExceptionContainerTest {
 
     @Test
     public void getResponseBodyAsStringTest() {
-        String expected = "400 BAD" + System.lineSeparator() + "FEILMELDINGER" + System.lineSeparator() + "FEIL" + System.lineSeparator();
-
         HttpStatusCodeExceptionContainer container = new HttpStatusCodeExceptionContainer();
         container.addException(new HttpClientErrorException(HttpStatus.BAD_REQUEST, "BAD"));
         container.addFeilmeldingBeskrivelse("FEIL");
 
         String s = container.getResponseBodyAsString();
-        assertEquals(expected, s);
+        assertThat(s, containsString("400 BAD"));
+        assertThat(s, containsString("FEIL"));
+        assertThat(s, containsString("FEILMELDINGER"));
+
     }
 
     private void throwHttpServerErrorException(HttpStatus status) {
