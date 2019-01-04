@@ -55,7 +55,7 @@ export function mapTpsfData(tpsfData, bestillingData) {
 				},
 				{
 					id: 'spesreg',
-					label: 'Diskresjonskoder hah',
+					label: 'Diskresjonskoder',
 					value: tpsfData.spesreg
 				},
 				{
