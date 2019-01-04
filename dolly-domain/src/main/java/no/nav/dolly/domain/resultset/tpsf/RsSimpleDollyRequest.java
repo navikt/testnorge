@@ -30,4 +30,8 @@ public class RsSimpleDollyRequest {
     private String statsborgerskap;
 
     private LocalDateTime statsborgerskapRegdato;
+
+    private LocalDateTime egenAnsattDatoFom;
+
+    private LocalDateTime egenAnsattDatoTom;
 }
