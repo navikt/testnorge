@@ -2,6 +2,7 @@ package no.nav.registre.orkestratoren.service;
 
 import static no.nav.registre.orkestratoren.utils.ExceptionUtils.createListOfRangesFromIds;
 import static no.nav.registre.orkestratoren.utils.ExceptionUtils.extractIdsFromResponseBody;
+import static no.nav.registre.orkestratoren.utils.ExceptionUtils.filterStackTraceOnNavSpecificItems;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,7 @@ public class TpsSyntPakkenService {
             }
         }
         if (!httpStatusCodeExceptionContainer.getNestedExceptions().isEmpty()) {
+            filterStackTraceOnNavSpecificItems(httpStatusCodeExceptionContainer);
             throw httpStatusCodeExceptionContainer;
         }
         return skdMeldingerTilTpsRespons;
