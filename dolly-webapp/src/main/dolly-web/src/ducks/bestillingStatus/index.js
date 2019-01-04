@@ -78,7 +78,7 @@ export const miljoStatusSelector = bestillingStatus => {
 	let successEnvs = []
 	let failedEnvs = []
 
-	if (bestillingStatus.personStatus.length != 0) {
+	if (bestillingStatus.personStatus && bestillingStatus.personStatus.length != 0) {
 		envs.forEach(env => {
 			bestillingStatus.personStatus.forEach(person => {
 				if (!person.tpsfSuccessEnv) {

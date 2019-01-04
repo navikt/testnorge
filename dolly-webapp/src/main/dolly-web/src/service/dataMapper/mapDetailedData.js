@@ -57,6 +57,27 @@ export function mapTpsfData(tpsfData, bestillingData) {
 					id: 'spesreg',
 					label: 'Diskresjonskoder',
 					value: tpsfData.spesreg
+				},
+				{
+					id: 'gtRegel',
+					label: 'GT Regel',
+					value: tpsfData.gtRegel
+				},
+				{
+					id: 'gtType',
+					label: 'GT Type',
+					value: tpsfData.gtType
+				},
+				{
+					id: 'gtVerdi',
+					label: 'GT Verdi',
+					value: tpsfData.gtVerdi,
+					apiKodeverkId: 'Kommuner'
+				},
+				{
+					id: 'tknr',
+					label: 'TK nummer',
+					value: tpsfData.tknr
 				}
 			]
 		}
