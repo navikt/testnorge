@@ -64,7 +64,6 @@ export default class PersonInfoBlock extends PureComponent {
 								/>
 							)
 						} else if (apiKodeverkId) {
-							console.log(apiKodever
 							return <KodeverkValueConnector apiKodeverkId={apiKodeverkId} {...staticValueProps} />
 						}
 						return v.value && <StaticValue {...staticValueProps} />
