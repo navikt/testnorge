@@ -9,7 +9,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
 export default class TestbrukerListe extends Component {
 	componentDidMount() {
-		if (this.props.testidenter.length) {
+		if (this.props.testidenter && this.props.testidenter.length) {
 			this.props.getTPSFTestbrukere()
 		}
 	}
@@ -26,7 +26,7 @@ export default class TestbrukerListe extends Component {
 			isDeleting
 		} = this.props
 
-		if (testidenter.length <= 0)
+		if (!testidenter)
 			return (
 				<ContentContainer>
 					Trykk på opprett personer-knappen for å starte en bestilling.
