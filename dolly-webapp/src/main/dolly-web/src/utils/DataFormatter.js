@@ -62,4 +62,22 @@ formatters.camelCaseToLabel = camelCase => {
 formatters.kodeverkLabel = kodeverk => {
 	return kodeverk.substring(kodeverk.indexOf('-') + 1)
 }
+
+formatters.gtApiKodeverkId = gtType => {
+	console.log(gtType, 'gtType')
+	let gtApiKodeverkId = ''
+	switch (gtType) {
+		case 'KNR':
+			gtApiKodeverkId = 'Kommuner'
+			break
+		case 'BYDEL':
+			gtApiKodeverkId = 'Bydeler'
+			break
+		case 'LAND':
+			gtApiKodeverkId = 'Landkoder'
+			break
+	}
+
+	return gtApiKodeverkId
+}
 export default formatters
