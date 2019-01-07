@@ -16,8 +16,10 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @Component
@@ -27,7 +29,10 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 public class JobController {
 
     @Value("${orkestratoren.tpsbatch.miljoe}")
-    private String miljoe;
+    private String tpsbatchMiljoe;
+
+    @Value("${orkestratoren.eiabatch.miljoe}")
+    private String eiabatchMiljoe;
 
     @Value("${orkestratoren.batch.skdMeldingGruppeId}")
     private Long skdMeldingGruppeId;
@@ -35,17 +40,23 @@ public class JobController {
     @Value("#{${orkestratoren.batch.antallMeldingerPerEndringskode}}")
     private Map<String, Integer> antallMeldingerPerEndringskode;
 
+    @Value("${orkestratoren.eiabatch.antallSykemeldinger}")
+    private int antallSykemeldinger;
+
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
 
     @Autowired
     private ArenaInntektSyntPakkenService arenaInntektSyntPakkenService;
 
+    @Autowired
+    private EiaSyntPakkenService eiaSyntPakkenService;
+
     @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
         List<Long> ids = new ArrayList<>();
         try {
-            tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
+            tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, tpsbatchMiljoe, antallMeldingerPerEndringskode);
         } catch (HttpStatusCodeException e) {
             ids.addAll(extractIdsFromResponseBody(e));
             if (!ids.isEmpty()) {
@@ -62,5 +73,12 @@ public class JobController {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(skdMeldingGruppeId);
         List<String> levendeNordmennFnr = arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med {} meldinger.", levendeNordmennFnr.size());
+    }
+
+    @Scheduled(cron = "${orkestratoren.eiabatch.cron:0 0 1 1 * *}")
+    public void eiaSyntBatch() {
+        SyntetiserEiaRequest request = new SyntetiserEiaRequest(skdMeldingGruppeId, eiabatchMiljoe, antallSykemeldinger);
+        List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(request);
+        log.info("eiabatch har opprettet {} sykemeldinger.", fnrMedGenererteMeldinger.size());
     }
 }

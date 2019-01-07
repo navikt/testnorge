@@ -36,6 +36,7 @@ public class ExceptionUtils {
     }
 
     public static void filterStackTraceOnNavSpecificItems(HttpStatusCodeExceptionContainer exceptionContainer) {
+        log.info("Stack trace in logs has been shortened. Disable method 'ExceptionUtils.filterStackTraceOnNavSpecificItems' in order to get full trace");
         StackTraceElement[] outerStackTraceElements = exceptionContainer.getStackTrace();
         if (outerStackTraceElements != null && outerStackTraceElements.length != 0) {
             List<StackTraceElement> stackTraceElements = new ArrayList<>(Arrays.asList(outerStackTraceElements));

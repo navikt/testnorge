@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,7 +112,7 @@ public class StartSyntetiseringTpsCompTest {
      */
     @Test
     public void shouldGetProperties() {
-        assertEquals(miljoe, jobController.getMiljoe());
+        assertEquals(miljoe, jobController.getTpsbatchMiljoe());
         assertEquals(gruppeId, jobController.getSkdMeldingGruppeId());
 
         Map<String, Integer> testMap = new HashMap<>(jobController.getAntallMeldingerPerEndringskode());
