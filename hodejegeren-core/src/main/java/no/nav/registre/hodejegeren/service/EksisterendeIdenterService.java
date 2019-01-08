@@ -27,15 +27,17 @@ import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoed
 public class EksisterendeIdenterService {
 
     @Autowired
-    TpsfConsumer tpsfConsumer;
+    private TpsfConsumer tpsfConsumer;
 
     @Autowired
-    TpsStatusQuoService tpsStatusQuoService;
+    private TpsStatusQuoService tpsStatusQuoService;
+
+    @Autowired
+    private Random rand;
 
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
 
     public List<String> hentVokseneIdenterIGruppe(Long gruppeId, String miljoe, int henteAntall) {
-        Random rand = new Random();
         List<String> hentedeIdenter = new ArrayList<>(henteAntall);
 
         List<String> identer = finnLevendeIdenter(gruppeId);

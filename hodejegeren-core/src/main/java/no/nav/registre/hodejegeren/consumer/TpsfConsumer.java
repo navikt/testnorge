@@ -31,7 +31,6 @@ public class TpsfConsumer {
     private UriTemplate uriTemplateSave;
     private String urlGetIdenter;
     private String urlServiceRoutine;
-    private String urlGetIdenterIGruppe;
 
     public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
@@ -43,7 +42,6 @@ public class TpsfConsumer {
         this.uriTemplateSave = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/save/{gruppeId}");
         this.urlGetIdenter = serverUrl + "/v1/endringsmelding/skd/identer/{gruppeId}?aarsakskode={aarsakskode}&transaksjonstype={transaksjonstype}";
         this.urlServiceRoutine = serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={environment}&fnr={fnr}";
-        this.urlGetIdenterIGruppe = serverUrl + "/v1/endringsmelding/skd/identer/{gruppeId}";
     }
 
     public Set<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskode, String transaksjonstype) {
