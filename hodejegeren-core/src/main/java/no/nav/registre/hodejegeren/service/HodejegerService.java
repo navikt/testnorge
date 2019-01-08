@@ -57,13 +57,15 @@ public class HodejegerService {
     @Autowired
     private NyeIdenterService nyeIdenterService;
     @Autowired
-    private EksisterendeIdenterService eksisterendeIdenterService;
+    private EksisterendeIdenterSkdService eksisterendeIdenterSkdService;
     @Autowired
     private FoedselService foedselService;
     @Autowired
     private TpsfConsumer tpsfConsumer;
     @Autowired
     private ValidationService validationService;
+    @Autowired
+    private EksisterendeIdenterService eksisterendeIdenterService;
 
     public ResponseEntity puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         final Map<String, Integer> antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
@@ -88,7 +90,7 @@ public class HodejegerService {
                 } else if (FOEDSELSMELDING.equals(endringskode)) {
                     foedselService.behandleFoedselsmeldinger(FNR, syntetiserteSkdmeldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE));
                 } else {
-                    eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, environment);
+                    eksisterendeIdenterSkdService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, environment);
                 }
 
                 lagreSkdEndringsmeldingerITpsfOgOppdaterIds(ids, endringskode, syntetiserteSkdmeldinger, genereringsOrdreRequest);
@@ -180,49 +182,29 @@ public class HodejegerService {
     private Map<String, List<String>> opprettListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {
         Map<String, List<String>> listerMedIdenter = new HashMap<>();
 
-        List<String> opprettedeIdenterITpsf = new ArrayList<>();
-        opprettedeIdenterITpsf.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                genereringsOrdreRequest.getSkdMeldingGruppeId(), Arrays.asList(
-                        FOEDSELSMELDING.getAarsakskode(),
-                        INNVANDRING.getAarsakskode(),
-                        FOEDSELSNUMMERKORREKSJON.getAarsakskode(),
-                        TILDELING_DNUMMER.getAarsakskode()),
-                TRANSAKSJONSTYPE));
-
-        List<String> doedeOgUtvandredeIdenter = new ArrayList<>();
-        doedeOgUtvandredeIdenter.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                genereringsOrdreRequest.getSkdMeldingGruppeId(), Arrays.asList(
-                        Endringskoder.DOEDSMELDING.getAarsakskode(),
-                        Endringskoder.UTVANDRING.getAarsakskode()),
-                TRANSAKSJONSTYPE));
-
-        List<String> levendeIdenterINorge = new ArrayList<>();
-        levendeIdenterINorge.addAll(opprettedeIdenterITpsf);
-        levendeIdenterINorge.removeAll(doedeOgUtvandredeIdenter);
+        List<String> doedeIdenterINorge = eksisterendeIdenterService.finnDoedeOgUtvandredeIdenter(genereringsOrdreRequest.getSkdMeldingGruppeId());
+        List<String> levendeIdenterINorge = eksisterendeIdenterService.finnAlleIdenter(genereringsOrdreRequest.getSkdMeldingGruppeId());
+        levendeIdenterINorge.removeAll(doedeIdenterINorge);
         listerMedIdenter.put(LEVENDE_IDENTER_I_NORGE, levendeIdenterINorge);
         StringBuilder message = new StringBuilder("Antall identer i lister fra TPSF: - ")
                 .append(LEVENDE_IDENTER_I_NORGE)
                 .append(": ")
                 .append(levendeIdenterINorge.size());
 
-        List<String> gifteIdenterINorge = new ArrayList<>();
-        gifteIdenterINorge.addAll(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                genereringsOrdreRequest.getSkdMeldingGruppeId(), Arrays.asList(
-                        Endringskoder.VIGSEL.getAarsakskode()),
-                TRANSAKSJONSTYPE));
-        gifteIdenterINorge.removeAll(doedeOgUtvandredeIdenter);
+        List<String> gifteIdenterINorge = eksisterendeIdenterService.finnGifteIdenter(genereringsOrdreRequest.getSkdMeldingGruppeId());
+
+        gifteIdenterINorge.removeAll(doedeIdenterINorge);
         listerMedIdenter.put(GIFTE_IDENTER_I_NORGE, gifteIdenterINorge);
         message.append(" - ")
                 .append(GIFTE_IDENTER_I_NORGE)
                 .append(": ").append(gifteIdenterINorge.size());
 
-        List<String> singleIdenterINorge = new ArrayList<>();
-        singleIdenterINorge.addAll(levendeIdenterINorge);
-        singleIdenterINorge.removeAll(gifteIdenterINorge);
-        listerMedIdenter.put(SINGLE_IDENTER_I_NORGE, singleIdenterINorge);
+        List<String> singleIdenter = new ArrayList<>(levendeIdenterINorge);
+        singleIdenter.removeAll(gifteIdenterINorge);
+        listerMedIdenter.put(SINGLE_IDENTER_I_NORGE, singleIdenter);
         message.append(" - ")
                 .append(SINGLE_IDENTER_I_NORGE)
-                .append(": ").append(singleIdenterINorge.size());
+                .append(": ").append(levendeIdenterINorge.size());
 
         List<String> brukteIdenterIDenneBolken = new ArrayList<>();
         listerMedIdenter.put(BRUKTE_IDENTER_I_DENNE_BOLKEN, brukteIdenterIDenneBolken);

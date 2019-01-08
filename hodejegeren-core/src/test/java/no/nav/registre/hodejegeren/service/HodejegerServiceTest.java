@@ -61,10 +61,13 @@ public class HodejegerServiceTest {
     private ValidationService validationService;
 
     @Mock
-    private EksisterendeIdenterService eksisterendeIdenterService;
+    private EksisterendeIdenterSkdService eksisterendeIdenterSkdService;
 
     @Mock
     private FoedselService foedselService;
+
+    @Mock
+    private EksisterendeIdenterService eksisterendeIdenterService;
 
     @InjectMocks
     private HodejegerService hodejegerService;
@@ -226,7 +229,7 @@ public class HodejegerServiceTest {
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), any())).thenReturn(new ArrayList<>());
         String testfeilmelding = "testfeilmelding";
         doThrow(new RuntimeException(testfeilmelding))
-                .when(eksisterendeIdenterService).behandleEksisterendeIdenter(any(), any(), eq(ENDRING_OPPHOLDSTILLATELSE), any());
+                .when(eksisterendeIdenterSkdService).behandleEksisterendeIdenter(any(), any(), eq(ENDRING_OPPHOLDSTILLATELSE), any());
         when(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(any(), any())).thenReturn(ids);
 
         ResponseEntity response = hodejegerService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
