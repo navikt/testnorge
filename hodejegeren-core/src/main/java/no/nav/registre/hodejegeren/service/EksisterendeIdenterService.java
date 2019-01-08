@@ -26,16 +26,13 @@ import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoed
 @Slf4j
 public class EksisterendeIdenterService {
 
+    private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     @Autowired
     private TpsfConsumer tpsfConsumer;
-
     @Autowired
     private TpsStatusQuoService tpsStatusQuoService;
-
     @Autowired
     private Random rand;
-
-    private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
 
     public List<String> hentVokseneIdenterIGruppe(Long gruppeId, String miljoe, int henteAntall) {
         List<String> hentedeIdenter = new ArrayList<>(henteAntall);

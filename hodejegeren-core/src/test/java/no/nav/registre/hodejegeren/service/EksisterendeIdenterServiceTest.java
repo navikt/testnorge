@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
@@ -24,8 +25,6 @@ import static no.nav.registre.hodejegeren.service.HodejegerService.TRANSAKSJONST
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -35,11 +34,13 @@ public class EksisterendeIdenterServiceTest {
     private Map<String, String> status;
 
     @Mock
+    private Random rand;
+
+    @Mock
     private TpsStatusQuoService tpsStatusQuoService;
 
     @Mock
     private TpsfConsumer tpsfConsumer;
-
 
     @InjectMocks
     private EksisterendeIdenterService eksisterendeIdenterService;
@@ -74,8 +75,6 @@ public class EksisterendeIdenterServiceTest {
         status = new HashMap<>();
         status.put("datoDo", "");
 
-
-
         when(tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger"), miljoe, "20044249945")).thenReturn(status);
         when(tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger"), miljoe, "20044249946")).thenReturn(status);
         when(tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger"), miljoe, "20044249947")).thenReturn(status);
@@ -85,14 +84,14 @@ public class EksisterendeIdenterServiceTest {
     @Test
     public void hentVokseneIdenterIGruppeTest() throws IOException {
         for (int i = 0; i < 3; i++) {
-            List<String> identer = eksisterendeIdenterService.hentVokseneIdenterIGruppe(1L, miljoe,i);
+            List<String> identer = eksisterendeIdenterService.hentVokseneIdenterIGruppe(1L, miljoe, i);
             assertEquals(i, identer.size());
         }
     }
 
     @Test
     public void hentVoksneIdenterIGruppeIngenIdenterTest() {
-        List<String> identer = eksisterendeIdenterService.hentVokseneIdenterIGruppe(2L, miljoe,2);
+        List<String> identer = eksisterendeIdenterService.hentVokseneIdenterIGruppe(2L, miljoe, 2);
         assertEquals(0, identer.size());
     }
 
