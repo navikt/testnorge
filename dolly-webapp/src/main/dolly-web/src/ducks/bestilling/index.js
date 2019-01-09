@@ -174,7 +174,6 @@ const getValues = (attributeList, values) => {
 
 			return _set(accumulator, pathPrefix, dataArr)
 		}
-		console.log(attribute, value)
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
 }
