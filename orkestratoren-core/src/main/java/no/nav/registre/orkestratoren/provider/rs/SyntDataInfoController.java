@@ -1,6 +1,7 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ public class SyntDataInfoController {
 
     @Autowired
     private SyntDataInfoService syntDataInfoService;
-    @Value("${orkestratoren.batch.skdMeldingGruppeId}")
+    @Value("${orkestratoren.batch.avspillergruppeId}")
     private Long tpsBatchGruppeId;
 
     @LogExceptions

@@ -31,7 +31,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeld
 public class StartSyntetiseringInntektCompTest {
 
     String expectedFnrMedInntektsmelding = "11110061111";
-    private long skdMeldingGruppeId = 123L;
+    private Long avspillergruppeId = 123L;
 
     @Autowired
     private SyntetiseringsController syntetiseringsController;
@@ -55,7 +55,7 @@ public class StartSyntetiseringInntektCompTest {
         stubTPSF();
         stubInntektSynt();
 
-        List<String> fnr = syntetiseringsController.opprettSyntetiskInntektsmeldingIInntektstub(new SyntetiserInntektsmeldingRequest(skdMeldingGruppeId));
+        List<String> fnr = syntetiseringsController.opprettSyntetiskInntektsmeldingIInntektstub(new SyntetiserInntektsmeldingRequest(avspillergruppeId));
         assertEquals(Arrays.asList(expectedFnrMedInntektsmelding), fnr);
     }
 
@@ -67,8 +67,8 @@ public class StartSyntetiseringInntektCompTest {
 
     public void stubTPSF() {
         //Hodejegeren henter fnr i avspillergruppa hos TPSF:
-        stubTpsfFiltrerIdenterPaaAarsakskode(skdMeldingGruppeId, "01,02,39", "[\"" + expectedFnrMedInntektsmelding + "\",\n\"22222222222\"\n,\n\"33333333333\"\n]");
-        stubTpsfFiltrerIdenterPaaAarsakskode(skdMeldingGruppeId, "43,32", "[\n\"33333333333\"\n]"); //død eller utvandret
+        stubTpsfFiltrerIdenterPaaAarsakskode(avspillergruppeId, "01,02,39", "[\"" + expectedFnrMedInntektsmelding + "\",\n\"22222222222\"\n,\n\"33333333333\"\n]");
+        stubTpsfFiltrerIdenterPaaAarsakskode(avspillergruppeId, "43,32", "[\n\"33333333333\"\n]"); //død eller utvandret
     }
 
     private void stubTpsfFiltrerIdenterPaaAarsakskode(long gruppeId, String aarsakskode, String okJsonResponse) {

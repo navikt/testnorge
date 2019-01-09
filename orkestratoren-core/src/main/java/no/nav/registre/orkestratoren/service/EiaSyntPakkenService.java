@@ -14,7 +14,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 public class EiaSyntPakkenService {
 
     @Autowired
-    EiaSyntConsumer eiaSyntConsumer;
+    private EiaSyntConsumer eiaSyntConsumer;
 
     public List<String> genererEiaSykemeldinger(SyntetiserEiaRequest request) {
         return eiaSyntConsumer.startSyntetisering(request);

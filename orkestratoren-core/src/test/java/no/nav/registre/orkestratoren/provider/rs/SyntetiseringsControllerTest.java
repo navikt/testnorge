@@ -19,16 +19,16 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringsControllerTest {
 
-    @InjectMocks
-    private SyntetiseringsController syntetiseringsController;
-
     @Mock
     private TpsSyntPakkenService tpsSyntPakkenService;
 
     @Mock
     private EiaSyntPakkenService eiaSyntPakkenService;
 
-    private Long skdMeldingGruppeId = 100000445L;
+    @InjectMocks
+    private SyntetiseringsController syntetiseringsController;
+
+    private Long avspillergruppeId = 100000445L;
     private String miljoe = "t9";
 
     /**
@@ -40,20 +40,24 @@ public class SyntetiseringsControllerTest {
         Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 20);
 
-        SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest = new SyntetiserSkdmeldingerRequest(skdMeldingGruppeId,
+        SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest = new SyntetiserSkdmeldingerRequest(avspillergruppeId,
                 miljoe,
                 antallMeldingerPerEndringskode);
 
         syntetiseringsController.opprettSkdMeldingerOgSendTilTps(syntetiserSkdmeldingerRequest);
 
-        verify(tpsSyntPakkenService).produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, miljoe, antallMeldingerPerEndringskode);
+        verify(tpsSyntPakkenService).produserOgSendSkdmeldingerTilTpsIMiljoer(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
     }
 
+    /**
+     * Scenario: HVIS syntetiseringskontrolleren får et request om å generere sykemeldinger til EIA, skal metoden kalle på
+     * {@link EiaSyntPakkenService#genererEiaSykemeldinger}.
+     */
     @Test
     public void shouldTriggerGenereringAvSykemeldingerIEia() {
         int antallMeldinger = 20;
 
-        SyntetiserEiaRequest syntetiserEiaRequest = new SyntetiserEiaRequest(skdMeldingGruppeId, miljoe, antallMeldinger);
+        SyntetiserEiaRequest syntetiserEiaRequest = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallMeldinger);
 
         syntetiseringsController.genererSykemeldingerIEia(syntetiserEiaRequest);
 

@@ -3,6 +3,7 @@ package no.nav.registre.orkestratoren.consumer.rs;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,19 +24,19 @@ public class TpsfConsumer {
     private String urlGetIdenter;
 
     public TpsfConsumer(@Value("${tps-forvalteren.rest-api.url}") String tpsfServerUrl) {
-        uriTemplate = new UriTemplate(tpsfServerUrl + "/v1/endringsmelding/skd/send/{skdMeldingGruppeId}");
-        this.urlGetIdenter = tpsfServerUrl + "/v1/endringsmelding/skd/identer/{skdMeldingGruppeId}?aarsakskode={aarsakskoder}&transaksjonstype={transaksjonstype}";
+        uriTemplate = new UriTemplate(tpsfServerUrl + "/v1/endringsmelding/skd/send/{avspillergruppeId}");
+        this.urlGetIdenter = tpsfServerUrl + "/v1/endringsmelding/skd/identer/{avspillergruppeId}?aarsakskode={aarsakskoder}&transaksjonstype={transaksjonstype}";
     }
 
-    public SkdMeldingerTilTpsRespons sendSkdmeldingerTilTps(Long skdMeldingGruppeId, SendToTpsRequest sendToTpsRequest) {
-        String url = uriTemplate.expand(skdMeldingGruppeId).toString();
+    public SkdMeldingerTilTpsRespons sendSkdmeldingerTilTps(Long avspillergruppeId, SendToTpsRequest sendToTpsRequest) {
+        String url = uriTemplate.expand(avspillergruppeId).toString();
 
         return restTemplateTpsf.postForObject(url,
                 sendToTpsRequest,
                 SkdMeldingerTilTpsRespons.class);
     }
 
-    public Set<String> getIdenterFiltrertPaaAarsakskode(Long skdMeldingGruppeId, List<String> aarsakskoder, String transaksjonstype) {
-        return restTemplateTpsf.getForObject(urlGetIdenter, LinkedHashSet.class, skdMeldingGruppeId, StringUtils.join(aarsakskoder, ','), transaksjonstype);
+    public Set<String> getIdenterFiltrertPaaAarsakskode(Long avspillergruppeId, List<String> aarsakskoder, String transaksjonstype) {
+        return restTemplateTpsf.getForObject(urlGetIdenter, LinkedHashSet.class, avspillergruppeId, StringUtils.join(aarsakskoder, ','), transaksjonstype);
     }
 }

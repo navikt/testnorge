@@ -34,8 +34,8 @@ public class JobController {
     @Value("${orkestratoren.eiabatch.miljoe}")
     private String eiabatchMiljoe;
 
-    @Value("${orkestratoren.batch.skdMeldingGruppeId}")
-    private Long skdMeldingGruppeId;
+    @Value("${orkestratoren.batch.avspillergruppeId}")
+    private Long avspillergruppeId;
 
     @Value("#{${orkestratoren.batch.antallMeldingerPerEndringskode}}")
     private Map<String, Integer> antallMeldingerPerEndringskode;
@@ -56,12 +56,12 @@ public class JobController {
     public void tpsSyntBatch() {
         List<Long> ids = new ArrayList<>();
         try {
-            tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(skdMeldingGruppeId, tpsbatchMiljoe, antallMeldingerPerEndringskode);
+            tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(avspillergruppeId, tpsbatchMiljoe, antallMeldingerPerEndringskode);
         } catch (HttpStatusCodeException e) {
             ids.addAll(extractIdsFromResponseBody(e));
             if (!ids.isEmpty()) {
                 log.warn("tpsSyntBatch: Noe feilet i produserOfSendSkdmeldingerTilTpsIMiljoer for gruppe {}. Følgende id-er ble returnert: {}. {} {}",
-                        skdMeldingGruppeId, createListOfRangesFromIds(ids), e.getResponseBodyAsString(), e);
+                        avspillergruppeId, createListOfRangesFromIds(ids), e.getResponseBodyAsString(), e);
             } else {
                 log.warn(e.getResponseBodyAsString(), e);
             }
@@ -70,14 +70,14 @@ public class JobController {
 
     @Scheduled(cron = "${orkestratoren.arenabatch.cron:0 0 1 1 * *}")
     public void arenaInntektSyntBatch() {
-        SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(skdMeldingGruppeId);
+        SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
         List<String> levendeNordmennFnr = arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med {} meldinger.", levendeNordmennFnr.size());
     }
 
     @Scheduled(cron = "${orkestratoren.eiabatch.cron:0 0 1 1 * *}")
     public void eiaSyntBatch() {
-        SyntetiserEiaRequest request = new SyntetiserEiaRequest(skdMeldingGruppeId, eiabatchMiljoe, antallSykemeldinger);
+        SyntetiserEiaRequest request = new SyntetiserEiaRequest(avspillergruppeId, eiabatchMiljoe, antallSykemeldinger);
         List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(request);
         log.info("eiabatch har opprettet {} sykemeldinger.", fnrMedGenererteMeldinger.size());
     }

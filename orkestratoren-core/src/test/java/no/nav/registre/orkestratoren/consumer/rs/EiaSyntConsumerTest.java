@@ -60,7 +60,7 @@ public class EiaSyntConsumerTest {
     public void stubEiaSyntConsumer() {
         stubFor(post(urlPathEqualTo("/eia/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
-                        "{\"skdMeldingGruppeId\":" + gruppeId
+                        "{\"avspillergruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe + "\""
                                 + ",\"antallMeldinger\":" + antallMeldinger + "}"))
                 .willReturn(ok()

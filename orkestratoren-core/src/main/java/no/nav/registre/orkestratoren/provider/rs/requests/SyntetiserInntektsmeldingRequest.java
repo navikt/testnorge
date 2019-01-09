@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SyntetiserInntektsmeldingRequest {
 
-    private Long skdMeldingGruppeId;
+    private Long avspillergruppeId;
 }

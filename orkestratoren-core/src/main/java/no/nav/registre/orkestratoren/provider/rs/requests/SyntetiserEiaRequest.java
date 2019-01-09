@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SyntetiserEiaRequest {
 
-    private Long skdMeldingGruppeId;
+    private Long avspillergruppeId;
     private String miljoe;
     private int antallMeldinger;
 }

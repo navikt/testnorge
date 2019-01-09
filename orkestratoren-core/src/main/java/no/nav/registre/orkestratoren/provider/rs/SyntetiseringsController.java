@@ -38,7 +38,7 @@ public class SyntetiseringsController {
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity opprettSkdMeldingerOgSendTilTps(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
         try {
-            SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getSkdMeldingGruppeId(),
+            SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
                     syntetiserSkdmeldingerRequest.getMiljoe(),
                     syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
             return ResponseEntity.ok(skdMeldingerTilTpsRespons);

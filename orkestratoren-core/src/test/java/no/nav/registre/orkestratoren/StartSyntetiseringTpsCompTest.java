@@ -113,7 +113,7 @@ public class StartSyntetiseringTpsCompTest {
     @Test
     public void shouldGetProperties() {
         assertEquals(miljoe, jobController.getTpsbatchMiljoe());
-        assertEquals(gruppeId, jobController.getSkdMeldingGruppeId());
+        assertEquals(gruppeId, jobController.getAvspillergruppeId());
 
         Map<String, Integer> testMap = new HashMap<>(jobController.getAntallMeldingerPerEndringskode());
 
@@ -146,7 +146,7 @@ public class StartSyntetiseringTpsCompTest {
 
     public void stubHodejegeren() {
         stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
-                .withRequestBody(equalToJson("{\"skdMeldingGruppeId\": " + gruppeId
+                .withRequestBody(equalToJson("{\"avspillergruppeId\": " + gruppeId
                         + ", \"miljoe\": \"" + miljoe
                         + "\", \"antallMeldingerPerEndringskode\": {\"" + endringskode1 + "\": " + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
                 .willReturn(aResponse()
@@ -158,7 +158,7 @@ public class StartSyntetiseringTpsCompTest {
     public void stubHodejegerenWithError() {
         stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
-                        "{\"skdMeldingGruppeId\":" + gruppeId
+                        "{\"avspillergruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe
                                 + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode1 + "\":" + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
                 .willReturn(aResponse()
