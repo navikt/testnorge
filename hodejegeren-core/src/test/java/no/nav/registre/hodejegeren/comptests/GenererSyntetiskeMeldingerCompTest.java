@@ -13,13 +13,6 @@ import static no.nav.registre.hodejegeren.testutils.ResourceUtils.getResourceFil
 import static no.nav.registre.hodejegeren.testutils.StrSubstitutor.replace;
 import static org.junit.Assert.assertEquals;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +22,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import no.nav.registre.hodejegeren.ApplicationStarter;
 import no.nav.registre.hodejegeren.provider.rs.TriggeSyntetiseringController;

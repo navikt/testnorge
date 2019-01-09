@@ -4,9 +4,6 @@ import static no.nav.registre.hodejegeren.testutils.ResourceUtils.getResourceFil
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +14,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
+
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.hodejegeren.testutils.AssertionUtils;
 
 @RunWith(SpringRunner.class)
@@ -66,6 +66,6 @@ public class TpsSyntetisererenConsumerITest {
         List<String> ignoredFields = Arrays.asList("getSaksid", "getEmbete", "getSakstype",
                 "getVedtaksdato", "getInternVergeid", "getVergeFnrDnr", "getVergetype",
                 "getMandattype", "getMandatTekst", "getReserverFramtidigBruk");
-        AssertionUtils.assertAllFieldsNotNull(((RsMeldingstype1Felter) skdmeldinger.get(0)), ignoredFields);
+        AssertionUtils.assertAllFieldsNotNull(skdmeldinger.get(0), ignoredFields);
     }
 }

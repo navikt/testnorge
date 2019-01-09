@@ -1,12 +1,21 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.FNR_RELASJON;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.SIVILSTAND;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
+import static no.nav.registre.hodejegeren.service.HodejegerService.BRUKTE_IDENTER_I_DENNE_BOLKEN;
+import static no.nav.registre.hodejegeren.service.HodejegerService.GIFTE_IDENTER_I_NORGE;
+import static no.nav.registre.hodejegeren.service.HodejegerService.LEVENDE_IDENTER_I_NORGE;
+import static no.nav.registre.hodejegeren.service.HodejegerService.SINGLE_IDENTER_I_NORGE;
+import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.opprettKopiAvSkdMelding;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putEktefellePartnerFnrInnIMelding;
+import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
-import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,18 +30,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
 
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.FNR_RELASJON;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.SIVILSTAND;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
-import static no.nav.registre.hodejegeren.service.HodejegerService.BRUKTE_IDENTER_I_DENNE_BOLKEN;
-import static no.nav.registre.hodejegeren.service.HodejegerService.GIFTE_IDENTER_I_NORGE;
-import static no.nav.registre.hodejegeren.service.HodejegerService.LEVENDE_IDENTER_I_NORGE;
-import static no.nav.registre.hodejegeren.service.HodejegerService.SINGLE_IDENTER_I_NORGE;
-import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
-import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.opprettKopiAvSkdMelding;
-import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putEktefellePartnerFnrInnIMelding;
-import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
+import no.nav.registre.hodejegeren.exception.ManglerEksisterendeIdentException;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
 @Service
 @AllArgsConstructor

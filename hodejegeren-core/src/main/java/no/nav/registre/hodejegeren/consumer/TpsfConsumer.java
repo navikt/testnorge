@@ -3,7 +3,6 @@ package no.nav.registre.hodejegeren.consumer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -18,6 +17,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
+
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 
 @Component
 @Slf4j

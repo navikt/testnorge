@@ -7,6 +7,14 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKO
 import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,15 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.IkkeFullfoertBehandlingExceptionsContainer;
@@ -225,7 +224,7 @@ public class HodejegerService {
 
         for (int i = 0; i < ids.size(); i++) {
             if (i >= ids.size() - 1) {
-                if(rangeStarted) {
+                if (rangeStarted) {
                     rangeToAdd.append(ids.get(i));
                     idsWithRange.add(rangeToAdd.toString());
                 } else {
@@ -234,12 +233,12 @@ public class HodejegerService {
                 break;
             }
             if (ids.get(i + 1) == ids.get(i) + 1) {
-                if(!rangeStarted) {
+                if (!rangeStarted) {
                     rangeToAdd = new StringBuilder(ids.get(i).toString()).append(" - ");
                     rangeStarted = true;
                 }
             } else {
-                if(rangeStarted) {
+                if (rangeStarted) {
                     rangeToAdd.append(ids.get(i));
                     idsWithRange.add(rangeToAdd.toString());
                     rangeStarted = false;

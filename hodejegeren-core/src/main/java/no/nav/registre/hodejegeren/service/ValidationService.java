@@ -1,8 +1,6 @@
 package no.nav.registre.hodejegeren.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.hodejegeren.exception.TomResponsFraTpsSyntException;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
@@ -13,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import no.nav.registre.hodejegeren.exception.TomResponsFraTpsSyntException;
+import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 
 @Slf4j
 @Service

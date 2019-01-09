@@ -1,20 +1,20 @@
 package no.nav.registre.hodejegeren.provider.rs.requests;
 
-import java.util.Map;
-import javax.validation.constraints.NotNull;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+import java.util.Map;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class GenereringsOrdreRequest {
-    
+
     @NotNull
     @ApiModelProperty(value = "Angir avspillergruppen i TPSF SKD-ENDRINGSMELDINGER som meldingene skal lagres i", required = true)
     private Long skdMeldingGruppeId;

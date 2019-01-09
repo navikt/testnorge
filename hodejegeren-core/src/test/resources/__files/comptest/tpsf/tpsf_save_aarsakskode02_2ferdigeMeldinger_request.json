@@ -1,6 +1,6 @@
 [
   {
-    "beskrivelse" : "IDENT: 11111111111- AARSAKSKODE:02",
+    "beskrivelse": "IDENT: 11111111111- AARSAKSKODE:02",
     "transtype": "1",
     "maskindato": "20150716",
     "maskintid": "93951 ",
@@ -153,7 +153,7 @@
     "slekstnavnUgift": null
   },
   {
-    "beskrivelse" : "IDENT: 22222222222- AARSAKSKODE:02",
+    "beskrivelse": "IDENT: 22222222222- AARSAKSKODE:02",
     "transtype": "1",
     "maskindato": "20150716",
     "maskintid": "93951 ",
@@ -306,7 +306,7 @@
     "farsFarsNavn": " "
   },
   {
-    "beskrivelse" : "IDENT: 11111111111- AARSAKSKODE:35",
+    "beskrivelse": "IDENT: 11111111111- AARSAKSKODE:35",
     "fodselsdato": "111111",
     "personnummer": "11111",
     "regDato": null,
@@ -452,14 +452,14 @@
     "aarsakskode": "35",
     "sekvensnr": "3288 ",
     "slekstnavnUgift": null,
-    "morsSiviltilstand" : null,
-    "statsborgerskapRegdato" : null,
-    "farsFarsNavn" : null,
-    "kjonn" : null,
+    "morsSiviltilstand": null,
+    "statsborgerskapRegdato": null,
+    "farsFarsNavn": null,
+    "kjonn": null,
     "meldingstype": "t1"
   },
   {
-    "beskrivelse" : "IDENT: 22222222222- AARSAKSKODE:35",
+    "beskrivelse": "IDENT: 22222222222- AARSAKSKODE:35",
     "fodselsdato": "222222",
     "personnummer": "22222",
     "regDato": null,
@@ -604,11 +604,11 @@
     "maskintid": "93951 ",
     "aarsakskode": "35",
     "sekvensnr": "3288 ",
-    "slekstnavnUgift" : null,
-    "morsSiviltilstand" : null,
-    "statsborgerskapRegdato" : null,
-    "farsFarsNavn" : null,
-    "kjonn" : null,
-    "meldingstype" : "t1"
+    "slekstnavnUgift": null,
+    "morsSiviltilstand": null,
+    "statsborgerskapRegdato": null,
+    "farsFarsNavn": null,
+    "kjonn": null,
+    "meldingstype": "t1"
   }
 ]
