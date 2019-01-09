@@ -133,7 +133,7 @@ export function mapTpsfData(tpsfData, bestillingData) {
 			]
 		})
 	}
-	if (tpsfData.relasjoner.length) {
+	if (tpsfData.relasjoner && tpsfData.relasjoner.length) {
 		data.push({
 			header: 'Familierelasjoner',
 			multiple: true,

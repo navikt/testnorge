@@ -100,8 +100,14 @@ export default class Gruppe extends Component {
 		}
 
 		const toggleValues = [
-			{ value: this.VISNING_TESTPERSONER, label: `Testpersoner (${gruppe.testidenter.length})` },
-			{ value: this.VISNING_BESTILLING, label: `Bestillinger (${gruppe.bestillinger.length})` }
+			{
+				value: this.VISNING_TESTPERSONER,
+				label: `Testpersoner (${gruppe.testidenter ? gruppe.testidenter.length : 0})`
+			},
+			{
+				value: this.VISNING_BESTILLING,
+				label: `Bestillinger (${gruppe.bestillinger ? gruppe.bestillinger.length : 0})`
+			}
 		]
 
 		return (
@@ -124,13 +130,14 @@ export default class Gruppe extends Component {
 				<GruppeDetaljer gruppe={gruppe} />
 
 				{// Viser progressbar og bestillingsstatus
-				gruppe.bestillinger.map(bestilling => (
-					<BestillingStatusConnector
-						key={bestilling.id}
-						bestilling={bestilling}
-						onGroupUpdate={getGruppe}
-					/>
-				))}
+				gruppe.bestillinger &&
+					gruppe.bestillinger.map(bestilling => (
+						<BestillingStatusConnector
+							key={bestilling.id}
+							bestilling={bestilling}
+							onGroupUpdate={getGruppe}
+						/>
+					))}
 
 				<Toolbar
 					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}
