@@ -41,8 +41,6 @@ export default class TestbrukerListe extends Component {
 					<PaginationConnector
 						items={testbrukerListe}
 						render={testbrukere => {
-							const hei = Formatters.sort2DArray(testbrukere, 5)
-							console.log(hei, 'he')
 							return (
 								<div className="oversikt-container">
 									<Fragment>

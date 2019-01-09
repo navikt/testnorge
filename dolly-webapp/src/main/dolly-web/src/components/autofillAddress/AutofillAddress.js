@@ -109,9 +109,9 @@ export default class AutofillAddress extends Component {
 					const { adrnavn, husnrfra, pnr, knr } = addressData
 
 					newAddressObject = {
-						boadresse_gateadresse: adrnavn,
-						boadresse_husnummer: husnrfra,
-						boadresse_kommunenr: knr,
+						boadresse_gateadresse: adrnavn.toString(),
+						boadresse_husnummer: husnrfra.toString(),
+						boadresse_kommunenr: knr.toString(),
 						boadresse_postnr: pnr.toString()
 					}
 					status = ''
