@@ -80,4 +80,9 @@ formatters.gtApiKodeverkId = gtType => {
 
 	return gtApiKodeverkId
 }
+formatters.sort2DArray = (array, i) => {
+	// i er indexen av verdi som man ønsker å sortere på
+	return array.sort((a, b) => b[i] - a[i])
+}
+
 export default formatters
