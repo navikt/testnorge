@@ -63,19 +63,9 @@ formatters.kodeverkLabel = kodeverk => {
 	return kodeverk.substring(kodeverk.indexOf('-') + 1)
 }
 
-// Hjelpefunksjon til sort2DArray
-_comparator = (a, b, i) => {
-	if (a[i] < b[i]) return 1
-	if (a[i] > b[i]) return -1
-	return 0
-}
-
 formatters.sort2DArray = (array, i) => {
-	return array.sort(_comparator(i))
+	// i er indexen av verdi som man ønsker å sortere på
+	return array.sort((a, b) => b[i] - a[i])
 }
-
-// formatters.sort2DArray = (2DArray, a, b, i) => {
-// 	return 2DArray.sort(comparator(i))
-// }
 
 export default formatters

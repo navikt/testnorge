@@ -41,6 +41,8 @@ export default class TestbrukerListe extends Component {
 					<PaginationConnector
 						items={testbrukerListe}
 						render={testbrukere => {
+							const hei = Formatters.sort2DArray(testbrukere, 5)
+							console.log(hei, 'he')
 							return (
 								<div className="oversikt-container">
 									<Fragment>
@@ -57,7 +59,7 @@ export default class TestbrukerListe extends Component {
 
 												<TransitionGroup component={null}>
 													{testbrukere &&
-														testbrukere.map((bruker, idx) => {
+														Formatters.sort2DArray(testbrukere, 5).map((bruker, idx) => {
 															// Note: idx=0 of bruker (data) is parsed to be ID
 															return (
 																<CSSTransition
