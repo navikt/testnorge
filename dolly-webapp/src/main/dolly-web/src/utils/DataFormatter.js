@@ -62,4 +62,10 @@ formatters.camelCaseToLabel = camelCase => {
 formatters.kodeverkLabel = kodeverk => {
 	return kodeverk.substring(kodeverk.indexOf('-') + 1)
 }
+
+formatters.sort2DArray = (array, i) => {
+	// i er indexen av verdi som man ønsker å sortere på
+	return array.sort((a, b) => b[i] - a[i])
+}
+
 export default formatters
