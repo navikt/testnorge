@@ -1,7 +1,13 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
+import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
+import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
+import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
+import static no.nav.registre.hodejegeren.service.HodejegerService.TRANSAKSJONSTYPE;
+import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
+
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +21,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
-import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
-import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
-import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
-import static no.nav.registre.hodejegeren.service.HodejegerService.TRANSAKSJONSTYPE;
-import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
+import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 
 @Service
 @Slf4j
@@ -34,12 +35,13 @@ public class EksisterendeIdenterService {
     @Autowired
     private Random rand;
 
-    public List<String> hentVokseneIdenterIGruppe(Long gruppeId, String miljoe, int henteAntall) {
+    public List<String> hentMyndigeIdenterIAvspillerGruppe(Long gruppeId, String miljoe, int henteAntall) {
         List<String> hentedeIdenter = new ArrayList<>(henteAntall);
-
         List<String> identer = finnLevendeIdenter(gruppeId);
         List<String> gyldigeIdenter = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(18))).collect(Collectors.toList());
+
         if (henteAntall > gyldigeIdenter.size()) {
+            log.info("Antall ønskede identer å hente er større enn myndige identer i avspiller gruppe.\n HenteAntall:{} MyndigeIdenter:{}", henteAntall, gyldigeIdenter.size());
             henteAntall = gyldigeIdenter.size();
         }
 
@@ -50,25 +52,27 @@ public class EksisterendeIdenterService {
         int index = rand.nextInt(gyldigeIdenter.size());
         String ident = gyldigeIdenter.get(index);
 
+        int identerFeilet = 0;
+
         while (hentedeIdenter.size() != henteAntall) {
             try {
-                //Finn status på ident
                 Map<String, String> status = tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList("datoDo", "statsborger"), miljoe, ident);
-                //Hvis dato død ikke er satt så lever personen i følge tps
                 if (status.get("datoDo") == null || status.get("datoDo").isEmpty()) {
-                    //Legg til i hentede identer
                     hentedeIdenter.add(ident);
+                } else {
+                    identerFeilet++;
                 }
             } catch (IOException e) {
                 log.warn(e.getMessage(), e);
+                identerFeilet++;
             }
-            //Fjern ident uansett hva, enten har den blitt lagt til eller så er den ugyldig
             gyldigeIdenter.remove(index);
-            //Hvis gyldige er tom etter å ha fjernet, avslutt løkken
             if (gyldigeIdenter.isEmpty()) {
+                if (hentedeIdenter.size() != henteAntall) {
+                    log.info("Fant ikke ønsket antall identer pga de var døde i TPS og ikke TPSF (kan også inneholde feilparset FNR fra TPS).\n Antall som var døde i TPS: {}", identerFeilet);
+                }
                 break;
             }
-            //Gå til neste ident
             index = rand.nextInt(gyldigeIdenter.size());
             ident = gyldigeIdenter.get(index);
         }

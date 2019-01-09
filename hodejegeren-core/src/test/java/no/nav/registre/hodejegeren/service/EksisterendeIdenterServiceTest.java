@@ -1,6 +1,16 @@
 package no.nav.registre.hodejegeren.service;
 
-import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
+import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
+import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
+import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
+import static no.nav.registre.hodejegeren.service.HodejegerService.TRANSAKSJONSTYPE;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,21 +27,16 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
-import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
-import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
-import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
-import static no.nav.registre.hodejegeren.service.HodejegerService.TRANSAKSJONSTYPE;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
+import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EksisterendeIdenterServiceTest {
 
+    private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
+
     private final String miljoe = "t1";
-    private Map<String, String> status;
+
+    private final List<String> statusFelter = Arrays.asList("datoDo", "statsborger");
 
     @Mock
     private Random rand;
@@ -46,7 +51,7 @@ public class EksisterendeIdenterServiceTest {
     private EksisterendeIdenterService eksisterendeIdenterService;
 
     @Before
-    public void init() throws IOException {
+    public void setUp() throws IOException {
 
         Set<String> levendeIdenter = new LinkedHashSet<>();
         levendeIdenter.add("20044249945");
@@ -72,46 +77,79 @@ public class EksisterendeIdenterServiceTest {
                 Endringskoder.DOEDSMELDING.getAarsakskode(),
                 Endringskoder.UTVANDRING.getAarsakskode()), TRANSAKSJONSTYPE)).thenReturn(doedeIdenter);
 
-        status = new HashMap<>();
+        Map<String, String> status = new HashMap<>();
         status.put("datoDo", "");
 
-        when(tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger"), miljoe, "20044249945")).thenReturn(status);
-        when(tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger"), miljoe, "20044249946")).thenReturn(status);
-        when(tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger"), miljoe, "20044249947")).thenReturn(status);
-        when(tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger"), miljoe, "20044249948")).thenReturn(status);
+        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249945")).thenReturn(status);
+        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249946")).thenReturn(status);
+        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249947")).thenReturn(status);
+        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249948")).thenReturn(status);
     }
 
+    /**
+     * Scenario:
+     * Henter et varierende antall FNR 0-2
+     */
     @Test
-    public void hentVokseneIdenterIGruppeTest() throws IOException {
+    public void hentVokseneIdenterIGruppeTest() {
         for (int i = 0; i < 3; i++) {
-            List<String> identer = eksisterendeIdenterService.hentVokseneIdenterIGruppe(1L, miljoe, i);
+            List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(1L, miljoe, i);
             assertEquals(i, identer.size());
         }
     }
 
+    /**
+     * Scenario:
+     * Henter identer fra en tom gruppe
+     */
     @Test
     public void hentVoksneIdenterIGruppeIngenIdenterTest() {
-        List<String> identer = eksisterendeIdenterService.hentVokseneIdenterIGruppe(2L, miljoe, 2);
-        assertEquals(0, identer.size());
+        List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(2L, miljoe, 2);
+        assertTrue(identer.isEmpty());
     }
 
+    /**
+     * Scenario:
+     * Henter for mange identer i forhold til hvor mange som eksisterer i avspillergruppa
+     */
     @Test
     public void hentVoksneIdenterIGruppeForMangeAaHenteTest() {
-        List<String> identer = eksisterendeIdenterService.hentVokseneIdenterIGruppe(1L, miljoe, 6);
+        List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(1L, miljoe, 6);
         assertEquals(4, identer.size());
+        assertThat(identer, containsInAnyOrder(
+                "20044249945",
+                "20044249946",
+                "20044249947",
+                "20044249948"
+        ));
     }
 
+    /**
+     * Scenario:
+     * Henter identer, men en ident er ikke synkronisert med tps og har motatt en dødsmelding
+     *
+     * @throws IOException
+     */
     @Test
     public void hentVoksneIdenterIGruppeEnDoedITPS() throws IOException {
 
         Map<String, String> statusDoed = new HashMap<>();
         statusDoed.put("datoDo", "12312");
-        when(tpsStatusQuoService.hentStatusQuo("FS03-FDNUMMER-PERSDATA-O", Arrays.asList("datoDo", "statsborger"), miljoe, "20044249948")).thenReturn(statusDoed);
-        List<String> identer = eksisterendeIdenterService.hentVokseneIdenterIGruppe(1L, miljoe, 10);
+        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249948")).thenReturn(statusDoed);
+        List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(1L, miljoe, 10);
         assertEquals(3, identer.size());
+        assertThat(identer, containsInAnyOrder(
+                "20044249945",
+                "20044249946",
+                "20044249947"
+        ));
 
     }
 
+    /**
+     * Scenario:
+     * Finn levende identer
+     */
     @Test
     public void finnLevendeIdenterTest() {
         List<String> levende = eksisterendeIdenterService.finnLevendeIdenter(3L);
@@ -123,15 +161,16 @@ public class EksisterendeIdenterServiceTest {
         ));
     }
 
+    /**
+     * Scenario:
+     * Finn døde og utvandrede identer
+     */
     @Test
     public void finnDoedeOgUtvandredeIdenterTest() {
         List<String> doede = eksisterendeIdenterService.finnDoedeOgUtvandredeIdenter(3L);
         assertEquals(1, doede.size());
+        assertThat(doede, containsInAnyOrder(
+                "20044249948"
+        ));
     }
-
-    @Test
-    public void finnGifteIdenterTest() {
-
-    }
-
 }
