@@ -61,10 +61,6 @@ public class TpsfConsumer {
         } else if (response.isEmpty()) {
             log.warn("Respons fra TPS er tom for rutine {} på fnr {}", routineName, fnr);
         }
-        JsonNode jsonNode = objectMapper.readTree(response);
-        if (jsonNode == null) {
-            log.warn("jsonNode er null etter readTree - routineName: {} - fnr: {} environment: {}, - response: {}", routineName, fnr, environment, response); // midl. logging av respons for feilsøking i testmiljø
-        }
-        return jsonNode;
+        return objectMapper.readTree(response);
     }
 }
