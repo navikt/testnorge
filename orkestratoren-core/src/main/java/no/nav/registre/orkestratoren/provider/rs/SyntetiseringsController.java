@@ -55,7 +55,7 @@ public class SyntetiseringsController {
     }
 
     @LogExceptions
-    @PostMapping(value = "/eia/sykemelding/generer")
+    @PostMapping(value = "/eia/sykemeldinger/generer")
     public List<String> genererSykemeldingerIEia(@RequestBody SyntetiserEiaRequest syntetiserEiaRequest) {
         return eiaSyntPakkenService.genererEiaSykemeldinger(syntetiserEiaRequest);
     }
