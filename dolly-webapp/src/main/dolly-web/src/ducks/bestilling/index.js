@@ -114,7 +114,6 @@ const bestillingFormatter = bestillingState => {
 		environments: environments,
 		...getValues(AttributtListe, values)
 	}
-
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	final_values.tpsf.identtype = identtype
@@ -175,6 +174,7 @@ const getValues = (attributeList, values) => {
 
 			return _set(accumulator, pathPrefix, dataArr)
 		}
+		console.log(attribute, value)
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
 }

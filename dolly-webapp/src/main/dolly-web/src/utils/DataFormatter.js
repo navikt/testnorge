@@ -63,6 +63,23 @@ formatters.kodeverkLabel = kodeverk => {
 	return kodeverk.substring(kodeverk.indexOf('-') + 1)
 }
 
+formatters.gtApiKodeverkId = gtType => {
+	console.log(gtType, 'gtType')
+	let gtApiKodeverkId = ''
+	switch (gtType) {
+		case 'KNR':
+			gtApiKodeverkId = 'Kommuner'
+			break
+		case 'BYDEL':
+			gtApiKodeverkId = 'Bydeler'
+			break
+		case 'LAND':
+			gtApiKodeverkId = 'Landkoder'
+			break
+	}
+
+	return gtApiKodeverkId
+}
 formatters.sort2DArray = (array, i) => {
 	// i er indexen av verdi som man ønsker å sortere på
 	return array.sort((a, b) => b[i] - a[i])
