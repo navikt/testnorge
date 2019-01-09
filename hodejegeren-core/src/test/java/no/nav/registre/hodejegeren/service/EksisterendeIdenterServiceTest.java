@@ -62,7 +62,6 @@ public class EksisterendeIdenterServiceTest {
         Set<String> doedeIdenter = new LinkedHashSet<>();
         doedeIdenter.add("20044249948");
 
-        //Liste med identer og tom liste med identer for å teste å hente voksne identer
         when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(1L, Arrays.asList(
                 FOEDSELSMELDING.getAarsakskode(),
                 INNVANDRING.getAarsakskode(),
@@ -91,7 +90,7 @@ public class EksisterendeIdenterServiceTest {
      * Henter et varierende antall FNR 0-2
      */
     @Test
-    public void hentVokseneIdenterIGruppeTest() {
+    public void hentMyndigeIdenterIGruppeTest() {
         for (int i = 0; i < 3; i++) {
             List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(1L, miljoe, i);
             assertEquals(i, identer.size());
@@ -103,7 +102,7 @@ public class EksisterendeIdenterServiceTest {
      * Henter identer fra en tom gruppe
      */
     @Test
-    public void hentVoksneIdenterIGruppeIngenIdenterTest() {
+    public void hentMyndigeIdenterIGruppeIngenIdenterTest() {
         List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(2L, miljoe, 2);
         assertTrue(identer.isEmpty());
     }
@@ -113,7 +112,7 @@ public class EksisterendeIdenterServiceTest {
      * Henter for mange identer i forhold til hvor mange som eksisterer i avspillergruppa
      */
     @Test
-    public void hentVoksneIdenterIGruppeForMangeAaHenteTest() {
+    public void hentMyndigeIdenterIGruppeForMangeAaHenteTest() {
         List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(1L, miljoe, 6);
         assertEquals(4, identer.size());
         assertThat(identer, containsInAnyOrder(
@@ -131,7 +130,7 @@ public class EksisterendeIdenterServiceTest {
      * @throws IOException
      */
     @Test
-    public void hentVoksneIdenterIGruppeEnDoedITPS() throws IOException {
+    public void hentMyndigeIdenterIGruppeEnDoedITPS() throws IOException {
 
         Map<String, String> statusDoed = new HashMap<>();
         statusDoed.put("datoDo", "12312");
