@@ -110,8 +110,8 @@ export const miljoStatusSelector = bestillingStatus => {
 					: !failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
 			}
 
+			// Feilmelding fra tps
 			person.feil && errorMsgs.push('Ident ' + person.ident + ': ' + person.feil)
-			// Feilmelding
 		})
 	}
 
