@@ -8,7 +8,6 @@ export default class MiljoeStatus extends PureComponent {
 		const { id, successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
 		const failed = true && successEnvs.length == 0
 
-		console.log(this.props.miljoeStatusObj, 'miljostatusobjs')
 		return (
 			<div className="miljoe-status">
 				<div className="status-header">
@@ -38,8 +37,6 @@ export default class MiljoeStatus extends PureComponent {
 			{failedEnvs.map((env, i) => {
 				return this._renderMiljoe(env, i, 'failed')
 			})}
-
-			<br />
 		</Fragment>
 	)
 
