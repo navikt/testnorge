@@ -77,6 +77,7 @@ export const miljoStatusSelector = bestillingStatus => {
 	let envs = bestillingStatus.environments.slice(0) // Clone array for å unngå mutering
 	let successEnvs = []
 	let failedEnvs = []
+	let errorMsgs = []
 
 	if (bestillingStatus.personStatus && bestillingStatus.personStatus.length != 0) {
 		envs.forEach(env => {
@@ -108,10 +109,13 @@ export const miljoStatusSelector = bestillingStatus => {
 					? !successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')
 					: !failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
 			}
+
+			// Feilmelding fra tps
+			person.feil && errorMsgs.push('Ident ' + person.ident + ': ' + person.feil)
 		})
 	}
 
-	return { id, successEnvs, failedEnvs }
+	return { id, successEnvs, failedEnvs, errorMsgs }
 }
 
 const mapItems = items => {
