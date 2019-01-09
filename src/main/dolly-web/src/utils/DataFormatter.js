@@ -64,7 +64,6 @@ formatters.kodeverkLabel = kodeverk => {
 }
 
 formatters.gtApiKodeverkId = gtType => {
-	console.log(gtType, 'gtType')
 	let gtApiKodeverkId = ''
 	switch (gtType) {
 		case 'KNR':
