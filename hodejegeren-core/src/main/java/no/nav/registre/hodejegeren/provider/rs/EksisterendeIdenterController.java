@@ -3,10 +3,12 @@ package no.nav.registre.hodejegeren.provider.rs;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
@@ -18,12 +20,21 @@ public class EksisterendeIdenterController {
     EksisterendeIdenterService eksisterendeIdenterService;
 
     @LogExceptions
-    @ApiOperation(value = "Her bestilles sykemeldinger på et gitt antall fødselsnummer som hentes tilfeldig fra TPSF. \n"
-            + "Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeids forhold for å få en sykemelding\n"
-            + "De er garantert til å være myndige")
+    @ApiOperation(value = "Her kan et gitt antall myndige levende personer hentes fra en gitt avspillergruppe i TPSF. "
+            + "Systemet sjekker status-quo på personen i det angitte miljø.")
     @GetMapping("api/v1/eksisterende-identer")
-    public List<String> hentEksisterendeIdenter(@RequestParam("avspillerGruppeId") Long avspillerGruppeId, @RequestParam("miljoe") String miljoe, @RequestParam("antallPersoner") int antallPersoner) {
+    public List<String> hentEksisterendeMyndigeIdenter(@RequestParam("avspillerGruppeId") Long avspillerGruppeId, @RequestParam("miljoe") String miljoe, @RequestParam("antallPersoner") int antallPersoner) {
         return eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(avspillerGruppeId, miljoe, antallPersoner);
     }
 
+    @LogExceptions
+    @ApiOperation(value = "Her bestilles sykemeldinger på et gitt antall fødselsnummer som hentes tilfeldig fra TPSF. \n"
+            + "Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeids forhold for å få en sykemelding\n"
+            + "De er garantert til å være myndige")
+    @GetMapping("api/v1/fnr-med-navkontor/{avspillerGruppeId}/{miljoe}/{antallPersoner}")
+    public Map<String, String> hentEksisterendeMyndigeIdenterMedNavKontor(@PathVariable("avspillerGruppeId") Long avspillerGruppeId, @PathVariable("miljoe") String miljoe,
+            @PathVariable("antallPersoner") int antallPersoner) {
+        List<String> myndigeIdenter = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(avspillerGruppeId, miljoe, antallPersoner);
+        return eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, myndigeIdenter);
+    }
 }

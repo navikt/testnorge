@@ -1,14 +1,20 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
 import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
 import static no.nav.registre.hodejegeren.service.HodejegerService.TRANSAKSJONSTYPE;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -19,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -36,7 +43,7 @@ public class EksisterendeIdenterServiceTest {
 
     private final String miljoe = "t1";
 
-    private final List<String> statusFelter = Arrays.asList("datoDo", "statsborger");
+    private final List<String> statusFelter = Arrays.asList(DATO_DO, STATSBORGER);
 
     @Mock
     private Random rand;
@@ -77,7 +84,7 @@ public class EksisterendeIdenterServiceTest {
                 Endringskoder.UTVANDRING.getAarsakskode()), TRANSAKSJONSTYPE)).thenReturn(doedeIdenter);
 
         Map<String, String> status = new HashMap<>();
-        status.put("datoDo", "");
+        status.put(DATO_DO, "");
 
         when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249945")).thenReturn(status);
         when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249946")).thenReturn(status);
@@ -133,7 +140,7 @@ public class EksisterendeIdenterServiceTest {
     public void hentMyndigeIdenterIGruppeEnDoedITPS() throws IOException {
 
         Map<String, String> statusDoed = new HashMap<>();
-        statusDoed.put("datoDo", "12312");
+        statusDoed.put(DATO_DO, "12312");
         when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249948")).thenReturn(statusDoed);
         List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(1L, miljoe, 10);
         assertEquals(3, identer.size());
@@ -171,5 +178,24 @@ public class EksisterendeIdenterServiceTest {
         assertThat(doede, containsInAnyOrder(
                 "20044249948"
         ));
+    }
+
+    /**
+     * Gitt en liste med identer, skal systemet finne tilhørende nav-kontor og returnere et map med fnr-navKontor
+     */
+    @Test
+    public void hentFnrMedNavKontor() throws IOException {
+        Map<String, String> status = new HashMap<>();
+        status.put(NAV_ENHET, "123");
+        when(tpsStatusQuoService.hentStatusQuo(eq("FS03-FDNUMMER-KERNINFO-O"), eq(Arrays.asList(NAV_ENHET)), eq(miljoe), any())).thenReturn(status);
+
+        List<String> levendeIdenter = new ArrayList<>();
+        levendeIdenter.add("20044249945");
+        levendeIdenter.add("20044249946");
+
+        Map<String, String> fnrMedNavKontor = eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, levendeIdenter);
+
+        assertThat(fnrMedNavKontor.get(levendeIdenter.get(0)), equalTo("123"));
+        assertThat(fnrMedNavKontor.get(levendeIdenter.get(1)), equalTo("123"));
     }
 }

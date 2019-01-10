@@ -1,5 +1,8 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
 import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
@@ -16,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -28,6 +32,7 @@ import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 public class EksisterendeIdenterService {
 
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
+    private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
     @Autowired
     private TpsfConsumer tpsfConsumer;
     @Autowired
@@ -56,8 +61,8 @@ public class EksisterendeIdenterService {
 
         while (hentedeIdenter.size() != henteAntall) {
             try {
-                Map<String, String> status = tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList("datoDo", "statsborger"), miljoe, ident);
-                if (status.get("datoDo") == null || status.get("datoDo").isEmpty()) {
+                Map<String, String> status = tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, ident);
+                if (status.get(DATO_DO) == null || status.get(DATO_DO).isEmpty()) {
                     hentedeIdenter.add(ident);
                 } else {
                     identerFeilet++;
@@ -77,6 +82,23 @@ public class EksisterendeIdenterService {
             ident = gyldigeIdenter.get(index);
         }
         return hentedeIdenter;
+    }
+
+    public Map<String, String> hentFnrMedNavKontor(String miljoe, List<String> identer) {
+        Map<String, String> fnrMedNavKontor = new HashMap<>();
+
+        for (String ident : identer) {
+            Map<String, String> feltMedStatusQuo;
+
+            try {
+                feltMedStatusQuo = tpsStatusQuoService.hentStatusQuo(ROUTINE_KERNINFO, Arrays.asList(NAV_ENHET), miljoe, ident);
+                fnrMedNavKontor.put(ident, feltMedStatusQuo.get(NAV_ENHET));
+            } catch (IOException e) {
+                log.warn(e.getMessage(), e);
+            }
+        }
+
+        return fnrMedNavKontor;
     }
 
     public List<String> finnAlleIdenter(Long gruppeId) {
