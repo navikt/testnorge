@@ -71,6 +71,8 @@ public class EksisterendeIdenterService {
             } catch (IOException e) {
                 log.warn(e.getMessage(), e);
                 identerFeilet++;
+            } catch (ManglendeInfoITpsException e) {
+                log.warn(e.getMessage()); // TODO - Vi bør gi bruker beskjed om at ikke alle identene kunne hentes (men fortsatt ikke stoppe eksekveringen)
             }
             gyldigeIdenter.remove(index);
             if (gyldigeIdenter.isEmpty()) {
@@ -97,7 +99,7 @@ public class EksisterendeIdenterService {
             } catch (IOException e) {
                 log.warn(e.getMessage(), e);
             } catch (ManglendeInfoITpsException e) {
-                log.warn(e.getMessage()); // TODO - Vi bør gi bruker beskjed om at ikke alle meldingene ble lagret (men fortsatt ikke stoppe eksekveringen)
+                log.warn(e.getMessage()); // TODO - Vi bør gi bruker beskjed om at ikke alle identene kunne hentes (men fortsatt ikke stoppe eksekveringen)
             }
         }
 
