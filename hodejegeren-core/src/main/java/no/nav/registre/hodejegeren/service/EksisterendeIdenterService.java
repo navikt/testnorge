@@ -26,6 +26,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 
 @Service
 @Slf4j
@@ -46,7 +47,7 @@ public class EksisterendeIdenterService {
         List<String> gyldigeIdenter = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(18))).collect(Collectors.toList());
 
         if (henteAntall > gyldigeIdenter.size()) {
-            log.info("Antall ønskede identer å hente er større enn myndige identer i avspiller gruppe.\n HenteAntall:{} MyndigeIdenter:{}", henteAntall, gyldigeIdenter.size());
+            log.info("Antall ønskede identer å hente er større enn myndige identer i avspiller gruppe. - HenteAntall:{} MyndigeIdenter:{}", henteAntall, gyldigeIdenter.size());
             henteAntall = gyldigeIdenter.size();
         }
 
@@ -74,7 +75,7 @@ public class EksisterendeIdenterService {
             gyldigeIdenter.remove(index);
             if (gyldigeIdenter.isEmpty()) {
                 if (hentedeIdenter.size() != henteAntall) {
-                    log.info("Fant ikke ønsket antall identer pga de var døde i TPS og ikke TPSF (kan også inneholde feilparset FNR fra TPS).\n Antall som var døde i TPS: {}", identerFeilet);
+                    log.info("Fant ikke ønsket antall identer fordi status i TPS og TPSF ikke samsvarte. - Antall identer som feilet: {}", identerFeilet);
                 }
                 break;
             }
@@ -95,6 +96,8 @@ public class EksisterendeIdenterService {
                 fnrMedNavKontor.put(ident, feltMedStatusQuo.get(NAV_ENHET));
             } catch (IOException e) {
                 log.warn(e.getMessage(), e);
+            } catch (ManglendeInfoITpsException e) {
+                log.warn(e.getMessage()); // TODO - Vi bør gi bruker beskjed om at ikke alle meldingene ble lagret (men fortsatt ikke stoppe eksekveringen)
             }
         }
 
