@@ -167,6 +167,11 @@ export function mapTpsfData(tpsfData, bestillingData) {
 							id: 'kjonn',
 							label: 'Kjønn',
 							value: relasjon.personRelasjonMed.kjonn
+						},
+						{
+							id: 'statsborgerskap',
+							label: 'Statsborgerskap',
+							value: relasjon.personRelasjonMed.statsborgerskap
 						}
 					]
 				}
