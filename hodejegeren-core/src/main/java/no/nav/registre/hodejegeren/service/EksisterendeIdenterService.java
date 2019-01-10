@@ -73,6 +73,7 @@ public class EksisterendeIdenterService {
                 identerFeilet++;
             } catch (ManglendeInfoITpsException e) {
                 log.warn(e.getMessage()); // TODO - Vi bør gi bruker beskjed om at ikke alle identene kunne hentes (men fortsatt ikke stoppe eksekveringen)
+                identerFeilet++;
             }
             gyldigeIdenter.remove(index);
             if (gyldigeIdenter.isEmpty()) {
