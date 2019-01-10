@@ -91,17 +91,31 @@ public class EksisterendeIdenterService {
     public Map<String, String> hentFnrMedNavKontor(String miljoe, List<String> identer) {
         Map<String, String> fnrMedNavKontor = new HashMap<>();
 
+        int antallFeilet = 0;
+
         for (String ident : identer) {
             Map<String, String> feltMedStatusQuo;
 
             try {
                 feltMedStatusQuo = tpsStatusQuoService.hentStatusQuo(ROUTINE_KERNINFO, Arrays.asList(NAV_ENHET), miljoe, ident);
-                fnrMedNavKontor.put(ident, feltMedStatusQuo.get(NAV_ENHET));
+                String statusQuo = feltMedStatusQuo.get(NAV_ENHET);
+                if (!statusQuo.isEmpty()) {
+                    fnrMedNavKontor.put(ident, statusQuo);
+                } else {
+                    antallFeilet++;
+                    log.warn("Person med fnr {} hadde ingen tilknytning til NAV-enhet.", ident);
+                }
             } catch (IOException e) {
                 log.warn(e.getMessage(), e);
+                antallFeilet++;
             } catch (ManglendeInfoITpsException e) {
                 log.warn(e.getMessage()); // TODO - Vi bør gi bruker beskjed om at ikke alle identene kunne hentes (men fortsatt ikke stoppe eksekveringen)
+                antallFeilet++;
             }
+        }
+
+        if(antallFeilet > 0 ) {
+            log.warn("Kunne ikke finne NAV-enhet for {} av identene.", antallFeilet);
         }
 
         return fnrMedNavKontor;
