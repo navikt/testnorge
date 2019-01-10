@@ -1,10 +1,8 @@
 package no.nav.registre.hodejegeren.consumer;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-import java.util.Set;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -15,10 +13,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
+import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 
 @Component
@@ -35,9 +34,9 @@ public class TpsfConsumer {
     private String urlServiceRoutine;
 
     public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
-                        @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
-                        @Value("${testnorges.ida.credential.tpsf.username}") String username,
-                        @Value("${testnorges.ida.credential.tpsf.password}") String password
+            @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
+            @Value("${testnorges.ida.credential.tpsf.username}") String username,
+            @Value("${testnorges.ida.credential.tpsf.password}") String password
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
@@ -63,10 +62,6 @@ public class TpsfConsumer {
         } else if (response.isEmpty()) {
             log.warn("Respons fra TPS er tom for rutine {} på fnr {}", routineName, fnr);
         }
-        JsonNode jsonNode = objectMapper.readTree(response);
-        if(jsonNode == null) {
-            log.warn("jsonNode er null etter readTree - routineName: {} - fnr: {} environment: {}, - response: {}", routineName, fnr, environment, response); // midl. logging av respons for feilsøking i testmiljø
-        }
-        return jsonNode;
+        return objectMapper.readTree(response);
     }
 }

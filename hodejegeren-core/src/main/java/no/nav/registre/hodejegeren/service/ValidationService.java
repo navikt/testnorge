@@ -1,18 +1,17 @@
 package no.nav.registre.hodejegeren.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
-import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.exception.TomResponsFraTpsSyntException;
 import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
 

@@ -1,12 +1,12 @@
 package no.nav.registre.hodejegeren.skdmelding;
 
-import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @JsonTypeName("t2")
 public class RsMeldingstype2Felter extends RsMeldingstype {
-    
+
     @Size(max = 11)
     private String fodselsnr;
     @Size(max = 6)
@@ -130,5 +130,5 @@ public class RsMeldingstype2Felter extends RsMeldingstype {
     public String getMeldingstype() {
         return "t2";
     }
-    
+
 }

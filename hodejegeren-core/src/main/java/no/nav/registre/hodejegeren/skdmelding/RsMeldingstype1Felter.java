@@ -1,13 +1,13 @@
 package no.nav.registre.hodejegeren.skdmelding;
 
-import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ import lombok.Setter;
 @JsonTypeName("t1")
 @Builder(toBuilder = true)
 public class RsMeldingstype1Felter extends RsMeldingstype {
-    
+
     @Size(max = 6)
     private String fodselsdato;
     @Size(max = 5)
@@ -295,23 +295,23 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     private String mandatTekst;
     @Size(max = 151)
     private String reserverFramtidigBruk;
-    
+
     public String getSlekstnavnUgift() {
         return slektsnavnUgift;
     }
-    
+
     public String getKjonn() {
         return kjoenn;
     }
-    
+
     public String getFarsFarsNavn() {
         return farsNavn;
     }
-    
+
     public String getMorsSiviltilstand() {
         return morsSivilstand;
     }
-    
+
     public String getStatsborgerskapRegdato() {
         return regdatoStatsb;
     }
@@ -324,5 +324,5 @@ public class RsMeldingstype1Felter extends RsMeldingstype {
     public String getMeldingstype() {
         return "t1";
     }
-    
+
 }

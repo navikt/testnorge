@@ -1,13 +1,10 @@
 package no.nav.registre.hodejegeren.provider.rs;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import springfox.documentation.annotations.ApiIgnore;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -17,6 +14,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 /**
  * Configure automated swagger API documentation
  */
@@ -24,10 +24,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig implements WebMvcConfigurer {
-    
+
     @Value("${application.version}")
     private String appVersion;
-    
+
     @Bean
     public Docket api() {
         HashSet contentTypeJson = new HashSet(Arrays.asList("application/json"));
@@ -42,7 +42,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .consumes(contentTypeJson)
                 .useDefaultResponseMessages(false);
     }
-    
+
     private ApiInfo apiInfo() {
         return new ApiInfo(
                 "Testnorge-Hodejegeren",
@@ -55,7 +55,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 "https://opensource.org/licenses/super-strict-license"
         );
     }
-    
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/api").setViewName("redirect:/swagger-ui.html");

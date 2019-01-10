@@ -3,11 +3,11 @@ package no.nav.registre.hodejegeren.service;
 import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.opprettStatsborgerendringsmelding;
 import static no.nav.registre.hodejegeren.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 import no.nav.registre.hodejegeren.consumer.IdentPoolConsumer;
 import no.nav.registre.hodejegeren.consumer.requests.HentIdenterRequest;
