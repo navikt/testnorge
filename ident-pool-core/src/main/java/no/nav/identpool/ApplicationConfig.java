@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @EnableConfigurationProperties
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, RetryConfig.class})
 public class ApplicationConfig {
 
 }

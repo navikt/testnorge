@@ -1,0 +1,120 @@
+package no.nav.identpool.ajourhold;
+
+import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.service.IdentGeneratorService;
+import no.nav.identpool.service.IdentTpsService;
+import no.nav.identpool.domain.Ident;
+import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.test.mockito.MockitoExtension;
+import no.nav.identpool.util.PersonidentUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.stubbing.Answer;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyIterable;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class AjourholdServiceTest {
+
+    @Mock
+    private IdentTpsService identTpsService;
+
+    @Mock
+    private IdentRepository identRepository;
+
+    private AjourholdService ajourholdService;
+
+    private List<Ident> entities = new ArrayList<>();
+
+    @BeforeEach
+    void init() {
+        entities.clear();
+        ajourholdService = spy(new AjourholdService(identRepository, new IdentGeneratorService(), identTpsService));
+        ajourholdService.current = LocalDate.now();
+
+        when(identRepository.saveAll(anyIterable())).thenAnswer((Answer<Void>) invocationOnMock -> {
+            List<Ident> pins = invocationOnMock.getArgument(0);
+            entities.addAll(pins);
+            return null;
+        });
+    }
+
+    @Test
+    void identerBlirGenerertForHvertAar() {
+        doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.FNR));
+        doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.DNR));
+        ajourholdService.checkCriticalAndGenerate();
+        int number = 111;
+        if (LocalDate.now().getDayOfYear() == 1) {
+            number -= 1;
+        }
+        verify(ajourholdService, times(number)).checkAndGenerateForDate(any(), eq(Identtype.FNR));
+        verify(ajourholdService, times(number)).checkAndGenerateForDate(any(), eq(Identtype.DNR));
+    }
+
+    @Test
+    void genererIdenterForAarHvorIngenErLedige() {
+        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+            List<String> pins = invocationOnMock.getArgument(0);
+            return pins.stream().map(p -> new TpsStatus(p, false)).collect(Collectors.toSet());
+        });
+        ajourholdService.generateForYear(1941, Identtype.FNR);
+        verify(identRepository, times(2)).saveAll(anyIterable());
+        assertThat(entities.size(), is(365 * 2));
+        entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.FNR)));
+        entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.FNR)));
+        entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG)));
+    }
+
+    @Test
+    void genererIdenterForAarHvorAlleErLedige() {
+        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+            List<String> pins = invocationOnMock.getArgument(0);
+            return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
+        });
+        ajourholdService.generateForYear(1941, Identtype.DNR);
+        verify(identRepository, times(2)).saveAll(anyIterable());
+        assertThat(entities.size(), is(365 * 2));
+        entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
+        entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.DNR)));
+        entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)));
+
+    }
+
+    @Test
+    void generererIdenterFraAarTilDatoMidtISammeAar() {
+        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+            List<String> pins = invocationOnMock.getArgument(0);
+            return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
+        });
+        LocalDate dayOfYear = LocalDate.of(1941, 4, 10);
+        ajourholdService.current = dayOfYear;
+        ajourholdService.generateForYear(1941, Identtype.DNR);
+        verify(identRepository, times(2)).saveAll(anyIterable());
+        assertThat(entities.size(), is(dayOfYear.minusDays(1).getDayOfYear() * 2));
+        entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
+        entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.DNR)));
+        entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)));
+    }
+}

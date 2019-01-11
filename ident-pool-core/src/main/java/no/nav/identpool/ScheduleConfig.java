@@ -1,9 +1,9 @@
 package no.nav.identpool;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication
+@Configuration
 @EnableScheduling
 public class ScheduleConfig {
 }

@@ -18,7 +18,8 @@ import no.nav.freg.security.oidc.idp.Idp;
 import no.nav.freg.security.oidc.idp.registry.IdpRegistry;
 import no.nav.freg.security.test.oidc.tools.RsaKey;
 
-@Configuration class SecurityTestConfig {
+@Configuration
+class SecurityTestConfig {
 
     static final String NAV_STS_ISSUER_URL = "http://navStsIssuerUrl";
 
@@ -33,6 +34,14 @@ import no.nav.freg.security.test.oidc.tools.RsaKey;
         return simpleGet;
     }
 
+    @Bean
+    RsaKey issuerNavSts() throws Exception {
+        RsaJsonWebKey webKey = RsaJwkGenerator.generateJwk(2048);
+        webKey.setKeyId("navSts1");
+        webKey.setAlgorithm("RSA256");
+        return new RsaKey(NAV_STS_ISSUER_URL, webKey);
+    }
+
     private void mockRsa(RsaKey rsaKey, SimpleGet simpleGet) throws IOException {
         String jwks = idpRegistry.findByIssuer(rsaKey.getIssuer()).map(Idp::getJwksUrl).orElse(rsaKey.getIssuer());
 
@@ -41,13 +50,5 @@ import no.nav.freg.security.test.oidc.tools.RsaKey;
 
         when(response.getBody()).thenReturn(format("{\"keys\":[%s]}", value));
         when(simpleGet.get(jwks)).thenReturn(response);
-    }
-
-    @Bean
-    RsaKey issuerNavSts() throws Exception {
-        RsaJsonWebKey webKey = RsaJwkGenerator.generateJwk(2048);
-        webKey.setKeyId("navSts1");
-        webKey.setAlgorithm("RSA256");
-        return new RsaKey(NAV_STS_ISSUER_URL, webKey);
     }
 }

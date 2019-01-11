@@ -1,17 +1,26 @@
 package no.nav.identpool.repository;
 
 import java.time.LocalDate;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+
+import no.nav.identpool.domain.Ident;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
+import org.springframework.data.repository.Repository;
 
-public interface IdentRepository extends JpaRepository<IdentEntity, Long>, QuerydslPredicateExecutor<IdentEntity> {
+public interface IdentRepository extends Repository<Ident, Long>, QuerydslPredicateExecutor<Ident> {
 
     boolean existsByPersonidentifikator(String identifikator);
 
     long countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(LocalDate from, LocalDate to, Identtype type, Rekvireringsstatus rekvireringsstatus);
 
-    IdentEntity findTopByPersonidentifikator(String personidentifkator);
+    Ident findTopByPersonidentifikator(String personidentifkator);
+
+    List<Ident> saveAll(Iterable<Ident> entities);
+
+    Ident save(Ident newIdent);
+
+    void deleteAll();
 }

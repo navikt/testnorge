@@ -1,9 +1,12 @@
 package no.nav.identpool.rs.v1;
 
-import static no.nav.identpool.util.PersonidentifikatorUtil.valider;
+import static no.nav.identpool.util.PersonidentUtil.validate;
 
 import java.util.List;
 import javax.validation.Valid;
+
+import no.nav.identpool.rs.v1.support.HentIdenterRequest;
+import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
-import no.nav.identpool.repository.IdentEntity;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.service.IdentpoolService;
 
 @Slf4j
@@ -28,6 +31,15 @@ public class IdentpoolController {
 
     private final IdentpoolService identpoolService;
 
+    @GetMapping
+    @ApiOperation(value = "hent informasjon lagret på en test-ident")
+    public Ident lesInnhold(
+            @RequestHeader String personidentifikator
+    ) throws UgyldigPersonidentifikatorException {
+        validate(personidentifikator);
+        return identpoolService.lesInnhold(personidentifikator);
+    }
+
     @PostMapping
     @ApiOperation(value = "rekvirer nye test-identer")
     public List<String> rekvirer(@RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
@@ -37,7 +49,7 @@ public class IdentpoolController {
     @PostMapping("/bruk")
     @ApiOperation(value = "marker eksisterende og ledige identer som i bruk")
     public void markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) throws Exception {
-        valider(markerBruktRequest.getPersonidentifikator());
+        validate(markerBruktRequest.getPersonidentifikator());
         identpoolService.markerBrukt(markerBruktRequest);
     }
 
@@ -46,16 +58,7 @@ public class IdentpoolController {
     public Boolean erLedig(
             @RequestHeader String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
-        valider(personidentifikator);
+        validate(personidentifikator);
         return identpoolService.erLedig(personidentifikator);
-    }
-
-    @GetMapping
-    @ApiOperation(value = "hent informasjon lagret på en test-ident")
-    public IdentEntity lesInnhold(
-            @RequestHeader String personidentifikator
-    ) throws UgyldigPersonidentifikatorException {
-        valider(personidentifikator);
-        return identpoolService.lesInnhold(personidentifikator);
     }
 }
