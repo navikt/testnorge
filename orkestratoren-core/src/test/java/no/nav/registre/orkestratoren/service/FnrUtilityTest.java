@@ -1,8 +1,9 @@
 package no.nav.registre.orkestratoren.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
+
 import org.junit.Test;
 
 public class FnrUtilityTest {

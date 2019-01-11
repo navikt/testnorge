@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,9 +25,8 @@ public class SyntDataInfoServiceTest {
     private SyntDataInfoService syntDataInfoService;
 
     /**
-     * Testscenario: Metoden henter liste med innvandrede og fødte personers FNR
-     * fra Tpsf via TpsfConsumer, og deretter henter liste med FNR den utvandrede og døde personer.
-     * Responsen er resultatet av at sistnevnte liste trekkes fra førstnevnte.
+     * Testscenario: Metoden henter liste med innvandrede og fødte personers FNR fra Tpsf via TpsfConsumer, og deretter henter liste
+     * med FNR den utvandrede og døde personer. Responsen er resultatet av at sistnevnte liste trekkes fra førstnevnte.
      */
     @Test
     public void opprettListenLevendeNordmenn() {

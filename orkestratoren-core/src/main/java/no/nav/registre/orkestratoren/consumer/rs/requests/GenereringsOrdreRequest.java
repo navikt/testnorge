@@ -16,7 +16,7 @@ import lombok.Setter;
 public class GenereringsOrdreRequest {
 
     @NotNull
-    private Long skdMeldingGruppeId;
+    private Long avspillergruppeId;
     @NotNull
     private String miljoe;
     @NotNull

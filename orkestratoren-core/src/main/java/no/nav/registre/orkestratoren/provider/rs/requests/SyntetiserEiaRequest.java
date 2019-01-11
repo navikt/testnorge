@@ -7,9 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class SyntetiserInntektsmeldingRequest {
+@AllArgsConstructor
+public class SyntetiserEiaRequest {
 
     private Long avspillergruppeId;
+    private String miljoe;
+    private int antallMeldinger;
 }

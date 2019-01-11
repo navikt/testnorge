@@ -1,8 +1,8 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
+import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.orkestratoren.exceptions.HttpStatusCodeExceptionContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +12,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
+import no.nav.registre.orkestratoren.exceptions.HttpStatusCodeExceptionContainer;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
+@Slf4j
 public class SyntetiseringsController {
 
     @Autowired
@@ -29,11 +35,14 @@ public class SyntetiseringsController {
     @Autowired
     private ArenaInntektSyntPakkenService arenaInntektSyntPakkenService;
 
+    @Autowired
+    private EiaSyntPakkenService eiaSyntPakkenService;
+
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity opprettSkdMeldingerOgSendTilTps(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
         try {
-            SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getSkdMeldingGruppeId(),
+            SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
                     syntetiserSkdmeldingerRequest.getMiljoe(),
                     syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
             return ResponseEntity.ok(skdMeldingerTilTpsRespons);
@@ -47,5 +56,13 @@ public class SyntetiseringsController {
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public List<String> opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest request) {
         return arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
+    }
+
+    @LogExceptions
+    @PostMapping(value = "/eia/sykemeldinger/generer")
+    public List<String> genererSykemeldingerIEia(@RequestBody SyntetiserEiaRequest syntetiserEiaRequest) {
+        List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(syntetiserEiaRequest);
+        log.info("eia har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
+        return fnrMedGenererteMeldinger;
     }
 }

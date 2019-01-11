@@ -27,8 +27,8 @@ public class InternalControllerTest {
     private InternalController controller;
 
     /**
-     * Hvis minst en av orkestratorens avhengigheter ikke er klare til å motta kall (returnerer ikke 200 status for isReady),
-     * så skal orkestratorens respons på isReady være status 500.
+     * Hvis minst en av orkestratorens avhengigheter ikke er klare til å motta kall (returnerer ikke 200 status for isReady), så
+     * skal orkestratorens respons på isReady være status 500.
      */
     @Test
     public void shouldReturnNotReady() {
@@ -43,8 +43,8 @@ public class InternalControllerTest {
     }
 
     /**
-     * Hvis alle av orkestratorens avhengigheter er klare til å motta kall og returnerer httpstatus OK fra isReady,
-     * så skal orkestratorens isReady-endepunkt returnere http-status OK.
+     * Hvis alle av orkestratorens avhengigheter er klare til å motta kall og returnerer httpstatus OK fra isReady, så skal
+     * orkestratorens isReady-endepunkt returnere http-status OK.
      */
     @Test
     public void shouldReturnReady() {

@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.orkestratoren.exceptions.HttpStatusCodeExceptionContainer;
 
 @Slf4j
@@ -36,6 +37,7 @@ public class ExceptionUtils {
     }
 
     public static void filterStackTraceOnNavSpecificItems(HttpStatusCodeExceptionContainer exceptionContainer) {
+        log.info("Stack trace in logs has been shortened. Disable method 'ExceptionUtils.filterStackTraceOnNavSpecificItems' in order to get full trace");
         StackTraceElement[] outerStackTraceElements = exceptionContainer.getStackTrace();
         if (outerStackTraceElements != null && outerStackTraceElements.length != 0) {
             List<StackTraceElement> stackTraceElements = new ArrayList<>(Arrays.asList(outerStackTraceElements));

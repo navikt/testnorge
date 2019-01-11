@@ -41,7 +41,7 @@ public class ArenaInntektSyntConsumer {
         try {
             genererEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere);
             if (log.isInfoEnabled()) {
-                log.info("synth-arena-inntekt har fullført bestillingen som ble sendt {}. " //NOSONAR - Sonar kjenner ikke igjen at log er i if-statement
+                log.info("synth-arena-inntekt har fullført bestillingen som ble sendt {}. " // NOSONAR - Sonar kjenner ikke igjen at log er i if-statement
                         + "Antall inntektsmeldinger opprettet i inntekts-stub: {} ",
                         bestillingstidspunktet, inntektsmldMottakere.size());
             }

@@ -2,6 +2,7 @@ package no.nav.registre.orkestratoren.config;
 
 import java.util.Arrays;
 import java.util.HashSet;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,8 +53,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 "https://nav.no",
                 new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/orkestratoren/browse", null),
                 "Super Strict Licence",
-                "https://opensource.org/licenses/super-strict-license"
-        );
+                "https://opensource.org/licenses/super-strict-license");
     }
 
     @Override
