@@ -58,7 +58,7 @@ public class EiaSyntConsumerTest {
     }
 
     public void stubEiaSyntConsumer() {
-        stubFor(post(urlPathEqualTo("/eia/api/v1/syntetisering/generer"))
+        stubFor(post(urlPathEqualTo("/eia/api/v1/syntetisering/generer/QA.Q414.FS06_EIA_MELDINGER"))
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe + "\""
