@@ -24,16 +24,12 @@ export default class PersonDetaljer extends PureComponent {
 	_renderPersonInfoBlockHandler = i => {
 		const { isFetchingKrr, isFetchingSigrun } = this.props
 		if (i.header === 'Inntekter') {
-			return <Loading label="Henter data fra Sigrun-stub" panel />
-
 			return isFetchingSigrun ? (
 				<Loading label="Henter data fra Sigrun-stub" panel />
 			) : (
 				this._renderPersonInfoBlock(i)
 			)
 		} else if (i.header === 'Kontaktinformasjon og reservasjon') {
-			return <Loading label="Henter data fra Krr-stub" panel />
-
 			return isFetchingKrr ? (
 				<Loading label="Henter data fra Krr" panel />
 			) : (
