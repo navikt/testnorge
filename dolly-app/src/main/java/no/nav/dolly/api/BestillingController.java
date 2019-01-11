@@ -36,10 +36,18 @@ public class BestillingController {
 
     @GetMapping("/{bestillingId}")
     public RsBestilling checkBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
-        List<RsBestillingProgress> progress = mapperFacade.mapAsList(progressService.fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(bestillingId), RsBestillingProgress.class);
+        List<RsBestillingProgress> progress = mapperFacade.mapAsList(progressService.fetchBestillingProgressByBestillingId(bestillingId), RsBestillingProgress.class);
         RsBestilling rsBestilling = mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestilling.class);
-        rsBestilling.setPersonStatus(progress);
+        rsBestilling.setBestillingProgress(progress);
         return rsBestilling;
+    }
+
+    @GetMapping("/gruppe/{gruppeId}")
+    public List<RsBestilling> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
+        List<RsBestilling> bestillinger = mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestilling.class);
+        bestillinger.forEach(rsBestilling -> rsBestilling.setBestillingProgress(
+                mapperFacade.mapAsList(progressService.fetchBestillingProgressByBestillingId(rsBestilling.getId()), RsBestillingProgress.class)));
+        return bestillinger;
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)

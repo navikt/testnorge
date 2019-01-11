@@ -129,7 +129,7 @@ public class TestgruppeControllerTest {
         when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, ant, envir)).thenReturn(bestilling);
 
         controller.opprettIdentBestilling(gruppeId, dollyBestillingsRequest);
-        verify(dollyBestillingService).opprettPersonerByKriterierAsync(gruppeId, dollyBestillingsRequest, bestillingId);
+        verify(dollyBestillingService).opprettPersonerByKriterierAsync(gruppeId, dollyBestillingsRequest, bestilling);
     }
 
     @Test(expected = NotFoundException.class)

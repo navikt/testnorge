@@ -45,7 +45,7 @@ public class BestillingProgressServiceTest {
     @Test
     public void hvisFetchProgressSomReturnererTomListeHvisIkkeFunnetIkkeFinnerObjektSåReturnerTomListe() {
         when(mockRepo.findBestillingProgressByBestillingIdOrderByBestillingId(1l)).thenReturn(new ArrayList<>());
-        List<BestillingProgress> bes = progressService.fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(1l);
+        List<BestillingProgress> bes = progressService.fetchBestillingProgressByBestillingId(1l);
         assertThat(bes.isEmpty(), is(true));
     }
 

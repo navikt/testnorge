@@ -117,7 +117,7 @@ public class TestgruppeController {
     public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
         Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, request.getAntall(), request.getEnvironments());
 
-        dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling.getId());
+        dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
