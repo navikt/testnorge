@@ -35,6 +35,8 @@ fasitResources:
       resourceType: restservice
     - alias: "synthdata-arena-inntekt.rest-api"
       resourceType: restservice
+    - alias: "eia-mq-proxy.rest-api"
+      resourceType: restservice
     - alias: "testnorges.ida.credential.tpsf"
       resourceType: credential
     - alias: "orkestratorensProperties"

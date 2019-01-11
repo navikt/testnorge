@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,8 +32,8 @@ public class ArenaInntektSyntPakkenServiceTest {
     private ArenaInntektSyntPakkenService inntektSyntPakkenService;
 
     /**
-     * Testscenario: De FNR som er eldre enn 13 år i første halvdel av lista fra TPSF skdavspillergruppa,
-     * skal sendes til Inntektsynt for å få inntektsmelding og skal returneres fra metoden.
+     * Testscenario: De FNR som er eldre enn 13 år i første halvdel av lista fra TPSF skdavspillergruppa, skal sendes til
+     * Inntektsynt for å få inntektsmelding og skal returneres fra metoden.
      */
     @Test
     public void genererEnInntektsmeldingPerFnrIInntektstub() {
@@ -50,7 +51,7 @@ public class ArenaInntektSyntPakkenServiceTest {
                 new SyntetiserInntektsmeldingRequest(123L));
 
         assertEquals(1, inntektsmldMottakere.size());
-        assertEquals(personOver13Aar, inntektsmldMottakere.get(0)); //blant første halvpart av FNR-lista er det kun element 0 som er over 13 år
+        assertEquals(personOver13Aar, inntektsmldMottakere.get(0)); // blant første halvpart av FNR-lista er det kun element 0 som er over 13 år
 
         verify(arenaInntektSyntConsumer).asyncBestillEnInntektsmeldingPerFnrIInntektstub(eq(Arrays.asList(personOver13Aar)));
     }

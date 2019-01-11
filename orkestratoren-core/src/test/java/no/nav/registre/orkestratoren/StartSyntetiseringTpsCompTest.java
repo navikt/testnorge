@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,8 +112,8 @@ public class StartSyntetiseringTpsCompTest {
      */
     @Test
     public void shouldGetProperties() {
-        assertEquals(miljoe, jobController.getMiljoe());
-        assertEquals(gruppeId, jobController.getSkdMeldingGruppeId());
+        assertEquals(miljoe, jobController.getTpsbatchMiljoe());
+        assertEquals(gruppeId, jobController.getAvspillergruppeId());
 
         Map<String, Integer> testMap = new HashMap<>(jobController.getAntallMeldingerPerEndringskode());
 
@@ -145,7 +146,7 @@ public class StartSyntetiseringTpsCompTest {
 
     public void stubHodejegeren() {
         stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
-                .withRequestBody(equalToJson("{\"skdMeldingGruppeId\": " + gruppeId
+                .withRequestBody(equalToJson("{\"avspillergruppeId\": " + gruppeId
                         + ", \"miljoe\": \"" + miljoe
                         + "\", \"antallMeldingerPerEndringskode\": {\"" + endringskode1 + "\": " + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
                 .willReturn(aResponse()
@@ -157,7 +158,7 @@ public class StartSyntetiseringTpsCompTest {
     public void stubHodejegerenWithError() {
         stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
-                        "{\"skdMeldingGruppeId\":" + gruppeId
+                        "{\"avspillergruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe
                                 + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode1 + "\":" + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
                 .willReturn(aResponse()

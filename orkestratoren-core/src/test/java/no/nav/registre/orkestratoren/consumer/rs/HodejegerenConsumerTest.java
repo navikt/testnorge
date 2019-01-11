@@ -66,7 +66,7 @@ public class HodejegerenConsumerTest {
     public void stubHodejegerenConsumer() {
         stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
-                        "{\"skdMeldingGruppeId\":" + gruppeId
+                        "{\"avspillergruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe
                                 + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode + "\":" + antallPerEndringskode + "}}"))
                 .willReturn(ok()
