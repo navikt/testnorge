@@ -28,8 +28,8 @@ public class EiaSyntConsumer {
 
     private UriTemplate url;
 
-    public EiaSyntConsumer(@Value("${eia-mq-proxy.rest-api.url}") String baseUrl) {
-        this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer");
+    public EiaSyntConsumer(@Value("${eias-emottakstub.rest-api.url}") String baseUrl, @Value("${orkestratoren.eiabatch.queue}") String queueName) {
+        this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/" + queueName);
     }
 
     public List<String> startSyntetisering(SyntetiserEiaRequest syntetiserEiaRequest) {
