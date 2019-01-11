@@ -28,7 +28,7 @@ public class EiaSyntConsumer {
 
     private UriTemplate url;
 
-    public EiaSyntConsumer(@Value("${eias-emottakstub.rest-api.url}") String baseUrl) {
+    public EiaSyntConsumer(@Value("${eia-mq-proxy.rest-api.url}") String baseUrl) {
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer");
     }
 
