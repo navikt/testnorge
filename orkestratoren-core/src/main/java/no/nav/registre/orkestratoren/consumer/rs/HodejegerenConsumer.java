@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
 
 @Component

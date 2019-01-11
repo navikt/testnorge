@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;

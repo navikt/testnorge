@@ -4,6 +4,7 @@ import static no.nav.registre.orkestratoren.utils.ExceptionUtils.createListOfRan
 import static no.nav.registre.orkestratoren.utils.ExceptionUtils.extractIdsFromResponseBody;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
@@ -75,10 +77,10 @@ public class JobController {
         log.info("Inntekt-synt.-batch har matet Inntektstub med {} meldinger.", levendeNordmennFnr.size());
     }
 
-    @Scheduled(cron = "${orkestratoren.eiabatch.cron:0 0 1 1 * *}")
+    @Scheduled(cron = "${orkestratoren.eiabatch.cron:0 0 0 * * *}")
     public void eiaSyntBatch() {
         SyntetiserEiaRequest request = new SyntetiserEiaRequest(avspillergruppeId, eiabatchMiljoe, antallSykemeldinger);
         List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(request);
-        log.info("eiabatch har opprettet {} sykemeldinger.", fnrMedGenererteMeldinger.size());
+        log.info("eiabatch har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
     }
 }

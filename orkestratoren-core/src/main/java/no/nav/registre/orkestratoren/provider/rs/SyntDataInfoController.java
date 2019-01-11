@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.service.SyntDataInfoService;
 
@@ -23,8 +24,7 @@ public class SyntDataInfoController {
 
     @LogExceptions
     @ApiOperation(value = "Endepunktet returnerer samtlige FNR på levende nordmenn i "
-            + "skdavspillergruppa i TPSF som orkestratorens tps-batch arbeider på. ",
-            notes = "Se fasit-ressursen orkestratorProperties for skdMeldingenes gruppeId i TPSF. ")
+            + "skdavspillergruppa i TPSF som orkestratorens tps-batch arbeider på. ", notes = "Se fasit-ressursen orkestratorProperties for skdMeldingenes gruppeId i TPSF. ")
     @GetMapping("fnr/levende-nordmenn")
     public List<String> hentAlleLevendeNordmennFraTpsf() {
         return syntDataInfoService.opprettListenLevendeNordmenn(tpsBatchGruppeId);

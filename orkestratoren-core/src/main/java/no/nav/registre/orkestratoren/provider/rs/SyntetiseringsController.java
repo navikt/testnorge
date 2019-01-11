@@ -1,5 +1,6 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
@@ -23,6 +26,7 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
+@Slf4j
 public class SyntetiseringsController {
 
     @Autowired
@@ -57,6 +61,8 @@ public class SyntetiseringsController {
     @LogExceptions
     @PostMapping(value = "/eia/sykemeldinger/generer")
     public List<String> genererSykemeldingerIEia(@RequestBody SyntetiserEiaRequest syntetiserEiaRequest) {
-        return eiaSyntPakkenService.genererEiaSykemeldinger(syntetiserEiaRequest);
+        List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(syntetiserEiaRequest);
+        log.info("eia har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
+        return fnrMedGenererteMeldinger;
     }
 }
