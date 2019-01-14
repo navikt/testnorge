@@ -73,6 +73,11 @@ export function mapTpsfData(tpsfData, bestillingData) {
 					id: 'tknr',
 					label: 'TK nummer',
 					value: tpsfData.tknr
+				},
+				{
+					id: 'egenAnsattDatoFom',
+					label: 'Egenansatt siden',
+					value: Formatters.formatDate(tpsfData.egenAnsattDatoFom)	
 				}
 			]
 		}
