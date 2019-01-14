@@ -22,7 +22,9 @@ export default class BestillingStatus extends PureComponent {
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
-			antallKlare: props.bestilling.personStatus ? props.bestilling.personStatus.length : 0,
+			antallKlare: props.bestilling.bestillingProgress
+				? props.bestilling.bestillingProgress.length
+				: 0,
 			failureIntervalCounter: 0,
 			failed: false,
 			sistOppdatert: props.bestilling.sistOppdatert,
@@ -62,7 +64,7 @@ export default class BestillingStatus extends PureComponent {
 		// en kort melding som sier at prosessen er ferdig
 		let newState = {
 			ferdig: false,
-			antallKlare: data.personStatus ? data.personStatus.length : 0,
+			antallKlare: data.bestillingProgress ? data.bestillingProgress.length : 0,
 			sistOppdatert: data.sistOppdatert
 		}
 		this.setState(newState)
@@ -70,8 +72,9 @@ export default class BestillingStatus extends PureComponent {
 		if (data.ferdig) {
 			setTimeout(() => {
 				// Update groups
-				this.props.onGroupUpdate() // state.ferdig = true
 				this.props.setBestillingStatus(data.id, { ...data, ny: true })
+				this.props.onBestillingerUpdate() // state.ferdig = true
+				this.props.onIdenterUpdate()
 			}, this.TIMEOUT_BEFORE_HIDE)
 		}
 
@@ -89,8 +92,10 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	calculateStatus = () => {
+		console.log(this.props.bestilling, 'props bestilling')
 		const total = this.props.bestilling.antallIdenter
 		const { antallKlare } = this.state
+		console.log(antallKlare, 'antall Klare')
 
 		// Percent
 		let percent = (100 / total) * antallKlare
@@ -99,6 +104,7 @@ export default class BestillingStatus extends PureComponent {
 		// To indicate progress hvis ingenting har skjedd enda
 		if (percent === 0) percent += 10
 
+		console.log(total, 'total')
 		if (antallKlare === total) text = `Ferdigstiller bestilling`
 
 		const title = percent === 100 ? 'FERDIG' : 'AKTIV BESTILLING'
@@ -145,6 +151,8 @@ export default class BestillingStatus extends PureComponent {
 			(bestillingStatusObj && !bestillingStatusObj.ny)
 		)
 			return null
+
+		// console.log(this.state.ferdig, 'this.state')
 
 		const status = this.calculateStatus()
 		return (
