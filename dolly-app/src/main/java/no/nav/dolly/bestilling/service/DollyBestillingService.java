@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 import java.time.LocalDateTime;
@@ -127,6 +128,9 @@ public class DollyBestillingService {
     }
 
     private void clearCache() {
+        if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
+            cacheManager.getCache(CACHE_BESTILLING).clear();
+        }
         if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
             cacheManager.getCache(CACHE_GRUPPE).clear();
         }
