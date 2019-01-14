@@ -43,6 +43,8 @@ providers:
     url: https://krr-stub.nais.preprod.local
   kodeverk:
     url: https://kodeverk.nais.preprod.local
+  norg2:
+    url: https://app-q1.adeo.no/norg2
 
 jira:
   host: https://jira.adeo.no

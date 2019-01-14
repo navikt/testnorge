@@ -45,6 +45,11 @@ fasitResources:
     propertyMap:
       url: providers.kodeverk.url
 
+  - alias: norg2-host
+    resourceType: baseurl
+    propertyMap:
+      url: providers.norg2.url
+
   - alias: sigrunStub-host
     resourceType: baseurl
     propertyMap:
