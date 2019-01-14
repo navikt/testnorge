@@ -84,4 +84,8 @@ formatters.sort2DArray = (array, i) => {
 	return array.sort((a, b) => b[i] - a[i])
 }
 
+formatters.commaToSpace = streng => {
+	return streng.split(',').join(', ')
+}
+
 export default formatters

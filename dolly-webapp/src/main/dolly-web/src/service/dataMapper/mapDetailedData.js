@@ -1,7 +1,7 @@
 import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
-export function mapTpsfData(tpsfData, bestillingData) {
+export function mapTpsfData(tpsfData, testIdent) {
 	if (!tpsfData) return null
 	let data
 	data = [
@@ -51,7 +51,7 @@ export function mapTpsfData(tpsfData, bestillingData) {
 				{
 					id: 'miljoer',
 					label: 'Miljøer',
-					value: Formatters.arrayToString(bestillingData.environments)
+					value: Formatters.commaToSpace(testIdent.tpsfSuccessEnv)
 				},
 				{
 					id: 'spesreg',
