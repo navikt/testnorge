@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import Gruppe from './Gruppe'
 import { getGruppe, showCreateOrEditGroup, deleteGruppe } from '~/ducks/gruppe'
+import { getBestillinger } from '~/ducks/bestillinger'
 import { getBestillingStatus } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import { resetSearch } from '~/ducks/search'
@@ -20,6 +21,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getGruppe: () => dispatch(getGruppe(gruppeId)),
 		deleteGruppe: () => dispatch(deleteGruppe(gruppeId)),
+		getBestillinger: () => dispatch(getBestillinger(gruppeId)),
 		createGroup: () => dispatch(showCreateOrEditGroup(-1)),
 		editTestbruker: ident => dispatch(push(`/gruppe/${gruppeId}/testbruker/${ident}`)),
 		resetSearch: () => dispatch(resetSearch())
