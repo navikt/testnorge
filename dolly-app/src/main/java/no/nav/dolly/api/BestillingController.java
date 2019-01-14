@@ -54,7 +54,7 @@ public class BestillingController {
         return bestillinger;
     }
 
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     public RsBestilling stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
         Bestilling bestilling = bestillingService.cancelBestilling(bestillingId);

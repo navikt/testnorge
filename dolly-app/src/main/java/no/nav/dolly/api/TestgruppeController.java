@@ -1,6 +1,7 @@
 package no.nav.dolly.api;
 
 import static java.lang.String.format;
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 
@@ -111,7 +112,7 @@ public class TestgruppeController {
         }
     }
 
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
