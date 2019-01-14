@@ -9,11 +9,14 @@ import { resetSearch } from '~/ducks/search'
 import bestillingStatus from '../../ducks/bestillingStatus'
 
 const loadingSelector = createLoadingSelector(getGruppe)
+const loadingBestillingerSelector = createLoadingSelector(getBestillinger)
 
 const mapStateToProps = state => ({
 	isFetching: loadingSelector(state),
+	isFetchingBestillinger: loadingBestillingerSelector(state),
 	gruppeArray: state.gruppe.data,
-	createOrUpdateId: state.gruppe.createOrUpdateId
+	createOrUpdateId: state.gruppe.createOrUpdateId,
+	bestillinger: state.bestillinger
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
