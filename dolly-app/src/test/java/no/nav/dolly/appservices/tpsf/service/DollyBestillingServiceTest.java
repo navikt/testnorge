@@ -1,5 +1,6 @@
 package no.nav.dolly.appservices.tpsf.service;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -12,7 +13,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +61,7 @@ public class DollyBestillingServiceTest {
     private String standardHovedident = "10";
     private String standardFeilmelding = "feil";
     private String standardTpsFeedback = "feedback";
-    private List<String> standardIdenter = Arrays.asList(standardHovedident, "34", "56");
+    private List<String> standardIdenter = asList(standardHovedident, "34", "56");
 
     @Mock
     private BestillingProgressRepository bestillingProgressRepository;
@@ -99,19 +99,18 @@ public class DollyBestillingServiceTest {
         standardSendSkdResponse.setPersonId(standardHovedident);
         standardSendSkdResponse.setSkdmeldingstype(INNVANDRING_CREATE_NAVN);
 
-        standardNyBestilling = new Bestilling();
-        standardNyBestilling.setId(bestillingsId);
-        standardNyBestilling.setFerdig(false);
+        standardNyBestilling = Bestilling.builder().id(bestillingsId).build();
 
         status_SuccU1T2_FailQ3 = new HashMap<>();
         status_SuccU1T2_FailQ3.put("u1", SUCCESS_CODE_TPS);
         status_SuccU1T2_FailQ3.put("t2", SUCCESS_CODE_TPS);
         status_SuccU1T2_FailQ3.put("q3", FAIL_CODE_TPS);
 
-        standardBestillingRequest_u1_t2_q3 = new RsDollyBestillingsRequest();
-        standardBestillingRequest_u1_t2_q3.setEnvironments(Arrays.asList("u1", "t2", "q3"));
-        standardBestillingRequest_u1_t2_q3.setAntall(1);
-        standardBestillingRequest_u1_t2_q3.setTpsf(tpsfReqEmpty);
+        standardBestillingRequest_u1_t2_q3 = RsDollyBestillingsRequest.builder()
+                .environments(asList("u1", "t2", "q3"))
+                .antall(1)
+                .tpsf(tpsfReqEmpty)
+                .build();
 
         when(bestillingService.isStoppet(anyLong())).thenReturn(false);
         when(cacheManager.getCache(anyString())).thenReturn(cache);
@@ -121,10 +120,9 @@ public class DollyBestillingServiceTest {
     public void opprettPersonerByKriterierAsync_bestillingBlirSattFerdigNaarExceptionKastesUnderOppretting() {
         when(tpsfService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
-        when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
 
-        dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
+        dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, standardNyBestilling);
 
         assertThat(standardNyBestilling.isFerdig(), is(true));
         verify(bestillingService, times(2)).saveBestillingToDB(standardNyBestilling);
@@ -139,11 +137,10 @@ public class DollyBestillingServiceTest {
 
         when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
-        when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenReturn(skdMeldingResponse);
         when(tpsfResponseHandler.extractTPSFeedback(anyList())).thenReturn(standardTpsFeedback);
 
-        dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
+        dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, standardNyBestilling);
 
         ArgumentCaptor<BestillingProgress> argumentCaptor = ArgumentCaptor.forClass(BestillingProgress.class);
 
@@ -169,13 +166,12 @@ public class DollyBestillingServiceTest {
 
         TpsfException tpsfException = new TpsfException(standardFeilmelding);
 
-        when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
         when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenReturn(response).thenThrow(tpsfException);
         when(tpsfResponseHandler.extractTPSFeedback(anyList())).thenReturn(standardTpsFeedback);
 
-        dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
+        dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, standardNyBestilling);
 
         ArgumentCaptor<BestillingProgress> argumentCaptor = ArgumentCaptor.forClass(BestillingProgress.class);
 
@@ -201,10 +197,9 @@ public class DollyBestillingServiceTest {
 
         when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
-        when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(tpsfException);
 
-        dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
+        dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, standardNyBestilling);
 
         verify(identService, never()).saveIdentTilGruppe(standardHovedident, standardGruppe);
         verify(tpsfResponseHandler).setErrorMessageToBestillingsProgress(any(TpsfException.class), any(BestillingProgress.class));
@@ -214,11 +209,10 @@ public class DollyBestillingServiceTest {
     public void opprettPersonerByKriterierAsync_sjekkAtIngenSigrunRequestIkkeGirNullPointException() {
         when(tpsfService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(standardIdenter);
         when(testgruppeService.fetchTestgruppeById(standardGruppeId)).thenReturn(standardGruppe);
-        when(bestillingService.fetchBestillingById(bestillingsId)).thenReturn(standardNyBestilling);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
 
         standardBestillingRequest_u1_t2_q3.setSigrunstub(null);
-        dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, bestillingsId);
+        dollyBestillingService.opprettPersonerByKriterierAsync(standardGruppeId, standardBestillingRequest_u1_t2_q3, standardNyBestilling);
         verify(responseHandler, times(0)).extractResponse(any());
     }
 }

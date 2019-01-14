@@ -1,10 +1,12 @@
 package no.nav.dolly.api;
 
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,12 +36,22 @@ public class BestillingController {
     @Autowired
     private BestillingService bestillingService;
 
+    @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
     public RsBestilling checkBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
-        List<RsBestillingProgress> progress = mapperFacade.mapAsList(progressService.fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(bestillingId), RsBestillingProgress.class);
+        List<RsBestillingProgress> progress = mapperFacade.mapAsList(progressService.fetchBestillingProgressByBestillingId(bestillingId), RsBestillingProgress.class);
         RsBestilling rsBestilling = mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestilling.class);
-        rsBestilling.setPersonStatus(progress);
+        rsBestilling.setBestillingProgress(progress);
         return rsBestilling;
+    }
+
+    @Cacheable(value = CACHE_BESTILLING)
+    @GetMapping("/gruppe/{gruppeId}")
+    public List<RsBestilling> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
+        List<RsBestilling> bestillinger = mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestilling.class);
+        bestillinger.forEach(rsBestilling -> rsBestilling.setBestillingProgress(
+                mapperFacade.mapAsList(progressService.fetchBestillingProgressByBestillingId(rsBestilling.getId()), RsBestillingProgress.class)));
+        return bestillinger;
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
