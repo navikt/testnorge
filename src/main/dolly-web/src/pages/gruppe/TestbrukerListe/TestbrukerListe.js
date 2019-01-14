@@ -57,7 +57,7 @@ export default class TestbrukerListe extends Component {
 
 												<TransitionGroup component={null}>
 													{testbrukere &&
-														testbrukere.map((bruker, idx) => {
+														Formatters.sort2DArray(testbrukere, 5).map((bruker, idx) => {
 															// Note: idx=0 of bruker (data) is parsed to be ID
 															return (
 																<CSSTransition
