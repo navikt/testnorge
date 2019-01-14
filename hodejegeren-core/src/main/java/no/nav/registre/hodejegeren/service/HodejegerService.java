@@ -106,7 +106,7 @@ public class HodejegerService {
                         .addMessage(e.getMessage() + " (ManglendeInfoITPSException) - endringskode: " + endringskode.getEndringskode());
 
                 log.error(e.getMessage(), e);
-                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), createListOfRangesFromIds(ids));
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getAvspillergruppeId(), createListOfRangesFromIds(ids));
             } catch (HttpStatusCodeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
@@ -116,7 +116,7 @@ public class HodejegerService {
                         .addCause(e);
 
                 log.error(getMessageFromJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), createListOfRangesFromIds(ids));
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getAvspillergruppeId(), createListOfRangesFromIds(ids));
             } catch (RuntimeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
@@ -126,7 +126,7 @@ public class HodejegerService {
                         .addCause(e);
 
                 log.error(e.getMessage(), e);
-                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getSkdMeldingGruppeId(), createListOfRangesFromIds(ids));
+                log.warn(FEILMELDING_TEKST, genereringsOrdreRequest.getAvspillergruppeId(), createListOfRangesFromIds(ids));
             }
         }
 
@@ -159,7 +159,7 @@ public class HodejegerService {
     private void lagreSkdEndringsmeldingerITpsfOgOppdaterIds(List<Long> ids, Endringskoder endringskode,
             List<RsMeldingstype> syntetiserteSkdmeldinger, GenereringsOrdreRequest genereringsOrdreRequest) {
         try {
-            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getSkdMeldingGruppeId(), syntetiserteSkdmeldinger));
+            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getAvspillergruppeId(), syntetiserteSkdmeldinger));
         } catch (Exception e) {
             StringBuilder message = new StringBuilder(120).append("Noe feilet under lagring til TPSF: ")
                     .append(e.getMessage())
@@ -181,8 +181,8 @@ public class HodejegerService {
     private Map<String, List<String>> opprettListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {
         Map<String, List<String>> listerMedIdenter = new HashMap<>();
 
-        List<String> doedeIdenterINorge = eksisterendeIdenterService.finnDoedeOgUtvandredeIdenter(genereringsOrdreRequest.getSkdMeldingGruppeId());
-        List<String> levendeIdenterINorge = eksisterendeIdenterService.finnAlleIdenter(genereringsOrdreRequest.getSkdMeldingGruppeId());
+        List<String> doedeIdenterINorge = eksisterendeIdenterService.finnDoedeOgUtvandredeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
+        List<String> levendeIdenterINorge = eksisterendeIdenterService.finnAlleIdenter(genereringsOrdreRequest.getAvspillergruppeId());
         levendeIdenterINorge.removeAll(doedeIdenterINorge);
         listerMedIdenter.put(LEVENDE_IDENTER_I_NORGE, levendeIdenterINorge);
         StringBuilder message = new StringBuilder("Antall identer i lister fra TPSF: - ")
@@ -190,7 +190,7 @@ public class HodejegerService {
                 .append(": ")
                 .append(levendeIdenterINorge.size());
 
-        List<String> gifteIdenterINorge = eksisterendeIdenterService.finnGifteIdenter(genereringsOrdreRequest.getSkdMeldingGruppeId());
+        List<String> gifteIdenterINorge = eksisterendeIdenterService.finnGifteIdenter(genereringsOrdreRequest.getAvspillergruppeId());
 
         gifteIdenterINorge.removeAll(doedeIdenterINorge);
         listerMedIdenter.put(GIFTE_IDENTER_I_NORGE, gifteIdenterINorge);
