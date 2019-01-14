@@ -46,10 +46,9 @@ export default class MiljoeStatus extends PureComponent {
 				<div className={'flexbox--all-center'} key={i}>
 					<Icon size={'24px'} kind={'report-problem-triangle'} />
 					<p className="error-text" key={i}>
-						{error
-							.split('%')
-							.join(' ')
-							.substring(0, error.length - 1)}
+						{error.split('%').join(' ')
+						// .substring(0, error.length - 1)
+						}
 					</p>
 				</div>
 			)
