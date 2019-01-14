@@ -33,6 +33,7 @@ export default class Gruppe extends Component {
 
 	componentDidMount() {
 		this.props.getGruppe()
+		this.props.getBestillinger()
 	}
 
 	startBestilling = () => {
