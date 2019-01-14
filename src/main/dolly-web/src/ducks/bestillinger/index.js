@@ -13,7 +13,6 @@ export default handleActions(
 	{
 		[success(getBestillinger)](state, action) {
 			const { data } = action.payload
-
 			return { ...state, data }
 		}
 	},
