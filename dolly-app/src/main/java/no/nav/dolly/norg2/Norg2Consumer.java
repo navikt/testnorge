@@ -38,7 +38,7 @@ public class Norg2Consumer {
             ResponseEntity<Norg2EnhetResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity, Norg2EnhetResponse.class);
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            throw new NotFoundException(format("Enhet med nummeret '%s' eksisterer ikke", enhetNr));
+            throw new NotFoundException(format("Enhet med nummeret '%s' eksisterer ikke", enhetNr), e);
         }
     }
 
