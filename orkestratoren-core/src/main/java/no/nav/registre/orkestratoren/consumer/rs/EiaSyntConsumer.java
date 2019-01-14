@@ -33,7 +33,6 @@ public class EiaSyntConsumer {
     }
 
     public List<String> startSyntetisering(SyntetiserEiaRequest syntetiserEiaRequest) {
-        log.info("Calling EIA on URL {}", url);
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(syntetiserEiaRequest);
         ArrayList<String> identer = new ArrayList<>();
         ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
