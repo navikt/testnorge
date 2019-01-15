@@ -18,7 +18,7 @@ public class MedlService {
     }
 
     @Async
-    public CompletableFuture<List<Map<String, String>>> generateMedl(int num_to_generate) throws InterruptedException{
+    public CompletableFuture<List<Map<String, String>>> generateMedlFromNAIS(int num_to_generate) throws InterruptedException{
         List<Map<String, String>> result = restTemplate.getForObject(String.format(NaisConnections.CONNECTION_MEDL, num_to_generate), List.class);
         return CompletableFuture.completedFuture(result);
     }

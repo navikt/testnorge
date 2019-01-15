@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.providers;
+package no.nav.registre.syntrest.controllers;
 import no.nav.registre.syntrest.services.MeldekortService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

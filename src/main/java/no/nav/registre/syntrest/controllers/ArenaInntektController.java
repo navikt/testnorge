@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.providers;
+package no.nav.registre.syntrest.controllers;
 
 import no.nav.registre.syntrest.Domain.Inntektsmelding;
 import no.nav.registre.syntrest.services.ArenaInntektService;
@@ -22,7 +22,7 @@ public class ArenaInntektController {
 
     @PostMapping(value = "/generateArenaInntekt")
     public Map<String, List<Inntektsmelding>> generateMeldekort(@RequestBody String[] fnrs) throws InterruptedException, ExecutionException {
-        CompletableFuture<Map<String, List<Inntektsmelding>>> result = arenaInntektService.generateInntektsmeldinger(fnrs);
+        CompletableFuture<Map<String, List<Inntektsmelding>>> result = arenaInntektService.generateInntektsmeldingerFromNAIS(fnrs);
         return result.get();
     }
 }
