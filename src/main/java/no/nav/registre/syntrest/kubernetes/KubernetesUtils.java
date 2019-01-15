@@ -1,34 +1,18 @@
-package no.nav.registre.syntrest.kubernetes;
+package no.nav.registre.synthesizer.kubernetes;
 
 import com.google.gson.JsonSyntaxException;
-import com.google.protobuf.Api;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.BatchV1Api;
 import io.kubernetes.client.apis.CoreV1Api;
 import io.kubernetes.client.models.*;
-import io.kubernetes.client.proto.V1beta1Extensions;
-import io.kubernetes.client.util.Config;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class KubernetesUtils {
-
-    public void listJobs(ApiClient client)throws ApiException, IOException {
-
-        BatchV1Api api = new BatchV1Api();
-        api.setApiClient(client);
-
-        V1JobList list = api.listJobForAllNamespaces(null, null,null,null,null,null,null,null,null);
-        for (V1Job job : list.getItems()) {
-            System.out.println(job.getMetadata().getName());
-        }
-    }
-
 
     public void deletePod(ApiClient client, String appName)throws ApiException {
 
@@ -36,8 +20,8 @@ public class KubernetesUtils {
         api.setApiClient(client);
 
         String podName = "";
-        V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null);
-        for (V1Pod item : list.getItems()) {
+        V1PodList podList = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null);
+        for (V1Pod item : podList.getItems()) {
             if (item.getMetadata().getName().startsWith("synthdata")){
                 System.out.println(item.getMetadata().getName());
             }
@@ -64,22 +48,38 @@ public class KubernetesUtils {
     }
 
 
+    public void listJobs(ApiClient client)throws ApiException, IOException {
+
+        BatchV1Api api = new BatchV1Api();
+        api.setApiClient(client);
+
+        V1JobList jobList = api.listNamespacedJob("synthdata", null, null, null, null, null, null, null, null, null);
+        for (V1Job job : jobList.getItems()) {
+            System.out.println(job.getMetadata().getName());
+        }
+        if (jobList.getItems().isEmpty()){
+            System.out.println(" ---- No jobs currently running ---- ");
+        }
+    }
+
+
     public V1Job createJob(String appName)throws ApiException{
 
         //Specify image
-        //String imageName = "docker.adeo.no:5000/registre/synthdata-medl";
-        String imageName = "docker.adeo.no:5000/arena-nais-simple-demo:0.0.2-SNAPSHOT";
+        String imageName = "docker.adeo.no:5000/registre/" + appName;
 
         //Create container
         V1Container container = new V1Container();
         container.setImage(imageName);
+        container.setName("container:" + appName);
 
         //Create container list
         List<V1Container> containerList = Arrays.asList(container);
 
         //Create PodSpec
         V1PodSpec podSpec = new V1PodSpec();
-        podSpec.setInitContainers(containerList);
+        podSpec.setContainers(containerList);
+        podSpec.setRestartPolicy("Never");
 
         //Create PodTemplateSpec
         V1PodTemplateSpec podTemplateSpec = new V1PodTemplateSpec();
@@ -91,7 +91,7 @@ public class KubernetesUtils {
 
         //Create Job Metadata
         V1ObjectMeta objectMeta = new V1ObjectMeta();
-        objectMeta.setName("job-test");
+        objectMeta.setName(appName + UUID.randomUUID().toString());
 
         //Create Job
         V1Job job = new V1Job();
@@ -109,33 +109,47 @@ public class KubernetesUtils {
 
         //TODO: make this async?
         try {
-            V1Job response = api.createNamespacedJob("default", job, null);
+            V1Job response = api.createNamespacedJob("synthdata", job, null);
             System.out.println("Running job:" + job.getMetadata().getName());
         }
         catch (ApiException e){
-            System.out.println("Job:" + job.getMetadata().getName() + "FAILED");
+            System.out.println("Job: " + job.getMetadata().getName() + " FAILED");
             System.out.println(e.getCode());
             System.out.println(e.getResponseBody());
         }
     }
 
 
-    public void deleteJob(ApiClient client, String name)throws ApiException{
+    public void deleteJob(ApiClient client, String appName, Boolean listAll)throws ApiException{
 
         BatchV1Api api = new BatchV1Api();
         api.setApiClient(client);
 
+        String jobName = "";
+        V1JobList jobList = api.listNamespacedJob("synthdata", null, null, null, null, null, null, null, null, null);
+        for (V1Job item : jobList.getItems()) {
+            if (item.getMetadata().getName().startsWith(appName)){
+                jobName = item.getMetadata().getName();
+            }
+        }
+
         V1DeleteOptions deleteOptions = new V1DeleteOptions();
 
         try {
-            V1Status status = api.deleteNamespacedJob(name, "default", deleteOptions, null, null, null, null);
+            V1Status status = api.deleteNamespacedJob(jobName, "synthdata", deleteOptions, null, null, null, null);
         }
-        catch (ApiException e){
-            System.out.println(e.getCode());
-            System.out.println(e.getResponseBody());
+        catch (JsonSyntaxException e) {
+            if (e.getCause() instanceof IllegalStateException) {
+                IllegalStateException ise = (IllegalStateException) e.getCause();
+                if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")){
+                    System.out.println("Successfully deleted job --> " + jobName);
+                }
+                else throw e;
+            }
+            else throw e;
         }
-
 
     }
 
 }
+
