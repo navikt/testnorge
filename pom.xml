@@ -13,7 +13,6 @@
     <groupId>no.nav.registre</groupId>
     <artifactId>syntrest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
 
     <name>syntrest</name>
 
