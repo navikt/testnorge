@@ -20,11 +20,18 @@ public class EksisterendeIdenterController {
     EksisterendeIdenterService eksisterendeIdenterService;
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man hente et gitt antall levende personer fra en gitt avspillergruppe i TPSF.")
+    @GetMapping("api/v1/eksisterende-identer/{avspillergruppeId}")
+    public List<String> hentEksisterendeIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
+        return eksisterendeIdenterService.finnLevendeIdenter(avspillergruppeId);
+    }
+
+    @LogExceptions
     @ApiOperation(value = "Her kan et gitt antall myndige levende personer hentes fra en gitt avspillergruppe i TPSF. "
             + "Systemet sjekker status-quo på personen i det angitte miljø.")
     @GetMapping("api/v1/eksisterende-identer")
-    public List<String> hentEksisterendeMyndigeIdenter(@RequestParam("avspillerGruppeId") Long avspillerGruppeId, @RequestParam("miljoe") String miljoe, @RequestParam("antallPersoner") int antallPersoner) {
-        return eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(avspillerGruppeId, miljoe, antallPersoner);
+    public List<String> hentEksisterendeMyndigeIdenter(@RequestParam("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe, @RequestParam("antallPersoner") int antallPersoner) {
+        return eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(avspillergruppeId, miljoe, antallPersoner);
     }
 
     @LogExceptions
