@@ -87,6 +87,10 @@ class DollyEndpoints {
 		return `${kodeverkBase}/${kodeverkNavn}`
 	}
 
+	static bestillinger(gruppeId) {
+		return `${bestillingBase}/gruppe/${gruppeId}`
+	}
+
 	static bestillingStatus(bestillingId) {
 		return `${bestillingBase}/${bestillingId}`
 	}

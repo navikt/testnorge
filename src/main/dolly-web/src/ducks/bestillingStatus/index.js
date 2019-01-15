@@ -77,10 +77,11 @@ export const miljoStatusSelector = bestillingStatus => {
 	let envs = bestillingStatus.environments.slice(0) // Clone array for å unngå mutering
 	let successEnvs = []
 	let failedEnvs = []
+	let errorMsgs = []
 
-	if (bestillingStatus.personStatus.length != 0) {
+	if (bestillingStatus.bestillingProgress && bestillingStatus.bestillingProgress.length != 0) {
 		envs.forEach(env => {
-			bestillingStatus.personStatus.forEach(person => {
+			bestillingStatus.bestillingProgress.forEach(person => {
 				if (!person.tpsfSuccessEnv) {
 					// TODO: Bestilling failed 100% fra Tpsf. Implement retry-funksjonalitet når maler er støttet
 					failedEnvs = envs
@@ -96,7 +97,7 @@ export const miljoStatusSelector = bestillingStatus => {
 
 		// Registre miljø status
 		// Plasseres i egen for-each for visuel plassering og mer lesbar kode
-		bestillingStatus.personStatus.forEach(person => {
+		bestillingStatus.bestillingProgress.forEach(person => {
 			if (person.krrstubStatus) {
 				person.krrstubStatus == 'OK'
 					? !successEnvs.includes('Krr-stub') && successEnvs.push('Krr-stub')
@@ -108,10 +109,13 @@ export const miljoStatusSelector = bestillingStatus => {
 					? !successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')
 					: !failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
 			}
+
+			// Feilmelding fra tps
+			person.feil && errorMsgs.push('Ident ' + person.ident + ': ' + person.feil)
 		})
 	}
 
-	return { id, successEnvs, failedEnvs }
+	return { id, successEnvs, failedEnvs, errorMsgs }
 }
 
 const mapItems = items => {

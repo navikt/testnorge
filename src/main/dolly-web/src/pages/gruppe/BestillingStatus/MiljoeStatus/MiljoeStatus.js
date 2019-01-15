@@ -5,7 +5,7 @@ import Button from '~/components/button/Button'
 
 export default class MiljoeStatus extends PureComponent {
 	render() {
-		const { id, successEnvs, failedEnvs } = this.props.miljoeStatusObj
+		const { id, successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
 		const failed = true && successEnvs.length == 0
 
 		return (
@@ -23,6 +23,7 @@ export default class MiljoeStatus extends PureComponent {
 						? this._renderFailureMessage()
 						: this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				</div>
+				{this._renderErrorMessage(errorMsgs)}
 			</div>
 		)
 	}
@@ -38,6 +39,20 @@ export default class MiljoeStatus extends PureComponent {
 			})}
 		</Fragment>
 	)
+
+	_renderErrorMessage = errorMsgs =>
+		errorMsgs.map((error, i) => {
+			return (
+				<div className={'flexbox--all-center'} key={i}>
+					<Icon size={'24px'} kind={'report-problem-triangle'} />
+					<p className="error-text" key={i}>
+						{error.split('%').join(' ')
+						// .substring(0, error.length - 1)
+						}
+					</p>
+				</div>
+			)
+		})
 
 	_renderFailureMessage = () => (
 		<Fragment>

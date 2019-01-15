@@ -82,7 +82,7 @@ ENDPOINT    URL                                 Aksjon                          
     miljøerBestilt: [<miljø>],
     bestillingId: <bestillingId>,
     sistOppdatert: <date>,
-    personStatus : [{
+    bestillingProgress : [{
         "aaregSuccessEnv": "string",
         "feil": "string",
         "id": 0,

@@ -14,6 +14,7 @@ export default class PersonInfoBlock extends PureComponent {
 	render() {
 		const { header, data, multiple } = this.props
 		if (multiple) {
+			// Multiple: Eksempel: flere inntekter.
 			return (
 				<Fragment>
 					{data.map((subBlock, idx) =>
@@ -49,6 +50,9 @@ export default class PersonInfoBlock extends PureComponent {
 							value: v.value
 						}
 
+						// Spesiell tilfelle for gtVerdi
+						const apiKodeverkId = v.apiKodeverkId ? v.apiKodeverkId : null
+
 						// finn tilhørende attributt
 						const attributt = this.props.attributtManager.getAttributtById(v.id)
 
@@ -59,6 +63,8 @@ export default class PersonInfoBlock extends PureComponent {
 									{...staticValueProps}
 								/>
 							)
+						} else if (apiKodeverkId) {
+							return <KodeverkValueConnector apiKodeverkId={apiKodeverkId} {...staticValueProps} />
 						}
 						return v.value && <StaticValue {...staticValueProps} />
 					})}
