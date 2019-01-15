@@ -14,10 +14,11 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 public class BestillingProgressService {
 
     @Autowired
-    private BestillingProgressRepository repository;
+    private BestillingProgressRepository bestillingProgressRepository;
+    
 
     public List<BestillingProgress> fetchBestillingProgressByBestillingsIdFromDB(Long bestillingsId) {
-        List<BestillingProgress> progress = repository.findBestillingProgressByBestillingIdOrderByBestillingId(bestillingsId);
+        List<BestillingProgress> progress = bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(bestillingsId);
 
         if (isNull(progress) || progress.isEmpty()) {
             throw new NotFoundException("Kunne ikke finne bestillingsprogress med bestillingId=" + bestillingsId + ", i tabell T_BESTILLINGS_PROGRESS");
@@ -26,7 +27,7 @@ public class BestillingProgressService {
         return progress;
     }
 
-    public List<BestillingProgress> fetchProgressButReturnEmptyListIfBestillingsIdIsNotFound(Long bestillingsId) {
-        return repository.findBestillingProgressByBestillingIdOrderByBestillingId(bestillingsId);
+    public List<BestillingProgress> fetchBestillingProgressByBestillingId(Long bestillingsId) {
+        return bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(bestillingsId);
     }
 }

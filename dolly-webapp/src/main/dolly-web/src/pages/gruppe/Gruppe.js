@@ -33,6 +33,7 @@ export default class Gruppe extends Component {
 
 	componentDidMount() {
 		this.props.getGruppe()
+		this.props.getBestillinger()
 	}
 
 	startBestilling = () => {
@@ -44,7 +45,7 @@ export default class Gruppe extends Component {
 
 	toggleToolbar = e => {
 		const visning = e.target.value
-		visning === this.VISNING_BESTILLING && this.props.getGruppe()
+		visning === this.VISNING_BESTILLING && this.props.getBestillinger()
 		this.setState({ visning }, () => this.props.resetSearch())
 	}
 
@@ -55,13 +56,13 @@ export default class Gruppe extends Component {
 
 	renderList = gruppe => {
 		const { visning } = this.state
-		const { editTestbruker } = this.props
+		const { editTestbruker, bestillinger, isFetchingBestillinger } = this.props
 
 		if (visning === this.VISNING_BESTILLING) {
-			if (this.props.isFetching) {
+			if (isFetchingBestillinger) {
 				return <Loading label="Laster bestillinger" panel />
 			}
-			return <BestillingListeConnector bestillingListe={gruppe.bestillinger} />
+			return <BestillingListeConnector bestillingListe={bestillinger} />
 		}
 		// !!! Pagination is is applied on TestbrukerListe because we fetch "testbrukere" from TPSF.
 		// !!! Therefore pagination is applied to data from TPSF and not DOLLY.
@@ -78,7 +79,9 @@ export default class Gruppe extends Component {
 			isFetching,
 			getGruppe,
 			deleteGruppe,
-			addFavorite
+			addFavorite,
+			bestillinger,
+			getBestillinger
 		} = this.props
 
 		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
@@ -100,8 +103,14 @@ export default class Gruppe extends Component {
 		}
 
 		const toggleValues = [
-			{ value: this.VISNING_TESTPERSONER, label: `Testpersoner (${gruppe.testidenter.length})` },
-			{ value: this.VISNING_BESTILLING, label: `Bestillinger (${gruppe.bestillinger.length})` }
+			{
+				value: this.VISNING_TESTPERSONER,
+				label: `Testpersoner (${gruppe.testidenter ? gruppe.testidenter.length : 0})`
+			},
+			{
+				value: this.VISNING_BESTILLING,
+				label: `Bestillinger (${bestillinger.data ? bestillinger.data.length : 0})`
+			}
 		]
 
 		return (
@@ -124,13 +133,15 @@ export default class Gruppe extends Component {
 				<GruppeDetaljer gruppe={gruppe} />
 
 				{// Viser progressbar og bestillingsstatus
-				gruppe.bestillinger.map(bestilling => (
-					<BestillingStatusConnector
-						key={bestilling.id}
-						bestilling={bestilling}
-						onGroupUpdate={getGruppe}
-					/>
-				))}
+				bestillinger.data &&
+					bestillinger.data.map(bestilling => (
+						<BestillingStatusConnector
+							key={bestilling.id}
+							bestilling={bestilling}
+							onIdenterUpdate={getGruppe}
+							onBestillingerUpdate={getBestillinger}
+						/>
+					))}
 
 				<Toolbar
 					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}

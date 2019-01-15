@@ -3,7 +3,10 @@ package no.nav.dolly.domain.resultset;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +14,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@Builder
 public class RsBestilling {
 
     private Long id;
@@ -21,7 +27,7 @@ public class RsBestilling {
     private boolean stoppet;
     private String feil;
     private List<String> environments;
-    private List<RsBestillingProgress> personStatus;
+    private List<RsBestillingProgress> bestillingProgress;
 
     public List<String> getEnvironments() {
         if (environments == null) {
@@ -30,10 +36,10 @@ public class RsBestilling {
         return environments;
     }
 
-    public List<RsBestillingProgress> getPersonStatus() {
-        if (personStatus == null) {
-            personStatus = new ArrayList<>();
+    public List<RsBestillingProgress> getBestillingProgress() {
+        if (bestillingProgress == null) {
+            bestillingProgress = new ArrayList<>();
         }
-        return personStatus;
+        return bestillingProgress;
     }
 }

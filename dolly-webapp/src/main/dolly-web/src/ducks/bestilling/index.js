@@ -114,7 +114,6 @@ const bestillingFormatter = bestillingState => {
 		environments: environments,
 		...getValues(AttributtListe, values)
 	}
-
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	final_values.tpsf.identtype = identtype

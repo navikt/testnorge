@@ -26,7 +26,7 @@ export default class GruppeDetaljer extends PureComponent {
 					<StaticValue header="TEAM" value={gruppe.team.navn} />
 					<StaticValue
 						header="ANTALL OPPRETTEDE TESTPERSONER"
-						value={String(gruppe.testidenter.length)}
+						value={String(gruppe.testidenter ? gruppe.testidenter.length : 0)}
 					/>
 					<StaticValue header="SIST ENDRET" value={gruppe.datoEndret} />
 					{this.state.expanded && (

@@ -1,7 +1,7 @@
 import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
-export function mapTpsfData(tpsfData, bestillingData) {
+export function mapTpsfData(tpsfData, testIdent) {
 	if (!tpsfData) return null
 	let data
 	data = [
@@ -51,12 +51,28 @@ export function mapTpsfData(tpsfData, bestillingData) {
 				{
 					id: 'miljoer',
 					label: 'Miljøer',
-					value: Formatters.arrayToString(bestillingData.environments)
+					value: Formatters.commaToSpace(testIdent.tpsfSuccessEnv)
 				},
 				{
 					id: 'spesreg',
 					label: 'Diskresjonskoder',
 					value: tpsfData.spesreg
+				},
+				{
+					id: 'gtRegel',
+					label: 'GT Regel',
+					value: tpsfData.gtRegel
+				},
+				{
+					id: 'gtVerdi',
+					label: 'GT Verdi',
+					value: tpsfData.gtVerdi,
+					apiKodeverkId: Formatters.gtApiKodeverkId(tpsfData.gtType)
+				},
+				{
+					id: 'tknr',
+					label: 'TK nummer',
+					value: tpsfData.tknr
 				}
 			]
 		}
@@ -117,7 +133,7 @@ export function mapTpsfData(tpsfData, bestillingData) {
 			]
 		})
 	}
-	if (tpsfData.relasjoner.length) {
+	if (tpsfData.relasjoner && tpsfData.relasjoner.length) {
 		data.push({
 			header: 'Familierelasjoner',
 			multiple: true,
@@ -151,6 +167,11 @@ export function mapTpsfData(tpsfData, bestillingData) {
 							id: 'kjonn',
 							label: 'Kjønn',
 							value: relasjon.personRelasjonMed.kjonn
+						},
+						{
+							id: 'statsborgerskap',
+							label: 'Statsborgerskap',
+							value: relasjon.personRelasjonMed.statsborgerskap
 						}
 					]
 				}

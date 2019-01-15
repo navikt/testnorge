@@ -1,10 +1,12 @@
 package no.nav.dolly.api;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +34,7 @@ import no.nav.dolly.service.TestgruppeService;
 public class TestgruppeControllerTest {
 
     private static final String IDENT = "12345678901";
+    private static final Long GRUPPE_ID = 1L;
 
     @Mock
     private TestgruppeService testgruppeService;
@@ -63,14 +66,14 @@ public class TestgruppeControllerTest {
 
     @Test
     public void oppdaterTestgruppe() {
-        Long gId = 1L;
+
         RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
         Testgruppe testgruppe = new Testgruppe();
-        when(testgruppeService.oppdaterTestgruppe(gId, gruppe)).thenReturn(testgruppe);
+        when(testgruppeService.oppdaterTestgruppe(GRUPPE_ID, gruppe)).thenReturn(testgruppe);
 
-        controller.oppdaterTestgruppe(gId, gruppe);
+        controller.oppdaterTestgruppe(GRUPPE_ID, gruppe);
 
-        verify(testgruppeService).oppdaterTestgruppe(gId, gruppe);
+        verify(testgruppeService).oppdaterTestgruppe(GRUPPE_ID, gruppe);
     }
 
     @Test
@@ -94,27 +97,27 @@ public class TestgruppeControllerTest {
 
     @Test
     public void getTestgruppe() {
-        Long gruppeId = 1L;
         RsTestgruppeUtvidet testgruppeUtvidet = new RsTestgruppeUtvidet();
-        Testgruppe testgruppe = new Testgruppe();
+        testgruppeUtvidet.setId(GRUPPE_ID);
+        when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(new Testgruppe());
+        when(mapperFacade.map(any(Testgruppe.class), eq(RsTestgruppeUtvidet.class))).thenReturn(testgruppeUtvidet);
 
-        when(testgruppeService.fetchTestgruppeById(gruppeId)).thenReturn(testgruppe);
-        when(mapperFacade.map(testgruppe, RsTestgruppeUtvidet.class)).thenReturn(testgruppeUtvidet);
+        RsTestgruppeUtvidet result = controller.getTestgruppe(GRUPPE_ID);
 
-        RsTestgruppeUtvidet result = controller.getTestgruppe(gruppeId);
+        assertThat(result.getId(), is(equalTo(GRUPPE_ID)));
 
-        assertThat(result.getBestillinger(), is(emptyList()));
+        verify(testgruppeService).fetchTestgruppeById(GRUPPE_ID);
+        verify(mapperFacade).map(any(Testgruppe.class), eq(RsTestgruppeUtvidet.class));
     }
 
     @Test
     public void getTestgrupper() {
-        controller.getTestgrupper("nav", 1L);
-        verify(testgruppeService).getTestgruppeByNavidentOgTeamId("nav", 1L);
+        controller.getTestgrupper("nav", GRUPPE_ID);
+        verify(testgruppeService).getTestgruppeByNavidentOgTeamId("nav", GRUPPE_ID);
     }
 
     @Test
     public void oppretteIdentBestilling() {
-        Long gruppeId = 1L;
         Long bestillingId = 2L;
         int ant = 1;
         List<String> envir = singletonList("u");
@@ -126,10 +129,10 @@ public class TestgruppeControllerTest {
 
         Bestilling bestilling = Bestilling.builder().id(bestillingId).build();
 
-        when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, ant, envir)).thenReturn(bestilling);
+        when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(GRUPPE_ID, ant, envir)).thenReturn(bestilling);
 
-        controller.opprettIdentBestilling(gruppeId, dollyBestillingsRequest);
-        verify(dollyBestillingService).opprettPersonerByKriterierAsync(gruppeId, dollyBestillingsRequest, bestillingId);
+        controller.opprettIdentBestilling(GRUPPE_ID, dollyBestillingsRequest);
+        verify(dollyBestillingService).opprettPersonerByKriterierAsync(GRUPPE_ID, dollyBestillingsRequest, bestilling);
     }
 
     @Test(expected = NotFoundException.class)

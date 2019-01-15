@@ -10,7 +10,6 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestidentBestillingId;
@@ -33,7 +32,6 @@ public class TestgruppeUtvidetMappingStrategy implements MappingStrategy {
                                 .build());
                         testgruppeUtvidet.setAntallIdenter(testgruppe.getTestidenter().size());
                         testgruppeUtvidet.setTestidenter(mapperFacade.mapAsList(testgruppe.getTestidenter(), RsTestidentBestillingId.class));
-                        testgruppeUtvidet.setBestillinger(mapperFacade.mapAsList(testgruppe.getBestillinger(), RsBestilling.class));
                         testgruppeUtvidet.setErMedlemAvTeamSomEierGruppe(isMedlem(testgruppe.getTeamtilhoerighet().getMedlemmer()));
                         testgruppeUtvidet.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
                     }

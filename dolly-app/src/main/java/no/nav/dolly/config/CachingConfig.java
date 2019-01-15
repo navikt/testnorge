@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CachingConfig {
 
+    public static final String CACHE_BESTILLING = "bestilling";
     public static final String CACHE_BRUKER = "bruker";
     public static final String CACHE_GRUPPE = "gruppe";
     public static final String CACHE_KODEVERK = "kodeverk";
@@ -15,6 +16,6 @@ public class CachingConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager(CACHE_BRUKER, CACHE_GRUPPE, CACHE_KODEVERK, CACHE_TEAM);
+        return new ConcurrentMapCacheManager(CACHE_BESTILLING, CACHE_BRUKER, CACHE_GRUPPE, CACHE_KODEVERK, CACHE_TEAM);
     }
 }
