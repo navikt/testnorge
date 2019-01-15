@@ -1,5 +1,5 @@
 applicationPipeline {
-    applicationName = "synthdata-synt-rest"
+    applicationName = "syntrest"
     javaVersion = "1.8"
     environment = "q11"
     namespace="default"
