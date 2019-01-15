@@ -27,6 +27,8 @@ resources:
   limits:
     cpu: 1.5
     memory: 2048Mi
+fasitResources:
+  exposed:
    - alias: synthdata-synt-rest.rest-api
      resourceType: restservice
      path: /api
