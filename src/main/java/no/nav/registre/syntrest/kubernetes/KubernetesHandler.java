@@ -1,3 +1,4 @@
+/*
 package no.nav.registre.syntrest.kubernetes;
 
 import io.kubernetes.client.ApiClient;
@@ -20,6 +21,7 @@ public class KubernetesHandler {
         ApiClient config = Config.fromConfig(KubeConfig.loadKubeConfig(fr));
         System.out.println(config);
 
+*/
 /*        ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
 
@@ -27,7 +29,9 @@ public class KubernetesHandler {
         V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null);
         for (V1Pod item : list.getItems()) {
             System.out.println(item.getMetadata().getName());
-        }*/
+        }*//*
+
     }
 }
 
+*/

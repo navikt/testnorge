@@ -1,3 +1,4 @@
+/*
 package no.nav.registre.syntrest.kubernetes;
 
 import com.google.gson.JsonSyntaxException;
@@ -139,3 +140,4 @@ public class KubernetesUtils {
     }
 
 }
+*/
