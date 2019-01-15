@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>no.nav.registre</groupId>
-    <artifactId><synt>  </synt>-rest</artifactId>
+    <artifactId>synt-rest</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
