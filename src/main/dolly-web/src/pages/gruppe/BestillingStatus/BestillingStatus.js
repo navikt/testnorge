@@ -92,10 +92,8 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	calculateStatus = () => {
-		console.log(this.props.bestilling, 'props bestilling')
 		const total = this.props.bestilling.antallIdenter
 		const { antallKlare } = this.state
-		console.log(antallKlare, 'antall Klare')
 
 		// Percent
 		let percent = (100 / total) * antallKlare
@@ -104,7 +102,6 @@ export default class BestillingStatus extends PureComponent {
 		// To indicate progress hvis ingenting har skjedd enda
 		if (percent === 0) percent += 10
 
-		console.log(total, 'total')
 		if (antallKlare === total) text = `Ferdigstiller bestilling`
 
 		const title = percent === 100 ? 'FERDIG' : 'AKTIV BESTILLING'
@@ -151,8 +148,6 @@ export default class BestillingStatus extends PureComponent {
 			(bestillingStatusObj && !bestillingStatusObj.ny)
 		)
 			return null
-
-		// console.log(this.state.ferdig, 'this.state')
 
 		const status = this.calculateStatus()
 		return (
