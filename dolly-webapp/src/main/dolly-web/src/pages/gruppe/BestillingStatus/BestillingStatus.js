@@ -22,7 +22,9 @@ export default class BestillingStatus extends PureComponent {
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
-			antallKlare: props.bestilling.personStatus ? props.bestilling.personStatus.length : 0,
+			antallKlare: props.bestilling.bestillingProgress
+				? props.bestilling.bestillingProgress.length
+				: 0,
 			failureIntervalCounter: 0,
 			failed: false,
 			sistOppdatert: props.bestilling.sistOppdatert,
@@ -62,7 +64,7 @@ export default class BestillingStatus extends PureComponent {
 		// en kort melding som sier at prosessen er ferdig
 		let newState = {
 			ferdig: false,
-			antallKlare: data.personStatus ? data.personStatus.length : 0,
+			antallKlare: data.bestillingProgress ? data.bestillingProgress.length : 0,
 			sistOppdatert: data.sistOppdatert
 		}
 		this.setState(newState)
@@ -70,8 +72,9 @@ export default class BestillingStatus extends PureComponent {
 		if (data.ferdig) {
 			setTimeout(() => {
 				// Update groups
-				this.props.onGroupUpdate() // state.ferdig = true
 				this.props.setBestillingStatus(data.id, { ...data, ny: true })
+				this.props.onBestillingerUpdate() // state.ferdig = true
+				this.props.onIdenterUpdate()
 			}, this.TIMEOUT_BEFORE_HIDE)
 		}
 

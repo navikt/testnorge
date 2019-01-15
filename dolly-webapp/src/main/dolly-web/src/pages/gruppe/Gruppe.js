@@ -80,7 +80,8 @@ export default class Gruppe extends Component {
 			getGruppe,
 			deleteGruppe,
 			addFavorite,
-			bestillinger
+			bestillinger,
+			getBestillinger
 		} = this.props
 
 		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
@@ -132,12 +133,13 @@ export default class Gruppe extends Component {
 				<GruppeDetaljer gruppe={gruppe} />
 
 				{// Viser progressbar og bestillingsstatus
-				gruppe.bestillinger &&
-					gruppe.bestillinger.map(bestilling => (
+				bestillinger.data &&
+					bestillinger.data.map(bestilling => (
 						<BestillingStatusConnector
 							key={bestilling.id}
 							bestilling={bestilling}
-							onGroupUpdate={getGruppe}
+							onIdenterUpdate={getGruppe}
+							onBestillingerUpdate={getBestillinger}
 						/>
 					))}
 
