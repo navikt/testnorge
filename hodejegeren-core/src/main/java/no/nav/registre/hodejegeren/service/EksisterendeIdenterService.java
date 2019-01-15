@@ -41,10 +41,10 @@ public class EksisterendeIdenterService {
     @Autowired
     private Random rand;
 
-    public List<String> hentMyndigeIdenterIAvspillerGruppe(Long gruppeId, String miljoe, int henteAntall) {
+    public List<String> hentMyndigeIdenterIAvspillerGruppe(Long gruppeId, String miljoe, int henteAntall, int minimumAlder) {
         List<String> hentedeIdenter = new ArrayList<>(henteAntall);
         List<String> identer = finnLevendeIdenter(gruppeId);
-        List<String> gyldigeIdenter = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(18))).collect(Collectors.toList());
+        List<String> gyldigeIdenter = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
 
         if (henteAntall > gyldigeIdenter.size()) {
             log.info("Antall ønskede identer å hente er større enn myndige identer i avspiller gruppe. - HenteAntall:{} MyndigeIdenter:{}", henteAntall, gyldigeIdenter.size());
@@ -114,7 +114,7 @@ public class EksisterendeIdenterService {
             }
         }
 
-        if(antallFeilet > 0 ) {
+        if (antallFeilet > 0) {
             log.warn("Kunne ikke finne NAV-enhet for {} av identene.", antallFeilet);
         }
 

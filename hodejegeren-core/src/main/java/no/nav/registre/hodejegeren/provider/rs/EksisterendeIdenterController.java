@@ -27,21 +27,25 @@ public class EksisterendeIdenterController {
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her kan et gitt antall myndige levende personer hentes fra en gitt avspillergruppe i TPSF. "
-            + "Systemet sjekker status-quo på personen i det angitte miljø.")
+    @ApiOperation(value = "Her kan et gitt antall levende personer hentes fra en gitt avspillergruppe i TPSF. "
+            + "Systemet sjekker status-quo på personen i det angitte miljø. En minimum alder på personene kan oppgis.")
     @GetMapping("api/v1/eksisterende-identer")
-    public List<String> hentEksisterendeMyndigeIdenter(@RequestParam("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe, @RequestParam("antallPersoner") int antallPersoner) {
-        return eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(avspillergruppeId, miljoe, antallPersoner);
+    public List<String> hentEksisterendeIdenter(@RequestParam("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe,
+            @RequestParam("antallPersoner") int antallPersoner, @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder) {
+        if (minimumAlder == null || minimumAlder < 0) {
+            minimumAlder = 0;
+        }
+        return eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(avspillergruppeId, miljoe, antallPersoner, minimumAlder);
     }
 
     @LogExceptions
     @ApiOperation(value = "Her bestilles sykemeldinger på et gitt antall fødselsnummer som hentes tilfeldig fra TPSF. \n"
-            + "Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeids forhold for å få en sykemelding\n"
-            + "De er garantert til å være myndige")
+            + "Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeidsforhold for å få en sykemelding.\n"
+            + "De er garantert til å være myndige.")
     @GetMapping("api/v1/fnr-med-navkontor/{avspillerGruppeId}/{miljoe}/{antallPersoner}")
     public Map<String, String> hentEksisterendeMyndigeIdenterMedNavKontor(@PathVariable("avspillerGruppeId") Long avspillerGruppeId, @PathVariable("miljoe") String miljoe,
             @PathVariable("antallPersoner") int antallPersoner) {
-        List<String> myndigeIdenter = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(avspillerGruppeId, miljoe, antallPersoner);
+        List<String> myndigeIdenter = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(avspillerGruppeId, miljoe, antallPersoner, 18);
         return eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, myndigeIdenter);
     }
 }
