@@ -20,5 +20,6 @@ public class MedlService {
     public CompletableFuture<List<String>> generateMedl(int num_to_generate) throws InterruptedException{
         List<String> result = restTemplate.postForObject(NaisConnections.CONNECTION_MEDL, num_to_generate, List.class);
         return CompletableFuture.completedFuture(result);
+        //test
     }
 }
