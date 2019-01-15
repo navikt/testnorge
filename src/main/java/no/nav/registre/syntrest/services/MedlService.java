@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -17,9 +18,8 @@ public class MedlService {
     }
 
     @Async
-    public CompletableFuture<List<String>> generateMedl(int num_to_generate) throws InterruptedException{
-        List<String> result = restTemplate.postForObject(NaisConnections.CONNECTION_MEDL, num_to_generate, List.class);
+    public CompletableFuture<List<Map<String, String>>> generateMedl(int num_to_generate) throws InterruptedException{
+        List<Map<String, String>> result = restTemplate.getForObject(String.format(NaisConnections.CONNECTION_MEDL, num_to_generate), List.class);
         return CompletableFuture.completedFuture(result);
-        //test
     }
 }
