@@ -21,7 +21,7 @@ public class ArenaInntektController {
     private ArenaInntektService arenaInntektService;
 
     @PostMapping(value = "/generateArenaInntekt")
-    public Map<String, List<Inntektsmelding>> generateMeldekort(@RequestBody String[] fnrs) throws InterruptedException, ExecutionException {
+    public Map<String, List<Inntektsmelding>> generateInntektsmeldinger(@RequestBody String[] fnrs) throws InterruptedException, ExecutionException {
         CompletableFuture<Map<String, List<Inntektsmelding>>> result = arenaInntektService.generateInntektsmeldingerFromNAIS(fnrs);
         return result.get();
     }
