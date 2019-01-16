@@ -2,7 +2,10 @@ package no.nav.registre.syntrest.controllers;
 
 import no.nav.registre.syntrest.Domain.Inntektsmelding;
 import no.nav.registre.syntrest.services.ArenaInntektService;
+import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +21,17 @@ import java.util.concurrent.ExecutionException;
 public class ArenaInntektController {
 
     @Autowired
+    private Validation validation;
+
+    @Autowired
     private ArenaInntektService arenaInntektService;
 
     @PostMapping(value = "/generateArenaInntekt")
-    public Map<String, List<Inntektsmelding>> generateInntektsmeldinger(@RequestBody String[] fnrs) throws InterruptedException, ExecutionException {
+    public ResponseEntity generateInntektsmeldinger(@RequestBody String[] fnrs) throws InterruptedException, ExecutionException {
+        if (validation.validateFnrs(fnrs) != true){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
+        }
         CompletableFuture<Map<String, List<Inntektsmelding>>> result = arenaInntektService.generateInntektsmeldingerFromNAIS(fnrs);
-        return result.get();
+        return ResponseEntity.status(HttpStatus.OK).body(result.get());
     }
 }
