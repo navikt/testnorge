@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -312,16 +311,7 @@ public class EksisterendeIdenterService {
     }
 
     private Map<String, String> getStatusQuoPaaIdent(Endringskoder endringskode, String environment, String fnr) {
-        Map<String, String> statusQuoFraAarsakskode = new HashMap<>();
-
-        try {
-            statusQuoFraAarsakskode.putAll(hodejegerenConsumer.getStatusQuoFraAarsakskode(
-                    endringskode, environment, fnr));
-        } catch (IOException e) {
-            log.error("Kunne ikke finne status quo for ident {} ", fnr);
-        }
-
-        return statusQuoFraAarsakskode;
+        return new HashMap<>(hodejegerenConsumer.getStatusQuoFraEndringskode(endringskode, environment, fnr));
     }
 
     private RsMeldingstype1Felter opprettSivilstandsendringsmelding(RsMeldingstype identMelding, String identPartner) {

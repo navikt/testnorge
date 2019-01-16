@@ -155,7 +155,7 @@ public class SyntetiseringService {
     private void lagreSkdEndringsmeldingerITpsfOgOppdaterIds(List<Long> ids, Endringskoder endringskode,
             List<RsMeldingstype> syntetiserteSkdmeldinger, GenereringsOrdreRequest genereringsOrdreRequest) {
         try {
-            ids.addAll(hodejegerenConsumer.lagreSkdEndringsmeldingerITPSF(genereringsOrdreRequest.getAvspillergruppeId(), syntetiserteSkdmeldinger));
+            ids.addAll(hodejegerenConsumer.lagreSkdEndringsmeldingerITpsf(genereringsOrdreRequest.getAvspillergruppeId(), syntetiserteSkdmeldinger));
         } catch (Exception e) {
             StringBuilder message = new StringBuilder(120).append("Noe feilet under lagring til TPSF: ")
                     .append(e.getMessage())
@@ -177,16 +177,16 @@ public class SyntetiseringService {
     private Map<String, List<String>> opprettListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {
         Map<String, List<String>> listerMedIdenter = new HashMap<>();
 
-        List<String> levendeIdenterINorge = hodejegerenConsumer.finnLevendeIdenter(genereringsOrdreRequest.getAvspillergruppeId(), genereringsOrdreRequest.getMiljoe());
+        List<String> levendeIdenterINorge = hodejegerenConsumer.finnLevendeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
         listerMedIdenter.put(LEVENDE_IDENTER_I_NORGE, levendeIdenterINorge);
         StringBuilder message = new StringBuilder("Antall identer i lister fra TPSF: - ")
                 .append(LEVENDE_IDENTER_I_NORGE)
                 .append(": ")
                 .append(levendeIdenterINorge.size());
 
-        List<String> doedeIdenterINorge = hodejegerenConsumer.finnDoedeOgUtvandredeIdenter(genereringsOrdreRequest.getAvspillergruppeId(), genereringsOrdreRequest.getMiljoe());
+        List<String> doedeIdenterINorge = hodejegerenConsumer.finnDoedeOgUtvandredeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
 
-        List<String> gifteIdenterINorge = hodejegerenConsumer.finnGifteIdenter(genereringsOrdreRequest.getAvspillergruppeId(), genereringsOrdreRequest.getMiljoe());
+        List<String> gifteIdenterINorge = hodejegerenConsumer.finnGifteIdenter(genereringsOrdreRequest.getAvspillergruppeId());
         gifteIdenterINorge.removeAll(doedeIdenterINorge);
         listerMedIdenter.put(GIFTE_IDENTER_I_NORGE, gifteIdenterINorge);
         message.append(" - ")
