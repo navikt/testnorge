@@ -1,6 +1,9 @@
 package no.nav.dolly.service;
 
-import java.time.LocalDateTime;
+import static java.lang.String.format;
+import static java.lang.String.join;
+import static java.time.LocalDateTime.now;
+
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +39,8 @@ public class BestillingService {
     @Autowired
     private BestillingProgressRepository bestillingProgressRepository;
 
-    public Bestilling fetchBestillingById(Long bestillingsId) {
-        return bestillingRepository.findById(bestillingsId).orElseThrow(() -> new NotFoundException("Fant ikke bestillingId"));
+    public Bestilling fetchBestillingById(Long bestillingId) {
+        return bestillingRepository.findById(bestillingId).orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
     public Bestilling saveBestillingToDB(Bestilling bestilling) {
@@ -64,7 +67,7 @@ public class BestillingService {
         Bestilling bestilling = fetchBestillingById(bestillingId);
         bestilling.setStoppet(true);
         bestilling.setFerdig(true);
-        bestilling.setSistOppdatert(LocalDateTime.now());
+        bestilling.setSistOppdatert(now());
         saveBestillingToDB(bestilling);
         identRepository.deleteTestidentsByBestillingId(bestillingId);
         bestillingProgressRepository.deleteByBestillingId(bestillingId);
@@ -83,6 +86,14 @@ public class BestillingService {
         miljoer.forEach(miljoe -> miljoeliste
                 .append(miljoe)
                 .append(','));
-        return saveBestillingToDB(new Bestilling(gruppe, antallIdenter, LocalDateTime.now(), miljoeliste.substring(0, miljoeliste.length() - 1)));
+        return saveBestillingToDB(new Bestilling(gruppe, antallIdenter, now(), miljoeliste.substring(0, miljoeliste.length() - 1)));
+    }
+
+    @Transactional
+    // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
+    public Bestilling createBestillingForGjenopprett(Long bestillingId, List<String> miljoer) {
+        Bestilling bestilling = fetchBestillingById(bestillingId);
+        return saveBestillingToDB(new Bestilling(bestilling.getGruppe(), bestilling.getAntallIdenter(), now(),
+                miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer), bestillingId));
     }
 }

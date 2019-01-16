@@ -1,11 +1,13 @@
 package no.nav.dolly.bestilling.tpsf;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -19,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
+import no.nav.dolly.domain.resultset.Person;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
@@ -32,6 +35,7 @@ public class TpsfService {
     private static final String TPSF_BASE_URL = "/api/v1/dolly/testdata";
     private static final String TPSF_OPPRETT_URL = "/personer";
     private static final String TPSF_SEND_TPS_FLERE_URL = "/tilTpsFlere";
+    private static final String TPSF_HENT_PERSONER_URL = "/hentpersoner";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -51,6 +55,20 @@ public class TpsfService {
         validateEnvironments(environments);
         ResponseEntity<Object> response = postToTpsf(TPSF_SEND_TPS_FLERE_URL, new HttpEntity<>(new TpsfIdenterMiljoer(identer, environments)));
         return nonNull(response) ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
+    }
+
+    public List<String> hentTilhoerendeIdenter(List<String> identer) {
+        List<String> identerMedFamilie = new ArrayList<>();
+        ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, new HttpEntity(identer));
+        if (nonNull(response)) {
+            Person[] personer = objectMapper.convertValue(response.getBody(), Person[].class);
+
+            newArrayList(personer).forEach(person -> {
+                identerMedFamilie.add(person.getIdent());
+                person.getRelasjoner().forEach(relasjon -> identerMedFamilie.add(relasjon.getPersonRelasjonMed().getIdent()));
+            });
+        }
+        return identerMedFamilie;
     }
 
     private ResponseEntity<Object> postToTpsf(String addtionalUrl, HttpEntity request) {

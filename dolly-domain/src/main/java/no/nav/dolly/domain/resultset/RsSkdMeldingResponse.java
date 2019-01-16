@@ -1,11 +1,11 @@
 package no.nav.dolly.domain.resultset;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -14,7 +14,6 @@ import java.util.List;
 public class RsSkdMeldingResponse {
     private Long gruppeid;
 
-    List<SendSkdMeldingTilTpsResponse> sendSkdMeldingTilTpsResponsene;
-    List<ServiceRoutineResponseStatus> serviceRoutineStatusResponsene;
-
+    private List<SendSkdMeldingTilTpsResponse> sendSkdMeldingTilTpsResponsene;
+    private List<ServiceRoutineResponseStatus> serviceRoutineStatusResponsene;
 }

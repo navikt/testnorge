@@ -1,12 +1,15 @@
 package no.nav.dolly.bestilling.service;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,7 +47,8 @@ import no.nav.dolly.service.TestgruppeService;
 @Service
 public class DollyBestillingService {
 
-    private static final String INNVANDRINGS_MLD_NAVN = "innvandringcreate";
+    private static final String INNVANDRING_CREATE = "innvandringcreate";
+    private static final String INNVANDRING_UPDATE = "innvandringupdate";
 
     @Autowired
     private TpsfResponseHandler tpsfResponseHandler;
@@ -84,26 +88,26 @@ public class DollyBestillingService {
 
     @Async
     @Transactional
-    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingRequest, Bestilling bestilling) {
+    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest request, Bestilling bestilling) {
 
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
         try {
-            RsTpsfBestilling tpsfBestilling = nonNull(bestillingRequest.getTpsf()) ? bestillingRequest.getTpsf() : new RsTpsfBestilling();
-            tpsfBestilling.setEnvironments(bestillingRequest.getEnvironments());
+            RsTpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? request.getTpsf() : new RsTpsfBestilling();
+            tpsfBestilling.setEnvironments(request.getEnvironments());
             tpsfBestilling.setAntall(1);
 
             int loopCount = 0;
-            while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < bestillingRequest.getAntall()) {
+            while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < request.getAntall()) {
                 List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
                 BestillingProgress progress = new BestillingProgress(bestilling.getId(), hovedPersonIdent);
 
-                sendIdenterTilTPS(bestillingRequest, bestilteIdenter, testgruppe, progress);
+                sendIdenterTilTPS(request.getEnvironments(), bestilteIdenter, testgruppe, progress);
 
-                handleSigrunstub(bestillingRequest, hovedPersonIdent, progress);
+                handleSigrunstub(request, hovedPersonIdent, progress);
 
-                handleKrrstub(bestillingRequest, bestilling.getId(), hovedPersonIdent, progress);
+                handleKrrstub(request, bestilling.getId(), hovedPersonIdent, progress);
 
                 if (!bestillingService.isStoppet(bestilling.getId())) {
                     bestillingProgressRepository.save(progress);
@@ -127,6 +131,32 @@ public class DollyBestillingService {
         }
     }
 
+    @Async
+    @Transactional
+    public void gjenopprettBestillingAsync(Bestilling bestilling) {
+
+        List<BestillingProgress> identerForGjenopprett = bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(bestilling.getOpprettetFraId());
+
+        Iterator<BestillingProgress> identIterator = identerForGjenopprett.iterator();
+        while (!bestillingService.isStoppet(bestilling.getId()) && identIterator.hasNext()) {
+            BestillingProgress bestillingProgress = identIterator.next();
+
+            List<String> identer = tpsfService.hentTilhoerendeIdenter(singletonList(bestillingProgress.getIdent()));
+
+            String hovedPersonIdent = getHovedpersonAvBestillingsidenter(identer);
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), hovedPersonIdent);
+
+            sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
+
+            if (!bestillingService.isStoppet(bestilling.getId())) {
+                bestillingProgressRepository.save(progress);
+                bestilling.setSistOppdatert(LocalDateTime.now());
+                bestillingService.saveBestillingToDB(bestilling);
+            }
+            clearCache();
+        }
+    }
+
     private void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
             cacheManager.getCache(CACHE_BESTILLING).clear();
@@ -136,13 +166,13 @@ public class DollyBestillingService {
         }
     }
 
-    private void sendIdenterTilTPS(RsDollyBestillingsRequest request, List<String> klareIdenter, Testgruppe testgruppe, BestillingProgress progress) {
+    private void sendIdenterTilTPS(List<String> environments, List<String> identer, Testgruppe testgruppe, BestillingProgress progress) {
         try {
-            RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
+            RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(identer, environments.stream().map(String::toLowerCase).collect(Collectors.toList()));
             String feedbackTps = tpsfResponseHandler.extractTPSFeedback(response.getSendSkdMeldingTilTpsResponsene());
             log.info(feedbackTps);
 
-            String hovedperson = getHovedpersonAvBestillingsidenter(klareIdenter);
+            String hovedperson = getHovedpersonAvBestillingsidenter(identer);
             List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
             List<String> failureMiljoer = extraxtFailureMiljoForHovedperson(hovedperson, response);
 
@@ -188,15 +218,13 @@ public class DollyBestillingService {
         List<String> successMiljoer = new ArrayList<>();
 
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
-
-            if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId()) && isInnvandringsmelding(sendSkdMldResponse)) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
                     if ((entry.getValue().contains("OK"))) {
                         successMiljoer.add(entry.getKey());
                     }
                 }
             }
-
         }
 
         return successMiljoer;
@@ -206,21 +234,21 @@ public class DollyBestillingService {
         List<String> failure = new ArrayList<>();
 
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
-
-            if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId()) && isInnvandringsmelding(sendSkdMldResponse)) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
                     if (!(entry.getValue().contains("OK"))) {
-                        failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("^(08)(;08%)*", "FEIL: ").trim()));
+                        failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("08%", "").trim()));
                     }
                 }
             }
-
         }
 
         return failure;
     }
 
-    private boolean isInnvandringsmeldingPaaPerson(String personId, SendSkdMeldingTilTpsResponse r) {
-        return r.getSkdmeldingstype() != null && INNVANDRINGS_MLD_NAVN.equalsIgnoreCase(r.getSkdmeldingstype()) && personId.equals(r.getPersonId());
+    private boolean isInnvandringsmelding(SendSkdMeldingTilTpsResponse response) {
+        return nonNull(response.getSkdmeldingstype()) &&
+                (INNVANDRING_CREATE.equalsIgnoreCase(response.getSkdmeldingstype()) ||
+                        INNVANDRING_UPDATE.equalsIgnoreCase(response.getSkdmeldingstype()));
     }
 }
