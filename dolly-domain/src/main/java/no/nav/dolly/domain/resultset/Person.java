@@ -1,6 +1,9 @@
 package no.nav.dolly.domain.resultset;
 
+import static java.util.Objects.isNull;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -18,4 +21,11 @@ public class Person {
     private String etternavn;
     private LocalDateTime regdato;
     private List<Relasjon> relasjoner;
+
+    public List<Relasjon> getRelasjoner() {
+        if (isNull(relasjoner)) {
+            relasjoner = new ArrayList();
+        }
+        return relasjoner;
+    }
 }

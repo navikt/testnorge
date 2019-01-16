@@ -64,15 +64,6 @@ public class Bestilling {
     @Column(name = "OPPRETTET_FRA_ID")
     private Long opprettetFraId;
 
-    public Bestilling(Testgruppe gruppe, int antallIdenter, LocalDateTime sistOppdatert, String miljoer) {
-        this(gruppe, antallIdenter, sistOppdatert, miljoer, null);
-    }
-
-    public Bestilling(Testgruppe gruppe, int antallIdenter, LocalDateTime sistOppdatert, String miljoer, Long opprettetFraId) {
-        this.gruppe = gruppe;
-        this.antallIdenter = antallIdenter;
-        this.sistOppdatert = sistOppdatert;
-        this.miljoer = miljoer;
-        this.opprettetFraId = opprettetFraId;
-    }
+    @Column(name = "TPSF_KRITERIER")
+    private String tpsfKriterier;
 }

@@ -7,7 +7,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Component
 public class DollyObjectMapper extends ObjectMapper {
-    public DollyObjectMapper(){
+
+    public DollyObjectMapper() {
         disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    //ISO 8601 er default format for java.time
         disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         findAndRegisterModules();

@@ -109,11 +109,7 @@ public class DollyBestillingService {
 
                 handleKrrstub(request, bestilling.getId(), hovedPersonIdent, progress);
 
-                if (!bestillingService.isStoppet(bestilling.getId())) {
-                    bestillingProgressRepository.save(progress);
-                    bestilling.setSistOppdatert(LocalDateTime.now());
-                    bestillingService.saveBestillingToDB(bestilling);
-                }
+                oppdaterProgress(bestilling, progress);
                 clearCache();
                 loopCount++;
             }
@@ -121,12 +117,7 @@ public class DollyBestillingService {
             log.error("Bestilling med id <" + bestilling.getId() + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
             bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()));
         } finally {
-            if (bestillingService.isStoppet(bestilling.getId())) {
-                identService.slettTestidenter(bestilling.getId());
-                bestilling.setStoppet(true);
-            }
-            bestilling.setFerdig(true);
-            bestillingService.saveBestillingToDB(bestilling);
+            oppdaterProgressFerdig(bestilling);
             clearCache();
         }
     }
@@ -148,12 +139,27 @@ public class DollyBestillingService {
 
             sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
 
-            if (!bestillingService.isStoppet(bestilling.getId())) {
-                bestillingProgressRepository.save(progress);
-                bestilling.setSistOppdatert(LocalDateTime.now());
-                bestillingService.saveBestillingToDB(bestilling);
-            }
+            oppdaterProgress(bestilling, progress);
             clearCache();
+        }
+        oppdaterProgressFerdig(bestilling);
+        clearCache();
+    }
+
+    private void oppdaterProgressFerdig(Bestilling bestilling) {
+        if (bestillingService.isStoppet(bestilling.getId())) {
+            identService.slettTestidenter(bestilling.getId());
+            bestilling.setStoppet(true);
+        }
+        bestilling.setFerdig(true);
+        bestillingService.saveBestillingToDB(bestilling);
+    }
+
+    private void oppdaterProgress(Bestilling bestilling, BestillingProgress progress) {
+        if (!bestillingService.isStoppet(bestilling.getId())) {
+            bestillingProgressRepository.save(progress);
+            bestilling.setSistOppdatert(LocalDateTime.now());
+            bestillingService.saveBestillingToDB(bestilling);
         }
     }
 

@@ -29,6 +29,7 @@ public class RsBestilling {
     private List<String> environments;
     private List<RsBestillingProgress> bestillingProgress;
     private Long opprettetFraId;
+    private String tpsfKriterier;
 
     public List<String> getEnvironments() {
         if (environments == null) {

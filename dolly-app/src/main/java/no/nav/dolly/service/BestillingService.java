@@ -10,10 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
@@ -22,6 +27,8 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 
 @Service
+@Slf4j
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BestillingService {
 
     @Autowired
@@ -38,6 +45,9 @@ public class BestillingService {
 
     @Autowired
     private BestillingProgressRepository bestillingProgressRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId).orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
@@ -80,20 +90,41 @@ public class BestillingService {
 
     @Transactional
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
-    public Bestilling saveBestillingByGruppeIdAndAntallIdenter(Long gruppeId, int antallIdenter, List<String> miljoer) {
+    public Bestilling saveBestillingByGruppeIdAndAntallIdenter(Long gruppeId, int antallIdenter, List<String> miljoer, RsTpsfBestilling tpsfBestilling) {
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
-        StringBuilder miljoeliste = new StringBuilder();
-        miljoer.forEach(miljoe -> miljoeliste
-                .append(miljoe)
-                .append(','));
-        return saveBestillingToDB(new Bestilling(gruppe, antallIdenter, now(), miljoeliste.substring(0, miljoeliste.length() - 1)));
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(gruppe)
+                        .antallIdenter(antallIdenter)
+                        .sistOppdatert(now())
+                        .miljoer(join(",", miljoer))
+                        .tpsfKriterier(toJson(tpsfBestilling))
+                        .build()
+        );
     }
 
     @Transactional
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Bestilling createBestillingForGjenopprett(Long bestillingId, List<String> miljoer) {
         Bestilling bestilling = fetchBestillingById(bestillingId);
-        return saveBestillingToDB(new Bestilling(bestilling.getGruppe(), bestilling.getAntallIdenter(), now(),
-                miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer), bestillingId));
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(bestilling.getGruppe())
+                        .antallIdenter(bestilling.getAntallIdenter())
+                        .sistOppdatert(now())
+                        .miljoer(miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
+                        .opprettetFraId(bestillingId)
+                        .tpsfKriterier(bestilling.getTpsfKriterier())
+                        .build()
+        );
+    }
+
+    private String toJson(Object object) {
+        try {
+            return objectMapper.writer().writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            log.debug("Konvertering til Json feilet", e);
+        }
+        return null;
     }
 }
