@@ -5,7 +5,6 @@ import Loading from '~/components/loading/Loading'
 import BestillingProgress from './BestillingProgress/BestillingProgress'
 import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
 import './BestillingStatus.less'
-import _find from 'lodash/find'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 
 export default class BestillingStatus extends PureComponent {
@@ -46,7 +45,7 @@ export default class BestillingStatus extends PureComponent {
 	stopPolling = () => clearInterval(this.interval)
 
 	getBestillingStatus = async () => {
-		const bestillingId = this.props.bestilling.id
+		const bestillingId = this.props.bestillingsId
 
 		try {
 			const { data } = await DollyApi.getBestillingStatus(bestillingId)
@@ -72,7 +71,7 @@ export default class BestillingStatus extends PureComponent {
 		if (data.ferdig) {
 			setTimeout(async () => {
 				// Update groups
-				await this.props.setBestillingStatus(data.id, { ...data, ny: true })
+				// await this.props.setBestillingStatus(data.id, { ...data, ny: true })
 				await this.props.onBestillingerUpdate() // state.ferdig = true
 				await this.props.onIdenterUpdate()
 			}, this.TIMEOUT_BEFORE_HIDE)
@@ -113,9 +112,9 @@ export default class BestillingStatus extends PureComponent {
 		}
 	}
 
-	_onCloseMiljoeStatus = bestillingStatusObj => {
+	_onCloseMiljoeStatus = bestilling => {
 		this.setState({ isOpen: false })
-		this.props.setBestillingStatus(bestillingStatusObj.id, { ...bestillingStatusObj, ny: false })
+		this.props.setBestillingStatus(bestilling.id, { ...bestilling, ny: false })
 	}
 
 	_onCancelBtn = () => {
@@ -126,13 +125,7 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		const {
-			bestillingStatusObj,
-			miljoeStatusObj,
-			isCanceling,
-			cancelBestilling,
-			bestilling
-		} = this.props
+		const { miljoeStatusObj, isCanceling, cancelBestilling, bestilling } = this.props
 
 		if (isCanceling && this.state.showCancelLoadingMsg) {
 			return (
@@ -143,9 +136,10 @@ export default class BestillingStatus extends PureComponent {
 		}
 
 		if (
-			(this.state.ferdig && !bestillingStatusObj) ||
-			!this.state.isOpen ||
-			(bestillingStatusObj && !bestillingStatusObj.ny)
+			// (this.state.ferdig && !bestilling) ||
+			!this.state.isOpen
+			// bestilling
+			// (bestilling && !bestilling.ny)
 		)
 			return null
 
@@ -159,11 +153,10 @@ export default class BestillingStatus extends PureComponent {
 						cancelBestilling={this._onCancelBtn}
 					/>
 				) : (
-					bestillingStatusObj &&
-					bestillingStatusObj.ny && (
+					bestilling && (
 						<MiljoeStatus
 							miljoeStatusObj={miljoeStatusObj}
-							onCloseButton={() => this._onCloseMiljoeStatus(bestillingStatusObj)}
+							onCloseButton={() => this._onCloseMiljoeStatus(bestilling)}
 						/>
 					)
 				)}

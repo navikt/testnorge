@@ -42,7 +42,6 @@ const DataMapper = {
 
 		const testIdent = gruppe.data[0].testidenter.find(testIdent => testIdent.ident === personId)
 
-		console.log(testIdent, 'hei')
 		// const bestillingId = _findBestillingId(gruppe, ownProps.personId)
 		// const bestillingObj = gruppe.data[0].bestillinger.find(
 		// 	bestilling => bestilling.id === bestillingId

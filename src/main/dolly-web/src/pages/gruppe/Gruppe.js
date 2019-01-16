@@ -77,6 +77,7 @@ export default class Gruppe extends Component {
 			createOrUpdateId,
 			createGroup,
 			isFetching,
+			isFetchingBestillinger,
 			getGruppe,
 			deleteGruppe,
 			addFavorite,
@@ -133,15 +134,28 @@ export default class Gruppe extends Component {
 				<GruppeDetaljer gruppe={gruppe} />
 
 				{// Viser progressbar og bestillingsstatus
-				bestillinger.data &&
-					bestillinger.data.map(bestilling => (
-						<BestillingStatusConnector
-							key={bestilling.id}
-							bestilling={bestilling}
-							onIdenterUpdate={getGruppe}
-							onBestillingerUpdate={getBestillinger}
-						/>
-					))}
+				!isFetchingBestillinger &&
+					bestillinger.ny.map((bestillingsId, i) => {
+						return (
+							<BestillingStatusConnector
+								key={i}
+								bestillingsId={bestillingsId}
+								onIdenterUpdate={getGruppe}
+								onBestillingerUpdate={getBestillinger}
+							/>
+						)
+					})
+
+				// bestillinger.data &&
+				// 	bestillinger.data.map(bestilling => (
+				// 		<BestillingStatusConnector
+				// 			key={bestilling.id}
+				// 			bestilling={bestilling}
+				// 			onIdenterUpdate={getGruppe}
+				// 			onBestillingerUpdate={getBestillinger}
+				// 		/>
+				// 	))}
+				}
 
 				<Toolbar
 					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}

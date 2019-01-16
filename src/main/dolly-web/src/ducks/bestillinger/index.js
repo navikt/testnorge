@@ -12,8 +12,8 @@ const initialState = {}
 export default handleActions(
 	{
 		[success(getBestillinger)](state, action) {
-			const { data } = action.payload
-			return { ...state, data }
+			// const { data } = action.payload
+			return { ...state, initialState }
 		}
 	},
 	initialState
