@@ -6,35 +6,55 @@ import Formatters from '~/utils/DataFormatter'
 import success from '~/utils/SuccessAction'
 import { actions as bestillingActions } from '~/ducks/bestilling'
 
+export const getBestillinger = createAction('GET_BESTILLINGER', async gruppeID => {
+	let res = await DollyApi.getBestillinger(gruppeID)
+	return res
+})
+
+// export const getBestillinger = createAction('GET_BESTILLINGER', DollyApi.getBestillinger)
+
 export const getBestillingStatus = createAction(
 	'GET_BESTILLING_STATUS',
 	DollyApi.getBestillingStatus
 )
+
 const SET_BESTILLING_STATUS = 'SET_BESTILLING_STATUS'
 
-const initialState = {}
+const initialState = { ny: [1806] }
 
 export const cancelBestilling = createAction('CANCEL_BESTILLING', async id => {
 	let res = await DollyApi.cancelBestilling(id)
 	return { ...res, data: { ...res.data, ny: true } }
 })
+
 export default handleActions(
 	{
+		[success(getBestillinger)](state, action) {
+			const { data } = action.payload
+			// console.log(data, 'data')
+			// const dataReducer = data.reduce((acc, curr) => {
+			// 	return { ...acc, [curr.id]: curr }
+			// })
+
+			return { ...state, data }
+		},
 		[success(getBestillingStatus)](state, action) {
 			return { ...state, [action.payload.data.id]: action.payload.data }
 		},
 
 		[success(bestillingActions.postBestilling)](state, action) {
-			return { ...state, [action.payload.data.id]: action.payload.data }
-		},
-
-		[success(cancelBestilling)](state, action) {
-			return { ...state, [action.payload.data.id]: action.payload.data }
-		},
-
-		[SET_BESTILLING_STATUS](state, action) {
-			return { ...state, [action.bestillingId]: action.data }
+			console.log(action.payload.data, 'ny best')
+			return { ...state, ny: [...state.ny, action.payload.data.id] }
 		}
+
+		// [success(cancelBestilling)](state, action) {
+		// 	return { ...state, [action.payload.data.id]: action.payload.data }
+		// },
+
+		// [SET_BESTILLING_STATUS](state, action) {
+		// 	return { ...state, [action.bestillingId]: action.data }
+		// 	// return { ...state, ...action.data }
+		// }
 	},
 	initialState
 )
