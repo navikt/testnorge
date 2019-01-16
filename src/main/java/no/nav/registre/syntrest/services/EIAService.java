@@ -22,7 +22,6 @@ public class EIAService {
     @Async
     public CompletableFuture<List<String>> generateSykemeldingerFromNAIS(List<Map<String, String>> request) {
         List<String> result = restTemplate.postForObject(NaisConnections.CONNECTION_EIA, request, List.class);
-        System.out.println(result);
         return CompletableFuture.completedFuture(result);
     }
 }

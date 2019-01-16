@@ -18,7 +18,7 @@ public class EIAController {
     @Autowired
     private EIAService eiaService;
 
-    @PostMapping(value = "/generateEia")
+    @PostMapping(value = "/generateSykemeldinger")
     public List<String> generateSykemeldinger(@RequestBody List<Map<String, String>> request) throws InterruptedException, ExecutionException {
         CompletableFuture<List<String>> result = eiaService.generateSykemeldingerFromNAIS(request);
         return result.get();
