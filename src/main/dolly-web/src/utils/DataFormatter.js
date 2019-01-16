@@ -81,7 +81,9 @@ formatters.gtApiKodeverkId = gtType => {
 }
 formatters.sort2DArray = (array, i) => {
 	// i er indexen av verdi som man ønsker å sortere på
-	return array.sort((a, b) => b[i] - a[i])
+	return array.sort((a, b) => {
+		return b[i] - a[i]
+	})
 }
 
 formatters.commaToSpace = streng => {
