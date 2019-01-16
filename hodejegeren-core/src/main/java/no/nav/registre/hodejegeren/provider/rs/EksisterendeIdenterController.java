@@ -69,14 +69,8 @@ public class EksisterendeIdenterController {
     @LogExceptions
     @ApiOperation(value = "Her kan man sjekke status quo på en ident i TPS.")
     @GetMapping("api/v1/status-quo/{endringskode}/{miljoe}/{fnr}")
-    public Map<String, String> hentStatusQuoFraEndringskode(@PathVariable("endringskode") Endringskoder endringskode, @PathVariable("miljoe") String miljoe, @PathVariable("fnr") String fnr) {
-        Map<String, String> feltnavnMedStatusQuo = new HashMap<>();
-        try {
-            feltnavnMedStatusQuo.putAll(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, miljoe, fnr));
-        } catch (IOException e) {
-
-        }
-        return feltnavnMedStatusQuo;
+    public Map<String, String> hentStatusQuoFraEndringskode(@PathVariable("endringskode") Endringskoder endringskode, @PathVariable("miljoe") String miljoe, @PathVariable("fnr") String fnr) throws IOException {
+        return new HashMap<>(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, miljoe, fnr));
     }
 
     @LogExceptions
