@@ -17,7 +17,6 @@ public class MedlController {
 
     @GetMapping(value = "/generateMedl/{num_to_generate}")
     public List<Map<String, String>> generateMedl(@PathVariable int num_to_generate) throws InterruptedException, ExecutionException {
-        System.out.println(num_to_generate);
         CompletableFuture<List<Map<String, String>>> result = medlService.generateMedlFromNAIS(num_to_generate);
         return result.get();
     }
