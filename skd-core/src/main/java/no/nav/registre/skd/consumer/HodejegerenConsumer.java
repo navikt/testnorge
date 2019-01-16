@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +41,10 @@ public class HodejegerenConsumer {
     private UriTemplate lagreITpsfUrl;
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
-        this.levendeIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/levende-identer");
-        this.doedeIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/doede-identer");
-        this.gifteIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/gifte-identer");
-        this.statusQuoUrl = new UriTemplate(hodejegerenServerUrl + "/v1/status-quo");
+        this.levendeIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/levende-identer/{avspillergruppeId}");
+        this.doedeIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/doede-identer/{avspillergruppeId}");
+        this.gifteIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/gifte-identer/{avspillergruppeId}");
+        this.statusQuoUrl = new UriTemplate(hodejegerenServerUrl + "/v1/status-quo/{endringskode}/{miljoe}/{fnr}");
         this.lagreITpsfUrl = new UriTemplate(hodejegerenServerUrl + "/v1/lagre-tpsf");
     }
 
