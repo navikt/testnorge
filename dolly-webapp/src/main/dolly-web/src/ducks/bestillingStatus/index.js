@@ -11,60 +11,37 @@ export const getBestillinger = createAction('GET_BESTILLINGER', async gruppeID =
 	return res
 })
 
-// export const getBestillinger = createAction('GET_BESTILLINGER', DollyApi.getBestillinger)
+export const removeNyBestillingStatus = createAction('REMOVE_NY_BESTILLING_STATUS')
 
-export const getBestillingStatus = createAction(
-	'GET_BESTILLING_STATUS',
-	DollyApi.getBestillingStatus
-)
-
-const SET_BESTILLING_STATUS = 'SET_BESTILLING_STATUS'
-
-const initialState = { ny: [1806] }
+// ny-array holder oversikt over nye bestillinger i en session
+const initialState = { ny: [] }
 
 export const cancelBestilling = createAction('CANCEL_BESTILLING', async id => {
 	let res = await DollyApi.cancelBestilling(id)
-	return { ...res, data: { ...res.data, ny: true } }
+	return res
 })
 
 export default handleActions(
 	{
 		[success(getBestillinger)](state, action) {
 			const { data } = action.payload
-			// console.log(data, 'data')
-			// const dataReducer = data.reduce((acc, curr) => {
-			// 	return { ...acc, [curr.id]: curr }
-			// })
-
 			return { ...state, data }
-		},
-		[success(getBestillingStatus)](state, action) {
-			return { ...state, [action.payload.data.id]: action.payload.data }
 		},
 
 		[success(bestillingActions.postBestilling)](state, action) {
-			console.log(action.payload.data, 'ny best')
 			return { ...state, ny: [...state.ny, action.payload.data.id] }
-		}
+		},
 
 		// [success(cancelBestilling)](state, action) {
-		// 	return { ...state, [action.payload.data.id]: action.payload.data }
-		// },
-
-		// [SET_BESTILLING_STATUS](state, action) {
-		// 	return { ...state, [action.bestillingId]: action.data }
-		// 	// return { ...state, ...action.data }
+		// 	return { ...state, ny: state.ny.filter(id => id !== action.payload.id) }
 		// }
+
+		[removeNyBestillingStatus](state, action) {
+			return { ...state, ny: state.ny.filter(id => id !== action.payload) }
+		}
 	},
 	initialState
 )
-
-// SET BESTILLING STATUS
-export const setBestillingStatus = (bestillingId, data) => ({
-	type: SET_BESTILLING_STATUS,
-	bestillingId,
-	data
-})
 
 // Selector + mapper
 export const sokSelector = (items, searchStr) => {

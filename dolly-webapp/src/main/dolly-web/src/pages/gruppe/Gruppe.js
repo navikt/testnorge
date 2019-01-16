@@ -144,18 +144,7 @@ export default class Gruppe extends Component {
 								onBestillingerUpdate={getBestillinger}
 							/>
 						)
-					})
-
-				// bestillinger.data &&
-				// 	bestillinger.data.map(bestilling => (
-				// 		<BestillingStatusConnector
-				// 			key={bestilling.id}
-				// 			bestilling={bestilling}
-				// 			onIdenterUpdate={getGruppe}
-				// 			onBestillingerUpdate={getBestillinger}
-				// 		/>
-				// 	))}
-				}
+					})}
 
 				<Toolbar
 					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}

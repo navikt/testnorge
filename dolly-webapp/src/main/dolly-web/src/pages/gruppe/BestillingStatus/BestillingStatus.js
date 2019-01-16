@@ -49,6 +49,7 @@ export default class BestillingStatus extends PureComponent {
 
 		try {
 			const { data } = await DollyApi.getBestillingStatus(bestillingId)
+
 			if (data.ferdig) {
 				this.stopPolling()
 			}
@@ -71,7 +72,6 @@ export default class BestillingStatus extends PureComponent {
 		if (data.ferdig) {
 			setTimeout(async () => {
 				// Update groups
-				// await this.props.setBestillingStatus(data.id, { ...data, ny: true })
 				await this.props.onBestillingerUpdate() // state.ferdig = true
 				await this.props.onIdenterUpdate()
 			}, this.TIMEOUT_BEFORE_HIDE)
@@ -112,9 +112,9 @@ export default class BestillingStatus extends PureComponent {
 		}
 	}
 
-	_onCloseMiljoeStatus = bestilling => {
+	_onCloseMiljoeStatus = () => {
 		this.setState({ isOpen: false })
-		this.props.setBestillingStatus(bestilling.id, { ...bestilling, ny: false })
+		this.props.removeNyBestillingStatus(this.props.bestillingsId)
 	}
 
 	_onCancelBtn = () => {
@@ -156,7 +156,7 @@ export default class BestillingStatus extends PureComponent {
 					bestilling && (
 						<MiljoeStatus
 							miljoeStatusObj={miljoeStatusObj}
-							onCloseButton={() => this._onCloseMiljoeStatus(bestilling)}
+							onCloseButton={() => this._onCloseMiljoeStatus()}
 						/>
 					)
 				)}
