@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@Import({ MeldekortController.class, ArenaInntektController.class, InternalController.class, MedlController.class, EIAService.class})
+@Import({ MeldekortController.class})
 public class AppConfig {
 
     @Bean
