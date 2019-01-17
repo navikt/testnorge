@@ -33,8 +33,13 @@ export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', identAr
 
 export const GET_SIGRUN_TESTBRUKER = createAction(
 	'GET_SIGRUN_TESTBRUKER',
-	ident => {
-		return SigrunApi.getTestbruker(ident)
+	async ident => {
+		try {
+			const res = await SigrunApi.getTestbruker(ident)
+			return res
+		} catch (err) {
+			return err
+		}
 	},
 	ident => ({
 		ident

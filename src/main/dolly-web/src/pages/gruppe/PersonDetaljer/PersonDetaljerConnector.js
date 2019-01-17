@@ -3,8 +3,14 @@ import PersonDetaljer from './PersonDetaljer'
 import DataMapper from '~/service/dataMapper'
 import { GET_KRR_TESTBRUKER, GET_SIGRUN_TESTBRUKER } from '~/ducks/testBruker'
 import { FRIGJOER_TESTBRUKER } from '~/ducks/testBruker'
+import { createLoadingSelector } from '~/ducks/loading'
+
+const loadingSelectorKrr = createLoadingSelector(GET_KRR_TESTBRUKER)
+const loadingSelectorSigrun = createLoadingSelector(GET_SIGRUN_TESTBRUKER)
 
 const mapStateToProps = (state, ownProps) => ({
+	isFetchingKrr: loadingSelectorKrr(state),
+	isFetchingSigrun: loadingSelectorSigrun(state),
 	personData: DataMapper.getDetailedData(state, ownProps)
 })
 
