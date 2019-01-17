@@ -4,7 +4,7 @@ import Navigation from './Navigation'
 import { actions } from '~/ducks/bestilling'
 
 const mapStateToProps = state => ({
-	currentPage: state.bestilling.page
+	currentPage: state.currentBestilling.page
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

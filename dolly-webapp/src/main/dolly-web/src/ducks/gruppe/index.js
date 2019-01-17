@@ -4,6 +4,7 @@ import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import { createAction, handleActions, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
+import _find from 'lodash/find'
 
 // GET
 export const getGruppe = createAction('GET_GRUPPE', DollyApi.getGruppeById)
@@ -109,4 +110,18 @@ export const sokSelectorOversikt = (items, searchStr) => {
 
 		return searchValues.some(v => v.includes(query))
 	})
+}
+
+// Nye bestillinger selector
+export const nyeBestillingerSelector = bestillinger => {
+	if (!bestillinger.data) return null
+
+	let nyeBestillinger = []
+
+	bestillinger.ny.forEach(bestillingsId => {
+		const bestilling = _find(bestillinger.data, bestilling => bestilling.id === bestillingsId)
+		bestilling && nyeBestillinger.push(bestilling)
+	})
+
+	return nyeBestillinger
 }
