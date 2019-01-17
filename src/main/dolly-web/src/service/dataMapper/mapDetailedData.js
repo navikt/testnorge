@@ -72,7 +72,7 @@ export function mapTpsfData(tpsfData, testIdent) {
 				{
 					id: 'tknr',
 					label: 'TK nummer',
-					value: tpsfData.tknr
+					tknr: tpsfData.tknr
 				}
 			]
 		}
