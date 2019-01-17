@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
+
 @Slf4j
 @Component
 public class ArenaInntektSyntConsumer {
@@ -53,6 +55,11 @@ public class ArenaInntektSyntConsumer {
                     .append(bestillingstidspunktet);
             log.error(feilmelding.toString(), e);
         }
+    }
+
+    public List<String> startSyntetisering(SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
+        // kall endepunkt i testnorge-arena-inntekt
+        return null;
     }
 
     private String getMessageFromJson(String responseBody) {
