@@ -30,6 +30,12 @@ public class BestillingProgressMappingStrategy implements MappingStrategy {
                             );
                         }
 
+                        if (isNotBlank(progress.getFeil())) {
+                            rsProgress.setFeil(
+                                    new ArrayList<>(Arrays.asList(progress.getFeil().split(",")))
+                            );
+                        }
+
                         if (isNotBlank(progress.getSigrunstubStatus())) {
                             rsProgress.setSigrunstubStatus(
                                     progress.getSigrunstubStatus()
@@ -44,6 +50,7 @@ public class BestillingProgressMappingStrategy implements MappingStrategy {
                     }
                 })
                 .exclude("tpsfSuccessEnv")
+                .exclude("feil")
                 .byDefault()
                 .register();
     }

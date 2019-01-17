@@ -2,6 +2,7 @@ package no.nav.dolly.domain.resultset.tpsf;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import no.nav.dolly.domain.resultset.RsPostadresse;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsTpsfBestilling {
 
     private List<String> environments;

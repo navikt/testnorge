@@ -34,7 +34,7 @@ public class BestillingProgressMappingStrategyTest {
 
         assertThat(rsProgress.getId(), is(1L));
         assertThat(rsProgress.getBestillingsId(), is(2L));
-        assertThat(rsProgress.getFeil(), is("feil"));
+        assertThat(rsProgress.getFeil().get(0), is("feil"));
         assertThat(rsProgress.getIdent(), is("ident"));
         assertThat(rsProgress.getKrrstubStatus(), is(nullValue()));
         assertThat(rsProgress.getSigrunstubStatus(), is(nullValue()));
@@ -61,7 +61,7 @@ public class BestillingProgressMappingStrategyTest {
 
         assertThat(rsProgress.getId(), is(1L));
         assertThat(rsProgress.getBestillingsId(), is(2L));
-        assertThat(rsProgress.getFeil(), is("feil"));
+        assertThat(rsProgress.getFeil().get(0), is("feil"));
         assertThat(rsProgress.getIdent(), is("ident"));
         assertThat(rsProgress.getKrrstubStatus(), is(nullValue()));
         assertThat(rsProgress.getSigrunstubStatus(), is(nullValue()));

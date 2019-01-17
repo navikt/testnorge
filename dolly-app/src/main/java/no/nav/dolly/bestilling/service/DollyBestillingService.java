@@ -2,16 +2,19 @@ package no.nav.dolly.bestilling.service;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
+import static java.lang.String.join;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -34,6 +37,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
@@ -47,8 +51,7 @@ import no.nav.dolly.service.TestgruppeService;
 @Service
 public class DollyBestillingService {
 
-    private static final String INNVANDRING_CREATE = "innvandringcreate";
-    private static final String INNVANDRING_UPDATE = "innvandringupdate";
+    private static final String OUT_FMT = "%s: %s";
 
     @Autowired
     private TpsfResponseHandler tpsfResponseHandler;
@@ -184,10 +187,10 @@ public class DollyBestillingService {
 
             if (!successMiljoer.isEmpty()) {
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);
-                progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
+                progress.setTpsfSuccessEnv(join(",", successMiljoer));
             }
             if (!failureMiljoer.isEmpty()) {
-                progress.setFeil(String.join(",", failureMiljoer));
+                progress.setFeil(join(",", failureMiljoer));
                 log.warn("Person med ident: {} ble ikke opprettet i TPS", hovedperson);
             }
         } catch (TpsfException e) {
@@ -221,40 +224,85 @@ public class DollyBestillingService {
     }
 
     private List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        List<String> successMiljoer = new ArrayList<>();
+        Set<String> successMiljoer = new TreeSet();
 
+        // Add successful messages
+        addSuccessfulMessages(hovedperson, response, successMiljoer);
+
+        // Remove unsuccessful messages
+        removeUnsuccessfulMessages(hovedperson, response, successMiljoer);
+
+        return newArrayList(successMiljoer);
+    }
+
+    private void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
-            if (hovedperson.equals(sendSkdMldResponse.getPersonId()) && isInnvandringsmelding(sendSkdMldResponse)) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if ((entry.getValue().contains("OK"))) {
+                    if (!entry.getValue().contains("OK")) {
+                        successMiljoer.remove(entry.getKey());
+                    }
+                }
+            }
+        }
+    }
+
+    private void addSuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
+        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
+                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
+                    if (entry.getValue().contains("OK")) {
                         successMiljoer.add(entry.getKey());
                     }
                 }
             }
         }
-
-        return successMiljoer;
     }
 
     private List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        List<String> failure = new ArrayList<>();
+        Map<String, List<String>> failures = new TreeMap();
 
+        addFeilmeldingSkdMeldinger(hovedperson, response, failures);
+
+        addFeilmeldingServicerutiner(hovedperson, response, failures);
+
+        List<String> errors = newArrayList();
+        failures.keySet().forEach(miljoe -> errors.add(format(OUT_FMT, miljoe, join(" + ", failures.get(miljoe)))));
+
+        return errors;
+    }
+
+    private void addFeilmeldingSkdMeldinger(String hovedperson, RsSkdMeldingResponse response, Map<String, List<String>> failures) {
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
-            if (hovedperson.equals(sendSkdMldResponse.getPersonId()) && isInnvandringsmelding(sendSkdMldResponse)) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (!(entry.getValue().contains("OK"))) {
-                        failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("08%", "").trim()));
+                    if (!entry.getValue().contains("OK") && !failures.containsKey(entry.getKey())) {
+                        failures.put(entry.getKey(), newArrayList(trimFeilmelding(entry.getValue())));
+                    } else if (!entry.getValue().contains("OK")) {
+                        failures.get(entry.getKey()).add(trimFeilmelding(entry.getValue()));
                     }
                 }
             }
         }
-
-        return failure;
     }
 
-    private boolean isInnvandringsmelding(SendSkdMeldingTilTpsResponse response) {
-        return nonNull(response.getSkdmeldingstype()) &&
-                (INNVANDRING_CREATE.equalsIgnoreCase(response.getSkdmeldingstype()) ||
-                        INNVANDRING_UPDATE.equalsIgnoreCase(response.getSkdmeldingstype()));
+    private void addFeilmeldingServicerutiner(String hovedperson, RsSkdMeldingResponse response, Map<String, List<String>> failures) {
+        for (ServiceRoutineResponseStatus responseStatus : response.getServiceRoutineStatusResponsene()) {
+            if (hovedperson.equals(responseStatus.getPersonId())) {
+                if (!"OK".equals(responseStatus.getStatus().getKode()) && !failures.containsKey(responseStatus.getEnvironment())) {
+                    failures.put(responseStatus.getEnvironment(), newArrayList(formatFeilmelding(responseStatus)));
+                } else if (!"OK".equals(responseStatus.getStatus().getKode())) {
+                    failures.get(responseStatus.getEnvironment()).add(formatFeilmelding(responseStatus));
+                }
+            }
+        }
+    }
+
+    private String trimFeilmelding(String melding) {
+        return melding.replaceAll("08%", "").replaceAll("%;", "").trim();
+    }
+
+    private String formatFeilmelding(ServiceRoutineResponseStatus responseStatus) {
+        return format(OUT_FMT, responseStatus.getServiceRutinenavn(), responseStatus.getStatus().getUtfyllendeMelding());
     }
 }

@@ -36,6 +36,8 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
+import no.nav.dolly.domain.resultset.TpsResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -62,6 +64,7 @@ public class DollyBestillingServiceTest {
     private Bestilling standardNyBestilling;
     private Testgruppe standardGruppe;
     private SendSkdMeldingTilTpsResponse standardSendSkdResponse;
+    private ServiceRoutineResponseStatus serviceRoutineResponseStatus;
 
     @Mock
     private BestillingProgressRepository bestillingProgressRepository;
@@ -101,9 +104,17 @@ public class DollyBestillingServiceTest {
         standardGruppe = new Testgruppe();
         tpsfReqEmpty = new RsTpsfBestilling();
 
-        standardSendSkdResponse = new SendSkdMeldingTilTpsResponse();
-        standardSendSkdResponse.setPersonId(IDENT);
-        standardSendSkdResponse.setSkdmeldingstype(INNVANDRING_CREATE_NAVN);
+        standardSendSkdResponse = SendSkdMeldingTilTpsResponse.builder()
+                .personId(IDENT)
+                .skdmeldingstype(INNVANDRING_CREATE_NAVN)
+                .build();
+
+        serviceRoutineResponseStatus = ServiceRoutineResponseStatus.builder()
+                .environment("u2")
+                .serviceRutinenavn("endre_spraakkode")
+                .personId(IDENT)
+                .status(TpsResponseStatus.builder().kode("OK").build())
+                .build();
 
         standardNyBestilling = Bestilling.builder().id(BESTILLING_ID).build();
 
@@ -138,8 +149,10 @@ public class DollyBestillingServiceTest {
     public void opprettPersonerByKriterierAsync_lagrerAlleMiljoeneSomErsuksessfulleSendtTilTPSTilBestilllingProgress() {
         standardSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
 
-        RsSkdMeldingResponse skdMeldingResponse = new RsSkdMeldingResponse();
-        skdMeldingResponse.setSendSkdMeldingTilTpsResponsene(singletonList(standardSendSkdResponse));
+        RsSkdMeldingResponse skdMeldingResponse = RsSkdMeldingResponse.builder()
+                .sendSkdMeldingTilTpsResponsene(singletonList(standardSendSkdResponse))
+                .serviceRoutineStatusResponsene(singletonList(serviceRoutineResponseStatus))
+                .build();
 
         when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(STANDARD_IDENTER);
         when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(standardGruppe);
@@ -167,8 +180,10 @@ public class DollyBestillingServiceTest {
         standardBestillingRequest_u1_t2_q3.setAntall(bestiltAntallIdenter);
         standardSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
 
-        RsSkdMeldingResponse response = new RsSkdMeldingResponse();
-        response.setSendSkdMeldingTilTpsResponsene(singletonList(standardSendSkdResponse));
+        RsSkdMeldingResponse response = RsSkdMeldingResponse.builder()
+                .sendSkdMeldingTilTpsResponsene(singletonList(standardSendSkdResponse))
+                .serviceRoutineStatusResponsene(singletonList(serviceRoutineResponseStatus))
+                .build();
 
         TpsfException tpsfException = new TpsfException(FEILMELDING);
 
@@ -197,8 +212,6 @@ public class DollyBestillingServiceTest {
     public void opprettPersonerByKriterierAsync_lagrerFeilIProgressHvisSendingAvIdenterTilTpsMiljoFeiler() throws Exception {
         standardSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
 
-        RsSkdMeldingResponse response = new RsSkdMeldingResponse();
-        response.setSendSkdMeldingTilTpsResponsene(singletonList(standardSendSkdResponse));
         TpsfException tpsfException = new TpsfException(FEILMELDING);
 
         when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(STANDARD_IDENTER);
