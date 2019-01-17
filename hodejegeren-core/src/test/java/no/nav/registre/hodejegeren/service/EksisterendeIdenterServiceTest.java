@@ -1,5 +1,6 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.TRANSAKSJONSTYPE;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
@@ -7,7 +8,6 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
 import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
-import static no.nav.registre.hodejegeren.service.HodejegerService.TRANSAKSJONSTYPE;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
