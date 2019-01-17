@@ -6,45 +6,42 @@ import Formatters from '~/utils/DataFormatter'
 import success from '~/utils/SuccessAction'
 import { actions as bestillingActions } from '~/ducks/bestilling'
 
-export const getBestillingStatus = createAction(
-	'GET_BESTILLING_STATUS',
-	DollyApi.getBestillingStatus
-)
-const SET_BESTILLING_STATUS = 'SET_BESTILLING_STATUS'
+export const getBestillinger = createAction('GET_BESTILLINGER', async gruppeID => {
+	let res = await DollyApi.getBestillinger(gruppeID)
+	return res
+})
 
-const initialState = {}
+export const removeNyBestillingStatus = createAction('REMOVE_NY_BESTILLING_STATUS')
+
+// ny-array holder oversikt over nye bestillinger i en session
+const initialState = { ny: [] }
 
 export const cancelBestilling = createAction('CANCEL_BESTILLING', async id => {
 	let res = await DollyApi.cancelBestilling(id)
-	return { ...res, data: { ...res.data, ny: true } }
+	return res
 })
+
 export default handleActions(
 	{
-		[success(getBestillingStatus)](state, action) {
-			return { ...state, [action.payload.data.id]: action.payload.data }
+		[success(getBestillinger)](state, action) {
+			const { data } = action.payload
+			return { ...state, data }
 		},
 
 		[success(bestillingActions.postBestilling)](state, action) {
-			return { ...state, [action.payload.data.id]: action.payload.data }
+			return { ...state, ny: [...state.ny, action.payload.data.id] }
 		},
 
-		[success(cancelBestilling)](state, action) {
-			return { ...state, [action.payload.data.id]: action.payload.data }
-		},
+		// [success(cancelBestilling)](state, action) {
+		// 	return { ...state, ny: state.ny.filter(id => id !== action.payload.id) }
+		// }
 
-		[SET_BESTILLING_STATUS](state, action) {
-			return { ...state, [action.bestillingId]: action.data }
+		[removeNyBestillingStatus](state, action) {
+			return { ...state, ny: state.ny.filter(id => id !== action.payload) }
 		}
 	},
 	initialState
 )
-
-// SET BESTILLING STATUS
-export const setBestillingStatus = (bestillingId, data) => ({
-	type: SET_BESTILLING_STATUS,
-	bestillingId,
-	data
-})
 
 // Selector + mapper
 export const sokSelector = (items, searchStr) => {

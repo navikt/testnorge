@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react'
 import Table from '~/components/table/Table'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
-import Formatters from '~/utils/DataFormatter'
 import BestillingDetaljer from './BestillingDetaljer/BestillingDetaljer'
 import PaginationConnector from '~/components/pagination/PaginationConnector'
+import _orderBy from 'lodash/orderBy'
 
 export default class BestillingListe extends PureComponent {
 	render() {
 		const { bestillinger, searchActive } = this.props
 		if (!bestillinger) return null
-
+		const sortedBestillinger = _orderBy(bestillinger, ['id'], ['desc'])
 		return (
 			<div className="oversikt-container">
 				{bestillinger.length <= 0 ? (
@@ -20,7 +20,7 @@ export default class BestillingListe extends PureComponent {
 					</ContentContainer>
 				) : (
 					<PaginationConnector
-						items={bestillinger}
+						items={sortedBestillinger}
 						render={items => (
 							<Table>
 								<Table.Header>

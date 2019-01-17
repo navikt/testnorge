@@ -52,8 +52,9 @@ const configureReduxStore = history => {
 	const rootReducer = history =>
 		combineReducers({
 			router: connectRouter(history),
-			bestilling: bestillingReducer,
-			bestillinger: bestillingerReducer,
+			currentBestilling: bestillingReducer,
+			bestillingStatuser: bestillingStatusReducer,
+			// bestillinger: bestillingerReducer,
 			gruppe: gruppeReducer,
 			teams: teamsReducer,
 			bruker: brukerReducer,
@@ -63,7 +64,6 @@ const configureReduxStore = history => {
 			loading: loadingReducer,
 			errors: errorsReducer,
 			common: commonReducer,
-			bestillingStatus: bestillingStatusReducer,
 			environments: environmentsReducer,
 			openam: openamReducer,
 			kodeverk: kodeverkReducer,

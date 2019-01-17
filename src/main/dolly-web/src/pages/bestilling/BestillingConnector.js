@@ -5,12 +5,12 @@ import { actions, sendBestilling } from '~/ducks/bestilling'
 import { getEnvironments } from '~/ducks/environments'
 
 const mapStateToProps = state => ({
-	page: state.bestilling.page,
-	attributeIds: state.bestilling.attributeIds,
-	environments: state.bestilling.environments,
-	antall: state.bestilling.antall,
-	identtype: state.bestilling.identtype,
-	values: state.bestilling.values
+	page: state.currentBestilling.page,
+	attributeIds: state.currentBestilling.attributeIds,
+	environments: state.currentBestilling.environments,
+	antall: state.currentBestilling.antall,
+	identtype: state.currentBestilling.identtype,
+	values: state.currentBestilling.values
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

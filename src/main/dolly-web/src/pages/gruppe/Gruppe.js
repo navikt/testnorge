@@ -13,7 +13,7 @@ import Toolbar from '~/components/toolbar/Toolbar'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import Knapp from 'nav-frontend-knapper'
 import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
-
+import _find from 'lodash/find'
 import './Gruppe.less'
 
 export default class Gruppe extends Component {
@@ -36,51 +36,18 @@ export default class Gruppe extends Component {
 		this.props.getBestillinger()
 	}
 
-	startBestilling = () => {
-		const { gruppeId } = this.props.match.params
-		this.props.history.push(`/gruppe/${gruppeId}/bestilling`)
-	}
-
-	toggleRedigerGruppe = () => this.setState({ redigerGruppe: !this.state.redigerGruppe })
-
-	toggleToolbar = e => {
-		const visning = e.target.value
-		visning === this.VISNING_BESTILLING && this.props.getBestillinger()
-		this.setState({ visning }, () => this.props.resetSearch())
-	}
-
-	searchfieldPlaceholderSelector = () => {
-		if (this.state.visning === this.VISNING_BESTILLING) return 'Søk i bestillinger'
-		return 'Søk etter testpersoner'
-	}
-
-	renderList = gruppe => {
-		const { visning } = this.state
-		const { editTestbruker, bestillinger, isFetchingBestillinger } = this.props
-
-		if (visning === this.VISNING_BESTILLING) {
-			if (isFetchingBestillinger) {
-				return <Loading label="Laster bestillinger" panel />
-			}
-			return <BestillingListeConnector bestillingListe={bestillinger} />
-		}
-		// !!! Pagination is is applied on TestbrukerListe because we fetch "testbrukere" from TPSF.
-		// !!! Therefore pagination is applied to data from TPSF and not DOLLY.
-		return (
-			<TestbrukerListeConnector testidenter={gruppe.testidenter} editTestbruker={editTestbruker} />
-		)
-	}
-
 	render() {
 		const {
 			gruppeArray,
 			createOrUpdateId,
 			createGroup,
 			isFetching,
-			getGruppe,
+			isFetchingBestillinger,
 			deleteGruppe,
 			addFavorite,
 			bestillinger,
+			nyeBestillinger,
+			getGruppe,
 			getBestillinger
 		} = this.props
 
@@ -133,15 +100,20 @@ export default class Gruppe extends Component {
 				<GruppeDetaljer gruppe={gruppe} />
 
 				{// Viser progressbar og bestillingsstatus
-				bestillinger.data &&
-					bestillinger.data.map(bestilling => (
-						<BestillingStatusConnector
-							key={bestilling.id}
-							bestilling={bestilling}
-							onIdenterUpdate={getGruppe}
-							onBestillingerUpdate={getBestillinger}
-						/>
-					))}
+				// Ikke render hvis det er ingen nye bestillinger besom tilhører gruppen
+				!isFetchingBestillinger &&
+					nyeBestillinger.map((bestilling, i) => {
+						if (bestilling) {
+							return (
+								<BestillingStatusConnector
+									key={i}
+									bestilling={bestilling}
+									onIdenterUpdate={getGruppe}
+									onBestillingerUpdate={getBestillinger}
+								/>
+							)
+						}
+					})}
 
 				<Toolbar
 					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}
@@ -157,6 +129,41 @@ export default class Gruppe extends Component {
 				</Toolbar>
 				{this.renderList(gruppe)}
 			</div>
+		)
+	}
+
+	startBestilling = () => {
+		const { gruppeId } = this.props.match.params
+		this.props.history.push(`/gruppe/${gruppeId}/bestilling`)
+	}
+
+	toggleRedigerGruppe = () => this.setState({ redigerGruppe: !this.state.redigerGruppe })
+
+	toggleToolbar = e => {
+		const visning = e.target.value
+		visning === this.VISNING_BESTILLING && this.props.getBestillinger()
+		this.setState({ visning }, () => this.props.resetSearch())
+	}
+
+	searchfieldPlaceholderSelector = () => {
+		if (this.state.visning === this.VISNING_BESTILLING) return 'Søk i bestillinger'
+		return 'Søk etter testpersoner'
+	}
+
+	renderList = gruppe => {
+		const { visning } = this.state
+		const { editTestbruker, bestillinger, isFetchingBestillinger } = this.props
+
+		if (visning === this.VISNING_BESTILLING) {
+			if (isFetchingBestillinger) {
+				return <Loading label="Laster bestillinger" panel />
+			}
+			return <BestillingListeConnector bestillingListe={bestillinger} />
+		}
+		// !!! Pagination is is applied on TestbrukerListe because we fetch "testbrukere" from TPSF.
+		// !!! Therefore pagination is applied to data from TPSF and not DOLLY.
+		return (
+			<TestbrukerListeConnector testidenter={gruppe.testidenter} editTestbruker={editTestbruker} />
 		)
 	}
 }

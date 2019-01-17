@@ -1,12 +1,15 @@
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import Gruppe from './Gruppe'
-import { getGruppe, showCreateOrEditGroup, deleteGruppe } from '~/ducks/gruppe'
-import { getBestillinger } from '~/ducks/bestillinger'
-import { getBestillingStatus } from '~/ducks/bestillingStatus'
+import {
+	getGruppe,
+	showCreateOrEditGroup,
+	deleteGruppe,
+	nyeBestillingerSelector
+} from '~/ducks/gruppe'
+import { getBestillinger, getBestillingStatus } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import { resetSearch } from '~/ducks/search'
-import bestillingStatus from '../../ducks/bestillingStatus'
 
 const loadingSelector = createLoadingSelector(getGruppe)
 const loadingBestillingerSelector = createLoadingSelector(getBestillinger)
@@ -16,7 +19,8 @@ const mapStateToProps = state => ({
 	isFetchingBestillinger: loadingBestillingerSelector(state),
 	gruppeArray: state.gruppe.data,
 	createOrUpdateId: state.gruppe.createOrUpdateId,
-	bestillinger: state.bestillinger
+	bestillinger: state.bestillingStatuser,
+	nyeBestillinger: nyeBestillingerSelector(state.bestillingStatuser)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
