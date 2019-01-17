@@ -14,7 +14,7 @@ export const getBestillinger = createAction('GET_BESTILLINGER', async gruppeID =
 export const removeNyBestillingStatus = createAction('REMOVE_NY_BESTILLING_STATUS')
 
 // ny-array holder oversikt over nye bestillinger i en session
-const initialState = { ny: [] }
+const initialState = { ny: [1862, 1861, 1860] }
 
 export const cancelBestilling = createAction('CANCEL_BESTILLING', async id => {
 	let res = await DollyApi.cancelBestilling(id)
