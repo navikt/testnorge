@@ -66,7 +66,7 @@ public class StartSyntetiseringInntektCompTest {
     }
 
     public void stubTPSF() {
-        // Hodejegeren henter fnr i avspillergruppa hos TPSF:
+        // Testnorge-Skd henter fnr i avspillergruppa hos TPSF:
         stubTpsfFiltrerIdenterPaaAarsakskode(avspillergruppeId, "01,02,39", "[\"" + expectedFnrMedInntektsmelding + "\",\n\"22222222222\"\n,\n\"33333333333\"\n]");
         stubTpsfFiltrerIdenterPaaAarsakskode(avspillergruppeId, "43,32", "[\n\"33333333333\"\n]"); // død eller utvandret
     }

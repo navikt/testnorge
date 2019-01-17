@@ -27,10 +27,10 @@ import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreReques
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("test")
-public class HodejegerenConsumerTest {
+public class TestnorgeSkdConsumerTest {
 
     @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private TestnorgeSkdConsumer testnorgeSkdConsumer;
 
     private long gruppeId = 10L;
     private String miljoe = "t9";
@@ -51,20 +51,20 @@ public class HodejegerenConsumerTest {
     }
 
     /**
-     * Scenario: Tester happypath til {@link HodejegerenConsumer#startSyntetisering} - forventer at metoden returnerer id-ene til de
-     * lagrede skdmeldingene i TPSF - forventer at metoden kaller hodejegeren med de rette parametrene (se stub)
+     * Scenario: Tester happypath til {@link TestnorgeSkdConsumer#startSyntetisering} - forventer at metoden returnerer id-ene til de
+     * lagrede skdmeldingene i TPSF - forventer at metoden kaller Testnorge-Skd med de rette parametrene (se stub)
      */
     @Test
     public void shouldStartSyntetisering() {
-        stubHodejegerenConsumer();
+        stubSkdConsumer();
 
-        List<Long> ids = hodejegerenConsumer.startSyntetisering(ordreRequest);
+        List<Long> ids = testnorgeSkdConsumer.startSyntetisering(ordreRequest);
 
         assertEquals(expectedMeldingsIds.toString(), ids.toString());
     }
 
-    public void stubHodejegerenConsumer() {
-        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
+    public void stubSkdConsumer() {
+        stubFor(post(urlPathEqualTo("/skd/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe

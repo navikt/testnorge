@@ -15,7 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpServerErrorException;
 
-import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
 import no.nav.registre.orkestratoren.exceptions.HttpStatusCodeExceptionContainer;
 
@@ -25,15 +25,15 @@ public class TpsSyntPakkenServiceTest {
     @Mock
     private TpsfConsumer tpsfConsumer;
     @Mock
-    private HodejegerenConsumer hodejegerenConsumer;
+    private TestnorgeSkdConsumer testnorgeSkdConsumer;
     @InjectMocks
     private TpsSyntPakkenService tpsSyntPakkenService;
     @Mock
     private HttpStatusCodeExceptionContainer httpStatusCodeException;
 
     /**
-     * Testscenario: Dersom hodejegeren kaster feilmelding og varsler at Ids for lagrede meldinger i TPSF er tom, så skal ikke
-     * hodejegeren kalle på endepunktet sendToTps hos TPSF.
+     * Testscenario: Dersom Testnorge-Skd kaster feilmelding og varsler at Ids for lagrede meldinger i TPSF er tom, så skal ikke
+     * testnorge-skd kalle på endepunktet sendToTps hos TPSF.
      * <p>
      * Flere scenarier for denne metoden dekkes av komponenttesten
      * {@link no.nav.registre.orkestratoren.StartSyntetiseringTpsCompTest}
@@ -41,7 +41,7 @@ public class TpsSyntPakkenServiceTest {
     @Test(expected = HttpStatusCodeExceptionContainer.class)
     public void shouldNotCallTpsfIfIdsIsEmpty() {
         // when(httpStatusCodeException.getResponseBodyAsString()).thenReturn("{\"ids\":[]}");
-        when(hodejegerenConsumer.startSyntetisering(any())).thenThrow(httpStatusCodeException);
+        when(testnorgeSkdConsumer.startSyntetisering(any())).thenThrow(httpStatusCodeException);
         try {
             tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(123L, "u6", new HashMap<>());
         } finally {
@@ -51,7 +51,7 @@ public class TpsSyntPakkenServiceTest {
 
     @Test(expected = HttpStatusCodeExceptionContainer.class)
     public void serverErrorFromTpsfTest() {
-        when(hodejegerenConsumer.startSyntetisering(any())).thenReturn(new ArrayList<Long>() {
+        when(testnorgeSkdConsumer.startSyntetisering(any())).thenReturn(new ArrayList<Long>() {
             {
                 add(1L);
                 add(2L);

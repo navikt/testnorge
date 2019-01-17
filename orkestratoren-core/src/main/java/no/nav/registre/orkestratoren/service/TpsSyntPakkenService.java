@@ -15,7 +15,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
@@ -31,7 +31,7 @@ public class TpsSyntPakkenService {
     private TpsfConsumer tpsfConsumer;
 
     @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private TestnorgeSkdConsumer testnorgeSkdConsumer;
 
     private static final String MULIG_LAGRET_MEN_KANSKJE_IKKE_SENDT_MELDING = "Noe feilet i TPSF-sendSkdmeldingerTilTps. "
             + "Følgende id-er ble lagret i TPSF avspillergruppe {}, men er trolig ikke sendt til TPS: {}";
@@ -44,14 +44,14 @@ public class TpsSyntPakkenService {
         SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = null;
         HttpStatusCodeExceptionContainer httpStatusCodeExceptionContainer = new HttpStatusCodeExceptionContainer();
         try {
-            ids.addAll(hodejegerenConsumer.startSyntetisering(new GenereringsOrdreRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode)));
+            ids.addAll(testnorgeSkdConsumer.startSyntetisering(new GenereringsOrdreRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode)));
         } catch (HttpStatusCodeException e) {
             ids.addAll(extractIdsFromResponseBody(e));
             httpStatusCodeExceptionContainer.addException(e);
         }
         if (ids.isEmpty()) {
             StatusPaaAvspiltSkdMelding status = new StatusPaaAvspiltSkdMelding();
-            status.setStatus("Hodejegeren returnerte uten å ha lagret noen melding i TPSF. Ingen id-er å sende til TPS.");
+            status.setStatus("Testnorge-Skd returnerte uten å ha lagret noen melding i TPSF. Ingen id-er å sende til TPS.");
             skdMeldingerTilTpsRespons = new SkdMeldingerTilTpsRespons().addStatusFraFeilendeMeldinger(status);
         } else {
             try {

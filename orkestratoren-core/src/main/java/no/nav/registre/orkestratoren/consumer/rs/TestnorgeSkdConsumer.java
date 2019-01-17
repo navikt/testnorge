@@ -18,7 +18,7 @@ import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreReques
 
 @Component
 @Slf4j
-public class HodejegerenConsumer {
+public class TestnorgeSkdConsumer {
 
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Long>>() {
     };
@@ -28,8 +28,8 @@ public class HodejegerenConsumer {
 
     private UriTemplate url;
 
-    public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
-        this.url = new UriTemplate(hodejegerenServerUrl + "/v1/syntetisering/generer");
+    public TestnorgeSkdConsumer(@Value("${testnorge-skd.rest-api.url}") String skdServerUrl) {
+        this.url = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
     }
 
     public List<Long> startSyntetisering(GenereringsOrdreRequest genereringsOrdreRequest) {
@@ -39,7 +39,7 @@ public class HodejegerenConsumer {
         if (response != null && response.getBody() != null) {
             ids.addAll(response.getBody());
         } else {
-            log.error("Kunne ikke hente response body fra Hodejegeren: NullPointerException");
+            log.error("Kunne ikke hente response body fra Testnorge-Skd: NullPointerException");
         }
         return ids;
     }
