@@ -33,6 +33,7 @@ export default class Gruppe extends Component {
 
 	componentDidMount() {
 		this.props.getGruppe()
+		this.props.getBestillinger()
 	}
 
 	startBestilling = () => {
@@ -44,7 +45,7 @@ export default class Gruppe extends Component {
 
 	toggleToolbar = e => {
 		const visning = e.target.value
-		visning === this.VISNING_BESTILLING && this.props.getGruppe()
+		visning === this.VISNING_BESTILLING && this.props.getBestillinger()
 		this.setState({ visning }, () => this.props.resetSearch())
 	}
 
@@ -55,13 +56,13 @@ export default class Gruppe extends Component {
 
 	renderList = gruppe => {
 		const { visning } = this.state
-		const { editTestbruker } = this.props
+		const { editTestbruker, bestillinger, isFetchingBestillinger } = this.props
 
 		if (visning === this.VISNING_BESTILLING) {
-			if (this.props.isFetching) {
+			if (isFetchingBestillinger) {
 				return <Loading label="Laster bestillinger" panel />
 			}
-			return <BestillingListeConnector bestillingListe={gruppe.bestillinger} />
+			return <BestillingListeConnector bestillingListe={bestillinger} />
 		}
 		// !!! Pagination is is applied on TestbrukerListe because we fetch "testbrukere" from TPSF.
 		// !!! Therefore pagination is applied to data from TPSF and not DOLLY.
@@ -78,7 +79,9 @@ export default class Gruppe extends Component {
 			isFetching,
 			getGruppe,
 			deleteGruppe,
-			addFavorite
+			addFavorite,
+			bestillinger,
+			getBestillinger
 		} = this.props
 
 		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
@@ -106,7 +109,7 @@ export default class Gruppe extends Component {
 			},
 			{
 				value: this.VISNING_BESTILLING,
-				label: `Bestillinger (${gruppe.bestillinger ? gruppe.bestillinger.length : 0})`
+				label: `Bestillinger (${bestillinger.data ? bestillinger.data.length : 0})`
 			}
 		]
 
@@ -130,12 +133,13 @@ export default class Gruppe extends Component {
 				<GruppeDetaljer gruppe={gruppe} />
 
 				{// Viser progressbar og bestillingsstatus
-				gruppe.bestillinger &&
-					gruppe.bestillinger.map(bestilling => (
+				bestillinger.data &&
+					bestillinger.data.map(bestilling => (
 						<BestillingStatusConnector
 							key={bestilling.id}
 							bestilling={bestilling}
-							onGroupUpdate={getGruppe}
+							onIdenterUpdate={getGruppe}
+							onBestillingerUpdate={getBestillinger}
 						/>
 					))}
 

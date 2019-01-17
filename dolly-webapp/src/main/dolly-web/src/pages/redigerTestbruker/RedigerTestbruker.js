@@ -6,6 +6,7 @@ import { Formik } from 'formik'
 import FormEditor from '~/components/formEditor/FormEditor'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import Button from '~/components/button/Button'
+import Loading from '~/components/loading/Loading'
 
 import './RedigerTestbruker.less'
 
@@ -41,7 +42,10 @@ export default class RedigerTestbruker extends Component {
 		const { sigrunstub, krrstub } = testbruker
 
 		const dataSources = [DataSource.TPSF]
-		if (sigrunstub[match.params.ident].length > 0) dataSources.push(DataSource.SIGRUN)
+		if (sigrunstub[match.params.ident] && sigrunstub[match.params.ident].length > 0) {
+			dataSources.push(DataSource.SIGRUN)
+		}
+
 		if (krrstub[match.params.ident]) dataSources.push(DataSource.KRR)
 
 		return dataSources
@@ -78,6 +82,7 @@ export default class RedigerTestbruker extends Component {
 				render={formikProps => (
 					<div>
 						<h2>Rediger {`${tpsf[0].fornavn} ${tpsf[0].etternavn}`}</h2>
+						{/* return <Loading label="Laster data fra TPSF" panel /> */}
 						<FormEditor
 							AttributtListe={attributtListe}
 							FormikProps={formikProps}

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.service;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 import java.time.LocalDateTime;
@@ -83,9 +84,8 @@ public class DollyBestillingService {
 
     @Async
     @Transactional
-    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingRequest, Long bestillingsId) {
+    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingRequest, Bestilling bestilling) {
 
-        Bestilling bestilling = bestillingService.fetchBestillingById(bestillingsId);
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
         try {
@@ -94,18 +94,18 @@ public class DollyBestillingService {
             tpsfBestilling.setAntall(1);
 
             int loopCount = 0;
-            while (!bestillingService.isStoppet(bestillingsId) && loopCount < bestillingRequest.getAntall()) {
+            while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < bestillingRequest.getAntall()) {
                 List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
-                BestillingProgress progress = new BestillingProgress(bestillingsId, hovedPersonIdent);
+                BestillingProgress progress = new BestillingProgress(bestilling.getId(), hovedPersonIdent);
 
                 sendIdenterTilTPS(bestillingRequest, bestilteIdenter, testgruppe, progress);
 
                 handleSigrunstub(bestillingRequest, hovedPersonIdent, progress);
 
-                handleKrrstub(bestillingRequest, bestillingsId, hovedPersonIdent, progress);
+                handleKrrstub(bestillingRequest, bestilling.getId(), hovedPersonIdent, progress);
 
-                if (!bestillingService.isStoppet(bestillingsId)) {
+                if (!bestillingService.isStoppet(bestilling.getId())) {
                     bestillingProgressRepository.save(progress);
                     bestilling.setSistOppdatert(LocalDateTime.now());
                     bestillingService.saveBestillingToDB(bestilling);
@@ -114,10 +114,10 @@ public class DollyBestillingService {
                 loopCount++;
             }
         } catch (Exception e) {
-            log.error("Bestilling med id <" + bestillingsId + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
+            log.error("Bestilling med id <" + bestilling.getId() + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
             bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()));
         } finally {
-            if (bestillingService.isStoppet(bestillingsId)) {
+            if (bestillingService.isStoppet(bestilling.getId())) {
                 identService.slettTestidenter(bestilling.getId());
                 bestilling.setStoppet(true);
             }
@@ -128,6 +128,9 @@ public class DollyBestillingService {
     }
 
     private void clearCache() {
+        if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
+            cacheManager.getCache(CACHE_BESTILLING).clear();
+        }
         if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
             cacheManager.getCache(CACHE_GRUPPE).clear();
         }
