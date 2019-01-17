@@ -9,7 +9,7 @@ class KodeverkValue extends Component {
 	}
 
 	render() {
-		const { kodeverkObject, value, ...restProps } = this.props
+		const { kodeverkObject, value, extraLabel, ...restProps } = this.props
 		if (!kodeverkObject) {
 			return (
 				<div className="static-value">
@@ -17,7 +17,8 @@ class KodeverkValue extends Component {
 				</div>
 			)
 		}
-		return <StaticValue value={kodeverkObject.label} {...restProps} />
+		const label = extraLabel ? extraLabel + ' - ' + kodeverkObject.label : kodeverkObject.label
+		return <StaticValue value={label} {...restProps} />
 	}
 }
 

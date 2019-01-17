@@ -5,8 +5,8 @@ import { mapTpsfData, mapSigrunData, mapKrrData } from './mapDetailedData'
 const DataMapper = {
 	getHeaders() {
 		return [
-			c('ID', '15'),
-			c('ID-type', '15'),
+			c('Ident', '15'),
+			c('Type', '15'),
 			c('Navn', '30'),
 			c('Kjønn', '20'),
 			c('Alder', '10'),

@@ -79,6 +79,24 @@ formatters.gtApiKodeverkId = gtType => {
 
 	return gtApiKodeverkId
 }
+
+formatters.gtTypeLabel = gtType => {
+	let gtTypeLabel = ''
+	switch (gtType) {
+		case 'KNR':
+			gtTypeLabel = 'Kommune'
+			break
+		case 'BYDEL':
+			gtTypeLabel = 'Bydel'
+			break
+		case 'LAND':
+			gtTypeLabel = 'Land'
+			break
+	}
+
+	return gtTypeLabel
+}
+
 formatters.sort2DArray = (array, i) => {
 	// i er indexen av verdi som man ønsker å sortere på
 	return array.sort((a, b) => {

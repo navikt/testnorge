@@ -9,9 +9,8 @@ class TknrValue extends Component {
 	}
 
 	render() {
-
 		const { tknrObject, value, ...restProps } = this.props
-        if (!tknrObject) {
+		if (!tknrObject) {
 			return (
 				<div className="static-value">
 					<Loading onlySpinner />
