@@ -50,7 +50,7 @@ import no.nav.registre.skd.service.SyntetiseringService;
 @ActiveProfiles("itest")
 public class FeilhaandteringCompTest {
 
-    // private String testfeilmelding = "testfeilmelding";
+    private String testfeilmelding = "testfeilmelding";
     private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
     private List<Long> expectedMeldingsIdsITpsf = Arrays.asList(120421016L, 110156008L);
     private Integer antallMeldinger = 2;
@@ -97,7 +97,7 @@ public class FeilhaandteringCompTest {
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         IkkeFullfoertBehandlingExceptionsContainer exception = (IkkeFullfoertBehandlingExceptionsContainer) response.getBody();
-        assertEquals(3, listAppender.list.size()); //TODO - sett break-point her og observer at listAppender.list ikke inneholder alle riktige feilmeldinger (galt med stub)
+        assertEquals(3, listAppender.list.size());
         assertTrue(listAppender.list.toString()
                 .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
                         123, expectedMeldingsIdsITpsf.toString())));
@@ -136,13 +136,8 @@ public class FeilhaandteringCompTest {
         // Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubHodejegerenHentGifteIdenter(gruppeId, "[\n\"55555555555\",\n\"66666666666\"\n]");
 
-        /*
-        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/status-quo"))
-                .withQueryParam("endringskode", equalTo("NAVNEENDRING_FOERSTE"))
-                .withQueryParam("miljoe", equalTo(t10))
-                .withQueryParam("fnr", equalTo("55555555555"))
+        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/status-quo/NAVNEENDRING_FOERSTE/t10/01010101010"))
                 .willReturn(aResponse().withStatus(500).withBody("{\"message\":\"" + testfeilmelding + "\"}")));
-        */
 
         // Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
         stubFor(post("/hodejegeren/api/v1/lagre-tpsf")
