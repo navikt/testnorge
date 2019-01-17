@@ -83,14 +83,14 @@ public class StartSyntetiseringTpsCompTest {
     }
 
     /**
-     * Scenario: Happypath Sjekker at systemet sender og mottar riktige verdier i post-requesten til hodejegeren og TPSF. Id-ene som
-     * returneres fra hodejegeren skal sendes videre til TPSF gjennom metoden
+     * Scenario: Happypath Sjekker at systemet sender og mottar riktige verdier i post-requesten til Testnorge-Skd og TPSF. Id-ene som
+     * returneres fra Testnorge-Skd skal sendes videre til TPSF gjennom metoden
      * {@link no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer#sendSkdmeldingerTilTps}. Testen sjekker også at resultatet fra
      * TPSF stemmer overens med det som er forventet.
      */
     @Test
     public void shouldStartSyntetisering() {
-        stubHodejegeren();
+        stubSkd();
         stubTPSF();
 
         SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
@@ -124,13 +124,13 @@ public class StartSyntetiseringTpsCompTest {
     }
 
     /**
-     * Scenario: HVIS hodejegeren returnerer et exception, skal metoden
+     * Scenario: HVIS Testnorge-Skd returnerer et exception, skal metoden
      * {@link no.nav.registre.orkestratoren.service.TpsSyntPakkenService#produserOgSendSkdmeldingerTilTpsIMiljoer} hente ut id-ene
      * som ligger i exception og returnere disse slik at de kan lagres i TPS.
      */
     @Test
     public void shouldReturnIdsWhenReceivingException() {
-        stubHodejegerenWithError();
+        stubSkdWithError();
         stubTPSF();
 
         SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
@@ -144,8 +144,8 @@ public class StartSyntetiseringTpsCompTest {
         }
     }
 
-    public void stubHodejegeren() {
-        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
+    public void stubSkd() {
+        stubFor(post(urlPathEqualTo("/skd/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson("{\"avspillergruppeId\": " + gruppeId
                         + ", \"miljoe\": \"" + miljoe
                         + "\", \"antallMeldingerPerEndringskode\": {\"" + endringskode1 + "\": " + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
@@ -155,8 +155,8 @@ public class StartSyntetiseringTpsCompTest {
                         .withBody("[" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]")));
     }
 
-    public void stubHodejegerenWithError() {
-        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
+    public void stubSkdWithError() {
+        stubFor(post(urlPathEqualTo("/skd/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe
