@@ -43,11 +43,7 @@ export function mapTpsfData(tpsfData, testIdent) {
 					label: 'Sivilstand',
 					value: tpsfData.sivilstand
 				},
-				{
-					id: 'sprakKode',
-					label: 'Språk',
-					value: tpsfData.sprakKode
-				},
+
 				{
 					id: 'miljoer',
 					label: 'Miljøer',
@@ -59,14 +55,10 @@ export function mapTpsfData(tpsfData, testIdent) {
 					value: tpsfData.spesreg
 				},
 				{
-					id: 'gtRegel',
-					label: 'GT Regel',
-					value: tpsfData.gtRegel
-				},
-				{
 					id: 'gtVerdi',
-					label: 'GT Verdi',
+					label: 'Geo. Tilhør',
 					value: tpsfData.gtVerdi,
+					extraLabel: Formatters.gtTypeLabel(tpsfData.gtType),
 					apiKodeverkId: Formatters.gtApiKodeverkId(tpsfData.gtType)
 				},
 				{
@@ -96,6 +88,11 @@ export function mapTpsfData(tpsfData, testIdent) {
 					id: 'statsborgerskap',
 					label: 'Statsborgerskap',
 					value: tpsfData.statsborgerskap
+				},
+				{
+					id: 'sprakKode',
+					label: 'Språk',
+					value: tpsfData.sprakKode
 				}
 			]
 		})
@@ -127,6 +124,8 @@ export function mapTpsfData(tpsfData, testIdent) {
 					parent: 'boadresse',
 					id: 'postnr',
 					label: 'Postnummer',
+					extraLabel: tpsfData.boadresse.postnr,
+					apiKodeverkId: 'Postnummer',
 					value: tpsfData.boadresse.postnr
 				},
 				{

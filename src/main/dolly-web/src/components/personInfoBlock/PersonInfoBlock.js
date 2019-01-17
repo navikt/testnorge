@@ -5,7 +5,7 @@ import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 
 import './personInfoBlock.less'
-import TknrValueConnector from '../fields/TknrValue/TknrValueConnector';
+import TknrValueConnector from '../fields/TknrValue/TknrValueConnector'
 
 export default class PersonInfoBlock extends PureComponent {
 	static propTypes = {
@@ -57,7 +57,6 @@ export default class PersonInfoBlock extends PureComponent {
 						// console.log(tknr)
 						// finn tilhørende attributt
 						const attributt = this.props.attributtManager.getAttributtById(v.id)
-						
 
 						if (attributt && attributt.apiKodeverkId && v.value) {
 							return (
@@ -67,7 +66,13 @@ export default class PersonInfoBlock extends PureComponent {
 								/>
 							)
 						} else if (apiKodeverkId) {
-							return <KodeverkValueConnector apiKodeverkId={apiKodeverkId} {...staticValueProps} />
+							return (
+								<KodeverkValueConnector
+									apiKodeverkId={apiKodeverkId}
+									{...staticValueProps}
+									extraLabel={v.extraLabel && v.extraLabel}
+								/>
+							)
 						} else if (tknr) {
 							return <TknrValueConnector tknr={tknr} {...staticValueProps} />
 						}
