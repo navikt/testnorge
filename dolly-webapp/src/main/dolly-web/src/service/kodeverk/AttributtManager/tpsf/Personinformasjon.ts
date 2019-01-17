@@ -91,6 +91,16 @@ const AttributtListe: Attributt[] = [
 		apiKodeverkId: 'Språk',
 		validation: yup.string().required('Velg språk.'),
 		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'egenAnsattDatoFom',
+		label: 'Egenansatt',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Date,
+		validation: DateValidation,
+		attributtType: AttributtType.SelectAndEdit
 	}
 	// {
 	// 	hovedKategori: Kategorier.PersInfo,

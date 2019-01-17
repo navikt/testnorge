@@ -72,7 +72,12 @@ export function mapTpsfData(tpsfData, testIdent) {
 				{
 					id: 'tknr',
 					label: 'TK nummer',
-					tknr: tpsfData.tknr
+					value: tpsfData.tknr
+				},
+				{
+					id: 'egenAnsattDatoFom',
+					label: 'Egenansatt siden',
+					value: Formatters.formatDate(tpsfData.egenAnsattDatoFom)
 				}
 			]
 		}
