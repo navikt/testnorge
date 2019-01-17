@@ -198,7 +198,7 @@ public class SyntetiseringService {
         listerMedIdenter.put(SINGLE_IDENTER_I_NORGE, singleIdenterINorge);
         message.append(" - ")
                 .append(SINGLE_IDENTER_I_NORGE)
-                .append(": ").append(levendeIdenterINorge.size());
+                .append(": ").append(singleIdenterINorge.size());
 
         List<String> brukteIdenterIDenneBolken = new ArrayList<>();
         listerMedIdenter.put(BRUKTE_IDENTER_I_DENNE_BOLKEN, brukteIdenterIDenneBolken);

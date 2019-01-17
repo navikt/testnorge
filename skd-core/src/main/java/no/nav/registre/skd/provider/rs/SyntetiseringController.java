@@ -28,7 +28,8 @@ public class SyntetiseringController {
             "\tVed bestilling av endringskode 0211, genereres tilhørende endringsmelding 3510.\n\n" +
             "\tVed bestilling av endringskode 1110, genereres tilhørende endringsmelding 1110 til partner.\n\n" +
             "\tVed bestilling av endringskode 1410, genereres tilhørende endringsmelding 1410 til partner.\n\n" +
-            "\tVed bestilling av endringskode 1810, genereres tilhørende endringsmelding 1810 til partner.")
+            "\tVed bestilling av endringskode 1810, genereres tilhørende endringsmelding 1810 til partner.\n\n" +
+            "\tVed bestilling av endringskode 4310, genereres tilhørende endringsmelding 8510 på en eventuell partner.")
     @ApiResponses(value = { @ApiResponse(code = 201, message = "De opprettede skdmeldingene ble lagret på disse id-ene i TPSF") })
     @PostMapping(value = "/generer")
     public ResponseEntity genererSkdMeldinger(@RequestBody GenereringsOrdreRequest genereringsOrdreRequest) {
