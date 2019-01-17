@@ -134,4 +134,9 @@ export default class DollyService {
 	static deleteTestIdent(identId) {
 		return Request.delete(Endpoints.removeTestIdent(identId))
 	}
+
+	//Oppslag
+	static getEnhetByTknr (tknr) {
+		return Request.get(Endpoints.enhetByTknr(tknr))
+	}
 }
