@@ -33,13 +33,15 @@ export default class TestbrukerListe extends Component {
 				</ContentContainer>
 			)
 
+		const sortedTestbrukere = testbrukerListe ? Formatters.sort2DArray(testbrukerListe, 5) : null
+
 		return (
 			<Fragment>
-				{isFetching || !testbrukerListe ? (
+				{isFetching || !sortedTestbrukere ? (
 					<Loading label="laster testbrukere" panel />
 				) : (
 					<PaginationConnector
-						items={testbrukerListe}
+						items={sortedTestbrukere}
 						render={testbrukere => {
 							return (
 								<div className="oversikt-container">
