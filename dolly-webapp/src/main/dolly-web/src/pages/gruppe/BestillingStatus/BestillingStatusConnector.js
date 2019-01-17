@@ -10,12 +10,8 @@ import _find from 'lodash/find'
 
 const loadingSelector = createLoadingSelector(cancelBestilling)
 const mapStateToProps = (state, ownProps) => {
-	const bestillinger = state.bestillingStatuser.data
-	const bestilling = _find(bestillinger, bestilling => bestilling.id === ownProps.bestillingsId)
-
 	return {
-		bestilling,
-		miljoeStatusObj: miljoStatusSelector(bestilling),
+		miljoeStatusObj: miljoStatusSelector(ownProps.bestilling),
 		isCanceling: loadingSelector(state)
 	}
 }
