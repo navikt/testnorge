@@ -28,6 +28,8 @@ public class RsBestilling {
     private String feil;
     private List<String> environments;
     private List<RsBestillingProgress> bestillingProgress;
+    private Long opprettetFraId;
+    private String tpsfKriterier;
 
     public List<String> getEnvironments() {
         if (environments == null) {

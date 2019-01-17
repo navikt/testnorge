@@ -61,10 +61,9 @@ public class Bestilling {
     @Column(name = "FEIL")
     private String feil;
 
-    public Bestilling(Testgruppe gruppe, int antallIdenter, LocalDateTime sistOppdatert, String miljoer) {
-        this.gruppe = gruppe;
-        this.antallIdenter = antallIdenter;
-        this.sistOppdatert = sistOppdatert;
-        this.miljoer = miljoer;
-    }
+    @Column(name = "OPPRETTET_FRA_ID")
+    private Long opprettetFraId;
+
+    @Column(name = "TPSF_KRITERIER")
+    private String tpsfKriterier;
 }

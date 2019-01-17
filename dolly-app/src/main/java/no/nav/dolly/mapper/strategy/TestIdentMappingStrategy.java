@@ -2,8 +2,8 @@ package no.nav.dolly.mapper.strategy;
 
 import static java.lang.String.join;
 import static java.util.Arrays.sort;
+import static java.util.Objects.nonNull;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -27,12 +27,13 @@ public class TestIdentMappingStrategy implements MappingStrategy {
                         if (!testgrupper.isEmpty()) {
                             BestillingProgress bestillingProgress = testgrupper.get(0);
                             rsTestIdent.setBestillingId(bestillingProgress.getBestillingId());
-                            String[] environments = bestillingProgress.getTpsfSuccessEnv().split(",");
-                            sort(environments);
-                            rsTestIdent.setTpsfSuccessEnv(join(",", environments));
+                            if (nonNull(bestillingProgress.getTpsfSuccessEnv())) {
+                                String[] environments = bestillingProgress.getTpsfSuccessEnv().split(",");
+                                sort(environments);
+                                rsTestIdent.setTpsfSuccessEnv(join(",", environments));
+                            }
                             rsTestIdent.setKrrstubStatus(bestillingProgress.getKrrstubStatus());
                             rsTestIdent.setSigrunstubStatus(bestillingProgress.getSigrunstubStatus());
-                            rsTestIdent.setSisteOppdatering(LocalDateTime.now());
                         }
                     }
                 })

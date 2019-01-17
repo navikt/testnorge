@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsBestilling;
@@ -40,6 +41,9 @@ public class BestillingControllerTest {
 
     @Mock
     private BestillingService bestillingService;
+
+    @Mock
+    private DollyBestillingService dollyBestillingService;
 
     @InjectMocks
     private BestillingController bestillingController;
@@ -87,6 +91,21 @@ public class BestillingControllerTest {
         bestillingController.stopBestillingProgress(BESTILLING_ID);
 
         verify(bestillingService).cancelBestilling(BESTILLING_ID);
+        verify(mapperFacade).map(any(Bestilling.class), eq(RsBestilling.class));
+    }
+
+    @Test
+    public void gjenopprettBestillingOk() {
+
+        when(bestillingService.createBestillingForGjenopprett(eq(BESTILLING_ID), anyList()))
+                .thenReturn(Bestilling.builder().build());
+        when(mapperFacade.map(any(Bestilling.class), eq(RsBestilling.class)))
+                .thenReturn(RsBestilling.builder().id(BESTILLING_ID).build());
+
+        RsBestilling bestilling = bestillingController.gjenopprettBestilling(BESTILLING_ID, null);
+
+        assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
+        verify(dollyBestillingService).gjenopprettBestillingAsync(any(Bestilling.class));
         verify(mapperFacade).map(any(Bestilling.class), eq(RsBestilling.class));
     }
 }

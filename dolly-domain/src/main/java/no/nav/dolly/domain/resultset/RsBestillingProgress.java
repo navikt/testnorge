@@ -29,5 +29,5 @@ public class RsBestillingProgress {
 
     private String krrstubStatus;
 
-    private String feil;
+    private List<String> feil;
 }
