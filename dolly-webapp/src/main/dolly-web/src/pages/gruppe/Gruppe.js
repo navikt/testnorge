@@ -104,7 +104,6 @@ export default class Gruppe extends Component {
 				!isFetchingBestillinger &&
 					nyeBestillinger.map((bestilling, i) => {
 						if (bestilling) {
-							console.log(bestilling, 'hver')
 							return (
 								<BestillingStatusConnector
 									key={i}

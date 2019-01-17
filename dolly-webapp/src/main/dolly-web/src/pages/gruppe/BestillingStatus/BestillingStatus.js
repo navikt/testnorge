@@ -27,7 +27,6 @@ export default class BestillingStatus extends PureComponent {
 			failureIntervalCounter: 0,
 			failed: false,
 			sistOppdatert: props.bestilling.sistOppdatert,
-			isOpen: true,
 			showCancelLoadingMsg: false
 		}
 	}
@@ -113,7 +112,6 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	_onCloseMiljoeStatus = () => {
-		this.setState({ isOpen: false })
 		this.props.removeNyBestillingStatus(this.props.bestilling.id)
 	}
 
@@ -134,14 +132,6 @@ export default class BestillingStatus extends PureComponent {
 				</ContentContainer>
 			)
 		}
-
-		if (
-			// (this.state.ferdig && !bestilling) ||
-			!this.state.isOpen
-			// bestilling
-			// (bestilling && !bestilling.ny)
-		)
-			return null
 
 		const status = this.calculateStatus()
 
