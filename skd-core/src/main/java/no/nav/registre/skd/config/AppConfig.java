@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Random;
+
 @Configuration
 public class AppConfig {
 
@@ -11,5 +13,10 @@ public class AppConfig {
     public RestTemplate restTemplateTpsf() {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate;
+    }
+
+    @Bean
+    public Random rand() {
+        return new Random();
     }
 }
