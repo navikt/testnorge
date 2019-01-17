@@ -32,8 +32,7 @@ public class InternalControllerTest {
      */
     @Test
     public void shouldReturnNotReady() {
-        this.server.expect(requestTo("https://dummyUrl.tps.synt/internal/isReady")).andRespond(withServerError());
-        this.server.expect(requestTo("https://dummyUrl.tpsf/internal/isReady")).andRespond(withSuccess());
+        this.server.expect(requestTo("https://dummyUrl.tpsf/internal/isReady")).andRespond(withServerError());
         this.server.expect(requestTo("https://dummyUrl.identpool/internal/isReady")).andRespond(withSuccess());
 
         ResponseEntity<?> ready = controller.isReady();
@@ -47,7 +46,6 @@ public class InternalControllerTest {
      * så skal hodejegerens isReady-endepunkt returnere http-status OK.
      */
     public void shouldReturnReady() {
-        this.server.expect(requestTo("https://dummyUrl.tps.synt/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.tpsf/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.identpool/internal/isReady")).andRespond(withSuccess());
 

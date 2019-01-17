@@ -46,8 +46,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private ApiInfo apiInfo() {
         return new ApiInfo(
                 "Testnorge-Hodejegeren",
-                "Testnorge-Hodejegeren henter syntetiserte meldinger fra TPS Syntetisereren og jakter på hoder/testpersoner i "
-                        + "TPSF og TPS i testmiljø for å fylle meldingene med identer som oppfyller visse kriterier. ",
+                "Testnorge-Hodejegeren jakter på hoder/testpersoner i TPSF og TPS i testmiljø for å fylle meldingene med identer som oppfyller visse kriterier. ",
                 "" + appVersion,
                 "https://nav.no",
                 new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-hodejegeren/browse", null),

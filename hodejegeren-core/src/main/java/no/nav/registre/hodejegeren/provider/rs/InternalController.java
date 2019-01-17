@@ -21,18 +21,15 @@ import java.util.List;
 @RequestMapping("/internal")
 public class InternalController {
 
-    private String synthdataTpsIsReadyUrl;
     private String tpsfIsReadyUrl;
     private String identpoolIsReadyUrl;
 
     private RestTemplate restTemplate;
 
     public InternalController(RestTemplateBuilder restTemplateBuilder,
-            @Value("${tps-syntetisereren.rest-api.url}") String synthdataTpsBaseUrl,
             @Value("${tps-forvalteren.rest-api.url}") String tpsfBaseUrl,
             @Value("${ident-pool.rest-api.url}") String identpoolBaseUrl) throws MalformedURLException {
         this.restTemplate = restTemplateBuilder.build();
-        this.synthdataTpsIsReadyUrl = createIsReadyUrl(synthdataTpsBaseUrl);
         this.tpsfIsReadyUrl = createIsReadyUrl(tpsfBaseUrl);
         this.identpoolIsReadyUrl = createIsReadyUrl(identpoolBaseUrl);
     }
@@ -46,7 +43,6 @@ public class InternalController {
     public ResponseEntity<?> isReady() {
         List<String> nonAvailableResources = new ArrayList<>();
 
-        checkReadiness(synthdataTpsIsReadyUrl, nonAvailableResources);
         checkReadiness(tpsfIsReadyUrl, nonAvailableResources);
         checkReadiness(identpoolIsReadyUrl, nonAvailableResources);
 

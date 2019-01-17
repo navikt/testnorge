@@ -16,7 +16,7 @@
     <packaging>pom</packaging>
 
     <name>testnorge-hodejegeren</name>
-    <description>Samhandler med syntetisereren og TPSF. Hodejegeren jakter på identer/testpersoner i identpool og TPS.</description>
+    <description>Hodejegeren jakter på identer/testpersoner i identpool og TPS.</description>
 
     <modules>
         <module>hodejegeren-core</module>
