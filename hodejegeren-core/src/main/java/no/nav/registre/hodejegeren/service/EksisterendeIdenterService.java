@@ -7,7 +7,6 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
 import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
-import static no.nav.registre.hodejegeren.service.HodejegerService.TRANSAKSJONSTYPE;
 import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +33,14 @@ public class EksisterendeIdenterService {
 
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
+    public static final String TRANSAKSJONSTYPE = "1";
+
     @Autowired
     private TpsfConsumer tpsfConsumer;
+
     @Autowired
     private TpsStatusQuoService tpsStatusQuoService;
+
     @Autowired
     private Random rand;
 
