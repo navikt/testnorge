@@ -24,14 +24,14 @@ public class ExceptionUtils {
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(e.getResponseBodyAsString()).get("ids");
             if (jsonNode == null) {
-                log.warn("Finner ikke id-er i response body til exception fra Hodejegeren - Body: {}", e.getResponseBodyAsString());
+                log.warn("Finner ikke id-er i response body til exception fra Testnorge-Skd - Body: {}", e.getResponseBodyAsString());
             } else {
                 for (final JsonNode idNode : jsonNode) {
                     ids.add(idNode.asLong());
                 }
             }
         } catch (IOException ie) {
-            log.warn("Kunne ikke deserialisere innholdet i exception fra Hodejegeren");
+            log.warn("Kunne ikke deserialisere innholdet i exception fra Testnorge-Skd");
         }
         return ids;
     }
