@@ -38,7 +38,7 @@ fasitResources:
     - alias: "tps-syntetisereren.rest-api"
       resourceType: restservice
     - alias: "testnorge-hodejegeren.rest-api"
-        resourceType: restservice
+      resourceType: restservice
   exposed:
    - alias: testnorge-skd.rest-api
      description: På denne base-url finner du swagger-dokumentasjon av REST-tjenesten.
