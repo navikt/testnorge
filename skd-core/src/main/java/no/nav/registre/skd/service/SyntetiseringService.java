@@ -102,7 +102,8 @@ public class SyntetiseringService {
                         .addMessage(e.getMessage() + " (ManglendeInfoITPSException) - endringskode: " + endringskode.getEndringskode());
 
                 log.error(e.getMessage(), e);
-                log.warn("ManglendeInfoITPSException: ", FEILMELDING_TEKST, genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
+                String errorMessage = "ManglendeInfoITPSException: " + FEILMELDING_TEKST;
+                log.warn(errorMessage, genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
             } catch (HttpStatusCodeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
@@ -112,7 +113,8 @@ public class SyntetiseringService {
                         .addCause(e);
 
                 log.error(hentMeldingFraJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                log.warn("HttpStatusCodeException: ", FEILMELDING_TEKST, genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
+                String errorMessage = "HttpStatusCodeException: " + FEILMELDING_TEKST;
+                log.warn(errorMessage, genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
             } catch (RuntimeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
                     ikkeFullfoertBehandlingExceptionsContainer = new IkkeFullfoertBehandlingExceptionsContainer();
@@ -122,7 +124,8 @@ public class SyntetiseringService {
                         .addCause(e);
 
                 log.error(e.getMessage(), e);
-                log.warn("RuntimeException: ", FEILMELDING_TEKST, genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
+                String errorMessage = "RuntimeException: " + FEILMELDING_TEKST;
+                log.warn(errorMessage, genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
             }
         }
 
