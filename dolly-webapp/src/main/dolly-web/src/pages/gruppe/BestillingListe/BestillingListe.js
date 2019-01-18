@@ -5,6 +5,7 @@ import PaginationConnector from '~/components/pagination/PaginationConnector'
 import _orderBy from 'lodash/orderBy'
 import BestillingStatusConnector from '../BestillingStatus/BestillingStatusConnector'
 import Formatters from '~/utils/DataFormatter'
+import BestillingDetaljerConnector from './BestillingDetaljer/BestillingDetaljerConnector'
 
 export default class BestillingListe extends PureComponent {
 	render() {
@@ -39,7 +40,8 @@ export default class BestillingListe extends PureComponent {
 										return (
 											<Table.Row
 												key={idx}
-												expandComponent={<BestillingStatusConnector bestilling={bestilling} />}
+												expandComponent={<BestillingDetaljerConnector bestilling={bestilling} />}
+												// expandComponent={<BestillingStatusConnector bestilling={bestilling} />}
 											>
 												<Table.Column width="15" value={bestilling.id} />
 												<Table.Column width="15" value={bestilling.antallIdenter} />
