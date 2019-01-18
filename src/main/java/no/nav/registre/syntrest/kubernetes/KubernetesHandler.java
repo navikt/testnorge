@@ -2,32 +2,28 @@ package no.nav.registre.syntrest.kubernetes;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
-import io.kubernetes.client.Configuration;
-import io.kubernetes.client.apis.CoreV1Api;
-import io.kubernetes.client.models.V1Pod;
-import io.kubernetes.client.models.V1PodList;
 import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 
-public class KubernetesHandler {
+@RestController
+@RequestMapping("api/v1")
+public class KubernetesHandler extends KubernetesUtils {
 
-    public void main(String[] args) throws IOException, ApiException{
-        Reader fr = new FileReader("C:\\nais\\kubeconfigs\\config");
-        ApiClient config = Config.fromConfig(KubeConfig.loadKubeConfig(fr));
-        System.out.println(config);
+    @GetMapping(value = "/test")
+    public String testKubernetes(String[] args) throws IOException, ApiException{
+        KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs_naiserator\\config"));
+        ApiClient client = Config.fromConfig(kc);
 
-/*        ApiClient client = Config.defaultClient();
-        Configuration.setDefaultApiClient(client);
+        listApplications(client);
 
-        CoreV1Api api = new CoreV1Api();
-        V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null);
-        for (V1Pod item : list.getItems()) {
-            System.out.println(item.getMetadata().getName());
-        }*/
+        createApplication(client, "");
+
+        return "Alive";
     }
 }
-

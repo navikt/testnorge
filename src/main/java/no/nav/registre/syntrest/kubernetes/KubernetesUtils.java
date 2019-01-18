@@ -1,155 +1,151 @@
-package no.nav.registre.synthesizer.kubernetes;
+package no.nav.registre.syntrest.kubernetes;
 
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
+
+
+import com.google.gson.internal.LinkedHashTreeMap;
+import com.google.gson.internal.LinkedTreeMap;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
-import io.kubernetes.client.apis.BatchV1Api;
-import io.kubernetes.client.apis.CoreV1Api;
+import io.kubernetes.client.JSON;
+import io.kubernetes.client.apis.CustomObjectsApi;
+import io.kubernetes.client.apis.ExtensionsV1beta1Api;
 import io.kubernetes.client.models.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.yaml.snakeyaml.Yaml;
 
-import java.io.IOException;
-import java.util.Arrays;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+
 
 public class KubernetesUtils {
 
-    public void deletePod(ApiClient client, String appName)throws ApiException {
+    public ExtensionsV1beta1DeploymentList listSynthDeployments(ApiClient client)throws ApiException{
 
-        CoreV1Api api = new CoreV1Api();
+        ExtensionsV1beta1Api api = new ExtensionsV1beta1Api();
         api.setApiClient(client);
 
-        String podName = "";
-        V1PodList podList = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null);
-        for (V1Pod item : podList.getItems()) {
-            if (item.getMetadata().getName().startsWith("synthdata")){
-                System.out.println(item.getMetadata().getName());
-            }
-            if (item.getMetadata().getName().startsWith(appName)){
-                podName = item.getMetadata().getName();
+        ExtensionsV1beta1DeploymentList deploymentList = api.listNamespacedDeployment("default", null, null, null, null, null, null, null, null, null);
+
+        for (ExtensionsV1beta1Deployment deployment : deploymentList.getItems()){
+            if (deployment.getMetadata().getName().startsWith("synthdata")){
+                System.out.println(deployment.getMetadata().getName());
             }
         }
 
-        V1DeleteOptions deleteOptions = new V1DeleteOptions();
+        return deploymentList;
+    }
 
-        try {
-            api.deleteNamespacedPod(podName, "default", deleteOptions, null, null, null, null);
+
+    public void deleteDeployment(ApiClient client, String appName)throws ApiException{
+
+        ExtensionsV1beta1Api api = new ExtensionsV1beta1Api();
+        api.setApiClient(client);
+
+        ExtensionsV1beta1DeploymentList deploymentList = listSynthDeployments(client);
+
+        Boolean deploymentExists = false;
+        for (ExtensionsV1beta1Deployment deployment : deploymentList.getItems()){
+            if (deployment.getMetadata().getName().equals(appName)){
+                deploymentExists = true;
+            }
         }
-        catch (JsonSyntaxException e) {
-            if (e.getCause() instanceof IllegalStateException) {
-                IllegalStateException ise = (IllegalStateException) e.getCause();
-                if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")){
-                    System.out.println("Deleted pod: " + podName);
+
+        if (deploymentExists){
+            V1DeleteOptions deleteOptions = new V1DeleteOptions();
+
+            try {
+                V1Status status = api.deleteNamespacedDeployment(appName, "default", deleteOptions, null, null, null, null);
+            }catch (JsonSyntaxException e) {
+                if (e.getCause() instanceof IllegalStateException) {
+                    IllegalStateException ise = (IllegalStateException) e.getCause();
+                    if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")){
+                        System.out.println("Successfully deleted deployment --> " + appName);
+                    }
+                    else throw e;
                 }
                 else throw e;
             }
-            else throw e;
+        } else{
+            throw new IllegalArgumentException("No deployment named:" + appName + "found");
         }
     }
 
+    public void createDeployment(ApiClient client, String appName)throws ApiException{
 
-    public void listJobs(ApiClient client)throws ApiException, IOException {
 
-        BatchV1Api api = new BatchV1Api();
+        //TODO: CustomObjectsApi  <-------
+
+        ExtensionsV1beta1Api api = new ExtensionsV1beta1Api();
         api.setApiClient(client);
 
-        V1JobList jobList = api.listNamespacedJob("synthdata", null, null, null, null, null, null, null, null, null);
-        for (V1Job job : jobList.getItems()) {
-            System.out.println(job.getMetadata().getName());
-        }
-        if (jobList.getItems().isEmpty()){
-            System.out.println(" ---- No jobs currently running ---- ");
-        }
-    }
+        ExtensionsV1beta1DeploymentSpec deploymentSpec = new ExtensionsV1beta1DeploymentSpec();
+        deploymentSpec.setReplicas(1);
 
 
-    public V1Job createJob(String appName)throws ApiException{
-
-        //Specify image
-        String imageName = "docker.adeo.no:5000/registre/" + appName;
-
-        //Create container
-        V1Container container = new V1Container();
-        container.setImage(imageName);
-        container.setName("container:" + appName);
-
-        //Create container list
-        List<V1Container> containerList = Arrays.asList(container);
-
-        //Create PodSpec
-        V1PodSpec podSpec = new V1PodSpec();
-        podSpec.setContainers(containerList);
-        podSpec.setRestartPolicy("Never");
-
-        //Create PodTemplateSpec
-        V1PodTemplateSpec podTemplateSpec = new V1PodTemplateSpec();
-        podTemplateSpec.setSpec(podSpec);
-
-        //Create JobSpec
-        V1JobSpec jobSpec = new V1JobSpec();
-        jobSpec.setTemplate(podTemplateSpec);
-
-        //Create Job Metadata
         V1ObjectMeta objectMeta = new V1ObjectMeta();
-        objectMeta.setName(appName + UUID.randomUUID().toString());
+        objectMeta.setName(appName);
+        objectMeta.setNamespace("default");
+        Map<String, String> labels = new HashMap<String, String>();
+        labels.put("team", "teamsynt");
+        objectMeta.setLabels(labels);
 
-        //Create Job
-        V1Job job = new V1Job();
-        job.setSpec(jobSpec);
-        job.setMetadata(objectMeta);
+        ExtensionsV1beta1Deployment deployment = new ExtensionsV1beta1Deployment();
+        deployment.setSpec(deploymentSpec);
+        deployment.setKind("Application");
+        deployment.setMetadata(objectMeta);
 
-        return job;
+        api.createNamespacedDeployment("default", deployment, null);
+
     }
 
 
-    public void startJob(ApiClient client, V1Job job)throws ApiException{
+    public void createApplication(ApiClient client, String manifestPath)throws ApiException, FileNotFoundException {
 
-        BatchV1Api api = new BatchV1Api();
+        CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
 
-        //TODO: make this async?
-        try {
-            V1Job response = api.createNamespacedJob("synthdata", job, null);
-            System.out.println("Running job:" + job.getMetadata().getName());
-        }
-        catch (ApiException e){
-            System.out.println("Job: " + job.getMetadata().getName() + " FAILED");
-            System.out.println(e.getCode());
+        Object jsonObject = convertToJson(new FileReader(manifestPath));
+
+        try{
+            api.createNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", jsonObject, null);
+        }catch (ApiException e){
             System.out.println(e.getResponseBody());
         }
+
     }
 
 
-    public void deleteJob(ApiClient client, String appName, Boolean listAll)throws ApiException{
+    private JSONObject convertToJson(Reader yamlReader){
+        Yaml yaml = new Yaml();
+        Map<String, Object> map = yaml.load(yamlReader);
+        return new JSONObject(map);
+    }
 
-        BatchV1Api api = new BatchV1Api();
+
+    public void listApplications(ApiClient client)throws ApiException{
+
+        CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
 
-        String jobName = "";
-        V1JobList jobList = api.listNamespacedJob("synthdata", null, null, null, null, null, null, null, null, null);
-        for (V1Job item : jobList.getItems()) {
-            if (item.getMetadata().getName().startsWith(appName)){
-                jobName = item.getMetadata().getName();
-            }
-        }
+        LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", null, null, null, null);
+        ArrayList items = (ArrayList) result.get("items");
 
-        V1DeleteOptions deleteOptions = new V1DeleteOptions();
-
-        try {
-            V1Status status = api.deleteNamespacedJob(jobName, "synthdata", deleteOptions, null, null, null, null);
-        }
-        catch (JsonSyntaxException e) {
-            if (e.getCause() instanceof IllegalStateException) {
-                IllegalStateException ise = (IllegalStateException) e.getCause();
-                if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")){
-                    System.out.println("Successfully deleted job --> " + jobName);
-                }
-                else throw e;
-            }
-            else throw e;
+        for (Object item : items){
+            LinkedTreeMap app = (LinkedTreeMap) item;
+            LinkedTreeMap metadata = (LinkedTreeMap) app.get("metadata");
+            System.out.println(metadata.get("name"));
         }
 
     }
+
 
 }
 

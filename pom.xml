@@ -36,6 +36,11 @@
             <artifactId>adal4j</artifactId>
             <version>1.6.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180813</version>
+        </dependency>
     </dependencies>
 
     <build>
