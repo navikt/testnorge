@@ -31,8 +31,8 @@ public class ExceptionUtils {
                 }
             }
         } catch (IOException ie) {
-            log.warn("Kunne ikke deserialisere innholdet i exception fra Testnorge-Skd: {} - {}", ie.getMessage(), ie);
-            log.warn("HttpStatusCodeException fra Testnorge-Skd: {} - {} - {}", e.getStatusCode(), e.getMessage(), e);
+            log.warn("Kunne ikke deserialisere innholdet i exception fra Testnorge-Skd: {} - {}", ie.getMessage());
+            log.warn("HttpStatusCodeException fra Testnorge-Skd: {} - {}", e.getMessage(), e.getResponseBodyAsString());
         }
         return ids;
     }
