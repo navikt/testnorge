@@ -10,6 +10,7 @@ import _find from 'lodash/find'
 
 const loadingSelector = createLoadingSelector(cancelBestilling)
 const mapStateToProps = (state, ownProps) => {
+	console.log(ownProps.bestilling, 'bestili')
 	return {
 		miljoeStatusObj: miljoStatusSelector(ownProps.bestilling),
 		isCanceling: loadingSelector(state)
