@@ -12,17 +12,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.consumer.requests.SendToTpsRequest;
-import no.nav.registre.hodejegeren.provider.rs.requests.LagreITpsfRequest;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 import no.nav.registre.hodejegeren.service.Endringskoder;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype;
-import no.nav.registre.hodejegeren.skdmelding.RsMeldingstype1Felter;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HodejegerenControllerTest {
@@ -33,9 +27,6 @@ public class HodejegerenControllerTest {
     @Mock
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
 
-    @Mock
-    private TpsfConsumer tpsfConsumer;
-
     @InjectMocks
     private HodejegerenController hodejegerenController;
 
@@ -45,8 +36,6 @@ public class HodejegerenControllerTest {
     private Endringskoder endringskode;
     private int antallIdenter;
     private int minimumAlder;
-    private LagreITpsfRequest lagreITpsfRequest;
-    private SendToTpsRequest sendToTpsRequest;
     private List<String> myndigeIdenter;
 
     @Before
@@ -57,11 +46,6 @@ public class HodejegerenControllerTest {
         endringskode = Endringskoder.FOEDSELSMELDING;
         antallIdenter = 10;
         minimumAlder = 18;
-        List<Long> ids = new ArrayList<>(Arrays.asList(123L, 234L));
-        List<RsMeldingstype> meldinger = new ArrayList<>();
-        meldinger.add(RsMeldingstype1Felter.builder().build());
-        lagreITpsfRequest = new LagreITpsfRequest(avspillergruppeId, meldinger);
-        sendToTpsRequest = new SendToTpsRequest(miljoe, ids);
         myndigeIdenter = new ArrayList<>();
         myndigeIdenter.add(fnr);
     }
@@ -127,25 +111,5 @@ public class HodejegerenControllerTest {
     public void shouldHenteStatusQuoFraEndringskode() throws IOException {
         hodejegerenController.hentStatusQuoFraEndringskode(endringskode, miljoe, fnr);
         verify(endringskodeTilFeltnavnMapperService).getStatusQuoFraAarsakskode(endringskode, miljoe, fnr);
-    }
-
-    /**
-     * Scenario: HVIS hodejeger-controlleren får et request om å lagre en liste med meldinger i en viss avspillergruppe i TPSF, skal metoden kalle på
-     * {@link TpsfConsumer#saveSkdEndringsmeldingerInTPSF}
-     */
-    @Test
-    public void shouldLagreSkdEndringsmeldignerITpsf() {
-        hodejegerenController.lagreSkdEndringsmeldingerITpsf(lagreITpsfRequest);
-        verify(tpsfConsumer).saveSkdEndringsmeldingerInTPSF(avspillergruppeId, lagreITpsfRequest.getSkdMeldinger());
-    }
-
-    /**
-     * Scenario: HVIS hodejeger-controlleren får et request om å sende en liste med id-er fra en viss avspillergruppe til TPS, skal metoden kalle på
-     * {@link TpsfConsumer#sendSkdmeldingerToTps}
-     */
-    @Test
-    public void shouldSendeSkdEndringsmeldignerTilTpsf() {
-        hodejegerenController.sendSkdEndringsmeldingerTilTps(avspillergruppeId, sendToTpsRequest);
-        verify(tpsfConsumer).sendSkdmeldingerToTps(avspillergruppeId, sendToTpsRequest);
     }
 }

@@ -4,8 +4,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,10 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
-import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.consumer.requests.SendToTpsRequest;
-import no.nav.registre.hodejegeren.consumer.response.SkdMeldingerTilTpsRespons;
-import no.nav.registre.hodejegeren.provider.rs.requests.LagreITpsfRequest;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 import no.nav.registre.hodejegeren.service.Endringskoder;
@@ -31,9 +25,6 @@ public class HodejegerenController {
 
     @Autowired
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
-
-    @Autowired
-    private TpsfConsumer tpsfConsumer;
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente et gitt antall levende personer fra en gitt avspillergruppe i TPSF.")
@@ -84,19 +75,5 @@ public class HodejegerenController {
     @GetMapping("api/v1/status-quo/{endringskode}/{miljoe}/{fnr}")
     public Map<String, String> hentStatusQuoFraEndringskode(@PathVariable("endringskode") Endringskoder endringskode, @PathVariable("miljoe") String miljoe, @PathVariable("fnr") String fnr) throws IOException {
         return new HashMap<>(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, miljoe, fnr));
-    }
-
-    @LogExceptions
-    @ApiOperation(value = "Her kan man lagre et antall skd-endringsmeldinger fra avspillergruppen i TPSF.")
-    @PostMapping("api/v1/lagre-tpsf")
-    public List<Long> lagreSkdEndringsmeldingerITpsf(@RequestBody LagreITpsfRequest lagreITpsfRequest) {
-        return tpsfConsumer.saveSkdEndringsmeldingerInTPSF(lagreITpsfRequest.getAvspillergruppeId(), lagreITpsfRequest.getSkdMeldinger());
-    }
-
-    @LogExceptions
-    @ApiOperation(value = "Her kan man lagre et antall skd-endringsmeldinger fra avspillergruppen i TPSF.")
-    @PostMapping("api/v1/send-til-tps/{avspillergruppeId}")
-    public SkdMeldingerTilTpsRespons sendSkdEndringsmeldingerTilTps(@PathVariable("avspillergruppeId") Long avspillergruppeId, @RequestBody SendToTpsRequest sendToTpsRequest) {
-        return tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, sendToTpsRequest);
     }
 }
