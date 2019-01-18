@@ -48,6 +48,7 @@ public class TpsSyntPakkenService {
         } catch (HttpStatusCodeException e) {
             ids.addAll(extractIdsFromResponseBody(e));
             httpStatusCodeExceptionContainer.addException(e);
+            httpStatusCodeExceptionContainer.addFeilmeldingBeskrivelse(e.getMessage());
         }
         if (ids.isEmpty()) {
             StatusPaaAvspiltSkdMelding status = new StatusPaaAvspiltSkdMelding();
