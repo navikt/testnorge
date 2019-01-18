@@ -102,7 +102,7 @@ public class SyntetiseringService {
                         .addMessage(e.getMessage() + " (ManglendeInfoITPSException) - endringskode: " + endringskode.getEndringskode());
 
                 log.error(e.getMessage(), e);
-                String errorMessage = "ManglendeInfoITPSException: " + FEILMELDING_TEKST;
+                String errorMessage = "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + ": " + FEILMELDING_TEKST;
                 log.warn(errorMessage, genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
             } catch (HttpStatusCodeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
@@ -113,7 +113,7 @@ public class SyntetiseringService {
                         .addCause(e);
 
                 log.error(hentMeldingFraJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                String errorMessage = "HttpStatusCodeException: " + FEILMELDING_TEKST;
+                String errorMessage = "HttpStatusCodeException på endringskode " + endringskode.getEndringskode() + ": " + FEILMELDING_TEKST;
                 log.warn(errorMessage, genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
             } catch (RuntimeException e) {
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
@@ -124,7 +124,7 @@ public class SyntetiseringService {
                         .addCause(e);
 
                 log.error(e.getMessage(), e);
-                String errorMessage = "RuntimeException: " + FEILMELDING_TEKST;
+                String errorMessage = "RuntimeException på endringskode " + endringskode.getEndringskode() + ": " + FEILMELDING_TEKST;
                 log.warn(errorMessage, genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
             }
         }
