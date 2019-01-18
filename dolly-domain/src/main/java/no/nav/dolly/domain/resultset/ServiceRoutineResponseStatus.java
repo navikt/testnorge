@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset;
 
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +16,5 @@ import lombok.Setter;
 public class ServiceRoutineResponseStatus {
     private String personId;
     private String serviceRutinenavn;
-    private String environment;
-    private TpsResponseStatus status;
-    
+    private Map<String, String> status; //Map<Environment, TPS respons statusmelding >
 }
