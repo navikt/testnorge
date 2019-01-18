@@ -6,7 +6,7 @@ import Button from '~/components/button/Button'
 export default class MiljoeStatus extends PureComponent {
 	render() {
 		const { id, successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
-		const failed = true && successEnvs.length == 0
+		const failed = true && successEnvs.length == 0 && errorMsgs.length == 0
 
 		return (
 			<div className="miljoe-status">
@@ -57,7 +57,7 @@ export default class MiljoeStatus extends PureComponent {
 	_renderFailureMessage = () => (
 		<Fragment>
 			<Icon kind={'report-problem-circle'} />
-			<p>Din bestilling ble ikke utført. Ingen testdata ble opprettet</p>
+			<p>Din bestilling ble ikke utført</p>
 		</Fragment>
 	)
 

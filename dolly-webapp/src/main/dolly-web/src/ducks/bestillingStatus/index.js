@@ -45,6 +45,7 @@ export default handleActions(
 
 // Selector + mapper
 export const sokSelector = (items, searchStr) => {
+	console.log(items, 'orgiinal items')
 	if (!items) return null
 	const mappedItems = mapItems(items)
 
@@ -67,18 +68,22 @@ export const sokSelector = (items, searchStr) => {
 }
 
 // Selector
-export const miljoStatusSelector = bestillingStatus => {
-	if (!bestillingStatus) return null
+export const miljoStatusSelector = bestilling => {
+	if (!bestilling) return null
 
-	const id = bestillingStatus.id
-	let envs = bestillingStatus.environments.slice(0) // Clone array for å unngå mutering
+	const id = bestilling.id
+	let envs = bestilling.environments.slice(0) // Clone array for å unngå mutering
 	let successEnvs = []
 	let failedEnvs = []
 	let errorMsgs = []
 
-	if (bestillingStatus.bestillingProgress && bestillingStatus.bestillingProgress.length != 0) {
+	// TODO: REG-2921: Denne må bli forbedret.
+	// feilmelding for hele bestillingen
+	bestilling.feil && errorMsgs.push(bestilling.feil)
+
+	if (bestilling.bestillingProgress && bestilling.bestillingProgress.length != 0) {
 		envs.forEach(env => {
-			bestillingStatus.bestillingProgress.forEach(person => {
+			bestilling.bestillingProgress.forEach(person => {
 				if (!person.tpsfSuccessEnv) {
 					// TODO: Bestilling failed 100% fra Tpsf. Implement retry-funksjonalitet når maler er støttet
 					failedEnvs = envs
@@ -94,7 +99,7 @@ export const miljoStatusSelector = bestillingStatus => {
 
 		// Registre miljø status
 		// Plasseres i egen for-each for visuel plassering og mer lesbar kode
-		bestillingStatus.bestillingProgress.forEach(person => {
+		bestilling.bestillingProgress.forEach(person => {
 			if (person.krrstubStatus) {
 				person.krrstubStatus == 'OK'
 					? !successEnvs.includes('Krr-stub') && successEnvs.push('Krr-stub')
@@ -123,7 +128,6 @@ const mapItems = items => {
 			id: item.id.toString(),
 			antallIdenter: item.antallIdenter.toString(),
 			sistOppdatert: Formatters.formatDate(item.sistOppdatert),
-			environments: Formatters.arrayToString(item.environments),
 			ferdig: item.stoppet ? 'Stoppet' : item.ferdig ? 'Ferdig' : 'Pågår'
 		}
 	})
