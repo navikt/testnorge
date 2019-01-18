@@ -51,6 +51,7 @@ import no.nav.dolly.service.TestgruppeService;
 @Service
 public class DollyBestillingService {
 
+    private static final String SUCCESS = "OK";
     private static final String OUT_FMT = "%s: %s";
 
     @Autowired
@@ -239,7 +240,7 @@ public class DollyBestillingService {
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
             if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (!entry.getValue().contains("OK")) {
+                    if (!entry.getValue().contains(SUCCESS)) {
                         successMiljoer.remove(entry.getKey());
                     }
                 }
@@ -251,7 +252,7 @@ public class DollyBestillingService {
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
             if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (entry.getValue().contains("OK")) {
+                    if (entry.getValue().contains(SUCCESS)) {
                         successMiljoer.add(entry.getKey());
                     }
                 }
@@ -276,9 +277,9 @@ public class DollyBestillingService {
         for (SendSkdMeldingTilTpsResponse response : responseStatus) {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                    if (!entry.getValue().contains("OK") && !failures.containsKey(entry.getKey())) {
+                    if (!entry.getValue().contains(SUCCESS) && !failures.containsKey(entry.getKey())) {
                         failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
-                    } else if (!entry.getValue().contains("OK")) {
+                    } else if (!entry.getValue().contains(SUCCESS)) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue()));
                     }
                 }
@@ -290,9 +291,9 @@ public class DollyBestillingService {
         for (ServiceRoutineResponseStatus response : responseStatus) {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                    if (!"OK".equals(entry.getValue()) && !failures.containsKey(entry.getKey())) {
+                    if (!SUCCESS.equals(entry.getValue()) && !failures.containsKey(entry.getKey())) {
                         failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
-                    } else if (!"OK".equals(entry.getValue())) {
+                    } else if (!SUCCESS.equals(entry.getValue())) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue()));
                     }
                 }
