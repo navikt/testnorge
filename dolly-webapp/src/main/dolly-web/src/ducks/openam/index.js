@@ -4,8 +4,11 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 import success from '~/utils/SuccessAction'
 import _groupBy from 'lodash/groupBy'
 
-export const postOpenAm = createAction('POST_OPEN_AM', async groupObj => {
-	const { testidenter, bestillinger } = groupObj
+export const postOpenAm = createAction('POST_OPEN_AM', async (groupObj, bestillinger) => {
+	console.log(groupObj, 'halla')
+	console.log(bestillinger, 'halla')
+
+	const { testidenter } = groupObj
 	const testidenterSortedByBestillingId = _groupBy(testidenter, 'bestillingId')
 	const bestillingIdListe = Object.keys(testidenterSortedByBestillingId)
 
@@ -52,6 +55,6 @@ export default handleActions(
 
 //thunk
 export const sendToOpenAm = () => (dispatch, getState) => {
-	const { gruppe } = getState()
-	return dispatch(postOpenAm(gruppe.data[0]))
+	const { gruppe, bestillinger } = getState()
+	return dispatch(postOpenAm(gruppe.data[0], bestillinger.data))
 }
