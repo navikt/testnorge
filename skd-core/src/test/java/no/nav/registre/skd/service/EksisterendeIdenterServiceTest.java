@@ -45,7 +45,7 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 
 @RunWith(MockitoJUnitRunner.class)
 @Slf4j
-public class EksisterendeIdenterSkdServiceTest {
+public class EksisterendeIdenterServiceTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
