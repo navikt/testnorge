@@ -247,7 +247,7 @@ public class DollyBestillingServiceTest {
                         .opprettetFraId(BESTILLING_ID)
                         .miljoer("t2,t3").build());
 
-        verify(bestillingService, times(3)).isStoppet(BESTILLING_ID);
+        verify(bestillingService, times(4)).isStoppet(BESTILLING_ID);
         verify(tpsfService).hentTilhoerendeIdenter(anyList());
         verify(tpsfService).sendIdenterTilTpsFraTPSF(anyList(), anyList());
         verify(tpsfResponseHandler).extractTPSFeedback(anyList());

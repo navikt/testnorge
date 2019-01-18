@@ -66,6 +66,7 @@ public class BestillingService {
         return bestillingRepository.findBestillingByGruppeOrderById(testgruppeService.fetchTestgruppeById(gruppeId));
     }
 
+    @Transactional
     public Bestilling cancelBestilling(Long bestillingId) {
         Optional<BestillingKontroll> bestillingKontroll = bestillingKontrollRepository.findByBestillingIdOrderByBestillingId(bestillingId);
         if (!bestillingKontroll.isPresent()) {

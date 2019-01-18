@@ -157,7 +157,9 @@ public class DollyBestillingService {
     }
 
     private void oppdaterProgress(Bestilling bestilling, BestillingProgress progress) {
-        bestillingProgressRepository.save(progress);
+        if (!bestillingService.isStoppet(bestilling.getId())) {
+            bestillingProgressRepository.save(progress);
+        }
         bestilling.setSistOppdatert(now());
         bestillingService.saveBestillingToDB(bestilling);
     }
