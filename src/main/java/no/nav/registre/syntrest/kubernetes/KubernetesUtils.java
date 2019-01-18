@@ -10,8 +10,11 @@ import io.kubernetes.client.JSON;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.apis.ExtensionsV1beta1Api;
 import io.kubernetes.client.models.*;
+import io.kubernetes.client.util.Config;
+import io.kubernetes.client.util.KubeConfig;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.yaml.snakeyaml.Yaml;
 
 
@@ -25,6 +28,17 @@ import java.util.Map;
 
 
 public class KubernetesUtils {
+
+    //TODO: save kubeconfig to vault and reference it here
+    @Value("${kubeconfigVariableNameHere}")
+    private String kubeCongif;
+
+    public ApiClient createApiClient()throws IOException{
+        KubeConfig kc = KubeConfig.loadKubeConfig(new StringReader(kubeCongif));
+        ApiClient client = Config.fromConfig(kc);
+        return client;
+    }
+
 
     public ExtensionsV1beta1DeploymentList listSynthDeployments(ApiClient client)throws ApiException{
 
@@ -158,9 +172,7 @@ public class KubernetesUtils {
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
 
-
         List<String> applicationList = listApplications(client, false);
-
 
         Boolean applicationExists = false;
         for (String name : applicationList){
