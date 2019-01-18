@@ -11,9 +11,15 @@
     </parent>
 
     <groupId>no.nav.registre</groupId>
-    <artifactId>synt-rest</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <artifactId>syntrest</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -26,12 +32,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.kubernetes</groupId>
-            <artifactId>client-java</artifactId>
-            <version>3.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.microsoft.azure</groupId>
             <artifactId>adal4j</artifactId>
             <version>1.6.3</version>
@@ -41,6 +41,12 @@
             <artifactId>json</artifactId>
             <version>20180813</version>
         </dependency>
+        <dependency>
+            <groupId>io.kubernetes</groupId>
+            <artifactId>client-java</artifactId>
+            <version>3.0.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -48,6 +54,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>syntrest-app</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

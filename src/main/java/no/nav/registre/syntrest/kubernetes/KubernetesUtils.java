@@ -2,7 +2,6 @@ package no.nav.registre.syntrest.kubernetes;
 
 import com.google.gson.*;
 
-
 import com.google.gson.internal.LinkedHashTreeMap;
 import com.google.gson.internal.LinkedTreeMap;
 import io.kubernetes.client.ApiClient;

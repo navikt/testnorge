@@ -1,6 +1,5 @@
 package no.nav.registre.syntrest.services;
 
-import no.nav.registre.syntrest.Domain.Inntektsmelding;
 import no.nav.registre.syntrest.globals.NaisConnections;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
@@ -12,19 +11,16 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class ArenaInntektService {
-
+public class TPService {
     private final RestTemplate restTemplate;
 
-    public ArenaInntektService(RestTemplateBuilder restTemplateBuilder) {
+    public TPService(RestTemplateBuilder restTemplateBuilder){
         this.restTemplate = restTemplateBuilder.build();
     }
 
     @Async
-    public CompletableFuture<Map<String, List<Inntektsmelding>>> generateInntektsmeldingerFromNAIS(String[] fnrs) throws InterruptedException {
-        Map<String, List<Inntektsmelding>> result = restTemplate.postForObject(NaisConnections.CONNECTION_ARENA_INNTEKT, fnrs, Map.class);
-        System.out.println(result);
+    public CompletableFuture<List<Map<String, String>>> generateTPFromNAIS(int num_to_generate) throws InterruptedException{
+        List<Map<String, String>> result = restTemplate.getForObject(String.format(NaisConnections.CONNECTION_TP, num_to_generate), List.class);
         return CompletableFuture.completedFuture(result);
     }
 }
-
