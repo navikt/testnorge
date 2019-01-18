@@ -5,9 +5,6 @@ import success from '~/utils/SuccessAction'
 import _groupBy from 'lodash/groupBy'
 
 export const postOpenAm = createAction('POST_OPEN_AM', async (groupObj, bestillinger) => {
-	console.log(groupObj, 'halla')
-	console.log(bestillinger, 'halla')
-
 	const { testidenter } = groupObj
 	const testidenterSortedByBestillingId = _groupBy(testidenter, 'bestillingId')
 	const bestillingIdListe = Object.keys(testidenterSortedByBestillingId)
