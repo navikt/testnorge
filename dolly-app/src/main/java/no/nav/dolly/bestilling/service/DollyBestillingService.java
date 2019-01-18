@@ -3,12 +3,12 @@ package no.nav.dolly.bestilling.service;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
+import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
-import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -91,7 +90,6 @@ public class DollyBestillingService {
     private CacheManager cacheManager;
 
     @Async
-    @Transactional
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest request, Bestilling bestilling) {
 
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
@@ -127,7 +125,6 @@ public class DollyBestillingService {
     }
 
     @Async
-    @Transactional
     public void gjenopprettBestillingAsync(Bestilling bestilling) {
 
         List<BestillingProgress> identerForGjenopprett = bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(bestilling.getOpprettetFraId());
@@ -162,9 +159,9 @@ public class DollyBestillingService {
     private void oppdaterProgress(Bestilling bestilling, BestillingProgress progress) {
         if (!bestillingService.isStoppet(bestilling.getId())) {
             bestillingProgressRepository.save(progress);
-            bestilling.setSistOppdatert(LocalDateTime.now());
-            bestillingService.saveBestillingToDB(bestilling);
         }
+        bestilling.setSistOppdatert(now());
+        bestillingService.saveBestillingToDB(bestilling);
     }
 
     private void clearCache() {
@@ -287,7 +284,7 @@ public class DollyBestillingService {
         }
     }
 
-    private void addFeilmeldingServicerutiner(String hovedperson,  List<ServiceRoutineResponseStatus> responseStatus, Map<String, List<String>> failures) {
+    private void addFeilmeldingServicerutiner(String hovedperson, List<ServiceRoutineResponseStatus> responseStatus, Map<String, List<String>> failures) {
         for (ServiceRoutineResponseStatus response : responseStatus) {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {

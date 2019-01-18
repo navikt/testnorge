@@ -53,6 +53,7 @@ public class BestillingService {
         return bestillingRepository.findById(bestillingId).orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
+    @Transactional
     public Bestilling saveBestillingToDB(Bestilling bestilling) {
         try {
             return bestillingRepository.save(bestilling);
@@ -65,6 +66,7 @@ public class BestillingService {
         return bestillingRepository.findBestillingByGruppeOrderById(testgruppeService.fetchTestgruppeById(gruppeId));
     }
 
+    @Transactional
     public Bestilling cancelBestilling(Long bestillingId) {
         Optional<BestillingKontroll> bestillingKontroll = bestillingKontrollRepository.findByBestillingIdOrderByBestillingId(bestillingId);
         if (!bestillingKontroll.isPresent()) {
