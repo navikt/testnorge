@@ -113,6 +113,8 @@ public class KubernetesUtils {
 
         Object jsonObject = convertToJson(new FileReader(manifestPath));
 
+        System.out.println(jsonObject);
+
         try{
             api.createNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", jsonObject, null);
         }catch (ApiException e){
@@ -129,10 +131,12 @@ public class KubernetesUtils {
     }
 
 
-    public void listApplications(ApiClient client)throws ApiException{
+    public List<String> listApplications(ApiClient client, Boolean print)throws ApiException{
 
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
+
+        List<String> applicationList = new ArrayList<>();
 
         LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", null, null, null, null);
         ArrayList items = (ArrayList) result.get("items");
@@ -140,11 +144,51 @@ public class KubernetesUtils {
         for (Object item : items){
             LinkedTreeMap app = (LinkedTreeMap) item;
             LinkedTreeMap metadata = (LinkedTreeMap) app.get("metadata");
-            System.out.println(metadata.get("name"));
+            String name = (String) metadata.get("name");
+            applicationList.add(name);
+            if (print){ System.out.println(name); }
+        }
+
+        return applicationList;
+    }
+
+
+    public void deleteApplication(ApiClient client, String appName)throws ApiException{
+
+        CustomObjectsApi api = new CustomObjectsApi();
+        api.setApiClient(client);
+
+
+        List<String> applicationList = listApplications(client, false);
+
+
+        Boolean applicationExists = false;
+        for (String name : applicationList){
+            if (name.equals(appName)){
+                applicationExists = true;
+            }
+        }
+
+        if (applicationExists){
+            V1DeleteOptions deleteOptions = new V1DeleteOptions();
+
+            try {
+                api.deleteNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", appName, deleteOptions, null, null, null);
+            }catch (JsonSyntaxException e) {
+                if (e.getCause() instanceof IllegalStateException) {
+                    IllegalStateException ise = (IllegalStateException) e.getCause();
+                    if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")){
+                        System.out.println("Successfully deleted application --> " + appName);
+                    }
+                    else throw e;
+                }
+                else throw e;
+            }
+        } else{
+            throw new IllegalArgumentException("No application named:" + appName + "found");
         }
 
     }
-
 
 }
 

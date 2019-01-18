@@ -20,7 +20,7 @@ public class KubernetesHandler extends KubernetesUtils {
         KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs_naiserator\\config"));
         ApiClient client = Config.fromConfig(kc);
 
-        listApplications(client);
+        listApplications(client, true);
 
         createApplication(client, "");
 
