@@ -16,13 +16,15 @@ import java.util.Map;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import no.nav.registre.hodejegeren.consumer.requests.SendToTpsRequest;
+import no.nav.registre.hodejegeren.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.hodejegeren.provider.rs.requests.LagreITpsfRequest;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 import no.nav.registre.hodejegeren.service.Endringskoder;
 
 @RestController
-public class EksisterendeIdenterController {
+public class HodejegerenController {
 
     @Autowired
     private EksisterendeIdenterService eksisterendeIdenterService;
@@ -63,7 +65,18 @@ public class EksisterendeIdenterController {
         if (minimumAlder == null || minimumAlder < 0) {
             minimumAlder = 0;
         }
-        return eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(avspillergruppeId, miljoe, antallPersoner, minimumAlder);
+        return eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallPersoner, minimumAlder);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her bestilles et gitt antall identer med tilhørende nav-enhet som hentes tilfeldig fra TPSF. \n"
+            + "Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeidsforhold for å få en sykemelding.\n"
+            + "De er garantert til å være myndige.")
+    @GetMapping("api/v1/fnr-med-navkontor/{avspillerGruppeId}/{miljoe}/{antallPersoner}")
+    public Map<String, String> hentEksisterendeMyndigeIdenterMedNavKontor(@PathVariable("avspillerGruppeId") Long avspillerGruppeId, @PathVariable("miljoe") String miljoe,
+            @PathVariable("antallPersoner") int antallPersoner) {
+        List<String> myndigeIdenter = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillerGruppeId, miljoe, antallPersoner, 18);
+        return eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, myndigeIdenter);
     }
 
     @LogExceptions
@@ -81,13 +94,9 @@ public class EksisterendeIdenterController {
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her bestilles et gitt antall identer med tilhørende nav-enhet som hentes tilfeldig fra TPSF. \n"
-            + "Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeidsforhold for å få en sykemelding.\n"
-            + "De er garantert til å være myndige.")
-    @GetMapping("api/v1/fnr-med-navkontor/{avspillerGruppeId}/{miljoe}/{antallPersoner}")
-    public Map<String, String> hentEksisterendeMyndigeIdenterMedNavKontor(@PathVariable("avspillerGruppeId") Long avspillerGruppeId, @PathVariable("miljoe") String miljoe,
-            @PathVariable("antallPersoner") int antallPersoner) {
-        List<String> myndigeIdenter = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(avspillerGruppeId, miljoe, antallPersoner, 18);
-        return eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, myndigeIdenter);
+    @ApiOperation(value = "Her kan man lagre et antall skd-endringsmeldinger fra avspillergruppen i TPSF.")
+    @PostMapping("api/v1/send-til-tps/{avspillergruppeId}")
+    public SkdMeldingerTilTpsRespons sendSkdEndringsmeldingerTilTps(@PathVariable("avspillergruppeId") Long avspillergruppeId, @RequestBody SendToTpsRequest sendToTpsRequest) {
+        return tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, sendToTpsRequest);
     }
 }

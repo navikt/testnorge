@@ -1,0 +1,84 @@
+package no.nav.registre.hodejegeren.consumer;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import no.nav.registre.hodejegeren.consumer.requests.SendToTpsRequest;
+import no.nav.registre.hodejegeren.consumer.response.SkdMeldingerTilTpsRespons;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWireMock(port = 0)
+@ActiveProfiles("test")
+public class TpsfConsumerTpsTest {
+
+    @Autowired
+    private TpsfConsumer tpsfConsumer;
+
+    private SendToTpsRequest sendToTpsRequest;
+
+    private long gruppeId = 10L;
+    private String environment = "t9";
+    private List<Long> ids;
+    private int expectedAntallSendte;
+    private int expectedAntallFeilet;
+    private String expectedFoedselnummer;
+    private Long expectedSekvensnummer;
+    private String expectedStatus;
+
+    /**
+     * Scenario: Tester happypath til {@link TpsfConsumer#sendSkdmeldingerToTps}
+     */
+    @Test
+    public void shouldSendSkdMeldingTilTpsf() {
+        ids = new ArrayList<>();
+        ids.add(123L);
+        ids.add(321L);
+        sendToTpsRequest = new SendToTpsRequest(environment, ids);
+
+        expectedAntallSendte = 1;
+        expectedAntallFeilet = 0;
+        expectedFoedselnummer = "01010101010";
+        expectedSekvensnummer = 10L;
+        expectedStatus = "ok";
+
+        stubTpsfConsumer();
+
+        SkdMeldingerTilTpsRespons response = tpsfConsumer.sendSkdmeldingerToTps(gruppeId, sendToTpsRequest);
+
+        assertEquals(expectedAntallSendte, response.getAntallSendte());
+        assertEquals(expectedAntallFeilet, response.getAntallFeilet());
+        assertEquals(expectedFoedselnummer, response.getStatusFraFeilendeMeldinger().get(0).getFoedselsnummer());
+        assertEquals(expectedSekvensnummer, response.getStatusFraFeilendeMeldinger().get(0).getSekvensnummer());
+        assertEquals(expectedStatus, response.getStatusFraFeilendeMeldinger().get(0).getStatus());
+    }
+
+    public void stubTpsfConsumer() {
+        stubFor(post(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))
+                .withRequestBody(equalToJson(
+                        "{\"environment\":\"" + environment
+                                + "\",\"ids\":[" + ids.get(0) + ", " + ids.get(1) + "]}"))
+                .willReturn(ok()
+                        .withHeader("content-type", "application/json")
+                        .withBody("{\"antallSendte\": \"" + expectedAntallSendte
+                                + "\", \"antallFeilet\": \"" + expectedAntallFeilet
+                                + "\", \"statusFraFeilendeMeldinger\": [{\"foedselsnummer\": \"" + expectedFoedselnummer
+                                + "\", \"sekvensnummer\": " + expectedSekvensnummer
+                                + ", \"status\": \"" + expectedStatus + "\"}]}")));
+    }
+}

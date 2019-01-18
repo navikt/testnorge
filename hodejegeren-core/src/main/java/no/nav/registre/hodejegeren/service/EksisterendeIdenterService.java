@@ -44,7 +44,7 @@ public class EksisterendeIdenterService {
     @Autowired
     private Random rand;
 
-    public List<String> hentMyndigeIdenterIAvspillerGruppe(Long gruppeId, String miljoe, int henteAntall, int minimumAlder) {
+    public List<String> hentLevendeIdenterIGruppeOgSjekkStatusQuo(Long gruppeId, String miljoe, int henteAntall, int minimumAlder) {
         List<String> hentedeIdenter = new ArrayList<>(henteAntall);
         List<String> identer = finnLevendeIdenter(gruppeId);
         List<String> gyldigeIdenter = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
