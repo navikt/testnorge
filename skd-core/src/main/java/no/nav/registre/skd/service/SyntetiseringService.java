@@ -26,6 +26,9 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.skd.consumer.HodejegerenConsumer;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
+import no.nav.registre.skd.consumer.TpsfConsumer;
+import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
+import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.exceptions.IkkeFullfoertBehandlingExceptionsContainer;
 import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
@@ -46,6 +49,9 @@ public class SyntetiseringService {
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
+
+    @Autowired
+    private TpsfConsumer tpsfConsumer;
 
     @Autowired
     private TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
@@ -93,6 +99,7 @@ public class SyntetiseringService {
                 listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+
             } catch (ManglendeInfoITpsException e) {
                 e.getClass().getName();
                 if (ikkeFullfoertBehandlingExceptionsContainer == null) {
@@ -133,6 +140,9 @@ public class SyntetiseringService {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ikkeFullfoertBehandlingExceptionsContainer);
         }
 
+        // TODO - hvordan skal vi lage denne responsen?
+        // SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = sendSkdEndringsmeldingerTilTps(ids, genereringsOrdreRequest);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(ids);
     }
 
@@ -158,7 +168,7 @@ public class SyntetiseringService {
     private void lagreSkdEndringsmeldingerITpsfOgOppdaterIds(List<Long> ids, Endringskoder endringskode,
             List<RsMeldingstype> syntetiserteSkdmeldinger, GenereringsOrdreRequest genereringsOrdreRequest) {
         try {
-            ids.addAll(hodejegerenConsumer.lagreSkdEndringsmeldingerITpsf(genereringsOrdreRequest.getAvspillergruppeId(), syntetiserteSkdmeldinger));
+            ids.addAll(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getAvspillergruppeId(), syntetiserteSkdmeldinger));
         } catch (Exception e) {
             StringBuilder message = new StringBuilder(120).append("Noe feilet under lagring til TPSF: ")
                     .append(e.getMessage())
@@ -175,6 +185,11 @@ public class SyntetiseringService {
             log.warn(message.toString());
             throw e;
         }
+    }
+
+    private SkdMeldingerTilTpsRespons sendSkdEndringsmeldingerTilTps(List<Long> ids, GenereringsOrdreRequest genereringsOrdreRequest) {
+        SendToTpsRequest sendToTpsRequest = new SendToTpsRequest(genereringsOrdreRequest.getMiljoe(), ids);
+        return tpsfConsumer.sendSkdmeldingerToTps(genereringsOrdreRequest.getAvspillergruppeId(), sendToTpsRequest);
     }
 
     private Map<String, List<String>> opprettListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {

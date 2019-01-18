@@ -86,6 +86,9 @@ public class GenererSyntetiskeMeldingerCompTest {
         stubHodejegeren(gruppeId);
         stubTpsSynt();
         stubIdentpool();
+        stubTpsf(gruppeId);
+
+        // TODO - legg til test av sendTilTps her
 
         GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, "t10", antallMeldingerPerAarsakskode);
 
@@ -124,11 +127,17 @@ public class GenererSyntetiskeMeldingerCompTest {
 
         // Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubHodejegerenHentGifteIdenter(gruppeId, "[]");
+    }
 
-        // Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
-        stubFor(post("/hodejegeren/api/v1/lagre-tpsf")
-                .withRequestBody(
-                        equalToJson("{\"avspillergruppeId\": " + gruppeId + ",\"skdMeldinger\": " + getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json") + "}"))
+    private void stubTpsf(long gruppeId) {
+        // Lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
+        stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
+                .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
+                .willReturn(okJson(expectedMeldingsIdsITpsf.toString())));
+
+        // Sender meldingene til TPS
+        stubFor(post("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId)
+                .withRequestBody(equalToJson("{\"environment\": \"t10\", \"ids\": [120421016, 110156008, 120421017, 110156009]}"))
                 .willReturn(okJson(expectedMeldingsIdsITpsf.toString())));
     }
 

@@ -89,6 +89,8 @@ public class FeilhaandteringCompTest {
 
         stubIdentpool();
         stubHodejegeren(gruppeId);
+        stubTpsf(gruppeId);
+
         stubTpsSynt(INNVANDRING.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json");
         stubTpsSynt(NAVNEENDRING_FOERSTE.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode06_2meldinger_Response.json");
 
@@ -126,23 +128,25 @@ public class FeilhaandteringCompTest {
     }
 
     private void stubHodejegeren(long gruppeId) {
-        // Hodejegeren henter alle identer i avspillergruppa hos TPSF:
+        // Henter alle identer i avspillergruppa hos TPSF:
         stubHodejegerenHentLevendeIdenter(gruppeId,
                 "[\"01010101010\",\n\"02020202020\"\n,\"33333333333\",\n  \"44444444444\"\n,\n\"55555555555\",\n\"66666666666\"\n]");
 
-        // Hodejegeren henter liste med alle døde eller utvandrede identer i avspillergruppa hos TPSF:
+        // Henter liste med alle døde eller utvandrede identer i avspillergruppa hos TPSF:
         stubHodejegerenHentDoedeIdenter(gruppeId, "[\n  \"33333333333\",\n  \"44444444444\"\n]");
 
-        // Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
+        // Henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubHodejegerenHentGifteIdenter(gruppeId, "[\n\"55555555555\",\n\"66666666666\"\n]");
 
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/status-quo/NAVNEENDRING_FOERSTE/t10/01010101010"))
                 .willReturn(aResponse().withStatus(500).withBody("{\"message\":\"" + testfeilmelding + "\"}")));
 
-        // Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
-        stubFor(post("/hodejegeren/api/v1/lagre-tpsf")
-                .withRequestBody(
-                        equalToJson("{\"avspillergruppeId\": " + gruppeId + ",\"skdMeldinger\": " + getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json") + "}"))
+    }
+
+    private void stubTpsf(long gruppeId) {
+        // Lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
+        stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
+                .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
                 .willReturn(okJson(expectedMeldingsIdsITpsf.toString())));
     }
 

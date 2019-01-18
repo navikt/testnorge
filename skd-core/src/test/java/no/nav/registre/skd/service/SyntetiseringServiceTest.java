@@ -41,6 +41,7 @@ import java.util.List;
 
 import no.nav.registre.skd.consumer.HodejegerenConsumer;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
+import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.exceptions.IkkeFullfoertBehandlingExceptionsContainer;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
@@ -60,6 +61,9 @@ public class SyntetiseringServiceTest {
 
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
+
+    @Mock
+    private TpsfConsumer tpsfConsumer;
 
     @Mock
     private FoedselService foedselService;
@@ -98,7 +102,7 @@ public class SyntetiseringServiceTest {
         verify(validationService).logAndRemoveInvalidMessages(eq(fireSkdmeldinger), any());
 
         ArgumentCaptor<List<RsMeldingstype>> captor = ArgumentCaptor.forClass(List.class);
-        verify(hodejegerenConsumer, times(2)).lagreSkdEndringsmeldingerITpsf(eq(GRUPPE_ID), captor.capture());
+        verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(eq(GRUPPE_ID), captor.capture());
         final List<List<RsMeldingstype>> actualSavedSkdmeldinger = captor.getAllValues();
         assertEquals(fireSkdmeldinger, actualSavedSkdmeldinger.get(0));
         assertEquals(treSkdmeldinger, actualSavedSkdmeldinger.get(1));
@@ -180,7 +184,7 @@ public class SyntetiseringServiceTest {
     }
 
     /**
-     * Testscenario: HVIS kall til Tpsf gjennom {@link HodejegerenConsumer#lagreSkdEndringsmeldingerITpsf} feiler, og det kastes en
+     * Testscenario: HVIS kall til Tpsf gjennom {@link TpsfConsumer#saveSkdEndringsmeldingerInTPSF} feiler, og det kastes en
      * exception, skal denne catches og feilen og nye, rekvirerte identer som ikke blir lagret i TPSF logges.
      */
     @Test
@@ -198,13 +202,13 @@ public class SyntetiseringServiceTest {
         ((RsMeldingstype1Felter) melding).setFodselsdato("010101");
         ((RsMeldingstype1Felter) melding).setPersonnummer("01010");
 
-        when(hodejegerenConsumer.lagreSkdEndringsmeldingerITpsf(any(), any())).thenThrow(RuntimeException.class);
+        when(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(any(), any())).thenThrow(RuntimeException.class);
         when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), anyInt())).thenReturn(Arrays.asList(melding));
 
         try {
             syntetiseringService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
         } catch (Exception e) {
-            verify(hodejegerenConsumer, times(2)).lagreSkdEndringsmeldingerITpsf(any(), eq(Arrays.asList(melding)));
+            verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(any(), eq(Arrays.asList(melding)));
 
             assertTrue(listAppender.list.toString().contains("Noe feilet under lagring til TPSF"));
             assertTrue(listAppender.list.toString().contains("01010101010"));
@@ -228,7 +232,7 @@ public class SyntetiseringServiceTest {
         String testfeilmelding = "testfeilmelding";
         doThrow(new RuntimeException(testfeilmelding))
                 .when(eksisterendeIdenterService).behandleEksisterendeIdenter(any(), any(), eq(ENDRING_OPPHOLDSTILLATELSE), any());
-        when(hodejegerenConsumer.lagreSkdEndringsmeldingerITpsf(any(), any())).thenReturn(ids);
+        when(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(any(), any())).thenReturn(ids);
 
         ResponseEntity response = syntetiseringService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
 
