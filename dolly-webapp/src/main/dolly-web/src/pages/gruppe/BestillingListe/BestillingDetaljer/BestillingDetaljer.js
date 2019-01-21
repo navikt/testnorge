@@ -2,11 +2,14 @@ import React, { PureComponent, Fragment } from 'react'
 import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
 import './BestillingDetaljer.less'
+import Formatters from '~/utils/DataFormatter'
+import StaticValue from '~/components/fields/StaticValue/StaticValue'
 
 export default class BestillingDetaljer extends PureComponent {
 	render() {
 		const { id, successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
 
+		// TODO: Reverse Map detail data here. Alex
 		return (
 			<div className="bestilling-detaljer">
 				<h3>Bestillingsdetaljer</h3>
@@ -23,75 +26,37 @@ export default class BestillingDetaljer extends PureComponent {
 
 	_renderErrorMessage = errorMsgs => (
 		<Fragment>
-			<h3>Feilmeldinger</h3>
-			{errorMsgs.map((error, i) => {
-				return (
-					<div className={'flexbox--all-center'} key={i}>
-						<Icon size={'24px'} kind={'report-problem-triangle'} />
+			<div className="flexbox--align-center error-header">
+				<Icon size={'16px'} kind={'report-problem-triangle'} />
+				<h3>Feilmeldinger</h3>
+			</div>
+			<div className={'flexbox--align-center info-block'}>
+				{errorMsgs.map((error, i) => {
+					return (
 						<p className="" key={i}>
 							{error.split('%').join(' ')
 							// .substring(0, error.length - 1)
 							}
 						</p>
-					</div>
-				)
-			})}
-		</Fragment>
-	)
-
-	_renderMiljoeStatus = (successEnvs, failedEnvs) => (
-		<Fragment>
-			<h3>Miljøstatus</h3>
-			<div className={'flexbox--align-center--justify-start'}>
-				{successEnvs.map((env, i) => {
-					return this._renderMiljoe(env, i, 'success')
-				})}
-
-				{failedEnvs.map((env, i) => {
-					return this._renderMiljoe(env, i, 'failed')
+					)
 				})}
 			</div>
 		</Fragment>
 	)
 
-	_renderMiljoe = (env, key, status) => {
-		const iconKind = status == 'success' ? 'feedback-check-circle' : 'report-problem-triangle'
+	_renderMiljoeStatus = (successEnvs, failedEnvs) => {
+		const successEnvsStr = Formatters.arrayToString(successEnvs)
+		const failedEnvsStr = Formatters.arrayToString(failedEnvs)
+
 		return (
-			<div className={'miljoe'} key={key}>
-				<Icon size={'24px'} kind={iconKind} />
-				<p>{env}</p>
-			</div>
+			<Fragment>
+				<h3>Miljøstatus</h3>
+
+				<div className={'flexbox--align-center info-block'}>
+					{successEnvsStr.length > 0 && <StaticValue header="Suksess" value={successEnvsStr} />}
+					{failedEnvsStr.length > 0 && <StaticValue header="Feilet" value={failedEnvsStr} />}
+				</div>
+			</Fragment>
 		)
 	}
-
-	// _renderErrorMessage = errorMsgs =>
-	// 	errorMsgs.map((error, i) => {
-	// 		return (
-	// 			<div className={'flexbox--all-center'} key={i}>
-	// 				<Icon size={'24px'} kind={'report-problem-triangle'} />
-	// 				<p className="error-text" key={i}>
-	// 					{error.split('%').join(' ')
-	// 					// .substring(0, error.length - 1)
-	// 					}
-	// 				</p>
-	// 			</div>
-	// 		)
-	// 	})
-
-	// _renderFailureMessage = () => (
-	// 	<Fragment>
-	// 		<Icon kind={'report-problem-circle'} />
-	// 		<p>Din bestilling ble ikke utført</p>
-	// 	</Fragment>
-	// )
-
-	// _renderMiljoe = (env, key, status) => {
-	// 	const iconKind = status == 'success' ? 'feedback-check-circle' : 'report-problem-triangle'
-	// 	return (
-	// 		<div className={'miljoe'} key={key}>
-	// 			<Icon size={'24px'} kind={iconKind} />
-	// 			<p>{env}</p>
-	// 		</div>
-	// 	)
-	// }
 }
