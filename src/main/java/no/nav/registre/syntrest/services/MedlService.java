@@ -22,4 +22,8 @@ public class MedlService {
         List<Map<String, String>> result = restTemplate.getForObject(String.format(NaisConnections.CONNECTION_MEDL, num_to_generate), List.class);
         return CompletableFuture.completedFuture(result);
     }
+
+    public String isAlive(){
+        return restTemplate.getForObject(NaisConnections.ALIVE_MEDL, String.class);
+    }
 }
