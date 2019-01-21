@@ -157,9 +157,8 @@ public class SyntetiseringService {
     }
 
     private List<Long> lagreSkdEndringsmeldingerITpsf(Endringskoder endringskode, List<RsMeldingstype> syntetiserteSkdmeldinger, GenereringsOrdreRequest genereringsOrdreRequest) {
-        List<Long> ids;
         try {
-            ids = new ArrayList<>(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getAvspillergruppeId(), syntetiserteSkdmeldinger));
+            return new ArrayList<>(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(genereringsOrdreRequest.getAvspillergruppeId(), syntetiserteSkdmeldinger));
         } catch (Exception e) {
             StringBuilder message = new StringBuilder(120).append("Noe feilet under lagring til TPSF: ")
                     .append(e.getMessage())
@@ -176,7 +175,6 @@ public class SyntetiseringService {
             log.warn(message.toString());
             throw e;
         }
-        return ids;
     }
 
     private SkdMeldingerTilTpsRespons sendSkdEndringsmeldingerTilTps(List<Long> ids, GenereringsOrdreRequest genereringsOrdreRequest) {

@@ -13,8 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SendToTpsRequest {
+
     @JsonProperty("environment")
     private String environment;
+
     @JsonProperty("ids")
     private List<Long> ids;
 }
