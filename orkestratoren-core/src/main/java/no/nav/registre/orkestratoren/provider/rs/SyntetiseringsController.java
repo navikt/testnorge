@@ -42,14 +42,16 @@ public class SyntetiseringsController {
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity opprettSkdMeldingerOgSendTilTps(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
         try {
-            try {
+            ResponseEntity response = tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
+                    syntetiserSkdmeldingerRequest.getMiljoe(),
+                    syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
+            if(response != null && response.getBody() != null) {
                 SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
                         syntetiserSkdmeldingerRequest.getMiljoe(),
                         syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode()).getBody();
                 return ResponseEntity.ok(skdMeldingerTilTpsRespons);
-            } catch (NullPointerException npe) {
-                log.error("NullPointerException: Fikk ikke riktig respons fra Testnorge-Skd. {}", npe);
-                throw npe;
+            } else {
+                return response;
             }
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
