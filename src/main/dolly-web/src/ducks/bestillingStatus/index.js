@@ -45,7 +45,6 @@ export default handleActions(
 
 // Selector + mapper
 export const sokSelector = (items, searchStr) => {
-	console.log(items, 'orgiinal items')
 	if (!items) return null
 	const mappedItems = mapItems(items)
 
