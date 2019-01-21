@@ -40,7 +40,7 @@ public class TpsfConsumerTest {
      * @throws IOException
      */
     @Test
-    public void shouldSendCorrectRequestParametersAndgetIdenterFiltrertPaaAarsakskode() {
+    public void shouldSendCorrectRequestParametersAndGetIdenterFiltrertPaaAarsakskode() {
         long gruppeId = 123L;
         String transaksjonskode = "1";
         Set<String> expectedIdenter = new HashSet<>();

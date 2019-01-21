@@ -100,7 +100,7 @@ public class EksisterendeIdenterServiceTest {
     @Test
     public void hentMyndigeIdenterIGruppeTest() {
         for (int i = 0; i < 3; i++) {
-            List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(1L, miljoe, i, MINIMUM_ALDER);
+            List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(1L, miljoe, i, MINIMUM_ALDER);
             assertEquals(i, identer.size());
         }
     }
@@ -111,7 +111,7 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void hentMyndigeIdenterIGruppeIngenIdenterTest() {
-        List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(2L, miljoe, 2, MINIMUM_ALDER);
+        List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(2L, miljoe, 2, MINIMUM_ALDER);
         assertTrue(identer.isEmpty());
     }
 
@@ -121,7 +121,7 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void hentMyndigeIdenterIGruppeForMangeAaHenteTest() {
-        List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(1L, miljoe, 6, MINIMUM_ALDER);
+        List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(1L, miljoe, 6, MINIMUM_ALDER);
         assertEquals(4, identer.size());
         assertThat(identer, containsInAnyOrder(
                 "20044249945",
@@ -143,7 +143,7 @@ public class EksisterendeIdenterServiceTest {
         Map<String, String> statusDoed = new HashMap<>();
         statusDoed.put(DATO_DO, "12312");
         when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249948")).thenReturn(statusDoed);
-        List<String> identer = eksisterendeIdenterService.hentMyndigeIdenterIAvspillerGruppe(1L, miljoe, 10, MINIMUM_ALDER);
+        List<String> identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(1L, miljoe, 10, MINIMUM_ALDER);
         assertEquals(3, identer.size());
         assertThat(identer, containsInAnyOrder(
                 "20044249945",
