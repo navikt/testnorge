@@ -184,7 +184,7 @@ public class SyntetiseringService {
         try {
             return tpsfConsumer.sendSkdmeldingerToTps(genereringsOrdreRequest.getAvspillergruppeId(), sendToTpsRequest);
         } catch (HttpStatusCodeException e) {
-            throw new KunneIkkeSendeTilTpsException(e.getMessage());
+            throw new KunneIkkeSendeTilTpsException(e.getMessage(), e);
         }
     }
 
