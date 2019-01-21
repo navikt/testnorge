@@ -4,17 +4,22 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static javax.security.auth.callback.ConfirmationCallback.OK;
 import static no.nav.registre.skd.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.skd.service.Endringskoder.NAVNEENDRING_FOERSTE;
 import static no.nav.registre.skd.testutils.ResourceUtils.getResourceFileContent;
 import static no.nav.registre.skd.testutils.StrSubstitutor.replace;
 import static no.nav.registre.skd.testutils.Utils.testLoggingInClass;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +44,7 @@ import java.util.List;
 import java.util.Random;
 
 import no.nav.registre.skd.ApplicationStarter;
-import no.nav.registre.skd.exceptions.IkkeFullfoertBehandlingExceptionsContainer;
+import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.SyntetiseringController;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.service.SyntetiseringService;
@@ -54,7 +59,7 @@ public class FeilhaandteringCompTest {
     private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
     private List<Long> expectedMeldingsIdsITpsf = Arrays.asList(120421016L, 110156008L);
     private Integer antallMeldinger = 2;
-    private String t10 = "t10";
+    private String miljoe = "t10";
 
     @Autowired
     private SyntetiseringController syntetiseringController;
@@ -89,20 +94,21 @@ public class FeilhaandteringCompTest {
 
         stubIdentpool();
         stubHodejegeren(gruppeId);
+        stubTpsf(gruppeId);
+        stubSendIderTilTps(gruppeId);
+
         stubTpsSynt(INNVANDRING.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json");
         stubTpsSynt(NAVNEENDRING_FOERSTE.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode06_2meldinger_Response.json");
 
-        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, t10, antallMeldingerPerAarsakskode);
+        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerAarsakskode);
         ResponseEntity response = syntetiseringController.genererSkdMeldinger(ordreRequest);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        IkkeFullfoertBehandlingExceptionsContainer exception = (IkkeFullfoertBehandlingExceptionsContainer) response.getBody();
-        assertEquals(3, listAppender.list.size());
-        assertTrue(listAppender.list.toString()
-                .contains(String.format("Skdmeldinger som var ferdig behandlet før noe feilet, har følgende id-er i TPSF (avspillergruppe %s): %s",
-                        123, expectedMeldingsIdsITpsf.toString())));
-        assertEquals(2, (exception.getIds().size()));
-        assertTrue(exception.getIds().containsAll(expectedMeldingsIdsITpsf));
+        assertEquals(5, listAppender.list.size());
+        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
+        assertThat(skdMeldingerTilTpsRespons.getAntallSendte(), is(equalTo(2)));
+        assertThat(listAppender.list.toString(), containsString("Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: ["
+                + expectedMeldingsIdsITpsf.get(0) + ", " + expectedMeldingsIdsITpsf.get(1) + "]"));
     }
 
     private void stubIdentpool() {
@@ -126,24 +132,45 @@ public class FeilhaandteringCompTest {
     }
 
     private void stubHodejegeren(long gruppeId) {
-        // Hodejegeren henter alle identer i avspillergruppa hos TPSF:
+        // Henter alle identer i avspillergruppa hos TPSF:
         stubHodejegerenHentLevendeIdenter(gruppeId,
                 "[\"01010101010\",\n\"02020202020\"\n,\"33333333333\",\n  \"44444444444\"\n,\n\"55555555555\",\n\"66666666666\"\n]");
 
-        // Hodejegeren henter liste med alle døde eller utvandrede identer i avspillergruppa hos TPSF:
+        // Henter liste med alle døde eller utvandrede identer i avspillergruppa hos TPSF:
         stubHodejegerenHentDoedeIdenter(gruppeId, "[\n  \"33333333333\",\n  \"44444444444\"\n]");
 
-        // Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
+        // Henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubHodejegerenHentGifteIdenter(gruppeId, "[\n\"55555555555\",\n\"66666666666\"\n]");
 
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/status-quo/NAVNEENDRING_FOERSTE/t10/01010101010"))
                 .willReturn(aResponse().withStatus(500).withBody("{\"message\":\"" + testfeilmelding + "\"}")));
 
-        // Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
-        stubFor(post("/hodejegeren/api/v1/lagre-tpsf")
-                .withRequestBody(
-                        equalToJson("{\"avspillergruppeId\": " + gruppeId + ",\"skdMeldinger\": " + getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json") + "}"))
+    }
+
+    private void stubTpsf(long gruppeId) {
+        // Lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
+        stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
+                .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
                 .willReturn(okJson(expectedMeldingsIdsITpsf.toString())));
+
+        int expectedAntallFeilet = 0;
+
+        // Sender skdmeldingene til TPS
+        stubFor(post(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))
+                .withRequestBody(equalToJson(
+                        "{\"environment\":\"" + miljoe
+                                + "\",\"ids\":[" + expectedMeldingsIdsITpsf.get(0) + ", " + expectedMeldingsIdsITpsf.get(1) + "]}"))
+                .willReturn(ok()
+                        .withHeader("content-type", "application/json")
+                        .withBody("{\"antallSendte\": \"" + expectedMeldingsIdsITpsf.size()
+                                + "\", \"antallFeilet\": \"" + expectedAntallFeilet
+                                + "\", \"statusFraFeilendeMeldinger\": ["
+                                + "{\"foedselsnummer\": \"" + expectedFnrFromIdentpool.get(0)
+                                + "\", \"sekvensnummer\": \"\""
+                                + ", \"status\": \"\"},"
+                                + "{\"foedselsnummer\": \"" + expectedFnrFromIdentpool.get(1)
+                                + "\", \"sekvensnummer\": \"\""
+                                + ", \"status\": \"\"}]}")));
     }
 
     private void stubHodejegerenHentLevendeIdenter(long gruppeId, String okJsonResponse) {
@@ -159,5 +186,10 @@ public class FeilhaandteringCompTest {
     private void stubHodejegerenHentGifteIdenter(long gruppeId, String okJsonResponse) {
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/gifte-identer/" + gruppeId))
                 .willReturn(okJson(okJsonResponse)));
+    }
+
+    private void stubSendIderTilTps(long gruppeId) {
+        stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send" + gruppeId))
+                .willReturn(aResponse().withStatus(OK)));
     }
 }

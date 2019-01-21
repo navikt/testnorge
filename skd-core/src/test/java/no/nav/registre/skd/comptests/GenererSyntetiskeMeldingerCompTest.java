@@ -4,6 +4,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import no.nav.registre.skd.ApplicationStarter;
+import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.SyntetiseringController;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 
@@ -64,12 +66,10 @@ public class GenererSyntetiskeMeldingerCompTest {
      * <p>
      * <p>
      * Testnorge-skd henter syntetiserte skdmeldinger fra TPS Syntetisereren, mater dem med identer og tilhørende info, og lagrer
-     * meldingene i TPSF ved å kalle på endepunkt hos Hodejegeren. (se løsningsbeskrivelse for hele prosedyren som testes i happypath:
-     * https://confluence.adeo.no/display/FEL/TPSF+Hodejegeren)
+     * meldingene i TPSF.
      * <p>
      * HVIS endepunktet kalles med bestilling av et gitt antall syntetiserte skdmeldinger for et utvalg av årsakskoder, Så skal
      * disse meldingene lagres i TPSF på endepunktet /v1/endringsmelding/skd/save/{skdMeldingGruppeId}, og id-ene til meldingene returneres.
-     * Dette endepunktet i TPSF kalles i Hodejegeren.
      * Meldingene skal bestå av gyldige identer (FNR/DNR) i tråd med meldingens felter og som være identer som stemmer overens med
      * TPS i det miljøet som angis av bestillingen/request. Tilhørende felter må stemme overens med status quo i TPS på de
      * eksisterende identer som mates inn i de syntetiserte meldingene.
@@ -86,13 +86,16 @@ public class GenererSyntetiskeMeldingerCompTest {
         stubHodejegeren(gruppeId);
         stubTpsSynt();
         stubIdentpool();
+        stubTpsf(gruppeId);
 
         GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, "t10", antallMeldingerPerAarsakskode);
 
-        List<Long> meldingsIderITpsf = (List<Long>) syntetiseringController.genererSkdMeldinger(ordreRequest).getBody();
+        SkdMeldingerTilTpsRespons respons = (SkdMeldingerTilTpsRespons) syntetiseringController.genererSkdMeldinger(ordreRequest).getBody();
 
         assertEquals(4, expectedMeldingsIdsITpsf.size());
-        assertEquals(expectedMeldingsIdsITpsf, meldingsIderITpsf);
+        assertEquals(4, respons.getAntallSendte());
+        assertEquals(expectedFnrFromIdentpool.get(0), respons.getStatusFraFeilendeMeldinger().get(0).getFoedselsnummer());
+        assertEquals(expectedFnrFromIdentpool.get(1), respons.getStatusFraFeilendeMeldinger().get(1).getFoedselsnummer());
     }
 
     private void stubIdentpool() {
@@ -124,12 +127,28 @@ public class GenererSyntetiskeMeldingerCompTest {
 
         // Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubHodejegerenHentGifteIdenter(gruppeId, "[]");
+    }
 
-        // Hodejegeren lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
-        stubFor(post("/hodejegeren/api/v1/lagre-tpsf")
-                .withRequestBody(
-                        equalToJson("{\"avspillergruppeId\": " + gruppeId + ",\"skdMeldinger\": " + getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json") + "}"))
+    private void stubTpsf(long gruppeId) {
+        // Lagrer meldingene og får liste over database-id-ene til de lagrede meldingene i retur.
+        stubFor(post("/tpsf/api/v1/endringsmelding/skd/save/" + gruppeId)
+                .withRequestBody(equalToJson(getResourceFileContent("__files/comptest/tpsf/tpsf_save_aarsakskode02_2ferdigeMeldinger_request.json")))
                 .willReturn(okJson(expectedMeldingsIdsITpsf.toString())));
+
+        // Sender meldingene til TPS
+        stubFor(post("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId)
+                .withRequestBody(equalToJson("{\"environment\": \"t10\", \"ids\": [120421016, 110156008, 120421017, 110156009]}"))
+                .willReturn(ok()
+                        .withHeader("content-type", "application/json")
+                        .withBody("{\"antallSendte\": \"" + expectedMeldingsIdsITpsf.size()
+                                + "\", \"antallFeilet\": \"" + 0
+                                + "\", \"statusFraFeilendeMeldinger\": ["
+                                + "{\"foedselsnummer\": \"" + expectedFnrFromIdentpool.get(0)
+                                + "\", \"sekvensnummer\": \"\""
+                                + ", \"status\": \"\"},"
+                                + "{\"foedselsnummer\": \"" + expectedFnrFromIdentpool.get(1)
+                                + "\", \"sekvensnummer\": \"\""
+                                + ", \"status\": \"\"}]}")));
     }
 
     private void stubHodejegerenHentLevendeIdenter(long gruppeId, String okJsonResponse) {
