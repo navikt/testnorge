@@ -22,4 +22,11 @@ public class SkdMeldingerTilTpsRespons {
         this.statusFraFeilendeMeldinger.add(statusFraFeilendeMeldinger);
         return this;
     }
+
+    public void addTpsfId(Long id) {
+        if(tpsfIds == null) {
+            tpsfIds = new ArrayList<>();
+        }
+        tpsfIds.add(id);
+    }
 }
