@@ -104,8 +104,10 @@ public class SyntetiseringService {
                 for (StatusPaaAvspiltSkdMelding status : skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger()) {
                     skdMeldingerTilTpsResponsTotal.addStatusFraFeilendeMeldinger(status);
                 }
-                for (Long tpsfId : skdMeldingerTilTpsRespons.getTpsfIds()) {
-                    skdMeldingerTilTpsResponsTotal.addTpsfId(tpsfId);
+                if (skdMeldingerTilTpsRespons.getTpsfIds() != null) {
+                    for (Long tpsfId : skdMeldingerTilTpsRespons.getTpsfIds()) {
+                        skdMeldingerTilTpsResponsTotal.addTpsfId(tpsfId);
+                    }
                 }
 
                 listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
