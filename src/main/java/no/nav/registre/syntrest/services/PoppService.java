@@ -24,4 +24,8 @@ public class PoppService {
         System.out.println(result);
         return CompletableFuture.completedFuture(result);
     }
+
+    public String isAlive(){
+        return restTemplate.getForObject(NaisConnections.ALIVE_POPP, String.class);
+    }
 }

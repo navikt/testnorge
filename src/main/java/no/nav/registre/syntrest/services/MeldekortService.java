@@ -21,4 +21,8 @@ public class MeldekortService {
         List<String> result = restTemplate.getForObject(String.format(NaisConnections.CONNECTION_ARENA_MELDEKORT, num_to_generate, meldegruppe), List.class);
         return CompletableFuture.completedFuture(result);
     }
+
+    public String isAlive(){
+        return restTemplate.getForObject(NaisConnections.ALIVE_ARENA_MELDEKORT, String.class);
+    }
 }

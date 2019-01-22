@@ -24,4 +24,8 @@ public class EIAService {
         List<String> result = restTemplate.postForObject(NaisConnections.CONNECTION_EIA, request, List.class);
         return CompletableFuture.completedFuture(result);
     }
+
+    public String isAlive(){
+        return restTemplate.getForObject(NaisConnections.ALIVE_EIA, String.class);
+    }
 }

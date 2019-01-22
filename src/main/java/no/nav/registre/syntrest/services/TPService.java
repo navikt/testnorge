@@ -23,4 +23,8 @@ public class TPService {
         List<Map<String, String>> result = restTemplate.getForObject(String.format(NaisConnections.CONNECTION_TP, num_to_generate), List.class);
         return CompletableFuture.completedFuture(result);
     }
+
+    public String isAlive(){
+        return restTemplate.getForObject(NaisConnections.ALIVE_TP, String.class);
+    }
 }
