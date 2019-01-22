@@ -34,14 +34,14 @@ import java.util.concurrent.TimeUnit;
 public class KubernetesUtils {
 
     //TODO: save kubeconfig to vault and reference it here
-//    @Value("${kubeconfigVariableNameHere}")
-//    private String kubeCongif;
-//
-//    public ApiClient createApiClient()throws IOException{
-//        KubeConfig kc = KubeConfig.loadKubeConfig(new StringReader(kubeCongif));
-//        ApiClient client = Config.fromConfig(kc);
-//        return client;
-//    }
+    @Value("${kubeconfigVariableNameHere}")
+    private String kubeCongif;
+
+    public ApiClient createApiClient()throws IOException{
+        KubeConfig kc = KubeConfig.loadKubeConfig(new StringReader(kubeCongif));
+        ApiClient client = Config.fromConfig(kc);
+        return client;
+    }
 
 
     public ExtensionsV1beta1DeploymentList listSynthDeployments(ApiClient client)throws ApiException{
@@ -144,7 +144,7 @@ public class KubernetesUtils {
                 else throw e;
             }
         } else{
-            throw new IllegalArgumentException("No application named:" + appName + "found");
+            throw new IllegalArgumentException("No application named: " + appName + " found");
         }
 
     }

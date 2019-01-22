@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.Domain;
+package no.nav.registre.syntrest.domain;
 
 import lombok.Data;
 
