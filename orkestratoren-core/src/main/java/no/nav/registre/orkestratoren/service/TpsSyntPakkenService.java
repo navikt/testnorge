@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
+import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 
 @Service
 @Slf4j
@@ -26,6 +27,11 @@ public class TpsSyntPakkenService {
         ResponseEntity response = testnorgeSkdConsumer.startSyntetisering(new GenereringsOrdreRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode));
         if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
             log.warn("Noe feilet under syntetisering av skd-meldinger. Vennligst se loggene til Testnorge-Skd for mer informasjon");
+        } else {
+            if (response.getBody() != null) {
+                SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
+                log.info("{} skd-meldinger sendt til TPS.", skdMeldingerTilTpsRespons.getAntallSendte());
+            }
         }
         return response;
     }
