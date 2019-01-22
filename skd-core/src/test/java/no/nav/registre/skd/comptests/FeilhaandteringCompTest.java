@@ -104,11 +104,10 @@ public class FeilhaandteringCompTest {
         ResponseEntity response = syntetiseringController.genererSkdMeldinger(ordreRequest);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertEquals(5, listAppender.list.size());
+        assertEquals(3, listAppender.list.size());
         SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
         assertThat(skdMeldingerTilTpsRespons.getAntallSendte(), is(equalTo(2)));
-        assertThat(listAppender.list.toString(), containsString("Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: ["
-                + expectedMeldingsIdsITpsf.get(0) + ", " + expectedMeldingsIdsITpsf.get(1) + "]"));
+        assertThat(listAppender.list.toString(), containsString("Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: []"));
     }
 
     private void stubIdentpool() {
@@ -170,7 +169,8 @@ public class FeilhaandteringCompTest {
                                 + ", \"status\": \"\"},"
                                 + "{\"foedselsnummer\": \"" + expectedFnrFromIdentpool.get(1)
                                 + "\", \"sekvensnummer\": \"\""
-                                + ", \"status\": \"\"}]}")));
+                                + ", \"status\": \"\"}],"
+                                + "\"tpsfIds\": [" + expectedMeldingsIdsITpsf.get(0) + ", " + expectedMeldingsIdsITpsf.get(1) + "]}")));
     }
 
     private void stubHodejegerenHentLevendeIdenter(long gruppeId, String okJsonResponse) {

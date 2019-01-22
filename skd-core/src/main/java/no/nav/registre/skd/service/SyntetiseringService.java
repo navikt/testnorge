@@ -78,9 +78,10 @@ public class SyntetiseringService {
         Map<String, List<String>> listerMedIdenter = opprettListerMedIdenter(genereringsOrdreRequest);
 
         HttpStatus httpStatus = HttpStatus.CREATED;
+        List<Long> idsLagretITpsfMenIkkeTps = new ArrayList<>();
 
         for (Endringskoder endringskode : sorterteEndringskoder) {
-            List<Long> ids = new ArrayList<>();
+            List<Long> ids;
             try {
                 List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(),
                         antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
@@ -97,6 +98,7 @@ public class SyntetiseringService {
                 }
 
                 ids = lagreSkdEndringsmeldingerITpsf(endringskode, syntetiserteSkdmeldinger, genereringsOrdreRequest);
+                idsLagretITpsfMenIkkeTps.addAll(ids);
 
                 SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = sendSkdEndringsmeldingerTilTps(ids, genereringsOrdreRequest);
                 skdMeldingerTilTpsResponsTotal.setAntallSendte(skdMeldingerTilTpsResponsTotal.getAntallSendte() + skdMeldingerTilTpsRespons.getAntallSendte());
@@ -113,6 +115,7 @@ public class SyntetiseringService {
                 listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
                 listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+                idsLagretITpsfMenIkkeTps.removeAll(ids);
 
             } catch (ManglendeInfoITpsException e) {
                 log.error(e.getMessage(), e);
@@ -121,17 +124,17 @@ public class SyntetiseringService {
             } catch (KunneIkkeSendeTilTpsException e) {
                 log.error(e.getMessage(), e);
                 log.warn("KunneIkkeSendeTilTpsException på endringskode {} i avspillergruppe {}. Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: {}",
-                        endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
+                        endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
                 httpStatus = HttpStatus.CONFLICT;
             } catch (HttpStatusCodeException e) {
                 log.error(hentMeldingFraJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
                 log.warn("HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: {}",
-                        endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
+                        endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
                 httpStatus = HttpStatus.CONFLICT;
             } catch (RuntimeException e) {
                 log.error(e.getMessage(), e);
                 log.warn("RuntimeException på endringskode {} i avspillergruppe {}. Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: {}",
-                        endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(ids));
+                        endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
                 httpStatus = HttpStatus.CONFLICT;
             }
         }
