@@ -21,6 +21,11 @@ export const cancelBestilling = createAction('CANCEL_BESTILLING', async id => {
 	return res
 })
 
+export const gjenopprettBestilling = createAction('GJENOPPRETT_BESTILLING', async id => {
+	let res = await DollyApi.gjenopprettBestilling(id)
+	return res
+})
+
 export default handleActions(
 	{
 		[success(getBestillinger)](state, action) {
@@ -30,6 +35,10 @@ export default handleActions(
 
 		[success(bestillingActions.postBestilling)](state, action) {
 			return { ...state, ny: [...state.ny, action.payload.data.id] }
+		},
+
+		[success(gjenopprettBestilling)](state, action) {
+			return { ...state }
 		},
 
 		// [success(cancelBestilling)](state, action) {

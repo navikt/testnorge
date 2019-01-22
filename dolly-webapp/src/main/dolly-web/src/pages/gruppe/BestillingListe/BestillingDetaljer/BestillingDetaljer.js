@@ -8,6 +8,7 @@ import StaticValue from '~/components/fields/StaticValue/StaticValue'
 export default class BestillingDetaljer extends PureComponent {
 	render() {
 		const { id, successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
+		const { onGjenopprettBestilling } = this.props
 
 		// TODO: Reverse Map detail data here. Alex
 		return (
@@ -16,14 +17,19 @@ export default class BestillingDetaljer extends PureComponent {
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
 				<div className="flexbox--align-center--justify-end">
-					<Button className="flexbox--align-center" kind="edit">
+					<Button
+						onClick={onGjenopprettBestilling}
+						className="flexbox--align-center"
+						kind="synchronize"
+					>
 						GJENOPPRETT I TPS
 					</Button>
+
+					{/* Loading..gjenoppretting */}
 				</div>
 			</div>
 		)
 	}
-
 	_renderErrorMessage = errorMsgs => (
 		<Fragment>
 			<div className="flexbox--align-center error-header">
@@ -53,7 +59,11 @@ export default class BestillingDetaljer extends PureComponent {
 				<h3>Miljøstatus</h3>
 
 				<div className={'flexbox--align-center info-block'}>
-					{successEnvsStr.length > 0 && <StaticValue header="Suksess" value={successEnvsStr} />}
+					{successEnvsStr.length > 0 ? (
+						<StaticValue header="Suksess" value={successEnvsStr} />
+					) : (
+						<StaticValue header="Suksess" value={'Ingen'} />
+					)}
 					{failedEnvsStr.length > 0 && <StaticValue header="Feilet" value={failedEnvsStr} />}
 				</div>
 			</Fragment>

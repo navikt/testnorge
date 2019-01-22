@@ -1,10 +1,6 @@
 import { connect } from 'react-redux'
 import BestillingDetaljer from './BestillingDetaljer'
-import {
-	removeNyBestillingStatus,
-	miljoStatusSelector,
-	cancelBestilling
-} from '~/ducks/bestillingStatus'
+import { miljoStatusSelector, gjenopprettBestilling } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 
 // const loadingSelector = createLoadingSelector(cancelBestilling)
@@ -12,12 +8,14 @@ import { createLoadingSelector } from '~/ducks/loading'
 const mapStateToProps = (state, ownProps) => {
 	return {
 		miljoeStatusObj: miljoStatusSelector(ownProps.bestilling)
-		// isCanceling: loadingSelector(state)
 	}
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	return {}
+	const bestillingId = ownProps.bestilling.id
+	return {
+		onGjenopprettBestilling: () => dispatch(gjenopprettBestilling(bestillingId))
+	}
 }
 
 export default connect(

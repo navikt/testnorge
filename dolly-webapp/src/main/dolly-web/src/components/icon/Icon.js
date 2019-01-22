@@ -30,7 +30,8 @@ export const iconList = [
 	'arrow-circle-left',
 	'feedback-check-circle',
 	'arrow-left',
-	'arrow-right'
+	'arrow-right',
+	'synchronize'
 ]
 
 export default class Icon extends PureComponent {
@@ -76,58 +77,55 @@ export default class Icon extends PureComponent {
             case ('info-circle'): return (<svg {...props} className={cn('svg-icon-info-circle', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Info</title><g><circle stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" cx="11.5" cy="12.5" r="11" fill="none"/><path stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none" d="M8.5 19.5h6M9.5 10.5h2v8.5"/><path stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" d="M11 6c-.277 0-.5.225-.5.5 0 .277.223.5.5.5.275 0 .5-.223.5-.5 0-.275-.225-.5-.5-.5z" fill="none"/></g></svg>)
             case ('arrow-left'): return (<svg {...props} className={cn('svg-icon-arrow-left', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil venstre</title><path fill="#3e3832" d="M21.746,0.064c-0.156-0.088-0.349-0.084-0.504,0.008l-19,11.5C2.091,11.663,2,11.825,2,12s0.091,0.337,0.241,0.428l19,11.5  C21.321,23.976,21.41,24,21.5,24c0.084,0,0.169-0.021,0.246-0.064C21.903,23.847,22,23.681,22,23.5v-23  C22,0.319,21.903,0.153,21.746,0.064z"/></svg>)
             case ('arrow-right'): return (<svg {...props} className={cn('svg-icon-arrow-right', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil høyre</title><path fill="#3e3832" d="M21.759,11.577L2.786,0.077C2.631-0.017,2.439-0.02,2.281,0.069C2.124,0.158,2.027,0.324,2.027,0.505v23  c0,0.181,0.097,0.347,0.254,0.436c0.077,0.043,0.161,0.064,0.246,0.064c0.09,0,0.18-0.024,0.259-0.072l18.973-11.5  C21.909,12.342,22,12.18,22,12.005S21.909,11.668,21.759,11.577z"/></svg>)
-			case ('report-problem-circle'): return (
-				<svg {...props} className={cn('svg-icon-report-problem-circle', className)}
-				focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
-  <g fill="#258965">		   
-  			<circle className="circle" cx="12" cy="12" r="8"/>
+			case ('report-problem-circle'): return ( <svg {...props} className={cn('svg-icon-report-problem-circle', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"> <g fill="#258965"> <circle className="circle" cx="12" cy="12" r="8"/><path className="path" d="M11.696,0.996l-0.205,0.002c-3.08,0.054-5.979,1.299-8.162,3.506c-2.199,2.223-3.38,5.133-3.327,8.195
+				C0.112,19.036,5.077,24,11.305,24l0.203-0.002c6.446-0.111,11.601-5.361,11.49-11.7C22.888,5.961,17.923,0.996,11.696,0.996z
+					M11,6.996c0-0.276,0.224-0.5,0.5-0.5c0.275,0,0.5,0.224,0.5,0.5v7c0,0.276-0.225,0.5-0.5,0.5c-0.276,0-0.5-0.224-0.5-0.5V6.996z
+					M11.518,18.496c-0.006,0-0.012,0-0.018,0c-0.545,0-0.991-0.436-1-0.982c-0.01-0.552,0.43-1.008,0.982-1.017
+				c0.006,0,0.012-0.001,0.018-0.001c0.545,0,0.99,0.437,1,0.983C12.51,18.031,12.069,18.486,11.518,18.496z"/>
+				</g></svg>)
 
-  			<path className="path" d="M11.696,0.996l-0.205,0.002c-3.08,0.054-5.979,1.299-8.162,3.506c-2.199,2.223-3.38,5.133-3.327,8.195
-			   C0.112,19.036,5.077,24,11.305,24l0.203-0.002c6.446-0.111,11.601-5.361,11.49-11.7C22.888,5.961,17.923,0.996,11.696,0.996z
-				M11,6.996c0-0.276,0.224-0.5,0.5-0.5c0.275,0,0.5,0.224,0.5,0.5v7c0,0.276-0.225,0.5-0.5,0.5c-0.276,0-0.5-0.224-0.5-0.5V6.996z
-				M11.518,18.496c-0.006,0-0.012,0-0.018,0c-0.545,0-0.991-0.436-1-0.982c-0.01-0.552,0.43-1.008,0.982-1.017
-			   c0.006,0,0.012-0.001,0.018-0.001c0.545,0,0.99,0.437,1,0.983C12.51,18.031,12.069,18.486,11.518,18.496z"/>
-		   </g></svg>)
-
-
-
-
-	case ('report-problem-triangle'): return (
-	<svg {...props} className={cn('svg-icon-report-problem-triangle', className)}
-				focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
-
-	 <path className="path" d="M22.906,23.196L11.947,1.276c-0.17-0.339-0.726-0.339-0.895,0l-11,22c-0.078,0.155-0.069,0.339,0.021,0.486S0.326,24,0.5,24
-    h22c0.003,0,0.006,0,0.01,0c0.275,0,0.5-0.224,0.5-0.5C23.01,23.386,22.971,23.28,22.906,23.196z M11,9.152
-    c0-0.276,0.224-0.5,0.5-0.5c0.275,0,0.5,0.224,0.5,0.5v7.653c0,0.275-0.225,0.5-0.5,0.5c-0.276,0-0.5-0.225-0.5-0.5V9.152z
-     M11.5,21.108c-0.529,0-0.957-0.428-0.957-0.956c0-0.527,0.428-0.957,0.957-0.957c0.527,0,0.956,0.43,0.956,0.957
-    C12.456,20.681,12.027,21.108,11.5,21.108z"/>
-
-   </svg>
-   )
+			case ('report-problem-triangle'): return (
+				<svg {...props} className={cn('svg-icon-report-problem-triangle', className)}
+				focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">	
+	 			<path className="path" d="M22.906,23.196L11.947,1.276c-0.17-0.339-0.726-0.339-0.895,0l-11,22c-0.078,0.155-0.069,0.339,0.021,0.486S0.326,24,0.5,24
+				h22c0.003,0,0.006,0,0.01,0c0.275,0,0.5-0.224,0.5-0.5C23.01,23.386,22.971,23.28,22.906,23.196z M11,9.152
+				c0-0.276,0.224-0.5,0.5-0.5c0.275,0,0.5,0.224,0.5,0.5v7.653c0,0.275-0.225,0.5-0.5,0.5c-0.276,0-0.5-0.225-0.5-0.5V9.152z
+				M11.5,21.108c-0.529,0-0.957-0.428-0.957-0.956c0-0.527,0.428-0.957,0.957-0.957c0.527,0,0.956,0.43,0.956,0.957
+				C12.456,20.681,12.027,21.108,11.5,21.108z"/>
+				</svg>)
 
 			case ('search'): return (<svg {...props} className={cn('svg-icon-search', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Søk</title><g stroke="#000" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><circle cx="8.5" cy="8.5" r="8"/><path strokeLinecap="round" d="M14.156 14.156l9.344 9.344"/></g></svg>)
             case ('arrow-up'): return (<svg {...props} className={cn('svg-arrow-up', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil opp</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M6.513 5.5l5-5 5 5M11.513.5v23"/></g></svg>)
             case ('arrow-down'): return (<svg {...props} className={cn('svg-arrow-down', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Pil ned</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"><path d="M16.513 18.5l-5 5-5-5M11.513 23.5v-23"/></g></svg>)
 			case ('arrow-circle-right'): return (<svg {...props} className={cn('svg-arrow-circle-right', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Arrow up</title>
-	   <path d="M12,0.004c-6.617,0-12,5.383-12,12s5.383,12,12,12s12-5.383,12-12S18.617,0.004,12,0.004z M17.317,12.401l-8.514,6.496
-	C8.713,18.967,8.606,19,8.5,19c-0.151,0-0.3-0.067-0.398-0.196c-0.167-0.22-0.125-0.534,0.094-0.701l7.993-6.099L8.196,5.897
-	C7.977,5.729,7.935,5.416,8.103,5.196c0.168-0.219,0.482-0.261,0.701-0.094l8.514,6.504c0.124,0.095,0.196,0.242,0.196,0.397
-	C17.514,12.16,17.441,12.307,17.317,12.401z"/> </svg>)
+	   			<path d="M12,0.004c-6.617,0-12,5.383-12,12s5.383,12,12,12s12-5.383,12-12S18.617,0.004,12,0.004z M17.317,12.401l-8.514,6.496
+					C8.713,18.967,8.606,19,8.5,19c-0.151,0-0.3-0.067-0.398-0.196c-0.167-0.22-0.125-0.534,0.094-0.701l7.993-6.099L8.196,5.897
+					C7.977,5.729,7.935,5.416,8.103,5.196c0.168-0.219,0.482-0.261,0.701-0.094l8.514,6.504c0.124,0.095,0.196,0.242,0.196,0.397
+					C17.514,12.16,17.441,12.307,17.317,12.401z"/> </svg>)
 			case ('arrow-circle-left'): return (<svg {...props} className={cn('svg-arrow-circle-left', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Arrow up</title>
-		<path d="M12,0.004c-6.617,0-12,5.383-12,12s5.383,12,12,12s12-5.383,12-12S18.617,0.004,12,0.004z M15.897,18.804
-	C15.799,18.933,15.65,19,15.5,19c-0.106,0-0.212-0.033-0.303-0.103l-8.5-6.496C6.573,12.307,6.5,12.16,6.5,12.004
-	c0-0.155,0.072-0.303,0.196-0.397l8.5-6.504c0.219-0.167,0.534-0.125,0.701,0.094c0.168,0.219,0.126,0.533-0.093,0.701l-7.98,6.106
-	l7.98,6.099C16.023,18.271,16.065,18.584,15.897,18.804z"/>
-		  </svg>)
+				<path d="M12,0.004c-6.617,0-12,5.383-12,12s5.383,12,12,12s12-5.383,12-12S18.617,0.004,12,0.004z M15.897,18.804
+					C15.799,18.933,15.65,19,15.5,19c-0.106,0-0.212-0.033-0.303-0.103l-8.5-6.496C6.573,12.307,6.5,12.16,6.5,12.004
+					c0-0.155,0.072-0.303,0.196-0.397l8.5-6.504c0.219-0.167,0.534-0.125,0.701,0.094c0.168,0.219,0.126,0.533-0.093,0.701l-7.98,6.106
+					l7.98,6.099C16.023,18.271,16.065,18.584,15.897,18.804z"/>
+		  		</svg>)
 
-		  		 case ('feedback-check-circle'): return (<svg {...props} className={cn('svg-icon-feedback-check-circle', className)}
-			 focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
-			 <title>Checkmark-success</title>
-			 <g>
-			 	<circle className="circle" cx="12" cy="12" r="11.5"/>
-    			<path className="checkmark" d="M17,8.5l-7.5,7L7,13"/>
-				</g>
-			 </svg>)
+		  	case ('feedback-check-circle'): return (<svg {...props} className={cn('svg-icon-feedback-check-circle', className)}
+				focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
+				<title>Checkmark-success</title>
+				<g>
+					<circle className="circle" cx="12" cy="12" r="11.5"/>
+					<path className="checkmark" d="M17,8.5l-7.5,7L7,13"/>
+					</g>
+				</svg>)
+			case ('synchronize'): return (<svg {...props} className={cn('svg-icon-synchronize', className)}
+			focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
+			<title>Gjenopprett</title>
+			<g fill="#3e3832">
+        <path fill="#3e3832"
+              d="M23.866,14.227l-2.42-4.186c-0.041-0.069-0.086-0.134-0.141-0.19c-0.167-0.185-0.397-0.304-0.65-0.326   c-0.326-0.024-0.643,0.104-0.854,0.354l-3.213,3.832c-0.355,0.423-0.3,1.054,0.123,1.408c0.422,0.356,1.055,0.3,1.408-0.123   l1.456-1.735c-0.552,2.833-2.817,5.341-5.801,6.04c-2.529,0.595-5.143-0.146-6.995-1.976c-0.392-0.389-1.025-0.386-1.414,0.008   c-0.389,0.393-0.385,1.025,0.008,1.414c1.81,1.79,4.198,2.756,6.667,2.756c0.727,0,1.461-0.084,2.19-0.255   c3.605-0.845,6.377-3.801,7.213-7.212l0.689,1.192c0.186,0.321,0.522,0.5,0.866,0.5c0.17,0,0.343-0.043,0.5-0.135   C23.979,15.317,24.142,14.706,23.866,14.227z"/>
+        <path fill="#3e3832"
+              d="M7.415,9.892c-0.424-0.354-1.054-0.3-1.408,0.124L4.284,12.07c0.033-1.282,0.396-2.549,1.085-3.697   c1.111-1.854,2.927-3.194,4.983-3.676c2.695-0.633,5.507,0.267,7.341,2.345c0.365,0.414,0.997,0.454,1.411,0.089   c0.414-0.365,0.454-0.997,0.089-1.412c-2.322-2.632-5.885-3.771-9.298-2.969C7.316,3.354,5.041,5.029,3.653,7.345   c-0.624,1.041-1.029,2.162-1.229,3.312L1.858,9.713c-0.285-0.473-0.9-0.626-1.373-0.342c-0.472,0.284-0.627,0.898-0.342,1.372   l2.561,4.262c0.166,0.277,0.456,0.457,0.778,0.482c0.026,0.002,0.051,0.003,0.078,0.003c0.294,0,0.575-0.13,0.767-0.357   l3.212-3.832C7.893,10.877,7.838,10.246,7.415,9.892z"/></g></svg>
+			)
 		}
 	}
 }
