@@ -3,9 +3,10 @@ import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
-import no.nav.registre.syntrest.services.EIAService;
 import no.nav.registre.syntrest.services.MeldekortService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +32,12 @@ public class MeldekortController extends KubernetesUtils {
 
         ApiClient client = createApiClient();
 
-        final String dir = System.getProperty("user.dir");
-        log.info("Current dir: " + dir);
+        Resource resource = new ClassPathResource("/synthdata-meldekort.yaml");
+        String manifestPath = resource.getURL().getPath();
+        log.info("Manifest path: " + manifestPath);
 
         log.info("Creating application..");
-        createApplication(client, "../config/synthdata-meldekort.yaml");
+        createApplication(client, manifestPath);
 
         log.info("Checking liveness..");
         boolean stillDeploying = true;
