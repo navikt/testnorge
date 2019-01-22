@@ -32,12 +32,12 @@ public class MeldekortController extends KubernetesUtils {
 
         ApiClient client = createApiClient();
 
-        Resource resource = new ClassPathResource("/synthdata-meldekort.yaml");
-        String manifestPath = resource.getURL().getPath();
-        log.info("Manifest path: " + manifestPath);
+//        Resource resource = new ClassPathResource("/synthdata-meldekort.yaml");
+//        String manifestPath = resource.getURL().getPath();
+//        log.info("Manifest path: " + manifestPath);
 
         log.info("Creating application..");
-        createApplication(client, manifestPath);
+        createApplication(client, "../src/main/no/registre/syntrest/config/synthdata-meldekort.yaml");
 
         log.info("Checking liveness..");
         boolean stillDeploying = true;
