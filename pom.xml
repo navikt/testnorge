@@ -20,6 +20,7 @@
 
     <modules>
         <module>sigrun-core</module>
+        <module>sigrun-local</module>
     </modules>
 
     <properties>
