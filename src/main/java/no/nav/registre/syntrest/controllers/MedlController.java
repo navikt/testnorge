@@ -6,6 +6,8 @@ import io.kubernetes.client.util.KubeConfig;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import no.nav.registre.syntrest.services.MedlService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -26,7 +28,7 @@ public class MedlController extends KubernetesUtils {
     private MedlService medlService;
 
     @GetMapping(value = "/generateMedl/{num_to_generate}")
-    public List<Map<String, String>> generateMedl(@PathVariable int num_to_generate) throws InterruptedException, ExecutionException, IOException, ApiException {
+    public ResponseEntity generateMedl(@PathVariable int num_to_generate) throws InterruptedException, ExecutionException, IOException, ApiException {
 
         KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
         ApiClient client = Config.fromConfig(kc);
@@ -47,13 +49,13 @@ public class MedlController extends KubernetesUtils {
             }
         }
 
-        System.out.println("Requesting stuff..");
+        System.out.println("Requesting synthetic data..");
         CompletableFuture<List<Map<String, String>>> result = medlService.generateMedlFromNAIS(num_to_generate);
         List<Map<String, String>> synData = result.get();
 
         System.out.println("Deleting application..");
         deleteApplication(client, "synthdata-medl");
 
-        return synData;
+        return ResponseEntity.status(HttpStatus.OK).body(synData);
     }
 }
