@@ -31,8 +31,11 @@ public class MeldekortController extends KubernetesUtils {
 
         ApiClient client = createApiClient();
 
+        final String dir = System.getProperty("user.dir");
+        log.info("Current dir: " + dir);
+
         log.info("Creating application..");
-        createApplication(client, "src/main/java/no/nav/registre/syntrest/config/synthdata-meldekort.yaml");
+        createApplication(client, "../config/synthdata-meldekort.yaml");
 
         log.info("Checking liveness..");
         boolean stillDeploying = true;
