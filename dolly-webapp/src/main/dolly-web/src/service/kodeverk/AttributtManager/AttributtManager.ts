@@ -74,7 +74,9 @@ export default class AttributtManager {
 
 			const dataPath = editPath || path || id
 			// check if value exists (not NULL)
-			return _get(dataSourceValues, dataPath) !== null
+			if(_get(dataSourceValues, dataPath)) {
+				return _get(dataSourceValues, dataPath)
+			}
 		})
 	}
 
