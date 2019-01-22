@@ -1,6 +1,7 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
@@ -43,6 +46,13 @@ public class SyntetiseringsControllerTest {
         SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest = new SyntetiserSkdmeldingerRequest(avspillergruppeId,
                 miljoe,
                 antallMeldingerPerEndringskode);
+
+        ResponseEntity respons = new ResponseEntity(HttpStatus.CREATED);
+
+        when(tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
+                syntetiserSkdmeldingerRequest.getMiljoe(),
+                syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode()))
+                        .thenReturn(respons);
 
         syntetiseringsController.opprettSkdMeldingerOgSendTilTps(syntetiserSkdmeldingerRequest);
 

@@ -48,7 +48,7 @@ public class InternalController {
         List<String> nonAvailableResources = new ArrayList<>();
 
         checkReadiness(testnorgeSkdIsReadyUrl, nonAvailableResources);
-        checkReadiness(synthdataArenaIsReadyUrl, nonAvailableResources);
+        // checkReadiness(synthdataArenaIsReadyUrl, nonAvailableResources); // synthdata-arena er midl. nede
         checkReadiness(tpsfIsReadyUrl, nonAvailableResources);
 
         if (nonAvailableResources.isEmpty()) {

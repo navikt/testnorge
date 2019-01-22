@@ -9,10 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
-
-import no.nav.registre.orkestratoren.consumer.rs.requests.SendToTpsRequest;
-import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 
 @Component
 public class TpsfConsumer {
@@ -20,20 +16,10 @@ public class TpsfConsumer {
     @Autowired
     private RestTemplate restTemplateTpsf;
 
-    private UriTemplate uriTemplate;
     private String urlGetIdenter;
 
     public TpsfConsumer(@Value("${tps-forvalteren.rest-api.url}") String tpsfServerUrl) {
-        uriTemplate = new UriTemplate(tpsfServerUrl + "/v1/endringsmelding/skd/send/{avspillergruppeId}");
         this.urlGetIdenter = tpsfServerUrl + "/v1/endringsmelding/skd/identer/{avspillergruppeId}?aarsakskode={aarsakskoder}&transaksjonstype={transaksjonstype}";
-    }
-
-    public SkdMeldingerTilTpsRespons sendSkdmeldingerTilTps(Long avspillergruppeId, SendToTpsRequest sendToTpsRequest) {
-        String url = uriTemplate.expand(avspillergruppeId).toString();
-
-        return restTemplateTpsf.postForObject(url,
-                sendToTpsRequest,
-                SkdMeldingerTilTpsRespons.class);
     }
 
     public Set<String> getIdenterFiltrertPaaAarsakskode(Long avspillergruppeId, List<String> aarsakskoder, String transaksjonstype) {
