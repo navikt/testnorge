@@ -1,6 +1,5 @@
 package no.nav.registre.syntrest.services;
-
-import no.nav.registre.syntrest.globals.NaisConnections;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -12,6 +11,13 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class PoppService {
+
+    @Value("${isAlive}")
+    private String isAlive;
+
+    @Value("${synth-popp-url}")
+    private String synthPoppUrl;
+
     private final RestTemplate restTemplate;
 
     public PoppService(RestTemplateBuilder restTemplateBuilder) {
@@ -20,12 +26,12 @@ public class PoppService {
 
     @Async
     public CompletableFuture<List<Map<String, Object>>> generatePoppMeldingerFromNAIS(String[] fnrs) throws InterruptedException {
-        List<Map<String, Object>> result = restTemplate.postForObject(NaisConnections.CONNECTION_POPP, fnrs, List.class);
+        List<Map<String, Object>> result = restTemplate.postForObject(synthPoppUrl, fnrs, List.class);
         System.out.println(result);
         return CompletableFuture.completedFuture(result);
     }
 
     public String isAlive(){
-        return restTemplate.getForObject(NaisConnections.ALIVE_POPP, String.class);
+        return restTemplate.getForObject(String.format(isAlive, "nais-synthdata-popp"), String.class);
     }
 }

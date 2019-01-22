@@ -1,6 +1,7 @@
 package no.nav.registre.syntrest.config;
 
 import no.nav.registre.syntrest.controllers.*;
+import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

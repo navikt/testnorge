@@ -1,4 +1,5 @@
 package no.nav.registre.syntrest.controllers;
+
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.util.Config;
@@ -38,13 +39,13 @@ public class MedlController extends KubernetesUtils {
 
         System.out.println("Checking liveness..");
         boolean stillDeploying = true;
-        while (stillDeploying){
-            try{
-                if (medlService.isAlive().equals("1")){
+        while (stillDeploying) {
+            try {
+                if (medlService.isAlive().equals("1")) {
                     System.out.println("It's Alive!");
                     stillDeploying = false;
                 }
-            } catch (HttpClientErrorException | HttpServerErrorException e){
+            } catch (HttpClientErrorException | HttpServerErrorException e) {
                 TimeUnit.SECONDS.sleep(1);
             }
         }

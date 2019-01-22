@@ -1,6 +1,5 @@
 package no.nav.registre.syntrest.services;
-
-import no.nav.registre.syntrest.globals.NaisConnections;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,12 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class EIAService {
 
+    @Value("${isAlive}")
+    private String isAlive;
+
+    @Value("${synth-eia-url}")
+    private String synthEiaUrl;
+
     private final RestTemplate restTemplate;
 
     public EIAService(RestTemplateBuilder restTemplateBuilder) {
@@ -21,11 +26,11 @@ public class EIAService {
 
     @Async
     public CompletableFuture<List<String>> generateSykemeldingerFromNAIS(List<Map<String, String>> request) {
-        List<String> result = restTemplate.postForObject(NaisConnections.CONNECTION_EIA, request, List.class);
+        List<String> result = restTemplate.postForObject(synthEiaUrl, request, List.class);
         return CompletableFuture.completedFuture(result);
     }
 
     public String isAlive(){
-        return restTemplate.getForObject(NaisConnections.ALIVE_EIA, String.class);
+        return restTemplate.getForObject(String.format(isAlive, "nais-synthdata-eia"), String.class);
     }
 }

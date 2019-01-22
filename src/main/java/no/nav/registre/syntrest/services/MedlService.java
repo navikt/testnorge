@@ -1,5 +1,5 @@
 package no.nav.registre.syntrest.services;
-import no.nav.registre.syntrest.globals.NaisConnections;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,13 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class MedlService {
+
+    @Value("${isAlive}")
+    private String isAlive;
+
+    @Value("${synth-medl-url}")
+    private String synthMedlUrl;
+
     private final RestTemplate restTemplate;
 
     public MedlService(RestTemplateBuilder restTemplateBuilder){
@@ -19,11 +26,11 @@ public class MedlService {
 
     @Async
     public CompletableFuture<List<Map<String, String>>> generateMedlFromNAIS(int num_to_generate) throws InterruptedException{
-        List<Map<String, String>> result = restTemplate.getForObject(String.format(NaisConnections.CONNECTION_MEDL, num_to_generate), List.class);
+        List<Map<String, String>> result = restTemplate.getForObject(String.format(synthMedlUrl, num_to_generate), List.class);
         return CompletableFuture.completedFuture(result);
     }
 
     public String isAlive(){
-        return restTemplate.getForObject(NaisConnections.ALIVE_MEDL, String.class);
+        return restTemplate.getForObject(String.format(isAlive, "nais-synthdata-medl"), String.class);
     }
 }
