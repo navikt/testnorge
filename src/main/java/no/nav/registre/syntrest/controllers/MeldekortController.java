@@ -1,6 +1,7 @@
 package no.nav.registre.syntrest.controllers;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import no.nav.registre.syntrest.services.EIAService;
 import no.nav.registre.syntrest.services.MeldekortService;
@@ -17,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1")
 public class MeldekortController extends KubernetesUtils {
@@ -29,15 +31,15 @@ public class MeldekortController extends KubernetesUtils {
 
         ApiClient client = createApiClient();
 
-        System.out.println("Creating application..");
+        log.info("Creating application..");
         createApplication(client, "src/main/java/no/nav/registre/syntrest/config/synthdata-meldekort.yaml");
 
-        System.out.println("Checking liveness..");
+        log.info("Checking liveness..");
         boolean stillDeploying = true;
         while (stillDeploying){
             try{
                 if (meldekortService.isAlive().equals("1")){
-                    System.out.println("It's Alive!");
+                    log.info("It's Alive!");
                     stillDeploying = false;
                 }
             } catch (HttpClientErrorException | HttpServerErrorException e){
@@ -45,11 +47,11 @@ public class MeldekortController extends KubernetesUtils {
             }
         }
 
-        System.out.println("Requesting synthetic data..");
+        log.info("Requesting synthetic data..");
         CompletableFuture<List<String>> result = meldekortService.generateMeldekortFromNAIS(num_to_generate, meldegruppe);
         List<String> synData = result.get();
 
-        System.out.println("Deleting application..");
+        log.info("Deleting application..");
         deleteApplication(client, "synthdata-meldekort");
 
         return ResponseEntity.status(HttpStatus.OK).body(synData);

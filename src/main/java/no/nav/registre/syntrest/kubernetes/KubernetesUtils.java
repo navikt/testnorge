@@ -25,11 +25,12 @@ import java.util.Map;
 public class KubernetesUtils {
 
     //TODO: save kubeconfig to vault and reference it here
-    @Value("${/var/run/secrets/nais.io/vault/kubeconfig}")
-    private String kubeConfig;
+//    @Value("${/var/run/secrets/nais.io/vault/kubeconfig}")
+//    private String kubeConfig;
 
     public ApiClient createApiClient()throws IOException{
-        KubeConfig kc = KubeConfig.loadKubeConfig(new StringReader(kubeConfig));
+        //KubeConfig kc = KubeConfig.loadKubeConfig(new StringReader(kubeConfig));
+        KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("/var/run/secrets/nais.io/vault/kubeconfig"));
         ApiClient client = Config.fromConfig(kc);
         log.info("successfully loaded kubeconfig!");
         return client;
