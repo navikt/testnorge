@@ -1,6 +1,6 @@
 package no.nav.registre.syntrest.controllers;
 
-import no.nav.registre.syntrest.Domain.Inntektsmelding;
+import no.nav.registre.syntrest.domain.Inntektsmelding;
 import no.nav.registre.syntrest.services.ArenaInntektService;
 import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;

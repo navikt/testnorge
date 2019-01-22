@@ -1,5 +1,5 @@
 package no.nav.registre.syntrest.services;
-import no.nav.registre.syntrest.globals.NaisConnections;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -10,6 +10,10 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class MeldekortService {
+
+    @Value("${synth-arena-meldekort-url}")
+    private String synthArenaMeldekortUrl;
+
     private final RestTemplate restTemplate;
 
     public MeldekortService(RestTemplateBuilder restTemplateBuilder) {
@@ -18,7 +22,7 @@ public class MeldekortService {
 
     @Async
     public CompletableFuture<List<String>> generateMeldekortFromNAIS(int num_to_generate, String meldegruppe) {
-        List<String> result = restTemplate.getForObject(String.format(NaisConnections.CONNECTION_ARENA_MELDEKORT, num_to_generate, meldegruppe), List.class);
+        List<String> result = restTemplate.getForObject(String.format(synthArenaMeldekortUrl, num_to_generate, meldegruppe), List.class);
         return CompletableFuture.completedFuture(result);
     }
 }
