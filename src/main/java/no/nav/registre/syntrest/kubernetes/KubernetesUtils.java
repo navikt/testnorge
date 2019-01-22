@@ -1,45 +1,37 @@
 package no.nav.registre.syntrest.kubernetes;
 
 import com.google.gson.*;
-
-import com.google.gson.internal.LinkedHashTreeMap;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.protobuf.Api;
+
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
-import io.kubernetes.client.JSON;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.apis.ExtensionsV1beta1Api;
 import io.kubernetes.client.models.*;
 import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.yaml.snakeyaml.Yaml;
 
-
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 
+@Slf4j
 public class KubernetesUtils {
 
     //TODO: save kubeconfig to vault and reference it here
-    @Value("${kubeconfigVariableNameHere}")
-    private String kubeCongif;
+    @Value("${/var/run/secrets/nais.io/vault/kubeconfig}")
+    private String kubeConfig;
 
     public ApiClient createApiClient()throws IOException{
-        KubeConfig kc = KubeConfig.loadKubeConfig(new StringReader(kubeCongif));
+        KubeConfig kc = KubeConfig.loadKubeConfig(new StringReader(kubeConfig));
         ApiClient client = Config.fromConfig(kc);
+        log.info("successfully loaded kubeconfig!");
         return client;
     }
 
