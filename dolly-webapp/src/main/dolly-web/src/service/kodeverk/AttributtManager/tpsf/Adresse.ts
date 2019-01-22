@@ -68,7 +68,7 @@ const AttributtListe: Attributt[] = [
 		subKategori: SubKategorier.Boadresse,
 		id: 'boadresse_flyttedato',
 		path: 'boadresse.flyttedato',
-		parent: 'boadresse',
+		//parent: 'boadresse',
 		label: 'Flyttedato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
