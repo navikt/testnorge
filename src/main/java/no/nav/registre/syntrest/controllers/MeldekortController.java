@@ -1,4 +1,5 @@
 package no.nav.registre.syntrest.controllers;
+
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
@@ -30,20 +31,25 @@ public class MeldekortController extends KubernetesUtils {
     private QueueHandler queueHandler = QueueHandler.getInstance();
 
     @GetMapping(value = "/generateMeldekort/{num_to_generate}/{meldegruppe}")
-    public ResponseEntity generateMeldekort(@PathVariable int num_to_generate, @PathVariable String meldegruppe) throws InterruptedException, ExecutionException, ApiException, IOException {
-
+    public ResponseEntity generateMeldekort(@PathVariable int num_to_generate, @PathVariable String meldegruppe) throws ApiException, IOException {
         int queueId = queueHandler.getQueueId();
         queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
+        try {
+            log.info("Creating application: synthdata-meldekort");
+            createApplication(client, "/nais/synthdata-meldekort.yaml", meldekortService);
 
-        log.info("Creating application: synthdata-meldekort");
-        createApplication(client, "/nais/synthdata-meldekort.yaml", meldekortService);
+            log.info("Requesting synthetic data from: synthdata-meldekort");
+            CompletableFuture<List<String>> result = meldekortService.generateMeldekortFromNAIS(num_to_generate, meldegruppe);
+            List<String> synData = result.get();
 
-        log.info("Requesting synthetic data from: synthdata-meldekort" );
-        CompletableFuture<List<String>> result = meldekortService.generateMeldekortFromNAIS(num_to_generate, meldegruppe);
-        List<String> synData = result.get();
+            queueHandler.removeFromQueue(queueId, client, appName);
+            return ResponseEntity.status(HttpStatus.OK).body(synData);
+        } catch (Exception e) {
+            log.info("Exception in generateMeldekort: " + e);
+            queueHandler.removeFromQueue(queueId, client, appName);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
 
-        queueHandler.removeFromQueue(queueId, client, appName);
-        return ResponseEntity.status(HttpStatus.OK).body(synData);
     }
 }

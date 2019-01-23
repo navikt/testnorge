@@ -32,19 +32,25 @@ public class MedlController extends KubernetesUtils {
     private QueueHandler queueHandler = QueueHandler.getInstance();
 
     @GetMapping(value = "/generateMedl/{num_to_generate}")
-    public ResponseEntity generateMedl(@PathVariable int num_to_generate) throws InterruptedException, ExecutionException, IOException, ApiException {
-
+    public ResponseEntity generateMedl(@PathVariable int num_to_generate) throws IOException, ApiException {
         int queueId = queueHandler.getQueueId();
         queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
-        log.info("Creating application: synthdata-medl");
-        createApplication(client, "/nais/synthdata-medl.yaml", medlService);
+        try {
+            log.info("Creating application: synthdata-medl");
+            createApplication(client, "/nais/synthdata-medl.yaml", medlService);
 
-        log.info("Requesting synthetic data from: synthdata-medl");
-        CompletableFuture<List<Map<String, String>>> result = medlService.generateMedlFromNAIS(num_to_generate);
-        List<Map<String, String>> synData = result.get();
+            log.info("Requesting synthetic data from: synthdata-medl");
+            CompletableFuture<List<Map<String, String>>> result = medlService.generateMedlFromNAIS(num_to_generate);
+            List<Map<String, String>> synData = result.get();
 
-        queueHandler.removeFromQueue(queueId, client, appName);
-        return ResponseEntity.status(HttpStatus.OK).body(synData);
+            queueHandler.removeFromQueue(queueId, client, appName);
+            return ResponseEntity.status(HttpStatus.OK).body(synData);
+        } catch (Exception e) {
+            log.info("Exception in generateMedl: " + e);
+            queueHandler.removeFromQueue(queueId, client, appName);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+
     }
 }
