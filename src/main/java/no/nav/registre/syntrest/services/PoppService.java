@@ -12,6 +12,9 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class PoppService implements IService{
 
+    @Value("${synth-popp-app}")
+    private String appName;
+
     @Value("${isAlive}")
     private String isAlive;
 
@@ -32,6 +35,6 @@ public class PoppService implements IService{
     }
 
     public String isAlive(){
-        return restTemplate.getForObject(String.format(isAlive, "nais-synthdata-popp"), String.class);
+        return restTemplate.getForObject(String.format(isAlive, appName), String.class);
     }
 }

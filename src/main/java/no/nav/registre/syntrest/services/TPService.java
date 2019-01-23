@@ -13,6 +13,9 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class TPService implements IService{
 
+    @Value("${synth-tp-app}")
+    private String appName;
+
     @Value("${isAlive}")
     private String isAlive;
 
@@ -32,6 +35,6 @@ public class TPService implements IService{
     }
 
     public String isAlive(){
-        return restTemplate.getForObject(String.format(isAlive, "nais-synthdata-tp"), String.class);
+        return restTemplate.getForObject(String.format(isAlive, appName), String.class);
     }
 }

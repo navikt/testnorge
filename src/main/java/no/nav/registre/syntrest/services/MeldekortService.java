@@ -1,4 +1,5 @@
 package no.nav.registre.syntrest.services;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
@@ -9,7 +10,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class MeldekortService implements IService{
+public class MeldekortService implements IService {
+
+    @Value("${synth-arena-meldekort-app}")
+    private String appName;
 
     @Value("${isAlive}")
     private String isAlive;
@@ -29,7 +33,7 @@ public class MeldekortService implements IService{
         return CompletableFuture.completedFuture(result);
     }
 
-    public String isAlive(){
-        return restTemplate.getForObject(String.format(isAlive, "nais-synthdata-arena-meldekort"), String.class);
+    public String isAlive() {
+        return restTemplate.getForObject(String.format(isAlive, appName), String.class);
     }
 }

@@ -1,4 +1,5 @@
 package no.nav.registre.syntrest.services;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
@@ -11,6 +12,9 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class EIAService implements IService {
+
+    @Value("${synth-eia-app}")
+    private String appName;
 
     @Value("${isAlive}")
     private String isAlive;
@@ -30,7 +34,7 @@ public class EIAService implements IService {
         return CompletableFuture.completedFuture(result);
     }
 
-    public String isAlive(){
-        return restTemplate.getForObject(String.format(isAlive, "nais-synthdata-eia"), String.class);
+    public String isAlive() {
+        return restTemplate.getForObject(String.format(isAlive, appName), String.class);
     }
 }

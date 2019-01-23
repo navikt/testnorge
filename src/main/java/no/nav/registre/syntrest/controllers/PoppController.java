@@ -2,10 +2,12 @@ package no.nav.registre.syntrest.controllers;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
+import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import no.nav.registre.syntrest.services.PoppService;
 import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,11 +28,16 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("api/v1")
 public class PoppController extends KubernetesUtils {
 
+    @Value("${synth-popp-app}")
+    private String appName;
+
     @Autowired
     private Validation validation;
 
     @Autowired
     private PoppService poppService;
+
+    private QueueHandler queueHandler = QueueHandler.getInstance();
 
     @PostMapping(value = "/generatePopp")
     public ResponseEntity generatePopp(@RequestBody String[] fnrs) throws InterruptedException, ExecutionException, IOException, ApiException {
@@ -38,31 +45,17 @@ public class PoppController extends KubernetesUtils {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }
 
+        int queueId = queueHandler.getQueueId();
+        queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
-
         System.out.println("Creating application..");
-        createApplication(client, "src/main/java/no/nav/registre/syntrest/config/synthdata-popp.yaml");
-
-        System.out.println("Checking liveness..");
-        boolean stillDeploying = true;
-        while (stillDeploying){
-            try{
-                if (poppService.isAlive().equals("1")){
-                    System.out.println("It's Alive!");
-                    stillDeploying = false;
-                }
-            } catch (HttpClientErrorException | HttpServerErrorException e){
-                TimeUnit.SECONDS.sleep(1);
-            }
-        }
+        createApplication(client, "src/main/java/no/nav/registre/syntrest/config/synthdata-popp.yaml", poppService);
 
         System.out.println("Requesting synthetic data..");
         CompletableFuture<List<Map<String, Object>>> result = poppService.generatePoppMeldingerFromNAIS(fnrs);
         List<Map<String, Object>> synData = result.get();
 
-        System.out.println("Deleting application..");
-        deleteApplication(client, "synthdata-popp");
-
+        queueHandler.removeFromQueue(queueId, client, appName);
         return ResponseEntity.status(HttpStatus.OK).body(synData);
     }
 }

@@ -53,7 +53,7 @@ public class ArenaInntektController extends KubernetesUtils {
         CompletableFuture<Map<String, List<Inntektsmelding>>> result = arenaInntektService.generateInntektsmeldingerFromNAIS(fnrs);
         Map<String, List<Inntektsmelding>> synData = result.get();
 
-        System.out.println("Deleting application..");
+        System.out.println("Removing from queue");
         queueHandler.removeFromQueue(queueId, client, appName);
 
         return ResponseEntity.status(HttpStatus.OK).body(synData);

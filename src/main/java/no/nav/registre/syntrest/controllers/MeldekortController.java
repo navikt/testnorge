@@ -2,63 +2,47 @@ package no.nav.registre.syntrest.controllers;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import no.nav.registre.syntrest.services.MeldekortService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
 @RequestMapping("api/v1")
 public class MeldekortController extends KubernetesUtils {
 
+    @Value("${synth-arena-meldekort-app}")
+    private String appName;
+
     @Autowired
     private MeldekortService meldekortService;
+
+    private QueueHandler queueHandler = QueueHandler.getInstance();
 
     @GetMapping(value = "/generateMeldekort/{num_to_generate}/{meldegruppe}")
     public ResponseEntity generateMeldekort(@PathVariable int num_to_generate, @PathVariable String meldegruppe) throws InterruptedException, ExecutionException, ApiException, IOException {
 
+        int queueId = queueHandler.getQueueId();
+        queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
+        System.out.println("Creating application..");
+        createApplication(client, "../src/main/no/registre/syntrest/config/synthdata-meldekort.yaml", meldekortService);
 
-//        Resource resource = new ClassPathResource("/synthdata-meldekort.yaml");
-//        String manifestPath = resource.getURL().getPath();
-//        log.info("Manifest path: " + manifestPath);
-
-        log.info("Creating application..");
-        createApplication(client, "../src/main/no/registre/syntrest/config/synthdata-meldekort.yaml");
-
-        log.info("Checking liveness..");
-        boolean stillDeploying = true;
-        while (stillDeploying){
-            try{
-                if (meldekortService.isAlive().equals("1")){
-                    log.info("It's Alive!");
-                    stillDeploying = false;
-                }
-            } catch (HttpClientErrorException | HttpServerErrorException e){
-                TimeUnit.SECONDS.sleep(1);
-            }
-        }
-
-        log.info("Requesting synthetic data..");
+        System.out.println("Requesting synthetic data..");
         CompletableFuture<List<String>> result = meldekortService.generateMeldekortFromNAIS(num_to_generate, meldegruppe);
         List<String> synData = result.get();
 
-        log.info("Deleting application..");
-        deleteApplication(client, "synthdata-meldekort");
-
+        queueHandler.removeFromQueue(queueId, client, appName);
         return ResponseEntity.status(HttpStatus.OK).body(synData);
     }
 }

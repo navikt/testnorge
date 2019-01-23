@@ -32,6 +32,7 @@ public class QueueHandler extends KubernetesUtils {
     public void removeFromQueue(int queueId, ApiClient client, String appName) throws ApiException {
         queue.remove(queueId);
         if (queue.size() == 0){
+            System.out.println("Terminating NAIS application");
             deleteApplication(client, appName);
         }
     }

@@ -2,10 +2,12 @@ package no.nav.registre.syntrest.controllers;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
+import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import no.nav.registre.syntrest.services.EIAService;
 import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,11 +28,16 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("api/v1")
 public class EIAController extends KubernetesUtils {
 
+    @Value("${synth-eia-app}")
+    private String appName;
+
     @Autowired
     private Validation validation;
 
     @Autowired
     private EIAService eiaService;
+
+    private QueueHandler queueHandler = QueueHandler.getInstance();
 
     @PostMapping(value = "/generateSykemeldinger")
     public ResponseEntity generateSykemeldinger(@RequestBody List<Map<String, String>> request) throws InterruptedException, ExecutionException, IOException, ApiException {
@@ -38,30 +45,17 @@ public class EIAController extends KubernetesUtils {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }
 
+        int queueId = queueHandler.getQueueId();
+        queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
-
         System.out.println("Creating application..");
-        createApplication(client, "src/main/java/no/nav/registre/syntrest/config/synthdata-eia.yaml");
-
-        System.out.println("Checking liveness..");
-        boolean stillDeploying = true;
-        while (stillDeploying){
-            try{
-                if (eiaService.isAlive().equals("1")){
-                    System.out.println("It's Alive!");
-                    stillDeploying = false;
-                }
-            } catch (HttpClientErrorException | HttpServerErrorException e){
-                TimeUnit.SECONDS.sleep(1);
-            }
-        }
+        createApplication(client, "src/main/java/no/nav/registre/syntrest/config/synthdata-eia.yaml", eiaService);
 
         System.out.println("Requesting synthetic data..");
         CompletableFuture<List<String>> result = eiaService.generateSykemeldingerFromNAIS(request);
         List<String> synData = result.get();
 
-        System.out.println("Deleting application..");
-        deleteApplication(client, "synthdata-eia");
+        queueHandler.removeFromQueue(queueId, client, appName);
 
         return ResponseEntity.status(HttpStatus.OK).body(synData);
     }
