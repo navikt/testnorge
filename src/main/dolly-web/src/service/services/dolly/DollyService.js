@@ -115,8 +115,8 @@ export default class DollyService {
 		return Request.get(Endpoints.bestillingStatus(bestillingId))
 	}
 
-	static gjenopprettBestilling(bestillingId, body) {
-		return Request.post(Endpoints.gjenopprettBestilling(bestillingId), body)
+	static gjenopprettBestilling(bestillingId, envs) {
+		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
 	}
 
 	static getConfig() {
