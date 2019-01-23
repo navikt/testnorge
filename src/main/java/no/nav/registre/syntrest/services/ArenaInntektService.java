@@ -1,9 +1,12 @@
 package no.nav.registre.syntrest.services;
 
+import io.swagger.annotations.Scope;
 import no.nav.registre.syntrest.domain.Inntektsmelding;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
