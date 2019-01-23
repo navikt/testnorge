@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 
+@Slf4j
 public class QueueHandler extends KubernetesUtils {
     private static QueueHandler queueHandler = null;
     private ArrayList<Integer> queue;
@@ -30,9 +32,11 @@ public class QueueHandler extends KubernetesUtils {
     }
 
     public void removeFromQueue(int queueId, ApiClient client, String appName) throws ApiException {
+        log.info("queue size before: "+queue.size());
         queue.remove(queueId);
+        log.info("queue size after: "+queue.size());
         if (queue.size() == 0){
-            System.out.println("Terminating NAIS application");
+            log.info("Terminating " + appName + " application");
             deleteApplication(client, appName);
         }
     }
