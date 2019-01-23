@@ -9,10 +9,18 @@ import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 
 @Slf4j
 public class QueueHandler extends KubernetesUtils {
+    private static QueueHandler queueHandler = null;
     private ArrayList<Integer> queue;
 
-    public QueueHandler(){
+    private QueueHandler(){
         this.queue = new ArrayList<>();
+    }
+
+    public static QueueHandler getInstance() {
+        if (queueHandler == null){
+            queueHandler = new QueueHandler();
+        }
+        return queueHandler;
     }
 
     public ArrayList<Integer> getQueue(){
@@ -25,11 +33,20 @@ public class QueueHandler extends KubernetesUtils {
             newList.add(i);
         }
         newList.add(queueId);
-        this.queue = newList;
+        setQueue(newList);
+    }
+
+    public void setQueue(ArrayList<Integer> newQueue){
+        queue = newQueue;
     }
 
     public void removeFromQueue(int queueId, ApiClient client, String appName) throws ApiException {
-        queue.remove(queueId);
+        ArrayList<Integer> newList  = new ArrayList<>();
+        for (int i : queue){
+            newList.add(i);
+        }
+        newList.remove(queueId);
+        setQueue(newList);
         if (queue.size() == 0){
             log.info("Terminating " + appName);
             deleteApplication(client, appName);
