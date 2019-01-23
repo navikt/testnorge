@@ -32,11 +32,9 @@ public class QueueHandler extends KubernetesUtils {
     }
 
     public void removeFromQueue(int queueId, ApiClient client, String appName) throws ApiException {
-        log.info("queue size before: "+queue.size());
         queue.remove(queueId);
-        log.info("queue size after: "+queue.size());
         if (queue.size() == 0){
-            log.info("Terminating " + appName + " application");
+            log.info("Terminating " + appName);
             deleteApplication(client, appName);
         }
     }

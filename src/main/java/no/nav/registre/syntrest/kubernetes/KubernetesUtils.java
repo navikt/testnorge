@@ -12,8 +12,6 @@ import io.kubernetes.client.util.KubeConfig;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.services.IService;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -33,17 +31,19 @@ public class KubernetesUtils {
     }
 
 
-    public void createApplication(ApiClient client, String manifestPath, IService serviceObject) throws FileNotFoundException, InterruptedException, ApiException {
+    public void createApplication(ApiClient client, String manifestPath, IService serviceObject) throws InterruptedException, ApiException {
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
 
-        Object jsonObject = convertToJson(getClass().getResourceAsStream(manifestPath));
-        Object metadata = ((Map) jsonObject).get("metadata");
-        String appName = (String) ((Map) metadata).get("name");
+        Yaml yaml = new Yaml();
+        Object manifest = yaml.load(getClass().getResourceAsStream(manifestPath));
+
+        Map<String, String> metadata = (Map)((Map) manifest).get("metadata");
+        String appName = metadata.get("name");
 
         if(!applicationExists(client, appName)){
             try {
-                api.createNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", jsonObject, null);
+                api.createNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", manifest, null);
                 log.info("Application: " + appName + " deployed successfully!");
                 log.info("Checking liveness..");
                 boolean stillDeploying = true;
@@ -54,7 +54,8 @@ public class KubernetesUtils {
                             stillDeploying = false;
                         }
                     } catch (Exception e) {
-                        TimeUnit.SECONDS.sleep(1);
+                        TimeUnit.SECONDS.sleep(2);
+                        log.info("Waiting for app to come alive: " + e);
                     }
                 }
             } catch (ApiException e) {

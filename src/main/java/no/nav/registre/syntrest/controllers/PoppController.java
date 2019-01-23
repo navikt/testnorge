@@ -2,6 +2,7 @@ package no.nav.registre.syntrest.controllers;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import no.nav.registre.syntrest.services.PoppService;
@@ -14,16 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1")
 public class PoppController extends KubernetesUtils {
@@ -48,10 +47,10 @@ public class PoppController extends KubernetesUtils {
         int queueId = queueHandler.getQueueId();
         queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
-        System.out.println("Creating application..");
-        createApplication(client, "src/main/java/no/nav/registre/syntrest/config/synthdata-popp.yaml", poppService);
+        log.info("Creating application: synthdata-popp");
+        createApplication(client, "/nais/synthdata-popp.yaml", poppService);
 
-        System.out.println("Requesting synthetic data..");
+        log.info("Requesting synthetic data: synthdata-popp");
         CompletableFuture<List<Map<String, Object>>> result = poppService.generatePoppMeldingerFromNAIS(fnrs);
         List<Map<String, Object>> synData = result.get();
 

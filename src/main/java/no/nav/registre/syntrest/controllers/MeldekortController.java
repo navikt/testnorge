@@ -36,10 +36,10 @@ public class MeldekortController extends KubernetesUtils {
         queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
 
-        System.out.println("Creating application..");
+        log.info("Creating application: synthdata-meldekort");
         createApplication(client, "/nais/synthdata-meldekort.yaml", meldekortService);
 
-        System.out.println("Requesting synthetic data..");
+        log.info("Requesting synthetic data from: synthdata-meldekort" );
         CompletableFuture<List<String>> result = meldekortService.generateMeldekortFromNAIS(num_to_generate, meldegruppe);
         List<String> synData = result.get();
 

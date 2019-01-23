@@ -1,12 +1,12 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: synthdata-arena-meldekort
+  name: synthdata-medl
   namespace: default
   labels:
     team: synt
 spec:
-  image: "docker.adeo.no:5000/registre/synthdata-arena-meldekort:44cc188-80"
+  image: "docker.adeo.no:5000/registre/synthdata-medl:00439a4-13"
   port: 8080
   liveness:
     path: /internal/isAlive
@@ -27,9 +27,9 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 2000Mi
+      memory: 15000Mi
     limits:
       cpu: 500m
-      memory: 2200Mi
+      memory: 18000Mi
   ingresses:
-    - "https://nais-synthdata-arena-medlekort.nais.preprod.local"
+    - "https://nais-synthdata-medl.nais.preprod.local"

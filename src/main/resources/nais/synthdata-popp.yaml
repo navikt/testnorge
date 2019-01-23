@@ -1,23 +1,23 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: synthdata-arena-inntekt
+  name: synthdata-popp
   namespace: default
   labels:
     team: synt
 spec:
-  image: "insert image here"
+  image: "docker.adeo.no:5000/registre/synthdata-popp:dc4f795-28"
   port: 8080
   liveness:
     path: /internal/isAlive
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 10
+    failureThreshold: 500
   readiness:
     path: /internal/isReady
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 10
+    failureThreshold: 500
   prometheus:
     path: /metrics
   replicas:
@@ -25,11 +25,11 @@ spec:
     max: 4
   secrets: true
   resources:
-    limits:
-      cpu: 500m
-      memory: 1800Mi
     requests:
       cpu: 200m
-      memory: 1500Mi
+      memory: 1000Mi
+    limits:
+      cpu: 500m
+      memory: 1100Mi
   ingresses:
-    - "https://nais-synthdata-arena-inntekt.nais.preprod.local"
+    - "https://nais-synthdata-popp.nais.preprod.local"

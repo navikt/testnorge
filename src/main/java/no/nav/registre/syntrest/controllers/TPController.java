@@ -38,16 +38,14 @@ public class TPController extends KubernetesUtils {
         int queueId = queueHandler.getQueueId();
         queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
-        System.out.println("Creating application..");
-        createApplication(client, "src/main/java/no/nav/registre/syntrest/config/synthdata-tp.yaml", tpService);
+        System.out.println("Creating application: synthdata-tp");
+        createApplication(client, "/nais/synthdata-tp.yaml", tpService);
 
-        System.out.println("Requesting synthetic data..");
+        System.out.println("Requesting synthetic data: synthdata-tp");
         CompletableFuture<List<Map<String, String>>> result = tpService.generateTPFromNAIS(num_to_generate);
         List<Map<String, String>> synData = result.get();
 
-        System.out.println("Deleting application..");
         queueHandler.removeFromQueue(queueId, client, appName);
-
         return ResponseEntity.status(HttpStatus.OK).body(synData);
     }
 }
