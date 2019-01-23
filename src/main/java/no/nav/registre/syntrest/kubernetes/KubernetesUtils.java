@@ -6,14 +6,12 @@ import com.google.gson.internal.LinkedTreeMap;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
-import io.kubernetes.client.apis.ExtensionsV1beta1Api;
 import io.kubernetes.client.models.*;
 import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.services.IService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.yaml.snakeyaml.Yaml;
@@ -25,61 +23,42 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
+@Slf4j
 public class KubernetesUtils {
 
-    //TODO: save kubeconfig to vault and reference it here
-//    @Value("${/var/run/secrets/nais.io/vault/kubeconfig}")
-//    private String kubeConfig;
-
     public ApiClient createApiClient() throws IOException {
-        //KubeConfig kc = KubeConfig.loadKubeConfig(new StringReader(kubeConfig));
         KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("/var/run/secrets/nais.io/vault/kubeconfig"));
         ApiClient client = Config.fromConfig(kc);
         return client;
     }
 
 
-    public ExtensionsV1beta1DeploymentList listSynthDeployments(ApiClient client) throws ApiException {
-
-        ExtensionsV1beta1Api api = new ExtensionsV1beta1Api();
-        api.setApiClient(client);
-
-        ExtensionsV1beta1DeploymentList deploymentList = api.listNamespacedDeployment("default", null, null,
-                null, null, null, null, null, null, null);
-
-        for (ExtensionsV1beta1Deployment deployment : deploymentList.getItems()) {
-            if (deployment.getMetadata().getName().startsWith("synthdata")) {
-                System.out.println(deployment.getMetadata().getName());
-            }
-        }
-
-        return deploymentList;
-    }
-
-
-    public void createApplication(ApiClient client, String manifestPath, IService serviceObject) throws FileNotFoundException, InterruptedException {
+    public void createApplication(ApiClient client, String manifestPath, IService serviceObject) throws FileNotFoundException, InterruptedException, ApiException {
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
         Object jsonObject = convertToJson(new FileReader(manifestPath));
-        try {
-            api.createNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", jsonObject, null);
-            Object metadata = ((Map) jsonObject).get("metadata");
-            String appName = (String) ((Map) metadata).get("name");
-            System.out.println("Application: " + appName + " deployed successfully!");
-            System.out.println("Checking liveness..");
-            boolean stillDeploying = true;
-            while (stillDeploying) {
-                try {
-                    if (serviceObject.isAlive().equals("1")) {
-                        System.out.println("It's Alive!");
-                        stillDeploying = false;
+        Object metadata = ((Map) jsonObject).get("metadata");
+        String appName = (String) ((Map) metadata).get("name");
+
+        if(!applicationExists(client, appName)){
+            try {
+                api.createNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", jsonObject, null);
+                log.info("Application: " + appName + " deployed successfully!");
+                log.info("Checking liveness..");
+                boolean stillDeploying = true;
+                while (stillDeploying) {
+                    try {
+                        if (serviceObject.isAlive().equals("1")) {
+                            log.info("It's Alive!");
+                            stillDeploying = false;
+                        }
+                    } catch (HttpClientErrorException | HttpServerErrorException e) {
+                        TimeUnit.SECONDS.sleep(1);
                     }
-                } catch (HttpClientErrorException | HttpServerErrorException e) {
-                    TimeUnit.SECONDS.sleep(1);
                 }
+            } catch (ApiException e) {
+                log.info(e.getResponseBody());
             }
-        } catch (ApiException e) {
-            System.out.println(e.getResponseBody());
         }
     }
 
@@ -107,7 +86,7 @@ public class KubernetesUtils {
             String name = (String) metadata.get("name");
             applicationList.add(name);
             if (print) {
-                System.out.println(name);
+                log.info(name);
             }
         }
 
@@ -144,7 +123,7 @@ public class KubernetesUtils {
                 if (e.getCause() instanceof IllegalStateException) {
                     IllegalStateException ise = (IllegalStateException) e.getCause();
                     if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
-                        System.out.println("Successfully deleted application --> " + appName);
+                        log.info("Successfully deleted application --> " + appName);
                     } else throw e;
                 } else throw e;
             }
