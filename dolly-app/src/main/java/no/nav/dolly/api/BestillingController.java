@@ -71,8 +71,8 @@ public class BestillingController {
 
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @PostMapping("/gjenopprett/{bestillingId}")
-    public RsBestilling gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) List<String> miljoer) {
-        Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? miljoer : newArrayList());
+    public RsBestilling gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
+        Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? newArrayList(miljoer.split(",")) : newArrayList());
         dollyBestillingService.gjenopprettBestillingAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
     }

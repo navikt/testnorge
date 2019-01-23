@@ -20,6 +20,7 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -109,6 +110,12 @@ public class BestillingService {
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Bestilling createBestillingForGjenopprett(Long bestillingId, List<String> miljoer) {
         Bestilling bestilling = fetchBestillingById(bestillingId);
+        if (!bestilling.isFerdig()) {
+            throw new DollyFunctionalException(format("Du kan ikke starte gjenopprett før bestilling %d er ferdigstilt.", bestillingId));
+        }
+        if (bestilling.getGruppe().getTestidenter().isEmpty()) {
+            throw new NotFoundException(format("Ingen testidenter funnet på bestilling: %d", bestillingId));
+        }
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(bestilling.getGruppe())
