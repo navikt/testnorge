@@ -9,18 +9,10 @@ import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 
 @Slf4j
 public class QueueHandler extends KubernetesUtils {
-    private static QueueHandler queueHandler = null;
     private ArrayList<Integer> queue;
 
-    private QueueHandler(){
+    public QueueHandler(){
         this.queue = new ArrayList<>();
-    }
-
-    public static QueueHandler getInstance() {
-        if (queueHandler == null){
-            queueHandler = new QueueHandler();
-        }
-        return queueHandler;
     }
 
     public ArrayList<Integer> getQueue(){

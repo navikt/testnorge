@@ -32,14 +32,15 @@ public class TPController extends KubernetesUtils {
     @Autowired
     private TPService tpService;
 
-    private QueueHandler queueHandler = QueueHandler.getInstance();
+    @Autowired
+    private QueueHandler queueHandler;
 
     @GetMapping(value = "/generateTp/{num_to_generate}")
     public ResponseEntity generateTp(@PathVariable int num_to_generate) throws IOException, ApiException {
         int queueId = queueHandler.getQueueId();
         queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
-        try {
+        try{
             System.out.println("Creating application: synthdata-tp");
             createApplication(client, "/nais/synthdata-tp.yaml", tpService);
 
@@ -49,7 +50,7 @@ public class TPController extends KubernetesUtils {
 
             queueHandler.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
-        } catch (Exception e) {
+        } catch (Exception e){
             log.info("Exception in generateTp: " + e);
             queueHandler.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);

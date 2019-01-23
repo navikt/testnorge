@@ -23,4 +23,8 @@ public class AppConfig {
         return new Validation();
     }
 
+    @Bean
+    QueueHandler queueHandler(){
+        return new QueueHandler();
+    }
 }
