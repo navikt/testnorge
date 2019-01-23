@@ -12,6 +12,7 @@ import io.kubernetes.client.util.KubeConfig;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.services.IService;
+import org.springframework.beans.factory.annotation.Value;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -30,6 +31,12 @@ public class KubernetesUtils {
         return client;
     }
 
+    @Value("${max-alive-retries}")
+    private int maxRetries;
+
+    @Value("${alive-retry-delay}")
+    private int retryDelay;
+
     public void createApplication(ApiClient client, String manifestPath, IService serviceObject) throws InterruptedException, ApiException {
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
@@ -40,8 +47,9 @@ public class KubernetesUtils {
         if(!applicationExists(client, appName)){
             try {
                 api.createNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", manifest, null);
-                log.info("Application: " + appName + " deployed successfully!");
+                log.info("Application: " + appName + " created!");
                 log.info("Checking liveness..");
+                int num_retries = 0;
                 boolean stillDeploying = true;
                 while (stillDeploying) {
                     try {
@@ -50,9 +58,16 @@ public class KubernetesUtils {
                             stillDeploying = false;
                         }
                     } catch (Exception e) {
-                        TimeUnit.SECONDS.sleep(2);
-                        log.info("Waiting for app to come alive: " + e);
+                        if (num_retries < maxRetries){
+                            TimeUnit.SECONDS.sleep(retryDelay);
+                            log.info("Waiting for " + appName + " to come alive: " + e);
+                        }
+                        else {
+                            log.error("Application" + appName + "failed to come alive. Terminating..");
+                            deleteApplication(client, appName);
+                        }
                     }
+                    num_retries ++;
                 }
             } catch (ApiException e) {
                 log.info(e.getResponseBody());
