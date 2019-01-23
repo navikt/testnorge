@@ -32,4 +32,4 @@ spec:
       cpu: 500m
       memory: 2200Mi
   ingresses:
-    - "https://nais-synthdata-arena-medlekort.nais.preprod.local"
+    - "https://nais-synthdata-arena-meldekort.nais.preprod.local"
