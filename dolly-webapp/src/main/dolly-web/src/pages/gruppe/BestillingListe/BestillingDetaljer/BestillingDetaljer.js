@@ -4,32 +4,137 @@ import Button from '~/components/button/Button'
 import './BestillingDetaljer.less'
 import Formatters from '~/utils/DataFormatter'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import Modal from 'react-modal'
+import Knapp from 'nav-frontend-knapper'
+import Lukknapp from 'nav-frontend-lukknapp'
+import { Formik, FieldArray, Field } from 'formik'
+import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
+import * as yup from 'yup'
+
+const customStyles = {
+	content: {
+		top: '50%',
+		left: '50%',
+		right: 'auto',
+		bottom: 'auto',
+		marginRight: '-50%',
+		transform: 'translate(-50%, -50%)',
+		width: '25%',
+		minWidth: '500px',
+		overflow: 'inherit'
+	}
+}
+
+Modal.setAppElement('#root')
 
 export default class BestillingDetaljer extends PureComponent {
+	constructor(props) {
+		super(props)
+
+		this.EnvValidation = yup.object().shape({
+			environments: yup.array().required('Velg minst ett miljø')
+		})
+
+		this.state = {
+			modalOpen: false
+		}
+	}
+
 	render() {
 		const { id, successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
-		const { onGjenopprettBestilling } = this.props
 
 		// TODO: Reverse Map detail data here. Alex
 		return (
 			<div className="bestilling-detaljer">
-				<h3>Bestillingsdetaljer</h3>
+				{/* <h3>Bestillingsdetaljer</h3> */}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
 				<div className="flexbox--align-center--justify-end">
 					<Button
-						onClick={onGjenopprettBestilling}
+						onClick={this._onToggleModal}
 						className="flexbox--align-center"
 						kind="synchronize"
 					>
 						GJENOPPRETT I TPS
 					</Button>
-
-					{/* Loading..gjenoppretting */}
+					{this._renderModal(id)}
 				</div>
 			</div>
 		)
 	}
+
+	_renderModal = id => {
+		return (
+			<Modal
+				isOpen={this.state.modalOpen}
+				onRequestClose={this._onToggleModal}
+				shouldCloseOnEsc
+				style={customStyles}
+			>
+				<div className="openam-modal">
+					<div>
+						<strong>Bestilling #{id}</strong>
+						<p>Success miliø: T0</p>
+						<p>Failed miljø: T1</p>
+					</div>
+					{this._renderMiljoerVelger()}
+
+					<Lukknapp onClick={this._onToggleModal} />
+				</div>
+			</Modal>
+		)
+	}
+
+	_renderMiljoerVelger = () => {
+		const environments = ['t0', 't1']
+		return (
+			<Formik
+				initialValues={{
+					environments
+				}}
+				onSubmit={this._submitFormik}
+				validationSchema={this.EnvValidation}
+				render={formikProps => {
+					return (
+						<Fragment>
+							<FieldArray
+								name="environments"
+								render={arrayHelpers => (
+									<MiljoVelgerConnector
+										heading="Hvilke testmiljø vil du opprette testpersonene i?"
+										arrayHelpers={arrayHelpers}
+										arrayValues={formikProps.values.environments}
+									/>
+								)}
+							/>
+							<div className="openam-modal_buttons">
+								<Knapp autoFocus type="standard" onClick={this._onToggleModal}>
+									Avbryt
+								</Knapp>
+								<Knapp type="hoved" onClick={formikProps.submitForm}>
+									Utfør
+								</Knapp>
+							</div>
+						</Fragment>
+					)
+				}}
+			/>
+		)
+	}
+
+	_submitFormik = async values => {
+		console.log(values.environments, 'env to send')
+		const envsQuery = Formatters.arrayToString(values.environments)
+			.replace(/ /g, '')
+			.toLowerCase()
+		await this.props.gjenopprettBestilling(envsQuery)
+		await this.props.getBestillinger()
+	}
+
+	_onToggleModal = () => {
+		this.setState({ modalOpen: !this.state.modalOpen })
+	}
+
 	_renderErrorMessage = errorMsgs => (
 		<Fragment>
 			<div className="flexbox--align-center error-header">
@@ -57,7 +162,6 @@ export default class BestillingDetaljer extends PureComponent {
 		return (
 			<Fragment>
 				<h3>Miljøstatus</h3>
-
 				<div className={'flexbox--align-center info-block'}>
 					{successEnvsStr.length > 0 ? (
 						<StaticValue header="Suksess" value={successEnvsStr} />

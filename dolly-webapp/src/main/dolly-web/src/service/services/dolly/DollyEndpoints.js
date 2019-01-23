@@ -96,8 +96,8 @@ class DollyEndpoints {
 		return `${bestillingBase}/${bestillingId}`
 	}
 
-	static gjenopprettBestilling(bestillingId) {
-		return `${bestillingBase}/gjenopprett/${bestillingId}`
+	static gjenopprettBestilling(bestillingId, envs) {
+		return `${bestillingBase}/gjenopprett/${bestillingId}?miljoer=${envs}`
 	}
 
 	static config() {

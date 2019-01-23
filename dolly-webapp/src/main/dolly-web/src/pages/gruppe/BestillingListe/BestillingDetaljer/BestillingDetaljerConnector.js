@@ -1,9 +1,10 @@
 import { connect } from 'react-redux'
 import BestillingDetaljer from './BestillingDetaljer'
-import { miljoStatusSelector, gjenopprettBestilling } from '~/ducks/bestillingStatus'
-import { createLoadingSelector } from '~/ducks/loading'
-
-// const loadingSelector = createLoadingSelector(cancelBestilling)
+import {
+	getBestillinger,
+	miljoStatusSelector,
+	gjenopprettBestilling
+} from '~/ducks/bestillingStatus'
 
 const mapStateToProps = (state, ownProps) => {
 	return {
@@ -13,8 +14,10 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const bestillingId = ownProps.bestilling.id
+	const gruppeId = ownProps.bestilling.gruppeId
 	return {
-		onGjenopprettBestilling: () => dispatch(gjenopprettBestilling(bestillingId))
+		gjenopprettBestilling: envs => dispatch(gjenopprettBestilling(bestillingId, envs)),
+		getBestillinger: () => dispatch(getBestillinger(gruppeId))
 	}
 }
 

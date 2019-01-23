@@ -21,8 +21,8 @@ export const cancelBestilling = createAction('CANCEL_BESTILLING', async id => {
 	return res
 })
 
-export const gjenopprettBestilling = createAction('GJENOPPRETT_BESTILLING', async id => {
-	let res = await DollyApi.gjenopprettBestilling(id)
+export const gjenopprettBestilling = createAction('GJENOPPRETT_BESTILLING', async (id, envs) => {
+	let res = await DollyApi.gjenopprettBestilling(id, envs)
 	return res
 })
 
@@ -38,7 +38,7 @@ export default handleActions(
 		},
 
 		[success(gjenopprettBestilling)](state, action) {
-			return { ...state }
+			return { ...state, ny: [...state.ny, action.payload.data.id] }
 		},
 
 		// [success(cancelBestilling)](state, action) {
@@ -91,18 +91,21 @@ export const miljoStatusSelector = bestilling => {
 
 	if (bestilling.bestillingProgress && bestilling.bestillingProgress.length != 0) {
 		envs.forEach(env => {
+			const lowerCaseEnv = env.toLowerCase()
+
 			bestilling.bestillingProgress.forEach(person => {
 				if (!person.tpsfSuccessEnv) {
 					// TODO: Bestilling failed 100% fra Tpsf. Implement retry-funksjonalitet når maler er støttet
 					failedEnvs = envs
-				} else if (!person.tpsfSuccessEnv.includes(env)) {
-					!failedEnvs.includes(env) && failedEnvs.push(env)
+				} else if (!person.tpsfSuccessEnv.includes(lowerCaseEnv)) {
+					!failedEnvs.includes(lowerCaseEnv) && failedEnvs.push(lowerCaseEnv)
 				}
 			})
 		})
 
 		envs.forEach(env => {
-			!failedEnvs.includes(env) && successEnvs.push(env)
+			const lowerCaseEnv = env.toLowerCase()
+			!failedEnvs.includes(lowerCaseEnv) && successEnvs.push(lowerCaseEnv)
 		})
 
 		// Registre miljø status
