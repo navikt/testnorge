@@ -20,7 +20,12 @@ public class QueueHandler extends KubernetesUtils {
     }
 
     public void addToQueue(int queueId){
-        queue.add(queueId);
+        ArrayList<Integer> newList  = new ArrayList<>();
+        for (int i : queue){
+            newList.add(i);
+        }
+        newList.add(queueId);
+        this.queue = newList;
     }
 
     public void removeFromQueue(int queueId, ApiClient client, String appName) throws ApiException {
