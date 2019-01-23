@@ -53,7 +53,7 @@ public class KubernetesUtils {
                             log.info("It's Alive!");
                             stillDeploying = false;
                         }
-                    } catch (HttpClientErrorException | HttpServerErrorException e) {
+                    } catch (Exception e) {
                         TimeUnit.SECONDS.sleep(1);
                     }
                 }
