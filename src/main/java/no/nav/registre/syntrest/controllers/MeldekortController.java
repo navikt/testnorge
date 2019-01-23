@@ -37,7 +37,7 @@ public class MeldekortController extends KubernetesUtils {
         ApiClient client = createApiClient();
 
         System.out.println("Creating application..");
-        createApplication(client, "src/main/resources/nais/synthdata-meldekort.yaml", meldekortService);
+        createApplication(client, "/nais/synthdata-meldekort.yaml", meldekortService);
 
         System.out.println("Requesting synthetic data..");
         CompletableFuture<List<String>> result = meldekortService.generateMeldekortFromNAIS(num_to_generate, meldegruppe);

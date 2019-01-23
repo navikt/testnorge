@@ -36,7 +36,8 @@ public class KubernetesUtils {
     public void createApplication(ApiClient client, String manifestPath, IService serviceObject) throws FileNotFoundException, InterruptedException, ApiException {
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
-        Object jsonObject = convertToJson(new FileReader(manifestPath));
+
+        Object jsonObject = convertToJson(getClass().getResourceAsStream(manifestPath));
         Object metadata = ((Map) jsonObject).get("metadata");
         String appName = (String) ((Map) metadata).get("name");
 
@@ -63,7 +64,7 @@ public class KubernetesUtils {
     }
 
 
-    private Map<String, Object> convertToJson(Reader yamlReader) {
+    private Map<String, Object> convertToJson(InputStream yamlReader) {
         Yaml yaml = new Yaml();
         Map<String, Object> map = yaml.load(yamlReader);
         return map;
