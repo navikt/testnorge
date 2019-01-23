@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
@@ -39,22 +38,28 @@ public class PoppController extends KubernetesUtils {
     private QueueHandler queueHandler = QueueHandler.getInstance();
 
     @PostMapping(value = "/generatePopp")
-    public ResponseEntity generatePopp(@RequestBody String[] fnrs) throws InterruptedException, ExecutionException, IOException, ApiException {
-        if (!validation.validateFnrs(fnrs)){
+    public ResponseEntity generatePopp(@RequestBody String[] fnrs) throws IOException, ApiException {
+        if (!validation.validateFnrs(fnrs)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }
-
         int queueId = queueHandler.getQueueId();
         queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
-        log.info("Creating application: synthdata-popp");
-        createApplication(client, "/nais/synthdata-popp.yaml", poppService);
+        try {
+            log.info("Creating application: synthdata-popp");
+            createApplication(client, "/nais/synthdata-popp.yaml", poppService);
 
-        log.info("Requesting synthetic data: synthdata-popp");
-        CompletableFuture<List<Map<String, Object>>> result = poppService.generatePoppMeldingerFromNAIS(fnrs);
-        List<Map<String, Object>> synData = result.get();
+            log.info("Requesting synthetic data: synthdata-popp");
+            CompletableFuture<List<Map<String, Object>>> result = poppService.generatePoppMeldingerFromNAIS(fnrs);
+            List<Map<String, Object>> synData = result.get();
 
-        queueHandler.removeFromQueue(queueId, client, appName);
-        return ResponseEntity.status(HttpStatus.OK).body(synData);
+            queueHandler.removeFromQueue(queueId, client, appName);
+            return ResponseEntity.status(HttpStatus.OK).body(synData);
+        } catch (Exception e) {
+            log.info("Exception in generatePopp: " + e);
+            queueHandler.removeFromQueue(queueId, client, appName);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+
     }
 }

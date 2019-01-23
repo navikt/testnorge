@@ -30,17 +30,13 @@ public class KubernetesUtils {
         return client;
     }
 
-
     public void createApplication(ApiClient client, String manifestPath, IService serviceObject) throws InterruptedException, ApiException {
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
-
         Yaml yaml = new Yaml();
         Object manifest = yaml.load(getClass().getResourceAsStream(manifestPath));
-
         Map<String, String> metadata = (Map)((Map) manifest).get("metadata");
         String appName = metadata.get("name");
-
         if(!applicationExists(client, appName)){
             try {
                 api.createNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", manifest, null);
@@ -64,24 +60,12 @@ public class KubernetesUtils {
         }
     }
 
-
-    private Map<String, Object> convertToJson(InputStream yamlReader) {
-        Yaml yaml = new Yaml();
-        Map<String, Object> map = yaml.load(yamlReader);
-        return map;
-    }
-
-
     public List<String> listApplications(ApiClient client, Boolean print) throws ApiException {
-
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
-
         List<String> applicationList = new ArrayList<>();
-
         LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", null, null, null, null);
         ArrayList items = (ArrayList) result.get("items");
-
         for (Object item : items) {
             LinkedTreeMap app = (LinkedTreeMap) item;
             LinkedTreeMap metadata = (LinkedTreeMap) app.get("metadata");
@@ -91,15 +75,11 @@ public class KubernetesUtils {
                 log.info(name);
             }
         }
-
         return applicationList;
     }
 
-
     public boolean applicationExists(ApiClient client, String appName) throws ApiException {
-
         List<String> applicationList = listApplications(client, false);
-
         for (String name : applicationList) {
             if (name.equals(appName)) {
                 return true;
@@ -108,17 +88,12 @@ public class KubernetesUtils {
         return false;
     }
 
-
     public void deleteApplication(ApiClient client, String appName) throws ApiException {
-
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
-
         Boolean applicationExists = applicationExists(client, appName);
-
         if (applicationExists) {
             V1DeleteOptions deleteOptions = new V1DeleteOptions();
-
             try {
                 api.deleteNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", appName, deleteOptions, null, null, null);
             } catch (JsonSyntaxException e) {
@@ -132,8 +107,6 @@ public class KubernetesUtils {
         } else {
             throw new IllegalArgumentException("No application named: " + appName + " found");
         }
-
     }
-
 }
 

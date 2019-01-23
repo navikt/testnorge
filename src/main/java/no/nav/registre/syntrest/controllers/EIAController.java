@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
@@ -39,22 +38,28 @@ public class EIAController extends KubernetesUtils {
     private QueueHandler queueHandler = QueueHandler.getInstance();
 
     @PostMapping(value = "/generateSykemeldinger")
-    public ResponseEntity generateSykemeldinger(@RequestBody List<Map<String, String>> request) throws InterruptedException, ExecutionException, IOException, ApiException {
-        if (validation.validateEia(request) != true){
+    public ResponseEntity generateSykemeldinger(@RequestBody List<Map<String, String>> request) throws IOException, ApiException {
+        if (validation.validateEia(request) != true) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }
-
         int queueId = queueHandler.getQueueId();
         queueHandler.addToQueue(queueId);
         ApiClient client = createApiClient();
-        log.info("Creating application: synthdata-eia");
-        createApplication(client, "/nais/synthdata-eia.yaml", eiaService);
+        try {
+            log.info("Creating application: synthdata-eia");
+            createApplication(client, "/nais/synthdata-eia.yaml", eiaService);
 
-        log.info("Requesting synthetic data from: synthdata-eia");
-        CompletableFuture<List<String>> result = eiaService.generateSykemeldingerFromNAIS(request);
-        List<String> synData = result.get();
+            log.info("Requesting synthetic data from: synthdata-eia");
+            CompletableFuture<List<String>> result = eiaService.generateSykemeldingerFromNAIS(request);
+            List<String> synData = result.get();
 
-        queueHandler.removeFromQueue(queueId, client, appName);
-        return ResponseEntity.status(HttpStatus.OK).body(synData);
+            queueHandler.removeFromQueue(queueId, client, appName);
+            return ResponseEntity.status(HttpStatus.OK).body(synData);
+        } catch (Exception e) {
+            log.info("Exception in generateSykemeldinger: " + e);
+            queueHandler.removeFromQueue(queueId, client, appName);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+
     }
 }
