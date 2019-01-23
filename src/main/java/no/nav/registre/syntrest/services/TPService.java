@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class TPService {
+public class TPService implements IService{
 
     @Value("${isAlive}")
     private String isAlive;

@@ -2,33 +2,41 @@ package no.nav.registre.syntrest.globals;
 
 import java.util.ArrayList;
 
-public class QueueHandler {
+import io.kubernetes.client.ApiClient;
+import io.kubernetes.client.ApiException;
+import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
+
+public class QueueHandler extends KubernetesUtils {
     private static QueueHandler queueHandler = null;
     private ArrayList<Integer> queue;
 
-    public QueueHandler getInstance() {
+    private QueueHandler(){
+        this.queue = new ArrayList<>();
+    }
+
+    public static QueueHandler getInstance() {
         if (queueHandler == null){
             queueHandler = new QueueHandler();
         }
         return queueHandler;
     }
 
-    private ArrayList<Integer> getQueue(){
+    public ArrayList<Integer> getQueue(){
         return queue;
     }
 
-    private void addToQueue(int queueId){
+    public void addToQueue(int queueId){
         queue.add(queueId);
     }
 
-    private void removeFromQueue(int queueId, String appName){
+    public void removeFromQueue(int queueId, ApiClient client, String appName) throws ApiException {
         queue.remove(queueId);
         if (queue.size() == 0){
-            //TODO insert code for close kubernetes pod
+            deleteApplication(client, appName);
         }
     }
 
-    private int getQueueId(){
+    public int getQueueId(){
         return queue.size();
     }
 }

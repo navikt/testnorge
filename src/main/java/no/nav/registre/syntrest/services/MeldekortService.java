@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class MeldekortService {
+public class MeldekortService implements IService{
 
     @Value("${isAlive}")
     private String isAlive;

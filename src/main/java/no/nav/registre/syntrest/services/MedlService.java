@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class MedlService {
+public class MedlService implements IService{
 
     @Value("${isAlive}")
     private String isAlive;

@@ -1,22 +1,22 @@
 package no.nav.registre.syntrest.services;
 
-import io.kubernetes.client.ApiException;
 import no.nav.registre.syntrest.domain.Inntektsmelding;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
-import no.nav.registre.syntrest.domain.Inntektsmelding;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class ArenaInntektService extends KubernetesUtils {
+public class ArenaInntektService extends KubernetesUtils implements IService {
+
+    @Value("${synth-arena-inntekt-app}")
+    private String appName;
 
     @Value("${isAlive}")
     private String isAlive;
@@ -38,7 +38,7 @@ public class ArenaInntektService extends KubernetesUtils {
     }
 
     public String isAlive(){
-        return restTemplate.getForObject(String.format(isAlive, "nais-synthdata-arena-inntekt"), String.class);
+        return restTemplate.getForObject(String.format(isAlive, appName), String.class);
     }
 }
 

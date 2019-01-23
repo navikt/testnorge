@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class PoppService {
+public class PoppService implements IService{
 
     @Value("${isAlive}")
     private String isAlive;
