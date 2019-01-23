@@ -1,12 +1,12 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: synthdata-medl
+  name: synthdata-eia
   namespace: default
   labels:
     team: synt
 spec:
-  image: "insert image here"
+  image: "docker.adeo.no:5000/registre/synthdata-eia:da868f7-32"
   port: 8080
   liveness:
     path: /internal/isAlive
@@ -25,11 +25,11 @@ spec:
     max: 4
   secrets: true
   resources:
-    limits:
-      cpu: 500m
-      memory: 18000Mi
     requests:
       cpu: 200m
       memory: 18000Mi
+    limits:
+      cpu: 500m
+      memory: 18000Mi
   ingresses:
-    - "https://synthdata-medl.nais.preprod.local"
+    - "https://nais-synthdata-eia.nais.preprod.local"
