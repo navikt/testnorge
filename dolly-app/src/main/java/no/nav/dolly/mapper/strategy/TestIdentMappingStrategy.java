@@ -4,6 +4,8 @@ import static java.lang.String.join;
 import static java.util.Arrays.sort;
 import static java.util.Objects.nonNull;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -23,17 +25,21 @@ public class TestIdentMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<Testident, RsTestidentBestillingId>() {
                     @Override
                     public void mapAtoB(Testident testgruppe, RsTestidentBestillingId rsTestIdent, MappingContext context) {
-                        List<BestillingProgress> testgrupper = testgruppe.getBestillingProgress();
-                        if (!testgrupper.isEmpty()) {
-                            BestillingProgress bestillingProgress = testgrupper.get(0);
-                            rsTestIdent.setBestillingId(bestillingProgress.getBestillingId());
-                            if (nonNull(bestillingProgress.getTpsfSuccessEnv())) {
-                                String[] environments = bestillingProgress.getTpsfSuccessEnv().split(",");
+                        List<BestillingProgress> bestillinger = testgruppe.getBestillingProgress();
+                        if (!bestillinger.isEmpty()) {
+                            List<Long> bestillingListe = new ArrayList<>(bestillinger.size());
+                            for (BestillingProgress progress : bestillinger) {
+                                bestillingListe.add(progress.getBestillingId());
+                            }
+                            bestillingListe.sort(Comparator.reverseOrder());
+                            rsTestIdent.setBestillingId(bestillingListe);
+                            if (nonNull(bestillinger.get(0).getTpsfSuccessEnv())) {
+                                String[] environments = bestillinger.get(0).getTpsfSuccessEnv().split(",");
                                 sort(environments);
                                 rsTestIdent.setTpsfSuccessEnv(join(",", environments));
                             }
-                            rsTestIdent.setKrrstubStatus(bestillingProgress.getKrrstubStatus());
-                            rsTestIdent.setSigrunstubStatus(bestillingProgress.getSigrunstubStatus());
+                            rsTestIdent.setKrrstubStatus(bestillinger.get(0).getKrrstubStatus());
+                            rsTestIdent.setSigrunstubStatus(bestillinger.get(0).getSigrunstubStatus());
                         }
                     }
                 })

@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset;
 
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Getter;
@@ -12,5 +13,5 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsTestidentBestillingId extends RsTestident {
 
-    private Long bestillingId;
+    private List<Long> bestillingId;
 }
