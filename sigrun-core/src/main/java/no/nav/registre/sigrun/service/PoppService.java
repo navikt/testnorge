@@ -1,16 +1,15 @@
 package no.nav.registre.sigrun.service;
 
-import no.nav.registre.sigrun.consumer.PoppSyntRestConsumer;
-import no.nav.registre.sigrun.domain.Grunnlag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import no.nav.registre.sigrun.consumer.PoppSyntRestConsumer;
+import no.nav.registre.sigrun.domain.Grunnlag;
 
 @Service
 public class PoppService {
@@ -26,10 +25,10 @@ public class PoppService {
         return unpackedResult;
     }
 
-    public List<Map<String, Object>> castTypes(List<Map<String, Object>> meldinger){
-        for (Map<String, Object> map : meldinger){
-            for (String key : map.keySet()){
-                if (key.equals("grunnlag")){
+    public List<Map<String, Object>> castTypes(List<Map<String, Object>> meldinger) {
+        for (Map<String, Object> map : meldinger) {
+            for (String key : map.keySet()) {
+                if (key.equals("grunnlag")) {
                     Grunnlag grunnlag = new Grunnlag(map.get(key));
                     map.put(key, grunnlag.getGrunnlag());
                 }

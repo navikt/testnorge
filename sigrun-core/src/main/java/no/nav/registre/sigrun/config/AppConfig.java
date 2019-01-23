@@ -12,9 +12,7 @@ import no.nav.registre.sigrun.provider.rs.SyntetiseringController;
 public class AppConfig {
 
     @Bean
-    public RestTemplate restTemplateTpsf() {
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate;
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
-
 }

@@ -11,11 +11,12 @@ import java.util.Map;
 @Data
 @Getter
 public class Grunnlag {
+
     @NotNull
     private List<Map<String, String>> grunnlag;
 
     public Grunnlag(Object obj) {
-       this.grunnlag = (ArrayList<Map<String, String>> ) obj;
+        this.grunnlag = (ArrayList<Map<String, String>>) obj;
     }
 
     public List<Map<String, String>> getGrunnlag() {

@@ -39,5 +39,4 @@ public class PoppSyntRestConsumer {
         ResponseEntity response = restTemplate.postForEntity(sigrunUrl, entity, List.class);
         return true;
     }
-
 }
