@@ -48,9 +48,9 @@ public class PoppController extends KubernetesUtils {
         }
         queue++;
         System.out.println("QUEUE: " + queue);
-        //ApiClient client = createApiClient();
-        KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
-        ApiClient client = Config.fromConfig(kc);
+        ApiClient client = createApiClient();
+        //KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
+        //ApiClient client = Config.fromConfig(kc);
         try {
             log.info("Creating application: synthdata-popp");
             createApplication(client, "/nais/synthdata-popp.yaml", poppService);
