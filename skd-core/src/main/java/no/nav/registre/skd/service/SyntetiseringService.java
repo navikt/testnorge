@@ -118,28 +118,28 @@ public class SyntetiseringService {
                 idsLagretITpsfMenIkkeTps.removeAll(ids);
 
             } catch (ManglendeInfoITpsException e) {
-                log.error(e.getMessage(), e);
-                log.warn("ManglendeInfoITPSException på endringskode {} i avspillergruppe {}.", endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId());
-                httpStatus = HttpStatus.CONFLICT;
+                httpStatus = logException(e, "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() + ".");
             } catch (KunneIkkeSendeTilTpsException e) {
-                log.error(e.getMessage(), e);
-                log.warn("KunneIkkeSendeTilTpsException på endringskode {} i avspillergruppe {}. Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: {}",
-                        endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
-                httpStatus = HttpStatus.CONFLICT;
+                httpStatus = logException(e, "KunneIkkeSendeTilTpsException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
+                        ". Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
             } catch (HttpStatusCodeException e) {
                 log.error(hentMeldingFraJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
                 log.warn("HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: {}",
                         endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
                 httpStatus = HttpStatus.CONFLICT;
             } catch (RuntimeException e) {
-                log.error(e.getMessage(), e);
-                log.warn("RuntimeException på endringskode {} i avspillergruppe {}. Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: {}",
-                        endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
-                httpStatus = HttpStatus.CONFLICT;
+                httpStatus = logException(e, "RuntimeException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
+                        ". Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
             }
         }
 
         return ResponseEntity.status(httpStatus).body(skdMeldingerTilTpsResponsTotal);
+    }
+
+    private HttpStatus logException(Exception e, String feilmeldingTekst) {
+        log.error(e.getMessage(), e);
+        log.warn(feilmeldingTekst);
+        return HttpStatus.CONFLICT;
     }
 
     private String hentMeldingFraJson(String responseBody) {
