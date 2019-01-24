@@ -22,7 +22,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
 
 @Slf4j
 @RestController
@@ -56,8 +56,9 @@ public class PoppController extends KubernetesUtils {
             createApplication(client, "/nais/synthdata-popp.yaml", poppService);
 
             log.info("Requesting synthetic data: synthdata-popp");
-            CompletableFuture<List<Map<String, Object>>> result = poppService.generatePoppMeldingerFromNAIS(fnrs);
-            List<Map<String, Object>> synData = result.get();
+            Future<List<Map<String, Object>>> completableFuture = poppService.generatePoppMeldingerFromNAIS(fnrs);
+            List<Map<String, Object>> synData = completableFuture.get();
+            System.out.println(synData);
             queue--;
             if (queue == 0){
                 deleteApplication(client, appName);
