@@ -18,9 +18,9 @@ export const postOpenAm = createAction('POST_OPEN_AM', async (groupObj, bestilli
 			miljoer: currentBestilling.environments
 		})
 	})
+
 	const resArr = await Promise.all(promiseArray)
 	const res = await DollyApi.putOpenAmGroupStatus(groupObj.id)
-	console.log(res)
 	return resArr.map((res, idx) => {
 		const bestillingId = bestillingIdListe[idx]
 		return {
@@ -52,6 +52,6 @@ export default handleActions(
 
 //thunk
 export const sendToOpenAm = () => (dispatch, getState) => {
-	const { gruppe, bestillinger } = getState()
-	return dispatch(postOpenAm(gruppe.data[0], bestillinger.data))
+	const { gruppe, bestillingStatuser } = getState()
+	return dispatch(postOpenAm(gruppe.data[0], bestillingStatuser.data))
 }

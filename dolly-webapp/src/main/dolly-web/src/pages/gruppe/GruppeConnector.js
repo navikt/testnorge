@@ -20,7 +20,8 @@ const mapStateToProps = state => ({
 	gruppeArray: state.gruppe.data,
 	createOrUpdateId: state.gruppe.createOrUpdateId,
 	bestillinger: state.bestillingStatuser,
-	nyeBestillinger: nyeBestillingerSelector(state.bestillingStatuser)
+	nyeBestillinger: nyeBestillingerSelector(state.bestillingStatuser),
+	openAm: state.openam
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
