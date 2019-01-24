@@ -13,6 +13,8 @@ const DataMapper = {
 			c('Bestilling-ID', '10')
 		]
 	},
+
+	// Testbrukersliste
 	getData(state) {
 		/*
         Gruppe: Dolly
@@ -35,6 +37,8 @@ const DataMapper = {
 			]
 		})
 	},
+
+	// Viser under expand
 	getDetailedData(state, ownProps) {
 		const { gruppe, testbruker } = state
 		const { personId } = ownProps
