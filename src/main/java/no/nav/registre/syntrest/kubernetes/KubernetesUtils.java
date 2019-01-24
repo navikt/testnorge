@@ -3,6 +3,7 @@ package no.nav.registre.syntrest.kubernetes;
 import com.google.gson.*;
 import com.google.gson.internal.LinkedTreeMap;
 
+import com.google.protobuf.Api;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
@@ -44,34 +45,19 @@ public class KubernetesUtils {
         Object manifest = yaml.load(getClass().getResourceAsStream(manifestPath));
         Map<String, String> metadata = (Map)((Map) manifest).get("metadata");
         String appName = metadata.get("name");
+
         if(!applicationExists(client, appName)){
             try {
                 api.createNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", manifest, null);
                 log.info("Application: " + appName + " created!");
-                log.info("Checking liveness..");
-                int num_retries = 0;
-                boolean stillDeploying = true;
-                while (stillDeploying) {
-                    try {
-                        if (serviceObject.isAlive().equals("1")) {
-                            log.info("It's Alive!");
-                            stillDeploying = false;
-                        }
-                    } catch (Exception e) {
-                        if (num_retries < maxRetries){
-                            TimeUnit.SECONDS.sleep(retryDelay);
-                            log.info("Waiting for " + appName + " to come alive: " + e);
-                        }
-                        else {
-                            log.error("Application" + appName + "failed to come alive. Terminating..");
-                            deleteApplication(client, appName);
-                        }
-                    }
-                    num_retries ++;
-                }
+                waitForIsAlive(client, appName, serviceObject);
             } catch (ApiException e) {
                 log.info(e.getResponseBody());
+            } catch (Exception e){
+                log.info(e.toString());
             }
+        } else if (!applicationIsAlive(serviceObject)){
+            waitForIsAlive(client, appName, serviceObject);
         }
     }
 
@@ -102,6 +88,40 @@ public class KubernetesUtils {
         }
         return false;
     }
+
+    public void waitForIsAlive(ApiClient client, String appName, IService serviceObject) throws ApiException, InterruptedException {
+        log.info("Checking liveness..");
+        int num_retries = 0;
+        boolean stillDeploying = true;
+        while (stillDeploying) {
+            try {
+                if (applicationIsAlive(serviceObject)) {
+                    log.info("It's Alive!");
+                    stillDeploying = false;
+                }
+            } catch (Exception e) {
+                if (num_retries < maxRetries){
+                    TimeUnit.SECONDS.sleep(retryDelay);
+                    log.info("Waiting for " + appName + " to come alive: " + e);
+                }
+                else {
+                    log.error("Application" + appName + "failed to come alive. Terminating..");
+                    deleteApplication(client, appName);
+                }
+            }
+            num_retries ++;
+        }
+    }
+
+
+    public boolean applicationIsAlive(IService serviceObject) {
+        try{
+            return serviceObject.isAlive().equals("1");
+        } catch (Exception e){
+            return false;
+        }
+    }
+
 
     public void deleteApplication(ApiClient client, String appName) throws ApiException {
         CustomObjectsApi api = new CustomObjectsApi();
