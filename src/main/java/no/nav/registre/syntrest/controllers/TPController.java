@@ -40,11 +40,9 @@ public class TPController extends KubernetesUtils {
 
     @GetMapping(value = "/generateTp/{num_to_generate}")
     public ResponseEntity generateTp(@PathVariable int num_to_generate) throws IOException, ApiException {
-        //ApiClient client = createApiClient();
         queue++;
         log.info("TP QueueSize: " + queue);
-        KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
-        ApiClient client = Config.fromConfig(kc);
+        ApiClient client = createApiClient();
         try{
 
             createApplication(client, "/nais/synthdata-tp.yaml", tpService);
