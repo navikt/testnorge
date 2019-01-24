@@ -131,11 +131,12 @@ public class KubernetesUtils {
             V1DeleteOptions deleteOptions = new V1DeleteOptions();
             try {
                 api.deleteNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", appName, deleteOptions, null, null, null);
+                log.info("Successfully deleted application --> " + appName);
             } catch (JsonSyntaxException e) {
                 if (e.getCause() instanceof IllegalStateException) {
                     IllegalStateException ise = (IllegalStateException) e.getCause();
                     if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
-                        log.info("Successfully deleted application --> " + appName);
+                        log.info("Successfully deleted application: " + appName);
                     } else throw e;
                 } else throw e;
             }
