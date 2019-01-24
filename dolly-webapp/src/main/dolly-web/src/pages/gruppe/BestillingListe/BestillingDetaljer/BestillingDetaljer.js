@@ -10,7 +10,9 @@ import Lukknapp from 'nav-frontend-lukknapp'
 import { Formik, FieldArray, Field } from 'formik'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import * as yup from 'yup'
+import { mapBestillingData } from './BestillingDataMapper'
 
+// TODO: Flytt modal ut som en dumb komponent
 const customStyles = {
 	content: {
 		top: '50%',
@@ -46,7 +48,7 @@ export default class BestillingDetaljer extends PureComponent {
 		// TODO: Reverse Map detail data here. Alex
 		return (
 			<div className="bestilling-detaljer">
-				{/* <h3>Bestillingsdetaljer</h3> */}
+				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
 				<div className="flexbox--align-center--justify-end">
@@ -63,7 +65,21 @@ export default class BestillingDetaljer extends PureComponent {
 		)
 	}
 
+	_renderBestillingsDetaljer = () => {
+		const { bestilling } = this.props
+		console.log(this.props.bestilling)
+		const data = mapBestillingData(bestilling)
+		return (
+			<Fragment>
+				<h3>Bestillingsdetaljer</h3>
+				<StaticValue header="antallIdenter" value={bestilling.antallIdenter} />
+			</Fragment>
+		)
+	}
+
 	_renderModal = id => {
+		const { environments } = this.props.bestilling
+
 		return (
 			<Modal
 				isOpen={this.state.modalOpen}
@@ -72,58 +88,50 @@ export default class BestillingDetaljer extends PureComponent {
 				style={customStyles}
 			>
 				<div className="openam-modal">
-					<div>
-						<strong>Bestilling #{id}</strong>
-						<p>Success miliø: T0</p>
-						<p>Failed miljø: T1</p>
+					<div style={{ paddingLeft: 20, paddingRight: 20 }}>
+						<h1>Bestilling #{id}</h1>
+						<StaticValue header="Bestilt miljø" value={Formatters.arrayToString(environments)} />
+						<br />
+						<hr />
 					</div>
-					{this._renderMiljoerVelger()}
-
+					<Formik
+						initialValues={{
+							environments
+						}}
+						onSubmit={this._submitFormik}
+						validationSchema={this.EnvValidation}
+						render={formikProps => {
+							return (
+								<Fragment>
+									<FieldArray
+										name="environments"
+										render={arrayHelpers => (
+											<MiljoVelgerConnector
+												heading={'Velg miljø å gjenopprett'}
+												arrayHelpers={arrayHelpers}
+												arrayValues={formikProps.values.environments}
+											/>
+										)}
+									/>
+									<div className="openam-modal_buttons">
+										<Knapp autoFocus type="standard" onClick={this._onToggleModal}>
+											Avbryt
+										</Knapp>
+										<Knapp type="hoved" onClick={formikProps.submitForm}>
+											Utfør
+										</Knapp>
+									</div>
+								</Fragment>
+							)
+						}}
+					/>{' '}
 					<Lukknapp onClick={this._onToggleModal} />
 				</div>
 			</Modal>
 		)
 	}
 
-	_renderMiljoerVelger = () => {
-		const environments = ['t0', 't1']
-		return (
-			<Formik
-				initialValues={{
-					environments
-				}}
-				onSubmit={this._submitFormik}
-				validationSchema={this.EnvValidation}
-				render={formikProps => {
-					return (
-						<Fragment>
-							<FieldArray
-								name="environments"
-								render={arrayHelpers => (
-									<MiljoVelgerConnector
-										heading="Hvilke testmiljø vil du opprette testpersonene i?"
-										arrayHelpers={arrayHelpers}
-										arrayValues={formikProps.values.environments}
-									/>
-								)}
-							/>
-							<div className="openam-modal_buttons">
-								<Knapp autoFocus type="standard" onClick={this._onToggleModal}>
-									Avbryt
-								</Knapp>
-								<Knapp type="hoved" onClick={formikProps.submitForm}>
-									Utfør
-								</Knapp>
-							</div>
-						</Fragment>
-					)
-				}}
-			/>
-		)
-	}
-
 	_submitFormik = async values => {
-		console.log(values.environments, 'env to send')
 		const envsQuery = Formatters.arrayToString(values.environments)
 			.replace(/ /g, '')
 			.toLowerCase()
