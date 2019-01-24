@@ -6,21 +6,15 @@ import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class QueueHandler extends KubernetesUtils {
-    private static QueueHandler queueHandler = null;
     private ArrayList<Integer> queue;
 
-    private QueueHandler(){
+    public QueueHandler(){
         this.queue = new ArrayList<>();
-    }
-
-    public static QueueHandler getInstance() {
-        if (queueHandler == null){
-            queueHandler = new QueueHandler();
-        }
-        return queueHandler;
     }
 
     public ArrayList<Integer> getQueue(){
@@ -28,27 +22,17 @@ public class QueueHandler extends KubernetesUtils {
     }
 
     public void addToQueue(int queueId){
-        ArrayList<Integer> newList  = new ArrayList<>();
-        for (int i : queue){
-            newList.add(i);
-        }
-        newList.add(queueId);
-        setQueue(newList);
-    }
-
-    public void setQueue(ArrayList<Integer> newQueue){
-        queue = newQueue;
+        queue.add(queueId);
     }
 
     public void removeFromQueue(int queueId, ApiClient client, String appName) throws ApiException {
-        ArrayList<Integer> newList  = new ArrayList<>();
-        for (int i : queue){
-            newList.add(i);
+        for (int i = 0; i < queue.size(); i++){
+            if (queue.get(i) == queueId){
+                queue.remove(i);
+            }
         }
-        newList.remove(queueId);
-        setQueue(newList);
         if (queue.size() == 0){
-            log.info("Terminating " + appName);
+            log.info("ID: " + queueId + " is terminating " + appName);
             deleteApplication(client, appName);
         }
     }

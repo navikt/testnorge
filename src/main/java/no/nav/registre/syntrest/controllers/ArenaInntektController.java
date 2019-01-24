@@ -36,7 +36,8 @@ public class ArenaInntektController extends KubernetesUtils {
     @Autowired
     private ArenaInntektService arenaInntektService;
 
-    private QueueHandler queueHandler = QueueHandler.getInstance();
+    @Autowired
+    private QueueHandler queueHandler;
 
     @PostMapping(value = "/generateArenaInntekt")
     public ResponseEntity generateInntektsmeldinger(@RequestBody String[] fnrs) throws ApiException, IOException {

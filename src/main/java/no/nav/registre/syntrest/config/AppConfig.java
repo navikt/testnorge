@@ -3,10 +3,8 @@ package no.nav.registre.syntrest.config;
 import no.nav.registre.syntrest.controllers.*;
 import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.utils.Validation;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Import;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -21,5 +19,17 @@ public class AppConfig {
     @Bean
     Validation validation() {
         return new Validation();
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public QueueHandler queueHandler(){
+        return new QueueHandler();
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public int queue(){
+        return 0;
     }
 }

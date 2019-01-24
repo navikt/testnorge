@@ -2,6 +2,8 @@ package no.nav.registre.syntrest.controllers;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
+import io.kubernetes.client.util.Config;
+import io.kubernetes.client.util.KubeConfig;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -35,16 +38,19 @@ public class PoppController extends KubernetesUtils {
     @Autowired
     private PoppService poppService;
 
-    private QueueHandler queueHandler = QueueHandler.getInstance();
+    @Autowired
+    private int queue;
 
     @PostMapping(value = "/generatePopp")
     public ResponseEntity generatePopp(@RequestBody String[] fnrs) throws IOException, ApiException {
         if (!validation.validateFnrs(fnrs)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }
-        int queueId = queueHandler.getQueueId();
-        queueHandler.addToQueue(queueId);
-        ApiClient client = createApiClient();
+        queue++;
+        System.out.println("QUEUE: " + queue);
+        //ApiClient client = createApiClient();
+        KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
+        ApiClient client = Config.fromConfig(kc);
         try {
             log.info("Creating application: synthdata-popp");
             createApplication(client, "/nais/synthdata-popp.yaml", poppService);
@@ -52,13 +58,19 @@ public class PoppController extends KubernetesUtils {
             log.info("Requesting synthetic data: synthdata-popp");
             CompletableFuture<List<Map<String, Object>>> result = poppService.generatePoppMeldingerFromNAIS(fnrs);
             List<Map<String, Object>> synData = result.get();
-
-            queueHandler.removeFromQueue(queueId, client, appName);
+            queue--;
+            if (queue == 0){
+                deleteApplication(client, appName);
+            }
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
-            log.info("Exception in generatePopp: " + e);
-            queueHandler.removeFromQueue(queueId, client, appName);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+            System.out.println(e);
+            log.info("Exception in generatePopp: " + e.getCause());
+            queue--;
+            if (queue == 0){
+                deleteApplication(client, appName);
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
 
     }

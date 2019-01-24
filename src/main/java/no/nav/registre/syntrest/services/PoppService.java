@@ -28,9 +28,8 @@ public class PoppService implements IService{
     }
 
     @Async
-    public CompletableFuture<List<Map<String, Object>>> generatePoppMeldingerFromNAIS(String[] fnrs) throws InterruptedException {
+    public CompletableFuture<List<Map<String, Object>>> generatePoppMeldingerFromNAIS(String[] fnrs) {
         List<Map<String, Object>> result = restTemplate.postForObject(synthPoppUrl, fnrs, List.class);
-        System.out.println(result);
         return CompletableFuture.completedFuture(result);
     }
 
