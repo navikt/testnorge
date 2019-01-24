@@ -1,6 +1,9 @@
 package no.nav.dolly.mapper.strategy;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.String.join;
+import static java.util.Collections.emptySet;
+import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -8,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.springframework.stereotype.Component;
-import com.google.common.collect.Sets;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -32,7 +34,8 @@ public class TestIdentMappingStrategy implements MappingStrategy {
                             Set<String> environments = new TreeSet<>();
                             for (BestillingProgress progress : bestillinger) {
                                 bestillingListe.add(progress.getBestillingId());
-                                environments.addAll(Sets.newHashSet(progress.getTpsfSuccessEnv().split(",")));
+                                environments.addAll(nonNull(progress.getTpsfSuccessEnv()) ?
+                                        newHashSet(progress.getTpsfSuccessEnv().split(",")) : emptySet());
                             }
                             bestillingListe.sort(Comparator.reverseOrder());
                             rsTestIdent.setBestillingId(bestillingListe);
