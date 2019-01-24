@@ -18,14 +18,14 @@ export const mapIdentAndEnvironementForTps = (state, ident) => {
 }
 
 const _findEnvironmentsForIdent = (state, ident) => {
-	const { gruppe } = state
+	const { gruppe, bestillingStatuser } = state
 	if (!gruppe.data) return null
 
 	const identArray = gruppe.data[0].testidenter
 	const personObj = identArray.find(item => item.ident === ident)
 	if (!personObj) return null
 
-	const bestillingObj = gruppe.data[0].bestillinger.find(
+	const bestillingObj = bestillingStatuser.data.find(
 		bestilling => bestilling.id === personObj.bestillingId
 	)
 	return bestillingObj.environments
