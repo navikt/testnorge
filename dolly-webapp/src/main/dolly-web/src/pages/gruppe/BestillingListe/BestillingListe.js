@@ -8,6 +8,10 @@ import Formatters from '~/utils/DataFormatter'
 import BestillingDetaljerConnector from './BestillingDetaljer/BestillingDetaljerConnector'
 
 export default class BestillingListe extends PureComponent {
+	componentWillMount() {
+		this.props.getEnvironments()
+	}
+
 	render() {
 		const { bestillinger, searchActive } = this.props
 		if (!bestillinger) return null
@@ -41,7 +45,6 @@ export default class BestillingListe extends PureComponent {
 											<Table.Row
 												key={idx}
 												expandComponent={<BestillingDetaljerConnector bestilling={bestilling} />}
-												// expandComponent={<BestillingStatusConnector bestilling={bestilling} />}
 											>
 												<Table.Column width="15" value={bestilling.id} />
 												<Table.Column width="15" value={bestilling.antallIdenter} />
