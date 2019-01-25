@@ -7,7 +7,7 @@ import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import Modal from 'react-modal'
 import Knapp from 'nav-frontend-knapper'
 import Lukknapp from 'nav-frontend-lukknapp'
-import { Formik, FieldArray, Field } from 'formik'
+import { Formik, FieldArray } from 'formik'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
@@ -43,7 +43,7 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-		const { id, successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
+		const { successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
 
 		// TODO: Reverse Map detail data here. Alex
 		return (
@@ -59,7 +59,7 @@ export default class BestillingDetaljer extends PureComponent {
 					>
 						GJENOPPRETT I TPS
 					</Button>
-					{this._renderModal(id)}
+					{this._renderModal()}
 				</div>
 			</div>
 		)
@@ -67,18 +67,24 @@ export default class BestillingDetaljer extends PureComponent {
 
 	_renderBestillingsDetaljer = () => {
 		const { bestilling } = this.props
-		console.log(this.props.bestilling)
 		const data = mapBestillingData(bestilling)
+		console.log(data, 'data')
 		return (
 			<Fragment>
 				<h3>Bestillingsdetaljer</h3>
-				<StaticValue header="antallIdenter" value={bestilling.antallIdenter} />
+				<div className={'flexbox--align-center info-block'}>
+					{/* Husk å lage en sjekk om verdi finnes */}
+					{data.map((v, i) => {
+						return <StaticValue header="antallIdenter" value={bestilling.antallIdenter} />
+					})}
+				</div>
 			</Fragment>
 		)
 	}
 
-	_renderModal = id => {
-		const { environments } = this.props.bestilling
+	_renderModal = () => {
+		console.log(this.props.bestilling, 'bestillng')
+		const { environments, id } = this.props.bestilling // miljø som ble bestilt i en bestilling
 
 		return (
 			<Modal

@@ -1,21 +1,32 @@
 export function mapBestillingData(bestillingData) {
 	// TODO: Alex - Split strengen
 
-	console.log(bestillingData, 'data')
-	console.log(bestillingData.antallIdenter, 'antall')
-	const dataTpsfArray = bestillingData.tpsfKriterier
-		.substring(1, bestillingData.tpsfKriterier.length - 1)
-		.split(',')
+	// console.log(bestillingData, 'data')
+	// const dataTpsfArray = bestillingData.tpsfKriterier
+	// 	.substring(1, bestillingData.tpsfKriterier.length - 1)
+	// 	.split(',')
 
-	console.log(dataTpsfArray)
+	const tpsfKriterier = JSON.parse(bestillingData.tpsfKriterier)
+
+	// console.log(tpsfKriterier, 'objekt')
 
 	if (!bestillingData) return null
-	return {
-		data: [
-			{
-				label: 'Språk',
-				value: bestillingData.sprakKode
-			}
-		]
-	}
+	return [
+		{
+			label: 'Identtype',
+			value: tpsfKriterier.identtype
+		},
+		{
+			label: 'Antall',
+			value: bestillingData.antallIdenter
+		},
+		{
+			label: 'Sist Oppdatert',
+			value: bestillingData.sistOppdatert
+		},
+		{
+			label: 'Språk',
+			value: bestillingData.sprakKode
+		}
+	]
 }
