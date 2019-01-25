@@ -68,22 +68,34 @@ export default class BestillingDetaljer extends PureComponent {
 	_renderBestillingsDetaljer = () => {
 		const { bestilling } = this.props
 		const data = mapBestillingData(bestilling)
-		console.log(data, 'data')
+		console.log(data, 'data output')
 		return (
 			<Fragment>
 				<h3>Bestillingsdetaljer</h3>
 				<div className={'flexbox--align-center info-block'}>
 					{/* Husk å lage en sjekk om verdi finnes */}
-					{data.map((v, i) => {
-						return <StaticValue header="antallIdenter" value={bestilling.antallIdenter} />
-					})}
+					{data ? (
+						data.map((attributt, i) => {
+							if (attributt.value) {
+								return (
+									<StaticValue
+										header={attributt.label}
+										size="small"
+										value={attributt.value}
+										key={i}
+									/>
+								)
+							}
+						})
+					) : (
+						<p>Kunne ikke hente bestillingsdata</p>
+					)}
 				</div>
 			</Fragment>
 		)
 	}
 
 	_renderModal = () => {
-		console.log(this.props.bestilling, 'bestillng')
 		const { environments, id } = this.props.bestilling // miljø som ble bestilt i en bestilling
 
 		return (
@@ -178,11 +190,13 @@ export default class BestillingDetaljer extends PureComponent {
 				<h3>Miljøstatus</h3>
 				<div className={'flexbox--align-center info-block'}>
 					{successEnvsStr.length > 0 ? (
-						<StaticValue header="Suksess" value={successEnvsStr} />
+						<StaticValue size={'medium'} header="Suksess" value={successEnvsStr} />
 					) : (
-						<StaticValue header="Suksess" value={'Ingen'} />
+						<StaticValue size={'medium'} header="Suksess" value={'Ingen'} />
 					)}
-					{failedEnvsStr.length > 0 && <StaticValue header="Feilet" value={failedEnvsStr} />}
+					{failedEnvsStr.length > 0 && (
+						<StaticValue size={'medium'} header="Feilet" value={failedEnvsStr} />
+					)}
 				</div>
 			</Fragment>
 		)
