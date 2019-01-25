@@ -1,32 +1,46 @@
 export function mapBestillingData(bestillingData) {
-	// TODO: Alex - Split strengen
-
-	// console.log(bestillingData, 'data')
-	// const dataTpsfArray = bestillingData.tpsfKriterier
-	// 	.substring(1, bestillingData.tpsfKriterier.length - 1)
-	// 	.split(',')
-
-	const tpsfKriterier = JSON.parse(bestillingData.tpsfKriterier)
-
-	// console.log(tpsfKriterier, 'objekt')
+	console.log(bestillingData, 'input')
 
 	if (!bestillingData) return null
-	return [
-		{
-			label: 'Identtype',
-			value: tpsfKriterier.identtype
-		},
-		{
-			label: 'Antall',
-			value: bestillingData.antallIdenter
-		},
+	const data = []
+
+	data.push({
+		label: 'Antall',
+		value: bestillingData.antallIdenter
+	})
+
+	// Gamle bestillinger har ikke tpsfKriterie
+	if (bestillingData.tpsfKriterier) {
+		const tpsfKriterier = bestillingData.tpsfKriterier && JSON.parse(bestillingData.tpsfKriterier)
+
+		console.log(tpsfKriterier, 'tpsf')
+		data.push(
+			{
+				label: 'Identtype',
+				value: tpsfKriterier.identtype
+			},
+			{
+				label: 'Språk',
+				value: tpsfKriterier.sprakKode
+			},
+			{
+				label: 'Statsborgerskap',
+				value: tpsfKriterier.statsborgerskap
+			}
+		)
+	}
+
+	// 2 siste elementer å vise
+	data.push(
 		{
 			label: 'Sist Oppdatert',
 			value: bestillingData.sistOppdatert
 		},
 		{
-			label: 'Språk',
-			value: bestillingData.sprakKode
+			label: 'Gjenopprett fra',
+			value: bestillingData.opprettetFraId && 'Bestilling #' + bestillingData.opprettetFraId
 		}
-	]
+	)
+
+	return data
 }
