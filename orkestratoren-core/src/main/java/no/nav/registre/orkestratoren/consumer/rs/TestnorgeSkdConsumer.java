@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import io.micrometer.core.instrument.Metrics;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
-import no.nav.registre.orkestratoren.micrometer.timed.Timed;
 
 @Component
 @Slf4j
@@ -31,9 +31,10 @@ public class TestnorgeSkdConsumer {
         this.url = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
     }
 
-    @Timed(name = "orkestratoren.resource.latency", tags = {"operation", "skd"})
     public ResponseEntity startSyntetisering(GenereringsOrdreRequest genereringsOrdreRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(genereringsOrdreRequest);
+        String result = "";
+        Metrics.counter("message.sent", "result", result).increment();
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 }
