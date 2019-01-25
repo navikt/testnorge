@@ -1,5 +1,6 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
+import io.micrometer.core.aop.TimedAspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -31,7 +32,7 @@ public class TestnorgeSkdConsumer {
         this.url = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
     }
 
-    @Timed
+    @Timed(value = "orkestratoren.skd")
     public ResponseEntity startSyntetisering(GenereringsOrdreRequest genereringsOrdreRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(genereringsOrdreRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
