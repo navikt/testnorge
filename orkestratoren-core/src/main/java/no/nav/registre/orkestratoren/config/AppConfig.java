@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.web.client.RestTemplate;
 
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
+
 import no.nav.registre.orkestratoren.batch.JobController;
 import no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer;
 import no.nav.registre.orkestratoren.provider.rs.InternalController;
@@ -26,5 +29,10 @@ public class AppConfig {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(tpsfUsername, tpsfPassword));
         return restTemplate;
+    }
+
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry registry) {
+        return new TimedAspect(registry);
     }
 }

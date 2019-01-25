@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
@@ -31,10 +31,9 @@ public class TestnorgeSkdConsumer {
         this.url = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
     }
 
+    @Timed
     public ResponseEntity startSyntetisering(GenereringsOrdreRequest genereringsOrdreRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(genereringsOrdreRequest);
-        String result = "";
-        Metrics.counter("message.sent", "result", result).increment();
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 }
