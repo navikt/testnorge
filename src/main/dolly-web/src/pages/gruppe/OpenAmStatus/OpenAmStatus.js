@@ -14,6 +14,9 @@ export default class OpenAmStatus extends Component {
 				<div>
 					<h3>JIRA-saker opprettet</h3>
 					<div className="jira-link">{this._renderJiraLinks()}</div>
+					<div>
+						Sakene vil bli oppdatert i løpet av 2-3 minutter, og finnes da i kommentarfeltet.
+					</div>
 				</div>
 				<Button kind="remove-circle" onClick={this._onCloseButton} />
 			</div>
