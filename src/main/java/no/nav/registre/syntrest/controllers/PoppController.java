@@ -39,38 +39,30 @@ public class PoppController extends KubernetesUtils {
     private PoppService poppService;
 
     @Autowired
-    private int queue;
+    private QueueHandler queue;
 
     @PostMapping(value = "/generatePopp")
     public ResponseEntity generatePopp(@RequestBody String[] fnrs) throws IOException, ApiException {
         if (!validation.validateFnrs(fnrs)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }
-        queue++;
-        System.out.println("QUEUE: " + queue);
+        int queueId = queue.getQueueId();
+        queue.addToQueue(queueId);
         ApiClient client = createApiClient();
-        //KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
-        //ApiClient client = Config.fromConfig(kc);
         try {
-            log.info("Creating application: synthdata-popp");
             createApplication(client, "/nais/synthdata-popp.yaml", poppService);
-
-            log.info("Requesting synthetic data: synthdata-popp");
+            while (queue.getNextInQueue() != queueId) {
+                TimeUnit.SECONDS.sleep(2);
+            }
+            log.info("Requesting synthetic data: synthdata-popp for id " + queueId);
             Future<List<Map<String, Object>>> completableFuture = poppService.generatePoppMeldingerFromNAIS(fnrs);
             List<Map<String, Object>> synData = completableFuture.get();
-            System.out.println(synData);
-            queue--;
-            if (queue == 0){
-                deleteApplication(client, appName);
-            }
+            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
             System.out.println(e);
             log.info("Exception in generatePopp: " + e.getCause());
-            queue--;
-            if (queue == 0){
-                deleteApplication(client, appName);
-            }
+            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
 

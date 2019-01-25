@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -36,29 +37,27 @@ public class TPController extends KubernetesUtils {
     private TPService tpService;
 
     @Autowired
-    private int queue;
+    private QueueHandler queue;
 
     @GetMapping(value = "/generateTp/{num_to_generate}")
     public ResponseEntity generateTp(@PathVariable int num_to_generate) throws IOException, ApiException {
-        queue++;
-        log.info("TP QueueSize: " + queue);
+        int queueId = queue.getQueueId();
+        queue.addToQueue(queueId);
         ApiClient client = createApiClient();
-        try{
-
+        try {
             createApplication(client, "/nais/synthdata-tp.yaml", tpService);
-
-            log.info("Requesting synthetic data: synthdata-tp");
+            while (queue.getNextInQueue() != queueId) {
+                TimeUnit.SECONDS.sleep(2);
+            }
+            log.info("Requesting synthetic data: synthdata-tp for id " + queueId);
             CompletableFuture<List<Map<String, String>>> result = tpService.generateTPFromNAIS(num_to_generate);
             List<Map<String, String>> synData = result.get();
-            queue--;
-            log.info("TP QueueSize: " + queue);
-            if (queue == 0){ deleteApplication(client, appName); }
+
+            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
-        } catch (Exception e){
-            log.info("Something went horribly wrong in generateTp: " + e);
-            queue--;
-            log.info("TP QueueSize: " + queue);
-            if (queue == 0){ deleteApplication(client, appName); }
+        } catch (Exception e) {
+            log.info("Exception in generateTp: " + e.getCause());
+            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
 

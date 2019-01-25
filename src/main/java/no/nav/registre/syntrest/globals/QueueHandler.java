@@ -21,6 +21,10 @@ public class QueueHandler extends KubernetesUtils {
         return queue;
     }
 
+    public int getNextInQueue(){
+        return queue.get(0);
+    }
+
     public void addToQueue(int queueId){
         queue.add(queueId);
     }

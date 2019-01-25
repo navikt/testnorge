@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -30,26 +31,27 @@ public class MedlController extends KubernetesUtils {
     private MedlService medlService;
 
     @Autowired
-    private QueueHandler queueHandler;
+    private QueueHandler queue;
 
     @GetMapping(value = "/generateMedl/{num_to_generate}")
     public ResponseEntity generateMedl(@PathVariable int num_to_generate) throws IOException, ApiException {
-        int queueId = queueHandler.getQueueId();
-        queueHandler.addToQueue(queueId);
+        int queueId = queue.getQueueId();
+        queue.addToQueue(queueId);
         ApiClient client = createApiClient();
         try {
-            log.info("Creating application: synthdata-medl");
             createApplication(client, "/nais/synthdata-medl.yaml", medlService);
-
+            while (queue.getNextInQueue() != queueId) {
+                TimeUnit.SECONDS.sleep(2);
+            }
             log.info("Requesting synthetic data from: synthdata-medl");
             CompletableFuture<List<Map<String, String>>> result = medlService.generateMedlFromNAIS(num_to_generate);
             List<Map<String, String>> synData = result.get();
 
-            queueHandler.removeFromQueue(queueId, client, appName);
+            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
-            log.info("Exception in generateMedl: " + e);
-            queueHandler.removeFromQueue(queueId, client, appName);
+            log.info("Exception in generateMedl: " + e.getCause());
+            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
 

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -29,26 +30,27 @@ public class MeldekortController extends KubernetesUtils {
     private MeldekortService meldekortService;
 
     @Autowired
-    private QueueHandler queueHandler;
+    private QueueHandler queue;
 
     @GetMapping(value = "/generateMeldekort/{num_to_generate}/{meldegruppe}")
     public ResponseEntity generateMeldekort(@PathVariable int num_to_generate, @PathVariable String meldegruppe) throws ApiException, IOException {
-        int queueId = queueHandler.getQueueId();
-        queueHandler.addToQueue(queueId);
+        int queueId = queue.getQueueId();
+        queue.addToQueue(queueId);
         ApiClient client = createApiClient();
         try {
-            log.info("Creating application: synthdata-meldekort");
             createApplication(client, "/nais/synthdata-meldekort.yaml", meldekortService);
-
-            log.info("Requesting synthetic data from: synthdata-meldekort");
+            while (queue.getNextInQueue() != queueId) {
+                TimeUnit.SECONDS.sleep(2);
+            }
+            log.info("Requesting synthetic data: synthdata-arena-meldekort for id " + queueId);
             CompletableFuture<List<String>> result = meldekortService.generateMeldekortFromNAIS(num_to_generate, meldegruppe);
             List<String> synData = result.get();
 
-            queueHandler.removeFromQueue(queueId, client, appName);
+            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
-            log.info("Exception in generateMeldekort: " + e);
-            queueHandler.removeFromQueue(queueId, client, appName);
+            log.info("Exception in generateMeldekort: " + e.getCause());
+            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
 

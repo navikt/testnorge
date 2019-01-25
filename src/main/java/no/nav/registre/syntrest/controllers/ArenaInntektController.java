@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -37,29 +38,30 @@ public class ArenaInntektController extends KubernetesUtils {
     private ArenaInntektService arenaInntektService;
 
     @Autowired
-    private QueueHandler queueHandler;
+    private QueueHandler queue;
 
     @PostMapping(value = "/generateArenaInntekt")
     public ResponseEntity generateInntektsmeldinger(@RequestBody String[] fnrs) throws ApiException, IOException {
         if (!validation.validateFnrs(fnrs)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }
-        int queueId = queueHandler.getQueueId();
-        queueHandler.addToQueue(queueId);
+        int queueId = queue.getQueueId();
+        queue.addToQueue(queueId);
         ApiClient client = createApiClient();
         try {
-            log.info("Creating application: synthdata-arena-inntekt");
             createApplication(client, "/nais/synthdata-inntekt.yaml", arenaInntektService);
-
-            log.info("Requesting synthetic data from: synthdata-arena-inntekt");
+            while (queue.getNextInQueue() != queueId) {
+                TimeUnit.SECONDS.sleep(2);
+            }
+            log.info("Requesting synthetic data: synthdata-arena-inntekt for id " + queueId);
             CompletableFuture<Map<String, List<Inntektsmelding>>> result = arenaInntektService.generateInntektsmeldingerFromNAIS(fnrs);
             Map<String, List<Inntektsmelding>> synData = result.get();
 
-            queueHandler.removeFromQueue(queueId, client, appName);
+            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
-            log.info("Exception in generateInntektsmeldinger: " + e);
-            queueHandler.removeFromQueue(queueId, client, appName);
+            log.info("Exception in generateInntektsmeldinger: " + e.getCause());
+            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
     }
