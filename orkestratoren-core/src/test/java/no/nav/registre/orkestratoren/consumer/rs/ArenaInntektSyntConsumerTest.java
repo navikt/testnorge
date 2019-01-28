@@ -1,84 +1,64 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
-import java.util.ArrayList;
-import java.util.List;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 
 @RunWith(SpringRunner.class)
-@RestClientTest(ArenaInntektSyntConsumer.class)
-@TestPropertySource(locations = "classpath:unittest/provider/internalController.properties")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWireMock(port = 0)
+@ActiveProfiles("test")
 public class ArenaInntektSyntConsumerTest {
-
-    @Autowired
-    private MockRestServiceServer server;
 
     @Autowired
     private ArenaInntektSyntConsumer arenaInntektSyntConsumer;
 
-    private List<String> inntektsmldMottakere;
-    private Logger logger;
-    private ListAppender<ILoggingEvent> listAppender;
+    private long gruppeId = 10L;
+    private String miljoe = "t9";
+    private int antallPersoner = 2;
+    private String expectedId = "1234";
+    private SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest;
 
     @Before
     public void setUp() {
-        inntektsmldMottakere = new ArrayList<>();
-        inntektsmldMottakere.add("Something");
-        inntektsmldMottakere.add("Something else");
-
-        logger = (Logger) LoggerFactory.getLogger(ArenaInntektSyntConsumer.class);
-        listAppender = new ListAppender<>();
-        listAppender.start();
-        logger.addAppender(listAppender);
+        syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(gruppeId, miljoe, antallPersoner);
     }
 
+    /**
+     * Scenario: Tester happypath til {@link ArenaInntektSyntConsumer#startSyntetisering} - forventer at metoden returnerer id-en
+     * gitt av arena-inntekt forventer at metoden kaller Testnorge-Arena-Inntekt med de rette parametrene (se stub)
+     */
     @Test
-    public void asyncBestillEnInntektsmeldingPerFnrIInntektstubShouldLogOnSuccess() throws InterruptedException {
-        this.server.expect(requestTo("https://dummyUrl.inntekt.synt/api/v1/generate")).andRespond(withSuccess());
+    public void shouldStartSyntetisering() {
+        stubArenaInntektConsumer();
 
-        arenaInntektSyntConsumer.asyncBestillEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere);
+        String id = arenaInntektSyntConsumer.startSyntetisering(syntetiserInntektsmeldingRequest);
 
-        Thread.sleep(2000); // gi async-metoden tid til å bli ferdig
-
-        this.server.verify();
-
-        assertThat(listAppender.list.size(), is(equalTo(1)));
-        assertThat(listAppender.list.get(0).toString(), containsString("synth-arena-inntekt har fullført bestillingen som ble sendt"));
-        assertThat(listAppender.list.get(0).toString(), containsString("Antall inntektsmeldinger opprettet i inntekts-stub: " + inntektsmldMottakere.size()));
+        assertEquals(expectedId, id);
     }
 
-    @Test
-    public void asyncBestillEnInntektsmeldingPerFnrIInntektstubShouldLogOnError() throws InterruptedException {
-        this.server.expect(requestTo("https://dummyUrl.inntekt.synt/api/v1/generate")).andRespond(withServerError());
-
-        arenaInntektSyntConsumer.asyncBestillEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere);
-
-        Thread.sleep(2000); // gi async-metoden tid til å bli ferdig
-
-        this.server.verify();
-
-        assertThat(listAppender.list.size(), is(equalTo(1)));
-        assertThat(listAppender.list.get(0).toString(), containsString("synth-arena-inntekt returnerte feilmeldingen"));
-        assertThat(listAppender.list.get(0).toString(), containsString("Bestillingen ble sendt"));
+    public void stubArenaInntektConsumer() {
+        stubFor(post(urlPathEqualTo("/arenainntekt/api/v1/syntetisering/generer"))
+                .withRequestBody(equalToJson(
+                        "{\"avspillergruppeId\":" + gruppeId
+                                + ",\"miljoe\":\"" + miljoe + "\""
+                                + ",\"antallPersoner\":" + antallPersoner + "}"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(expectedId)));
     }
 }

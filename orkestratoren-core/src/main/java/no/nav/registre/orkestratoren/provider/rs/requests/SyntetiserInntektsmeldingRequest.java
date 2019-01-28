@@ -1,6 +1,7 @@
 package no.nav.registre.orkestratoren.provider.rs.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,5 +14,9 @@ import lombok.Setter;
 public class SyntetiserInntektsmeldingRequest {
 
     @JsonProperty("avspillergruppeId")
-    private Long avspillergruppeId;
+    private long avspillergruppeId;
+    @JsonProperty("miljoe")
+    private String miljoe;
+    @JsonProperty("antallPersoner")
+    private int antallPersoner;
 }

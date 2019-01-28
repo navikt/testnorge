@@ -1,6 +1,5 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import io.micrometer.core.aop.TimedAspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;

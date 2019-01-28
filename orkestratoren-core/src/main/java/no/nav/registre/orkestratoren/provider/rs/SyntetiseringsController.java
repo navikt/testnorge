@@ -52,7 +52,7 @@ public class SyntetiseringsController {
     @LogExceptions
     @PostMapping(value = "/arena/inntekt/generer")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public List<String> opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
+    public String opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
         return arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(syntetiserInntektsmeldingRequest);
     }
 
