@@ -31,7 +31,7 @@ fasitResources:
   used:
     - alias: "tps-forvalteren.rest-api"
       resourceType: restservice
-    - alias: "testnorge-hodejegeren.rest-api"
+    - alias: "testnorge-skd.rest-api"
       resourceType: restservice
     - alias: "synthdata-arena-inntekt.rest-api"
       resourceType: restservice

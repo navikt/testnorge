@@ -1,13 +1,10 @@
 package no.nav.registre.orkestratoren;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -21,14 +18,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import no.nav.registre.orkestratoren.batch.JobController;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
@@ -46,9 +41,6 @@ public class StartSyntetiseringTpsCompTest {
 
     @Autowired
     private JobController jobController;
-
-    @Value("${tps-forvalteren.rest-api.url}")
-    private String tpsfServerUrl;
 
     private Long gruppeId;
     private String miljoe;
@@ -83,15 +75,11 @@ public class StartSyntetiseringTpsCompTest {
     }
 
     /**
-     * Scenario: Happypath Sjekker at systemet sender og mottar riktige verdier i post-requesten til hodejegeren og TPSF. Id-ene som
-     * returneres fra hodejegeren skal sendes videre til TPSF gjennom metoden
-     * {@link no.nav.registre.orkestratoren.consumer.rs.TpsfConsumer#sendSkdmeldingerTilTps}. Testen sjekker også at resultatet fra
-     * TPSF stemmer overens med det som er forventet.
+     * Scenario: Happypath Sjekker at systemet sender og mottar riktige verdier i post-requesten til Testnorge-Skd.
      */
     @Test
     public void shouldStartSyntetisering() {
-        stubHodejegeren();
-        stubTPSF();
+        stubSkd();
 
         SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
 
@@ -123,59 +111,19 @@ public class StartSyntetiseringTpsCompTest {
         assertEquals(antallEndringskode2, testMap.get(endringskode2).intValue());
     }
 
-    /**
-     * Scenario: HVIS hodejegeren returnerer et exception, skal metoden
-     * {@link no.nav.registre.orkestratoren.service.TpsSyntPakkenService#produserOgSendSkdmeldingerTilTpsIMiljoer} hente ut id-ene
-     * som ligger i exception og returnere disse slik at de kan lagres i TPS.
-     */
-    @Test
-    public void shouldReturnIdsWhenReceivingException() {
-        stubHodejegerenWithError();
-        stubTPSF();
-
-        SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
-        try {
-            syntetiseringsController.opprettSkdMeldingerOgSendTilTps(ordreRequest);
-        } catch (HttpStatusCodeException e) {
-            verify(postRequestedFor(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))
-                    .withRequestBody(equalToJson(
-                            "{\"environment\" : \"" + miljoe
-                                    + "\", \"ids\" : [" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]}")));
-        }
-    }
-
-    public void stubHodejegeren() {
-        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
+    public void stubSkd() {
+        stubFor(post(urlPathEqualTo("/skd/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson("{\"avspillergruppeId\": " + gruppeId
                         + ", \"miljoe\": \"" + miljoe
                         + "\", \"antallMeldingerPerEndringskode\": {\"" + endringskode1 + "\": " + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
-                .willReturn(aResponse()
-                        .withStatus(HttpStatus.CREATED.value())
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("[" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]")));
-    }
-
-    public void stubHodejegerenWithError() {
-        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
-                .withRequestBody(equalToJson(
-                        "{\"avspillergruppeId\":" + gruppeId
-                                + ",\"miljoe\":\"" + miljoe
-                                + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode1 + "\":" + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
-                .willReturn(aResponse()
-                        .withStatus(500)
-                        .withBody("{\"ids\": [" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]}")));
-    }
-
-    public void stubTPSF() {
-        stubFor(post(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))
-                .withRequestBody(equalToJson("{\"environment\": \"" + miljoe
-                        + "\", \"ids\": [" + expectedMeldingIds.get(0) + ", " + expectedMeldingIds.get(1) + "]}"))
                 .willReturn(ok()
                         .withHeader("content-type", "application/json")
                         .withBody("{\"antallSendte\": \"" + expectedAntallSendte
                                 + "\", \"antallFeilet\": \"" + expectedAntallFeilet
-                                + "\", \"statusFraFeilendeMeldinger\": [{\"foedselsnummer\": \"" + expectedFoedselnummer
-                                + "\", \"sekvensnummer\": " + expectedSekvensnummer
-                                + ", \"status\": \"" + expectedStatus + "\"}]}")));
+                                + "\", \"statusFraFeilendeMeldinger\": ["
+                                + "{\"foedselsnummer\": \"" + expectedFoedselnummer
+                                + "\", \"sekvensnummer\": \"" + expectedSekvensnummer + "\""
+                                + ", \"status\": \"" + expectedStatus + "\"}],"
+                                + "\"tpsfIds\": [\"" + expectedMeldingIds.get(0) + "\", \"" + expectedMeldingIds.get(1) + "\"]}")));
     }
 }

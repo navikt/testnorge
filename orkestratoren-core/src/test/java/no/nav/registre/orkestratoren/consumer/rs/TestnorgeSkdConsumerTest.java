@@ -5,7 +5,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,19 +18,21 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
+import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("test")
-public class HodejegerenConsumerTest {
+public class TestnorgeSkdConsumerTest {
 
     @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private TestnorgeSkdConsumer testnorgeSkdConsumer;
 
     private long gruppeId = 10L;
     private String miljoe = "t9";
@@ -51,26 +53,37 @@ public class HodejegerenConsumerTest {
     }
 
     /**
-     * Scenario: Tester happypath til {@link HodejegerenConsumer#startSyntetisering} - forventer at metoden returnerer id-ene til de
-     * lagrede skdmeldingene i TPSF - forventer at metoden kaller hodejegeren med de rette parametrene (se stub)
+     * Scenario: Tester happypath til {@link TestnorgeSkdConsumer#startSyntetisering} - forventer at metoden returnerer id-ene til
+     * de lagrede skdmeldingene i TPSF - forventer at metoden kaller Testnorge-Skd med de rette parametrene (se stub)
      */
     @Test
     public void shouldStartSyntetisering() {
-        stubHodejegerenConsumer();
+        stubSkdConsumer();
 
-        List<Long> ids = hodejegerenConsumer.startSyntetisering(ordreRequest);
+        ResponseEntity response = testnorgeSkdConsumer.startSyntetisering(ordreRequest);
 
-        assertEquals(expectedMeldingsIds.toString(), ids.toString());
+        SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
+
+        assertTrue(skdMeldingerTilTpsRespons.getTpsfIds().containsAll(expectedMeldingsIds));
     }
 
-    public void stubHodejegerenConsumer() {
-        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/syntetisering/generer"))
+    public void stubSkdConsumer() {
+        stubFor(post(urlPathEqualTo("/skd/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\":" + gruppeId
                                 + ",\"miljoe\":\"" + miljoe
                                 + "\",\"antallMeldingerPerEndringskode\":{\"" + endringskode + "\":" + antallPerEndringskode + "}}"))
                 .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("[" + expectedMeldingsIds.get(0) + ", " + expectedMeldingsIds.get(1) + "]")));
+                        .withHeader("content-type", "application/json")
+                        .withBody("{\"antallSendte\": \"" + expectedMeldingsIds.size()
+                                + "\", \"antallFeilet\": \"" + 0
+                                + "\", \"statusFraFeilendeMeldinger\": ["
+                                + "{\"foedselsnummer\": \"" + "01010101010"
+                                + "\", \"sekvensnummer\": \"\""
+                                + ", \"status\": \"\"},"
+                                + "{\"foedselsnummer\": \"" + "02020202020"
+                                + "\", \"sekvensnummer\": \"\""
+                                + ", \"status\": \"\"}],"
+                                + "\"tpsfIds\": [\"" + expectedMeldingsIds.get(0) + "\", \"" + expectedMeldingsIds.get(1) + "\"]}")));
     }
 }

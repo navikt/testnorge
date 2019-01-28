@@ -1,9 +1,5 @@
 package no.nav.registre.orkestratoren.batch;
 
-import static no.nav.registre.orkestratoren.utils.ExceptionUtils.createListOfRangesFromIds;
-import static no.nav.registre.orkestratoren.utils.ExceptionUtils.extractIdsFromResponseBody;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -56,17 +52,10 @@ public class JobController {
 
     @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
-        List<Long> ids = new ArrayList<>();
         try {
             tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(avspillergruppeId, tpsbatchMiljoe, antallMeldingerPerEndringskode);
         } catch (HttpStatusCodeException e) {
-            ids.addAll(extractIdsFromResponseBody(e));
-            if (!ids.isEmpty()) {
-                log.warn("tpsSyntBatch: Noe feilet i produserOfSendSkdmeldingerTilTpsIMiljoer for gruppe {}. Følgende id-er ble returnert: {}. {} {}",
-                        avspillergruppeId, createListOfRangesFromIds(ids), e.getResponseBodyAsString(), e);
-            } else {
-                log.warn(e.getResponseBodyAsString(), e);
-            }
+            log.warn(e.getResponseBodyAsString(), e);
         }
     }
 

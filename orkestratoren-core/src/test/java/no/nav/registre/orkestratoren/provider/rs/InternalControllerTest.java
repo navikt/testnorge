@@ -32,9 +32,9 @@ public class InternalControllerTest {
      */
     @Test
     public void shouldReturnNotReady() {
-        this.server.expect(requestTo("https://dummyUrl.hodejegeren/internal/isReady")).andRespond(withServerError());
-        this.server.expect(requestTo("https://dummyUrl.inntekt.synt/internal/isReady")).andRespond(withServerError());
-        this.server.expect(requestTo("https://dummyUrl.tpsf/internal/isReady")).andRespond(withSuccess());
+        this.server.expect(requestTo("https://dummyUrl.skd/internal/isReady")).andRespond(withServerError());
+        // this.server.expect(requestTo("https://dummyUrl.inntekt.synt/internal/isReady")).andRespond(withSuccess()); // synthdata-arena er midl. nede
+        this.server.expect(requestTo("https://dummyUrl.tpsf/internal/isReady")).andRespond(withServerError());
 
         ResponseEntity<?> ready = controller.isReady();
 
@@ -48,8 +48,8 @@ public class InternalControllerTest {
      */
     @Test
     public void shouldReturnReady() {
-        this.server.expect(requestTo("https://dummyUrl.hodejegeren/internal/isReady")).andRespond(withSuccess());
-        this.server.expect(requestTo("https://dummyUrl.inntekt.synt/internal/isReady")).andRespond(withSuccess());
+        this.server.expect(requestTo("https://dummyUrl.skd/internal/isReady")).andRespond(withSuccess());
+        // this.server.expect(requestTo("https://dummyUrl.inntekt.synt/internal/isReady")).andRespond(withSuccess()); // synthdata-arena er midl. nede
         this.server.expect(requestTo("https://dummyUrl.tpsf/internal/isReady")).andRespond(withSuccess());
 
         ResponseEntity<?> ready = controller.isReady();
