@@ -1,5 +1,6 @@
 package no.nav.registre.skd.consumer;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -29,6 +30,7 @@ public class TpsSyntetisererenConsumer {
         this.uriTemplate = new UriTemplate(serverUrl + "/generate?endringskode={endringskode}&antallMeldinger={antall}&service=skd");
     }
 
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tps-syntetisereren" })
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String endringskode, Integer antallMeldinger) {
         URI url = uriTemplate.expand(endringskode, antallMeldinger);
         RequestEntity getRequest = RequestEntity.get(url).build();

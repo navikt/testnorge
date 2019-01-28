@@ -1,5 +1,6 @@
 package no.nav.registre.skd.consumer;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -37,12 +38,14 @@ public class TpsfConsumer {
         this.uriTemplateSaveToTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/send/{gruppeId}");
     }
 
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public List<Long> saveSkdEndringsmeldingerInTPSF(Long gruppeId, List<RsMeldingstype> skdmeldinger) {
         URI url = uriTemplateSaveToTpsf.expand(gruppeId);
         RequestEntity postRequest = RequestEntity.post(url).body(skdmeldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public SkdMeldingerTilTpsRespons sendSkdmeldingerToTps(Long gruppeId, SendToTpsRequest sendToTpsRequest) {
         String url = uriTemplateSaveToTps.expand(gruppeId).toString();
 

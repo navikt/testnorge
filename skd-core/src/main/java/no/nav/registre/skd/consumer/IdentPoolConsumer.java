@@ -3,6 +3,7 @@ package no.nav.registre.skd.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -35,6 +36,7 @@ public class IdentPoolConsumer {
         this.url = new URI(serverUrl + "/v1/identifikator");
     }
 
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "identpool" })
     public List<String> hentNyeIdenter(HentIdenterRequest hentIdenterRequest) {
         RequestEntity postRequest = RequestEntity.post(url).body(hentIdenterRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();

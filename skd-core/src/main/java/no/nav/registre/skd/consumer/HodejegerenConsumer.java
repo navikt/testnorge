@@ -1,5 +1,6 @@
 package no.nav.registre.skd.consumer;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,7 @@ public class HodejegerenConsumer {
         this.statusQuoUrl = new UriTemplate(hodejegerenServerUrl + "/v1/status-quo/{endringskode}/{miljoe}/{fnr}");
     }
 
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> finnLevendeIdenter(Long avspillergruppeId) {
         RequestEntity getRequest = RequestEntity.get(levendeIdenterUrl.expand(avspillergruppeId.toString())).build();
         List<String> levendeIdenter = new ArrayList<>();
@@ -55,6 +57,7 @@ public class HodejegerenConsumer {
         return levendeIdenter;
     }
 
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> finnDoedeOgUtvandredeIdenter(Long avspillergruppeId) {
         RequestEntity getRequest = RequestEntity.get(doedeIdenterUrl.expand(avspillergruppeId.toString())).build();
         List<String> doedeOgUtvandredeIdenter = new ArrayList<>();
@@ -69,6 +72,7 @@ public class HodejegerenConsumer {
         return doedeOgUtvandredeIdenter;
     }
 
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> finnGifteIdenter(Long avspillergruppeId) {
         RequestEntity getRequest = RequestEntity.get(gifteIdenterUrl.expand(avspillergruppeId.toString())).build();
         List<String> gifteIdenter = new ArrayList<>();
@@ -83,6 +87,7 @@ public class HodejegerenConsumer {
         return gifteIdenter;
     }
 
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
     public Map<String, String> getStatusQuoFraEndringskode(Endringskoder endringskode, String miljoe, String fnr) {
         RequestEntity getRequest = RequestEntity.get(statusQuoUrl.expand(endringskode.toString(), miljoe, fnr)).build();
         Map<String, String> statusQuo = new HashMap<>();
