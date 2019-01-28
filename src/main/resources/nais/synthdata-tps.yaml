@@ -1,23 +1,23 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: syntrest
+  name: synthdata-tps
   namespace: default
   labels:
     team: synt
 spec:
-  image: "docker.adeo.no:5000/registre/synthdata-synt-rest:0.0.1-SNAPSHOT-54"
+  image: "docker.adeo.no:5000/registre/synthdata-tps"
   port: 8080
   liveness:
     path: /internal/isAlive
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 15
+    failureThreshold: 500
   readiness:
     path: /internal/isReady
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 15
+    failureThreshold: 500
   prometheus:
     path: /metrics
   replicas:
@@ -25,11 +25,11 @@ spec:
     max: 4
   secrets: true
   resources:
-    limits:
-      cpu: 500m
-      memory: 500Mi
     requests:
       cpu: 200m
-      memory: 200Mi
+      memory: 370Mi
+    limits:
+      cpu: 500m
+      memory: 600Mi
   ingresses:
-    - "https://syntrest.nais.preprod.local"
+    - "https://nais-synthdata-tps.nais.preprod.local"

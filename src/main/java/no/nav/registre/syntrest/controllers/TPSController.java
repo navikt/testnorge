@@ -5,7 +5,7 @@ import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
-import no.nav.registre.syntrest.services.TPService;
+import no.nav.registre.syntrest.services.TPSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -24,35 +24,35 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RestController
 @RequestMapping("api/v1")
-public class TPController extends KubernetesUtils {
+public class TPSController extends KubernetesUtils {
 
-    @Value("${synth-tp-app}")
+    @Value("${synth-tps-app}")
     private String appName;
 
     @Autowired
-    private TPService tpService;
+    private TPSService tpsService;
 
     @Autowired
     private QueueHandler queue;
 
-    @GetMapping(value = "/generateTp/{num_to_generate}")
-    public ResponseEntity generateTp(@PathVariable int num_to_generate) throws IOException, ApiException {
+    @GetMapping(value = "/generateTps/{num_to_generate}/{endringskode}")
+    public ResponseEntity generateTps(@PathVariable int num_to_generate, @PathVariable String endringskode) throws IOException, ApiException {
         int queueId = queue.getQueueId();
         queue.addToQueue(queueId);
         ApiClient client = createApiClient();
         try {
-            createApplication(client, "/nais/synthdata-tp.yaml", tpService);
+            createApplication(client, "/nais/synthdata-tps.yaml", tpsService);
             while (queue.getNextInQueue() != queueId) {
                 TimeUnit.SECONDS.sleep(2);
             }
-            log.info("Requesting synthetic data: synthdata-tp for id " + queueId);
-            CompletableFuture<List<Map<String, String>>> result = tpService.generateTPFromNAIS(num_to_generate);
-            List<Map<String, String>> synData = result.get();
+            log.info("Requesting synthetic data: synthdata-tps for id " + queueId);
+            CompletableFuture<List<Map<String, Object>>> result = tpsService.generateTPSFromNAIS(num_to_generate, endringskode);
+            List<Map<String, Object>> synData = result.get();
 
             queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
-            log.info("Exception in generateTp: " + e.getCause());
+            log.info("Exception in generateTps: " + e.getCause());
             queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
