@@ -2,8 +2,6 @@ package no.nav.registre.syntrest.controllers;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
-import io.kubernetes.client.util.Config;
-import io.kubernetes.client.util.KubeConfig;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +39,7 @@ public class TPSController extends KubernetesUtils {
     public ResponseEntity generateTps(@PathVariable int num_to_generate, @PathVariable String endringskode) throws IOException, ApiException {
         int queueId = queue.getQueueId();
         queue.addToQueue(queueId);
-        //ApiClient client = createApiClient();
-        KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
-        ApiClient client = Config.fromConfig(kc);
+        ApiClient client = createApiClient();
         try {
             createApplication(client, "/nais/synthdata-tps.yaml", tpsService);
             while (queue.getNextInQueue() != queueId) {
