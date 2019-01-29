@@ -2,11 +2,13 @@ package no.nav.registre.hodejegeren.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +59,17 @@ public class HodejegerenController {
             minimumAlder = 0;
         }
         return eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallPersoner, minimumAlder);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man hente ut alle levende identer over en viss alder")
+    @GetMapping("api/v1/levende-identer")
+    public List<String> hentAlleLevendeIdenterOverAlder(@RequestParam Long avspillergruppeId, @RequestParam int minimumAlder, HttpServletResponse response) {
+        if (minimumAlder < 0) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return null;
+        }
+        return eksisterendeIdenterService.finnAlleIdenterOverAlder(avspillergruppeId, minimumAlder);
     }
 
     @LogExceptions
