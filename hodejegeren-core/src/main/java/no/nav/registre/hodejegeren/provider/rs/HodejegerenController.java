@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class HodejegerenController {
     public List<String> hentAlleLevendeIdenterOverAlder(@RequestParam Long avspillergruppeId, @RequestParam int minimumAlder, HttpServletResponse response) {
         if (minimumAlder < 0) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            return null;
+            return new ArrayList<>();
         }
         return eksisterendeIdenterService.finnAlleIdenterOverAlder(avspillergruppeId, minimumAlder);
     }
