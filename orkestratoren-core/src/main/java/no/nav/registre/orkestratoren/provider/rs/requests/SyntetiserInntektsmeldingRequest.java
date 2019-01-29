@@ -15,8 +15,4 @@ public class SyntetiserInntektsmeldingRequest {
 
     @JsonProperty("avspillergruppeId")
     private long avspillergruppeId;
-    @JsonProperty("miljoe")
-    private String miljoe;
-    @JsonProperty("antallPersoner")
-    private int antallPersoner;
 }

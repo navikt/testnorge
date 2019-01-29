@@ -28,14 +28,12 @@ public class ArenaInntektSyntConsumerTest {
     private ArenaInntektSyntConsumer arenaInntektSyntConsumer;
 
     private long gruppeId = 10L;
-    private String miljoe = "t9";
-    private int antallPersoner = 2;
     private String expectedId = "1234";
     private SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest;
 
     @Before
     public void setUp() {
-        syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(gruppeId, miljoe, antallPersoner);
+        syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(gruppeId);
     }
 
     /**
@@ -54,9 +52,7 @@ public class ArenaInntektSyntConsumerTest {
     public void stubArenaInntektConsumer() {
         stubFor(post(urlPathEqualTo("/arenainntekt/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
-                        "{\"avspillergruppeId\":" + gruppeId
-                                + ",\"miljoe\":\"" + miljoe + "\""
-                                + ",\"antallPersoner\":" + antallPersoner + "}"))
+                        "{\"avspillergruppeId\":" + gruppeId + "}"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(expectedId)));
