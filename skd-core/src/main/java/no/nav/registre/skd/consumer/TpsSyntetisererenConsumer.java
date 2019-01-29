@@ -20,13 +20,14 @@ public class TpsSyntetisererenConsumer {
     private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<List<RsMeldingstype>>() {
     };
 
-    @Value("${syntrest.rest-api.url}")
     private String serverUrl;
 
     private RestTemplate restTemplate;
 
-    public TpsSyntetisererenConsumer(RestTemplateBuilder restTemplateBuilder) {
+    public TpsSyntetisererenConsumer(RestTemplateBuilder restTemplateBuilder,
+            @Value("${syntrest.rest-api.url}") String syntrestServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
+        this.serverUrl = syntrestServerUrl;
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tps-syntetisereren" })
