@@ -66,7 +66,7 @@ public class IdentpoolController {
 
     @GetMapping("/ledige")
     @ApiOperation(value = "returnerer identer som er ledige og født mellom to datoer")
-    public List<String> erLedige(@RequestParam int from, @RequestParam int to) {
-        return identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(from, 1, 1), LocalDate.of(to, 1, 1));
+    public List<String> erLedige(@RequestParam int fromYear, @RequestParam int toYear) {
+        return identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(fromYear, 1, 1), LocalDate.of(toYear, 1, 1));
     }
 }
