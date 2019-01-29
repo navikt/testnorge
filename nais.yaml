@@ -6,7 +6,7 @@ metadata:
   labels:
     team: synt
 spec:
-  image: "docker.adeo.no:5000/registre/synthdata-synt-rest:0.0.1-SNAPSHOT-55"
+  image: "docker.adeo.no:5000/registre/synthdata-synt-rest:0.0.1-SNAPSHOT-57"
   port: 8080
   liveness:
     path: /internal/isAlive

@@ -2,6 +2,8 @@ package no.nav.registre.syntrest.controllers;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
+import io.kubernetes.client.util.Config;
+import io.kubernetes.client.util.KubeConfig;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +42,9 @@ public class PenController extends KubernetesUtils {
     public ResponseEntity generatePen(@PathVariable int num_to_generate) throws IOException, ApiException {
         int queueId = queue.getQueueId();
         queue.addToQueue(queueId);
-        ApiClient client = createApiClient();
+        //ApiClient client = createApiClient();
+        KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
+        ApiClient client = Config.fromConfig(kc);
         try {
             createApplication(client, "/nais/synthdata-pen.yaml", penService);
             while (queue.getNextInQueue() != queueId) {
