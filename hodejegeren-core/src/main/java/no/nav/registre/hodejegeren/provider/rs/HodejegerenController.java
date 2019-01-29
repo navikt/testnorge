@@ -63,7 +63,7 @@ public class HodejegerenController {
 
     @LogExceptions
     @ApiOperation(value = "Her kan man hente ut alle levende identer over en viss alder")
-    @GetMapping("api/v1/levende-identer")
+    @GetMapping("api/v1/levende-identer-over-alder")
     public List<String> hentAlleLevendeIdenterOverAlder(@RequestParam Long avspillergruppeId, @RequestParam int minimumAlder, HttpServletResponse response) {
         if (minimumAlder < 0) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
