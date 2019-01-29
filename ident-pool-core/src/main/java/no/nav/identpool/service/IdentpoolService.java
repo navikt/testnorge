@@ -154,11 +154,11 @@ public class IdentpoolService {
     }
 
     public List<String> hentLedigeFNRFoedtMellom(LocalDate from, LocalDate to) {
-        List<Ident> identer = identRepository.findByFoedselsdatoBetweenAndRekvireringsstatus(from, to, LEDIG);
+        List<Ident> identer = identRepository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(from, to, Identtype.FNR, LEDIG);
         return identer.stream().
                 filter(i -> i.getIdenttype() == Identtype.FNR).
                 filter(i -> i.getFoedselsdato().isAfter(from) && i.getFoedselsdato().isBefore(to)).
-                map(i -> i.getIdentity().toString()).
+                map(Ident::getPersonidentifikator).
                 collect(Collectors.toList());
     }
 
