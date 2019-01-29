@@ -2,6 +2,7 @@ package no.nav.registre.hodejegeren.consumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,10 +35,12 @@ public class TpsfConsumer {
         this.urlServiceRoutine = serverUrl + "/v1/serviceroutine/{routineName}?aksjonsKode={aksjonskode}&environment={environment}&fnr={fnr}";
     }
 
+    @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
     public Set<String> getIdenterFiltrertPaaAarsakskode(Long gruppeId, List<String> aarsakskode, String transaksjonstype) {
         return restTemplate.getForObject(urlGetIdenter, Set.class, gruppeId, StringUtils.join(aarsakskode, ','), transaksjonstype);
     }
 
+    @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
     public JsonNode getTpsServiceRoutine(String routineName, String aksjonsKode, String environment, String fnr) throws IOException {
         String response = restTemplate.getForObject(urlServiceRoutine, String.class, routineName, aksjonsKode, environment, fnr);
         if (response == null) {
