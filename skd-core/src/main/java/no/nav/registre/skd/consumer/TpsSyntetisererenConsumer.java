@@ -24,15 +24,15 @@ public class TpsSyntetisererenConsumer {
     private UriTemplate uriTemplate;
 
     public TpsSyntetisererenConsumer(RestTemplateBuilder restTemplateBuilder,
-            @Value("${tps-syntetisereren.rest-api.url}") String serverUrl
+            @Value("${syntrest.rest-api.url}") String serverUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.uriTemplate = new UriTemplate(serverUrl + "/generate?endringskode={endringskode}&antallMeldinger={antall}&service=skd");
+        this.uriTemplate = new UriTemplate(serverUrl + "/v1/generateTps/{antallMeldinger}/{endringskode}");
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tps-syntetisereren" })
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String endringskode, Integer antallMeldinger) {
-        URI url = uriTemplate.expand(endringskode, antallMeldinger);
+        URI url = uriTemplate.expand(antallMeldinger, endringskode);
         RequestEntity getRequest = RequestEntity.get(url).build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }

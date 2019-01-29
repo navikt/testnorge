@@ -111,9 +111,7 @@ public class GenererSyntetiskeMeldingerCompTest {
     }
 
     private void stubTpsSynt() {
-        stubFor(get(urlPathEqualTo("/tpssynt/api/generate"))
-                .withQueryParam("endringskode", equalTo(endringskodeInnvandringsmelding))
-                .withQueryParam("antallMeldinger", equalTo(antallMeldinger.toString()))
+        stubFor(get(urlPathEqualTo("/tpssynt/api/v1/generateTps/" + antallMeldinger + "/" + endringskodeInnvandringsmelding))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
                         .withBodyFile("comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json")));
     }

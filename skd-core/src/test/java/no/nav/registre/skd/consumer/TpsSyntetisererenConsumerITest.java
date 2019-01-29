@@ -32,7 +32,7 @@ public class TpsSyntetisererenConsumerITest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${tps-syntetisereren.rest-api.url}")
+    @Value("${syntrest.rest-api.url}")
     private String serverUrl;
 
     /**
@@ -43,7 +43,7 @@ public class TpsSyntetisererenConsumerITest {
         String endringskode = "0211";
         int antallMeldinger = 1;
 
-        this.server.expect(requestToUriTemplate(serverUrl + "/generate?endringskode={endringskode}&antallMeldinger={antall}&service=skd", endringskode, antallMeldinger))
+        this.server.expect(requestToUriTemplate(serverUrl + "/v1/generateTps/" + antallMeldinger + "/" + endringskode))
                 .andRespond(withSuccess("[null]", MediaType.APPLICATION_JSON));
 
         consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
@@ -60,7 +60,7 @@ public class TpsSyntetisererenConsumerITest {
         String endringskode = "0211";
         int antallMeldinger = 1;
         this.server.expect(requestToUriTemplate(serverUrl +
-                "/generate?endringskode={endringskode}&antallMeldinger={antall}&service=skd", endringskode, antallMeldinger))
+                "/v1/generateTps/" + antallMeldinger + "/" + endringskode))
                 .andRespond(withSuccess(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"), MediaType.APPLICATION_JSON));
 
         List<RsMeldingstype> skdmeldinger = consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);

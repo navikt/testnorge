@@ -123,9 +123,7 @@ public class FeilhaandteringCompTest {
     }
 
     private void stubTpsSynt(String endringskode, Integer antallMeldinger, String responseBodyFile) {
-        stubFor(get(urlPathEqualTo("/tpssynt/api/generate"))
-                .withQueryParam("endringskode", equalTo(endringskode))
-                .withQueryParam("antallMeldinger", equalTo(antallMeldinger.toString()))
+        stubFor(get(urlPathEqualTo("/tpssynt/api/v1/generateTps/" + antallMeldinger + "/" + endringskode))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
                         .withBodyFile(responseBodyFile)));
     }
