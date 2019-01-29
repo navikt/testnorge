@@ -20,18 +20,18 @@ public class TpsSyntetisererenConsumer {
     private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<List<RsMeldingstype>>() {
     };
 
-    private RestTemplate restTemplate;
-    private UriTemplate uriTemplate;
+    @Value("${syntrest.rest-api.url}")
+    private String serverUrl;
 
-    public TpsSyntetisererenConsumer(RestTemplateBuilder restTemplateBuilder,
-            @Value("${syntrest.rest-api.url}") String serverUrl
-    ) {
+    private RestTemplate restTemplate;
+
+    public TpsSyntetisererenConsumer(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
-        this.uriTemplate = new UriTemplate(serverUrl + "/v1/generateTps/{antallMeldinger}/{endringskode}");
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tps-syntetisereren" })
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String endringskode, Integer antallMeldinger) {
+        UriTemplate uriTemplate = new UriTemplate(serverUrl + "/v1/generateTps/{antallMeldinger}/{endringskode}");
         URI url = uriTemplate.expand(antallMeldinger, endringskode);
         RequestEntity getRequest = RequestEntity.get(url).build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
