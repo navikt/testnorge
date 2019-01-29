@@ -1,15 +1,16 @@
 package no.nav.identpool.util;
 
-import no.nav.identpool.domain.QIdent;
-import no.nav.identpool.domain.Rekvireringsstatus;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
+import no.nav.identpool.domain.QIdent;
+import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 
 public final class IdentPredicateUtil {
 
-    private IdentPredicateUtil() {}
+    private IdentPredicateUtil() {
+    }
 
     public static Predicate lagPredicateFraRequest(HentIdenterRequest hentIdenterRequest) {
         QIdent qIdent = QIdent.ident;
