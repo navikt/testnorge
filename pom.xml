@@ -16,7 +16,7 @@
     <packaging>pom</packaging>
 
     <name>testnorge-skd</name>
-    <description>Forvalter for syntetisering av skd-meldinger. Blir trigget av Orkestratoren og tar seg av oppretelse av slike.</description>
+    <description>Forvalter for syntetisering av skd-meldinger. Blir trigget av Orkestratoren og tar seg av opprettelse av slike.</description>
 
     <modules>
         <module>skd-core</module>
