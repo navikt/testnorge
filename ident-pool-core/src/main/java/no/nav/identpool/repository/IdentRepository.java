@@ -22,5 +22,7 @@ public interface IdentRepository extends Repository<Ident, Long>, QuerydslPredic
 
     Ident save(Ident newIdent);
 
+    List<Ident> findByFoedselsdatoBetweenAndRekvireringsstatus(LocalDate from, LocalDate to, Rekvireringsstatus rekvireringsstatus);
+
     void deleteAll();
 }

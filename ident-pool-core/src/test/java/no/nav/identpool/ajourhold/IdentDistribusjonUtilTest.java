@@ -22,7 +22,7 @@ class IdentDistribusjonUtilTest {
             }
         }
 
-        assertThat(sum, is(greaterThan(40000)));
-        assertThat(sum, is(lessThan(70000)));
+        assertThat(sum, is(greaterThan(100000)));
+        assertThat(sum, is(lessThan(200000)));
     }
 }

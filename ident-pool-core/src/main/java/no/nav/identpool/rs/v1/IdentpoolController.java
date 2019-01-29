@@ -2,6 +2,7 @@ package no.nav.identpool.rs.v1;
 
 import static no.nav.identpool.util.PersonidentUtil.validate;
 
+import java.time.LocalDate;
 import java.util.List;
 import javax.validation.Valid;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -60,5 +62,11 @@ public class IdentpoolController {
     ) throws UgyldigPersonidentifikatorException {
         validate(personidentifikator);
         return identpoolService.erLedig(personidentifikator);
+    }
+
+    @GetMapping("/ledige")
+    @ApiOperation(value = "returnerer identer som er ledige og født mellom to datoer")
+    public List<String> erLedige(@RequestParam int from, @RequestParam int to) {
+        return identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(from, 1, 1), LocalDate.of(to, 1, 1));
     }
 }

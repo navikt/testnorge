@@ -4,6 +4,10 @@ import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static no.nav.identpool.util.PersonidentUtil.getIdentType;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,25 +17,23 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import no.nav.identpool.domain.Ident;
-import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.util.IdentGeneratorUtil;
-import no.nav.identpool.util.IdentPredicateUtil;
-import org.springframework.stereotype.Service;
-
-import lombok.RequiredArgsConstructor;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
+import no.nav.identpool.util.IdentGeneratorUtil;
+import no.nav.identpool.util.IdentPredicateUtil;
 import no.nav.identpool.util.PersonidentUtil;
 
 @Service
 @RequiredArgsConstructor
 public class IdentpoolService {
+
     private static final int MAKS_ANTALL_MANGLENDE_IDENTER = 80;
     private static final int MAKS_ANTALL_KALL_MOT_TPS = 3;
 
@@ -48,7 +50,6 @@ public class IdentpoolService {
         List<String> identList = StreamSupport.stream(identEntities.spliterator(), false)
                 .map(Ident::getPersonidentifikator)
                 .collect(Collectors.toList());
-
 
         int missingIdentCount = request.getAntall() - identList.size();
 
@@ -71,7 +72,6 @@ public class IdentpoolService {
                 throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
             }
         }
-
 
         //Sier at request har tatt disse i bruk
         identEntities.forEach(i -> {
@@ -151,6 +151,15 @@ public class IdentpoolService {
             ident.setFinnesHosSkatt(true);
         }
         identRepository.save(ident);
+    }
+
+    public List<String> hentLedigeFNRFoedtMellom(LocalDate from, LocalDate to) {
+        List<Ident> identer = identRepository.findByFoedselsdatoBetweenAndRekvireringsstatus(from, to, LEDIG);
+        return identer.stream().
+                filter(i -> i.getIdenttype() == Identtype.FNR).
+                filter(i -> i.getFoedselsdato().isAfter(from) && i.getFoedselsdato().isBefore(to)).
+                map(i -> i.getIdentity().toString()).
+                collect(Collectors.toList());
     }
 
     private List<String> hentIdenterFraTps(HentIdenterRequest request) {
