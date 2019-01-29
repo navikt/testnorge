@@ -25,7 +25,7 @@ public class TpsSyntetisererenConsumer {
     private RestTemplate restTemplate;
 
     public TpsSyntetisererenConsumer(RestTemplateBuilder restTemplateBuilder,
-            @Value("${syntrest.rest-api.url}") String syntrestServerUrl) {
+            @Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
         this.restTemplate = restTemplateBuilder.build();
         this.serverUrl = syntrestServerUrl;
     }

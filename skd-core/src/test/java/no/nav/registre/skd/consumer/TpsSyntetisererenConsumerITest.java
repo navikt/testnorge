@@ -32,7 +32,7 @@ public class TpsSyntetisererenConsumerITest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${syntrest.rest-api.url}")
+    @Value("${syntrest.rest.api.url}")
     private String serverUrl;
 
     /**
