@@ -48,6 +48,10 @@ public class HodejegerenConsumer {
         List<String> levendeIdenter = new ArrayList<>();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST);
 
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());
+        }
+
         if (response != null && response.getBody() != null) {
             levendeIdenter.addAll(response.getBody());
         } else {
@@ -62,6 +66,10 @@ public class HodejegerenConsumer {
         RequestEntity getRequest = RequestEntity.get(doedeIdenterUrl.expand(avspillergruppeId.toString())).build();
         List<String> doedeOgUtvandredeIdenter = new ArrayList<>();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());
+        }
 
         if (response != null && response.getBody() != null) {
             doedeOgUtvandredeIdenter.addAll(response.getBody());
@@ -78,6 +86,10 @@ public class HodejegerenConsumer {
         List<String> gifteIdenter = new ArrayList<>();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_LIST);
 
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());
+        }
+
         if (response != null && response.getBody() != null) {
             gifteIdenter.addAll(response.getBody());
         } else {
@@ -92,6 +104,10 @@ public class HodejegerenConsumer {
         RequestEntity getRequest = RequestEntity.get(statusQuoUrl.expand(endringskode.toString(), miljoe, fnr)).build();
         Map<String, String> statusQuo = new HashMap<>();
         ResponseEntity<Map<String, String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_MAP);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());
+        }
 
         if (response != null && response.getBody() != null) {
             statusQuo.putAll(response.getBody());
