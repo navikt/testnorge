@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
@@ -32,6 +33,7 @@ public class EiaSyntConsumer {
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/" + queueName);
     }
 
+    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "eia" })
     public List<String> startSyntetisering(SyntetiserEiaRequest syntetiserEiaRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(syntetiserEiaRequest);
         ArrayList<String> identer = new ArrayList<>();

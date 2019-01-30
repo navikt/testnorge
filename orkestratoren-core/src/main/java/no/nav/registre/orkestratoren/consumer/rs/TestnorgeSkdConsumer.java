@@ -31,7 +31,7 @@ public class TestnorgeSkdConsumer {
         this.url = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");
     }
 
-    @Timed(value = "orkestratoren.skd")
+    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "skd" })
     public ResponseEntity startSyntetisering(GenereringsOrdreRequest genereringsOrdreRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(genereringsOrdreRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
