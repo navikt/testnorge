@@ -32,6 +32,8 @@ public class JobController {
     @Value("${orkestratoren.eiabatch.miljoe}")
     private String eiabatchMiljoe;
 
+    private String arenaInntektMiljoe;
+
     @Value("${orkestratoren.batch.avspillergruppeId}")
     private Long avspillergruppeId;
 
@@ -40,6 +42,8 @@ public class JobController {
 
     @Value("${orkestratoren.eiabatch.antallSykemeldinger}")
     private int antallSykemeldinger;
+
+    private int antallArenaInntektPersoner;
 
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
@@ -62,8 +66,8 @@ public class JobController {
     @Scheduled(cron = "${orkestratoren.arenabatch.cron:0 0 1 1 * *}")
     public void arenaInntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
-        List<String> levendeNordmennFnr = arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
-        log.info("Inntekt-synt.-batch har matet Inntektstub med {} meldinger.", levendeNordmennFnr.size());
+        String arenaInntektId = arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
+        log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", arenaInntektId);
     }
 
     @Scheduled(cron = "${orkestratoren.eiabatch.cron:0 0 0 * * *}")
