@@ -52,7 +52,7 @@ public class HodejegerenConsumer {
             log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());
         }
 
-        if (response != null && response.getBody() != null) {
+        if (response.getBody() != null) {
             levendeIdenter.addAll(response.getBody());
         } else {
             log.error("HodejegerenConsumer.finnLevendeIdenter: Kunne ikke hente response body fra Hodejegeren: NullPointerException");
@@ -71,7 +71,7 @@ public class HodejegerenConsumer {
             log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());
         }
 
-        if (response != null && response.getBody() != null) {
+        if (response.getBody() != null) {
             doedeOgUtvandredeIdenter.addAll(response.getBody());
         } else {
             log.error("HodejegerenConsumer.finnDoedeOgUtvandredeIdenter: Kunne ikke hente response body fra Hodejegeren: NullPointerException");
@@ -90,7 +90,7 @@ public class HodejegerenConsumer {
             log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());
         }
 
-        if (response != null && response.getBody() != null) {
+        if (response.getBody() != null) {
             gifteIdenter.addAll(response.getBody());
         } else {
             log.error("HodejegerenConsumer.finnGifteIdenter: Kunne ikke hente response body fra Hodejegeren: NullPointerException");
@@ -109,7 +109,7 @@ public class HodejegerenConsumer {
             log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());
         }
 
-        if (response != null && response.getBody() != null) {
+        if (response.getBody() != null) {
             statusQuo.putAll(response.getBody());
         } else {
             log.error("HodejegerenConsumer.getStatusQuoFraEndringskode: Kunne ikke hente response body fra Hodejegeren: NullPointerException");
