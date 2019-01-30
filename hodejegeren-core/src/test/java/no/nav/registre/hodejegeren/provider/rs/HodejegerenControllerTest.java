@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -111,5 +112,12 @@ public class HodejegerenControllerTest {
     public void shouldHenteStatusQuoFraEndringskode() throws IOException {
         hodejegerenController.hentStatusQuoFraEndringskode(endringskode, miljoe, fnr);
         verify(endringskodeTilFeltnavnMapperService).getStatusQuoFraAarsakskode(endringskode, miljoe, fnr);
+    }
+
+    @Test
+    public void hentAlleLevendeOverAlderTest() {
+        MockHttpServletResponse resp = new MockHttpServletResponse();
+        hodejegerenController.hentAlleLevendeIdenterOverAlder(avspillergruppeId, 13, resp);
+        verify(eksisterendeIdenterService).finnAlleIdenterOverAlder(avspillergruppeId, 13);
     }
 }

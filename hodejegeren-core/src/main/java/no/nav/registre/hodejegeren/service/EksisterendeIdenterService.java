@@ -46,9 +46,7 @@ public class EksisterendeIdenterService {
 
     public List<String> hentLevendeIdenterIGruppeOgSjekkStatusQuo(Long gruppeId, String miljoe, int henteAntall, int minimumAlder) {
         List<String> hentedeIdenter = new ArrayList<>(henteAntall);
-        List<String> identer = finnLevendeIdenter(gruppeId);
-        List<String> gyldigeIdenter = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
-
+        List<String> gyldigeIdenter = finnAlleIdenterOverAlder(gruppeId, minimumAlder);
         if (henteAntall > gyldigeIdenter.size()) {
             log.info("Antall ønskede identer å hente er større enn myndige identer i avspiller gruppe. - HenteAntall:{} MyndigeIdenter:{}", henteAntall, gyldigeIdenter.size());
             henteAntall = gyldigeIdenter.size();
@@ -75,7 +73,7 @@ public class EksisterendeIdenterService {
                 log.warn(e.getMessage(), e);
                 identerFeilet++;
             } catch (ManglendeInfoITpsException e) {
-                log.warn(e.getMessage()); // TODO - Vi bør gi bruker beskjed om at ikke alle identene kunne hentes (men fortsatt ikke stoppe eksekveringen)
+                log.warn(e.getMessage());
                 identerFeilet++;
             }
             gyldigeIdenter.remove(index);
@@ -112,7 +110,7 @@ public class EksisterendeIdenterService {
                 log.warn(e.getMessage(), e);
                 antallFeilet++;
             } catch (ManglendeInfoITpsException e) {
-                log.warn(e.getMessage()); // TODO - Vi bør gi bruker beskjed om at ikke alle identene kunne hentes (men fortsatt ikke stoppe eksekveringen)
+                log.warn(e.getMessage());
                 antallFeilet++;
             }
         }
@@ -122,6 +120,11 @@ public class EksisterendeIdenterService {
         }
 
         return fnrMedNavKontor;
+    }
+
+    public List<String> finnAlleIdenterOverAlder(Long avspillergruppeId, int minimumAlder) {
+        List<String> identer = finnLevendeIdenter(avspillergruppeId);
+        return identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
     }
 
     public List<String> finnAlleIdenter(Long gruppeId) {
