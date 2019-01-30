@@ -1,4 +1,4 @@
-name: testnorge-hodejegeren
+name: testnorge-skd
 team: registre
 image: "docker.adeo.no:5000/registre/testnorge-skd"
 replicas:
