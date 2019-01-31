@@ -16,12 +16,14 @@ export default class DollyCheckbox extends PureComponent {
 	}
 
 	render() {
-		const { id, label, className, ...restProps } = this.props
+		const { id, label, className, disabled, ...restProps } = this.props
 
 		const cssClass = cn('dolly-checkbox', className, {
 			nonlabel: label === ''
 		})
 
-		return <Checkbox id={id} className={cssClass} label={label} {...restProps} />
+		return (
+			<Checkbox disabled={disabled} id={id} className={cssClass} label={label} {...restProps} />
+		)
 	}
 }
