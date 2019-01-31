@@ -5,7 +5,6 @@ import Input from '~/components/fields/Input/Input'
 import Utvalg from './Utvalg/Utvalg'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { AttributtManager } from '~/service/Kodeverk'
-import { Radio } from 'nav-frontend-skjema'
 import './AttributtVelger.less'
 export default class AttributtVelger extends Component {
 	static propTypes = {
@@ -59,50 +58,57 @@ export default class AttributtVelger extends Component {
 				{subKategori && <h3>{subKategori.navn}</h3>}
 				<fieldset name={subKategori.navn}>
 					<div className="attributt-velger_panelsubcontent">
-						{subKategori.singleChoice
-							? this.renderRadioButtons(items)
-							: items.map(item => this.renderItem(item))}
+						{items.map(item => this.renderItem(item))}
 					</div>
 				</fieldset>
 			</Fragment>
 		)
 	}
 
-	renderRadioButtons = items => (
-		<form className="attributt-velger_radiogruppe">
-			{items.map(item => (
-				<Radio
-					key={item.id}
-					label={item.label}
-					name="he"
-					checked={this.props.selectedIds.includes(item.id)}
-					onChange={() => this.onChangeRadioGruppe(items, item)}
-				/>
-			))}
-		</form>
-	)
+	renderItem = item => {
+		const { attributeIds } = this.props.currentBestilling
 
-	onChangeRadioGruppe = (items, selectedItem) => {
-		this.props.onToggle(selectedItem.id)
-		items.forEach(item => {
-			this.props.selectedIds.includes(item.id) && this.props.onToggle(item.id)
-		})
+		// Dependency system, finner ut om attributtene kan toggles
+		const disabled = item.dependentOn
+			? !attributeIds.includes(item.dependentOn)
+				? true
+				: false
+			: false
+
+		const dependentBy = item.dependentBy ? item.dependentBy : null
+
+		return (
+			<Checkbox
+				key={item.id}
+				label={item.label}
+				id={item.id}
+				disabled={disabled}
+				checked={this.props.selectedIds.includes(item.id)}
+				onChange={
+					dependentBy
+						? e =>
+								this._onToggleMultipleItems(
+									e.target.id,
+									dependentBy,
+									this.props.selectedIds.includes(dependentBy)
+								)
+						: e => this.props.onToggle(e.target.id)
+				}
+			/>
+		)
 	}
 
-	renderItem = item => (
-		<Checkbox
-			key={item.id}
-			label={item.label}
-			id={item.id}
-			checked={this.props.selectedIds.includes(item.id)}
-			onChange={e => this.props.onToggle(e.target.id)}
-		/>
-	)
+	// Når man toggler av en attributt som er avhengig av en annen, må også dependentBy-attributten toggles av
+	_onToggleMultipleItems = (dependentOn, dependentBy, isChecked) => {
+		this.props.onToggle(dependentOn)
+		isChecked && this.props.onToggle(dependentBy)
+	}
 
 	renderEmptyResult = () => <p>Søket ga ingen treff</p>
 
 	render() {
 		const { selectedIds, uncheckAllAttributes } = this.props
+
 		return (
 			<div className="attributt-velger">
 				<Input
