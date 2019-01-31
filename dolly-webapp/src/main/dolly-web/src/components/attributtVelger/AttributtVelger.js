@@ -109,7 +109,6 @@ export default class AttributtVelger extends Component {
 	render() {
 		const { selectedIds, uncheckAllAttributes } = this.props
 
-		console.log(this.props.currentBestilling)
 		return (
 			<div className="attributt-velger">
 				<Input
