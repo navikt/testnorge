@@ -96,6 +96,10 @@ class DollyEndpoints {
 		return `${bestillingBase}/${bestillingId}`
 	}
 
+	static gjenopprettBestilling(bestillingId, envs) {
+		return `${bestillingBase}/gjenopprett/${bestillingId}?miljoer=${envs}`
+	}
+
 	static config() {
 		return configBase
 	}
@@ -116,7 +120,7 @@ class DollyEndpoints {
 		return `${groupBase}/{gruppeId}/slettTestident?ident=${identId}`
 	}
 
-	static enhetByTknr (tknr) {
+	static enhetByTknr(tknr) {
 		return `${norg2Base}/enhet/${tknr}`
 	}
 }

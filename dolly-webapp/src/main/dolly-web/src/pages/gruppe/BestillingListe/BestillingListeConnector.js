@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import BestillingListe from './BestillingListe'
 import { sokSelector } from '~/ducks/bestillingStatus'
+import { getEnvironments } from '~/ducks/environments'
 
 const mapStateToProps = (state, ownProps) => {
 	return {
@@ -9,4 +10,11 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-export default connect(mapStateToProps)(BestillingListe)
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	getEnvironments: () => dispatch(getEnvironments())
+})
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(BestillingListe)
