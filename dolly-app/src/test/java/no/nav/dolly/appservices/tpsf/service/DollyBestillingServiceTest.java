@@ -2,6 +2,7 @@ package no.nav.dolly.appservices.tpsf.service;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,7 +38,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
-import no.nav.dolly.domain.resultset.TpsResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -110,10 +110,9 @@ public class DollyBestillingServiceTest {
                 .build();
 
         serviceRoutineResponseStatus = ServiceRoutineResponseStatus.builder()
-                .environment("u2")
                 .serviceRutinenavn("endre_spraakkode")
                 .personId(IDENT)
-                .status(TpsResponseStatus.builder().kode("OK").build())
+                .status(singletonMap("u2", "OK"))
                 .build();
 
         standardNyBestilling = Bestilling.builder().id(BESTILLING_ID).build();
@@ -209,7 +208,7 @@ public class DollyBestillingServiceTest {
     }
 
     @Test
-    public void opprettPersonerByKriterierAsync_lagrerFeilIProgressHvisSendingAvIdenterTilTpsMiljoFeiler() throws Exception {
+    public void opprettPersonerByKriterierAsync_lagrerFeilIProgressHvisSendingAvIdenterTilTpsMiljoFeiler() {
         standardSendSkdResponse.setStatus(status_SuccU1T2_FailQ3);
 
         TpsfException tpsfException = new TpsfException(FEILMELDING);

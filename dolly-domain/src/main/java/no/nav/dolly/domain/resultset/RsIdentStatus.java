@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset;
 
 import java.util.Map;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,11 +11,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ServiceRoutineResponseStatus {
-    private String personId;
-    private String serviceRutinenavn;
-    private Map<String, String> status; //Map<Environment, TPS respons statusmelding >
+public class RsIdentStatus {
+
+    private String statusMelding;
+    private Map<String, Set<String>> environmentIdents;
 }

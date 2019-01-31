@@ -3,12 +3,12 @@ package no.nav.dolly.bestilling.service;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
+import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
-import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -51,6 +50,7 @@ import no.nav.dolly.service.TestgruppeService;
 @Service
 public class DollyBestillingService {
 
+    private static final String SUCCESS = "OK";
     private static final String OUT_FMT = "%s: %s";
 
     @Autowired
@@ -90,7 +90,6 @@ public class DollyBestillingService {
     private CacheManager cacheManager;
 
     @Async
-    @Transactional
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest request, Bestilling bestilling) {
 
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
@@ -126,7 +125,6 @@ public class DollyBestillingService {
     }
 
     @Async
-    @Transactional
     public void gjenopprettBestillingAsync(Bestilling bestilling) {
 
         List<BestillingProgress> identerForGjenopprett = bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(bestilling.getOpprettetFraId());
@@ -161,9 +159,9 @@ public class DollyBestillingService {
     private void oppdaterProgress(Bestilling bestilling, BestillingProgress progress) {
         if (!bestillingService.isStoppet(bestilling.getId())) {
             bestillingProgressRepository.save(progress);
-            bestilling.setSistOppdatert(LocalDateTime.now());
-            bestillingService.saveBestillingToDB(bestilling);
         }
+        bestilling.setSistOppdatert(now());
+        bestillingService.saveBestillingToDB(bestilling);
     }
 
     private void clearCache() {
@@ -239,7 +237,7 @@ public class DollyBestillingService {
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
             if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (!entry.getValue().contains("OK")) {
+                    if (!entry.getValue().contains(SUCCESS)) {
                         successMiljoer.remove(entry.getKey());
                     }
                 }
@@ -251,7 +249,7 @@ public class DollyBestillingService {
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
             if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (entry.getValue().contains("OK")) {
+                    if (entry.getValue().contains(SUCCESS)) {
                         successMiljoer.add(entry.getKey());
                     }
                 }
@@ -262,9 +260,9 @@ public class DollyBestillingService {
     private List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
         Map<String, List<String>> failures = new TreeMap();
 
-        addFeilmeldingSkdMeldinger(hovedperson, response, failures);
+        addFeilmeldingSkdMeldinger(hovedperson, response.getSendSkdMeldingTilTpsResponsene(), failures);
 
-        addFeilmeldingServicerutiner(hovedperson, response, failures);
+        addFeilmeldingServicerutiner(hovedperson, response.getServiceRoutineStatusResponsene(), failures);
 
         List<String> errors = newArrayList();
         failures.keySet().forEach(miljoe -> errors.add(format(OUT_FMT, miljoe, join(" + ", failures.get(miljoe)))));
@@ -272,37 +270,31 @@ public class DollyBestillingService {
         return errors;
     }
 
-    private void addFeilmeldingSkdMeldinger(String hovedperson, RsSkdMeldingResponse response, Map<String, List<String>> failures) {
-        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
-            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
-                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (!entry.getValue().contains("OK") && !failures.containsKey(entry.getKey())) {
-                        failures.put(entry.getKey(), newArrayList(trimFeilmelding(entry.getValue())));
-                    } else if (!entry.getValue().contains("OK")) {
-                        failures.get(entry.getKey()).add(trimFeilmelding(entry.getValue()));
+    private void addFeilmeldingSkdMeldinger(String hovedperson, List<SendSkdMeldingTilTpsResponse> responseStatus, Map<String, List<String>> failures) {
+        for (SendSkdMeldingTilTpsResponse response : responseStatus) {
+            if (hovedperson.equals(response.getPersonId())) {
+                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
+                    if (!entry.getValue().contains(SUCCESS) && !failures.containsKey(entry.getKey())) {
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
+                    } else if (!entry.getValue().contains(SUCCESS)) {
+                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue()));
                     }
                 }
             }
         }
     }
 
-    private void addFeilmeldingServicerutiner(String hovedperson, RsSkdMeldingResponse response, Map<String, List<String>> failures) {
-        for (ServiceRoutineResponseStatus responseStatus : response.getServiceRoutineStatusResponsene()) {
-            if (hovedperson.equals(responseStatus.getPersonId())) {
-                if (!"OK".equals(responseStatus.getStatus().getKode()) && !failures.containsKey(responseStatus.getEnvironment())) {
-                    failures.put(responseStatus.getEnvironment(), newArrayList(formatFeilmelding(responseStatus)));
-                } else if (!"OK".equals(responseStatus.getStatus().getKode())) {
-                    failures.get(responseStatus.getEnvironment()).add(formatFeilmelding(responseStatus));
+    private void addFeilmeldingServicerutiner(String hovedperson, List<ServiceRoutineResponseStatus> responseStatus, Map<String, List<String>> failures) {
+        for (ServiceRoutineResponseStatus response : responseStatus) {
+            if (hovedperson.equals(response.getPersonId())) {
+                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
+                    if (!SUCCESS.equals(entry.getValue()) && !failures.containsKey(entry.getKey())) {
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
+                    } else if (!SUCCESS.equals(entry.getValue())) {
+                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue()));
+                    }
                 }
             }
         }
-    }
-
-    private String trimFeilmelding(String melding) {
-        return melding.replaceAll("08%", "").replaceAll("%;", "").trim();
-    }
-
-    private String formatFeilmelding(ServiceRoutineResponseStatus responseStatus) {
-        return format(OUT_FMT, responseStatus.getServiceRutinenavn(), responseStatus.getStatus().getUtfyllendeMelding());
     }
 }

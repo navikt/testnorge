@@ -96,12 +96,6 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
         assertThat(resultat.size(), is(3));
 
         assertThat(resultat, hasItem(both(
-                hasProperty("navn", equalTo(STANDARD_GRUPPE_NAVN))).and(
-                hasProperty("hensikt", equalTo(STANDARD_GRUPPE_HENSIKT))).and(
-                hasProperty("opprettetAvNavIdent", equalTo(standardBruker.getNavIdent())))
-                ));
-
-        assertThat(resultat, hasItem(both(
                 hasProperty("navn", equalTo("gruppe2"))).and(
                 hasProperty("hensikt", equalTo("hensikt2")))
         ));
