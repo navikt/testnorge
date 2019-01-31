@@ -4,50 +4,50 @@ import _startCase from 'lodash/startCase'
 
 import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
 
-const formatters = {}
+const Formatters = {}
 
 // Skriv ut FNR og DNR med mellom mellom fødselsdato og personnummer
 // Ex: 010195 12345
-formatters.formatIdentNr = ident => {
+Formatters.formatIdentNr = ident => {
 	if (!ident) return ident
 	const birth = ident.substring(0, 6)
 	const personnummer = ident.substring(6, 11)
 	return `${birth}${personnummer}`
 }
 
-formatters.formatAlder = (alder, dodsdato) => {
+Formatters.formatAlder = (alder, dodsdato) => {
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 
 // Format date to readable string format
 // Date ---> String
-formatters.formatDate = date => {
+Formatters.formatDate = date => {
 	if (!date) return date
 	return dateFnsFormat(date, defaultDateFormat, new Date())
 }
 
 // Format string to Date format
 // String ---> Date
-formatters.parseDate = date => {
+Formatters.parseDate = date => {
 	if (!date) return date
 
 	const parts = date.split('.')
 	return new Date(Date.UTC(parts[2], parts[1] - 1, parts[0]))
 }
 
-formatters.kjonnToString = (kjonn = '') => {
+Formatters.kjonnToString = (kjonn = '') => {
 	const _kjonn = kjonn.toLowerCase()
 	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
 	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
 }
 
-formatters.kjonnToStringBarn = (kjonn = '') => {
+Formatters.kjonnToStringBarn = (kjonn = '') => {
 	const _kjonn = kjonn.toLowerCase()
 	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
 	return _kjonn === 'm' ? 'GUTT' : 'JENTE'
 }
 
-formatters.arrayToString = (array, separator = ',') => {
+Formatters.arrayToString = (array, separator = ',') => {
 	return array.reduce((accumulator, nextString, idx) => {
 		return `${accumulator}${accumulator ? separator : ''}${
 			idx === 0 ? '' : ' '
@@ -55,15 +55,15 @@ formatters.arrayToString = (array, separator = ',') => {
 	}, '')
 }
 
-formatters.camelCaseToLabel = camelCase => {
+Formatters.camelCaseToLabel = camelCase => {
 	return _startCase(camelCase)
 }
 
-formatters.kodeverkLabel = kodeverk => {
+Formatters.kodeverkLabel = kodeverk => {
 	return kodeverk.substring(kodeverk.indexOf('-') + 1)
 }
 
-formatters.gtApiKodeverkId = gtType => {
+Formatters.gtApiKodeverkId = gtType => {
 	let gtApiKodeverkId = ''
 	switch (gtType) {
 		case 'KNR':
@@ -80,7 +80,7 @@ formatters.gtApiKodeverkId = gtType => {
 	return gtApiKodeverkId
 }
 
-formatters.gtTypeLabel = gtType => {
+Formatters.gtTypeLabel = gtType => {
 	let gtTypeLabel = ''
 	switch (gtType) {
 		case 'KNR':
@@ -97,15 +97,25 @@ formatters.gtTypeLabel = gtType => {
 	return gtTypeLabel
 }
 
-formatters.sort2DArray = (array, i) => {
+Formatters.sort2DArray = (array, i) => {
 	// i er indexen av verdi som man ønsker å sortere på
 	return array.sort((a, b) => {
 		return b[i] - a[i]
 	})
 }
 
-formatters.commaToSpace = streng => {
+Formatters.flat2DArray = (array, i) => {
+	array.forEach(person => {
+		if (person[i].includes(',')) {
+			const arrayValues = person[i].split(',')
+			person[i] = Math.max(...arrayValues).toString()
+		}
+	})
+	return array
+}
+
+Formatters.commaToSpace = streng => {
 	return streng.split(',').join(', ')
 }
 
-export default formatters
+export default Formatters

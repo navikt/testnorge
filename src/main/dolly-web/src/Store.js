@@ -9,7 +9,6 @@ import gruppeReducer from './ducks/gruppe'
 import teamsReducer from './ducks/teams'
 import brukerReducer from './ducks/bruker'
 import testbrukerReducer from './ducks/testBruker'
-import bestillingerReducer from './ducks/bestillinger'
 import searchReducer from './ducks/search'
 import sortReducer from './ducks/sort'
 import loadingReducer from './ducks/loading'
@@ -54,7 +53,6 @@ const configureReduxStore = history => {
 			router: connectRouter(history),
 			currentBestilling: bestillingReducer,
 			bestillingStatuser: bestillingStatusReducer,
-			// bestillinger: bestillingerReducer,
 			gruppe: gruppeReducer,
 			teams: teamsReducer,
 			bruker: brukerReducer,
