@@ -50,7 +50,6 @@ export default class PersonInfoBlock extends PureComponent {
 						// Spesiell tilfeller for gtVerdi og tknr
 						const apiKodeverkId = v.apiKodeverkId ? v.apiKodeverkId : null
 						const tknr = v.tknr ? v.tknr : null
-						// console.log(tknr)
 						// finn tilhørende attributt
 						const attributt = this.props.attributtManager.getAttributtById(v.id)
 
