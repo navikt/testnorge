@@ -1,6 +1,4 @@
 export function mapBestillingData(bestillingData) {
-	console.log(bestillingData, 'input')
-
 	if (!bestillingData) return null
 	const data = []
 
@@ -13,7 +11,6 @@ export function mapBestillingData(bestillingData) {
 	if (bestillingData.tpsfKriterier) {
 		const tpsfKriterier = bestillingData.tpsfKriterier && JSON.parse(bestillingData.tpsfKriterier)
 
-		console.log(tpsfKriterier, 'tpsf')
 		data.push(
 			{
 				label: 'Identtype',

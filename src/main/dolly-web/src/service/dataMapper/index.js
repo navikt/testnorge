@@ -41,15 +41,13 @@ const DataMapper = {
 	// Viser under expand
 	getDetailedData(state, ownProps) {
 		const { gruppe, testbruker } = state
+
 		const { personId } = ownProps
 		if (!testbruker.items || !testbruker.items.tpsf) return null
 
 		const testIdent = gruppe.data[0].testidenter.find(testIdent => testIdent.ident === personId)
 
-		// const bestillingId = _findBestillingId(gruppe, ownProps.personId)
-		// const bestillingObj = gruppe.data[0].bestillinger.find(
-		// 	bestilling => bestilling.id === bestillingId
-		// )
+		// TODO: Alex - hent bestillingId fra testIdent og legg til data
 		const tpsfData = testbruker.items.tpsf.find(item => item.ident === personId)
 		let data = mapTpsfData(tpsfData, testIdent)
 		const sigrunData = testbruker.items.sigrunstub && testbruker.items.sigrunstub[personId]

@@ -28,8 +28,7 @@ export default class Gruppe extends Component {
 
 	state = {
 		redigerGruppe: false,
-		visning: this.VISNING_BESTILLING
-		// visning: this.VISNING_TESTPERSONER
+		visning: this.VISNING_TESTPERSONER
 	}
 
 	componentDidMount() {

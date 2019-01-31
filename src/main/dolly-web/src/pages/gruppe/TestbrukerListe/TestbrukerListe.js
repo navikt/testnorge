@@ -33,8 +33,12 @@ export default class TestbrukerListe extends Component {
 				</ContentContainer>
 			)
 
-		const sortedTestbrukere = testbrukerListe ? Formatters.sort2DArray(testbrukerListe, 5) : null
+		if (!testbrukerListe) return null
 
+		const testbrukereMedEnBestillingId = Formatters.flat2DArray(testbrukerListe, 5)
+		const sortedTestbrukere = Formatters.sort2DArray(testbrukereMedEnBestillingId, 5)
+
+		console.log(sortedTestbrukere, 'sortedTestbrukere')
 		return (
 			<Fragment>
 				{isFetching || !sortedTestbrukere ? (
@@ -59,7 +63,7 @@ export default class TestbrukerListe extends Component {
 
 												<TransitionGroup component={null}>
 													{testbrukere &&
-														Formatters.sort2DArray(testbrukere, 5).map((bruker, idx) => {
+														testbrukere.map((bruker, idx) => {
 															// Note: idx=0 of bruker (data) is parsed to be ID
 															return (
 																<CSSTransition
