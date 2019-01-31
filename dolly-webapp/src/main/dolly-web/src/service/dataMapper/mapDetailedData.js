@@ -68,8 +68,10 @@ export function mapTpsfData(tpsfData, testIdent) {
 				},
 				{
 					id: 'egenAnsattDatoFom',
-					label: 'Egenansatt siden',
-					value: Formatters.formatDate(tpsfData.egenAnsattDatoFom)
+					label: 'Egenansatt',
+					//label: 'Egenansatt siden',
+					value: tpsfData.egenAnsattDatoFom ? 'JA' : 'NEI'
+					//value: Formatters.formatDate(tpsfData.egenAnsattDatoFom)
 				}
 			]
 		}
