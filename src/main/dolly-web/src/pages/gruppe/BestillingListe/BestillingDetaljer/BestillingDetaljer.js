@@ -68,7 +68,6 @@ export default class BestillingDetaljer extends PureComponent {
 	_renderBestillingsDetaljer = () => {
 		const { bestilling } = this.props
 		const data = mapBestillingData(bestilling)
-		console.log(data, 'data output')
 		return (
 			<Fragment>
 				<h3>Bestillingsdetaljer</h3>
