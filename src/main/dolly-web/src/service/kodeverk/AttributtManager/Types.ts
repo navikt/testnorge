@@ -24,7 +24,6 @@ export interface Kategori {
 	navn: string
 	order: number
 	showInSummary?: boolean
-	singleChoice?: boolean
 }
 
 export interface KategoriTypes {
@@ -56,7 +55,8 @@ export interface Attributt {
 	validation?: yup.MixedSchema
 	parent?: string
 	items?: Attributt[]
-	dependentOn?: string
+	dependentOn?: string // Er avhengig av en annen attributt for å kunne settes verdi på
+	dependentBy?: string // Er ikke avhengig, er attributten som ble settet av dependentOn
 }
 
 // Attributt grupper
