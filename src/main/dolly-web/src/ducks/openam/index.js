@@ -4,8 +4,8 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 import success from '~/utils/SuccessAction'
 import _groupBy from 'lodash/groupBy'
 
-export const postOpenAm = createAction('POST_OPEN_AM', async groupObj => {
-	const { testidenter, bestillinger } = groupObj
+export const postOpenAm = createAction('POST_OPEN_AM', async (groupObj, bestillinger) => {
+	const { testidenter } = groupObj
 	const testidenterSortedByBestillingId = _groupBy(testidenter, 'bestillingId')
 	const bestillingIdListe = Object.keys(testidenterSortedByBestillingId)
 
@@ -18,9 +18,9 @@ export const postOpenAm = createAction('POST_OPEN_AM', async groupObj => {
 			miljoer: currentBestilling.environments
 		})
 	})
+
 	const resArr = await Promise.all(promiseArray)
 	const res = await DollyApi.putOpenAmGroupStatus(groupObj.id)
-	console.log(res)
 	return resArr.map((res, idx) => {
 		const bestillingId = bestillingIdListe[idx]
 		return {
@@ -52,6 +52,6 @@ export default handleActions(
 
 //thunk
 export const sendToOpenAm = () => (dispatch, getState) => {
-	const { gruppe } = getState()
-	return dispatch(postOpenAm(gruppe.data[0]))
+	const { gruppe, bestillingStatuser } = getState()
+	return dispatch(postOpenAm(gruppe.data[0], bestillingStatuser.data))
 }

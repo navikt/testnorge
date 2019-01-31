@@ -15,6 +15,7 @@ import Knapp from 'nav-frontend-knapper'
 import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
 import _find from 'lodash/find'
 import './Gruppe.less'
+import OpenAmStatus from './OpenAmStatus/OpenAmStatus'
 
 export default class Gruppe extends Component {
 	static propTypes = {
@@ -48,7 +49,8 @@ export default class Gruppe extends Component {
 			bestillinger,
 			nyeBestillinger,
 			getGruppe,
-			getBestillinger
+			getBestillinger,
+			openAm
 		} = this.props
 
 		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
@@ -81,7 +83,7 @@ export default class Gruppe extends Component {
 		]
 
 		return (
-			<div id="gruppe-container">
+			<div className="gruppe-container">
 				<Overskrift label={gruppe.navn} actions={groupActions}>
 					<ConfirmTooltip
 						label="SLETT"
@@ -96,6 +98,7 @@ export default class Gruppe extends Component {
 						</div>
 					)}
 				</Overskrift>
+				{openAm.response && <OpenAmStatus responses={openAm.response} />}
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
 				<GruppeDetaljer gruppe={gruppe} />
 
