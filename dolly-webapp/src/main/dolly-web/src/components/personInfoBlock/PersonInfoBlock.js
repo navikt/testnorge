@@ -39,13 +39,9 @@ export default class PersonInfoBlock extends PureComponent {
 
 				<div className={cssClassContent}>
 					{data.map((v, k) => {
-						const optionalClassName = cn('static-value', [
-							{ 'static-value_xlarge': v.width === 'xlarge' },
-							{ 'static-value_medium': v.width === 'medium' }
-						])
 						const staticValueProps = {
 							key: k,
-							optionalClassName: optionalClassName,
+							size: v.width && v.width,
 							header: v.label,
 							headerType: 'h4',
 							value: v.value
@@ -54,7 +50,6 @@ export default class PersonInfoBlock extends PureComponent {
 						// Spesiell tilfeller for gtVerdi og tknr
 						const apiKodeverkId = v.apiKodeverkId ? v.apiKodeverkId : null
 						const tknr = v.tknr ? v.tknr : null
-						// console.log(tknr)
 						// finn tilhørende attributt
 						const attributt = this.props.attributtManager.getAttributtById(v.id)
 
