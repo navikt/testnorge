@@ -38,7 +38,6 @@ export default class TestbrukerListe extends Component {
 		const testbrukereMedEnBestillingId = Formatters.flat2DArray(testbrukerListe, 5)
 		const sortedTestbrukere = Formatters.sort2DArray(testbrukereMedEnBestillingId, 5)
 
-		console.log(sortedTestbrukere, 'sortedTestbrukere')
 		return (
 			<Fragment>
 				{isFetching || !sortedTestbrukere ? (
