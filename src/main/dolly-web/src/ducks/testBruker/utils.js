@@ -25,8 +25,17 @@ const _findEnvironmentsForIdent = (state, ident) => {
 	const personObj = identArray.find(item => item.ident === ident)
 	if (!personObj) return null
 
-	const bestillingObj = bestillingStatuser.data.find(
-		bestilling => bestilling.id === personObj.bestillingId
-	)
+	const bestillingObj = bestillingStatuser.data.find(bestilling => {
+		const bestillingid = bestilling.id
+		let foundId = false
+
+		personObj.bestillingId.map(id => {
+			if (bestillingid === id) {
+				foundId = true
+			}
+		})
+		return foundId
+	})
+
 	return bestillingObj.environments
 }
