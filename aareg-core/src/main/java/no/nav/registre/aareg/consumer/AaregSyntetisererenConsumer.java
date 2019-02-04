@@ -5,6 +5,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Component
 public class AaregSyntetisererenConsumer {
 
@@ -18,8 +20,7 @@ public class AaregSyntetisererenConsumer {
         this.serverUrl = syntrestServerUrl;
     }
 
-
-    public void getSyntetiserteMeldinger() {
+    public void getSyntetiserteMeldinger(List<String> identer) {
 
     }
 }
