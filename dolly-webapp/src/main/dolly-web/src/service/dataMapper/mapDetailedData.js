@@ -69,7 +69,7 @@ export function mapTpsfData(tpsfData, testIdent) {
 				{
 					id: 'egenAnsattDatoFom',
 					label: 'Egenansatt',
-					value: tpsfData.egenAnsattDatoFom ? 'JA' : 'NEI'
+					value: tpsfData.egenAnsattDatoFom && 'JA'
 				}
 			]
 		}
