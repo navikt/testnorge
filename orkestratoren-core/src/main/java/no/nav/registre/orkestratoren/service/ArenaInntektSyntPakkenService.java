@@ -15,7 +15,7 @@ public class ArenaInntektSyntPakkenService {
     @Autowired
     private ArenaInntektSyntConsumer arenaInntektSyntConsumer;
 
-    public String genererEnInntektsmeldingPerFnrIInntektstub(SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
+    public String genererInntektsmeldinger(SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
         return arenaInntektSyntConsumer.startSyntetisering(syntetiserInntektsmeldingRequest);
     }
 }

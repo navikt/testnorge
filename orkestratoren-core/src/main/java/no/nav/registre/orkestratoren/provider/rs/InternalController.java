@@ -24,18 +24,21 @@ public class InternalController {
 
     private String testnorgeSkdIsReadyUrl;
     private String testnorgeArenaInntektIsReadyUrl;
-    private String tpsfIsReadyUrl;
+    private String testnorgeAaregIsReadyUrl;
+    private String eiasEmottakstubIsReadyUrl;
 
     private RestTemplate restTemplate;
 
     public InternalController(RestTemplateBuilder restTemplateBuilder,
             @Value("${testnorge-skd.rest-api.url}") String testnorgeSkdBaseUrl,
             @Value("${testnorge-arena-inntekt.rest-api.url}") String testnorgeArenaInntektBaseUrl,
-            @Value("${tps-forvalteren.rest-api.url}") String tpsfBaseUrl) throws MalformedURLException {
+            @Value("${testnorge-aareg.rest-api.url}") String testnorgeAaregBaseUrl,
+            @Value("${eias-emottakstub.rest-api.url}") String eiasEmottakstubBaseUrl) throws MalformedURLException {
         this.restTemplate = restTemplateBuilder.build();
         this.testnorgeSkdIsReadyUrl = createIsReadyUrl(testnorgeSkdBaseUrl);
         this.testnorgeArenaInntektIsReadyUrl = createIsReadyUrl(testnorgeArenaInntektBaseUrl);
-        this.tpsfIsReadyUrl = createIsReadyUrl(tpsfBaseUrl);
+        this.testnorgeAaregIsReadyUrl = createIsReadyUrl(testnorgeAaregBaseUrl);
+        this.eiasEmottakstubIsReadyUrl = createIsReadyUrl(eiasEmottakstubBaseUrl);
     }
 
     @RequestMapping(value = "/isAlive", method = RequestMethod.GET)
@@ -49,7 +52,8 @@ public class InternalController {
 
         checkReadiness(testnorgeSkdIsReadyUrl, nonAvailableResources);
         checkReadiness(testnorgeArenaInntektIsReadyUrl, nonAvailableResources);
-        checkReadiness(tpsfIsReadyUrl, nonAvailableResources);
+        checkReadiness(testnorgeAaregIsReadyUrl, nonAvailableResources);
+        checkReadiness(eiasEmottakstubIsReadyUrl, nonAvailableResources);
 
         if (nonAvailableResources.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).build();

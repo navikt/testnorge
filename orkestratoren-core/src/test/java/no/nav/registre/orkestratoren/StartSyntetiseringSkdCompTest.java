@@ -34,7 +34,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldinger
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("test")
-public class StartSyntetiseringTpsCompTest {
+public class StartSyntetiseringSkdCompTest {
 
     @Autowired
     private SyntetiseringsController syntetiseringsController;
@@ -83,10 +83,11 @@ public class StartSyntetiseringTpsCompTest {
 
         SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
 
-        ResponseEntity response = syntetiseringsController.opprettSkdMeldingerOgSendTilTps(ordreRequest);
+        ResponseEntity response = syntetiseringsController.opprettSkdmeldingerITPS(ordreRequest);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = ((SkdMeldingerTilTpsRespons) response.getBody());
+        assert skdMeldingerTilTpsRespons != null;
         assertEquals(expectedAntallSendte, skdMeldingerTilTpsRespons.getAntallSendte());
         assertEquals(expectedAntallFeilet, skdMeldingerTilTpsRespons.getAntallFeilet());
         assertEquals(expectedFoedselnummer, skdMeldingerTilTpsRespons.getStatusFraFeilendeMeldinger().get(0).getFoedselsnummer());
