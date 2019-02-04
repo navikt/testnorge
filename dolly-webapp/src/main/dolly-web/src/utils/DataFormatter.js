@@ -63,6 +63,10 @@ Formatters.kodeverkLabel = kodeverk => {
 	return kodeverk.substring(kodeverk.indexOf('-') + 1)
 }
 
+Formatters.oversettBoolean = value => {
+	return value === true ? 'Ja' : 'Nei'
+}
+
 Formatters.gtApiKodeverkId = gtType => {
 	let gtApiKodeverkId = ''
 	switch (gtType) {
