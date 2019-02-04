@@ -33,9 +33,16 @@ export const fetchKodeverk = kodeverkNavn => (dispatch, getState) => {
 
 export const kodeverkLabelSelector = (state, kodeverkNavn, value) => {
 	const kodeverk = state.kodeverk[kodeverkNavn]
-
 	if (!kodeverk) return null
 
 	const kodeArray = SortKodeverkArray(kodeverk)
-	return kodeArray.find(kode => kode.value === value)
+
+	const result = kodeArray.find(kode => kode.value === value)
+
+	if (result) {
+		return result
+	}
+
+	// Viser bruker feilmelding istedenfor loadingloop
+	return { label: value + ' - Finnes ikke i kodeverk' }
 }

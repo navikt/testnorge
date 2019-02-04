@@ -6,45 +6,51 @@ import Formatters from '~/utils/DataFormatter'
 import success from '~/utils/SuccessAction'
 import { actions as bestillingActions } from '~/ducks/bestilling'
 
-export const getBestillingStatus = createAction(
-	'GET_BESTILLING_STATUS',
-	DollyApi.getBestillingStatus
-)
-const SET_BESTILLING_STATUS = 'SET_BESTILLING_STATUS'
+export const getBestillinger = createAction('GET_BESTILLINGER', async gruppeID => {
+	let res = await DollyApi.getBestillinger(gruppeID)
+	return res
+})
 
-const initialState = {}
+export const removeNyBestillingStatus = createAction('REMOVE_NY_BESTILLING_STATUS')
+
+// ny-array holder oversikt over nye bestillinger i en session
+const initialState = { ny: [] }
 
 export const cancelBestilling = createAction('CANCEL_BESTILLING', async id => {
 	let res = await DollyApi.cancelBestilling(id)
-	return { ...res, data: { ...res.data, ny: true } }
+	return res
 })
+
+export const gjenopprettBestilling = createAction('GJENOPPRETT_BESTILLING', async (id, envs) => {
+	let res = await DollyApi.gjenopprettBestilling(id, envs)
+	return res
+})
+
 export default handleActions(
 	{
-		[success(getBestillingStatus)](state, action) {
-			return { ...state, [action.payload.data.id]: action.payload.data }
+		[success(getBestillinger)](state, action) {
+			const { data } = action.payload
+			return { ...state, data }
 		},
 
 		[success(bestillingActions.postBestilling)](state, action) {
-			return { ...state, [action.payload.data.id]: action.payload.data }
+			return { ...state, ny: [...state.ny, action.payload.data.id] }
 		},
 
-		[success(cancelBestilling)](state, action) {
-			return { ...state, [action.payload.data.id]: action.payload.data }
+		[success(gjenopprettBestilling)](state, action) {
+			return { ...state, ny: [...state.ny, action.payload.data.id] }
 		},
 
-		[SET_BESTILLING_STATUS](state, action) {
-			return { ...state, [action.bestillingId]: action.data }
+		// [success(cancelBestilling)](state, action) {
+		// 	return { ...state, ny: state.ny.filter(id => id !== action.payload.id) }
+		// }
+
+		[removeNyBestillingStatus](state, action) {
+			return { ...state, ny: state.ny.filter(id => id !== action.payload) }
 		}
 	},
 	initialState
 )
-
-// SET BESTILLING STATUS
-export const setBestillingStatus = (bestillingId, data) => ({
-	type: SET_BESTILLING_STATUS,
-	bestillingId,
-	data
-})
 
 // Selector + mapper
 export const sokSelector = (items, searchStr) => {
@@ -70,34 +76,41 @@ export const sokSelector = (items, searchStr) => {
 }
 
 // Selector
-export const miljoStatusSelector = bestillingStatus => {
-	if (!bestillingStatus) return null
+export const miljoStatusSelector = bestilling => {
+	if (!bestilling) return null
 
-	const id = bestillingStatus.id
-	let envs = bestillingStatus.environments.slice(0) // Clone array for å unngå mutering
+	const id = bestilling.id
+	let envs = bestilling.environments.slice(0) // Clone array for å unngå mutering
 	let successEnvs = []
 	let failedEnvs = []
 	let errorMsgs = []
 
-	if (bestillingStatus.bestillingProgress && bestillingStatus.bestillingProgress.length != 0) {
+	// TODO: REG-2921: Denne må bli forbedret.
+	// feilmelding for hele bestillingen
+	bestilling.feil && errorMsgs.push(bestilling.feil)
+
+	if (bestilling.bestillingProgress && bestilling.bestillingProgress.length != 0) {
 		envs.forEach(env => {
-			bestillingStatus.bestillingProgress.forEach(person => {
+			const lowerCaseEnv = env.toLowerCase()
+
+			bestilling.bestillingProgress.forEach(person => {
 				if (!person.tpsfSuccessEnv) {
 					// TODO: Bestilling failed 100% fra Tpsf. Implement retry-funksjonalitet når maler er støttet
 					failedEnvs = envs
-				} else if (!person.tpsfSuccessEnv.includes(env)) {
-					!failedEnvs.includes(env) && failedEnvs.push(env)
+				} else if (!person.tpsfSuccessEnv.includes(lowerCaseEnv)) {
+					!failedEnvs.includes(lowerCaseEnv) && failedEnvs.push(lowerCaseEnv)
 				}
 			})
 		})
 
 		envs.forEach(env => {
-			!failedEnvs.includes(env) && successEnvs.push(env)
+			const lowerCaseEnv = env.toLowerCase()
+			!failedEnvs.includes(lowerCaseEnv) && successEnvs.push(lowerCaseEnv)
 		})
 
 		// Registre miljø status
 		// Plasseres i egen for-each for visuel plassering og mer lesbar kode
-		bestillingStatus.bestillingProgress.forEach(person => {
+		bestilling.bestillingProgress.forEach(person => {
 			if (person.krrstubStatus) {
 				person.krrstubStatus == 'OK'
 					? !successEnvs.includes('Krr-stub') && successEnvs.push('Krr-stub')
@@ -126,7 +139,6 @@ const mapItems = items => {
 			id: item.id.toString(),
 			antallIdenter: item.antallIdenter.toString(),
 			sistOppdatert: Formatters.formatDate(item.sistOppdatert),
-			environments: Formatters.arrayToString(item.environments),
 			ferdig: item.stoppet ? 'Stoppet' : item.ferdig ? 'Ferdig' : 'Pågår'
 		}
 	})

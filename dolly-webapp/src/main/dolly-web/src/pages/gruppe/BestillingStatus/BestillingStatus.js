@@ -5,7 +5,6 @@ import Loading from '~/components/loading/Loading'
 import BestillingProgress from './BestillingProgress/BestillingProgress'
 import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
 import './BestillingStatus.less'
-import _find from 'lodash/find'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 
 export default class BestillingStatus extends PureComponent {
@@ -28,7 +27,6 @@ export default class BestillingStatus extends PureComponent {
 			failureIntervalCounter: 0,
 			failed: false,
 			sistOppdatert: props.bestilling.sistOppdatert,
-			isOpen: true,
 			showCancelLoadingMsg: false
 		}
 	}
@@ -50,6 +48,7 @@ export default class BestillingStatus extends PureComponent {
 
 		try {
 			const { data } = await DollyApi.getBestillingStatus(bestillingId)
+
 			if (data.ferdig) {
 				this.stopPolling()
 			}
@@ -72,7 +71,6 @@ export default class BestillingStatus extends PureComponent {
 		if (data.ferdig) {
 			setTimeout(async () => {
 				// Update groups
-				await this.props.setBestillingStatus(data.id, { ...data, ny: true })
 				await this.props.onBestillingerUpdate() // state.ferdig = true
 				await this.props.onIdenterUpdate()
 			}, this.TIMEOUT_BEFORE_HIDE)
@@ -113,9 +111,8 @@ export default class BestillingStatus extends PureComponent {
 		}
 	}
 
-	_onCloseMiljoeStatus = bestillingStatusObj => {
-		this.setState({ isOpen: false })
-		this.props.setBestillingStatus(bestillingStatusObj.id, { ...bestillingStatusObj, ny: false })
+	_onCloseMiljoeStatus = () => {
+		this.props.removeNyBestillingStatus(this.props.bestilling.id)
 	}
 
 	_onCancelBtn = () => {
@@ -126,13 +123,7 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		const {
-			bestillingStatusObj,
-			miljoeStatusObj,
-			isCanceling,
-			cancelBestilling,
-			bestilling
-		} = this.props
+		const { miljoeStatusObj, isCanceling, cancelBestilling, bestilling } = this.props
 
 		if (isCanceling && this.state.showCancelLoadingMsg) {
 			return (
@@ -142,14 +133,8 @@ export default class BestillingStatus extends PureComponent {
 			)
 		}
 
-		if (
-			(this.state.ferdig && !bestillingStatusObj) ||
-			!this.state.isOpen ||
-			(bestillingStatusObj && !bestillingStatusObj.ny)
-		)
-			return null
-
 		const status = this.calculateStatus()
+
 		return (
 			<div className="bestilling-status">
 				{!this.state.ferdig ? (
@@ -159,11 +144,10 @@ export default class BestillingStatus extends PureComponent {
 						cancelBestilling={this._onCancelBtn}
 					/>
 				) : (
-					bestillingStatusObj &&
-					bestillingStatusObj.ny && (
+					bestilling && (
 						<MiljoeStatus
 							miljoeStatusObj={miljoeStatusObj}
-							onCloseButton={() => this._onCloseMiljoeStatus(bestillingStatusObj)}
+							onCloseButton={() => this._onCloseMiljoeStatus()}
 						/>
 					)
 				)}

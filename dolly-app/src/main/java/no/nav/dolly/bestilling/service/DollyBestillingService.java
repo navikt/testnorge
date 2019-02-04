@@ -1,21 +1,26 @@
 package no.nav.dolly.bestilling.service;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
+import static java.lang.String.join;
+import static java.time.LocalDateTime.now;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -31,6 +36,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
@@ -44,7 +50,8 @@ import no.nav.dolly.service.TestgruppeService;
 @Service
 public class DollyBestillingService {
 
-    private static final String INNVANDRINGS_MLD_NAVN = "innvandringcreate";
+    private static final String SUCCESS = "OK";
+    private static final String OUT_FMT = "%s: %s";
 
     @Autowired
     private TpsfResponseHandler tpsfResponseHandler;
@@ -83,33 +90,28 @@ public class DollyBestillingService {
     private CacheManager cacheManager;
 
     @Async
-    @Transactional
-    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest bestillingRequest, Bestilling bestilling) {
+    public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingsRequest request, Bestilling bestilling) {
 
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
         try {
-            RsTpsfBestilling tpsfBestilling = nonNull(bestillingRequest.getTpsf()) ? bestillingRequest.getTpsf() : new RsTpsfBestilling();
-            tpsfBestilling.setEnvironments(bestillingRequest.getEnvironments());
+            RsTpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? request.getTpsf() : new RsTpsfBestilling();
+            tpsfBestilling.setEnvironments(request.getEnvironments());
             tpsfBestilling.setAntall(1);
 
             int loopCount = 0;
-            while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < bestillingRequest.getAntall()) {
+            while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < request.getAntall()) {
                 List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
                 String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
                 BestillingProgress progress = new BestillingProgress(bestilling.getId(), hovedPersonIdent);
 
-                sendIdenterTilTPS(bestillingRequest, bestilteIdenter, testgruppe, progress);
+                sendIdenterTilTPS(request.getEnvironments(), bestilteIdenter, testgruppe, progress);
 
-                handleSigrunstub(bestillingRequest, hovedPersonIdent, progress);
+                handleSigrunstub(request, hovedPersonIdent, progress);
 
-                handleKrrstub(bestillingRequest, bestilling.getId(), hovedPersonIdent, progress);
+                handleKrrstub(request, bestilling.getId(), hovedPersonIdent, progress);
 
-                if (!bestillingService.isStoppet(bestilling.getId())) {
-                    bestillingProgressRepository.save(progress);
-                    bestilling.setSistOppdatert(LocalDateTime.now());
-                    bestillingService.saveBestillingToDB(bestilling);
-                }
+                oppdaterProgress(bestilling, progress);
                 clearCache();
                 loopCount++;
             }
@@ -117,14 +119,49 @@ public class DollyBestillingService {
             log.error("Bestilling med id <" + bestilling.getId() + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
             bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()));
         } finally {
-            if (bestillingService.isStoppet(bestilling.getId())) {
-                identService.slettTestidenter(bestilling.getId());
-                bestilling.setStoppet(true);
-            }
-            bestilling.setFerdig(true);
-            bestillingService.saveBestillingToDB(bestilling);
+            oppdaterProgressFerdig(bestilling);
             clearCache();
         }
+    }
+
+    @Async
+    public void gjenopprettBestillingAsync(Bestilling bestilling) {
+
+        List<BestillingProgress> identerForGjenopprett = bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(bestilling.getOpprettetFraId());
+
+        Iterator<BestillingProgress> identIterator = identerForGjenopprett.iterator();
+        while (!bestillingService.isStoppet(bestilling.getId()) && identIterator.hasNext()) {
+            BestillingProgress bestillingProgress = identIterator.next();
+
+            List<String> identer = tpsfService.hentTilhoerendeIdenter(singletonList(bestillingProgress.getIdent()));
+
+            String hovedPersonIdent = getHovedpersonAvBestillingsidenter(identer);
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), hovedPersonIdent);
+
+            sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
+
+            oppdaterProgress(bestilling, progress);
+            clearCache();
+        }
+        oppdaterProgressFerdig(bestilling);
+        clearCache();
+    }
+
+    private void oppdaterProgressFerdig(Bestilling bestilling) {
+        if (bestillingService.isStoppet(bestilling.getId())) {
+            identService.slettTestidenter(bestilling.getId());
+            bestilling.setStoppet(true);
+        }
+        bestilling.setFerdig(true);
+        bestillingService.saveBestillingToDB(bestilling);
+    }
+
+    private void oppdaterProgress(Bestilling bestilling, BestillingProgress progress) {
+        if (!bestillingService.isStoppet(bestilling.getId())) {
+            bestillingProgressRepository.save(progress);
+        }
+        bestilling.setSistOppdatert(now());
+        bestillingService.saveBestillingToDB(bestilling);
     }
 
     private void clearCache() {
@@ -136,22 +173,22 @@ public class DollyBestillingService {
         }
     }
 
-    private void sendIdenterTilTPS(RsDollyBestillingsRequest request, List<String> klareIdenter, Testgruppe testgruppe, BestillingProgress progress) {
+    private void sendIdenterTilTPS(List<String> environments, List<String> identer, Testgruppe testgruppe, BestillingProgress progress) {
         try {
-            RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(klareIdenter, request.getEnvironments().stream().map(String::toLowerCase).collect(Collectors.toList()));
+            RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(identer, environments.stream().map(String::toLowerCase).collect(Collectors.toList()));
             String feedbackTps = tpsfResponseHandler.extractTPSFeedback(response.getSendSkdMeldingTilTpsResponsene());
             log.info(feedbackTps);
 
-            String hovedperson = getHovedpersonAvBestillingsidenter(klareIdenter);
+            String hovedperson = getHovedpersonAvBestillingsidenter(identer);
             List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
             List<String> failureMiljoer = extraxtFailureMiljoForHovedperson(hovedperson, response);
 
             if (!successMiljoer.isEmpty()) {
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);
-                progress.setTpsfSuccessEnv(String.join(",", successMiljoer));
+                progress.setTpsfSuccessEnv(join(",", successMiljoer));
             }
             if (!failureMiljoer.isEmpty()) {
-                progress.setFeil(String.join(",", failureMiljoer));
+                progress.setFeil(join(",", failureMiljoer));
                 log.warn("Person med ident: {} ble ikke opprettet i TPS", hovedperson);
             }
         } catch (TpsfException e) {
@@ -185,42 +222,79 @@ public class DollyBestillingService {
     }
 
     private List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        List<String> successMiljoer = new ArrayList<>();
+        Set<String> successMiljoer = new TreeSet();
 
+        // Add successful messages
+        addSuccessfulMessages(hovedperson, response, successMiljoer);
+
+        // Remove unsuccessful messages
+        removeUnsuccessfulMessages(hovedperson, response, successMiljoer);
+
+        return newArrayList(successMiljoer);
+    }
+
+    private void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
-
-            if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if ((entry.getValue().contains("OK"))) {
+                    if (!entry.getValue().contains(SUCCESS)) {
+                        successMiljoer.remove(entry.getKey());
+                    }
+                }
+            }
+        }
+    }
+
+    private void addSuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
+        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
+                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
+                    if (entry.getValue().contains(SUCCESS)) {
                         successMiljoer.add(entry.getKey());
                     }
                 }
             }
-
         }
-
-        return successMiljoer;
     }
 
     private List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        List<String> failure = new ArrayList<>();
+        Map<String, List<String>> failures = new TreeMap();
 
-        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
+        addFeilmeldingSkdMeldinger(hovedperson, response.getSendSkdMeldingTilTpsResponsene(), failures);
 
-            if (isInnvandringsmeldingPaaPerson(hovedperson, sendSkdMldResponse)) {
-                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (!(entry.getValue().contains("OK"))) {
-                        failure.add(format("%s: %s", entry.getKey(), entry.getValue().replaceAll("^(08)(;08%)*", "FEIL: ").trim()));
+        addFeilmeldingServicerutiner(hovedperson, response.getServiceRoutineStatusResponsene(), failures);
+
+        List<String> errors = newArrayList();
+        failures.keySet().forEach(miljoe -> errors.add(format(OUT_FMT, miljoe, join(" + ", failures.get(miljoe)))));
+
+        return errors;
+    }
+
+    private void addFeilmeldingSkdMeldinger(String hovedperson, List<SendSkdMeldingTilTpsResponse> responseStatus, Map<String, List<String>> failures) {
+        for (SendSkdMeldingTilTpsResponse response : responseStatus) {
+            if (hovedperson.equals(response.getPersonId())) {
+                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
+                    if (!entry.getValue().contains(SUCCESS) && !failures.containsKey(entry.getKey())) {
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
+                    } else if (!entry.getValue().contains(SUCCESS)) {
+                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue()));
                     }
                 }
             }
-
         }
-
-        return failure;
     }
 
-    private boolean isInnvandringsmeldingPaaPerson(String personId, SendSkdMeldingTilTpsResponse r) {
-        return r.getSkdmeldingstype() != null && INNVANDRINGS_MLD_NAVN.equalsIgnoreCase(r.getSkdmeldingstype()) && personId.equals(r.getPersonId());
+    private void addFeilmeldingServicerutiner(String hovedperson, List<ServiceRoutineResponseStatus> responseStatus, Map<String, List<String>> failures) {
+        for (ServiceRoutineResponseStatus response : responseStatus) {
+            if (hovedperson.equals(response.getPersonId())) {
+                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
+                    if (!SUCCESS.equals(entry.getValue()) && !failures.containsKey(entry.getKey())) {
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
+                    } else if (!SUCCESS.equals(entry.getValue())) {
+                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue()));
+                    }
+                }
+            }
+        }
     }
 }

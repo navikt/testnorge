@@ -129,7 +129,7 @@ public class TestgruppeControllerTest {
 
         Bestilling bestilling = Bestilling.builder().id(bestillingId).build();
 
-        when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(GRUPPE_ID, ant, envir)).thenReturn(bestilling);
+        when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(GRUPPE_ID, ant, envir, null)).thenReturn(bestilling);
 
         controller.opprettIdentBestilling(GRUPPE_ID, dollyBestillingsRequest);
         verify(dollyBestillingService).opprettPersonerByKriterierAsync(GRUPPE_ID, dollyBestillingsRequest, bestilling);

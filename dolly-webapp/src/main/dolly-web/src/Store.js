@@ -9,7 +9,6 @@ import gruppeReducer from './ducks/gruppe'
 import teamsReducer from './ducks/teams'
 import brukerReducer from './ducks/bruker'
 import testbrukerReducer from './ducks/testBruker'
-import bestillingerReducer from './ducks/bestillinger'
 import searchReducer from './ducks/search'
 import sortReducer from './ducks/sort'
 import loadingReducer from './ducks/loading'
@@ -19,6 +18,7 @@ import bestillingStatusReducer from './ducks/bestillingStatus'
 import environmentsReducer from './ducks/environments'
 import openamReducer from './ducks/openam'
 import kodeverkReducer from './ducks/kodeverk'
+import tknrReducer from './ducks/tknr'
 import history from './history'
 
 const locationMiddleware = store => next => action => {
@@ -51,8 +51,8 @@ const configureReduxStore = history => {
 	const rootReducer = history =>
 		combineReducers({
 			router: connectRouter(history),
-			bestilling: bestillingReducer,
-			bestillinger: bestillingerReducer,
+			currentBestilling: bestillingReducer,
+			bestillingStatuser: bestillingStatusReducer,
 			gruppe: gruppeReducer,
 			teams: teamsReducer,
 			bruker: brukerReducer,
@@ -62,10 +62,10 @@ const configureReduxStore = history => {
 			loading: loadingReducer,
 			errors: errorsReducer,
 			common: commonReducer,
-			bestillingStatus: bestillingStatusReducer,
 			environments: environmentsReducer,
 			openam: openamReducer,
-			kodeverk: kodeverkReducer
+			kodeverk: kodeverkReducer,
+			tknr: tknrReducer
 		})
 
 	return createStore(rootReducer(history), composeWithDevTools(applyMiddleware(...allMiddleware)))

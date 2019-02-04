@@ -5,14 +5,16 @@ import { mapTpsfData, mapSigrunData, mapKrrData } from './mapDetailedData'
 const DataMapper = {
 	getHeaders() {
 		return [
-			c('ID', '15'),
-			c('ID-type', '15'),
+			c('Ident', '15'),
+			c('Type', '15'),
 			c('Navn', '30'),
 			c('Kjønn', '20'),
 			c('Alder', '10'),
 			c('Bestilling-ID', '10')
 		]
 	},
+
+	// Testbrukersliste
 	getData(state) {
 		/*
         Gruppe: Dolly
@@ -35,18 +37,17 @@ const DataMapper = {
 			]
 		})
 	},
+
+	// Viser under expand
 	getDetailedData(state, ownProps) {
 		const { gruppe, testbruker } = state
+
 		const { personId } = ownProps
 		if (!testbruker.items || !testbruker.items.tpsf) return null
 
 		const testIdent = gruppe.data[0].testidenter.find(testIdent => testIdent.ident === personId)
 
-		console.log(testIdent, 'hei')
-		// const bestillingId = _findBestillingId(gruppe, ownProps.personId)
-		// const bestillingObj = gruppe.data[0].bestillinger.find(
-		// 	bestilling => bestilling.id === bestillingId
-		// )
+		// TODO: Alex - hent bestillingId fra testIdent og legg til data
 		const tpsfData = testbruker.items.tpsf.find(item => item.ident === personId)
 		let data = mapTpsfData(tpsfData, testIdent)
 		const sigrunData = testbruker.items.sigrunstub && testbruker.items.sigrunstub[personId]

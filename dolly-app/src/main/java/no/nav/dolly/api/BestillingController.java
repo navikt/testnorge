@@ -1,5 +1,7 @@
 package no.nav.dolly.api;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
@@ -12,10 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsBestillingProgress;
@@ -35,6 +40,9 @@ public class BestillingController {
 
     @Autowired
     private BestillingService bestillingService;
+
+    @Autowired
+    private DollyBestillingService dollyBestillingService;
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
@@ -58,6 +66,14 @@ public class BestillingController {
     @DeleteMapping("/stop/{bestillingId}")
     public RsBestilling stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
         Bestilling bestilling = bestillingService.cancelBestilling(bestillingId);
+        return mapperFacade.map(bestilling, RsBestilling.class);
+    }
+
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @PostMapping("/gjenopprett/{bestillingId}")
+    public RsBestilling gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
+        Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? newArrayList(miljoer.split(",")) : newArrayList());
+        dollyBestillingService.gjenopprettBestillingAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 }

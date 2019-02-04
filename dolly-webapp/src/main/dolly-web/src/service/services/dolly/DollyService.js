@@ -115,6 +115,10 @@ export default class DollyService {
 		return Request.get(Endpoints.bestillingStatus(bestillingId))
 	}
 
+	static gjenopprettBestilling(bestillingId, envs) {
+		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
+	}
+
 	static getConfig() {
 		return Request.get(Endpoints.config())
 	}
@@ -133,5 +137,10 @@ export default class DollyService {
 
 	static deleteTestIdent(identId) {
 		return Request.delete(Endpoints.removeTestIdent(identId))
+	}
+
+	//Oppslag
+	static getEnhetByTknr(tknr) {
+		return Request.get(Endpoints.enhetByTknr(tknr))
 	}
 }

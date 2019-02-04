@@ -19,6 +19,7 @@ export const actions = createActions(
 		POST_BESTILLING: [
 			async (gruppeId, values) => {
 				const res = await DollyApi.createBestilling(gruppeId, values) // Payload
+				// TODO: Med nye reducer setup trenger vi ikke 2dette lenge
 				return { ...res, data: { ...res.data, ny: true } }
 			},
 			gruppeId => ({ gruppeId }) // Meta
@@ -179,7 +180,7 @@ const getValues = (attributeList, values) => {
 }
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
-	const { bestilling } = getState()
-	const values = bestillingFormatter(bestilling)
+	const { currentBestilling } = getState()
+	const values = bestillingFormatter(currentBestilling)
 	return dispatch(actions.postBestilling(gruppeId, values))
 }

@@ -13,8 +13,9 @@ import Toolbar from '~/components/toolbar/Toolbar'
 import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import Knapp from 'nav-frontend-knapper'
 import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
-
+import _find from 'lodash/find'
 import './Gruppe.less'
+import OpenAmStatus from './OpenAmStatus/OpenAmStatus'
 
 export default class Gruppe extends Component {
 	static propTypes = {
@@ -34,6 +35,104 @@ export default class Gruppe extends Component {
 	componentDidMount() {
 		this.props.getGruppe()
 		this.props.getBestillinger()
+	}
+
+	render() {
+		const {
+			gruppeArray,
+			createOrUpdateId,
+			createGroup,
+			isFetching,
+			isFetchingBestillinger,
+			deleteGruppe,
+			addFavorite,
+			bestillinger,
+			nyeBestillinger,
+			getGruppe,
+			getBestillinger,
+			openAm
+		} = this.props
+
+		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
+			return <Loading label="Laster grupper" panel />
+
+		if (!gruppeArray) return null
+
+		const gruppe = gruppeArray[0]
+
+		let groupActions = []
+
+		// Vise redigeringsknapp eller stjerne
+		if (gruppe.erMedlemAvTeamSomEierGruppe) {
+			groupActions.push({
+				icon: 'edit',
+				label: 'REDIGER',
+				onClick: createGroup
+			})
+		}
+
+		const toggleValues = [
+			{
+				value: this.VISNING_TESTPERSONER,
+				label: `Testpersoner (${gruppe.testidenter ? gruppe.testidenter.length : 0})`
+			},
+			{
+				value: this.VISNING_BESTILLING,
+				label: `Bestillinger (${bestillinger.data ? bestillinger.data.length : 0})`
+			}
+		]
+
+		return (
+			<div className="gruppe-container">
+				<Overskrift label={gruppe.navn} actions={groupActions}>
+					<ConfirmTooltip
+						label="SLETT"
+						className="flexbox--align-center"
+						message={'Vil du slette denne testdatagruppen?'}
+						onClick={deleteGruppe}
+					/>
+					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
+					{gruppe.antallIdenter > 0 && (
+						<div className="pull-right">
+							<SendOpenAmConnector gruppe={gruppe} />
+						</div>
+					)}
+				</Overskrift>
+				{openAm.response && <OpenAmStatus responses={openAm.response} />}
+				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
+				<GruppeDetaljer gruppe={gruppe} />
+
+				{// Viser progressbar og bestillingsstatus
+				// Ikke render hvis det er ingen nye bestillinger besom tilhører gruppen
+				!isFetchingBestillinger &&
+					nyeBestillinger.map((bestilling, i) => {
+						if (bestilling) {
+							return (
+								<BestillingStatusConnector
+									key={i}
+									bestilling={bestilling}
+									onIdenterUpdate={getGruppe}
+									onBestillingerUpdate={getBestillinger}
+								/>
+							)
+						}
+					})}
+
+				<Toolbar
+					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}
+					toggleOnChange={this.toggleToolbar}
+					toggleCurrent={this.state.visning}
+					toggleValues={toggleValues}
+				>
+					<Fragment>
+						<Knapp type="hoved" onClick={this.startBestilling}>
+							Opprett personer
+						</Knapp>
+					</Fragment>
+				</Toolbar>
+				{this.renderList(gruppe)}
+			</div>
+		)
 	}
 
 	startBestilling = () => {
@@ -68,95 +167,6 @@ export default class Gruppe extends Component {
 		// !!! Therefore pagination is applied to data from TPSF and not DOLLY.
 		return (
 			<TestbrukerListeConnector testidenter={gruppe.testidenter} editTestbruker={editTestbruker} />
-		)
-	}
-
-	render() {
-		const {
-			gruppeArray,
-			createOrUpdateId,
-			createGroup,
-			isFetching,
-			getGruppe,
-			deleteGruppe,
-			addFavorite,
-			bestillinger,
-			getBestillinger
-		} = this.props
-
-		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
-			return <Loading label="Laster grupper" panel />
-
-		if (!gruppeArray) return null
-
-		const gruppe = gruppeArray[0]
-
-		let groupActions = []
-
-		// Vise redigeringsknapp eller stjerne
-		if (gruppe.erMedlemAvTeamSomEierGruppe) {
-			groupActions.push({
-				icon: 'edit',
-				label: 'REDIGER',
-				onClick: createGroup
-			})
-		}
-
-		const toggleValues = [
-			{
-				value: this.VISNING_TESTPERSONER,
-				label: `Testpersoner (${gruppe.testidenter ? gruppe.testidenter.length : 0})`
-			},
-			{
-				value: this.VISNING_BESTILLING,
-				label: `Bestillinger (${bestillinger.data ? bestillinger.data.length : 0})`
-			}
-		]
-
-		return (
-			<div id="gruppe-container">
-				<Overskrift label={gruppe.navn} actions={groupActions}>
-					<ConfirmTooltip
-						label="SLETT"
-						className="flexbox--align-center"
-						message={'Vil du slette denne testdatagruppen?'}
-						onClick={deleteGruppe}
-					/>
-					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
-					{gruppe.antallIdenter > 0 && (
-						<div className="pull-right">
-							<SendOpenAmConnector gruppe={gruppe} />
-						</div>
-					)}
-				</Overskrift>
-				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
-				<GruppeDetaljer gruppe={gruppe} />
-
-				{// Viser progressbar og bestillingsstatus
-				bestillinger.data &&
-					bestillinger.data.map(bestilling => (
-						<BestillingStatusConnector
-							key={bestilling.id}
-							bestilling={bestilling}
-							onIdenterUpdate={getGruppe}
-							onBestillingerUpdate={getBestillinger}
-						/>
-					))}
-
-				<Toolbar
-					searchField={<SearchFieldConnector placeholder={this.searchfieldPlaceholderSelector()} />}
-					toggleOnChange={this.toggleToolbar}
-					toggleCurrent={this.state.visning}
-					toggleValues={toggleValues}
-				>
-					<Fragment>
-						<Knapp type="hoved" onClick={this.startBestilling}>
-							Opprett personer
-						</Knapp>
-					</Fragment>
-				</Toolbar>
-				{this.renderList(gruppe)}
-			</div>
 		)
 	}
 }

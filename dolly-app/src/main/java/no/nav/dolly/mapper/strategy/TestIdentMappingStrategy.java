@@ -1,10 +1,15 @@
 package no.nav.dolly.mapper.strategy;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.String.join;
-import static java.util.Arrays.sort;
+import static java.util.Collections.emptySet;
+import static java.util.Objects.nonNull;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
@@ -23,16 +28,20 @@ public class TestIdentMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<Testident, RsTestidentBestillingId>() {
                     @Override
                     public void mapAtoB(Testident testgruppe, RsTestidentBestillingId rsTestIdent, MappingContext context) {
-                        List<BestillingProgress> testgrupper = testgruppe.getBestillingProgress();
-                        if (!testgrupper.isEmpty()) {
-                            BestillingProgress bestillingProgress = testgrupper.get(0);
-                            rsTestIdent.setBestillingId(bestillingProgress.getBestillingId());
-                            String[] environments = bestillingProgress.getTpsfSuccessEnv().split(",");
-                            sort(environments);
+                        List<BestillingProgress> bestillinger = testgruppe.getBestillingProgress();
+                        if (!bestillinger.isEmpty()) {
+                            List<Long> bestillingListe = new ArrayList<>(bestillinger.size());
+                            Set<String> environments = new TreeSet<>();
+                            for (BestillingProgress progress : bestillinger) {
+                                bestillingListe.add(progress.getBestillingId());
+                                environments.addAll(nonNull(progress.getTpsfSuccessEnv()) ?
+                                        newHashSet(progress.getTpsfSuccessEnv().split(",")) : emptySet());
+                            }
+                            bestillingListe.sort(Comparator.reverseOrder());
+                            rsTestIdent.setBestillingId(bestillingListe);
                             rsTestIdent.setTpsfSuccessEnv(join(",", environments));
-                            rsTestIdent.setKrrstubStatus(bestillingProgress.getKrrstubStatus());
-                            rsTestIdent.setSigrunstubStatus(bestillingProgress.getSigrunstubStatus());
-                            rsTestIdent.setSisteOppdatering(LocalDateTime.now());
+                            rsTestIdent.setKrrstubStatus(bestillinger.get(0).getKrrstubStatus());
+                            rsTestIdent.setSigrunstubStatus(bestillinger.get(0).getSigrunstubStatus());
                         }
                     }
                 })

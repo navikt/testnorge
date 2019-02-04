@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import AttributtVelger from '~/components/attributtVelger/AttributtVelger'
+import AttributtVelgerConnector from '~/components/attributtVelger/AttributtVelgerConnector'
 import Overskrift from '~/components/overskrift/Overskrift'
 import * as yup from 'yup'
 import NavigationConnector from '../Navigation/NavigationConnector'
@@ -72,7 +72,7 @@ class Step1 extends Component {
 					</ContentTooltip>
 				</div>
 
-				<AttributtVelger
+				<AttributtVelgerConnector
 					onToggle={toggleAttributeSelection}
 					uncheckAllAttributes={uncheckAllAttributes}
 					checkAttributeArray={checkAttributeArray}

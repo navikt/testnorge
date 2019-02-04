@@ -7,14 +7,14 @@ export const Kategorier: KategoriTypes = {
 		navn: 'Personinformasjon',
 		order: 10
 	},
-	FamilieRelasjoner: {
-		id: 'familierelasjoner',
-		navn: 'Familierelasjoner',
-		order: 20
-	},
 	Adresser: {
 		id: 'adresser',
 		navn: 'Adresser',
+		order: 20
+	},
+	FamilieRelasjoner: {
+		id: 'familierelasjoner',
+		navn: 'Familierelasjoner',
 		order: 30
 	},
 	Inntekter: {
