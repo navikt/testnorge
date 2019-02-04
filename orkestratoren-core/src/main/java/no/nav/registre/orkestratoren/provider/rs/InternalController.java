@@ -23,18 +23,18 @@ import lombok.extern.slf4j.Slf4j;
 public class InternalController {
 
     private String testnorgeSkdIsReadyUrl;
-    private String synthdataArenaIsReadyUrl;
+    private String testnorgeArenaInntektIsReadyUrl;
     private String tpsfIsReadyUrl;
 
     private RestTemplate restTemplate;
 
     public InternalController(RestTemplateBuilder restTemplateBuilder,
             @Value("${testnorge-skd.rest-api.url}") String testnorgeSkdBaseUrl,
-            @Value("${synthdata-arena-inntekt.rest-api.url}") String synthdataArenaBaseUrl,
+            @Value("${testnorge-arena-inntekt.rest-api.url}") String testnorgeArenaInntektBaseUrl,
             @Value("${tps-forvalteren.rest-api.url}") String tpsfBaseUrl) throws MalformedURLException {
         this.restTemplate = restTemplateBuilder.build();
         this.testnorgeSkdIsReadyUrl = createIsReadyUrl(testnorgeSkdBaseUrl);
-        this.synthdataArenaIsReadyUrl = createIsReadyUrl(synthdataArenaBaseUrl);
+        this.testnorgeArenaInntektIsReadyUrl = createIsReadyUrl(testnorgeArenaInntektBaseUrl);
         this.tpsfIsReadyUrl = createIsReadyUrl(tpsfBaseUrl);
     }
 
@@ -48,7 +48,7 @@ public class InternalController {
         List<String> nonAvailableResources = new ArrayList<>();
 
         checkReadiness(testnorgeSkdIsReadyUrl, nonAvailableResources);
-        checkReadiness(synthdataArenaIsReadyUrl, nonAvailableResources);
+        checkReadiness(testnorgeArenaInntektIsReadyUrl, nonAvailableResources);
         checkReadiness(tpsfIsReadyUrl, nonAvailableResources);
 
         if (nonAvailableResources.isEmpty()) {

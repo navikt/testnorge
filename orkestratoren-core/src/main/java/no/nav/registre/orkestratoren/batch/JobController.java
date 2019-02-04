@@ -1,9 +1,5 @@
 package no.nav.registre.orkestratoren.batch;
 
-import static no.nav.registre.orkestratoren.utils.ExceptionUtils.createListOfRangesFromIds;
-import static no.nav.registre.orkestratoren.utils.ExceptionUtils.extractIdsFromResponseBody;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +32,8 @@ public class JobController {
     @Value("${orkestratoren.eiabatch.miljoe}")
     private String eiabatchMiljoe;
 
+    private String arenaInntektMiljoe;
+
     @Value("${orkestratoren.batch.avspillergruppeId}")
     private Long avspillergruppeId;
 
@@ -44,6 +42,8 @@ public class JobController {
 
     @Value("${orkestratoren.eiabatch.antallSykemeldinger}")
     private int antallSykemeldinger;
+
+    private int antallArenaInntektPersoner;
 
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
@@ -56,25 +56,18 @@ public class JobController {
 
     @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
-        List<Long> ids = new ArrayList<>();
         try {
             tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(avspillergruppeId, tpsbatchMiljoe, antallMeldingerPerEndringskode);
         } catch (HttpStatusCodeException e) {
-            ids.addAll(extractIdsFromResponseBody(e));
-            if (!ids.isEmpty()) {
-                log.warn("tpsSyntBatch: Noe feilet i produserOfSendSkdmeldingerTilTpsIMiljoer for gruppe {}. Følgende id-er ble returnert: {}. {} {}",
-                        avspillergruppeId, createListOfRangesFromIds(ids), e.getResponseBodyAsString(), e);
-            } else {
-                log.warn(e.getResponseBodyAsString(), e);
-            }
+            log.warn(e.getResponseBodyAsString(), e);
         }
     }
 
     @Scheduled(cron = "${orkestratoren.arenabatch.cron:0 0 1 1 * *}")
     public void arenaInntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
-        List<String> levendeNordmennFnr = arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
-        log.info("Inntekt-synt.-batch har matet Inntektstub med {} meldinger.", levendeNordmennFnr.size());
+        String arenaInntektId = arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
+        log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", arenaInntektId);
     }
 
     @Scheduled(cron = "${orkestratoren.eiabatch.cron:0 0 0 * * *}")

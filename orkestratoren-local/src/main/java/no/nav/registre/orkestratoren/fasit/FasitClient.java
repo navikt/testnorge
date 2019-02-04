@@ -37,8 +37,6 @@ public class FasitClient {
         properties.put("testnorges.ida.credential.tpsf.password", fasitService.findSecret(credentials.getPasswordUrl()));
         RestService testnorgeSkd = fasitService.find("testnorge-skd.rest-api", REST_SERVICE, environmentName, applicationName, FSS, RestService.class);
         properties.put("testnorge-skd.rest-api.url", testnorgeSkd.getEndpointUrl());
-        RestService inntektSynt = fasitService.find("synthdata-arena-inntekt.rest-api", REST_SERVICE, environmentName, applicationName, FSS, RestService.class);
-        properties.put("synthdata-arena-inntekt.rest-api.url", inntektSynt.getEndpointUrl());
 
         return properties;
     }

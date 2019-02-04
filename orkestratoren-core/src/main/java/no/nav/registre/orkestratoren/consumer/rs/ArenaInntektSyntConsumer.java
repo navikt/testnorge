@@ -1,69 +1,43 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.util.UriTemplate;
 
 import lombok.extern.slf4j.Slf4j;
+
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 
 @Slf4j
 @Component
 public class ArenaInntektSyntConsumer {
 
+    private static final ParameterizedTypeReference<String> RESPONSE_TYPE = new ParameterizedTypeReference<String>() {
+    };
+
+    @Autowired
     private RestTemplate restTemplate;
-    private String url;
 
-    public ArenaInntektSyntConsumer(RestTemplateBuilder restTemplateBuilder,
-            @Value("${synthdata-arena-inntekt.rest-api.url}") String baseUrl) {
-        this.url = baseUrl + "/v1/generate";
-        this.restTemplate = restTemplateBuilder.build();
+    private UriTemplate url;
+
+    public ArenaInntektSyntConsumer(@Value("${testnorge-arena-inntekt.rest-api.url}") String arenaInntektServerUrl) {
+        this.url = new UriTemplate(arenaInntektServerUrl + "/v1/syntetisering/generer");
     }
 
-    public void genererEnInntektsmeldingPerFnrIInntektstub(List<String> fnr) {
-        restTemplate.postForObject(url, fnr, String.class);
-    }
-
-    @Async
-    public void asyncBestillEnInntektsmeldingPerFnrIInntektstub(List<String> inntektsmldMottakere) {
-        if (inntektsmldMottakere == null) {
-            return;
+    public String startSyntetisering(SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
+        RequestEntity postRequest = RequestEntity.post(url.expand()).body(syntetiserInntektsmeldingRequest);
+        String id = "";
+        ResponseEntity<String> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
+        if (response != null && response.getBody() != null) {
+            id = response.getBody();
+        } else {
+            log.error("Kunne ikke hente response body fra testnorge-arena-inntekt: NullPointerException");
         }
-        LocalDateTime bestillingstidspunktet = LocalDateTime.now();
-        try {
-            genererEnInntektsmeldingPerFnrIInntektstub(inntektsmldMottakere);
-            if (log.isInfoEnabled()) {
-                log.info("synth-arena-inntekt har fullført bestillingen som ble sendt {}. " // NOSONAR - Sonar kjenner ikke igjen at log er i if-statement
-                        + "Antall inntektsmeldinger opprettet i inntekts-stub: {} ",
-                        bestillingstidspunktet, inntektsmldMottakere.size());
-            }
-        } catch (HttpStatusCodeException e) {
-            StringBuilder feilmelding = new StringBuilder(200)
-                    .append("synth-arena-inntekt returnerte feilmeldingen ")
-                    .append(getMessageFromJson(e.getResponseBodyAsString()))
-                    .append(". Bestillingen ble sendt ")
-                    .append(bestillingstidspunktet);
-            log.error(feilmelding.toString(), e);
-        }
-    }
-
-    private String getMessageFromJson(String responseBody) {
-        if (responseBody == null || responseBody.isEmpty()) {
-            return "";
-        }
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readTree(responseBody).findValue("message").asText();
-        } catch (IOException e) {
-            return responseBody;
-        }
+        return id;
     }
 }

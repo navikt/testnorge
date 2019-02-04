@@ -11,12 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
-import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
-import no.nav.registre.orkestratoren.exceptions.HttpStatusCodeExceptionContainer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
@@ -42,20 +41,19 @@ public class SyntetiseringsController {
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity opprettSkdMeldingerOgSendTilTps(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
         try {
-            SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
+            return tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
                     syntetiserSkdmeldingerRequest.getMiljoe(),
                     syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
-            return ResponseEntity.ok(skdMeldingerTilTpsRespons);
-        } catch (HttpStatusCodeExceptionContainer e) {
-            return ResponseEntity.status(e.getGeneralStatusCode()).body(e.getResponseBodyAsString());
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
     }
 
     @LogExceptions
     @PostMapping(value = "/arena/inntekt/generer")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public List<String> opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest request) {
-        return arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
+    public String opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
+        return arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(syntetiserInntektsmeldingRequest);
     }
 
     @LogExceptions
