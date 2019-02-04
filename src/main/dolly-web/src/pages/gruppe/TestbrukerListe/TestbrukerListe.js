@@ -33,13 +33,18 @@ export default class TestbrukerListe extends Component {
 				</ContentContainer>
 			)
 
+		if (!testbrukerListe) return null
+
+		const testbrukereMedEnBestillingId = Formatters.flat2DArray(testbrukerListe, 5)
+		const sortedTestbrukere = Formatters.sort2DArray(testbrukereMedEnBestillingId, 5)
+
 		return (
 			<Fragment>
-				{isFetching || !testbrukerListe ? (
+				{isFetching || !sortedTestbrukere ? (
 					<Loading label="laster testbrukere" panel />
 				) : (
 					<PaginationConnector
-						items={testbrukerListe}
+						items={sortedTestbrukere}
 						render={testbrukere => {
 							return (
 								<div className="oversikt-container">
@@ -57,7 +62,7 @@ export default class TestbrukerListe extends Component {
 
 												<TransitionGroup component={null}>
 													{testbrukere &&
-														Formatters.sort2DArray(testbrukere, 5).map((bruker, idx) => {
+														testbrukere.map((bruker, idx) => {
 															// Note: idx=0 of bruker (data) is parsed to be ID
 															return (
 																<CSSTransition

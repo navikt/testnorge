@@ -24,9 +24,11 @@ export default class FormEditor extends PureComponent {
 				if (touched) {
 					if (typeof touched === 'object') {
 						const objectHasError = error.some((obj, idx) => {
-							return Object.keys(obj).some(x => {
-								return Boolean(touched[idx] && touched[idx][x])
-							})
+							if (obj) {
+								return Object.keys(obj).some(x => {
+									return Boolean(touched[idx] && touched[idx][x])
+								})
+							}
 						})
 						return objectHasError
 					}

@@ -50,7 +50,6 @@ export default class PersonDetaljer extends PureComponent {
 
 	render() {
 		const { personData, editAction, frigjoerTestbruker } = this.props
-
 		if (!personData) return null
 
 		return (

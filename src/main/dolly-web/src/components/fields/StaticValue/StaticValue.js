@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import cn from 'classnames'
 
 import './StaticValue.less'
 
@@ -17,12 +18,14 @@ export default class StaticValue extends PureComponent {
 	}
 
 	render() {
-		const { header, value, format, headerType, optionalClassName } = this.props
+		const { header, value, format, headerType, optionalClassName, size } = this.props
+
 		let _value = value
 		if (format) _value = format(value)
 
+		const fixedSize = size ? 'static-value_' + size : 'static-value'
 		return (
-			<div className={optionalClassName || 'static-value'}>
+			<div className={optionalClassName || cn(fixedSize, 'static-value-headers')}>
 				{React.createElement(headerType, null, [header])}
 				<span>{_value}</span>
 			</div>

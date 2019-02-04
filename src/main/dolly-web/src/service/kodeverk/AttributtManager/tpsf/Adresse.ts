@@ -13,7 +13,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Har adresse',
 		dataSource: DataSource.TPSF,
 		validation: yup.object(),
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectAndEdit,
+		dependentBy: 'boadresse_flyttedato'
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -68,12 +69,12 @@ const AttributtListe: Attributt[] = [
 		subKategori: SubKategorier.Boadresse,
 		id: 'boadresse_flyttedato',
 		path: 'boadresse.flyttedato',
-		parent: 'boadresse',
 		label: 'Flyttedato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
 		validation: DateValidation,
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectAndEdit,
+		dependentOn: 'boadresse'
 	}
 
 	// {

@@ -9,6 +9,7 @@ const kodeverkBase = `${uri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
 const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
+const norg2Base = `${uri}/norg2`
 
 class DollyEndpoints {
 	static gruppe() {
@@ -95,6 +96,10 @@ class DollyEndpoints {
 		return `${bestillingBase}/${bestillingId}`
 	}
 
+	static gjenopprettBestilling(bestillingId, envs) {
+		return `${bestillingBase}/gjenopprett/${bestillingId}?miljoer=${envs}`
+	}
+
 	static config() {
 		return configBase
 	}
@@ -113,6 +118,10 @@ class DollyEndpoints {
 
 	static removeTestIdent(identId) {
 		return `${groupBase}/{gruppeId}/slettTestident?ident=${identId}`
+	}
+
+	static enhetByTknr(tknr) {
+		return `${norg2Base}/enhet/${tknr}`
 	}
 }
 
