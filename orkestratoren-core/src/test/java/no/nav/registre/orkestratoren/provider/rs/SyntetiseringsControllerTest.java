@@ -1,7 +1,6 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,11 +10,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
+import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
@@ -24,6 +23,9 @@ public class SyntetiseringsControllerTest {
 
     @Mock
     private TpsSyntPakkenService tpsSyntPakkenService;
+
+    @Mock
+    private ArenaInntektSyntPakkenService arenaInntektSyntPakkenService;
 
     @Mock
     private EiaSyntPakkenService eiaSyntPakkenService;
@@ -35,11 +37,11 @@ public class SyntetiseringsControllerTest {
     private String miljoe = "t9";
 
     /**
-     * Scenario: HVIS syntetiseringskontrolleren får et request om å oppretteSkdMeldinger, skal metoden kalle på
+     * Scenario: HVIS syntetiseringskontrolleren får et request om å opprette skd-meldinger, skal metoden kalle på
      * {@link TpsSyntPakkenService#genererSkdmeldinger}
      */
     @Test
-    public void shouldProduceAndSendSkdmeldingerToTpsIMiljoer() {
+    public void shouldProduceSkdmeldinger() {
         Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 20);
 
@@ -47,16 +49,22 @@ public class SyntetiseringsControllerTest {
                 miljoe,
                 antallMeldingerPerEndringskode);
 
-        ResponseEntity respons = new ResponseEntity(HttpStatus.CREATED);
-
-        when(tpsSyntPakkenService.genererSkdmeldinger(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
-                syntetiserSkdmeldingerRequest.getMiljoe(),
-                syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode()))
-                        .thenReturn(respons);
-
         syntetiseringsController.opprettSkdmeldingerITPS(syntetiserSkdmeldingerRequest);
 
         verify(tpsSyntPakkenService).genererSkdmeldinger(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
+    }
+
+    /**
+     * Scenario: HVIS syntetiseringskontrolleren får et request om å opprette inntektsmeldinger, skal metoden kalle på
+     * {@link ArenaInntektSyntPakkenService#genererInntektsmeldinger}
+     */
+    @Test
+    public void shouldProduceInntektsmeldinger() {
+        SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
+
+        syntetiseringsController.opprettSyntetiskInntektsmeldingIInntektstub(syntetiserInntektsmeldingRequest);
+
+        verify(arenaInntektSyntPakkenService).genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
     }
 
     /**
