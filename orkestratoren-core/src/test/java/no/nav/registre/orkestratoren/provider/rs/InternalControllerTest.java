@@ -34,7 +34,8 @@ public class InternalControllerTest {
     public void shouldReturnNotReady() {
         this.server.expect(requestTo("https://dummyUrl.skd/internal/isReady")).andRespond(withServerError());
         this.server.expect(requestTo("https://dummyUrl.arena.inntekt/internal/isReady")).andRespond(withSuccess());
-        this.server.expect(requestTo("https://dummyUrl.tpsf/internal/isReady")).andRespond(withServerError());
+        this.server.expect(requestTo("https://dummyUrl.aareg/internal/isReady")).andRespond(withServerError());
+        this.server.expect(requestTo("https://dummyUrl.eia/internal/isReady")).andRespond(withSuccess());
 
         ResponseEntity<?> ready = controller.isReady();
 
@@ -50,7 +51,8 @@ public class InternalControllerTest {
     public void shouldReturnReady() {
         this.server.expect(requestTo("https://dummyUrl.skd/internal/isReady")).andRespond(withSuccess());
         this.server.expect(requestTo("https://dummyUrl.arena.inntekt/internal/isReady")).andRespond(withSuccess());
-        this.server.expect(requestTo("https://dummyUrl.tpsf/internal/isReady")).andRespond(withSuccess());
+        this.server.expect(requestTo("https://dummyUrl.aareg/internal/isReady")).andRespond(withSuccess());
+        this.server.expect(requestTo("https://dummyUrl.eia/internal/isReady")).andRespond(withSuccess());
 
         ResponseEntity<?> ready = controller.isReady();
 

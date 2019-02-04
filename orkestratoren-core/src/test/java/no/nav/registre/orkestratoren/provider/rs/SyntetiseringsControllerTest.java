@@ -36,7 +36,7 @@ public class SyntetiseringsControllerTest {
 
     /**
      * Scenario: HVIS syntetiseringskontrolleren får et request om å oppretteSkdMeldinger, skal metoden kalle på
-     * {@link TpsSyntPakkenService#produserOgSendSkdmeldingerTilTpsIMiljoer}
+     * {@link TpsSyntPakkenService#genererSkdmeldinger}
      */
     @Test
     public void shouldProduceAndSendSkdmeldingerToTpsIMiljoer() {
@@ -49,14 +49,14 @@ public class SyntetiseringsControllerTest {
 
         ResponseEntity respons = new ResponseEntity(HttpStatus.CREATED);
 
-        when(tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
+        when(tpsSyntPakkenService.genererSkdmeldinger(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
                 syntetiserSkdmeldingerRequest.getMiljoe(),
                 syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode()))
                         .thenReturn(respons);
 
-        syntetiseringsController.opprettSkdMeldingerOgSendTilTps(syntetiserSkdmeldingerRequest);
+        syntetiseringsController.opprettSkdmeldingerITPS(syntetiserSkdmeldingerRequest);
 
-        verify(tpsSyntPakkenService).produserOgSendSkdmeldingerTilTpsIMiljoer(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
+        verify(tpsSyntPakkenService).genererSkdmeldinger(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
     }
 
     /**
@@ -69,7 +69,7 @@ public class SyntetiseringsControllerTest {
 
         SyntetiserEiaRequest syntetiserEiaRequest = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallMeldinger);
 
-        syntetiseringsController.genererSykemeldingerIEia(syntetiserEiaRequest);
+        syntetiseringsController.opprettSykemeldingerIEia(syntetiserEiaRequest);
 
         verify(eiaSyntPakkenService).genererEiaSykemeldinger(syntetiserEiaRequest);
     }

@@ -39,12 +39,11 @@ public class TestnorgeSkdConsumerTest {
     private String endringskode = "0110";
     private int antallPerEndringskode = 2;
     private List<Long> expectedMeldingsIds;
-    private Map<String, Integer> antallMeldingerPerEndringskode;
     private GenereringsOrdreRequest ordreRequest;
 
     @Before
     public void setUp() {
-        antallMeldingerPerEndringskode = new HashMap<>();
+        Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put(endringskode, antallPerEndringskode);
         ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
         expectedMeldingsIds = new ArrayList<>();
@@ -64,6 +63,7 @@ public class TestnorgeSkdConsumerTest {
 
         SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
 
+        assert skdMeldingerTilTpsRespons != null;
         assertTrue(skdMeldingerTilTpsRespons.getTpsfIds().containsAll(expectedMeldingsIds));
     }
 

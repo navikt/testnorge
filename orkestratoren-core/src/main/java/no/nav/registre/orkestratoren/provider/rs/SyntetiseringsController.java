@@ -39,9 +39,9 @@ public class SyntetiseringsController {
 
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
-    public ResponseEntity opprettSkdMeldingerOgSendTilTps(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
+    public ResponseEntity opprettSkdmeldingerITPS(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
         try {
-            return tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
+            return tpsSyntPakkenService.genererSkdmeldinger(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
                     syntetiserSkdmeldingerRequest.getMiljoe(),
                     syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
         } catch (HttpStatusCodeException e) {
@@ -53,12 +53,12 @@ public class SyntetiseringsController {
     @PostMapping(value = "/arena/inntekt/generer")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public String opprettSyntetiskInntektsmeldingIInntektstub(@RequestBody SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
-        return arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(syntetiserInntektsmeldingRequest);
+        return arenaInntektSyntPakkenService.genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
     }
 
     @LogExceptions
     @PostMapping(value = "/eia/sykemeldinger/generer")
-    public List<String> genererSykemeldingerIEia(@RequestBody SyntetiserEiaRequest syntetiserEiaRequest) {
+    public List<String> opprettSykemeldingerIEia(@RequestBody SyntetiserEiaRequest syntetiserEiaRequest) {
         List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(syntetiserEiaRequest);
         log.info("eia har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
         return fnrMedGenererteMeldinger;

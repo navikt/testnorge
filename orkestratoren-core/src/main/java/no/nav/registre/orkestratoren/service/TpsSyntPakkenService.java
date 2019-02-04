@@ -20,7 +20,7 @@ public class TpsSyntPakkenService {
     @Autowired
     private TestnorgeSkdConsumer testnorgeSkdConsumer;
 
-    public ResponseEntity produserOgSendSkdmeldingerTilTpsIMiljoer(Long avspillergruppeId,
+    public ResponseEntity genererSkdmeldinger(Long avspillergruppeId,
             String miljoe,
             Map<String, Integer> antallMeldingerPerEndringskode) {
 

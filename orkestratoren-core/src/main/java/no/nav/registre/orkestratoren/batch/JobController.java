@@ -32,8 +32,6 @@ public class JobController {
     @Value("${orkestratoren.eiabatch.miljoe}")
     private String eiabatchMiljoe;
 
-    private String arenaInntektMiljoe;
-
     @Value("${orkestratoren.batch.avspillergruppeId}")
     private Long avspillergruppeId;
 
@@ -42,8 +40,6 @@ public class JobController {
 
     @Value("${orkestratoren.eiabatch.antallSykemeldinger}")
     private int antallSykemeldinger;
-
-    private int antallArenaInntektPersoner;
 
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
@@ -57,7 +53,7 @@ public class JobController {
     @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
         try {
-            tpsSyntPakkenService.produserOgSendSkdmeldingerTilTpsIMiljoer(avspillergruppeId, tpsbatchMiljoe, antallMeldingerPerEndringskode);
+            tpsSyntPakkenService.genererSkdmeldinger(avspillergruppeId, tpsbatchMiljoe, antallMeldingerPerEndringskode);
         } catch (HttpStatusCodeException e) {
             log.warn(e.getResponseBodyAsString(), e);
         }
@@ -66,7 +62,7 @@ public class JobController {
     @Scheduled(cron = "${orkestratoren.arenabatch.cron:0 0 1 1 * *}")
     public void arenaInntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
-        String arenaInntektId = arenaInntektSyntPakkenService.genererEnInntektsmeldingPerFnrIInntektstub(request);
+        String arenaInntektId = arenaInntektSyntPakkenService.genererInntektsmeldinger(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", arenaInntektId);
     }
 

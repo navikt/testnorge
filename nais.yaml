@@ -29,16 +29,14 @@ resources:
     memory: 2048Mi
 fasitResources:
   used:
-    - alias: "tps-forvalteren.rest-api"
-      resourceType: restservice
     - alias: "testnorge-skd.rest-api"
       resourceType: restservice
     - alias: "testnorge-arena-inntekt.rest-api"
       resourceType: restservice
     - alias: "eias-emottakstub.rest-api"
       resourceType: restservice
-    - alias: "testnorges.ida.credential.tpsf"
-      resourceType: credential
+    - alias: "testnorge-aareg.rest-api"
+      resourceType: restservice
     - alias: "orkestratorensProperties"
       resourceType: applicationProperties
   exposed:
