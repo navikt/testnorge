@@ -9,6 +9,7 @@ import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import { AttributtManager } from '~/service/Kodeverk'
 import { Formik, FieldArray, Field } from 'formik'
 import _get from 'lodash/get'
+import Formatters from '~/utils/DataFormatter'
 
 export default class Step3 extends PureComponent {
 	static propTypes = {
@@ -81,7 +82,7 @@ export default class Step3 extends PureComponent {
 		const staticValueProps = {
 			key: item.id,
 			header: item.label,
-			value: _get(stateValues, item.id).toString(),
+			value: Formatters.oversettBoolean(_get(stateValues, item.id)),
 			format: item.format
 		}
 
