@@ -30,8 +30,8 @@ public class AaregService implements IService {
     }
 
     @Async
-    public CompletableFuture<JSONArray> generateAaregFromNAIS(List<Map<String, String>> request) {
-        JSONArray result = restTemplate.postForObject(synthAaregUrl, request, JSONArray.class);
+    public CompletableFuture<String> generateAaregFromNAIS(List<String> request) {
+        String result = restTemplate.postForObject(synthAaregUrl, request, String.class);
         return CompletableFuture.completedFuture(result);
     }
 
