@@ -101,9 +101,6 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),
 		validation: yup.string().required('Vennligst velg en verdi.'),
-		//inputType: InputType.Checkbox,
-		//inputType: InputType.Date,
-		//validation: DateValidation,
 		attributtType: AttributtType.SelectAndEdit
 	}
 	// {
