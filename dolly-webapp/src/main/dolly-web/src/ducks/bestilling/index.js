@@ -124,6 +124,12 @@ const bestillingFormatter = bestillingState => {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 	}
 	console.log('POSTING BESTILLING', final_values)
+	// KUN FOR egen ansatt - spesielt tilfelle
+	if (final_values.tpsf.egenAnsattDatoFom != null) {
+		if (final_values.tpsf.egenAnsattDatoFom) {
+			final_values.tpsf.egenAnsattDatoFom = new Date()
+		} else final_values.tpsf.egenAnsattDatoFom = null
+	}
 
 	return final_values
 }

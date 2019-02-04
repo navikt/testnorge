@@ -98,8 +98,9 @@ const AttributtListe: Attributt[] = [
 		id: 'egenAnsattDatoFom',
 		label: 'Egenansatt',
 		dataSource: DataSource.TPSF,
-		inputType: InputType.Date,
-		validation: DateValidation,
+		inputType: InputType.Select,
+		options: SelectOptionsManager('boolean'),
+		validation: yup.string().required('Vennligst velg en verdi.'),
 		attributtType: AttributtType.SelectAndEdit
 	}
 	// {
