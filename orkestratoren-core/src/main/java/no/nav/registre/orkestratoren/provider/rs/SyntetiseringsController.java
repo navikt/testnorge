@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,13 +39,9 @@ public class SyntetiseringsController {
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity opprettSkdmeldingerITPS(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
-        try {
-            return tpsSyntPakkenService.genererSkdmeldinger(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
-                    syntetiserSkdmeldingerRequest.getMiljoe(),
-                    syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
-        } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
-        }
+        return tpsSyntPakkenService.genererSkdmeldinger(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
+                syntetiserSkdmeldingerRequest.getMiljoe(),
+                syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
     }
 
     @LogExceptions

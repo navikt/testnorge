@@ -28,8 +28,8 @@ public class TpsSyntPakkenService {
         if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
             log.warn("Noe feilet under syntetisering av skd-meldinger. Vennligst se loggene til Testnorge-Skd for mer informasjon");
         } else {
-            if (response.getBody() != null) {
-                SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
+            SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
+            if (skdMeldingerTilTpsRespons != null) {
                 log.info("{} skd-meldinger sendt til TPS.", skdMeldingerTilTpsRespons.getAntallSendte());
             }
         }
