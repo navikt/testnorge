@@ -1,4 +1,4 @@
-package no.nav.registre.aareg.consumer;
+package no.nav.registre.aareg.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;

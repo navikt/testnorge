@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import no.nav.registre.aareg.consumer.AaregSyntetisererenConsumer;
-import no.nav.registre.aareg.consumer.HodejegerenConsumer;
-import no.nav.registre.aareg.consumer.requests.SyntetiserAaregRequest;
+import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
+import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @Service
 public class SyntetiseringService {
@@ -23,7 +23,7 @@ public class SyntetiseringService {
     @Autowired
     private Random rand;
 
-    public void hentArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest) {
+    public List<String> hentArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest) {
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId());
         List<String> utvalgteIdenter = new ArrayList<>(syntetiserAaregRequest.getAntallMeldinger());
 
@@ -32,5 +32,7 @@ public class SyntetiseringService {
         }
 
         aaregSyntetisererenConsumer.getSyntetiserteMeldinger(utvalgteIdenter);
+
+        return new ArrayList<>();
     }
 }
