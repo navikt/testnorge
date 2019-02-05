@@ -61,7 +61,7 @@ public class ArenaInntektController extends KubernetesUtils {
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
             log.info("Exception in generateInntektsmeldinger: " + e.getCause());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         } finally {
             counter--;
             lock.unlock();
