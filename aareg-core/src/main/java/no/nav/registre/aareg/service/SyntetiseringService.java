@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
@@ -31,7 +32,7 @@ public class SyntetiseringService {
             utvalgteIdenter.add(levendeIdenter.remove(rand.nextInt(levendeIdenter.size())));
         }
 
-        aaregSyntetisererenConsumer.getSyntetiserteMeldinger(utvalgteIdenter);
+        Map<String, List<Map<String, String>>> syntetiserteMeldinger = aaregSyntetisererenConsumer.getSyntetiserteMeldinger(utvalgteIdenter);
 
         return new ArrayList<>();
     }
