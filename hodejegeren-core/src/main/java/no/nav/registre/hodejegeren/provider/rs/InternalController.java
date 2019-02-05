@@ -22,16 +22,13 @@ import java.util.List;
 public class InternalController {
 
     private String tpsfIsReadyUrl;
-    private String identpoolIsReadyUrl;
 
     private RestTemplate restTemplate;
 
     public InternalController(RestTemplateBuilder restTemplateBuilder,
-            @Value("${tps-forvalteren.rest-api.url}") String tpsfBaseUrl,
-            @Value("${ident-pool.rest-api.url}") String identpoolBaseUrl) throws MalformedURLException {
+            @Value("${tps-forvalteren.rest-api.url}") String tpsfBaseUrl) throws MalformedURLException {
         this.restTemplate = restTemplateBuilder.build();
         this.tpsfIsReadyUrl = createIsReadyUrl(tpsfBaseUrl);
-        this.identpoolIsReadyUrl = createIsReadyUrl(identpoolBaseUrl);
     }
 
     @RequestMapping(value = "/isAlive", method = RequestMethod.GET)
@@ -44,7 +41,6 @@ public class InternalController {
         List<String> nonAvailableResources = new ArrayList<>();
 
         checkReadiness(tpsfIsReadyUrl, nonAvailableResources);
-        checkReadiness(identpoolIsReadyUrl, nonAvailableResources);
 
         if (nonAvailableResources.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).build();
