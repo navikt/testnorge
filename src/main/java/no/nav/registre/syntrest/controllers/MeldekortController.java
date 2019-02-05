@@ -68,7 +68,7 @@ public class MeldekortController extends KubernetesUtils {
                 Object synData = result.get();
                 return synData;
             } catch (Exception e) {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(3);
                 attempt++;
             }
         }
