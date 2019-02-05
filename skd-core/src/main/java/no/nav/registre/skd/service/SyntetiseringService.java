@@ -115,11 +115,8 @@ public class SyntetiseringService {
                     }
                 }
 
-                listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
-                listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
-                listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+                fjernBrukteIdenterFraListerMedIdenter(listerMedIdenter);
                 idsLagretITpsfMenIkkeTps.removeAll(ids);
-
             } catch (ManglendeInfoITpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
                         "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() + ".",
@@ -148,6 +145,12 @@ public class SyntetiseringService {
         }
 
         return ResponseEntity.status(httpStatus).body(skdMeldingerTilTpsResponsTotal);
+    }
+
+    private void fjernBrukteIdenterFraListerMedIdenter(Map<String, List<String>> listerMedIdenter) {
+        listerMedIdenter.get(GIFTE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+        listerMedIdenter.get(SINGLE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+        listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE).removeAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
     }
 
     private HttpStatus loggExceptionOgLeggTilFeiletEndringskode(Exception e, String feilmeldingTekst, String endringskode) {
