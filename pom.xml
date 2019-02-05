@@ -56,7 +56,6 @@
         <swagger.version>2.8.0</swagger.version>
         <junit-platform.version>1.2.0</junit-platform.version>
         <spring-boot.version>2.0.4.RELEASE</spring-boot.version>
-
     </properties>
 
     <dependencyManagement>
