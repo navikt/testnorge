@@ -9,6 +9,8 @@ import no.nav.identpool.domain.Ident;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.test.mockito.MockitoExtension;
 import no.nav.identpool.util.PersonidentUtil;
+
+import io.micrometer.core.instrument.Counter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,10 +49,13 @@ class AjourholdServiceTest {
 
     private List<Ident> entities = new ArrayList<>();
 
+    @Mock
+    private Counter counter;
+
     @BeforeEach
     void init() {
         entities.clear();
-        ajourholdService = spy(new AjourholdService(identRepository, new IdentGeneratorService(), identTpsService));
+        ajourholdService = spy(new AjourholdService(identRepository, new IdentGeneratorService(), identTpsService, counter));
         ajourholdService.current = LocalDate.now();
 
         when(identRepository.saveAll(anyIterable())).thenAnswer((Answer<Void>) invocationOnMock -> {

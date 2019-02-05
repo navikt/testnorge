@@ -2,14 +2,8 @@ package no.nav.identpool.ajourhold;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
 
+import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
-import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.repository.IdentRepository;
-import no.nav.identpool.service.IdentGeneratorService;
-import no.nav.identpool.service.IdentTpsService;
-import no.nav.identpool.util.IdentGeneratorUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,6 +14,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.service.IdentGeneratorService;
+import no.nav.identpool.service.IdentTpsService;
+import no.nav.identpool.util.IdentGeneratorUtil;
+
 @Service
 @RequiredArgsConstructor
 public class AjourholdService {
@@ -27,6 +29,8 @@ public class AjourholdService {
     private final IdentRepository identRepository;
     private final IdentGeneratorService identGeneratorService;
     private final IdentTpsService identTpsService;
+
+    private final Counter counter;
 
     LocalDate current;
     private int newIdentCount;
@@ -42,7 +46,7 @@ public class AjourholdService {
             checkAndGenerateForDate(minDate, Identtype.DNR);
             minDate = minDate.plusYears(1);
         }
-
+        counter.increment(newIdentCount);
         return newIdentCount > 0;
     }
 

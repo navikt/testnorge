@@ -1,6 +1,7 @@
 package no.nav.identpool.service;
 
 import com.google.common.collect.Lists;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.mq.consumer.MessageQueue;
@@ -59,6 +60,7 @@ public class IdentTpsService {
                 .collect(Collectors.toSet());
     }
 
+    @Timed(value = "ident-pool.resource.latency", extraTags = { "operation", "TPS" })
     private Set<TpsStatus> checkInEnvironment(String env, List<String> nonExisting) {
         Set<TpsStatus> statusSet = new HashSet<>();
         try {
