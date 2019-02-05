@@ -131,7 +131,7 @@ public class SyntetiseringService {
                 log.warn("HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: {}",
                         endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
                 feiledeEndringskoder.add(endringskode.getEndringskode());
-                httpStatus = HttpStatus.CONFLICT;
+                httpStatus = HttpStatus.ACCEPTED;
             } catch (RuntimeException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
                         "RuntimeException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
@@ -157,7 +157,7 @@ public class SyntetiseringService {
         feiledeEndringskoder.add(endringskode);
         log.error(e.getMessage(), e);
         log.warn(feilmeldingTekst);
-        return HttpStatus.CONFLICT;
+        return HttpStatus.ACCEPTED;
     }
 
     private String hentMeldingFraJson(String responseBody) {
