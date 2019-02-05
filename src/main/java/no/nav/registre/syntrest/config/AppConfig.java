@@ -1,9 +1,7 @@
 package no.nav.registre.syntrest.config;
 
 import no.nav.registre.syntrest.controllers.*;
-import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.utils.Validation;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,9 +19,4 @@ public class AppConfig {
         return new Validation();
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public QueueHandler queueHandler(){
-        return new QueueHandler();
-    }
 }

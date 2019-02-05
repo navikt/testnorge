@@ -3,7 +3,6 @@ package no.nav.registre.syntrest.controllers;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.globals.QueueHandler;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import no.nav.registre.syntrest.services.TPService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
 @RequestMapping("api/v1")
 public class TPController extends KubernetesUtils {
+
+    @Value("${max_retrys}")
+    private int retryCount;
 
     @Value("${synth-tp-app}")
     private String appName;
@@ -32,29 +35,48 @@ public class TPController extends KubernetesUtils {
     @Autowired
     private TPService tpService;
 
-    @Autowired
-    private QueueHandler queue;
+    private int counter = 0;
 
-    @GetMapping(value = "/generateTp/{num_to_generate}")
-    public ResponseEntity generateTp(@PathVariable int num_to_generate) throws IOException, ApiException {
-        int queueId = queue.getQueueId();
-        queue.addToQueue(queueId);
+    ReentrantLock lock = new ReentrantLock();
+    ReentrantLock counterLock = new ReentrantLock();
+
+    @GetMapping(value = "/generateTp/{numToGenerate}")
+    public ResponseEntity generateTp(@PathVariable int numToGenerate) throws IOException, ApiException {
+        counterLock.lock();
+        counter++;
+        counterLock.unlock();
+        lock.lock();
         ApiClient client = createApiClient();
         try {
             createApplication(client, "/nais/synthdata-tp.yaml", tpService);
-            while (queue.getNextInQueue() != queueId) {
-                TimeUnit.SECONDS.sleep(2);
-            }
-            log.info("Requesting synthetic data: synthdata-tp for id " + queueId);
-            CompletableFuture<List<Map<String, String>>> result = tpService.generateTPFromNAIS(num_to_generate);
-            List<Map<String, String>> synData = result.get();
-
-            queue.removeFromQueue(queueId, client, appName);
+            log.info("Requesting synthetic data: synthdata-tp");
+            CompletableFuture<List<Map<String, String>>> result = tpService.generateTPFromNAIS(numToGenerate);
+            Object synData = getData(numToGenerate);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
             log.info("Exception in generateTp: " + e.getCause());
-            queue.removeFromQueue(queueId, client, appName);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
+        } finally {
+            counter--;
+            System.out.println("Counter: " + counter);
+            lock.unlock();
+            if (counter == 0)
+                deleteApplication(client, appName);
         }
+    }
+
+    public Object getData(int numToGenerate) throws InterruptedException {
+        int attempt = 0;
+        while (attempt < retryCount) {
+            try {
+                CompletableFuture<List<Map<String, String>>> result = tpService.generateTPFromNAIS(numToGenerate);
+                Object synData = result.get();
+                return synData;
+            } catch (Exception e) {
+                TimeUnit.SECONDS.sleep(1);
+                attempt++;
+            }
+        }
+        return new Exception("Could not retrieve data in " + retryCount + " attempts. Aborting");
     }
 }

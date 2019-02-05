@@ -1,4 +1,5 @@
 package no.nav.registre.syntrest.services;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class PoppService implements IService{
+public class PoppService implements IService {
 
     @Value("${synth-popp-app}")
     private String appName;
@@ -28,12 +29,12 @@ public class PoppService implements IService{
     }
 
     @Async
-    public CompletableFuture<List<Map<String, Object>>> generatePoppMeldingerFromNAIS(String[] fnrs) {
-        List<Map<String, Object>> result = restTemplate.postForObject(synthPoppUrl, fnrs, List.class);
+    public CompletableFuture<Object> generatePoppMeldingerFromNAIS(String[] fnrs) {
+        Object result = restTemplate.postForObject(synthPoppUrl, fnrs, List.class);
         return CompletableFuture.completedFuture(result);
     }
 
-    public String isAlive(){
+    public String isAlive() {
         return restTemplate.getForObject(String.format(isAlive, appName), String.class);
     }
 }

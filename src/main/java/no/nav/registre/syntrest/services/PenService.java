@@ -29,8 +29,8 @@ public class PenService implements IService{
     }
 
     @Async
-    public CompletableFuture<List<Map<String, String>>> generatePenFromNAIS(int num_to_generate) throws InterruptedException {
-        List<Map<String, String>> result = restTemplate.getForObject(String.format(synthPenUrl, num_to_generate), List.class);
+    public CompletableFuture<Object> generatePenFromNAIS(int num_to_generate) throws InterruptedException {
+        Object result = restTemplate.getForObject(String.format(synthPenUrl, num_to_generate), Object.class);
         return CompletableFuture.completedFuture(result);
     }
 
