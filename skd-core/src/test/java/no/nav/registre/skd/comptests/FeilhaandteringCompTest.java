@@ -104,10 +104,10 @@ public class FeilhaandteringCompTest {
         ResponseEntity response = syntetiseringController.genererSkdMeldinger(ordreRequest);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertEquals(3, listAppender.list.size());
+        assertEquals(4, listAppender.list.size());
         SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
         assertThat(skdMeldingerTilTpsRespons.getAntallSendte(), is(equalTo(2)));
-        assertThat(listAppender.list.toString(), containsString("Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: []"));
+        assertThat(listAppender.list.toString(), containsString("Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: []"));
     }
 
     private void stubIdentpool() {

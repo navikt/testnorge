@@ -232,8 +232,8 @@ public class SyntetiseringServiceTest {
         ResponseEntity response = syntetiseringService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
 
         assertThat(response.getStatusCode(), is(equalTo(HttpStatus.CONFLICT)));
-        assertThat(listAppender.list.size(), is(equalTo(5)));
-        assertThat(listAppender.list.toString(), containsString(String.format("Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: %s",
+        assertThat(listAppender.list.size(), is(equalTo(6)));
+        assertThat(listAppender.list.toString(), containsString(String.format("Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: %s",
                 "[1 - 6, 8, 10 - 11, 13 - 15, 17 - 18]")));
     }
 }

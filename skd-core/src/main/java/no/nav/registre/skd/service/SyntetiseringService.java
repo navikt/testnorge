@@ -68,6 +68,8 @@ public class SyntetiseringService {
     @Autowired
     private EksisterendeIdenterService eksisterendeIdenterService;
 
+    private List<String> feiledeEndringskoder;
+
     public ResponseEntity puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         final Map<String, Integer> antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
         final List<Endringskoder> sorterteEndringskoder = filtrerOgSorterBestilteEndringskoder(antallMeldingerPerEndringskode.keySet());
@@ -79,6 +81,7 @@ public class SyntetiseringService {
 
         HttpStatus httpStatus = HttpStatus.CREATED;
         List<Long> idsLagretITpsfMenIkkeTps = new ArrayList<>();
+        feiledeEndringskoder = new ArrayList<>();
 
         for (Endringskoder endringskode : sorterteEndringskoder) {
             List<Long> ids;
@@ -118,25 +121,37 @@ public class SyntetiseringService {
                 idsLagretITpsfMenIkkeTps.removeAll(ids);
 
             } catch (ManglendeInfoITpsException e) {
-                httpStatus = logException(e, "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() + ".");
+                httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
+                        "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() + ".",
+                        endringskode.getEndringskode());
             } catch (KunneIkkeSendeTilTpsException e) {
-                httpStatus = logException(e, "KunneIkkeSendeTilTpsException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
-                        ". Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
+                httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
+                        "KunneIkkeSendeTilTpsException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
+                        ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps),
+                        endringskode.getEndringskode());
             } catch (HttpStatusCodeException e) {
                 log.error(hentMeldingFraJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                log.warn("HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: {}",
+                log.warn("HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: {}",
                         endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
+                feiledeEndringskoder.add(endringskode.getEndringskode());
                 httpStatus = HttpStatus.CONFLICT;
             } catch (RuntimeException e) {
-                httpStatus = logException(e, "RuntimeException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
-                        ". Skdmeldinger som muligens ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
+                httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
+                        "RuntimeException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
+                        ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps),
+                        endringskode.getEndringskode());
             }
+        }
+
+        if(!feiledeEndringskoder.isEmpty()) {
+            log.warn("Endringskoder som feilet i denne kjøringen: {}", feiledeEndringskoder);
         }
 
         return ResponseEntity.status(httpStatus).body(skdMeldingerTilTpsResponsTotal);
     }
 
-    private HttpStatus logException(Exception e, String feilmeldingTekst) {
+    private HttpStatus loggExceptionOgLeggTilFeiletEndringskode(Exception e, String feilmeldingTekst, String endringskode) {
+        feiledeEndringskoder.add(endringskode);
         log.error(e.getMessage(), e);
         log.warn(feilmeldingTekst);
         return HttpStatus.CONFLICT;
