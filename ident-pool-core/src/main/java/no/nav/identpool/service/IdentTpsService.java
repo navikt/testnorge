@@ -1,6 +1,7 @@
 package no.nav.identpool.service;
 
 import com.google.common.collect.Lists;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.mq.consumer.MessageQueue;
@@ -13,6 +14,7 @@ import no.nav.tps.ctg.m201.domain.TpsPersonData;
 import org.springframework.stereotype.Service;
 
 import javax.jms.JMSException;
+import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
 import java.io.StringReader;
 import java.util.HashSet;
@@ -58,15 +60,21 @@ public class IdentTpsService {
                 .collect(Collectors.toSet());
     }
 
+    @Timed(value = "ident-pool.resource.latency", extraTags = { "operation", "TPS" })
     private Set<TpsStatus> checkInEnvironment(String env, List<String> nonExisting) {
         Set<TpsStatus> statusSet = new HashSet<>();
         try {
             initMq(env);
             for (List<String> list : Lists.partition(nonExisting, MAX_SIZE_TPS_QUEUE)) {
                 String response = messageQueue.sendMessage(new NavnOpplysning(list).toXml());
-                TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
-                if (data.getTpsSvar().getIngenReturData() == null) {
-                    statusSet = updateIdents(data);
+                try {
+                    TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
+                    if (data.getTpsSvar().getIngenReturData() == null) {
+                        statusSet = updateIdents(data);
+                    }
+                } catch (DataBindingException ex) {
+                    log.info(response);
+                    throw new RuntimeException(ex);
                 }
             }
         } catch (JMSException e) {
