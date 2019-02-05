@@ -6,6 +6,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -32,7 +33,7 @@ public class TestnorgeSkdConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "skd" })
-    public ResponseEntity startSyntetisering(GenereringsOrdreRequest genereringsOrdreRequest) {
+    public ResponseEntity startSyntetisering(GenereringsOrdreRequest genereringsOrdreRequest) throws HttpStatusCodeException {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(genereringsOrdreRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
