@@ -38,8 +38,7 @@ public class PoppController extends KubernetesUtils {
     @Autowired
     private PoppService poppService;
 
-    @Autowired
-    private QueueHandler queue;
+    private QueueHandler queue = new QueueHandler();
 
     @PostMapping(value = "/generatePopp")
     public ResponseEntity generatePopp(@RequestBody String[] fnrs) throws IOException, ApiException {

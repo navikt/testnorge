@@ -36,8 +36,7 @@ public class EIAController extends KubernetesUtils {
     @Autowired
     private EIAService eiaService;
 
-    @Autowired
-    private QueueHandler queue;
+    private QueueHandler queue = new QueueHandler();
 
     @PostMapping(value = "/generateSykemeldinger")
     public ResponseEntity generateSykemeldinger(@RequestBody List<Map<String, String>> request) throws IOException, ApiException {

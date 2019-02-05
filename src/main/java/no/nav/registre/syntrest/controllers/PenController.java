@@ -35,8 +35,7 @@ public class PenController extends KubernetesUtils {
     @Autowired
     private PenService penService;
 
-    @Autowired
-    private QueueHandler queue;
+    private QueueHandler queue = new QueueHandler();
 
     @GetMapping(value = "/generatePen/{num_to_generate}")
     public ResponseEntity generatePen(@PathVariable int num_to_generate) throws IOException, ApiException {

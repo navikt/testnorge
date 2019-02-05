@@ -29,8 +29,7 @@ public class MeldekortController extends KubernetesUtils {
     @Autowired
     private MeldekortService meldekortService;
 
-    @Autowired
-    private QueueHandler queue;
+    private QueueHandler queue = new QueueHandler();
 
     @GetMapping(value = "/generateMeldekort/{num_to_generate}/{meldegruppe}")
     public ResponseEntity generateMeldekort(@PathVariable int num_to_generate, @PathVariable String meldegruppe) throws ApiException, IOException {
