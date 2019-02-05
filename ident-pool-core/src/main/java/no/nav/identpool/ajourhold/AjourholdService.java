@@ -4,15 +4,6 @@ import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
 
 import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
-import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.repository.IdentRepository;
-import no.nav.identpool.service.IdentGeneratorService;
-import no.nav.identpool.service.IdentTpsService;
-import no.nav.identpool.util.IdentGeneratorUtil;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,6 +13,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.service.IdentGeneratorService;
+import no.nav.identpool.service.IdentTpsService;
+import no.nav.identpool.util.IdentGeneratorUtil;
 
 @Service
 @RequiredArgsConstructor
