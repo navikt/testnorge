@@ -32,7 +32,7 @@ public class SyntetiseringService {
             utvalgteIdenter.add(levendeIdenter.remove(rand.nextInt(levendeIdenter.size())));
         }
 
-        Map<String, List<Map<String, String>>> syntetiserteMeldinger = aaregSyntetisererenConsumer.getSyntetiserteMeldinger(utvalgteIdenter);
+        Map<String, List<Map<String, String>>> syntetiserteArbeidsforholdsmeldinger = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
 
         return new ArrayList<>();
     }

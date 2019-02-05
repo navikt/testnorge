@@ -47,7 +47,7 @@ public class SyntetiseringControllerTest {
 
         when(syntetiseringService.hentArbeidshistorikk(syntetiserAaregRequest)).thenReturn(meldinger);
 
-        List<String> result = syntetiseringController.genererMeldinger(syntetiserAaregRequest);
+        List<String> result = syntetiseringController.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
 
         verify(syntetiseringService).hentArbeidshistorikk(syntetiserAaregRequest);
 

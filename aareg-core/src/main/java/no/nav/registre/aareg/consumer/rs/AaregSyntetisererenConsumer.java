@@ -32,7 +32,7 @@ public class AaregSyntetisererenConsumer {
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aareg-syntetisereren" })
-    public Map<String, List<Map<String, String>>> getSyntetiserteMeldinger(List<String> identer) {
+    public Map<String, List<Map<String, String>>> getSyntetiserteArbeidsforholdsmeldinger(List<String> identer) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(identer);
 
         Map<String, List<Map<String, String>>> syntetiserteMeldinger = new HashMap<>();

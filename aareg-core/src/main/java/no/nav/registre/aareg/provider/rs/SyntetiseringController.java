@@ -22,7 +22,7 @@ public class SyntetiseringController {
 
     @LogExceptions
     @PostMapping(value = "/generer")
-    public List<String> genererMeldinger(@RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
+    public List<String> genererArbeidsforholdsmeldinger(@RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
         return syntetiseringService.hentArbeidshistorikk(syntetiserAaregRequest);
     }
 }
