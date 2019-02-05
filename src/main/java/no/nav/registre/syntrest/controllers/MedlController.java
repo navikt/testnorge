@@ -30,7 +30,8 @@ public class MedlController extends KubernetesUtils {
     @Autowired
     private MedlService medlService;
 
-    private QueueHandler queue = new QueueHandler();
+    @Autowired
+    private QueueHandler queue;
 
     @GetMapping(value = "/generateMedl/{num_to_generate}")
     public ResponseEntity generateMedl(@PathVariable int num_to_generate) throws IOException, ApiException {

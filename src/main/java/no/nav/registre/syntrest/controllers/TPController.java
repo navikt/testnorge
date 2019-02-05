@@ -32,7 +32,8 @@ public class TPController extends KubernetesUtils {
     @Autowired
     private TPService tpService;
 
-    private QueueHandler queue = new QueueHandler();
+    @Autowired
+    private QueueHandler queue;
 
     @GetMapping(value = "/generateTp/{num_to_generate}")
     public ResponseEntity generateTp(@PathVariable int num_to_generate) throws IOException, ApiException {

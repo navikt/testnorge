@@ -32,7 +32,8 @@ public class TPSController extends KubernetesUtils {
     @Autowired
     private TPSService tpsService;
 
-    private QueueHandler queue = new QueueHandler();
+    @Autowired
+    private QueueHandler queue;
 
     @GetMapping(value = "/generateTps/{num_to_generate}/{endringskode}")
     public ResponseEntity generateTps(@PathVariable int num_to_generate, @PathVariable String endringskode) throws IOException, ApiException {
