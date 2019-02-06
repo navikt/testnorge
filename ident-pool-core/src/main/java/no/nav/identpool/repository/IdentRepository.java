@@ -1,14 +1,14 @@
 package no.nav.identpool.repository;
 
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.Repository;
+
 import java.time.LocalDate;
 import java.util.List;
 
 import no.nav.identpool.domain.Ident;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import org.springframework.data.repository.Repository;
 
 public interface IdentRepository extends Repository<Ident, Long>, QuerydslPredicateExecutor<Ident> {
 
@@ -23,6 +23,8 @@ public interface IdentRepository extends Repository<Ident, Long>, QuerydslPredic
     Ident save(Ident newIdent);
 
     List<Ident> findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(LocalDate from, LocalDate to, Identtype type, Rekvireringsstatus rekvireringsstatus);
+
+    long countByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype);
 
     void deleteAll();
 }

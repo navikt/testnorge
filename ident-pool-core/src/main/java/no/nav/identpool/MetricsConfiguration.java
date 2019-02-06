@@ -7,6 +7,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.repository.IdentRepository;
+
 @Configuration
 @EnableAspectJAutoProxy
 public class MetricsConfiguration {
@@ -17,9 +21,14 @@ public class MetricsConfiguration {
     }
 
     @Bean
-    public Counter counter(MeterRegistry registry) {
-        return Counter.builder("identer.antall").
+    public Counter batchNyeIdenterCounter(MeterRegistry registry) {
+        return Counter.builder("identer.antall.opprettet").
                 description("Antall identer som ble opprettet under batch kjøring").
                 register(registry);
+    }
+
+    @Bean
+    public Long totaltLedigeGauge(MeterRegistry registry, IdentRepository repository) {
+        return registry.gauge("identer.antall.ledige", repository.countByRekvireringsstatusAndIdenttype(Rekvireringsstatus.LEDIG, Identtype.FNR));
     }
 }
