@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
+import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.sigrun.service.PoppService;
 
 @RestController
@@ -23,7 +24,8 @@ public class SyntetiseringController {
     @LogExceptions
     @PostMapping(value = "/generer")
     public ResponseEntity generatePopp(@RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
-            @RequestBody List<String> fnrs) {
+            @RequestBody SyntetiserPoppRequest syntetiserPoppRequest) {
+        List<String> fnrs = poppService.finnLevendeIdenter(syntetiserPoppRequest);
         return poppService.getPoppMeldinger(fnrs, testdataEier);
     }
 }
