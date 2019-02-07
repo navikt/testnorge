@@ -18,6 +18,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
+import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @Component
@@ -50,6 +51,9 @@ public class JobController {
     @Autowired
     private EiaSyntPakkenService eiaSyntPakkenService;
 
+    @Autowired
+    private PoppSyntPakkenService poppSyntPakkenService;
+
     @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
         try {
@@ -71,5 +75,11 @@ public class JobController {
         SyntetiserEiaRequest request = new SyntetiserEiaRequest(avspillergruppeId, eiabatchMiljoe, antallSykemeldinger);
         List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(request);
         log.info("eiabatch har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
+    }
+
+    public void poppSyntBatch() { // TODO: finne verdiene for cron-jobben (hvor ofte og hvor mange)
+        int antallMeldinger = 0;
+        String testdataEier = "orkestratoren";
+        poppSyntPakkenService.genererSkattegrunnlag(antallMeldinger, testdataEier);
     }
 }

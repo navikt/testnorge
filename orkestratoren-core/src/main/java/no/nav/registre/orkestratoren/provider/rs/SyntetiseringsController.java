@@ -6,8 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeld
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
+import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RestController
@@ -35,6 +38,9 @@ public class SyntetiseringsController {
 
     @Autowired
     private EiaSyntPakkenService eiaSyntPakkenService;
+
+    @Autowired
+    private PoppSyntPakkenService poppSyntPakkenService;
 
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
@@ -57,5 +63,12 @@ public class SyntetiseringsController {
         List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(syntetiserEiaRequest);
         log.info("eia har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
         return fnrMedGenererteMeldinger;
+    }
+
+    @LogExceptions
+    @PostMapping(value = "/popp/skattegrunnlag/generer/{antallMeldinger}")
+    public ResponseEntity opprettSkattegrunnlagISigrun(@RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
+            @PathVariable int antallMeldinger) {
+        return poppSyntPakkenService.genererSkattegrunnlag(antallMeldinger, testdataEier);
     }
 }
