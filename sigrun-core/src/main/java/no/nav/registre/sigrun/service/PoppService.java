@@ -19,8 +19,8 @@ public class PoppService {
     @Autowired
     private SigrunStubConsumer sigrunStubConsumer;
 
-    public ResponseEntity getPoppMeldinger(List<String> fnrs) {
+    public ResponseEntity getPoppMeldinger(List<String> fnrs, String testdataEier) {
         List<Map<String, Object>> result = poppSyntRestConsumer.getPoppMeldingerFromSyntRest(fnrs);
-        return sigrunStubConsumer.sendDataToSigrunstub(result);
+        return sigrunStubConsumer.sendDataToSigrunstub(result, testdataEier);
     }
 }

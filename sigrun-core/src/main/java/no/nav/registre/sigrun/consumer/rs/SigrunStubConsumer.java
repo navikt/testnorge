@@ -21,9 +21,10 @@ public class SigrunStubConsumer {
     @Value("${sigrunstub.url}")
     private String sigrunUrl;
 
-    public ResponseEntity sendDataToSigrunstub(List<Map<String, Object>> meldinger) {
+    public ResponseEntity sendDataToSigrunstub(List<Map<String, Object>> meldinger, String testdataEier) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("testdataEier", testdataEier);
         HttpEntity entity = new HttpEntity(meldinger, headers);
         return restTemplate.postForEntity(sigrunUrl, entity, List.class);
     }

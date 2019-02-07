@@ -56,7 +56,7 @@ public class SigrunStubConsumerTest {
     public void shouldSendDataToSigrunStub() {
         stubSigrunStubConsumer();
 
-        ResponseEntity result = sigrunStubConsumer.sendDataToSigrunstub(meldinger);
+        ResponseEntity result = sigrunStubConsumer.sendDataToSigrunstub(meldinger, "test");
 
         assertThat(result.getStatusCode(), equalTo(HttpStatus.OK));
         assertNotNull(result.getBody());

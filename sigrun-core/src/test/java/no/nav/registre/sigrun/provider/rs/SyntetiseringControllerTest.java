@@ -31,10 +31,10 @@ public class SyntetiseringControllerTest {
         List<String> fnrs = new ArrayList<>();
         fnrs.addAll(Arrays.asList("01010101010", "02020202020"));
 
-        when(poppService.getPoppMeldinger(fnrs)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
+        when(poppService.getPoppMeldinger(fnrs, "test")).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
-        syntetiseringController.generatePopp(fnrs);
+        syntetiseringController.generatePopp("test", fnrs);
 
-        verify(poppService).getPoppMeldinger(fnrs);
+        verify(poppService).getPoppMeldinger(fnrs, "test");
     }
 }
