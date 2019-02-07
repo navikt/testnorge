@@ -46,9 +46,7 @@ public class MedlController extends KubernetesUtils {
         counter++;
         counterLock.unlock();
         lock.lock();
-        //ApiClient client = createApiClient();
-        KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
-        ApiClient client = Config.fromConfig(kc);
+        ApiClient client = createApiClient();
         try {
             createApplication(client, "/nais/synthdata-medl.yaml", medlService);
             log.info("Requesting synthetic data from: synthdata-medl");
