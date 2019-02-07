@@ -37,13 +37,13 @@ public class PoppSyntConsumerTest {
 
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
     private List<String> fnrs;
     private SyntetiserPoppRequest syntetiserPoppRequest;
 
     @Before
     public void setUp() {
+        String fnr1 = "01010101010";
+        String fnr2 = "02020202020";
         fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
         syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, fnrs.size());
     }
@@ -72,5 +72,4 @@ public class PoppSyntConsumerTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody("[\"" + HttpStatus.OK + "\", \"" + HttpStatus.INTERNAL_SERVER_ERROR + "\"]")));
     }
-
 }
