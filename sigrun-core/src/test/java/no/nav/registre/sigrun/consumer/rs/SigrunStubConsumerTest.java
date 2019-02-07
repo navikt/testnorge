@@ -6,7 +6,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.registre.sigrun.testutils.ResourceUtils.getResourceFileContent;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -38,6 +40,9 @@ public class SigrunStubConsumerTest {
 
     private List meldinger;
     private JsonNode jsonNode;
+    private HttpStatus statusCodeOk = HttpStatus.OK;
+    private HttpStatus statusCodeInternalServerError = HttpStatus.INTERNAL_SERVER_ERROR;
+
 
     @Before
     public void setUp() throws IOException {
@@ -54,12 +59,16 @@ public class SigrunStubConsumerTest {
         ResponseEntity result = sigrunStubConsumer.sendDataToSigrunstub(meldinger);
 
         assertThat(result.getStatusCode(), equalTo(HttpStatus.OK));
+        assertNotNull(result.getBody());
+        assertThat(result.getBody().toString(), containsString(statusCodeOk.toString()));
+        assertThat(result.getBody().toString(), containsString(statusCodeInternalServerError.toString()));
     }
 
     public void stubSigrunStubConsumer() {
         stubFor(post(urlPathEqualTo("/sigrunstub/testdata/opprettBolk"))
                 .withRequestBody(equalToJson(getResourceFileContent("inntektsmeldinger_test.json")))
                 .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(("[" + statusCodeOk + ", " + statusCodeInternalServerError + "]"))));
     }
 }
