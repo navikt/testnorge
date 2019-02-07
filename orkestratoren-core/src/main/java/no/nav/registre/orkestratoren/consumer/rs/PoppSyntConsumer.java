@@ -19,7 +19,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 @Component
 public class PoppSyntConsumer {
 
-    private static final ParameterizedTypeReference<List<HttpStatus>> RESPONSE_TYPE = new ParameterizedTypeReference<List<HttpStatus>>() {
+    private static final ParameterizedTypeReference<List<Integer>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Integer>>() {
     };
 
     @Autowired

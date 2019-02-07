@@ -24,7 +24,7 @@ public class PoppSyntPakkenService {
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             log.warn("Noe feilet under syntetisering av skattegrunnlag. Vennligst se loggene til Testnorge-Sigrun for mer informasjon");
         } else {
-            List<HttpStatus> statuskoderFraSigrunSkdStub = (List<HttpStatus>) response.getBody();
+            List<Integer> statuskoderFraSigrunSkdStub = (List<Integer>) response.getBody();
             if (statuskoderFraSigrunSkdStub != null) {
                 log.info("Status fra skattegrunnlag sendt til sigrun-skd-stub: {}", statuskoderFraSigrunSkdStub);
             }
