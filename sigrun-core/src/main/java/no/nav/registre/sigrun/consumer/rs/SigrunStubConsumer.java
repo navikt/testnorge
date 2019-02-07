@@ -18,7 +18,7 @@ public class SigrunStubConsumer {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${sigrunstub-url}")
+    @Value("${sigrunstub.url}")
     private String sigrunUrl;
 
     public ResponseEntity sendDataToSigrunstub(List<Map<String, Object>> meldinger) {
