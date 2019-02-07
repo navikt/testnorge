@@ -78,8 +78,8 @@ public class JobController {
     }
 
     public void poppSyntBatch() { // TODO: finne verdiene for cron-jobben (hvor ofte og hvor mange)
-        int antallMeldinger = 0;
+        int antallIdenter = 0;
         String testdataEier = "orkestratoren";
-        poppSyntPakkenService.genererSkattegrunnlag(antallMeldinger, testdataEier);
+        poppSyntPakkenService.genererSkattegrunnlag(antallIdenter, testdataEier);
     }
 }

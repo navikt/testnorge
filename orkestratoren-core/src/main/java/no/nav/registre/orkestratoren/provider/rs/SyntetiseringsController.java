@@ -66,9 +66,9 @@ public class SyntetiseringsController {
     }
 
     @LogExceptions
-    @PostMapping(value = "/popp/skattegrunnlag/generer/{antallMeldinger}")
+    @PostMapping(value = "/popp/skattegrunnlag/generer/{antallIdenter}")
     public ResponseEntity opprettSkattegrunnlagISigrun(@RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
-            @PathVariable int antallMeldinger) {
-        return poppSyntPakkenService.genererSkattegrunnlag(antallMeldinger, testdataEier);
+            @PathVariable int antallIdenter) {
+        return poppSyntPakkenService.genererSkattegrunnlag(antallIdenter, testdataEier);
     }
 }

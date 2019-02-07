@@ -30,8 +30,8 @@ public class PoppSyntConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "sigrun" })
-    public ResponseEntity startSyntetisering(int antallMeldinger, String testdataEier) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).header("testdataEier", testdataEier).body(antallMeldinger);
+    public ResponseEntity startSyntetisering(int antallIdenter, String testdataEier) {
+        RequestEntity postRequest = RequestEntity.post(url.expand()).header("testdataEier", testdataEier).body(antallIdenter);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 }

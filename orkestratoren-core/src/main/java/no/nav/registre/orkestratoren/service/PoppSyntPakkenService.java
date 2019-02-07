@@ -18,8 +18,8 @@ public class PoppSyntPakkenService {
     @Autowired
     private PoppSyntConsumer poppSyntConsumer;
 
-    public ResponseEntity genererSkattegrunnlag(int antallMeldinger, String testdataEier) {
-        ResponseEntity response = poppSyntConsumer.startSyntetisering(antallMeldinger, testdataEier);
+    public ResponseEntity genererSkattegrunnlag(int antallIdenter, String testdataEier) {
+        ResponseEntity response = poppSyntConsumer.startSyntetisering(antallIdenter, testdataEier);
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             log.warn("Noe feilet under syntetisering av skattegrunnlag. Vennligst se loggene til Testnorge-Sigrun for mer informasjon");
         } else {
