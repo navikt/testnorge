@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
@@ -66,9 +67,9 @@ public class SyntetiseringsController {
     }
 
     @LogExceptions
-    @PostMapping(value = "/popp/skattegrunnlag/generer/{antallIdenter}")
+    @PostMapping(value = "/popp/skattegrunnlag/generer")
     public ResponseEntity opprettSkattegrunnlagISigrun(@RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
-            @PathVariable int antallIdenter) {
-        return poppSyntPakkenService.genererSkattegrunnlag(antallIdenter, testdataEier);
+            @RequestBody SyntetiserPoppRequest syntetiserPoppRequest) {
+        return poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
     }
 }

@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
@@ -78,8 +79,8 @@ public class JobController {
     }
 
     public void poppSyntBatch() { // TODO: finne verdiene for cron-jobben (hvor ofte og hvor mange)
-        int antallIdenter = 0;
+        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(100000783L, "t1", 1);
         String testdataEier = "orkestratoren";
-        poppSyntPakkenService.genererSkattegrunnlag(antallIdenter, testdataEier);
+        poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
     }
 }

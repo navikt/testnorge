@@ -14,6 +14,8 @@ import org.springframework.web.util.UriTemplate;
 
 import io.micrometer.core.annotation.Timed;
 
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
+
 @Component
 public class PoppSyntConsumer {
 
@@ -30,8 +32,8 @@ public class PoppSyntConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "sigrun" })
-    public ResponseEntity startSyntetisering(int antallIdenter, String testdataEier) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).header("testdataEier", testdataEier).body(antallIdenter);
+    public ResponseEntity startSyntetisering(SyntetiserPoppRequest syntetiserPoppRequest, String testdataEier) {
+        RequestEntity postRequest = RequestEntity.post(url.expand()).header("testdataEier", testdataEier).body(syntetiserPoppRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 }

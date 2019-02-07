@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.orkestratoren.consumer.rs.PoppSyntConsumer;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 
 @Service
 @Slf4j
@@ -18,8 +19,8 @@ public class PoppSyntPakkenService {
     @Autowired
     private PoppSyntConsumer poppSyntConsumer;
 
-    public ResponseEntity genererSkattegrunnlag(int antallIdenter, String testdataEier) {
-        ResponseEntity response = poppSyntConsumer.startSyntetisering(antallIdenter, testdataEier);
+    public ResponseEntity genererSkattegrunnlag(SyntetiserPoppRequest syntetiserPoppRequest, String testdataEier) {
+        ResponseEntity response = poppSyntConsumer.startSyntetisering(syntetiserPoppRequest, testdataEier);
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             log.warn("Noe feilet under syntetisering av skattegrunnlag. Vennligst se loggene til Testnorge-Sigrun for mer informasjon");
         } else {
