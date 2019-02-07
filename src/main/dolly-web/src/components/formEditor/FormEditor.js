@@ -9,12 +9,14 @@ import FormEditorFieldArray from './FormEditorFieldArray'
 import AutofillAddress from '~/components/autofillAddress/AutofillAddress'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
+import Button from '~/components/button/Button'
+import _xor from 'lodash/fp/xor'
 
 import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
-		const { getAttributtListByHovedkategori } = this.props
+		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributts } = this.props
 		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
 
 		const hasError = hovedKategoriAttributes.some(attr => {
@@ -38,6 +40,17 @@ export default class FormEditor extends PureComponent {
 			return false
 		})
 
+		let notYetAddedAttributts = []
+
+		if (AttributtListeToAdd) {
+			AttributtListeToAdd.forEach(item => {
+				item.hovedKategori.id === hovedKategori.id &&
+					item.items.forEach(item => {
+						notYetAddedAttributts = _xor(item.items, AddedAttributts)
+					})
+			})
+		}
+
 		return (
 			<Panel
 				key={hovedKategori.id}
@@ -48,10 +61,31 @@ export default class FormEditor extends PureComponent {
 				{items.map((item, idx) => {
 					return this.renderFieldContainer(item, idx, formikProps)
 				})}
+
+				<div className="add-buttons-container">
+					{notYetAddedAttributts &&
+						notYetAddedAttributts.map((element, i) => {
+							return this.renderAddButton(element.label, element, i)
+						})}
+				</div>
 			</Panel>
 		)
 	}
 
+	renderAddButton = (label, element, i) => {
+		return (
+			<Button
+				className="flexbox--align-center"
+				kind="add-circle"
+				onClick={() => this.props.onAddAttribute(element)}
+				key={i}
+			>
+				{label}
+			</Button>
+		)
+	}
+
+	//Ny knapp ligger også på adressekategorien. Hvordan sortere hvilke attributt som skal være med?
 	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
@@ -131,7 +165,6 @@ export default class FormEditor extends PureComponent {
 						// TODO: Implement når vi trenger avhengighet mellom flat attributter
 					}
 				}
-
 				if (item.apiKodeverkId) {
 					return {
 						loadOptions: () =>
@@ -156,7 +189,7 @@ export default class FormEditor extends PureComponent {
 	}
 
 	render() {
-		const { AttributtListe, FormikProps, ClosePanels } = this.props
+		const { FormikProps, ClosePanels, AttributtListe } = this.props
 
 		return AttributtListe.map(hovedKategori =>
 			// Ikke vis kategori som har default ikke-valgt radio button
