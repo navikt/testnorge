@@ -1,5 +1,6 @@
 package no.nav.registre.sigrun.consumer.rs;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -21,6 +22,7 @@ public class SigrunStubConsumer {
     @Value("${sigrunstub.url}")
     private String sigrunUrl;
 
+    @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
     public ResponseEntity sendDataToSigrunstub(List<Map<String, Object>> meldinger, String testdataEier) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
