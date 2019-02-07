@@ -40,7 +40,7 @@ public class PoppSyntetisererenConsumer {
         if (response != null && response.getBody() != null) {
             syntetiserteMeldinger.addAll(response.getBody());
         } else {
-            log.error("Kunne ikke hente response body fra synthdata-aareg: NullPointerException");
+            log.error("Kunne ikke hente response body fra synthdata-popp: NullPointerException");
         }
 
         return syntetiserteMeldinger;
