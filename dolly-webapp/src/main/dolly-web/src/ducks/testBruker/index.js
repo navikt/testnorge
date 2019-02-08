@@ -27,8 +27,15 @@ const updateTestbrukerRequest = () => ({ type: actionTypes.UPDATE_TESTBRUKER_REQ
 const updateTestbrukerSuccess = () => ({ type: actionTypes.UPDATE_TESTBRUKER_SUCCESS })
 const updateTestbrukerError = () => ({ type: actionTypes.UPDATE_TESTBRUKER_ERROR })
 
-export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', identArray => {
-	return TpsfApi.getTestbrukere(identArray)
+export const GET_TPSF_TESTBRUKERE = createAction(
+	'GET_TPSF_TESTBRUKERE', 
+	async identArray => {
+		try {
+			const res = await TpsfApi.getTestbrukere(identArray)
+			return res
+		} catch (err) {
+			return err
+		}
 })
 
 export const GET_SIGRUN_TESTBRUKER = createAction(
