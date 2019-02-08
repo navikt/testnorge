@@ -74,7 +74,7 @@ export default class AttributtManager {
 
 			const dataPath = editPath || path || id
 			// check if value exists (not NULL)
-			if(_get(dataSourceValues, dataPath)) {
+			if (_get(dataSourceValues, dataPath)) {
 				return _get(dataSourceValues, dataPath)
 			}
 		})
@@ -88,6 +88,38 @@ export default class AttributtManager {
 		// editable attributter, som kun er read skal ikke ha validering.
 		const list = this.listEditableFlat(values, ident, dataSources)
 		return this._createValidationObject(list, true)
+	}
+
+	//Liste med attributter som er redigerbare, men uten verdi (kan legges til)
+	listEditableWithoutValueFlat(values: object, ident: string, dataSources: string[]): Attributt[] {
+		return AttributtListe.filter(attr => {
+			//fjern ikke-redigerbare attributt
+			if (!isAttributtEditable(attr)) return false
+
+			const { dataSource, path, id, editPath } = attr
+			// sjekk datasource
+			if (!dataSources.includes(dataSource)) return false
+
+			const dataSourceValues =
+				values[DataSourceMapper(dataSource)][0] || values[DataSourceMapper(dataSource)][ident]
+			// sjekk om liste av verdier finnes
+			if (!dataSourceValues) return false
+
+			const dataPath = editPath || path || id
+			// fjern attributt som allerede har en verdi
+			if (_get(dataSourceValues, dataPath)) {
+				return !_get(dataSourceValues, dataPath)
+			}
+			return true
+		})
+	}
+
+	listEditableWithoutValue(
+		values: object,
+		ident: string,
+		dataSources: string[]
+	): AttributtGruppe[] {
+		return groupList(this.listEditableWithoutValueFlat(values, ident, dataSources))
 	}
 
 	//TODO: Se om vi dette kan gjøres ryddigere, litt rotete pga tpsf er array mens andre registre er object
@@ -177,6 +209,10 @@ export default class AttributtManager {
 		if (fromState || fromState === false) initialValue = fromState
 
 		if (item.inputType === 'date') initialValue = DataFormatter.formatDate(initialValue)
+
+		// TODO: Hvis det dukker opp flere slike tilfelle, vurder å expande AttributeSystem
+		// KUN FOR egen ansatt - spesielt tilfelle
+		if (item.id === 'egenAnsattDatoFom') initialValue = true
 
 		return _set(currentObject, item.id, initialValue)
 	}
