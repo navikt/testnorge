@@ -124,6 +124,8 @@ const bestillingFormatter = bestillingState => {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 	}
 	console.log('POSTING BESTILLING', final_values)
+
+	// TODO: Hvis det dukker opp flere slike tilfelle, vurder å expande AttributeSystem
 	// KUN FOR egen ansatt - spesielt tilfelle
 	if (final_values.tpsf.egenAnsattDatoFom != null) {
 		if (final_values.tpsf.egenAnsattDatoFom) {
