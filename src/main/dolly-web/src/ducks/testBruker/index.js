@@ -131,9 +131,18 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 		const tpsfBody = mapValuesFromDataSource(values, attributtListe, DataSource.TPSF)
 		const tpsfCurrentValues = testbruker.items.tpsf[0]
 		const sendToTpsBody = mapIdentAndEnvironementForTps(state, ident)
+		let tpsfJsonToSend = _merge(tpsfCurrentValues, tpsfBody)
+
+		// TODO: Hvis det dukker opp flere slike tilfelle, vurder å expande AttributeSystem
+		// KUN FOR egen ansatt - spesielt tilfelle
+		if (tpsfJsonToSend.egenAnsattDatoFom) {
+			tpsfJsonToSend.egenAnsattDatoFom = new Date()
+		} else {
+			tpsfJsonToSend.egenAnsattDatoFom = null
+		}
 
 		const tpsfRequest = async () => {
-			const tpsfRes = await TpsfApi.updateTestbruker(_merge(tpsfCurrentValues, tpsfBody))
+			const tpsfRes = await TpsfApi.updateTestbruker(tpsfJsonToSend)
 			if (tpsfRes.status === 200) {
 				const sendToTpsRes = await TpsfApi.sendToTps(sendToTpsBody)
 			}
