@@ -26,23 +26,21 @@ export default class TestbrukerListe extends Component {
 			isDeleting
 		} = this.props
 
-		console.log('isFetching :', isFetching);
-		
-		if(isFetching) {
+		if (isFetching) {
 			return <Loading label="laster testbrukere" panel />
 		}
 
 		if (!testidenter)
-		return (
-			<ContentContainer>
+			return (
+				<ContentContainer>
 					Trykk på opprett personer-knappen for å starte en bestilling.
 				</ContentContainer>
 			)
-			
-			if (!testbrukerListe) return null
-			
-			const testbrukereMedEnBestillingId = Formatters.flat2DArray(testbrukerListe, 5)
-			const sortedTestbrukere = Formatters.sort2DArray(testbrukereMedEnBestillingId, 5)
+
+		if (!testbrukerListe) return null
+
+		const testbrukereMedEnBestillingId = Formatters.flat2DArray(testbrukerListe, 5)
+		const sortedTestbrukere = Formatters.sort2DArray(testbrukereMedEnBestillingId, 5)
 
 		return (
 			<Fragment>
