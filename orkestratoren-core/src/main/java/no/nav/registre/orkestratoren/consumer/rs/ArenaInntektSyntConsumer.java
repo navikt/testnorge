@@ -1,5 +1,6 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -29,6 +30,7 @@ public class ArenaInntektSyntConsumer {
         this.url = new UriTemplate(arenaInntektServerUrl + "/v1/syntetisering/generer");
     }
 
+    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena-inntekt" })
     public String startSyntetisering(SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(syntetiserInntektsmeldingRequest);
         String id = "";
