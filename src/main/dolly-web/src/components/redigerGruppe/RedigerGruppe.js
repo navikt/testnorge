@@ -91,7 +91,7 @@ export default class Rediger extends PureComponent {
 									Avbryt
 								</Knapp>
 								<Knapp mini type="hoved" htmlType="submit">
-									{this.erRedigering ? 'Lagre' : 'Opprett'}
+									{this.erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
 								</Knapp>
 							</div>
 							{error && (
