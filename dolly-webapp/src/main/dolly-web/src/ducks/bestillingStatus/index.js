@@ -139,7 +139,37 @@ const mapItems = items => {
 			id: item.id.toString(),
 			antallIdenter: item.antallIdenter.toString(),
 			sistOppdatert: Formatters.formatDate(item.sistOppdatert),
-			ferdig: item.stoppet ? 'Stoppet' : item.ferdig ? 'Ferdig' : 'Pågår'
+			ferdig: item.stoppet
+				? 'Stoppet'
+				: harIkkeIdenter(item.status)
+					? 'Feilet'
+					: harOkStatuses(item.status)
+						? 'Ferdig'
+						: 'Avvik'
 		}
 	})
+}
+
+const harOkStatuses = status => {
+	let ferdig = true
+	if (status) {
+		status.forEach(line => {
+			if (line.statusMelding != 'OK') {
+				ferdig = false
+			}
+		})
+	}
+	return ferdig
+}
+
+const harIkkeIdenter = ident => {
+	let feilet = true
+	if (ident) {
+		ident.forEach(line => {
+			if (line.environmentIdents) {
+				feilet = false
+			}
+		})
+		return feilet
+	}
 }
