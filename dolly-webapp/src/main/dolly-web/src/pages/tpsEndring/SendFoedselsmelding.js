@@ -194,7 +194,6 @@ export default class SendFoedselsmelding extends PureComponent {
 										label="MORS IDENT"
 										component={FormikInput}
 										onBlur={this._handleOnBlurInput}
-										multi={true}
 									/>
 									<Field
 										name="identFar"
