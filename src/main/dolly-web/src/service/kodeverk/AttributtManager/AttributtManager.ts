@@ -210,6 +210,10 @@ export default class AttributtManager {
 
 		if (item.inputType === 'date') initialValue = DataFormatter.formatDate(initialValue)
 
+		// TODO: Hvis det dukker opp flere slike tilfelle, vurder å expande AttributeSystem
+		// KUN FOR egen ansatt - spesielt tilfelle
+		if (item.id === 'egenAnsattDatoFom') initialValue = true
+
 		return _set(currentObject, item.id, initialValue)
 	}
 
