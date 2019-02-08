@@ -98,7 +98,6 @@ export default class RedigerTestbruker extends Component {
 			dataSources
 		)
 
-		console.log(initialValues, 'initialValues')
 		const attributtListeToAdd = this.AttributtManager.listEditableWithoutValue(
 			testbruker,
 			match.params.ident,
