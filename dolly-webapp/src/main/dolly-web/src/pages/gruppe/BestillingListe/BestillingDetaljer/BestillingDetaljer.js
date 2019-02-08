@@ -11,6 +11,7 @@ import { Formik, FieldArray } from 'formik'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
+import cn from 'classnames'
 
 // TODO: Flytt modal ut som en dumb komponent
 const customStyles = {
@@ -71,18 +72,33 @@ export default class BestillingDetaljer extends PureComponent {
 		return (
 			<Fragment>
 				<h3>Bestillingsdetaljer</h3>
-				<div className={'flexbox--align-center info-block'}>
+				<div className={'info-block'}>
 					{/* Husk å lage en sjekk om verdi finnes */}
 					{data ? (
-						data.map((attributt, i) => {
-							if (attributt.value) {
+						data.map((kategori, j) => {
+							const bottomBorder = j != data.length - 1
+							const cssClass = cn('flexbox--align-center info-text', {
+								'bottom-border': bottomBorder
+							})
+							if (kategori.header) {
 								return (
-									<StaticValue
-										header={attributt.label}
-										size="small"
-										value={attributt.value}
-										key={i}
-									/>
+									<Fragment>
+										<h4>{kategori.header} </h4>
+										<div className={cssClass} key={j}>
+											{kategori.items.map((attributt, i) => {
+												if (attributt.value) {
+													return (
+														<StaticValue
+															header={attributt.label}
+															size="small"
+															value={attributt.value}
+															key={i}
+														/>
+													)
+												}
+											})}
+										</div>
+									</Fragment>
 								)
 							}
 						})
