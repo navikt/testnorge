@@ -64,7 +64,7 @@ Formatters.kodeverkLabel = kodeverk => {
 }
 
 Formatters.oversettBoolean = value => {
-	return value === true ? 'Ja' : 'Nei'
+	return value === true ? 'Ja' : value === false ? 'Nei': value
 }
 
 Formatters.gtApiKodeverkId = gtType => {
