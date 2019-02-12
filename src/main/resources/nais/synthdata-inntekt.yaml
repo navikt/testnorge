@@ -2,7 +2,7 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: synthdata-arena-inntekt
-  namespace: default
+  namespace: q2
   labels:
     team: synt
 spec:
