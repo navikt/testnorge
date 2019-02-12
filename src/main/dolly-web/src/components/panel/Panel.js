@@ -5,6 +5,7 @@ import ExpandButton from '~/components/button/ExpandButton'
 import Icon from '~/components/icon/Icon'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import LinkButton from '~/components/button/LinkButton/LinkButton'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 import './Panel.less'
 
@@ -47,10 +48,33 @@ export default class Panel extends Component {
 
 		const renderContent = children ? children : content
 
+		let infotekst, link
+		switch (heading.props.children) {
+			case 'Inntekter':
+				infotekst = 'Her kommer informasjon om hvor inntekten kommer fra.'
+				break
+			case 'Kontaktinformasjon og reservasjon':
+				infotekst = 'Her kommer informasjon om krr'
+				break
+		}
+
 		return (
 			<div className={panelClass}>
 				<div className="panel-heading">
 					{heading}
+					{infotekst && (
+						<ContentTooltip>
+							<span>{infotekst}</span>
+							<br />
+							{link && <a
+									style={{ color: 'lightblue' }}
+									href={link}
+								>
+								Les mer
+							</a>
+							}
+						</ContentTooltip>
+					)}
 					{errors && (
 						<div className="panel-heading_error">
 							<Icon kind="report-problem-triangle" />Feil i felter
