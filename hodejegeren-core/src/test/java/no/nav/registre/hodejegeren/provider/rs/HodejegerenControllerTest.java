@@ -120,4 +120,10 @@ public class HodejegerenControllerTest {
         hodejegerenController.hentAlleLevendeIdenterOverAlder(avspillergruppeId, 13, resp);
         verify(eksisterendeIdenterService).finnAlleIdenterOverAlder(avspillergruppeId, 13);
     }
+
+    @Test
+    public void shouldHenteIdenterMedStatusQuo() throws IOException {
+        hodejegerenController.hentEksisterendeIdenterMedStatusQuo(avspillergruppeId, miljoe, 1);
+        verify(eksisterendeIdenterService).hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, 1);
+    }
 }

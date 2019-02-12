@@ -1,5 +1,6 @@
 package no.nav.registre.hodejegeren.provider.rs;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -89,5 +90,14 @@ public class HodejegerenController {
     @GetMapping("api/v1/status-quo/{endringskode}/{miljoe}/{fnr}")
     public Map<String, String> hentStatusQuoFraEndringskode(@PathVariable("endringskode") Endringskoder endringskode, @PathVariable("miljoe") String miljoe, @PathVariable("fnr") String fnr) throws IOException {
         return new HashMap<>(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, miljoe, fnr));
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man hente listen over identer i en gitt avspillergruppe med tilhørende status-quo "
+            + "i et gitt miljø.")
+    @GetMapping("api/v1/status-quo/{avspillergruppeId}/{miljoe}/{antallPersoner}")
+    public Map<String, JsonNode> hentEksisterendeIdenterMedStatusQuo(@PathVariable("avspillergruppeId") Long avspillergruppeId,
+            @PathVariable("miljoe") String miljoe, @PathVariable("antallPersoner") int antallPersoner) throws IOException {
+        return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallPersoner);
     }
 }

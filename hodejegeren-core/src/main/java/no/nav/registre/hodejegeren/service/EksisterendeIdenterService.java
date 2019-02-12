@@ -7,8 +7,10 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
 import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
+import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
 import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +50,7 @@ public class EksisterendeIdenterService {
         List<String> hentedeIdenter = new ArrayList<>(henteAntall);
         List<String> gyldigeIdenter = finnAlleIdenterOverAlder(gruppeId, minimumAlder);
         if (henteAntall > gyldigeIdenter.size()) {
-            log.info("Antall ønskede identer å hente er større enn myndige identer i avspiller gruppe. - HenteAntall:{} MyndigeIdenter:{}", henteAntall, gyldigeIdenter.size());
+            log.info("Antall ønskede identer å hente er større enn myndige identer i avspillergruppe. - HenteAntall:{} MyndigeIdenter:{}", henteAntall, gyldigeIdenter.size());
             henteAntall = gyldigeIdenter.size();
         }
 
@@ -120,6 +122,22 @@ public class EksisterendeIdenterService {
         }
 
         return fnrMedNavKontor;
+    }
+
+    public Map<String, JsonNode> hentGittAntallIdenterMedStatusQuo(Long avspillergruppeId, String miljoe, int antallIdenter) throws IOException {
+        List<String> alleIdenter = finnAlleIdenter(avspillergruppeId);
+        if (alleIdenter.size() < antallIdenter) {
+            log.info("Antall ønskede identer å hente er større enn tilgjengelige identer i avspillergruppe. - HenteAntall:{} TilgjengeligeIdenter:{}", antallIdenter, alleIdenter.size());
+            antallIdenter = alleIdenter.size();
+        }
+
+        Map<String, JsonNode> utvalgteIdenterMedStatusQuo = new HashMap<>(antallIdenter);
+        for (int i = 0; i < antallIdenter; i++) {
+            String tilfeldigIdent = alleIdenter.remove(rand.nextInt(alleIdenter.size()));
+            utvalgteIdenterMedStatusQuo.put(tilfeldigIdent, tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, tilfeldigIdent));
+        }
+
+        return utvalgteIdenterMedStatusQuo;
     }
 
     public List<String> finnAlleIdenterOverAlder(Long avspillergruppeId, int minimumAlder) {

@@ -14,9 +14,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +32,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,6 +48,8 @@ import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 public class EksisterendeIdenterServiceTest {
 
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
+    private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
+    private static final String AKSJONSKODE = "A0";
     private static final int MINIMUM_ALDER = 18;
 
     private final String miljoe = "t1";
@@ -198,5 +208,27 @@ public class EksisterendeIdenterServiceTest {
 
         assertThat(fnrMedNavKontor.get(levendeIdenter.get(0)), equalTo("123"));
         assertThat(fnrMedNavKontor.get(levendeIdenter.get(1)), equalTo("123"));
+    }
+
+    /**
+     * Gitt et antall identer med tilhørende miljø i TPS, returner et map med ident->status-quo-kobling
+     */
+    @Test
+    public void hentGittAntallIdenterMedStatusQuoTest() throws IOException {
+        URL jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
+        JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
+        String fnr1 = "23048801390";
+        Set<String> identSet = new LinkedHashSet<>();
+        identSet.add(fnr1);
+
+        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(anyLong(), anyList(), anyString())).thenReturn(identSet);
+        when(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1)).thenReturn(jsonNode);
+
+        Map<String, JsonNode> fnrMedStatusQuo = eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(1L, miljoe, identSet.size());
+
+        verify(tpsfConsumer).getIdenterFiltrertPaaAarsakskode(anyLong(), anyList(), anyString());
+        verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
+
+        assertThat(fnrMedStatusQuo.get(fnr1), equalTo(jsonNode));
     }
 }
