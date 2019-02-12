@@ -95,7 +95,7 @@ public class HodejegerenController {
     @LogExceptions
     @ApiOperation(value = "Her kan man hente listen over identer i en gitt avspillergruppe med tilhørende status-quo "
             + "i et gitt miljø.")
-    @GetMapping("api/v1/status-quo/{avspillergruppeId}/{miljoe}/{antallPersoner}")
+    @GetMapping("api/v1/status-quo-identer/{avspillergruppeId}/{miljoe}/{antallPersoner}")
     public Map<String, JsonNode> hentEksisterendeIdenterMedStatusQuo(@PathVariable("avspillergruppeId") Long avspillergruppeId,
             @PathVariable("miljoe") String miljoe, @PathVariable("antallPersoner") int antallPersoner) {
         return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallPersoner);
