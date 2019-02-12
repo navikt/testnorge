@@ -97,7 +97,7 @@ public class HodejegerenController {
             + "i et gitt miljø.")
     @GetMapping("api/v1/status-quo/{avspillergruppeId}/{miljoe}/{antallPersoner}")
     public Map<String, JsonNode> hentEksisterendeIdenterMedStatusQuo(@PathVariable("avspillergruppeId") Long avspillergruppeId,
-            @PathVariable("miljoe") String miljoe, @PathVariable("antallPersoner") int antallPersoner) throws IOException {
+            @PathVariable("miljoe") String miljoe, @PathVariable("antallPersoner") int antallPersoner) {
         return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallPersoner);
     }
 }

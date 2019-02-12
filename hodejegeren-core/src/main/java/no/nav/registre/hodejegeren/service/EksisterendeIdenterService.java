@@ -124,7 +124,7 @@ public class EksisterendeIdenterService {
         return fnrMedNavKontor;
     }
 
-    public Map<String, JsonNode> hentGittAntallIdenterMedStatusQuo(Long avspillergruppeId, String miljoe, int antallIdenter) throws IOException {
+    public Map<String, JsonNode> hentGittAntallIdenterMedStatusQuo(Long avspillergruppeId, String miljoe, int antallIdenter) {
         List<String> alleIdenter = finnAlleIdenter(avspillergruppeId);
         if (alleIdenter.size() < antallIdenter) {
             log.info("Antall ønskede identer å hente er større enn tilgjengelige identer i avspillergruppe. - HenteAntall:{} TilgjengeligeIdenter:{}", antallIdenter, alleIdenter.size());
@@ -134,7 +134,11 @@ public class EksisterendeIdenterService {
         Map<String, JsonNode> utvalgteIdenterMedStatusQuo = new HashMap<>(antallIdenter);
         for (int i = 0; i < antallIdenter; i++) {
             String tilfeldigIdent = alleIdenter.remove(rand.nextInt(alleIdenter.size()));
-            utvalgteIdenterMedStatusQuo.put(tilfeldigIdent, tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, tilfeldigIdent));
+            try {
+                utvalgteIdenterMedStatusQuo.put(tilfeldigIdent, tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, tilfeldigIdent));
+            } catch (IOException e) {
+                log.error("Kunne ikke hente status quo på ident {} - ", tilfeldigIdent, e);
+            }
         }
 
         return utvalgteIdenterMedStatusQuo;
