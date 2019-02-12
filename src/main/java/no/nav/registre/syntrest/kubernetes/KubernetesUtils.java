@@ -48,7 +48,7 @@ public class KubernetesUtils {
 
         if(!applicationExists(client, appName)){
             try {
-                api.createNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", manifest, null);
+                api.createNamespacedCustomObject("nais.io", "v1alpha1", "q2", "applications", manifest, null);
                 log.info("Application: " + appName + " created!");
                 waitForIsAlive(client, appName, serviceObject);
             } catch (ApiException e) {
@@ -65,7 +65,7 @@ public class KubernetesUtils {
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
         List<String> applicationList = new ArrayList<>();
-        LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", null, null, null, null);
+        LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject("nais.io", "v1alpha1", "q2", "applications", null, null, null, null);
         ArrayList items = (ArrayList) result.get("items");
         for (Object item : items) {
             LinkedTreeMap app = (LinkedTreeMap) item;
@@ -130,7 +130,7 @@ public class KubernetesUtils {
         if (applicationExists) {
             V1DeleteOptions deleteOptions = new V1DeleteOptions();
             try {
-                api.deleteNamespacedCustomObject("nais.io", "v1alpha1", "default", "applications", appName, deleteOptions, null, null, null);
+                api.deleteNamespacedCustomObject("nais.io", "v1alpha1", "q2", "applications", appName, deleteOptions, null, null, null);
                 log.info("Successfully deleted application --> " + appName);
             } catch (JsonSyntaxException e) {
                 if (e.getCause() instanceof IllegalStateException) {
