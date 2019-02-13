@@ -46,9 +46,6 @@ export default class Rediger extends PureComponent {
 	}
 
 	getTeam = async values => {
-		if (values.teamId === this.Teams.currentUser) {
-			return null
-		}
 		const { currentUserId, createTeam } = this.props
 		let teamValues = null
 
