@@ -5,6 +5,7 @@ import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManag
 import Button from '~/components/button/Button'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Loading from '~/components/loading/Loading'
+import Panel from '~/components/panel/Panel'
 
 import './PersonDetaljer.less'
 
@@ -56,6 +57,14 @@ export default class PersonDetaljer extends PureComponent {
 			<div className="person-details">
 				{personData.map((i, idx) => {
 					if (i.data.length < 0) return null
+					if (i.data[0].id == 'bestillingID') {
+						return (
+							<div key={idx} className="panel panel--border">
+								<h4 className="panel-bestilling-id">{i.header}</h4>
+								{this._renderPersonInfoBlockHandler(i)}
+							</div>
+						)
+					}
 					return (
 						<div key={idx} className="person-details_content">
 							<h3>{i.header}</h3>
