@@ -26,6 +26,10 @@ export default class TestbrukerListe extends Component {
 			isDeleting
 		} = this.props
 
+		if (isFetching) {
+			return <Loading label="laster testbrukere" panel />
+		}
+
 		if (!testidenter)
 			return (
 				<ContentContainer>
@@ -40,7 +44,7 @@ export default class TestbrukerListe extends Component {
 
 		return (
 			<Fragment>
-				{isFetching || !sortedTestbrukere ? (
+				{!sortedTestbrukere ? (
 					<Loading label="laster testbrukere" panel />
 				) : (
 					<PaginationConnector
