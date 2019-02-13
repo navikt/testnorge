@@ -3,7 +3,6 @@ package no.nav.registre.syntrest.kubernetes;
 import com.google.gson.*;
 import com.google.gson.internal.LinkedTreeMap;
 
-import com.google.protobuf.Api;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
@@ -14,6 +13,7 @@ import io.kubernetes.client.util.KubeConfig;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.services.IService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestTemplate;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -42,13 +42,19 @@ public class KubernetesUtils {
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
         Yaml yaml = new Yaml();
-        Object manifest = yaml.load(getClass().getResourceAsStream(manifestPath));
-        Map<String, String> metadata = (Map)((Map) manifest).get("metadata");
+        Map<String, Object> manifestFile = yaml.load(getClass().getResourceAsStream(manifestPath));
+
+        Map<String, String> metadata = (Map) manifestFile.get("metadata");
         String appName = metadata.get("name");
+
+        Map<String, Object> spec = (Map) manifestFile.get("spec");
+        String imageBase = spec.get("image").toString();
+        String latestImage = imageBase.replace("latest", getLatestImageVersion(appName));
+        spec.put("image", latestImage);
 
         if(!applicationExists(client, appName)){
             try {
-                api.createNamespacedCustomObject("nais.io", "v1alpha1", "q2", "applications", manifest, null);
+                api.createNamespacedCustomObject("nais.io", "v1alpha1", "q2", "applications", manifestFile, null);
                 log.info("Application: " + appName + " created!");
                 waitForIsAlive(client, appName, serviceObject);
             } catch (ApiException e) {
@@ -59,6 +65,14 @@ public class KubernetesUtils {
         } else if (!applicationIsAlive(serviceObject)){
             waitForIsAlive(client, appName, serviceObject);
         }
+    }
+
+    public String getLatestImageVersion(String appName){
+        String query = String.format("https://docker.adeo.no:5000/v2/registre/%s/tags/list", appName);
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String, Object> repositoryMap = (Map) restTemplate.getForObject(query, Object.class);
+        List<String> tags = (List) repositoryMap.get("tags");
+        return tags.get(tags.size()-1);
     }
 
     public List<String> listApplications(ApiClient client, Boolean print) throws ApiException {
@@ -145,4 +159,3 @@ public class KubernetesUtils {
         }
     }
 }
-
