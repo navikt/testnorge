@@ -84,10 +84,8 @@ export const FormikDollySelect = props => {
 	const onChange = selected => {
 		if (beforeChange != null) {
 			beforeChange(selected)
-			onChangeHandler(selected)
-		} else {
-			onChangeHandler(selected)
 		}
+		onChangeHandler(selected)
 	}
 
 	return (
