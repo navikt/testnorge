@@ -18,16 +18,20 @@ export const updateGruppe = createAction('UPDATE_GRUPPE', DollyApi.updateGruppe)
 export const deleteGruppe = createAction('DELETE_GRUPPE', DollyApi.deleteGruppe, gruppeId => ({
 	gruppeId
 }))
+export const createTeam = createAction('CREATE_TEAM', DollyApi.createTeam)
 
 // UI
 export const showCreateOrEditGroup = createAction('TOGGLE_SHOW_CREATE_OR_EDIT')
 export const closeCreateOrEdit = createAction('CANCEL_CREATE_OR_EDIT')
 export const settVisning = createAction('SETT_VISNING')
+export const toggleCreateTeam = createAction('TOOGLE_CREATE_TEAM')
+
 
 const initialState = {
 	data: null,
 	createOrUpdateId: null, // null = ingen, -1 = opprett ny gruppe, '45235' (ex: 425323) = rediger
-	visning: 'mine'
+	visning: 'mine',
+	team: { toggle: false, id: null }
 }
 
 const getSuccess = combineActions(
@@ -60,6 +64,18 @@ export default handleActions(
 			return {
 				...state,
 				data: state.data.filter(item => item.id !== action.meta.gruppeId)
+			}
+		},
+		[success(createTeam)](state, action) {
+			return {
+				...state,
+				team: { ...state.team, id: action.payload.data.id + "" }
+			}
+		},
+		[toggleCreateTeam](state, action) {
+			return {
+				...state,
+				team: { ...state.team, toggle: action.payload }
 			}
 		},
 		[showCreateOrEditGroup](state, action) {
