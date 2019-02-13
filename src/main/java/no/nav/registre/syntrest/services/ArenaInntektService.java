@@ -1,6 +1,5 @@
 package no.nav.registre.syntrest.services;
 
-import io.swagger.annotations.Scope;
 import no.nav.registre.syntrest.domain.Inntektsmelding;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import org.springframework.beans.factory.annotation.Value;
