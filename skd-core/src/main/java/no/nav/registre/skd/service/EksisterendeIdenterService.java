@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -299,7 +300,7 @@ public class EksisterendeIdenterService {
             try {
                 statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
                 break;
-            } catch (ManglendeInfoITpsException e) {
+            } catch (ManglendeInfoITpsException | HttpStatusCodeException e) {
                 if (i >= ANTALL_FORSOEK_PER_AARSAK) {
                     throw new ManglendeInfoITpsException("Kunne ikke finne ident med gyldig status quo i TPS etter " + i + " forsøk. " +
                             "Status på siste forsøk: " + e.getMessage(), e);

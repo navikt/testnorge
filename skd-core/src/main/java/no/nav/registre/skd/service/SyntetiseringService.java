@@ -119,7 +119,8 @@ public class SyntetiseringService {
                 idsLagretITpsfMenIkkeTps.removeAll(ids);
             } catch (ManglendeInfoITpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
-                        "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() + ".",
+                        "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
+                                ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps) + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
                         endringskode.getEndringskode());
             } catch (KunneIkkeSendeTilTpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
