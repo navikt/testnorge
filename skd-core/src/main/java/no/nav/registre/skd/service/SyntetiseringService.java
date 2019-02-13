@@ -84,7 +84,7 @@ public class SyntetiseringService {
         feiledeEndringskoder = new ArrayList<>();
 
         for (Endringskoder endringskode : sorterteEndringskoder) {
-            List<Long> ids;
+            List<Long> ids = new ArrayList<>();
             try {
                 List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(),
                         antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
@@ -124,18 +124,18 @@ public class SyntetiseringService {
             } catch (KunneIkkeSendeTilTpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
                         "KunneIkkeSendeTilTpsException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
-                        ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps),
+                        ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps) + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
                         endringskode.getEndringskode());
             } catch (HttpStatusCodeException e) {
                 log.error(hentMeldingFraJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                log.warn("HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: {}",
-                        endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps));
+                log.warn("HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: {} - Skdmeldinger som ble lagret i TPSF: ",
+                        endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps), lagGrupperAvIder(ids));
                 feiledeEndringskoder.add(endringskode.getEndringskode());
                 httpStatus = HttpStatus.CONFLICT;
             } catch (RuntimeException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
                         "RuntimeException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
-                        ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps),
+                        ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)  + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
                         endringskode.getEndringskode());
             }
         }
