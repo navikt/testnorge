@@ -44,13 +44,13 @@ export default handleActions(
 			}
 		},
 
-		[success(bestillingActions.postBestilling)](state, action) {
-			return { ...state, ny: [...state.ny, action.payload.data.id] }
-		},
+		// [success(bestillingActions.postBestilling)](state, action) {
+		// 	return { ...state, ny: [...state.ny, action.payload.data.id] }
+		// },
 
-		[success(gjenopprettBestilling)](state, action) {
-			return { ...state, ny: [...state.ny, action.payload.data.id] }
-		},
+		// [success(gjenopprettBestilling)](state, action) {
+		// 	return { ...state, ny: [...state.ny, action.payload.data.id] }
+		// },
 
 		// [success(cancelBestilling)](state, action) {
 		// 	return { ...state, ny: state.ny.filter(id => id !== action.payload.id) }
