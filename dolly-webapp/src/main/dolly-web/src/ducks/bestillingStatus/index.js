@@ -30,7 +30,18 @@ export default handleActions(
 	{
 		[success(getBestillinger)](state, action) {
 			const { data } = action.payload
-			return { ...state, data }
+			const nyeBestillinger = data.filter(bestilling => {
+				if (!bestilling.ferdig) return true
+			})
+			let idListe = []
+			nyeBestillinger.forEach(bestilling => {
+				if (!state.ny.find(id => id == bestilling.id)) idListe.push(bestilling.id)
+			})
+			return {
+				...state,
+				data,
+				ny: idListe.length > 0 ? [...state.ny, ...idListe] : state.ny
+			}
 		},
 
 		[success(bestillingActions.postBestilling)](state, action) {
