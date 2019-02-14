@@ -121,13 +121,9 @@ export const nyeBestillingerSelector = bestillinger => {
 	bestillinger.ny.forEach(bestillingsId => {
 		const bestilling = _find(bestillinger.data, bestilling => bestilling.id === bestillingsId)
 		bestilling && nyeBestillinger.push(bestilling)
-		
 	})
 	bestillinger.data.forEach(bestilling => {
-		if (!bestilling.ferdig && !(_find(nyeBestillinger,bestilling)))
-			nyeBestillinger.push(bestilling)
+		if (!bestilling.ferdig && !_find(nyeBestillinger, bestilling)) nyeBestillinger.push(bestilling)
 	})
-	console.log('nyeBestillinger :', nyeBestillinger);
-	console.log('bestillinger :', bestillinger);
 	return nyeBestillinger
 }
