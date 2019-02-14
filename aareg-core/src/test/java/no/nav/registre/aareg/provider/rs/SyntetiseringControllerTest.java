@@ -25,7 +25,7 @@ public class SyntetiseringControllerTest {
     private SyntetiseringService syntetiseringService;
 
     @InjectMocks
-    SyntetiseringController syntetiseringController;
+    private SyntetiseringController syntetiseringController;
 
     private SyntetiserAaregRequest syntetiserAaregRequest;
     private Long avspillergruppeId = 123L;

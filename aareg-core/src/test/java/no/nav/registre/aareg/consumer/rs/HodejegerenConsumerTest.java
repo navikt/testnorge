@@ -66,7 +66,6 @@ public class HodejegerenConsumerTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
-
     }
 
     public void stubHodejegerenConsumerWithEmptyBody() {
