@@ -144,7 +144,9 @@ export const miljoStatusSelector = bestilling => {
 
 const mapItems = items => {
 	if (!items) return null
+	console.log('items :', items);
 	return items.map(item => {
+		console.log('item :', item);
 		return {
 			...item,
 			id: item.id.toString(),
@@ -154,12 +156,16 @@ const mapItems = items => {
 				? 'Stoppet'
 				: harIkkeIdenter(item.status)
 					? 'Feilet'
-					: harOkStatuses(item.status)
-						? 'Ferdig'
-						: 'Avvik'
+					: bestillingIkkeFerdig(item) 
+						? 'Pågår' 
+						: harOkStatuses(item.status)
+							? 'Ferdig'
+							: 'Avvik'
 		}
 	})
 }
+
+const bestillingIkkeFerdig = item => !(item.ferdig)
 
 const harOkStatuses = status => {
 	let ferdig = true
@@ -174,6 +180,7 @@ const harOkStatuses = status => {
 }
 
 const harIkkeIdenter = ident => {
+	console.log('ident :', ident);
 	let feilet = true
 	if (ident) {
 		ident.forEach(line => {
