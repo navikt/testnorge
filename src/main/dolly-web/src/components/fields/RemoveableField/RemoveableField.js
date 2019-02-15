@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react'
 import Button from '~/components/button/Button'
 import './RemovableField.less'
 
-class RemovableField extends PureComponent {
+class RemovbleField extends PureComponent {
 	static defaultProps = {
 		removable: true
 	}
@@ -21,7 +21,7 @@ class RemovableField extends PureComponent {
 				</div>
 				{removable === true && (
 					<div
-						className='removable-button'
+						className="removable-button"
 						onMouseEnter={() => this.setState({ onButtonHover: true })}
 						onMouseLeave={() => this.setState({ onButtonHover: false })}
 					>
@@ -37,4 +37,4 @@ class RemovableField extends PureComponent {
 	}
 }
 
-export default RemovableField
+export default RemovbleField
