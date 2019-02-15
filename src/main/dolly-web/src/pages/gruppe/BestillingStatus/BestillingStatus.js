@@ -113,6 +113,7 @@ export default class BestillingStatus extends PureComponent {
 
 	_onCloseMiljoeStatus = () => {
 		this.props.removeNyBestillingStatus(this.props.bestilling.id)
+		this.props.onBestillingerUpdate()
 	}
 
 	_onCancelBtn = () => {
@@ -123,7 +124,7 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		const { miljoeStatusObj, isCanceling, cancelBestilling, bestilling } = this.props
+		const { miljoeStatusObj, isCanceling, cancelBestilling, bestilling, key } = this.props
 
 		if (isCanceling && this.state.showCancelLoadingMsg) {
 			return (

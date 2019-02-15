@@ -27,8 +27,15 @@ const updateTestbrukerRequest = () => ({ type: actionTypes.UPDATE_TESTBRUKER_REQ
 const updateTestbrukerSuccess = () => ({ type: actionTypes.UPDATE_TESTBRUKER_SUCCESS })
 const updateTestbrukerError = () => ({ type: actionTypes.UPDATE_TESTBRUKER_ERROR })
 
-export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', identArray => {
-	return TpsfApi.getTestbrukere(identArray)
+export const GET_TPSF_TESTBRUKERE = createAction(
+	'GET_TPSF_TESTBRUKERE', 
+	async identArray => {
+		try {
+			const res = await TpsfApi.getTestbrukere(identArray)
+			return res
+		} catch (err) {
+			return err
+		}
 })
 
 export const GET_SIGRUN_TESTBRUKER = createAction(
@@ -131,9 +138,18 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 		const tpsfBody = mapValuesFromDataSource(values, attributtListe, DataSource.TPSF)
 		const tpsfCurrentValues = testbruker.items.tpsf[0]
 		const sendToTpsBody = mapIdentAndEnvironementForTps(state, ident)
+		let tpsfJsonToSend = _merge(tpsfCurrentValues, tpsfBody)
+
+		// TODO: Hvis det dukker opp flere slike tilfelle, vurder å expande AttributeSystem
+		// KUN FOR egen ansatt - spesielt tilfelle
+		if (tpsfJsonToSend.egenAnsattDatoFom) {
+			tpsfJsonToSend.egenAnsattDatoFom = new Date()
+		} else {
+			tpsfJsonToSend.egenAnsattDatoFom = null
+		}
 
 		const tpsfRequest = async () => {
-			const tpsfRes = await TpsfApi.updateTestbruker(_merge(tpsfCurrentValues, tpsfBody))
+			const tpsfRes = await TpsfApi.updateTestbruker(tpsfJsonToSend)
 			if (tpsfRes.status === 200) {
 				const sendToTpsRes = await TpsfApi.sendToTps(sendToTpsBody)
 			}
