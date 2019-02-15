@@ -2,12 +2,33 @@ import _set from 'lodash/set'
 import DataFormatter from '~/utils/DataFormatter'
 
 export const mapValuesFromDataSource = (values, attributtListe, dataSource) => {
-	const filteredAttributtListe = attributtListe.filter(item => item.dataSource === dataSource)
-	return filteredAttributtListe.reduce((prev, curr) => {
-		let currentValue = values[curr.id]
-		if (curr.inputType === 'date') currentValue = DataFormatter.parseDate(currentValue)
-		return _set(prev, curr.editPath || curr.path || curr.id, currentValue)
-	}, {})
+	//TODO: Teste når Sigrid og Krr er tilbake
+	let temp = false
+	const filteredAttributtListe = attributtListe.filter(item => {
+		temp = false
+		item.items.filter(item => {
+			item.items.filter(item => {
+				if (item.dataSource === dataSource) {
+					temp = true
+					return temp
+				}
+			})
+			return temp
+		})
+		return temp
+	})
+
+	let verdier = {}
+	filteredAttributtListe.forEach(item => {
+		item.items.forEach(item => {
+			item.items.forEach(item => {
+				let currentValue = values[item.id]
+				if (item.inputType === 'date') currentValue = DataFormatter.parseDate(currentValue)
+				_set(verdier, item.editpath || item.path || item.id, currentValue)
+			})
+		})
+	})
+	return verdier
 }
 
 export const mapIdentAndEnvironementForTps = (state, ident) => {
@@ -25,8 +46,17 @@ const _findEnvironmentsForIdent = (state, ident) => {
 	const personObj = identArray.find(item => item.ident === ident)
 	if (!personObj) return null
 
-	const bestillingObj = bestillingStatuser.data.find(
-		bestilling => bestilling.id === personObj.bestillingId
-	)
+	const bestillingObj = bestillingStatuser.data.find(bestilling => {
+		const bestillingid = bestilling.id
+		let foundId = false
+
+		personObj.bestillingId.map(id => {
+			if (bestillingid === id) {
+				foundId = true
+			}
+		})
+		return foundId
+	})
+
 	return bestillingObj.environments
 }

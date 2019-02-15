@@ -11,9 +11,13 @@ import Loading from '~/components/loading/Loading'
 import './RedigerTestbruker.less'
 
 export default class RedigerTestbruker extends Component {
-	constructor() {
-		super()
+	constructor(props) {
+		super(props)
 		this.AttributtManager = new AttributtManager()
+
+		this.state = {
+			addedAttributts: []
+		}
 	}
 
 	componentDidMount() {
@@ -23,17 +27,10 @@ export default class RedigerTestbruker extends Component {
 		this.props.getKrrTestbruker()
 	}
 
-	submit = values => {
-		const { updateTestbruker, goBack, match, testbruker } = this.props
+	submit = (values, attributtListe) => {
+		const { updateTestbruker, goBack } = this.props
 
-		updateTestbruker(
-			values,
-			this.AttributtManager.listEditableFlat(
-				testbruker,
-				match.params.ident,
-				this._checkDataSources()
-			)
-		)
+		updateTestbruker(values, attributtListe)
 		goBack()
 	}
 
@@ -51,9 +48,36 @@ export default class RedigerTestbruker extends Component {
 		return dataSources
 	}
 
+	_onAddAttribute = attributeId => {
+		this.setState({ addedAttributts: [...this.state.addedAttributts, attributeId] })
+	}
+
+	_getAttributtListeToEdit = (AttributtListe, AddedAttributts) => {
+		let AttributtListeToEdit = []
+		if (AddedAttributts && AddedAttributts.length > 0) {
+			let tempElement = null
+			AttributtListe.forEach(element => {
+				tempElement = JSON.parse(JSON.stringify(element))
+				AddedAttributts.forEach(addedElement => {
+					if (tempElement.hovedKategori.id === addedElement.hovedKategori.id) {
+						tempElement.items.forEach(subElement => {
+							if (subElement.subKategori.id === addedElement.subKategori.id) {
+								subElement.items.push(addedElement)
+							}
+						})
+					}
+				})
+				AttributtListeToEdit.push(tempElement)
+			})
+			return AttributtListeToEdit
+		}
+		return AttributtListe
+	}
+
 	render() {
 		const { testbruker, goBack, match } = this.props
 		const { tpsf, sigrunstub, krrstub } = testbruker
+		const { addedAttributts } = this.state
 
 		if (!tpsf || !sigrunstub || !krrstub) return null
 
@@ -74,9 +98,17 @@ export default class RedigerTestbruker extends Component {
 			dataSources
 		)
 
+		const attributtListeToAdd = this.AttributtManager.listEditableWithoutValue(
+			testbruker,
+			match.params.ident,
+			dataSources
+		)
+
+		const attributtListeToEdit = this._getAttributtListeToEdit(attributtListe, addedAttributts)
+
 		return (
 			<Formik
-				onSubmit={this.submit}
+				onSubmit={values => this.submit(values, attributtListeToEdit)}
 				initialValues={initialValues}
 				validationSchema={validations}
 				render={formikProps => (
@@ -84,13 +116,16 @@ export default class RedigerTestbruker extends Component {
 						<h2>Rediger {`${tpsf[0].fornavn} ${tpsf[0].etternavn}`}</h2>
 						{/* return <Loading label="Laster data fra TPSF" panel /> */}
 						<FormEditor
-							AttributtListe={attributtListe}
+							AttributtListe={attributtListeToEdit}
+							AttributtListeToAdd={attributtListeToAdd}
+							AddedAttributts={addedAttributts}
 							FormikProps={formikProps}
 							ClosePanels
 							editMode
 							getAttributtListByHovedkategori={
 								this.AttributtManager.getAttributtListByHovedkategori
 							}
+							onAddAttribute={this._onAddAttribute}
 						/>
 						<div className="form-editor-knapper">
 							<Knapp type="standard" onClick={goBack}>

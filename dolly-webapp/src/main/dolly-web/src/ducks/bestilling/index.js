@@ -33,6 +33,8 @@ export const actions = createActions(
 	'UNCHECK_ATTRIBUTE_ARRAY',
 	'SET_ENVIRONMENTS',
 	'SET_VALUES',
+	'DELETE_VALUES',
+	'DELETE_VALUES_ARRAY',
 	'START_BESTILLING',
 	'ABORT_BESTILLING'
 )
@@ -91,6 +93,31 @@ export default handleActions(
 				page: (state.page += action.payload.goBack ? -1 : 1)
 			}
 		},
+		[actions.deleteValues](state, action) {
+			return {
+				...state,
+				values: Object.keys(state.values)
+					.filter(key => !action.payload.values.includes(key))
+					.reduce((obj, key) => ({ ...obj, [key]: state.values[key] }), {}),
+				attributeIds: state.attributeIds.filter(key => !action.payload.values.includes(key))
+			}
+		},
+		[actions.deleteValuesArray](state, action) {
+			let copy = JSON.parse(JSON.stringify(state.values))
+			let attributeIds = state.attributeIds.slice()
+			attributeIds.filter(key => action.payload.values.includes(key)).forEach(key => {
+				copy[key].splice(action.payload.index, 1)
+				if (copy[key].length == 0) {
+					attributeIds.splice(attributeIds.indexOf(key), 1)
+					delete copy[key]
+				}
+			})
+			return {
+				...state,
+				values: copy,
+				attributeIds: attributeIds
+			}
+		},
 
 		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestilling))](
 			state,
@@ -124,6 +151,14 @@ const bestillingFormatter = bestillingState => {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 	}
 	console.log('POSTING BESTILLING', final_values)
+
+	// TODO: Hvis det dukker opp flere slike tilfelle, vurder å expande AttributeSystem
+	// KUN FOR egen ansatt - spesielt tilfelle
+	if (final_values.tpsf.egenAnsattDatoFom != null) {
+		if (final_values.tpsf.egenAnsattDatoFom) {
+			final_values.tpsf.egenAnsattDatoFom = new Date()
+		} else final_values.tpsf.egenAnsattDatoFom = null
+	}
 
 	return final_values
 }
