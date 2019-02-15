@@ -154,12 +154,16 @@ const mapItems = items => {
 				? 'Stoppet'
 				: harIkkeIdenter(item.status)
 					? 'Feilet'
-					: harOkStatuses(item.status)
-						? 'Ferdig'
-						: 'Avvik'
+					: bestillingIkkeFerdig(item) 
+						? 'Pågår' 
+						: harOkStatuses(item.status)
+							? 'Ferdig'
+							: 'Avvik'
 		}
 	})
 }
+
+const bestillingIkkeFerdig = item => !(item.ferdig)
 
 const harOkStatuses = status => {
 	let ferdig = true
