@@ -122,6 +122,5 @@ export const nyeBestillingerSelector = bestillinger => {
 		const bestilling = _find(bestillinger.data, bestilling => bestilling.id === bestillingsId)
 		bestilling && nyeBestillinger.push(bestilling)
 	})
-
 	return nyeBestillinger
 }
