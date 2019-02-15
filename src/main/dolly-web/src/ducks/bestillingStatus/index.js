@@ -144,7 +144,9 @@ export const miljoStatusSelector = bestilling => {
 
 const mapItems = items => {
 	if (!items) return null
+	console.log('items :', items);
 	return items.map(item => {
+		console.log('item :', item);
 		return {
 			...item,
 			id: item.id.toString(),
@@ -178,6 +180,7 @@ const harOkStatuses = status => {
 }
 
 const harIkkeIdenter = ident => {
+	console.log('ident :', ident);
 	let feilet = true
 	if (ident) {
 		ident.forEach(line => {
