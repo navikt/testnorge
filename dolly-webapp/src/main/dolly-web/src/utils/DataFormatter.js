@@ -104,8 +104,9 @@ Formatters.gtTypeLabel = gtType => {
 Formatters.sort2DArray = (array, i) => {
 	// i er indexen av verdi som man ønsker å sortere på
 	return array.sort((a, b) => {
-		var aSub = a[i].substr(0, 4)
-		var bSub = b[i].substr(0, 4)
+		var lengde = Formatters.getIdLengde(a[i])
+		var aSub = a[i].substr(0, lengde)
+		var bSub = b[i].substr(0, lengde)
 		return bSub - aSub
 	})
 }
@@ -118,6 +119,11 @@ Formatters.flat2DArray = (array, i) => {
 		}
 	})
 	return array
+}
+
+Formatters.getIdLengde = id => {
+	var forste = id.split(' ')
+	return forste[0].length
 }
 
 Formatters.commaToSpace = streng => {
