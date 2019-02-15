@@ -175,7 +175,7 @@ export default class Step3 extends PureComponent {
 					</div>
 					{this.renderValues()}
 					{selectedAttributeIds.length > 0 && (
-						<div className="flexbox--align-center--justify-end">
+						<div className="flexbox--align-center--justify-start">
 							<Button
 								className="flexbox--align-center"
 								kind="edit"
