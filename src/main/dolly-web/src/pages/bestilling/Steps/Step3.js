@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import * as yup from 'yup'
-import RemoveableFeild from '~/components/fields/RemoveableField/RemoveableField'
+import RemoveableField from '~/components/fields/RemoveableField/RemoveableField'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import Button from '~/components/button/Button'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
@@ -51,15 +51,14 @@ export default class Step3 extends PureComponent {
 		return (
 			<Fragment key={hovedKategori.navn}>
 				<h4>{hovedKategori.navn}</h4>
-				<RemoveableFeild
+				<RemoveableField
 					onRemove={() => this._onRemoveHovedKategori(items)}
 					removable={this.state.edit && removable}
-					style={{ borderLeft: '15px' }}
 				>
 					<div className="oppsummering-blokk oppsummering-blokk-margin">
 						{items.map(item => this.renderSubKategori(item))}
 					</div>
-				</RemoveableFeild>
+				</RemoveableField>
 			</Fragment>
 		)
 	}
@@ -69,7 +68,7 @@ export default class Step3 extends PureComponent {
 			let removable = !items.every(item => this.props.selectedAttributeIds.includes(item.id))
 			return (
 				<div className="oppsummering-multifield" key={header}>
-					<RemoveableFeild
+					<RemoveableField
 						removable={removable && this.state.edit}
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
@@ -77,7 +76,7 @@ export default class Step3 extends PureComponent {
 						<div className="oppsummering-blokk">
 							{items.map(item => this.renderItem(item, values))}
 						</div>
-					</RemoveableFeild>
+					</RemoveableField>
 				</div>
 			)
 		}
@@ -116,7 +115,7 @@ export default class Step3 extends PureComponent {
 		}
 
 		return (
-			<RemoveableFeild
+			<RemoveableField
 				removable={this.state.edit && this.props.selectedAttributeIds.indexOf(item.id) >= 0}
 				onRemove={() => this._onRemove(item)}
 				key={item.id}
@@ -126,7 +125,7 @@ export default class Step3 extends PureComponent {
 				) : (
 					<StaticValue {...staticValueProps} />
 				)}
-			</RemoveableFeild>
+			</RemoveableField>
 		)
 	}
 
