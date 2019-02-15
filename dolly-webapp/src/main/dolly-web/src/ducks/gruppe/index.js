@@ -24,14 +24,13 @@ export const createTeam = createAction('CREATE_TEAM', DollyApi.createTeam)
 export const showCreateOrEditGroup = createAction('TOGGLE_SHOW_CREATE_OR_EDIT')
 export const closeCreateOrEdit = createAction('CANCEL_CREATE_OR_EDIT')
 export const settVisning = createAction('SETT_VISNING')
-export const toggleCreateTeam = createAction('TOOGLE_CREATE_TEAM')
 
 
 const initialState = {
 	data: null,
 	createOrUpdateId: null, // null = ingen, -1 = opprett ny gruppe, '45235' (ex: 425323) = rediger
 	visning: 'mine',
-	team: { toggle: false, id: null }
+	teamId: null
 }
 
 const getSuccess = combineActions(
@@ -69,13 +68,7 @@ export default handleActions(
 		[success(createTeam)](state, action) {
 			return {
 				...state,
-				team: { ...state.team, id: action.payload.data.id + "" }
-			}
-		},
-		[toggleCreateTeam](state, action) {
-			return {
-				...state,
-				team: { ...state.team, toggle: action.payload }
+				teamId: action.payload.data.id.toString()
 			}
 		},
 		[showCreateOrEditGroup](state, action) {

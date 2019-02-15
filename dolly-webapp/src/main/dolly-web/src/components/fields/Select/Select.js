@@ -82,9 +82,7 @@ export const FormikDollySelect = props => {
 	const onChangeHandler = props.multi ? multiSelectChangeHandler : singleSelectChangeHandler
 
 	const onChange = selected => {
-		if (beforeChange != null) {
-			beforeChange(selected)
-		}
+		beforeChange && beforeChange(selected)
 		onChangeHandler(selected)
 	}
 

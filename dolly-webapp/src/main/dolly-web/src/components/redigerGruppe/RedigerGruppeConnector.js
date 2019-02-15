@@ -11,15 +11,14 @@ const mapStateToProps = state => ({
 	createOrUpdateFetching: loadingSelector(state),
 	currentUserId: state.bruker.brukerData.navIdent,
 	error: errorSelector(state),
-	team: state.gruppe.team
+	teamId: state.gruppe.teamId
 })
 
 const mapDispatchToProps = dispatch => ({
 	createTeam: nyttTeam => dispatch(createTeam(nyttTeam)),
 	createGruppe: nyGruppe => dispatch(createGruppe(nyGruppe)),
 	updateGruppe: (id, values) => dispatch(updateGruppe(id, values)),
-	onCancel: () => dispatch(closeCreateOrEdit()),
-	toggleCreateTeam: (value) => dispatch(toggleCreateTeam(value))
+	onCancel: () => dispatch(closeCreateOrEdit())
 })
 
 export default connect(
