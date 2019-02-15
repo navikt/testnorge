@@ -48,27 +48,31 @@ export default class BestillingDetaljer extends PureComponent {
 
 		// TODO: Reverse Map detail data here. Alex
 		return (
-			<div className="bestilling-detaljer">
-				{this._renderBestillingsDetaljer()}
-				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
-				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
-				<div className="flexbox--align-center--justify-end">
-					<Button
-						onClick={this._onToggleModal}
-						className="flexbox--align-center"
-						kind="synchronize"
-					>
-						GJENOPPRETT I TPS
-					</Button>
-					{this._renderModal()}
+			console.log('this.props :', this.props),
+			(
+				<div className="bestilling-detaljer">
+					{this._renderBestillingsDetaljer()}
+					{this._renderMiljoeStatus(successEnvs, failedEnvs)}
+					{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
+					<div className="flexbox--align-center--justify-end">
+						<Button
+							onClick={this._onToggleModal}
+							className="flexbox--align-center"
+							kind="synchronize"
+						>
+							GJENOPPRETT I TPS
+						</Button>
+						{this._renderModal()}
+					</div>
 				</div>
-			</div>
+			)
 		)
 	}
 
 	_renderBestillingsDetaljer = () => {
 		const { bestilling } = this.props
 		const data = mapBestillingData(bestilling)
+		console.log('bestilling :', bestilling)
 		return (
 			<Fragment>
 				<h3>Bestillingsdetaljer</h3>
