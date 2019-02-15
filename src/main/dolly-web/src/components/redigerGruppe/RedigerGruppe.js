@@ -19,15 +19,17 @@ export default class Rediger extends PureComponent {
 			teamTilhoerlighetNavn: PropTypes.string,
 			hensikt: PropTypes.string
 		}),
-		team: PropTypes.shape({
-			toggle: PropTypes.bool,
-			id: PropTypes.string
-		}),
+		teamId: PropTypes.string,
 		createTeam: PropTypes.func,
 		createGruppe: PropTypes.func,
 		updateGruppe: PropTypes.func,
 		onCancel: PropTypes.func,
 		error: PropTypes.string
+	}
+
+	constructor(props) {
+		super(props)
+		this.state = { teamToggle: false }
 	}
 
 	erRedigering = Boolean(getIn(this.props.gruppe, 'id', false))
@@ -48,31 +50,28 @@ export default class Rediger extends PureComponent {
 	getTeam = async values => {
 		const { currentUserId, createTeam } = this.props
 		let teamValues = null
-
 		if (values.teamId === this.Teams.newTeam) {
 			teamValues = { navn: values.teamnavn, beskrivelse: values.beskrivelse }
-		} else if (this.erRedigering && values.teamId === this.Teams.currentUser) {
+		} else if (values.teamId === this.Teams.currentUser) {
 			teamValues = { navn: currentUserId, beskrivelse: null }
 		}
 		if (teamValues != null) {
 			await createTeam(teamValues)
-			const { team } = this.props
-			return team.id
+			return this.props.teamId
 		} else {
 			return values.teamId
 		}
 	}
 
 	onCancel() {
-		this.props.toggleCreateTeam(false)
+		this.setState({ teamToggle: false })
 		this.props.onCancel()
 	}
 
 	onBeforeChange(option) {
-		const { team, toggleCreateTeam } = this.props
 		let toggle = option != null && option.value === this.Teams.newTeam
-		if (toggle !== team.toggle) {
-			toggleCreateTeam(toggle)
+		if (toggle !== this.state.teamToggle) {
+			this.setState({ teamToggle: toggle })
 		}
 	}
 
@@ -102,7 +101,10 @@ export default class Rediger extends PureComponent {
 				.string()
 				.required('Navn er et påkrevd felt')
 				.max(50, 'Maksimalt 30 bokstaver'),
-			teamId: yup.number().nullable(),
+			teamId: yup
+				.number()
+				.required('Team er et påkrevd felt')
+				.nullable(),
 			hensikt: yup // .required('Du må velge hvilket team gruppen skal knyttes til'),
 				.string()
 				.required('Gi en liten beskrivelse av hensikten med gruppen')
@@ -124,7 +126,7 @@ export default class Rediger extends PureComponent {
 		})
 
 	render() {
-		const { team, currentUserId, gruppe, createOrUpdateFetching, error } = this.props
+		const { currentUserId, gruppe, createOrUpdateFetching, error } = this.props
 
 		if (createOrUpdateFetching) {
 			return (
@@ -174,9 +176,9 @@ export default class Rediger extends PureComponent {
 										DollyApi.getTeamsByUserId(currentUserId).then(res => this.loadOptions(res))
 									}
 								/>
-								{!team.toggle && buttons}
+								{!this.state.teamToggle && buttons}
 							</div>
-							{team.toggle && (
+							{this.state.teamToggle && (
 								<div className="fields">
 									<Field name="teamnavn" label="team navn" component={FormikInput} />
 									<Field name="beskrivelse" label="team beskrivelse" component={FormikInput} />
