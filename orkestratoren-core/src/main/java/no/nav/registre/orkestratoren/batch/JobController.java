@@ -16,8 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
+import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @Component
@@ -32,6 +34,9 @@ public class JobController {
     @Value("${orkestratoren.eiabatch.miljoe}")
     private String eiabatchMiljoe;
 
+    @Value("${orkestratoren.poppbatch.miljoe}")
+    private String poppbatchMiljoe;
+
     @Value("${orkestratoren.batch.avspillergruppeId}")
     private Long avspillergruppeId;
 
@@ -41,6 +46,9 @@ public class JobController {
     @Value("${orkestratoren.eiabatch.antallSykemeldinger}")
     private int antallSykemeldinger;
 
+    @Value("${orkestratoren.poppbatch.antallNyeIdenter}")
+    private int poppbatchAntallNyeIdenter;
+
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
 
@@ -49,6 +57,9 @@ public class JobController {
 
     @Autowired
     private EiaSyntPakkenService eiaSyntPakkenService;
+
+    @Autowired
+    private PoppSyntPakkenService poppSyntPakkenService;
 
     @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
@@ -71,5 +82,12 @@ public class JobController {
         SyntetiserEiaRequest request = new SyntetiserEiaRequest(avspillergruppeId, eiabatchMiljoe, antallSykemeldinger);
         List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(request);
         log.info("eiabatch har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
+    }
+
+    @Scheduled(cron = "${orkestratoren.poppbatch.cron:0 0 1 6 * *}")
+    public void poppSyntBatch() {
+        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, poppbatchMiljoe, poppbatchAntallNyeIdenter);
+        String testdataEier = "orkestratoren";
+        poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
     }
 }
