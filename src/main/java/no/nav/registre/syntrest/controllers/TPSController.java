@@ -68,8 +68,7 @@ public class TPSController extends KubernetesUtils {
         int attempt = 0;
         while (attempt < retryCount) {
             try {
-                CompletableFuture<List<Map<String, Object>>> result = tpsService.generateTPSFromNAIS(num_to_generate, endringskode);
-                Object synData = result.get();
+                List<Map<String, Object>> synData = tpsService.generateTPSFromNAIS(num_to_generate, endringskode);
                 return synData;
             } catch (Exception e) {
                 TimeUnit.SECONDS.sleep(1);

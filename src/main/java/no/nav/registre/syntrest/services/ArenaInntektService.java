@@ -34,11 +34,9 @@ public class ArenaInntektService extends KubernetesUtils implements IService {
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-inntekt" })
-    @Async
-    public CompletableFuture<Map<String, List<Inntektsmelding>>> generateInntektsmeldingerFromNAIS(String[] fnrs) throws InterruptedException {
+    public Map<String, List<Inntektsmelding>> generateInntektsmeldingerFromNAIS(String[] fnrs) throws InterruptedException {
         Map<String, List<Inntektsmelding>> result = restTemplate.postForObject(synthArenaInntektUrl, fnrs, Map.class);
-        System.out.println(result);
-        return CompletableFuture.completedFuture(result);
+        return result;
     }
 
     public String isAlive(){

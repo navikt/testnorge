@@ -30,10 +30,9 @@ public class PenService implements IService{
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-pen" })
-    @Async
-    public CompletableFuture<Object> generatePenFromNAIS(int num_to_generate) throws InterruptedException {
+    public Object generatePenFromNAIS(int num_to_generate) {
         Object result = restTemplate.getForObject(String.format(synthPenUrl, num_to_generate), Object.class);
-        return CompletableFuture.completedFuture(result);
+        return result;
     }
 
     public String isAlive() {

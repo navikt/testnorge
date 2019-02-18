@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -74,8 +73,7 @@ public class EIAController extends KubernetesUtils {
         int attempt = 0;
         while (attempt < retryCount) {
             try {
-                CompletableFuture<List<String>> result = eiaService.generateSykemeldingerFromNAIS(request);
-                List<String> synData = result.get();
+                List<String> synData = eiaService.generateSykemeldingerFromNAIS(request);
                 return synData;
             } catch (Exception e) {
                 System.out.println(e.toString());

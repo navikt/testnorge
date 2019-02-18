@@ -30,10 +30,9 @@ public class TPSService implements IService{
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-tps" })
-    @Async
-    public CompletableFuture<List<Map<String, Object>>> generateTPSFromNAIS(int num_to_generate, String endringskode) throws InterruptedException{
+    public List<Map<String, Object>> generateTPSFromNAIS(int num_to_generate, String endringskode) throws InterruptedException{
         List<Map<String, Object>> result = restTemplate.getForObject(String.format(synthTpsUrl, num_to_generate, endringskode), List.class);
-        return CompletableFuture.completedFuture(result);
+        return result;
     }
 
     public String isAlive(){

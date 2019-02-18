@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -66,8 +65,7 @@ public class PenController extends KubernetesUtils {
         int attempt = 0;
         while (attempt < retryCount) {
             try {
-                CompletableFuture<Object> result = penService.generatePenFromNAIS(num_to_generate);
-                Object synData = result.get();
+                Object synData = penService.generatePenFromNAIS(num_to_generate);
                 return synData;
             } catch (Exception e) {
                 TimeUnit.SECONDS.sleep(1);
