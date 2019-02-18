@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.services;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
@@ -28,6 +29,7 @@ public class EIAService implements IService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-eia" })
     @Async
     public CompletableFuture<List<String>> generateSykemeldingerFromNAIS(List<Map<String, String>> request) {
         List<String> result = restTemplate.postForObject(synthEiaUrl, request, List.class);

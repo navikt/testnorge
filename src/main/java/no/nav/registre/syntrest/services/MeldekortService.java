@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.services;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
@@ -27,6 +28,7 @@ public class MeldekortService implements IService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-meldekort" })
     @Async
     public CompletableFuture<List<String>> generateMeldekortFromNAIS(int num_to_generate, String meldegruppe) {
         List<String> result = restTemplate.getForObject(String.format(synthArenaMeldekortUrl, num_to_generate, meldegruppe), List.class);

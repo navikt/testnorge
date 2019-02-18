@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.services;
 
+import io.micrometer.core.annotation.Timed;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -29,10 +30,10 @@ public class AaregService implements IService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @Async
-    public CompletableFuture<String> generateAaregFromNAIS(List<String> request) {
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-aareg" })
+    public String generateAaregFromNAIS(List<String> request) {
         String result = restTemplate.postForObject(synthAaregUrl, request, String.class);
-        return CompletableFuture.completedFuture(result);
+        return result;
     }
 
     public String isAlive() {
