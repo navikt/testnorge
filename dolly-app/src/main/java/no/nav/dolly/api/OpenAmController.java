@@ -76,11 +76,15 @@ public class OpenAmController {
                         }
                     })
             );
-            List<RsOpenAmResponse> responser = new ArrayList<>();
+            List<RsOpenAmResponse> responser = new ArrayList<>(bestilling.getMiljoer().split(",").length);
+            StringBuilder status = new StringBuilder();
             for (String miljoe : bestilling.getMiljoer().split(",")) {
-                responser.add(openAmService.opprettIdenter(identer, miljoe));
+                RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(identer, miljoe);
+                status.append(openAmResponse.getMessage());
+                status.append(",");
+                responser.add(openAmResponse);
             }
-            bestilling.setOpenamSent(true);
+            bestilling.setOpenamSent(status.substring(0, status.length() - 1));
             bestillingRepository.save(bestilling);
             return responser;
         } else {

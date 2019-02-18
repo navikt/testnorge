@@ -68,5 +68,5 @@ public class Bestilling {
     private String tpsfKriterier;
 
     @Column(name = "OPENAM_SENT")
-    private Boolean openamSent;
+    private String openamSent;
 }
