@@ -38,7 +38,7 @@ public class HodejegerenConsumer {
         RequestEntity getRequest = RequestEntity.get(url.expand(
                 syntetiserPoppRequest.getAvspillergruppeId(),
                 syntetiserPoppRequest.getMiljoe(),
-                syntetiserPoppRequest.getAntallIdenter()))
+                syntetiserPoppRequest.getAntallNyeIdenter()))
                 .build();
 
         List<String> identer = new ArrayList<>();

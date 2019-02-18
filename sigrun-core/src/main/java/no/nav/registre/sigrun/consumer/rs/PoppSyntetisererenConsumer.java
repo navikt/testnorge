@@ -30,7 +30,7 @@ public class PoppSyntetisererenConsumer {
         this.url = new UriTemplate(syntrestServerUrl + "/v1/generatePopp");
     }
 
-    public List<Map<String, Object>> getPoppMeldingerFromSyntRest(List<String> fnrs) {
+    public List<Map<String, Object>> hentPoppMeldingerFromSyntRest(List<String> fnrs) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(fnrs);
 
         List<Map<String, Object>> syntetiserteMeldinger = new ArrayList<>();

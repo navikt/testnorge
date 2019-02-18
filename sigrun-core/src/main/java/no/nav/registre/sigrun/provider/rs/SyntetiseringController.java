@@ -12,20 +12,20 @@ import java.util.List;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
-import no.nav.registre.sigrun.service.PoppService;
+import no.nav.registre.sigrun.service.SigrunService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
 public class SyntetiseringController {
 
     @Autowired
-    private PoppService poppService;
+    private SigrunService sigrunService;
 
     @LogExceptions
     @PostMapping(value = "/generer")
     public ResponseEntity generatePopp(@RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
             @RequestBody SyntetiserPoppRequest syntetiserPoppRequest) {
-        List<String> fnrs = poppService.finnLevendeIdenter(syntetiserPoppRequest);
-        return poppService.getPoppMeldinger(fnrs, testdataEier);
+        List<String> identer = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest);
+        return sigrunService.genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier);
     }
 }
