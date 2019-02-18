@@ -1,5 +1,6 @@
 package no.nav.registre.sigrun.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 
 @Service
+@Slf4j
 public class SigrunService {
 
     @Autowired
@@ -28,7 +30,20 @@ public class SigrunService {
         List<String> eksisterendeIdenter = finnEksisterendeIdenter();
         List<String> nyeIdenter = finnLevendeIdenter(syntetiserPoppRequest);
 
-        eksisterendeIdenter.addAll(nyeIdenter);
+        int antallIdenterAlleredeIStub = 0;
+
+        for (String ident : nyeIdenter) {
+            if (eksisterendeIdenter.contains(ident)) {
+                antallIdenterAlleredeIStub++;
+            } else {
+                eksisterendeIdenter.add(ident);
+            }
+        }
+
+        if (antallIdenterAlleredeIStub > 0) {
+            log.info("{} av de nyutvalgte identene eksisterte allerede i sigrun-skd-stub.", antallIdenterAlleredeIStub);
+        }
+
         return eksisterendeIdenter;
     }
 
