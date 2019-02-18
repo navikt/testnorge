@@ -13,6 +13,6 @@ public class SyntetiserPoppRequest {
     private Long avspillergruppeId;
     @JsonProperty("miljoe")
     private String miljoe;
-    @JsonProperty("antallIdenter")
-    private int antallIdenter;
+    @JsonProperty("antallNyeIdenter")
+    private int antallNyeIdenter;
 }

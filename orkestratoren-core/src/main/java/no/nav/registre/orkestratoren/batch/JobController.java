@@ -34,6 +34,9 @@ public class JobController {
     @Value("${orkestratoren.eiabatch.miljoe}")
     private String eiabatchMiljoe;
 
+    @Value("${orkestratoren.poppbatch.miljoe}")
+    private String poppbatchMiljoe;
+
     @Value("${orkestratoren.batch.avspillergruppeId}")
     private Long avspillergruppeId;
 
@@ -42,6 +45,9 @@ public class JobController {
 
     @Value("${orkestratoren.eiabatch.antallSykemeldinger}")
     private int antallSykemeldinger;
+
+    @Value("${orkestratoren.poppbatch.antallNyeIdenter}")
+    private int poppbatchAntallNyeIdenter;
 
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
@@ -78,8 +84,9 @@ public class JobController {
         log.info("eiabatch har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
     }
 
-    public void poppSyntBatch() { // TODO: finne verdiene for cron-jobben (hvor ofte og hvor mange)
-        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(100000783L, "t1", 1);
+    @Scheduled(cron = "${orkestratoren.poppbatch.cron:0 0 1 6 * *}")
+    public void poppSyntBatch() {
+        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, poppbatchMiljoe, poppbatchAntallNyeIdenter);
         String testdataEier = "orkestratoren";
         poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
     }

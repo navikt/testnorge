@@ -35,8 +35,8 @@ public class PoppSyntConsumerTest {
     @Autowired
     private PoppSyntConsumer poppSyntConsumer;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
+    private static final Long AVSPILLERGRUPPE_ID = 123L;
+    private static final String MILJOE = "t1";
     private List<String> fnrs;
     private SyntetiserPoppRequest syntetiserPoppRequest;
 
@@ -45,7 +45,7 @@ public class PoppSyntConsumerTest {
         String fnr1 = "01010101010";
         String fnr2 = "02020202020";
         fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
-        syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, fnrs.size());
+        syntetiserPoppRequest = new SyntetiserPoppRequest(AVSPILLERGRUPPE_ID, MILJOE, fnrs.size());
     }
 
     /**
@@ -65,9 +65,9 @@ public class PoppSyntConsumerTest {
         stubFor(post(urlPathEqualTo("/sigrun/api/v1/syntetisering/generer"))
                 .withHeader("testdataEier", equalTo("test"))
                 .withRequestBody(equalToJson(
-                        "{\"avspillergruppeId\":" + avspillergruppeId
-                                + ",\"miljoe\":\"" + miljoe + "\""
-                                + ",\"antallIdenter\":" + fnrs.size() + "}"))
+                        "{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
+                                + ",\"miljoe\":\"" + MILJOE + "\""
+                                + ",\"antallNyeIdenter\":" + fnrs.size() + "}"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[\"" + HttpStatus.OK + "\", \"" + HttpStatus.INTERNAL_SERVER_ERROR + "\"]")));
