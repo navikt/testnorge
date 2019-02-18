@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.requests.GenereringsOrdreRequest;
@@ -23,7 +22,7 @@ public class TpsSyntPakkenService {
 
     public ResponseEntity genererSkdmeldinger(Long avspillergruppeId,
             String miljoe,
-            Map<String, Integer> antallMeldingerPerEndringskode) throws HttpStatusCodeException {
+            Map<String, Integer> antallMeldingerPerEndringskode) {
 
         ResponseEntity response = testnorgeSkdConsumer.startSyntetisering(new GenereringsOrdreRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode));
         if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
