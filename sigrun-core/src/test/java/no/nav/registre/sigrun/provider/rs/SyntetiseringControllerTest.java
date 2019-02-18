@@ -16,13 +16,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
-import no.nav.registre.sigrun.service.PoppService;
+import no.nav.registre.sigrun.service.SigrunService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringControllerTest {
 
     @Mock
-    private PoppService poppService;
+    private SigrunService sigrunService;
 
     @InjectMocks
     private SyntetiseringController syntetiseringController;
@@ -33,11 +33,11 @@ public class SyntetiseringControllerTest {
         fnrs.addAll(Arrays.asList("01010101010", "02020202020"));
         SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(123L, "t1", fnrs.size());
 
-        when(poppService.finnLevendeIdenter(syntetiserPoppRequest)).thenReturn(fnrs);
-        when(poppService.getPoppMeldinger(fnrs, "test")).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
+        when(sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest)).thenReturn(fnrs);
+        when(sigrunService.genererPoppmeldingerOgSendTilSigrunStub(fnrs, "test")).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
         syntetiseringController.generatePopp("test", syntetiserPoppRequest);
 
-        verify(poppService).getPoppMeldinger(fnrs, "test");
+        verify(sigrunService).genererPoppmeldingerOgSendTilSigrunStub(fnrs, "test");
     }
 }

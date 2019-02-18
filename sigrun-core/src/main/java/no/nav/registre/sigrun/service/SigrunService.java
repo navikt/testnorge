@@ -1,0 +1,51 @@
+package no.nav.registre.sigrun.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+import no.nav.registre.sigrun.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
+import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
+import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
+
+@Service
+public class SigrunService {
+
+    @Autowired
+    private PoppSyntetisererenConsumer poppSyntRestConsumer;
+
+    @Autowired
+    private HodejegerenConsumer hodejegerenConsumer;
+
+    @Autowired
+    private SigrunStubConsumer sigrunStubConsumer;
+
+    public List<String> finnEksisterendeOgNyeIdenter(SyntetiserPoppRequest syntetiserPoppRequest) {
+        List<String> eksisterendeIdenter = finnEksisterendeIdenter();
+        List<String> nyeIdenter = finnLevendeIdenter(syntetiserPoppRequest);
+
+        eksisterendeIdenter.addAll(nyeIdenter);
+        return eksisterendeIdenter;
+    }
+
+    public ResponseEntity genererPoppmeldingerOgSendTilSigrunStub(List<String> identer, String testdataEier) {
+        List<Map<String, Object>> syntetiserteMeldinger = finnSyntetiserteMeldinger(identer);
+        return sigrunStubConsumer.sendDataTilSigrunstub(syntetiserteMeldinger, testdataEier);
+    }
+
+    private List<Map<String, Object>> finnSyntetiserteMeldinger(List<String> fnrs) {
+        return poppSyntRestConsumer.hentPoppMeldingerFromSyntRest(fnrs);
+    }
+
+    private List<String> finnEksisterendeIdenter() {
+        return sigrunStubConsumer.hentEksisterendePersonidentifikatorer();
+    }
+
+    private List<String> finnLevendeIdenter(SyntetiserPoppRequest syntetiserPoppRequest) {
+        return hodejegerenConsumer.finnLevendeIdenter(syntetiserPoppRequest);
+    }
+}

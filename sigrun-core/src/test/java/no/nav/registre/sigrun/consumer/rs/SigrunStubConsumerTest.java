@@ -1,6 +1,7 @@
 package no.nav.registre.sigrun.consumer.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -38,6 +39,8 @@ public class SigrunStubConsumerTest {
     @Autowired
     private SigrunStubConsumer sigrunStubConsumer;
 
+    private String fnr1 = "01010101010";
+    private String fnr2 = "02020202020";
     private List meldinger;
     private JsonNode jsonNode;
     private HttpStatus statusCodeOk = HttpStatus.OK;
@@ -53,10 +56,20 @@ public class SigrunStubConsumerTest {
     }
 
     @Test
-    public void shouldSendDataToSigrunStub() {
-        stubSigrunStubConsumer();
+    public void shouldGetPersonidentifikatorer() {
+        stubSigrunStubConsumerHentPersonidentifikatorer();
 
-        ResponseEntity result = sigrunStubConsumer.sendDataToSigrunstub(meldinger, "test");
+        List<String> result = sigrunStubConsumer.hentEksisterendePersonidentifikatorer();
+
+        assertThat(result.toString(), containsString(fnr1));
+        assertThat(result.toString(), containsString(fnr2));
+    }
+
+    @Test
+    public void shouldSendDataToSigrunStub() {
+        stubSigrunStubConsumerOpprettBolk();
+
+        ResponseEntity result = sigrunStubConsumer.sendDataTilSigrunstub(meldinger, "test");
 
         assertThat(result.getStatusCode(), equalTo(HttpStatus.OK));
         assertNotNull(result.getBody());
@@ -64,7 +77,14 @@ public class SigrunStubConsumerTest {
         assertThat(result.getBody().toString(), containsString(statusCodeInternalServerError.toString()));
     }
 
-    public void stubSigrunStubConsumer() {
+    public void stubSigrunStubConsumerHentPersonidentifikatorer() {
+        stubFor(get(urlPathEqualTo("/sigrunstub/testdata/hentPersonidentifikatorer"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(("[\"" + fnr1 + "\", \"" + fnr2 + "\"]"))));
+    }
+
+    public void stubSigrunStubConsumerOpprettBolk() {
         stubFor(post(urlPathEqualTo("/sigrunstub/testdata/opprettBolk"))
                 .withRequestBody(equalToJson(getResourceFileContent("inntektsmeldinger_test.json")))
                 .willReturn(ok()

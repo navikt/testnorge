@@ -27,7 +27,7 @@ import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PoppServiceTest {
+public class SigrunServiceTest {
 
     @Mock
     private PoppSyntetisererenConsumer poppSyntetisererenConsumer;
@@ -36,7 +36,7 @@ public class PoppServiceTest {
     private SigrunStubConsumer sigrunStubConsumer;
 
     @InjectMocks
-    private PoppService poppService;
+    private SigrunService sigrunService;
 
     private List poppSyntetisererenResponse;
     private String testdataEier = "test";
@@ -55,13 +55,13 @@ public class PoppServiceTest {
         String fnr2 = "02020202020";
         List<String> fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        when(poppSyntetisererenConsumer.getPoppMeldingerFromSyntRest(fnrs)).thenReturn(poppSyntetisererenResponse);
-        when(sigrunStubConsumer.sendDataToSigrunstub(poppSyntetisererenResponse, testdataEier)).thenReturn(ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK));
+        when(poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(fnrs)).thenReturn(poppSyntetisererenResponse);
+        when(sigrunStubConsumer.sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier)).thenReturn(ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK));
 
-        ResponseEntity actualResponse = poppService.getPoppMeldinger(fnrs, testdataEier);
+        ResponseEntity actualResponse = sigrunService.genererPoppmeldingerOgSendTilSigrunStub(fnrs, testdataEier);
 
-        verify(poppSyntetisererenConsumer).getPoppMeldingerFromSyntRest(fnrs);
-        verify(sigrunStubConsumer).sendDataToSigrunstub(poppSyntetisererenResponse, testdataEier);
+        verify(poppSyntetisererenConsumer).hentPoppMeldingerFromSyntRest(fnrs);
+        verify(sigrunStubConsumer).sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier);
         assertThat(actualResponse.getBody(), equalTo(HttpStatus.OK));
     }
 }

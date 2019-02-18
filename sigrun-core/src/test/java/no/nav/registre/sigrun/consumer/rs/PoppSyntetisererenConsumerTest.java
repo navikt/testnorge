@@ -50,7 +50,7 @@ public class PoppSyntetisererenConsumerTest {
 
         stubPoppSyntetisererenConsumer();
 
-        List<Map<String, Object>> result = poppSyntetisererenConsumer.getPoppMeldingerFromSyntRest(fnrs);
+        List<Map<String, Object>> result = poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(fnrs);
 
         assertThat(result, equalTo(list));
     }
