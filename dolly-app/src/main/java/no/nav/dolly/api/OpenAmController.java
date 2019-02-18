@@ -81,7 +81,7 @@ public class OpenAmController {
             for (String miljoe : bestilling.getMiljoer().split(",")) {
                 RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(identer, miljoe);
                 status.append(openAmResponse.getMessage());
-                status.append(",");
+                status.append(',');
                 responser.add(openAmResponse);
             }
             bestilling.setOpenamSent(status.substring(0, status.length() - 1));
