@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,9 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
+import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RestController
@@ -35,6 +38,9 @@ public class SyntetiseringsController {
 
     @Autowired
     private EiaSyntPakkenService eiaSyntPakkenService;
+
+    @Autowired
+    private PoppSyntPakkenService poppSyntPakkenService;
 
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
@@ -57,5 +63,12 @@ public class SyntetiseringsController {
         List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(syntetiserEiaRequest);
         log.info("eia har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
         return fnrMedGenererteMeldinger;
+    }
+
+    @LogExceptions
+    @PostMapping(value = "/popp/skattegrunnlag/generer")
+    public ResponseEntity opprettSkattegrunnlagISigrun(@RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
+            @RequestBody SyntetiserPoppRequest syntetiserPoppRequest) {
+        return poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
     }
 }

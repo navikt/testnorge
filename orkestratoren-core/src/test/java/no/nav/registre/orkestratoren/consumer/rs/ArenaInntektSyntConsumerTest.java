@@ -38,7 +38,7 @@ public class ArenaInntektSyntConsumerTest {
 
     /**
      * Scenario: Tester happypath til {@link ArenaInntektSyntConsumer#startSyntetisering} - forventer at metoden returnerer id-en
-     * gitt av arena-inntekt forventer at metoden kaller Testnorge-Arena-Inntekt med de rette parametrene (se stub)
+     * gitt av arena-inntekt. Forventer at metoden kaller Testnorge-Arena-Inntekt med de rette parametrene (se stub)
      */
     @Test
     public void shouldStartSyntetisering() {
