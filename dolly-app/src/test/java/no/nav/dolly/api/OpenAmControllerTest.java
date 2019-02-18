@@ -6,6 +6,8 @@ import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,6 +30,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsOpenAmRequest;
+import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.GruppeRepository;
@@ -61,6 +64,9 @@ public class OpenAmControllerTest {
 
     @Mock
     private Testgruppe testgruppe;
+
+    @Mock
+    private RsOpenAmResponse openAmResponse;
 
     private ArgumentCaptor<List<String>> captor;
 
@@ -114,6 +120,7 @@ public class OpenAmControllerTest {
                                                 .build())))
                                 .build())
                         .build()));
+        when(openAmService.opprettIdenter(anyList(), anyString())).thenReturn(openAmResponse);
 
         openAmController.sendBestillingTilOpenAm(BESTILLING_ID);
 
