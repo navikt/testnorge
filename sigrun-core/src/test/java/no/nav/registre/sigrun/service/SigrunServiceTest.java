@@ -1,6 +1,7 @@
 package no.nav.registre.sigrun.service;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,8 +24,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import no.nav.registre.sigrun.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
+import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SigrunServiceTest {
@@ -34,6 +37,9 @@ public class SigrunServiceTest {
 
     @Mock
     private SigrunStubConsumer sigrunStubConsumer;
+
+    @Mock
+    private HodejegerenConsumer hodejegerenConsumer;
 
     @InjectMocks
     private SigrunService sigrunService;
@@ -63,5 +69,20 @@ public class SigrunServiceTest {
         verify(poppSyntetisererenConsumer).hentPoppMeldingerFromSyntRest(fnrs);
         verify(sigrunStubConsumer).sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier);
         assertThat(actualResponse.getBody(), equalTo(HttpStatus.OK));
+    }
+
+    @Test
+    public void shouldNotAddIdenticalId() {
+        List<String> eksisterendeIdenter = new ArrayList<>(Arrays.asList("01010101010", "02020202020", "03030303030", "04040404040"));
+        List<String> nyeIdenter = new ArrayList<>(Arrays.asList("02020202020", "05050505050"));
+
+        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(123L, "t1", 2);
+
+        when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer()).thenReturn(eksisterendeIdenter);
+        when(hodejegerenConsumer.finnLevendeIdenter(syntetiserPoppRequest)).thenReturn(nyeIdenter);
+
+        List<String> resultat = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest);
+
+        assertThat(resultat.size(), is(5));
     }
 }
