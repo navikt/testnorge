@@ -66,4 +66,7 @@ public class Bestilling {
 
     @Column(name = "TPSF_KRITERIER")
     private String tpsfKriterier;
+
+    @Column(name = "OPENAM_SENT")
+    private String openamSent;
 }
