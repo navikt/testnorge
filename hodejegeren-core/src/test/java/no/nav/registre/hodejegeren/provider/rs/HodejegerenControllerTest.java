@@ -122,7 +122,7 @@ public class HodejegerenControllerTest {
     }
 
     @Test
-    public void shouldHenteIdenterMedStatusQuo() throws IOException {
+    public void shouldHenteIdenterMedStatusQuo() {
         hodejegerenController.hentEksisterendeIdenterMedStatusQuo(avspillergruppeId, miljoe, 1);
         verify(eksisterendeIdenterService).hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, 1);
     }
