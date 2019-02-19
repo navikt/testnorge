@@ -35,8 +35,8 @@ public class TpsSyntetisererenConsumer {
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tps-syntetisereren" })
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(String endringskode, Integer antallMeldinger) {
-        UriTemplate uriTemplate = new UriTemplate(serverUrl + "/v1/generateTps/{antallMeldinger}/{endringskode}");
-        URI url = uriTemplate.expand(antallMeldinger, endringskode);
+        UriTemplate uriTemplate = new UriTemplate(serverUrl + "/v1/generate/tps/{endringskode}?numToGenerate={antallMeldinger}");
+        URI url = uriTemplate.expand(endringskode, antallMeldinger);
         RequestEntity getRequest = RequestEntity.get(url).build();
         ResponseEntity<List<RsMeldingstype>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 

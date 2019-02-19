@@ -1,7 +1,6 @@
 package no.nav.registre.skd.comptests;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -44,6 +43,7 @@ public class GenererSyntetiskeMeldingerCompTest {
     private List<Long> expectedMeldingsIdsITpsf = new ArrayList<>();
     private List<String> expectedFnrFromIdentpool = Arrays.asList("11111111111", "22222222222");
     private long gruppeId = 123L;
+    private String miljoe = "t10";
     private Integer antallMeldinger = 2;
     private String endringskodeInnvandringsmelding = "0211";
 
@@ -88,7 +88,7 @@ public class GenererSyntetiskeMeldingerCompTest {
         stubIdentpool();
         stubTpsf(gruppeId);
 
-        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, "t10", antallMeldingerPerAarsakskode);
+        GenereringsOrdreRequest ordreRequest = new GenereringsOrdreRequest(gruppeId, miljoe, antallMeldingerPerAarsakskode);
 
         SkdMeldingerTilTpsRespons respons = (SkdMeldingerTilTpsRespons) syntetiseringController.genererSkdMeldinger(ordreRequest).getBody();
 
@@ -135,7 +135,7 @@ public class GenererSyntetiskeMeldingerCompTest {
 
         // Sender meldingene til TPS
         stubFor(post("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId)
-                .withRequestBody(equalToJson("{\"environment\": \"t10\", \"ids\": [120421016, 110156008, 120421017, 110156009]}"))
+                .withRequestBody(equalToJson("{\"environment\": \"" + miljoe + "\", \"ids\": [120421016, 110156008, 120421017, 110156009]}"))
                 .willReturn(ok()
                         .withHeader("content-type", "application/json")
                         .withBody("{\"antallSendte\": \"" + expectedMeldingsIdsITpsf.size()
@@ -150,7 +150,7 @@ public class GenererSyntetiskeMeldingerCompTest {
     }
 
     private void stubHodejegerenHentLevendeIdenter(long gruppeId, String okJsonResponse) {
-        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/levende-identer/" + gruppeId))
+        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/alle-levende-identer/" + gruppeId))
                 .willReturn(okJson(okJsonResponse)));
     }
 

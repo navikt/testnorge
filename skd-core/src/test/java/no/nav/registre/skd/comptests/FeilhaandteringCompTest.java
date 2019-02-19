@@ -1,7 +1,6 @@
 package no.nav.registre.skd.comptests;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -172,7 +171,7 @@ public class FeilhaandteringCompTest {
     }
 
     private void stubHodejegerenHentLevendeIdenter(long gruppeId, String okJsonResponse) {
-        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/levende-identer/" + gruppeId))
+        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/alle-levende-identer/" + gruppeId))
                 .willReturn(okJson(okJsonResponse)));
     }
 
