@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/generate")
 public class MedlController extends KubernetesUtils {
 
     @Value("${max_retrys}")
@@ -40,8 +40,8 @@ public class MedlController extends KubernetesUtils {
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @GetMapping(value = "/generateMedl/{numToGenerate}")
-    public ResponseEntity generateMedl(@PathVariable int numToGenerate) throws IOException, ApiException {
+    @GetMapping(value = "/medl")
+    public ResponseEntity generateMedl(@RequestParam int numToGenerate) throws IOException, ApiException {
         counterLock.lock();
         counter++;
         counterLock.unlock();

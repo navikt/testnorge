@@ -5,14 +5,12 @@ import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import no.nav.registre.syntrest.services.TPSService;
+import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/generate")
 public class TPSController extends KubernetesUtils {
 
     @Value("${max_retrys}")
@@ -33,6 +31,9 @@ public class TPSController extends KubernetesUtils {
     private String appName;
 
     @Autowired
+    private Validation validation;
+
+    @Autowired
     private TPSService tpsService;
 
     private int counter = 0;
@@ -40,8 +41,11 @@ public class TPSController extends KubernetesUtils {
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @GetMapping(value = "/generateTps/{num_to_generate}/{endringskode}")
-    public ResponseEntity generateTps(@PathVariable int num_to_generate, @PathVariable String endringskode) throws IOException, ApiException {
+    @GetMapping(value = "/tps/{endringskode}")
+    public ResponseEntity generateTps(@PathVariable String endringskode, @RequestParam int numToGenerate) throws IOException, ApiException {
+        if (!validation.validateEndringskode(endringskode)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Not a valid endringskode. Needs to be one of " + validation.getEndringskoder().toString());
+        }
         counterLock.lock();
         counter++;
         counterLock.unlock();
@@ -50,7 +54,7 @@ public class TPSController extends KubernetesUtils {
         try {
             createApplication(client, "/nais/synthdata-tps.yaml", tpsService);
             log.info("Requesting synthetic data: synthdata-tps");
-            Object synData = getData(num_to_generate, endringskode);
+            Object synData = getData(numToGenerate, endringskode);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
             log.info("Exception in generateTps: " + e.getCause());

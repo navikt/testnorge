@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/generate")
 public class TPController extends KubernetesUtils {
 
     @Value("${max_retrys}")
@@ -40,8 +37,8 @@ public class TPController extends KubernetesUtils {
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @GetMapping(value = "/generateTp/{numToGenerate}")
-    public ResponseEntity generateTp(@PathVariable int numToGenerate) throws IOException, ApiException {
+    @GetMapping(value = "/tp")
+    public ResponseEntity generateTp(@RequestParam int numToGenerate) throws IOException, ApiException {
         counterLock.lock();
         counter++;
         counterLock.unlock();
@@ -50,7 +47,6 @@ public class TPController extends KubernetesUtils {
         try {
             createApplication(client, "/nais/synthdata-tp.yaml", tpService);
             log.info("Requesting synthetic data: synthdata-tp");
-            CompletableFuture<List<Map<String, String>>> result = tpService.generateTPFromNAIS(numToGenerate);
             Object synData = getData(numToGenerate);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {

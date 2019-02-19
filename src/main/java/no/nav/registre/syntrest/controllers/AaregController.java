@@ -22,7 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/generate")
 public class AaregController extends KubernetesUtils {
 
     @Value("${max_retrys}")
@@ -39,7 +39,7 @@ public class AaregController extends KubernetesUtils {
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @PostMapping(value = "/generateAareg")
+    @PostMapping(value = "/aareg")
     public ResponseEntity generateAareg(@RequestBody List<String> request) throws IOException, ApiException {
         counterLock.lock();
         counter++;

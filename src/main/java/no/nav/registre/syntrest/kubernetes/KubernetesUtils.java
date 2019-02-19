@@ -52,34 +52,41 @@ public class KubernetesUtils {
         String latestImage = imageBase.replace("latest", getLatestImageVersion(appName));
         spec.put("image", latestImage);
 
-        if(!applicationExists(client, appName)){
+        if (!applicationExists(client, appName)) {
             try {
                 api.createNamespacedCustomObject("nais.io", "v1alpha1", "q2", "applications", manifestFile, null);
                 log.info("Application: " + appName + " created!");
                 waitForIsAlive(client, appName, serviceObject);
             } catch (ApiException e) {
                 log.info(e.getResponseBody());
-            } catch (Exception e){
+            } catch (Exception e) {
                 log.info(e.toString());
             }
-        } else if (!applicationIsAlive(serviceObject)){
+        } else if (!applicationIsAlive(serviceObject)) {
             waitForIsAlive(client, appName, serviceObject);
         }
     }
 
-    public String getLatestImageVersion(String appName){
+    public String getLatestImageVersion(String appName) {
         String query = String.format("https://docker.adeo.no:5000/v2/registre/%s/tags/list", appName);
         RestTemplate restTemplate = new RestTemplate();
         Map<String, Object> repositoryMap = (Map) restTemplate.getForObject(query, Object.class);
         List<String> tags = (List) repositoryMap.get("tags");
-        return tags.get(tags.size()-1);
+        return tags.get(tags.size() - 1);
     }
 
     public List<String> listApplications(ApiClient client, Boolean print) throws ApiException {
         CustomObjectsApi api = new CustomObjectsApi();
         api.setApiClient(client);
         List<String> applicationList = new ArrayList<>();
-        LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject("nais.io", "v1alpha1", "q2", "applications", null, null, null, null);
+        LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject("nais.io",
+                "v1alpha1",
+                "q2",
+                "applications",
+                null,
+                null,
+                null,
+                null);
         ArrayList items = (ArrayList) result.get("items");
         for (Object item : items) {
             LinkedTreeMap app = (LinkedTreeMap) item;
@@ -114,24 +121,23 @@ public class KubernetesUtils {
                     stillDeploying = false;
                 }
             } catch (Exception e) {
-                if (num_retries < maxRetries){
+                if (num_retries < maxRetries) {
                     TimeUnit.SECONDS.sleep(retryDelay);
                     log.info("Waiting for " + appName + " to come alive: " + e);
-                }
-                else {
+                } else {
                     log.error("Application" + appName + "failed to come alive. Terminating..");
                     deleteApplication(client, appName);
                 }
             }
-            num_retries ++;
+            num_retries++;
         }
     }
 
 
     public boolean applicationIsAlive(IService serviceObject) {
-        try{
+        try {
             return serviceObject.isAlive().equals("1");
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -144,7 +150,15 @@ public class KubernetesUtils {
         if (applicationExists) {
             V1DeleteOptions deleteOptions = new V1DeleteOptions();
             try {
-                api.deleteNamespacedCustomObject("nais.io", "v1alpha1", "q2", "applications", appName, deleteOptions, null, null, null);
+                api.deleteNamespacedCustomObject("nais.io",
+                        "v1alpha1",
+                        "q2",
+                        "applications",
+                        appName,
+                        deleteOptions,
+                        null,
+                        null,
+                        null);
                 log.info("Successfully deleted application --> " + appName);
             } catch (JsonSyntaxException e) {
                 if (e.getCause() instanceof IllegalStateException) {

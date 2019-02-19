@@ -3,8 +3,9 @@ package no.nav.registre.syntrest.controllers;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.syntrest.domain.Inntektsmelding;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
-import no.nav.registre.syntrest.services.PoppService;
+import no.nav.registre.syntrest.services.InntektService;
 import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,33 +17,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
-public class PoppController extends KubernetesUtils {
+public class InntektController extends KubernetesUtils {
 
     @Value("${max_retrys}")
     private int retryCount;
 
-    @Value("${synth-popp-app}")
+    @Value("${synth-inntekt-app}")
     private String appName;
 
     @Autowired
     private Validation validation;
 
     @Autowired
-    private PoppService poppService;
+    private InntektService inntektService;
 
     private int counter = 0;
 
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @PostMapping(value = "/popp")
-    public ResponseEntity generatePopp(@RequestBody String[] fnrs) throws IOException, ApiException {
+    @PostMapping(value = "/inntekt")
+    public ResponseEntity generateInntektsmeldinger(@RequestBody String[] fnrs) throws ApiException, IOException {
         if (!validation.validateFnrs(fnrs)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }
@@ -52,17 +56,14 @@ public class PoppController extends KubernetesUtils {
         lock.lock();
         ApiClient client = createApiClient();
         try {
-            createApplication(client, "/nais/synthdata-popp.yaml", poppService);
-            log.info("Requesting synthetic data: synthdata-popp");
+            createApplication(client, "/nais/synthdata-inntekt.yaml", inntektService);
             Object synData = getData(fnrs);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
-            System.out.println(e);
-            log.info("Exception in generatePopp: " + e.getCause());
+            log.info("Exception in generateInntektsmeldinger: " + e.getCause());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         } finally {
             counter--;
-            System.out.println("Counter: " + counter);
             lock.unlock();
             if (counter == 0)
                 deleteApplication(client, appName);
@@ -73,8 +74,8 @@ public class PoppController extends KubernetesUtils {
         int attempt = 0;
         while (attempt < retryCount) {
             try {
-                CompletableFuture<Object> result = poppService.generatePoppMeldingerFromNAIS(fnrs);
-                Object synData = result.get();
+                CompletableFuture<Map<String, List<Inntektsmelding>>> result = inntektService.generateInntektsmeldingerFromNAIS(fnrs);
+                Map<String, List<Inntektsmelding>> synData = result.get();
                 return synData;
             } catch (Exception e) {
                 TimeUnit.SECONDS.sleep(1);
