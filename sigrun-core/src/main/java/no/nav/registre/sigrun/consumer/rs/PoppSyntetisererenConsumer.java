@@ -27,7 +27,7 @@ public class PoppSyntetisererenConsumer {
     private UriTemplate url;
 
     public PoppSyntetisererenConsumer(@Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
-        this.url = new UriTemplate(syntrestServerUrl + "/v1/generatePopp");
+        this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/popp");
     }
 
     public List<Map<String, Object>> hentPoppMeldingerFromSyntRest(List<String> fnrs) {

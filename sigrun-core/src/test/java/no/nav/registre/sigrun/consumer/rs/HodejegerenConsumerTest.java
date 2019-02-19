@@ -54,8 +54,8 @@ public class HodejegerenConsumerTest {
 
     public void stubHodejegerenConsumer() {
         stubFor(get(urlEqualTo("/hodejegeren/api/v1/levende-identer"
-                + "?avspillergruppeId=" + avspillergruppeId
-                + "&miljoe=" + miljoe
+                + "/" + avspillergruppeId
+                + "?miljoe=" + miljoe
                 + "&antallPersoner=" + fnrs.size()))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")

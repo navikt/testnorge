@@ -30,7 +30,7 @@ public class HodejegerenConsumer {
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
         this.url = new UriTemplate(hodejegerenServerUrl +
-                "/v1/levende-identer?avspillergruppeId={avspillergruppeId}&miljoe={miljoe}&antallPersoner={antallIdenter}");
+                "/v1/levende-identer/{avspillergruppeId}?miljoe={miljoe}&antallPersoner={antallIdenter}");
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "hodejegeren" })

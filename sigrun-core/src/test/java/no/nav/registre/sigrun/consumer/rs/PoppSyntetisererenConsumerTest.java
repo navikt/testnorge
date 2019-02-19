@@ -56,7 +56,7 @@ public class PoppSyntetisererenConsumerTest {
     }
 
     public void stubPoppSyntetisererenConsumer() {
-        stubFor(post(urlPathEqualTo("/synthdata-popp/api/v1/generatePopp"))
+        stubFor(post(urlPathEqualTo("/synthdata-popp/api/v1/generate/popp"))
                 .withRequestBody(equalToJson("[\"" + fnr1 + "\", \"" + fnr2 + "\"]"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
