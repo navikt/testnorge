@@ -28,7 +28,7 @@ public class AaregSyntetisererenConsumer {
     private UriTemplate url;
 
     public AaregSyntetisererenConsumer(@Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
-        this.url = new UriTemplate(syntrestServerUrl + "/v1/generateAareg");
+        this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/aareg");
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aareg-syntetisereren" })

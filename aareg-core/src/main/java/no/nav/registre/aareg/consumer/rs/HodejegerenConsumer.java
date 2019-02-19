@@ -27,7 +27,7 @@ public class HodejegerenConsumer {
     private UriTemplate url;
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
-        this.url = new UriTemplate(hodejegerenServerUrl + "/v1/levende-identer/{gruppeId}");
+        this.url = new UriTemplate(hodejegerenServerUrl + "/v1/alle-levende-identer/{avspillergruppeId}");
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
