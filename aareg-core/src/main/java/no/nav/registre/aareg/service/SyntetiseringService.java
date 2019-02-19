@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
+import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
@@ -22,6 +23,9 @@ public class SyntetiseringService {
     private AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
 
     @Autowired
+    private AaregstubConsumer aaregstubConsumer;
+
+    @Autowired
     private Random rand;
 
     public List<String> hentArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest) {
@@ -33,6 +37,8 @@ public class SyntetiseringService {
         }
 
         Map<String, List<Map<String, String>>> syntetiserteArbeidsforholdsmeldinger = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
+
+        aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforholdsmeldinger);
 
         return new ArrayList<>();
     }
