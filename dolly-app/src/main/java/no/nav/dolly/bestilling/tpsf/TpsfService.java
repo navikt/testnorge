@@ -24,7 +24,7 @@ import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.Person;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
 
@@ -46,7 +46,7 @@ public class TpsfService {
     @Autowired
     ProvidersProps providersProps;
 
-    public List<String> opprettIdenterTpsf(RsTpsfBestilling request) {
+    public List<String> opprettIdenterTpsf(TpsfBestilling request) {
         ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, new HttpEntity<>(request));
         return nonNull(response) ? objectMapper.convertValue(response.getBody(), List.class) : null;
     }

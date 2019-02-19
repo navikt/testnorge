@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,6 +28,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
@@ -34,11 +36,13 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
@@ -59,8 +63,7 @@ public class DollyBestillingServiceTest {
     private static final List<String> STANDARD_IDENTER = asList(IDENT, "34", "56");
 
     private Map<String, String> status_SuccU1T2_FailQ3;
-    private RsDollyBestillingsRequest standardBestillingRequest_u1_t2_q3;
-    private RsTpsfBestilling tpsfReqEmpty;
+    private RsDollyBestillingRequest standardBestillingRequest_u1_t2_q3;
     private Bestilling standardNyBestilling;
     private Testgruppe standardGruppe;
     private SendSkdMeldingTilTpsResponse standardSendSkdResponse;
@@ -94,6 +97,9 @@ public class DollyBestillingServiceTest {
     private CacheManager cacheManager;
 
     @Mock
+    private MapperFacade mapperFacade;
+
+    @Mock
     private Cache cache;
 
     @Mock
@@ -102,11 +108,11 @@ public class DollyBestillingServiceTest {
     @Before
     public void setup() {
         standardGruppe = new Testgruppe();
-        tpsfReqEmpty = new RsTpsfBestilling();
 
         standardSendSkdResponse = SendSkdMeldingTilTpsResponse.builder()
                 .personId(IDENT)
                 .skdmeldingstype(INNVANDRING_CREATE_NAVN)
+                .status(singletonMap("u2", "OK"))
                 .build();
 
         serviceRoutineResponseStatus = ServiceRoutineResponseStatus.builder()
@@ -122,19 +128,21 @@ public class DollyBestillingServiceTest {
         status_SuccU1T2_FailQ3.put("t2", SUCCESS_CODE_TPS);
         status_SuccU1T2_FailQ3.put("q3", FAIL_CODE_TPS);
 
-        standardBestillingRequest_u1_t2_q3 = RsDollyBestillingsRequest.builder()
-                .environments(asList("u1", "t2", "q3"))
-                .antall(1)
-                .tpsf(tpsfReqEmpty)
+        standardBestillingRequest_u1_t2_q3 = RsDollyBestillingRequest.builder()
+                .tpsf(new RsTpsfUtvidetBestilling())
                 .build();
+        standardBestillingRequest_u1_t2_q3.setEnvironments(asList("u1", "t2", "q3"));
+        standardBestillingRequest_u1_t2_q3.setAntall(1);
 
         when(bestillingService.isStoppet(anyLong())).thenReturn(false);
         when(cacheManager.getCache(anyString())).thenReturn(cache);
+
+        when(mapperFacade.map(any(RsTpsfUtvidetBestilling.class), eq(TpsfBestilling.class))).thenReturn(new TpsfBestilling());
     }
 
     @Test
     public void opprettPersonerByKriterierAsync_bestillingBlirSattFerdigNaarExceptionKastesUnderOppretting() {
-        when(tpsfService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(STANDARD_IDENTER);
+        when(tpsfService.opprettIdenterTpsf(any(TpsfBestilling.class))).thenReturn(STANDARD_IDENTER);
         when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(standardGruppe);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
 
@@ -153,7 +161,7 @@ public class DollyBestillingServiceTest {
                 .serviceRoutineStatusResponsene(singletonList(serviceRoutineResponseStatus))
                 .build();
 
-        when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(STANDARD_IDENTER);
+        when(tpsfService.opprettIdenterTpsf(any(TpsfBestilling.class))).thenReturn(STANDARD_IDENTER);
         when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(standardGruppe);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenReturn(skdMeldingResponse);
         when(tpsfResponseHandler.extractTPSFeedback(anyList())).thenReturn(TPS_FEEDBACK);
@@ -186,7 +194,7 @@ public class DollyBestillingServiceTest {
 
         TpsfException tpsfException = new TpsfException(FEILMELDING);
 
-        when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(STANDARD_IDENTER);
+        when(tpsfService.opprettIdenterTpsf(any(TpsfBestilling.class))).thenReturn(STANDARD_IDENTER);
         when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(standardGruppe);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenReturn(response).thenThrow(tpsfException);
         when(tpsfResponseHandler.extractTPSFeedback(anyList())).thenReturn(TPS_FEEDBACK);
@@ -213,7 +221,7 @@ public class DollyBestillingServiceTest {
 
         TpsfException tpsfException = new TpsfException(FEILMELDING);
 
-        when(tpsfService.opprettIdenterTpsf(tpsfReqEmpty)).thenReturn(STANDARD_IDENTER);
+        when(tpsfService.opprettIdenterTpsf(any(TpsfBestilling.class))).thenReturn(STANDARD_IDENTER);
         when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(standardGruppe);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(tpsfException);
 
@@ -225,7 +233,7 @@ public class DollyBestillingServiceTest {
 
     @Test
     public void opprettPersonerByKriterierAsync_sjekkAtIngenSigrunRequestIkkeGirNullPointException() {
-        when(tpsfService.opprettIdenterTpsf(standardBestillingRequest_u1_t2_q3.getTpsf())).thenReturn(STANDARD_IDENTER);
+        when(tpsfService.opprettIdenterTpsf(any(TpsfBestilling.class))).thenReturn(STANDARD_IDENTER);
         when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(standardGruppe);
         when(tpsfService.sendIdenterTilTpsFraTPSF(any(), any())).thenThrow(TpsfException.class);
 
@@ -251,5 +259,27 @@ public class DollyBestillingServiceTest {
         verify(tpsfService).hentTilhoerendeIdenter(anyList());
         verify(tpsfService).sendIdenterTilTpsFraTPSF(anyList(), anyList());
         verify(tpsfResponseHandler).extractTPSFeedback(anyList());
+    }
+
+    @Test
+    public void opprettPersonerByKriterierFraIdenterAsync_bestillingOk() {
+
+        RsDollyBestillingFraIdenterRequest bestillingFraIdenterRequest = RsDollyBestillingFraIdenterRequest.builder()
+                .eksisterendeIdenter(STANDARD_IDENTER)
+                .build();
+        bestillingFraIdenterRequest.setEnvironments(asList("u1", "t2", "q3"));
+
+        RsSkdMeldingResponse response = RsSkdMeldingResponse.builder()
+                .sendSkdMeldingTilTpsResponsene(singletonList(standardSendSkdResponse))
+                .serviceRoutineStatusResponsene(singletonList(serviceRoutineResponseStatus))
+                .build();
+        when(tpsfService.opprettIdenterTpsf(any(TpsfBestilling.class))).thenReturn(STANDARD_IDENTER);
+        when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(standardGruppe);
+        when(tpsfService.sendIdenterTilTpsFraTPSF(anyList(), anyList())).thenReturn(response);
+
+        dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(GRUPPE_ID, bestillingFraIdenterRequest, standardNyBestilling);
+
+        assertThat(standardNyBestilling.isFerdig(), is(true));
+        verify(bestillingService, times(4)).saveBestillingToDB(standardNyBestilling);
     }
 }

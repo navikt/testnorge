@@ -48,8 +48,8 @@ public class Bestilling {
     @Column(name = "MILJOER", nullable = false)
     private String miljoer;
 
-    @Column(name = "ANTALL_IDENTER", nullable = false)
-    private int antallIdenter;
+    @Column(name = "ANTALL_IDENTER")
+    private Integer antallIdenter;
 
     @Column(name = "SIST_OPPDATERT", nullable = false)
     @UpdateTimestamp
@@ -69,4 +69,7 @@ public class Bestilling {
 
     @Column(name = "OPENAM_SENT")
     private String openamSent;
+
+    @Column(name = "EKSISTERENDE_IDENTER")
+    private String eksisterendeIdenter;
 }

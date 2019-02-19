@@ -24,7 +24,7 @@ import lombok.Setter;
 public class RsBestilling {
 
     private Long id;
-    private int antallIdenter;
+    private Integer antallIdenter;
     private boolean ferdig;
     private LocalDateTime sistOppdatert;
     private long gruppeId;
@@ -36,6 +36,7 @@ public class RsBestilling {
     private Long opprettetFraId;
     private String tpsfKriterier;
     private String openamSent;
+    private String eksisterendeIdenter;
 
     public List<String> getEnvironments() {
         if (isNull(environments)) {

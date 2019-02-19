@@ -17,8 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -35,14 +33,8 @@ public class BestillingServiceTest {
     @Mock
     private TestgruppeService testgruppeService;
 
-    @Mock
-    private ObjectMapper objectMapper;
-
     @InjectMocks
     private BestillingService bestillingService;
-
-    @Mock
-    private ObjectWriter objectWriter;
 
     @Test(expected = NotFoundException.class)
     public void fetchBestillingByIdKasterExceptionHvisBestillingIkkeFunnet() throws Exception {
@@ -88,9 +80,8 @@ public class BestillingServiceTest {
         int antallIdenter = 4;
 
         when(testgruppeService.fetchTestgruppeById(gruppeId)).thenReturn(gruppe);
-        when(objectMapper.writer()).thenReturn(objectWriter);
 
-        bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, antallIdenter, miljoer, null);
+        bestillingService.saveBestillingByGruppeIdAndIdenter(gruppeId, antallIdenter, miljoer, null);
 
         ArgumentCaptor<Bestilling> argCap = ArgumentCaptor.forClass(Bestilling.class);
         verify(bestillingRepository).save(argCap.capture());

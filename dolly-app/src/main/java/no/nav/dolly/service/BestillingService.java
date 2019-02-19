@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
+import static java.util.Objects.nonNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -92,8 +93,20 @@ public class BestillingService {
     }
 
     @Transactional
-    // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
-    public Bestilling saveBestillingByGruppeIdAndAntallIdenter(Long gruppeId, int antallIdenter, List<String> miljoer, RsTpsfBestilling tpsfBestilling) {
+    public Bestilling saveBestillingByGruppeIdAndIdenter(Long gruppeId, List<String> miljoer,
+            RsTpsfBasisBestilling tpsfBestilling, List<String> eksisterendeIdenter) {
+
+        return saveBestillingByGruppeIdAndIdenter(gruppeId, null, miljoer, tpsfBestilling, eksisterendeIdenter);
+    }
+
+    @Transactional
+    public Bestilling saveBestillingByGruppeIdAndIdenter(Long gruppeId, Integer antallIdenter, List<String> miljoer,
+            RsTpsfBasisBestilling tpsfBestilling) {
+        return saveBestillingByGruppeIdAndIdenter(gruppeId, antallIdenter, miljoer, tpsfBestilling, null);
+    }
+
+    private Bestilling saveBestillingByGruppeIdAndIdenter(Long gruppeId, Integer antallIdenter, List<String> miljoer,
+            RsTpsfBasisBestilling tpsfBestilling, List<String> eksisterendeIdenter) {
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
         return saveBestillingToDB(
                 Bestilling.builder()
@@ -101,7 +114,8 @@ public class BestillingService {
                         .antallIdenter(antallIdenter)
                         .sistOppdatert(now())
                         .miljoer(join(",", miljoer))
-                        .tpsfKriterier(toJson(tpsfBestilling))
+                        .tpsfKriterier(nonNull(tpsfBestilling) ? toJson(tpsfBestilling) : null)
+                        .eksisterendeIdenter(nonNull(eksisterendeIdenter) ? join(",", eksisterendeIdenter) : null)
                         .build()
         );
     }
