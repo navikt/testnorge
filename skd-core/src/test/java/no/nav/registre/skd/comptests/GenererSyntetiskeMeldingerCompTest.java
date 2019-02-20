@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.registre.skd.testutils.ResourceUtils.getResourceFileContent;
 import static no.nav.registre.skd.testutils.StrSubstitutor.replace;
@@ -111,7 +112,7 @@ public class GenererSyntetiskeMeldingerCompTest {
     }
 
     private void stubTpsSynt() {
-        stubFor(get(urlPathEqualTo("/tpssynt/api/v1/generateTps/" + antallMeldinger + "/" + endringskodeInnvandringsmelding))
+        stubFor(get(urlEqualTo("/tpssynt/api/v1/generate/tps/" + endringskodeInnvandringsmelding + "?numToGenerate=" + antallMeldinger))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
                         .withBodyFile("comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json")));
     }
