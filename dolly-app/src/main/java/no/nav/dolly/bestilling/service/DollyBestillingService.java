@@ -6,6 +6,7 @@ import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
@@ -15,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +41,7 @@ import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -124,9 +125,16 @@ public class DollyBestillingService {
             TpsfBestilling tpsfBestilling =  nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setEnvironments(request.getEnvironments());
 
+            CheckStatusResponse tilgjengeligeIdenter = tpsfService.checkEksisterendeIdenter(request.getOpprettFraIdenter());
+            List<String> identer = tilgjengeligeIdenter.getStatuser().stream()
+                    .filter(identStatus -> identStatus.isAvailable())
+                    .map(identStatus -> identStatus.getIdent())
+                    .collect(toList());
+            oppdaterBestilling(bestilling, tilgjengeligeIdenter);
+
             int loopCount = 0;
-            while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < request.getEksisterendeIdenter().size()) {
-                tpsfBestilling.setEksisterendeIdenter(newArrayList(request.getEksisterendeIdenter().get(loopCount)));
+            while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < identer.size()) {
+                tpsfBestilling.setEksisterendeIdenter(newArrayList(identer.get(loopCount)));
                 preparePerson(request, bestilling, testgruppe, tpsfBestilling);
                 loopCount++;
             }
@@ -137,6 +145,21 @@ public class DollyBestillingService {
             oppdaterProgressFerdig(bestilling);
             clearCache();
         }
+    }
+
+    private void oppdaterBestilling(Bestilling bestilling, CheckStatusResponse tilgjengeligeIdenter) {
+        tilgjengeligeIdenter.getStatuser().forEach(identStatus -> {
+            if (!identStatus.isAvailable()) {
+                oppdaterProgress(bestilling, BestillingProgress.builder()
+                        .bestillingId(bestilling.getId())
+                        .ident(identStatus.getIdent().length() <= 11 ? identStatus.getIdent() :
+                                format("%s*%s", identStatus.getIdent().substring(0, 6),
+                                        identStatus.getIdent().substring(identStatus.getIdent().length()-4, identStatus.getIdent().length())))
+                        .feil(format("Miljø: %s", identStatus.getStatus()))
+                        .build());
+                clearCache();
+            }
+        });
     }
 
     private void preparePerson(RsDollyBestilling request, Bestilling bestilling, Testgruppe testgruppe, TpsfBestilling tpsfBestilling) {
@@ -206,7 +229,7 @@ public class DollyBestillingService {
 
     private void sendIdenterTilTPS(List<String> environments, List<String> identer, Testgruppe testgruppe, BestillingProgress progress) {
         try {
-            RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(identer, environments.stream().map(String::toLowerCase).collect(Collectors.toList()));
+            RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(identer, environments.stream().map(String::toLowerCase).collect(toList()));
             String feedbackTps = tpsfResponseHandler.extractTPSFeedback(response.getSendSkdMeldingTilTpsResponsene());
             log.info(feedbackTps);
 

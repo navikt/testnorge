@@ -161,7 +161,7 @@ public class TestgruppeControllerTest {
         List<String> envir = singletonList("u");
 
         RsDollyBestillingFraIdenterRequest dollyBestillingsRequest = RsDollyBestillingFraIdenterRequest.builder()
-                .eksisterendeIdenter(newArrayList(IDENT)).build();
+                .opprettFraIdenter(newArrayList(IDENT)).build();
         dollyBestillingsRequest.setEnvironments(envir);
 
         Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();

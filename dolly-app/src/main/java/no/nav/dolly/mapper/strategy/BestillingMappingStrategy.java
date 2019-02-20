@@ -15,7 +15,6 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.domain.resultset.RsIdentStatus;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -32,12 +31,9 @@ public class BestillingMappingStrategy implements MappingStrategy {
                         rsBestilling.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
                         rsBestilling.setGruppeId(bestilling.getGruppe().getId());
                         Map<String, Map<String, Set<String>>> errorEnvIdents = new HashMap<>();
-                        Set<Testident> identer = bestilling.getGruppe().getTestidenter();
-                        identer.forEach(ident -> ident.getBestillingProgress().forEach(progress -> {
-                            if (bestilling.getId().equals(progress.getBestillingId())) {
-                                prepStatus(errorEnvIdents, progress, ident);
-                            }
-                        }));
+                        bestilling.getProgresser().forEach(progress ->
+                                prepStatus(errorEnvIdents, progress)
+                            );
                         errorEnvIdents.keySet().forEach(env ->
                                 rsBestilling.getStatus().add(RsIdentStatus.builder()
                                         .statusMelding(env)
@@ -50,32 +46,32 @@ public class BestillingMappingStrategy implements MappingStrategy {
                 .register();
     }
 
-    private void prepStatus(Map<String, Map<String, Set<String>>> errorEnvIdents, BestillingProgress progress, Testident ident) {
+    private void prepStatus(Map<String, Map<String, Set<String>>> errorEnvIdents, BestillingProgress progress) {
         if (nonNull(progress.getFeil())) {
             newArrayList(progress.getFeil().split(",")).forEach(error -> {
                 String environ = error.split(":", 2)[0];
                 String errMsg = error.split(":", 2)[1].trim();
-                checkNUpdateStatus(errorEnvIdents, ident, environ, errMsg);
+                checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsg);
             });
         }
         if (nonNull(progress.getTpsfSuccessEnv())) {
             newArrayList(progress.getTpsfSuccessEnv().split(",")).forEach(environ ->
-                checkNUpdateStatus(errorEnvIdents, ident, environ, SUCCESS)
+                checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, SUCCESS)
             );
         }
 
     }
 
-    private void checkNUpdateStatus(Map<String, Map<String, Set<String>>> errorEnvIdents, Testident ident, String environ, String status) {
+    private void checkNUpdateStatus(Map<String, Map<String, Set<String>>> errorEnvIdents, String ident, String environ, String status) {
         if (errorEnvIdents.containsKey(status)) {
             if (errorEnvIdents.get(status).containsKey(environ)) {
-                errorEnvIdents.get(status).get(environ).add(ident.getIdent());
+                errorEnvIdents.get(status).get(environ).add(ident);
             } else {
-                errorEnvIdents.get(status).put(environ, newHashSet(ident.getIdent()));
+                errorEnvIdents.get(status).put(environ, newHashSet(ident));
             }
         } else {
             Map<String, Set<String>> entry = new HashMap();
-            entry.put(environ, newHashSet(ident.getIdent()));
+            entry.put(environ, newHashSet(ident));
             errorEnvIdents.put(status, entry);
         }
     }

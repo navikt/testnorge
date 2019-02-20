@@ -36,7 +36,7 @@ public class RsBestilling {
     private Long opprettetFraId;
     private String tpsfKriterier;
     private String openamSent;
-    private String eksisterendeIdenter;
+    private String opprettFraIdenter;
 
     public List<String> getEnvironments() {
         if (isNull(environments)) {

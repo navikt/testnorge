@@ -19,13 +19,13 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 @NoArgsConstructor
 public class RsDollyBestillingFraIdenterRequest extends RsDollyBestilling {
 
-    List<String> eksisterendeIdenter;
+    List<String> opprettFraIdenter;
     private RsTpsfBasisBestilling tpsf;
 
-    public List<String> getEksisterendeIdenter() {
-        if (isNull(eksisterendeIdenter)) {
-            eksisterendeIdenter = new ArrayList();
+    public List<String> getOpprettFraIdenter() {
+        if (isNull(opprettFraIdenter)) {
+            opprettFraIdenter = new ArrayList();
         }
-        return eksisterendeIdenter;
+        return opprettFraIdenter;
     }
 }

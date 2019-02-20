@@ -265,7 +265,7 @@ public class DollyBestillingServiceTest {
     public void opprettPersonerByKriterierFraIdenterAsync_bestillingOk() {
 
         RsDollyBestillingFraIdenterRequest bestillingFraIdenterRequest = RsDollyBestillingFraIdenterRequest.builder()
-                .eksisterendeIdenter(STANDARD_IDENTER)
+                .opprettFraIdenter(STANDARD_IDENTER)
                 .build();
         bestillingFraIdenterRequest.setEnvironments(asList("u1", "t2", "q3"));
 

@@ -94,9 +94,9 @@ public class BestillingService {
 
     @Transactional
     public Bestilling saveBestillingByGruppeIdAndIdenter(Long gruppeId, List<String> miljoer,
-            RsTpsfBasisBestilling tpsfBestilling, List<String> eksisterendeIdenter) {
+            RsTpsfBasisBestilling tpsfBestilling, List<String> opprettFraIdenter) {
 
-        return saveBestillingByGruppeIdAndIdenter(gruppeId, null, miljoer, tpsfBestilling, eksisterendeIdenter);
+        return saveBestillingByGruppeIdAndIdenter(gruppeId, null, miljoer, tpsfBestilling, opprettFraIdenter);
     }
 
     @Transactional
@@ -106,7 +106,7 @@ public class BestillingService {
     }
 
     private Bestilling saveBestillingByGruppeIdAndIdenter(Long gruppeId, Integer antallIdenter, List<String> miljoer,
-            RsTpsfBasisBestilling tpsfBestilling, List<String> eksisterendeIdenter) {
+            RsTpsfBasisBestilling tpsfBestilling, List<String> opprettFraIdenter) {
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
         return saveBestillingToDB(
                 Bestilling.builder()
@@ -115,7 +115,7 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .miljoer(join(",", miljoer))
                         .tpsfKriterier(nonNull(tpsfBestilling) ? toJson(tpsfBestilling) : null)
-                        .eksisterendeIdenter(nonNull(eksisterendeIdenter) ? join(",", eksisterendeIdenter) : null)
+                        .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .build()
         );
     }
