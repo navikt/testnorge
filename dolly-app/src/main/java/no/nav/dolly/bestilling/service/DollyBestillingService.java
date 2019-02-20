@@ -42,6 +42,7 @@ import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
+import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -122,13 +123,13 @@ public class DollyBestillingService {
         Testgruppe testgruppe = testgruppeService.fetchTestgruppeById(gruppeId);
 
         try {
-            TpsfBestilling tpsfBestilling =  nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
+            TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setEnvironments(request.getEnvironments());
 
             CheckStatusResponse tilgjengeligeIdenter = tpsfService.checkEksisterendeIdenter(request.getOpprettFraIdenter());
             List<String> identer = tilgjengeligeIdenter.getStatuser().stream()
-                    .filter(identStatus -> identStatus.isAvailable())
-                    .map(identStatus -> identStatus.getIdent())
+                    .filter(IdentStatus::isAvailable)
+                    .map(IdentStatus::getIdent)
                     .collect(toList());
             oppdaterBestilling(bestilling, tilgjengeligeIdenter);
 
@@ -139,7 +140,7 @@ public class DollyBestillingService {
                 loopCount++;
             }
         } catch (Exception e) {
-            log.error("Bestilling med id <" + bestilling.getId() + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
+            log.error("Bestilling med id={} til gruppeId={} ble avsluttet med feil={}", bestilling.getId(), gruppeId, e.getMessage(), e);
             bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()));
         } finally {
             oppdaterProgressFerdig(bestilling);
@@ -154,7 +155,7 @@ public class DollyBestillingService {
                         .bestillingId(bestilling.getId())
                         .ident(identStatus.getIdent().length() <= 11 ? identStatus.getIdent() :
                                 format("%s*%s", identStatus.getIdent().substring(0, 6),
-                                        identStatus.getIdent().substring(identStatus.getIdent().length()-4, identStatus.getIdent().length())))
+                                        identStatus.getIdent().substring(identStatus.getIdent().length() - 4, identStatus.getIdent().length())))
                         .feil(format("Miljø: %s", identStatus.getStatus()))
                         .build());
                 clearCache();
