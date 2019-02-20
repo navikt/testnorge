@@ -6,7 +6,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@Import({ MeldekortController.class, EIAController.class, ArenaInntektController.class, EIAController.class, MedlController.class})
+@Import({ MeldekortController.class, EIAController.class, InntektController.class, EIAController.class, MedlController.class})
 public class AppConfig {
 
     @Bean
