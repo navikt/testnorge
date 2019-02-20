@@ -3,6 +3,7 @@ package no.nav.dolly.appservices.tpsf.service;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,6 +42,8 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
+import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
+import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
@@ -57,10 +60,13 @@ public class DollyBestillingServiceTest {
     private static final String SUCCESS_CODE_TPS = "OK";
     private static final String FAIL_CODE_TPS = "08";
     private static final String INNVANDRING_CREATE_NAVN = "InnvandringCreate";
-    private static final String IDENT = "10";
+    private static final String IDENT_1 = "10";
+    private static final String IDENT_2 = "34";
+    private static final String IDENT_3 = "56";
     private static final String FEILMELDING = "feil";
     private static final String TPS_FEEDBACK = "feedback";
-    private static final List<String> STANDARD_IDENTER = asList(IDENT, "34", "56");
+    private static final List<String> STANDARD_IDENTER = asList(IDENT_1, IDENT_2, IDENT_3);
+    private static final String STATUS = "Tull";
 
     private Map<String, String> status_SuccU1T2_FailQ3;
     private RsDollyBestillingRequest standardBestillingRequest_u1_t2_q3;
@@ -110,14 +116,14 @@ public class DollyBestillingServiceTest {
         standardGruppe = new Testgruppe();
 
         standardSendSkdResponse = SendSkdMeldingTilTpsResponse.builder()
-                .personId(IDENT)
+                .personId(IDENT_1)
                 .skdmeldingstype(INNVANDRING_CREATE_NAVN)
                 .status(singletonMap("u2", "OK"))
                 .build();
 
         serviceRoutineResponseStatus = ServiceRoutineResponseStatus.builder()
                 .serviceRutinenavn("endre_spraakkode")
-                .personId(IDENT)
+                .personId(IDENT_1)
                 .status(singletonMap("u2", "OK"))
                 .build();
 
@@ -170,7 +176,7 @@ public class DollyBestillingServiceTest {
 
         ArgumentCaptor<BestillingProgress> argumentCaptor = ArgumentCaptor.forClass(BestillingProgress.class);
 
-        verify(identService).saveIdentTilGruppe(IDENT, standardGruppe);
+        verify(identService).saveIdentTilGruppe(IDENT_1, standardGruppe);
         verify(bestillingProgressRepository, times(2)).save(argumentCaptor.capture());
 
         BestillingProgress bestillingProgress = argumentCaptor.getValue();
@@ -203,7 +209,7 @@ public class DollyBestillingServiceTest {
 
         ArgumentCaptor<BestillingProgress> argumentCaptor = ArgumentCaptor.forClass(BestillingProgress.class);
 
-        verify(identService, times(1)).saveIdentTilGruppe(IDENT, standardGruppe);
+        verify(identService, times(1)).saveIdentTilGruppe(IDENT_1, standardGruppe);
         verify(bestillingProgressRepository, times(4)).save(argumentCaptor.capture());
         verify(tpsfResponseHandler).setErrorMessageToBestillingsProgress(any(TpsfException.class), any(BestillingProgress.class));
 
@@ -227,7 +233,7 @@ public class DollyBestillingServiceTest {
 
         dollyBestillingService.opprettPersonerByKriterierAsync(GRUPPE_ID, standardBestillingRequest_u1_t2_q3, standardNyBestilling);
 
-        verify(identService, never()).saveIdentTilGruppe(IDENT, standardGruppe);
+        verify(identService, never()).saveIdentTilGruppe(IDENT_1, standardGruppe);
         verify(tpsfResponseHandler).setErrorMessageToBestillingsProgress(any(TpsfException.class), any(BestillingProgress.class));
     }
 
@@ -246,8 +252,8 @@ public class DollyBestillingServiceTest {
     public void gjenopprettPersonerIMiljoer() {
 
         when(bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(BESTILLING_ID)).thenReturn(
-                singletonList(BestillingProgress.builder().ident(IDENT).build()));
-        when(tpsfService.hentTilhoerendeIdenter(singletonList(IDENT))).thenReturn(singletonList(IDENT));
+                singletonList(BestillingProgress.builder().ident(IDENT_1).build()));
+        when(tpsfService.hentTilhoerendeIdenter(singletonList(IDENT_1))).thenReturn(singletonList(IDENT_1));
         when(tpsfService.sendIdenterTilTpsFraTPSF(anyList(), anyList())).thenReturn(skdMeldingResponse);
 
         dollyBestillingService.gjenopprettBestillingAsync(
@@ -276,6 +282,13 @@ public class DollyBestillingServiceTest {
         when(tpsfService.opprettIdenterTpsf(any(TpsfBestilling.class))).thenReturn(STANDARD_IDENTER);
         when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(standardGruppe);
         when(tpsfService.sendIdenterTilTpsFraTPSF(anyList(), anyList())).thenReturn(response);
+
+        when(tpsfService.checkEksisterendeIdenter(STANDARD_IDENTER)).thenReturn(
+                CheckStatusResponse.builder().statuser(
+                        newArrayList(IdentStatus.builder().available(true).ident(IDENT_1).status(STATUS).build(),
+                                IdentStatus.builder().available(true).ident(IDENT_2).status(STATUS).build(),
+                                IdentStatus.builder().available(true).ident(IDENT_3).status(STATUS).build()))
+                        .build());
 
         dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(GRUPPE_ID, bestillingFraIdenterRequest, standardNyBestilling);
 
