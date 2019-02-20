@@ -1,13 +1,12 @@
 package no.nav.registre.syntrest.services;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class MeldekortService implements IService {
@@ -27,10 +26,10 @@ public class MeldekortService implements IService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @Async
-    public CompletableFuture<List<String>> generateMeldekortFromNAIS(int num_to_generate, String meldegruppe) {
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-meldekort" })
+    public List<String> generateMeldekortFromNAIS(int num_to_generate, String meldegruppe) {
         List<String> result = restTemplate.getForObject(String.format(synthArenaMeldekortUrl, num_to_generate, meldegruppe), List.class);
-        return CompletableFuture.completedFuture(result);
+        return result;
     }
 
     public String isAlive() {

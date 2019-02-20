@@ -21,7 +21,7 @@ spec:
   prometheus:
     path: /metrics
   replicas:
-    min: 2
+    min: 1
     max: 4
   secrets: true
   resources:

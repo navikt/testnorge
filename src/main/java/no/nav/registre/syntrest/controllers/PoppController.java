@@ -73,8 +73,7 @@ public class PoppController extends KubernetesUtils {
         int attempt = 0;
         while (attempt < retryCount) {
             try {
-                CompletableFuture<Object> result = poppService.generatePoppMeldingerFromNAIS(fnrs);
-                Object synData = result.get();
+                Object synData = poppService.generatePoppMeldingerFromNAIS(fnrs);
                 return synData;
             } catch (Exception e) {
                 TimeUnit.SECONDS.sleep(1);

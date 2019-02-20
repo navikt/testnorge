@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.services;
 
+import io.micrometer.core.annotation.Timed;
 import no.nav.registre.syntrest.domain.Inntektsmelding;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,11 +33,10 @@ public class ArenaInntektService extends KubernetesUtils implements IService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @Async
-    public CompletableFuture<Map<String, List<Inntektsmelding>>> generateInntektsmeldingerFromNAIS(String[] fnrs) throws InterruptedException {
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-inntekt" })
+    public Map<String, List<Inntektsmelding>> generateInntektsmeldingerFromNAIS(String[] fnrs) throws InterruptedException {
         Map<String, List<Inntektsmelding>> result = restTemplate.postForObject(synthArenaInntektUrl, fnrs, Map.class);
-        System.out.println(result);
-        return CompletableFuture.completedFuture(result);
+        return result;
     }
 
     public String isAlive(){

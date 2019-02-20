@@ -50,7 +50,6 @@ public class TPController extends KubernetesUtils {
         try {
             createApplication(client, "/nais/synthdata-tp.yaml", tpService);
             log.info("Requesting synthetic data: synthdata-tp");
-            CompletableFuture<List<Map<String, String>>> result = tpService.generateTPFromNAIS(numToGenerate);
             Object synData = getData(numToGenerate);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
@@ -69,8 +68,7 @@ public class TPController extends KubernetesUtils {
         int attempt = 0;
         while (attempt < retryCount) {
             try {
-                CompletableFuture<List<Map<String, String>>> result = tpService.generateTPFromNAIS(numToGenerate);
-                Object synData = result.get();
+                List<Map<String, String>> synData = tpService.generateTPFromNAIS(numToGenerate);
                 return synData;
             } catch (Exception e) {
                 TimeUnit.SECONDS.sleep(1);

@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.services;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
@@ -28,10 +29,10 @@ public class PenService implements IService{
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @Async
-    public CompletableFuture<Object> generatePenFromNAIS(int num_to_generate) throws InterruptedException {
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-pen" })
+    public Object generatePenFromNAIS(int num_to_generate) {
         Object result = restTemplate.getForObject(String.format(synthPenUrl, num_to_generate), Object.class);
-        return CompletableFuture.completedFuture(result);
+        return result;
     }
 
     public String isAlive() {

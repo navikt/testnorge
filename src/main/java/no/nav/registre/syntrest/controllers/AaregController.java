@@ -49,7 +49,6 @@ public class AaregController extends KubernetesUtils {
         try {
             createApplication(client, "/nais/synthdata-aareg.yaml", aaregService);
             log.info("Requesting synthetic data: synthdata-aareg");
-            CompletableFuture<String> result = aaregService.generateAaregFromNAIS(request);
             Object synData = getData(request);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
@@ -68,8 +67,7 @@ public class AaregController extends KubernetesUtils {
         int attempt = 0;
         while (attempt < retryCount) {
             try {
-                CompletableFuture<String> result = aaregService.generateAaregFromNAIS(request);
-                Object synData = result.get();
+                String synData = aaregService.generateAaregFromNAIS(request);
                 return synData;
             } catch (Exception e) {
                 TimeUnit.SECONDS.sleep(1);

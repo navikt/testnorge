@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -74,8 +73,7 @@ public class ArenaInntektController extends KubernetesUtils {
         int attempt = 0;
         while (attempt < retryCount) {
             try {
-                CompletableFuture<Map<String, List<Inntektsmelding>>> result = arenaInntektService.generateInntektsmeldingerFromNAIS(fnrs);
-                Map<String, List<Inntektsmelding>> synData = result.get();
+                Map<String, List<Inntektsmelding>> synData = arenaInntektService.generateInntektsmeldingerFromNAIS(fnrs);
                 return synData;
             } catch (Exception e) {
                 TimeUnit.SECONDS.sleep(1);

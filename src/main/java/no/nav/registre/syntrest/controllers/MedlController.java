@@ -2,8 +2,6 @@ package no.nav.registre.syntrest.controllers;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
-import io.kubernetes.client.util.Config;
-import io.kubernetes.client.util.KubeConfig;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
 import no.nav.registre.syntrest.services.MedlService;
@@ -17,7 +15,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -68,8 +65,7 @@ public class MedlController extends KubernetesUtils {
         int attempt = 0;
         while (attempt < retryCount) {
             try {
-                CompletableFuture<List<Map<String, String>>> result = medlService.generateMedlFromNAIS(numToGenerate);
-                Object synData = result.get();
+                List<Map<String, String>> synData = medlService.generateMedlFromNAIS(numToGenerate);
                 return synData;
             } catch (Exception e) {
                 TimeUnit.SECONDS.sleep(1);

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -64,8 +63,7 @@ public class MeldekortController extends KubernetesUtils {
         int attempt = 0;
         while (attempt < retryCount) {
             try {
-                CompletableFuture<List<String>> result = meldekortService.generateMeldekortFromNAIS(num_to_generate, meldegruppe);
-                Object synData = result.get();
+                List<String> synData = meldekortService.generateMeldekortFromNAIS(num_to_generate, meldegruppe);
                 return synData;
             } catch (Exception e) {
                 TimeUnit.SECONDS.sleep(3);

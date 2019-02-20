@@ -2,11 +2,11 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: syntrest
-  namespace: default
+  namespace: q2
   labels:
     team: synt
 spec:
-  image: "docker.adeo.no:5000/registre/synthdata-synt-rest:0.0.1-SNAPSHOT-68"
+  image: "docker.adeo.no:5000/registre/synthdata-synt-rest:beta-4"
   port: 8080
   liveness:
     path: /internal/isAlive
@@ -19,7 +19,8 @@ spec:
     periodSeconds: 5
     failureThreshold: 15
   prometheus:
-    path: /metrics
+    enabled: true
+    path: /internal/prometheus
   replicas:
     min: 2
     max: 4
@@ -27,7 +28,7 @@ spec:
   resources:
     limits:
       cpu: 500m
-      memory: 500Mi
+      memory: 800Mi
     requests:
       cpu: 200m
       memory: 200Mi

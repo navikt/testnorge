@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.services;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
@@ -28,10 +29,10 @@ public class TPSService implements IService{
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @Async
-    public CompletableFuture<List<Map<String, Object>>> generateTPSFromNAIS(int num_to_generate, String endringskode) throws InterruptedException{
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-tps" })
+    public List<Map<String, Object>> generateTPSFromNAIS(int num_to_generate, String endringskode) throws InterruptedException{
         List<Map<String, Object>> result = restTemplate.getForObject(String.format(synthTpsUrl, num_to_generate, endringskode), List.class);
-        return CompletableFuture.completedFuture(result);
+        return result;
     }
 
     public String isAlive(){
