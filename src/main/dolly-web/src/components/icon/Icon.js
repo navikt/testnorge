@@ -31,7 +31,8 @@ export const iconList = [
 	'feedback-check-circle',
 	'arrow-left',
 	'arrow-right',
-	'synchronize'
+	'synchronize',
+	'details'
 ]
 
 export default class Icon extends PureComponent {
@@ -126,6 +127,17 @@ export default class Icon extends PureComponent {
         <path fill="#3e3832"
               d="M7.415,9.892c-0.424-0.354-1.054-0.3-1.408,0.124L4.284,12.07c0.033-1.282,0.396-2.549,1.085-3.697   c1.111-1.854,2.927-3.194,4.983-3.676c2.695-0.633,5.507,0.267,7.341,2.345c0.365,0.414,0.997,0.454,1.411,0.089   c0.414-0.365,0.454-0.997,0.089-1.412c-2.322-2.632-5.885-3.771-9.298-2.969C7.316,3.354,5.041,5.029,3.653,7.345   c-0.624,1.041-1.029,2.162-1.229,3.312L1.858,9.713c-0.285-0.473-0.9-0.626-1.373-0.342c-0.472,0.284-0.627,0.898-0.342,1.372   l2.561,4.262c0.166,0.277,0.456,0.457,0.778,0.482c0.026,0.002,0.051,0.003,0.078,0.003c0.294,0,0.575-0.13,0.767-0.357   l3.212-3.832C7.893,10.877,7.838,10.246,7.415,9.892z"/></g></svg>
 			)
+
+			case ('details'): return (<svg {...props} className={cn('svg-icon-details', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24">
+				<title>Bestillingsdetaljer</title><g stroke="#0067C5" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none">
+				</g>
+				<g><line id="svg_5" y2="1.739583" x2="18.361613" y1="1.739583" x1="0.666667" strokeWidth="1"/>
+					<line id="svg_6" y2="6.946506" x2="18.361613" y1="6.946506" x1="0.666667" strokeWidth="1"/>
+					<line id="svg_10" y2="12" x2="9.194946" y1="12" x1="0.666667" strokeWidth="1"/>
+					<line id="svg_4" y2="17" x2="9.194946" y1="17" x1="0.666667" strokeWidth="1"/>
+					<ellipse ry="4.083333" rx="4.083333" id="svg_7" cy="14.822917" cx="15.75" strokeWidth="2" fill="none"/>
+					<line id="svg_9" y2="22.239583" x2="22.333333" y1="17.90625" x1="18.666667" strokeWidth="2"/>
+ 				</g></svg>)
 		}
 	}
 }
