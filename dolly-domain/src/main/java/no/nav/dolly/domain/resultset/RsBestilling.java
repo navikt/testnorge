@@ -35,6 +35,7 @@ public class RsBestilling {
     private List<RsBestillingProgress> bestillingProgress;
     private Long opprettetFraId;
     private String tpsfKriterier;
+    private String openamSent;
 
     public List<String> getEnvironments() {
         if (isNull(environments)) {

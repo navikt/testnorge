@@ -1,15 +1,29 @@
 @import (reference) '~lessVars';
 
-.person-details_content {
-	h3 {
-		font-size: 1em;
-		background-color: @color-bg-divider;
-		padding: 6px 6px 6px 6px;
-		margin: 8px 0;
-	}
-}
-
 .person-details {
+	.person-details_content {
+		h3 {
+			font-size: 1em;
+			background-color: @color-bg-divider;
+			padding: 6px 6px 6px 6px;
+			margin: 8px 0;
+		}
+	}
+	.tidligere-bestilling-id {
+		padding: 0;
+		margin: 20px 0 5px 5px;
+	}
+
+	.tidligere-bestilling-panel {
+		display: flex;
+		flex-direction: column;
+		padding: 0 10px;
+		margin-bottom: 20px;
+		border: 1px solid white; // get correct sizing when open
+		border-radius: 4px;
+		border-color: @color-bg-grey-border;
+	}
+
 	.dolly-button {
 		margin-left: 10px;
 	}
