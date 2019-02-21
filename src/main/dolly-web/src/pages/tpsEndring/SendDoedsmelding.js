@@ -22,6 +22,7 @@ export default class SendDoedsmelding extends PureComponent {
 		showErrorMessageFoundIdent: false,
 		currentfnr: '',
 		environments: [],
+		miljoer: [],
 		environments_success: [],
 		environments_error: []
 	}
@@ -75,6 +76,8 @@ export default class SendDoedsmelding extends PureComponent {
 					this.setState({
 						isFetching: false,
 						meldingSent: true,
+						currentfnr: null,
+						miljoer: [],
 						environments_success: success_envs,
 						environments_error: error_envs
 					})
@@ -82,6 +85,8 @@ export default class SendDoedsmelding extends PureComponent {
 				} catch (err) {
 					this.setState({
 						meldingSent: false,
+						currentfnr: null,
+						miljoer: [],
 						errorMessage: err.response.data.message,
 						isFetching: false
 					})
@@ -105,6 +110,7 @@ export default class SendDoedsmelding extends PureComponent {
 					environments: [],
 					showErrorMessageFoundIdent: false,
 					errorMessage: null,
+					miljoer: [],
 					meldingSent: false,
 					foundIdent: false
 				},
@@ -113,19 +119,25 @@ export default class SendDoedsmelding extends PureComponent {
 						const getMiljoerByFnrRes = await TpsfApi.getMiljoerByFnr(fnr)
 						const res_environments = getMiljoerByFnrRes.data.statusPaaIdenter[0].env
 
+						let miljoer = []
+
 						if (res_environments.length < 1) {
 							return this.setState({
 								currentfnr: fnr,
 								foundIdent: false,
 								isFetchingMiljoer: false,
+								miljoer: miljoer,
 								showErrorMessageFoundIdent: true
 							})
+						} else if (res_environments.length === 1) {
+							miljoer.push({value: res_environments[0], label: res_environments[0]})
 						}
 
 						const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)
 						return this.setState({
 							environments: displayEnvironmentsInDropdown,
 							currentfnr: fnr,
+							miljoer: miljoer,
 							foundIdent: true,
 							isFetchingMiljoer: false
 						})
@@ -193,13 +205,13 @@ export default class SendDoedsmelding extends PureComponent {
 	}
 
 	render() {
-		const { foundIdent, environments, handlingsType } = this.state
+		const { foundIdent, environments, currentfnr, miljoer, handlingsType } = this.state
 
 		let initialValues = {
-			ident: '',
+			ident: currentfnr,
 			handling: 'C',
 			doedsdato: '',
-			miljoer: []
+			miljoer: miljoer.slice()
 		}
 
 		const handlingOptions = [

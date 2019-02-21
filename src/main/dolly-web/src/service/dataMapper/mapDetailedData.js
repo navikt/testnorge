@@ -185,6 +185,19 @@ export function mapTpsfData(tpsfData, testIdent) {
 	return data
 }
 
+export function mapBestillingId(testIdent) {
+	if (!testIdent) return null
+	return {
+		header: 'Tidligere bestilling-ID',
+		data: [
+			{
+				id: 'bestillingID',
+				value: testIdent.bestillingId.slice(1).join(', ')
+			}
+		]
+	}
+}
+
 export function mapSigrunData(sigrunData) {
 	if (!sigrunData || sigrunData.length === 0) return null
 
