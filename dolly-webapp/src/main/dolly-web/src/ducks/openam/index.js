@@ -31,6 +31,13 @@ export const postOpenAm = createAction('POST_OPEN_AM', async (groupObj, bestilli
 	})
 })
 
+export const postOpenAm2 = createAction('POST_OPEN_AM', async bestillingId => {
+	const res = await DollyApi.postOpenAmBestilling(bestillingId)
+	console.log('res :', res)
+
+	return res
+})
+
 const initialState = {
 	response: null
 }
@@ -51,7 +58,10 @@ export default handleActions(
 )
 
 //thunk
-export const sendToOpenAm = () => (dispatch, getState) => {
+export const sendToOpenAm = bestillingId => (dispatch, getState) => {
 	const { gruppe, bestillingStatuser } = getState()
-	return dispatch(postOpenAm(gruppe.data[0], bestillingStatuser.data))
+
+	console.log('bestillingId :', bestillingId)
+
+	return dispatch(postOpenAm2(bestillingId))
 }

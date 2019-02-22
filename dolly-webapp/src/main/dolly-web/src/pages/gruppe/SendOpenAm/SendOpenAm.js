@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import Knapp from 'nav-frontend-knapper'
 import Modal from 'react-modal'
 import Lukknapp from 'nav-frontend-lukknapp'
+import Button from '~/components/button/Button'
 
 import './SendOpenAm.less'
 
@@ -38,45 +39,58 @@ export default class SendOpenAm extends Component {
 	}
 
 	render() {
-		const { sendToOpenAm, openAmFetching, openAmResponse, gruppe } = this.props
+		const { sendToOpenAm, openAmFetching, openAmResponse, gruppe, bestillingId } = this.props
+		// console.log('this.props :', this.props)
 		const { modalOpen } = this.state
+		console.log('gruppe :', gruppe)
 
-		if (gruppe.openAmSent || openAmResponse) {
-			return (
-				<Fragment>
-					{openAmResponse && <span className="openam-status">Gruppen ble sendt!</span>}
-					<Knapp type="standard" onClick={this.open} spinner={openAmFetching} autoDisableVedSpinner>
-						Oppdater OpenAM
-					</Knapp>
-					<Modal
-						isOpen={modalOpen}
-						onRequestClose={this.close}
-						shouldCloseOnEsc
-						style={customStyles}
-					>
-						<div className="openam-modal">
-							<h1>Oppdater OpenAM</h1>
-							Gruppen er allerede sendt til OpenAM. Dolly vil forsøke å sende alle testidenter på
-							nytt. Er du sikker på at du vil utføre dette?
-							<div className="openam-modal_buttons">
-								<Knapp autoFocus type="standard" onClick={this.close}>
-									Avbryt
-								</Knapp>
-								<Knapp type="hoved" onClick={this.closeOnSend}>
-									Utfør
-								</Knapp>
-							</div>
-							<Lukknapp onClick={this.close} />
-						</div>
-					</Modal>
-				</Fragment>
-			)
-		}
+		// if (gruppe.openAmSent || openAmResponse) {
+		// 	return (
+		// 		<Fragment>
+		// 			{openAmResponse && <span className="openam-status">Gruppen ble sendt!</span>}
+		// 			<Knapp type="standard" onClick={this.open} spinner={openAmFetching} autoDisableVedSpinner>
+		// 				Oppdater OpenAM
+		// 			</Knapp>
+		// 			<Modal
+		// 				isOpen={modalOpen}
+		// 				onRequestClose={this.close}
+		// 				shouldCloseOnEsc
+		// 				style={customStyles}
+		// 			>
+		// 				<div className="openam-modal">
+		// 					<h1>Oppdater OpenAM</h1>
+		// 					Gruppen er allerede sendt til OpenAM. Dolly vil forsøke å sende alle testidenter på
+		// 					nytt. Er du sikker på at du vil utføre dette?
+		// 					<div className="openam-modal_buttons">
+		// 						<Knapp autoFocus type="standard" onClick={this.close}>
+		// 							Avbryt
+		// 						</Knapp>
+		// 						<Knapp type="hoved" onClick={this.closeOnSend}>
+		// 							Utfør
+		// 						</Knapp>
+		// 					</div>
+		// 					<Lukknapp onClick={this.close} />
+		// 				</div>
+		// 			</Modal>
+		// 		</Fragment>
+		// 	)
+		// }
+
+		// return (
+		// 	<Knapp type="standard" onClick={sendToOpenAm} spinner={openAmFetching} autoDisableVedSpinner>
+		// 		Send til OpenAM
+		// 	</Knapp>
+		// )
 
 		return (
-			<Knapp type="standard" onClick={sendToOpenAm} spinner={openAmFetching} autoDisableVedSpinner>
-				Send til OpenAM
-			</Knapp>
+			<Button
+				className="flexbox--align-center"
+				onClick={() => sendToOpenAm(bestillingId)}
+				spinner={openAmFetching}
+				autoDisableVedSpinner
+			>
+				SEND TIL OPENAM
+			</Button>
 		)
 	}
 }
