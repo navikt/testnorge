@@ -17,7 +17,6 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
-import no.nav.dolly.testdata.builder.RsOpprettTestgruppeBuilder;
 
 public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
 
@@ -25,12 +24,11 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
     public void opprettTestgruppeBasertPaaCurrentBruker() throws Exception {
         Team team = teamRepository.findAllByOrderByNavn().get(0);
 
-        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettTestgruppeBuilder.builder()
+        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
                 .navn("mingruppe")
                 .hensikt("hensikt")
                 .teamId(team.getId())
-                .build()
-                .convertToRealRsOpprettTestgruppe();
+                .build();
 
         mvcMock.perform(post(endpointUrl)
                 .contentType(APPLICATION_JSON_UTF8)
@@ -49,11 +47,10 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
     @Test
     @Ignore
     public void opprettTestgruppeUtenAaSpesifisereTeamOgFaaSpesifisertTeamMedNavidentNavn() throws Exception {
-        RsOpprettEndreTestgruppe rsOpprettTestgruppe = RsOpprettTestgruppeBuilder.builder()
+        RsOpprettEndreTestgruppe rsOpprettTestgruppe = RsOpprettEndreTestgruppe.builder()
                 .navn("mingruppe")
                 .hensikt("hensikt")
-                .build()
-                .convertToRealRsOpprettTestgruppe();
+                .build();
 
         mvcMock.perform(post(endpointUrl)
                 .contentType(APPLICATION_JSON_UTF8)
@@ -80,17 +77,15 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
     @Test
     @Ignore
     public void opprettTestgruppeUtenAaSpesifisereTeamOgTeamMedNavidentnavnAlleredeEksisterer() throws Exception {
-        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettTestgruppeBuilder.builder()
+        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
                 .navn("mingruppe")
                 .hensikt("hensikt")
-                .build()
-                .convertToRealRsOpprettTestgruppe();
+                .build();
 
-        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe2 = RsOpprettTestgruppeBuilder.builder()
+        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe2 = RsOpprettEndreTestgruppe.builder()
                 .navn("mingruppe2")
                 .hensikt("hensikt2")
-                .build()
-                .convertToRealRsOpprettTestgruppe();
+                .build();
 
         String url = endpointUrl;
 

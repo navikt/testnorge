@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset;
+package no.nav.dolly.domain.resultset.tpsf;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class RsOpprettEndreTestgruppe {
-	private Long teamId;
-	private String navn;
-	private String hensikt;
+@AllArgsConstructor
+public class IdentStatus {
+
+    private String ident;
+    private String status;
+    private boolean available;
 }
