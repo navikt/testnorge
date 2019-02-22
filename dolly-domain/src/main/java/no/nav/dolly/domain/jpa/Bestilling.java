@@ -53,7 +53,7 @@ public class Bestilling {
     @Column(name = "MILJOER", nullable = false)
     private String miljoer;
 
-    @Column(name = "ANTALL_IDENTER")
+    @Column(name = "ANTALL_IDENTER", nullable = false)
     private Integer antallIdenter;
 
     @Column(name = "SIST_OPPDATERT", nullable = false)

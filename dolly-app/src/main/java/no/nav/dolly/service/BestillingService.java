@@ -93,19 +93,7 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestillingByGruppeIdAndIdenter(Long gruppeId, List<String> miljoer,
-            RsTpsfBasisBestilling tpsfBestilling, List<String> opprettFraIdenter) {
-
-        return saveBestillingByGruppeIdAndIdenter(gruppeId, 0, miljoer, tpsfBestilling, opprettFraIdenter);
-    }
-
-    @Transactional
-    public Bestilling saveBestillingByGruppeIdAndIdenter(Long gruppeId, Integer antallIdenter, List<String> miljoer,
-            RsTpsfBasisBestilling tpsfBestilling) {
-        return saveBestillingByGruppeIdAndIdenter(gruppeId, antallIdenter, miljoer, tpsfBestilling, null);
-    }
-
-    private Bestilling saveBestillingByGruppeIdAndIdenter(Long gruppeId, Integer antallIdenter, List<String> miljoer,
+    public Bestilling saveBestilling(Long gruppeId, Integer antallIdenter, List<String> miljoer,
             RsTpsfBasisBestilling tpsfBestilling, List<String> opprettFraIdenter) {
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
         return saveBestillingToDB(

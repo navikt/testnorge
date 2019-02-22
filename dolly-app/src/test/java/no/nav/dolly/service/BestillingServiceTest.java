@@ -81,7 +81,7 @@ public class BestillingServiceTest {
 
         when(testgruppeService.fetchTestgruppeById(gruppeId)).thenReturn(gruppe);
 
-        bestillingService.saveBestillingByGruppeIdAndIdenter(gruppeId, antallIdenter, miljoer, null);
+        bestillingService.saveBestilling(gruppeId, antallIdenter, miljoer, null, null);
 
         ArgumentCaptor<Bestilling> argCap = ArgumentCaptor.forClass(Bestilling.class);
         verify(bestillingRepository).save(argCap.capture());

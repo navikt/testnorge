@@ -117,7 +117,7 @@ public class TestgruppeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
-        Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndIdenter(gruppeId, request.getAntall(), request.getEnvironments(), request.getTpsf());
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getAntall(), request.getEnvironments(), request.getTpsf(), null);
 
         dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
@@ -127,7 +127,7 @@ public class TestgruppeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
-        Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndIdenter(gruppeId, request.getEnvironments(), request.getTpsf(), request.getOpprettFraIdenter());
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getOpprettFraIdenter().size(), request.getEnvironments(), request.getTpsf(), request.getOpprettFraIdenter());
 
         dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
