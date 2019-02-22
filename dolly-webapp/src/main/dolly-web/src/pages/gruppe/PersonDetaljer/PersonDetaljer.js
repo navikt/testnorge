@@ -76,8 +76,8 @@ export default class PersonDetaljer extends PureComponent {
 					if (i.data[0].id == 'bestillingID') {
 						return (
 							<div key={idx} className="tidligere-bestilling-panel">
-								<h4 className="tidligere-bestilling-id">{i.header}</h4>
-								{this._renderPersonInfoBlockHandler(i)}
+								<h4>{i.header}</h4>
+								<div>{i.data[0].value}</div>
 							</div>
 						)
 					}
