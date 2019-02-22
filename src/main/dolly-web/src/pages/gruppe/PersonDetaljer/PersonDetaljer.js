@@ -10,22 +10,9 @@ import { mapBestillingData } from '~/pages/gruppe/BestillingListe/BestillingDeta
 import cn from 'classnames'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import DollyModal from '~/components/modal/DollyModal'
+import Formatters from '~/utils/DataFormatter'
 
 const AttributtManagerInstance = new AttributtManager()
-
-// const customStyles = {
-// 	content: {
-// 		top: '50%',
-// 		left: '50%',
-// 		right: 'auto',
-// 		bottom: 'auto',
-// 		marginRight: '-50%',
-// 		transform: 'translate(-50%, -50%)',
-// 		width: '60%',
-// 		minWidth: '500px',
-// 		overflow: 'inherit'
-// 	}
-// }
 
 export default class PersonDetaljer extends PureComponent {
 	constructor(props) {
@@ -127,9 +114,9 @@ export default class PersonDetaljer extends PureComponent {
 	}
 
 	_renderBestillingModal = () => {
-		const ident = this.props.bestillingId
+		const ident = Formatters.idUtenEllipse(this.props.bestillingId)
 		const { bestillinger } = this.props
-		const bestilling = bestillinger.data.find(i => i.id == ident)
+		const bestilling = bestillinger.data.find(i => i.id.toString() === ident)
 		const data = mapBestillingData(bestilling)
 
 		return (
