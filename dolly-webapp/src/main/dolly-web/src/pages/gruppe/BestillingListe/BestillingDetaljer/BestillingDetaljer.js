@@ -12,8 +12,6 @@ import { mapBestillingData } from './BestillingDataMapper'
 import cn from 'classnames'
 import DollyModal from '~/components/modal/DollyModal'
 
-// TODO: Flytt modal ut som en dumb komponent
-
 export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
 		super(props)
