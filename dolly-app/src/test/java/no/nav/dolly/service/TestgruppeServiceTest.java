@@ -40,7 +40,6 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
-import no.nav.dolly.testdata.builder.RsOpprettTestgruppeBuilder;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
@@ -228,7 +227,7 @@ public class TestgruppeServiceTest {
     public void oppdaterTestgruppe_sjekkAtDBKalles() {
         long teamId = 2L;
 
-        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettTestgruppeBuilder.builder().hensikt("test").navn("navn").teamId(1L).build().convertToRealRsOpprettTestgruppe();
+        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").teamId(1L).build();
 
         Team team = Team.builder().navn("team").id(teamId).build();
 

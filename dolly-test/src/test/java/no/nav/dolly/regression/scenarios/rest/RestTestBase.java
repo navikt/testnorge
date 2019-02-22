@@ -23,7 +23,7 @@ import no.nav.dolly.config.DollyObjectMapper;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.regression.InMememoryDbTestSetup;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
@@ -49,7 +49,7 @@ public abstract class RestTestBase extends InMememoryDbTestSetup {
     protected Testgruppe standardTestgruppe;
     protected Bruker standardBruker;
     protected Team standardTeam;
-    protected RsDollyBestillingsRequest standardBestilling_u6 = new RsDollyBestillingsRequest();
+    protected RsDollyBestillingRequest standardBestilling_u6 = new RsDollyBestillingRequest();
     protected List<String> standardEnvironments = singletonList("u6");
 
 

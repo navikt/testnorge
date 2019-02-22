@@ -24,7 +24,8 @@ import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.Person;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
+import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
 
@@ -36,6 +37,7 @@ public class TpsfService {
     private static final String TPSF_OPPRETT_URL = "/personer";
     private static final String TPSF_SEND_TPS_FLERE_URL = "/tilTpsFlere";
     private static final String TPSF_HENT_PERSONER_URL = "/hentpersoner";
+    private static final String TPSF_CHECK_IDENT_STATUS = "/checkpersoner";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -46,7 +48,12 @@ public class TpsfService {
     @Autowired
     ProvidersProps providersProps;
 
-    public List<String> opprettIdenterTpsf(RsTpsfBestilling request) {
+    public CheckStatusResponse checkEksisterendeIdenter(List<String> identer) {
+        ResponseEntity<Object> response = postToTpsf(TPSF_CHECK_IDENT_STATUS, new HttpEntity<>(identer));
+        return nonNull(response) ? objectMapper.convertValue(response.getBody(), CheckStatusResponse.class) : null;
+    }
+
+    public List<String> opprettIdenterTpsf(TpsfBestilling request) {
         ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, new HttpEntity<>(request));
         return nonNull(response) ? objectMapper.convertValue(response.getBody(), List.class) : null;
     }
