@@ -96,7 +96,7 @@ public class BestillingService {
     public Bestilling saveBestillingByGruppeIdAndIdenter(Long gruppeId, List<String> miljoer,
             RsTpsfBasisBestilling tpsfBestilling, List<String> opprettFraIdenter) {
 
-        return saveBestillingByGruppeIdAndIdenter(gruppeId, null, miljoer, tpsfBestilling, opprettFraIdenter);
+        return saveBestillingByGruppeIdAndIdenter(gruppeId, 0, miljoer, tpsfBestilling, opprettFraIdenter);
     }
 
     @Transactional
