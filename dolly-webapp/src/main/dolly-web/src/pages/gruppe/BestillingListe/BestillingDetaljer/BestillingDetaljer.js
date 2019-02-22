@@ -12,6 +12,7 @@ import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
 import cn from 'classnames'
+import FeilmeldingValue from '~/components/fields/FeilmeldingValue/FeilmeldingValue'
 
 // TODO: Flytt modal ut som en dumb komponent
 const customStyles = {
@@ -44,14 +45,14 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-		const { successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
-
+		const { successEnvs, failedEnvs, bestillingStatus, statusmeldingFeil } = this.props.miljoeStatusObj
 		// TODO: Reverse Map detail data here. Alex
+		//OBS! Kun error fra tpsf foreløbig
 		return (
 			<div className="bestilling-detaljer">
 				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
-				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
+				{statusmeldingFeil.length > 0 && this._renderErrorMessage(bestillingStatus)}
 				<div className="flexbox--align-center--justify-end">
 					<Button
 						onClick={this._onToggleModal}
@@ -176,25 +177,54 @@ export default class BestillingDetaljer extends PureComponent {
 		this.setState({ modalOpen: !this.state.modalOpen })
 	}
 
-	_renderErrorMessage = errorMsgs => (
-		<Fragment>
-			<div className="flexbox--align-center error-header">
-				<Icon size={'16px'} kind={'report-problem-triangle'} />
-				<h3>Feilmeldinger</h3>
-			</div>
-			<div className={'flexbox--align-center info-block'}>
-				{errorMsgs.map((error, i) => {
-					return (
-						<p className="" key={i}>
-							{error.split('%').join(' ')
-							// .substring(0, error.length - 1)
-							}
-						</p>
-					)
+	_renderErrorMessage = bestillingStatus => {
+		// map trenger unique key
+		return (
+			<Fragment>
+				<div className="flexbox--align-center error-header">
+					<Icon size={'16px'} kind={'report-problem-triangle'} />
+					<h3>Feilmeldinger</h3>
+				</div>
+				<div className="feil-container">
+					<div className = 'feil-header feil-header_stor'>Feilmelding</div>
+					<div className = 'feil-kolonne_header'>
+						<div className = 'feil-header feil-header_liten'>Miljø</div>
+						<div className = 'feil-header feil-header_stor'>Ident</div>
+					</div>
+				</div>
+				{bestillingStatus.map(feil => {
+					if (feil.statusMelding !== 'OK'){
+						return (
+							<div className='feil-container feil-container_border'>
+								<div className = 'feil-kolonne_stor' >
+									{feil.statusMelding}
+								</div>
+								<div className = 'feil-kolonne_stor'>
+									{Object.keys(feil.environmentIdents).map(miljo => {
+										let identerPerMiljo = []
+											feil.environmentIdents[miljo].map(ident => {
+												!identerPerMiljo.includes(ident) && identerPerMiljo.push(ident)
+											})
+
+										const miljoUpperCase = miljo.toUpperCase()
+										const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
+											
+										return (
+											<div className = 'feil-container'>
+												<div className="feil-kolonne_liten">{miljoUpperCase}</div>
+												<div className="feil-kolonne_stor">{identerPerMiljoStr}</div>
+											</div>
+										)
+									})}
+								</div>
+							</div>
+						)
+					}
 				})}
-			</div>
-		</Fragment>
-	)
+			</Fragment>
+		)
+	}
+
 
 	_renderMiljoeStatus = (successEnvs, failedEnvs) => {
 		const successEnvsStr = Formatters.arrayToString(successEnvs)

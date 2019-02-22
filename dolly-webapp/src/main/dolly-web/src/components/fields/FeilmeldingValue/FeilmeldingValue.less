@@ -1,0 +1,58 @@
+
+.feil-container {
+	display: flex;
+	flex-direction: row;
+
+	&_border {
+		border-bottom: 1px solid #d3dee3;
+	}
+}
+
+.feil-kolonne {
+	&_liten {
+		flex-direction: column;
+		text-align: start;
+		padding-right: 35px;
+		flex: 1;
+	}
+
+	&_stor {
+		flex-direction: column;
+		text-align: start;
+		padding-right: 35px;
+		flex: 5;
+	}
+
+	&_header {
+		flex-direction: row;
+		display: flex;
+		padding-right: 35px;
+		flex: 5;
+	}
+}
+
+.feil-header {
+	flex-direction: column;
+	text-align: left;
+	margin: 0px;
+	
+	&_liten {
+		flex: 1;
+		font-size: 0.75em;
+		margin: 0 0 0px;
+		font-weight: bold;
+		text-transform: uppercase;
+		padding-right: 25px;
+	}
+	
+	&_stor {
+		flex: 5;
+		font-size: 0.75em;
+		margin: 0 0 0px;
+		font-weight: bold;
+		text-transform: uppercase;
+		padding-right: 30px;
+	}
+}
+
+//TODO: scope classnamesene under et css classname
