@@ -12,6 +12,7 @@ import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
 import cn from 'classnames'
+import SendOpenAmConnector from '~/pages/gruppe/SendOpenAm/SendOpenAmConnector'
 
 // TODO: Flytt modal ut som en dumb komponent
 const customStyles = {
@@ -45,6 +46,8 @@ export default class BestillingDetaljer extends PureComponent {
 
 	render() {
 		const { successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
+		console.log('props :', this.props)
+		const bestillingId = this.props.bestilling.id
 
 		// TODO: Reverse Map detail data here. Alex
 		return (
@@ -53,6 +56,7 @@ export default class BestillingDetaljer extends PureComponent {
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
 				<div className="flexbox--align-center--justify-end">
+					{bestillingId && <SendOpenAmConnector bestillingId={bestillingId} />}
 					<Button
 						onClick={this._onToggleModal}
 						className="flexbox--align-center"

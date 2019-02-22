@@ -4,8 +4,8 @@ import { postOpenAm, sendToOpenAm } from '~/ducks/openam'
 import { createLoadingSelector } from '~/ducks/loading'
 
 const openAmSelector = createLoadingSelector(postOpenAm)
-
 const mapStateToProps = state => {
+	console.log('state :', state)
 	return {
 		openAmFetching: openAmSelector(state),
 		openAmResponse: state.openam.response
@@ -14,7 +14,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		sendToOpenAm: () => dispatch(sendToOpenAm())
+		sendToOpenAm: bestillingId => dispatch(sendToOpenAm(bestillingId))
 	}
 }
 
