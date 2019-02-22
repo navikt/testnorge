@@ -1,6 +1,9 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import static java.util.Objects.isNull;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -22,7 +25,7 @@ public class TpsfBestilling {
 
     private List<String> environments;
 
-    List<String> eksisterendeIdenter;
+    List<String> opprettFraIdenter;
 
     private int antall;
 
@@ -69,4 +72,11 @@ public class TpsfBestilling {
     private String sprakKode;
 
     private LocalDateTime datoSprak;
+
+    public List<String> getOpprettFraIdenter() {
+        if (isNull(opprettFraIdenter)) {
+            opprettFraIdenter = new ArrayList();
+        }
+        return opprettFraIdenter;
+    }
 }

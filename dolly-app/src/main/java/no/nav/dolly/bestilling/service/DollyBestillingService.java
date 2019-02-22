@@ -135,7 +135,7 @@ public class DollyBestillingService {
 
             int loopCount = 0;
             while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < identer.size()) {
-                tpsfBestilling.setEksisterendeIdenter(newArrayList(identer.get(loopCount)));
+                tpsfBestilling.setOpprettFraIdenter(newArrayList(identer.get(loopCount)));
                 preparePerson(request, bestilling, testgruppe, tpsfBestilling);
                 loopCount++;
             }

@@ -25,7 +25,7 @@ public class BestillingMappingStrategy implements MappingStrategy {
                         rsBestilling.setGruppeId(bestilling.getGruppe().getId());
                         rsBestilling.getTpsfStatus().addAll(buildTpsfStatusMap(bestilling.getProgresser()));
                         rsBestilling.getKrrStubStatus().addAll(buildKrrStubStatusMap(bestilling.getProgresser()));
-                        rsBestilling.getKrrStubStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
+                        rsBestilling.getSigrunStubStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
                     }
                 })
                 .byDefault()
