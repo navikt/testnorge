@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +14,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsIdentStatus {
+public class RsIdentTpsStatus {
 
     private String statusMelding;
-    private List<String> identer;
+    private Map<String, Set<String>> environmentIdents;
 }

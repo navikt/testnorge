@@ -149,6 +149,7 @@ public class DollyBestillingService {
     }
 
     private void oppdaterBestilling(Bestilling bestilling, CheckStatusResponse tilgjengeligeIdenter) {
+        bestilling.setAntallIdenter(tilgjengeligeIdenter.getStatuser().size());
         tilgjengeligeIdenter.getStatuser().forEach(identStatus -> {
             if (!identStatus.isAvailable()) {
                 oppdaterProgress(bestilling, BestillingProgress.builder()
