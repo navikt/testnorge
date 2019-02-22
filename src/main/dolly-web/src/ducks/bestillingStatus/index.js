@@ -84,15 +84,40 @@ export const miljoStatusSelector = bestilling => {
 	let successEnvs = []
 	let failedEnvs = []
 	let errorMsgs = []
+	let statusmeldingFeil = []
+	
+	let bestillingStatus = bestilling.tpsfStatus //OBS! Kun for tpsf foreløbig
+	
 
 	// TODO: REG-2921: Denne må bli forbedret.
 	// feilmelding for hele bestillingen
 	bestilling.feil && errorMsgs.push(bestilling.feil)
 
+	//statusmeldinger != OK under bestillingstatus. Kun for tpsf foreløbig
+	bestillingStatus.map( feil => {
+		if (feil.statusMelding !== 'OK') {
+			{!statusmeldingFeil.includes(feil.statusMelding) && statusmeldingFeil.push(feil.statusMelding)}
+		}
+	})
+
+	//Bestillingsstatus blir delt opp i tpsf, krr og sigrun. 
+	let bestillingStatus2 = []
+	
+	{bestilling.tpsfStatus && bestillingStatus2.push(bestilling.tpsfStatus)}
+	{bestilling.krrStatus && bestillingStatus2.push(bestilling.krrStatus)}
+	{bestilling.sigrunStatus && bestillingStatus2.push(bestilling.sigrunStatus)}
+
+	bestillingStatus2.map( service => { 
+		service.map(feil => {
+			if (feil.statusMelding !== 'OK') {
+				{!statusmeldingFeil.includes(feil.statusMelding) && statusmeldingFeil.push(feil.statusMelding)}
+			}
+		})
+	})
+
 	if (bestilling.bestillingProgress && bestilling.bestillingProgress.length != 0) {
 		envs.forEach(env => {
 			const lowerCaseEnv = env.toLowerCase()
-
 			bestilling.bestillingProgress.forEach(person => {
 				if (!person.tpsfSuccessEnv) {
 					// TODO: Bestilling failed 100% fra Tpsf. Implement retry-funksjonalitet når maler er støttet
@@ -128,7 +153,7 @@ export const miljoStatusSelector = bestilling => {
 		})
 	}
 
-	return { id, successEnvs, failedEnvs, errorMsgs }
+	return { id, successEnvs, failedEnvs, errorMsgs, bestillingStatus, statusmeldingFeil }
 }
 
 const mapItems = items => {
