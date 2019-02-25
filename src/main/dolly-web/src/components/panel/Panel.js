@@ -48,14 +48,15 @@ export default class Panel extends Component {
 
 		const renderContent = children ? children : content
 
-		let infotekst, link
+		let infotekst, infotekstHeader
 		switch (heading.props.children) {
 			case 'Inntekter':
-				infotekst = 'Her kommer informasjon om hvor inntekten kommer fra.'
+				infotekstHeader = 'Lignede inntekter - årlige'	
+				infotekst = 'Lignede inntekter er stemplet og godkjent. Inntektene her blir lagt i Sigrun-stub.'
 				break
-			case 'Kontaktinformasjon og reservasjon':
-				infotekst = 'Her kommer informasjon om krr'
-				break
+			// case 'Kontaktinformasjon og reservasjon':
+			// 	infotekst = 'Her kommer informasjon om krr'
+			// 	break
 		}
 
 		return (
@@ -64,15 +65,16 @@ export default class Panel extends Component {
 					{heading}
 					{infotekst && (
 						<ContentTooltip>
-							<span>{infotekst}</span>
-							<br />
-							{link && <a
+								{infotekstHeader && <b>{infotekstHeader}: <br/></b>}
+								<span>{infotekst}</span>
+							<br/>
+							{/* {link && <a
 									style={{ color: 'lightblue' }}
 									href={link}
 								>
 								Les mer
 							</a>
-							}
+							} */}
 						</ContentTooltip>
 					)}
 					{errors && (
