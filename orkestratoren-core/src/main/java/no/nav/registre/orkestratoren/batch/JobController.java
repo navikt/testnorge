@@ -70,7 +70,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${orkestratoren.arenabatch.cron:0 0 1 1 * *}")
+    @Scheduled(cron = "${orkestratoren.inntektbatch.cron:0 0 1 1 * *}")
     public void arenaInntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
         String arenaInntektId = arenaInntektSyntPakkenService.genererInntektsmeldinger(request);
@@ -84,7 +84,7 @@ public class JobController {
         log.info("eiabatch har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
     }
 
-    @Scheduled(cron = "${orkestratoren.poppbatch.cron:0 0 1 6 * *}")
+    @Scheduled(cron = "${orkestratoren.poppbatch.cron:0 0 1 1 5 *}")
     public void poppSyntBatch() {
         SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, poppbatchMiljoe, poppbatchAntallNyeIdenter);
         String testdataEier = "orkestratoren";
