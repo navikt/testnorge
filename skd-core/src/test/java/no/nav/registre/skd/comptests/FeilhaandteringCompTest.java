@@ -1,13 +1,13 @@
 package no.nav.registre.skd.comptests;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static javax.security.auth.callback.ConfirmationCallback.OK;
 import static no.nav.registre.skd.service.Endringskoder.INNVANDRING;
@@ -123,7 +123,7 @@ public class FeilhaandteringCompTest {
     }
 
     private void stubTpsSynt(String endringskode, Integer antallMeldinger, String responseBodyFile) {
-        stubFor(get(urlPathEqualTo("/tpssynt/api/v1/generateTps/" + antallMeldinger + "/" + endringskode))
+        stubFor(get(urlEqualTo("/tpssynt/api/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
                 .willReturn(aResponse().withHeader("Content-Type", "application/json")
                         .withBodyFile(responseBodyFile)));
     }
@@ -172,7 +172,7 @@ public class FeilhaandteringCompTest {
     }
 
     private void stubHodejegerenHentLevendeIdenter(long gruppeId, String okJsonResponse) {
-        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/levende-identer/" + gruppeId))
+        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/alle-levende-identer/" + gruppeId))
                 .willReturn(okJson(okJsonResponse)));
     }
 

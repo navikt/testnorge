@@ -43,7 +43,7 @@ public class TpsSyntetisererenConsumerITest {
         String endringskode = "0211";
         int antallMeldinger = 1;
 
-        this.server.expect(requestToUriTemplate(serverUrl + "/v1/generateTps/" + antallMeldinger + "/" + endringskode))
+        this.server.expect(requestToUriTemplate(serverUrl + "/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
                 .andRespond(withSuccess("[null]", MediaType.APPLICATION_JSON));
 
         consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
@@ -60,7 +60,7 @@ public class TpsSyntetisererenConsumerITest {
         String endringskode = "0211";
         int antallMeldinger = 1;
         this.server.expect(requestToUriTemplate(serverUrl +
-                "/v1/generateTps/" + antallMeldinger + "/" + endringskode))
+                "/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
                 .andRespond(withSuccess(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"), MediaType.APPLICATION_JSON));
 
         List<RsMeldingstype> skdmeldinger = consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);

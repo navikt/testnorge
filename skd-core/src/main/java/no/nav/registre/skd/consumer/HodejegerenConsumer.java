@@ -36,10 +36,10 @@ public class HodejegerenConsumer {
     private UriTemplate statusQuoUrl;
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
-        this.levendeIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/levende-identer/{avspillergruppeId}");
+        this.levendeIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/alle-levende-identer/{avspillergruppeId}");
         this.doedeIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/doede-identer/{avspillergruppeId}");
         this.gifteIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/gifte-identer/{avspillergruppeId}");
-        this.statusQuoUrl = new UriTemplate(hodejegerenServerUrl + "/v1/status-quo/{endringskode}/{miljoe}/{fnr}");
+        this.statusQuoUrl = new UriTemplate(hodejegerenServerUrl + "/v1/status-quo?endringskode={endringskode}&miljoe={miljoe}&fnr={fnr}");
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })

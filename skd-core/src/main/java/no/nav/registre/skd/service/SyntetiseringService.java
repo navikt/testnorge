@@ -129,7 +129,7 @@ public class SyntetiseringService {
                         endringskode.getEndringskode());
             } catch (HttpStatusCodeException e) {
                 log.error(hentMeldingFraJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                log.warn("HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: {} - Skdmeldinger som ble lagret i TPSF: ",
+                log.warn("HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: {} - Skdmeldinger som ble lagret i TPSF: {}",
                         endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps), lagGrupperAvIder(ids));
                 feiledeEndringskoder.add(endringskode.getEndringskode());
                 httpStatus = HttpStatus.CONFLICT;
