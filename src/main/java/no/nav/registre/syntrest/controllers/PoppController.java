@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/generate")
 public class PoppController extends KubernetesUtils {
 
     @Value("${max_retrys}")
@@ -41,7 +41,7 @@ public class PoppController extends KubernetesUtils {
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @PostMapping(value = "/generatePopp")
+    @PostMapping(value = "/popp")
     public ResponseEntity generatePopp(@RequestBody String[] fnrs) throws IOException, ApiException {
         if (!validation.validateFnrs(fnrs)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");

@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/generate")
 public class EIAController extends KubernetesUtils {
 
     @Value("${max_retrys}")
@@ -43,8 +43,8 @@ public class EIAController extends KubernetesUtils {
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @PostMapping(value = "/generateSykemeldinger")
-    public ResponseEntity generateSykemeldinger(@RequestBody List<Map<String, String>> request) throws IOException, ApiException {
+    @PostMapping(value = "/eia")
+    public ResponseEntity generateEia(@RequestBody List<Map<String, String>> request) throws IOException, ApiException {
         if (validation.validateEia(request) != true) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }

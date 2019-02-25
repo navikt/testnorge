@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/generate")
 public class PenController extends KubernetesUtils {
 
     @Value("${max_retrys}")
@@ -37,8 +34,8 @@ public class PenController extends KubernetesUtils {
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @GetMapping(value = "/generatePen/{num_to_generate}")
-    public ResponseEntity generatePen(@PathVariable int num_to_generate) throws IOException, ApiException {
+    @GetMapping(value = "/pen")
+    public ResponseEntity generatePen(@RequestParam int numToGenerate) throws IOException, ApiException {
         counterLock.lock();
         counter++;
         counterLock.unlock();
@@ -47,7 +44,7 @@ public class PenController extends KubernetesUtils {
         try {
             createApplication(client, "/nais/synthdata-pen.yaml", penService);
             log.info("Requesting synthetic data from: synthdata-pen");
-            Object synData = getData(num_to_generate);
+            Object synData = getData(numToGenerate);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
             log.info("Exception in generatePen: " + e.getCause());

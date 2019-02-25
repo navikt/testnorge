@@ -19,12 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/generate")
 public class InntektController extends KubernetesUtils {
 
     @Value("${max_retrys}")
@@ -44,7 +45,7 @@ public class InntektController extends KubernetesUtils {
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @PostMapping(value = "/generateInntekt")
+    @PostMapping(value = "/inntekt")
     public ResponseEntity generateInntektsmeldinger(@RequestBody String[] fnrs) throws ApiException, IOException {
         if (!validation.validateFnrs(fnrs)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
@@ -83,3 +84,4 @@ public class InntektController extends KubernetesUtils {
         return new Exception("Could not retrieve data in " + retryCount + " attempts. Aborting");
     }
 }
+
