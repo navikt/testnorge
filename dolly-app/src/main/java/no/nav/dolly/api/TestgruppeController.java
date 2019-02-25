@@ -27,7 +27,8 @@ import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsBestilling;
-import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
@@ -112,13 +113,23 @@ public class TestgruppeController {
         }
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
-    public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingsRequest request) {
-        Bestilling bestilling = bestillingService.saveBestillingByGruppeIdAndAntallIdenter(gruppeId, request.getAntall(), request.getEnvironments(), request.getTpsf());
+    public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getAntall(), request.getEnvironments(), request.getTpsf(), null);
 
         dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
+        return mapperFacade.map(bestilling, RsBestilling.class);
+    }
+
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{gruppeId}/bestilling/fraidenter")
+    public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getOpprettFraIdenter().size(), request.getEnvironments(), request.getTpsf(), request.getOpprettFraIdenter());
+
+        dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 

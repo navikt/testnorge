@@ -23,6 +23,7 @@ export default class SendFoedselsmelding extends PureComponent {
 		showErrorMessageFoundIdent: false,
 		currentFnrMor: '',
 		environments: [],
+		miljoer: [],
 		response_success: []
 	}
 
@@ -48,7 +49,6 @@ export default class SendFoedselsmelding extends PureComponent {
 		const miljoer = values.miljoer.map(env => {
 			return env.value
 		})
-
 		return { ...values, miljoer: miljoer }
 	}
 
@@ -62,6 +62,7 @@ export default class SendFoedselsmelding extends PureComponent {
 				nyttBarn: null,
 				errorMessage: null,
 				foundIdentMor: false,
+				miljoer: values.miljoer,
 				response_success: []
 			},
 			async () => {
@@ -82,12 +83,16 @@ export default class SendFoedselsmelding extends PureComponent {
 					return this.setState({
 						nyttBarn: getKontaktInformasjonRes.data.person,
 						isFetching: false,
+						currentFnrMor: null,
+						miljoer: [],
 						response_success: success_envs
 					})
 				} catch (err) {
 					resetForm()
 					this.setState({
+						currentFnrMor: null,
 						isFetching: false,
+						miljoer: [],
 						errorMessage: err.response.data.message
 					})
 				}
@@ -122,6 +127,7 @@ export default class SendFoedselsmelding extends PureComponent {
 				{
 					isFetchingMiljoer: true,
 					nyttBarn: null,
+					miljoer: [],
 					environments: [],
 					showErrorMessageFoundIdent: false,
 					foundIdentMor: false,
@@ -132,13 +138,18 @@ export default class SendFoedselsmelding extends PureComponent {
 						const getMiljoerByFnrRes = await TpsfApi.getMiljoerByFnr(fnr)
 						const res_environments = getMiljoerByFnrRes.data.statusPaaIdenter[0].env
 
+						let miljoer = []
+
 						if (res_environments.length < 1) {
 							return this.setState({
+								miljoer: miljoer,
 								currentFnrMor: fnr,
 								foundIdentMor: false,
 								isFetchingMiljoer: false,
 								showErrorMessageFoundIdent: true
 							})
+						} else if (res_environments.length === 1) {
+							miljoer.push({value: res_environments[0], label: res_environments[0]})
 						}
 
 						const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)
@@ -146,7 +157,8 @@ export default class SendFoedselsmelding extends PureComponent {
 							environments: displayEnvironmentsInDropdown,
 							currentFnrMor: fnr,
 							foundIdentMor: true,
-							isFetchingMiljoer: false
+							isFetchingMiljoer: false,
+							miljoer: miljoer
 						})
 					} catch (err) {
 						this.setState({ isFetchingMiljoer: false, currentFnrMor: fnr })
@@ -157,15 +169,15 @@ export default class SendFoedselsmelding extends PureComponent {
 	}
 
 	render() {
-		const { environments, foundIdentMor } = this.state
+		const { environments, foundIdentMor, miljoer, currentFnrMor } = this.state
 
 		let initialValues = {
-			identMor: '',
+			identMor: currentFnrMor,
 			identFar: '',
 			identtype: 'FNR',
 			foedselsdato: '',
 			kjonn: '',
-			miljoer: [],
+			miljoer: miljoer.slice(),
 			adresseFra: ''
 		}
 

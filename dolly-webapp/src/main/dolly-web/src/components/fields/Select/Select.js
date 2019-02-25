@@ -69,7 +69,7 @@ export default class DollySelect extends PureComponent {
 }
 
 export const FormikDollySelect = props => {
-	const { field, form, ...restProps } = props
+	const { field, form, beforeChange, ...restProps } = props
 
 	const singleSelectChangeHandler = selected => {
 		form.setFieldValue(field.name, _get(selected, 'value', ''))
@@ -81,11 +81,16 @@ export const FormikDollySelect = props => {
 
 	const onChangeHandler = props.multi ? multiSelectChangeHandler : singleSelectChangeHandler
 
+	const onChange = selected => {
+		beforeChange && beforeChange(selected)
+		onChangeHandler(selected)
+	}
+
 	return (
 		<DollySelect
 			name={field.name}
 			value={field.value}
-			onChange={onChangeHandler}
+			onChange={onChange}
 			onBlur={() => form.setFieldTouched(field.name, true)}
 			error={_get(form.touched, field.name) && _get(form.errors, field.name)}
 			{...restProps}

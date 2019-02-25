@@ -30,16 +30,27 @@ export default handleActions(
 	{
 		[success(getBestillinger)](state, action) {
 			const { data } = action.payload
-			return { ...state, data }
+			const nyeBestillinger = data.filter(bestilling => {
+				if (!bestilling.ferdig) return true
+			})
+			let idListe = []
+			nyeBestillinger.forEach(bestilling => {
+				if (!state.ny.find(id => id == bestilling.id)) idListe.push(bestilling.id)
+			})
+			return {
+				...state,
+				data,
+				ny: idListe.length > 0 ? [...state.ny, ...idListe] : state.ny
+			}
 		},
 
-		[success(bestillingActions.postBestilling)](state, action) {
-			return { ...state, ny: [...state.ny, action.payload.data.id] }
-		},
+		// [success(bestillingActions.postBestilling)](state, action) {
+		// 	return { ...state, ny: [...state.ny, action.payload.data.id] }
+		// },
 
-		[success(gjenopprettBestilling)](state, action) {
-			return { ...state, ny: [...state.ny, action.payload.data.id] }
-		},
+		// [success(gjenopprettBestilling)](state, action) {
+		// 	return { ...state, ny: [...state.ny, action.payload.data.id] }
+		// },
 
 		// [success(cancelBestilling)](state, action) {
 		// 	return { ...state, ny: state.ny.filter(id => id !== action.payload.id) }
@@ -143,12 +154,16 @@ const mapItems = items => {
 				? 'Stoppet'
 				: harIkkeIdenter(item.status)
 					? 'Feilet'
-					: harOkStatuses(item.status)
-						? 'Ferdig'
-						: 'Avvik'
+					: bestillingIkkeFerdig(item) 
+						? 'Pågår' 
+						: harOkStatuses(item.status)
+							? 'Ferdig'
+							: 'Avvik'
 		}
 	})
 }
+
+const bestillingIkkeFerdig = item => !(item.ferdig)
 
 const harOkStatuses = status => {
 	let ferdig = true
