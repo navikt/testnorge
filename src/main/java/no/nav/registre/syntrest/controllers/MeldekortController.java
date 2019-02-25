@@ -43,7 +43,7 @@ public class MeldekortController extends KubernetesUtils {
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @GetMapping(value = "/meldekort/{meldegruppe}")
+    @GetMapping(value = "/arena/meldekort/{meldegruppe}")
     public ResponseEntity generateMeldekort(@PathVariable String meldegruppe, @RequestParam int numToGenerate) throws ApiException, IOException {
         if (!validation.validateMeldegruppe(meldegruppe)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Not a valid meldegruppe. Needs to be one of: ATTF, DAGP, INDI, ARBS, FY");
