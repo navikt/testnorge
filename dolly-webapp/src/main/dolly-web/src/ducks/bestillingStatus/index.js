@@ -84,7 +84,7 @@ export const miljoStatusSelector = bestilling => {
 	let successEnvs = []
 	let failedEnvs = []
 	let errorMsgs = []
-	let statusmeldingFeil = []
+	let statusmeldingFeil = [] //midlertidig løsning frem til vi vet hvordan vi skal vise andre deler som bruker errorMsgs
 		
 	//Bestillingsstatus blir delt opp i tpsfStatus, krrStatus og sigrunStatus. 
 	let bestillingStatus = []
@@ -102,15 +102,8 @@ export const miljoStatusSelector = bestilling => {
 	})
 
 	// TODO: REG-2921: Denne må bli forbedret.
-	// feilmelding for hele bestillingen
+	// feilmelding for hele bestillingen 
 	bestilling.feil && errorMsgs.push(bestilling.feil)
-
-	//statusmeldinger != OK under bestillingstatus. Kun for tpsf foreløbig
-	bestillingStatus.map( feil => {
-		if (feil.statusMelding !== 'OK') {
-			{!statusmeldingFeil.includes(feil.statusMelding) && statusmeldingFeil.push(feil.statusMelding)}
-		}
-	})
 
 	if (bestilling.bestillingProgress && bestilling.bestillingProgress.length != 0) {
 		envs.forEach(env => {
