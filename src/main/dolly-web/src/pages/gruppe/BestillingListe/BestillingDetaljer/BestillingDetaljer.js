@@ -12,7 +12,6 @@ import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
 import cn from 'classnames'
-import FeilmeldingValue from '~/components/fields/FeilmeldingValue/FeilmeldingValue'
 
 // TODO: Flytt modal ut som en dumb komponent
 const customStyles = {
@@ -52,7 +51,7 @@ export default class BestillingDetaljer extends PureComponent {
 			<div className="bestilling-detaljer">
 				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
-				{statusmeldingFeil.length > 0 && this._renderErrorMessage(bestillingStatus)}
+				{statusmeldingFeil.length > 0 && bestillingStatus.map((service, idx) => this._renderErrorMessage(service, idx))}
 				<div className="flexbox--align-center--justify-end">
 					<Button
 						onClick={this._onToggleModal}
@@ -83,9 +82,9 @@ export default class BestillingDetaljer extends PureComponent {
 							})
 							if (kategori.header) {
 								return (
-									<Fragment>
+									<Fragment key={j}>
 										<h4>{kategori.header} </h4>
-										<div className={cssClass} key={j}>
+										<div className={cssClass}>
 											{kategori.items.map((attributt, i) => {
 												if (attributt.value) {
 													return (
@@ -177,10 +176,9 @@ export default class BestillingDetaljer extends PureComponent {
 		this.setState({ modalOpen: !this.state.modalOpen })
 	}
 
-	_renderErrorMessage = bestillingStatus => {
-		// map trenger unique key
+	_renderErrorMessage = (bestillingStatus, idx) => {
 		return (
-			<Fragment>
+			<Fragment key ={idx}>
 				<div className="flexbox--align-center error-header">
 					<Icon size={'16px'} kind={'report-problem-triangle'} />
 					<h3>Feilmeldinger</h3>
@@ -192,17 +190,17 @@ export default class BestillingDetaljer extends PureComponent {
 						<div className = 'feil-header feil-header_stor'>Ident</div>
 					</div>
 				</div>
-				{bestillingStatus.map(feil => {
+				{bestillingStatus.map((feil, i) => {
 					if (feil.statusMelding !== 'OK'){
-						return (
-							<div className='feil-container feil-container_border'>
+						return (							
+							<div className='feil-container feil-container_border' key={i}>
 								<div className = 'feil-kolonne_stor' >
 									{feil.statusMelding}
 								</div>
-								<div className = 'feil-kolonne_stor'>
-									{Object.keys(feil.environmentIdents).map(miljo => {
+								<div className = 'feil-kolonne_stor' key={i}>
+									{Object.keys(feil.environmentIdents).map((miljo,idx) => {
 										let identerPerMiljo = []
-											feil.environmentIdents[miljo].map(ident => {
+											feil.environmentIdents[miljo].map((ident) => {
 												!identerPerMiljo.includes(ident) && identerPerMiljo.push(ident)
 											})
 
@@ -210,7 +208,7 @@ export default class BestillingDetaljer extends PureComponent {
 										const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
 											
 										return (
-											<div className = 'feil-container'>
+											<div className = 'feil-container' key ={idx}>
 												<div className="feil-kolonne_liten">{miljoUpperCase}</div>
 												<div className="feil-kolonne_stor">{identerPerMiljoStr}</div>
 											</div>

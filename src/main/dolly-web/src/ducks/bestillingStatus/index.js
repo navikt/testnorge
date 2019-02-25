@@ -85,9 +85,21 @@ export const miljoStatusSelector = bestilling => {
 	let failedEnvs = []
 	let errorMsgs = []
 	let statusmeldingFeil = []
+		
+	//Bestillingsstatus blir delt opp i tpsfStatus, krrStatus og sigrunStatus. 
+	let bestillingStatus = []
 	
-	let bestillingStatus = bestilling.tpsfStatus //OBS! Kun for tpsf foreløbig
-	
+	{bestilling.tpsfStatus && bestillingStatus.push(bestilling.tpsfStatus)}
+	{bestilling.krrStatus && bestillingStatus.push(bestilling.krrStatus)}
+	{bestilling.sigrunStatus && bestillingStatus.push(bestilling.sigrunStatus)}
+
+	bestillingStatus.map( service => { 
+		service.map(feil => {
+			if (feil.statusMelding !== 'OK') {
+				{!statusmeldingFeil.includes(feil.statusMelding) && statusmeldingFeil.push(feil.statusMelding)}
+			}
+		})
+	})
 
 	// TODO: REG-2921: Denne må bli forbedret.
 	// feilmelding for hele bestillingen
@@ -98,21 +110,6 @@ export const miljoStatusSelector = bestilling => {
 		if (feil.statusMelding !== 'OK') {
 			{!statusmeldingFeil.includes(feil.statusMelding) && statusmeldingFeil.push(feil.statusMelding)}
 		}
-	})
-
-	//Bestillingsstatus blir delt opp i tpsf, krr og sigrun. 
-	let bestillingStatus2 = []
-	
-	{bestilling.tpsfStatus && bestillingStatus2.push(bestilling.tpsfStatus)}
-	{bestilling.krrStatus && bestillingStatus2.push(bestilling.krrStatus)}
-	{bestilling.sigrunStatus && bestillingStatus2.push(bestilling.sigrunStatus)}
-
-	bestillingStatus2.map( service => { 
-		service.map(feil => {
-			if (feil.statusMelding !== 'OK') {
-				{!statusmeldingFeil.includes(feil.statusMelding) && statusmeldingFeil.push(feil.statusMelding)}
-			}
-		})
 	})
 
 	if (bestilling.bestillingProgress && bestilling.bestillingProgress.length != 0) {
