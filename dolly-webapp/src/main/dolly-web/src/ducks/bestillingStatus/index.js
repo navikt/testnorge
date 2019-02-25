@@ -90,8 +90,8 @@ export const miljoStatusSelector = bestilling => {
 	let bestillingStatus = []
 	
 	{bestilling.tpsfStatus && bestillingStatus.push(bestilling.tpsfStatus)}
-	{bestilling.krrStatus && bestillingStatus.push(bestilling.krrStatus)}
-	{bestilling.sigrunStatus && bestillingStatus.push(bestilling.sigrunStatus)}
+	{bestilling.krrStubStatus && bestillingStatus.push(bestilling.krrStubStatus)}
+	{bestilling.sigrunStubStatus && bestillingStatus.push(bestilling.sigrunStubStatus)}
 
 	bestillingStatus.map( service => { 
 		service.map(feil => {
@@ -158,11 +158,31 @@ const mapItems = items => {
 				? 'Stoppet'
 				: harIkkeIdenter(item.status)
 					? 'Feilet'
-					: harOkStatuses(item.status)
-						? 'Ferdig'
-						: 'Avvik'
+					: avvikStatus(item)
+						? 'Avvik'
+						: 'Ferdig'
 		}
 	})
+}
+
+const avvikStatus = item => {
+	let avvik = false
+	if (item.tpsfStatus) {
+		item.tpsfStatus.map (status => {
+			if (status.statusMelding !== 'OK') avvik = true
+		})
+	}
+	if (item.krrStubStatus) {
+		item.krrStubStatus.map(status => {
+			if (status.statusMelding !== 'OK') avvik = true 
+		})
+	}
+	if (item.sigrunStubStatus) {
+		item.sigrunStubStatus.map(status => {
+			if (status.statusMelding !== 'OK') avvik = true
+		})
+	}
+	return avvik
 }
 
 const harOkStatuses = status => {

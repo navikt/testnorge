@@ -51,7 +51,7 @@ export default class BestillingDetaljer extends PureComponent {
 			<div className="bestilling-detaljer">
 				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
-				{statusmeldingFeil.length > 0 && bestillingStatus.map((service, idx) => this._renderErrorMessage(service, idx))}
+				{statusmeldingFeil.length > 0 && this._renderErrorMessage(bestillingStatus)}
 				<div className="flexbox--align-center--justify-end">
 					<Button
 						onClick={this._onToggleModal}
@@ -176,9 +176,9 @@ export default class BestillingDetaljer extends PureComponent {
 		this.setState({ modalOpen: !this.state.modalOpen })
 	}
 
-	_renderErrorMessage = (bestillingStatus, idx) => {
+	_renderErrorMessage = bestillingStatus => {
 		return (
-			<Fragment key ={idx}>
+			<Fragment>
 				<div className="flexbox--align-center error-header">
 					<Icon size={'16px'} kind={'report-problem-triangle'} />
 					<h3>Feilmeldinger</h3>
@@ -190,35 +190,38 @@ export default class BestillingDetaljer extends PureComponent {
 						<div className = 'feil-header feil-header_stor'>Ident</div>
 					</div>
 				</div>
-				{bestillingStatus.map((feil, i) => {
-					if (feil.statusMelding !== 'OK'){
-						return (							
-							<div className='feil-container feil-container_border' key={i}>
-								<div className = 'feil-kolonne_stor' >
-									{feil.statusMelding}
-								</div>
-								<div className = 'feil-kolonne_stor' key={i}>
-									{Object.keys(feil.environmentIdents).map((miljo,idx) => {
-										let identerPerMiljo = []
-											feil.environmentIdents[miljo].map((ident) => {
-												!identerPerMiljo.includes(ident) && identerPerMiljo.push(ident)
-											})
+				{bestillingStatus.map((service, idx) => {
+					return (service.map((feil, i) => {
+						if (feil.statusMelding !== 'OK'){
+							return (							
+								<div className='feil-container feil-container_border' key={i}>
+									<div className = 'feil-kolonne_stor' >
+										{feil.statusMelding}
+									</div>
+									<div className = 'feil-kolonne_stor' key={i}>
+										{Object.keys(feil.environmentIdents).map((miljo,idx) => {
+											let identerPerMiljo = []
+												feil.environmentIdents[miljo].map((ident) => {
+													!identerPerMiljo.includes(ident) && identerPerMiljo.push(ident)
+												})
 
-										const miljoUpperCase = miljo.toUpperCase()
-										const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
-											
-										return (
-											<div className = 'feil-container' key ={idx}>
-												<div className="feil-kolonne_liten">{miljoUpperCase}</div>
-												<div className="feil-kolonne_stor">{identerPerMiljoStr}</div>
-											</div>
-										)
-									})}
+											const miljoUpperCase = miljo.toUpperCase()
+											const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
+												
+											return (
+												<div className = 'feil-container' key ={idx}>
+													<div className="feil-kolonne_liten">{miljoUpperCase}</div>
+													<div className="feil-kolonne_stor">{identerPerMiljoStr}</div>
+												</div>
+											)
+										})}
+									</div>
 								</div>
-							</div>
-						)
-					}
-				})}
+							)
+						}
+					})
+				)})
+			}
 			</Fragment>
 		)
 	}
