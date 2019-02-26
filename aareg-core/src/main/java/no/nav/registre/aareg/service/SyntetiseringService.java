@@ -1,6 +1,7 @@
 package no.nav.registre.aareg.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class SyntetiseringService {
     @Autowired
     private Random rand;
 
-    public List<String> hentArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest) {
+    public ResponseEntity opprettArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest) {
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId());
         List<String> utvalgteIdenter = new ArrayList<>(syntetiserAaregRequest.getAntallMeldinger());
 
@@ -38,8 +39,6 @@ public class SyntetiseringService {
 
         Map<String, List<Map<String, String>>> syntetiserteArbeidsforholdsmeldinger = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
 
-        aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforholdsmeldinger);
-
-        return new ArrayList<>();
+        return aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforholdsmeldinger);
     }
 }
