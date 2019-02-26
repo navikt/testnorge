@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MeldekortService implements IService {
@@ -27,8 +28,9 @@ public class MeldekortService implements IService {
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-meldekort" })
-    public List<String> generateMeldekortFromNAIS(int num_to_generate, String meldegruppe) {
-        List<String> result = restTemplate.getForObject(String.format(synthArenaMeldekortUrl, num_to_generate, meldegruppe), List.class);
+    public Object getDataFromNAIS(Object requestParams) {
+        Map<String, String> rp = (Map) requestParams;
+        Object result = restTemplate.getForObject(String.format(synthArenaMeldekortUrl, rp.get("numToGenerate"), rp.get("meldegruppe")), List.class);
         return result;
     }
 

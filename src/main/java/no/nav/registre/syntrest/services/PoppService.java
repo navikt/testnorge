@@ -27,7 +27,7 @@ public class PoppService implements IService {
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-popp" })
-    public Object generatePoppMeldingerFromNAIS(String[] fnrs) {
+    public Object getDataFromNAIS(Object fnrs) {
         Object result = restTemplate.postForObject(synthPoppUrl, fnrs, List.class);
         return result;
     }

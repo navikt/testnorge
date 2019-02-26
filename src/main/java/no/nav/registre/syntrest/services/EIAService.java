@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -29,8 +28,8 @@ public class EIAService implements IService {
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-eia" })
-    public List<String> generateSykemeldingerFromNAIS(List<Map<String, String>> request) {
-        List<String> result = restTemplate.postForObject(synthEiaUrl, request, List.class);
+    public Object getDataFromNAIS(Object request) {
+        Object result = restTemplate.postForObject(synthEiaUrl, request, List.class);
         return result;
     }
 

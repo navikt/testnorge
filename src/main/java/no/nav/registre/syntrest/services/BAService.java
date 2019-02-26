@@ -1,3 +1,4 @@
+/*
 package no.nav.registre.syntrest.services;
 
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
@@ -7,8 +8,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -29,7 +28,7 @@ public class BAService extends KubernetesUtils implements IService {
     }
 
     @Async
-    public CompletableFuture<Object> generateBaFromNAIS(String[] fnrs) throws InterruptedException {
+    public CompletableFuture<Object> getDataFromNAIS(Object fnrs) throws InterruptedException {
         Object result = restTemplate.postForObject(synthBaUrl, fnrs, Object.class);
         System.out.println(result);
         return CompletableFuture.completedFuture(result);
@@ -39,3 +38,4 @@ public class BAService extends KubernetesUtils implements IService {
         return restTemplate.getForObject(String.format(isAlive, appName), String.class);
     }
 }
+*/

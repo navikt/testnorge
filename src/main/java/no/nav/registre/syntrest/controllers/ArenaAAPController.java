@@ -25,11 +25,12 @@ import java.util.concurrent.locks.ReentrantLock;
 @RestController
 @RequestMapping("api/v1/generate")
 public class ArenaAAPController extends KubernetesUtils {
-    @Value("${max_retrys}")
-    private int retryCount;
 
     @Value("${synth-arena-aap-app}")
     private String appName;
+
+    @Autowired
+    private RootController controller;
 
     @Autowired
     private ArenaAAPService aapService;
@@ -41,39 +42,6 @@ public class ArenaAAPController extends KubernetesUtils {
 
     @GetMapping(value = "/arena/aap")
     public ResponseEntity generateArenaAAP(@RequestParam int numToGenerate) throws IOException, ApiException {
-        counterLock.lock();
-        counter++;
-        counterLock.unlock();
-        lock.lock();
-        ApiClient client = createApiClient();
-        try {
-            createApplication(client, "/nais/synthdata-arena-aap.yaml", aapService);
-            log.info("Requesting synthetic data from: synthdata-arena-aap");
-            Object synData = getData(numToGenerate);
-            return ResponseEntity.status(HttpStatus.OK).body(synData);
-        } catch (Exception e) {
-            log.info("Exception in generateArenaAAP: " + e.getCause());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
-        } finally {
-            counter--;
-            System.out.println("Counter: " + counter);
-            lock.unlock();
-            if (counter == 0)
-                deleteApplication(client, appName);
-        }
-    }
-
-    public Object getData(int numToGenerate) throws InterruptedException {
-        int attempt = 0;
-        while (attempt < retryCount) {
-            try {
-                List<Map<String, String>> synData = aapService.generateArenaAAPFromNAIS(numToGenerate);
-                return synData;
-            } catch (Exception e) {
-                TimeUnit.SECONDS.sleep(1);
-                attempt++;
-            }
-        }
-        return new Exception("Could not retrieve data in " + retryCount + " attempts. Aborting");
+        return controller.generate(appName, aapService, numToGenerate, counter, lock, counterLock);
     }
 }

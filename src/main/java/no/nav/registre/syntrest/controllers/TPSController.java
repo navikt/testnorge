@@ -1,3 +1,4 @@
+/*
 package no.nav.registre.syntrest.controllers;
 
 import io.kubernetes.client.ApiClient;
@@ -82,3 +83,4 @@ public class TPSController extends KubernetesUtils {
         return new Exception("Could not retrieve data in " + retryCount + " attempts. Aborting");
     }
 }
+*/

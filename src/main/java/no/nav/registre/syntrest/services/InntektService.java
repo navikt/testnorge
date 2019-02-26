@@ -30,8 +30,8 @@ public class InntektService extends KubernetesUtils implements IService {
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-inntekt" })
-    public Map<String, List<Inntektsmelding>> generateInntektsmeldingerFromNAIS(String[] fnrs) throws InterruptedException {
-        Map<String, List<Inntektsmelding>> result = restTemplate.postForObject(synthInntektUrl, fnrs, Map.class);
+    public Object getDataFromNAIS(Object fnrs) {
+        Object result = restTemplate.postForObject(synthInntektUrl, fnrs, Map.class);
         return result;
     }
 

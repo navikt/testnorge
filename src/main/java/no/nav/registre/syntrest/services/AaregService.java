@@ -31,8 +31,8 @@ public class AaregService implements IService {
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-aareg" })
-    public String generateAaregFromNAIS(List<String> request) {
-        String result = restTemplate.postForObject(synthAaregUrl, request, String.class);
+    public Object getDataFromNAIS(Object request) {
+        Object result = restTemplate.postForObject(synthAaregUrl, request, String.class);
         return result;
     }
 

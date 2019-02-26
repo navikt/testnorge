@@ -30,8 +30,8 @@ public class PenService implements IService{
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-pen" })
-    public Object generatePenFromNAIS(int num_to_generate) {
-        Object result = restTemplate.getForObject(String.format(synthPenUrl, num_to_generate), Object.class);
+    public Object getDataFromNAIS(Object numToGenerate) {
+        Object result = restTemplate.getForObject(String.format(synthPenUrl, numToGenerate), Object.class);
         return result;
     }
 

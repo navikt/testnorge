@@ -1,6 +1,5 @@
 package no.nav.registre.syntrest.controllers;
 
-import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
@@ -16,16 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
 public class PoppController extends KubernetesUtils {
-
-    @Value("${max_retrys}")
-    private int retryCount;
 
     @Value("${synth-popp-app}")
     private String appName;
@@ -35,6 +30,9 @@ public class PoppController extends KubernetesUtils {
 
     @Autowired
     private PoppService poppService;
+
+    @Autowired
+    private RootController controller;
 
     private int counter = 0;
 
@@ -46,40 +44,6 @@ public class PoppController extends KubernetesUtils {
         if (!validation.validateFnrs(fnrs)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }
-        counterLock.lock();
-        counter++;
-        counterLock.unlock();
-        lock.lock();
-        ApiClient client = createApiClient();
-        try {
-            createApplication(client, "/nais/synthdata-popp.yaml", poppService);
-            log.info("Requesting synthetic data: synthdata-popp");
-            Object synData = getData(fnrs);
-            return ResponseEntity.status(HttpStatus.OK).body(synData);
-        } catch (Exception e) {
-            System.out.println(e);
-            log.info("Exception in generatePopp: " + e.getCause());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
-        } finally {
-            counter--;
-            System.out.println("Counter: " + counter);
-            lock.unlock();
-            if (counter == 0)
-                deleteApplication(client, appName);
-        }
-    }
-
-    public Object getData(String[] fnrs) throws InterruptedException {
-        int attempt = 0;
-        while (attempt < retryCount) {
-            try {
-                Object synData = poppService.generatePoppMeldingerFromNAIS(fnrs);
-                return synData;
-            } catch (Exception e) {
-                TimeUnit.SECONDS.sleep(1);
-                attempt++;
-            }
-        }
-        return new Exception("Could not retrieve data in " + retryCount + " attempts. Aborting");
+        return controller.generate(appName, poppService, fnrs, counter, lock, counterLock);
     }
 }

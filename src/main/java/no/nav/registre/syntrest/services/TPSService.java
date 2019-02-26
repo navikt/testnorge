@@ -1,3 +1,4 @@
+/*
 package no.nav.registre.syntrest.services;
 
 import io.micrometer.core.annotation.Timed;
@@ -39,3 +40,4 @@ public class TPSService implements IService{
         return restTemplate.getForObject(String.format(isAlive, appName), String.class);
     }
 }
+*/

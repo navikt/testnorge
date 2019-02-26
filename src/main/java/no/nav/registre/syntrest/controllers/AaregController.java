@@ -23,10 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
-public class AaregController extends KubernetesUtils {
-
-    @Value("${max_retrys}")
-    private int retryCount;
+public class AaregController {
 
     @Value("${synth-aareg-app}")
     private String appName;
@@ -34,46 +31,16 @@ public class AaregController extends KubernetesUtils {
     @Autowired
     private AaregService aaregService;
 
+    @Autowired
+    private RootController controller;
+
     private int counter = 0;
 
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
     @PostMapping(value = "/aareg")
-    public ResponseEntity generateAareg(@RequestBody List<String> request) throws IOException, ApiException {
-        counterLock.lock();
-        counter++;
-        counterLock.unlock();
-        lock.lock();
-        ApiClient client = createApiClient();
-        try {
-            createApplication(client, "/nais/synthdata-aareg.yaml", aaregService);
-            log.info("Requesting synthetic data: synthdata-aareg");
-            Object synData = getData(request);
-            return ResponseEntity.status(HttpStatus.OK).body(synData);
-        } catch (Exception e) {
-            log.info("Exception in generateAareg: " + e.getCause());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
-        } finally {
-            counter--;
-            System.out.println("Counter: " + counter);
-            lock.unlock();
-            if (counter == 0)
-                deleteApplication(client, appName);
-        }
-    }
-
-    public Object getData(List<String> request) throws InterruptedException {
-        int attempt = 0;
-        while (attempt < retryCount) {
-            try {
-                String synData = aaregService.generateAaregFromNAIS(request);
-                return synData;
-            } catch (Exception e) {
-                TimeUnit.SECONDS.sleep(1);
-                attempt++;
-            }
-        }
-        return new Exception("Could not retrieve data in " + retryCount + " attempts. Aborting");
+    public ResponseEntity generateAareg(@RequestBody String[] request) throws IOException, ApiException {
+        return controller.generate(appName, aaregService, request, counter, lock, counterLock);
     }
 }

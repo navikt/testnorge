@@ -1,3 +1,4 @@
+/*
 package no.nav.registre.syntrest.services;
 
 import io.micrometer.core.annotation.Timed;
@@ -38,3 +39,4 @@ public class BisysService implements IService{
     }
 
 }
+*/
