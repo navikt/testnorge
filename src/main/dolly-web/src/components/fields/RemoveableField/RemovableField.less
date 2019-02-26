@@ -2,15 +2,35 @@
 
 .removable-column {
     display: flex;
-    margin: 3px 0;
+    margin: 2px 0;
+}
+
+.removable-column-text {
+    display: flex;
+    justify-content: space-between;
+    margin: 2px 0;
+}
+
+
+.removable-body {
+    border: 2px solid transparent;
 }
 
 .removable-body-hover {
     background-color: @color-bg-grey-border;
+    border: 2px solid @color-bg-grey-border-darker;
 }
 
-.removable-button {
+.removable-body-button {
     display: flex;
     align-items: center;
     margin: 0 5px;
+
+    p {
+        font-size: 0.75em;
+        margin: 0 0 5px;
+        font-weight: bold;
+        min-width: 100px;
+        text-transform: uppercase;
+    }
 }
