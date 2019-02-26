@@ -1,6 +1,6 @@
 package no.nav.registre.syntrest.config;
 
-import no.nav.registre.syntrest.controllers.*;
+import no.nav.registre.syntrest.controllers.domains.AaregController;
 import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -12,11 +12,6 @@ public class AppConfig {
     @Bean
     RestTemplate restTemplate() {
         return new RestTemplate();
-    }
-
-    @Bean
-    RootController rootController(){
-        return new RootController();
     }
 
     @Bean

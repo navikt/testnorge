@@ -1,6 +1,7 @@
-package no.nav.registre.syntrest.services;
+package no.nav.registre.syntrest.services.domains;
 
 import io.micrometer.core.annotation.Timed;
+import no.nav.registre.syntrest.services.IService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;

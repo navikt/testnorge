@@ -1,6 +1,7 @@
-package no.nav.registre.syntrest.services;
+package no.nav.registre.syntrest.services.domains;
 
 import io.micrometer.core.annotation.Timed;
+import no.nav.registre.syntrest.services.IService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -8,28 +9,27 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-
 @Service
-public class EIAService implements IService {
+public class PoppService implements IService {
 
-    @Value("${synth-eia-app}")
+    @Value("${synth-popp-app}")
     private String appName;
 
     @Value("${isAlive}")
     private String isAlive;
 
-    @Value("${synth-eia-url}")
-    private String synthEiaUrl;
+    @Value("${synth-popp-url}")
+    private String synthPoppUrl;
 
     private final RestTemplate restTemplate;
 
-    public EIAService(RestTemplateBuilder restTemplateBuilder) {
+    public PoppService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-eia" })
-    public Object getDataFromNAIS(Object request) {
-        Object result = restTemplate.postForObject(synthEiaUrl, request, List.class);
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-popp" })
+    public Object getDataFromNAIS(Object fnrs) {
+        Object result = restTemplate.postForObject(synthPoppUrl, fnrs, List.class);
         return result;
     }
 

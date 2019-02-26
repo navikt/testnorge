@@ -1,9 +1,9 @@
-package no.nav.registre.syntrest.controllers;
+package no.nav.registre.syntrest.controllers.domains;
 
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
-import no.nav.registre.syntrest.services.InntektService;
+import no.nav.registre.syntrest.controllers.RootController;
+import no.nav.registre.syntrest.services.domains.PoppService;
 import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,31 +20,27 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
-public class InntektController extends KubernetesUtils {
+public class PoppController extends RootController {
 
-    @Value("${synth-inntekt-app}")
+    @Value("${synth-popp-app}")
     private String appName;
 
     @Autowired
     private Validation validation;
 
     @Autowired
-    private RootController controller;
-
-    @Autowired
-    private InntektService inntektService;
+    private PoppService poppService;
 
     private int counter = 0;
 
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @PostMapping(value = "/inntekt")
-    public ResponseEntity generateInntektsmeldinger(@RequestBody String[] fnrs) throws ApiException, IOException {
+    @PostMapping(value = "/popp")
+    public ResponseEntity generatePopp(@RequestBody String[] fnrs) throws IOException, ApiException {
         if (!validation.validateFnrs(fnrs)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Fødselsnummer needs to be of type String and length 11.");
         }
-        return controller.generate(appName, inntektService, fnrs, counter, lock, counterLock);
+        return generate(appName, poppService, fnrs, counter, lock, counterLock);
     }
 }
-

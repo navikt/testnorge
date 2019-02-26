@@ -1,9 +1,9 @@
-package no.nav.registre.syntrest.controllers;
+package no.nav.registre.syntrest.controllers.domains;
 
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
-import no.nav.registre.syntrest.services.TPSService;
+import no.nav.registre.syntrest.controllers.RootController;
+import no.nav.registre.syntrest.services.domains.TPSService;
 import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
-public class TPSController extends KubernetesUtils {
+public class TPSController extends RootController {
 
     @Value("${synth-tps-app}")
     private String appName;
@@ -29,9 +29,6 @@ public class TPSController extends KubernetesUtils {
 
     @Autowired
     private TPSService tpsService;
-
-    @Autowired
-    private RootController controller;
 
     private int counter = 0;
 
@@ -46,6 +43,6 @@ public class TPSController extends KubernetesUtils {
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put("endringskode", endringskode);
         requestParams.put("numToGenerate", numToGenerate);
-        return controller.generate(appName, tpsService, requestParams, counter, lock, counterLock);
+        return generate(appName, tpsService, requestParams, counter, lock, counterLock);
     }
 }

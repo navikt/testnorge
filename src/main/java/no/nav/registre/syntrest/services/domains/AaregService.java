@@ -1,34 +1,33 @@
-package no.nav.registre.syntrest.services;
+package no.nav.registre.syntrest.services.domains;
 
 import io.micrometer.core.annotation.Timed;
+import no.nav.registre.syntrest.services.IService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-
 @Service
-public class PoppService implements IService {
+public class AaregService implements IService {
 
-    @Value("${synth-popp-app}")
+    @Value("${synth-aareg-app}")
     private String appName;
 
     @Value("${isAlive}")
     private String isAlive;
 
-    @Value("${synth-popp-url}")
-    private String synthPoppUrl;
+    @Value("${synth-aareg-url}")
+    private String synthAaregUrl;
 
     private final RestTemplate restTemplate;
 
-    public PoppService(RestTemplateBuilder restTemplateBuilder) {
+    public AaregService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-popp" })
-    public Object getDataFromNAIS(Object fnrs) {
-        Object result = restTemplate.postForObject(synthPoppUrl, fnrs, List.class);
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-aareg" })
+    public Object getDataFromNAIS(Object request) {
+        Object result = restTemplate.postForObject(synthAaregUrl, request, String.class);
         return result;
     }
 

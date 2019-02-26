@@ -12,26 +12,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @Component
-public class RootController extends KubernetesUtils {
+public abstract class RootController extends KubernetesUtils {
 
     @Value("${max_retrys}")
     private int retryCount;
 
-    public ResponseEntity<? extends Object> generate(String appName, IService service, Object request, int counter, ReentrantLock lock, ReentrantLock counterLock) throws IOException, ApiException{
+    protected ResponseEntity<? extends Object> generate(String appName, IService service, Object request, int counter, ReentrantLock lock, ReentrantLock counterLock) throws IOException, ApiException{
         counterLock.lock();
         counter++;
         counterLock.unlock();
         lock.lock();
-        //ApiClient client = createApiClient();
-        KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
-        ApiClient client = Config.fromConfig(kc);
+        ApiClient client = createApiClient();
+        //KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader("C:\\nais\\kubeconfigs\\config"));
+        //ApiClient client = Config.fromConfig(kc);
         try {
             createApplication(client, "/nais/" + appName + ".yaml", service);
             log.info("Requesting synthetic data: " + appName);
@@ -50,7 +49,7 @@ public class RootController extends KubernetesUtils {
         }
     }
 
-    public Object getData(Object request, IService service) throws InterruptedException {
+    private Object getData(Object request, IService service) throws InterruptedException {
         int attempt = 0;
         while (attempt < retryCount) {
             try {

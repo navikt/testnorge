@@ -1,9 +1,9 @@
-package no.nav.registre.syntrest.controllers;
+package no.nav.registre.syntrest.controllers.domains;
 
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.kubernetes.KubernetesUtils;
-import no.nav.registre.syntrest.services.MeldekortService;
+import no.nav.registre.syntrest.controllers.RootController;
+import no.nav.registre.syntrest.services.domains.MeldekortService;
 import no.nav.registre.syntrest.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
-public class MeldekortController extends KubernetesUtils {
+public class MeldekortController extends RootController {
 
     @Value("${synth-arena-meldekort-app}")
     private String appName;
@@ -29,9 +29,6 @@ public class MeldekortController extends KubernetesUtils {
 
     @Autowired
     private MeldekortService meldekortService;
-
-    @Autowired
-    private RootController controller;
 
     private int counter = 0;
 
@@ -46,6 +43,6 @@ public class MeldekortController extends KubernetesUtils {
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put("meldegruppe", meldegruppe);
         requestParams.put("numToGenerate", numToGenerate);
-        return controller.generate(appName, meldekortService, requestParams, counter, lock, counterLock);
+        return generate(appName, meldekortService, requestParams, counter, lock, counterLock);
     }
 }
