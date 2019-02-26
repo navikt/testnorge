@@ -1,13 +1,16 @@
 package no.nav.registre.aareg.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
+import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
@@ -21,9 +24,12 @@ public class SyntetiseringService {
     private AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
 
     @Autowired
+    private AaregstubConsumer aaregstubConsumer;
+
+    @Autowired
     private Random rand;
 
-    public List<String> hentArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest) {
+    public ResponseEntity opprettArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest) {
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId());
         List<String> utvalgteIdenter = new ArrayList<>(syntetiserAaregRequest.getAntallMeldinger());
 
@@ -31,8 +37,8 @@ public class SyntetiseringService {
             utvalgteIdenter.add(levendeIdenter.remove(rand.nextInt(levendeIdenter.size())));
         }
 
-        aaregSyntetisererenConsumer.getSyntetiserteMeldinger(utvalgteIdenter);
+        Map<String, List<Map<String, String>>> syntetiserteArbeidsforholdsmeldinger = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
 
-        return new ArrayList<>();
+        return aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforholdsmeldinger);
     }
 }

@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.service.SyntetiseringService;
@@ -22,7 +20,7 @@ public class SyntetiseringController {
 
     @LogExceptions
     @PostMapping(value = "/generer")
-    public List<String> genererMeldinger(@RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
-        return syntetiseringService.hentArbeidshistorikk(syntetiserAaregRequest);
+    public ResponseEntity genererArbeidsforholdsmeldinger(@RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
+        return syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest);
     }
 }

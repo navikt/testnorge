@@ -62,15 +62,14 @@ public class HodejegerenConsumerTest {
     }
 
     public void stubHodejegerenConsumer() {
-        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/levende-identer/" + gruppeId))
+        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/alle-levende-identer/" + gruppeId))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
-
     }
 
     public void stubHodejegerenConsumerWithEmptyBody() {
-        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/levende-identer/" + gruppeId))
+        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/alle-levende-identer/" + gruppeId))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
     }
