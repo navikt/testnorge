@@ -23,6 +23,7 @@ Formatters.formatAlder = (alder, dodsdato) => {
 // Date ---> String
 Formatters.formatDate = date => {
 	if (!date) return date
+	if (date.length == 10) return date
 	return dateFnsFormat(date, defaultDateFormat, new Date())
 }
 
@@ -64,7 +65,7 @@ Formatters.kodeverkLabel = kodeverk => {
 }
 
 Formatters.oversettBoolean = value => {
-	return value === true ? 'Ja' : 'Nei'
+	return value === true ? 'Ja' : value === false ? 'Nei' : value
 }
 
 Formatters.gtApiKodeverkId = gtType => {
@@ -104,7 +105,10 @@ Formatters.gtTypeLabel = gtType => {
 Formatters.sort2DArray = (array, i) => {
 	// i er indexen av verdi som man ønsker å sortere på
 	return array.sort((a, b) => {
-		return b[i] - a[i]
+		var lengde = Formatters.getIdLengde(a[i])
+		var aSub = a[i].substr(0, lengde)
+		var bSub = b[i].substr(0, lengde)
+		return bSub - aSub
 	})
 }
 
@@ -112,10 +116,20 @@ Formatters.flat2DArray = (array, i) => {
 	array.forEach(person => {
 		if (person[i].includes(',')) {
 			const arrayValues = person[i].split(',')
-			person[i] = Math.max(...arrayValues).toString()
+			person[i] = Math.max(...arrayValues).toString() + ' ...'
 		}
 	})
 	return array
+}
+
+Formatters.getIdLengde = id => {
+	var forste = id.split(' ')
+	return forste[0].length
+}
+
+Formatters.idUtenEllipse = id => {
+	var lengde = Formatters.getIdLengde(id)
+	return id.substr(0, lengde)
 }
 
 Formatters.commaToSpace = streng => {

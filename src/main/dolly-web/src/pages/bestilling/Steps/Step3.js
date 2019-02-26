@@ -1,7 +1,9 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import * as yup from 'yup'
+import RemoveableField from '~/components/fields/RemoveableField/RemoveableField'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import Button from '~/components/button/Button'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import Overskrift from '~/components/overskrift/Overskrift'
 import NavigationConnector from '../Navigation/NavigationConnector'
@@ -23,10 +25,8 @@ export default class Step3 extends PureComponent {
 
 	constructor(props) {
 		super(props)
+		this.state = { edit: false }
 		this.AttributtManager = new AttributtManager()
-		this.SelectedAttributes = this.AttributtManager.listSelectedAttributesForValueSelection(
-			props.selectedAttributeIds
-		)
 		this.EnvValidation = yup.object().shape({
 			environments: yup.array().required('Velg minst ett miljø')
 		})
@@ -42,15 +42,44 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }) => {
+		let removable = items.every(
+			nested =>
+				!nested.subKategori.showInSummary &&
+				!nested.items.every(item => this.props.selectedAttributeIds.includes(item.id))
+		)
+
 		return (
 			<Fragment key={hovedKategori.navn}>
 				<h4>{hovedKategori.navn}</h4>
-				<div className="oppsummering-blokk">{items.map(item => this.renderSubKategori(item))}</div>
+				<RemoveableField
+					onRemove={() => this._onRemoveHovedKategori(items)}
+					removable={this.state.edit && removable}
+				>
+					<div className="oppsummering-blokk oppsummering-blokk-margin">
+						{items.map(item => this.renderSubKategori(item))}
+					</div>
+				</RemoveableField>
 			</Fragment>
 		)
 	}
 
 	renderSubKategoriBlokk = (header, items, values) => {
+		if (!items.every(nested => nested.items)) {
+			let removable = !items.every(item => this.props.selectedAttributeIds.includes(item.id))
+			return (
+				<div className="oppsummering-multifield" key={header}>
+					<RemoveableField
+						removable={removable && this.state.edit}
+						onRemove={() => this._onRemoveSubKategori(items, header)}
+					>
+						<h4>{typeof header === 'number' ? `# ${header}` : header}</h4>
+						<div className="oppsummering-blokk">
+							{items.map(item => this.renderItem(item, values))}
+						</div>
+					</RemoveableField>
+				</div>
+			)
+		}
 		return (
 			<div className="oppsummering-multifield" key={header}>
 				<h4>{header}</h4>
@@ -65,7 +94,6 @@ export default class Step3 extends PureComponent {
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
 		}
-
 		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
@@ -73,7 +101,7 @@ export default class Step3 extends PureComponent {
 		if (item.items) {
 			const valueArray = _get(this.props.values, item.id)
 			return valueArray.map((values, idx) => {
-				return this.renderSubKategoriBlokk(`# ${idx + 1}`, item.items, values)
+				return this.renderSubKategoriBlokk(idx + 1, item.items, values)
 			})
 		}
 
@@ -86,11 +114,40 @@ export default class Step3 extends PureComponent {
 			format: item.format
 		}
 
-		if (item.apiKodeverkId) {
-			return <KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
-		}
+		return (
+			<RemoveableField
+				removable={this.state.edit && this.props.selectedAttributeIds.indexOf(item.id) >= 0}
+				onRemove={() => this._onRemove(item)}
+				key={item.id}
+			>
+				{item.apiKodeverkId ? (
+					<KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
+				) : (
+					<StaticValue {...staticValueProps} />
+				)}
+			</RemoveableField>
+		)
+	}
 
-		return <StaticValue {...staticValueProps} />
+	_onRemoveHovedKategori(items) {
+		let toDelete = []
+		items.forEach(nested => nested.items.forEach(item => toDelete.push(item.id)))
+		this.props.deleteValues({ values: toDelete })
+	}
+
+	_onRemoveSubKategori(items, header) {
+		if (typeof header === 'number') {
+			this.props.deleteValuesArray({
+				values: items.map(item => item.subKategori.id),
+				index: header - 1
+			})
+		} else {
+			this.props.deleteValues({ values: [header.toLowerCase()] })
+		}
+	}
+
+	_onRemove(item) {
+		this.props.deleteValues({ values: [item.id] })
 	}
 
 	onClickPrevious = values => {
@@ -98,7 +155,11 @@ export default class Step3 extends PureComponent {
 	}
 
 	render() {
-		const { identtype, antall, environments } = this.props
+		const { identtype, antall, environments, selectedAttributeIds } = this.props
+
+		this.SelectedAttributes = this.AttributtManager.listSelectedAttributesForValueSelection(
+			selectedAttributeIds
+		)
 
 		return (
 			<div className="bestilling-step3">
@@ -107,17 +168,26 @@ export default class Step3 extends PureComponent {
 				</div>
 
 				<div className="oppsummering">
-					<div className="oppsummering-blokk">
+					<div className="oppsummering-blokk oppsummering-blokk-margin">
 						<StaticValue header="Identtype" value={identtype} />
 						<StaticValue header="Antall personer" value={antall.toString()} />
 					</div>
 					{this.renderValues()}
+					{selectedAttributeIds.length > 0 && (
+						<div className="flexbox--align-center--justify-start">
+							<Button
+								className="flexbox--align-center"
+								kind="edit"
+								onClick={() => this.setState({ edit: !this.state.edit })}
+							>
+								REDIGER
+							</Button>
+						</div>
+					)}
 				</div>
 
 				<Formik
-					initialValues={{
-						environments
-					}}
+					initialValues={{ environments }}
 					onSubmit={this.submit}
 					validationSchema={this.EnvValidation}
 					render={formikProps => {

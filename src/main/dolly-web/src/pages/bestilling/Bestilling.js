@@ -28,6 +28,8 @@ export default class Bestilling extends PureComponent {
 			checkAttributeArray,
 			uncheckAttributeArray,
 			setValues,
+			deleteValues,
+			deleteValuesArray,
 			setEnvironments,
 			sendBestilling,
 			environments
@@ -78,6 +80,8 @@ export default class Bestilling extends PureComponent {
 						sendBestilling={sendBestilling}
 						setEnvironments={setEnvironments}
 						environments={environments}
+						deleteValues={deleteValues}
+						deleteValuesArray={deleteValuesArray}
 					/>
 				)}
 			</div>
