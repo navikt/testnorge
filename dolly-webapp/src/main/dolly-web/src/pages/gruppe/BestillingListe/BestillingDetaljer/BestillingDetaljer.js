@@ -4,31 +4,13 @@ import Button from '~/components/button/Button'
 import './BestillingDetaljer.less'
 import Formatters from '~/utils/DataFormatter'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
-import Modal from 'react-modal'
 import Knapp from 'nav-frontend-knapper'
-import Lukknapp from 'nav-frontend-lukknapp'
 import { Formik, FieldArray } from 'formik'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
 import cn from 'classnames'
-
-// TODO: Flytt modal ut som en dumb komponent
-const customStyles = {
-	content: {
-		top: '50%',
-		left: '50%',
-		right: 'auto',
-		bottom: 'auto',
-		marginRight: '-50%',
-		transform: 'translate(-50%, -50%)',
-		width: '25%',
-		minWidth: '500px',
-		overflow: 'inherit'
-	}
-}
-
-Modal.setAppElement('#root')
+import DollyModal from '~/components/modal/DollyModal'
 
 export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
@@ -37,14 +19,21 @@ export default class BestillingDetaljer extends PureComponent {
 		this.EnvValidation = yup.object().shape({
 			environments: yup.array().required('Velg minst ett miljø')
 		})
-
 		this.state = {
 			modalOpen: false
 		}
 	}
 
+	openModal = () => {
+		this.setState({ modalOpen: true })
+	}
+	closeModal = () => {
+		this.setState({ modalOpen: false })
+	}
+
 	render() {
 		const { successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
+		const { modalOpen } = this.state
 
 		// TODO: Reverse Map detail data here. Alex
 		return (
@@ -53,14 +42,15 @@ export default class BestillingDetaljer extends PureComponent {
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
 				<div className="flexbox--align-center--justify-end">
-					<Button
-						onClick={this._onToggleModal}
-						className="flexbox--align-center"
-						kind="synchronize"
-					>
+					<Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
 						GJENOPPRETT I TPS
 					</Button>
-					{this._renderModal()}
+					<DollyModal
+						isOpen={modalOpen}
+						onRequestClose={this.closeModal}
+						closeModal={this.closeModal}
+						content={this._renderGjenopprettModal()}
+					/>
 				</div>
 			</div>
 		)
@@ -82,7 +72,7 @@ export default class BestillingDetaljer extends PureComponent {
 							})
 							if (kategori.header) {
 								return (
-									<Fragment>
+									<Fragment key={j}>
 										<h4>{kategori.header} </h4>
 										<div className={cssClass} key={j}>
 											{kategori.items.map((attributt, i) => {
@@ -110,17 +100,12 @@ export default class BestillingDetaljer extends PureComponent {
 		)
 	}
 
-	_renderModal = () => {
+	_renderGjenopprettModal = () => {
 		const { environments, id } = this.props.bestilling // miljø som ble bestilt i en bestilling
 
 		return (
-			<Modal
-				isOpen={this.state.modalOpen}
-				onRequestClose={this._onToggleModal}
-				shouldCloseOnEsc
-				style={customStyles}
-			>
-				<div className="openam-modal">
+			<Fragment>
+				<div className="dollymodal">
 					<div style={{ paddingLeft: 20, paddingRight: 20 }}>
 						<h1>Bestilling #{id}</h1>
 						<StaticValue header="Bestilt miljø" value={Formatters.arrayToString(environments)} />
@@ -146,8 +131,8 @@ export default class BestillingDetaljer extends PureComponent {
 											/>
 										)}
 									/>
-									<div className="openam-modal_buttons">
-										<Knapp autoFocus type="standard" onClick={this._onToggleModal}>
+									<div className="dollymodal_buttons">
+										<Knapp autoFocus type="standard" onClick={this.closeModal}>
 											Avbryt
 										</Knapp>
 										<Knapp type="hoved" onClick={formikProps.submitForm}>
@@ -157,10 +142,9 @@ export default class BestillingDetaljer extends PureComponent {
 								</Fragment>
 							)
 						}}
-					/>{' '}
-					<Lukknapp onClick={this._onToggleModal} />
+					/>
 				</div>
-			</Modal>
+			</Fragment>
 		)
 	}
 
@@ -170,10 +154,6 @@ export default class BestillingDetaljer extends PureComponent {
 			.toLowerCase()
 		await this.props.gjenopprettBestilling(envsQuery)
 		await this.props.getBestillinger()
-	}
-
-	_onToggleModal = () => {
-		this.setState({ modalOpen: !this.state.modalOpen })
 	}
 
 	_renderErrorMessage = errorMsgs => (
@@ -186,9 +166,7 @@ export default class BestillingDetaljer extends PureComponent {
 				{errorMsgs.map((error, i) => {
 					return (
 						<p className="" key={i}>
-							{error.split('%').join(' ')
-							// .substring(0, error.length - 1)
-							}
+							{error.split('%').join(' ')}
 						</p>
 					)
 				})}

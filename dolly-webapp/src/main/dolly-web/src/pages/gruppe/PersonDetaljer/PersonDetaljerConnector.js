@@ -11,7 +11,8 @@ const loadingSelectorSigrun = createLoadingSelector(GET_SIGRUN_TESTBRUKER)
 const mapStateToProps = (state, ownProps) => ({
 	isFetchingKrr: loadingSelectorKrr(state),
 	isFetchingSigrun: loadingSelectorSigrun(state),
-	personData: DataMapper.getDetailedData(state, ownProps)
+	personData: DataMapper.getDetailedData(state, ownProps),
+	bestillinger: state.bestillingStatuser
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

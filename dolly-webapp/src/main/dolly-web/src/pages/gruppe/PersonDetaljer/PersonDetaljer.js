@@ -5,19 +5,35 @@ import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManag
 import Button from '~/components/button/Button'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Loading from '~/components/loading/Loading'
-
 import './PersonDetaljer.less'
+import { mapBestillingData } from '~/pages/gruppe/BestillingListe/BestillingDetaljer/BestillingDataMapper'
+import cn from 'classnames'
+import StaticValue from '~/components/fields/StaticValue/StaticValue'
+import DollyModal from '~/components/modal/DollyModal'
+import Formatters from '~/utils/DataFormatter'
 
 const AttributtManagerInstance = new AttributtManager()
 
 export default class PersonDetaljer extends PureComponent {
+	constructor(props) {
+		super(props)
+		this.state = {
+			modalOpen: false
+		}
+	}
+
 	static propTypes = {
 		editAction: PropTypes.func
 	}
-
 	componentDidMount() {
 		this.props.getSigrunTestbruker()
 		this.props.getKrrTestbruker()
+	}
+	openModal = () => {
+		this.setState({ modalOpen: true })
+	}
+	closeModal = () => {
+		this.setState({ modalOpen: false })
 	}
 
 	// render loading for krr og sigrun
@@ -50,8 +66,9 @@ export default class PersonDetaljer extends PureComponent {
 
 	render() {
 		const { personData, editAction, frigjoerTestbruker } = this.props
-		if (!personData) return null
+		const { modalOpen } = this.state
 
+		if (!personData) return null
 		return (
 			<div className="person-details">
 				{personData.map((i, idx) => {
@@ -59,8 +76,8 @@ export default class PersonDetaljer extends PureComponent {
 					if (i.data[0].id == 'bestillingID') {
 						return (
 							<div key={idx} className="tidligere-bestilling-panel">
-								<h4 className="tidligere-bestilling-id">{i.header}</h4>
-								{this._renderPersonInfoBlockHandler(i)}
+								<h4>{i.header}</h4>
+								<div>{i.data[0].value}</div>
 							</div>
 						)
 					}
@@ -72,6 +89,16 @@ export default class PersonDetaljer extends PureComponent {
 					)
 				})}
 				<div className="flexbox--align-center--justify-end">
+					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
+						BESTILLINGSDETALJER
+					</Button>
+					<DollyModal
+						isOpen={modalOpen}
+						onRequestClose={this.closeModal}
+						closeModal={this.closeModal}
+						content={this._renderBestillingModal()}
+						width={'60%'}
+					/>
 					<Button onClick={editAction} className="flexbox--align-center" kind="edit">
 						REDIGER
 					</Button>
@@ -83,6 +110,54 @@ export default class PersonDetaljer extends PureComponent {
 					/>
 				</div>
 			</div>
+		)
+	}
+
+	_renderBestillingModal = () => {
+		const ident = Formatters.idUtenEllipse(this.props.bestillingId)
+		const { bestillinger } = this.props
+		const bestilling = bestillinger.data.find(i => i.id.toString() === ident)
+		const data = mapBestillingData(bestilling)
+
+		return (
+			<Fragment>
+				<div className="dollymodal" style={{ paddingLeft: 20, paddingRight: 20 }}>
+					<h1>Bestilling #{ident}</h1>
+					<div className={'bestilling-modal'}>
+						{data ? (
+							data.map((kategori, j) => {
+								const bottomBorder = j != data.length - 1
+								const cssClass = cn('flexbox--align-center bestilling-details', {
+									'bottom-border': bottomBorder
+								})
+								if (kategori.header) {
+									return (
+										<Fragment key={j}>
+											<h4>{kategori.header} </h4>
+											<div className={cssClass}>
+												{kategori.items.map((attributt, i) => {
+													if (attributt.value) {
+														return (
+															<StaticValue
+																header={attributt.label}
+																size="small"
+																value={attributt.value}
+																key={i}
+															/>
+														)
+													}
+												})}
+											</div>
+										</Fragment>
+									)
+								}
+							})
+						) : (
+							<p>Kunne ikke hente bestillingsdata</p>
+						)}
+					</div>
+				</div>
+			</Fragment>
 		)
 	}
 }
