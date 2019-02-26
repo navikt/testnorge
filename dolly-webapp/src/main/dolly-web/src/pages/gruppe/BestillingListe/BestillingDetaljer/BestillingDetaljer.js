@@ -44,14 +44,13 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-		const { successEnvs, failedEnvs, bestillingStatus, statusmeldingFeil } = this.props.miljoeStatusObj
+		const { successEnvs, failedEnvs, tpsfStatus, stubStatus, statusmeldingFeil } = this.props.miljoeStatusObj
 		// TODO: Reverse Map detail data here. Alex
-		//OBS! Kun error fra tpsf foreløbig
 		return (
 			<div className="bestilling-detaljer">
 				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
-				{statusmeldingFeil.length > 0 && this._renderErrorMessage(bestillingStatus)}
+				{statusmeldingFeil.length > 0 && this._renderErrorMessage(tpsfStatus, stubStatus)}
 				<div className="flexbox--align-center--justify-end">
 					<Button
 						onClick={this._onToggleModal}
@@ -176,7 +175,7 @@ export default class BestillingDetaljer extends PureComponent {
 		this.setState({ modalOpen: !this.state.modalOpen })
 	}
 
-	_renderErrorMessage = bestillingStatus => {
+	_renderErrorMessage = (tpsfStatus, stubStatus) => {
 		return (
 			<Fragment>
 				<div className="flexbox--align-center error-header">
@@ -190,8 +189,7 @@ export default class BestillingDetaljer extends PureComponent {
 						<div className = 'feil-header feil-header_stor'>Ident</div>
 					</div>
 				</div>
-				{bestillingStatus.map((service, idx) => {
-					return (service.map((feil, i) => {
+				{tpsfStatus.map((feil, i) => { //feilmeldinger fra tpsf
 						if (feil.statusMelding !== 'OK'){
 							return (							
 								<div className='feil-container feil-container_border' key={i}>
@@ -200,28 +198,43 @@ export default class BestillingDetaljer extends PureComponent {
 									</div>
 									<div className = 'feil-kolonne_stor' key={i}>
 										{Object.keys(feil.environmentIdents).map((miljo,idx) => {
-											let identerPerMiljo = []
+												let identerPerMiljo = []
 												feil.environmentIdents[miljo].map((ident) => {
 													!identerPerMiljo.includes(ident) && identerPerMiljo.push(ident)
 												})
 
-											const miljoUpperCase = miljo.toUpperCase()
-											const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
-												
-											return (
-												<div className = 'feil-container' key ={idx}>
-													<div className="feil-kolonne_liten">{miljoUpperCase}</div>
-													<div className="feil-kolonne_stor">{identerPerMiljoStr}</div>
-												</div>
-											)
-										})}
+												const miljoUpperCase = miljo.toUpperCase()
+												const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
+												return (
+													<div className = 'feil-container' key ={idx}>
+														<div className="feil-kolonne_liten">{miljoUpperCase}</div>
+														<div className="feil-kolonne_stor">{identerPerMiljoStr}</div>
+													</div>
+												)
+										})} 
 									</div>
 								</div>
 							)
 						}
-					})
-				)})
-			}
+					}
+				)}
+				{stubStatus && stubStatus.map ((stub, idx) => { //feilmeldinger fra sigrun- og krrstub
+					const miljoUpperCase = stub.navn
+					const identerPerMiljoStr = Formatters.arrayToString(stub.status[0].identer)
+					return (
+						<div className='feil-container feil-container_border' key={idx}>
+							<div className = 'feil-kolonne_stor' >
+								{stub.status[0].statusMelding}
+							</div>
+							<div className = 'feil-kolonne_stor'>
+									<div className = 'feil-container'>
+										<div className="feil-kolonne_liten">{miljoUpperCase}</div>
+										<div className="feil-kolonne_stor">{identerPerMiljoStr}</div>
+									</div>
+							</div>
+						</div>
+					)
+				})}
 			</Fragment>
 		)
 	}

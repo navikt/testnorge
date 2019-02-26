@@ -86,12 +86,22 @@ export const miljoStatusSelector = bestilling => {
 	let errorMsgs = []
 	let statusmeldingFeil = [] //midlertidig løsning frem til vi vet hvordan vi skal vise andre deler som bruker errorMsgs
 		
-	//Bestillingsstatus blir delt opp i tpsfStatus, krrStatus og sigrunStatus. 
+	//Bestillingsstatus er delt opp i tpsfStatus, krrStatus og sigrunStatus. 
 	let bestillingStatus = []
+	let stubStatus = []
+
+	const tpsfStatus = bestilling.tpsfStatus
+	const krrStubStatus = {navn: 'KRRSTUB', status: bestilling.krrStubStatus}
+	const sigrunStubStatus = {navn: 'SIGRUNSTUB', status: bestilling.sigrunStubStatus}
 	
-	{bestilling.tpsfStatus && bestillingStatus.push(bestilling.tpsfStatus)}
-	{bestilling.krrStubStatus && bestillingStatus.push(bestilling.krrStubStatus)}
-	{bestilling.sigrunStubStatus && bestillingStatus.push(bestilling.sigrunStubStatus)}
+	// Legger til feilmeldinger fra krrStub og sigrunStub i et array
+	{(krrStubStatus.status && krrStubStatus.status[0].statusMelding !== 'OK') && stubStatus.push(krrStubStatus)}
+	{(sigrunStubStatus.status && sigrunStubStatus.status[0].statusMelding !== 'OK') && stubStatus.push(sigrunStubStatus)}
+	
+	// Bestillingstatus har alle statuser fra tpsf, sigrun og krr. statusmeldingFeil har alle feilmeldinger
+	{tpsfStatus && bestillingStatus.push(tpsfStatus)}
+	{krrStubStatus.status && bestillingStatus.push(krrStubStatus.status)}
+	{sigrunStubStatus.status && bestillingStatus.push(sigrunStubStatus.status)}
 
 	bestillingStatus.map( service => { 
 		service.map(feil => {
@@ -143,7 +153,7 @@ export const miljoStatusSelector = bestilling => {
 		})
 	}
 
-	return { id, successEnvs, failedEnvs, errorMsgs, bestillingStatus, statusmeldingFeil }
+	return { id, successEnvs, failedEnvs, errorMsgs, tpsfStatus, stubStatus, statusmeldingFeil }
 }
 
 const mapItems = items => {
