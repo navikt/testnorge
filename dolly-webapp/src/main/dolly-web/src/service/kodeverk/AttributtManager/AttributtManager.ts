@@ -14,12 +14,28 @@ import DataSourceMapper from '~/utils/DataSourceMapper'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import { isAttributtEditable } from './AttributtHelpers'
+import { isAttributtEditable, DependencyTree } from './AttributtHelpers'
 
 export default class AttributtManager {
 	// BASE FUNCTIONS
 	listAllSelected(selectedIds: string[]): Attributt[] {
-		return AttributtListe.filter(f => selectedIds.includes(f.parent || f.id))
+		return this.listAllSelectFilterItems(selectedIds, AttributtListe)
+	}
+
+	listAllSelectFilterItems(selectedIds: string[], attributter: Attributt[]): Attributt[] {
+		return attributter
+			.filter(
+				attr =>
+					selectedIds.includes(attr.parent || attr.id) &&
+					(!attr.includeIf || attr.includeIf.every(e => selectedIds.includes(e.id)))
+			)
+			.map(attr => {
+				return attr.items && attr.dataSource !== 'SIGRUN'
+					? Object.assign(Object.assign({}, attr), {
+							items: this.listAllSelectFilterItems(selectedIds, attr.items)
+					  })
+					: attr
+			})
 	}
 
 	listAllExcludingChildren(): Attributt[] {
@@ -265,4 +281,12 @@ export default class AttributtManager {
 				return ''
 		}
 	}
+
+	listDependencies = selectedIds =>
+		selectedIds
+			.filter(id => DependencyTree[id])
+			.map(id =>
+				Object.values(DependencyTree[id]).reduce((res, val) => ({ ...res, [val.id]: val }), {})
+			)
+			.reduce((res, acc) => ({ ...res, ...acc }), {})
 }
