@@ -169,7 +169,7 @@ public class KubernetesUtils {
                 } else throw e;
             }
         } else {
-            throw new IllegalArgumentException("No application named: " + appName + " found");
+            throw new IllegalArgumentException("No application named: " + appName + " found, unable to delete");
         }
     }
 }
