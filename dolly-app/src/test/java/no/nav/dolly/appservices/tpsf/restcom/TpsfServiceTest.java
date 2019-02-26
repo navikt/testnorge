@@ -32,7 +32,7 @@ import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
 
@@ -40,7 +40,7 @@ import no.nav.dolly.properties.ProvidersProps;
 public class TpsfServiceTest {
 
     private String url = "https://localhost:8080/api/v1/dolly/testdata/personer";
-    private RsTpsfBestilling standardTpsfBestilling = new RsTpsfBestilling();
+    private TpsfBestilling standardTpsfBestilling = new TpsfBestilling();
     private String standardIdent = "123";
     private List<String> standardIdenter = new ArrayList<>(singleton(standardIdent));
     private List<String> standardMiljoer_u1_t1 = Arrays.asList("u1", "t1");
