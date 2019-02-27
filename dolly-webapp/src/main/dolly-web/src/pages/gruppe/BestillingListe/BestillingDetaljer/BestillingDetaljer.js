@@ -42,9 +42,9 @@ export default class BestillingDetaljer extends PureComponent {
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
 				<div className="flexbox--align-center--justify-end">
-					<Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
+				{successEnvs.length > 0 && <Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
 						GJENOPPRETT I TPS
-					</Button>
+					</Button>}
 					<DollyModal
 						isOpen={modalOpen}
 						onRequestClose={this.closeModal}
