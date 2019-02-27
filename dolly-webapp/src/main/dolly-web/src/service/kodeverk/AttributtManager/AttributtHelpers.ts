@@ -14,6 +14,9 @@ const _attributesFlatMap = attributes => {
 	return [].concat(...attributes.map(attribute => attributeFlatMap(attribute)))
 }
 
+// Traverse and group dependencies
+// A dependens on B which depends on C
+// -> { C: { A: attribute, B: attribute }, B: { A : attribute } }
 const traverseDependencies = (attributter: Attributt[]): { [key: string]: Attributt[] } => {
 	return attributter
 		.filter(attr => attr.includeIf)
