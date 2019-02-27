@@ -12,8 +12,6 @@ $application = $matches['name']
 
 $image = $image_base + $application + ":" + $tag
 
-mvn clean install
-
 docker build . -t $image
 docker push $image
 
