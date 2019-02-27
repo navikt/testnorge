@@ -80,6 +80,7 @@ export default class TestbrukerListe extends Component {
 																			<PersonDetaljerConnector
 																				personId={bruker[0]}
 																				username={username}
+																				bestillingId={bruker[5]}
 																				editAction={() => editTestbruker(bruker[0])}
 																			/>
 																		}

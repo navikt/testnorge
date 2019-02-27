@@ -1,5 +1,8 @@
 package no.nav.dolly.domain.resultset;
 
+import java.util.Map;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,10 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class RsOpprettEndreTestgruppe {
-	private Long teamId;
-	private String navn;
-	private String hensikt;
+@AllArgsConstructor
+public class RsIdentTpsStatus {
+
+    private String statusMelding;
+    private Map<String, Set<String>> environmentIdents;
 }

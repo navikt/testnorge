@@ -62,7 +62,7 @@ public class OpenAmController {
     }
 
     @CacheEvict(value = CACHE_BESTILLING, allEntries = true)
-    @PostMapping("/bestilling/{bestillingId")
+    @PostMapping("/bestilling/{bestillingId}")
     @Transactional
     public List<RsOpenAmResponse> sendBestillingTilOpenAm(@RequestParam Long bestillingId) {
         Optional<Bestilling> bestillingOpt = bestillingRepository.findById(bestillingId);
