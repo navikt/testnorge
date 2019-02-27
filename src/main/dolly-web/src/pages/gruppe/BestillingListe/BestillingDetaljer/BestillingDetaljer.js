@@ -161,6 +161,7 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	_renderErrorMessage = (tpsfStatus, stubStatus) => {
+		let cssClass = 'feil-container feil-container_border'
 		return (
 			<Fragment>
 				<div className="flexbox--align-center error-header">
@@ -175,9 +176,15 @@ export default class BestillingDetaljer extends PureComponent {
 					</div>
 				</div>
 				{tpsfStatus.map((feil, i) => { //feilmeldinger fra tpsf
+					//Ha linje mellom feilmeldingene, men ikke etter den siste
+					if (stubStatus.length < 1){
+						const bottomBorder = i != tpsfStatus.length - 1
+						cssClass = cn('feil-container', 
+						{'feil-container feil-container_border': bottomBorder
+					})} 
 						if (feil.statusMelding !== 'OK'){
 							return (							
-								<div className='feil-container feil-container_border' key={i}>
+								<div className={cssClass} key={i}>
 									<div className = 'feil-kolonne_stor' >
 										{feil.statusMelding}
 									</div>
@@ -203,11 +210,17 @@ export default class BestillingDetaljer extends PureComponent {
 						}
 					}
 				)}
-				{stubStatus && stubStatus.map ((stub, idx) => { //feilmeldinger fra sigrun- og krrstub
+				{stubStatus && stubStatus.map ((stub, i) => { //feilmeldinger fra sigrun- og krrstub
 					const miljoUpperCase = stub.navn
 					const identerPerMiljoStr = Formatters.arrayToString(stub.status[0].identer)
+					const bottomBorder = i != stubStatus.length - 1
+					//Ha linje mellom feilmeldingene, men ikke etter den siste
+					cssClass = cn('feil-container', 
+					{'feil-container feil-container_border': bottomBorder
+					})
+
 					return (
-						<div className='feil-container feil-container_border' key={idx}>
+						<div className={cssClass} key={i}>
 							<div className = 'feil-kolonne_stor' >
 								{stub.status[0].statusMelding}
 							</div>
