@@ -62,14 +62,14 @@ public class HodejegerenConsumerTest {
         assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Hodejegeren: NullPointerException"));
     }
 
-    public void stubHodejegerenConsumer() {
+    private void stubHodejegerenConsumer() {
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/alle-levende-identer/" + gruppeId))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
     }
 
-    public void stubHodejegerenConsumerWithEmptyBody() {
+    private void stubHodejegerenConsumerWithEmptyBody() {
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/alle-levende-identer/" + gruppeId))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
