@@ -150,14 +150,6 @@ const bestillingFormatter = bestillingState => {
 	}
 	console.log('POSTING BESTILLING', final_values)
 
-	// TODO: Hvis det dukker opp flere slike tilfelle, vurder å expande AttributeSystem
-	// KUN FOR egen ansatt - spesielt tilfelle
-	if (final_values.tpsf.egenAnsattDatoFom != null) {
-		if (final_values.tpsf.egenAnsattDatoFom) {
-			final_values.tpsf.egenAnsattDatoFom = new Date()
-		} else final_values.tpsf.egenAnsattDatoFom = null
-	}
-
 	return final_values
 }
 
@@ -193,6 +185,8 @@ const getValues = (attributeList, values) => {
 	}, {})
 }
 
+// Transform attributes before order is sent
+// Only affects attributes that has property "transform: (value: any, attributter: Attributt[]) => any"
 const _transformAttributt = (attribute, attributes, value) => {
 	if (attribute.items) {
 		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
@@ -211,6 +205,8 @@ const _transformAttributt = (attribute, attributes, value) => {
 	return value
 }
 
+// Filter attributes included in filter argument
+// Removes all children if attribute is a parent and dependencies
 const _filterAttributes = (values, filter, attribute, dependencies) =>
 	attribute
 		.filter(
@@ -224,6 +220,8 @@ const _filterAttributes = (values, filter, attribute, dependencies) =>
 		])
 		.reduce((res, [key, val]) => ({ ...res, [key]: val }), {})
 
+// Remove all values with ids in filter at index 
+// If last element in array is removed, then remove children and dependencies
 const _filterArrayAttributes = (values, selectedIds, filter, index) => {
 	let copy = JSON.parse(JSON.stringify(values))
 	let attributeIds = selectedIds.slice()
