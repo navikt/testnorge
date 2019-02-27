@@ -36,10 +36,6 @@ public class HodejegerenConsumer {
         List<String> levendeIdenter = new ArrayList<>();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());
-        }
-
         if (response.getBody() != null) {
             levendeIdenter.addAll(response.getBody());
         } else {
