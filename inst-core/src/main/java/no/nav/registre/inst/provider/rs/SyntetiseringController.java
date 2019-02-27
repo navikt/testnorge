@@ -17,9 +17,10 @@ public class SyntetiseringController {
     private InstService instService;
 
     @LogExceptions
-    @PostMapping(value = "/generer")
-    public void generateInst(@RequestParam int numToGenerate) {
+    @GetMapping(value = "/generer")
+    public ResponseEntity generateInst(@RequestParam int numToGenerate) {
         List<Map<String, String>> instMeldinger = instService.finnSyntetiserteMeldinger(numToGenerate);
         System.out.println(instMeldinger);
+        return null;
     }
 }
