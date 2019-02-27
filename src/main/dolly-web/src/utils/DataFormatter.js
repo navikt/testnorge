@@ -23,6 +23,7 @@ Formatters.formatAlder = (alder, dodsdato) => {
 // Date ---> String
 Formatters.formatDate = date => {
 	if (!date) return date
+	if (date.length == 10) return date
 	return dateFnsFormat(date, defaultDateFormat, new Date())
 }
 
@@ -64,7 +65,7 @@ Formatters.kodeverkLabel = kodeverk => {
 }
 
 Formatters.oversettBoolean = value => {
-	return value === true ? 'Ja' : value === false ? 'Nei': value
+	return value === true ? 'Ja' : value === false ? 'Nei' : value
 }
 
 Formatters.gtApiKodeverkId = gtType => {
@@ -124,6 +125,11 @@ Formatters.flat2DArray = (array, i) => {
 Formatters.getIdLengde = id => {
 	var forste = id.split(' ')
 	return forste[0].length
+}
+
+Formatters.idUtenEllipse = id => {
+	var lengde = Formatters.getIdLengde(id)
+	return id.substr(0, lengde)
 }
 
 Formatters.commaToSpace = streng => {
