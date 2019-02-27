@@ -25,21 +25,21 @@ public class InstSyntetisererenConsumer {
 
     private UriTemplate url;
 
-    public InstSyntetisererenConsumer(@Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
-        this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/inst");
+    public InstSyntetisererenConsumer(@Value("${syntrest.rest.inst.api.url}") String syntrestServerUrl) {
+        this.url = new UriTemplate(syntrestServerUrl);
     }
 
-    public List<Map<String, String>> hentInstMeldingerFromSyntRest(List<String> fnrs) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).body(fnrs);
+    public List<Map<String, String>> hentInstMeldingerFromSyntRest(int numToGenerate) {
+        RequestEntity getRequest = RequestEntity.get(url.expand(numToGenerate)).build();
 
         List<Map<String, String>> syntetiserteMeldinger = new ArrayList<>();
 
-        ResponseEntity<List<Map<String, String>>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
+        ResponseEntity<List<Map<String, String>>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
         if (response != null && response.getBody() != null) {
             syntetiserteMeldinger.addAll(response.getBody());
         } else {
-            log.error("Kunne ikke hente response body fra synthdata-popp: NullPointerException");
+            log.error("Kunne ikke hente response body fra synthdata-inst: NullPointerException");
         }
 
         return syntetiserteMeldinger;

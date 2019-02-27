@@ -1,5 +1,6 @@
 package no.nav.registre.inst.config;
 
+import no.nav.registre.inst.provider.rs.SyntetiseringController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
