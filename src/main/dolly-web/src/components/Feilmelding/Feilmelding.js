@@ -90,13 +90,13 @@ export default class Feilmelding extends Component {
 
         return (
             <Fragment>
-                <div className="feil-container">
+                <span className="feil-container">
                     <h2 className = 'feil-header feil-header_stor'>Feilmelding</h2>
-                    <div className = 'feil-kolonne_header'>
+                    <span className = 'feil-kolonne_header'>
                         <h2 className = 'feil-header feil-header_liten'>Miljø</h2>
                         <h2 className = 'feil-header feil-header_stor'>Ident</h2>
-                    </div>
-                </div>
+                    </span>
+                </span>
                 {this.finnTpsfFeilStatus(bestilling.tpsfStatus).map((feil, i) => { //Feilmeldinger fra tpsf
                     if (stubStatus.length < 1){
                         const bottomBorder = i != this.finnTpsfFeilStatus(bestilling.tpsfStatus).length - 1
