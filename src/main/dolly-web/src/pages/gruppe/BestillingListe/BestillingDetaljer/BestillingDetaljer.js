@@ -11,6 +11,8 @@ import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
 import cn from 'classnames'
 import DollyModal from '~/components/modal/DollyModal'
+import Feilmelding from '~/components/Feilmelding/Feilmelding'
+
 
 export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
@@ -32,7 +34,7 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-		const { successEnvs, failedEnvs, tpsfStatus, stubStatus, statusmeldingFeil } = this.props.miljoeStatusObj
+		const { successEnvs, failedEnvs, bestilling } = this.props.miljoeStatusObj
 		const { modalOpen } = this.state
 
 		// TODO: Reverse Map detail data here. Alex
@@ -40,7 +42,7 @@ export default class BestillingDetaljer extends PureComponent {
 			<div className="bestilling-detaljer">
 				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
-				{statusmeldingFeil.length > 0 && this._renderErrorMessage(tpsfStatus, stubStatus)}
+				{this._finnesFeilmelding(bestilling) && this._renderErrorMessage(bestilling)}
 				<div className="flexbox--align-center--justify-end">
 					<Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
 						GJENOPPRETT I TPS
@@ -160,83 +162,34 @@ export default class BestillingDetaljer extends PureComponent {
 		this.setState({ modalOpen: !this.state.modalOpen })
 	}
 
-	_renderErrorMessage = (tpsfStatus, stubStatus) => {
-		let cssClass = 'feil-container feil-container_border'
+	_renderErrorMessage = bestilling => {
 		return (
 			<Fragment>
 				<div className="flexbox--align-center error-header">
 					<Icon size={'16px'} kind={'report-problem-triangle'} />
 					<h3>Feilmeldinger</h3>
 				</div>
-				<div className="feil-container">
-					<div className = 'feil-header feil-header_stor'>Feilmelding</div>
-					<div className = 'feil-kolonne_header'>
-						<div className = 'feil-header feil-header_liten'>Miljø</div>
-						<div className = 'feil-header feil-header_stor'>Ident</div>
-					</div>
-				</div>
-				{tpsfStatus.map((feil, i) => { //feilmeldinger fra tpsf
-					//Ha linje mellom feilmeldingene, men ikke etter den siste
-					if (stubStatus.length < 1){
-						const bottomBorder = i != tpsfStatus.length - 1
-						cssClass = cn('feil-container', 
-						{'feil-container feil-container_border': bottomBorder
-					})} 
-						if (feil.statusMelding !== 'OK'){
-							return (							
-								<div className={cssClass} key={i}>
-									<div className = 'feil-kolonne_stor' >
-										{feil.statusMelding}
-									</div>
-									<div className = 'feil-kolonne_stor' key={i}>
-										{Object.keys(feil.environmentIdents).map((miljo,idx) => {
-												let identerPerMiljo = []
-												feil.environmentIdents[miljo].map((ident) => {
-													!identerPerMiljo.includes(ident) && identerPerMiljo.push(ident)
-												})
-
-												const miljoUpperCase = miljo.toUpperCase()
-												const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
-												return (
-													<div className = 'feil-container' key ={idx}>
-														<div className="feil-kolonne_liten">{miljoUpperCase}</div>
-														<div className="feil-kolonne_stor">{identerPerMiljoStr}</div>
-													</div>
-												)
-										})} 
-									</div>
-								</div>
-							)
-						}
-					}
-				)}
-				{stubStatus && stubStatus.map ((stub, i) => { //feilmeldinger fra sigrun- og krrstub
-					const miljoUpperCase = stub.navn
-					const identerPerMiljoStr = Formatters.arrayToString(stub.status[0].identer)
-					const bottomBorder = i != stubStatus.length - 1
-					//Ha linje mellom feilmeldingene, men ikke etter den siste
-					cssClass = cn('feil-container', 
-					{'feil-container feil-container_border': bottomBorder
-					})
-
-					return (
-						<div className={cssClass} key={i}>
-							<div className = 'feil-kolonne_stor' >
-								{stub.status[0].statusMelding}
-							</div>
-							<div className = 'feil-kolonne_stor'>
-									<div className = 'feil-container'>
-										<div className="feil-kolonne_liten">{miljoUpperCase}</div>
-										<div className="feil-kolonne_stor">{identerPerMiljoStr}</div>
-									</div>
-							</div>
-						</div>
-					)
-				})}
+				<Feilmelding bestilling = {bestilling} />
 			</Fragment>
 		)
 	}
+	
+	_finnesFeilmelding = (bestilling) => {
+		let temp = false
+		{bestilling.sigrunStubStatus && bestilling.sigrunStubStatus.map (status => {
+				if (status.statusMelding !== 'OK') temp = true 
+		})}
 
+		{bestilling.krrStubStatus && bestilling.krrStubStatus.map (status => {
+			if (status.statusMelding !== 'OK') temp = true
+		})}
+		
+		{bestilling.tpsfStatus && bestilling.tpsfStatus.map (status => {
+			if (status.statusMelding !== 'OK') temp = true
+		})} 
+		
+		return temp
+	}
 
 	_renderMiljoeStatus = (successEnvs, failedEnvs) => {
 		const successEnvsStr = Formatters.arrayToString(successEnvs)
