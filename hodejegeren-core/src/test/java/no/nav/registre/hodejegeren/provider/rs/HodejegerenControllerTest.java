@@ -52,6 +52,16 @@ public class HodejegerenControllerTest {
     }
 
     /**
+     * Scenario: HVIS hodejeger-controlleren får et request om å hente identer i gruppe, skal metoden kalle på
+     * {@link EksisterendeIdenterService#finnAlleIdenter}
+     */
+    @Test
+    public void shouldHenteAlleIdenterIGruppe() {
+        hodejegerenController.hentAlleIdenterIGruppe(avspillergruppeId);
+        verify(eksisterendeIdenterService).finnAlleIdenter(avspillergruppeId);
+    }
+
+    /**
      * Scenario: HVIS hodejeger-controlleren får et request om å hente levende identer i gruppe, skal metoden kalle på
      * {@link EksisterendeIdenterService#finnLevendeIdenter}
      */

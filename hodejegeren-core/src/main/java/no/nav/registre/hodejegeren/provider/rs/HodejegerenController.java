@@ -31,6 +31,13 @@ public class HodejegerenController {
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man hente alle personer i en gitt avspillergruppe i TPSF.")
+    @GetMapping("api/v1/alle-identer/{avspillergruppeId}")
+    public List<String> hentAlleIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
+        return eksisterendeIdenterService.finnAlleIdenter(avspillergruppeId);
+    }
+
+    @LogExceptions
     @ApiOperation(value = "Her kan man hente alle levende personer i en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/alle-levende-identer/{avspillergruppeId}")
     public List<String> hentLevendeIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
