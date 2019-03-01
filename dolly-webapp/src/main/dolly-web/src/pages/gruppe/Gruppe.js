@@ -49,9 +49,11 @@ export default class Gruppe extends Component {
 			bestillinger,
 			nyeBestillinger,
 			getGruppe,
-			getBestillinger,
-			openAm
+			getBestillinger
+			// openAm
 		} = this.props
+
+		// console.log('this :', this)
 
 		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
 			return <Loading label="Laster grupper" panel />
@@ -92,13 +94,13 @@ export default class Gruppe extends Component {
 						onClick={deleteGruppe}
 					/>
 					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
-					{gruppe.antallIdenter > 0 && (
+					{/* {gruppe.antallIdenter > 0 && (
 						<div className="pull-right">
 							<SendOpenAmConnector gruppe={gruppe} />
 						</div>
-					)}
+					)} */}
 				</Overskrift>
-				{openAm.response && <OpenAmStatus responses={openAm.response} />}
+				{/* {openAm.response && <OpenAmStatus responses={openAm.response} />} */}
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
 				<GruppeDetaljer gruppe={gruppe} />
 

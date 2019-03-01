@@ -32,10 +32,16 @@ export const postOpenAm = createAction('POST_OPEN_AM', async (groupObj, bestilli
 })
 
 export const postOpenAm2 = createAction('POST_OPEN_AM', async bestillingId => {
-	const res = await DollyApi.postOpenAmBestilling(bestillingId)
-	console.log('res :', res)
-
+	// console.log('postOpenAm2 skjer 1 :', bestillingId)
+	const res = DollyApi.postOpenAmBestilling(bestillingId)
+	// console.log('postOpenAm2 skjer 2 :', res)
 	return res
+	// return {
+	// 	res,
+	// 	bestillingId,
+	// 	testidenter: testidenterSortedByBestillingId[bestillingId].map(ident => ident.ident),
+	// 	status: res.data
+	// }
 })
 
 const initialState = {
@@ -47,10 +53,13 @@ export default handleActions(
 		[LOCATION_CHANGE](state, action) {
 			return initialState
 		},
-		[`${postOpenAm}_REQUEST`](state, action) {
+		// [`${postOpenAm}_REQUEST`](state, action) {
+		// 	return initialState
+		// },
+		[`${postOpenAm2}_REQUEST`](state, action) {
 			return initialState
 		},
-		[success(postOpenAm)](state, action) {
+		[success(postOpenAm2)](state, action) {
 			return { ...state, response: action.payload }
 		}
 	},
@@ -61,7 +70,7 @@ export default handleActions(
 export const sendToOpenAm = bestillingId => (dispatch, getState) => {
 	const { gruppe, bestillingStatuser } = getState()
 
-	console.log('bestillingId :', bestillingId)
+	// console.log('sendToOpenAm skjer :', bestillingId)
 
 	return dispatch(postOpenAm2(bestillingId))
 }

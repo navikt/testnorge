@@ -109,7 +109,7 @@ class DollyEndpoints {
 	}
 
 	static openAmBestilling(bestillingId) {
-		return `${openamBase}/bestilling/${bestillingId}`
+		return `${openamBase}/bestilling/{bestillingId}?bestillingId=${bestillingId}`
 	}
 
 	static openAmGroupStatus(groupId, isSent = true) {
