@@ -56,6 +56,7 @@ public class SyntetiseringServiceTest {
 
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(fnrs);
         when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(syntetiserteMeldinger);
+        when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(new ArrayList<>());
 
         syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest);
 

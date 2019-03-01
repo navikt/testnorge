@@ -1,6 +1,7 @@
 package no.nav.registre.aareg.consumer.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -31,18 +32,38 @@ public class AaregstubConsumerTest {
     @Autowired
     private AaregstubConsumer aaregstubConsumer;
 
+    private String fnr1 = "01010101010";
+    private String fnr2 = "02020202020";
+
+    @Test
+    public void shouldGetAlleArbeidstakere() {
+        stubAaregstubHentArbeidstakereConsumer();
+
+        List<String> response = aaregstubConsumer.hentEksisterendeIdenter();
+
+        assertThat(response.get(0), equalTo(fnr1));
+        assertThat(response.get(1), equalTo(fnr2));
+    }
+
     @Test
     public void shouldSendSyntetiskeMeldinger() {
         Map<String, List<Map<String, String>>> syntetiserteMeldinger = new HashMap<>();
 
-        stubAaregstubConsumer();
+        stubAaregstubLagreConsumer();
 
         ResponseEntity response = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }
 
-    private void stubAaregstubConsumer() {
+    private void stubAaregstubHentArbeidstakereConsumer() {
+        stubFor(get(urlPathEqualTo("/aaregstub/api/v1/hentAlleArbeidstakere"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
+    }
+
+    private void stubAaregstubLagreConsumer() {
         stubFor(post(urlPathEqualTo("/aaregstub/api/v1/lagreArbeidsforhold"))
                 .withRequestBody(equalToJson("{}"))
                 .willReturn(ok()

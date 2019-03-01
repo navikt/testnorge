@@ -31,13 +31,15 @@ public class SyntetiseringService {
 
     public ResponseEntity opprettArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest) {
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId());
-        List<String> utvalgteIdenter = new ArrayList<>(syntetiserAaregRequest.getAntallMeldinger());
+        List<String> utvalgteNyeIdenter = new ArrayList<>(syntetiserAaregRequest.getAntallNyeIdenter());
+        List<String> eksisterendeIdenter = new ArrayList<>(aaregstubConsumer.hentEksisterendeIdenter());
 
-        for (int i = 0; i < syntetiserAaregRequest.getAntallMeldinger(); i++) {
-            utvalgteIdenter.add(levendeIdenter.remove(rand.nextInt(levendeIdenter.size())));
+        for (int i = 0; i < syntetiserAaregRequest.getAntallNyeIdenter(); i++) {
+            utvalgteNyeIdenter.add(levendeIdenter.remove(rand.nextInt(levendeIdenter.size())));
         }
 
-        Map<String, List<Map<String, String>>> syntetiserteArbeidsforholdsmeldinger = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
+        eksisterendeIdenter.addAll(utvalgteNyeIdenter);
+        Map<String, List<Map<String, String>>> syntetiserteArbeidsforholdsmeldinger = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(eksisterendeIdenter);
 
         return aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforholdsmeldinger);
     }
