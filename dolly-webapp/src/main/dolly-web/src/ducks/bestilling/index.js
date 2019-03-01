@@ -140,6 +140,7 @@ const bestillingFormatter = bestillingState => {
 		environments: environments,
 		...getValues(AttributtListe, values)
 	}
+
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	final_values.tpsf.identtype = identtype
@@ -193,9 +194,13 @@ const _transformAttributt = (attribute, attributes, value) => {
 		return value.map(val =>
 			Object.assign(
 				{},
-				...Object.entries(val).map(([key, value]) => ({
-					[key]: _transformAttributt(attributeList[key], attributes, value)
-				}))
+				...Object.entries(val).map(([key, value]) => {
+					let pathId = attributeList[key].path.split('.')
+					return {
+						//  Hente kun siste key, f.eks barn.kjønn => kjønn
+						[pathId[pathId.length - 1]]: _transformAttributt(attributeList[key], attributes, value)
+					}
+				})
 			)
 		)
 	} else if (attribute.transform) {
@@ -210,7 +215,7 @@ const _transformAttributt = (attribute, attributes, value) => {
 const _filterAttributes = (values, filter, attribute, dependencies) =>
 	attribute
 		.filter(
-			attr => (!filter.includes(attr.id) && !filter.includes(attr.parent)) && !dependencies[attr.id]
+			attr => !filter.includes(attr.id) && !filter.includes(attr.parent) && !dependencies[attr.id]
 		)
 		.map(attr => [
 			attr.id,
@@ -220,7 +225,7 @@ const _filterAttributes = (values, filter, attribute, dependencies) =>
 		])
 		.reduce((res, [key, val]) => ({ ...res, [key]: val }), {})
 
-// Remove all values with ids in filter at index 
+// Remove all values with ids in filter at index
 // If last element in array is removed, then remove children and dependencies
 const _filterArrayAttributes = (values, selectedIds, filter, index) => {
 	let copy = JSON.parse(JSON.stringify(values))
@@ -240,11 +245,11 @@ const _filterArrayAttributes = (values, selectedIds, filter, index) => {
 		values:
 			Object.keys(dependencies).length > 0
 				? _filterAttributes(
-					copy,
-					deletedIds,
-					AttributtManagerInstance.listAllSelected(attributeIds),
-					dependencies
-				)
+						copy,
+						deletedIds,
+						AttributtManagerInstance.listAllSelected(attributeIds),
+						dependencies
+				  )
 				: copy,
 		attributeIds: attributeIds.filter(attr => !dependencies[attr])
 	}
