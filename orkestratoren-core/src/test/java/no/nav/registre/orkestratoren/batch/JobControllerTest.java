@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
@@ -34,6 +35,9 @@ public class JobControllerTest {
 
     @Mock
     private PoppSyntPakkenService poppSyntPakkenService;
+
+    @Mock
+    private AaregSyntPakkenService aaregSyntPakkenService;
 
     @InjectMocks
     private JobController jobController;
@@ -73,5 +77,11 @@ public class JobControllerTest {
     public void shouldStartPoppBatch() {
         jobController.poppSyntBatch();
         verify(poppSyntPakkenService).genererSkattegrunnlag(any(), anyString());
+    }
+
+    @Test
+    public void shouldStartAaregBatch() {
+        jobController.aaregSyntBatch();
+        verify(aaregSyntPakkenService).genererArbeidsforholdsmeldinger(any());
     }
 }

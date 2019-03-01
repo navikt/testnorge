@@ -11,11 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
+import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
+import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,6 +33,12 @@ public class SyntetiseringsControllerTest {
 
     @Mock
     private EiaSyntPakkenService eiaSyntPakkenService;
+
+    @Mock
+    private PoppSyntPakkenService poppSyntPakkenService;
+
+    @Mock
+    private AaregSyntPakkenService aaregSyntPakkenService;
 
     @InjectMocks
     private SyntetiseringsController syntetiseringsController;
@@ -80,5 +90,35 @@ public class SyntetiseringsControllerTest {
         syntetiseringsController.opprettSykemeldingerIEia(syntetiserEiaRequest);
 
         verify(eiaSyntPakkenService).genererEiaSykemeldinger(syntetiserEiaRequest);
+    }
+
+    /**
+     * Scenario: HVIS syntetiseringskontrolleren får et request om å generere skattegrunnlag i sigrun, skal metoden kalle på
+     * {@link PoppSyntPakkenService#genererSkattegrunnlag}.
+     */
+    @Test
+    public void shouldProduceSkattegrunnlagISigrun() {
+        int antallNyeIdenter = 20;
+
+        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+
+        syntetiseringsController.opprettSkattegrunnlagISigrun("test", syntetiserPoppRequest);
+
+        verify(poppSyntPakkenService).genererSkattegrunnlag(syntetiserPoppRequest, "test");
+    }
+
+    /**
+     * Scenario: HVIS syntetiseringskontrolleren får et request om å generere arbeidsforhold i aareg, skal metoden kalle på
+     * {@link AaregSyntPakkenService#genererArbeidsforholdsmeldinger}.
+     */
+    @Test
+    public void shouldProduceArbeidsforholdIAareg() {
+        int antallNyeIdenter = 20;
+
+        SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+
+        syntetiseringsController.opprettArbeidsforholdIAareg(syntetiserAaregRequest);
+
+        verify(aaregSyntPakkenService).genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
     }
 }

@@ -49,7 +49,7 @@ public class ArenaInntektSyntConsumerTest {
         assertEquals(expectedId, id);
     }
 
-    public void stubArenaInntektConsumer() {
+    private void stubArenaInntektConsumer() {
         stubFor(post(urlPathEqualTo("/arenainntekt/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\":" + gruppeId + "}"))

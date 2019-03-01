@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
+import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
@@ -41,6 +43,9 @@ public class SyntetiseringsController {
 
     @Autowired
     private PoppSyntPakkenService poppSyntPakkenService;
+
+    @Autowired
+    private AaregSyntPakkenService aaregSyntPakkenService;
 
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
@@ -70,5 +75,11 @@ public class SyntetiseringsController {
     public ResponseEntity opprettSkattegrunnlagISigrun(@RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
             @RequestBody SyntetiserPoppRequest syntetiserPoppRequest) {
         return poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
+    }
+
+    @LogExceptions
+    @PostMapping(value = "aareg/arbeidsforhold/generer")
+    public ResponseEntity opprettArbeidsforholdIAareg(@RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
+        return aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
     }
 }
