@@ -67,7 +67,7 @@ public class TestnorgeSkdConsumerTest {
         assertTrue(skdMeldingerTilTpsRespons.getTpsfIds().containsAll(expectedMeldingsIds));
     }
 
-    public void stubSkdConsumer() {
+    private void stubSkdConsumer() {
         stubFor(post(urlPathEqualTo("/skd/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\":" + gruppeId

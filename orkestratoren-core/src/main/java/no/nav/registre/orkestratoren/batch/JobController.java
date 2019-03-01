@@ -14,9 +14,11 @@ import org.springframework.web.client.HttpStatusCodeException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
+import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
@@ -37,6 +39,9 @@ public class JobController {
     @Value("${orkestratoren.poppbatch.miljoe}")
     private String poppbatchMiljoe;
 
+    @Value("${orkestratoren.aaregbatch.miljoe}")
+    private String aaregbatchMiljoe;
+
     @Value("${orkestratoren.batch.avspillergruppeId}")
     private Long avspillergruppeId;
 
@@ -49,6 +54,9 @@ public class JobController {
     @Value("${orkestratoren.poppbatch.antallNyeIdenter}")
     private int poppbatchAntallNyeIdenter;
 
+    @Value("${orkestratoren.aaregbatch.antallNyeIdenter}")
+    private int aaregbatchAntallNyeIdenter;
+
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
 
@@ -60,6 +68,9 @@ public class JobController {
 
     @Autowired
     private PoppSyntPakkenService poppSyntPakkenService;
+
+    @Autowired
+    private AaregSyntPakkenService aaregSyntPakkenService;
 
     @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
@@ -89,5 +100,11 @@ public class JobController {
         SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, poppbatchMiljoe, poppbatchAntallNyeIdenter);
         String testdataEier = "orkestratoren";
         poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
+    }
+
+    @Scheduled(cron = "${orkestratoren.aaregbatch.cron:0 0 1 1 * *}")
+    public void aaregSyntBatch() {
+        SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, aaregbatchMiljoe, aaregbatchAntallNyeIdenter);
+        aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
     }
 }
