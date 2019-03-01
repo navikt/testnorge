@@ -173,6 +173,34 @@ export function mapTpsfData(tpsfData, testIdent) {
 							value: relasjon.personRelasjonMed.kjonn
 						},
 						{
+							id: 'alder',
+							label: 'Alder',
+							value: Formatters.formatAlder(
+								relasjon.personRelasjonMed.alder,
+								relasjon.personRelasjonMed.doedsdato
+							)
+						},
+						{
+							id: 'sprakKode',
+							label: 'Språk',
+							value: relasjon.personRelasjonMed.sprakKode
+						},
+						{
+							id: 'sivilstand',
+							label: 'Sivilstand',
+							value: relasjon.personRelasjonMed.sivilstand
+						},
+						{
+							id: 'spesreg',
+							label: 'Diskresjonskoder',
+							value: relasjon.personRelasjonMed.spesreg
+						},
+						{
+							id: 'egenAnsattDatoFom',
+							label: 'Egenansatt',
+							value: relasjon.personRelasjonMed.egenAnsattDatoFom && 'JA'
+						},
+						{
 							id: 'statsborgerskap',
 							label: 'Statsborgerskap',
 							value: relasjon.personRelasjonMed.statsborgerskap
