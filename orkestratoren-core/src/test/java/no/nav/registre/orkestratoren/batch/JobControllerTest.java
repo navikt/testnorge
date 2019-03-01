@@ -4,7 +4,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -43,13 +46,17 @@ public class JobControllerTest {
     private JobController jobController;
 
     private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
+    private List<String> miljoe;
     private Map<String, Integer> antallMeldingerPerEndringskode;
 
     @Before
     public void setUp() {
+        miljoe = new ArrayList<>(Arrays.asList("t1"));
         ReflectionTestUtils.setField(jobController, "avspillergruppeId", avspillergruppeId);
         ReflectionTestUtils.setField(jobController, "tpsbatchMiljoe", miljoe);
+        ReflectionTestUtils.setField(jobController, "eiabatchMiljoe", miljoe);
+        ReflectionTestUtils.setField(jobController, "poppbatchMiljoe", miljoe);
+        ReflectionTestUtils.setField(jobController, "aaregbatchMiljoe", miljoe);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallMeldingerPerEndringskode", antallMeldingerPerEndringskode);
@@ -58,7 +65,7 @@ public class JobControllerTest {
     @Test
     public void shouldStartTpsBatch() {
         jobController.tpsSyntBatch();
-        verify(tpsSyntPakkenService).genererSkdmeldinger(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
+        verify(tpsSyntPakkenService).genererSkdmeldinger(avspillergruppeId, miljoe.get(0), antallMeldingerPerEndringskode);
     }
 
     @Test

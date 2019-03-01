@@ -43,7 +43,8 @@ public class StartSyntetiseringSkdCompTest {
     private JobController jobController;
 
     private Long gruppeId;
-    private String miljoe;
+    private String miljoe1;
+    private String miljoe2;
     private String endringskode1, endringskode2;
     private int antallEndringskode1, antallEndringskode2;
     private Map<String, Integer> antallMeldingerPerEndringskode;
@@ -58,7 +59,8 @@ public class StartSyntetiseringSkdCompTest {
     @Before
     public void setUp() {
         this.gruppeId = 100000445L;
-        this.miljoe = "t9";
+        this.miljoe1 = "t9";
+        this.miljoe2 = "t10";
         this.endringskode1 = "0110";
         this.endringskode2 = "0211";
         this.antallEndringskode1 = 10;
@@ -81,7 +83,7 @@ public class StartSyntetiseringSkdCompTest {
     public void shouldStartSyntetisering() {
         stubSkd();
 
-        SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe, antallMeldingerPerEndringskode);
+        SyntetiserSkdmeldingerRequest ordreRequest = new SyntetiserSkdmeldingerRequest(gruppeId, miljoe1, antallMeldingerPerEndringskode);
 
         ResponseEntity response = syntetiseringsController.opprettSkdmeldingerITPS(ordreRequest);
 
@@ -101,7 +103,8 @@ public class StartSyntetiseringSkdCompTest {
      */
     @Test
     public void shouldGetProperties() {
-        assertEquals(miljoe, jobController.getTpsbatchMiljoe());
+        assertEquals(miljoe1, jobController.getTpsbatchMiljoe().get(0));
+        assertEquals(miljoe2, jobController.getTpsbatchMiljoe().get(1));
         assertEquals(gruppeId, jobController.getAvspillergruppeId());
 
         Map<String, Integer> testMap = new HashMap<>(jobController.getAntallMeldingerPerEndringskode());
@@ -115,7 +118,7 @@ public class StartSyntetiseringSkdCompTest {
     public void stubSkd() {
         stubFor(post(urlPathEqualTo("/skd/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson("{\"avspillergruppeId\": " + gruppeId
-                        + ", \"miljoe\": \"" + miljoe
+                        + ", \"miljoe\": \"" + miljoe1
                         + "\", \"antallMeldingerPerEndringskode\": {\"" + endringskode1 + "\": " + antallMeldingerPerEndringskode.get(endringskode1) + "}}"))
                 .willReturn(ok()
                         .withHeader("content-type", "application/json")

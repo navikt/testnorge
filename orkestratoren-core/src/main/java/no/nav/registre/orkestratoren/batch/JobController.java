@@ -30,17 +30,17 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 @Slf4j
 public class JobController {
 
-    @Value("${orkestratoren.tpsbatch.miljoe}")
-    private String tpsbatchMiljoe;
+    @Value("#{'${orkestratoren.tpsbatch.miljoe}'.split(', ')}")
+    private List<String> tpsbatchMiljoe;
 
-    @Value("${orkestratoren.eiabatch.miljoe}")
-    private String eiabatchMiljoe;
+    @Value("#{'${orkestratoren.eiabatch.miljoe}'.split(', ')}")
+    private List<String> eiabatchMiljoe;
 
-    @Value("${orkestratoren.poppbatch.miljoe}")
-    private String poppbatchMiljoe;
+    @Value("#{'${orkestratoren.poppbatch.miljoe}'.split(', ')}")
+    private List<String> poppbatchMiljoe;
 
-    @Value("${orkestratoren.aaregbatch.miljoe}")
-    private String aaregbatchMiljoe;
+    @Value("#{'${orkestratoren.aaregbatch.miljoe}'.split(', ')}")
+    private List<String> aaregbatchMiljoe;
 
     @Value("${orkestratoren.batch.avspillergruppeId}")
     private Long avspillergruppeId;
@@ -74,10 +74,12 @@ public class JobController {
 
     @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
-        try {
-            tpsSyntPakkenService.genererSkdmeldinger(avspillergruppeId, tpsbatchMiljoe, antallMeldingerPerEndringskode);
-        } catch (HttpStatusCodeException e) {
-            log.warn(e.getResponseBodyAsString(), e);
+        for(String miljoe : tpsbatchMiljoe) {
+            try {
+                tpsSyntPakkenService.genererSkdmeldinger(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
+            } catch (HttpStatusCodeException e) {
+                log.warn(e.getResponseBodyAsString(), e);
+            }
         }
     }
 
@@ -90,21 +92,27 @@ public class JobController {
 
     @Scheduled(cron = "${orkestratoren.eiabatch.cron:0 0 0 * * *}")
     public void eiaSyntBatch() {
-        SyntetiserEiaRequest request = new SyntetiserEiaRequest(avspillergruppeId, eiabatchMiljoe, antallSykemeldinger);
-        List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(request);
-        log.info("eiabatch har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
+        for(String miljoe : eiabatchMiljoe) {
+            SyntetiserEiaRequest request = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallSykemeldinger);
+            List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(request);
+            log.info("eiabatch har opprettet {} sykemeldinger i miljø {}. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), miljoe, Arrays.toString(fnrMedGenererteMeldinger.toArray()));
+        }
     }
 
     @Scheduled(cron = "${orkestratoren.poppbatch.cron:0 0 1 1 5 *}")
     public void poppSyntBatch() {
-        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, poppbatchMiljoe, poppbatchAntallNyeIdenter);
-        String testdataEier = "orkestratoren";
-        poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
+        for(String miljoe : poppbatchMiljoe) {
+            SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, poppbatchAntallNyeIdenter);
+            String testdataEier = "orkestratoren";
+            poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
+        }
     }
 
     @Scheduled(cron = "${orkestratoren.aaregbatch.cron:0 0 1 1 * *}")
     public void aaregSyntBatch() {
-        SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, aaregbatchMiljoe, aaregbatchAntallNyeIdenter);
-        aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
+        for(String miljoe : aaregbatchMiljoe) {
+            SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, aaregbatchAntallNyeIdenter);
+            aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
+        }
     }
 }
