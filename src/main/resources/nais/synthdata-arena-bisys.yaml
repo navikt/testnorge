@@ -1,0 +1,35 @@
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: synthdata-arena-bisys
+  namespace: q2
+  labels:
+    team: synt
+spec:
+  image: "docker.adeo.no:5000/registre/synthdata-arena-bisys:latest"
+  port: 8080
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  prometheus:
+    path: /metrics
+  replicas:
+    min: 1
+    max: 4
+  secrets: true
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1000Mi
+    limits:
+      cpu: 500m
+      memory: 1500Mi
+  ingresses:
+    - "https://nais-synthdata-arena-bisys.nais.preprod.local"

@@ -1,26 +1,23 @@
-/*
-package no.nav.registre.syntrest.services;
+package no.nav.registre.syntrest.services.domains;
 
 import io.micrometer.core.annotation.Timed;
+import no.nav.registre.syntrest.services.IService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.concurrent.CompletableFuture;
-
 @Service
-public class BisysService implements IService{
+public class BisysService implements IService {
 
-    @Value("${synth-pen-app}")
+    @Value("${synth-arena-bisys-app}")
     private String appName;
 
     @Value("${isAlive}")
     private String isAlive;
 
     @Value("${synth-arena-bisys-url}")
-    private String synthPenUrl;
+    private String synthBisysUrl;
 
     private final RestTemplate restTemplate;
 
@@ -28,9 +25,9 @@ public class BisysService implements IService{
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-bisys" })
-    public Object generateBisysFromNAIS(int num_to_generate) {
-        Object result = restTemplate.getForObject(String.format(synthPenUrl, num_to_generate), Object.class);
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-bisys" })
+    public Object getDataFromNAIS(Object numToGenerate) {
+        Object result = restTemplate.getForObject(String.format(synthBisysUrl, numToGenerate), Object.class);
         return result;
     }
 
@@ -39,4 +36,3 @@ public class BisysService implements IService{
     }
 
 }
-*/
