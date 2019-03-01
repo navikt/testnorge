@@ -13,6 +13,7 @@ import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
 import cn from 'classnames'
 import SendOpenAmConnector from '~/pages/gruppe/SendOpenAm/SendOpenAmConnector'
+import OpenAmStatus from '~/pages/gruppe/OpenAmStatus/OpenAmStatus'
 
 // TODO: Flytt modal ut som en dumb komponent
 const customStyles = {
@@ -35,39 +36,108 @@ export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
 		super(props)
 
+		// let tempOpenAm = ''
+		// console.log('openAm xxx:', props.openAm)
+		// console.log('props.openAmState1 :', props.openAmState)
+
 		this.EnvValidation = yup.object().shape({
 			environments: yup.array().required('Velg minst ett miljø')
 		})
 
 		this.state = {
-			modalOpen: false
+			modalOpen: false,
+			openAmInfoOpen: false
 		}
 	}
 
 	render() {
 		const { successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
-		console.log('props :', this.props)
 		const bestillingId = this.props.bestilling.id
+		const { openAm, openAmState } = this.props
+		let bestillingIdOpenAm = ''
+		openAmState.response && (bestillingIdOpenAm = openAmState.response.config.url)
 
+		console.log('bestillingId :', bestillingId)
+		console.log('openAm :', openAm)
+		console.log('openAmState :', openAmState)
 		// TODO: Reverse Map detail data here. Alex
 		return (
 			<div className="bestilling-detaljer">
 				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
-				<div className="flexbox--align-center--justify-end">
-					{bestillingId && <SendOpenAmConnector bestillingId={bestillingId} />}
-					<Button
-						onClick={this._onToggleModal}
-						className="flexbox--align-center"
-						kind="synchronize"
-					>
-						GJENOPPRETT I TPS
-					</Button>
-					{this._renderModal()}
+
+				<div>
+					{openAm && (
+						<div className="bestilling-detaljer">
+							<h3>Jira-lenker</h3>
+							<div className={'jira-link'}>{this._renderJiraLinks(openAm)}</div>
+						</div>
+					)}
 				</div>
+				{/* {console.log('this.state.openAmInfoOpen :', this.state.openAmInfoOpen)}
+				{openAmState.response &&
+					console.log('openAmState :', this._renderOpenAmStateResponses(openAmState.response))} */}
+				{/* {this.state.openAmInfoOpen && */}
+				{openAmState.response &&
+					bestillingIdOpenAm ===
+						'https://dolly-u2.nais.preprod.local/api/v1/openam/bestilling/{bestillingId}?bestillingId=' +
+							bestillingId && (
+						<OpenAmStatus
+							responses={this._renderOpenAmStateResponses(openAmState.response)}
+							className="open-am-status"
+							// onClose={(this.state.openAmInfoOpen = false)}
+						/>
+					)}
+				{/* {this.state.openAmInfoOpen && <OpenAmStatus responses={this.tempOpenAm} />} */}
+				{/* {console.log('this.props :', this.props)} */}
+				<div className="flexbox--align-center--justify-end info-block">
+					{openAm == undefined && (
+						<div className="button">
+							{bestillingId && (
+								<SendOpenAmConnector
+									bestillingId={bestillingId}
+									className="flexbox--align-center button"
+									// kind="arrow-right"
+									// onClick={(this.tempOpenAm = 'https://jira.adeo.no/browse/DEPLOY-267161')}
+									// onClick={(this.state.openAmInfoOpen = true)}
+
+									// onClick={<OpenAmStatus responses={openAm} />}
+									//renderInfoboks() ellernoe
+								/>
+							)}
+						</div>
+					)}
+
+					{/* {console.log('this.openAm xxx:', this.props.openAm)} */}
+					{/* {console.log('openAm :', openAm)} */}
+					<div className="button">
+						<Button
+							onClick={this._onToggleModal}
+							className="flexbox--align-center button"
+							kind="synchronize"
+						>
+							GJENOPPRETT I TPS
+						</Button>
+						{this._renderModal()}
+					</div>
+				</div>
+				{/* {this.state.openAmInfoOpen &&
+					this.state.openAmState && <OpenAmStatus responses={this.props.openAm} />} */}
+				{/* {this.state.openAmInfoOpen && <OpenAmStatus responses={this.props.openAm} />} */}
+				{/* {console.log('openAm :', openAm)} */}
 			</div>
 		)
+	}
+
+	_renderOpenAmStateResponses = openAmState => {
+		// console.log('openAmState :', openAmState)
+		// const responses = openAmState.map((respons, i) => {
+		const responses = []
+		openAmState.data.forEach(response => {
+			responses.push(response.message)
+		})
+		return responses
 	}
 
 	_renderBestillingsDetaljer = () => {
@@ -86,7 +156,7 @@ export default class BestillingDetaljer extends PureComponent {
 							})
 							if (kategori.header) {
 								return (
-									<Fragment>
+									<Fragment key={j}>
 										<h4>{kategori.header} </h4>
 										<div className={cssClass} key={j}>
 											{kategori.items.map((attributt, i) => {
@@ -113,6 +183,24 @@ export default class BestillingDetaljer extends PureComponent {
 			</Fragment>
 		)
 	}
+
+	_renderJiraLinks = openAm => {
+		const data = openAm.split(',')
+		const linkArray = data.map((respons, i) => {
+			const link = respons
+			return (
+				<Fragment key={i}>
+					<a href={link} target="_blank">
+						{link.substring(28, link.length)}
+					</a>
+					{i !== data.length - 1 && <p>, </p>}
+				</Fragment>
+			)
+		})
+		return linkArray
+	}
+
+	//array.join(separator)
 
 	_renderModal = () => {
 		const { environments, id } = this.props.bestilling // miljø som ble bestilt i en bestilling
@@ -168,6 +256,11 @@ export default class BestillingDetaljer extends PureComponent {
 		)
 	}
 
+	_renderOpenAmInfo = () => {
+		const openAm = this.props.openAm
+		// console.log('openAm :', openAm)
+	}
+
 	_submitFormik = async values => {
 		const envsQuery = Formatters.arrayToString(values.environments)
 			.replace(/ /g, '')
@@ -178,6 +271,10 @@ export default class BestillingDetaljer extends PureComponent {
 
 	_onToggleModal = () => {
 		this.setState({ modalOpen: !this.state.modalOpen })
+	}
+
+	_onToggleOpenAm = () => {
+		this.setState({ openAmInfoOpen: !this.state.openAmInfoOpen })
 	}
 
 	_renderErrorMessage = errorMsgs => (

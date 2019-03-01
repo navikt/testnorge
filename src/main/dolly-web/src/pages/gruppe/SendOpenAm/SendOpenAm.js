@@ -3,6 +3,8 @@ import Knapp from 'nav-frontend-knapper'
 import Modal from 'react-modal'
 import Lukknapp from 'nav-frontend-lukknapp'
 import Button from '~/components/button/Button'
+import Icon from '~/components/icon/Icon'
+import PropTypes from 'prop-types'
 
 import './SendOpenAm.less'
 
@@ -24,8 +26,17 @@ Modal.setAppElement('#root')
 
 export default class SendOpenAm extends Component {
 	state = {
-		modalOpen: false
+		modalOpen: false,
+		showButton: true
 	}
+
+	// static propTypes = {
+	// 	kind: PropTypes.string
+	// }
+
+	// static defaultProps = {
+	// 	kind: null
+	// }
 
 	open = () => {
 		this.setState({ modalOpen: true })
@@ -38,11 +49,21 @@ export default class SendOpenAm extends Component {
 		this.setState({ modalOpen: false }, () => this.props.sendToOpenAm())
 	}
 
+	_hideOnClick = (sendToOpenAm, bestillingId) => {
+		console.log('xx sendToOpenAm :', sendToOpenAm)
+		console.log('xx bestillingId :', bestillingId)
+		this.setState({ showButton: false })
+		return sendToOpenAm(bestillingId)
+	}
+
 	render() {
-		const { sendToOpenAm, openAmFetching, openAmResponse, gruppe, bestillingId } = this.props
-		// console.log('this.props :', this.props)
+		// console.log('this :', this)
+		const { sendToOpenAm, openAmFetching, openAmResponse, gruppe, bestillingId, kind } = this.props
+		// console.log('sendToOpenAm :', sendToOpenAm)
+		// console.log('openAmResponse :', openAmResponse)
 		const { modalOpen } = this.state
-		console.log('gruppe :', gruppe)
+		// console.log('gruppe :', gruppe)
+		// console.log('bestillingId :', bestillingId)
 
 		// if (gruppe.openAmSent || openAmResponse) {
 		// 	return (
@@ -83,14 +104,22 @@ export default class SendOpenAm extends Component {
 		// )
 
 		return (
-			<Button
-				className="flexbox--align-center"
-				onClick={() => sendToOpenAm(bestillingId)}
-				spinner={openAmFetching}
-				autoDisableVedSpinner
-			>
-				SEND TIL OPENAM
-			</Button>
+			this.state.showButton && (
+				<Button
+					className="flexbox--align-center"
+					// onClick={this.setState({ showButton: false })}
+					onClick={() => {
+						this._hideOnClick(sendToOpenAm, bestillingId)
+					}}
+					// onClick={() => sendToOpenAm(bestillingId)}
+					// onRelease={(this.className = 'flexbox--align-center hidden')}
+					spinner={openAmFetching}
+					autoDisableVedSpinner
+					// kind
+				>
+					SEND TIL OPENAM
+				</Button>
+			)
 		)
 	}
 }
