@@ -11,6 +11,8 @@ import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
 import cn from 'classnames'
 import DollyModal from '~/components/modal/DollyModal'
+import Feilmelding from '~/components/Feilmelding/Feilmelding'
+
 
 export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
@@ -32,7 +34,7 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-		const { successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
+		const { successEnvs, failedEnvs, bestilling } = this.props.miljoeStatusObj
 		const { modalOpen } = this.state
 
 		// TODO: Reverse Map detail data here. Alex
@@ -40,7 +42,7 @@ export default class BestillingDetaljer extends PureComponent {
 			<div className="bestilling-detaljer">
 				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
-				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
+				{this._finnesFeilmelding(bestilling) && this._renderErrorMessage(bestilling)}
 				<div className="flexbox--align-center--justify-end">
 				{successEnvs.length > 0 && <Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
 						GJENOPPRETT I TPS
@@ -74,7 +76,7 @@ export default class BestillingDetaljer extends PureComponent {
 								return (
 									<Fragment key={j}>
 										<h4>{kategori.header} </h4>
-										<div className={cssClass} key={j}>
+										<div className={cssClass}>
 											{kategori.items.map((attributt, i) => {
 												if (attributt.value) {
 													return (
@@ -156,23 +158,38 @@ export default class BestillingDetaljer extends PureComponent {
 		await this.props.getBestillinger()
 	}
 
-	_renderErrorMessage = errorMsgs => (
-		<Fragment>
-			<div className="flexbox--align-center error-header">
-				<Icon size={'16px'} kind={'report-problem-triangle'} />
-				<h3>Feilmeldinger</h3>
-			</div>
-			<div className={'flexbox--align-center info-block'}>
-				{errorMsgs.map((error, i) => {
-					return (
-						<p className="" key={i}>
-							{error.split('%').join(' ')}
-						</p>
-					)
-				})}
-			</div>
-		</Fragment>
-	)
+	_onToggleModal = () => {
+		this.setState({ modalOpen: !this.state.modalOpen })
+	}
+
+	_renderErrorMessage = bestilling => {
+		return (
+			<Fragment>
+				<div className="flexbox--align-center error-header">
+					<Icon size={'16px'} kind={'report-problem-triangle'} />
+					<h3>Feilmeldinger</h3>
+				</div>
+				<Feilmelding bestilling = {bestilling} />
+			</Fragment>
+		)
+	}
+	
+	_finnesFeilmelding = (bestilling) => {
+		let temp = false
+		{bestilling.sigrunStubStatus && bestilling.sigrunStubStatus.map (status => {
+				if (status.statusMelding !== 'OK') temp = true 
+		})}
+
+		{bestilling.krrStubStatus && bestilling.krrStubStatus.map (status => {
+			if (status.statusMelding !== 'OK') temp = true
+		})}
+		
+		{bestilling.tpsfStatus && bestilling.tpsfStatus.map (status => {
+			if (status.statusMelding !== 'OK') temp = true
+		})} 
+		
+		return temp
+	}
 
 	_renderMiljoeStatus = (successEnvs, failedEnvs) => {
 		const successEnvsStr = Formatters.arrayToString(successEnvs)
