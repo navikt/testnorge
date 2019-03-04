@@ -26,7 +26,7 @@ Modal.setAppElement('#root')
 
 export default class SendOpenAm extends Component {
 	state = {
-		modalOpen: false,
+		// modalOpen: false,
 		showButton: true
 	}
 
@@ -38,20 +38,20 @@ export default class SendOpenAm extends Component {
 	// 	kind: null
 	// }
 
-	open = () => {
-		this.setState({ modalOpen: true })
-	}
-	close = () => {
-		this.setState({ modalOpen: false })
-	}
+	// open = () => {
+	// 	this.setState({ modalOpen: true })
+	// }
+	// close = () => {
+	// 	this.setState({ modalOpen: false })
+	// }
 
-	closeOnSend = () => {
-		this.setState({ modalOpen: false }, () => this.props.sendToOpenAm())
-	}
+	// closeOnSend = () => {
+	// 	this.setState({ modalOpen: false }, () => this.props.sendToOpenAm())
+	// }
 
 	_hideOnClick = (sendToOpenAm, bestillingId) => {
-		console.log('xx sendToOpenAm :', sendToOpenAm)
-		console.log('xx bestillingId :', bestillingId)
+		// console.log('xx sendToOpenAm :', sendToOpenAm)
+		// console.log('xx bestillingId :', bestillingId)
 		this.setState({ showButton: false })
 		return sendToOpenAm(bestillingId)
 	}
@@ -59,6 +59,8 @@ export default class SendOpenAm extends Component {
 	render() {
 		// console.log('this :', this)
 		const { sendToOpenAm, openAmFetching, openAmResponse, gruppe, bestillingId, kind } = this.props
+		// console.log('openAmFetching :', openAmFetching)
+		// console.log('this.props :', this.props)
 		// console.log('sendToOpenAm :', sendToOpenAm)
 		// console.log('openAmResponse :', openAmResponse)
 		const { modalOpen } = this.state
@@ -107,15 +109,12 @@ export default class SendOpenAm extends Component {
 			this.state.showButton && (
 				<Button
 					className="flexbox--align-center"
-					// onClick={this.setState({ showButton: false })}
 					onClick={() => {
 						this._hideOnClick(sendToOpenAm, bestillingId)
 					}}
-					// onClick={() => sendToOpenAm(bestillingId)}
-					// onRelease={(this.className = 'flexbox--align-center hidden')}
+					kind="chevron-right"
 					spinner={openAmFetching}
 					autoDisableVedSpinner
-					// kind
 				>
 					SEND TIL OPENAM
 				</Button>

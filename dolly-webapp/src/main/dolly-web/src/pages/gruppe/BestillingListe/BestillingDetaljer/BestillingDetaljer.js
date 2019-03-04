@@ -36,10 +36,6 @@ export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
 		super(props)
 
-		// let tempOpenAm = ''
-		// console.log('openAm xxx:', props.openAm)
-		// console.log('props.openAmState1 :', props.openAmState)
-
 		this.EnvValidation = yup.object().shape({
 			environments: yup.array().required('Velg minst ett miljø')
 		})
@@ -75,22 +71,17 @@ export default class BestillingDetaljer extends PureComponent {
 						</div>
 					)}
 				</div>
-				{/* {console.log('this.state.openAmInfoOpen :', this.state.openAmInfoOpen)}
-				{openAmState.response &&
-					console.log('openAmState :', this._renderOpenAmStateResponses(openAmState.response))} */}
-				{/* {this.state.openAmInfoOpen && */}
-				{openAmState.response &&
-					bestillingIdOpenAm ===
-						'https://dolly-u2.nais.preprod.local/api/v1/openam/bestilling/{bestillingId}?bestillingId=' +
-							bestillingId && (
-						<OpenAmStatus
-							responses={this._renderOpenAmStateResponses(openAmState.response)}
-							className="open-am-status"
-							// onClose={(this.state.openAmInfoOpen = false)}
-						/>
-					)}
-				{/* {this.state.openAmInfoOpen && <OpenAmStatus responses={this.tempOpenAm} />} */}
-				{/* {console.log('this.props :', this.props)} */}
+
+				{bestillingIdOpenAm ===
+					'https://dolly-u2.nais.preprod.local/api/v1/openam/bestilling/{bestillingId}?bestillingId=' +
+						bestillingId && (
+					<OpenAmStatus
+						responses={this._renderOpenAmStateResponses(openAmState.response)}
+						className="open-am-status"
+					/>
+					// this.state.openAmInfoOpen = true
+				)}
+
 				<div className="flexbox--align-center--justify-end info-block">
 					{openAm == undefined && (
 						<div className="button">
@@ -98,19 +89,12 @@ export default class BestillingDetaljer extends PureComponent {
 								<SendOpenAmConnector
 									bestillingId={bestillingId}
 									className="flexbox--align-center button"
-									// kind="arrow-right"
-									// onClick={(this.tempOpenAm = 'https://jira.adeo.no/browse/DEPLOY-267161')}
-									// onClick={(this.state.openAmInfoOpen = true)}
-
-									// onClick={<OpenAmStatus responses={openAm} />}
-									//renderInfoboks() ellernoe
 								/>
 							)}
+							{this._setOpenAmState()}
 						</div>
 					)}
 
-					{/* {console.log('this.openAm xxx:', this.props.openAm)} */}
-					{/* {console.log('openAm :', openAm)} */}
 					<div className="button">
 						<Button
 							onClick={this._onToggleModal}
@@ -122,13 +106,13 @@ export default class BestillingDetaljer extends PureComponent {
 						{this._renderModal()}
 					</div>
 				</div>
-				{/* {this.state.openAmInfoOpen &&
-					this.state.openAmState && <OpenAmStatus responses={this.props.openAm} />} */}
-				{/* {this.state.openAmInfoOpen && <OpenAmStatus responses={this.props.openAm} />} */}
-				{/* {console.log('openAm :', openAm)} */}
 			</div>
 		)
 	}
+
+	// _setState = () => {
+
+	// }
 
 	_renderOpenAmStateResponses = openAmState => {
 		// console.log('openAmState :', openAmState)
