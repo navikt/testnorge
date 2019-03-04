@@ -31,7 +31,7 @@ public class SyntetiseringServiceTest {
     private int antallMeldinger = 1;
 
     @Test
-    public void shouldOppretteArbeidshistorikk() {
+    public void shouldOppretteInstitusjonsmeldinger() {
         SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallMeldinger);
 
         List<Map<String, String>> syntetiserteMeldinger = new ArrayList<>();
