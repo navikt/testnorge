@@ -20,6 +20,8 @@ export const Kategorier: KategoriTypes = {
 	Inntekter: {
 		id: 'inntekt',
 		navn: 'Inntekter',
+		informasjonstekst: 'Lignede inntekter - årlig: \n'
+						 + 'Lignede inntekter er stemplet og godkjent. Inntektene her blir lagt i Sigrun-stub.',
 		order: 40
 	},
 	KontaktInfo: {
