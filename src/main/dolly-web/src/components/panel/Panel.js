@@ -37,7 +37,8 @@ export default class Panel extends Component {
 			children,
 			errors,
 			checkAttributeArray,
-			uncheckAttributeArray
+			uncheckAttributeArray, 
+			informasjonstekst
 		} = this.props
 
 		const panelIsOpen = forceOpen || this.state.open
@@ -48,33 +49,13 @@ export default class Panel extends Component {
 
 		const renderContent = children ? children : content
 
-		let infotekst, infotekstHeader
-		switch (heading.props.children) {
-			case 'Inntekter':
-				infotekstHeader = 'Lignede inntekter - årlige'	
-				infotekst = 'Lignede inntekter er stemplet og godkjent. Inntektene her blir lagt i Sigrun-stub.'
-				break
-			// case 'Kontaktinformasjon og reservasjon':
-			// 	infotekst = 'Her kommer informasjon om krr'
-			// 	break
-		}
-
 		return (
 			<div className={panelClass}>
 				<div className="panel-heading">
 					{heading}
-					{infotekst && (
+					{informasjonstekst && (
 						<ContentTooltip>
-								{infotekstHeader && <b>{infotekstHeader}: <br/></b>}
-								<span>{infotekst}</span>
-							<br/>
-							{/* {link && <a
-									style={{ color: 'lightblue' }}
-									href={link}
-								>
-								Les mer
-							</a>
-							} */}
+								<span>{informasjonstekst}</span>
 						</ContentTooltip>
 					)}
 					{errors && (
