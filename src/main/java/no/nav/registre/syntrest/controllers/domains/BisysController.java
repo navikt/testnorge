@@ -1,16 +1,16 @@
 package no.nav.registre.syntrest.controllers.domains;
 
-import io.kubernetes.client.ApiException;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.controllers.RootController;
-import no.nav.registre.syntrest.services.domains.BisysService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+        import io.kubernetes.client.ApiException;
+        import lombok.extern.slf4j.Slf4j;
+        import no.nav.registre.syntrest.controllers.RootController;
+        import no.nav.registre.syntrest.services.domains.BisysService;
+        import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.beans.factory.annotation.Value;
+        import org.springframework.http.ResponseEntity;
+        import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.concurrent.locks.ReentrantLock;
+        import java.io.IOException;
+        import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
 @RestController
