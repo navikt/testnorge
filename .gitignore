@@ -16,7 +16,7 @@
 *.iml
 *.ipr
 *target/
-testnorge-sigrun-app/target/
+testnorge-inst-app/target/
 
 ### NetBeans ###
 /nbproject/private/

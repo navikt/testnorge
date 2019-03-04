@@ -7,10 +7,10 @@
     <parent>
         <groupId>no.nav.registre</groupId>
         <artifactId>testnorge-inst</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>sigrun-local</artifactId>
+    <artifactId>inst-local</artifactId>
 
     <dependencies>
         <dependency>
