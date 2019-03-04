@@ -23,6 +23,7 @@ export interface Kategori {
 	id: string
 	navn: string
 	order: number
+	informasjonstekst?: string
 	showInSummary?: boolean
 }
 
