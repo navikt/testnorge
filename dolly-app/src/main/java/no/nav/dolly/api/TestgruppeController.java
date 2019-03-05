@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -41,6 +42,28 @@ import no.nav.dolly.service.TestgruppeService;
 @RestController
 @RequestMapping(value = "api/v1/gruppe")
 public class TestgruppeController {
+
+    private static final String ADRESSE_COMMON =
+            "       &nbsp; &nbsp; \"postnr\": \"string\", <br />"
+            + "     &nbsp; &nbsp; \"kommunenr\": \"string\", <br />"
+            + "     &nbsp; &nbsp; \"flyttedato\": \"string\" <br />";
+    private static final String BOADRESSE_COMMENT = "Json-parametere for boadresse har følgende parametre: <br />"
+            + " For gateadresse:  <br />"
+            + "     &nbsp; \"boadresse\": {<br />"
+            + "     &nbsp; &nbsp; \"adressetype\": \"GATE\", <br />"
+            + "     &nbsp; &nbsp; \"gateadresse\": \"string\", <br />"
+            + "     &nbsp; &nbsp; \"husnummer\": \"string\", <br />"
+            + "     &nbsp; &nbsp; \"gatekode\": \"string\",<br />"
+            + ADRESSE_COMMON + "} <br />"
+            + " For matrikkeladresse: <br />"
+            + "     &nbsp;   \"boadresse\": {<br />"
+            + "     &nbsp; &nbsp; \"adressetype\": \"MATR\", <br />"
+            + "     &nbsp; &nbsp; \"mellomnavn\": \"string\", <br />"
+            + "     &nbsp; &nbsp; \"gardsnr\": \"string\", <br />"
+            + "     &nbsp; &nbsp; \"bruksnr\": \"string\", <br />"
+            + "     &nbsp; &nbsp; \"festenr\": \"string\", <br />"
+            + "     &nbsp; &nbsp; \"undernr\": \"string\", <br />"
+            + ADRESSE_COMMON + "}";
 
     @Autowired
     private TestgruppeService testgruppeService;
@@ -96,6 +119,17 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
     }
 
+    @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype", notes = BOADRESSE_COMMENT)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{gruppeId}/bestilling")
+    public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getAntall(), request.getEnvironments(), request.getTpsf(), null);
+
+        dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
+        return mapperFacade.map(bestilling, RsBestilling.class);
+    }
+
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
     public List<RsTestgruppe> getTestgrupper(
@@ -113,16 +147,7 @@ public class TestgruppeController {
         }
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/{gruppeId}/bestilling")
-    public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
-        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getAntall(), request.getEnvironments(), request.getTpsf(), null);
-
-        dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
-        return mapperFacade.map(bestilling, RsBestilling.class);
-    }
-
+    @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BOADRESSE_COMMENT)
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
