@@ -1,12 +1,33 @@
+
 import React, { PureComponent, Fragment } from 'react'
 import './MiljoeStatus.less'
+import '~/styles/utils.less'
+import cn from 'classnames'
 import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
+import DollyModal from '~/components/modal/DollyModal'
+import BestillingDetaljerModal from '~/components/bestillingDetaljerModal/BestillingDetaljerModal'
+
 
 export default class MiljoeStatus extends PureComponent {
+	constructor(props) {
+		super(props)
+		this.state = {
+			modalOpen: false
+		}
+	}
+
+	openModal = () => {
+		this.setState({ modalOpen: true })
+	}
+	closeModal = () => {
+		this.setState({ modalOpen: false })
+	}
+	
 	render() {
-		const { id, successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
+		const { id, successEnvs, failedEnvs, errorMsgs, bestilling } = this.props.miljoeStatusObj
 		const failed = true && successEnvs.length == 0 && errorMsgs.length == 0
+		const { modalOpen } = this.state
 
 		return (
 			<div className="miljoe-status">
@@ -23,7 +44,18 @@ export default class MiljoeStatus extends PureComponent {
 						? this._renderFailureMessage()
 						: this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				</div>
-				{this._renderErrorMessage(errorMsgs)}
+				<div className="flexbox--all-center">
+					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
+						BESTILLINGSDETALJER
+					</Button>
+					<DollyModal
+						isOpen={modalOpen}
+						onRequestClose={this.closeModal}
+						closeModal={this.closeModal}
+						content={<BestillingDetaljerModal bestilling = {bestilling}/>}
+						width={'60%'}
+					/>
+				</div>
 			</div>
 		)
 	}
@@ -39,21 +71,6 @@ export default class MiljoeStatus extends PureComponent {
 			})}
 		</Fragment>
 	)
-
-	_renderErrorMessage = errorMsgs =>
-		errorMsgs.map((error, i) => {
-			return (
-				<div className={'flexbox--all-center'} key={i}>
-					<Icon size={'24px'} kind={'report-problem-triangle'} />
-					<p className="error-text" key={i}>
-						{error.split('%').join(' ')
-						// .substring(0, error.length - 1)
-						}
-					</p>
-				</div>
-			)
-		})
-
 	_renderFailureMessage = () => (
 		<Fragment>
 			<Icon kind={'report-problem-circle'} />
