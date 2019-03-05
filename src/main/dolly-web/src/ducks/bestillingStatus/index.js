@@ -91,54 +91,44 @@ export const miljoStatusSelector = bestilling => {
 	if (!bestilling) return null
 
 	const id = bestilling.id
-	let envs = bestilling.environments.slice(0) // Clone array for å unngå mutering
 	let successEnvs = []
 	let failedEnvs = []
-	let errorMsgs = []
+	const finnesFeilmelding = avvikStatus(bestilling)
 
-	// TODO: REG-2921: Denne må bli forbedret.
-	// feilmelding for hele bestillingen 
-	bestilling.feil && errorMsgs.push(bestilling.feil)
-
-	if (bestilling.bestillingProgress && bestilling.bestillingProgress.length != 0) {
-		envs.forEach(env => {
-			const lowerCaseEnv = env.toLowerCase()
-			bestilling.bestillingProgress.forEach(person => {
-				if (!person.tpsfSuccessEnv) {
-					// TODO: Bestilling failed 100% fra Tpsf. Implement retry-funksjonalitet når maler er støttet
-					failedEnvs = envs
-				} else if (!person.tpsfSuccessEnv.includes(lowerCaseEnv)) {
-					!failedEnvs.includes(lowerCaseEnv) && failedEnvs.push(lowerCaseEnv)
-				}
+	//Finn feilet og suksess miljø
+	bestilling.krrStubStatus && bestilling.krrStubStatus.map (status => {
+		(status.statusMelding == 'OK')
+			?	(!successEnvs.includes('Krr-stub') && successEnvs.push('Krr-stub'))
+			: 	(!failedEnvs.includes('Krr-stub') && failedEnvs.push('Krr-stub'))
+	})
+	bestilling.sigrunStubStatus && bestilling.sigrunStubStatus.map (status => {
+		if (status.statusMelding == 'OK') {
+			!successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')
+		} else {
+			!failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
+		}
+	})
+	bestilling.tpsfStatus && (bestilling.tpsfStatus.map (status => {
+		(status.statusMelding !== 'OK') && 
+			Object.keys(status.environmentIdents).map((miljo) => {
+				const lowMiljo = miljo.toLowerCase()
+				!failedEnvs.includes(lowMiljo) && failedEnvs.push(lowMiljo)
+			}) 
+	})) 
+	//Går gjennom TPSF-statuser igjen slik at ingen miljø er både suksess og feilet
+	bestilling.tpsfStatus && (bestilling.tpsfStatus.map (status => {
+		(status.statusMelding == 'OK') &&
+			Object.keys(status.environmentIdents).map((miljo) => {
+				const lowMiljo = miljo.toLowerCase()
+				!failedEnvs.includes(lowMiljo) && (
+					!successEnvs.includes(lowMiljo) && successEnvs.push(lowMiljo)
+				)
 			})
-		})
+	}))
 
-		envs.forEach(env => {
-			const lowerCaseEnv = env.toLowerCase()
-			!failedEnvs.includes(lowerCaseEnv) && successEnvs.push(lowerCaseEnv)
-		})
+	//TODO: Hvis bestilling failer 100 % fra TPSF finnes ikke støtte for retry.
 
-		// Registre miljø status
-		// Plasseres i egen for-each for visuel plassering og mer lesbar kode
-		bestilling.bestillingProgress.forEach(person => {
-			if (person.krrstubStatus) {
-				person.krrstubStatus == 'OK'
-					? !successEnvs.includes('Krr-stub') && successEnvs.push('Krr-stub')
-					: !failedEnvs.includes('Krr-stub') && failedEnvs.push('Krr-stub')
-			}
-
-			if (person.sigrunstubStatus) {
-				person.sigrunstubStatus == 'OK'
-					? !successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')
-					: !failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
-			}
-
-			// Feilmelding fra tps
-			person.feil && errorMsgs.push('Ident ' + person.ident + ': ' + person.feil)
-		})
-	}
-
-	return { id, successEnvs, failedEnvs, errorMsgs, bestilling }
+	return { id, successEnvs, failedEnvs, bestilling, finnesFeilmelding }
 }
 
 const mapItems = items => {
@@ -151,46 +141,36 @@ const mapItems = items => {
 			sistOppdatert: Formatters.formatDate(item.sistOppdatert),
 			ferdig: item.stoppet
 				? 'Stoppet'
-				: harIkkeIdenter(item.status)
+				: harIkkeIdenter(item)
 					? 'Feilet'
 					: bestillingIkkeFerdig(item) 
 						? 'Pågår' 
 						 : avvikStatus(item)
-						? 'Avvik'
-						: 'Ferdig'
+							? 'Avvik'
+							: 'Ferdig'
 		}
 	})
 }
 
 const avvikStatus = item => {
 	let avvik = false
-	if (item.tpsfStatus) {
-		item.tpsfStatus.map (status => {
-			if (status.statusMelding !== 'OK') avvik = true
-		})
-	}
-	if (item.krrStubStatus) {
-		item.krrStubStatus.map(status => {
-			if (status.statusMelding !== 'OK') avvik = true 
-		})
-	}
-	if (item.sigrunStubStatus) {
-		item.sigrunStubStatus.map(status => {
-			if (status.statusMelding !== 'OK') avvik = true
-		})
-	}
+	item.tpsfStatus && item.tpsfStatus.map (status => {
+		(status.statusMelding !== 'OK') && (avvik = true)
+	})
+	item.krrStubStatus && item.krrStubStatus.map(status => {
+		(status.statusMelding !== 'OK') && (avvik = true)
+	})
+	item.sigrunStubStatus && item.sigrunStubStatus.map(status => {
+		(status.statusMelding !== 'OK') && (avvik = true)
+	})
+	item.feil && (avvik = true)
 	return avvik
 }
+
 const bestillingIkkeFerdig = item => !(item.ferdig)
 
-const harIkkeIdenter = ident => {
+const harIkkeIdenter = item => {
 	let feilet = true
-	if (ident) {
-		ident.forEach(line => {
-			if (line.environmentIdents) {
-				feilet = false
-			}
-		})
-		return feilet
-	}
+	item.tpsfStatus && (feilet = false)
+	return feilet
 }

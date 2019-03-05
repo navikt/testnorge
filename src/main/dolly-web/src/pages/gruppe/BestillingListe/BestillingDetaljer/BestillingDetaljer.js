@@ -34,7 +34,7 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-		const { successEnvs, failedEnvs, bestilling } = this.props.miljoeStatusObj
+		const { successEnvs, failedEnvs, bestilling, finnesFeilmelding } = this.props.miljoeStatusObj
 		const { modalOpen } = this.state
 
 		// TODO: Reverse Map detail data here. Alex
@@ -42,7 +42,7 @@ export default class BestillingDetaljer extends PureComponent {
 			<div className="bestilling-detaljer">
 				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
-				{this._finnesFeilmelding(bestilling) && this._renderErrorMessage(bestilling)}
+				{finnesFeilmelding && this._renderErrorMessage(bestilling)}
 				<div className="flexbox--align-center--justify-end">
 				{successEnvs.length > 0 && <Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
 						GJENOPPRETT I TPS
@@ -172,23 +172,6 @@ export default class BestillingDetaljer extends PureComponent {
 				<Feilmelding bestilling = {bestilling} />
 			</Fragment>
 		)
-	}
-	
-	_finnesFeilmelding = (bestilling) => {
-		let temp = false
-		{bestilling.sigrunStubStatus && bestilling.sigrunStubStatus.map (status => {
-				if (status.statusMelding !== 'OK') temp = true 
-		})}
-
-		{bestilling.krrStubStatus && bestilling.krrStubStatus.map (status => {
-			if (status.statusMelding !== 'OK') temp = true
-		})}
-		
-		{bestilling.tpsfStatus && bestilling.tpsfStatus.map (status => {
-			if (status.statusMelding !== 'OK') temp = true
-		})} 
-		
-		return temp
 	}
 
 	_renderMiljoeStatus = (successEnvs, failedEnvs) => {
