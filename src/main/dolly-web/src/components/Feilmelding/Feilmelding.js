@@ -58,15 +58,15 @@ export default class Feilmelding extends Component {
         )
     }
 
-    _renderStubStatus = (bestilling, stubStatus, cssClass) =>  {
+    _renderStubStatus = (stubStatus, cssClass) =>  {
         return (stubStatus.map ((stub, i) => {
             const stubNavn = stub.navn
             const identer = Formatters.arrayToString(stub.status[0].identer)          
             //Ha linje mellom feilmeldingene, men ikke etter den siste
-            if (!bestilling.feil) {const bottomBorder = i != stubStatus.length - 1
+            const bottomBorder = i != stubStatus.length - 1
                 cssClass = cn('feil-container', 
                 {'feil-container feil-container_border': bottomBorder
-            })}
+            })
             return (
                 <div className={cssClass} key={i}>
                     <div className = 'feil-kolonne_stor'>
@@ -83,8 +83,8 @@ export default class Feilmelding extends Component {
         }))
     }
 
-    _renderAndreFeil = bestilling => {
-        const cssClass = 'feil-container'
+    _renderGenerelleFeil = (bestilling, cssClass, finnesTPSFEllerStub) => {
+        !finnesTPSFEllerStub && (cssClass = 'feil-container')
         return (
             <div className={cssClass}>
                 <div className = 'feil-kolonne_stor'>
@@ -113,29 +113,36 @@ export default class Feilmelding extends Component {
         return (bestilling.antallIdenter - identArray.length)
     }
 
+    _finnesTPSFEllerStub = () => {
+
+    }
+
     render(){
         const {bestilling} = this.props
         let cssClass = 'feil-container feil-container_border'
         const stubStatus = this._finnStubStatus(bestilling)
+        const finnesTPSFEllerStub = ((bestilling.tpsfStatus && (this._finnTpsfFeilStatus(bestilling.tpsfStatus).length > 0)) || stubStatus.length > 0)
 
         //TODO: Samle tpsf, stub og generelle feil. Finere løsning på linjer mellom + rendering
         return (
             <Fragment>
-                <span className="feil-container">
-                    <h2 className = 'feil-header feil-header_stor'>Feilmelding</h2>
-                    <span className = 'feil-kolonne_header'>
-                        <h2 className = 'feil-header feil-header_liten'>Miljø</h2>
-                        <h2 className = 'feil-header feil-header_stor'>Ident</h2>
+                {bestilling.feil && this._renderGenerelleFeil(bestilling, cssClass, finnesTPSFEllerStub)} {/*Generelle feilmeldinger */}
+                {finnesTPSFEllerStub &&
+                    <span className="feil-container">
+                        <h2 className = 'feil-header feil-header_stor'>Feilmelding</h2>
+                        <span className = 'feil-kolonne_header'>
+                            <h2 className = 'feil-header feil-header_liten'>Miljø</h2>
+                            <h2 className = 'feil-header feil-header_stor'>Ident</h2>
+                        </span>
                     </span>
-                </span>
+                }
                 {bestilling.tpsfStatus && this._finnTpsfFeilStatus(bestilling.tpsfStatus).map((feil, i) => { //Feilmeldinger fra tpsf
-                    if (stubStatus.length < 1 && !bestilling.feil){
+                    if (stubStatus.length < 1){
                         const bottomBorder = i != this._finnTpsfFeilStatus(bestilling.tpsfStatus).length - 1
                         cssClass = cn('feil-container', {'feil-container feil-container_border': bottomBorder})} 
                     return this._renderTPSFStatus(feil, cssClass, i)})
                 }
-                {stubStatus && this._renderStubStatus(bestilling, stubStatus, cssClass)} {/*Feilmeldinger fra Sigrun- og krrStub */}
-                {bestilling.feil && this._renderAndreFeil(bestilling)} {/*Generelle feilmeldinger */}
+                {stubStatus && this._renderStubStatus(stubStatus, cssClass)} {/*Feilmeldinger fra Sigrun- og krrStub */}
             </Fragment>
         )
     }
