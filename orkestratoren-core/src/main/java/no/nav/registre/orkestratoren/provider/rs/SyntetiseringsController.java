@@ -19,11 +19,13 @@ import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
+import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
@@ -46,6 +48,9 @@ public class SyntetiseringsController {
 
     @Autowired
     private AaregSyntPakkenService aaregSyntPakkenService;
+
+    @Autowired
+    private InstSyntPakkenService instSyntPakkenService;
 
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
@@ -81,5 +86,11 @@ public class SyntetiseringsController {
     @PostMapping(value = "aareg/arbeidsforhold/generer")
     public ResponseEntity opprettArbeidsforholdIAareg(@RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
         return aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
+    }
+
+    @LogExceptions
+    @PostMapping(value = "inst/institusjonsforhold/generer")
+    public ResponseEntity opprettInstitutjonsforholdIInst(@RequestBody SyntetiserInstRequest syntetiserInstRequest) {
+        return instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
     }
 }

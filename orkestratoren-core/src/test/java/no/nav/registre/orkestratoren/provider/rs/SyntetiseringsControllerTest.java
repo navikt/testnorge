@@ -14,11 +14,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
+import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
@@ -39,6 +41,9 @@ public class SyntetiseringsControllerTest {
 
     @Mock
     private AaregSyntPakkenService aaregSyntPakkenService;
+
+    @Mock
+    private InstSyntPakkenService instSyntPakkenService;
 
     @InjectMocks
     private SyntetiseringsController syntetiseringsController;
@@ -120,5 +125,20 @@ public class SyntetiseringsControllerTest {
         syntetiseringsController.opprettArbeidsforholdIAareg(syntetiserAaregRequest);
 
         verify(aaregSyntPakkenService).genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
+    }
+
+    /**
+     * Scenario: HVIS syntetiseringskontrolleren får et request om å generere institusjonsforhold i inst, skal metoden kalle på
+     * {@link InstSyntPakkenService#genererInstitusjonsforhold}.
+     */
+    @Test
+    public void shouldProduceInstitusjonsmeldingIInst() {
+        int antallNyeIdenter = 20;
+
+        SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+
+        syntetiseringsController.opprettInstitutjonsforholdIInst(syntetiserInstRequest);
+
+        verify(instSyntPakkenService).genererInstitusjonsforhold(syntetiserInstRequest);
     }
 }

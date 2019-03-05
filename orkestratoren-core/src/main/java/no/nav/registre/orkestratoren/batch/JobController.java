@@ -17,10 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
+import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
@@ -30,32 +32,38 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 @Slf4j
 public class JobController {
 
-    @Value("#{'${orkestratoren.tpsbatch.miljoe}'.split(', ')}")
+    @Value("#{'${tpsbatch.miljoe}'.split(', ')}")
     private List<String> tpsbatchMiljoe;
 
-    @Value("#{'${orkestratoren.eiabatch.miljoe}'.split(', ')}")
+    @Value("#{'${eiabatch.miljoe}'.split(', ')}")
     private List<String> eiabatchMiljoe;
 
-    @Value("#{'${orkestratoren.poppbatch.miljoe}'.split(', ')}")
+    @Value("#{'${poppbatch.miljoe}'.split(', ')}")
     private List<String> poppbatchMiljoe;
 
-    @Value("#{'${orkestratoren.aaregbatch.miljoe}'.split(', ')}")
+    @Value("#{'${aaregbatch.miljoe}'.split(', ')}")
     private List<String> aaregbatchMiljoe;
 
-    @Value("${orkestratoren.batch.avspillergruppeId}")
+    @Value("#{'${instbatch.miljoe}'.split(', ')}")
+    private List<String> instbatchMiljoe;
+
+    @Value("${batch.avspillergruppeId}")
     private Long avspillergruppeId;
 
-    @Value("#{${orkestratoren.batch.antallMeldingerPerEndringskode}}")
+    @Value("#{${batch.antallMeldingerPerEndringskode}}")
     private Map<String, Integer> antallMeldingerPerEndringskode;
 
-    @Value("${orkestratoren.eiabatch.antallSykemeldinger}")
+    @Value("${eiabatch.antallSykemeldinger}")
     private int antallSykemeldinger;
 
-    @Value("${orkestratoren.poppbatch.antallNyeIdenter}")
+    @Value("${poppbatch.antallNyeIdenter}")
     private int poppbatchAntallNyeIdenter;
 
-    @Value("${orkestratoren.aaregbatch.antallNyeIdenter}")
+    @Value("${aaregbatch.antallNyeIdenter}")
     private int aaregbatchAntallNyeIdenter;
+
+    @Value("${instbatch.antallNyeIdenter}")
+    private int instbatchAntallNyeIdenter;
 
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
@@ -72,7 +80,10 @@ public class JobController {
     @Autowired
     private AaregSyntPakkenService aaregSyntPakkenService;
 
-    @Scheduled(cron = "${orkestratoren.tpsbatch.cron:0 0 0 * * *}")
+    @Autowired
+    private InstSyntPakkenService instSyntPakkenService;
+
+    @Scheduled(cron = "${tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
         for(String miljoe : tpsbatchMiljoe) {
             try {
@@ -83,14 +94,14 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${orkestratoren.inntektbatch.cron:0 0 1 1 * *}")
+    @Scheduled(cron = "${inntektbatch.cron:0 0 1 1 * *}")
     public void arenaInntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
         String arenaInntektId = arenaInntektSyntPakkenService.genererInntektsmeldinger(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", arenaInntektId);
     }
 
-    @Scheduled(cron = "${orkestratoren.eiabatch.cron:0 0 0 * * *}")
+    @Scheduled(cron = "${eiabatch.cron:0 0 0 * * *}")
     public void eiaSyntBatch() {
         for(String miljoe : eiabatchMiljoe) {
             SyntetiserEiaRequest request = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallSykemeldinger);
@@ -99,7 +110,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${orkestratoren.poppbatch.cron:0 0 1 1 5 *}")
+    @Scheduled(cron = "${poppbatch.cron:0 0 1 1 5 *}")
     public void poppSyntBatch() {
         for(String miljoe : poppbatchMiljoe) {
             SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, poppbatchAntallNyeIdenter);
@@ -108,11 +119,19 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${orkestratoren.aaregbatch.cron:0 0 1 1 * *}")
+    @Scheduled(cron = "${aaregbatch.cron:0 0 1 1 * *}")
     public void aaregSyntBatch() {
         for(String miljoe : aaregbatchMiljoe) {
             SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, aaregbatchAntallNyeIdenter);
             aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
+        }
+    }
+
+    @Scheduled(cron = "${instbatch.cron:0 0 0 * * *}")
+    public void instSyntBatch() {
+        for(String miljoe : instbatchMiljoe) {
+            SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, instbatchAntallNyeIdenter);
+            instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
         }
     }
 }

@@ -21,6 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
+import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
@@ -42,6 +43,9 @@ public class JobControllerTest {
     @Mock
     private AaregSyntPakkenService aaregSyntPakkenService;
 
+    @Mock
+    private InstSyntPakkenService instSyntPakkenService;
+
     @InjectMocks
     private JobController jobController;
 
@@ -57,6 +61,7 @@ public class JobControllerTest {
         ReflectionTestUtils.setField(jobController, "eiabatchMiljoe", miljoe);
         ReflectionTestUtils.setField(jobController, "poppbatchMiljoe", miljoe);
         ReflectionTestUtils.setField(jobController, "aaregbatchMiljoe", miljoe);
+        ReflectionTestUtils.setField(jobController, "instbatchMiljoe", miljoe);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallMeldingerPerEndringskode", antallMeldingerPerEndringskode);
@@ -90,5 +95,11 @@ public class JobControllerTest {
     public void shouldStartAaregBatch() {
         jobController.aaregSyntBatch();
         verify(aaregSyntPakkenService).genererArbeidsforholdsmeldinger(any());
+    }
+
+    @Test
+    public void shouldStartInstBatch() {
+        jobController.instSyntBatch();
+        verify(instSyntPakkenService).genererInstitusjonsforhold(any());
     }
 }
