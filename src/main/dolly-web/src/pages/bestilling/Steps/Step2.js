@@ -5,7 +5,6 @@ import NavigationConnector from '../Navigation/NavigationConnector'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import { Formik } from 'formik'
 import { AttributtManager } from '~/service/Kodeverk'
-import DisplayFormikState from '~/utils/DisplayFormikState'
 import FormEditor from '~/components/formEditor/FormEditor'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Icon from '~/components/icon/Icon'
@@ -63,14 +62,14 @@ export default class Step2 extends PureComponent {
 									opprette testpersoner med tilfeldige verdier.
 								</ContentContainer>
 							) : (
-								<FormEditor
-									AttributtListe={this.AttributtListe}
-									FormikProps={formikProps}
-									getAttributtListByHovedkategori={
-										this.AttributtManager.getAttributtListByHovedkategori
-									}
-								/>
-							)}
+									<FormEditor
+										AttributtListe={this.AttributtListe}
+										FormikProps={formikProps}
+										getAttributtListByHovedkategori={
+											this.AttributtManager.getAttributtListByHovedkategori
+										}
+									/>
+								)}
 
 							<NavigationConnector
 								onClickNext={formikProps.submitForm}

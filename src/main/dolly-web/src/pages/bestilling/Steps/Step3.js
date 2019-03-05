@@ -9,7 +9,7 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import NavigationConnector from '../Navigation/NavigationConnector'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import { AttributtManager } from '~/service/Kodeverk'
-import { Formik, FieldArray, Field } from 'formik'
+import { Formik, FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 
@@ -54,6 +54,7 @@ export default class Step3 extends PureComponent {
 				<RemoveableField
 					onRemove={() => this._onRemoveHovedKategori(items)}
 					removable={this.state.edit && removable}
+					removableText={'FJERN RAD'}
 				>
 					<div className="oppsummering-blokk oppsummering-blokk-margin">
 						{items.map(item => this.renderSubKategori(item))}
@@ -70,6 +71,7 @@ export default class Step3 extends PureComponent {
 				<div className="oppsummering-multifield" key={header}>
 					<RemoveableField
 						removable={removable && this.state.edit}
+						removableText={'FJERN RAD'}
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
 						<h4>{typeof header === 'number' ? `# ${header}` : header}</h4>
@@ -130,15 +132,14 @@ export default class Step3 extends PureComponent {
 	}
 
 	_onRemoveHovedKategori(items) {
-		let toDelete = []
-		items.forEach(nested => nested.items.forEach(item => toDelete.push(item.id)))
-		this.props.deleteValues({ values: toDelete })
+		const _findIds = item => (item.items ? [].concat(...item.items.map(i => _findIds(i))) : item.id)
+		this.props.deleteValues({ values: _findIds(items) })
 	}
 
 	_onRemoveSubKategori(items, header) {
 		if (typeof header === 'number') {
 			this.props.deleteValuesArray({
-				values: items.map(item => item.subKategori.id),
+				values: [...new Set(items.map(item => item.subKategori.id))],
 				index: header - 1
 			})
 		} else {
@@ -171,19 +172,19 @@ export default class Step3 extends PureComponent {
 					<div className="oppsummering-blokk oppsummering-blokk-margin">
 						<StaticValue header="Identtype" value={identtype} />
 						<StaticValue header="Antall personer" value={antall.toString()} />
+						{selectedAttributeIds.length > 0 && (
+							<div className="flexbox--align-center--justify-end edit-align-right">
+								<Button
+									className="flexbox--align-center"
+									kind="eraser"
+									onClick={() => this.setState({ edit: !this.state.edit })}
+								>
+									FJERN ATTRIBUTTER
+								</Button>
+							</div>
+						)}
 					</div>
 					{this.renderValues()}
-					{selectedAttributeIds.length > 0 && (
-						<div className="flexbox--align-center--justify-start">
-							<Button
-								className="flexbox--align-center"
-								kind="edit"
-								onClick={() => this.setState({ edit: !this.state.edit })}
-							>
-								REDIGER
-							</Button>
-						</div>
-					)}
 				</div>
 
 				<Formik

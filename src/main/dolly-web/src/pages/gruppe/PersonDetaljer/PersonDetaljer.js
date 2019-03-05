@@ -5,19 +5,34 @@ import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManag
 import Button from '~/components/button/Button'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Loading from '~/components/loading/Loading'
-
 import './PersonDetaljer.less'
+import DollyModal from '~/components/modal/DollyModal'
+import Formatters from '~/utils/DataFormatter'
+import BestillingDetaljerModal from '~/components/bestillingDetaljerModal/BestillingDetaljerModal'
+
 
 const AttributtManagerInstance = new AttributtManager()
 
 export default class PersonDetaljer extends PureComponent {
+	constructor(props) {
+		super(props)
+		this.state = {
+			modalOpen: false
+		}
+	}
+
 	static propTypes = {
 		editAction: PropTypes.func
 	}
-
 	componentDidMount() {
 		this.props.getSigrunTestbruker()
 		this.props.getKrrTestbruker()
+	}
+	openModal = () => {
+		this.setState({ modalOpen: true })
+	}
+	closeModal = () => {
+		this.setState({ modalOpen: false })
 	}
 
 	// render loading for krr og sigrun
@@ -48,10 +63,19 @@ export default class PersonDetaljer extends PureComponent {
 		/>
 	)
 
+	_renderBestillingDetaljerModal = () => {
+		const ident = Formatters.idUtenEllipse(this.props.bestillingId)
+		const { bestillinger } = this.props
+		const bestilling = bestillinger.data.find(i => i.id.toString() === ident)
+
+		return <BestillingDetaljerModal bestilling = {bestilling}/>
+	}
+
 	render() {
 		const { personData, editAction, frigjoerTestbruker } = this.props
-		if (!personData) return null
+		const { modalOpen } = this.state
 
+		if (!personData) return null
 		return (
 			<div className="person-details">
 				{personData.map((i, idx) => {
@@ -59,8 +83,8 @@ export default class PersonDetaljer extends PureComponent {
 					if (i.data[0].id == 'bestillingID') {
 						return (
 							<div key={idx} className="tidligere-bestilling-panel">
-								<h4 className="tidligere-bestilling-id">{i.header}</h4>
-								{this._renderPersonInfoBlockHandler(i)}
+								<h4>{i.header}</h4>
+								<div>{i.data[0].value}</div>
 							</div>
 						)
 					}
@@ -72,6 +96,16 @@ export default class PersonDetaljer extends PureComponent {
 					)
 				})}
 				<div className="flexbox--align-center--justify-end">
+					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
+						BESTILLINGSDETALJER
+					</Button>
+					<DollyModal
+						isOpen={modalOpen}
+						onRequestClose={this.closeModal}
+						closeModal={this.closeModal}
+						content={this._renderBestillingDetaljerModal()}
+						width={'60%'}
+					/>
 					<Button onClick={editAction} className="flexbox--align-center" kind="edit">
 						REDIGER
 					</Button>
