@@ -57,9 +57,19 @@ export default handleActions(
 			return { ...state, page: state.page - 1 }
 		},
 		[actions.toggleAttribute](state, action) {
+			let attributeIds = _xor(state.attributeIds, [action.payload])
 			return {
 				...state,
-				attributeIds: _xor(state.attributeIds, [action.payload])
+				values:
+					attributeIds.length > state.attributeIds.length
+						? state.values
+						: _filterAttributes(
+								state.values,
+								[action.payload],
+								AttributtManagerInstance.listAllSelected(state.attributeIds),
+								AttributtManagerInstance.listDependencies([action.payload])
+						  ),
+				attributeIds: attributeIds
 			}
 		},
 		[actions.uncheckAllAttributes](state, action) {
@@ -212,18 +222,25 @@ const _transformAttributt = (attribute, attributes, value) => {
 
 // Filter attributes included in filter argument
 // Removes all children if attribute is a parent and dependencies
-const _filterAttributes = (values, filter, attribute, dependencies) =>
-	attribute
+const _filterAttributes = (values, filter, attribute, dependencies) => {
+	return attribute
 		.filter(
-			attr => !filter.includes(attr.id) && !filter.includes(attr.parent) && !dependencies[attr.id]
+			attr =>
+				!filter.includes(attr.id) &&
+				!filter.includes(attr.parent) &&
+				!dependencies[attr.id] &&
+				(attr.items == null || values[attr.id] != null) // Values are not set before step 2
 		)
-		.map(attr => [
-			attr.id,
-			attr.items
-				? values[attr.id].map(val => _filterAttributes(val, filter, attr.items, dependencies))
-				: values[attr.id]
-		])
+		.map(attr => {
+			return [
+				attr.id,
+				attr.items
+					? values[attr.id].map(val => _filterAttributes(val, filter, attr.items, dependencies))
+					: values[attr.id]
+			]
+		})
 		.reduce((res, [key, val]) => ({ ...res, [key]: val }), {})
+}
 
 // Remove all values with ids in filter at index
 // If last element in array is removed, then remove children and dependencies
