@@ -181,6 +181,11 @@ export function mapTpsfData(tpsfData, testIdent) {
 							)
 						},
 						{
+							id: 'statsborgerskap',
+							label: 'Statsborgerskap',
+							value: relasjon.personRelasjonMed.statsborgerskap
+						},
+						{
 							id: 'sprakKode',
 							label: 'Språk',
 							value: relasjon.personRelasjonMed.sprakKode
@@ -199,11 +204,6 @@ export function mapTpsfData(tpsfData, testIdent) {
 							id: 'egenAnsattDatoFom',
 							label: 'Egenansatt',
 							value: relasjon.personRelasjonMed.egenAnsattDatoFom && 'JA'
-						},
-						{
-							id: 'statsborgerskap',
-							label: 'Statsborgerskap',
-							value: relasjon.personRelasjonMed.statsborgerskap
 						}
 					]
 				}
