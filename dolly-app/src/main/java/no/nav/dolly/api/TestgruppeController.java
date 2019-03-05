@@ -119,17 +119,6 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
     }
 
-    @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype", notes = BOADRESSE_COMMENT)
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/{gruppeId}/bestilling")
-    public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
-        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getAntall(), request.getEnvironments(), request.getTpsf(), null);
-
-        dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
-        return mapperFacade.map(bestilling, RsBestilling.class);
-    }
-
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
     public List<RsTestgruppe> getTestgrupper(
@@ -145,6 +134,17 @@ public class TestgruppeController {
         if (testgruppeService.slettGruppeById(gruppeId) == 0) {
             throw new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId));
         }
+    }
+
+    @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype", notes = BOADRESSE_COMMENT)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{gruppeId}/bestilling")
+    public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getAntall(), request.getEnvironments(), request.getTpsf(), null);
+
+        dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
+        return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
     @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BOADRESSE_COMMENT)
