@@ -1,6 +1,5 @@
 import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource, AttributtType } from '../Types'
-import Formatters from '~/utils/DataFormatter'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
@@ -101,7 +100,8 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),
 		validation: yup.string().required('Vennligst velg en verdi.'),
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectAndEdit,
+		transform: egenAnsatt => egenAnsatt ? new Date() : null
 	}
 	// {
 	// 	hovedKategori: Kategorier.PersInfo,

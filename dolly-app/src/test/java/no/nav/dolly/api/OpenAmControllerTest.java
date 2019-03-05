@@ -2,9 +2,12 @@ package no.nav.dolly.api;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,10 +23,16 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import com.google.common.collect.Lists;
 
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsOpenAmRequest;
+import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.service.OpenAmService;
 
@@ -36,11 +45,16 @@ public class OpenAmControllerTest {
     private static final String MILJOE2 = "t1";
     private static final long GRUPPEID = 1L;
     private static final Boolean STATUS = true;
+    private static final Long BESTILLING_ID = 1L;
 
     @Mock
     private OpenAmService openAmService;
 
-    @Mock GruppeRepository gruppeRepository;
+    @Mock
+    private GruppeRepository gruppeRepository;
+
+    @Mock
+    private BestillingRepository bestillingRepository;
 
     @InjectMocks
     private OpenAmController openAmController;
@@ -51,6 +65,9 @@ public class OpenAmControllerTest {
     @Mock
     private Testgruppe testgruppe;
 
+    @Mock
+    private RsOpenAmResponse openAmResponse;
+
     private ArgumentCaptor<List<String>> captor;
 
     @Before
@@ -59,8 +76,8 @@ public class OpenAmControllerTest {
     }
 
     @Test
-    public void opprettIdenterOk() {
-        openAmController.opprettIdenter(RsOpenAmRequest.builder()
+    public void sendIdenterTilOpenAmOk() {
+        openAmController.sendIdenterTilOpenAm(RsOpenAmRequest.builder()
                 .identer(asList(IDENT1, IDENT2))
                 .miljoer(asList(MILJOE1, MILJOE2))
                 .build());
@@ -87,5 +104,31 @@ public class OpenAmControllerTest {
         openAmController.oppdaterOpenAmSentStatus(GRUPPEID, STATUS);
         verify(gruppeRepository).findById(GRUPPEID);
         verify(gruppeRepository).save(any(Testgruppe.class));
+    }
+
+    @Test
+    public void sendBestillingTilOpenAm() {
+        when(bestillingRepository.findById(BESTILLING_ID)).thenReturn(Optional.of(
+                Bestilling.builder()
+                        .miljoer(format("%s,%s", MILJOE1, MILJOE2))
+                        .gruppe(Testgruppe.builder()
+                                .testidenter(newHashSet(asList(Testident.builder().ident(IDENT1)
+                                                .bestillingProgress(Lists.newArrayList(BestillingProgress.builder().bestillingId(BESTILLING_ID).build()))
+                                                .build(),
+                                        Testident.builder().ident(IDENT2)
+                                                .bestillingProgress(Lists.newArrayList(BestillingProgress.builder().bestillingId(BESTILLING_ID).build()))
+                                                .build())))
+                                .build())
+                        .build()));
+        when(openAmService.opprettIdenter(anyList(), anyString())).thenReturn(openAmResponse);
+
+        openAmController.sendBestillingTilOpenAm(BESTILLING_ID);
+
+        verify(openAmService).opprettIdenter(captor.capture(), eq(MILJOE1));
+        verify(openAmService).opprettIdenter(captor.capture(), eq(MILJOE2));
+        verify(bestillingRepository).findById(BESTILLING_ID);
+        verify(bestillingRepository).save(any(Bestilling.class));
+        assertThat(captor.getAllValues().get(0), containsInAnyOrder(IDENT1, IDENT2));
+        assertThat(captor.getAllValues().get(1), containsInAnyOrder(IDENT1, IDENT2));
     }
 }

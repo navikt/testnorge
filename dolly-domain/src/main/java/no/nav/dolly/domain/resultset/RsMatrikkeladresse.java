@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

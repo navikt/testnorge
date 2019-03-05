@@ -1,14 +1,19 @@
 package no.nav.dolly.domain.jpa;
 
+import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -49,7 +54,7 @@ public class Bestilling {
     private String miljoer;
 
     @Column(name = "ANTALL_IDENTER", nullable = false)
-    private int antallIdenter;
+    private Integer antallIdenter;
 
     @Column(name = "SIST_OPPDATERT", nullable = false)
     @UpdateTimestamp
@@ -66,4 +71,20 @@ public class Bestilling {
 
     @Column(name = "TPSF_KRITERIER")
     private String tpsfKriterier;
+
+    @Column(name = "OPENAM_SENT")
+    private String openamSent;
+
+    @Column(name = "OPPRETT_FRA_IDENTER")
+    private String opprettFraIdenter;
+
+    @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)
+    private List<BestillingProgress> progresser;
+
+    public List<BestillingProgress> getProgresser() {
+        if (isNull(progresser)) {
+            progresser = new ArrayList();
+        }
+        return progresser;
+    }
 }

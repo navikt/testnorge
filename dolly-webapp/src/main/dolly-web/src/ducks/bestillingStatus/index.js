@@ -97,13 +97,12 @@ export const miljoStatusSelector = bestilling => {
 	let errorMsgs = []
 
 	// TODO: REG-2921: Denne må bli forbedret.
-	// feilmelding for hele bestillingen
+	// feilmelding for hele bestillingen 
 	bestilling.feil && errorMsgs.push(bestilling.feil)
 
 	if (bestilling.bestillingProgress && bestilling.bestillingProgress.length != 0) {
 		envs.forEach(env => {
 			const lowerCaseEnv = env.toLowerCase()
-
 			bestilling.bestillingProgress.forEach(person => {
 				if (!person.tpsfSuccessEnv) {
 					// TODO: Bestilling failed 100% fra Tpsf. Implement retry-funksjonalitet når maler er støttet
@@ -139,7 +138,7 @@ export const miljoStatusSelector = bestilling => {
 		})
 	}
 
-	return { id, successEnvs, failedEnvs, errorMsgs }
+	return { id, successEnvs, failedEnvs, errorMsgs, bestilling }
 }
 
 const mapItems = items => {
@@ -156,26 +155,33 @@ const mapItems = items => {
 					? 'Feilet'
 					: bestillingIkkeFerdig(item) 
 						? 'Pågår' 
-						: harOkStatuses(item.status)
-							? 'Ferdig'
-							: 'Avvik'
+						 : avvikStatus(item)
+						? 'Avvik'
+						: 'Ferdig'
 		}
 	})
 }
 
-const bestillingIkkeFerdig = item => !(item.ferdig)
-
-const harOkStatuses = status => {
-	let ferdig = true
-	if (status) {
-		status.forEach(line => {
-			if (line.statusMelding != 'OK') {
-				ferdig = false
-			}
+const avvikStatus = item => {
+	let avvik = false
+	if (item.tpsfStatus) {
+		item.tpsfStatus.map (status => {
+			if (status.statusMelding !== 'OK') avvik = true
 		})
 	}
-	return ferdig
+	if (item.krrStubStatus) {
+		item.krrStubStatus.map(status => {
+			if (status.statusMelding !== 'OK') avvik = true 
+		})
+	}
+	if (item.sigrunStubStatus) {
+		item.sigrunStubStatus.map(status => {
+			if (status.statusMelding !== 'OK') avvik = true
+		})
+	}
+	return avvik
 }
+const bestillingIkkeFerdig = item => !(item.ferdig)
 
 const harIkkeIdenter = ident => {
 	let feilet = true

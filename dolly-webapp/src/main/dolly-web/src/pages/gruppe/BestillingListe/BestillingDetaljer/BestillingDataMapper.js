@@ -9,11 +9,11 @@ export function mapBestillingData(bestillingData) {
 		items: [
 			{
 				label: 'Antall',
-				value: bestillingData.antallIdenter
+				value: bestillingData.antallIdenter.toString()
 			},
 			{
 				label: 'Sist Oppdatert',
-				value: bestillingData.sistOppdatert
+				value: Formatters.formatDate(bestillingData.sistOppdatert)
 			},
 			{
 				label: 'Gjenopprett fra',

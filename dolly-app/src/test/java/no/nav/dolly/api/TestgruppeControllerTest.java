@@ -1,6 +1,7 @@
 package no.nav.dolly.api;
 
 import static java.util.Collections.singletonList;
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,7 +22,8 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsDollyBestillingsRequest;
+import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestident;
@@ -35,6 +37,7 @@ public class TestgruppeControllerTest {
 
     private static final String IDENT = "12345678901";
     private static final Long GRUPPE_ID = 1L;
+    private static final Long BESTILLING_ID = 1L;
 
     @Mock
     private TestgruppeService testgruppeService;
@@ -118,21 +121,20 @@ public class TestgruppeControllerTest {
 
     @Test
     public void oppretteIdentBestilling() {
-        Long bestillingId = 2L;
         int ant = 1;
         List<String> envir = singletonList("u");
 
-        RsDollyBestillingsRequest dollyBestillingsRequest = RsDollyBestillingsRequest.builder()
-                .environments(envir)
+        RsDollyBestillingRequest dollyBestillingRequest = RsDollyBestillingRequest.builder()
                 .antall(ant)
                 .build();
+        dollyBestillingRequest.setEnvironments(envir);
 
-        Bestilling bestilling = Bestilling.builder().id(bestillingId).build();
+        Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();
 
-        when(bestillingService.saveBestillingByGruppeIdAndAntallIdenter(GRUPPE_ID, ant, envir, null)).thenReturn(bestilling);
+        when(bestillingService.saveBestilling(GRUPPE_ID, ant, envir, null, null)).thenReturn(bestilling);
 
-        controller.opprettIdentBestilling(GRUPPE_ID, dollyBestillingsRequest);
-        verify(dollyBestillingService).opprettPersonerByKriterierAsync(GRUPPE_ID, dollyBestillingsRequest, bestilling);
+        controller.opprettIdentBestilling(GRUPPE_ID, dollyBestillingRequest);
+        verify(dollyBestillingService).opprettPersonerByKriterierAsync(GRUPPE_ID, dollyBestillingRequest, bestilling);
     }
 
     @Test(expected = NotFoundException.class)
@@ -152,5 +154,21 @@ public class TestgruppeControllerTest {
     public void getIdentsByGroupId_hentIdenter() {
         controller.getIdentsByGroupId(anyLong());
         verify(testgruppeService).fetchIdenterByGruppeId(anyLong());
+    }
+
+    @Test
+    public void oppretteIdentBestillingFraEksisterende() {
+        List<String> envir = singletonList("u");
+
+        RsDollyBestillingFraIdenterRequest dollyBestillingsRequest = RsDollyBestillingFraIdenterRequest.builder()
+                .opprettFraIdenter(newArrayList(IDENT)).build();
+        dollyBestillingsRequest.setEnvironments(envir);
+
+        Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();
+
+        when(bestillingService.saveBestilling(GRUPPE_ID, 1, envir, null, newArrayList(IDENT))).thenReturn(bestilling);
+
+        controller.opprettIdentBestillingFraIdenter(GRUPPE_ID, dollyBestillingsRequest);
+        verify(dollyBestillingService).opprettPersonerFraIdenterMedKriterierAsync(GRUPPE_ID, dollyBestillingsRequest, bestilling);
     }
 }

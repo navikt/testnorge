@@ -1,20 +1,31 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import static java.util.Objects.isNull;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.RsAdresse;
 import no.nav.dolly.domain.resultset.RsPostadresse;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class RsTpsfBestilling {
+public class TpsfBestilling {
 
     private List<String> environments;
+
+    List<String> opprettFraIdenter;
 
     private int antall;
 
@@ -25,8 +36,6 @@ public class RsTpsfBestilling {
     private LocalDateTime foedtEtter;
 
     private LocalDateTime foedtFoer;
-
-    private boolean withAdresse;
 
     private RsAdresse boadresse;
 
@@ -63,4 +72,11 @@ public class RsTpsfBestilling {
     private String sprakKode;
 
     private LocalDateTime datoSprak;
+
+    public List<String> getOpprettFraIdenter() {
+        if (isNull(opprettFraIdenter)) {
+            opprettFraIdenter = new ArrayList();
+        }
+        return opprettFraIdenter;
+    }
 }

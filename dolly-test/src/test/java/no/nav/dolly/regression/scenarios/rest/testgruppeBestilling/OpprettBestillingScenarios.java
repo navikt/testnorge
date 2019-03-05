@@ -4,8 +4,7 @@ import java.time.LocalDate;
 import java.util.concurrent.CompletableFuture;
 import org.junit.Test;
 
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBestilling;
-import no.nav.dolly.testdata.builder.RsTpsfBestillingBuilder;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 
 public class OpprettBestillingScenarios extends TestgruppeBestillingTestCaseBase {
 
@@ -15,12 +14,10 @@ public class OpprettBestillingScenarios extends TestgruppeBestillingTestCaseBase
         String url = getEndpointUrl(gruppeId);
         CompletableFuture<String> future = new CompletableFuture<>();
 
-        RsTpsfBestilling tpsfBestilling = RsTpsfBestillingBuilder.builder()
-                .antall(1)
+        RsTpsfUtvidetBestilling tpsfBestilling = RsTpsfUtvidetBestilling.builder()
                 .kjonn("M")
                 .foedtEtter(LocalDate.of(2000, 1, 1).atStartOfDay())
-                .build()
-                .convertToRealRsTpsfBestilling();
+                .build();
 
         standardBestilling_u6.setTpsf(tpsfBestilling);
 
