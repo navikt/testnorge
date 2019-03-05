@@ -13,7 +13,7 @@ import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
 import cn from 'classnames'
 import SendOpenAmConnector from '~/pages/gruppe/SendOpenAm/SendOpenAmConnector'
-import OpenAmStatus from '~/pages/gruppe/OpenAmStatus/OpenAmStatus'
+import OpenAmStatusConnector from '~/pages/gruppe/OpenAmStatus/OpenAmStatusConnector'
 
 // TODO: Flytt modal ut som en dumb komponent
 const customStyles = {
@@ -50,51 +50,65 @@ export default class BestillingDetaljer extends PureComponent {
 		const { successEnvs, failedEnvs, errorMsgs } = this.props.miljoeStatusObj
 		const bestillingId = this.props.bestilling.id
 		const { openAm, openAmState } = this.props
-		let bestillingIdOpenAm = ''
-		openAmState.response && (bestillingIdOpenAm = openAmState.response.config.url)
 
-		console.log('bestillingId :', bestillingId)
-		console.log('openAm :', openAm)
-		console.log('openAmState :', openAmState)
+		let openAmRes
+		if (openAmState.responses.length > 0) {
+			openAmRes = openAmState.responses.find(response => response.id == bestillingId)
+		}
+
+		console.log('openAmRes :', openAmRes)
+
 		// TODO: Reverse Map detail data here. Alex
 		return (
 			<div className="bestilling-detaljer">
 				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{errorMsgs.length > 0 && this._renderErrorMessage(errorMsgs)}
-
-				<div>
+				{openAm ? (
+					<div className="bestilling-detaljer">
+						<h3>Jira-lenker</h3>
+						<div className={'jira-link'}>{this._renderJiraLinks(openAm)}</div>
+					</div>
+				) : (
+					openAmRes && (
+						<OpenAmStatusConnector
+							responses={this._renderOpenAmStateResponses(openAmRes)}
+							className="open-am-status"
+						/>
+					)
+				)}
+				{/* <div>
 					{openAm && (
 						<div className="bestilling-detaljer">
 							<h3>Jira-lenker</h3>
 							<div className={'jira-link'}>{this._renderJiraLinks(openAm)}</div>
 						</div>
 					)}
-				</div>
-
-				{bestillingIdOpenAm ===
+				</div> */}
+				{/* {bestillingIdOpenAm ===
 					'https://dolly-u2.nais.preprod.local/api/v1/openam/bestilling/{bestillingId}?bestillingId=' +
-						bestillingId && (
-					<OpenAmStatus
-						responses={this._renderOpenAmStateResponses(openAmState.response)}
+						bestillingId && ( */}
+				{/* {openAmState.responses.length > 0 && (
+					<OpenAmStatusConnector
+						responses={this._renderOpenAmStateResponses(openAmState.responses[0])}
 						className="open-am-status"
-					/>
-					// this.state.openAmInfoOpen = true
-				)}
-
+					/> */}
+				{/* )} */}
+				{/* // this.state.openAmInfoOpen = true */}
+				{/* )} */}
 				<div className="flexbox--align-center--justify-end info-block">
-					{openAm == undefined && (
-						<div className="button">
-							{bestillingId && (
-								<SendOpenAmConnector
-									bestillingId={bestillingId}
-									className="flexbox--align-center button"
-								/>
-							)}
-							{this._setOpenAmState()}
-						</div>
-					)}
+					{/* {openAm == undefined && ( */}
+					<div className="button">
+						{bestillingId && (
+							<SendOpenAmConnector
+								bestillingId={bestillingId}
+								className="flexbox--align-center button"
+							/>
+						)}
+						{/* {this._setOpenAmState()} */}
+					</div>
 
+					{/* } */}
 					<div className="button">
 						<Button
 							onClick={this._onToggleModal}
