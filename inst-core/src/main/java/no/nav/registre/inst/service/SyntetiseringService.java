@@ -19,7 +19,7 @@ public class SyntetiseringService {
     InstSyntetisererenConsumer instSyntRestConsumer;
 
     public ResponseEntity finnSyntetiserteMeldinger(SyntetiserInstRequest syntetiserInstRequest) {
-        List<Map<String, String>> syntetiserteMeldinger = instSyntRestConsumer.hentInstMeldingerFromSyntRest(syntetiserInstRequest.getAntallMeldinger());
+        List<Map<String, String>> syntetiserteMeldinger = instSyntRestConsumer.hentInstMeldingerFromSyntRest(syntetiserInstRequest.getAntallNyeIdenter());
         return ResponseEntity.ok().body(syntetiserteMeldinger);
     }
 }

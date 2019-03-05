@@ -12,6 +12,6 @@ public class SyntetiserInstRequest {
     private Long avspillergruppeId;
     @JsonProperty("miljoe")
     private String miljoe;
-    @JsonProperty("antallMeldinger")
-    private int antallMeldinger;
+    @JsonProperty("antallNyeIdenter")
+    private int antallNyeIdenter;
 }
