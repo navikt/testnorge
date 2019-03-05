@@ -29,7 +29,7 @@ public class EiaSyntConsumer {
 
     private UriTemplate url;
 
-    public EiaSyntConsumer(@Value("${eias-emottakstub.rest-api.url}") String baseUrl, @Value("${orkestratoren.eiabatch.queue}") String queueName) {
+    public EiaSyntConsumer(@Value("${eias-emottakstub.rest-api.url}") String baseUrl, @Value("${eiabatch.queue}") String queueName) {
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/" + queueName);
     }
 
