@@ -50,18 +50,20 @@ public class JobControllerTest {
     private JobController jobController;
 
     private Long avspillergruppeId = 123L;
-    private List<String> miljoe;
+    private String miljoe = "t1";
+    private List<String> miljoer;
     private Map<String, Integer> antallMeldingerPerEndringskode;
+    private Map<Long, String> avspillergruppeIdMedMiljoe;
 
     @Before
     public void setUp() {
-        miljoe = new ArrayList<>(Arrays.asList("t1"));
-        ReflectionTestUtils.setField(jobController, "avspillergruppeId", avspillergruppeId);
-        ReflectionTestUtils.setField(jobController, "tpsbatchMiljoe", miljoe);
-        ReflectionTestUtils.setField(jobController, "eiabatchMiljoe", miljoe);
-        ReflectionTestUtils.setField(jobController, "poppbatchMiljoe", miljoe);
-        ReflectionTestUtils.setField(jobController, "aaregbatchMiljoe", miljoe);
-        ReflectionTestUtils.setField(jobController, "instbatchMiljoe", miljoe);
+        miljoer = new ArrayList<>(Arrays.asList(miljoe));
+        avspillergruppeIdMedMiljoe = new HashMap<>();
+        avspillergruppeIdMedMiljoe.put(avspillergruppeId, miljoe);
+        ReflectionTestUtils.setField(jobController, "avspillergruppeIdMedMiljoe", avspillergruppeIdMedMiljoe);
+        ReflectionTestUtils.setField(jobController, "instbatchAvspillergruppeId", avspillergruppeId);
+        ReflectionTestUtils.setField(jobController, "inntektbatchAvspillergruppeId", avspillergruppeId);
+        ReflectionTestUtils.setField(jobController, "instbatchMiljoe", miljoer);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallMeldingerPerEndringskode", antallMeldingerPerEndringskode);
@@ -70,7 +72,7 @@ public class JobControllerTest {
     @Test
     public void shouldStartTpsBatch() {
         jobController.tpsSyntBatch();
-        verify(tpsSyntPakkenService).genererSkdmeldinger(avspillergruppeId, miljoe.get(0), antallMeldingerPerEndringskode);
+        verify(tpsSyntPakkenService).genererSkdmeldinger(avspillergruppeId, miljoer.get(0), antallMeldingerPerEndringskode);
     }
 
     @Test

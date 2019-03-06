@@ -67,7 +67,7 @@ public class StartSyntetiseringInstCompTest {
     public void shouldGetProperties() {
         assertEquals(miljoe1, jobController.getInstbatchMiljoe().get(0));
         assertEquals(miljoe2, jobController.getInstbatchMiljoe().get(1));
-        assertEquals(gruppeId, jobController.getAvspillergruppeId());
+        assertEquals(gruppeId, jobController.getInstbatchAvspillergruppeId());
         assertEquals(antallNyeIdenter, jobController.getInstbatchAntallNyeIdenter());
     }
 

@@ -32,23 +32,8 @@ import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 @Slf4j
 public class JobController {
 
-    @Value("#{'${tpsbatch.miljoe}'.split(', ')}")
-    private List<String> tpsbatchMiljoe;
-
-    @Value("#{'${eiabatch.miljoe}'.split(', ')}")
-    private List<String> eiabatchMiljoe;
-
-    @Value("#{'${poppbatch.miljoe}'.split(', ')}")
-    private List<String> poppbatchMiljoe;
-
-    @Value("#{'${aaregbatch.miljoe}'.split(', ')}")
-    private List<String> aaregbatchMiljoe;
-
-    @Value("#{'${instbatch.miljoe}'.split(', ')}")
-    private List<String> instbatchMiljoe;
-
-    @Value("${batch.avspillergruppeId}")
-    private Long avspillergruppeId;
+    @Value("#{${batch.avspillergruppeId.miljoe}}")
+    private Map<Long, String> avspillergruppeIdMedMiljoe;
 
     @Value("#{${batch.antallMeldingerPerEndringskode}}")
     private Map<String, Integer> antallMeldingerPerEndringskode;
@@ -59,8 +44,17 @@ public class JobController {
     @Value("${poppbatch.antallNyeIdenter}")
     private int poppbatchAntallNyeIdenter;
 
+    @Value("${inntektbatch.avspillergruppeId}")
+    private Long inntektbatchAvspillergruppeId;
+
     @Value("${aaregbatch.antallNyeIdenter}")
     private int aaregbatchAntallNyeIdenter;
+
+    @Value("#{'${instbatch.miljoe}'.split(', ')}")
+    private List<String> instbatchMiljoe;
+
+    @Value("${instbatch.avspillergruppeId}")
+    private Long instbatchAvspillergruppeId;
 
     @Value("${instbatch.antallNyeIdenter}")
     private int instbatchAntallNyeIdenter;
@@ -85,9 +79,9 @@ public class JobController {
 
     @Scheduled(cron = "${tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
-        for(String miljoe : tpsbatchMiljoe) {
+        for(Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             try {
-                tpsSyntPakkenService.genererSkdmeldinger(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
+                tpsSyntPakkenService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallMeldingerPerEndringskode);
             } catch (HttpStatusCodeException e) {
                 log.warn(e.getResponseBodyAsString(), e);
             }
@@ -96,24 +90,24 @@ public class JobController {
 
     @Scheduled(cron = "${inntektbatch.cron:0 0 1 1 * *}")
     public void arenaInntektSyntBatch() {
-        SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(avspillergruppeId);
+        SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(inntektbatchAvspillergruppeId);
         String arenaInntektId = arenaInntektSyntPakkenService.genererInntektsmeldinger(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", arenaInntektId);
     }
 
     @Scheduled(cron = "${eiabatch.cron:0 0 0 * * *}")
     public void eiaSyntBatch() {
-        for(String miljoe : eiabatchMiljoe) {
-            SyntetiserEiaRequest request = new SyntetiserEiaRequest(avspillergruppeId, miljoe, antallSykemeldinger);
+        for(Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            SyntetiserEiaRequest request = new SyntetiserEiaRequest(entry.getKey(), entry.getValue(), antallSykemeldinger);
             List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(request);
-            log.info("eiabatch har opprettet {} sykemeldinger i miljø {}. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), miljoe, Arrays.toString(fnrMedGenererteMeldinger.toArray()));
+            log.info("eiabatch har opprettet {} sykemeldinger i miljø {}. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), entry.getValue(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
         }
     }
 
     @Scheduled(cron = "${poppbatch.cron:0 0 1 1 5 *}")
     public void poppSyntBatch() {
-        for(String miljoe : poppbatchMiljoe) {
-            SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, poppbatchAntallNyeIdenter);
+        for(Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(entry.getKey(), entry.getValue(), poppbatchAntallNyeIdenter);
             String testdataEier = "orkestratoren";
             poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
         }
@@ -121,8 +115,8 @@ public class JobController {
 
     @Scheduled(cron = "${aaregbatch.cron:0 0 1 1 * *}")
     public void aaregSyntBatch() {
-        for(String miljoe : aaregbatchMiljoe) {
-            SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, aaregbatchAntallNyeIdenter);
+        for(Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(entry.getKey(), entry.getValue(), aaregbatchAntallNyeIdenter);
             aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
         }
     }
@@ -130,7 +124,7 @@ public class JobController {
     @Scheduled(cron = "${instbatch.cron:0 0 0 * * *}")
     public void instSyntBatch() {
         for(String miljoe : instbatchMiljoe) {
-            SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, instbatchAntallNyeIdenter);
+            SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(instbatchAvspillergruppeId, miljoe, instbatchAntallNyeIdenter);
             instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
         }
     }
