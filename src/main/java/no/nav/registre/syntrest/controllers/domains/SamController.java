@@ -19,6 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @RestController
 @RequestMapping("api/v1/generate")
 public class SamController extends RootController {
+
     @Value("${synth-sam-app}")
     private String appName;
 
