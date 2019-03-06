@@ -28,6 +28,7 @@ Modal.setAppElement('#root')
 export default class SendOpenAm extends Component {
 	state = {
 		// modalOpen: false,
+		requestSent: false,
 		showButton: true
 	}
 
@@ -50,10 +51,17 @@ export default class SendOpenAm extends Component {
 	// 	this.setState({ modalOpen: false }, () => this.props.sendToOpenAm())
 	// }
 
-	_hideOnClick = (sendToOpenAm, bestillingId) => {
+	_hideOnClick = async (sendToOpenAm, bestillingId) => {
 		// console.log('xx sendToOpenAm :', sendToOpenAm)
 		// console.log('xx bestillingId :', bestillingId)
-		return sendToOpenAm(bestillingId), this.setState({ showButton: false })
+		this.setState({ showButton: false })
+
+		try {
+			await sendToOpenAm(bestillingId)
+			this.setState({ requestSent: true })
+		} catch (err) {
+			console.log(err)
+		}
 	}
 
 	render() {
@@ -104,7 +112,9 @@ export default class SendOpenAm extends Component {
 		// 		Send til OpenAM
 		// 	</Knapp>
 		// )
-		if (openAmFetching && !this.state.showButton) {
+
+		if (openAmFetching & !this.state.showButton) {
+			if (this.state.requestSent) return null
 			return <Loading label="sender" className="openam-loading-spinner" />
 		}
 

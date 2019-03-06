@@ -25,7 +25,9 @@ export default class OpenAmStatus extends Component {
 	// }
 
 	render() {
-		if (this.state.isOpen) {
+		const { lukket } = this.props
+
+		if (this.state.isOpen && !lukket) {
 			return (
 				<div className="open-am-status">
 					<div>
