@@ -56,7 +56,7 @@ export default class BestillingDetaljer extends PureComponent {
 			openAmRes = openAmState.responses.find(response => response.id == bestillingId)
 		}
 
-		console.log('openAmRes :', openAmRes)
+		console.log('openAmState :', openAmState)
 
 		// TODO: Reverse Map detail data here. Alex
 		return (
@@ -70,13 +70,26 @@ export default class BestillingDetaljer extends PureComponent {
 						<div className={'jira-link'}>{this._renderJiraLinks(openAm)}</div>
 					</div>
 				) : (
-					openAmRes && (
+					openAmRes &&
+					!openAmState.lukket && (
 						<OpenAmStatusConnector
+							id={bestillingId}
 							responses={this._renderOpenAmStateResponses(openAmRes)}
 							className="open-am-status"
 						/>
 					)
 				)}
+				{!openAm &&
+					openAmRes &&
+					openAmState.lukket && (
+						<div className="bestilling-detaljer">
+							<h3>Jira-lenker</h3>
+							<div className={'jira-link'}>
+								{this._renderJiraLinks2(this._renderOpenAmStateResponses(openAmRes))}
+							</div>
+						</div>
+					)}
+
 				{/* <div>
 					{openAm && (
 						<div className="bestilling-detaljer">
@@ -97,14 +110,14 @@ export default class BestillingDetaljer extends PureComponent {
 				{/* // this.state.openAmInfoOpen = true */}
 				{/* )} */}
 				<div className="flexbox--align-center--justify-end info-block">
-					{/* {openAm == undefined && ( */}
 					<div className="button">
-						{bestillingId && (
-							<SendOpenAmConnector
-								bestillingId={bestillingId}
-								className="flexbox--align-center button"
-							/>
-						)}
+						{openAm == undefined &&
+							bestillingId && (
+								<SendOpenAmConnector
+									bestillingId={bestillingId}
+									className="flexbox--align-center button"
+								/>
+							)}
 						{/* {this._setOpenAmState()} */}
 					</div>
 
@@ -123,10 +136,6 @@ export default class BestillingDetaljer extends PureComponent {
 			</div>
 		)
 	}
-
-	// _setState = () => {
-
-	// }
 
 	_renderOpenAmStateResponses = openAmState => {
 		// console.log('openAmState :', openAmState)
@@ -184,6 +193,21 @@ export default class BestillingDetaljer extends PureComponent {
 
 	_renderJiraLinks = openAm => {
 		const data = openAm.split(',')
+		const linkArray = data.map((respons, i) => {
+			const link = respons
+			return (
+				<Fragment key={i}>
+					<a href={link} target="_blank">
+						{link.substring(28, link.length)}
+					</a>
+					{i !== data.length - 1 && <p>, </p>}
+				</Fragment>
+			)
+		})
+		return linkArray
+	}
+
+	_renderJiraLinks2 = data => {
 		const linkArray = data.map((respons, i) => {
 			const link = respons
 			return (

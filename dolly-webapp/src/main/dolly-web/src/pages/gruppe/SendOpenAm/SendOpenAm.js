@@ -5,6 +5,7 @@ import Lukknapp from 'nav-frontend-lukknapp'
 import Button from '~/components/button/Button'
 import Icon from '~/components/icon/Icon'
 import PropTypes from 'prop-types'
+import Loading from '~/components/loading/Loading'
 
 import './SendOpenAm.less'
 
@@ -52,18 +53,17 @@ export default class SendOpenAm extends Component {
 	_hideOnClick = (sendToOpenAm, bestillingId) => {
 		// console.log('xx sendToOpenAm :', sendToOpenAm)
 		// console.log('xx bestillingId :', bestillingId)
-		this.setState({ showButton: false })
-		return sendToOpenAm(bestillingId)
+		return sendToOpenAm(bestillingId), this.setState({ showButton: false })
 	}
 
 	render() {
 		// console.log('this :', this)
 		const { sendToOpenAm, openAmFetching, openAmResponse, gruppe, bestillingId, kind } = this.props
-		// console.log('openAmFetching :', openAmFetching)
+
 		// console.log('this.props :', this.props)
 		// console.log('sendToOpenAm :', sendToOpenAm)
 		// console.log('openAmResponse :', openAmResponse)
-		const { modalOpen } = this.state
+		// const { modalOpen } = this.state
 		// console.log('gruppe :', gruppe)
 		// console.log('bestillingId :', bestillingId)
 
@@ -104,17 +104,21 @@ export default class SendOpenAm extends Component {
 		// 		Send til OpenAM
 		// 	</Knapp>
 		// )
+		if (openAmFetching && !this.state.showButton) {
+			return <Loading label="sender" className="openam-loading-spinner" />
+		}
 
 		return (
+			// console.log('openAmFetching 1:', openAmFetching),
 			this.state.showButton && (
 				<Button
 					className="flexbox--align-center"
+					// spinner={openAmFetching}
+					// autoDisableVedSpinner
 					onClick={() => {
 						this._hideOnClick(sendToOpenAm, bestillingId)
 					}}
 					kind="chevron-right"
-					spinner={openAmFetching}
-					autoDisableVedSpinner
 				>
 					SEND TIL OPENAM
 				</Button>

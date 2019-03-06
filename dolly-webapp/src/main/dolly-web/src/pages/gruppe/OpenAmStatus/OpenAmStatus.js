@@ -49,7 +49,7 @@ export default class OpenAmStatus extends Component {
 	}
 
 	_onCloseButton = () => {
-		this.props.removeNyOpenAmStatus()
+		this.props.removeNyOpenAmStatus(this.props.id)
 		this.setState({ isOpen: false })
 	}
 

@@ -64,11 +64,18 @@ export default handleActions(
 		[success(postOpenAm)](state, action) {
 			const id = action.payload.bestillingId
 			const data = action.payload.data
-			return { ...state, responses: [...state.responses, { id, data }] }
+			const lukket = false
+			return { ...state, responses: [...state.responses, { id, data, lukket }] }
 		},
 		[removeNyOpenAmStatus](state, action) {
-			console.log('lukk')
-			return { ...state, hei: '2' }
+			const res = state.responses.find(response => response.id === action.payload)
+			const lukketRes = { ...res, lukket: true }
+			let copy = JSON.parse(
+				JSON.stringify(state.responses.filter(response => response.id !== action.payload))
+			)
+
+			console.log('copy :', copy)
+			return { ...state, responses: [...copy, lukketRes] }
 		}
 	},
 	initialState
