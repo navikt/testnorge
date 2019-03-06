@@ -94,6 +94,7 @@ export const miljoStatusSelector = bestilling => {
 	let successEnvs = []
 	let failedEnvs = []
 	const finnesFeilmelding = avvikStatus(bestilling)
+	const antallIdenterIkkeOpprettet = antallIdenterIkkeOpprettetFunk(bestilling)
 
 	//Finn feilet og suksess miljø
 	bestilling.krrStubStatus && bestilling.krrStubStatus.map (status => {
@@ -128,7 +129,19 @@ export const miljoStatusSelector = bestilling => {
 
 	//TODO: Hvis bestilling failer 100 % fra TPSF finnes ikke støtte for retry.
 
-	return { id, successEnvs, failedEnvs, bestilling, finnesFeilmelding }
+	return { id, successEnvs, failedEnvs, bestilling, finnesFeilmelding, antallIdenterIkkeOpprettet }
+}
+
+const antallIdenterIkkeOpprettetFunk = bestilling => {
+	let identArray = []
+	bestilling.tpsfStatus && bestilling.tpsfStatus.map (status => {
+		Object.keys(status.environmentIdents).map((miljo) => {
+			status.environmentIdents[miljo].map((ident) => {
+				!identArray.includes(ident) && identArray.push(ident)
+			})
+		})
+	})
+	return (bestilling.antallIdenter - identArray.length)
 }
 
 const mapItems = items => {
