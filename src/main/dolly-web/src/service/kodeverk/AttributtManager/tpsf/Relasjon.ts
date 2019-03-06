@@ -5,31 +5,27 @@ import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/Select
 
 import * as yup from 'yup'
 
-const partnerAttributes: any = PersoninformasjonListe.default
-	.filter(attribute => attribute.id !== 'statsborgerskap')
-	.map(attributt => {
-		let copy = Object.assign({}, attributt)
-		copy.hovedKategori = Kategorier.FamilieRelasjoner
-		copy.subKategori = SubKategorier.Partner
-		copy.id = 'partner_' + attributt.id
-		copy.parent = 'partner'
-		copy.path = 'relasjoner.partner.' + attributt.id
-		copy.includeIf = [attributt]
-		return copy
-	})
+const partnerAttributes: any = PersoninformasjonListe.default.map(attributt => {
+	let copy = Object.assign({}, attributt)
+	copy.hovedKategori = Kategorier.FamilieRelasjoner
+	copy.subKategori = SubKategorier.Partner
+	copy.id = 'partner_' + attributt.id
+	copy.parent = 'partner'
+	copy.path = 'relasjoner.partner.' + attributt.id
+	copy.includeIf = [attributt]
+	return copy
+})
 
-const barnAttributes: any = PersoninformasjonListe.default
-	.filter(attribute => attribute.id !== 'statsborgerskap')
-	.map(attributt => {
-		let copy = Object.assign({}, attributt)
-		copy.hovedKategori = Kategorier.FamilieRelasjoner
-		copy.subKategori = SubKategorier.Barn
-		copy.id = 'barn_' + attributt.id
-		copy.parent = 'barn'
-		copy.path = 'relasjoner.barn.' + attributt.id
-		copy.includeIf = [attributt]
-		return copy
-	})
+const barnAttributes: any = PersoninformasjonListe.default.map(attributt => {
+	let copy = Object.assign({}, attributt)
+	copy.hovedKategori = Kategorier.FamilieRelasjoner
+	copy.subKategori = SubKategorier.Barn
+	copy.id = 'barn_' + attributt.id
+	copy.parent = 'barn'
+	copy.path = 'relasjoner.barn.' + attributt.id
+	copy.includeIf = [attributt]
+	return copy
+})
 
 const AttributtListe: Attributt[] = [
 	{
