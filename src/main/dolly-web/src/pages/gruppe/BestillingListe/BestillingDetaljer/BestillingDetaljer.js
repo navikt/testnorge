@@ -74,6 +74,7 @@ export default class BestillingDetaljer extends PureComponent {
 					!openAmState.lukket && (
 						<OpenAmStatusConnector
 							id={bestillingId}
+							lukket={openAmRes.lukket}
 							responses={this._renderOpenAmStateResponses(openAmRes)}
 							className="open-am-status"
 						/>
@@ -111,13 +112,12 @@ export default class BestillingDetaljer extends PureComponent {
 				{/* )} */}
 				<div className="flexbox--align-center--justify-end info-block">
 					<div className="button">
-						{openAm == undefined &&
-							bestillingId && (
-								<SendOpenAmConnector
-									bestillingId={bestillingId}
-									className="flexbox--align-center button"
-								/>
-							)}
+						{!openAm && (
+							<SendOpenAmConnector
+								bestillingId={bestillingId}
+								className="flexbox--align-center button"
+							/>
+						)}
 						{/* {this._setOpenAmState()} */}
 					</div>
 
