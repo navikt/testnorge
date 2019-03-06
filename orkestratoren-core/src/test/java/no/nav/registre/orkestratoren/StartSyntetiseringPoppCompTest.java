@@ -6,6 +6,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
@@ -66,9 +68,9 @@ public class StartSyntetiseringPoppCompTest {
      */
     @Test
     public void shouldGetProperties() {
-        assertEquals(miljoe1, jobController.getPoppbatchMiljoe().get(0));
-        assertEquals(miljoe2, jobController.getPoppbatchMiljoe().get(1));
-        assertEquals(gruppeId, jobController.getAvspillergruppeId());
+        assertThat(jobController.getAvspillergruppeIdMedMiljoe().keySet().toString(), containsString(gruppeId.toString()));
+        assertThat(jobController.getAvspillergruppeIdMedMiljoe().values().toString(), containsString(miljoe1));
+        assertThat(jobController.getAvspillergruppeIdMedMiljoe().values().toString(), containsString(miljoe2));
         assertEquals(antallNyeIdenter, jobController.getPoppbatchAntallNyeIdenter());
     }
 
