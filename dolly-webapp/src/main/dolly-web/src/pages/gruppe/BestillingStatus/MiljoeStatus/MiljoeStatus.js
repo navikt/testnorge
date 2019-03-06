@@ -25,8 +25,8 @@ export default class MiljoeStatus extends PureComponent {
 	}
 	
 	render() {
-		const { id, successEnvs, failedEnvs, errorMsgs, bestilling } = this.props.miljoeStatusObj
-		const failed = true && successEnvs.length == 0 && errorMsgs.length == 0
+		const { id, successEnvs, failedEnvs, bestilling, antallIdenterIkkeOpprettet } = this.props.miljoeStatusObj
+		const failed = true && successEnvs.length == 0 && (antallIdenterIkkeOpprettet > 0)
 		const { modalOpen } = this.state
 
 		return (
@@ -41,7 +41,7 @@ export default class MiljoeStatus extends PureComponent {
 				<hr />
 				<div className={'miljoe-container'}>
 					{failed
-						? this._renderFailureMessage()
+						? this._renderFailureMessage(bestilling, antallIdenterIkkeOpprettet)
 						: this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				</div>
 				<div className="flexbox--all-center">
@@ -71,10 +71,10 @@ export default class MiljoeStatus extends PureComponent {
 			})}
 		</Fragment>
 	)
-	_renderFailureMessage = () => (
+	_renderFailureMessage = (bestilling, antallIdenterIkkeOpprettet) => (
 		<Fragment>
 			<Icon kind={'report-problem-circle'} />
-			<p>Din bestilling ble ikke utført</p>
+			<p>Bestillingen din ble ikke utført. {antallIdenterIkkeOpprettet} av {bestilling.antallIdenter} bestilte identer ble ikke opprettet i TPS.</p>
 		</Fragment>
 	)
 
