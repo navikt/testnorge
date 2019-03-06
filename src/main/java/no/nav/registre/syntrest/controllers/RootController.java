@@ -36,7 +36,6 @@ public abstract class RootController extends KubernetesUtils {
             createApplication(client, "/nais/" + appName + ".yaml", service);
             log.info("Requesting synthetic data: " + appName);
             Object synData = getData(request, service);
-            System.out.println(synData);
             return ResponseEntity.status(HttpStatus.OK).body(synData);
         } catch (Exception e) {
             log.info("Exception while generating data for " + appName + ": " + e.getCause());

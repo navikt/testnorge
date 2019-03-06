@@ -6,7 +6,7 @@ metadata:
   labels:
     team: synt
 spec:
-  image: "docker.adeo.no:5000/registre/syntrest:95419b787a"
+  image: "docker.adeo.no:5000/registre/syntrest:4ba8692a20"
   port: 8080
   liveness:
     path: /internal/isAlive
@@ -22,8 +22,8 @@ spec:
     enabled: true
     path: /internal/prometheus
   replicas:
-    min: 2
-    max: 4
+    min: 1
+    max: 2
   secrets: true
   resources:
     limits:
