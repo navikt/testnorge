@@ -57,9 +57,19 @@ export default handleActions(
 			return { ...state, page: state.page - 1 }
 		},
 		[actions.toggleAttribute](state, action) {
+			let attributeIds = _xor(state.attributeIds, [action.payload])
 			return {
 				...state,
-				attributeIds: _xor(state.attributeIds, [action.payload])
+				values:
+					attributeIds.length > state.attributeIds.length
+						? state.values
+						: _filterAttributes(
+								state.values,
+								[action.payload],
+								AttributtManagerInstance.listAllSelected(state.attributeIds),
+								AttributtManagerInstance.listDependencies([action.payload])
+						  ),
+				attributeIds: attributeIds
 			}
 		},
 		[actions.uncheckAllAttributes](state, action) {
@@ -96,26 +106,24 @@ export default handleActions(
 		[actions.deleteValues](state, action) {
 			return {
 				...state,
-				values: Object.keys(state.values)
-					.filter(key => !action.payload.values.includes(key))
-					.reduce((obj, key) => ({ ...obj, [key]: state.values[key] }), {}),
+				values: _filterAttributes(
+					state.values,
+					action.payload.values,
+					AttributtManagerInstance.listAllSelected(state.attributeIds),
+					AttributtManagerInstance.listDependencies(action.payload.values)
+				),
 				attributeIds: state.attributeIds.filter(key => !action.payload.values.includes(key))
 			}
 		},
 		[actions.deleteValuesArray](state, action) {
-			let copy = JSON.parse(JSON.stringify(state.values))
-			let attributeIds = state.attributeIds.slice()
-			attributeIds.filter(key => action.payload.values.includes(key)).forEach(key => {
-				copy[key].splice(action.payload.index, 1)
-				if (copy[key].length == 0) {
-					attributeIds.splice(attributeIds.indexOf(key), 1)
-					delete copy[key]
-				}
-			})
 			return {
 				...state,
-				values: copy,
-				attributeIds: attributeIds
+				..._filterArrayAttributes(
+					state.values,
+					state.attributeIds,
+					action.payload.values,
+					action.payload.index
+				)
 			}
 		},
 
@@ -142,6 +150,7 @@ const bestillingFormatter = bestillingState => {
 		environments: environments,
 		...getValues(AttributtListe, values)
 	}
+
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	final_values.tpsf.identtype = identtype
@@ -152,54 +161,26 @@ const bestillingFormatter = bestillingState => {
 	}
 	console.log('POSTING BESTILLING', final_values)
 
-	// TODO: Hvis det dukker opp flere slike tilfelle, vurder å expande AttributeSystem
-	// KUN FOR egen ansatt - spesielt tilfelle
-	if (final_values.tpsf.egenAnsattDatoFom != null) {
-		if (final_values.tpsf.egenAnsattDatoFom) {
-			final_values.tpsf.egenAnsattDatoFom = new Date()
-		} else final_values.tpsf.egenAnsattDatoFom = null
-	}
-
 	return final_values
 }
 
 const getValues = (attributeList, values) => {
 	return attributeList.reduce((accumulator, attribute) => {
-		let value = values[attribute.id]
+		let value = _transformAttributt(attribute, attributeList, values[attribute.id])
 		const pathPrefix = DataSourceMapper(attribute.dataSource)
-
-		const isDate = inputType => inputType === 'date'
-
-		// Convert to Date objects
-		if (isDate(attribute.inputType)) value = DataFormatter.parseDate(value)
-		// Do the same for Array values
-		if (attribute.items) {
-			const dateFields = attribute.items.filter(item => isDate(item.inputType))
-			value = value.map((item, idx) => {
-				return dateFields.reduce((acc, dateAttribute) => {
-					const pathId = dateAttribute.id
-					return Object.assign({}, acc, {
-						[pathId]: DataFormatter.parseDate(item[pathId])
-					})
-				}, item)
-			})
-		}
-
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
 			let tjenester = Object.keys(groupByTjeneste)
-
 			let dataArr = []
-
 			tjenester.forEach(tjeneste => {
 				const groupedByInntektsaar = _groupBy(groupByTjeneste[tjeneste], 'inntektsaar')
 				const keys = Object.keys(groupedByInntektsaar)
-
 				keys.forEach(key => {
 					const current = groupedByInntektsaar[key]
 					dataArr.push({
 						grunnlag: current.map(temp => ({
 							tekniskNavn: temp.typeinntekt,
+
 							verdi: temp.beloep
 						})),
 						inntektsaar: key,
@@ -210,8 +191,85 @@ const getValues = (attributeList, values) => {
 
 			return _set(accumulator, pathPrefix, dataArr)
 		}
+
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
+}
+
+// Transform attributes before order is sent
+// Only affects attributes that has property "transform: (value: any, attributter: Attributt[]) => any"
+const _transformAttributt = (attribute, attributes, value) => {
+	if (attribute.items) {
+		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
+		return value.map(val =>
+			Object.assign(
+				{},
+				...Object.entries(val).map(([key, value]) => {
+					let pathId = attributeList[key].path.split('.')
+					return {
+						//  Hente kun siste key, f.eks barn.kjønn => kjønn
+						[pathId[pathId.length - 1]]: _transformAttributt(attributeList[key], attributes, value)
+					}
+				})
+			)
+		)
+	} else if (attribute.transform) {
+		value = attribute.transform(value, attributes)
+	}
+	if (attribute.inputType === 'date') value = DataFormatter.parseDate(value)
+	return value
+}
+
+// Filter attributes included in filter argument
+// Removes all children if attribute is a parent and dependencies
+const _filterAttributes = (values, filter, attribute, dependencies) => {
+	return attribute
+		.filter(
+			attr =>
+				!filter.includes(attr.id) &&
+				!filter.includes(attr.parent) &&
+				!dependencies[attr.id] &&
+				(attr.items == null || values[attr.id] != null) // Values are not set before step 2
+		)
+		.map(attr => {
+			return [
+				attr.id,
+				attr.items
+					? values[attr.id].map(val => _filterAttributes(val, filter, attr.items, dependencies))
+					: values[attr.id]
+			]
+		})
+		.reduce((res, [key, val]) => ({ ...res, [key]: val }), {})
+}
+
+// Remove all values with ids in filter at index
+// If last element in array is removed, then remove children and dependencies
+const _filterArrayAttributes = (values, selectedIds, filter, index) => {
+	let copy = JSON.parse(JSON.stringify(values))
+	let attributeIds = selectedIds.slice()
+	let deletedIds = []
+	attributeIds.filter(key => filter.includes(key)).forEach(key => {
+		copy[key].splice(index, 1)
+		if (copy[key].length == 0) {
+			let ind = attributeIds.indexOf(key)
+			deletedIds.push(attributeIds[ind])
+			attributeIds.splice(ind, 1)
+			delete copy[key]
+		}
+	})
+	let dependencies = AttributtManagerInstance.listDependencies(deletedIds)
+	return {
+		values:
+			Object.keys(dependencies).length > 0
+				? _filterAttributes(
+						copy,
+						deletedIds,
+						AttributtManagerInstance.listAllSelected(attributeIds),
+						dependencies
+				  )
+				: copy,
+		attributeIds: attributeIds.filter(attr => !dependencies[attr])
+	}
 }
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
