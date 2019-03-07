@@ -20,11 +20,17 @@ export const Kategorier: KategoriTypes = {
 	Inntekter: {
 		id: 'inntekt',
 		navn: 'Inntekter',
+		informasjonstekst:
+			'Lignede inntekter - årlig: \n' +
+			'Lignede inntekter er stemplet og godkjent. Inntektene her blir lagt i Sigrun-stub.',
 		order: 40
 	},
 	KontaktInfo: {
 		id: 'kontaktInfo',
-		navn: 'Kontaktinformasjon og reservasjon',
+		navn: 'Kontakt- og reservasjonsregisteret',
+		informasjonstekst:
+			'KRR - benyttes for offentlige virksomheter for å avklare om den enkelte bruker har reservert seg mot digital kommunikasjon eller ikke. I tillegg skal varslene som sendes til bruker benytte den kontaktinformasjonen som ligger i registeret. Dette kan enten være mobiltelefonnummer for utsendelse av sms, eller epostadresse for utsendelse av epost. \n' +
+			'Dataene her blir lagt i Krr-stub.',
 		order: 50
 	}
 }
@@ -64,7 +70,7 @@ export const SubKategorier: KategoriTypes = {
 	// },
 	Krr: {
 		id: 'krr',
-		navn: 'Kontakt- og reservasjonsregisteret',
+		navn: '',
 		order: 10,
 		showInSummary: true
 	},
@@ -82,7 +88,7 @@ export const SubKategorier: KategoriTypes = {
 	},
 	Inntekt: {
 		id: 'inntekt',
-		navn: 'Inntekt',
+		navn: '',
 		order: 30,
 		showInSummary: true
 	}

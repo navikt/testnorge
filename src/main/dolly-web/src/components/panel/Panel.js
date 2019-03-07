@@ -5,6 +5,7 @@ import ExpandButton from '~/components/button/ExpandButton'
 import Icon from '~/components/icon/Icon'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import LinkButton from '~/components/button/LinkButton/LinkButton'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 import './Panel.less'
 
@@ -36,7 +37,8 @@ export default class Panel extends Component {
 			children,
 			errors,
 			checkAttributeArray,
-			uncheckAttributeArray
+			uncheckAttributeArray, 
+			informasjonstekst
 		} = this.props
 
 		const panelIsOpen = forceOpen || this.state.open
@@ -51,6 +53,11 @@ export default class Panel extends Component {
 			<div className={panelClass}>
 				<div className="panel-heading">
 					{heading}
+					{informasjonstekst && (
+						<ContentTooltip>
+								<span>{informasjonstekst}</span>
+						</ContentTooltip>
+					)}
 					{errors && (
 						<div className="panel-heading_error">
 							<Icon kind="report-problem-triangle" />Feil i felter

@@ -52,7 +52,7 @@ export default class SendOpenAm extends Component {
 		return (
 			this.state.showButton && (
 				<Button
-					className="flexbox--align-center"
+					className="flexbox--align-center openam-button"
 					onClick={() => {
 						this._hideOnClick(sendToOpenAm, bestillingId)
 					}}
@@ -63,4 +63,20 @@ export default class SendOpenAm extends Component {
 			)
 		)
 	}
+
+	_renderOpenAmModalContent = () => (
+		<Fragment>
+			<h1>Oppdater OpenAM</h1>
+			Gruppen er allerede sendt til OpenAM. Dolly vil forsøke å sende alle testidenter på nytt. Er
+			du sikker på at du vil utføre dette?
+			<div className="dollymodal_buttons">
+				<Knapp autoFocus type="standard" onClick={this.closeModal}>
+					Avbryt
+				</Knapp>
+				<Knapp type="hoved" onClick={this.closeOnSend}>
+					Utfør
+				</Knapp>
+			</div>
+		</Fragment>
+	)
 }

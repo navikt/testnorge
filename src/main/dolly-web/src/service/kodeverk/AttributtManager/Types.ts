@@ -23,6 +23,7 @@ export interface Kategori {
 	id: string
 	navn: string
 	order: number
+	informasjonstekst?: string
 	showInSummary?: boolean
 }
 
@@ -57,6 +58,8 @@ export interface Attributt {
 	items?: Attributt[]
 	dependentOn?: string // Er avhengig av en annen attributt for å kunne settes verdi på
 	dependentBy?: string // Er ikke avhengig, er attributten som ble settet av dependentOn
+	includeIf?: Attributt[]
+	transform?: (value:any, attributter:Attributt[]) => any;
 }
 
 // Attributt grupper

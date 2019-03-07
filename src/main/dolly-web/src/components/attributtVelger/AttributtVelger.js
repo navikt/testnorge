@@ -42,6 +42,7 @@ export default class AttributtVelger extends Component {
 				startOpen
 				checkAttributeArray={() => checkAttributeArray(hovedKategoriItems)}
 				uncheckAttributeArray={() => uncheckAttributeArray(hovedKategoriItems)}
+				informasjonstekst={hovedKategori.informasjonstekst}
 			>
 				<fieldset name={name}>
 					<div className="attributt-velger_panelcontent">
@@ -55,7 +56,7 @@ export default class AttributtVelger extends Component {
 	renderSubKategori = ({ subKategori, items }, idx) => {
 		return (
 			<Fragment key={idx}>
-				{subKategori && <h3>{subKategori.navn}</h3>}
+				{subKategori && subKategori.navn != '' && <h3>{subKategori.navn}</h3>}
 				<fieldset name={subKategori.navn}>
 					<div className="attributt-velger_panelsubcontent">
 						{items.map(item => this.renderItem(item))}
