@@ -2,6 +2,7 @@ package no.nav.registre.sam.service;
 
 import no.nav.registre.sam.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sam.consumer.rs.SamSyntetisererenConsumer;
+import no.nav.registre.sam.domain.SyntetisertSamObject;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,8 @@ public class SyntetiseringService {
     HodejegerenConsumer hodejegerenConsumer;
 
     public ResponseEntity finnSyntetiserteMeldinger(List<String> identer) {
-        List<Map<String, String>> syntetiserteMeldinger = samSyntRestConsumer.hentSammeldingerFromSyntRest(identer.size());
+        List<SyntetisertSamObject> syntetiserteMeldinger = samSyntRestConsumer.hentSammeldingerFromSyntRest(identer.size());
+        System.out.println(syntetiserteMeldinger.toString());
         return ResponseEntity.ok().body(syntetiserteMeldinger);
     }
 

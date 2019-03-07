@@ -2,6 +2,7 @@ package no.nav.registre.sam.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sam.domain.SyntetisertSamObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,7 +19,7 @@ import java.util.Map;
 @Component
 @Slf4j
 public class SamSyntetisererenConsumer {
-    private static final ParameterizedTypeReference<List<Map<String, String>>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Map<String, String>>>() {
+    private static final ParameterizedTypeReference<List<SyntetisertSamObject>> RESPONSE_TYPE = new ParameterizedTypeReference<List<SyntetisertSamObject>>() {
     };
 
     @Autowired
@@ -31,12 +32,12 @@ public class SamSyntetisererenConsumer {
     }
 
     @Timed(value = "sam.resource.latency", extraTags = { "operation", "sam-syntetisereren" })
-    public List<Map<String, String>> hentSammeldingerFromSyntRest(int numToGenerate) {
+    public List<SyntetisertSamObject> hentSammeldingerFromSyntRest(int numToGenerate) {
         RequestEntity getRequest = RequestEntity.get(url.expand(numToGenerate)).build();
 
-        List<Map<String, String>> syntetiserteMeldinger = new ArrayList<>();
+        List<SyntetisertSamObject> syntetiserteMeldinger = new ArrayList<>();
 
-        ResponseEntity<List<Map<String, String>>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        ResponseEntity<List<SyntetisertSamObject>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
         if (response != null && response.getBody() != null) {
             syntetiserteMeldinger.addAll(response.getBody());
         } else {
@@ -45,5 +46,4 @@ public class SamSyntetisererenConsumer {
 
         return syntetiserteMeldinger;
     }
-    
 }
