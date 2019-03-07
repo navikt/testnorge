@@ -58,7 +58,6 @@ const AttributtListe: Attributt[] = [
 		path: 'relasjoner.barn',
 		label: 'Har barn',
 		dataSource: DataSource.TPSF,
-		validation: yup.object(),
 		attributtType: AttributtType.SelectOnly,
 		items: [
 			{
