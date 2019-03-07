@@ -35,6 +35,11 @@ fasitResources:
       issuerUrl: freg.security.oidc.idp.openam.issuerUrl
       jwksUrl: freg.security.oidc.idp.openam.jwksUrl
 
+  - alias: securityTokenService
+    resourceType: BaseUrl
+    propertyMap:
+      url: securityTokenService.url
+
   - alias: tpsf-host
     resourceType: baseurl
     propertyMap:
@@ -59,6 +64,11 @@ fasitResources:
     resourceType: baseurl
     propertyMap:
       url: providers.krrStub.url
+
+  - alias: aareg-host
+    resourceType: baseurl
+    propertyMap:
+      url: providers.aareg.url
 
   - alias: jira.host
     resourceType: baseurl
