@@ -25,8 +25,8 @@ export default class MiljoeStatus extends PureComponent {
 	}
 	
 	render() {
-		const { id, successEnvs, failedEnvs, bestilling, antallIdenterIkkeOpprettet } = this.props.miljoeStatusObj
-		const failed = true && successEnvs.length == 0 && (antallIdenterIkkeOpprettet > 0)
+		const { id, successEnvs, failedEnvs, bestilling, finnesFeilmelding, antallIdenterOpprettet } = this.props.miljoeStatusObj
+		const failed = true && successEnvs.length == 0 && !finnesFeilmelding
 		const { modalOpen } = this.state
 
 		return (
@@ -41,8 +41,8 @@ export default class MiljoeStatus extends PureComponent {
 				<hr />
 				<div className={'miljoe-container'}>
 					{failed
-						? this._renderFailureMessage(bestilling, antallIdenterIkkeOpprettet)
-						: this._renderMiljoeStatus(successEnvs, failedEnvs)}
+						? this._renderFailureMessage(bestilling, antallIdenterOpprettet)
+						: this._renderStatus(bestilling, successEnvs, failedEnvs, antallIdenterOpprettet)}
 				</div>
 				<div className="flexbox--all-center">
 					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
@@ -60,6 +60,17 @@ export default class MiljoeStatus extends PureComponent {
 		)
 	}
 
+	_renderStatus = (bestilling, successEnvs, failedEnvs, antallIdenterOpprettet) => {
+		return (
+			<Fragment>
+				{antallIdenterOpprettet === bestilling.antallIdenter && ( //husk å endre krokodilletegn
+					<span>{antallIdenterOpprettet} av {bestilling.antallIdenter} bestilte identer ble opprettet i TPS.</span>
+				)}
+				<span>{this._renderMiljoeStatus(successEnvs, failedEnvs)}</span>
+			</Fragment>
+			)
+	}
+
 	_renderMiljoeStatus = (successEnvs, failedEnvs) => (
 		<Fragment>
 			{successEnvs.map((env, i) => {
@@ -71,10 +82,11 @@ export default class MiljoeStatus extends PureComponent {
 			})}
 		</Fragment>
 	)
-	_renderFailureMessage = (bestilling, antallIdenterIkkeOpprettet) => (
+
+	_renderFailureMessage = () => (
 		<Fragment>
 			<Icon kind={'report-problem-circle'} />
-			<p>Bestillingen din ble ikke utført. {antallIdenterIkkeOpprettet} av {bestilling.antallIdenter} bestilte identer ble ikke opprettet i TPS.</p>
+			<p>Bestillingen din ble ikke utført.</p>
 		</Fragment>
 	)
 
