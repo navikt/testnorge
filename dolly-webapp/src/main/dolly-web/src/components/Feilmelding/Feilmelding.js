@@ -94,14 +94,14 @@ export default class Feilmelding extends Component {
                 <div className = 'feil-kolonne_stor'>
                         <span className = 'feil-container'>
                             <span className="feil-kolonne_liten"></span>
-                            <span className="feil-kolonne_stor">{this.antallIdenterIkkeOpprettet(bestilling)} av {bestilling.antallIdenter} bestilte identer ble ikke opprettet i TPS</span>
+                            <span className="feil-kolonne_stor">{this.antallIdenterOpprettet(bestilling)} av {bestilling.antallIdenter} bestilte identer ble opprettet i TPS</span>
                         </span>
                 </div>
             </div>
         )
     }
 
-    antallIdenterIkkeOpprettet = bestilling => {
+    antallIdenterOpprettet = bestilling => {
         let identArray = []
         bestilling.tpsfStatus && bestilling.tpsfStatus.map (status => {
             Object.keys(status.environmentIdents).map((miljo) => {
@@ -110,11 +110,7 @@ export default class Feilmelding extends Component {
                 })
             })
         })
-        return (bestilling.antallIdenter - identArray.length)
-    }
-
-    _finnesTPSFEllerStub = () => {
-
+        return identArray.length
     }
 
     render(){
