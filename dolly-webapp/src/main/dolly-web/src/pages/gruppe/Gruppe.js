@@ -6,7 +6,6 @@ import BestillingStatusConnector from './BestillingStatus/BestillingStatusConnec
 import Loading from '~/components/loading/Loading'
 import TestbrukerListeConnector from './TestbrukerListe/TestbrukerListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
-import SendOpenAmConnector from './SendOpenAm/SendOpenAmConnector'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Toolbar from '~/components/toolbar/Toolbar'
@@ -15,7 +14,6 @@ import Knapp from 'nav-frontend-knapper'
 import FavoriteButtonConnector from '~/components/button/FavoriteButton/FavoriteButtonConnector'
 import _find from 'lodash/find'
 import './Gruppe.less'
-import OpenAmStatus from './OpenAmStatus/OpenAmStatus'
 
 export default class Gruppe extends Component {
 	static propTypes = {
@@ -29,7 +27,7 @@ export default class Gruppe extends Component {
 
 	state = {
 		redigerGruppe: false,
-		visning: this.VISNING_BESTILLING
+		visning: this.VISNING_TESTPERSONER
 	}
 
 	componentDidMount() {
@@ -50,10 +48,7 @@ export default class Gruppe extends Component {
 			nyeBestillinger,
 			getGruppe,
 			getBestillinger
-			// openAm
 		} = this.props
-
-		// console.log('this :', this)
 
 		if (isFetching && this.state.visning != this.VISNING_BESTILLING)
 			return <Loading label="Laster grupper" panel />
@@ -94,13 +89,7 @@ export default class Gruppe extends Component {
 						onClick={deleteGruppe}
 					/>
 					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
-					{/* {gruppe.antallIdenter > 0 && (
-						<div className="pull-right">
-							<SendOpenAmConnector gruppe={gruppe} />
-						</div>
-					)} */}
 				</Overskrift>
-				{/* {openAm.response && <OpenAmStatus responses={openAm.response} />} */}
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
 				<GruppeDetaljer gruppe={gruppe} />
 

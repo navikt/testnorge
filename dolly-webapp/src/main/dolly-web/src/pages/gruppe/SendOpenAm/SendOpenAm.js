@@ -1,117 +1,48 @@
 import React, { Component, Fragment } from 'react'
-import Knapp from 'nav-frontend-knapper'
-import Modal from 'react-modal'
-import Lukknapp from 'nav-frontend-lukknapp'
 import Button from '~/components/button/Button'
-import Icon from '~/components/icon/Icon'
 import PropTypes from 'prop-types'
 import Loading from '~/components/loading/Loading'
-
 import './SendOpenAm.less'
 
-const customStyles = {
-	content: {
-		top: '50%',
-		left: '50%',
-		right: 'auto',
-		bottom: 'auto',
-		marginRight: '-50%',
-		transform: 'translate(-50%, -50%)',
-		width: '25%',
-		minWidth: '500px',
-		overflow: 'inherit'
-	}
-}
-
-Modal.setAppElement('#root')
-
 export default class SendOpenAm extends Component {
+	constructor(props) {
+		super(props)
+		this._isMounted = false // For å unngå memory leaks
+	}
+
 	state = {
-		// modalOpen: false,
 		requestSent: false,
 		showButton: true
 	}
 
-	// static propTypes = {
-	// 	kind: PropTypes.string
-	// }
+	static propTypes = {
+		kind: PropTypes.string
+	}
 
-	// static defaultProps = {
-	// 	kind: null
-	// }
+	static defaultProps = {
+		kind: null
+	}
 
-	// open = () => {
-	// 	this.setState({ modalOpen: true })
-	// }
-	// close = () => {
-	// 	this.setState({ modalOpen: false })
-	// }
+	componentDidMount() {
+		this._isMounted = true
+	}
 
-	// closeOnSend = () => {
-	// 	this.setState({ modalOpen: false }, () => this.props.sendToOpenAm())
-	// }
+	componentWillUnmount() {
+		this._isMounted = false
+	}
 
 	_hideOnClick = async (sendToOpenAm, bestillingId) => {
-		// console.log('xx sendToOpenAm :', sendToOpenAm)
-		// console.log('xx bestillingId :', bestillingId)
 		this.setState({ showButton: false })
-
 		try {
 			await sendToOpenAm(bestillingId)
-			this.setState({ requestSent: true })
+			this._isMounted && this.setState({ requestSent: true })
 		} catch (err) {
 			console.log(err)
 		}
 	}
 
 	render() {
-		// console.log('this :', this)
-		const { sendToOpenAm, openAmFetching, openAmResponse, gruppe, bestillingId, kind } = this.props
-
-		// console.log('this.props :', this.props)
-		// console.log('sendToOpenAm :', sendToOpenAm)
-		// console.log('openAmResponse :', openAmResponse)
-		// const { modalOpen } = this.state
-		// console.log('gruppe :', gruppe)
-		// console.log('bestillingId :', bestillingId)
-
-		// if (gruppe.openAmSent || openAmResponse) {
-		// 	return (
-		// 		<Fragment>
-		// 			{openAmResponse && <span className="openam-status">Gruppen ble sendt!</span>}
-		// 			<Knapp type="standard" onClick={this.open} spinner={openAmFetching} autoDisableVedSpinner>
-		// 				Oppdater OpenAM
-		// 			</Knapp>
-		// 			<Modal
-		// 				isOpen={modalOpen}
-		// 				onRequestClose={this.close}
-		// 				shouldCloseOnEsc
-		// 				style={customStyles}
-		// 			>
-		// 				<div className="openam-modal">
-		// 					<h1>Oppdater OpenAM</h1>
-		// 					Gruppen er allerede sendt til OpenAM. Dolly vil forsøke å sende alle testidenter på
-		// 					nytt. Er du sikker på at du vil utføre dette?
-		// 					<div className="openam-modal_buttons">
-		// 						<Knapp autoFocus type="standard" onClick={this.close}>
-		// 							Avbryt
-		// 						</Knapp>
-		// 						<Knapp type="hoved" onClick={this.closeOnSend}>
-		// 							Utfør
-		// 						</Knapp>
-		// 					</div>
-		// 					<Lukknapp onClick={this.close} />
-		// 				</div>
-		// 			</Modal>
-		// 		</Fragment>
-		// 	)
-		// }
-
-		// return (
-		// 	<Knapp type="standard" onClick={sendToOpenAm} spinner={openAmFetching} autoDisableVedSpinner>
-		// 		Send til OpenAM
-		// 	</Knapp>
-		// )
+		const { sendToOpenAm, openAmFetching, bestillingId } = this.props
 
 		if (openAmFetching & !this.state.showButton) {
 			if (this.state.requestSent) return null
@@ -119,12 +50,9 @@ export default class SendOpenAm extends Component {
 		}
 
 		return (
-			// console.log('openAmFetching 1:', openAmFetching),
 			this.state.showButton && (
 				<Button
 					className="flexbox--align-center"
-					// spinner={openAmFetching}
-					// autoDisableVedSpinner
 					onClick={() => {
 						this._hideOnClick(sendToOpenAm, bestillingId)
 					}}

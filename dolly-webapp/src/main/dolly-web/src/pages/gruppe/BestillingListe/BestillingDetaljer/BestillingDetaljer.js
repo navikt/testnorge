@@ -41,8 +41,7 @@ export default class BestillingDetaljer extends PureComponent {
 		})
 
 		this.state = {
-			modalOpen: false,
-			openAmInfoOpen: false
+			modalOpen: false
 		}
 	}
 
@@ -56,8 +55,6 @@ export default class BestillingDetaljer extends PureComponent {
 			openAmRes = openAmState.responses.find(response => response.id == bestillingId)
 		}
 
-		console.log('openAmState :', openAmState)
-
 		// TODO: Reverse Map detail data here. Alex
 		return (
 			<div className="bestilling-detaljer">
@@ -70,8 +67,7 @@ export default class BestillingDetaljer extends PureComponent {
 						<div className={'jira-link'}>{this._renderJiraLinks(openAm)}</div>
 					</div>
 				) : (
-					openAmRes &&
-					!openAmState.lukket && (
+					openAmRes && (
 						<OpenAmStatusConnector
 							id={bestillingId}
 							lukket={openAmRes.lukket}
@@ -80,48 +76,16 @@ export default class BestillingDetaljer extends PureComponent {
 						/>
 					)
 				)}
-				{!openAm &&
-					openAmRes &&
-					openAmState.lukket && (
-						<div className="bestilling-detaljer">
-							<h3>Jira-lenker</h3>
-							<div className={'jira-link'}>
-								{this._renderJiraLinks2(this._renderOpenAmStateResponses(openAmRes))}
-							</div>
-						</div>
-					)}
-
-				{/* <div>
-					{openAm && (
-						<div className="bestilling-detaljer">
-							<h3>Jira-lenker</h3>
-							<div className={'jira-link'}>{this._renderJiraLinks(openAm)}</div>
-						</div>
-					)}
-				</div> */}
-				{/* {bestillingIdOpenAm ===
-					'https://dolly-u2.nais.preprod.local/api/v1/openam/bestilling/{bestillingId}?bestillingId=' +
-						bestillingId && ( */}
-				{/* {openAmState.responses.length > 0 && (
-					<OpenAmStatusConnector
-						responses={this._renderOpenAmStateResponses(openAmState.responses[0])}
-						className="open-am-status"
-					/> */}
-				{/* )} */}
-				{/* // this.state.openAmInfoOpen = true */}
-				{/* )} */}
 				<div className="flexbox--align-center--justify-end info-block">
 					<div className="button">
-						{!openAm && (
-							<SendOpenAmConnector
-								bestillingId={bestillingId}
-								className="flexbox--align-center button"
-							/>
-						)}
-						{/* {this._setOpenAmState()} */}
+						{!openAm &&
+							(!openAmRes && (
+								<SendOpenAmConnector
+									bestillingId={bestillingId}
+									className="flexbox--align-center button"
+								/>
+							))}
 					</div>
-
-					{/* } */}
 					<div className="button">
 						<Button
 							onClick={this._onToggleModal}
@@ -138,8 +102,6 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	_renderOpenAmStateResponses = openAmState => {
-		// console.log('openAmState :', openAmState)
-		// const responses = openAmState.map((respons, i) => {
 		const responses = []
 		openAmState.data.forEach(response => {
 			responses.push(response.message)
@@ -207,23 +169,6 @@ export default class BestillingDetaljer extends PureComponent {
 		return linkArray
 	}
 
-	_renderJiraLinks2 = data => {
-		const linkArray = data.map((respons, i) => {
-			const link = respons
-			return (
-				<Fragment key={i}>
-					<a href={link} target="_blank">
-						{link.substring(28, link.length)}
-					</a>
-					{i !== data.length - 1 && <p>, </p>}
-				</Fragment>
-			)
-		})
-		return linkArray
-	}
-
-	//array.join(separator)
-
 	_renderModal = () => {
 		const { environments, id } = this.props.bestilling // miljø som ble bestilt i en bestilling
 
@@ -278,11 +223,6 @@ export default class BestillingDetaljer extends PureComponent {
 		)
 	}
 
-	_renderOpenAmInfo = () => {
-		const openAm = this.props.openAm
-		// console.log('openAm :', openAm)
-	}
-
 	_submitFormik = async values => {
 		const envsQuery = Formatters.arrayToString(values.environments)
 			.replace(/ /g, '')
@@ -293,10 +233,6 @@ export default class BestillingDetaljer extends PureComponent {
 
 	_onToggleModal = () => {
 		this.setState({ modalOpen: !this.state.modalOpen })
-	}
-
-	_onToggleOpenAm = () => {
-		this.setState({ openAmInfoOpen: !this.state.openAmInfoOpen })
 	}
 
 	_renderErrorMessage = errorMsgs => (
