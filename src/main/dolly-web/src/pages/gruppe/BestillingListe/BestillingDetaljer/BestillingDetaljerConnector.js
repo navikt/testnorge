@@ -7,8 +7,6 @@ import {
 } from '~/ducks/bestillingStatus'
 
 const mapStateToProps = (state, ownProps) => {
-	// console.log('state :', state)
-	// console.log('ownProps :', ownProps)
 	return {
 		miljoeStatusObj: miljoStatusSelector(ownProps.bestilling),
 		openAmState: state.openam,

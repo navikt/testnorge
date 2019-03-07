@@ -6,8 +6,7 @@ import { createLoadingSelector } from '~/ducks/loading'
 const openAmSelector = createLoadingSelector(postOpenAm)
 const mapStateToProps = state => {
 	return {
-		openAmFetching: openAmSelector(state),
-		openAmResponse: state.openam.response
+		openAmFetching: openAmSelector(state)
 	}
 }
 
