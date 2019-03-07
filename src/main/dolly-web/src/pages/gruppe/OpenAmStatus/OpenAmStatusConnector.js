@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { removeNyOpenAmStatus } from '~/ducks/openAm'
+import { removeNyOpenAmStatus } from '~/ducks/openam'
 import OpenAmStatus from './OpenAmStatus'
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
