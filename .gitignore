@@ -29,3 +29,5 @@ testnorge-sam-app/target/
 ### mvnw ###
 mvnw
 mvnw.cmd
+
+sam-local/src/main/resources/application-local.properties
