@@ -43,6 +43,10 @@ export const kodeverkLabelSelector = (state, kodeverkNavn, value) => {
 		return result
 	}
 
+	// Når "ikke spesifisert" verdi er valgt fra step 2
+	if (!value) {
+		return { label: '' }
+	}
 	// Viser bruker feilmelding istedenfor loadingloop
 	return { label: value + ' - Finnes ikke i kodeverk' }
 }

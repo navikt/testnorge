@@ -97,6 +97,14 @@ export default handleActions(
 			}
 		},
 		[actions.setValues](state, action) {
+			// Remove empty values
+			let copy = JSON.parse(JSON.stringify(action.payload.values))
+			Object.entries(copy).forEach(([key, value]) => {
+				if (value === '') {
+					delete copy[key]
+				}
+			})
+
 			return {
 				...state,
 				values: action.payload.values,
