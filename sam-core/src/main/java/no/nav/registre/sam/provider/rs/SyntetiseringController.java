@@ -23,10 +23,11 @@ public class SyntetiseringController {
     @LogExceptions
     @PostMapping(value = "/generer")
     public ResponseEntity genererSammeldinger(@RequestBody SyntetiserSamRequest syntetiserSamRequest) {
+
         System.out.println("Finner hoder");
         //List<String> identer = syntetiseringService.finnLevendeIdenter(syntetiserSamRequest);
         List<String> identer = new ArrayList<>();
-        identer.add("12345678910");
+        identer.add("12345678911");
         System.out.println("Synter");
         return syntetiseringService.finnSyntetiserteMeldinger(identer);
     }

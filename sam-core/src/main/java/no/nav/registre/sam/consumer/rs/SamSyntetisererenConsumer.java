@@ -28,7 +28,7 @@ public class SamSyntetisererenConsumer {
     private UriTemplate url;
 
     public SamSyntetisererenConsumer(@Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
-        this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/sam?numToGenerate={numToGenerate}");
+        this.url = new UriTemplate(syntrestServerUrl + "/v1/generate_sam/{numToGenerate}");
     }
 
     @Timed(value = "sam.resource.latency", extraTags = { "operation", "sam-syntetisereren" })
