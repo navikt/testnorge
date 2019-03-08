@@ -10,9 +10,10 @@ import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import * as yup from 'yup'
 import { mapBestillingData } from './BestillingDataMapper'
 import cn from 'classnames'
+import SendOpenAmConnector from '~/pages/gruppe/SendOpenAm/SendOpenAmConnector'
+import OpenAmStatusConnector from '~/pages/gruppe/OpenAmStatus/OpenAmStatusConnector'
 import DollyModal from '~/components/modal/DollyModal'
 import Feilmelding from '~/components/Feilmelding/Feilmelding'
-
 
 export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
@@ -35,7 +36,14 @@ export default class BestillingDetaljer extends PureComponent {
 
 	render() {
 		const { successEnvs, failedEnvs, bestilling, finnesFeilmelding } = this.props.miljoeStatusObj
+		const bestillingId = this.props.bestilling.id
+		const { openAm, openAmState } = this.props
 		const { modalOpen } = this.state
+
+		let openAmRes
+		if (openAmState.responses.length > 0) {
+			openAmRes = openAmState.responses.find(response => response.id == bestillingId)
+		}
 
 		// TODO: Reverse Map detail data here. Alex
 		return (
@@ -44,18 +52,69 @@ export default class BestillingDetaljer extends PureComponent {
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{finnesFeilmelding && this._renderErrorMessage(bestilling)}
 				<div className="flexbox--align-center--justify-end">
-				{successEnvs.length > 0 && <Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
-						GJENOPPRETT I TPS
-					</Button>}
-					<DollyModal
-						isOpen={modalOpen}
-						onRequestClose={this.closeModal}
-						closeModal={this.closeModal}
-						content={this._renderGjenopprettModal()}
-					/>
-				</div>
+					{openAm ? (
+						<div className="bestilling-detaljer">
+							<h3>Jira-lenker</h3>
+							<div className={'jira-link'}>{this._renderJiraLinks(openAm)}</div>
+						</div>
+					) : (
+						openAmRes && (
+							<OpenAmStatusConnector
+								id={bestillingId}
+								lukket={openAmRes.lukket}
+								responses={this._renderOpenAmStateResponses(openAmRes)}
+								className="open-am-status"
+							/>
+						)
+					)}
+					<div className="flexbox--align-center--justify-end info-block">
+						<div className="flexbox--align-center--justify-end">
+							{!openAm &&
+								(!openAmRes && (
+									<SendOpenAmConnector
+										bestillingId={bestillingId}
+										className="flexbox--align-center"
+									/>
+								))}
+						</div>
+						<div className="flexbox--align-center--justify-end">
+							{this._erIdentOpprettet() && (
+								<Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
+									GJENOPPRETT I TPS
+								</Button>
+							)}
+							<DollyModal
+								isOpen={modalOpen}
+								onRequestClose={this.closeModal}
+								closeModal={this.closeModal}
+								content={this._renderGjenopprettModal()}
+							/>
+						</div>
+					</div>
 			</div>
+		</div>
 		)
+	}
+
+	_renderOpenAmStateResponses = openAmState => {
+		const responses = []
+		openAmState.data.forEach(response => {
+			responses.push(response.message)
+		})
+		return responses
+	}
+
+	_erIdentOpprettet = () => {
+		const { bestilling } = this.props
+		let temp = false
+
+		{
+			bestilling.tpsfStatus &&
+				bestilling.tpsfStatus.map(status => {
+					if (status.environmentIdents) temp = true
+				})
+		}
+		return temp
 	}
 
 	_renderBestillingsDetaljer = () => {
@@ -100,6 +159,22 @@ export default class BestillingDetaljer extends PureComponent {
 				</div>
 			</Fragment>
 		)
+	}
+
+	_renderJiraLinks = openAm => {
+		const data = openAm.split(',')
+		const linkArray = data.map((respons, i) => {
+			const link = respons
+			return (
+				<Fragment key={i}>
+					<a href={link} target="_blank">
+						{link.substring(28, link.length)}
+					</a>
+					{i !== data.length - 1 && <p>, </p>}
+				</Fragment>
+			)
+		})
+		return linkArray
 	}
 
 	_renderGjenopprettModal = () => {
@@ -169,7 +244,7 @@ export default class BestillingDetaljer extends PureComponent {
 					<Icon size={'16px'} kind={'report-problem-triangle'} />
 					<h3>Feilmeldinger</h3>
 				</div>
-				<Feilmelding bestilling = {bestilling} />
+				<Feilmelding bestilling={bestilling} />
 			</Fragment>
 		)
 	}
