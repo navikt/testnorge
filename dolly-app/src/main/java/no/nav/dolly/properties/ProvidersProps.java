@@ -17,7 +17,7 @@ public class ProvidersProps {
     private KrrStub krrStub = new KrrStub();
     private Kodeverk kodeverk = new Kodeverk();
     private Norg2 norg2 = new Norg2();
-    private Aareg aareg = new Aareg();
+    private Fasit fasit = new Fasit();
 
     @Getter
     @Setter
@@ -55,7 +55,7 @@ public class ProvidersProps {
 
     @Getter
     @Setter
-    public static class Aareg {
+    public static class Fasit {
 
         private String url;
     }

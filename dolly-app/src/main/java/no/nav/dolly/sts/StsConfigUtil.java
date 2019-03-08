@@ -17,20 +17,20 @@ import org.apache.cxf.ws.security.SecurityConstants;
 import org.apache.cxf.ws.security.trust.STSClient;
 import org.apache.neethi.Policy;
 
-public class STSConfigUtil {
+public class StsConfigUtil {
 
     private static final String STS_REQUEST_SAML_POLICY = "classpath:policy/requestSamlPolicy.xml";
     private static final String STS_CLIENT_AUTHENTICATION_POLICY = "classpath:policy/untPolicy.xml";
 
-    private STSConfigUtil() {
+    private StsConfigUtil() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 
-    public static void configureStsRequestSamlToken(Object port, STSConfig stsConfig) {
+    public static void configureStsRequestSamlToken(Object port, StsProps stsProps) {
 
         Client client = ClientProxy.getClient(port);
         STSClient stsClient = new STSClient(client.getBus());
-        configureSTSClient(stsClient, stsConfig);
+        configureSTSClient(stsClient, stsProps);
 
         client.getRequestContext().put(SecurityConstants.STS_CLIENT, stsClient);
         //Using CXF cache
@@ -39,15 +39,15 @@ public class STSConfigUtil {
         setClientEndpointPolicy(client, policy);
     }
 
-    private static void configureSTSClient(STSClient stsClient, STSConfig stsConfig) {
+    private static void configureSTSClient(STSClient stsClient, StsProps stsProps) {
 
         stsClient.setEnableAppliesTo(false);
         stsClient.setAllowRenewing(false);
-        stsClient.setLocation(stsConfig.getStsUrl());
+        stsClient.setLocation(stsProps.getHost());
 
         Map<String, Object> properties = new HashMap<>();
-        properties.put(SecurityConstants.USERNAME, stsConfig.getServiceUsername());
-        properties.put(SecurityConstants.PASSWORD, stsConfig.getServiceUserPassword());
+        properties.put(SecurityConstants.USERNAME, stsProps.getUsername());
+        properties.put(SecurityConstants.PASSWORD, stsProps.getPassword());
 
         stsClient.setProperties(properties);
 
@@ -58,7 +58,7 @@ public class STSConfigUtil {
     private static Policy resolvePolicyReference(Client client) {
         PolicyBuilder policyBuilder = client.getBus().getExtension(PolicyBuilder.class);
         ReferenceResolver resolver = new RemoteReferenceResolver("", policyBuilder);
-        return resolver.resolveReference(STSConfigUtil.STS_REQUEST_SAML_POLICY);
+        return resolver.resolveReference(StsConfigUtil.STS_REQUEST_SAML_POLICY);
     }
 
     private static void setClientEndpointPolicy(Client client, Policy policy) {

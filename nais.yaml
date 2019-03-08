@@ -38,7 +38,7 @@ fasitResources:
   - alias: securityTokenService
     resourceType: BaseUrl
     propertyMap:
-      url: securityTokenService.url
+      url: securityTokenService.host
 
   - alias: tpsf-host
     resourceType: baseurl
@@ -65,17 +65,18 @@ fasitResources:
     propertyMap:
       url: providers.krrStub.url
 
-  - alias: aareg-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.aareg.url
-
   - alias: jira.host
     resourceType: baseurl
     propertyMap:
       url: jira.host
 
-  - alias: srvDolly
+  - alias: srvdolly
+    resourceType: credential
+    propertyMap:
+      username: securityTokenService.username
+      password: securityTokenService.password
+
+  - alias: srvJiraDolly
     resourceType: credential
     propertyMap:
       username: jira.username
