@@ -79,7 +79,7 @@ export default class BestillingDetaljer extends PureComponent {
 
 					{this._finnesFeilmelding(bestilling) && this._renderErrorMessage(bestilling)}
 					<div className="flexbox--align-center--justify-end">
-						{successEnvs.length > 0 && (
+						{this._erIdentOpprettet() && (
 							<Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
 								GJENOPPRETT I TPS
 							</Button>
@@ -102,6 +102,19 @@ export default class BestillingDetaljer extends PureComponent {
 			responses.push(response.message)
 		})
 		return responses
+	}
+
+	_erIdentOpprettet = () => {
+		const { bestilling } = this.props
+		let temp = false
+
+		{
+			bestilling.tpsfStatus &&
+				bestilling.tpsfStatus.map(status => {
+					if (status.environmentIdents) temp = true
+				})
+		}
+		return temp
 	}
 
 	_renderBestillingsDetaljer = () => {

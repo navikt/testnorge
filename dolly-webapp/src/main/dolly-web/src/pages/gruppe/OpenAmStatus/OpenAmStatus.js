@@ -41,11 +41,10 @@ export default class OpenAmStatus extends Component {
 	_renderJiraLinks = () => {
 		const data = this.props.responses
 		const linkArray = data.map((respons, i) => {
-			const link = respons
 			return (
 				<Fragment key={i}>
-					<a href={link} target="_blank">
-						{link.substring(28, link.length)}
+					<a href={respons} target="_blank">
+						{respons.substring(28, respons.length)}
 					</a>
 					{i !== data.length - 1 && <p>, </p>}
 				</Fragment>
