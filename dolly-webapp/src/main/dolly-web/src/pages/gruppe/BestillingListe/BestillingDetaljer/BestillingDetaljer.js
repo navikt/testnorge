@@ -44,7 +44,7 @@ export default class BestillingDetaljer extends PureComponent {
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{this._finnesFeilmelding(bestilling) && this._renderErrorMessage(bestilling)}
 				<div className="flexbox--align-center--justify-end">
-				{successEnvs.length > 0 && <Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
+				{this._erIdentOpprettet() && <Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
 						GJENOPPRETT I TPS
 					</Button>}
 					<DollyModal
@@ -58,6 +58,16 @@ export default class BestillingDetaljer extends PureComponent {
 		)
 	}
 
+	_erIdentOpprettet = () => {
+		const {bestilling} = this.props
+		let temp = false
+
+		{bestilling.tpsfStatus && bestilling.tpsfStatus.map(status => {
+			if (status.environmentIdents) temp = true
+		})}
+		return temp
+	}
+	
 	_renderBestillingsDetaljer = () => {
 		const { bestilling } = this.props
 		const data = mapBestillingData(bestilling)
@@ -174,10 +184,10 @@ export default class BestillingDetaljer extends PureComponent {
 		)
 	}
 	
-	_finnesFeilmelding = (bestilling) => {
+	_finnesFeilmelding = bestilling => {
 		let temp = false
 		{bestilling.sigrunStubStatus && bestilling.sigrunStubStatus.map (status => {
-				if (status.statusMelding !== 'OK') temp = true 
+			if (status.statusMelding !== 'OK') temp = true 
 		})}
 
 		{bestilling.krrStubStatus && bestilling.krrStubStatus.map (status => {
