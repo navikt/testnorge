@@ -4,35 +4,17 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 import success from '~/utils/SuccessAction'
 import _groupBy from 'lodash/groupBy'
 
-export const postOpenAm = createAction('POST_OPEN_AM', async (groupObj, bestillinger) => {
-	const { testidenter } = groupObj
-	const testidenterSortedByBestillingId = _groupBy(testidenter, 'bestillingId')
-	const bestillingIdListe = Object.keys(testidenterSortedByBestillingId)
-
-	const promiseArray = bestillingIdListe.map(x => {
-		const currentBestilling = bestillinger.find(y => parseInt(y.id) === parseInt(x))
-		const currentTestidenter = testidenterSortedByBestillingId[x]
-
-		return DollyApi.postOpenAm({
-			identer: currentTestidenter.map(ident => ident.ident),
-			miljoer: currentBestilling.environments
-		})
-	})
-
-	const resArr = await Promise.all(promiseArray)
-	const res = await DollyApi.putOpenAmGroupStatus(groupObj.id)
-	return resArr.map((res, idx) => {
-		const bestillingId = bestillingIdListe[idx]
-		return {
-			bestillingId,
-			testidenter: testidenterSortedByBestillingId[bestillingId].map(ident => ident.ident),
-			status: res.data
-		}
-	})
+export const postOpenAm = createAction('POST_OPEN_AM', async bestillingId => {
+	const res = await DollyApi.postOpenAmBestilling(bestillingId)
+	const data = res.data
+	const payload = { bestillingId, data }
+	return payload
 })
 
+export const removeNyOpenAmStatus = createAction('REMOVE_NY_OPENAM_STATUS')
+
 const initialState = {
-	response: null
+	responses: []
 }
 
 export default handleActions(
@@ -40,18 +22,26 @@ export default handleActions(
 		[LOCATION_CHANGE](state, action) {
 			return initialState
 		},
-		[`${postOpenAm}_REQUEST`](state, action) {
-			return initialState
-		},
 		[success(postOpenAm)](state, action) {
-			return { ...state, response: action.payload }
+			const id = action.payload.bestillingId
+			const data = action.payload.data
+			const lukket = false
+			return { ...state, responses: [...state.responses, { id, data, lukket }] }
+		},
+		[removeNyOpenAmStatus](state, action) {
+			const res = state.responses.find(response => response.id === action.payload)
+			const lukketRes = { ...res, lukket: true }
+			let copy = JSON.parse(
+				JSON.stringify(state.responses.filter(response => response.id !== action.payload))
+			)
+			return { ...state, responses: [...copy, lukketRes] }
 		}
 	},
 	initialState
 )
 
 //thunk
-export const sendToOpenAm = () => (dispatch, getState) => {
+export const sendToOpenAm = bestillingId => (dispatch, getState) => {
 	const { gruppe, bestillingStatuser } = getState()
-	return dispatch(postOpenAm(gruppe.data[0], bestillingStatuser.data))
+	return dispatch(postOpenAm(bestillingId))
 }

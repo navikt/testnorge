@@ -1,52 +1,66 @@
 import React, { Component, Fragment } from 'react'
-import Knapp from 'nav-frontend-knapper'
-import DollyModal from '~/components/modal/DollyModal'
+import Button from '~/components/button/Button'
+import PropTypes from 'prop-types'
+import Loading from '~/components/loading/Loading'
 import './SendOpenAm.less'
 
 export default class SendOpenAm extends Component {
+	constructor(props) {
+		super(props)
+		this._isMounted = false // For å unngå memory leaks
+	}
+
 	state = {
-		modalOpen: false
+		requestSent: false,
+		showButton: true
 	}
-	openModal = () => {
-		this.setState({ modalOpen: true })
+
+	static propTypes = {
+		kind: PropTypes.string
 	}
-	closeModal = () => {
-		this.setState({ modalOpen: false })
+
+	static defaultProps = {
+		kind: null
 	}
-	closeOnSend = () => {
-		this.setState({ modalOpen: false }, () => this.props.sendToOpenAm())
+
+	componentDidMount() {
+		this._isMounted = true
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false
+	}
+
+	_hideOnClick = async (sendToOpenAm, bestillingId) => {
+		this.setState({ showButton: false })
+		try {
+			await sendToOpenAm(bestillingId)
+			this._isMounted && this.setState({ requestSent: true })
+		} catch (err) {
+			console.log(err)
+		}
 	}
 
 	render() {
-		const { sendToOpenAm, openAmFetching, openAmResponse, gruppe } = this.props
-		const { modalOpen } = this.state
+		const { sendToOpenAm, openAmFetching, bestillingId } = this.props
 
-		if (gruppe.openAmSent || openAmResponse) {
-			return (
-				<Fragment>
-					{openAmResponse && <span className="openam-status">Gruppen ble sendt!</span>}
-					<Knapp
-						type="standard"
-						onClick={this.openModal}
-						spinner={openAmFetching}
-						autoDisableVedSpinner
-					>
-						Oppdater OpenAM
-					</Knapp>
-					<DollyModal
-						isOpen={modalOpen}
-						onRequestClose={this.closeModal}
-						closeModal={this.closeModal}
-						content={this._renderOpenAmModalContent()}
-					/>
-				</Fragment>
-			)
+		if (openAmFetching & !this.state.showButton) {
+			if (this.state.requestSent) return null
+			return <Loading label="sender" className="openam-loading-spinner" />
 		}
 
 		return (
-			<Knapp type="standard" onClick={sendToOpenAm} spinner={openAmFetching} autoDisableVedSpinner>
-				Send til OpenAM
-			</Knapp>
+			this.state.showButton && (
+				<Button
+					className="flexbox--align-center openam-button"
+					onClick={() => {
+						this._hideOnClick(sendToOpenAm, bestillingId)
+					}}
+					kind="chevron-right"
+				>
+					SEND TIL OPENAM
+				</Button>
+			)
 		)
 	}
 
