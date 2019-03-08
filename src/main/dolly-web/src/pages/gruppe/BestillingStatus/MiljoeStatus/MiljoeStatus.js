@@ -39,7 +39,7 @@ export default class MiljoeStatus extends PureComponent {
 					</div>
 				</div>
 				<hr />
-				<div className={'miljoe-container'}>
+				<div className={'miljoe-container miljoe-container-kolonne'}>
 					{failed
 						? this._renderFailureMessage(bestilling, antallIdenterOpprettet)
 						: this._renderStatus(bestilling, successEnvs, failedEnvs, antallIdenterOpprettet)}
@@ -63,10 +63,10 @@ export default class MiljoeStatus extends PureComponent {
 	_renderStatus = (bestilling, successEnvs, failedEnvs, antallIdenterOpprettet) => {
 		return (
 			<Fragment>
-				{antallIdenterOpprettet === bestilling.antallIdenter && ( //husk å endre krokodilletegn
-					<span>{antallIdenterOpprettet} av {bestilling.antallIdenter} bestilte identer ble opprettet i TPS.</span>
+				{antallIdenterOpprettet < bestilling.antallIdenter && (
+					<span className = 'miljoe-status error-text'>{antallIdenterOpprettet} av {bestilling.antallIdenter} bestilte identer ble opprettet i TPS.</span>
 				)}
-				<span>{this._renderMiljoeStatus(successEnvs, failedEnvs)}</span>
+				<span className = 'miljoe-container miljoe-container-rad'>{this._renderMiljoeStatus(successEnvs, failedEnvs)}</span>
 			</Fragment>
 			)
 	}
