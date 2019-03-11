@@ -1,5 +1,10 @@
 package no.nav.dolly.aareg;
 
+import static java.lang.String.format;
+import static java.util.Objects.nonNull;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.resultset.aareg.RsAaregRequest;
+import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
+import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdArbeidsforholdIkkeFunnet;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdSikkerhetsbegrensning;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdUgyldigInput;
@@ -21,37 +28,59 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeids
 @Slf4j
 public class AaregConsumer {
 
+    private static final String STATUS_OK = "OK";
+
     @Autowired
     private BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
 
     @Autowired
     private MapperFacade mapperFacade;
 
-    public void opprettArbeidsforhold(RsAaregRequest request) throws OpprettArbeidsforholdSikkerhetsbegrensning, OpprettArbeidsforholdUgyldigInput {
+    public Map<String, String> opprettArbeidsforhold(RsAaregOpprettRequest request) {
 
         OpprettArbeidsforholdRequest arbeidsforholdRequest = new OpprettArbeidsforholdRequest();
         arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
-        arbeidsforholdRequest.setArkivreferanse(getUuid());
+        arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
 
-        for (String environment : request.getEnvironments()){
-            behandleArbeidsforholdV1Proxy.getServiceByEnvironment(environment).opprettArbeidsforhold(arbeidsforholdRequest);
-        }
+        Map<String, String> status = new HashMap(request.getEnvironments().size());
+        request.getEnvironments().forEach(env -> {
+            try {
+                behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env).opprettArbeidsforhold(arbeidsforholdRequest);
+                status.put(env, STATUS_OK);
+            } catch (OpprettArbeidsforholdSikkerhetsbegrensning | OpprettArbeidsforholdUgyldigInput | DollyFunctionalException error) {
+                status.put(env, extractError(error));
+            }
+        });
+
+        return status;
     }
 
-    public void oppdaterArbeidsforhold(RsAaregRequest request)
-            throws OppdaterArbeidsforholdArbeidsforholdIkkeFunnet, OppdaterArbeidsforholdSikkerhetsbegrensning, OppdaterArbeidsforholdUgyldigInput {
+    public Map<String, String> oppdaterArbeidsforhold(RsAaregOppdaterRequest request) {
 
         OppdaterArbeidsforholdRequest arbeidsforholdRequest = new OppdaterArbeidsforholdRequest();
         arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
-        arbeidsforholdRequest.setArkivreferanse(getUuid());
+        arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
         arbeidsforholdRequest.setRapporteringsperiode(mapperFacade.map(request.getRapporteringsperiode(), XMLGregorianCalendar.class));
 
-        for (String environment : request.getEnvironments()) {
-            behandleArbeidsforholdV1Proxy.getServiceByEnvironment(environment).oppdaterArbeidsforhold(arbeidsforholdRequest);
-        }
+        Map<String, String> status = new HashMap(request.getEnvironments().size());
+        request.getEnvironments().forEach(env -> {
+            try {
+                behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env).oppdaterArbeidsforhold(arbeidsforholdRequest);
+                status.put(env, STATUS_OK);
+            } catch (OppdaterArbeidsforholdArbeidsforholdIkkeFunnet | OppdaterArbeidsforholdSikkerhetsbegrensning | OppdaterArbeidsforholdUgyldigInput | DollyFunctionalException error) {
+                status.put(env, extractError(error));
+            }
+        });
+
+        return status;
     }
 
-    private static String getUuid() {
-        return "Dolly: " + UUID.randomUUID().toString();
+    private static String extractError(Exception exception) {
+        return format("Feil, %s -> %s", exception.getClass().getSimpleName(), exception.getMessage());
+    }
+
+    private static String getUuid(String referanse) {
+
+        return nonNull(referanse) ? referanse : "Dolly: " + UUID.randomUUID().toString();
     }
 }

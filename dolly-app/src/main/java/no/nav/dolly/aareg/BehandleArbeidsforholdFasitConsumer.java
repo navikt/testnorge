@@ -1,7 +1,9 @@
 package no.nav.dolly.aareg;
 
-import java.util.HashMap;
+import static java.util.Arrays.asList;
+
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +21,12 @@ public class BehandleArbeidsforholdFasitConsumer {
     @Autowired
     private FasitApiConsumer fasitApiConsumer;
 
-
     public Map fetchUrlsByEnvironment() {
-
-        Map<String, String> fasitUrlByEnviromenent = new HashMap<>();
 
         FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(BEHANDLE_ARBEIDFORHOLD_ALIAS, BASE_URL);
 
-        for (FasitResourceWithUnmappedProperties fasitResource : fasitResources) {
-            String url = ((String) ((Map) fasitResource.getProperties()).get("url"))
-                    .replaceAll("/aareg-services/BehandleArbeidsforholdService/v1", "") + BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL;
-            fasitUrlByEnviromenent.put(fasitResource.getScope().getEnvironment(), url);
-        }
-        return fasitUrlByEnviromenent;
+        return asList(fasitResources).stream().collect(Collectors.toMap(resource -> resource.getScope().getEnvironment(),
+                resource -> ((String) ((Map) resource.getProperties()).get("url"))
+                        .replaceAll("/aareg-services/BehandleArbeidsforholdService/v1", "") + BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL));
     }
 }
