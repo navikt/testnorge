@@ -8,7 +8,7 @@ import { AttributtManager } from '~/service/Kodeverk'
 import FormEditor from '~/components/formEditor/FormEditor'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Icon from '~/components/icon/Icon'
-
+import DisplayFormikState from '~/utils/DisplayFormikState'
 export default class Step2 extends PureComponent {
 	static propTypes = {
 		identtype: PropTypes.string,
@@ -62,19 +62,20 @@ export default class Step2 extends PureComponent {
 									opprette testpersoner med tilfeldige verdier.
 								</ContentContainer>
 							) : (
-									<FormEditor
-										AttributtListe={this.AttributtListe}
-										FormikProps={formikProps}
-										getAttributtListByHovedkategori={
-											this.AttributtManager.getAttributtListByHovedkategori
-										}
-									/>
-								)}
+								<FormEditor
+									AttributtListe={this.AttributtListe}
+									FormikProps={formikProps}
+									getAttributtListByHovedkategori={
+										this.AttributtManager.getAttributtListByHovedkategori
+									}
+								/>
+							)}
 
 							<NavigationConnector
 								onClickNext={formikProps.submitForm}
 								onClickPrevious={() => this.onClickPrevious(formikProps.values)}
 							/>
+							{/* // Uncomment for debug formik */}
 							{/* <DisplayFormikState {...formikProps} /> */}
 						</Fragment>
 					)}
