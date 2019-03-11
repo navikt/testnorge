@@ -25,8 +25,8 @@ export default class MiljoeStatus extends PureComponent {
 	}
 	
 	render() {
-		const { id, successEnvs, failedEnvs, errorMsgs, bestilling } = this.props.miljoeStatusObj
-		const failed = true && successEnvs.length == 0 && errorMsgs.length == 0
+		const { id, successEnvs, failedEnvs, bestilling, finnesFeilmelding, antallIdenterOpprettet } = this.props.miljoeStatusObj
+		const failed = true && successEnvs.length == 0 && !finnesFeilmelding
 		const { modalOpen } = this.state
 
 		return (
@@ -39,10 +39,10 @@ export default class MiljoeStatus extends PureComponent {
 					</div>
 				</div>
 				<hr />
-				<div className={'miljoe-container'}>
+				<div className={'miljoe-container miljoe-container-kolonne'}>
 					{failed
-						? this._renderFailureMessage()
-						: this._renderMiljoeStatus(successEnvs, failedEnvs)}
+						? this._renderFailureMessage(bestilling, antallIdenterOpprettet)
+						: this._renderStatus(bestilling, successEnvs, failedEnvs, antallIdenterOpprettet)}
 				</div>
 				<div className="flexbox--all-center">
 					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
@@ -60,6 +60,17 @@ export default class MiljoeStatus extends PureComponent {
 		)
 	}
 
+	_renderStatus = (bestilling, successEnvs, failedEnvs, antallIdenterOpprettet) => {
+		return (
+			<Fragment>
+				{antallIdenterOpprettet < bestilling.antallIdenter && (
+					<span className = 'miljoe-status error-text'>{antallIdenterOpprettet} av {bestilling.antallIdenter} bestilte identer ble opprettet i TPS.</span>
+				)}
+				<span className = 'miljoe-container miljoe-container-rad'>{this._renderMiljoeStatus(successEnvs, failedEnvs)}</span>
+			</Fragment>
+			)
+	}
+
 	_renderMiljoeStatus = (successEnvs, failedEnvs) => (
 		<Fragment>
 			{successEnvs.map((env, i) => {
@@ -71,10 +82,11 @@ export default class MiljoeStatus extends PureComponent {
 			})}
 		</Fragment>
 	)
+
 	_renderFailureMessage = () => (
 		<Fragment>
 			<Icon kind={'report-problem-circle'} />
-			<p>Din bestilling ble ikke utført</p>
+			<p>Bestillingen din ble ikke utført.</p>
 		</Fragment>
 	)
 
