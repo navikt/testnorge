@@ -6,10 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
+import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
+import no.nav.registre.tp.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.tp.consumer.rs.TpSyntConsumer;
 import no.nav.registre.tp.database.models.HistorikkComposityKey;
 import no.nav.registre.tp.database.models.TForhold;
@@ -20,6 +22,7 @@ import no.nav.registre.tp.database.repository.TForholdRepository;
 import no.nav.registre.tp.database.repository.TForholdYtelseHistorikkRepository;
 import no.nav.registre.tp.database.repository.TPersonRepository;
 import no.nav.registre.tp.database.repository.TYtelseRepository;
+import no.nav.registre.tp.provider.rs.request.SyntetiseringsRequest;
 
 @Slf4j
 @Service
@@ -32,8 +35,12 @@ public class TpService {
     private final TYtelseRepository tYtelseRepository;
 
     private final TpSyntConsumer tpSyntConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
 
-    public void syntetiser(List<String> fnrs) {
+    public void syntetiser(@Valid SyntetiseringsRequest request) {
+
+        List<String> fnrs = hodejegerenConsumer.getFnrs(request);
+
         List<TYtelse> ytelser = tpSyntConsumer.getYtelser(fnrs.size());
         if (ytelser.size() != fnrs.size()) {
             log.warn("Fikk ikke riktig antall ytelser i forhold til forventet antall. Ytelser: {} Fnrs: {}", ytelser.size(), fnrs.size());

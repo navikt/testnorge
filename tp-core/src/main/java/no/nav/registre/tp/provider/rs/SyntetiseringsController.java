@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import javax.validation.Valid;
 
+import no.nav.registre.tp.provider.rs.request.SyntetiseringsRequest;
 import no.nav.registre.tp.service.TpService;
 
 @RestController
@@ -19,8 +20,8 @@ public class SyntetiseringsController {
     private TpService tpService;
 
     @PostMapping(value = "/generer")
-    public ResponseEntity createYtelseWithRelations(@RequestBody List<String> fnrs) {
-        tpService.syntetiser(fnrs);
+    public ResponseEntity createYtelseWithRelations(@RequestBody @Valid SyntetiseringsRequest request) {
+        tpService.syntetiser(request);
         return ResponseEntity.ok().build();
     }
 

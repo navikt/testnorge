@@ -1,7 +1,6 @@
 package no.nav.registre.tp.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -19,13 +18,13 @@ import no.nav.registre.tp.database.models.TYtelse;
 @Component
 public class TpSyntConsumer {
 
-    public static final ParameterizedTypeReference<List<TYtelse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<TYtelse>>() {
+    private static final ParameterizedTypeReference<List<TYtelse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<TYtelse>>() {
     };
-    @Autowired
-    private RestTemplate restTemplate;
-    private String syntRestApiUrl;
+    private final RestTemplate restTemplate;
+    private final String syntRestApiUrl;
 
-    public TpSyntConsumer(@Value("${synt.rest.api.url}") String syntRestApiUrl) {
+    public TpSyntConsumer(RestTemplate restTemplate, @Value("${synt.rest.api.url}") String syntRestApiUrl) {
+        this.restTemplate = restTemplate;
         this.syntRestApiUrl = syntRestApiUrl + "/v1/generate/tp?numToGenerate={numToGenerate}";
     }
 
