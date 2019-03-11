@@ -23,7 +23,7 @@ public class HodejegerenConsumer {
     private final RestTemplate restTemplate;
     private final String hodejegerenUrl;
 
-    public HodejegerenConsumer(RestTemplate restTemplate, @Value("${hodejegeren.rest-api.url}") String hodejegerenUrl) {
+    public HodejegerenConsumer(RestTemplate restTemplate, @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenUrl) {
         this.restTemplate = restTemplate;
         this.hodejegerenUrl = hodejegerenUrl + "/v1/levende-identer/{avspillergruppeId}?miljoe={miljoe}&antallPersoner={antallPersoner}&minimumAlder={minimumAlder}";
     }
