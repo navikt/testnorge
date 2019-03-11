@@ -7,7 +7,6 @@ import './StaticValue.less'
 export default class StaticValue extends PureComponent {
 	static propTypes = {
 		header: PropTypes.string.isRequired,
-		value: PropTypes.string.isRequired,
 		format: PropTypes.func,
 		headerType: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'label']),
 		optionalClassName: PropTypes.string
@@ -20,7 +19,7 @@ export default class StaticValue extends PureComponent {
 	render() {
 		const { header, value, format, headerType, optionalClassName, size } = this.props
 
-		let _value = value
+		let _value = value ? value : 'Ikke spesifisert'
 		if (format) _value = format(value)
 
 		const fixedSize = size ? 'static-value_' + size : 'static-value'
