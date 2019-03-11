@@ -8,7 +8,7 @@ import java.util.Set;
 
 public abstract class BestillingSystemStatusMapper {
 
-    private BestillingSystemStatusMapper() {
+    protected BestillingSystemStatusMapper() {
 
     }
 
