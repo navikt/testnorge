@@ -291,7 +291,7 @@ public class DollyBestillingService {
                     .build());
 
             StringBuilder builder = new StringBuilder();
-            status.keySet().forEach(key -> builder.append(",").append(key).append(": ").append(status.get(key)));
+            status.keySet().forEach(key -> builder.append(',').append(key).append(": ").append(status.get(key)));
             progress.setAaregStatus(builder.substring(1));
         }
     }
