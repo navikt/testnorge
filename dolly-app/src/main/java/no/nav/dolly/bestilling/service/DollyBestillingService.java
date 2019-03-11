@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.aareg.AaregConsumer;
 import no.nav.dolly.bestilling.krrstub.KrrStubResponseHandler;
 import no.nav.dolly.bestilling.krrstub.KrrStubService;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
@@ -39,6 +40,8 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
+import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
+import no.nav.dolly.domain.resultset.aareg.RsPerson;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
@@ -71,6 +74,9 @@ public class DollyBestillingService {
 
     @Autowired
     private SigrunStubService sigrunStubService;
+
+    @Autowired
+    private AaregConsumer aaregConsumer;
 
     @Autowired
     private SigrunStubResponseHandler sigrunstubResponseHandler;
@@ -148,6 +154,29 @@ public class DollyBestillingService {
         }
     }
 
+    @Async
+    public void gjenopprettBestillingAsync(Bestilling bestilling) {
+
+        List<BestillingProgress> identerForGjenopprett = bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(bestilling.getOpprettetFraId());
+
+        Iterator<BestillingProgress> identIterator = identerForGjenopprett.iterator();
+        while (!bestillingService.isStoppet(bestilling.getId()) && identIterator.hasNext()) {
+            BestillingProgress bestillingProgress = identIterator.next();
+
+            List<String> identer = tpsfService.hentTilhoerendeIdenter(singletonList(bestillingProgress.getIdent()));
+
+            String hovedPersonIdent = getHovedpersonAvBestillingsidenter(identer);
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), hovedPersonIdent);
+
+            sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
+
+            oppdaterProgress(bestilling, progress);
+            clearCache();
+        }
+        oppdaterProgressFerdig(bestilling);
+        clearCache();
+    }
+
     private void oppdaterBestilling(Bestilling bestilling, CheckStatusResponse tilgjengeligeIdenter) {
         bestilling.setAntallIdenter((int) tilgjengeligeIdenter.getStatuser().stream().filter(IdentStatus::isAvailable).count());
         tilgjengeligeIdenter.getStatuser().forEach(identStatus -> {
@@ -176,30 +205,9 @@ public class DollyBestillingService {
 
         handleKrrstub(request, bestilling.getId(), hovedPersonIdent, progress);
 
+        handleAareg(request, hovedPersonIdent, progress);
+
         oppdaterProgress(bestilling, progress);
-        clearCache();
-    }
-
-    @Async
-    public void gjenopprettBestillingAsync(Bestilling bestilling) {
-
-        List<BestillingProgress> identerForGjenopprett = bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(bestilling.getOpprettetFraId());
-
-        Iterator<BestillingProgress> identIterator = identerForGjenopprett.iterator();
-        while (!bestillingService.isStoppet(bestilling.getId()) && identIterator.hasNext()) {
-            BestillingProgress bestillingProgress = identIterator.next();
-
-            List<String> identer = tpsfService.hentTilhoerendeIdenter(singletonList(bestillingProgress.getIdent()));
-
-            String hovedPersonIdent = getHovedpersonAvBestillingsidenter(identer);
-            BestillingProgress progress = new BestillingProgress(bestilling.getId(), hovedPersonIdent);
-
-            sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
-
-            oppdaterProgress(bestilling, progress);
-            clearCache();
-        }
-        oppdaterProgressFerdig(bestilling);
         clearCache();
     }
 
@@ -270,6 +278,21 @@ public class DollyBestillingService {
             }
             ResponseEntity sigrunResponse = sigrunStubService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
             progress.setSigrunstubStatus(sigrunstubResponseHandler.extractResponse(sigrunResponse));
+        }
+    }
+
+    private void handleAareg(RsDollyBestilling bestillingRequest, String ident, BestillingProgress progress) {
+
+        if (nonNull(bestillingRequest.getAareg())) {
+            bestillingRequest.getAareg().setArbeidstaker(RsPerson.builder().ident(ident).build());
+            Map<String, String> status = aaregConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
+                    .arbeidsforhold(bestillingRequest.getAareg())
+                    .environments(bestillingRequest.getEnvironments())
+                    .build());
+
+            StringBuilder builder = new StringBuilder();
+            status.keySet().forEach(key -> builder.append(",").append(key).append(": ").append(status.get(key)));
+            progress.setAaregStatus(builder.substring(1));
         }
     }
 

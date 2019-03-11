@@ -3,6 +3,8 @@ package no.nav.dolly.aareg;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -20,6 +22,7 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdSi
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdUgyldigInput;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdSikkerhetsbegrensning;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdUgyldigInput;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.feil.ForretningsmessigUnntak;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OppdaterArbeidsforholdRequest;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeidsforholdRequest;
@@ -75,8 +78,18 @@ public class AaregConsumer {
         return status;
     }
 
-    private static String extractError(Exception exception) {
-        return format("Feil, %s -> %s", exception.getClass().getSimpleName(), exception.getMessage());
+    private String extractError(Exception exception) {
+
+        String feilbeskrivelse = "";
+        try {
+            Method method = exception.getClass().getMethod("getFaultInfo");
+            ForretningsmessigUnntak faultInfo = (ForretningsmessigUnntak) method.invoke(exception);
+            feilbeskrivelse = format("(ForretningsmessigUnntak: feilaarsak: %s, feilkilde: %s, feilmelding: %s, tidspunkt: %s)",
+                    faultInfo.getFeilaarsak(), faultInfo.getFeilkilde(), faultInfo.getFeilmelding(), faultInfo.getTidspunkt().toString());
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            // Do nothing
+        }
+        return format("Feil, %s -> %s %s", exception.getClass().getSimpleName(), exception.getMessage(), feilbeskrivelse);
     }
 
     private static String getUuid(String referanse) {

@@ -47,6 +47,12 @@ public class BestillingProgressMappingStrategy implements MappingStrategy {
                                     progress.getKrrstubStatus()
                             );
                         }
+
+                        if (isNotBlank(progress.getAaregStatus())) {
+                            rsProgress.setAaregStatus(
+                                    progress.getAaregStatus()
+                            );
+                        }
                     }
                 })
                 .exclude("tpsfSuccessEnv")

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.aareg.AaregConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
@@ -20,7 +21,10 @@ import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
 @RequestMapping(value = "/api/v1/aareg", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AaregController {
 
-    private static final String AAREG_JSON_COMMENT = "Følgende felter er kodeverksfelter med kodeverksdomene i parentes: <br />"
+    @Autowired
+    private MapperFacade mapperFacade;
+
+    protected static final String AAREG_JSON_COMMENT = "For AAREG-integrasjon er følgende felter kodeverksfelter med kodeverksdomene i parentes: <br />"
             + "&nbsp;&nbsp;&nbsp; arbeidsforholdstype: (Arbeidsforholdstyper) <br />"
             + "&nbsp;&nbsp;&nbsp; arbeidstidsordning: (Arbeidstidsordninger) <br />"
             + "&nbsp;&nbsp;&nbsp; avlønningstype: (Avlønningstyper) <br />"
@@ -40,7 +44,7 @@ public class AaregController {
             + "&nbsp;&nbsp;&nbsp; \"aktoertype\": \"PERS\", <br />"
             + "&nbsp;&nbsp;&nbsp; \"ident\": \"<ident>\", <br />"
             + "&nbsp;&nbsp;&nbsp; \"identtype\": \"<identtype>\" <br />"
-            + "&nbsp; }";
+            + "&nbsp; } <br /><br />";
 
     @Autowired
     private AaregConsumer aaregConsumer;
@@ -54,7 +58,7 @@ public class AaregController {
     }
 
     @ApiOperation(value = "Oppdater attributter for aareg ", notes = AAREG_JSON_COMMENT
-            + "<br /><br />Rapporteringsperiode formidler innhold for måned og år kun.")
+            + "Rapporteringsperiode formidler innhold for måned og år kun.")
     @PutMapping("/arbeidsforhold")
     public RsAaregResponse oppdaterArbeidsforhold(@RequestBody RsAaregOppdaterRequest request) {
 
