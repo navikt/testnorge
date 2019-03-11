@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,9 +24,7 @@ public class SyntetiseringController {
     public ResponseEntity genererSammeldinger(@RequestBody SyntetiserSamRequest syntetiserSamRequest) {
 
         System.out.println("Finner hoder");
-        //List<String> identer = syntetiseringService.finnLevendeIdenter(syntetiserSamRequest);
-        List<String> identer = new ArrayList<>();
-        identer.add("12345678911");
+        List<String> identer = syntetiseringService.finnLevendeIdenter(syntetiserSamRequest);
         System.out.println("Synter");
         return syntetiseringService.finnSyntetiserteMeldinger(identer);
     }

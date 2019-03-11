@@ -30,4 +30,4 @@ testnorge-sam-app/target/
 mvnw
 mvnw.cmd
 
-*.properties
+/resources/*

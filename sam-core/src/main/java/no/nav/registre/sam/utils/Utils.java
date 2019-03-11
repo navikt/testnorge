@@ -1,7 +1,6 @@
 package no.nav.registre.sam.utils;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -9,6 +8,9 @@ public class Utils {
 
     public static Timestamp formatDate(String dateString){
         try {
+            if (dateString == ""){
+                return getTodaysDate();
+            }
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
             Date parsedDate = dateFormat.parse(dateString);
             return new java.sql.Timestamp(parsedDate.getTime());
@@ -21,7 +23,6 @@ public class Utils {
     public static Timestamp getTodaysDate(){
         Long date = new Date().getTime();
         Timestamp t = new Timestamp(date);
-        System.out.println(t);
         return t;
     }
 }

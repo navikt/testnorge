@@ -3,8 +3,6 @@ package no.nav.registre.sam.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import java.sql.Timestamp;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,6 +29,8 @@ public class SyntetisertSamObject {
     private String datoEndretAv;
     @JsonProperty("ETTERBETALING")
     private String etterbetaling;
+    @JsonProperty("FAG_VEDTAK_ID_FK")
+    private String fagVedtakIdFk;
     @JsonProperty("K_ART")
     private String kArt;
     @JsonProperty("K_FAGOMRADE")
@@ -51,6 +51,10 @@ public class SyntetisertSamObject {
     private String purring;
     @JsonProperty("REFUSJONSKRAV")
     private String refusjonskrav;
+    @JsonProperty("SAK_ID_FK")
+    private String sakIdFk;
+    @JsonProperty("TSS_EKSTERN_ID_FK")
+    private String tssEksternIdFk;
     @JsonProperty("VERSJON")
     private String versjon;
 }

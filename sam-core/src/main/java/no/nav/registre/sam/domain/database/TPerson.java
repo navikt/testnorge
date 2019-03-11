@@ -1,8 +1,6 @@
 package no.nav.registre.sam.domain.database;
 
 import lombok.*;
-import no.nav.registre.sam.domain.SyntetisertSamObject;
-import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.sam.utils.Utils;
 
 import javax.persistence.*;
@@ -13,6 +11,7 @@ import java.sql.Timestamp;
 @ToString
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name="t_person")
 public class TPerson {
     @Id

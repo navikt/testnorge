@@ -3,17 +3,17 @@ package no.nav.registre.sam.service;
 import no.nav.registre.sam.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sam.consumer.rs.SamSyntetisererenConsumer;
 import no.nav.registre.sam.database.TPersonRepository;
+import no.nav.registre.sam.database.TSamHendelseRepository;
+import no.nav.registre.sam.database.TSamMeldingRepository;
+import no.nav.registre.sam.database.TSamVedtakRepository;
 import no.nav.registre.sam.domain.SyntetisertSamObject;
-import no.nav.registre.sam.domain.database.DBObject;
-import no.nav.registre.sam.domain.database.TPerson;
+import no.nav.registre.sam.domain.database.*;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
-import no.nav.registre.sam.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,10 +28,25 @@ public class SyntetiseringService {
     @Autowired
     TPersonRepository tPersonRepository;
 
+    @Autowired
+    TSamHendelseRepository tSamHendelseRepository;
+
+    @Autowired
+    TSamMeldingRepository tSamMeldingRepository;
+
+    @Autowired
+    TSamVedtakRepository tSamVedtakRepository;
+
     public ResponseEntity finnSyntetiserteMeldinger(List<String> identer) {
         try{
             List<SyntetisertSamObject> syntetiserteMeldinger = samSyntRestConsumer.hentSammeldingerFromSyntRest(identer.size());
-            return ResponseEntity.ok().body(syntetiserteMeldinger);
+            try {
+                lagreSyntetiserteMeldinger(syntetiserteMeldinger, identer);
+            } catch (Exception e) {
+                System.out.println(e.toString());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -42,14 +57,18 @@ public class SyntetiseringService {
         return hodejegerenConsumer.finnLevendeIdenter(request);
     }
 
-    public List<DBObject> createDatabaseEntities(List<SyntetisertSamObject> syntetiserteMeldinger, List<String> identer){
-        ArrayList<DBObject> dbObjects = new ArrayList<>();
+    public void lagreSyntetiserteMeldinger(List<SyntetisertSamObject> syntetiserteMeldinger, List<String> identer){
         if (syntetiserteMeldinger.size() != identer.size()){
             throw new IndexOutOfBoundsException("Feil! Antall identer og antall syntetiske meldinger stemmer ikke overens");
         }
         for (int i = 0; i < identer.size(); i++){
-            TPerson tPerson = new TPerson(identer.get(i));
+            TPerson person = tPersonRepository.findByFnrFK(identer.get(i));
+            if (person == null){
+                person = tPersonRepository.save(new TPerson(identer.get(i)));
+            }
+            tSamHendelseRepository.save(new TSamHendelse(syntetiserteMeldinger.get(i), person));
+            TSamVedtak tSamVedtak = tSamVedtakRepository.save(new TSamVedtak(syntetiserteMeldinger.get(i), person));
+            tSamMeldingRepository.save(new TSamMelding(syntetiserteMeldinger.get(i), tSamVedtak));
         }
-        return null;
     }
 }

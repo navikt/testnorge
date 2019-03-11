@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface TPersonRepository extends CrudRepository<TPerson, Number> {
-    List<TPerson> findByFnrFK(String fnrFK);
+    TPerson findByFnrFK(String fnrFK);
 }
