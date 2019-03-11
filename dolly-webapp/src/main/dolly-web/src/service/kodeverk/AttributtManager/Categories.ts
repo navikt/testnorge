@@ -17,9 +17,9 @@ export const Kategorier: KategoriTypes = {
 		navn: 'Familierelasjoner',
 		order: 30
 	},
-	Inntekter: {
+	ArbeidOgInntekt: {
 		id: 'inntekt',
-		navn: 'Inntekter',
+		navn: 'Arbeid og inntekt',
 		informasjonstekst:
 			'Lignede inntekter - årlig: \n' +
 			'Lignede inntekter er stemplet og godkjent. Inntektene her blir lagt i Sigrun-stub.',
@@ -56,24 +56,6 @@ export const SubKategorier: KategoriTypes = {
 		navn: 'Boadresse',
 		order: 10
 	},
-	// PostadrInnland: {
-	// 	id: 'postadresseInnland',
-	// 	navn: 'Postadresse innland',
-	// 	order: 20,
-	// 	multiple: true
-	// },
-	// PostadrUtland: {
-	// 	id: 'postadresseUtland',
-	// 	navn: 'Postadresse utland',
-	// 	order: 30,
-	// 	multiple: true
-	// },
-	Krr: {
-		id: 'krr',
-		navn: '',
-		order: 10,
-		showInSummary: true
-	},
 	Partner: {
 		id: 'partner',
 		navn: 'Partner',
@@ -86,10 +68,25 @@ export const SubKategorier: KategoriTypes = {
 		order: 20,
 		showInSummary: true
 	},
+
+	Arbeidsforhold: {
+		id: 'arbeidsforhold',
+		navn: 'Arbeidsforhold',
+		order: 10,
+		showInSummary: true
+	},
+
 	Inntekt: {
 		id: 'inntekt',
+		navn: 'Inntekt',
+		order: 20,
+		showInSummary: true
+	},
+
+	Krr: {
+		id: 'krr',
 		navn: '',
-		order: 30,
+		order: 10,
 		showInSummary: true
 	}
 }

@@ -230,7 +230,7 @@ export function mapSigrunData(sigrunData) {
 	if (!sigrunData || sigrunData.length === 0) return null
 
 	return {
-		header: 'Inntekter',
+		header: 'Arbeid og inntekt',
 		multiple: true,
 		data: sigrunData.map(data => {
 			return {

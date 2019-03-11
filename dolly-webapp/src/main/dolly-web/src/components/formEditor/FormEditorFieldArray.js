@@ -41,12 +41,7 @@ export const FieldArrayComponent = ({
 	const createDefaultObject = () => arrayHelpers.push({ ...defs })
 	return (
 		<Fragment>
-			<h4>
-				{subKategori.navn}
-				{!editMode && (
-					<Button className="field-group-add" kind="add-circle" onClick={createDefaultObject} />
-				)}
-			</h4>
+			<h4>{subKategori.navn}</h4>
 			{formikProps.values[parentId] && formikProps.values[parentId].length > 0 ? (
 				formikProps.values[parentId].map((faKey, idx) => {
 					return (
@@ -75,7 +70,17 @@ export const FieldArrayComponent = ({
 					)
 				})
 			) : (
-				<span>Ingen verdi lagt til</span>
+				<p className="ingen-verdi-melding">Ingen verdi lagt til</p>
+			)}
+
+			{!editMode && (
+				<Button
+					className="flexbox--align-center field-group-add"
+					kind="add-circle"
+					onClick={createDefaultObject}
+				>
+					{subKategori.navn.toUpperCase()}
+				</Button>
 			)}
 		</Fragment>
 	)
