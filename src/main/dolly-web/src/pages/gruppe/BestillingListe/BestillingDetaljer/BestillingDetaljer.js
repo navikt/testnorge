@@ -51,7 +51,7 @@ export default class BestillingDetaljer extends PureComponent {
 				{this._renderBestillingsDetaljer()}
 				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
 				{finnesFeilmelding && this._renderErrorMessage(bestilling)}
-				<div className="flexbox--align-center--justify-end">
+				{/* <div className="flexbox--align-center--justify-end"> */}
 					{openAm ? (
 						<div className="bestilling-detaljer">
 							<h3>Jira-lenker</h3>
@@ -92,7 +92,7 @@ export default class BestillingDetaljer extends PureComponent {
 						</div>
 					</div>
 			</div>
-		</div>
+		// </div>
 		)
 	}
 
