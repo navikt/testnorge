@@ -153,6 +153,7 @@ export default class FormEditor extends PureComponent {
 	extraComponentProps = (item, valgteVerdier, parentObject) => {
 		switch (item.inputType) {
 			case 'select': {
+				const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg..'
 				if (item.dependentOn) {
 					if (parentObject) {
 						// Sjekk if item er avhengig av en valgt verdi
@@ -167,6 +168,7 @@ export default class FormEditor extends PureComponent {
 				}
 				if (item.apiKodeverkId) {
 					return {
+						placeholder: placeholder,
 						loadOptions: () =>
 							DollyApi.getKodeverkByNavn(item.apiKodeverkId).then(
 								DollyApi.Utils.NormalizeKodeverkForDropdown
@@ -174,6 +176,7 @@ export default class FormEditor extends PureComponent {
 					}
 				} else {
 					return {
+						placeholder: placeholder,
 						options: item.options
 					}
 				}

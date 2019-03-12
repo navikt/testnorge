@@ -23,12 +23,14 @@ export default class Loading extends PureComponent {
 	}
 
 	render() {
-		const { label, onlySpinner, fullpage, panel } = this.props
+		const { label, onlySpinner, fullpage, panel, className } = this.props
 
 		if (onlySpinner) return this.renderSpinner()
 
+		const cssClass = className ? className : 'loading-component'
+
 		const component = (
-			<div className="loading-component">
+			<div className={cssClass}>
 				{label}
 				{this.renderSpinner()}
 			</div>

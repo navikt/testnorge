@@ -109,10 +109,11 @@ export default class Step3 extends PureComponent {
 
 		if (!item.inputType) return null
 
+		const itemValue = Formatters.oversettBoolean(_get(stateValues, item.id))
 		const staticValueProps = {
 			key: item.id,
 			header: item.label,
-			value: Formatters.oversettBoolean(_get(stateValues, item.id)),
+			value: itemValue !== '' ? itemValue : null,
 			format: item.format
 		}
 
