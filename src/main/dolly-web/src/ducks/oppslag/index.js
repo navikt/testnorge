@@ -32,41 +32,40 @@ export default handleActions(
 		},
 		[success(getEnhetByTknr)](state, action) {
 			const { data } = action.payload
-			return { ...state, [data.enhetNr]: data.navn }
+			let tknrData = { nr: data.enhetNr, sted: data.navn }
+			if (!state.tknr) return { ...state, tknr: [tknrData] }
+			if (state.tknr.find(tknr => tknr.nr === tknrData.nr)) return { ...state }
+			return { ...state, tknr: [...state.tknr, tknrData] }
 		}
 	},
 	initialState
 )
 
 export const fetchKodeverk = kodeverkNavn => (dispatch, getState) => {
-	const { kodeverk } = getState()
-
-	if (kodeverk[kodeverkNavn]) {
+	const { oppslag } = getState()
+	if (oppslag[kodeverkNavn]) {
 		return
 	}
-
 	return dispatch(getKodeverk(kodeverkNavn))
 }
 
-export const kodeverkLabelSelector = (state, kodeverkNavn, value) => {
-	const kodeverk = state.kodeverk[kodeverkNavn]
-	if (!kodeverk) return null
+export const oppslagLabelSelector = (state, navn, value) => {
+	let oppslag = state.oppslag[navn]
+	if (!oppslag) return null
 
-	const kodeArray = SortKodeverkArray(kodeverk)
-
-	const result = kodeArray.find(kode => kode.value === value)
-
-	if (result) {
-		return result
+	if (navn === 'tknr') {
+		const findTknr = oppslag.find(tknr => tknr.nr === value)
+		let place = ''
+		if (findTknr) {
+			place = findTknr.sted
+		}
+		return value + ' - ' + place
+	} else {
+		const kodeArray = SortKodeverkArray(oppslag)
+		const result = kodeArray.find(kode => kode.value === value)
+		if (result) {
+			return result
+		}
+		return { label: value + ' - Finnes ikke i kodeverk' }
 	}
-
-	// Viser bruker feilmelding istedenfor loadingloop
-	return { label: value + ' - Finnes ikke i kodeverk' }
-}
-
-export const tknrLabelSelector = (state, tknr) => {
-	const tknrObject = state.tknr[tknr]
-
-	if (!tknrObject) return null
-	return tknr + ' - ' + tknrObject
 }
