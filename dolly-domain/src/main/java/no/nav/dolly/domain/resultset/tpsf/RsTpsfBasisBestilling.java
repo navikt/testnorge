@@ -51,4 +51,6 @@ public class RsTpsfBasisBestilling {
     private String sprakKode;
 
     private LocalDateTime datoSprak;
+
+    private Boolean utenFastBopel;
 }
