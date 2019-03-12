@@ -11,7 +11,7 @@ const AttributtListe: Attributt[] = [
 	...TpsfPersoninformasjon,
 	...TpsfAdresse,
 	...TpsfRelasjon,
-	...Arbeidsforhold,
+	// ...Arbeidsforhold,
 	...SigrunInntekt,
 	...Krr
 ]

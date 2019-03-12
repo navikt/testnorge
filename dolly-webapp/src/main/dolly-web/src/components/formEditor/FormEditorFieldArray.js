@@ -33,12 +33,25 @@ export const FieldArrayComponent = ({
 	editMode,
 	arrayHelpers
 }) => {
-	const { subKategori, items, id } = item
+	const { subKategori, items, id, subItems } = item
 	const parentId = id
-	const defs = items.reduce((prev, curr) => {
+	const parentAttributes = items.reduce((prev, curr) => {
 		return { ...prev, [curr.id]: Attributt.initValueSelector(curr) }
 	}, {})
-	const createDefaultObject = () => arrayHelpers.push({ ...defs })
+
+	const createDefaultObject = () => arrayHelpers.push({ ...parentAttributes })
+	const createSubItem = index => {
+		const subItemAttributes = subItems[0].items.reduce((prev, curr) => {
+			return { ...prev, [curr.id]: Attributt.initValueSelector(curr) }
+		}, {})
+
+		console.log('index :', index)
+		let valueCopy = JSON.parse(JSON.stringify(formikProps.values[parentId][0]))
+
+		const subItemId = subItems[0].id
+		arrayHelpers.replace(index, { ...valueCopy, [subItemId]: subItemAttributes })
+	}
+
 	return (
 		<Fragment>
 			<h4>{subKategori.navn}</h4>
@@ -66,6 +79,19 @@ export const FieldArrayComponent = ({
 									/>
 								)}
 							</div>
+							{/* // TODO: Alex, uncomment for videre implementere subItems AAREGs */}
+							{/* {!editMode &&
+								subItems &&
+								subItems.map((subItem, i) => (
+									<Button
+										className="flexbox--align-center field-group-add"
+										kind="add-circle"
+										key={i}
+										onClick={() => createSubItem(idx)}
+									>
+										{subItem.label}
+									</Button>
+								))} */}
 						</div>
 					)
 				})
