@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ArenaAAPService implements IService {
@@ -17,8 +18,11 @@ public class ArenaAAPService implements IService {
     @Value("${isAlive}")
     private String isAlive;
 
-    @Value("${synth-arena-aap-url}")
-    private String synthAapUrl;
+    @Value("${synth-arena-aap-115-url}")
+    private String synthAap115Url;
+
+    @Value("${synth-arena-aap-nyRettighet-url}")
+    private String synthAapNyRettighetUrl;
 
     private final RestTemplate restTemplate;
 
@@ -27,9 +31,13 @@ public class ArenaAAPService implements IService {
     }
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-aap" })
-    public Object getDataFromNAIS(Object numToGenerate) {
-        Object result = restTemplate.getForObject(String.format(synthAapUrl, numToGenerate), List.class);
-        return result;
+    public Object getDataFromNAIS(Object requestParams) {
+        Map<String, String> rp = (Map) requestParams;
+        if (rp.get("type") == "115"){
+            return restTemplate.getForObject(String.format(synthAap115Url, rp.get("numToGenerate")), List.class);
+        } else {
+            return restTemplate.getForObject(String.format(synthAapNyRettighetUrl, rp.get("numToGenerate")), List.class);
+        }
     }
 
     public String isAlive() {

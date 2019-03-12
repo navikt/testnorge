@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -29,8 +31,19 @@ public class ArenaAAPController extends RootController {
     ReentrantLock lock = new ReentrantLock();
     ReentrantLock counterLock = new ReentrantLock();
 
-    @GetMapping(value = "/arena/aap")
-    public ResponseEntity generateArenaAAP(@RequestParam int numToGenerate) throws IOException, ApiException {
-        return generate(appName, aapService, numToGenerate, counter, lock, counterLock);
+    @GetMapping(value = "/arena/aap/11_5")
+    public ResponseEntity generateArenaAAP11_5(@RequestParam String numToGenerate) throws IOException, ApiException {
+        Map<String, String> requestParams = new HashMap<>();
+        requestParams.put("type", "115");
+        requestParams.put("numToGenerate", numToGenerate);
+        return generate(appName, aapService, requestParams, counter, lock, counterLock);
+    }
+
+    @GetMapping(value = "/arena/aap/nyRettighet")
+    public ResponseEntity generateArenaAAPNyRettighet(@RequestParam String numToGenerate) throws IOException, ApiException {
+        Map<String, String> requestParams = new HashMap<>();
+        requestParams.put("type", "nyRettighet");
+        requestParams.put("numToGenerate", numToGenerate);
+        return generate(appName, aapService, requestParams, counter, lock, counterLock);
     }
 }
