@@ -59,7 +59,7 @@ public class TSamVedtak {
         this.kFagområde = obj.getKFagområde();
         this.kVedtakStatus = obj.getKVedtakStatus();
         this.kArt = obj.getKArt();
-        this.fagVedtakIdFk = Integer.parseInt(obj.getFagVedtakIdFk());
+        this.fagVedtakIdFk = 00000000;
         this.sakIdFk = Integer.parseInt(obj.getSakIdFk());
         this.purring = obj.getPurring();
         this.etterbetaling = obj.getEtterbetaling();

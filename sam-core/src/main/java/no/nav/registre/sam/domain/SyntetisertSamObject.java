@@ -29,8 +29,6 @@ public class SyntetisertSamObject {
     private String datoEndretAv;
     @JsonProperty("ETTERBETALING")
     private String etterbetaling;
-    @JsonProperty("FAG_VEDTAK_ID_FK")
-    private String fagVedtakIdFk;
     @JsonProperty("K_ART")
     private String kArt;
     @JsonProperty("K_FAGOMRADE")
