@@ -21,12 +21,14 @@ public class BehandleArbeidsforholdFasitConsumer {
     @Autowired
     private FasitApiConsumer fasitApiConsumer;
 
-    public Map fetchUrlsByEnvironment() {
+    public Map<String, String> fetchUrlsByEnvironment() {
 
         FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(BEHANDLE_ARBEIDFORHOLD_ALIAS, BASE_URL);
 
         return asList(fasitResources).stream().collect(Collectors.toMap(resource -> resource.getScope().getEnvironment(),
                 resource -> ((String) ((Map) resource.getProperties()).get("url"))
-                        .replaceAll("/aareg-services/BehandleArbeidsforholdService/v1", "") + BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL));
+                        .contains("/aareg-services/BehandleArbeidsforholdService/v1") ?
+                        ((String) ((Map) resource.getProperties()).get("url")) :
+                        ((Map) resource.getProperties()).get("url") + BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL));
     }
 }
