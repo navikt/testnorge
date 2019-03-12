@@ -31,9 +31,10 @@ public class RsBestilling {
     private boolean stoppet;
     private String feil;
     private List<String> environments;
-    private Set<RsIdentTpsStatus> tpsfStatus;
+    private Set<RsIdentSystemStatus> tpsfStatus;
     private Set<RsIdentStatus> krrStubStatus;
     private Set<RsIdentStatus> sigrunStubStatus;
+    private Set<RsIdentSystemStatus> aaregStatus;
 
     private List<RsBestillingProgress> bestillingProgress;
     private Long opprettetFraId;
@@ -55,7 +56,7 @@ public class RsBestilling {
         return bestillingProgress;
     }
 
-    public Set<RsIdentTpsStatus> getTpsfStatus() {
+    public Set<RsIdentSystemStatus> getTpsfStatus() {
         if (isNull(tpsfStatus)) {
             tpsfStatus = new HashSet();
         }
@@ -74,5 +75,12 @@ public class RsBestilling {
             sigrunStubStatus = new HashSet();
         }
         return sigrunStubStatus;
+    }
+
+    public Set<RsIdentSystemStatus> getAaregStatus() {
+        if (isNull(aaregStatus)) {
+            aaregStatus = new HashSet();
+        }
+        return aaregStatus;
     }
 }

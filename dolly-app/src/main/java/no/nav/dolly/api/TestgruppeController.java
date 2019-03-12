@@ -1,6 +1,7 @@
 package no.nav.dolly.api;
 
 import static java.lang.String.format;
+import static no.nav.dolly.api.AaregController.AAREG_JSON_COMMENT;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
@@ -63,7 +64,11 @@ public class TestgruppeController {
             + "     &nbsp; &nbsp; \"bruksnr\": \"string\", <br />"
             + "     &nbsp; &nbsp; \"festenr\": \"string\", <br />"
             + "     &nbsp; &nbsp; \"undernr\": \"string\", <br />"
-            + ADRESSE_COMMON + "}";
+            + ADRESSE_COMMON + "} <br /> <br />";
+
+    private static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br />";
+
+    private static final String BESTILLING_BESKRIVELSE =  BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER;
 
     @Autowired
     private TestgruppeService testgruppeService;
@@ -136,7 +141,7 @@ public class TestgruppeController {
         }
     }
 
-    @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype", notes = BOADRESSE_COMMENT)
+    @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype", notes = BESTILLING_BESKRIVELSE)
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
@@ -147,7 +152,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
-    @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BOADRESSE_COMMENT)
+    @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BESTILLING_BESKRIVELSE)
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")

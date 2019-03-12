@@ -35,6 +35,11 @@ fasitResources:
       issuerUrl: freg.security.oidc.idp.openam.issuerUrl
       jwksUrl: freg.security.oidc.idp.openam.jwksUrl
 
+  - alias: securityTokenService
+    resourceType: BaseUrl
+    propertyMap:
+      url: securityTokenService.host
+
   - alias: tpsf-host
     resourceType: baseurl
     propertyMap:
@@ -65,7 +70,13 @@ fasitResources:
     propertyMap:
       url: jira.host
 
-  - alias: srvDolly
+  - alias: srvdolly
+    resourceType: credential
+    propertyMap:
+      username: securityTokenService.username
+      password: securityTokenService.password
+
+  - alias: srvJiraDolly
     resourceType: credential
     propertyMap:
       username: jira.username
