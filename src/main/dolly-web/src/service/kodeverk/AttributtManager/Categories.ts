@@ -90,3 +90,13 @@ export const SubKategorier: KategoriTypes = {
 		showInSummary: true
 	}
 }
+
+// Sub-items?
+export const SubItem: KategoriTypes = {
+	Permisjon: {
+		id: 'permisjon',
+		navn: 'Permisjon',
+		order: 10,
+		showInSummary: true
+	}
+}

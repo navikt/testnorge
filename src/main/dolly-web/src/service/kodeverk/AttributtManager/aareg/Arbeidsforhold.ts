@@ -17,18 +17,106 @@ const AttributtListe: Attributt[] = [
 		attributtType: AttributtType.SelectAndEdit,
 		items: [
 			{
-				hovedKategori: Kategorier.Inntekt,
-				subKategori: SubKategorier.Inntekt,
+				hovedKategori: Kategorier.ArbeidOgInntekt,
+				subKategori: SubKategorier.Arbeidsforhold,
 				id: 'yrke',
 				label: 'Yrke',
 				path: 'ikkesett',
-				editPath: 'tjeneste',
+				dataSource: DataSource.SIGRUN,
+				inputType: InputType.Text,
+				validation: yup.string().required('Velg en type tjeneste.'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.ArbeidOgInntekt,
+				subKategori: SubKategorier.Arbeidsforhold,
+				id: 'arbeidsforholdFra',
+				label: 'Startdato',
+				path: 'ikkesett',
+				dataSource: DataSource.SIGRUN,
+				inputType: InputType.Date,
+				validation: yup.string().required('Velg en type tjeneste.'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.ArbeidOgInntekt,
+				subKategori: SubKategorier.Arbeidsforhold,
+				id: 'arbeidsforholdTil',
+				label: 'Sluttdato',
+				path: 'ikkesett',
+				dataSource: DataSource.SIGRUN,
+				inputType: InputType.Date,
+				validation: yup.string().required('Velg en type tjeneste.'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.ArbeidOgInntekt,
+				subKategori: SubKategorier.Arbeidsforhold,
+				id: 'yrk2e',
+				label: 'Stilling',
+				path: 'ikkesett',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Text,
 				validation: yup.string().required('Velg en type tjeneste.'),
 				attributtType: AttributtType.SelectAndRead
 			}
+		],
+		subItems: [
+			{
+				id: 'permisjon',
+				label: 'Permisjon',
+				items: [
+					{
+						hovedKategori: Kategorier.ArbeidOgInntekt,
+						subKategori: SubKategorier.Arbeidsforhold,
+						id: 'type',
+						label: 'Type',
+						path: 'ikkesett',
+						dataSource: DataSource.SIGRUN,
+						inputType: InputType.Text,
+						attributtType: AttributtType.SelectAndRead
+					}
+				]
+			},
+			{
+				id: 'Utenlandsopphold',
+				label: 'Utenlandsopphold',
+				items: [
+					{
+						hovedKategori: Kategorier.ArbeidOgInntekt,
+						subKategori: SubKategorier.Arbeidsforhold,
+						id: 'type222',
+						label: 'Type',
+						path: 'ikkesett',
+						dataSource: DataSource.SIGRUN,
+						inputType: InputType.Text,
+						attributtType: AttributtType.SelectAndRead
+					}
+				]
+			}
 		]
+
+		// subItems: [
+		// 	[
+		// 		{
+		// 			id: 'bro',
+		// 			label: 'string',
+		// 			items: [
+		// 				{
+		// 					hovedKategori: Kategorier.Inntekt,
+		// 					subKategori: SubKategorier.Arbeidsforhold,
+		// 					id: 'yrke',
+		// 					label: 'Stilling',
+		// 					path: 'ikkesett',
+		// 					dataSource: DataSource.SIGRUN,
+		// 					inputType: InputType.Text,
+		// 					validation: yup.string().required('Velg en type tjeneste.'),
+		// 					attributtType: AttributtType.SelectAndRead
+		// 				}
+		// 			]
+		// 		}
+		// 	]
+		// ]
 	}
 ]
 
