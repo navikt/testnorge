@@ -42,15 +42,15 @@ public class SyntetiseringService {
             List<SyntetisertSamObject> syntetiserteMeldinger = samSyntRestConsumer.hentSammeldingerFromSyntRest(identer.size());
             try {
                 lagreSyntetiserteMeldinger(syntetiserteMeldinger, identer);
+                return ResponseEntity.status(HttpStatus.OK).build();
             } catch (Exception e) {
                 System.out.println(e.toString());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
-            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             System.out.println(e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return null;
     }
 
     public List<String> finnLevendeIdenter(SyntetiserSamRequest request) {
