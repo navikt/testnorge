@@ -84,10 +84,11 @@ public class AaregConsumer {
         try {
             Method method = exception.getClass().getMethod("getFaultInfo");
             ForretningsmessigUnntak faultInfo = (ForretningsmessigUnntak) method.invoke(exception);
-            feilbeskrivelse = format("(ForretningsmessigUnntak: feilaarsak: %s, feilkilde: %s, feilmelding: %s, tidspunkt: %s)",
-                    faultInfo.getFeilaarsak(), faultInfo.getFeilkilde(), faultInfo.getFeilmelding(), faultInfo.getTidspunkt().toString());
+            feilbeskrivelse = format("(ForretningsmessigUnntak: feilaarsak: %s, feilkilde: %s, feilmelding: %s%s)",
+                    faultInfo.getFeilaarsak(), faultInfo.getFeilkilde(), faultInfo.getFeilmelding(),
+                    (nonNull(faultInfo.getTidspunkt()) ? format(", tidspunkt: %s", faultInfo.getTidspunkt().toString()) : ""));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            // Do nothing
+            log.error("Lesing af faultInfo fra Aaareg feilet.", e);
         }
         return format("Feil, %s -> %s %s", exception.getClass().getSimpleName(), exception.getMessage(), feilbeskrivelse);
     }
