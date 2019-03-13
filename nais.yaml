@@ -73,7 +73,7 @@ fasitResources:
   - alias: fasit.host
     resourceType: baseurl
     propertyMap:
-      url: fasit.url
+      url: providers.fasit.url
 
   - alias: srvdolly
     resourceType: credential
