@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 
@@ -18,4 +19,5 @@ public class RsDollyBestilling {
     private List<String> environments;
     private List<RsOpprettSkattegrunnlag> sigrunstub;
     private RsDigitalKontaktdata krrstub;
+    private RsArbeidsforhold aareg;
 }

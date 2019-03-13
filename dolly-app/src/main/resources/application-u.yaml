@@ -47,8 +47,6 @@ providers:
     url: https://app-q1.adeo.no/norg2
   fasit:
     url: https://fasit.adeo.no
-  securityTokenService:
-    url:
 
 jira:
   host: https://jira.adeo.no
