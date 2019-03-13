@@ -22,10 +22,9 @@ public final class AaregResponseHandler {
         try {
             Method method = exception.getClass().getMethod("getFaultInfo");
             ForretningsmessigUnntak faultInfo = (ForretningsmessigUnntak) method.invoke(exception);
-            if (nonNull(faultInfo)) {
-                feilbeskrivelse = format(" (ForretningsmessigUnntak: feilaarsak: %s, feilkilde: %s, feilmelding: %s%s)",
-                        faultInfo.getFeilaarsak(), faultInfo.getFeilkilde(), faultInfo.getFeilmelding(),
-                        (nonNull(faultInfo.getTidspunkt()) ? format(", tidspunkt: %s", faultInfo.getTidspunkt().toString()) : ""));
+            if (nonNull(faultInfo.getTidspunkt())) {
+                feilbeskrivelse = format(" (ForretningsmessigUnntak: feilaarsak: %s, feilkilde: %s, feilmelding: %s, tidspunkt: %s)",
+                        faultInfo.getFeilaarsak(), faultInfo.getFeilkilde(), faultInfo.getFeilmelding(), faultInfo.getTidspunkt());
             }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             log.error("Lesing af faultInfo fra Aaareg feilet.", e);
