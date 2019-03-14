@@ -23,9 +23,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-import java.util.Map;
 
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
+import no.nav.registre.inst.institusjonsforhold.Institusjonsforholdsmelding;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,11 +41,11 @@ public class InstSyntetisererenConsumerTest {
     @Test
     public void shouldGetMeldinger() {
         stubInstSyntetisererenConsumer();
-        List<Map<String, String>> result = instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(numToGenerate);
+        List<Institusjonsforholdsmelding> result = instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(numToGenerate);
 
         assertThat(result.size(), is(numToGenerate));
-        assertThat(result.get(0).get("endret_av"), equalTo("L113794"));
-        assertThat(result.get(1).get("endret_av"), equalTo("KONVERTERT_FRA_IS20"));
+        assertThat(result.get(0).getTssEksternId(), equalTo("440"));
+        assertThat(result.get(1).getTssEksternId(), equalTo("441"));
     }
 
     @Test
