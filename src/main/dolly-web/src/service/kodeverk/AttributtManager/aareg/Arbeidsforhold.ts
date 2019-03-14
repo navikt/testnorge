@@ -12,7 +12,7 @@ const AttributtListe: Attributt[] = [
 		subKategori: SubKategorier.Arbeidsforhold,
 		id: 'arbeidsforhold',
 		label: 'Har arbeidsforhold',
-		dataSource: DataSource.SIGRUN,
+		dataSource: DataSource.AAREG,
 		validation: yup.object(),
 		attributtType: AttributtType.SelectAndEdit,
 		items: [
@@ -21,8 +21,8 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Arbeidsforhold,
 				id: 'yrke',
 				label: 'Yrke',
-				path: 'ikkesett',
-				dataSource: DataSource.SIGRUN,
+				path: 'yrke',
+				dataSource: DataSource.AAREG,
 				inputType: InputType.Text,
 				validation: yup.string().required('Velg en type tjeneste.'),
 				attributtType: AttributtType.SelectAndRead
@@ -32,8 +32,8 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Arbeidsforhold,
 				id: 'arbeidsforholdFra',
 				label: 'Startdato',
-				path: 'ikkesett',
-				dataSource: DataSource.SIGRUN,
+				path: 'ansettelsesPeriode.fom',
+				dataSource: DataSource.AAREG,
 				inputType: InputType.Date,
 				validation: yup.string().required('Velg en type tjeneste.'),
 				attributtType: AttributtType.SelectAndRead
@@ -43,8 +43,8 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Arbeidsforhold,
 				id: 'arbeidsforholdTil',
 				label: 'Sluttdato',
-				path: 'ikkesett',
-				dataSource: DataSource.SIGRUN,
+				path: 'ansettelsesPeriode.tom',
+				dataSource: DataSource.AAREG,
 				inputType: InputType.Date,
 				validation: yup.string().required('Velg en type tjeneste.'),
 				attributtType: AttributtType.SelectAndRead
@@ -52,49 +52,60 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,
 				subKategori: SubKategorier.Arbeidsforhold,
-				id: 'yrk2e',
-				label: 'Stilling',
-				path: 'ikkesett',
-				dataSource: DataSource.SIGRUN,
+				id: 'stilling',
+				label: 'Stillingprosent',
+				path: 'stillingprosent',
+				dataSource: DataSource.AAREG,
+				inputType: InputType.Text,
+				validation: yup.string().required('Velg en type tjeneste.'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.ArbeidOgInntekt,
+				subKategori: SubKategorier.Arbeidsforhold,
+				id: 'arbeidsgiver',
+				label: 'Arbeidsgiver',
+				path: 'arbeidsgiver',
+				dataSource: DataSource.AAREG,
 				inputType: InputType.Text,
 				validation: yup.string().required('Velg en type tjeneste.'),
 				attributtType: AttributtType.SelectAndRead
 			}
-		],
-		subItems: [
-			{
-				id: 'permisjon',
-				label: 'Permisjon',
-				items: [
-					{
-						hovedKategori: Kategorier.ArbeidOgInntekt,
-						subKategori: SubKategorier.Arbeidsforhold,
-						id: 'type',
-						label: 'Type',
-						path: 'ikkesett',
-						dataSource: DataSource.SIGRUN,
-						inputType: InputType.Text,
-						attributtType: AttributtType.SelectAndRead
-					}
-				]
-			},
-			{
-				id: 'Utenlandsopphold',
-				label: 'Utenlandsopphold',
-				items: [
-					{
-						hovedKategori: Kategorier.ArbeidOgInntekt,
-						subKategori: SubKategorier.Arbeidsforhold,
-						id: 'type222',
-						label: 'Type',
-						path: 'ikkesett',
-						dataSource: DataSource.SIGRUN,
-						inputType: InputType.Text,
-						attributtType: AttributtType.SelectAndRead
-					}
-				]
-			}
 		]
+		// subItems: [
+		// 	{
+		// 		id: 'permisjon',
+		// 		label: 'Permisjon',
+		// 		items: [
+		// 			{
+		// 				hovedKategori: Kategorier.ArbeidOgInntekt,
+		// 				subKategori: SubKategorier.Arbeidsforhold,
+		// 				id: 'type',
+		// 				label: 'Type',
+		// 				path: 'ikkesett',
+		// 				dataSource: DataSource.AAREG,
+		// 				inputType: InputType.Text,
+		// 				attributtType: AttributtType.SelectAndRead
+		// 			}
+		// 		]
+		// 	},
+		// 	{
+		// 		id: 'Utenlandsopphold',
+		// 		label: 'Utenlandsopphold',
+		// 		items: [
+		// 			{
+		// 				hovedKategori: Kategorier.ArbeidOgInntekt,
+		// 				subKategori: SubKategorier.Arbeidsforhold,
+		// 				id: 'type',
+		// 				label: 'Type',
+		// 				path: 'ikkesett',
+		// 				dataSource: DataSource.AAREG,
+		// 				inputType: InputType.Text,
+		// 				attributtType: AttributtType.SelectAndRead
+		// 			}
+		// 		]
+		// 	}
+		// ]
 
 		// subItems: [
 		// 	[
@@ -108,7 +119,7 @@ const AttributtListe: Attributt[] = [
 		// 					id: 'yrke',
 		// 					label: 'Stilling',
 		// 					path: 'ikkesett',
-		// 					dataSource: DataSource.SIGRUN,
+		// 					dataSource: DataSource.AAREG,
 		// 					inputType: InputType.Text,
 		// 					validation: yup.string().required('Velg en type tjeneste.'),
 		// 					attributtType: AttributtType.SelectAndRead

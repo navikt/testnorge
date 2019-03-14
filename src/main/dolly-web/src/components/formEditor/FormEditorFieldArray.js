@@ -6,7 +6,13 @@ import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManag
 
 const Attributt = new AttributtManager()
 
-const FormEditorFieldArray = (subKategori, formikProps, renderFieldComponent, editMode) => {
+const FormEditorFieldArray = (
+	subKategori,
+	formikProps,
+	renderFieldComponent,
+	renderFieldSubItem,
+	editMode
+) => {
 	const parentId = subKategori.id
 	return (
 		<div className="subkategori" key={parentId}>
@@ -17,6 +23,7 @@ const FormEditorFieldArray = (subKategori, formikProps, renderFieldComponent, ed
 						item={subKategori}
 						formikProps={formikProps}
 						renderFieldComponent={renderFieldComponent}
+						renderFieldSubItem={renderFieldSubItem}
 						editMode={editMode}
 						arrayHelpers={arrayHelpers}
 					/>
@@ -30,47 +37,69 @@ export const FieldArrayComponent = ({
 	item,
 	formikProps,
 	renderFieldComponent,
+	renderFieldSubItem,
 	editMode,
 	arrayHelpers
 }) => {
-	const { subKategori, items, id, subItems } = item
+	const { subKategori, items, subItems, id } = item
+
+	// console.log('item :', item)
 	const parentId = id
 	const parentAttributes = items.reduce((prev, curr) => {
 		return { ...prev, [curr.id]: Attributt.initValueSelector(curr) }
 	}, {})
 
 	const createDefaultObject = () => arrayHelpers.push({ ...parentAttributes })
-	const createSubItem = index => {
-		const subItemAttributes = subItems[0].items.reduce((prev, curr) => {
+	const createSubItem = (itemIndex, subItemIndex) => {
+		const subItemAttributes = subItems[subItemIndex].items.reduce((prev, curr) => {
 			return { ...prev, [curr.id]: Attributt.initValueSelector(curr) }
 		}, {})
 
-		console.log('index :', index)
 		let valueCopy = JSON.parse(JSON.stringify(formikProps.values[parentId][0]))
 
-		const subItemId = subItems[0].id
-		arrayHelpers.replace(index, { ...valueCopy, [subItemId]: subItemAttributes })
+		const subItemId = subItems[subItemIndex].id
+		arrayHelpers.replace(itemIndex, { ...valueCopy, [subItemId]: subItemAttributes })
 	}
 
+	const formikValues = formikProps.values[parentId]
+	// console.log('formikValues :', formikValues)
+
+	// console.log('items :', items)
 	return (
 		<Fragment>
 			<h4>{subKategori.navn}</h4>
-			{formikProps.values[parentId] && formikProps.values[parentId].length > 0 ? (
-				formikProps.values[parentId].map((faKey, idx) => {
+			{formikValues && formikValues.length > 0 ? (
+				formikValues.map((faKey, idx) => {
+					// console.log('items :', items)
 					return (
 						<div key={idx}>
 							<div className="subkategori-field-group multi">
 								{items.map(item => {
+									// console.log('item :', item)
+
 									// Add subKategori to ID
 									const fakeItem = {
 										...item,
 										id: `${parentId}[${idx}]${item.id}`
 									}
+
+									// console.log('fakeItem :', fakeItem)
 									return renderFieldComponent(fakeItem, formikProps.values, {
 										parentId,
 										idx
 									})
 								})}
+								{/* {subItems && subItems.map(subItem => {
+									// console.log('subItem :', subItem)
+
+									const fakeSubItem = {
+										...subItem,
+										id: `${parentId}[${idx}]${subItem.id}`
+									}
+
+									return renderFieldSubItem(fakeSubItem)
+								})} */}
+
 								{!editMode && (
 									<Button
 										className="field-group-remove"
@@ -79,7 +108,7 @@ export const FieldArrayComponent = ({
 									/>
 								)}
 							</div>
-							{/* // TODO: Alex, uncomment for videre implementere subItems AAREGs */}
+							{/*Attributtene med items og subItems, f.eks AAREGs */}
 							{/* {!editMode &&
 								subItems &&
 								subItems.map((subItem, i) => (
@@ -87,7 +116,7 @@ export const FieldArrayComponent = ({
 										className="flexbox--align-center field-group-add"
 										kind="add-circle"
 										key={i}
-										onClick={() => createSubItem(idx)}
+										onClick={() => createSubItem(idx, i)}
 									>
 										{subItem.label}
 									</Button>
