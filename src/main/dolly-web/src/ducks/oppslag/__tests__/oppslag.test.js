@@ -1,10 +1,10 @@
-import kodeverkReducer, { kodeverkLabelSelector } from '../index'
+import oppslagReducer, { oppslagLabelSelector } from '../index'
 import success from '~/utils/SuccessAction'
 
-describe('kodeverkReducer', () => {
+describe('oppslagReducer', () => {
 	it('should return state with initial state', () => {
 		const initialState = {}
-		expect(kodeverkReducer(undefined, {})).toEqual(initialState)
+		expect(oppslagReducer(undefined, {})).toEqual(initialState)
 	})
 
 	it('should handle success action', () => {
@@ -19,11 +19,11 @@ describe('kodeverkReducer', () => {
 			[testdata]: testdata
 		}
 
-		expect(kodeverkReducer({}, action)).toEqual(res)
+		expect(oppslagReducer({}, action)).toEqual(res)
 	})
 })
 
-describe('kodeverkLabelSelector', () => {
+describe('oppslagLabelSelector', () => {
 	const testnavn = 'test'
 	const testkodeverk = {
 		value: testnavn,
@@ -34,5 +34,5 @@ describe('kodeverkLabelSelector', () => {
 		kodeverk: { [testnavn]: { koder: [testkodeverk] } }
 	}
 
-	expect(kodeverkLabelSelector(state, testnavn, testnavn)).toEqual(testkodeverk)
+	expect(oppslagLabelSelector(state, testnavn, testnavn)).toEqual(testkodeverk)
 })
