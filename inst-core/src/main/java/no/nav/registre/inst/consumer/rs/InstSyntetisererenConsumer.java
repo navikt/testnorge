@@ -13,13 +13,14 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import no.nav.registre.inst.institusjonsforhold.Institusjonsforholdsmelding;
 
 @Component
 @Slf4j
 public class InstSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<Map<String, String>>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Map<String, String>>>() {
+    private static final ParameterizedTypeReference<List<Institusjonsforholdsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Institusjonsforholdsmelding>>() {
     };
 
     @Autowired
@@ -32,12 +33,12 @@ public class InstSyntetisererenConsumer {
     }
 
     @Timed(value = "inst.resource.latency", extraTags = { "operation", "inst-syntetisereren" })
-    public List<Map<String, String>> hentInstMeldingerFromSyntRest(int numToGenerate) {
+    public List<Institusjonsforholdsmelding> hentInstMeldingerFromSyntRest(int numToGenerate) {
         RequestEntity getRequest = RequestEntity.get(url.expand(numToGenerate)).build();
 
-        List<Map<String, String>> syntetiserteMeldinger = new ArrayList<>();
+        List<Institusjonsforholdsmelding> syntetiserteMeldinger = new ArrayList<>();
 
-        ResponseEntity<List<Map<String, String>>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        ResponseEntity<List<Institusjonsforholdsmelding>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
         if (response != null && response.getBody() != null) {
             syntetiserteMeldinger.addAll(response.getBody());
         } else {

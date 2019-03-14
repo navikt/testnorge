@@ -14,6 +14,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Arrays;
+import java.util.List;
+
 import no.nav.registre.inst.provider.rs.SyntetiseringController;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.inst.service.SyntetiseringService;
@@ -39,12 +42,12 @@ public class SyntetiseringControllerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        when(syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
+        when(syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest)).thenReturn(Arrays.asList(ResponseEntity.status(HttpStatus.OK).build()));
 
-        ResponseEntity result = syntetiseringController.genererInstitusjonsmeldinger(syntetiserInstRequest);
+        List<ResponseEntity> result = syntetiseringController.genererInstitusjonsmeldinger(syntetiserInstRequest);
 
         verify(syntetiseringService).finnSyntetiserteMeldinger(syntetiserInstRequest);
 
-        assertThat(result.getStatusCode(), is(HttpStatus.OK));
+        assertThat(result.get(0).getStatusCode(), is(HttpStatus.OK));
     }
 }
