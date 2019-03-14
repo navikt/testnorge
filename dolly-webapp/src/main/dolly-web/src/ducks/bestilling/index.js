@@ -205,9 +205,10 @@ const getValues = (attributeList, values) => {
 }
 
 // Transform attributes before order is sent
-// Only affects attributes that has property "transform: (value: any, attributter: Attributt[]) => any"
 const _transformAttributt = (attribute, attributes, value) => {
-	if (attribute.items) {
+	if (attribute.dataSource === 'SIGRUN') {
+		return value
+	} else if (attribute.items) {
 		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
 		return value.map(val =>
 			Object.assign(
@@ -222,6 +223,7 @@ const _transformAttributt = (attribute, attributes, value) => {
 			)
 		)
 	} else if (attribute.transform) {
+		// Only affects attributes that has property "transform: (value: any, attributter: Attributt[]) => any"
 		value = attribute.transform(value, attributes)
 	}
 	if (attribute.inputType === 'date') value = DataFormatter.parseDate(value)

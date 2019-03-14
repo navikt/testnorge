@@ -36,7 +36,7 @@ freg.security.oidc:
 providers:
   tpsf:
     url: https://tps-forvalteren-u2.nais.preprod.local
-#     url: http://localhost:8050
+#    url: http://localhost:8050
   sigrunstub:
     url: https://sigrun-skd-stub.nais.preprod.local
   krrstub:
@@ -45,11 +45,18 @@ providers:
     url: https://kodeverk.nais.preprod.local
   norg2:
     url: https://app-q1.adeo.no/norg2
+  fasit:
+    url: https://fasit.adeo.no
 
 jira:
   host: https://jira.adeo.no
   username: srvFregDolly
   password: wudTENfn2uVd2EPh
+
+securityTokenService:
+  host: https://sts-t6.test.local/SecurityTokenServiceProvider/
+  username: srvdolly
+  password: WFPlLyHqMTa3yGA
 
 ### CORS ###
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000

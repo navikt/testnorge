@@ -14,7 +14,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsIdentTpsStatus {
+public class RsIdentSystemStatus {
 
     private String statusMelding;
     private Map<String, Set<String>> environmentIdents;
