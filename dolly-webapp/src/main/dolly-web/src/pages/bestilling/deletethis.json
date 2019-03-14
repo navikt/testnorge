@@ -1,0 +1,22 @@
+{
+	"aareg": {
+		"ansettelsesPeriode": {
+			"fom": "1999-01-01T00:00:00",
+			"tom": "1999-01-01T00:00:00"
+		},
+		"arbeidsavtale": {
+			"arbeidstidsordning": "ikkeSkift",
+			"avtaltArbeidstimerPerUke": 40.0,
+			"stillingsprosent": 100,
+			"yrke": "2130123"
+		},
+		"arbeidsforholdID": "1",
+		"arbeidsforholdstype": "ordinaertArbeidsforhold",
+		"arbeidsgiver": {
+			"aktoertype": "ORG",
+			"orgnummer": "913486056"
+		}
+	},
+	"antall": 1,
+	"environments": ["t6"]
+}

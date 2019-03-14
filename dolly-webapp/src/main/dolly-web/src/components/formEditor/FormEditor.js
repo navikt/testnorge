@@ -102,6 +102,7 @@ export default class FormEditor extends PureComponent {
 										item,
 										formikProps,
 										this.renderFieldComponent,
+										this.renderFieldSubItem,
 										this.props.editMode
 								  )
 								: this.renderFieldComponent(item, formikProps.values)
@@ -147,6 +148,24 @@ export default class FormEditor extends PureComponent {
 				{...componentProps}
 				{...item.inputTypeAttributes}
 			/>
+		)
+	}
+
+	renderFieldSubItem = item => {
+		console.log('item :', item)
+		const InputComponent = InputSelector(item.inputType)
+
+		return (
+			<p>{item.id}</p>
+			// <Field
+			// 	key={item.key || item.id}
+			// 	name={item.id}
+			// 	label={item.label}
+			// 	component={InputComponent}
+			// 	size={item.size}
+			// 	{...componentProps}
+			// 	{...item.inputTypeAttributes}
+			// />
 		)
 	}
 
