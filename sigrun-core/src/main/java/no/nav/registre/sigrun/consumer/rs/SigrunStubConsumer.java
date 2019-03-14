@@ -4,12 +4,12 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,19 +19,23 @@ import java.util.Map;
 @Slf4j
 public class SigrunStubConsumer {
 
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    };
+
     @Autowired
     private RestTemplate restTemplate;
 
-    private String sigrunBaseUrl;
+    private UriTemplate sigrunBaseUrl;
 
     public SigrunStubConsumer(@Value("${sigrunstub.url}") String sigrunServerUrl) {
-        this.sigrunBaseUrl = sigrunServerUrl;
+        this.sigrunBaseUrl = new UriTemplate(sigrunServerUrl);
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
     public List<String> hentEksisterendePersonidentifikatorer() {
-        String hentFnrUrl = sigrunBaseUrl + "testdata/hentPersonidentifikatorer";
-        ResponseEntity<List> response = restTemplate.getForEntity(hentFnrUrl, List.class);
+        UriTemplate hentFnrUrl = new UriTemplate(sigrunBaseUrl + "testdata/hentPersonidentifikatorer");
+        RequestEntity getRequest = RequestEntity.get(hentFnrUrl.expand()).build();
+        ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
         List<String> identer = new ArrayList<>();
 
@@ -46,11 +50,8 @@ public class SigrunStubConsumer {
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
     public ResponseEntity sendDataTilSigrunstub(List<Map<String, Object>> meldinger, String testdataEier) {
-        String sendDataUrl = sigrunBaseUrl + "testdata/opprettBolk";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("testdataEier", testdataEier);
-        HttpEntity entity = new HttpEntity(meldinger, headers);
-        return restTemplate.postForEntity(sendDataUrl, entity, List.class);
+        UriTemplate sendDataUrl = new UriTemplate(sigrunBaseUrl + "testdata/opprettBolk");
+        RequestEntity postRequest = RequestEntity.post(sendDataUrl.expand()).header("testdataEier", testdataEier).body(meldinger);
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 }
