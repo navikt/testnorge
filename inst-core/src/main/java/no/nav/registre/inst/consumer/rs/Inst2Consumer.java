@@ -77,7 +77,7 @@ public class Inst2Consumer {
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
                 return new ArrayList<>();
             } else {
-                log.error("Kunne ikke hente ident fra inst2 - {}", e);
+                log.error("Kunne ikke hente ident fra inst2", e);
             }
         }
         return response;
@@ -89,12 +89,11 @@ public class Inst2Consumer {
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", "orkestratoren")
                 .header("Nav-Consumer-Id", "orkestratoren")
-                .header("Content-Type", "application/json")
                 .body(institusjonsforholdsmelding);
         try {
             return restTemplate.exchange(postRequest, RESPONSE_TYPE_LEGG_TIL_INSTITUSJONSOPPHOLD);
         } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke legge til institusjonsopphold i inst2 - {}", e);
+            log.error("Kunne ikke legge til institusjonsopphold i inst2", e);
             return ResponseEntity.status(e.getStatusCode()).headers(e.getResponseHeaders()).body(e.getResponseBodyAsString());
         }
     }

@@ -59,7 +59,10 @@ public class Institusjonsforholdsmelding {
     }
 
     private String parseDatoToInst2Format(String date) {
-        if(date.length() == 10 && date.charAt(2) == '.' && date.charAt(5) == '.') {
+        if (date == null) {
+            return "";
+        }
+        if (date.length() == 10 && date.charAt(2) == '.' && date.charAt(5) == '.') {
             String day = date.substring(0, 2);
             String month = date.substring(3, 5);
             String year = date.substring(6);

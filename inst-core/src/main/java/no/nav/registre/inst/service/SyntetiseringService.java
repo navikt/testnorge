@@ -57,7 +57,7 @@ public class SyntetiseringService {
         for (Institusjonsforholdsmelding institusjonsforholdsmelding : syntetiserteMeldinger) {
             String ident = utvalgteIdenter.remove(0);
             List<Institusjonsforholdsmelding> eksisterendeInstitusjonsforhold = hentInstitusjonsoppholdFraInst2(ident);
-            if (eksisterendeInstitusjonsforhold.size() > 0) {
+            if (!eksisterendeInstitusjonsforhold.isEmpty()) {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", ident);
             } else {
                 institusjonsforholdsmelding.setPersonident(ident);

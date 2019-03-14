@@ -1,16 +1,23 @@
 package no.nav.registre.inst.consumer.rs.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,16 +52,22 @@ public class SyntetiseringServiceTest {
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
     private int antallMeldinger = 1;
+    private String fnr1 = "01010101010";
+    private SyntetiserInstRequest syntetiserInstRequest;
+    private List<String> utvalgteIdenter;
+    private List<Institusjonsforholdsmelding> meldinger;
+
+    @Before
+    public void setUp() {
+        syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallMeldinger);
+        utvalgteIdenter = new ArrayList<>(Arrays.asList(fnr1));
+        meldinger = new ArrayList<>();
+        meldinger.add(Institusjonsforholdsmelding.builder().build());
+    }
 
     @Test
     public void shouldOppretteInstitusjonsmeldinger() {
-        SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallMeldinger);
-        List<String> utvalgteIdenter = new ArrayList<>(Arrays.asList("01010101010"));
-
-        List<Institusjonsforholdsmelding> syntetiserteMeldinger = new ArrayList<>();
-        syntetiserteMeldinger.add(Institusjonsforholdsmelding.builder().build());
-
-        when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(syntetiserteMeldinger);
+        when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
 
         syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest);
@@ -63,5 +76,26 @@ public class SyntetiseringServiceTest {
         verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
         verify(inst2Consumer, times(2)).hentTokenTilInst2();
         verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), anyString());
+    }
+
+    @Test
+    public void shouldFindAndLogEksisterendeInstitusjonsopphold() {
+        Logger logger = (Logger) LoggerFactory.getLogger(SyntetiseringService.class);
+        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        listAppender.start();
+        logger.addAppender(listAppender);
+
+        when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
+        when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
+        when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), anyString())).thenReturn(meldinger);
+
+        syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest);
+
+        verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
+        verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
+        verify(inst2Consumer, times(2)).hentTokenTilInst2();
+        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), anyString());
+
+        assertThat(listAppender.list.get(0).toString(), containsString("Ident " + fnr1 + " har allerede fått opprettet institusjonsforhold."));
     }
 }
