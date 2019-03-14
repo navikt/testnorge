@@ -39,7 +39,7 @@ public class Inst2Consumer {
     private UriTemplate leggTilInstitusjonsforholdUrl;
 
     public Inst2Consumer(
-            @Value("${freg-token-provider-v1.rest-api.url}") String tokenProviderServerUrl,
+            @Value("${freg-token-provider-v1.url}") String tokenProviderServerUrl,
             @Value("${testnorges.ida.credential.inst.username}") String username,
             @Value("${testnorges.ida.credential.inst.password}") String password,
             @Value("${inst2.web.api.url}") String inst2ServerUrl) {
