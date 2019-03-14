@@ -11,12 +11,14 @@ import org.springframework.web.util.UriTemplate;
 
 import io.micrometer.core.annotation.Timed;
 
+import java.util.List;
+
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 
 @Component
 public class InstSyntConsumer {
 
-    private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE = new ParameterizedTypeReference<ResponseEntity>() {
+    private static final ParameterizedTypeReference<List<ResponseEntity>> RESPONSE_TYPE = new ParameterizedTypeReference<List<ResponseEntity>>() {
     };
 
     @Autowired
