@@ -49,7 +49,7 @@ public class EksisterendeIdenterServiceTest {
 
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
-    private static final String AKSJONSKODE = "A0";
+    private static final String AKSJONSKODE = "B0";
     private static final int MINIMUM_ALDER = 18;
 
     private final String miljoe = "t1";

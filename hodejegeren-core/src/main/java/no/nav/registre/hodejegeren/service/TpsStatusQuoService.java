@@ -22,7 +22,7 @@ import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 @Slf4j
 public class TpsStatusQuoService {
 
-    public static final String AKSJONSKODE = "A0";
+    public static final String AKSJONSKODE = "B0";
     @Autowired
     private TpsfConsumer tpsfConsumer;
     private Map<String, JsonNode> tpsServiceRoutineCache;

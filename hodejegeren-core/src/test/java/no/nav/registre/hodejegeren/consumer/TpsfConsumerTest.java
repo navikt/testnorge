@@ -64,7 +64,7 @@ public class TpsfConsumerTest {
      */
     @Test
     public void shouldWriteProperRequestWhenGettingTpsServiceRoutine() throws IOException {
-        String aksjonskode = "A0";
+        String aksjonskode = "B0";
         String environment = "env";
         String fnr = "bla";
 

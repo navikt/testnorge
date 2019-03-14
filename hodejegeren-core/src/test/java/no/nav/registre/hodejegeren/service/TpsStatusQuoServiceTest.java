@@ -109,7 +109,7 @@ public class TpsStatusQuoServiceTest {
      */
     @Test
     public void shouldUpdateCacheWithRoutine() throws IOException {
-        final String aksjonsKode = "A0";
+        final String aksjonsKode = "B0";
         final String environment = "Q11";
 
         JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
