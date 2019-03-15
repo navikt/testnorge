@@ -56,6 +56,10 @@ public class TpService {
         }
     }
 
+    public List<TForhold> getForhold() {
+        return (List<TForhold>) tForholdRepository.findAll();
+    }
+
     private TYtelse saveYtelse(TYtelse ytelse) {
         ytelse.setOpprettetAv("synt");
         ytelse.setEndretAv("synt");
