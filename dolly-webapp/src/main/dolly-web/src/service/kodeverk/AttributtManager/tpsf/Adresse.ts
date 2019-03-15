@@ -25,7 +25,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Gatenavn',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst fyll ut'),
+		// validation: yup.string().required('Vennligst fyll ut'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -37,7 +37,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Husnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst fyll ut'),
+		// validation: yup.string().required('Vennligst fyll ut'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
