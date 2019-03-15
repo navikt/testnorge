@@ -34,6 +34,9 @@ public class SyntetiseringService {
 
     public List<ResponseEntity> finnSyntetiserteMeldinger(SyntetiserInstRequest syntetiserInstRequest) {
         List<String> utvalgteIdenter = finnLevendeIdenter(syntetiserInstRequest);
+        if (utvalgteIdenter.size() < syntetiserInstRequest.getAntallNyeIdenter()) {
+            log.warn("Fant ikke nok ledige identer. Lager institusjonsforhold på {} identer.", utvalgteIdenter.size());
+        }
         List<Institusjonsforholdsmelding> syntetiserteMeldinger = instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(utvalgteIdenter.size());
         return leggTilSyntetisertInstitusjonsoppholdIInst2(utvalgteIdenter, syntetiserteMeldinger);
     }
@@ -43,7 +46,9 @@ public class SyntetiseringService {
         List<String> utvalgteIdenter = new ArrayList<>(syntetiserInstRequest.getAntallNyeIdenter());
 
         for (int i = 0; i < syntetiserInstRequest.getAntallNyeIdenter(); i++) {
-            utvalgteIdenter.add(alleLevendeIdenter.remove(rand.nextInt(alleLevendeIdenter.size())));
+            if (!alleLevendeIdenter.isEmpty()) {
+                utvalgteIdenter.add(alleLevendeIdenter.remove(rand.nextInt(alleLevendeIdenter.size())));
+            }
         }
 
         return utvalgteIdenter;
