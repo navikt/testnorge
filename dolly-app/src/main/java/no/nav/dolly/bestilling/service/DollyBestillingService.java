@@ -41,6 +41,7 @@ import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
+import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsPerson;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
@@ -283,15 +284,28 @@ public class DollyBestillingService {
 
     private void handleAareg(RsDollyBestilling bestillingRequest, String ident, BestillingProgress progress) {
 
-        if (nonNull(bestillingRequest.getAareg())) {
-            bestillingRequest.getAareg().setArbeidstaker(RsPerson.builder().ident(ident).build());
-            Map<String, String> status = aaregConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
-                    .arbeidsforhold(bestillingRequest.getAareg())
-                    .environments(bestillingRequest.getEnvironments())
-                    .build());
-
+        if (!bestillingRequest.getAareg().isEmpty()) {
             StringBuilder builder = new StringBuilder();
-            status.keySet().forEach(key -> builder.append(',').append(key).append(": ").append(status.get(key)));
+            Long arbeidsForholdId = 0L;
+
+            for (RsArbeidsforhold arbeidsforhold : bestillingRequest.getAareg()) {
+                arbeidsforhold.setArbeidstaker(RsPerson.builder().ident(ident).build());
+                arbeidsforhold.setArbeidsforholdID((++arbeidsForholdId).toString());
+                Map<String, String> status = aaregConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
+                        .arbeidsforhold(arbeidsforhold)
+                        .environments(bestillingRequest.getEnvironments())
+                        .build());
+
+                for (Map.Entry<String, String> entry : status.entrySet()) {
+                    builder.append(',')
+                            .append(entry.getKey())
+                            .append(": ")
+                            .append("arbforhold=")
+                            .append(arbeidsForholdId.toString())
+                            .append('$')
+                            .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
+                }
+            }
             progress.setAaregStatus(builder.substring(1));
         }
     }

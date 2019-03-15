@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsIdentStatus {
+public class RsStatusIdent {
 
     private String statusMelding;
     private List<String> identer;
