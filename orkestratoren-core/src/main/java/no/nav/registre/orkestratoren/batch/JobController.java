@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -19,11 +20,13 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
+import no.nav.registre.orkestratoren.service.TpService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @Component
@@ -59,6 +62,15 @@ public class JobController {
     @Value("${instbatch.antallNyeIdenter}")
     private int instbatchAntallNyeIdenter;
 
+    @Value("#{'${tpbatch.miljoe}'.split(', ')}")
+    private List<String> tpbatchMiljoe;
+
+    @Value("${tpbatch.antallIdenter}")
+    private Integer tpAntallIdenter;
+
+    @Value("${tpbatch.avspillergruppeId}")
+    private String tpAvspillergruppeId;
+
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
 
@@ -76,6 +88,9 @@ public class JobController {
 
     @Autowired
     private InstSyntPakkenService instSyntPakkenService;
+
+    @Autowired
+    private TpService tpService;
 
     @Scheduled(cron = "${tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
@@ -126,6 +141,17 @@ public class JobController {
         for(String miljoe : instbatchMiljoe) {
             SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(instbatchAvspillergruppeId, miljoe, instbatchAntallNyeIdenter);
             instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
+        }
+    }
+
+    @Scheduled(cron = "${tpbatch.cron:0 0 0 1 5 *}")
+    public void tpSyntBatch() {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            SyntetiserTpRequest request = new SyntetiserTpRequest(entry.getKey(), entry.getValue(), tpAntallIdenter);
+            HttpStatus httpStatus = tpService.genererTp(request);
+            if (!httpStatus.is2xxSuccessful()) {
+                log.error("Klarte ikke å fullføre syntetisering i batch kjøring");
+            }
         }
     }
 }

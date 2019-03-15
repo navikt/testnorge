@@ -3,6 +3,7 @@ package no.nav.registre.orkestratoren.batch;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
@@ -23,6 +25,7 @@ import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
+import no.nav.registre.orkestratoren.service.TpService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,6 +49,9 @@ public class JobControllerTest {
     @Mock
     private InstSyntPakkenService instSyntPakkenService;
 
+    @Mock
+    private TpService tpService;
+
     @InjectMocks
     private JobController jobController;
 
@@ -67,6 +73,8 @@ public class JobControllerTest {
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallMeldingerPerEndringskode", antallMeldingerPerEndringskode);
+
+        when(tpService.genererTp(any())).thenReturn(HttpStatus.OK);
     }
 
     @Test
@@ -103,5 +111,11 @@ public class JobControllerTest {
     public void shouldStartInstBatch() {
         jobController.instSyntBatch();
         verify(instSyntPakkenService).genererInstitusjonsforhold(any());
+    }
+
+    @Test
+    public void shouldStartTpBatch() {
+        jobController.tpSyntBatch();
+        verify(tpService).genererTp(any());
     }
 }
