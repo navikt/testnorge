@@ -8,7 +8,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import java.util.Map;
 
 @Service
 public class InntektService extends KubernetesUtils implements IService {
@@ -30,7 +30,7 @@ public class InntektService extends KubernetesUtils implements IService {
 
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-inntekt" })
     public Object getDataFromNAIS(Object fnrs) {
-        Object result = restTemplate.postForObject(synthInntektUrl, fnrs, List.class);
+        Object result = restTemplate.postForObject(synthInntektUrl, fnrs, Map.class);
         return result;
     }
 
