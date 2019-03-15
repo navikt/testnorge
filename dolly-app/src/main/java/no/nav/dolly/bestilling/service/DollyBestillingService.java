@@ -299,9 +299,8 @@ public class DollyBestillingService {
                 for (Map.Entry<String, String> entry : status.entrySet()) {
                     builder.append(',')
                             .append(entry.getKey())
-                            .append(": ")
-                            .append("arbforhold=")
-                            .append(arbeidsForholdId.toString())
+                            .append(": arbforhold=")
+                            .append(arbeidsForholdId)
                             .append('$')
                             .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
                 }
