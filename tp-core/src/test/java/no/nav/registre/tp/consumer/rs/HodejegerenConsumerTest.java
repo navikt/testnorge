@@ -5,6 +5,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,15 @@ public class HodejegerenConsumerTest {
     private Integer antallPersoner = 3;
     private Integer minimumAlder = 13;
 
-    private List<String> expectedFnrs = new ArrayList<String>() {{
-        add("123");
-        add("132");
-        add("321");
-    }};
+    private List<String> expectedFnrs = new ArrayList<>();
+
+    @Before
+    public void setUp() {
+        expectedFnrs.add("123");
+        expectedFnrs.add("132");
+        expectedFnrs.add("321");
+
+    }
 
     @Test
     public void getFnrs() {

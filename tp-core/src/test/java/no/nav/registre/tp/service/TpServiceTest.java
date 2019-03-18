@@ -52,27 +52,25 @@ public class TpServiceTest {
 
     @Before
     public void setUp() {
-        when(hodejegerenConsumer.getFnrs(any())).thenReturn(new ArrayList<String>() {{
-            add("123");
-            add("132");
-            add("321");
-        }});
+        ArrayList<String> fnrs = new ArrayList<>();
+        fnrs.add("123");
+        fnrs.add("132");
+        fnrs.add("321");
+        ArrayList<TYtelse> ytelser = new ArrayList<>();
+        ytelser.add(TYtelse.builder()
+                .ytelseId(3)
+                .erGyldig("0")
+                .funkYtelseId("10637556")
+                .k_Ytelse_T("UKJENT")
+                .endretAv("")
+                .versjon("2")
+                .build());
+        ytelser.add(TYtelse.builder().build());
+        ytelser.add(TYtelse.builder().build());
+        when(hodejegerenConsumer.getFnrs(any())).thenReturn(fnrs);
         when(tPersonRepository.save(any())).thenReturn(TPerson.builder().personId(1).fnrFk("123").build());
         when(tForholdRepository.save(any())).thenReturn(TForhold.builder().personId(1).forholdId(2).endretAv("").build());
-        when(tpSyntConsumer.getYtelser(3)).thenReturn(
-                new ArrayList<TYtelse>() {{
-                    add(TYtelse.builder()
-                            .ytelseId(3)
-                            .erGyldig("0")
-                            .funkYtelseId("10637556")
-                            .k_Ytelse_T("UKJENT")
-                            .endretAv("")
-                            .versjon("2")
-                            .build());
-                    add(TYtelse.builder().build());
-                    add(TYtelse.builder().build());
-                }}
-        );
+        when(tpSyntConsumer.getYtelser(3)).thenReturn(ytelser);
         when(tYtelseRepository.save(any())).thenReturn(TYtelse.builder()
                 .ytelseId(3)
                 .erGyldig("0")
@@ -83,9 +81,9 @@ public class TpServiceTest {
                 .build());
         when(tForholdYtelseHistorikkRepository.save(any())).thenReturn(new TForholdYtelseHistorikk(new HistorikkComposityKey(2, 3)));
 
-        when(tForholdRepository.findAll()).thenReturn(new ArrayList<TForhold>() {{
-            add(TForhold.builder().personId(1).forholdId(2).endretAv("").build());
-        }});
+        ArrayList<TForhold> forhold = new ArrayList<>();
+        forhold.add(TForhold.builder().personId(1).forholdId(2).endretAv("").build());
+        when(tForholdRepository.findAll()).thenReturn(forhold);
     }
 
     /**
@@ -101,25 +99,23 @@ public class TpServiceTest {
      */
     @Test
     public void syntetiserForMangeForhold() {
-        when(tpSyntConsumer.getYtelser(3)).thenReturn(
-                new ArrayList<TYtelse>() {{
-                    add(TYtelse.builder()
-                            .ytelseId(3)
-                            .erGyldig("0")
-                            .funkYtelseId("10637556")
-                            .k_Ytelse_T("UKJENT")
-                            .endretAv("")
-                            .versjon("2")
-                            .build());
-                    add(TYtelse.builder().build());
-                    add(TYtelse.builder().build());
-                    add(TYtelse.builder().build());
-                    add(TYtelse.builder().build());
-                    add(TYtelse.builder().build());
-                    add(TYtelse.builder().build());
-                    add(TYtelse.builder().build());
-                }}
-        );
+        ArrayList<TYtelse> ytelser = new ArrayList<>();
+        ytelser.add(TYtelse.builder()
+                .ytelseId(3)
+                .erGyldig("0")
+                .funkYtelseId("10637556")
+                .k_Ytelse_T("UKJENT")
+                .endretAv("")
+                .versjon("2")
+                .build());
+        ytelser.add(TYtelse.builder().build());
+        ytelser.add(TYtelse.builder().build());
+        ytelser.add(TYtelse.builder().build());
+        ytelser.add(TYtelse.builder().build());
+        ytelser.add(TYtelse.builder().build());
+        ytelser.add(TYtelse.builder().build());
+        ytelser.add(TYtelse.builder().build());
+        when(tpSyntConsumer.getYtelser(3)).thenReturn(ytelser);
         tpService.syntetiser(request);
     }
 
@@ -128,14 +124,14 @@ public class TpServiceTest {
      */
     @Test(expected = HttpServerErrorException.class)
     public void syntetiserForMangeFNR() {
-        when(hodejegerenConsumer.getFnrs(any())).thenReturn(new ArrayList<String>() {{
-            add("123");
-            add("132");
-            add("321");
-            add("312");
-            add("213");
-            add("231");
-        }});
+        ArrayList<String> fnrs = new ArrayList<>();
+        fnrs.add("123");
+        fnrs.add("132");
+        fnrs.add("321");
+        fnrs.add("312");
+        fnrs.add("213");
+        fnrs.add("231");
+        when(hodejegerenConsumer.getFnrs(any())).thenReturn(fnrs);
 
         tpService.syntetiser(request);
     }

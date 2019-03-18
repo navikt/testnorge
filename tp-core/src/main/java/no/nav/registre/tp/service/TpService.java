@@ -98,7 +98,7 @@ public class TpService {
                 .datoEndret(now)
                 .endretAv("synt")
                 .opprettetAv("synt")
-                .datoSamtykkeGitt(new java.sql.Date(Instant.now().getNano()))
+                .datoSamtykkeGitt(new java.sql.Date(Instant.now().toEpochMilli()))
                 .harUtlandPensj("N")
                 .funkForholdId(ytelse.getFunkYtelseId())
                 .build());
