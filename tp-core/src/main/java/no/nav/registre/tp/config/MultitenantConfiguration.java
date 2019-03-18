@@ -24,13 +24,16 @@ import no.nav.registre.tp.database.multitenancy.MultitenantDataSource;
 @Configuration
 public class MultitenantConfiguration {
 
-    private final List<String> databaseEnvironments = new ArrayList<String>() {{
-        this.add("q2");
-        this.add("q11");
+    private List<String> databaseEnvironments = new ArrayList<String>();
 
-    }};
     @Autowired
     private DataSourceProperties properties;
+
+    public MultitenantConfiguration(DataSourceProperties props) {
+        this.properties = props;
+        databaseEnvironments.add("q2");
+        databaseEnvironments.add("q11");
+    }
 
     /**
      * Defines the data source for the application
