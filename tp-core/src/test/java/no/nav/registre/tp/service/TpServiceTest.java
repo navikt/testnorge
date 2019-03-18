@@ -67,10 +67,10 @@ public class TpServiceTest {
                 .build());
         ytelser.add(TYtelse.builder().build());
         ytelser.add(TYtelse.builder().build());
-        when(hodejegerenConsumer.getFnrs(any())).thenReturn(fnrs);
+        when(hodejegerenConsumer.getLivingIdentities(any())).thenReturn(fnrs);
         when(tPersonRepository.save(any())).thenReturn(TPerson.builder().personId(1).fnrFk("123").build());
         when(tForholdRepository.save(any())).thenReturn(TForhold.builder().personId(1).forholdId(2).endretAv("").build());
-        when(tpSyntConsumer.getYtelser(3)).thenReturn(ytelser);
+        when(tpSyntConsumer.getSyntYtelser(3)).thenReturn(ytelser);
         when(tYtelseRepository.save(any())).thenReturn(TYtelse.builder()
                 .ytelseId(3)
                 .erGyldig("0")
@@ -115,7 +115,7 @@ public class TpServiceTest {
         ytelser.add(TYtelse.builder().build());
         ytelser.add(TYtelse.builder().build());
         ytelser.add(TYtelse.builder().build());
-        when(tpSyntConsumer.getYtelser(3)).thenReturn(ytelser);
+        when(tpSyntConsumer.getSyntYtelser(3)).thenReturn(ytelser);
         tpService.syntetiser(request);
     }
 
@@ -131,7 +131,7 @@ public class TpServiceTest {
         fnrs.add("312");
         fnrs.add("213");
         fnrs.add("231");
-        when(hodejegerenConsumer.getFnrs(any())).thenReturn(fnrs);
+        when(hodejegerenConsumer.getLivingIdentities(any())).thenReturn(fnrs);
 
         tpService.syntetiser(request);
     }

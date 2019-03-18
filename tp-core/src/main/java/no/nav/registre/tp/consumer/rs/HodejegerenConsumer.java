@@ -28,7 +28,7 @@ public class HodejegerenConsumer {
         this.hodejegerenUrl = hodejegerenUrl + "/v1/levende-identer/{avspillergruppeId}?miljoe={miljoe}&antallPersoner={antallPersoner}&minimumAlder={minimumAlder}";
     }
 
-    public List<String> getFnrs(@Valid SyntetiseringsRequest request) {
+    public List<String> getLivingIdentities(@Valid SyntetiseringsRequest request) {
         ResponseEntity<List<String>> responseEntity = restTemplate
                 .exchange(hodejegerenUrl, HttpMethod.GET, null, RESPONSE_TYPE, request.getAvspillergruppeId(), request.getMiljoe(), request.getAntallPersoner(), MIN_AGE);
 

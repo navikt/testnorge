@@ -28,7 +28,7 @@ public class TpSyntConsumer {
         this.syntRestApiUrl = syntRestApiUrl + "/v1/generate/tp?numToGenerate={numToGenerate}";
     }
 
-    public List<TYtelse> getYtelser(int numToGenerate) {
+    public List<TYtelse> getSyntYtelser(int numToGenerate) {
         ResponseEntity<List<TYtelse>> responseEntity = restTemplate.exchange(syntRestApiUrl, HttpMethod.GET, null, RESPONSE_TYPE, numToGenerate);
         List<TYtelse> ytelser = new LinkedList<>();
         if (responseEntity.getStatusCode() == HttpStatus.OK) {

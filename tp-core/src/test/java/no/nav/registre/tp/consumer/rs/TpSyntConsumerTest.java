@@ -31,7 +31,7 @@ public class TpSyntConsumerTest {
     @Test
     public void getYtelser() {
         stubForTpSynt();
-        List<TYtelse> ytelser = tpSyntConsumer.getYtelser(numToGen);
+        List<TYtelse> ytelser = tpSyntConsumer.getSyntYtelser(numToGen);
         assertEquals(3, ytelser.size());
         assertEquals("UKJENT", ytelser.get(0).getKYtelseT());
         assertEquals("0", ytelser.get(0).getErGyldig());

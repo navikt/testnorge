@@ -1,22 +1,17 @@
 package no.nav.registre.tp.config;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import no.nav.registre.tp.database.multitenancy.MultitenantDataSource;
 
@@ -26,11 +21,12 @@ public class MultitenantConfiguration {
 
     private List<String> databaseEnvironments = new ArrayList<>();
 
-    @Autowired
-    private DataSourceProperties properties;
+    private final DataSourceProperties properties;
+    private final Environment environment;
 
-    public MultitenantConfiguration(DataSourceProperties props) {
+    public MultitenantConfiguration(DataSourceProperties props, Environment environment) {
         this.properties = props;
+        this.environment = environment;
         databaseEnvironments.add("q2");
         databaseEnvironments.add("q11");
     }
@@ -44,26 +40,21 @@ public class MultitenantConfiguration {
     public DataSource dataSource() {
         Map<Object, Object> resolvedDataSources = new HashMap<>();
         for (String env : databaseEnvironments) {
-            Resource resource = new ClassPathResource(String.format("/hibernate-database-%s.properties", env));
-            try {
-                Properties tenantProperties = PropertiesLoaderUtils.loadProperties(resource);
-                DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader());
-                // Assumption: The tenant database uses the same driver class
-                // as the default database that you configure.
-                dataSourceBuilder
-                        .driverClassName(properties.getDriverClassName())
-                        .url(tenantProperties.getProperty("hibernate.connection.url"))
-                        .username(tenantProperties.getProperty("hibernate.connection.username"))
-                        .password(tenantProperties.getProperty("hibernate.connection.password"));
+            DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader());
+            // Assumption: The tenant database uses the same driver class
+            // as the default database that you configure.
+            String envPrefix = String.format("tp.%s.db.", env);
+            dataSourceBuilder
+                    .driverClassName(properties.getDriverClassName())
+                    .url(environment.getProperty(envPrefix + "url"))
+                    .username(environment.getProperty(envPrefix + "username"))
+                    .password(environment.getProperty(envPrefix + "password"));
 
-                if (properties.getType() != null) {
-                    dataSourceBuilder.type(properties.getType());
-                }
-
-                resolvedDataSources.put(env, dataSourceBuilder.build());
-            } catch (IOException e) {
-                log.error("Unable to read database prop");
+            if (properties.getType() != null) {
+                dataSourceBuilder.type(properties.getType());
             }
+
+            resolvedDataSources.put(env, dataSourceBuilder.build());
         }
 
         // Create the final multi-tenant source.

@@ -46,7 +46,7 @@ public class HodejegerenConsumerTest {
     @Test
     public void getFnrs() {
         stubHodejegeren();
-        List<String> fnrs = hodejegerenConsumer.getFnrs(new SyntetiseringsRequest(avspillgergruppeId, miljoe, antallPersoner));
+        List<String> fnrs = hodejegerenConsumer.getLivingIdentities(new SyntetiseringsRequest(avspillgergruppeId, miljoe, antallPersoner));
         assertEquals(expectedFnrs.toString(), fnrs.toString());
     }
 
