@@ -2,8 +2,12 @@ package no.nav.registre.tp.database.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +16,9 @@ import javax.persistence.SequenceGenerator;
 
 @Entity(name = "T_YTELSE")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TYtelse {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ytelse_seq")
@@ -24,17 +31,13 @@ public class TYtelse {
     @JsonProperty("dato_innm_ytel_fom")
     private java.sql.Date datoInnmYtelFom;
 
-    //    @JsonIgnore
     @JsonProperty("k_ytelse_t")
-    //    @OneToOne(targetEntity = TKYtelseT.class, cascade = CascadeType.ALL)
-    //    @JoinColumn(name = "T_K_YTELSE_T_K_YTELSE_T", referencedColumnName = "kYtelseT")
-    private String k_Ytelse_T;
+    @Column(name = "K_YTELSE_T")
+    private String kYtelseT;
 
-    //    @JsonIgnore
     @JsonProperty("k_melding_t")
-    //    @OneToOne(targetEntity = TKMeldingT.class, cascade = CascadeType.ALL)
-    //    @JoinColumn(name = "T_K_MELDING_T_K_MELDING_T", referencedColumnName = "kMeldingT")
-    private String k_Melding_T;
+    @Column(name = "K_MELDING_T")
+    private String kMeldingT;
 
     @JsonProperty("dato_ytel_iver_fom")
     private java.sql.Date datoYtelIverFom;
