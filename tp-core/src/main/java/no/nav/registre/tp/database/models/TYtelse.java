@@ -2,6 +2,7 @@ package no.nav.registre.tp.database.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.SequenceGenerator;
 
 @Entity(name = "T_YTELSE")
 @Data
+@Builder
 public class TYtelse {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ytelse_seq")
