@@ -23,7 +23,7 @@ public class TpSyntConsumer {
     private final RestTemplate restTemplate;
     private final String syntRestApiUrl;
 
-    public TpSyntConsumer(RestTemplate restTemplate, @Value("${synt.rest.api.url}") String syntRestApiUrl) {
+    public TpSyntConsumer(RestTemplate restTemplate, @Value("${syntrest.rest.api.url}") String syntRestApiUrl) {
         this.restTemplate = restTemplate;
         this.syntRestApiUrl = syntRestApiUrl + "/v1/generate/tp?numToGenerate={numToGenerate}";
     }
