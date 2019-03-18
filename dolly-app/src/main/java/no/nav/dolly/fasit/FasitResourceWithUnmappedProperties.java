@@ -1,8 +1,10 @@
 package no.nav.dolly.fasit;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class FasitResourceWithUnmappedProperties {
 
     private String id;

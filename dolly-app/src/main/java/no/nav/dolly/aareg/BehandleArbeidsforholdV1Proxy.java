@@ -50,7 +50,7 @@ public class BehandleArbeidsforholdV1Proxy {
         }
     }
 
-    public BehandleArbeidsforholdPortType createBehandleArbeidsforholdPortType(String url) {
+    private BehandleArbeidsforholdPortType createBehandleArbeidsforholdPortType(String url) {
         JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
         factoryBean.setWsdlURL(WSDL_URL);
         factoryBean.setServiceName(BEHANDLE_ARBEIDSFORHOLD_V1);
