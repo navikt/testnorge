@@ -39,21 +39,25 @@ public class TpService {
 
     public void syntetiser(@Valid SyntetiseringsRequest request) {
 
-        List<String> fnrs = hodejegerenConsumer.getFnrs(request);
+        List<String> ids = hodejegerenConsumer.getLivingIdentities(request);
 
-        List<TYtelse> ytelser = tpSyntConsumer.getYtelser(fnrs.size());
-        if (ytelser.size() != fnrs.size()) {
-            log.warn("Fikk ikke riktig antall ytelser i forhold til forventet antall. Ytelser: {} Fnrs: {}", ytelser.size(), fnrs.size());
+        List<TYtelse> ytelser = tpSyntConsumer.getSyntYtelser(ids.size());
+        if (ytelser.size() != ids.size()) {
+            log.warn("Fikk ikke riktig antall ytelser i forhold til forventet antall. Ytelser: {} Fnrs: {}", ytelser.size(), ids.size());
             log.warn("Fortsetter execution men sløyfer de siste ytelsene");
         }
-        if (fnrs.size() > ytelser.size()) {
-            String formated = String.format("Invalid amount of ytelser: %d, fnrs: %d", ytelser.size(), fnrs.size());
+        if (ids.size() > ytelser.size()) {
+            String formated = String.format("Invalid amount of ytelser: %d, fnrs: %d", ytelser.size(), ids.size());
             log.warn(formated);
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, formated);
         }
-        for (int i = 0; i < fnrs.size(); i++) {
-            createFullRelation(fnrs.get(i), ytelser.get(i));
+        for (int i = 0; i < ids.size(); i++) {
+            createFullRelation(ids.get(i), ytelser.get(i));
         }
+    }
+
+    public List<TForhold> getForhold() {
+        return (List<TForhold>) tForholdRepository.findAll();
     }
 
     private TYtelse saveYtelse(TYtelse ytelse) {
@@ -94,7 +98,7 @@ public class TpService {
                 .datoEndret(now)
                 .endretAv("synt")
                 .opprettetAv("synt")
-                .datoSamtykkeGitt(new java.sql.Date(Instant.now().getNano()))
+                .datoSamtykkeGitt(new java.sql.Date(Instant.now().toEpochMilli()))
                 .harUtlandPensj("N")
                 .funkForholdId(ytelse.getFunkYtelseId())
                 .build());
