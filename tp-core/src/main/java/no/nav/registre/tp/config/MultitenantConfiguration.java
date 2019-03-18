@@ -19,7 +19,7 @@ import no.nav.registre.tp.database.multitenancy.MultitenantDataSource;
 @Configuration
 public class MultitenantConfiguration {
 
-    private List<String> databaseEnvironments = new ArrayList<>();
+    private List<String> databaseEnvironments = new ArrayList<>(2);
 
     private final DataSourceProperties properties;
     private final Environment environment;
