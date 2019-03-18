@@ -8,6 +8,4 @@ import no.nav.registre.tp.database.models.TForholdYtelseHistorikk;
 @Repository
 public interface TForholdYtelseHistorikkRepository extends CrudRepository<TForholdYtelseHistorikk, Integer> {
 
-    TForholdYtelseHistorikk findByHistorikkComposityKey_YtelseIdFk(Integer ytelseId);
-
 }
