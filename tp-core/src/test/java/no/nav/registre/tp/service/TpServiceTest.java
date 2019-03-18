@@ -61,7 +61,7 @@ public class TpServiceTest {
                 .ytelseId(3)
                 .erGyldig("0")
                 .funkYtelseId("10637556")
-                .k_Ytelse_T("UKJENT")
+                .kYtelseT("UKJENT")
                 .endretAv("")
                 .versjon("2")
                 .build());
@@ -75,7 +75,7 @@ public class TpServiceTest {
                 .ytelseId(3)
                 .erGyldig("0")
                 .funkYtelseId("10637556")
-                .k_Ytelse_T("UKJENT")
+                .kYtelseT("UKJENT")
                 .endretAv("")
                 .versjon("2")
                 .build());
@@ -104,7 +104,7 @@ public class TpServiceTest {
                 .ytelseId(3)
                 .erGyldig("0")
                 .funkYtelseId("10637556")
-                .k_Ytelse_T("UKJENT")
+                .kYtelseT("UKJENT")
                 .endretAv("")
                 .versjon("2")
                 .build());
