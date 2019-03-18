@@ -43,7 +43,7 @@ public class MultitenantConfiguration {
             DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader());
             // Assumption: The tenant database uses the same driver class
             // as the default database that you configure.
-            String envPrefix = String.format("tp.%s.db.", env);
+            String envPrefix = String.format("tp.db.%s.", env);
             dataSourceBuilder
                     .driverClassName(properties.getDriverClassName())
                     .url(environment.getProperty(envPrefix + "url"))
