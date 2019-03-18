@@ -29,7 +29,7 @@ public class SyntetiseringsController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/debug/{miljoe}")
+    @GetMapping(value = "/forhold/{miljoe}")
     public ResponseEntity hentfolk(@PathVariable String miljoe) {
         TenantContext.setTenant(miljoe);
         return ResponseEntity.ok(tpService.getForhold());

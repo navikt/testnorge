@@ -31,17 +31,11 @@ public class TYtelse {
     @JsonProperty("dato_innm_ytel_fom")
     private java.sql.Date datoInnmYtelFom;
 
-    //    @JsonIgnore
     @JsonProperty("k_ytelse_t")
     @Column(name = "K_YTELSE_T")
-    //    @OneToOne(targetEntity = TKYtelseT.class, cascade = CascadeType.ALL)
-    //    @JoinColumn(name = "T_K_YTELSE_T_K_YTELSE_T", referencedColumnName = "kYtelseT")
     private String kYtelseT;
 
-    //    @JsonIgnore
     @JsonProperty("k_melding_t")
-    //    @OneToOne(targetEntity = TKMeldingT.class, cascade = CascadeType.ALL)
-    //    @JoinColumn(name = "T_K_MELDING_T_K_MELDING_T", referencedColumnName = "kMeldingT")
     @Column(name = "K_MELDING_T")
     private String kMeldingT;
 
