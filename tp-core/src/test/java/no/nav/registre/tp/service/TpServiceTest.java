@@ -2,6 +2,7 @@ package no.nav.registre.tp.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -94,7 +95,7 @@ public class TpServiceTest {
     public void syntetiser() {
         tpService.syntetiser(request);
 
-        verify(tForholdRepository).save(any());
+        verify(tForholdRepository, times(3)).save(any());
     }
 
     /**
@@ -121,7 +122,7 @@ public class TpServiceTest {
         when(tpSyntConsumer.getSyntYtelser(3)).thenReturn(ytelser);
         tpService.syntetiser(request);
 
-        verify(tForholdRepository).save(any());
+        verify(tForholdRepository, times(3)).save(any());
     }
 
     /**
@@ -139,7 +140,7 @@ public class TpServiceTest {
         when(hodejegerenConsumer.getLivingIdentities(any())).thenReturn(fnrs);
 
         tpService.syntetiser(request);
-        verify(tForholdRepository).save(any());
+        verify(tForholdRepository, times(0)).save(any());
     }
 
     @Test
