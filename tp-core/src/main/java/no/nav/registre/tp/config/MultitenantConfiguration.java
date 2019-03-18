@@ -24,7 +24,7 @@ import no.nav.registre.tp.database.multitenancy.MultitenantDataSource;
 @Configuration
 public class MultitenantConfiguration {
 
-    private List<String> databaseEnvironments = new ArrayList<String>();
+    private List<String> databaseEnvironments = new ArrayList<>();
 
     @Autowired
     private DataSourceProperties properties;
@@ -47,7 +47,7 @@ public class MultitenantConfiguration {
             Resource resource = new ClassPathResource(String.format("/hibernate-database-%s.properties", env));
             try {
                 Properties tenantProperties = PropertiesLoaderUtils.loadProperties(resource);
-                DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create(this.getClass().getClassLoader());
+                DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader());
                 // Assumption: The tenant database uses the same driver class
                 // as the default database that you configure.
                 dataSourceBuilder
