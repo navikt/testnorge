@@ -26,7 +26,7 @@ public class BehandleArbeidsforholdV1ProxyTest {
     private StsProps stsProps;
 
     @Mock
-    private BehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
+    private AaregArbeidsforholdFasitConsumer aaregArbeidsforholdFasitConsumer;
 
     @InjectMocks
     private BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
@@ -39,7 +39,7 @@ public class BehandleArbeidsforholdV1ProxyTest {
 
         Map<String, String> fasitEntry = new HashMap<>();
         fasitEntry.put("t0", "BaseUrl/aareg-core/BehandleArbeidsforholdService/v1");
-        when(behandleArbeidsforholdFasitConsumer.fetchUrlsByEnvironment()).thenReturn(fasitEntry);
+        when(aaregArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments()).thenReturn(fasitEntry);
         Object portType = behandleArbeidsforholdV1Proxy.getServiceByEnvironment("t0");
 
         assertThat(portType, is(instanceOf(BehandleArbeidsforholdPortType.class)));

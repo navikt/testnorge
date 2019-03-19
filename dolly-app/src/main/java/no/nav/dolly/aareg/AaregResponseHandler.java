@@ -31,7 +31,7 @@ public final class AaregResponseHandler {
                         LocalDateTime.of(tidspunkt.getYear(), tidspunkt.getMonth(), tidspunkt.getDay(), tidspunkt.getHour(), tidspunkt.getMinute()));
             }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            log.error("Lesing af faultInfo fra Aaareg feilet.", e);
+            log.error("Lesing av faultInfo fra Aaareg feilet.", e);
         }
         return format("Feil, %s -> %s%s", exception.getClass().getSimpleName(), exception.getMessage(), feilbeskrivelse);
     }

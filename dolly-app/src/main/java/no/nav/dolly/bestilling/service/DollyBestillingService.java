@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.aareg.AaregConsumer;
+import no.nav.dolly.aareg.AaregWsConsumer;
 import no.nav.dolly.bestilling.krrstub.KrrStubResponseHandler;
 import no.nav.dolly.bestilling.krrstub.KrrStubService;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
@@ -77,7 +77,7 @@ public class DollyBestillingService {
     private SigrunStubService sigrunStubService;
 
     @Autowired
-    private AaregConsumer aaregConsumer;
+    private AaregWsConsumer aaregWsConsumer;
 
     @Autowired
     private SigrunStubResponseHandler sigrunstubResponseHandler;
@@ -291,7 +291,7 @@ public class DollyBestillingService {
             for (RsArbeidsforhold arbeidsforhold : bestillingRequest.getAareg()) {
                 arbeidsforhold.setArbeidstaker(RsPerson.builder().ident(ident).build());
                 arbeidsforhold.setArbeidsforholdID((++arbeidsForholdId).toString());
-                Map<String, String> status = aaregConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
+                Map<String, String> status = aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
                         .arbeidsforhold(arbeidsforhold)
                         .environments(bestillingRequest.getEnvironments())
                         .build());

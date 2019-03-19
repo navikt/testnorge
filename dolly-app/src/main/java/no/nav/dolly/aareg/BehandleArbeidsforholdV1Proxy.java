@@ -30,7 +30,7 @@ public class BehandleArbeidsforholdV1Proxy {
     private StsProps stsProps;
 
     @Autowired
-    private BehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
+    private AaregArbeidsforholdFasitConsumer aaregArbeidsforholdFasitConsumer;
 
     private Map<String, BehandleArbeidsforholdPortType> wsServiceByEnvironment = new HashMap();
     private long timestamp;
@@ -38,7 +38,7 @@ public class BehandleArbeidsforholdV1Proxy {
     public BehandleArbeidsforholdPortType getServiceByEnvironment(String environment) {
 
         if (timestamp < new Date().getTime() - TIMEOUT) {
-            Map<String, String> urlByEnvironment = behandleArbeidsforholdFasitConsumer.fetchUrlsByEnvironment();
+            Map<String, String> urlByEnvironment = aaregArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
             urlByEnvironment.forEach((env, url) -> wsServiceByEnvironment.put(env, createBehandleArbeidsforholdPortType(url)));
             timestamp = new Date().getTime();
         }

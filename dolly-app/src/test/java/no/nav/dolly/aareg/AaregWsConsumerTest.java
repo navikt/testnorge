@@ -35,13 +35,13 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OppdaterArbeid
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeidsforholdRequest;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AaregConsumerTest {
+public class AaregWsConsumerTest {
 
     private static XMLGregorianCalendar calendar = new XMLGregorianCalendarImpl();
     private static Sikkerhetsbegrensning faultInfo = new Sikkerhetsbegrensning();
 
     static {
-        calendar.setTime(12, 13, 00);
+        calendar.setTime(12, 13, 0);
         calendar.setYear(2019);
         calendar.setMonth(3);
         calendar.setDay(10);
@@ -61,7 +61,7 @@ public class AaregConsumerTest {
     private BehandleArbeidsforholdPortType behandleArbeidsforholdPortType;
 
     @InjectMocks
-    private AaregConsumer aaregConsumer;
+    private AaregWsConsumer aaregWsConsumer;
 
     @Before
     public void setuo() {
@@ -72,7 +72,7 @@ public class AaregConsumerTest {
     @Test
     public void opprettArbeidsforhold_OK() throws Exception {
 
-        Map<String, String> status = aaregConsumer.opprettArbeidsforhold(RsAaregOpprettRequest
+        Map<String, String> status = aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest
                 .builder()
                 .arbeidsforhold(RsArbeidsforhold.builder().build())
                 .environments(singletonList("t0"))
@@ -93,7 +93,7 @@ public class AaregConsumerTest {
         doThrow(sikkerhetsbegrensning).when(behandleArbeidsforholdPortType)
                 .opprettArbeidsforhold(any(OpprettArbeidsforholdRequest.class));
 
-        Map<String, String> status = aaregConsumer.opprettArbeidsforhold(RsAaregOpprettRequest
+        Map<String, String> status = aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest
                 .builder()
                 .arbeidsforhold(RsArbeidsforhold.builder().build())
                 .environments(singletonList("t0"))
@@ -113,7 +113,7 @@ public class AaregConsumerTest {
         rsAaregOppdaterRequest.setArbeidsforhold(RsArbeidsforhold.builder().build());
         rsAaregOppdaterRequest.setRapporteringsperiode(LocalDateTime.now());
 
-        Map<String, String> status = aaregConsumer.oppdaterArbeidsforhold(rsAaregOppdaterRequest);
+        Map<String, String> status = aaregWsConsumer.oppdaterArbeidsforhold(rsAaregOppdaterRequest);
 
         assertThat(status.get("t1"), is(equalTo("OK")));
         verify(mapperFacade).map(any(RsArbeidsforhold.class), eq(Arbeidsforhold.class));
@@ -136,7 +136,7 @@ public class AaregConsumerTest {
         rsAaregOppdaterRequest.setArbeidsforhold(RsArbeidsforhold.builder().build());
         rsAaregOppdaterRequest.setRapporteringsperiode(LocalDateTime.now());
 
-        Map<String, String> status = aaregConsumer.oppdaterArbeidsforhold(rsAaregOppdaterRequest);
+        Map<String, String> status = aaregWsConsumer.oppdaterArbeidsforhold(rsAaregOppdaterRequest);
 
         assertThat(status.get("t1"), is(equalTo(
                 "Feil, OppdaterArbeidsforholdSikkerhetsbegrensning -> Ingen tilgang "

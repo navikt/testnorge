@@ -26,7 +26,7 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeids
 
 @Service
 @Slf4j
-public class AaregConsumer {
+public class AaregWsConsumer {
 
     private static final String STATUS_OK = "OK";
 

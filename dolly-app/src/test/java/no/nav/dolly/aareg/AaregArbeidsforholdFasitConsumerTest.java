@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -19,17 +20,16 @@ import no.nav.dolly.fasit.FasitResourceScope;
 import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BehandleArbeidsforholdFasitConsumerTest {
+public class AaregArbeidsforholdFasitConsumerTest {
 
     @Mock
     private FasitApiConsumer fasitApiConsumer;
 
     @InjectMocks
-    private BehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
+    private AaregArbeidsforholdFasitConsumer aaregArbeidsforholdFasitConsumer;
 
-    @Test
-    public void test() {
-
+    @Before
+    public void setup() {
         Map<String, String> map = new HashMap<>();
         map.put("url", "BaseUrl");
 
@@ -38,12 +38,26 @@ public class BehandleArbeidsforholdFasitConsumerTest {
                         FasitResourceWithUnmappedProperties.builder()
                                 .scope(FasitResourceScope.builder()
                                         .environment("t0")
+                                        .zone("fss")
                                         .build())
                                 .properties(map)
                                 .build()
                 });
-        Map<String, String> fasitConsumers = behandleArbeidsforholdFasitConsumer.fetchUrlsByEnvironment();
+    }
+
+    @Test
+    public void fetchWsUrslAllEnvironments_OK() {
+
+        Map<String, String> fasitConsumers = aaregArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
 
         assertThat(fasitConsumers.get("t0"), is(equalTo("BaseUrl/aareg-core/BehandleArbeidsforholdService/v1")));
+    }
+
+    @Test
+    public void fetchRestUrlsAllEnvironments_OK() {
+
+        Map<String, String> fasitConsumers = aaregArbeidsforholdFasitConsumer.fetchRestUrlsAllEnvironments();
+
+        assertThat(fasitConsumers.get("t0"), is(equalTo("BaseUrl/v1/arbeidstaker/arbeidsforhold")));
     }
 }
