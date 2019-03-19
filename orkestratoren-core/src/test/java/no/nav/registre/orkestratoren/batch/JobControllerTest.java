@@ -3,6 +3,7 @@ package no.nav.registre.orkestratoren.batch;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
@@ -23,6 +27,7 @@ import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
+import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,6 +51,9 @@ public class JobControllerTest {
     @Mock
     private InstSyntPakkenService instSyntPakkenService;
 
+    @Mock
+    private TpSyntPakkenService tpSyntPakkenService;
+
     @InjectMocks
     private JobController jobController;
 
@@ -64,9 +72,14 @@ public class JobControllerTest {
         ReflectionTestUtils.setField(jobController, "instbatchAvspillergruppeId", avspillergruppeId);
         ReflectionTestUtils.setField(jobController, "inntektbatchAvspillergruppeId", avspillergruppeId);
         ReflectionTestUtils.setField(jobController, "instbatchMiljoe", miljoer);
+
+        //Blir ikke satt fra properties, aner ikke hvorfor
+        ReflectionTestUtils.setField(jobController, "tpAntallPersoner", 3);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallMeldingerPerEndringskode", antallMeldingerPerEndringskode);
+
+        when(tpSyntPakkenService.genererTp(any())).thenReturn(new ResponseEntity(HttpStatus.OK));
     }
 
     @Test
@@ -103,5 +116,11 @@ public class JobControllerTest {
     public void shouldStartInstBatch() {
         jobController.instSyntBatch();
         verify(instSyntPakkenService).genererInstitusjonsforhold(any());
+    }
+
+    @Test
+    public void shouldStartTpBatch() {
+        jobController.tpSyntBatch();
+        verify(tpSyntPakkenService).genererTp(any());
     }
 }

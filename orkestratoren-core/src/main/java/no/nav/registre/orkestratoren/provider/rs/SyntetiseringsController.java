@@ -22,11 +22,13 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeld
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
+import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RestController
@@ -51,6 +53,9 @@ public class SyntetiseringsController {
 
     @Autowired
     private InstSyntPakkenService instSyntPakkenService;
+
+    @Autowired
+    private TpSyntPakkenService tpSyntPakkenService;
 
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
@@ -92,5 +97,11 @@ public class SyntetiseringsController {
     @PostMapping(value = "inst/institusjonsforhold/generer")
     public ResponseEntity opprettInstitutjonsforholdIInst(@RequestBody SyntetiserInstRequest syntetiserInstRequest) {
         return instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
+    }
+
+    @LogExceptions
+    @PostMapping(value = "tp/ytelser/generer")
+    public ResponseEntity opprettYtelserITp(@RequestBody SyntetiserTpRequest request) {
+        return tpSyntPakkenService.genererTp(request);
     }
 }
