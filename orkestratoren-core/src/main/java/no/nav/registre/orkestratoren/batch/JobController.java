@@ -1,9 +1,7 @@
 package no.nav.registre.orkestratoren.batch;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -12,8 +10,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
@@ -62,14 +61,8 @@ public class JobController {
     @Value("${instbatch.antallNyeIdenter}")
     private int instbatchAntallNyeIdenter;
 
-    @Value("#{'${tpbatch.miljoe}'.split(', ')}")
-    private List<String> tpbatchMiljoe;
-
     @Value("${tpbatch.antallIdenter}")
     private Integer tpAntallIdenter;
-
-    @Value("${tpbatch.avspillergruppeId}")
-    private String tpAvspillergruppeId;
 
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
@@ -94,7 +87,7 @@ public class JobController {
 
     @Scheduled(cron = "${tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
-        for(Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             try {
                 tpsSyntPakkenService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallMeldingerPerEndringskode);
             } catch (HttpStatusCodeException e) {
@@ -112,16 +105,17 @@ public class JobController {
 
     @Scheduled(cron = "${eiabatch.cron:0 0 0 * * *}")
     public void eiaSyntBatch() {
-        for(Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserEiaRequest request = new SyntetiserEiaRequest(entry.getKey(), entry.getValue(), antallSykemeldinger);
             List<String> fnrMedGenererteMeldinger = eiaSyntPakkenService.genererEiaSykemeldinger(request);
-            log.info("eiabatch har opprettet {} sykemeldinger i miljø {}. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), entry.getValue(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
+            log.info("eiabatch har opprettet {} sykemeldinger i miljø {}. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), entry.getValue(),
+                    Arrays.toString(fnrMedGenererteMeldinger.toArray()));
         }
     }
 
     @Scheduled(cron = "${poppbatch.cron:0 0 1 1 5 *}")
     public void poppSyntBatch() {
-        for(Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(entry.getKey(), entry.getValue(), poppbatchAntallNyeIdenter);
             String testdataEier = "orkestratoren";
             poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
@@ -130,7 +124,7 @@ public class JobController {
 
     @Scheduled(cron = "${aaregbatch.cron:0 0 1 1 * *}")
     public void aaregSyntBatch() {
-        for(Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(entry.getKey(), entry.getValue(), aaregbatchAntallNyeIdenter);
             aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
         }
@@ -138,7 +132,7 @@ public class JobController {
 
     @Scheduled(cron = "${instbatch.cron:0 0 0 * * *}")
     public void instSyntBatch() {
-        for(String miljoe : instbatchMiljoe) {
+        for (String miljoe : instbatchMiljoe) {
             SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(instbatchAvspillergruppeId, miljoe, instbatchAntallNyeIdenter);
             instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
         }

@@ -3,7 +3,6 @@ package no.nav.registre.orkestratoren.consumer.rs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +15,6 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 @Component
 @Slf4j
 public class TestnorgeTpConsumer {
-
-    private static final ParameterizedTypeReference<String> RESPONSE_TYPE = new ParameterizedTypeReference<String>() {
-    };
 
     @Autowired
     private RestTemplate restTemplate;
