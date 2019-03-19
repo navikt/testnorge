@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
@@ -25,7 +26,7 @@ import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
-import no.nav.registre.orkestratoren.service.TpService;
+import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,7 +51,7 @@ public class JobControllerTest {
     private InstSyntPakkenService instSyntPakkenService;
 
     @Mock
-    private TpService tpService;
+    private TpSyntPakkenService tpSyntPakkenService;
 
     @InjectMocks
     private JobController jobController;
@@ -74,7 +75,7 @@ public class JobControllerTest {
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallMeldingerPerEndringskode", antallMeldingerPerEndringskode);
 
-        when(tpService.genererTp(any())).thenReturn(HttpStatus.OK);
+        when(tpSyntPakkenService.genererTp(any())).thenReturn(new ResponseEntity(HttpStatus.OK));
     }
 
     @Test
@@ -116,6 +117,6 @@ public class JobControllerTest {
     @Test
     public void shouldStartTpBatch() {
         jobController.tpSyntBatch();
-        verify(tpService).genererTp(any());
+        verify(tpSyntPakkenService).genererTp(any());
     }
 }

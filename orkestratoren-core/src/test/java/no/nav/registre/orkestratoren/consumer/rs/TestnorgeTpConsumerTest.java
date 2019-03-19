@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -34,8 +35,8 @@ public class TestnorgeTpConsumerTest {
     @Test
     public void startSyntetisering() {
         stubTp();
-        HttpStatus httpStatus = testnorgeTpConsumer.startSyntetisering(new SyntetiserTpRequest(gruppeId, miljoe, antallPersoner));
-        assertEquals(HttpStatus.OK, httpStatus);
+        ResponseEntity entity = testnorgeTpConsumer.startSyntetisering(new SyntetiserTpRequest(gruppeId, miljoe, antallPersoner));
+        assertEquals(HttpStatus.OK, entity.getStatusCode());
 
     }
 

@@ -25,13 +25,13 @@ public class TestnorgeTpConsumer {
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/");
     }
 
-    public HttpStatus startSyntetisering(SyntetiserTpRequest request) {
+    public ResponseEntity startSyntetisering(SyntetiserTpRequest request) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(request);
         ResponseEntity<String> response = restTemplate.exchange(postRequest, String.class);
         if (response.getStatusCode() != HttpStatus.OK) {
             log.error("Klarte ikke syntetisere tp");
         }
-        return response.getStatusCode();
+        return response;
     }
 
 }

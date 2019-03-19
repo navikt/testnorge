@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
-import no.nav.registre.orkestratoren.service.TpService;
+import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @Component
@@ -83,7 +83,7 @@ public class JobController {
     private InstSyntPakkenService instSyntPakkenService;
 
     @Autowired
-    private TpService tpService;
+    private TpSyntPakkenService tpSyntPakkenService;
 
     @Scheduled(cron = "${tpsbatch.cron:0 0 0 * * *}")
     public void tpsSyntBatch() {
@@ -142,8 +142,8 @@ public class JobController {
     public void tpSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserTpRequest request = new SyntetiserTpRequest(entry.getKey(), entry.getValue(), tpAntallIdenter);
-            HttpStatus httpStatus = tpService.genererTp(request);
-            if (!httpStatus.is2xxSuccessful()) {
+            ResponseEntity entity = tpSyntPakkenService.genererTp(request);
+            if (!entity.getStatusCode().is2xxSuccessful()) {
                 log.error("Klarte ikke å fullføre syntetisering i batch kjøring");
             }
         }
