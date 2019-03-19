@@ -148,7 +148,7 @@ public class SyntetiseringsControllerTest {
     }
 
     /**
-     * Scenario: HVIS syntetiserinskontrolleren får et request om å generere ytelser i tjpen skal metoden kalle på
+     * Scenario: HVIS syntetiseringskontrolleren får en request om å generere ytelser i tjpen skal metoden kalle på
      * {@link TpSyntPakkenService#genererTp(SyntetiserTpRequest)}
      */
     @Test

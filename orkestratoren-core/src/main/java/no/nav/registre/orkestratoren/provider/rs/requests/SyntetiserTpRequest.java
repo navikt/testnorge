@@ -22,6 +22,6 @@ public class SyntetiserTpRequest {
     private String miljoe;
     @NotNull
     @JsonProperty("antallPersoner")
-    private Integer antallPersoner;
+    private int antallPersoner;
 
 }

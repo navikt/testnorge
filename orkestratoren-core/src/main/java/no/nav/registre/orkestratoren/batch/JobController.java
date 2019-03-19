@@ -61,8 +61,8 @@ public class JobController {
     @Value("${instbatch.antallNyeIdenter}")
     private int instbatchAntallNyeIdenter;
 
-    @Value("${tpbatch.antallIdenter}")
-    private Integer tpAntallIdenter;
+    @Value("${tpbatch.antallPersoner}")
+    private int tpAntallPersoner;
 
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
@@ -141,10 +141,10 @@ public class JobController {
     @Scheduled(cron = "${tpbatch.cron:0 0 0 1 5 *}")
     public void tpSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            SyntetiserTpRequest request = new SyntetiserTpRequest(entry.getKey(), entry.getValue(), tpAntallIdenter);
+            SyntetiserTpRequest request = new SyntetiserTpRequest(entry.getKey(), entry.getValue(), tpAntallPersoner);
             ResponseEntity entity = tpSyntPakkenService.genererTp(request);
             if (!entity.getStatusCode().is2xxSuccessful()) {
-                log.error("Klarte ikke å fullføre syntetisering i batch kjøring");
+                log.error("Klarte ikke å fullføre syntetisering i TP batch kjøring");
             }
         }
     }
