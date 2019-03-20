@@ -79,6 +79,13 @@ public class TpService {
         return (List<TForhold>) tForholdRepository.findAll();
     }
 
+    public List<String> createPeople(List<String> fnrs) {
+        List<String> notFound = fnrs.parallelStream().filter(fnr -> tPersonRepository.findByFnrFk(fnr) == null).collect(Collectors.toList());
+        Set<TPerson> peopleToSave = notFound.parallelStream().map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toSet());
+        List<TPerson> saved = (List<TPerson>) tPersonRepository.saveAll(peopleToSave);
+        return saved.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toList());
+    }
+
     private TYtelse saveYtelse(TYtelse ytelse) {
         ytelse.setOpprettetAv("synt");
         ytelse.setEndretAv("synt");

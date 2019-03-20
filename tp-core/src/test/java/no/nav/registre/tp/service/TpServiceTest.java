@@ -1,6 +1,7 @@
 package no.nav.registre.tp.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -16,6 +17,7 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.tp.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.tp.consumer.rs.TpSyntConsumer;
@@ -155,5 +157,59 @@ public class TpServiceTest {
     public void initializeTpDbForEnvironemnt() {
         tpService.initializeTpDbForEnvironemnt(1L, "q2");
         verify(tPersonRepository).saveAll(any());
+    }
+
+    @Test
+    public void createPeopleAllCreated() {
+        ArrayList<String> fnrs = new ArrayList<>();
+        fnrs.add("123");
+        fnrs.add("132");
+        fnrs.add("321");
+        fnrs.add("312");
+        fnrs.add("213");
+        fnrs.add("231");
+
+        List<TPerson> people = fnrs.parallelStream().map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toList());
+
+        for (String s : fnrs) {
+            when(tPersonRepository.findByFnrFk(s)).thenReturn(null);
+        }
+
+        when(tPersonRepository.saveAll(any())).thenReturn(people);
+        List<String> created = tpService.createPeople(fnrs);
+
+        for (String s : fnrs) {
+            assertTrue(created.contains(s));
+        }
+
+    }
+
+    @Test
+    public void createPeopleTwoExists() {
+        ArrayList<String> fnrs = new ArrayList<>();
+        fnrs.add("123");
+        fnrs.add("132");
+        fnrs.add("321");
+        fnrs.add("312");
+        fnrs.add("213");
+        fnrs.add("231");
+
+        when(tPersonRepository.findByFnrFk("123")).thenReturn(TPerson.builder().fnrFk("123").build());
+        when(tPersonRepository.findByFnrFk("132")).thenReturn(TPerson.builder().fnrFk("132").build());
+        for (int i = 2; i < fnrs.size(); i++) {
+            when(tPersonRepository.findByFnrFk(fnrs.get(i))).thenReturn(null);
+        }
+
+        List<TPerson> people = fnrs.parallelStream().filter(fnr -> !fnr.equals("123") && !fnr.equals("132")).map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toList());
+        when(tPersonRepository.saveAll(any())).thenReturn(people);
+        List<String> created = tpService.createPeople(fnrs);
+
+        for (String s : fnrs) {
+            if (s.equals("123") || s.equals("132")) {
+                continue;
+            }
+            assertTrue(created.contains(s));
+        }
+
     }
 }
