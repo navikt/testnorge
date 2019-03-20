@@ -10,6 +10,8 @@ import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import no.nav.registre.tp.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.tp.consumer.rs.TpSyntConsumer;
@@ -36,6 +38,23 @@ public class TpService {
 
     private final TpSyntConsumer tpSyntConsumer;
     private final HodejegerenConsumer hodejegerenConsumer;
+
+    public int initializeTpDbForEnvironemnt(Long id, String env) {
+        Set<String> allIdentities = hodejegerenConsumer.getAllIdentities(new SyntetiseringsRequest(id, env, 0));
+
+        Set<TPerson> people = (Set<TPerson>) tPersonRepository.findAll();
+
+        Set<String> fnrsInDb = people.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toSet());
+
+        Set<String> missing = allIdentities.parallelStream().filter(fnr -> !fnrsInDb.contains(fnr)).collect(Collectors.toSet());
+
+        Set<TPerson> toCreate = missing.parallelStream().map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toSet());
+
+        Set<TPerson> created = (Set<TPerson>) tPersonRepository.saveAll(toCreate);
+
+        log.info("Opprettet {} personer i tp", created.size());
+        return created.size();
+    }
 
     public void syntetiser(@Valid SyntetiseringsRequest request) {
 
