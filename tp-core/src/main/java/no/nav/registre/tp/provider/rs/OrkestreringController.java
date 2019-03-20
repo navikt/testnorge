@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.registre.tp.database.multitenancy.TenantContext;
@@ -14,11 +15,12 @@ import no.nav.registre.tp.service.TpService;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("api/v1/orkestrering")
 public class OrkestreringController {
 
     private final TpService tpService;
 
-    @PostMapping("/v1/orkestrering/init")
+    @PostMapping("/init")
     public ResponseEntity initializeDatabase(@RequestBody OrkestreringRequest request) {
         TenantContext.setTenant(request.getMiljoe());
 
