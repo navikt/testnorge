@@ -1,6 +1,8 @@
 package no.nav.registre.tp.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,18 +18,13 @@ import no.nav.registre.tp.database.multitenancy.MultitenantDataSource;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class MultitenantConfiguration {
 
     private final DataSourceProperties properties;
     private final Environment environment;
-    private List<String> databaseEnvironments = new ArrayList<>(2);
-
-    public MultitenantConfiguration(DataSourceProperties props, Environment environment) {
-        this.properties = props;
-        this.environment = environment;
-        databaseEnvironments.add("q2");
-        databaseEnvironments.add("q11");
-    }
+    @Value("${environments}")
+    private List<String> databaseEnvironments;
 
     /**
      * Defines the data source for the application

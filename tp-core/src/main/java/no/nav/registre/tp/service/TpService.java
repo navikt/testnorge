@@ -10,6 +10,9 @@ import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import no.nav.registre.tp.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.tp.consumer.rs.TpSyntConsumer;
@@ -37,6 +40,21 @@ public class TpService {
     private final TpSyntConsumer tpSyntConsumer;
     private final HodejegerenConsumer hodejegerenConsumer;
 
+    public int initializeTpDbForEnvironment(Long id, String env) {
+        Set<String> allIdentities = hodejegerenConsumer.getAllIdentities(new SyntetiseringsRequest(id, env, 0));
+
+        List<TPerson> allInDb = (List<TPerson>) tPersonRepository.findAll();
+
+        Set<String> fnrsInDb = allInDb.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toSet());
+
+        Set<String> missing = allIdentities.parallelStream().filter(fnr -> !fnrsInDb.contains(fnr)).collect(Collectors.toSet());
+
+        List<TPerson> created = createPeopleFromStream(missing.parallelStream());
+
+        log.info("Opprettet {} personer i tp", created.size());
+        return created.size();
+    }
+
     public void syntetiser(@Valid SyntetiseringsRequest request) {
 
         List<String> ids = hodejegerenConsumer.getLivingIdentities(request);
@@ -58,6 +76,27 @@ public class TpService {
 
     public List<TForhold> getForhold() {
         return (List<TForhold>) tForholdRepository.findAll();
+    }
+
+    public List<String> createPeople(List<String> fnrs) {
+        List<String> notFound = fnrs.parallelStream().filter(fnr -> tPersonRepository.findByFnrFk(fnr) == null).collect(Collectors.toList());
+        List<TPerson> saved = createPeopleFromStream(notFound.parallelStream());
+        return saved.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toList());
+    }
+
+    private List<TPerson> createPeopleFromStream(Stream<String> stringStream) {
+        Timestamp timestamp = Timestamp.from(Instant.now());
+
+        Set<TPerson> toCreate = stringStream.map(fnr -> TPerson.builder()
+                .fnrFk(fnr)
+                .datoOpprettet(timestamp)
+                .datoEndret(timestamp)
+                .endretAv("synt")
+                .opprettetAv("synt")
+                .build())
+                .collect(Collectors.toSet());
+
+        return (List<TPerson>) tPersonRepository.saveAll(toCreate);
     }
 
     private TYtelse saveYtelse(TYtelse ytelse) {
