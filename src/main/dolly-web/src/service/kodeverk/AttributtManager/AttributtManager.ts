@@ -68,8 +68,6 @@ export default class AttributtManager {
 
 	//STEP 2 + 3
 	listSelectedAttributesForValueSelection(selectedIds: string[]): AttributtGruppe[] {
-		console.log('selectedIds :', selectedIds)
-		console.log('this.listAllSelected(selectedIds) :', this.listAllSelected(selectedIds))
 		return groupList(this.listAllSelected(selectedIds))
 	}
 

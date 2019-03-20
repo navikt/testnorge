@@ -13,7 +13,6 @@ const AttributtListe: Attributt[] = [
 		id: 'arbeidsforhold',
 		label: 'Har arbeidsforhold',
 		dataSource: DataSource.AAREG,
-		validation: yup.object(),
 		attributtType: AttributtType.SelectAndEdit,
 		items: [
 			{
@@ -21,54 +20,64 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Arbeidsforhold,
 				id: 'yrke',
 				label: 'Yrke',
-				path: 'yrke',
+				path: 'arbeidsavtale',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Text,
+				// apiKodeverkId: 'Yrker',
 				validation: yup.string().required('Velg en type tjeneste.'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,
 				subKategori: SubKategorier.Arbeidsforhold,
-				id: 'arbeidsforholdFra',
+				id: 'fom',
 				label: 'Startdato',
-				path: 'ansettelsesPeriode.fom',
+				path: 'ansettelsesPeriode',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Date,
-				validation: yup.string().required('Velg en type tjeneste.'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,
 				subKategori: SubKategorier.Arbeidsforhold,
-				id: 'arbeidsforholdTil',
+				id: 'tom',
 				label: 'Sluttdato',
-				path: 'ansettelsesPeriode.tom',
+				path: 'ansettelsesPeriode',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Date,
-				validation: yup.string().required('Velg en type tjeneste.'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,
 				subKategori: SubKategorier.Arbeidsforhold,
-				id: 'stilling',
+				id: 'stillingsprosent',
 				label: 'Stillingprosent',
-				path: 'stillingprosent',
+				path: 'arbeidsavtale',
 				dataSource: DataSource.AAREG,
-				inputType: InputType.Text,
-				validation: yup.string().required('Velg en type tjeneste.'),
+				inputType: InputType.Number,
+				validation: yup.string().required('Krever stillingprosent'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,
 				subKategori: SubKategorier.Arbeidsforhold,
-				id: 'arbeidsgiver',
-				label: 'Arbeidsgiver',
+				id: 'aktoertype',
+				label: 'Type av arbeidsgiver',
 				path: 'arbeidsgiver',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Text,
-				validation: yup.string().required('Velg en type tjeneste.'),
+				validation: yup.string().required('Velg en type av arbeidsgiver'),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.ArbeidOgInntekt,
+				subKategori: SubKategorier.Arbeidsforhold,
+				id: 'orgnummer',
+				label: 'Orgnummer/ident',
+				path: 'arbeidsgiver',
+				dataSource: DataSource.AAREG,
+				inputType: InputType.Text,
+				validation: yup.string().required('Krever orgnummer/ident'),
 				attributtType: AttributtType.SelectAndRead
 			}
 		]
