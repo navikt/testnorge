@@ -45,7 +45,7 @@ public final class BestillingAaregStatusMapper {
 
     private static void checkNUpdateStatus(Map<String, Map<String, Map<String, List<String>>>> errorEnvIdents, String ident, String environ, String errMsg) {
 
-        if (errMsg.contains("\\$")) {
+        if (errMsg.contains("$")) {
             String forhold = errMsg.split("\\$")[0].replace("=", ": ");
             String status = errMsg.split("\\$")[1].replace('&', ',').replace('=', ':');
             if (errorEnvIdents.containsKey(status)) {
