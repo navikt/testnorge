@@ -15,13 +15,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import no.nav.dolly.aareg.AaregRestConsumer;
 import no.nav.dolly.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
-import no.nav.dolly.domain.resultset.aareg.RsArbeidsforholdResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregControllerTest {
@@ -42,7 +43,7 @@ public class AaregControllerTest {
     private AaregController aaregController;
 
     @Test
-    public void opprettArbeidsforhold() {
+    public void opprettArbeidsforhold_OK() {
 
         when(aaregWsConsumer.opprettArbeidsforhold(any(RsAaregOpprettRequest.class))).thenReturn(status);
 
@@ -53,7 +54,7 @@ public class AaregControllerTest {
     }
 
     @Test
-    public void oppdaterArbeidsforhold() {
+    public void oppdaterArbeidsforhold_OK() {
 
         when(aaregWsConsumer.oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class))).thenReturn(status);
 
@@ -64,9 +65,9 @@ public class AaregControllerTest {
     }
 
     @Test
-    public void lesArbeidsforhold() {
+    public void lesArbeidsforhold_OK() {
 
-        when(aaregRestConsumer.readArbeidsforhold(anyString(), anyString())).thenReturn(new RsArbeidsforholdResponse());
+        when(aaregRestConsumer.readArbeidsforhold(anyString(), anyString())).thenReturn(new ResponseEntity("Innhold fra tjenesten", HttpStatus.OK));
 
         aaregController.lesArbeidsforhold(anyString(), anyString());
 

@@ -3,6 +3,7 @@ package no.nav.dolly.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,7 +19,6 @@ import no.nav.dolly.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
-import no.nav.dolly.domain.resultset.aareg.RsArbeidsforholdResponse;
 
 @RestController
 @RequestMapping(value = "/api/v1/aareg", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,7 +70,7 @@ public class AaregController {
 
     @ApiOperation(value = "Les arbeidsforhold fra Aareg")
     @GetMapping("/arbeidsforhold")
-    public RsArbeidsforholdResponse lesArbeidsforhold(@RequestParam String ident, @RequestParam String environment) {
+    public ResponseEntity lesArbeidsforhold(@RequestParam String ident, @RequestParam String environment) {
 
         return aaregRestConsumer.readArbeidsforhold(ident, environment);
     }
