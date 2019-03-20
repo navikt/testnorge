@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import no.nav.registre.tp.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.tp.consumer.rs.TpSyntConsumer;
@@ -39,7 +40,7 @@ public class TpService {
     private final TpSyntConsumer tpSyntConsumer;
     private final HodejegerenConsumer hodejegerenConsumer;
 
-    public int initializeTpDbForEnvironemnt(Long id, String env) {
+    public int initializeTpDbForEnvironment(Long id, String env) {
         Set<String> allIdentities = hodejegerenConsumer.getAllIdentities(new SyntetiseringsRequest(id, env, 0));
 
         List<TPerson> allInDb = (List<TPerson>) tPersonRepository.findAll();
@@ -48,9 +49,7 @@ public class TpService {
 
         Set<String> missing = allIdentities.parallelStream().filter(fnr -> !fnrsInDb.contains(fnr)).collect(Collectors.toSet());
 
-        Set<TPerson> toCreate = missing.parallelStream().map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toSet());
-
-        List<TPerson> created = (List<TPerson>) tPersonRepository.saveAll(toCreate);
+        List<TPerson> created = createPeopleFromStream(missing.parallelStream());
 
         log.info("Opprettet {} personer i tp", created.size());
         return created.size();
@@ -81,9 +80,23 @@ public class TpService {
 
     public List<String> createPeople(List<String> fnrs) {
         List<String> notFound = fnrs.parallelStream().filter(fnr -> tPersonRepository.findByFnrFk(fnr) == null).collect(Collectors.toList());
-        Set<TPerson> peopleToSave = notFound.parallelStream().map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toSet());
-        List<TPerson> saved = (List<TPerson>) tPersonRepository.saveAll(peopleToSave);
+        List<TPerson> saved = createPeopleFromStream(notFound.parallelStream());
         return saved.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toList());
+    }
+
+    private List<TPerson> createPeopleFromStream(Stream<String> stringStream) {
+        Timestamp timestamp = Timestamp.from(Instant.now());
+
+        Set<TPerson> toCreate = stringStream.map(fnr -> TPerson.builder()
+                .fnrFk(fnr)
+                .datoOpprettet(timestamp)
+                .datoEndret(timestamp)
+                .endretAv("synt")
+                .opprettetAv("synt")
+                .build())
+                .collect(Collectors.toSet());
+
+        return (List<TPerson>) tPersonRepository.saveAll(toCreate);
     }
 
     private TYtelse saveYtelse(TYtelse ytelse) {

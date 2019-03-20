@@ -32,7 +32,7 @@ public class OrkestreringControllerTest {
     @Test
     public void initializeDatabase() {
 
-        when(tpService.initializeTpDbForEnvironemnt(anyLong(), anyString())).thenReturn(1);
+        when(tpService.initializeTpDbForEnvironment(anyLong(), anyString())).thenReturn(1);
         ResponseEntity entity = orkestreringController.initializeDatabase(new OrkestreringRequest(1L, "q2"));
         assertEquals(1, entity.getBody());
     }

@@ -155,7 +155,7 @@ public class TpServiceTest {
 
     @Test
     public void initializeTpDbForEnvironemnt() {
-        tpService.initializeTpDbForEnvironemnt(1L, "q2");
+        tpService.initializeTpDbForEnvironment(1L, "q2");
         verify(tPersonRepository).saveAll(any());
     }
 
