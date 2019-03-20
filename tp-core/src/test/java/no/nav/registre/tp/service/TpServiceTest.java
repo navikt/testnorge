@@ -150,4 +150,10 @@ public class TpServiceTest {
         assertEquals(1, (int) tForhold.getPersonId());
         assertEquals(2, (int) tForhold.getForholdId());
     }
+
+    @Test
+    public void initializeTpDbForEnvironemnt() {
+        tpService.initializeTpDbForEnvironemnt(1L, "q2");
+        verify(tPersonRepository).saveAll(any());
+    }
 }

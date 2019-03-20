@@ -42,15 +42,15 @@ public class TpService {
     public int initializeTpDbForEnvironemnt(Long id, String env) {
         Set<String> allIdentities = hodejegerenConsumer.getAllIdentities(new SyntetiseringsRequest(id, env, 0));
 
-        Set<TPerson> people = (Set<TPerson>) tPersonRepository.findAll();
+        List<TPerson> allInDb = (List<TPerson>) tPersonRepository.findAll();
 
-        Set<String> fnrsInDb = people.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toSet());
+        Set<String> fnrsInDb = allInDb.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toSet());
 
         Set<String> missing = allIdentities.parallelStream().filter(fnr -> !fnrsInDb.contains(fnr)).collect(Collectors.toSet());
 
         Set<TPerson> toCreate = missing.parallelStream().map(fnr -> TPerson.builder().fnrFk(fnr).build()).collect(Collectors.toSet());
 
-        Set<TPerson> created = (Set<TPerson>) tPersonRepository.saveAll(toCreate);
+        List<TPerson> created = (List<TPerson>) tPersonRepository.saveAll(toCreate);
 
         log.info("Opprettet {} personer i tp", created.size());
         return created.size();
