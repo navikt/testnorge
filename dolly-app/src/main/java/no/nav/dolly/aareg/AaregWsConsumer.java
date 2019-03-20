@@ -49,6 +49,9 @@ public class AaregWsConsumer {
                 status.put(env, STATUS_OK);
             } catch (OpprettArbeidsforholdSikkerhetsbegrensning | OpprettArbeidsforholdUgyldigInput | DollyFunctionalException error) {
                 status.put(env, extractError(error));
+            } catch (RuntimeException re) {
+                log.error("Feil: Teknisk feil ved oppretting mot Aareg", re);
+                status.put(env, "Feil: Teknisk feil ved oppretting mot Aareg, se logg!");
             }
         });
 
@@ -69,6 +72,9 @@ public class AaregWsConsumer {
                 status.put(env, STATUS_OK);
             } catch (OppdaterArbeidsforholdArbeidsforholdIkkeFunnet | OppdaterArbeidsforholdSikkerhetsbegrensning | OppdaterArbeidsforholdUgyldigInput | DollyFunctionalException error) {
                 status.put(env, extractError(error));
+            } catch (RuntimeException re) {
+                log.error("Feil: Teknisk feil ved oppdatering mot Aareg", re);
+                status.put(env, "Feil: Teknisk feil ved oppdatering mot Aareg, se logg.");
             }
         });
 
