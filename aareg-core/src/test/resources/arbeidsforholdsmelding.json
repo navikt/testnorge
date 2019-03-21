@@ -6,12 +6,11 @@
       },
       "arbeidsavtale": {
         "arbeidstidsordning": "doegnkontinuerligSkiftOgTurnus355",
-        "avtaltArbeidstimerPerUke": 0,
-        "endringsdatoStillingsprosent": "string",
+        "avtaltArbeidstimerPerUke": 35.5,
+        "endringsdatoStillingsprosent": "1985-08-01",
         "sisteLoennsendringsdato": "1985-08-01",
         "stillingsprosent": 0.01,
-        "yrke": "990458162",
-        "avtaltArbeidstimeerPerUke": 35.5
+        "yrke": "990458162"
       },
       "arbeidsforholdID": "oAq5SJgOPDHQnERi",
       "arbeidsforholdstype": "ordinaertArbeidsforhold",
@@ -33,12 +32,11 @@
       },
       "arbeidsavtale": {
         "arbeidstidsordning": "doegnkontinuerligSkiftOgTurnus355",
-        "avtaltArbeidstimerPerUke": 0,
-        "endringsdatoStillingsprosent": "string",
+        "avtaltArbeidstimerPerUke": 35.5,
+        "endringsdatoStillingsprosent": "1985-08-01",
         "sisteLoennsendringsdato": "1985-08-01",
         "stillingsprosent": 0.01,
-        "yrke": "990458162",
-        "avtaltArbeidstimeerPerUke": 35.5
+        "yrke": "990458162"
       },
       "arbeidsforholdID": "oAq5SJgOPDHQnERi",
       "arbeidsforholdstype": "ordinaertArbeidsforhold",

@@ -51,6 +51,10 @@ public class AaregSyntetisererenConsumerTest {
         List<ArbeidsforholdsResponse> result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
 
         assertThat(result.get(0).getArbeidsforhold().getArbeidstaker().get("ident"), equalTo(fnrs.get(0)));
+        assertThat(result.get(0).getArbeidsforhold().getArbeidsavtale().getArbeidstidsordning(), equalTo("doegnkontinuerligSkiftOgTurnus355"));
+        assertThat(result.get(0).getArbeidsforhold().getArbeidsavtale().getAvtaltArbeidstimerPerUke(), equalTo(35.5));
+        assertThat(result.get(0).getArbeidsforhold().getArbeidsavtale().getEndringsdatoStillingsprosent(), equalTo("1985-08-01"));
+        assertThat(result.get(0).getArbeidsforhold().getArbeidsavtale().getStillingsprosent(), equalTo(0.01));
         assertThat(result.get(0).getArbeidsforhold().getAnsettelsesPeriode().get("fom"), equalTo("1985-08-01"));
         assertThat(result.get(0).getArbeidsforhold().getArbeidsgiver().get("orgnummer"), equalTo("990458162"));
         assertThat(result.get(1).getArbeidsforhold().getArbeidstaker().get("ident"), equalTo(fnrs.get(1)));
