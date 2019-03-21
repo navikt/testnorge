@@ -11,14 +11,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -52,7 +51,7 @@ public class SyntetiseringServiceTest {
         fnrs.add(fnr1);
         fnrs.add(fnr2);
 
-        Map<String, List<Map<String, String>>> syntetiserteMeldinger = new HashMap<>();
+        List<ArbeidsforholdsResponse> syntetiserteMeldinger = new ArrayList<>();
 
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(fnrs);
         when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(syntetiserteMeldinger);

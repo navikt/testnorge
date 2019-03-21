@@ -13,7 +13,8 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 
 @Component
 @Slf4j
@@ -52,7 +53,7 @@ public class AaregstubConsumer {
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
-    public ResponseEntity sendTilAaregstub(Map<String, List<Map<String, String>>> syntetiserteArbeidsforholdsmeldinger) {
+    public ResponseEntity sendTilAaregstub(List<ArbeidsforholdsResponse> syntetiserteArbeidsforholdsmeldinger) {
         RequestEntity postRequest = RequestEntity.post(sendTilAaregstubUrl.expand()).body(syntetiserteArbeidsforholdsmeldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE_LAGRE);
     }

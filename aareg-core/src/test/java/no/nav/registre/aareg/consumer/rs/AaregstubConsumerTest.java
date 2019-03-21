@@ -19,9 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,7 +48,7 @@ public class AaregstubConsumerTest {
 
     @Test
     public void shouldSendSyntetiskeMeldinger() {
-        Map<String, List<Map<String, String>>> syntetiserteMeldinger = new HashMap<>();
+        List<ArbeidsforholdsResponse> syntetiserteMeldinger = new ArrayList<>();
 
         stubAaregstubLagreConsumer();
 
@@ -65,7 +66,7 @@ public class AaregstubConsumerTest {
 
     private void stubAaregstubLagreConsumer() {
         stubFor(post(urlPathEqualTo("/aaregstub/api/v1/lagreArbeidsforhold"))
-                .withRequestBody(equalToJson("{}"))
+                .withRequestBody(equalToJson("[]"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
     }
