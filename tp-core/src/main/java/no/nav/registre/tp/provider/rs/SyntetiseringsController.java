@@ -1,5 +1,6 @@
 package no.nav.registre.tp.provider.rs;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.tp.database.multitenancy.TenantContext;
 import no.nav.registre.tp.provider.rs.request.SyntetiseringsRequest;
 import no.nav.registre.tp.service.TpService;
@@ -22,6 +24,8 @@ public class SyntetiseringsController {
     @Autowired
     private TpService tpService;
 
+    @LogExceptions
+    @ApiOperation(value = "Dette endepunktet kan benyttes for å generere syntetiserte ytelser på tilfeldige personer i en gitt avspillergruppe som er definert i TPS-Forvalteren.")
     @PostMapping(value = "/generer")
     public ResponseEntity createYtelseWithRelations(@RequestBody @Valid SyntetiseringsRequest request) {
         TenantContext.setTenant(request.getMiljoe());
@@ -29,8 +33,10 @@ public class SyntetiseringsController {
         return ResponseEntity.ok().build();
     }
 
+    @LogExceptions
+    @ApiOperation(value = "Dette endepunktet kan benyttes for å hente ut alle forhold i et gitt miljø.")
     @GetMapping(value = "/forhold/{miljoe}")
-    public ResponseEntity hentfolk(@PathVariable String miljoe) {
+    public ResponseEntity getForhold(@PathVariable String miljoe) {
         TenantContext.setTenant(miljoe);
         return ResponseEntity.ok(tpService.getForhold());
     }

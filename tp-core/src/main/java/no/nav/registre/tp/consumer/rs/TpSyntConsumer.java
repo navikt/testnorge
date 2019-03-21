@@ -1,5 +1,6 @@
 package no.nav.registre.tp.consumer.rs;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,6 +29,7 @@ public class TpSyntConsumer {
         this.syntRestApiUrl = syntRestApiUrl + "/v1/generate/tp?numToGenerate={numToGenerate}";
     }
 
+    @Timed(value = "tp.resource.latency", extraTags = { "operation", "synt" })
     public List<TYtelse> getSyntYtelser(int numToGenerate) {
         ResponseEntity<List<TYtelse>> responseEntity = restTemplate.exchange(syntRestApiUrl, HttpMethod.GET, null, RESPONSE_TYPE, numToGenerate);
         List<TYtelse> ytelser = new LinkedList<>();

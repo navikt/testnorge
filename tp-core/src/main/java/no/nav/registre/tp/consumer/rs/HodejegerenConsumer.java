@@ -1,5 +1,6 @@
 package no.nav.registre.tp.consumer.rs;
 
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -34,6 +35,7 @@ public class HodejegerenConsumer {
         this.hodejegerenUrlAll = hodejegerenUrl + "/v1/alle-levende-identer/{avspillergruppeId}";
     }
 
+    @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> getLivingIdentities(@Valid SyntetiseringsRequest request) {
         ResponseEntity<List<String>> responseEntity = restTemplate
                 .exchange(hodejegerenUrl, HttpMethod.GET, null, RESPONSE_TYPE, request.getAvspillergruppeId(), request.getMiljoe(), request.getAntallPersoner(), MIN_AGE);
@@ -46,6 +48,7 @@ public class HodejegerenConsumer {
         return fnrs;
     }
 
+    @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
     public Set<String> getAllIdentities(@Valid SyntetiseringsRequest request) {
         ResponseEntity<Set<String>> response = restTemplate.exchange(hodejegerenUrlAll, HttpMethod.GET, null, RESPONSE_TYPE_SET, request.getAvspillergruppeId());
         Set<String> fnrs = new HashSet<>();
