@@ -22,7 +22,22 @@
         "ident": "01010101010",
         "identtype": "FNR",
         "aktoertype": "PERS"
-      }
+      },
+      "permisjon": [
+        {
+          "permisjonsId": "a1b2c3",
+          "permisjonsprosent": 10.5
+        }
+      ],
+      "utenlandsopphold": [
+        {
+          "land": "NOR",
+          "periode": {
+            "fom": "1985-08-01",
+            "tom": "1985-08-12"
+          }
+        }
+      ]
     }
   },
   {
