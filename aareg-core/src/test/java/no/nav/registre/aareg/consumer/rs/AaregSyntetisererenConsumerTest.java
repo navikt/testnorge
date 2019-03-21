@@ -40,6 +40,7 @@ public class AaregSyntetisererenConsumerTest {
 
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
+    private String fnr3 = "03030303030";
 
     @Test
     public void shouldGetSyntetiserteMeldinger() {
@@ -51,6 +52,19 @@ public class AaregSyntetisererenConsumerTest {
 
         assertThat(result.get(0).getArbeidsforhold().getArbeidstaker().get("ident"), equalTo(fnrs.get(0)));
         assertThat(result.get(1).getArbeidsforhold().getArbeidstaker().get("ident"), equalTo(fnrs.get(1)));
+    }
+
+    @Test
+    public void shouldGetSyntetiserteMeldingerWithPaging() {
+        List<String> fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2, fnr3));
+
+        stubAaregSyntetisererenConsumerWithPaging();
+
+        List<ArbeidsforholdsResponse> result = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(fnrs);
+
+        assertThat(result.get(0).getArbeidsforhold().getArbeidstaker().get("ident"), equalTo(fnrs.get(0)));
+        assertThat(result.get(1).getArbeidsforhold().getArbeidstaker().get("ident"), equalTo(fnrs.get(1)));
+        assertThat(result.get(2).getArbeidsforhold().getArbeidstaker().get("ident"), equalTo(fnrs.get(2)));
     }
 
     @Test
@@ -76,6 +90,20 @@ public class AaregSyntetisererenConsumerTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("arbeidsforholdsmelding.json"))));
+    }
+
+    private void stubAaregSyntetisererenConsumerWithPaging() {
+        stubFor(post(urlPathEqualTo("/synthdata-aareg/api/v1/generate/aareg"))
+                .withRequestBody(equalToJson("[\"" + fnr1 + "\", \"" + fnr2 + "\"]"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResourceFileContent("arbeidsforholdsmelding.json"))));
+
+        stubFor(post(urlPathEqualTo("/synthdata-aareg/api/v1/generate/aareg"))
+                .withRequestBody(equalToJson("[\"" + fnr3 + "\"]"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResourceFileContent("arbeidsforholdsmelding_paged.json"))));
     }
 
     private void stubAaregSyntetisererenConsumerWithEmptyBody() {

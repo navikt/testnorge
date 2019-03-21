@@ -23,7 +23,8 @@ public class AaregSyntetisererenConsumer {
     private static final ParameterizedTypeReference<List<ArbeidsforholdsResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<ArbeidsforholdsResponse>>() {
     };
 
-    private static final int PAGE_SIZE = 500;
+    @Value("${aareg.pageSize}")
+    private int pageSize;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -40,14 +41,14 @@ public class AaregSyntetisererenConsumer {
         RequestEntity postRequest;
         ResponseEntity<List<ArbeidsforholdsResponse>> response;
 
-        if (identer.size() > PAGE_SIZE) {
-            for (int i = 0; i * PAGE_SIZE < identer.size(); i++) {
-                int endIndex = PAGE_SIZE * (i + 1);
+        if (identer.size() > pageSize) {
+            for (int i = 0; i * pageSize < identer.size(); i++) {
+                int endIndex = pageSize * (i + 1);
                 if (endIndex > identer.size()) {
                     endIndex = identer.size();
                 }
 
-                postRequest = RequestEntity.post(url.expand()).body(identer.subList(i * PAGE_SIZE, endIndex));
+                postRequest = RequestEntity.post(url.expand()).body(identer.subList(i * pageSize, endIndex));
 
                 response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
                 if (response != null && response.getBody() != null) {

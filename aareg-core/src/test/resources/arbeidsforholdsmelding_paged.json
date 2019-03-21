@@ -1,0 +1,29 @@
+[
+  {
+    "arbeidsforhold": {
+      "ansettelsesPeriode": {
+        "fom": "1985-08-01"
+      },
+      "arbeidsavtale": {
+        "arbeidstidsordning": "doegnkontinuerligSkiftOgTurnus355",
+        "avtaltArbeidstimerPerUke": 0,
+        "endringsdatoStillingsprosent": "string",
+        "sisteLoennsendringsdato": "1985-08-01",
+        "stillingsprosent": 0.01,
+        "yrke": "990458162",
+        "avtaltArbeidstimeerPerUke": 35.5
+      },
+      "arbeidsforholdID": "oAq5SJgOPDHQnERi",
+      "arbeidsforholdstype": "ordinaertArbeidsforhold",
+      "arbeidsgiver": {
+        "aktoertype": "ORG",
+        "orgnummer": "990458162"
+      },
+      "arbeidstaker": {
+        "ident": "03030303030",
+        "identtype": "FNR",
+        "aktoertype": "PERS"
+      }
+    }
+  }
+]
