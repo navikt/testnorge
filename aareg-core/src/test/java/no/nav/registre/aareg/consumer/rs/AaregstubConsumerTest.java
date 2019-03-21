@@ -6,11 +6,17 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
@@ -57,6 +63,21 @@ public class AaregstubConsumerTest {
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }
 
+    @Test
+    public void shouldLogOnEmptyResponse() {
+        stubAaregstubWithEmptyBody();
+
+        Logger logger = (Logger) LoggerFactory.getLogger(AaregstubConsumer.class);
+        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        listAppender.start();
+        logger.addAppender(listAppender);
+
+        aaregstubConsumer.hentEksisterendeIdenter();
+
+        assertThat(listAppender.list.size(), is(equalTo(1)));
+        assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Aaregstub: NullPointerException"));
+    }
+
     private void stubAaregstubHentArbeidstakereConsumer() {
         stubFor(get(urlPathEqualTo("/aaregstub/api/v1/hentAlleArbeidstakere"))
                 .willReturn(ok()
@@ -67,6 +88,12 @@ public class AaregstubConsumerTest {
     private void stubAaregstubLagreConsumer() {
         stubFor(post(urlPathEqualTo("/aaregstub/api/v1/lagreArbeidsforhold"))
                 .withRequestBody(equalToJson("[]"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubAaregstubWithEmptyBody() {
+        stubFor(get(urlPathEqualTo("/aaregstub/api/v1/hentAlleArbeidstakere"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
     }
