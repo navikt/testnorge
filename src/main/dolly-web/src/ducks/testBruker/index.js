@@ -13,7 +13,8 @@ const initialState = {
 	items: {
 		tpsf: null,
 		sigrunstub: null,
-		krrstub: null
+		krrstub: null,
+		aareg: null
 	}
 }
 
@@ -27,15 +28,13 @@ const updateTestbrukerRequest = () => ({ type: actionTypes.UPDATE_TESTBRUKER_REQ
 const updateTestbrukerSuccess = () => ({ type: actionTypes.UPDATE_TESTBRUKER_SUCCESS })
 const updateTestbrukerError = () => ({ type: actionTypes.UPDATE_TESTBRUKER_ERROR })
 
-export const GET_TPSF_TESTBRUKERE = createAction(
-	'GET_TPSF_TESTBRUKERE', 
-	async identArray => {
-		try {
-			const res = await TpsfApi.getTestbrukere(identArray)
-			return res
-		} catch (err) {
-			return err
-		}
+export const GET_TPSF_TESTBRUKERE = createAction('GET_TPSF_TESTBRUKERE', async identArray => {
+	try {
+		const res = await TpsfApi.getTestbrukere(identArray)
+		return res
+	} catch (err) {
+		return err
+	}
 })
 
 export const GET_SIGRUN_TESTBRUKER = createAction(
@@ -65,6 +64,21 @@ export const GET_KRR_TESTBRUKER = createAction(
 				//ERROR 404 betyr at det ikke finnes data for identen, fake opp datastruktur slik at reducer blir consistent
 				return { data: [null] }
 			}
+			return err
+		}
+	},
+	ident => ({
+		ident
+	})
+)
+
+export const GET_AAREG_TESTBRUKER = createAction(
+	'GET_AAREG_TESTBRUKER',
+	async (ident, env) => {
+		try {
+			const res = await DollyApi.getArbeidsforhold(ident, env)
+			return res
+		} catch (err) {
 			return err
 		}
 	},
@@ -120,6 +134,19 @@ export default function testbrukerReducer(state = initialState, action) {
 					}
 				}
 			}
+
+		case success(GET_AAREG_TESTBRUKER):
+			return {
+				...state,
+				items: {
+					...state.items,
+					aareg: {
+						...state.items.aareg,
+						[action.meta.ident]: action.payload && action.payload.data
+					}
+				}
+			}
+
 		case actionTypes.UPDATE_TESTBRUKER_SUCCESS:
 			return state
 		default:

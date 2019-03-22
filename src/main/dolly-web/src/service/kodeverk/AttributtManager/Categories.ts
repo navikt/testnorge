@@ -21,9 +21,12 @@ export const Kategorier: KategoriTypes = {
 		id: 'arbeidOgInntekt',
 		navn: 'Arbeid og inntekt',
 		informasjonstekst:
-			'Lignede inntekter - årlig: \n' +
-			'Lignede inntekter er stemplet og godkjent. Inntektene her blir lagt i Sigrun-stub.' +
-			'AAREG: Insert info', //TODO: Insert info
+			'Arbeidsforhold: \n' +
+			'Dataene her blir lagt til AAREG. \n\n' +
+			'Inntekt: \n' +
+			'Lignede inntekter - årlig: ' +
+			'Lignede inntekter er stemplet og godkjent. Inntektene her blir lagt i Sigrun-stub.',
+
 		order: 40
 	},
 	KontaktInfo: {
