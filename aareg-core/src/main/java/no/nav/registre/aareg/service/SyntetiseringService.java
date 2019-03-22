@@ -1,12 +1,14 @@
 package no.nav.registre.aareg.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
@@ -16,6 +18,7 @@ import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @Service
+@Slf4j
 public class SyntetiseringService {
 
     @Autowired
@@ -36,13 +39,28 @@ public class SyntetiseringService {
         List<String> utvalgteIdenter = new ArrayList<>(aaregstubConsumer.hentEksisterendeIdenter());
         levendeIdenter.removeAll(utvalgteIdenter);
 
-        for (int i = 0; i < syntetiserAaregRequest.getAntallNyeIdenter() && i < levendeIdenter.size(); i++) {
+        int antallNyeIdenter = syntetiserAaregRequest.getAntallNyeIdenter();
+        if(antallNyeIdenter > levendeIdenter.size()) {
+            antallNyeIdenter = levendeIdenter.size();
+            log.info("Fant ikke nok ledige identer i avspillergruppe. Lager arbeidsforhold på {} identer.", antallNyeIdenter);
+        }
+
+        for (int i = 0; i < antallNyeIdenter; i++) {
             nyeIdenter.add(levendeIdenter.remove(rand.nextInt(levendeIdenter.size())));
         }
 
         utvalgteIdenter.addAll(nyeIdenter);
         List<ArbeidsforholdsResponse> syntetiserteArbeidsforholdsmeldinger = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
+        for(ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforholdsmeldinger) {
+            arbeidsforholdsResponse.setEnvironments(Arrays.asList(syntetiserAaregRequest.getMiljoe()));
+        }
 
-        return aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforholdsmeldinger);
+        utvalgteIdenter.removeAll(aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforholdsmeldinger));
+
+        if(utvalgteIdenter.isEmpty()) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(utvalgteIdenter);
+        }
     }
 }

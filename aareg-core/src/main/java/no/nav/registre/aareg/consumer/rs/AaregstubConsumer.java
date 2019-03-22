@@ -20,7 +20,7 @@ import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 @Slf4j
 public class AaregstubConsumer {
 
-    private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE_LAGRE = new ParameterizedTypeReference<ResponseEntity>() {
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE_LAGRE = new ParameterizedTypeReference<List<String>>() {
     };
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE_HENT_ARBEIDSTAKERE = new ParameterizedTypeReference<List<String>>() {
@@ -53,8 +53,17 @@ public class AaregstubConsumer {
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
-    public ResponseEntity sendTilAaregstub(List<ArbeidsforholdsResponse> syntetiserteArbeidsforholdsmeldinger) {
+    public List<String> sendTilAaregstub(List<ArbeidsforholdsResponse> syntetiserteArbeidsforholdsmeldinger) {
         RequestEntity postRequest = RequestEntity.post(sendTilAaregstubUrl.expand()).body(syntetiserteArbeidsforholdsmeldinger);
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE_LAGRE);
+        List<String> lagredeIdenter = new ArrayList<>();
+        ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LAGRE);
+
+        if (response.getBody() != null) {
+            lagredeIdenter.addAll(response.getBody());
+        } else {
+            log.error("AaregstubConsumer.sendTilAaregstub: Kunne ikke hente response body fra Aaregstub: NullPointerException");
+        }
+
+        return lagredeIdenter;
     }
 }

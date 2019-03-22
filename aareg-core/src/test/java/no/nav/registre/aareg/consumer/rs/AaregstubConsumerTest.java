@@ -20,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -58,9 +56,9 @@ public class AaregstubConsumerTest {
 
         stubAaregstubLagreConsumer();
 
-        ResponseEntity response = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger);
+        List<String> identerSendtTilAaregstub = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger);
 
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+        assertThat(identerSendtTilAaregstub.size(), equalTo(2));
     }
 
     @Test
@@ -89,7 +87,8 @@ public class AaregstubConsumerTest {
         stubFor(post(urlPathEqualTo("/aaregstub/api/v1/lagreArbeidsforhold"))
                 .withRequestBody(equalToJson("[]"))
                 .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
     }
 
     private void stubAaregstubWithEmptyBody() {
