@@ -10,7 +10,6 @@ import DollyModal from '~/components/modal/DollyModal'
 import Formatters from '~/utils/DataFormatter'
 import BestillingDetaljerModal from '~/components/bestillingDetaljerModal/BestillingDetaljerModal'
 
-
 const AttributtManagerInstance = new AttributtManager()
 
 export default class PersonDetaljer extends PureComponent {
@@ -24,13 +23,20 @@ export default class PersonDetaljer extends PureComponent {
 	static propTypes = {
 		editAction: PropTypes.func
 	}
+
 	componentDidMount() {
+		console.log('this.props.testIdent :', this.props.testIdent)
 		this.props.getSigrunTestbruker()
 		this.props.getKrrTestbruker()
+
+		this.props.testIdent.tpsfSuccessEnv &&
+			this.props.getAaregTestbruker(this.props.testIdent.tpsfSuccessEnv.substring(0, 2))
 	}
+
 	openModal = () => {
 		this.setState({ modalOpen: true })
 	}
+
 	closeModal = () => {
 		this.setState({ modalOpen: false })
 	}
@@ -68,7 +74,7 @@ export default class PersonDetaljer extends PureComponent {
 		const { bestillinger } = this.props
 		const bestilling = bestillinger.data.find(i => i.id.toString() === ident)
 
-		return <BestillingDetaljerModal bestilling = {bestilling}/>
+		return <BestillingDetaljerModal bestilling={bestilling} />
 	}
 
 	render() {

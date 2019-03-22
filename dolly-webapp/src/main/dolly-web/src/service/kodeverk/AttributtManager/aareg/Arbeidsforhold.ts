@@ -14,6 +14,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Har arbeidsforhold',
 		dataSource: DataSource.AAREG,
 		attributtType: AttributtType.SelectAndEdit,
+		validation: yup.object(),
 		items: [
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,
@@ -22,9 +23,11 @@ const AttributtListe: Attributt[] = [
 				label: 'Yrke',
 				path: 'arbeidsavtale',
 				dataSource: DataSource.AAREG,
-				inputType: InputType.Text,
+				// inputType: InputType.Select,
+				inputType: InputType.Select,
 				// apiKodeverkId: 'Yrker',
-				validation: yup.string().required('Velg en type tjeneste.'),
+				options: SelectOptionsManager('yrke'),
+				validation: yup.string().required('Velg et yrke.'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -35,6 +38,7 @@ const AttributtListe: Attributt[] = [
 				path: 'ansettelsesPeriode',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Date,
+				validation: DateValidation,
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -44,6 +48,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Sluttdato',
 				path: 'ansettelsesPeriode',
 				dataSource: DataSource.AAREG,
+				validation: DateValidation,
 				inputType: InputType.Date,
 				attributtType: AttributtType.SelectAndRead
 			},
@@ -55,7 +60,10 @@ const AttributtListe: Attributt[] = [
 				path: 'arbeidsavtale',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Number,
-				validation: yup.string().required('Krever stillingprosent'),
+				validation: yup
+					.number()
+					.integer('Ugyldig stillingprosent')
+					.min(1, 'Oppgi stillingprosent'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -65,7 +73,8 @@ const AttributtListe: Attributt[] = [
 				label: 'Type av arbeidsgiver',
 				path: 'arbeidsgiver',
 				dataSource: DataSource.AAREG,
-				inputType: InputType.Text,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('aktoertype'),
 				validation: yup.string().required('Velg en type av arbeidsgiver'),
 				attributtType: AttributtType.SelectAndRead
 			},
@@ -76,8 +85,11 @@ const AttributtListe: Attributt[] = [
 				label: 'Orgnummer/ident',
 				path: 'arbeidsgiver',
 				dataSource: DataSource.AAREG,
-				inputType: InputType.Text,
-				validation: yup.string().required('Krever orgnummer/ident'),
+				inputType: InputType.Number,
+				validation: yup
+					.number()
+					.integer('Ugyldig input')
+					.min(1, 'Oppgi orgnummer/ident'),
 				attributtType: AttributtType.SelectAndRead
 			}
 		]

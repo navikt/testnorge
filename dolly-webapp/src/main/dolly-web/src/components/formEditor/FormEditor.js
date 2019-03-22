@@ -152,7 +152,6 @@ export default class FormEditor extends PureComponent {
 	}
 
 	renderFieldSubItem = item => {
-		console.log('item :', item)
 		const InputComponent = InputSelector(item.inputType)
 
 		return (
