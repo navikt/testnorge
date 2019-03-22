@@ -62,7 +62,7 @@ public class SyntetiseringService {
             return ResponseEntity.ok().body(antallIdenter + " identer fikk opprettet arbeidsforhold og ble sendt til aareg-stub");
         } else {
             log.error("Noe feilet under lagring til aaregstub. Følgende identer ble ikke lagret: " + utvalgteIdenter);
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(utvalgteIdenter);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Noe feilet under lagring til aaregstub. Følgende identer ble ikke lagret: " + utvalgteIdenter.toString());
         }
     }
 }
