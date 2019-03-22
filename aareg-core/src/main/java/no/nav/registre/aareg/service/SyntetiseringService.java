@@ -58,7 +58,7 @@ public class SyntetiseringService {
         utvalgteIdenter.removeAll(aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforholdsmeldinger));
 
         if(utvalgteIdenter.isEmpty()) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(utvalgteIdenter + " identer fikk opprettet arbeidsforhold og ble sendt til aareg-stub");
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(utvalgteIdenter);
         }
