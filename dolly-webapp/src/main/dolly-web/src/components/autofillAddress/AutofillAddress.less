@@ -4,25 +4,39 @@
 	}
 }
 
-.generate-address-container {
-	.lukknapp {
-		position: absolute;
-		right: 20px;
-		top: 15px;
-		z-index: 1;
-	}
-	.generate-address-form {
-		display: flex;
-		margin-bottom: 10px;
+// .generate-address-container {
+// 	.lukknapp {
+// 		position: absolute;
+// 		right: 20px;
+// 		top: 15px;
+// 		z-index: 1;
+// 	}
+// 	.generate-address-form {
+// 		display: flex;
+// 		margin-bottom: 10px;
 
-		.skjemaelement:not(:last-child) {
-			margin-right: 15px;
-		}
-	}
+// 		.skjemaelement:not(:last-child) {
+// 			margin-right: 15px;
+// 		}
+// 	}
+// }
+
+.address-container {
+	// width: 100vw;
+	// position: relative;
+	// display: inline-flex;
+	display: flex;
+	flex-direction: row;
+	width: 100%;
 
 	input {
-		width: 50%;
+		float: left;
+		width: 200px;
 	}
+
+	// dollyselect {
+	// 	float: left;
+	// }
 }
 
 // z-index to make sure overlay is always in front

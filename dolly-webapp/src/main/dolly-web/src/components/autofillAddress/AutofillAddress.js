@@ -1,18 +1,14 @@
 import React, { Component, Fragment } from 'react'
 import Knapp from 'nav-frontend-knapper'
 import DollySelect from '~/components/fields/Select/Select'
+import Input from '~/components/fields/Input/Input'
 import { TpsfApi, DollyApi } from '~/service/Api'
-// import SearchFieldConnector from '~/components/searchField/SearchFieldConnector'
 import './AutofillAddress.less'
 
 const initialState = {
-	// isFetching: false,
-	// type: 'random',
-	// input: '',
-	// status: '',
-	// sokeTekst: ''
 	isFetching: false,
-	input: '',
+	// input: '',
+	// adresserHentet: false,
 	boadresse_gateadresse: '',
 	boadresse_husnummer: '',
 	boadresse_postnr: '',
@@ -22,130 +18,177 @@ const initialState = {
 export default class AutofillAddress extends Component {
 	state = { ...initialState }
 
-	onInputChangeHandler = (key, value) => {
-		console.log('key :', key)
-		console.log('value :', value)
-		console.log('this.state :', this.state)
-		this.setState({ key: value })
+	static gyldigeAdresser = []
+
+	onInputChangeHandler = input => {
+		this.setState({ ...this.state, [input.id]: input.value })
 	}
 
-	onTextChangeHandler = event => {
-		this.setState({ sokeTekst: event.target.value })
+	onGatenavnChangeHandler = input => {
+		this.setState({ boadresse_gateadresse: input.target.value })
+	}
+
+	onHusnummerChangeHandler = input => {
+		this.setState({ boadresse_husnummer: input.target.value })
 	}
 
 	placeHolderGenerator = type => {
 		if (type === 'boadresse_postnr') return 'Velg postnummer...'
 		if (type === 'boadresse_kommunenr') return 'Velg kommunenummer...'
 		if (type === 'boadresse_gateadresse') return 'Søk etter adresse...'
+		if (type === 'boadresse_husnummer') return 'Velg husnummer...'
 		return ''
 	}
 
 	loadOptionsSelector = type => {
-		if (type === 'boadresse_postnr') return () => this.fetchKodeverk('Postnummer')
-		if (type === 'boadresse_kommunenr') return () => this.fetchKodeverk('Kommuner')
-		if (type === 'boadresse_gateadresse') return () => this.fetchAdresser(this.state.sokeTekst)
+		if (type === 'boadresse_postnr') return () => this.fetchKodeverk('Postnummer', type)
+		if (type === 'boadresse_kommunenr') return () => this.fetchKodeverk('Kommuner', type)
+		// if (type === 'boadresse_gateadresse') rseturn () => this.fetchAdresser()
 		return undefined
 	}
 
-	fetchKodeverk = kodeverkNavn => {
+	fetchKodeverk = (kodeverkNavn, type) => {
 		return DollyApi.getKodeverkByNavn(kodeverkNavn).then(res => {
 			return {
 				options: res.data.koder.map(kode => ({
 					label: `${kode.value} - ${kode.label}`,
-					value: kode.value
+					value: kode.value,
+					id: type
 				}))
 			}
 		})
 	}
 
-	fetchAdresser = input => {
-		return TpsfApi.autocompleteAddress(input).then(res => {
-			return {
-				options: res.data.response.data1.adrData.map(adresse => ({
-					label: adresse.adrnavn + ' (' + adresse.psted + ')',
-					value: adresse.adrnavn
-				}))
+	fetchAdresser = () => {
+		const adr = this.gyldigeAdresser
+		var options = []
+		if (adr.length > 1) {
+			adr.forEach(adresse => {
+				console.log('adresse :', adresse)
+				options.push({
+					label: adresse.adrnavn + ', ' + adresse.pnr + ' ' + adresse.psted,
+					value: adresse.adrnavn,
+					adrObject: adresse
+				})
+			})
+		} else {
+			options.push({
+				label: adr.adrnavn + ', ' + adr.pnr + ' ' + adr.psted,
+				value: adr.adrnavn,
+				adrObject: adr
+			})
+		}
+		return Promise.resolve({ options: options })
+	}
+
+	onAdresseChangeHandler = input => {
+		const { formikProps } = this.props
+		const addressData = input.adrObject
+
+		let newAddressObject = {
+			boadresse_gateadresse: '',
+			boadresse_husnummer: '',
+			boadresse_gatekode: '',
+			boadresse_kommunenr: '',
+			boadresse_postnr: ''
+		}
+		if (addressData) {
+			const { adrnavn, husnrfra, gkode, pnr, knr } = addressData
+
+			newAddressObject = {
+				boadresse_gateadresse: adrnavn.toString(),
+				boadresse_husnummer: husnrfra.toString(),
+				boadresse_gatekode: gkode.toString(),
+				boadresse_kommunenr: knr.toString(),
+				boadresse_postnr: pnr.toString()
 			}
-		})
+			console.log('newAddressObject :', newAddressObject)
+		}
+
+		formikProps.setValues({ ...formikProps.values, ...newAddressObject })
+
+		// console.log('input :', input)
+		// return <p>test</p>
 	}
 
 	setQueryString = () => {
-		const { input, type } = this.state
-		console.log('input :', input)
-		console.log('type :', type)
-		const value = input.value
-		console.log('value :', value)
-		switch (type) {
-			case 'adrnavn':
-				return `&adresseNavnsok=${value}`
-			case 'pnr':
-				return `&postNrsok=${value}`
-			case 'knr':
-				return `&kommuneNrsok=${value}`
-			case 'husnrfra':
-				return `&husNrsok=${value}`
-			default:
-				return ''
+		let queryString = ''
+		if (this.state.boadresse_gateadresse) {
+			queryString += `&adresseNavnsok=${this.state.boadresse_gateadresse}`
 		}
+		if (this.state.boadresse_husnummer) {
+			queryString += `&husNrsok=${this.state.boadresse_husnummer}`
+		}
+		if (this.state.boadresse_postnr) {
+			queryString += `&postNrsok=${this.state.boadresse_postnr}`
+		}
+		if (this.state.boadresse_kommunenr) {
+			queryString += `&kommuneNrsok=${this.state.boadresse_kommunenr}`
+		}
+		return queryString
 	}
 
-	// må linkes til en knapp og sikkert endres
 	onClickHandler = () => {
-		const { formikProps } = this.props
-		console.log('this.state :', this.state)
-
 		return this.setState({ isFetching: true }, async () => {
 			try {
-				const generateAddressResponse = await TpsfApi.generateAddress(this.setQueryString())
-				console.log('generateAddressResponse :', generateAddressResponse)
+				const query = this.setQueryString()
+				let generateAddressResponse
+				query.length > 0
+					? (generateAddressResponse = await TpsfApi.generateAddress(query))
+					: (generateAddressResponse = await TpsfApi.generateRandomAddress())
 
 				const addressData = generateAddressResponse.data.response.data1.adrData
 				console.log('addressData :', addressData)
+				this.gyldigeAdresser = addressData
 
 				const count = parseInt(generateAddressResponse.data.response.data1.antallForekomster)
-				console.log('count :', count)
 
 				let status = generateAddressResponse.data.response.status.utfyllendeMelding
-				console.log('status :', status)
 
-				let newAddressObject = {
-					boadresse_gateadresse: '',
-					boadresse_husnummer: '',
-					boadresse_gatekode: '',
-					boadresse_kommunenr: '',
-					boadresse_postnr: ''
-				}
-				if (count > 0) {
-					const { adrnavn, husnrfra, gkode, pnr, knr } = addressData
-
-					newAddressObject = {
-						boadresse_gateadresse: adrnavn.toString(),
-						boadresse_husnummer: husnrfra.toString(),
-						boadresse_gatekode: gkode.toString(),
-						boadresse_kommunenr: knr.toString(),
-						boadresse_postnr: pnr.toString()
-					}
-					status = ''
-					console.log('newAddressObject :', newAddressObject)
-				}
-
-				formikProps.setValues({ ...formikProps.values, ...newAddressObject })
-
-				return this.setState({ isFetching: false, status })
+				return this.setState({ isFetching: false, adresserHentet: true, status })
 			} catch (err) {
 				return this.setState({ isFetching: false })
 			}
 		})
 	}
 
+	renderAdresseSelect = () => {
+		return (
+			<DollySelect
+				placeholder="Velg gyldig adresse..."
+				name="generator-select"
+				label=""
+				onChange={this.onAdresseChangeHandler}
+				loadOptions={this.fetchAdresser}
+			/>
+		)
+	}
+
 	renderSelect = item => {
-		// const { type, input } = this.state
 		const input = this.state
-		// const props = this.props
 		const selectProps = {
 			loadOptions: this.loadOptionsSelector(item.id),
 			placeholder: this.placeHolderGenerator(item.id)
-			// disabled: type === 'random'
+		}
+
+		if (item.id === 'boadresse_gateadresse') {
+			return (
+				<Input
+					key={item.id}
+					label={item.label}
+					placeholder={selectProps.placeholder}
+					onChange={this.onGatenavnChangeHandler}
+				/>
+			)
+		} else if (item.id === 'boadresse_husnummer') {
+			return (
+				<Input
+					key={item.id}
+					label={item.label}
+					placeholder={selectProps.placeholder}
+					onChange={this.onHusnummerChangeHandler}
+				/>
+			)
 		}
 		return (
 			<DollySelect
@@ -159,43 +202,12 @@ export default class AutofillAddress extends Component {
 		)
 	}
 
-	// adresseChange = value => {
-	// 	this.setState({ input: value })
-	// 	this.setState({ query: this.fetchAdresser(this.input) })
-	// }
-
-	// renderAdresse = () => {
-	// 	const { type, input, sokeTekst } = this.state
-	// 	const props = this.props
-	// 	const selectProps = {
-	// 		loadOptions: this.loadOptionsSelector(props.name),
-	// 		placeholder: this.placeHolderGenerator(props.name)
-	// 	}
-	// 	return (
-	// 		<Fragment>
-	// 			<input type="text" value={this.state.sokeTekst} onChange={this.onTextChangeHandler} />
-
-	// 			<DollySelect
-	// 				key={type}
-	// 				name="generator-select"
-	// 				label={props.label}
-	// 				onChange={this.onInputChangeHandler}
-	// 				value={input}
-	// 				{...selectProps}
-	// 			>
-	// 				{/* <input type="text" value={this.state.sokeTekst} onChange={this.onTextChangeHandler} /> */}
-	// 			</DollySelect>
-	// 		</Fragment>
-	// 	)
-	// }
-
 	render() {
-		console.log('this.props :', this.props)
-		// const name = this.props.name
 		const items = this.props.items
+		console.log('this.state :', this.state)
 		return (
 			<Fragment>
-				<div className="generate-address-container">
+				<div className="address-container">
 					{items.map(item => item.inputType && this.renderSelect(item))}
 				</div>
 				<div>
@@ -209,31 +221,10 @@ export default class AutofillAddress extends Component {
 					>
 						Hent gyldig adresse
 					</Knapp>
+					{this.gyldigeAdresser && this.renderAdresseSelect()}
 				</div>
 			</Fragment>
 		)
-
-		// return (
-		// 	<Fragment>
-		// 		<div className="generate-address-container">
-		// 			{name === 'boadresse_gateadresse' ? this.renderAdresse() : this.renderSelect()}
-		// 		</div>
-		// 		{name === 'boadresse_kommunenr' && (
-		// 			<div>
-		// 				<Knapp
-		// 					className="generate-address"
-		// 					type="standard"
-		// 					autoDisableVedSpinner
-		// 					mini
-		// 					spinner={this.state.isFetching}
-		// 					onClick={this.onClickHandler}
-		// 				>
-		// 					Hent gyldig adresse
-		// 				</Knapp>
-		// 			</div>
-		// 		)}
-		// 	</Fragment>
-		// )
 	}
 }
 

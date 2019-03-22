@@ -91,16 +91,13 @@ export default class FormEditor extends PureComponent {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
-		// console.log('items :', items)
 
 		if (isAdresse) {
 			return (
 				<div className="subkategori" key={uniqueId}>
 					{!isFieldarray && <h4>{subKategori.navn}</h4>}
 					<div className="subkategori-field-group">
-						{this.renderAdresseFelt(items, formikProps)
-						// evt. knapp for å hente gyldig adresse her...
-						}
+						{this.renderAdresseFelt(items, formikProps)}
 					</div>
 				</div>
 			)
@@ -119,7 +116,7 @@ export default class FormEditor extends PureComponent {
 										this.renderFieldComponent,
 										this.props.editMode
 								  )
-								: this.renderFieldComponent(item, isAdresse, formikProps, formikProps.values)
+								: this.renderFieldComponent(item, formikProps, formikProps.values)
 					)}
 				</div>
 			</div>
@@ -130,12 +127,8 @@ export default class FormEditor extends PureComponent {
 		return <AutofillAddress items={items} formikProps={formikProps} />
 	}
 
-	renderFieldComponent = (item, isAdresse, formikProps, valgteVerdier, parentObject) => {
+	renderFieldComponent = (item, formikProps, valgteVerdier, parentObject) => {
 		if (!item.inputType) return null
-		console.log('item :', item)
-		// console.log('formikProps :', formikProps)
-		// console.log('valgteVerdier :', valgteVerdier)
-		// console.log('parentObject :', parentObject)
 
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
@@ -158,21 +151,6 @@ export default class FormEditor extends PureComponent {
 				return <KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
 			}
 			return <StaticValue {...staticValueProps} />
-		}
-
-		if (isAdresse) {
-			return (
-				<AutofillAddress
-					formikProps={formikProps}
-					key={item.key || item.id}
-					name={item.id}
-					label={item.label}
-					component={InputComponent}
-					size={item.size}
-					{...componentProps}
-					{...item.inputTypeAttributes}
-				/>
-			)
 		}
 
 		return (

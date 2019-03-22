@@ -26,8 +26,7 @@ export default class DollySelect extends PureComponent {
 	})
 
 	render() {
-		const { name, label, placeholder, loadOptions, error, size, ...restProps } = this.props
-		console.log('DOLLYSELECT this.props :', this.props)
+		const { name, label, value, placeholder, loadOptions, error, size, ...restProps } = this.props
 
 		return (
 			<div className={cn({ error: Boolean(error) }, size, 'skjemaelement dollyselect')}>
@@ -45,7 +44,6 @@ export default class DollySelect extends PureComponent {
 							openOnFocus
 							{...this.translations}
 							{...restProps}
-							// searchField={searchField}
 						/>
 					) : (
 						<Select
@@ -57,7 +55,6 @@ export default class DollySelect extends PureComponent {
 							openOnFocus
 							{...this.translations}
 							{...restProps}
-							// searchField={searchField}
 						/>
 					)}
 				</div>
