@@ -55,11 +55,13 @@ public class SyntetiseringService {
             arbeidsforholdsResponse.setEnvironments(Arrays.asList(syntetiserAaregRequest.getMiljoe()));
         }
 
+        int antallIdenter = utvalgteIdenter.size();
         utvalgteIdenter.removeAll(aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforholdsmeldinger));
 
         if(utvalgteIdenter.isEmpty()) {
-            return ResponseEntity.ok().body(utvalgteIdenter + " identer fikk opprettet arbeidsforhold og ble sendt til aareg-stub");
+            return ResponseEntity.ok().body(antallIdenter + " identer fikk opprettet arbeidsforhold og ble sendt til aareg-stub");
         } else {
+            log.error("Noe feilet under lagring til aaregstub. Følgende identer ble ikke lagret: " + utvalgteIdenter);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(utvalgteIdenter);
         }
     }
