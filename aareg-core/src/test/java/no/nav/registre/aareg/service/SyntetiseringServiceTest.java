@@ -102,7 +102,7 @@ public class SyntetiseringServiceTest {
 
         syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest);
 
-        assertThat(listAppender.list.size(), CoreMatchers.is(equalTo(1)));
+        assertThat(listAppender.list.size(), CoreMatchers.is(equalTo(2)));
         assertThat(listAppender.list.get(0).toString(), containsString("Fant ikke nok ledige identer i avspillergruppe. Lager arbeidsforhold på " + antallMeldinger + " identer."));
     }
 }
