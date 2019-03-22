@@ -1,4 +1,3 @@
-
 import React, { PureComponent, Fragment } from 'react'
 import './MiljoeStatus.less'
 import '~/styles/utils.less'
@@ -7,7 +6,6 @@ import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
 import DollyModal from '~/components/modal/DollyModal'
 import BestillingDetaljerModal from '~/components/bestillingDetaljerModal/BestillingDetaljerModal'
-
 
 export default class MiljoeStatus extends PureComponent {
 	constructor(props) {
@@ -23,9 +21,16 @@ export default class MiljoeStatus extends PureComponent {
 	closeModal = () => {
 		this.setState({ modalOpen: false })
 	}
-	
+
 	render() {
-		const { id, successEnvs, failedEnvs, bestilling, finnesFeilmelding, antallIdenterOpprettet } = this.props.miljoeStatusObj
+		const {
+			id,
+			successEnvs,
+			failedEnvs,
+			bestilling,
+			finnesFeilmelding,
+			antallIdenterOpprettet
+		} = this.props.miljoeStatusObj
 		const failed = true && successEnvs.length == 0 && !finnesFeilmelding
 		const { modalOpen } = this.state
 
@@ -44,6 +49,11 @@ export default class MiljoeStatus extends PureComponent {
 						? this._renderFailureMessage(bestilling, antallIdenterOpprettet)
 						: this._renderStatus(bestilling, successEnvs, failedEnvs, antallIdenterOpprettet)}
 				</div>
+				{/* TODO: Alex - condition for feil i hele bestillingen her */}
+				<div className="flexbox--all-center overall-feil-container">
+					<Icon size={'16px'} kind={'report-problem-triangle'} />
+					<p>Avvik</p>
+				</div>
 				<div className="flexbox--all-center">
 					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
 						BESTILLINGSDETALJER
@@ -52,7 +62,7 @@ export default class MiljoeStatus extends PureComponent {
 						isOpen={modalOpen}
 						onRequestClose={this.closeModal}
 						closeModal={this.closeModal}
-						content={<BestillingDetaljerModal bestilling = {bestilling}/>}
+						content={<BestillingDetaljerModal bestilling={bestilling} />}
 						width={'60%'}
 					/>
 				</div>
@@ -64,11 +74,16 @@ export default class MiljoeStatus extends PureComponent {
 		return (
 			<Fragment>
 				{antallIdenterOpprettet < bestilling.antallIdenter && (
-					<span className = 'miljoe-status error-text'>{antallIdenterOpprettet} av {bestilling.antallIdenter} bestilte identer ble opprettet i TPS.</span>
+					<span className="miljoe-status error-text">
+						{antallIdenterOpprettet} av {bestilling.antallIdenter} bestilte identer ble opprettet i
+						TPS.
+					</span>
 				)}
-				<span className = 'miljoe-container miljoe-container-rad'>{this._renderMiljoeStatus(successEnvs, failedEnvs)}</span>
+				<span className="miljoe-container miljoe-container-rad">
+					{this._renderMiljoeStatus(successEnvs, failedEnvs)}
+				</span>
 			</Fragment>
-			)
+		)
 	}
 
 	_renderMiljoeStatus = (successEnvs, failedEnvs) => (
