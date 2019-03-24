@@ -60,6 +60,9 @@ const AttributtListe: Attributt[] = [
 				path: 'arbeidsavtale',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Number,
+				inputTypeAttributes: {
+					min: 0
+				},
 				validation: yup
 					.number()
 					.integer('Ugyldig stillingprosent')
@@ -86,6 +89,9 @@ const AttributtListe: Attributt[] = [
 				path: 'arbeidsgiver',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Number,
+				inputTypeAttributes: {
+					min: 0
+				},
 				validation: yup
 					.number()
 					.integer('Ugyldig input')
