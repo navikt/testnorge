@@ -50,10 +50,12 @@ export default class MiljoeStatus extends PureComponent {
 						: this._renderStatus(bestilling, successEnvs, failedEnvs, antallIdenterOpprettet)}
 				</div>
 				{/* TODO: Alex - condition for feil i hele bestillingen her */}
-				<div className="flexbox--all-center overall-feil-container">
-					<Icon size={'16px'} kind={'report-problem-triangle'} />
-					<p>Avvik</p>
-				</div>
+				{bestilling.feil && (
+					<div className="flexbox--all-center overall-feil-container">
+						<Icon size={'16px'} kind={'report-problem-triangle'} />
+						<p>{bestilling.feil} </p>
+					</div>
+				)}
 				<div className="flexbox--all-center">
 					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
 						BESTILLINGSDETALJER
