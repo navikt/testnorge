@@ -25,10 +25,11 @@ export default class PersonDetaljer extends PureComponent {
 	}
 
 	componentDidMount() {
-		console.log('this.props.testIdent :', this.props.testIdent)
 		this.props.getSigrunTestbruker()
 		this.props.getKrrTestbruker()
 
+		// TODO: Alex - Dette fungerer ikke hvis AAREG oppretting er feilet i noen av miljoene.
+		// Maa hente bestillingobjekt fra redux for aa hente AAREG miljoe
 		this.props.testIdent.tpsfSuccessEnv &&
 			this.props.getAaregTestbruker(this.props.testIdent.tpsfSuccessEnv.substring(0, 2))
 	}
