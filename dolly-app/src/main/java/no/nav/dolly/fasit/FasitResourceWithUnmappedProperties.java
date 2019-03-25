@@ -1,8 +1,18 @@
 package no.nav.dolly.fasit;
 
-import lombok.Data;
+import java.util.Map;
 
-@Data
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FasitResourceWithUnmappedProperties {
 
     private String id;
@@ -13,6 +23,5 @@ public class FasitResourceWithUnmappedProperties {
     private boolean dodgy;
     private FasitResourceScope scope;
     private Object properties;
-
-
+    private Map<String, String> links;
 }

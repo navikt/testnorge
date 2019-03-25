@@ -34,4 +34,6 @@ public class RsSimpleDollyRequest {
     private LocalDateTime egenAnsattDatoFom;
 
     private LocalDateTime egenAnsattDatoTom;
+
+    private Boolean utenFastBopel;
 }

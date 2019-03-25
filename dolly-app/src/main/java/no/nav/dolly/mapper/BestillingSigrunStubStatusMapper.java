@@ -9,14 +9,14 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsIdentStatus;
+import no.nav.dolly.domain.resultset.RsStatusIdent;
 
 public final class BestillingSigrunStubStatusMapper {
 
     private BestillingSigrunStubStatusMapper() {
     }
 
-    public static List<RsIdentStatus> buildSigrunStubStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusIdent> buildSigrunStubStatusMap(List<BestillingProgress> progressList) {
 
         Map<String, List<String>> statusMap = new HashMap<>();
 
@@ -30,9 +30,9 @@ public final class BestillingSigrunStubStatusMapper {
             }
         });
 
-        List<RsIdentStatus> identStatus = new ArrayList<>();
+        List<RsStatusIdent> identStatus = new ArrayList<>();
         statusMap.forEach((key, value) ->
-                identStatus.add(RsIdentStatus.builder()
+                identStatus.add(RsStatusIdent.builder()
                         .statusMelding(key)
                         .identer(value)
                         .build())
