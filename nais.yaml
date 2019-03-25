@@ -33,6 +33,8 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorge-properties"
       resourceType: applicationProperties
+    - alias: "testnorge-tp-properties"
+      resourceType: applicationProperties
   exposed:
     - alias: testnorge-tp.rest-api
       description: Her finner du apiet for applikasjonen som utfører mellomarbeid fra orkestratoren til tjpen databasen.
