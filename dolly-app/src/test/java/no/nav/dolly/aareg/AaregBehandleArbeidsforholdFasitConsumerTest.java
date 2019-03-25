@@ -20,13 +20,13 @@ import no.nav.dolly.fasit.FasitResourceScope;
 import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AaregArbeidsforholdFasitConsumerTest {
+public class AaregBehandleArbeidsforholdFasitConsumerTest {
 
     @Mock
     private FasitApiConsumer fasitApiConsumer;
 
     @InjectMocks
-    private AaregArbeidsforholdFasitConsumer aaregArbeidsforholdFasitConsumer;
+    private AaregBehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
 
     @Before
     public void setup() {
@@ -48,8 +48,8 @@ public class AaregArbeidsforholdFasitConsumerTest {
     @Test
     public void fetchWsUrslAllEnvironments_OK() {
 
-        String urlResult = aaregArbeidsforholdFasitConsumer.getUrlForEnv("t0");
+        Map<String, String> fasitConsumers = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
 
-        assertThat(urlResult, is(equalTo("BaseUrl/v1/arbeidstaker/arbeidsforhold")));
+        assertThat(fasitConsumers.get("t0"), is(equalTo("BaseUrl/aareg-core/BehandleArbeidsforholdService/v1")));
     }
 }
