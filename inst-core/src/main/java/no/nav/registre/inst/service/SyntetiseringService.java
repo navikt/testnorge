@@ -2,6 +2,7 @@ package no.nav.registre.inst.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,11 @@ public class SyntetiseringService {
         List<String> utvalgteIdenter = finnLevendeIdenter(syntetiserInstRequest);
         if (utvalgteIdenter.size() < syntetiserInstRequest.getAntallNyeIdenter()) {
             log.warn("Fant ikke nok ledige identer. Lager institusjonsforhold på {} identer.", utvalgteIdenter.size());
+        }
+        if(utvalgteIdenter.isEmpty()) {
+            List<ResponseEntity> tomRespons = new ArrayList<>();
+            tomRespons.add(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fant ingen ledige identer i avspillergruppe " + syntetiserInstRequest.getAvspillergruppeId()));
+            return tomRespons;
         }
         List<Institusjonsforholdsmelding> syntetiserteMeldinger = instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(utvalgteIdenter.size());
         return leggTilSyntetisertInstitusjonsoppholdIInst2(utvalgteIdenter, syntetiserteMeldinger);
