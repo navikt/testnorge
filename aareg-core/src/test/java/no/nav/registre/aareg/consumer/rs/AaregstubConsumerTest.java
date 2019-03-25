@@ -5,6 +5,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -39,6 +40,7 @@ public class AaregstubConsumerTest {
 
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
+    private Boolean lagreIAareg = false;
 
     @Test
     public void shouldGetAlleArbeidstakere() {
@@ -56,7 +58,19 @@ public class AaregstubConsumerTest {
 
         stubAaregstubLagreConsumer();
 
-        List<String> identerSendtTilAaregstub = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger);
+        List<String> identerSendtTilAaregstub = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
+
+        assertThat(identerSendtTilAaregstub.size(), equalTo(2));
+    }
+
+    @Test
+    public void shouldSendAndSaveSyntetiskeMeldinger() {
+        List<ArbeidsforholdsResponse> syntetiserteMeldinger = new ArrayList<>();
+        lagreIAareg = true;
+
+        stubAaregstubLagreIAaregConsumer();
+
+        List<String> identerSendtTilAaregstub = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
 
         assertThat(identerSendtTilAaregstub.size(), equalTo(2));
     }
@@ -85,6 +99,14 @@ public class AaregstubConsumerTest {
 
     private void stubAaregstubLagreConsumer() {
         stubFor(post(urlPathEqualTo("/aaregstub/api/v1/lagreArbeidsforhold"))
+                .withRequestBody(equalToJson("[]"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
+    }
+
+    private void stubAaregstubLagreIAaregConsumer() {
+        stubFor(post(urlEqualTo("/aaregstub/api/v1/lagreArbeidsforhold?lagreIAareg=" + lagreIAareg))
                 .withRequestBody(equalToJson("[]"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")

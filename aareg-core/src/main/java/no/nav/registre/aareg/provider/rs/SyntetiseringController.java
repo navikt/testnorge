@@ -5,9 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
+import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.service.SyntetiseringService;
 
@@ -20,7 +24,13 @@ public class SyntetiseringController {
 
     @LogExceptions
     @PostMapping(value = "/generer")
-    public ResponseEntity genererArbeidsforholdsmeldinger(@RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
-        return syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest);
+    public ResponseEntity genererArbeidsforholdsmeldinger(@RequestParam("lagreIAareg") Boolean lagreIAareg, @RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
+        return syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest, lagreIAareg);
+    }
+
+    @LogExceptions
+    @PostMapping(value = "/sendTilAareg")
+    public List<ResponseEntity> sendArbeidsforholdTilAareg(@RequestBody List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
+        return syntetiseringService.sendArbeidsforholdTilAareg(syntetiserteArbeidsforhold);
     }
 }

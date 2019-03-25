@@ -33,7 +33,7 @@ public class SyntetiseringService {
     @Autowired
     private Random rand;
 
-    public ResponseEntity opprettArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest) {
+    public ResponseEntity opprettArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest, Boolean lagreIAareg) {
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId());
         List<String> nyeIdenter = new ArrayList<>(syntetiserAaregRequest.getAntallNyeIdenter());
         List<String> utvalgteIdenter = new ArrayList<>(aaregstubConsumer.hentEksisterendeIdenter());
@@ -50,13 +50,13 @@ public class SyntetiseringService {
         }
 
         utvalgteIdenter.addAll(nyeIdenter);
-        List<ArbeidsforholdsResponse> syntetiserteArbeidsforholdsmeldinger = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
-        for(ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforholdsmeldinger) {
+        List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
+        for(ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforhold) {
             arbeidsforholdsResponse.setEnvironments(Arrays.asList(syntetiserAaregRequest.getMiljoe()));
         }
 
         int antallIdenter = utvalgteIdenter.size();
-        utvalgteIdenter.removeAll(aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforholdsmeldinger));
+        utvalgteIdenter.removeAll(aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforhold, lagreIAareg));
 
         if(utvalgteIdenter.isEmpty()) {
             return ResponseEntity.ok().body(antallIdenter + " identer fikk opprettet arbeidsforhold og ble sendt til aareg-stub");
@@ -64,5 +64,9 @@ public class SyntetiseringService {
             log.error("Noe feilet under lagring til aaregstub. Følgende identer ble ikke lagret: " + utvalgteIdenter);
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Noe feilet under lagring til aaregstub. Følgende identer ble ikke lagret: " + utvalgteIdenter.toString());
         }
+    }
+
+    public List<ResponseEntity> sendArbeidsforholdTilAareg(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
+        return aaregstubConsumer.sendArbeidsforholdTilAareg(syntetiserteArbeidsforhold);
     }
 }

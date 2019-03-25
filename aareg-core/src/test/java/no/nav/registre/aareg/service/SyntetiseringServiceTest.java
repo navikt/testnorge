@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,6 +60,7 @@ public class SyntetiseringServiceTest {
     private SyntetiserAaregRequest syntetiserAaregRequest;
     private List<String> fnrs;
     private List<ArbeidsforholdsResponse> syntetiserteMeldinger;
+    private Boolean lagreIAareg = false;
 
     @Before
     public void setUp() {
@@ -72,21 +74,21 @@ public class SyntetiseringServiceTest {
 
     @Test
     public void shouldOppretteArbeidshistorikk() {
-        when(aaregstubConsumer.sendTilAaregstub(anyList())).thenReturn(new ArrayList<>(fnrs));
+        when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(new ArrayList<>(fnrs));
 
-        ResponseEntity response = syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest);
+        ResponseEntity response = syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest, lagreIAareg);
 
-        verify(aaregstubConsumer).sendTilAaregstub(syntetiserteMeldinger);
+        verify(aaregstubConsumer).sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
     public void shouldReturnErrorOnPartialResult() {
-        when(aaregstubConsumer.sendTilAaregstub(anyList())).thenReturn(new ArrayList<>(Arrays.asList(fnr1)));
+        when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(new ArrayList<>(Arrays.asList(fnr1)));
 
-        ResponseEntity response = syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest);
+        ResponseEntity response = syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest, lagreIAareg);
 
-        verify(aaregstubConsumer).sendTilAaregstub(syntetiserteMeldinger);
+        verify(aaregstubConsumer).sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
         assertThat(response.getStatusCode(), is(HttpStatus.CONFLICT));
         assertThat(response.getBody().toString(), containsString(fnr2));
     }
@@ -100,7 +102,7 @@ public class SyntetiseringServiceTest {
 
         syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, 3);
 
-        syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest);
+        syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest, lagreIAareg);
 
         assertThat(listAppender.list.size(), CoreMatchers.is(equalTo(2)));
         assertThat(listAppender.list.get(0).toString(), containsString("Fant ikke nok ledige identer i avspillergruppe. Lager arbeidsforhold på " + antallMeldinger + " identer."));

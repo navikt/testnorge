@@ -2,13 +2,13 @@
   {
     "arbeidsforhold": {
       "ansettelsesPeriode": {
-        "fom": "1985-08-01"
+        "fom": "1985-08-01T00:00:00"
       },
       "arbeidsavtale": {
         "arbeidstidsordning": "doegnkontinuerligSkiftOgTurnus355",
         "avtaltArbeidstimerPerUke": 0,
         "endringsdatoStillingsprosent": "string",
-        "sisteLoennsendringsdato": "1985-08-01",
+        "sisteLoennsendringsdato": "1985-08-01T00:00:00",
         "stillingsprosent": 0.01,
         "yrke": "990458162",
         "avtaltArbeidstimeerPerUke": 35.5
