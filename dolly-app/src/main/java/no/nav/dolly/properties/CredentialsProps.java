@@ -15,24 +15,7 @@ import lombok.Setter;
 public class CredentialsProps {
 
     private PreprodEnv preprodEnv = new PreprodEnv();
-
     private TestEnv testEnv = new TestEnv();
-
-    @Getter
-    @Setter
-    public static class PreprodEnv {
-
-        private String username;
-        private String password;
-    }
-
-    @Getter
-    @Setter
-    public static class TestEnv {
-
-        private String username;
-        private String password;
-    }
 
     public String getUsername(Environment env) {
         return env == PREPROD ? getPreprodEnv().getUsername() : getTestEnv().getUsername();
@@ -40,5 +23,21 @@ public class CredentialsProps {
 
     public String getPassword(Environment env) {
         return env == PREPROD ? getPreprodEnv().getPassword() : getTestEnv().getPassword();
+    }
+
+    @Getter
+    @Setter
+    public static class PreprodEnv {
+        private String username;
+        private String password;
+
+    }
+
+    @Getter
+    @Setter
+    public static class TestEnv {
+        private String username;
+        private String password;
+
     }
 }

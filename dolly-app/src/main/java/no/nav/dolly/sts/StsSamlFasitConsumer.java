@@ -36,21 +36,7 @@ public class StsSamlFasitConsumer {
     public String getStsSamlService(Environment environment) {
 
         if (hasExpired()) {
-            synchronized (this) {
-                if (hasExpired()) {
-                    FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(SAML_ALIAS, BASE_URL);
-
-                    urlSamlPerEnv = asList(fasitResources).stream()
-                            .filter(resource -> FAGSYSTEM.equals(resource.getScope().getZone()) &&
-                                    isNull(resource.getScope().getApplication()) &&
-                                    nonNull(resource.getScope().getEnvironment()))
-                            .collect(Collectors.toMap(
-                                    resource -> resource.getScope().getEnvironment(),
-                                    resource -> (String) ((Map) resource.getProperties()).get("url")));
-
-                    expiry = LocalDateTime.now().plusHours(4);
-                }
-            }
+            updateInventory();
         }
 
         for (Map.Entry<String, String> entry : urlSamlPerEnv.entrySet()) {
@@ -59,10 +45,31 @@ public class StsSamlFasitConsumer {
                 return entry.getValue();
             }
         }
+
         throw new DollyFunctionalException(STS_NOT_FOUND);
     }
 
+    private void updateInventory() {
+
+        synchronized (this) {
+            if (hasExpired()) {
+                FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(SAML_ALIAS, BASE_URL);
+
+                urlSamlPerEnv = asList(fasitResources).stream()
+                        .filter(resource -> FAGSYSTEM.equals(resource.getScope().getZone()) &&
+                                isNull(resource.getScope().getApplication()) &&
+                                nonNull(resource.getScope().getEnvironment()))
+                        .collect(Collectors.toMap(
+                                resource -> resource.getScope().getEnvironment(),
+                                resource -> (String) ((Map) resource.getProperties()).get("url")));
+
+                expiry = LocalDateTime.now().plusHours(4);
+            }
+        }
+    }
+
     private boolean hasExpired() {
+
         return (isNull(expiry) || LocalDateTime.now().isAfter(expiry));
     }
 }
