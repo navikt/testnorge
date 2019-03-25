@@ -29,6 +29,8 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeids
 public class AaregWsConsumer {
 
     private static final String STATUS_OK = "OK";
+    private static final String TEKNISK_FEIL_OPPRETTING ="Feil: Teknisk feil ved oppretting mot Aareg";
+    private static final String TEKNISK_FEIL_OPPDATERING = "Feil: Teknisk feil ved oppdatering mot Aareg";
 
     @Autowired
     private BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
@@ -50,8 +52,8 @@ public class AaregWsConsumer {
             } catch (OpprettArbeidsforholdSikkerhetsbegrensning | OpprettArbeidsforholdUgyldigInput | DollyFunctionalException error) {
                 status.put(env, extractError(error));
             } catch (RuntimeException re) {
-                log.error("Feil: Teknisk feil ved oppretting mot Aareg", re);
-                status.put(env, "Feil: Teknisk feil ved oppretting mot Aareg, se logg!");
+                log.error(TEKNISK_FEIL_OPPRETTING, re);
+                status.put(env, TEKNISK_FEIL_OPPRETTING + ", se logg!");
             }
         });
 
@@ -73,8 +75,8 @@ public class AaregWsConsumer {
             } catch (OppdaterArbeidsforholdArbeidsforholdIkkeFunnet | OppdaterArbeidsforholdSikkerhetsbegrensning | OppdaterArbeidsforholdUgyldigInput | DollyFunctionalException error) {
                 status.put(env, extractError(error));
             } catch (RuntimeException re) {
-                log.error("Feil: Teknisk feil ved oppdatering mot Aareg", re);
-                status.put(env, "Feil: Teknisk feil ved oppdatering mot Aareg, se logg.");
+                log.error(TEKNISK_FEIL_OPPDATERING, re);
+                status.put(env, TEKNISK_FEIL_OPPDATERING + ", se logg!");
             }
         });
 

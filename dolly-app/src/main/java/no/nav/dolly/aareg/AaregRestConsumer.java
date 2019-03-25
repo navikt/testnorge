@@ -1,18 +1,17 @@
 package no.nav.dolly.aareg;
 
+import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import java.net.URI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import no.nav.dolly.sts.StsOidcService;
 
 @Service
 public class AaregRestConsumer {
@@ -23,17 +22,18 @@ public class AaregRestConsumer {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private StsOidcService stsOidcService;
+
     public ResponseEntity readArbeidsforhold(String ident, String envionment) {
 
-        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON);
-        headers.add(AUTHORIZATION, "Bearer " + auth.getIdToken());
-        headers.add("Nav-Consumer-Token", "Bearer" + auth.getIdToken());
-        headers.add("Nav-Personident", ident);
-
-        return restTemplate.exchange(
-                aaregArbeidsforholdFasitConsumer.fetchRestUrlsAllEnvironments().get(envionment),
-                HttpMethod.GET, new HttpEntity(headers), Object[].class);
+        return restTemplate.exchange(RequestEntity
+                        .get(URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(envionment)))
+                        .header(ACCEPT, APPLICATION_JSON_VALUE)
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(envionment))
+                        .header("Nav-Consumer-Token", stsOidcService.getIdToken(envionment))
+                        .header("Nav-Personident", ident)
+                        .build(),
+                Object[].class);
     }
 }

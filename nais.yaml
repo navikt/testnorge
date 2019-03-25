@@ -35,11 +35,6 @@ fasitResources:
       issuerUrl: freg.security.oidc.idp.openam.issuerUrl
       jwksUrl: freg.security.oidc.idp.openam.jwksUrl
 
-  - alias: securityTokenService
-    resourceType: BaseUrl
-    propertyMap:
-      url: securityTokenService.host
-
   - alias: tpsf-host
     resourceType: baseurl
     propertyMap:
@@ -75,11 +70,17 @@ fasitResources:
     propertyMap:
       url: providers.fasit.url
 
-  - alias: srvdolly
+  - alias: srvdolly-test-env
     resourceType: credential
     propertyMap:
-      username: securityTokenService.username
-      password: securityTokenService.password
+      username: credentials.testEnv.username
+      password: credentials.testEnv.password
+
+  - alias: srvdolly-preprod-env
+    resourceType: credential
+    propertyMap:
+      username: credentials.preprodEnv.username
+      password: credentials.preprodEnv.password
 
   - alias: srvJiraDolly
     resourceType: credential

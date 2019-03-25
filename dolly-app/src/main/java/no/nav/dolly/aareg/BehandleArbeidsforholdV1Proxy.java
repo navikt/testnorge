@@ -1,6 +1,8 @@
 package no.nav.dolly.aareg;
 
-import java.util.Date;
+import static java.util.Objects.isNull;
+
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.QName;
@@ -11,14 +13,11 @@ import org.springframework.stereotype.Service;
 
 import no.nav.dolly.cxf.TimeoutFeature;
 import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.sts.StsConfigUtil;
-import no.nav.dolly.sts.StsProps;
+import no.nav.dolly.sts.StsSamlTokenService;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 
 @Service
 public class BehandleArbeidsforholdV1Proxy {
-
-    private static final long TIMEOUT = 4 * 60 * 60 * 1000L;
 
     private static final int DEFAULT_TIMEOUT = 5_000;
 
@@ -27,20 +26,24 @@ public class BehandleArbeidsforholdV1Proxy {
     private static final QName BEHANDLE_ARBEIDSFORHOLD_V1 = new QName(NAMESPACE, "BehandleArbeidsforhold_v1");
 
     @Autowired
-    private StsProps stsProps;
+    private StsSamlTokenService stsSamlTokenService;
 
     @Autowired
-    private AaregArbeidsforholdFasitConsumer aaregArbeidsforholdFasitConsumer;
+    private AaregBehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
 
     private Map<String, BehandleArbeidsforholdPortType> wsServiceByEnvironment = new HashMap();
-    private long timestamp;
+    private LocalDateTime expiry;
 
     public BehandleArbeidsforholdPortType getServiceByEnvironment(String environment) {
 
-        if (timestamp < new Date().getTime() - TIMEOUT) {
-            Map<String, String> urlByEnvironment = aaregArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
-            urlByEnvironment.forEach((env, url) -> wsServiceByEnvironment.put(env, createBehandleArbeidsforholdPortType(url)));
-            timestamp = new Date().getTime();
+        if (hasExpired()) {
+            synchronized (this) {
+                if (hasExpired()) {
+                    Map<String, String> urlByEnvironment = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
+                    urlByEnvironment.forEach((env, url) -> wsServiceByEnvironment.put(env, createBehandleArbeidsforholdPortType(env, url)));
+                    expiry = LocalDateTime.now().plusHours(4);
+                }
+            }
         }
 
         if (wsServiceByEnvironment.containsKey(environment)) {
@@ -50,7 +53,11 @@ public class BehandleArbeidsforholdV1Proxy {
         }
     }
 
-    private BehandleArbeidsforholdPortType createBehandleArbeidsforholdPortType(String url) {
+    private boolean hasExpired() {
+        return isNull(expiry) || LocalDateTime.now().isAfter(expiry);
+    }
+
+    private BehandleArbeidsforholdPortType createBehandleArbeidsforholdPortType(String env, String url) {
         JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
         factoryBean.setWsdlURL(WSDL_URL);
         factoryBean.setServiceName(BEHANDLE_ARBEIDSFORHOLD_V1);
@@ -60,7 +67,7 @@ public class BehandleArbeidsforholdV1Proxy {
         factoryBean.getFeatures().add(new WSAddressingFeature());
         factoryBean.getFeatures().add(new TimeoutFeature(DEFAULT_TIMEOUT, DEFAULT_TIMEOUT));
         BehandleArbeidsforholdPortType behandleArbeidsforholdPortType = factoryBean.create(BehandleArbeidsforholdPortType.class);
-        StsConfigUtil.configureStsRequestSamlToken(behandleArbeidsforholdPortType, stsProps);
+        stsSamlTokenService.configureStsRequestSamlToken(behandleArbeidsforholdPortType, env);
 
         return behandleArbeidsforholdPortType;
     }
