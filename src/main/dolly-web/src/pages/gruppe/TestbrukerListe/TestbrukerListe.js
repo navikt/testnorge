@@ -67,7 +67,6 @@ export default class TestbrukerListe extends Component {
 												<TransitionGroup component={null}>
 													{testbrukere &&
 														testbrukere.map((bruker, idx) => {
-															// console.log('bruker :', bruker)
 															// Note: idx=0 of bruker (data) is parsed to be ID
 															return (
 																<CSSTransition
