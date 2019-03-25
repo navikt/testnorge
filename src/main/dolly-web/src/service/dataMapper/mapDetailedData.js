@@ -301,7 +301,6 @@ export function mapKrrData(krrData) {
 export function mapAaregData(aaregData) {
 	if (!aaregData) return null
 
-	console.log('aaregData :', aaregData)
 	return {
 		header: 'Arbeidsforhold',
 		multiple: true,
