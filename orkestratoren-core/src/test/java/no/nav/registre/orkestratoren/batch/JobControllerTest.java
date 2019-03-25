@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -72,8 +71,6 @@ public class JobControllerTest {
         ReflectionTestUtils.setField(jobController, "instbatchAvspillergruppeId", avspillergruppeId);
         ReflectionTestUtils.setField(jobController, "inntektbatchAvspillergruppeId", avspillergruppeId);
         ReflectionTestUtils.setField(jobController, "instbatchMiljoe", miljoer);
-
-        //Blir ikke satt fra properties, aner ikke hvorfor
         ReflectionTestUtils.setField(jobController, "tpAntallPersoner", 3);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
