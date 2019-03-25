@@ -63,8 +63,8 @@ const AttributtListe: Attributt[] = [
 				},
 				validation: yup
 					.number()
-					.integer('Ugyldig stillingprosent')
-					.min(1, 'Oppgi stillingprosent'),
+					.min(0, 'Oppgi stillingprosent')
+					.required('Ugyldig stillingprosent'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -92,8 +92,8 @@ const AttributtListe: Attributt[] = [
 				},
 				validation: yup
 					.number()
-					.integer('Ugyldig input')
-					.min(1, 'Oppgi orgnummer/ident'),
+					.min(0, 'Oppgi orgnummer/ident')
+					.required('Ugyldig input'),
 				attributtType: AttributtType.SelectAndRead
 			}
 		]
