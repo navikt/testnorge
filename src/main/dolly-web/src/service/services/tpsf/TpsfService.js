@@ -24,6 +24,12 @@ export default class TpsfService {
 		return Request.post(endpoint, [userData])
 	}
 
+	static checkpersoner(userArray) {
+		if (!userArray) return
+		const endpoint = this.getTpsfUrl() + '/dolly/testdata/checkpersoner'
+		return Request.post(endpoint, userArray)
+	}
+
 	static sendToTps(data) {
 		if (!data) return
 		const endpoint = this.getTpsfUrl() + '/dolly/testdata/tilTpsFlere'

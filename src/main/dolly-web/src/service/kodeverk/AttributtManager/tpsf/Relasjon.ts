@@ -36,7 +36,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Har partner',
 		dataSource: DataSource.TPSF,
 		validation: yup.object(),
-		attributtType: AttributtType.SelectOnly
+		attributtType: AttributtType.SelectOnly,
+		addToExistingIdent: 'false'
 	},
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
@@ -59,6 +60,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Har barn',
 		dataSource: DataSource.TPSF,
 		attributtType: AttributtType.SelectOnly,
+		addToExistingIdent: 'false',
 		items: [
 			{
 				hovedKategori: Kategorier.FamilieRelasjoner,

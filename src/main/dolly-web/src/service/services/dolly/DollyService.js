@@ -47,6 +47,10 @@ export default class DollyService {
 		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
 	}
 
+	static createBestillingFraEksisterendeIdenter(gruppeId, data) {
+		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
+	}
+
 	// Team
 	static getTeams() {
 		return Request.get(Endpoints.team())
