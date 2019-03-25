@@ -65,6 +65,7 @@ export interface Attributt {
 }
 
 // Attributtene som er child av Attributt.Items. Eks: AAREG
+// TODO: Alex - trenger vi den?
 export interface SubItem {
 	id: string
 	label: string

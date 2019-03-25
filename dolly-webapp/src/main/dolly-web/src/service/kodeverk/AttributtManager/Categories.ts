@@ -96,6 +96,7 @@ export const SubKategorier: KategoriTypes = {
 }
 
 // Sub-items?
+// TODO: Alex - trenger vi den?
 export const SubItem: KategoriTypes = {
 	Permisjon: {
 		id: 'permisjon',

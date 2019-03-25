@@ -62,33 +62,28 @@ export const FieldArrayComponent = ({
 	}
 
 	const formikValues = formikProps.values[parentId]
-	// console.log('formikValues :', formikValues)
 
-	// console.log('items :', items)
 	return (
 		<Fragment>
 			<h4>{subKategori.navn}</h4>
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
-					// console.log('items :', items)
 					return (
 						<div key={idx}>
 							<div className="subkategori-field-group multi">
 								{items.map(item => {
-									// console.log('item :', item)
-
 									// Add subKategori to ID
 									const fakeItem = {
 										...item,
 										id: `${parentId}[${idx}]${item.id}`
 									}
 
-									// console.log('fakeItem :', fakeItem)
 									return renderFieldComponent(fakeItem, formikProps.values, {
 										parentId,
 										idx
 									})
 								})}
+								{/* REG-3377: Alex - Under utvikling */}
 								{/* {subItems && subItems.map(subItem => {
 									// console.log('subItem :', subItem)
 
@@ -108,6 +103,8 @@ export const FieldArrayComponent = ({
 									/>
 								)}
 							</div>
+							{/* REG-3377: Alex - Under utvikling */}
+
 							{/*Attributtene med items og subItems, f.eks AAREGs */}
 							{/* {!editMode &&
 								subItems &&

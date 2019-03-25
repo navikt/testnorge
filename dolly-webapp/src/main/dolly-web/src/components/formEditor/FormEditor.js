@@ -155,6 +155,7 @@ export default class FormEditor extends PureComponent {
 		const InputComponent = InputSelector(item.inputType)
 
 		return (
+			/* REG-3377: Alex - Under utvikling */
 			<p>{item.id}</p>
 			// <Field
 			// 	key={item.key || item.id}

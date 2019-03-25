@@ -43,7 +43,6 @@ export default class Step2 extends PureComponent {
 	render() {
 		const { identtype, antall, selectedAttributeIds } = this.props
 
-		console.log('AttributtListe :', this.AttributtListe)
 		return (
 			<div className="bestilling-step2">
 				<div className="content-header">

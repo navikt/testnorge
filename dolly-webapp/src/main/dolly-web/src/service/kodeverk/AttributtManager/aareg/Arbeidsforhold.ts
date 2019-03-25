@@ -23,9 +23,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Yrke',
 				path: 'arbeidsavtale',
 				dataSource: DataSource.AAREG,
-				// inputType: InputType.Select,
 				inputType: InputType.Select,
-				// apiKodeverkId: 'Yrker',
 				options: SelectOptionsManager('yrke'),
 				validation: yup.string().required('Velg et yrke.'),
 				attributtType: AttributtType.SelectAndRead
@@ -132,28 +130,6 @@ const AttributtListe: Attributt[] = [
 		// 			}
 		// 		]
 		// 	}
-		// ]
-
-		// subItems: [
-		// 	[
-		// 		{
-		// 			id: 'bro',
-		// 			label: 'string',
-		// 			items: [
-		// 				{
-		// 					hovedKategori: Kategorier.Inntekt,
-		// 					subKategori: SubKategorier.Arbeidsforhold,
-		// 					id: 'yrke',
-		// 					label: 'Stilling',
-		// 					path: 'ikkesett',
-		// 					dataSource: DataSource.AAREG,
-		// 					inputType: InputType.Text,
-		// 					validation: yup.string().required('Velg en type tjeneste.'),
-		// 					attributtType: AttributtType.SelectAndRead
-		// 				}
-		// 			]
-		// 		}
-		// 	]
 		// ]
 	}
 ]
