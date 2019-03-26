@@ -8,22 +8,18 @@ import _union from 'lodash/union'
 import _difference from 'lodash/difference'
 import DataFormatter from '~/utils/DataFormatter'
 import DataSourceMapper from '~/utils/DataSourceMapper'
-import { handleActions, createActions, combineActions } from 'redux-actions'
+import BestillingMapper from '~/utils/BestillingMapper'
+import { handleActions, createActions, createAction, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
+import Bestilling from '../../pages/bestilling/Bestilling';
 
 const AttributtManagerInstance = new AttributtManager()
 
 export const actions = createActions(
-	{
-		POST_BESTILLING: [
-			async (gruppeId, values) => {
-				const res = await DollyApi.createBestilling(gruppeId, values) // Payload
-				// TODO: Med nye reducer setup trenger vi ikke 2dette lenge
-				// return { ...res, data: { ...res.data, ny: true } }
-			},
-			gruppeId => ({ gruppeId }) // Meta
-		]
+	{ 
+		POST_BESTILLING_FRA_EKSISTERENDE_IDENTER: (gruppeId, value) => DollyApi.createBestillingFraEksisterendeIdenter(gruppeId, value),
+		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values),
 	},
 	'NEXT_PAGE',
 	'PREV_PAGE',
@@ -36,6 +32,8 @@ export const actions = createActions(
 	'DELETE_VALUES',
 	'DELETE_VALUES_ARRAY',
 	'START_BESTILLING',
+	'SET_IDENT_OPPRETTES_FRA',
+	'SET_IDENT_LISTER',
 	'ABORT_BESTILLING'
 )
 
@@ -45,7 +43,10 @@ const initialState = {
 	attributeIds: [],
 	environments: [],
 	identtype: '',
-	values: {}
+	values: {},
+	identOpprettesFra: BestillingMapper(),
+	eksisterendeIdentListe: [],
+	ugyldigIdentListe: []
 }
 
 export default handleActions(
@@ -98,6 +99,7 @@ export default handleActions(
 		},
 		[actions.setValues](state, action) {
 			// Remove empty values
+
 			let copy = JSON.parse(JSON.stringify(action.payload.values))
 			Object.entries(copy).forEach(([key, value]) => {
 				if (value === '') {
@@ -134,11 +136,23 @@ export default handleActions(
 				)
 			}
 		},
-
+		[actions.setIdentOpprettesFra] (state, action) {
+			return {...state, identOpprettesFra: action.payload}
+		},
+		[actions.setIdentLister] (state, action) {	
+			return { ...state, eksisterendeIdentListe: action.payload.gyldigIdentListe, ugyldigIdentListe: action.payload.ugyldigIdentListe }
+		},
 		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestilling))](
 			state,
 			action
 		) {
+			return initialState
+		},
+		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestillingFraEksisterendeIdenter))](
+			state,
+			action
+		){
+			console.log('hei combine actions');
 			return initialState
 		}
 	},
@@ -150,18 +164,26 @@ export default handleActions(
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
 const bestillingFormatter = bestillingState => {
-	const { attributeIds, antall, environments, identtype, values } = bestillingState
+	const { attributeIds, antall, environments, identtype, values, identOpprettesFra, eksisterendeIdentListe } = bestillingState
 	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
 
-	let final_values = {
-		antall: antall,
-		environments: environments,
-		...getValues(AttributtListe, values)
+	let final_values = []
+
+	identOpprettesFra === BestillingMapper()
+	?	final_values = {
+			antall: antall,
+			environments: environments,
+			...getValues(AttributtListe, values)
+	} :
+		final_values = {
+			opprettFraIdenter: eksisterendeIdentListe,
+			environments: environments,
+			...getValues(AttributtListe, values)
 	}
 
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
-	final_values.tpsf.identtype = identtype
+	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
 
 	// TODO: SPECIAL HANDLING - Hva gjør vi her?
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
@@ -174,6 +196,7 @@ const bestillingFormatter = bestillingState => {
 
 // TODO: Kan getValues og transformAttributt merges?
 const getValues = (attributeList, values) => {
+
 	return attributeList.reduce((accumulator, attribute) => {
 		let value = _transformAttributt(attribute, attributeList, values[attribute.id])
 		const pathPrefix = DataSourceMapper(attribute.dataSource)
@@ -333,5 +356,13 @@ const _filterArrayAttributes = (values, selectedIds, filter, index) => {
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { currentBestilling } = getState()
 	const values = bestillingFormatter(currentBestilling)
-	return dispatch(actions.postBestilling(gruppeId, values))
+
+	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
+		console.log('hei');
+		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
+	} else {
+		console.log('hei i sendBestilling');
+		return dispatch(actions.postBestilling(gruppeId, values))
+	} 
 }
+

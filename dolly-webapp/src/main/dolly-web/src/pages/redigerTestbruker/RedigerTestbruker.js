@@ -16,7 +16,7 @@ export default class RedigerTestbruker extends Component {
 		this.AttributtManager = new AttributtManager()
 
 		this.state = {
-			addedAttributts: []
+			addedAttributes: []
 		}
 	}
 
@@ -49,16 +49,17 @@ export default class RedigerTestbruker extends Component {
 	}
 
 	_onAddAttribute = attributeId => {
-		this.setState({ addedAttributts: [...this.state.addedAttributts, attributeId] })
+		this.setState({ addedAttributes: [...this.state.addedAttributes, attributeId] })
 	}
 
-	_getAttributtListeToEdit = (AttributtListe, AddedAttributts) => {
+	_getAttributtListeToEdit = (AttributtListe, AddedAttributes) => {
 		let AttributtListeToEdit = []
-		if (AddedAttributts && AddedAttributts.length > 0) {
+
+		if (AddedAttributes && AddedAttributes.length > 0) {
 			let tempElement = null
 			AttributtListe.forEach(element => {
 				tempElement = JSON.parse(JSON.stringify(element))
-				AddedAttributts.forEach(addedElement => {
+				AddedAttributes.forEach(addedElement => {
 					if (tempElement.hovedKategori.id === addedElement.hovedKategori.id) {
 						tempElement.items.forEach(subElement => {
 							if (subElement.subKategori.id === addedElement.subKategori.id) {
@@ -77,7 +78,7 @@ export default class RedigerTestbruker extends Component {
 	render() {
 		const { testbruker, goBack, match } = this.props
 		const { tpsf, sigrunstub, krrstub } = testbruker
-		const { addedAttributts } = this.state
+		const { addedAttributes } = this.state
 
 		if (!tpsf || !sigrunstub || !krrstub) return null
 
@@ -104,7 +105,7 @@ export default class RedigerTestbruker extends Component {
 			dataSources
 		)
 
-		const attributtListeToEdit = this._getAttributtListeToEdit(attributtListe, addedAttributts)
+		const attributtListeToEdit = this._getAttributtListeToEdit(attributtListe, addedAttributes)
 
 		return (
 			<Formik
@@ -118,7 +119,7 @@ export default class RedigerTestbruker extends Component {
 						<FormEditor
 							AttributtListe={attributtListeToEdit}
 							AttributtListeToAdd={attributtListeToAdd}
-							AddedAttributts={addedAttributts}
+							AddedAttributes={addedAttributes}
 							FormikProps={formikProps}
 							ClosePanels
 							editMode
