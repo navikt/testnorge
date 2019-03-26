@@ -151,4 +151,9 @@ export default class DollyService {
 	static getEnhetByTknr(tknr) {
 		return Request.get(Endpoints.enhetByTknr(tknr))
 	}
+
+	//AAREG
+	static getArbeidsforhold(ident, env) {
+		return Request.get(Endpoints.arbeidsforholdByIdent(ident, env))
+	}
 }

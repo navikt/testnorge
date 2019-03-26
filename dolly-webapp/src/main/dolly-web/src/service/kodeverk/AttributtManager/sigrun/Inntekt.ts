@@ -8,7 +8,7 @@ import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
 	{
-		hovedKategori: Kategorier.Inntekter,
+		hovedKategori: Kategorier.ArbeidOgInntekt,
 		subKategori: SubKategorier.Inntekt,
 		id: 'inntekt',
 		label: 'Har inntekt',
@@ -76,8 +76,8 @@ const AttributtListe: Attributt[] = [
 					.integer('Ugyldig årstall')
 					.required('Tast inn et gyldig år')
 					// TODO: Henter inn gyldigFra fra kodeverk?
-					.min(2017, 'Inntektsår må være senere enn 2016')
-					.max(9999, 'Inntektsår må være tidligere enn 9999'),
+					.min(2017, 'Inntektsår må være 2017 eller senere')
+					.max(2100, 'Inntektsår må være tidligere enn 2100'),
 				attributtType: AttributtType.SelectAndRead
 			}
 		]

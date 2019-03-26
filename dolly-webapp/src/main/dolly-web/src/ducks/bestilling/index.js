@@ -194,6 +194,7 @@ const bestillingFormatter = bestillingState => {
 	return final_values
 }
 
+// TODO: Kan getValues og transformAttributt merges?
 const getValues = (attributeList, values) => {
 
 	return attributeList.reduce((accumulator, attribute) => {
@@ -211,7 +212,6 @@ const getValues = (attributeList, values) => {
 					dataArr.push({
 						grunnlag: current.map(temp => ({
 							tekniskNavn: temp.typeinntekt,
-
 							verdi: temp.beloep
 						})),
 						inntektsaar: key,
@@ -223,14 +223,59 @@ const getValues = (attributeList, values) => {
 			return _set(accumulator, pathPrefix, dataArr)
 		}
 
+		if (pathPrefix === DataSourceMapper('AAREG')) {
+			// TODO: Alex, construct a json-object before array
+			let dataArr = []
+
+			value.forEach(element => {
+				let arregObj = {}
+				attribute.items.forEach(item => {
+					const path = item.path
+					const id = item.id
+					let keyValue = element[id]
+
+					Object.assign(arregObj, { [path]: { ...arregObj[path], [id]: keyValue } })
+					// Spesifikk ekstra felter for AAREG, ikke-sett av UI
+					Object.assign(arregObj, {
+						arbeidsforholdstype: 'ordinaertArbeidsforhold',
+						arbeidsavtale: {
+							...arregObj.arbeidsavtale,
+							arbeidstidsordning: 'ikkeSkift',
+							avtaltArbeidstimerPerUke: 40.0
+						}
+					})
+				})
+
+				dataArr.push(arregObj)
+			})
+			return _set(accumulator, pathPrefix, dataArr)
+		}
+
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
 }
 
 // Transform attributes before order is sent
+// Date, boolean...
 const _transformAttributt = (attribute, attributes, value) => {
 	if (attribute.dataSource === 'SIGRUN') {
 		return value
+	} else if (attribute.dataSource === 'AAREG') {
+		let valueDeepCopy = JSON.parse(JSON.stringify(value))
+		attribute.items.forEach(item => {
+			if (item.inputType === 'date') {
+				valueDeepCopy.forEach((element, i) => {
+					const transformedElement = {
+						...element,
+						[item.id]: DataFormatter.parseDate(element[item.id])
+					}
+
+					valueDeepCopy[i] = transformedElement
+				})
+			}
+		})
+
+		return valueDeepCopy
 	} else if (attribute.items) {
 		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
 		return value.map(val =>
@@ -249,7 +294,10 @@ const _transformAttributt = (attribute, attributes, value) => {
 		// Only affects attributes that has property "transform: (value: any, attributter: Attributt[]) => any"
 		value = attribute.transform(value, attributes)
 	}
-	if (attribute.inputType === 'date') value = DataFormatter.parseDate(value)
+	if (attribute.inputType === 'date') {
+		value = DataFormatter.parseDate(value)
+	}
+
 	return value
 }
 
