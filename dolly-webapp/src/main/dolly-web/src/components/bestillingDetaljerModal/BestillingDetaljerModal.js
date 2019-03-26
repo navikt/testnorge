@@ -7,6 +7,7 @@ import { mapBestillingData } from '~/pages/gruppe/BestillingListe/BestillingDeta
 import Feilmelding from '~/components/Feilmelding/Feilmelding'
 
 export default class BestillingDetaljerModal extends PureComponent {
+	// TODO: Vi bør scrape bort denne klassen, og gjenbruke BestillingDetaljer komponent på modalen.
 	_renderFeilmelding = bestilling => {
 		return (
 			<Fragment>
@@ -20,7 +21,6 @@ export default class BestillingDetaljerModal extends PureComponent {
 	}
 
 	_finnesFeilmelding = bestilling => {
-		console.log('bestilling :', bestilling)
 		if (bestilling.feil) {
 			return true
 		}
@@ -43,6 +43,13 @@ export default class BestillingDetaljerModal extends PureComponent {
 		{
 			bestilling.tpsfStatus &&
 				bestilling.tpsfStatus.map(status => {
+					if (status.statusMelding !== 'OK') temp = true
+				})
+		}
+
+		{
+			bestilling.aaregStatus &&
+				bestilling.aaregStatus.map(status => {
 					if (status.statusMelding !== 'OK') temp = true
 				})
 		}

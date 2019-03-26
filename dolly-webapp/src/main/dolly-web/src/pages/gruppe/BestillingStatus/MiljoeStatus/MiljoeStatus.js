@@ -33,7 +33,6 @@ export default class MiljoeStatus extends PureComponent {
 		const failed = true && successEnvs.length == 0 && !finnesFeilmelding
 		const { modalOpen } = this.state
 
-		console.log('miljoeStatusObj :', this.props.miljoeStatusObj)
 		return (
 			<div className="miljoe-status">
 				<div className="status-header">

@@ -14,7 +14,7 @@ export const getBestillinger = createAction('GET_BESTILLINGER', async gruppeID =
 export const removeNyBestillingStatus = createAction('REMOVE_NY_BESTILLING_STATUS')
 
 // ny-array holder oversikt over nye bestillinger i en session
-const initialState = { ny: [3436, 3437] }
+const initialState = { ny: [3459, 3437] }
 
 export const cancelBestilling = createAction('CANCEL_BESTILLING', async id => {
 	let res = await DollyApi.cancelBestilling(id)
@@ -203,6 +203,10 @@ const avvikStatus = item => {
 	let avvik = false
 	item.tpsfStatus &&
 		item.tpsfStatus.map(status => {
+			status.statusMelding !== 'OK' && (avvik = true)
+		})
+	item.aaregStatus &&
+		item.aaregStatus.map(status => {
 			status.statusMelding !== 'OK' && (avvik = true)
 		})
 	item.krrStubStatus &&
