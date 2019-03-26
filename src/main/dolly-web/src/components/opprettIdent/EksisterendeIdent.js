@@ -44,7 +44,7 @@ export default class EksisterendeIdent extends Component {
                     ugyldigIdentListe: []
                 }
                 statusListe.data.statuser.map (fnr => {
-                    fnr.available == true ? identLister.gyldigIdentListe.push(fnr.ident) : identLister.ugyldigIdentListe.push(fnr.ident) //HUSK Å ENDRE TIL ===!
+                    fnr.available ? identLister.gyldigIdentListe.push(fnr.ident) : identLister.ugyldigIdentListe.push(fnr.ident)
                 })
 
                 this.props.setIdentLister(identLister)

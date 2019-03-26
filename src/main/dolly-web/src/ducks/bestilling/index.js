@@ -12,13 +12,14 @@ import BestillingMapper from '~/utils/BestillingMapper'
 import { handleActions, createActions, createAction, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
+import Bestilling from '../../pages/bestilling/Bestilling';
 
 const AttributtManagerInstance = new AttributtManager()
 
 export const actions = createActions(
 	{ 
 		POST_BESTILLING_FRA_EKSISTERENDE_IDENTER: (gruppeId, value) => DollyApi.createBestillingFraEksisterendeIdenter(gruppeId, value),
-		POST_BESTILLING: (gruppeId, value) => DollyApi.createBestilling(gruppeId, value),
+		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values),
 	},
 	'NEXT_PAGE',
 	'PREV_PAGE',
@@ -43,7 +44,7 @@ const initialState = {
 	environments: [],
 	identtype: '',
 	values: {},
-	identOpprettesFra: '',
+	identOpprettesFra: BestillingMapper(),
 	eksisterendeIdentListe: [],
 	ugyldigIdentListe: []
 }
@@ -151,6 +152,7 @@ export default handleActions(
 			state,
 			action
 		){
+			console.log('hei combine actions');
 			return initialState
 		}
 	},
@@ -311,6 +313,7 @@ export const sendBestilling = gruppeId => async (dispatch, getState) => {
 		console.log('hei');
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {
+		console.log('hei i sendBestilling');
 		return dispatch(actions.postBestilling(gruppeId, values))
 	} 
 }
