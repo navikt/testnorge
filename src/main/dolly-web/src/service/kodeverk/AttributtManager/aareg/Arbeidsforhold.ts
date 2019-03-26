@@ -63,8 +63,9 @@ const AttributtListe: Attributt[] = [
 				},
 				validation: yup
 					.number()
-					.min(0, 'Oppgi stillingprosent')
-					.required('Ugyldig stillingprosent'),
+					.min(1, 'Stillingprosent kan ikke være mindre enn 1')
+					.max(100, 'Stillingen prosent kan ikke være større enn 100')
+					.required('Tast inn en gyldig stillingprosent'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -92,8 +93,10 @@ const AttributtListe: Attributt[] = [
 				},
 				validation: yup
 					.number()
-					.min(0, 'Oppgi orgnummer/ident')
-					.required('Ugyldig input'),
+					.integer('Ugyldig input')
+					.required('Tast inn et gyldig orgnummer/ident')
+					.min(1, 'Tast inn et gyldig orgnummer/ident')
+					.max(99999999999, 'Ugyldig input'),
 				attributtType: AttributtType.SelectAndRead
 			}
 		]
