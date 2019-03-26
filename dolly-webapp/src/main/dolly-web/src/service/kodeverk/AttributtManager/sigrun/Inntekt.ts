@@ -8,7 +8,7 @@ import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
 	{
-		hovedKategori: Kategorier.Inntekter,
+		hovedKategori: Kategorier.ArbeidOgInntekt,
 		subKategori: SubKategorier.Inntekt,
 		id: 'inntekt',
 		label: 'Har inntekt',
