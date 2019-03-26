@@ -26,9 +26,11 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeids
 
 @Service
 @Slf4j
-public class AaregConsumer {
+public class AaregWsConsumer {
 
     private static final String STATUS_OK = "OK";
+    private static final String TEKNISK_FEIL_OPPRETTING ="Feil: Teknisk feil ved oppretting mot Aareg";
+    private static final String TEKNISK_FEIL_OPPDATERING = "Feil: Teknisk feil ved oppdatering mot Aareg";
 
     @Autowired
     private BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
@@ -49,6 +51,9 @@ public class AaregConsumer {
                 status.put(env, STATUS_OK);
             } catch (OpprettArbeidsforholdSikkerhetsbegrensning | OpprettArbeidsforholdUgyldigInput | DollyFunctionalException error) {
                 status.put(env, extractError(error));
+            } catch (RuntimeException re) {
+                log.error(TEKNISK_FEIL_OPPRETTING, re);
+                status.put(env, TEKNISK_FEIL_OPPRETTING + ", se logg!");
             }
         });
 
@@ -69,6 +74,9 @@ public class AaregConsumer {
                 status.put(env, STATUS_OK);
             } catch (OppdaterArbeidsforholdArbeidsforholdIkkeFunnet | OppdaterArbeidsforholdSikkerhetsbegrensning | OppdaterArbeidsforholdUgyldigInput | DollyFunctionalException error) {
                 status.put(env, extractError(error));
+            } catch (RuntimeException re) {
+                log.error(TEKNISK_FEIL_OPPDATERING, re);
+                status.put(env, TEKNISK_FEIL_OPPDATERING + ", se logg!");
             }
         });
 

@@ -1,5 +1,7 @@
 package no.nav.dolly.sts;
 
+import static no.nav.dolly.properties.Environment.convertEnv;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.cxf.binding.soap.Soap12;
@@ -16,21 +18,29 @@ import org.apache.cxf.ws.policy.attachment.reference.RemoteReferenceResolver;
 import org.apache.cxf.ws.security.SecurityConstants;
 import org.apache.cxf.ws.security.trust.STSClient;
 import org.apache.neethi.Policy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public final class StsConfigUtil {
+import no.nav.dolly.properties.CredentialsProps;
+import no.nav.dolly.properties.Environment;
+
+@Service
+public class StsSamlTokenService {
 
     private static final String STS_REQUEST_SAML_POLICY = "classpath:policy/requestSamlPolicy.xml";
     private static final String STS_CLIENT_AUTHENTICATION_POLICY = "classpath:policy/untPolicy.xml";
 
-    private StsConfigUtil() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-    }
+    @Autowired
+    private StsSamlFasitConsumer stsSamlFasitConsumer;
 
-    public static void configureStsRequestSamlToken(Object port, StsProps stsProps) {
+    @Autowired
+    private CredentialsProps credentialsProps;
+
+    public void configureStsRequestSamlToken(Object port, String env) {
 
         Client client = ClientProxy.getClient(port);
         STSClient stsClient = new STSClient(client.getBus());
-        configureSTSClient(stsClient, stsProps);
+        configureSTSClient(stsClient, convertEnv(env));
 
         client.getRequestContext().put(SecurityConstants.STS_CLIENT, stsClient);
         //Using CXF cache
@@ -39,15 +49,15 @@ public final class StsConfigUtil {
         setClientEndpointPolicy(client, policy);
     }
 
-    private static void configureSTSClient(STSClient stsClient, StsProps stsProps) {
+    private void configureSTSClient(STSClient stsClient, Environment env) {
 
         stsClient.setEnableAppliesTo(false);
         stsClient.setAllowRenewing(false);
-        stsClient.setLocation(stsProps.getHost());
+        stsClient.setLocation(stsSamlFasitConsumer.getStsSamlService(env));
 
         Map<String, Object> properties = new HashMap<>();
-        properties.put(SecurityConstants.USERNAME, stsProps.getUsername());
-        properties.put(SecurityConstants.PASSWORD, stsProps.getPassword());
+        properties.put(SecurityConstants.USERNAME, credentialsProps.getUsername(env));
+        properties.put(SecurityConstants.PASSWORD, credentialsProps.getPassword(env));
 
         stsClient.setProperties(properties);
 
@@ -58,7 +68,7 @@ public final class StsConfigUtil {
     private static Policy resolvePolicyReference(Client client) {
         PolicyBuilder policyBuilder = client.getBus().getExtension(PolicyBuilder.class);
         ReferenceResolver resolver = new RemoteReferenceResolver("", policyBuilder);
-        return resolver.resolveReference(StsConfigUtil.STS_REQUEST_SAML_POLICY);
+        return resolver.resolveReference(StsSamlTokenService.STS_REQUEST_SAML_POLICY);
     }
 
     private static void setClientEndpointPolicy(Client client, Policy policy) {

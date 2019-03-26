@@ -1,8 +1,14 @@
 package no.nav.dolly.fasit;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FasitResourceScope {
 
     private String environmentclass;

@@ -73,6 +73,8 @@ public class TpsfBestilling {
 
     private LocalDateTime datoSprak;
 
+    private Boolean utenFastBopel;
+
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {
             opprettFraIdenter = new ArrayList();
