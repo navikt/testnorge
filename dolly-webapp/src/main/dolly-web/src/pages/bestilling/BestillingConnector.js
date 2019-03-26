@@ -3,18 +3,19 @@ import { bindActionCreators } from 'redux'
 import Bestilling from './Bestilling'
 import { actions, sendBestilling } from '~/ducks/bestilling'
 import { getEnvironments } from '~/ducks/environments'
-import BestillingMapper from '../../utils/BestillingMapper';
 
-const mapStateToProps = state => ({
+const mapStateToProps = state => {
+	return {
 	page: state.currentBestilling.page,
 	attributeIds: state.currentBestilling.attributeIds,
 	environments: state.currentBestilling.environments,
 	antall: state.currentBestilling.antall,
 	identtype: state.currentBestilling.identtype,
 	values: state.currentBestilling.values,
-	identOpprettesFra: state.currentBestilling.identOpprettesFra || BestillingMapper(),
+	identOpprettesFra: state.currentBestilling.identOpprettesFra,
 	eksisterendeIdentListe: state.currentBestilling.eksisterendeIdentListe
-})
+	}
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	...bindActionCreators(actions, dispatch),
