@@ -9,6 +9,8 @@ import FormEditor from '~/components/formEditor/FormEditor'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Icon from '~/components/icon/Icon'
 import DisplayFormikState from '~/utils/DisplayFormikState'
+import BestillingMapper from '~/utils/BestillingMapper'
+
 export default class Step2 extends PureComponent {
 	static propTypes = {
 		identtype: PropTypes.string,
@@ -41,17 +43,23 @@ export default class Step2 extends PureComponent {
 	}
 
 	render() {
-		const { identtype, antall, selectedAttributeIds } = this.props
+		const { identtype, antall, selectedAttributeIds, identOpprettesFra, eksisterendeIdentListe } = this.props
 
 		return (
 			<div className="bestilling-step2">
 				<div className="content-header">
 					<Overskrift label="Velg verdier" />
 				</div>
-				<div className="grunnoppsett">
-					<StaticValue header="TYPE" value={identtype} />
-					<StaticValue header="ANTALL PERSONER" value={antall.toString()} />
-				</div>
+				{identOpprettesFra === BestillingMapper() ?
+					<div className="grunnoppsett">
+						<StaticValue header="TYPE" value={identtype}/>
+						<StaticValue header="ANTALL PERSONER" value={antall.toString()} />
+					</div>
+					:
+					<div className="grunnoppsett">
+						<StaticValue header="IDENTER" value={eksisterendeIdentListe}/>
+					</div>
+				}
 				<Formik
 					onSubmit={this.submit}
 					initialValues={this.InitialValues}

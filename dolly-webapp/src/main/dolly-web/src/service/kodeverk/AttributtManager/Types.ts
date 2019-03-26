@@ -61,6 +61,7 @@ export interface Attributt {
 	dependentOn?: string // Er avhengig av en annen attributt for å kunne settes verdi på
 	dependentBy?: string // Er ikke avhengig, er attributten som ble settet av dependentOn
 	includeIf?: Attributt[]
+	sattForEksisterendeIdent?: boolean
 	transform?: (value: any, attributter: Attributt[]) => any
 }
 

@@ -11,6 +11,7 @@ import AttributtListe from './Attributter'
 import { groupList, groupListByHovedKategori } from './GroupList'
 import DataFormatter from '~/utils/DataFormatter'
 import DataSourceMapper from '~/utils/DataSourceMapper'
+import BestillingMapper from '~/utils/BestillingMapper'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
@@ -50,13 +51,23 @@ export default class AttributtManager {
 		return AttributtListe.filter(f => !f.parent)
 	}
 
+	listAllExcludingChildrenAndEksisterendeIdentAttr(): Attributt [] {
+		return AttributtListe.filter(f=> {
+			return (!f.parent && !f.sattForEksisterendeIdent)
+		})
+	}
+
 	listSelectedExcludingChildren(selectedIds: string[]): Attributt[] {
 		return AttributtListe.filter(f => !f.parent && selectedIds.includes(f.id))
 	}
 
 	//STEP 1
-	listSelectableAttributes(searchTerm: string): AttributtGruppe[] {
-		const list = this.listAllExcludingChildren()
+	listSelectableAttributes(searchTerm: string, identOpprettesFra: string): AttributtGruppe[] {
+		let list
+		identOpprettesFra === BestillingMapper('EKSIDENT') ? 
+		list = this.listAllExcludingChildrenAndEksisterendeIdentAttr()
+		: list = this.listAllExcludingChildren()
+		
 		return groupList(
 			searchTerm ? list.filter(f => f.label.toLowerCase().includes(searchTerm.toLowerCase())) : list
 		)
