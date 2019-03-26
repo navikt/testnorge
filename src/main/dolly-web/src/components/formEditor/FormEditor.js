@@ -16,7 +16,7 @@ import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
-		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributts } = this.props
+		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributes } = this.props
 		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
 
 		const hasError = hovedKategoriAttributes.some(attr => {
@@ -40,13 +40,13 @@ export default class FormEditor extends PureComponent {
 			return false
 		})
 
-		let notYetAddedAttributts = []
+		let notYetAddedAttributes = []
 
 		if (AttributtListeToAdd) {
 			AttributtListeToAdd.forEach(item => {
 				item.hovedKategori.id === hovedKategori.id &&
 					item.items.forEach(item => {
-						notYetAddedAttributts = _xor(item.items, AddedAttributts)
+						notYetAddedAttributes = _xor(item.items, AddedAttributes)
 					})
 			})
 		}
@@ -63,8 +63,8 @@ export default class FormEditor extends PureComponent {
 				})}
 
 				<div className="add-buttons-container">
-					{notYetAddedAttributts &&
-						notYetAddedAttributts.map((element, i) => {
+					{notYetAddedAttributes &&
+						notYetAddedAttributes.map((element, i) => {
 							return this.renderAddButton(element.label, element, i)
 						})}
 				</div>

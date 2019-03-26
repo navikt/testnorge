@@ -24,7 +24,10 @@ export default class AttributtVelger extends Component {
 	searchOnChange = e => this.setState({ search: e.target.value })
 
 	renderPanels = () => {
-		const list = this.AttributtManager.listSelectableAttributes(this.state.search)
+
+		const {currentBestilling} = this.props
+		const list = this.AttributtManager.listSelectableAttributes(this.state.search, currentBestilling.identOpprettesFra)
+
 		if (list.length === 0) return this.renderEmptyResult()
 		return list.map(hovedKategori => this.renderHovedKategori(hovedKategori))
 	}
