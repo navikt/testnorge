@@ -12,6 +12,8 @@ import { AttributtManager } from '~/service/Kodeverk'
 import { Formik, FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
+import BestillingMapper from '~/utils/BestillingMapper'
+
 
 export default class Step3 extends PureComponent {
 	static propTypes = {
@@ -157,7 +159,7 @@ export default class Step3 extends PureComponent {
 	}
 
 	render() {
-		const { identtype, antall, environments, selectedAttributeIds } = this.props
+		const { identtype, antall, environments, selectedAttributeIds, identOpprettesFra, eksisterendeIdentListe } = this.props
 
 		this.SelectedAttributes = this.AttributtManager.listSelectedAttributesForValueSelection(
 			selectedAttributeIds
@@ -171,8 +173,16 @@ export default class Step3 extends PureComponent {
 
 				<div className="oppsummering">
 					<div className="oppsummering-blokk oppsummering-blokk-margin">
-						<StaticValue header="Identtype" value={identtype} />
-						<StaticValue header="Antall personer" value={antall.toString()} />
+					{identOpprettesFra === BestillingMapper() ?
+						<div className="grunnoppsett">
+							<StaticValue header="TYPE" value={identtype} />
+							<StaticValue header="ANTALL PERSONER" value={antall.toString()} />
+						</div>
+						:
+						<div className="grunnoppsett">
+							<StaticValue header="IDENTER" value={eksisterendeIdentListe}/>
+						</div>
+					}
 						{selectedAttributeIds.length > 0 && (
 							<div className="flexbox--align-center--justify-end edit-align-right">
 								<Button
