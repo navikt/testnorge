@@ -18,8 +18,6 @@ export default class Feilmelding extends Component {
 			stubStatus.length > 0 ||
 			(bestilling.aaregStatus && this._finnTpsfFeilStatus(bestilling.aaregStatus).length > 0)
 
-		console.log('bestilling :', bestilling.tpsfStatus)
-		console.log('bestilliefefg :', bestilling.aaregStatus)
 		return (
 			<div className="feil-melding">
 				{/*Generelle feilmeldinger */}
@@ -48,7 +46,6 @@ export default class Feilmelding extends Component {
 				{/* TODO: Lag en generell metode med generelle metodenavn hvis det blir en ny register med samme format */}
 				{bestilling.aaregStatus &&
 					this._finnTpsfFeilStatus(bestilling.aaregStatus).map((feil, i) => {
-						console.log('feil :', feil)
 						//Feilmeldinger fra tpsf
 						if (stubStatus.length < 1) {
 							const bottomBorder = i != this._finnTpsfFeilStatus(bestilling.aaregStatus).length - 1
@@ -72,7 +69,6 @@ export default class Feilmelding extends Component {
 			}
 		})
 
-		console.log('tpsfFeil :', tpsfFeil)
 		return tpsfFeil
 	}
 
