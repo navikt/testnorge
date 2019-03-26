@@ -4,6 +4,8 @@ const DataSourceMapper = data => {
 			return 'sigrunstub'
 		case 'KRR':
 			return 'krrstub'
+		case 'AAREG':
+			return 'aareg'
 		default:
 			return 'tpsf'
 	}

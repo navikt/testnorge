@@ -10,6 +10,7 @@ const bestillingBase = `${uri}/bestilling`
 const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
 const norg2Base = `${uri}/norg2`
+const aaregBase = `${uri}/aareg/arbeidsforhold`
 
 class DollyEndpoints {
 	static gruppe() {
@@ -130,6 +131,14 @@ class DollyEndpoints {
 
 	static enhetByTknr(tknr) {
 		return `${norg2Base}/enhet/${tknr}`
+	}
+
+	static aareg() {
+		return aaregBase
+	}
+
+	static arbeidsforholdByIdent(ident, env) {
+		return `${aaregBase}?ident=${ident}&environment=${env}`
 	}
 }
 

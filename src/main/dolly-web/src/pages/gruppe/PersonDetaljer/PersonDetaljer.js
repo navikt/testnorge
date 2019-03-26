@@ -10,7 +10,6 @@ import DollyModal from '~/components/modal/DollyModal'
 import Formatters from '~/utils/DataFormatter'
 import BestillingDetaljerModal from '~/components/bestillingDetaljerModal/BestillingDetaljerModal'
 
-
 const AttributtManagerInstance = new AttributtManager()
 
 export default class PersonDetaljer extends PureComponent {
@@ -24,20 +23,28 @@ export default class PersonDetaljer extends PureComponent {
 	static propTypes = {
 		editAction: PropTypes.func
 	}
+
 	componentDidMount() {
 		this.props.getSigrunTestbruker()
 		this.props.getKrrTestbruker()
+
+		// TODO: Alex - Dette fungerer ikke hvis AAREG oppretting er feilet i noen av miljoene.
+		// Maa hente bestillingobjekt fra redux for aa hente AAREG miljoe
+		this.props.testIdent.tpsfSuccessEnv &&
+			this.props.getAaregTestbruker(this.props.testIdent.tpsfSuccessEnv.substring(0, 2))
 	}
+
 	openModal = () => {
 		this.setState({ modalOpen: true })
 	}
+
 	closeModal = () => {
 		this.setState({ modalOpen: false })
 	}
 
 	// render loading for krr og sigrun
 	_renderPersonInfoBlockHandler = i => {
-		const { isFetchingKrr, isFetchingSigrun } = this.props
+		const { isFetchingKrr, isFetchingSigrun, isFetchingAareg } = this.props
 		if (i.header === 'Inntekter') {
 			return isFetchingSigrun ? (
 				<Loading label="Henter data fra Sigrun-stub" panel />
@@ -47,6 +54,12 @@ export default class PersonDetaljer extends PureComponent {
 		} else if (i.header === 'Kontaktinformasjon og reservasjon') {
 			return isFetchingKrr ? (
 				<Loading label="Henter data fra Krr" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else if (i.header === 'Arbeidsforhold') {
+			return isFetchingAareg ? (
+				<Loading label="Henter data fra Aareg" panel />
 			) : (
 				this._renderPersonInfoBlock(i)
 			)
@@ -68,7 +81,7 @@ export default class PersonDetaljer extends PureComponent {
 		const { bestillinger } = this.props
 		const bestilling = bestillinger.data.find(i => i.id.toString() === ident)
 
-		return <BestillingDetaljerModal bestilling = {bestilling}/>
+		return <BestillingDetaljerModal bestilling={bestilling} />
 	}
 
 	render() {
@@ -80,20 +93,23 @@ export default class PersonDetaljer extends PureComponent {
 			<div className="person-details">
 				{personData.map((i, idx) => {
 					if (i.data.length < 0) return null
-					if (i.data[0].id == 'bestillingID') {
-						return (
-							<div key={idx} className="tidligere-bestilling-panel">
-								<h4>{i.header}</h4>
-								<div>{i.data[0].value}</div>
-							</div>
-						)
+					if (i.data.length > 0) {
+						if (i.data[0].id == 'bestillingID') {
+							return (
+								<div key={idx} className="tidligere-bestilling-panel">
+									<h4>{i.header}</h4>
+									<div>{i.data[0].value}</div>
+								</div>
+							)
+						} else {
+							return (
+								<div key={idx} className="person-details_content">
+									<h3>{i.header}</h3>
+									{this._renderPersonInfoBlockHandler(i)}
+								</div>
+							)
+						}
 					}
-					return (
-						<div key={idx} className="person-details_content">
-							<h3>{i.header}</h3>
-							{this._renderPersonInfoBlockHandler(i)}
-						</div>
-					)
 				})}
 				<div className="flexbox--align-center--justify-end">
 					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
