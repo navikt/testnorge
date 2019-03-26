@@ -26,7 +26,6 @@ export default class MiljoeStatus extends PureComponent {
 		const {
 			id,
 			successEnvs,
-			failedEnvs,
 			bestilling,
 			finnesFeilmelding,
 			antallIdenterOpprettet
@@ -34,6 +33,7 @@ export default class MiljoeStatus extends PureComponent {
 		const failed = true && successEnvs.length == 0 && !finnesFeilmelding
 		const { modalOpen } = this.state
 
+		console.log('miljoeStatusObj :', this.props.miljoeStatusObj)
 		return (
 			<div className="miljoe-status">
 				<div className="status-header">
@@ -47,7 +47,7 @@ export default class MiljoeStatus extends PureComponent {
 				<div className={'miljoe-container miljoe-container-kolonne'}>
 					{failed
 						? this._renderFailureMessage(bestilling, antallIdenterOpprettet)
-						: this._renderStatus(bestilling, successEnvs, failedEnvs, antallIdenterOpprettet)}
+						: this._renderStatus(bestilling, antallIdenterOpprettet)}
 				</div>
 				{/* TODO: Alex - condition for feil i hele bestillingen her */}
 				{bestilling.feil && (
@@ -72,7 +72,7 @@ export default class MiljoeStatus extends PureComponent {
 		)
 	}
 
-	_renderStatus = (bestilling, successEnvs, failedEnvs, antallIdenterOpprettet) => {
+	_renderStatus = (bestilling, antallIdenterOpprettet) => {
 		return (
 			<Fragment>
 				{antallIdenterOpprettet < bestilling.antallIdenter && (
@@ -81,24 +81,30 @@ export default class MiljoeStatus extends PureComponent {
 						TPS.
 					</span>
 				)}
-				<span className="miljoe-container miljoe-container-rad">
-					{this._renderMiljoeStatus(successEnvs, failedEnvs)}
-				</span>
+				<span className="miljoe-container miljoe-container-rad">{this._renderMiljoeStatus()}</span>
 			</Fragment>
 		)
 	}
 
-	_renderMiljoeStatus = (successEnvs, failedEnvs) => (
-		<Fragment>
-			{successEnvs.map((env, i) => {
-				return this._renderMiljoe(env, i, 'success')
-			})}
+	_renderMiljoeStatus = () => {
+		const { successEnvs, failedEnvs, avvikEnvs } = this.props.miljoeStatusObj
 
-			{failedEnvs.map((env, i) => {
-				return this._renderMiljoe(env, i, 'failed')
-			})}
-		</Fragment>
-	)
+		return (
+			<Fragment>
+				{successEnvs.map((env, i) => {
+					return this._renderMiljoe(env, i, 'success')
+				})}
+
+				{failedEnvs.map((env, i) => {
+					return this._renderMiljoe(env, i, 'failed')
+				})}
+
+				{avvikEnvs.map((env, i) => {
+					return this._renderMiljoe(env, i, 'avvik')
+				})}
+			</Fragment>
+		)
+	}
 
 	_renderFailureMessage = () => (
 		<Fragment>
@@ -108,7 +114,20 @@ export default class MiljoeStatus extends PureComponent {
 	)
 
 	_renderMiljoe = (env, key, status) => {
-		const iconKind = status == 'success' ? 'feedback-check-circle' : 'report-problem-triangle'
+		let iconKind
+
+		switch (status) {
+			case 'avvik':
+				iconKind = 'report-problem-circle'
+				break
+			case 'failed':
+				iconKind = 'report-problem-triangle'
+				break
+			default:
+				iconKind = 'feedback-check-circle'
+				break
+		}
+
 		return (
 			<div className={'miljoe'} key={key}>
 				<Icon size={'24px'} kind={iconKind} />
