@@ -24,6 +24,8 @@ export default class Step2 extends PureComponent {
 			props.selectedAttributeIds
 		)
 		this.ValidationListe = this.AttributtManager.getValidations(props.selectedAttributeIds)
+
+		// TODO: Alex - initial values for child attributts with subItems
 		this.InitialValues = this.AttributtManager.getInitialValues(
 			props.selectedAttributeIds,
 			props.values
