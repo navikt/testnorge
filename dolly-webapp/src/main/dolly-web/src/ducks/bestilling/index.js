@@ -307,7 +307,8 @@ export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { currentBestilling } = getState()
 	const values = bestillingFormatter(currentBestilling)
 
-	if (currentBestilling.identOpprettesFra === BestillingMapper('eksIdent')) {
+	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
+		console.log('hei');
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {
 		return dispatch(actions.postBestilling(gruppeId, values))

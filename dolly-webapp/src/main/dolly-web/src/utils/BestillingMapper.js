@@ -1,6 +1,6 @@
 const BestillingMapper = data => {
 	switch (data) {
-		case 'eksIdent':
+		case 'EKSIDENT':
 			return 'eksIdent'
 		default:
 			return 'nyIdent'

@@ -13,7 +13,7 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Date,
 		validation: DateValidation,
 		attributtType: AttributtType.SelectOnly,
-		addToExistingIdent: 'false'
+		sattForEksisterendeIdent: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -24,7 +24,7 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Date,
 		validation: DateValidation,
 		attributtType: AttributtType.SelectOnly,
-		addToExistingIdent: 'false'
+		sattForEksisterendeIdent: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -57,7 +57,7 @@ const AttributtListe: Attributt[] = [
 		apiKodeverkId: 'Kjønnstyper',
 		// validation: yup.string().required('Velg kjønn.'),
 		attributtType: AttributtType.SelectAndEdit,
-		addToExistingIdent: 'false'
+		sattForEksisterendeIdent: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,

@@ -60,7 +60,7 @@ export interface Attributt {
 	dependentBy?: string // Er ikke avhengig, er attributten som ble settet av dependentOn
 	includeIf?: Attributt[]
 	transform?: (value:any, attributter:Attributt[]) => any;
-	addToExistingIdent?: string
+	sattForEksisterendeIdent?: boolean
 }
 
 // Attributt grupper

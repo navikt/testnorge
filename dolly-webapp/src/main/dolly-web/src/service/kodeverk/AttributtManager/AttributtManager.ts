@@ -49,7 +49,7 @@ export default class AttributtManager {
 
 	listAllExcludingChildrenAndEksisterendeIdentAttr(): Attributt [] {
 		return AttributtListe.filter(f=> {
-			return (!f.parent && !(f.addToExistingIdent === 'false'))
+			return (!f.parent && !f.sattForEksisterendeIdent)
 		})
 	}
 
@@ -60,7 +60,7 @@ export default class AttributtManager {
 	//STEP 1
 	listSelectableAttributes(searchTerm: string, identOpprettesFra: string): AttributtGruppe[] {
 		let list
-		BestillingMapper(identOpprettesFra) ==='eksIdent' ? 
+		identOpprettesFra === BestillingMapper('EKSIDENT') ? 
 		list = this.listAllExcludingChildrenAndEksisterendeIdentAttr()
 		: list = this.listAllExcludingChildren()
 		

@@ -40,8 +40,8 @@ export default class Navigation extends PureComponent {
 					)}
 
 					{!isPage.last(currentPage) && 
-						(identOpprettesFra !== BestillingMapper('eksIdent') || 
-						(identOpprettesFra === BestillingMapper('eksIdent') && eksisterendeIdentListe.length > 0)) &&
+						(identOpprettesFra !== BestillingMapper('EKSIDENT') || 
+						(identOpprettesFra === BestillingMapper('EKSIDENT') && eksisterendeIdentListe.length > 0)) &&
 							<NavButton direction="forward" onClick={onClickNext} />}
 
 					{isPage.last(currentPage) && (
