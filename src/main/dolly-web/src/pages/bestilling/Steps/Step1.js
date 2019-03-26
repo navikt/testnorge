@@ -59,7 +59,7 @@ class Step1 extends Component {
 				</div>
 				<form className="flexbox">
 					<span className = 'bestilling-page radiobuttons'>{this._renderRadioBtn(BestillingMapper(), 'NY TESTIDENT')}</span>
-					<span className = 'bestilling-page radiobuttons'>{this._renderRadioBtn(BestillingMapper('eksIdent'), 'EKSISTERENDE TESTIDENT')}</span>
+					<span className = 'bestilling-page radiobuttons'>{this._renderRadioBtn(BestillingMapper('EKSIDENT'), 'EKSISTERENDE TESTIDENT')}</span>
 				</form>
 				{identOpprettesFra === BestillingMapper() ?
 					<NyIdent

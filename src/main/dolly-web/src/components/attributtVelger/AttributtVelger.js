@@ -27,11 +27,6 @@ export default class AttributtVelger extends Component {
 
 		const {currentBestilling} = this.props
 		const list = this.AttributtManager.listSelectableAttributes(this.state.search, currentBestilling.identOpprettesFra)
-		
-		// let list
-		// currentBestilling.identOpprettesFra === 'eksIdent'
-		// ? list = this.AttributtManager.SOMENEWFUNCTION(this.state.search)
-		// : list = this.AttributtManager.listSelectableAttributes(this.state.search)
 
 		if (list.length === 0) return this.renderEmptyResult()
 		return list.map(hovedKategori => this.renderHovedKategori(hovedKategori))
