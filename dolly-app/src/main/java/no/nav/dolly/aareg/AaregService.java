@@ -8,7 +8,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
@@ -17,6 +19,7 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPerson;
 
+@Slf4j
 @Service
 public class AaregService {
 
@@ -35,7 +38,12 @@ public class AaregService {
 
             environments.forEach(env -> {
 
-                ResponseEntity<Object[]> response = aaregRestConsumer.readArbeidsforhold(ident, env);
+                ResponseEntity<Object[]> response = ResponseEntity.ok(new Object[]{});
+                try {
+                    response = aaregRestConsumer.readArbeidsforhold(ident, env);
+                } catch (HttpClientErrorException e) {
+                    log.error("Lesing av aareg i {} feilet, {}", env, e.getMessage());
+                }
 
                 for (int i = 0; i < arbeidsforholdList.size(); i++) {
                     RsArbeidsforhold arbfInput = arbeidsforholdList.get(i);
@@ -70,7 +78,7 @@ public class AaregService {
             });
         }
 
-        return result.substring(1);
+        return result.length() > 1 ? result.substring(1) : null;
     }
 
     private static boolean isMatchArbgivOrgnummer(RsAktoer arbeidsgiver, String orgnummer) {
