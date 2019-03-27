@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.jpa.BestKriterier;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -94,7 +95,7 @@ public class BestillingService {
 
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, Integer antallIdenter, List<String> miljoer,
-            RsTpsfBasisBestilling tpsfBestilling, List<String> opprettFraIdenter) {
+            RsTpsfBasisBestilling tpsfBestilling, BestKriterier bestKriterier, List<String> opprettFraIdenter) {
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
         return saveBestillingToDB(
                 Bestilling.builder()
@@ -103,6 +104,7 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .miljoer(join(",", miljoer))
                         .tpsfKriterier(nonNull(tpsfBestilling) ? toJson(tpsfBestilling) : null)
+                        .bestKriterier(nonNull(bestKriterier) ? toJson(bestKriterier) : null)
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .build()
         );
@@ -126,6 +128,7 @@ public class BestillingService {
                         .miljoer(miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
                         .opprettetFraId(bestillingId)
                         .tpsfKriterier(bestilling.getTpsfKriterier())
+                        .bestKriterier(bestilling.getBestKriterier())
                         .build()
         );
     }
