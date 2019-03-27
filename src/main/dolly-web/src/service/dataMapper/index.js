@@ -29,7 +29,6 @@ const DataMapper = {
 
 		const { gruppe, testbruker } = state
 
-		// TODO: Refactor, testbrukerIsFetched
 		if (!testbruker.items.tpsf) return null
 
 		return testbruker.items.tpsf.map(i => {
