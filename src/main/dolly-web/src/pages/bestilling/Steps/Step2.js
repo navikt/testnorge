@@ -43,23 +43,29 @@ export default class Step2 extends PureComponent {
 	}
 
 	render() {
-		const { identtype, antall, selectedAttributeIds, identOpprettesFra, eksisterendeIdentListe } = this.props
+		const {
+			identtype,
+			antall,
+			selectedAttributeIds,
+			identOpprettesFra,
+			eksisterendeIdentListe
+		} = this.props
 
 		return (
 			<div className="bestilling-step2">
 				<div className="content-header">
 					<Overskrift label="Velg verdier" />
 				</div>
-				{identOpprettesFra === BestillingMapper() ?
+				{identOpprettesFra === BestillingMapper() ? (
 					<div className="grunnoppsett">
-						<StaticValue header="TYPE" value={identtype}/>
+						<StaticValue header="TYPE" value={identtype} />
 						<StaticValue header="ANTALL PERSONER" value={antall.toString()} />
 					</div>
-					:
+				) : (
 					<div className="grunnoppsett">
-						<StaticValue header="IDENTER" value={eksisterendeIdentListe}/>
+						<StaticValue header="IDENTER" value={eksisterendeIdentListe} />
 					</div>
-				}
+				)}
 				<Formik
 					onSubmit={this.submit}
 					initialValues={this.InitialValues}

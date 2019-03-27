@@ -3,7 +3,7 @@ import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import Formatters from '~/utils/DataFormatter'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
-
+import { NumberValidator } from '~/utils/Validator'
 import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
@@ -91,15 +91,14 @@ const AttributtListe: Attributt[] = [
 				inputTypeAttributes: {
 					min: 0
 				},
-				validation: yup
-					.number()
-					.integer('Ugyldig input')
-					.required('Tast inn et gyldig orgnummer/ident')
+				// Egen validation pga yup tror stor streng ikke er integer
+				validation: NumberValidator.required('Tast inn et gyldig orgnummer/ident')
 					.min(1, 'Tast inn et gyldig orgnummer/ident')
 					.max(99999999999, 'Ugyldig input'),
 				attributtType: AttributtType.SelectAndRead
 			}
 		]
+
 		// subItems: [
 		// 	{
 		// 		id: 'permisjon',

@@ -12,14 +12,15 @@ import BestillingMapper from '~/utils/BestillingMapper'
 import { handleActions, createActions, createAction, combineActions } from 'redux-actions'
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
-import Bestilling from '../../pages/bestilling/Bestilling';
+import Bestilling from '../../pages/bestilling/Bestilling'
 
 const AttributtManagerInstance = new AttributtManager()
 
 export const actions = createActions(
-	{ 
-		POST_BESTILLING_FRA_EKSISTERENDE_IDENTER: (gruppeId, value) => DollyApi.createBestillingFraEksisterendeIdenter(gruppeId, value),
-		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values),
+	{
+		POST_BESTILLING_FRA_EKSISTERENDE_IDENTER: (gruppeId, value) =>
+			DollyApi.createBestillingFraEksisterendeIdenter(gruppeId, value),
+		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values)
 	},
 	'NEXT_PAGE',
 	'PREV_PAGE',
@@ -136,11 +137,15 @@ export default handleActions(
 				)
 			}
 		},
-		[actions.setIdentOpprettesFra] (state, action) {
-			return {...state, identOpprettesFra: action.payload}
+		[actions.setIdentOpprettesFra](state, action) {
+			return { ...state, identOpprettesFra: action.payload }
 		},
-		[actions.setIdentLister] (state, action) {	
-			return { ...state, eksisterendeIdentListe: action.payload.gyldigIdentListe, ugyldigIdentListe: action.payload.ugyldigIdentListe }
+		[actions.setIdentLister](state, action) {
+			return {
+				...state,
+				eksisterendeIdentListe: action.payload.gyldigIdentListe,
+				ugyldigIdentListe: action.payload.ugyldigIdentListe
+			}
 		},
 		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestilling))](
 			state,
@@ -148,11 +153,11 @@ export default handleActions(
 		) {
 			return initialState
 		},
-		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestillingFraEksisterendeIdenter))](
-			state,
-			action
-		){
-			console.log('hei combine actions');
+		[combineActions(
+			actions.abortBestilling,
+			LOCATION_CHANGE,
+			success(actions.postBestillingFraEksisterendeIdenter)
+		)](state, action) {
 			return initialState
 		}
 	},
@@ -164,22 +169,30 @@ export default handleActions(
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
 const bestillingFormatter = bestillingState => {
-	const { attributeIds, antall, environments, identtype, values, identOpprettesFra, eksisterendeIdentListe } = bestillingState
+	const {
+		attributeIds,
+		antall,
+		environments,
+		identtype,
+		values,
+		identOpprettesFra,
+		eksisterendeIdentListe
+	} = bestillingState
 	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
 
 	let final_values = []
 
 	identOpprettesFra === BestillingMapper()
-	?	final_values = {
-			antall: antall,
-			environments: environments,
-			...getValues(AttributtListe, values)
-	} :
-		final_values = {
-			opprettFraIdenter: eksisterendeIdentListe,
-			environments: environments,
-			...getValues(AttributtListe, values)
-	}
+		? (final_values = {
+				antall: antall,
+				environments: environments,
+				...getValues(AttributtListe, values)
+		  })
+		: (final_values = {
+				opprettFraIdenter: eksisterendeIdentListe,
+				environments: environments,
+				...getValues(AttributtListe, values)
+		  })
 
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
@@ -196,7 +209,6 @@ const bestillingFormatter = bestillingState => {
 
 // TODO: Kan getValues og transformAttributt merges?
 const getValues = (attributeList, values) => {
-
 	return attributeList.reduce((accumulator, attribute) => {
 		let value = _transformAttributt(attribute, attributeList, values[attribute.id])
 		const pathPrefix = DataSourceMapper(attribute.dataSource)
@@ -228,25 +240,35 @@ const getValues = (attributeList, values) => {
 			let dataArr = []
 
 			value.forEach(element => {
-				let arregObj = {}
+				let aaregObj = {}
 				attribute.items.forEach(item => {
 					const path = item.path
 					const id = item.id
 					let keyValue = element[id]
 
-					Object.assign(arregObj, { [path]: { ...arregObj[path], [id]: keyValue } })
-					// Spesifikk ekstra felter for AAREG, ikke-sett av UI
-					Object.assign(arregObj, {
-						arbeidsforholdstype: 'ordinaertArbeidsforhold',
-						arbeidsavtale: {
-							...arregObj.arbeidsavtale,
-							arbeidstidsordning: 'ikkeSkift',
-							avtaltArbeidstimerPerUke: 40.0
-						}
-					})
+					Object.assign(aaregObj, { [path]: { ...aaregObj[path], [id]: keyValue } })
 				})
 
-				dataArr.push(arregObj)
+				// aktorID = PERS
+				// TODO: bytt heller inputfelte som ny attribute
+				if (aaregObj.arbeidsgiver.aktoertype == 'PERS') {
+					const aktoerType = aaregObj.arbeidsgiver.aktoertype
+					const arbeidsgiverIdent = aaregObj.arbeidsgiver.orgnummer
+					Object.assign(aaregObj, {
+						arbeidsgiver: { aktoerType, ident: arbeidsgiverIdent }
+					})
+				}
+
+				// Spesifikk ekstra felter for AAREG, ikke-sett av UI
+				Object.assign(aaregObj, {
+					arbeidsforholdstype: 'ordinaertArbeidsforhold',
+					arbeidsavtale: {
+						...aaregObj.arbeidsavtale,
+						arbeidstidsordning: 'ikkeSkift',
+						avtaltArbeidstimerPerUke: 37.5
+					}
+				})
+				dataArr.push(aaregObj)
 			})
 			return _set(accumulator, pathPrefix, dataArr)
 		}
@@ -358,11 +380,9 @@ export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const values = bestillingFormatter(currentBestilling)
 
 	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
-		console.log('hei');
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {
-		console.log('hei i sendBestilling');
 		return dispatch(actions.postBestilling(gruppeId, values))
-	} 
+		// console.log('nei')
+	}
 }
-
