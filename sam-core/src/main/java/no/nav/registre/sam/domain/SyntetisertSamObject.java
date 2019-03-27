@@ -15,7 +15,7 @@ import lombok.Setter;
 public class SyntetisertSamObject {
 
     @JsonProperty("ANTALL_FORSOK")
-    private String antallForsøk;
+    private String antallForsoek;
     @JsonProperty("DATO_ENDRET")
     private String datoEndret;
     @JsonProperty("DATO_FOM")
@@ -37,7 +37,7 @@ public class SyntetisertSamObject {
     @JsonProperty("K_ART")
     private String kArt;
     @JsonProperty("K_FAGOMRADE")
-    private String kFagområde;
+    private String kFagomraade;
     @JsonProperty("K_KANAL_T")
     private String kKanalT;
     @JsonProperty("K_MELDING_STATUS")

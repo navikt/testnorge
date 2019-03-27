@@ -63,7 +63,7 @@ public class TSamVedtak {
 
     public TSamVedtak(SyntetisertSamObject obj, TPerson tPerson) throws ParseException {
         this.personId = tPerson.getPersonId();
-        this.kFagomraade = obj.getKFagområde();
+        this.kFagomraade = obj.getKFagomraade();
         this.kVedtakStatus = obj.getKVedtakStatus();
         this.kArt = obj.getKArt();
         this.fagVedtakIdFk = 0;

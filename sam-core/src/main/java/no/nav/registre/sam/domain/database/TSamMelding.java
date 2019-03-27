@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Date;
@@ -60,7 +59,7 @@ public class TSamMelding {
     @Column(name = "versjon")
     private int versjon;
     @Column(name = "antall_forsok")
-    private int antallForsok;
+    private int antallForsoek;
 
     public TSamMelding(SyntetisertSamObject obj, TSamVedtak tSamVedtak) throws ParseException {
         this.samVedtakId = tSamVedtak.getSamVedtakId();
@@ -72,11 +71,11 @@ public class TSamMelding {
         this.datoPurret = Utils.formatDate(obj.getDatoPurret());
         this.refusjonskrav = obj.getRefusjonskrav();
         this.datoOpprettet = Utils.formatDate(obj.getDatoOpprettet());
-        this.opprettetAv = (obj.getOpprettetAv() == "") ? "synt" : obj.getOpprettetAv();
+        this.opprettetAv = ("".equals(obj.getOpprettetAv())) ? "synt" : obj.getOpprettetAv();
         this.datoEndret = Utils.formatDate(obj.getDatoEndret());
         this.endretAv = "synt";
         this.versjon = (int) Double.parseDouble(obj.getVersjon());
-        this.antallForsok = (int) Double.parseDouble(obj.getVersjon());
+        this.antallForsoek = (int) Double.parseDouble(obj.getVersjon());
 
     }
 }
