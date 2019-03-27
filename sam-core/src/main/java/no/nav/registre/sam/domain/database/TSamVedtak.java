@@ -1,6 +1,7 @@
 package no.nav.registre.sam.domain.database;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,6 +25,7 @@ import no.nav.registre.sam.utils.Utils;
 @ToString
 @Entity
 @AllArgsConstructor
+@Builder
 @Table(name = "t_sam_vedtak")
 public class TSamVedtak {
 
