@@ -22,8 +22,8 @@ public class SyntetiseringController {
 
     @LogExceptions
     @PostMapping(value = "/generer")
-    public ResponseEntity genererSammeldinger(@RequestBody SyntetiserSamRequest syntetiserSamRequest) {
+    public ResponseEntity genererSamordningsmeldinger(@RequestBody SyntetiserSamRequest syntetiserSamRequest) {
         List<String> identer = syntetiseringService.finnLevendeIdenter(syntetiserSamRequest);
-        return syntetiseringService.finnSyntetiserteMeldinger(identer);
+        return syntetiseringService.opprettOgLagreSyntetiserteSamordningsmeldinger(identer);
     }
 }

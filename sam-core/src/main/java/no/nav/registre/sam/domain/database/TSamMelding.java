@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.Date;
 
 import no.nav.registre.sam.domain.SyntetisertSamObject;
@@ -62,7 +63,7 @@ public class TSamMelding {
     @Column(name = "antall_forsok")
     private int antallForsok;
 
-    public TSamMelding(SyntetisertSamObject obj, TSamVedtak tSamVedtak) {
+    public TSamMelding(SyntetisertSamObject obj, TSamVedtak tSamVedtak) throws ParseException {
         this.samVedtakId = tSamVedtak.getSamVedtakId();
         this.kKanalT = obj.getKKanalT();
         this.kMeldingStatus = obj.getKMeldingStatus();

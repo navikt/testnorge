@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.text.ParseException;
 
 import no.nav.registre.sam.domain.SyntetisertSamObject;
 import no.nav.registre.sam.utils.Utils;
@@ -53,7 +54,7 @@ public class TSamHendelse {
     @Column(name = "versjon")
     private int versjon;
 
-    public TSamHendelse(SyntetisertSamObject obj, TPerson tPerson) {
+    public TSamHendelse(SyntetisertSamObject obj, TPerson tPerson) throws ParseException {
         this.personId = tPerson.getPersonId();
         this.kTpArt = obj.getKTPArt();
         this.kSamHendelseT = obj.getKSamHendelseT();
@@ -61,7 +62,7 @@ public class TSamHendelse {
         this.tssEksternIdFk = "80000470761";
         this.samMeldingIdFk = null;
         this.datoOpprettet = Utils.formatDate(obj.getDatoOpprettet());
-        this.opprettetAv = (obj.getOpprettetAv() != "") ? obj.getOpprettetAv() : "synt";
+        this.opprettetAv = (!"".equals(obj.getOpprettetAv())) ? obj.getOpprettetAv() : "synt";
         this.datoEndret = Utils.formatDate(obj.getDatoEndret());
         this.endretAv = "synt";
         this.versjon = (int) Double.parseDouble(obj.getVersjon());

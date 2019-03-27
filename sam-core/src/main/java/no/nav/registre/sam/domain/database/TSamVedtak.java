@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.Date;
 
 import no.nav.registre.sam.domain.SyntetisertSamObject;
@@ -34,7 +35,7 @@ public class TSamVedtak {
     @Column(name = "person_id")
     private int personId;
     @Column(name = "k_fagomrade")
-    private String kFagområde;
+    private String kFagomraade;
     @Column(name = "k_vedtak_status")
     private String kVedtakStatus;
     @Column(name = "k_art")
@@ -62,9 +63,9 @@ public class TSamVedtak {
     @Column(name = "versjon")
     private int versjon;
 
-    public TSamVedtak(SyntetisertSamObject obj, TPerson tPerson) {
+    public TSamVedtak(SyntetisertSamObject obj, TPerson tPerson) throws ParseException {
         this.personId = tPerson.getPersonId();
-        this.kFagområde = obj.getKFagområde();
+        this.kFagomraade = obj.getKFagområde();
         this.kVedtakStatus = obj.getKVedtakStatus();
         this.kArt = obj.getKArt();
         this.fagVedtakIdFk = 00000000;

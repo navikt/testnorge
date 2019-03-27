@@ -47,12 +47,12 @@ public class SyntetiseringControllerTest {
     @Test
     public void shouldStartSyntetisering() {
         when(syntetiseringService.finnLevendeIdenter(syntetiserSamRequest)).thenReturn(identer);
-        when(syntetiseringService.finnSyntetiserteMeldinger(identer)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
+        when(syntetiseringService.opprettOgLagreSyntetiserteSamordningsmeldinger(identer)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
-        ResponseEntity response = syntetiseringController.genererSammeldinger(syntetiserSamRequest);
+        ResponseEntity response = syntetiseringController.genererSamordningsmeldinger(syntetiserSamRequest);
 
         verify(syntetiseringService).finnLevendeIdenter(syntetiserSamRequest);
-        verify(syntetiseringService).finnSyntetiserteMeldinger(identer);
+        verify(syntetiseringService).opprettOgLagreSyntetiserteSamordningsmeldinger(identer);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
