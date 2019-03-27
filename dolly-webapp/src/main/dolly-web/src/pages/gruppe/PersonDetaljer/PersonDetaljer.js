@@ -7,8 +7,8 @@ import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
-import Formatters from '~/utils/DataFormatter'
 import BestillingDetaljerModal from '~/components/bestillingDetaljerModal/BestillingDetaljerModal'
+import { getAaregSuccessEnv } from '~/ducks/bestillingStatus'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -28,60 +28,8 @@ export default class PersonDetaljer extends PureComponent {
 		this.props.getSigrunTestbruker()
 		this.props.getKrrTestbruker()
 
-		// TODO: Alex - Dette fungerer ikke hvis AAREG oppretting er feilet i noen av miljoene.
-		// Maa hente bestillingobjekt fra redux for aa hente AAREG miljoe
-		this.props.testIdent.tpsfSuccessEnv &&
-			this.props.getAaregTestbruker(this.props.testIdent.tpsfSuccessEnv.substring(0, 2))
-	}
-
-	openModal = () => {
-		this.setState({ modalOpen: true })
-	}
-
-	closeModal = () => {
-		this.setState({ modalOpen: false })
-	}
-
-	// render loading for krr og sigrun
-	_renderPersonInfoBlockHandler = i => {
-		const { isFetchingKrr, isFetchingSigrun, isFetchingAareg } = this.props
-		if (i.header === 'Inntekter') {
-			return isFetchingSigrun ? (
-				<Loading label="Henter data fra Sigrun-stub" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Kontaktinformasjon og reservasjon') {
-			return isFetchingKrr ? (
-				<Loading label="Henter data fra Krr" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Arbeidsforhold') {
-			return isFetchingAareg ? (
-				<Loading label="Henter data fra Aareg" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else {
-			return this._renderPersonInfoBlock(i)
-		}
-	}
-
-	_renderPersonInfoBlock = i => (
-		<PersonInfoBlock
-			data={i.data}
-			multiple={i.multiple}
-			attributtManager={AttributtManagerInstance}
-		/>
-	)
-
-	_renderBestillingDetaljerModal = () => {
-		const ident = Formatters.idUtenEllipse(this.props.bestillingId)
-		const { bestillinger } = this.props
-		const bestilling = bestillinger.data.find(i => i.id.toString() === ident)
-
-		return <BestillingDetaljerModal bestilling={bestilling} />
+		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.bestilling)
+		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
 	}
 
 	render() {
@@ -134,5 +82,52 @@ export default class PersonDetaljer extends PureComponent {
 				</div>
 			</div>
 		)
+	}
+
+	openModal = () => {
+		this.setState({ modalOpen: true })
+	}
+
+	closeModal = () => {
+		this.setState({ modalOpen: false })
+	}
+
+	// render loading for krr og sigrun
+	_renderPersonInfoBlockHandler = i => {
+		const { isFetchingKrr, isFetchingSigrun, isFetchingAareg } = this.props
+		if (i.header === 'Inntekter') {
+			return isFetchingSigrun ? (
+				<Loading label="Henter data fra Sigrun-stub" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else if (i.header === 'Kontaktinformasjon og reservasjon') {
+			return isFetchingKrr ? (
+				<Loading label="Henter data fra Krr" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else if (i.header === 'Arbeidsforhold') {
+			return isFetchingAareg ? (
+				<Loading label="Henter data fra Aareg" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else {
+			return this._renderPersonInfoBlock(i)
+		}
+	}
+
+	_renderPersonInfoBlock = i => (
+		<PersonInfoBlock
+			data={i.data}
+			multiple={i.multiple}
+			attributtManager={AttributtManagerInstance}
+		/>
+	)
+
+	_renderBestillingDetaljerModal = () => {
+		const { bestilling } = this.props
+		return <BestillingDetaljerModal bestilling={bestilling} />
 	}
 }
