@@ -165,6 +165,20 @@ export const miljoStatusSelector = bestilling => {
 	}
 }
 
+// TODO: Flytt saanne medtoder i egen fil. Klassen begynner aa vaere litt stor?
+export const getAaregSuccessEnv = bestilling => {
+	let envs = []
+	bestilling.aaregStatus &&
+		bestilling.aaregStatus.length > 0 &&
+		bestilling.aaregStatus.forEach(status => {
+			if (status.statusMelding === 'OK') {
+				envs = Object.keys(status.environmentIdentsForhold)
+			}
+		})
+
+	return envs
+}
+
 const antallIdenterOpprettetFunk = bestilling => {
 	let identArray = []
 	bestilling.tpsfStatus &&
@@ -177,6 +191,8 @@ const antallIdenterOpprettetFunk = bestilling => {
 		})
 	return identArray.length
 }
+
+const bestillingIkkeFerdig = item => !item.ferdig
 
 const mapItems = items => {
 	if (!items) return null
@@ -220,8 +236,6 @@ const avvikStatus = item => {
 	item.feil && (avvik = true)
 	return avvik
 }
-
-const bestillingIkkeFerdig = item => !item.ferdig
 
 const harIkkeIdenter = item => {
 	let feilet = true
