@@ -6,21 +6,21 @@ import java.util.Date;
 
 public class Utils {
 
-    public static Timestamp formatDate(String dateString){
+    public static Timestamp formatDate(String dateString) {
         try {
-            if (dateString == ""){
+            if (dateString == "") {
                 return getTodaysDate();
             }
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
             Date parsedDate = dateFormat.parse(dateString);
             return new java.sql.Timestamp(parsedDate.getTime());
-        } catch(Exception e) { //this generic but you can control another types of exception
+        } catch (Exception e) { //this generic but you can control another types of exception
             System.out.println(e.toString());
             return null;
         }
     }
 
-    public static Timestamp getTodaysDate(){
+    public static Timestamp getTodaysDate() {
         Long date = new Date().getTime();
         Timestamp t = new Timestamp(date);
         return t;

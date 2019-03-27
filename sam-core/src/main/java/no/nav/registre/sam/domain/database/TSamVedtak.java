@@ -4,57 +4,65 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import no.nav.registre.sam.domain.SyntetisertSamObject;
-import no.nav.registre.sam.utils.Utils;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
+
+import no.nav.registre.sam.domain.SyntetisertSamObject;
+import no.nav.registre.sam.utils.Utils;
 
 @Getter
 @Setter
 @ToString
 @Entity
 @AllArgsConstructor
-@Table(name="t_sam_vedtak")
+@Table(name = "t_sam_vedtak")
 public class TSamVedtak {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "p_seq")
-    @SequenceGenerator(name="p_seq", sequenceName = "S_SAM_VEDTAK", allocationSize=1)
-    @Column(name="sam_vedtak_id")
+    @SequenceGenerator(name = "p_seq", sequenceName = "S_SAM_VEDTAK", allocationSize = 1)
+    @Column(name = "sam_vedtak_id")
     private int samVedtakId;
-    @Column(name="person_id")
+    @Column(name = "person_id")
     private int personId;
-    @Column(name="k_fagomrade")
+    @Column(name = "k_fagomrade")
     private String kFagområde;
-    @Column(name="k_vedtak_status")
+    @Column(name = "k_vedtak_status")
     private String kVedtakStatus;
-    @Column(name="k_art")
+    @Column(name = "k_art")
     private String kArt;
-    @Column(name="fag_vedtak_id_fk")
+    @Column(name = "fag_vedtak_id_fk")
     private Integer fagVedtakIdFk;
-    @Column(name="sak_id_fk")
+    @Column(name = "sak_id_fk")
     private Integer sakIdFk;
-    @Column(name="purring")
+    @Column(name = "purring")
     private String purring;
-    @Column(name="etterbetaling")
+    @Column(name = "etterbetaling")
     private String etterbetaling;
-    @Column(name="dato_fom")
+    @Column(name = "dato_fom")
     private Date datoFom;
-    @Column(name="dato_tom")
+    @Column(name = "dato_tom")
     private Date datoTom;
-    @Column(name="dato_opprettet")
+    @Column(name = "dato_opprettet")
     private Timestamp datoOpprettet;
-    @Column(name="opprettet_av")
+    @Column(name = "opprettet_av")
     private String opprettetAv;
-    @Column(name="dato_endret")
+    @Column(name = "dato_endret")
     private Timestamp dato_endret;
-    @Column(name="endret_av")
+    @Column(name = "endret_av")
     private String endretAv;
-    @Column(name="versjon")
+    @Column(name = "versjon")
     private int versjon;
 
-    public TSamVedtak(SyntetisertSamObject obj, TPerson tPerson){
+    public TSamVedtak(SyntetisertSamObject obj, TPerson tPerson) {
         this.personId = tPerson.getPersonId();
         this.kFagområde = obj.getKFagområde();
         this.kVedtakStatus = obj.getKVedtakStatus();

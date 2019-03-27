@@ -1,12 +1,23 @@
 package no.nav.registre.sam.domain.database;
 
-import lombok.*;
-import no.nav.registre.sam.domain.SyntetisertSamObject;
-import no.nav.registre.sam.utils.Utils;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
+
+import no.nav.registre.sam.domain.SyntetisertSamObject;
+import no.nav.registre.sam.utils.Utils;
 
 @Getter
 @Setter
@@ -14,43 +25,44 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @Builder
-@Table(name="t_sam_melding")
+@Table(name = "t_sam_melding")
 public class TSamMelding {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "p_seq")
-    @SequenceGenerator(name="p_seq", sequenceName = "S_SAM_MELDING", allocationSize=1)
-    @Column(name="sam_melding_id")
+    @SequenceGenerator(name = "p_seq", sequenceName = "S_SAM_MELDING", allocationSize = 1)
+    @Column(name = "sam_melding_id")
     private int samMeldingId;
-    @Column(name="sam_vedtak_id")
+    @Column(name = "sam_vedtak_id")
     private int samVedtakId;
-    @Column(name="k_kanal_t")
+    @Column(name = "k_kanal_t")
     private String kKanalT;
-    @Column(name="k_melding_status")
+    @Column(name = "k_melding_status")
     private String kMeldingStatus;
-    @Column(name="tss_ekstern_id_fk")
+    @Column(name = "tss_ekstern_id_fk")
     private String tssEksternIdFk;
-    @Column(name="dato_sendt")
+    @Column(name = "dato_sendt")
     private Date datoSendt;
-    @Column(name="dato_svart")
+    @Column(name = "dato_svart")
     private Date datoSvart;
-    @Column(name="dato_purret")
+    @Column(name = "dato_purret")
     private Date datoPurret;
-    @Column(name="refusjonskrav")
+    @Column(name = "refusjonskrav")
     private String refusjonskrav;
-    @Column(name="dato_opprettet")
+    @Column(name = "dato_opprettet")
     private Timestamp datoOpprettet;
-    @Column(name="opprettet_av")
+    @Column(name = "opprettet_av")
     private String opprettetAv;
-    @Column(name="dato_endret")
+    @Column(name = "dato_endret")
     private Timestamp datoEndret;
-    @Column(name="endret_av")
+    @Column(name = "endret_av")
     private String endretAv;
-    @Column(name="versjon")
+    @Column(name = "versjon")
     private int versjon;
-    @Column(name="antall_forsok")
+    @Column(name = "antall_forsok")
     private int antallForsok;
 
-    public TSamMelding(SyntetisertSamObject obj, TSamVedtak tSamVedtak){
+    public TSamMelding(SyntetisertSamObject obj, TSamVedtak tSamVedtak) {
         this.samVedtakId = tSamVedtak.getSamVedtakId();
         this.kKanalT = obj.getKKanalT();
         this.kMeldingStatus = obj.getKMeldingStatus();
