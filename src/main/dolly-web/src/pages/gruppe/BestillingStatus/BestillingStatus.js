@@ -124,7 +124,7 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		const { miljoeStatusObj, isCanceling, cancelBestilling, bestilling, key } = this.props
+		const { miljoeStatusObj, isCanceling, bestilling } = this.props
 
 		if (isCanceling && this.state.showCancelLoadingMsg) {
 			return (
