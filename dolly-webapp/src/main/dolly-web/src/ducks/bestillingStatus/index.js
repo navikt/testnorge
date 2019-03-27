@@ -93,8 +93,30 @@ export const miljoStatusSelector = bestilling => {
 	const id = bestilling.id
 	let successEnvs = []
 	let failedEnvs = []
+	let avvikEnvs = []
 	const finnesFeilmelding = avvikStatus(bestilling)
 	const antallIdenterOpprettet = antallIdenterOpprettetFunk(bestilling)
+
+	// TODO: Kan disse 2 loops forenklet?
+	bestilling.tpsfStatus &&
+		bestilling.tpsfStatus.map(status => {
+			status.statusMelding !== 'OK' &&
+				Object.keys(status.environmentIdents).map(miljo => {
+					const lowMiljo = miljo.toLowerCase()
+					!failedEnvs.includes(lowMiljo) && failedEnvs.push(lowMiljo)
+				})
+		})
+
+	//Går gjennom TPSF-statuser igjen slik at ingen miljø er både suksess og feilet
+	bestilling.tpsfStatus &&
+		bestilling.tpsfStatus.map(status => {
+			status.statusMelding == 'OK' &&
+				Object.keys(status.environmentIdents).map(miljo => {
+					const lowMiljo = miljo.toLowerCase()
+					!failedEnvs.includes(lowMiljo) &&
+						(!successEnvs.includes(lowMiljo) && successEnvs.push(lowMiljo))
+				})
+		})
 
 	//Finn feilet og suksess miljø
 	bestilling.krrStubStatus &&
@@ -111,28 +133,50 @@ export const miljoStatusSelector = bestilling => {
 				!failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
 			}
 		})
-	bestilling.tpsfStatus &&
-		bestilling.tpsfStatus.map(status => {
-			status.statusMelding !== 'OK' &&
-				Object.keys(status.environmentIdents).map(miljo => {
-					const lowMiljo = miljo.toLowerCase()
-					!failedEnvs.includes(lowMiljo) && failedEnvs.push(lowMiljo)
-				})
-		})
-	//Går gjennom TPSF-statuser igjen slik at ingen miljø er både suksess og feilet
-	bestilling.tpsfStatus &&
-		bestilling.tpsfStatus.map(status => {
-			status.statusMelding == 'OK' &&
-				Object.keys(status.environmentIdents).map(miljo => {
-					const lowMiljo = miljo.toLowerCase()
-					!failedEnvs.includes(lowMiljo) &&
-						(!successEnvs.includes(lowMiljo) && successEnvs.push(lowMiljo))
-				})
+
+	let aaregHasOneSuccessEnv = false
+	let aaregFailed = false
+	bestilling.aaregStatus &&
+		bestilling.aaregStatus.length > 0 &&
+		bestilling.aaregStatus.map(status => {
+			if (status.statusMelding == 'OK') {
+				aaregHasOneSuccessEnv = true
+			} else {
+				aaregFailed = true
+			}
 		})
 
-	//TODO: Hvis bestilling failer 100 % fra TPSF finnes ikke støtte for retry.
+	if (bestilling.aaregStatus && bestilling.aaregStatus.length > 0) {
+		aaregFailed
+			? aaregHasOneSuccessEnv
+				? avvikEnvs.push('AAREG')
+				: failedEnvs.push('AAREG')
+			: successEnvs.push('AAREG')
+	}
 
-	return { id, successEnvs, failedEnvs, bestilling, finnesFeilmelding, antallIdenterOpprettet }
+	return {
+		id,
+		successEnvs,
+		failedEnvs,
+		avvikEnvs,
+		bestilling,
+		finnesFeilmelding,
+		antallIdenterOpprettet
+	}
+}
+
+// TODO: Flytt saanne medtoder i egen fil. Klassen begynner aa vaere litt stor?
+export const getAaregSuccessEnv = bestilling => {
+	let envs = []
+	bestilling.aaregStatus &&
+		bestilling.aaregStatus.length > 0 &&
+		bestilling.aaregStatus.forEach(status => {
+			if (status.statusMelding === 'OK') {
+				envs = Object.keys(status.environmentIdentsForhold)
+			}
+		})
+
+	return envs
 }
 
 const antallIdenterOpprettetFunk = bestilling => {
@@ -147,6 +191,8 @@ const antallIdenterOpprettetFunk = bestilling => {
 		})
 	return identArray.length
 }
+
+const bestillingIkkeFerdig = item => !item.ferdig
 
 const mapItems = items => {
 	if (!items) return null
@@ -175,6 +221,10 @@ const avvikStatus = item => {
 		item.tpsfStatus.map(status => {
 			status.statusMelding !== 'OK' && (avvik = true)
 		})
+	item.aaregStatus &&
+		item.aaregStatus.map(status => {
+			status.statusMelding !== 'OK' && (avvik = true)
+		})
 	item.krrStubStatus &&
 		item.krrStubStatus.map(status => {
 			status.statusMelding !== 'OK' && (avvik = true)
@@ -186,8 +236,6 @@ const avvikStatus = item => {
 	item.feil && (avvik = true)
 	return avvik
 }
-
-const bestillingIkkeFerdig = item => !item.ferdig
 
 const harIkkeIdenter = item => {
 	let feilet = true

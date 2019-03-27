@@ -39,6 +39,7 @@ public class RsBestilling {
     private List<RsBestillingProgress> bestillingProgress;
     private Long opprettetFraId;
     private String tpsfKriterier;
+    private String bestKriterier;
     private String openamSent;
     private String opprettFraIdenter;
 
