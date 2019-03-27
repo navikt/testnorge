@@ -4,35 +4,36 @@ import DollySelect from '~/components/fields/Select/Select'
 import Input from '~/components/fields/Input/Input'
 import { TpsfApi, DollyApi } from '~/service/Api'
 import './AutofillAddress.less'
+import InputSelector from '~/components/fields/InputSelector'
+import { Field } from 'formik'
 
 const initialState = {
 	isFetching: false,
-	// input: '',
-	// adresserHentet: false,
 	boadresse_gateadresse: '',
 	boadresse_husnummer: '',
 	boadresse_postnr: '',
-	boadresse_kommunenr: ''
+	boadresse_kommunenr: '',
+	gyldigeAdresser: [],
+	gyldigeAdresserKey: 0
 }
 
 export default class AutofillAddress extends Component {
 	state = { ...initialState }
 
-	static gyldigeAdresser = []
+	// onInputChangeHandler = input => {
+	// 	this.setState({ ...this.state, [input.id]: input.value })
+	// }
 
-	onInputChangeHandler = input => {
-		this.setState({ ...this.state, [input.id]: input.value })
-	}
+	// onGatenavnChangeHandler = input => {
+	// 	this.setState({ boadresse_gateadresse: input.target.value })
+	// }
 
-	onGatenavnChangeHandler = input => {
-		this.setState({ boadresse_gateadresse: input.target.value })
-	}
-
-	onHusnummerChangeHandler = input => {
-		this.setState({ boadresse_husnummer: input.target.value })
-	}
+	// onHusnummerChangeHandler = input => {
+	// 	this.setState({ boadresse_husnummer: input.target.value })
+	// }
 
 	placeHolderGenerator = type => {
+		// console.log('type :', type)
 		if (type === 'boadresse_postnr') return 'Velg postnummer...'
 		if (type === 'boadresse_kommunenr') return 'Velg kommunenummer...'
 		if (type === 'boadresse_gateadresse') return 'Søk etter adresse...'
@@ -43,7 +44,6 @@ export default class AutofillAddress extends Component {
 	loadOptionsSelector = type => {
 		if (type === 'boadresse_postnr') return () => this.fetchKodeverk('Postnummer', type)
 		if (type === 'boadresse_kommunenr') return () => this.fetchKodeverk('Kommuner', type)
-		// if (type === 'boadresse_gateadresse') rseturn () => this.fetchAdresser()
 		return undefined
 	}
 
@@ -60,11 +60,10 @@ export default class AutofillAddress extends Component {
 	}
 
 	fetchAdresser = () => {
-		const adr = this.gyldigeAdresser
+		const adr = this.state.gyldigeAdresser
 		var options = []
 		if (adr.length > 1) {
 			adr.forEach(adresse => {
-				console.log('adresse :', adresse)
 				options.push({
 					label: adresse.adrnavn + ', ' + adresse.pnr + ' ' + adresse.psted,
 					value: adresse.adrnavn,
@@ -93,7 +92,11 @@ export default class AutofillAddress extends Component {
 			boadresse_postnr: ''
 		}
 		if (addressData) {
-			const { adrnavn, husnrfra, gkode, pnr, knr } = addressData
+			let { adrnavn, husnrfra, gkode, pnr, knr } = addressData
+
+			if (this.props.formikProps.values.boadresse_husnummer) {
+				husnrfra = this.props.formikProps.values.boadresse_husnummer
+			}
 
 			newAddressObject = {
 				boadresse_gateadresse: adrnavn.toString(),
@@ -106,24 +109,21 @@ export default class AutofillAddress extends Component {
 		}
 
 		formikProps.setValues({ ...formikProps.values, ...newAddressObject })
-
-		// console.log('input :', input)
-		// return <p>test</p>
 	}
 
 	setQueryString = () => {
 		let queryString = ''
-		if (this.state.boadresse_gateadresse) {
-			queryString += `&adresseNavnsok=${this.state.boadresse_gateadresse}`
+		if (this.props.formikProps.values.boadresse_gateadresse) {
+			queryString += `&adresseNavnsok=${this.props.formikProps.values.boadresse_gateadresse}`
 		}
-		if (this.state.boadresse_husnummer) {
-			queryString += `&husNrsok=${this.state.boadresse_husnummer}`
+		if (this.props.formikProps.values.boadresse_husnummer) {
+			queryString += `&husNrsok=${this.props.formikProps.values.boadresse_husnummer}`
 		}
-		if (this.state.boadresse_postnr) {
-			queryString += `&postNrsok=${this.state.boadresse_postnr}`
+		if (this.props.formikProps.values.boadresse_postnr) {
+			queryString += `&postNrsok=${this.props.formikProps.values.boadresse_postnr}`
 		}
-		if (this.state.boadresse_kommunenr) {
-			queryString += `&kommuneNrsok=${this.state.boadresse_kommunenr}`
+		if (this.props.formikProps.values.boadresse_kommunenr) {
+			queryString += `&kommuneNrsok=${this.props.formikProps.values.boadresse_kommunenr}`
 		}
 		return queryString
 	}
@@ -133,19 +133,24 @@ export default class AutofillAddress extends Component {
 			try {
 				const query = this.setQueryString()
 				let generateAddressResponse
+
 				query.length > 0
 					? (generateAddressResponse = await TpsfApi.generateAddress(query))
 					: (generateAddressResponse = await TpsfApi.generateRandomAddress())
 
 				const addressData = generateAddressResponse.data.response.data1.adrData
 				console.log('addressData :', addressData)
-				this.gyldigeAdresser = addressData
+				this.setState({ gyldigeAdresser: addressData })
 
 				const count = parseInt(generateAddressResponse.data.response.data1.antallForekomster)
 
 				let status = generateAddressResponse.data.response.status.utfyllendeMelding
 
-				return this.setState({ isFetching: false, adresserHentet: true, status })
+				return this.setState({
+					isFetching: false,
+					gyldigeAdresserKey: this.state.gyldigeAdresserKey + 1,
+					status
+				})
 			} catch (err) {
 				return this.setState({ isFetching: false })
 			}
@@ -155,6 +160,7 @@ export default class AutofillAddress extends Component {
 	renderAdresseSelect = () => {
 		return (
 			<DollySelect
+				key={this.state.gyldigeAdresserKey}
 				placeholder="Velg gyldig adresse..."
 				name="generator-select"
 				label=""
@@ -165,38 +171,31 @@ export default class AutofillAddress extends Component {
 	}
 
 	renderSelect = item => {
-		const input = this.state
+		// const input = this.state
 		const selectProps = {
 			loadOptions: this.loadOptionsSelector(item.id),
 			placeholder: this.placeHolderGenerator(item.id)
 		}
+		const InputComponent = InputSelector(item.inputType)
 
-		if (item.id === 'boadresse_gateadresse') {
-			return (
-				<Input
-					key={item.id}
-					label={item.label}
-					placeholder={selectProps.placeholder}
-					onChange={this.onGatenavnChangeHandler}
-				/>
-			)
-		} else if (item.id === 'boadresse_husnummer') {
-			return (
-				<Input
-					key={item.id}
-					label={item.label}
-					placeholder={selectProps.placeholder}
-					onChange={this.onHusnummerChangeHandler}
-				/>
-			)
-		}
+		// if (item.id === 'boadresse_gateadresse' || item.id === 'boadresse_husnummer') {
+		// 	return (
+		// 		<Field
+		// 			key={item.id}
+		// 			name={item.id}
+		// 			label={item.label}
+		// 			component={InputComponent}
+		// 			placeholder={selectProps.placeholder}
+		// 		/>
+		// 	)
+		// }
+
 		return (
-			<DollySelect
+			<Field
 				key={item.id}
-				name="generator-select"
+				name={item.id}
 				label={item.label}
-				onChange={this.onInputChangeHandler}
-				value={input}
+				component={InputComponent}
 				{...selectProps}
 			/>
 		)
@@ -204,13 +203,14 @@ export default class AutofillAddress extends Component {
 
 	render() {
 		const items = this.props.items
-		console.log('this.state :', this.state)
+		console.log('this :', this.props.formikProps.values)
+
 		return (
 			<Fragment>
 				<div className="address-container">
 					{items.map(item => item.inputType && this.renderSelect(item))}
 				</div>
-				<div>
+				<div className="get-address-container">
 					<Knapp
 						className="generate-address"
 						type="standard"
@@ -219,9 +219,12 @@ export default class AutofillAddress extends Component {
 						spinner={this.state.isFetching}
 						onClick={this.onClickHandler}
 					>
-						Hent gyldig adresse
+						Hent gyldige adresser
 					</Knapp>
-					{this.gyldigeAdresser && this.renderAdresseSelect()}
+					{this.state.gyldigeAdresser &&
+						this.state.gyldigeAdresserKey > 0 &&
+						this.renderAdresseSelect()}
+					{this.state.gyldigeAdresser === undefined && <p>Fant ingen gyldige adresser</p>}
 				</div>
 			</Fragment>
 		)
