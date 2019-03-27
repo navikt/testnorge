@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import KodeverkValue from './KodeverkValue'
-import { fetchKodeverk, kodeverkLabelSelector } from '~/ducks/kodeverk'
+import { fetchKodeverk, oppslagLabelSelector } from '~/ducks/oppslag'
 
 const mapStateToProps = (state, ownProps) => {
 	const { value, apiKodeverkId } = ownProps
 	return {
-		kodeverkObject: kodeverkLabelSelector(state, apiKodeverkId, value)
+		kodeverkObject: oppslagLabelSelector(state, apiKodeverkId, value)
 	}
 }
 

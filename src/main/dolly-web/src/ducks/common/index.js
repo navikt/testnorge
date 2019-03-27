@@ -13,7 +13,9 @@ export const redirectReducer = (state = null, action) => {
 		case bestillingActions.abortBestilling.toString():
 			return `/gruppe/${action.payload}`
 		case success(bestillingActions.postBestilling):
-			return `/gruppe/${action.meta.gruppeId}`
+			return `/gruppe/${action.payload.data.gruppeId}`
+		case success(bestillingActions.postBestillingFraEksisterendeIdenter):
+			return `/gruppe/${action.payload.data.gruppeId}` 
 		case success(deleteGruppe):
 			return '/'
 		case success(teamActions.api.delete):

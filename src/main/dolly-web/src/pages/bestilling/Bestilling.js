@@ -15,6 +15,11 @@ export default class Bestilling extends PureComponent {
 		this.props.getEnvironments()
 	}
 
+	lagIdentListe = () => {
+		let identListe = this.props.eksisterendeIdentListe.join(', ')
+		return identListe
+	}
+
 	render() {
 		const {
 			values,
@@ -32,7 +37,10 @@ export default class Bestilling extends PureComponent {
 			deleteValuesArray,
 			setEnvironments,
 			sendBestilling,
-			environments
+			environments,
+			eksisterendeIdentListe,
+			identOpprettesFra, 
+			setIdentOpprettesFra
 		} = this.props
 
 		return (
@@ -58,6 +66,9 @@ export default class Bestilling extends PureComponent {
 						uncheckAllAttributes={uncheckAllAttributes}
 						checkAttributeArray={checkAttributeArray}
 						uncheckAttributeArray={uncheckAttributeArray}
+						eksisterendeIdentListe={eksisterendeIdentListe}
+						identOpprettesFra={identOpprettesFra}
+						setIdentOpprettesFra={setIdentOpprettesFra}
 					/>
 				)}
 
@@ -68,6 +79,8 @@ export default class Bestilling extends PureComponent {
 						selectedAttributeIds={attributeIds}
 						setValues={setValues}
 						values={values}
+						identOpprettesFra={identOpprettesFra}
+						eksisterendeIdentListe={this.props.eksisterendeIdentListe.join(', ')}
 					/>
 				)}
 
@@ -82,6 +95,8 @@ export default class Bestilling extends PureComponent {
 						environments={environments}
 						deleteValues={deleteValues}
 						deleteValuesArray={deleteValuesArray}
+						identOpprettesFra={identOpprettesFra}
+						eksisterendeIdentListe={this.props.eksisterendeIdentListe.join(', ')}
 					/>
 				)}
 			</div>

@@ -47,6 +47,10 @@ export default class DollyService {
 		return Request.post(Endpoints.gruppeBestilling(gruppeId), data)
 	}
 
+	static createBestillingFraEksisterendeIdenter(gruppeId, data) {
+		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
+	}
+
 	// Team
 	static getTeams() {
 		return Request.get(Endpoints.team())
@@ -146,5 +150,10 @@ export default class DollyService {
 	//Oppslag
 	static getEnhetByTknr(tknr) {
 		return Request.get(Endpoints.enhetByTknr(tknr))
+	}
+
+	//AAREG
+	static getArbeidsforhold(ident, env) {
+		return Request.get(Endpoints.arbeidsforholdByIdent(ident, env))
 	}
 }
