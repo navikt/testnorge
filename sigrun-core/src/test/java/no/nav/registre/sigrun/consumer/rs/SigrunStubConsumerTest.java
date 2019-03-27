@@ -45,6 +45,7 @@ public class SigrunStubConsumerTest {
     private JsonNode jsonNode;
     private HttpStatus statusCodeOk = HttpStatus.OK;
     private HttpStatus statusCodeInternalServerError = HttpStatus.INTERNAL_SERVER_ERROR;
+    private String miljoe = "t1";
 
 
     @Before
@@ -59,7 +60,7 @@ public class SigrunStubConsumerTest {
     public void shouldGetPersonidentifikatorer() {
         stubSigrunStubConsumerHentPersonidentifikatorer();
 
-        List<String> result = sigrunStubConsumer.hentEksisterendePersonidentifikatorer();
+        List<String> result = sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe);
 
         assertThat(result.toString(), containsString(fnr1));
         assertThat(result.toString(), containsString(fnr2));
@@ -69,7 +70,7 @@ public class SigrunStubConsumerTest {
     public void shouldSendDataToSigrunStub() {
         stubSigrunStubConsumerOpprettBolk();
 
-        ResponseEntity result = sigrunStubConsumer.sendDataTilSigrunstub(meldinger, "test");
+        ResponseEntity result = sigrunStubConsumer.sendDataTilSigrunstub(meldinger, "test", miljoe);
 
         assertThat(result.getStatusCode(), equalTo(HttpStatus.OK));
         assertNotNull(result.getBody());
