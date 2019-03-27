@@ -18,6 +18,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPerson;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 
 @Slf4j
 @Service
@@ -41,7 +42,7 @@ public class AaregService {
                 ResponseEntity<Object[]> response = ResponseEntity.ok(new Object[]{});
                 try {
                     response = aaregRestConsumer.readArbeidsforhold(ident, env);
-                } catch (HttpClientErrorException e) {
+                } catch (HttpClientErrorException | DollyFunctionalException e) {
                     log.error("Lesing av aareg i {} feilet, {}", env, e.getMessage());
                 }
 
