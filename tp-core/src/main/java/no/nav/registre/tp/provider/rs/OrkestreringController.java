@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,8 +40,9 @@ public class OrkestreringController {
 
     @LogExceptions
     @ApiOperation(value = "Dette endepunktet kan benyttes for å opprette gitte personer. De vil bli opprettet i TJPEN. Det er ikke noen verifikasjon av FNR mot TPS eller om det er et gyldig FNR.")
-    @PostMapping("/opprettPersoner")
-    public ResponseEntity<List<String>> addPeople(@RequestBody List<String> fnrs) {
+    @PostMapping("/opprettPersoner/{miljoe}")
+    public ResponseEntity<List<String>> addPeople(@RequestBody List<String> fnrs, @PathVariable String miljoe) {
+        TenantContext.setTenant(miljoe);
         List<String> people = tpService.createPeople(fnrs);
         List<String> feilet = fnrs.parallelStream().filter(fnr -> !people.contains(fnr)).collect(Collectors.toList());
         return ResponseEntity.ok(feilet);
