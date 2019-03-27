@@ -48,7 +48,7 @@ public class OrkestreringControllerTest {
         List<String> feiletPersoner = new ArrayList<>(1);
         feiletPersoner.add("123");
         when(tpService.createPeople(any())).thenReturn(feiletPersoner);
-        ResponseEntity<List<String>> entity = orkestreringController.addPeople(fnrs);
+        ResponseEntity<List<String>> entity = orkestreringController.addPeople(fnrs, "q");
         assertEquals(2, Objects.requireNonNull(entity.getBody()).size());
 
     }
