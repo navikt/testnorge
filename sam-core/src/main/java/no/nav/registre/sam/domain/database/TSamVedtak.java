@@ -68,14 +68,14 @@ public class TSamVedtak {
         this.kFagomraade = obj.getKFagområde();
         this.kVedtakStatus = obj.getKVedtakStatus();
         this.kArt = obj.getKArt();
-        this.fagVedtakIdFk = 00000000;
+        this.fagVedtakIdFk = 0;
         this.sakIdFk = Integer.parseInt(obj.getSakIdFk());
         this.purring = obj.getPurring();
         this.etterbetaling = obj.getEtterbetaling();
         this.datoFom = Utils.formatDate(obj.getDatoFom());
         this.datoTom = Utils.formatDate(obj.getDatoTom());
         this.datoOpprettet = Utils.formatDate(obj.getDatoOpprettet());
-        this.opprettetAv = (obj.getOpprettetAv() == "") ? "synt" : obj.getOpprettetAv();
+        this.opprettetAv = ("".equals(obj.getOpprettetAv())) ? "synt" : obj.getOpprettetAv();
         this.dato_endret = Utils.formatDate(obj.getDatoEndret());
         this.endretAv = "synt";
         this.versjon = (int) Double.parseDouble(obj.getVersjon());
