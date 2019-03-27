@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
+import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
@@ -19,7 +20,7 @@ import no.nav.dolly.domain.resultset.aareg.RsPerson;
 @Service
 public class AaregService {
 
-    private static final String ARBEDISGIVER = "arbeidsgiver";
+    private static final String ARBEIDSGIVER = "arbeidsgiver";
     @Autowired
     private AaregRestConsumer aaregRestConsumer;
 
@@ -43,15 +44,15 @@ public class AaregService {
 
                     boolean found = false;
                     for (int j = 0; j < response.getBody().length; j++) {
-                        Map arbforhold = (Map) response.getBody()[j];
+                        Map arbfFraAareg = (Map) response.getBody()[j];
 
-                        String orgIdentNummer = "Organisasjon".equals(getType(arbforhold)) ? getOrgnummer(arbforhold) : getPersonnummer(arbforhold);
+                        String orgIdentNummer = "Organisasjon".equals(getType(arbfFraAareg)) ? getOrgnummer(arbfFraAareg) : getPersonnummer(arbfFraAareg);
 
-                        if ((isMatchArbgivOrgnummer(arbfInput, orgIdentNummer) ||
-                                isMatchArbgivPersonnummer(arbfInput, orgIdentNummer)) &&
-                                arbfInput.getArbeidsforholdID().equals(getArbforholdId(arbforhold))) {
+                        if ((isMatchArbgivOrgnummer(arbfInput.getArbeidsgiver(), orgIdentNummer) ||
+                                isMatchArbgivPersonnummer(arbfInput.getArbeidsgiver(), orgIdentNummer)) &&
+                                arbfInput.getArbeidsforholdID().equals(getArbforholdId(arbfFraAareg))) {
 
-                            arbfInput.setArbeidsforholdIDnav(getNavArbfholdId(arbforhold));
+                            arbfInput.setArbeidsforholdIDnav(getNavArbfholdId(arbfFraAareg));
                             appendResult(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbfInput, env)), arbfInput.getArbeidsforholdID(), result);
 
                             found = true;
@@ -72,14 +73,14 @@ public class AaregService {
         return result.substring(1);
     }
 
-    private static boolean isMatchArbgivOrgnummer(RsArbeidsforhold arbeidsforhold, String orgnummer) {
-        return arbeidsforhold.getArbeidsgiver() instanceof RsOrganisasjon &&
-                ((RsOrganisasjon) arbeidsforhold.getArbeidsgiver()).getOrgnummer().equals(orgnummer);
+    private static boolean isMatchArbgivOrgnummer(RsAktoer arbeidsgiver, String orgnummer) {
+        return arbeidsgiver instanceof RsOrganisasjon &&
+                ((RsOrganisasjon) arbeidsgiver).getOrgnummer().equals(orgnummer);
     }
 
-    private static boolean isMatchArbgivPersonnummer(RsArbeidsforhold arbeidsforhold, String ident) {
-        return arbeidsforhold.getArbeidsgiver() instanceof RsAktoerPerson &&
-                ((RsAktoerPerson) arbeidsforhold.getArbeidsgiver()).getIdent().equals(ident);
+    private static boolean isMatchArbgivPersonnummer(RsAktoer arbeidsgiver, String ident) {
+        return arbeidsgiver instanceof RsAktoerPerson &&
+                ((RsAktoerPerson) arbeidsgiver).getIdent().equals(ident);
     }
 
     private static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
@@ -103,15 +104,15 @@ public class AaregService {
     }
 
     private static String getType(Map arbeidsforhold) {
-        return (String) ((Map) arbeidsforhold.get(ARBEDISGIVER)).get("type");
+        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("type");
     }
 
     private static String getOrgnummer(Map arbeidsforhold) {
-        return (String) ((Map) arbeidsforhold.get(ARBEDISGIVER)).get("organisasjonsnummer");
+        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("organisasjonsnummer");
     }
 
     private static String getPersonnummer(Map arbeidsforhold) {
-        return (String) ((Map) arbeidsforhold.get(ARBEDISGIVER)).get("offentligIdent");
+        return (String) ((Map) arbeidsforhold.get(ARBEIDSGIVER)).get("offentligIdent");
     }
 
     private static Long getNavArbfholdId(Map arbeidsforhold) {
