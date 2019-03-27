@@ -37,35 +37,22 @@ public class AaregService {
                 ResponseEntity<Object[]> response = aaregRestConsumer.readArbeidsforhold(ident, env);
 
                 for (int i = 0; i < arbeidsforholdList.size(); i++) {
-                    RsArbeidsforhold arbfGjenopprett = arbeidsforholdList.get(i);
-                    arbfGjenopprett.setArbeidsforholdID(Integer.toString(i + 1));
-                    arbfGjenopprett.setArbeidstaker(RsPerson.builder().ident(ident).build());
+                    RsArbeidsforhold arbfInput = arbeidsforholdList.get(i);
+                    arbfInput.setArbeidsforholdID(Integer.toString(i + 1));
+                    arbfInput.setArbeidstaker(RsPerson.builder().ident(ident).build());
 
                     boolean found = false;
                     for (int j = 0; j < response.getBody().length; j++) {
                         Map arbforhold = (Map) response.getBody()[j];
-                        String orgnummer = "";
-                        String personnummer = "";
-                        if ("Organisasjon".equals(getType(arbforhold))) {
-                            orgnummer = getOrgnummer(arbforhold);
-                        }
-                        if ("Person".equals(getType(arbforhold))) {
-                            personnummer = getPersonnummer(arbforhold);
-                        }
 
-                        if (((arbfGjenopprett.getArbeidsgiver() instanceof RsOrganisasjon &&
-                                ((RsOrganisasjon) arbfGjenopprett.getArbeidsgiver()).getOrgnummer().equals(orgnummer)) ||
-                                (arbfGjenopprett.getArbeidsgiver() instanceof RsAktoerPerson &&
-                                        ((RsAktoerPerson) arbfGjenopprett.getArbeidsgiver()).getIdent().equals(personnummer))) &&
-                                arbfGjenopprett.getArbeidsforholdID().equals(getArbforholdId(arbforhold))) {
+                        String orgIdentNummer = "Organisasjon".equals(getType(arbforhold)) ? getOrgnummer(arbforhold) : getPersonnummer(arbforhold);
 
-                            arbfGjenopprett.setArbeidsforholdIDnav(getNavArbfholdId(arbforhold));
-                            RsAaregOppdaterRequest request = new RsAaregOppdaterRequest();
-                            request.setRapporteringsperiode(LocalDateTime.now());
-                            request.setArbeidsforhold(arbfGjenopprett);
-                            request.setEnvironments(singletonList(env));
+                        if ((isMatchArbgivOrgnummer(arbfInput, orgIdentNummer) ||
+                                isMatchArbgivPersonnummer(arbfInput, orgIdentNummer)) &&
+                                arbfInput.getArbeidsforholdID().equals(getArbforholdId(arbforhold))) {
 
-                            appendResult(aaregWsConsumer.oppdaterArbeidsforhold(request), arbfGjenopprett.getArbeidsforholdID(), result);
+                            arbfInput.setArbeidsforholdIDnav(getNavArbfholdId(arbforhold));
+                            appendResult(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbfInput, env)), arbfInput.getArbeidsforholdID(), result);
 
                             found = true;
                             break;
@@ -74,15 +61,33 @@ public class AaregService {
 
                     if (!found) {
                         appendResult(aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
-                                .arbeidsforhold(arbfGjenopprett)
+                                .arbeidsforhold(arbfInput)
                                 .environments(singletonList(env))
-                                .build()), arbfGjenopprett.getArbeidsforholdID(), result);
+                                .build()), arbfInput.getArbeidsforholdID(), result);
                     }
                 }
             });
         }
 
         return result.substring(1);
+    }
+
+    private static boolean isMatchArbgivOrgnummer(RsArbeidsforhold arbeidsforhold, String orgnummer) {
+        return arbeidsforhold.getArbeidsgiver() instanceof RsOrganisasjon &&
+                ((RsOrganisasjon) arbeidsforhold.getArbeidsgiver()).getOrgnummer().equals(orgnummer);
+    }
+
+    private static boolean isMatchArbgivPersonnummer(RsArbeidsforhold arbeidsforhold, String ident) {
+        return arbeidsforhold.getArbeidsgiver() instanceof RsAktoerPerson &&
+                ((RsAktoerPerson) arbeidsforhold.getArbeidsgiver()).getIdent().equals(ident);
+    }
+
+    private static RsAaregOppdaterRequest buildRequest(RsArbeidsforhold arbfInput, String env) {
+        RsAaregOppdaterRequest request = new RsAaregOppdaterRequest();
+        request.setRapporteringsperiode(LocalDateTime.now());
+        request.setArbeidsforhold(arbfInput);
+        request.setEnvironments(singletonList(env));
+        return request;
     }
 
     private static StringBuilder appendResult(Map<String, String> result, String arbeidsforholdId, StringBuilder builder) {
