@@ -42,7 +42,7 @@ public class AaregController {
             + "For person: <br />"
             + "&nbsp; \"aktoer\": { <br />"
             + "&nbsp;&nbsp;&nbsp; \"aktoertype\": \"PERS\", <br />"
-            + "&nbsp;&nbsp;&nbsp; \"ident\": \"<ident>\", <br />"
+            + "&nbsp;&nbsp;&nbsp; \"ident\": \"<ident>\" <br />"
             + "&nbsp; } <br /><br />";
 
     @Autowired
