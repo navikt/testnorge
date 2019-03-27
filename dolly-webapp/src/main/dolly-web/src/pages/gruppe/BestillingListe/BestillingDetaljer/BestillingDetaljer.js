@@ -86,7 +86,7 @@ export default class BestillingDetaljer extends PureComponent {
 					<div className="flexbox--align-center--justify-end">
 						{this._erIdentOpprettet() && (
 							<Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
-								GJENOPPRETT I TPS
+								GJENOPPRETT
 							</Button>
 						)}
 						<DollyModal
