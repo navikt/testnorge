@@ -345,8 +345,13 @@ export function mapAaregData(aaregData) {
 
 					{
 						id: 'orgnr',
-						label: 'Orgnummer/Ident',
+						label: 'Orgnummer',
 						value: data.arbeidsgiver.organisasjonsnummer
+					},
+					{
+						id: 'orgnr',
+						label: 'Offentlig Ident',
+						value: data.arbeidsgiver.offentligIdent
 					}
 				]
 			}

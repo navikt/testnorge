@@ -252,10 +252,10 @@ const getValues = (attributeList, values) => {
 				// aktorID = PERS
 				// TODO: bytt heller inputfelte som ny attribute
 				if (aaregObj.arbeidsgiver.aktoertype == 'PERS') {
-					const aktoerType = aaregObj.arbeidsgiver.aktoertype
+					const aktoertype = aaregObj.arbeidsgiver.aktoertype
 					const arbeidsgiverIdent = aaregObj.arbeidsgiver.orgnummer
 					Object.assign(aaregObj, {
-						arbeidsgiver: { aktoerType, ident: arbeidsgiverIdent }
+						arbeidsgiver: { aktoertype, ident: arbeidsgiverIdent }
 					})
 				}
 
