@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsIdentTpsStatus;
+import no.nav.dolly.domain.resultset.RsStatusMiljoeIdent;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingTpsfStatusMapperTest {
@@ -37,7 +37,7 @@ public class BestillingTpsfStatusMapperTest {
     @Test
     public void tpsfStatusMapper_MapFeilmeldinger() {
 
-        List<RsIdentTpsStatus> mapperResult = BestillingTpsfStatusMapper.buildTpsfStatusMap(ERROR_STATUS);
+        List<RsStatusMiljoeIdent> mapperResult = BestillingTpsfStatusMapper.buildTpsfStatusMap(ERROR_STATUS);
 
         assertThat(mapperResult.get(0).getStatusMelding(), is(equalTo("FEIL: SQL-problem i KC57308")));
         assertThat(mapperResult.get(0).getEnvironmentIdents().get("qx"), contains("IDENT_4"));

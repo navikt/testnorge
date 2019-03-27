@@ -17,7 +17,7 @@ export default class BestillingStatus extends PureComponent {
 
 		this.PULL_INTERVAL = 1000
 		this.TIMEOUT_BEFORE_HIDE = 2000
-		this.TIME_BEFORE_WARNING_MESSAGE = 60
+		this.TIME_BEFORE_WARNING_MESSAGE = 120
 
 		this.state = {
 			ferdig: props.bestilling.ferdig,
@@ -124,7 +124,7 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		const { miljoeStatusObj, isCanceling, cancelBestilling, bestilling, key } = this.props
+		const { miljoeStatusObj, isCanceling, bestilling } = this.props
 
 		if (isCanceling && this.state.showCancelLoadingMsg) {
 			return (

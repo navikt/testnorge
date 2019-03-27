@@ -35,7 +35,13 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-		const { successEnvs, failedEnvs, bestilling, finnesFeilmelding } = this.props.miljoeStatusObj
+		const {
+			successEnvs,
+			failedEnvs,
+			avvikEnvs,
+			bestilling,
+			finnesFeilmelding
+		} = this.props.miljoeStatusObj
 		const bestillingId = this.props.bestilling.id
 		const { openAm, openAmState } = this.props
 		const { modalOpen } = this.state
@@ -49,50 +55,50 @@ export default class BestillingDetaljer extends PureComponent {
 		return (
 			<div className="bestilling-detaljer">
 				{this._renderBestillingsDetaljer()}
-				{this._renderMiljoeStatus(successEnvs, failedEnvs)}
+				{this._renderMiljoeStatus(successEnvs, failedEnvs, avvikEnvs)}
 				{finnesFeilmelding && this._renderErrorMessage(bestilling)}
 				{/* <div className="flexbox--align-center--justify-end"> */}
-					{openAm ? (
-						<div className="bestilling-detaljer">
-							<h3>Jira-lenker</h3>
-							<div className={'jira-link'}>{this._renderJiraLinks(openAm)}</div>
-						</div>
-					) : (
-						openAmRes && (
-							<OpenAmStatusConnector
-								id={bestillingId}
-								lukket={openAmRes.lukket}
-								responses={this._renderOpenAmStateResponses(openAmRes)}
-								className="open-am-status"
-							/>
-						)
-					)}
-					<div className="flexbox--align-center--justify-end info-block">
-						<div className="flexbox--align-center--justify-end">
-							{!openAm &&
-								(!openAmRes && (
-									<SendOpenAmConnector
-										bestillingId={bestillingId}
-										className="flexbox--align-center"
-									/>
-								))}
-						</div>
-						<div className="flexbox--align-center--justify-end">
-							{this._erIdentOpprettet() && (
-								<Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
-									GJENOPPRETT I TPS
-								</Button>
-							)}
-							<DollyModal
-								isOpen={modalOpen}
-								onRequestClose={this.closeModal}
-								closeModal={this.closeModal}
-								content={this._renderGjenopprettModal()}
-							/>
-						</div>
+				{openAm ? (
+					<div className="bestilling-detaljer">
+						<h3>Jira-lenker</h3>
+						<div className={'jira-link'}>{this._renderJiraLinks(openAm)}</div>
 					</div>
+				) : (
+					openAmRes && (
+						<OpenAmStatusConnector
+							id={bestillingId}
+							lukket={openAmRes.lukket}
+							responses={this._renderOpenAmStateResponses(openAmRes)}
+							className="open-am-status"
+						/>
+					)
+				)}
+				<div className="flexbox--align-center--justify-end info-block">
+					<div className="flexbox--align-center--justify-end">
+						{!openAm &&
+							(!openAmRes && (
+								<SendOpenAmConnector
+									bestillingId={bestillingId}
+									className="flexbox--align-center"
+								/>
+							))}
+					</div>
+					<div className="flexbox--align-center--justify-end">
+						{this._erIdentOpprettet() && (
+							<Button onClick={this.openModal} className="flexbox--align-center" kind="synchronize">
+								GJENOPPRETT
+							</Button>
+						)}
+						<DollyModal
+							isOpen={modalOpen}
+							onRequestClose={this.closeModal}
+							closeModal={this.closeModal}
+							content={this._renderGjenopprettModal()}
+						/>
+					</div>
+				</div>
 			</div>
-		// </div>
+			// </div>
 		)
 	}
 
@@ -249,9 +255,10 @@ export default class BestillingDetaljer extends PureComponent {
 		)
 	}
 
-	_renderMiljoeStatus = (successEnvs, failedEnvs) => {
+	_renderMiljoeStatus = (successEnvs, failedEnvs, avvikEnvs) => {
 		const successEnvsStr = Formatters.arrayToString(successEnvs)
 		const failedEnvsStr = Formatters.arrayToString(failedEnvs)
+		const avvikEnvsStr = Formatters.arrayToString(avvikEnvs)
 
 		return (
 			<Fragment>
@@ -264,6 +271,9 @@ export default class BestillingDetaljer extends PureComponent {
 					)}
 					{failedEnvsStr.length > 0 && (
 						<StaticValue size={'medium'} header="Feilet" value={failedEnvsStr} />
+					)}
+					{avvikEnvsStr.length > 0 && (
+						<StaticValue size={'medium'} header="Avvik" value={avvikEnvsStr} />
 					)}
 				</div>
 			</Fragment>

@@ -7,9 +7,8 @@ import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
-import Formatters from '~/utils/DataFormatter'
 import BestillingDetaljerModal from '~/components/bestillingDetaljerModal/BestillingDetaljerModal'
-
+import { getAaregSuccessEnv } from '~/ducks/bestillingStatus'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -24,51 +23,13 @@ export default class PersonDetaljer extends PureComponent {
 	static propTypes = {
 		editAction: PropTypes.func
 	}
+
 	componentDidMount() {
 		this.props.getSigrunTestbruker()
 		this.props.getKrrTestbruker()
-	}
-	openModal = () => {
-		this.setState({ modalOpen: true })
-	}
-	closeModal = () => {
-		this.setState({ modalOpen: false })
-	}
 
-	// render loading for krr og sigrun
-	_renderPersonInfoBlockHandler = i => {
-		const { isFetchingKrr, isFetchingSigrun } = this.props
-		if (i.header === 'Inntekter') {
-			return isFetchingSigrun ? (
-				<Loading label="Henter data fra Sigrun-stub" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else if (i.header === 'Kontaktinformasjon og reservasjon') {
-			return isFetchingKrr ? (
-				<Loading label="Henter data fra Krr" panel />
-			) : (
-				this._renderPersonInfoBlock(i)
-			)
-		} else {
-			return this._renderPersonInfoBlock(i)
-		}
-	}
-
-	_renderPersonInfoBlock = i => (
-		<PersonInfoBlock
-			data={i.data}
-			multiple={i.multiple}
-			attributtManager={AttributtManagerInstance}
-		/>
-	)
-
-	_renderBestillingDetaljerModal = () => {
-		const ident = Formatters.idUtenEllipse(this.props.bestillingId)
-		const { bestillinger } = this.props
-		const bestilling = bestillinger.data.find(i => i.id.toString() === ident)
-
-		return <BestillingDetaljerModal bestilling = {bestilling}/>
+		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.bestilling)
+		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
 	}
 
 	render() {
@@ -80,20 +41,23 @@ export default class PersonDetaljer extends PureComponent {
 			<div className="person-details">
 				{personData.map((i, idx) => {
 					if (i.data.length < 0) return null
-					if (i.data[0].id == 'bestillingID') {
-						return (
-							<div key={idx} className="tidligere-bestilling-panel">
-								<h4>{i.header}</h4>
-								<div>{i.data[0].value}</div>
-							</div>
-						)
+					if (i.data.length > 0) {
+						if (i.data[0].id == 'bestillingID') {
+							return (
+								<div key={idx} className="tidligere-bestilling-panel">
+									<h4>{i.header}</h4>
+									<div>{i.data[0].value}</div>
+								</div>
+							)
+						} else {
+							return (
+								<div key={idx} className="person-details_content">
+									<h3>{i.header}</h3>
+									{this._renderPersonInfoBlockHandler(i)}
+								</div>
+							)
+						}
 					}
-					return (
-						<div key={idx} className="person-details_content">
-							<h3>{i.header}</h3>
-							{this._renderPersonInfoBlockHandler(i)}
-						</div>
-					)
 				})}
 				<div className="flexbox--align-center--justify-end">
 					<Button onClick={this.openModal} className="flexbox--align-center" kind="details">
@@ -118,5 +82,52 @@ export default class PersonDetaljer extends PureComponent {
 				</div>
 			</div>
 		)
+	}
+
+	openModal = () => {
+		this.setState({ modalOpen: true })
+	}
+
+	closeModal = () => {
+		this.setState({ modalOpen: false })
+	}
+
+	// render loading for krr og sigrun
+	_renderPersonInfoBlockHandler = i => {
+		const { isFetchingKrr, isFetchingSigrun, isFetchingAareg } = this.props
+		if (i.header === 'Inntekter') {
+			return isFetchingSigrun ? (
+				<Loading label="Henter data fra Sigrun-stub" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else if (i.header === 'Kontaktinformasjon og reservasjon') {
+			return isFetchingKrr ? (
+				<Loading label="Henter data fra Krr" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else if (i.header === 'Arbeidsforhold') {
+			return isFetchingAareg ? (
+				<Loading label="Henter data fra Aareg" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else {
+			return this._renderPersonInfoBlock(i)
+		}
+	}
+
+	_renderPersonInfoBlock = i => (
+		<PersonInfoBlock
+			data={i.data}
+			multiple={i.multiple}
+			attributtManager={AttributtManagerInstance}
+		/>
+	)
+
+	_renderBestillingDetaljerModal = () => {
+		const { bestilling } = this.props
+		return <BestillingDetaljerModal bestilling={bestilling} />
 	}
 }

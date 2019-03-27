@@ -40,6 +40,9 @@
         <ojdbc.version>12.2.0.1</ojdbc.version>
 		<android.json.version>0.0.20131108.vaadin1</android.json.version>
 		<orika.version>1.5.2</orika.version>
+		<cxf.version>3.2.4</cxf.version>
+		<modig-security.version>3.0.6</modig-security.version>
+		<behandle.arbeidsforhold.version>1.2.1</behandle.arbeidsforhold.version>
 		<sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**, **/dolly/testdata/builder/**</sonar.exclusions>
 	</properties>
 
@@ -74,6 +77,12 @@
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
 			<version>LATEST</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.1</version>
 		</dependency>
 	</dependencies>
 
@@ -143,6 +152,31 @@
 				<groupId>com.vaadin.external.google</groupId>
 				<artifactId>android-json</artifactId>
 				<version>${android.json.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxws</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>no.nav.modig</groupId>
+				<artifactId>modig-security-ws</artifactId>
+				<version>${modig-security.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>no.nav.tjenester.domene.arbeidsforhold</groupId>
+				<artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
+				<version>${behandle.arbeidsforhold.version}</version>
+				<classifier>jaxws</classifier>
 			</dependency>
 		</dependencies>
 

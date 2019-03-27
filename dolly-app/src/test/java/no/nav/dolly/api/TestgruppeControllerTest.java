@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -20,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.domain.jpa.BestKriterier;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
@@ -131,7 +133,7 @@ public class TestgruppeControllerTest {
 
         Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();
 
-        when(bestillingService.saveBestilling(GRUPPE_ID, ant, envir, null, null)).thenReturn(bestilling);
+        when(bestillingService.saveBestilling(eq(GRUPPE_ID), eq(ant), anyList(), any(), any(BestKriterier.class), any())).thenReturn(bestilling);
 
         controller.opprettIdentBestilling(GRUPPE_ID, dollyBestillingRequest);
         verify(dollyBestillingService).opprettPersonerByKriterierAsync(GRUPPE_ID, dollyBestillingRequest, bestilling);
@@ -166,7 +168,7 @@ public class TestgruppeControllerTest {
 
         Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();
 
-        when(bestillingService.saveBestilling(GRUPPE_ID, 1, envir, null, newArrayList(IDENT))).thenReturn(bestilling);
+        when(bestillingService.saveBestilling(eq(GRUPPE_ID), eq(1), anyList(), any(), any(BestKriterier.class), anyList())).thenReturn(bestilling);
 
         controller.opprettIdentBestillingFraIdenter(GRUPPE_ID, dollyBestillingsRequest);
         verify(dollyBestillingService).opprettPersonerFraIdenterMedKriterierAsync(GRUPPE_ID, dollyBestillingsRequest, bestilling);

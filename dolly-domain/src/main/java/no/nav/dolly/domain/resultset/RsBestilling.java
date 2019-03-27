@@ -31,13 +31,15 @@ public class RsBestilling {
     private boolean stoppet;
     private String feil;
     private List<String> environments;
-    private Set<RsIdentTpsStatus> tpsfStatus;
-    private Set<RsIdentStatus> krrStubStatus;
-    private Set<RsIdentStatus> sigrunStubStatus;
+    private Set<RsStatusMiljoeIdent> tpsfStatus;
+    private Set<RsStatusIdent> krrStubStatus;
+    private Set<RsStatusIdent> sigrunStubStatus;
+    private Set<RsStatusMiljoeIdentForhold> aaregStatus;
 
     private List<RsBestillingProgress> bestillingProgress;
     private Long opprettetFraId;
     private String tpsfKriterier;
+    private String bestKriterier;
     private String openamSent;
     private String opprettFraIdenter;
 
@@ -55,24 +57,31 @@ public class RsBestilling {
         return bestillingProgress;
     }
 
-    public Set<RsIdentTpsStatus> getTpsfStatus() {
+    public Set<RsStatusMiljoeIdent> getTpsfStatus() {
         if (isNull(tpsfStatus)) {
             tpsfStatus = new HashSet();
         }
         return tpsfStatus;
     }
 
-    public Set<RsIdentStatus> getKrrStubStatus() {
+    public Set<RsStatusIdent> getKrrStubStatus() {
         if (isNull(krrStubStatus)) {
             krrStubStatus = new HashSet();
         }
         return krrStubStatus;
     }
 
-    public Set<RsIdentStatus> getSigrunStubStatus() {
+    public Set<RsStatusIdent> getSigrunStubStatus() {
         if (isNull(sigrunStubStatus)) {
             sigrunStubStatus = new HashSet();
         }
         return sigrunStubStatus;
+    }
+
+    public Set<RsStatusMiljoeIdentForhold> getAaregStatus() {
+        if (isNull(aaregStatus)) {
+            aaregStatus = new HashSet();
+        }
+        return aaregStatus;
     }
 }

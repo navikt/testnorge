@@ -232,12 +232,17 @@ export function mapSigrunData(sigrunData) {
 	return {
 		header: 'Inntekter',
 		multiple: true,
-		data: sigrunData.map(data => {
+		data: sigrunData.map((data, i) => {
 			return {
 				parent: 'inntekter',
 				id: data.personidentifikator,
-				label: data.inntektsaar,
 				value: [
+					{
+						id: 'id',
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small'
+					},
 					{
 						id: 'aar',
 						label: 'År',
@@ -290,5 +295,66 @@ export function mapKrrData(krrData) {
 				value: krrData.reservert ? 'JA' : 'NEI'
 			}
 		]
+	}
+}
+
+export function mapAaregData(aaregData) {
+	if (!aaregData) return null
+
+	return {
+		header: 'Arbeidsforhold',
+		multiple: true,
+		data: aaregData.map((data, i) => {
+			return {
+				parent: 'arbeidsforhold',
+				id: data.arbeidsforholdId,
+				label: data.inntektsaar,
+				value: [
+					{
+						id: 'id',
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small'
+					},
+					{
+						id: 'yrke',
+						label: 'Yrke',
+						value: data.arbeidsavtaler[0].yrke,
+						apiKodeverkId: 'Yrker'
+					},
+					{
+						id: 'startdato',
+						label: 'Startdato',
+						value: data.ansettelsesperiode.periode.fom
+					},
+					{
+						id: 'sluttdato',
+						label: 'Sluttdato',
+						value: data.ansettelsesperiode.periode.tom
+					},
+					{
+						id: 'stillingprosent',
+						label: 'Stillingprosent',
+						value: data.arbeidsavtaler[0].stillingsprosent
+					},
+					{
+						id: 'typearbeidsgiver',
+						label: 'Type av arbeidsgiver',
+						value: data.arbeidsgiver.type
+					},
+
+					{
+						id: 'orgnr',
+						label: 'Orgnummer',
+						value: data.arbeidsgiver.organisasjonsnummer
+					},
+					{
+						id: 'orgnr',
+						label: 'Offentlig Ident',
+						value: data.arbeidsgiver.offentligIdent
+					}
+				]
+			}
+		})
 	}
 }

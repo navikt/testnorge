@@ -65,7 +65,24 @@ fasitResources:
     propertyMap:
       url: jira.host
 
-  - alias: srvDolly
+  - alias: fasit.host
+    resourceType: baseurl
+    propertyMap:
+      url: providers.fasit.url
+
+  - alias: srvdolly-test-env
+    resourceType: credential
+    propertyMap:
+      username: credentials.testEnv.username
+      password: credentials.testEnv.password
+
+  - alias: srvdolly-preprod-env
+    resourceType: credential
+    propertyMap:
+      username: credentials.preprodEnv.username
+      password: credentials.preprodEnv.password
+
+  - alias: srvJiraDolly
     resourceType: credential
     propertyMap:
       username: jira.username

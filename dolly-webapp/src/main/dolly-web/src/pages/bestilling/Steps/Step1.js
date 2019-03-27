@@ -1,36 +1,55 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import AttributtVelgerConnector from '~/components/attributtVelger/AttributtVelgerConnector'
 import Overskrift from '~/components/overskrift/Overskrift'
 import * as yup from 'yup'
-import NavigationConnector from '../Navigation/NavigationConnector'
-import { FormikDollySelect } from '~/components/fields/Select/Select'
-import { FormikInput } from '~/components/fields/Input/Input'
+import NavigationConnector from '~/pages/bestilling/Navigation/NavigationConnector'
 import { Field, withFormik } from 'formik'
 import { animateScroll } from 'react-scroll'
-import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
-import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
+import { Radio } from 'nav-frontend-skjema'
+import '~/pages/bestilling/Bestilling.less'
+import NyIdent from '~/components/opprettIdent/NyIdent.js'
+import EksisterendeIdentConnector from '~/components/opprettIdent/EksisterendeIdentConnector'
+import BestillingMapper from '~/utils/BestillingMapper'
 
 class Step1 extends Component {
 	static propTypes = {
 		identtype: PropTypes.string,
 		antall: PropTypes.number,
 		selectedAttributeIds: PropTypes.array,
+		identOpprettesFra: PropTypes.string,
 		startBestilling: PropTypes.func,
-		toggleAttributeSelection: PropTypes.func
+		toggleAttributeSelection: PropTypes.func,
+		setIdentOpprettesFra: PropTypes.func
 	}
 
 	_onSubmitForm = () => {
 		this.props.submitForm()
 		animateScroll.scrollToTop({ duration: 250 })
 	}
+
+	_renderRadioBtn = (checkedType, label) => {
+		return (
+			<Radio
+				checked={this.props.identOpprettesFra === checkedType}
+				label={label}
+				name={label}
+				onChange={() => this._chooseType(checkedType)}
+			/>
+		)
+	}
+	_chooseType = checkedType => {
+		this.props.setIdentOpprettesFra(checkedType)
+	}
+
 	render() {
 		const {
 			selectedAttributeIds,
 			toggleAttributeSelection,
 			uncheckAllAttributes,
 			checkAttributeArray,
-			uncheckAttributeArray
+			uncheckAttributeArray,
+			identOpprettesFra,
+			eksisterendeIdentListe
 		} = this.props
 
 		return (
@@ -38,50 +57,29 @@ class Step1 extends Component {
 				<div className="flexbox--space">
 					<Overskrift label="Velg egenskaper" />
 				</div>
-
-				<div className="flexbox">
-					<Field
-						name="identtype"
-						label="Velg identtype"
-						component={FormikDollySelect}
-						options={SelectOptionsManager('identtype')}
+				<form className="flexbox">
+					<span className = 'bestilling-page radiobuttons'>{this._renderRadioBtn(BestillingMapper(), 'NY TESTIDENT')}</span>
+					<span className = 'bestilling-page radiobuttons'>{this._renderRadioBtn(BestillingMapper('EKSIDENT'), 'EKSISTERENDE TESTIDENT')}</span>
+				</form>
+				{identOpprettesFra === BestillingMapper() ?
+					<NyIdent
+						selectedAttributeIds={selectedAttributeIds}
+						toggleAttributeSelection={toggleAttributeSelection}
+						uncheckAllAttributes={uncheckAllAttributes}
+						checkAttributeArray={checkAttributeArray}
+						uncheckAttributeArray={uncheckAttributeArray}
+					/> 
+					: <EksisterendeIdentConnector
+						selectedAttributeIds={selectedAttributeIds}
+						toggleAttributeSelection={toggleAttributeSelection}
+						uncheckAllAttributes={uncheckAllAttributes}
+						checkAttributeArray={checkAttributeArray}
+						uncheckAttributeArray={uncheckAttributeArray}
+						identOpprettesFra={identOpprettesFra}
 					/>
-					<Field
-						name="antall"
-						label="Antall personer"
-						className="input-num-person"
-						type="number"
-						min="0"
-						component={FormikInput}
-					/>
-					<ContentTooltip>
-						<span>
-							Fødselsnummer er et ellevesifret registreringsnummer som tildeles av den norske stat
-							til alle landets innbyggere. Nummeret skiller enkeltpersoner fra hverandre, men kan
-							ikke brukes til å autentisere at en person er den de påstår de er. Fødselsnummer ble
-							innført i 1964 og administreres av Skatteetaten. Alle som er bosatt i Norge og innført
-							i Det sentrale folkeregisteret har enten et fødselsnummer eller et D-nummer.
-						</span>
-						<br />
-						<a
-							style={{ color: 'lightblue' }}
-							href="https://no.wikipedia.org/wiki/F%C3%B8dselsnummer"
-						>
-							Les mer
-						</a>
-					</ContentTooltip>
-				</div>
-
-				<AttributtVelgerConnector
-					onToggle={toggleAttributeSelection}
-					uncheckAllAttributes={uncheckAllAttributes}
-					checkAttributeArray={checkAttributeArray}
-					uncheckAttributeArray={uncheckAttributeArray}
-					selectedIds={selectedAttributeIds}
-				/>
-
-				<NavigationConnector onClickNext={this._onSubmitForm} />
-			</div>
+				}
+		<NavigationConnector onClickNext={this._onSubmitForm} eksisterendeIdentListe={eksisterendeIdentListe} identOpprettesFra={identOpprettesFra}/>
+		</div>
 		)
 	}
 }

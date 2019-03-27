@@ -12,7 +12,8 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
 		validation: DateValidation,
-		attributtType: AttributtType.SelectOnly
+		attributtType: AttributtType.SelectOnly,
+		sattForEksisterendeIdent: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -22,7 +23,8 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
 		validation: DateValidation,
-		attributtType: AttributtType.SelectOnly
+		attributtType: AttributtType.SelectOnly,
+		sattForEksisterendeIdent: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -54,7 +56,8 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'Kjønnstyper',
 		// validation: yup.string().required('Velg kjønn.'),
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectAndEdit,
+		sattForEksisterendeIdent: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,

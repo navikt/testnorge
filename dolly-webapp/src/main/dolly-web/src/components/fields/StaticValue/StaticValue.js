@@ -22,7 +22,7 @@ export default class StaticValue extends PureComponent {
 		let _value = value ? value : 'Ikke spesifisert'
 		if (format) _value = format(value)
 
-		const fixedSize = size ? 'static-value_' + size : 'static-value'
+		const fixedSize = size ? cn('static-value', 'static-value_' + size) : 'static-value'
 		return (
 			<div className={optionalClassName || cn(fixedSize, 'static-value-headers')}>
 				{React.createElement(headerType, null, [header])}

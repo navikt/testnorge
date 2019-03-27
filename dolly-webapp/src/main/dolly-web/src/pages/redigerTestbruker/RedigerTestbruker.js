@@ -16,7 +16,7 @@ export default class RedigerTestbruker extends Component {
 		this.AttributtManager = new AttributtManager()
 
 		this.state = {
-			addedAttributts: []
+			addedAttributes: []
 		}
 	}
 
@@ -49,16 +49,26 @@ export default class RedigerTestbruker extends Component {
 	}
 
 	_onAddAttribute = attributeId => {
-		this.setState({ addedAttributts: [...this.state.addedAttributts, attributeId] })
+		this.setState({ addedAttributes: [...this.state.addedAttributes, attributeId] })
 	}
 
-	_getAttributtListeToEdit = (AttributtListe, AddedAttributts) => {
+	_getAttributtListeToEdit = (AttributtListe, AddedAttributes, bestillinger) => {
+		let finalAttributtListe = []
 		let AttributtListeToEdit = []
-		if (AddedAttributts && AddedAttributts.length > 0) {
+		if (bestillinger.data) {
+			const eksisterendeIdentBestilling = this._typeBestilling(bestillinger)
+			eksisterendeIdentBestilling && (finalAttributtListe = this._fjernSattForEksisterendeIdentAttr(AttributtListe))
+		}
+
+		finalAttributtListe.length < 1 && AttributtListe.map (element => {
+			finalAttributtListe.push(element)
+		})
+		
+		if (AddedAttributes && AddedAttributes.length > 0) {
 			let tempElement = null
-			AttributtListe.forEach(element => {
+			finalAttributtListe.forEach(element => {
 				tempElement = JSON.parse(JSON.stringify(element))
-				AddedAttributts.forEach(addedElement => {
+				AddedAttributes.forEach(addedElement => {
 					if (tempElement.hovedKategori.id === addedElement.hovedKategori.id) {
 						tempElement.items.forEach(subElement => {
 							if (subElement.subKategori.id === addedElement.subKategori.id) {
@@ -71,13 +81,41 @@ export default class RedigerTestbruker extends Component {
 			})
 			return AttributtListeToEdit
 		}
-		return AttributtListe
+		return finalAttributtListe
+	}
+
+	_typeBestilling = (bestillinger) => {
+		let opprettetFraEksisterendeIdent = false
+		bestillinger.data.map (bestilling => {
+			if (bestilling.opprettFraIdenter) {
+				const opprettFraIdenterArr = bestilling.opprettFraIdenter.split(',')
+					opprettFraIdenterArr.map ( ident => {
+						ident === this.props.ident && (opprettetFraEksisterendeIdent = true)
+					})
+			}
+		})
+		return opprettetFraEksisterendeIdent
+	}
+
+	_fjernSattForEksisterendeIdentAttr = (AttributtListe) => {
+		let finalAttributtListe = []
+		let tempElement = null
+		AttributtListe.map ( element => {
+			tempElement = Object.assign({}, element)
+			tempElement.items.map ((subElement, jdx) => {
+				subElement.items.map ((attr, idx) => {
+					attr.sattForEksisterendeIdent && tempElement.items[jdx].items.splice(idx, 1) 
+				})
+			})
+			finalAttributtListe.push(tempElement)
+		})
+		return finalAttributtListe
 	}
 
 	render() {
-		const { testbruker, goBack, match } = this.props
+		const { testbruker, goBack, match, bestillinger } = this.props
 		const { tpsf, sigrunstub, krrstub } = testbruker
-		const { addedAttributts } = this.state
+		const { addedAttributes } = this.state
 
 		if (!tpsf || !sigrunstub || !krrstub) return null
 
@@ -103,8 +141,10 @@ export default class RedigerTestbruker extends Component {
 			match.params.ident,
 			dataSources
 		)
+		
 
-		const attributtListeToEdit = this._getAttributtListeToEdit(attributtListe, addedAttributts)
+		const attributtListeToEdit = this._getAttributtListeToEdit(attributtListe, addedAttributes, bestillinger)
+		
 
 		return (
 			<Formik
@@ -118,7 +158,7 @@ export default class RedigerTestbruker extends Component {
 						<FormEditor
 							AttributtListe={attributtListeToEdit}
 							AttributtListeToAdd={attributtListeToAdd}
-							AddedAttributts={addedAttributts}
+							AddedAttributes={addedAttributes}
 							FormikProps={formikProps}
 							ClosePanels
 							editMode

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsIdentTpsStatus;
+import no.nav.dolly.domain.resultset.RsStatusMiljoeIdent;
 
 public final class BestillingTpsfStatusMapper {
 
@@ -20,7 +20,7 @@ public final class BestillingTpsfStatusMapper {
     private BestillingTpsfStatusMapper() {
     }
 
-    public static List<RsIdentTpsStatus> buildTpsfStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusMiljoeIdent> buildTpsfStatusMap(List<BestillingProgress> progressList) {
         Map<String, Map<String, Set<String>>> errorEnvIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
@@ -38,17 +38,18 @@ public final class BestillingTpsfStatusMapper {
             }
         });
 
-        List<RsIdentTpsStatus> identTpsStatuses = new ArrayList<>();
-        errorEnvIdents.keySet().forEach(env ->
-                identTpsStatuses.add(RsIdentTpsStatus.builder()
-                        .statusMelding(env)
-                        .environmentIdents(errorEnvIdents.get(env))
+        List<RsStatusMiljoeIdent> identTpsStatuses = new ArrayList<>();
+        errorEnvIdents.keySet().forEach(status ->
+                identTpsStatuses.add(RsStatusMiljoeIdent.builder()
+                        .statusMelding(status)
+                        .environmentIdents(errorEnvIdents.get(status))
                         .build())
         );
         return identTpsStatuses;
     }
 
     private static void checkNUpdateStatus(Map<String, Map<String, Set<String>>> errorEnvIdents, String ident, String environ, String status) {
+
         if (errorEnvIdents.containsKey(status)) {
             if (errorEnvIdents.get(status).containsKey(environ)) {
                 errorEnvIdents.get(status).get(environ).add(ident);

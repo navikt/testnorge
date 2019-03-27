@@ -16,7 +16,7 @@ import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
-		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributts } = this.props
+		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributes } = this.props
 		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
 
 		const hasError = hovedKategoriAttributes.some(attr => {
@@ -40,13 +40,13 @@ export default class FormEditor extends PureComponent {
 			return false
 		})
 
-		let notYetAddedAttributts = []
+		let notYetAddedAttributes = []
 
 		if (AttributtListeToAdd) {
 			AttributtListeToAdd.forEach(item => {
 				item.hovedKategori.id === hovedKategori.id &&
 					item.items.forEach(item => {
-						notYetAddedAttributts = _xor(item.items, AddedAttributts)
+						notYetAddedAttributes = _xor(item.items, AddedAttributes)
 					})
 			})
 		}
@@ -63,8 +63,8 @@ export default class FormEditor extends PureComponent {
 				})}
 
 				<div className="add-buttons-container">
-					{notYetAddedAttributts &&
-						notYetAddedAttributts.map((element, i) => {
+					{notYetAddedAttributes &&
+						notYetAddedAttributes.map((element, i) => {
 							return this.renderAddButton(element.label, element, i)
 						})}
 				</div>
@@ -102,6 +102,7 @@ export default class FormEditor extends PureComponent {
 										item,
 										formikProps,
 										this.renderFieldComponent,
+										this.renderFieldSubItem,
 										this.props.editMode
 								  )
 								: this.renderFieldComponent(item, formikProps.values)
@@ -147,6 +148,24 @@ export default class FormEditor extends PureComponent {
 				{...componentProps}
 				{...item.inputTypeAttributes}
 			/>
+		)
+	}
+
+	renderFieldSubItem = item => {
+		const InputComponent = InputSelector(item.inputType)
+
+		return (
+			/* REG-3377: Alex - Under utvikling */
+			<p>{item.id}</p>
+			// <Field
+			// 	key={item.key || item.id}
+			// 	name={item.id}
+			// 	label={item.label}
+			// 	component={InputComponent}
+			// 	size={item.size}
+			// 	{...componentProps}
+			// 	{...item.inputTypeAttributes}
+			// />
 		)
 	}
 
