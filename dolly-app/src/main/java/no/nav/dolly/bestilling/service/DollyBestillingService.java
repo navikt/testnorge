@@ -10,6 +10,8 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
+import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +23,11 @@ import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.aareg.AaregService;
 import no.nav.dolly.aareg.AaregWsConsumer;
 import no.nav.dolly.bestilling.krrstub.KrrStubResponseHandler;
 import no.nav.dolly.bestilling.krrstub.KrrStubService;
@@ -31,6 +35,7 @@ import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubService;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
+import no.nav.dolly.domain.jpa.BestKriterier;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -40,10 +45,8 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
-import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
-import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
-import no.nav.dolly.domain.resultset.aareg.RsPerson;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
+import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
@@ -89,6 +92,9 @@ public class DollyBestillingService {
     private KrrStubResponseHandler krrstubResponseHandler;
 
     @Autowired
+    private AaregService aaregService;
+
+    @Autowired
     private BestillingProgressRepository bestillingProgressRepository;
 
     @Autowired
@@ -99,6 +105,9 @@ public class DollyBestillingService {
 
     @Autowired
     private CacheManager cacheManager;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Async
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingRequest request, Bestilling bestilling) {
@@ -117,7 +126,7 @@ public class DollyBestillingService {
             }
         } catch (Exception e) {
             log.error("Bestilling med id <" + bestilling.getId() + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
-            bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()));
+            bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres: %s", e.getMessage()));
         } finally {
             oppdaterProgressFerdig(bestilling);
             clearCache();
@@ -148,7 +157,7 @@ public class DollyBestillingService {
             }
         } catch (Exception e) {
             log.error("Bestilling med id={} til gruppeId={} ble avsluttet med feil={}", bestilling.getId(), gruppeId, e.getMessage(), e);
-            bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres mot TPS: %s", e.getMessage()));
+            bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres: %s", e.getMessage()));
         } finally {
             oppdaterProgressFerdig(bestilling);
             clearCache();
@@ -171,11 +180,32 @@ public class DollyBestillingService {
 
             sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
 
+            gjenopprettNonTpsf(bestillingProgress.getIdent(), bestilling, progress);
+
             oppdaterProgress(bestilling, progress);
             clearCache();
         }
         oppdaterProgressFerdig(bestilling);
         clearCache();
+    }
+
+    private void gjenopprettNonTpsf(String ident, Bestilling bestilling, BestillingProgress progress) {
+
+        if (nonNull(bestilling.getBestKriterier())) {
+            try {
+                BestKriterier bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), BestKriterier.class);
+
+                handleKrrstub(bestKriterier.getKrrStub(), ident, progress);
+                handleSigrunstub(bestKriterier.getSigrunStub(), ident, progress, false);
+                progress.setAaregStatus(aaregService.gjenopprettArbeidsforhold(bestKriterier.getAareg(), newArrayList(bestilling.getMiljoer().split(",")), ident));
+                oppdaterProgress(bestilling, progress);
+
+                clearCache();
+
+            } catch (IOException e) {
+                log.error("Feilet å lese bestillingskriterier", e);
+            }
+        }
     }
 
     private void oppdaterBestilling(Bestilling bestilling, CheckStatusResponse tilgjengeligeIdenter) {
@@ -197,16 +227,16 @@ public class DollyBestillingService {
     private void preparePerson(RsDollyBestilling request, Bestilling bestilling, Testgruppe testgruppe, TpsfBestilling tpsfBestilling) {
 
         List<String> bestilteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
-        String hovedPersonIdent = getHovedpersonAvBestillingsidenter(bestilteIdenter);
-        BestillingProgress progress = new BestillingProgress(bestilling.getId(), hovedPersonIdent);
+        String ident = getHovedpersonAvBestillingsidenter(bestilteIdenter);
+        BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
 
         sendIdenterTilTPS(request.getEnvironments(), bestilteIdenter, testgruppe, progress);
 
-        handleSigrunstub(request, hovedPersonIdent, progress);
+        handleKrrstub(request.getKrrstub(), ident, progress);
 
-        handleKrrstub(request, bestilling.getId(), hovedPersonIdent, progress);
+        handleSigrunstub(request.getSigrunstub(), ident, progress, true);
 
-        handleAareg(request, hovedPersonIdent, progress);
+        progress.setAaregStatus(aaregService.gjenopprettArbeidsforhold(request.getAareg(), newArrayList(bestilling.getMiljoer().split(",")), ident));
 
         oppdaterProgress(bestilling, progress);
         clearCache();
@@ -263,49 +293,25 @@ public class DollyBestillingService {
         bestillingProgressRepository.save(progress);
     }
 
-    private void handleKrrstub(RsDollyBestilling bestillingRequest, Long bestillingsId, String hovedPersonIdent, BestillingProgress progress) {
-        if (nonNull(bestillingRequest.getKrrstub())) {
-            DigitalKontaktdataRequest digitalKontaktdataRequest = mapperFacade.map(bestillingRequest, DigitalKontaktdataRequest.class);
-            digitalKontaktdataRequest.setPersonident(hovedPersonIdent);
-            ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(bestillingsId, digitalKontaktdataRequest);
+    private void handleKrrstub(RsDigitalKontaktdata krrStubdata, String ident, BestillingProgress progress) {
+        if (nonNull(krrStubdata)) {
+            DigitalKontaktdataRequest digitalKontaktdataRequest = mapperFacade.map(krrStubdata, DigitalKontaktdataRequest.class);
+            digitalKontaktdataRequest.setPersonident(ident);
+            digitalKontaktdataRequest.setGyldigFra(ZonedDateTime.now());
+            ResponseEntity krrstubResponse = krrStubService.createDigitalKontaktdata(progress.getBestillingId(), digitalKontaktdataRequest);
             progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
         }
     }
 
-    private void handleSigrunstub(RsDollyBestilling bestillingRequest, String hovedPersonIdent, BestillingProgress progress) {
-        if (nonNull(bestillingRequest.getSigrunstub())) {
-            for (RsOpprettSkattegrunnlag request : bestillingRequest.getSigrunstub()) {
-                request.setPersonidentifikator(hovedPersonIdent);
+    private void handleSigrunstub(List<RsOpprettSkattegrunnlag> opprettSkattegrunnlagList, String ident, BestillingProgress progress, boolean isOpprett) {
+        if (nonNull(opprettSkattegrunnlagList)) {
+            for (RsOpprettSkattegrunnlag request : opprettSkattegrunnlagList) {
+                request.setPersonidentifikator(ident);
             }
-            ResponseEntity sigrunResponse = sigrunStubService.createSkattegrunnlag(bestillingRequest.getSigrunstub());
+            ResponseEntity sigrunResponse = isOpprett ?
+                    sigrunStubService.createSkattegrunnlag(opprettSkattegrunnlagList) :
+                    sigrunStubService.oppdaterSkattegrunnlag(opprettSkattegrunnlagList);
             progress.setSigrunstubStatus(sigrunstubResponseHandler.extractResponse(sigrunResponse));
-        }
-    }
-
-    private void handleAareg(RsDollyBestilling bestillingRequest, String ident, BestillingProgress progress) {
-
-        if (!bestillingRequest.getAareg().isEmpty()) {
-            StringBuilder builder = new StringBuilder();
-            Long arbeidsForholdId = 0L;
-
-            for (RsArbeidsforhold arbeidsforhold : bestillingRequest.getAareg()) {
-                arbeidsforhold.setArbeidstaker(RsPerson.builder().ident(ident).build());
-                arbeidsforhold.setArbeidsforholdID((++arbeidsForholdId).toString());
-                Map<String, String> status = aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest.builder()
-                        .arbeidsforhold(arbeidsforhold)
-                        .environments(bestillingRequest.getEnvironments())
-                        .build());
-
-                for (Map.Entry<String, String> entry : status.entrySet()) {
-                    builder.append(',')
-                            .append(entry.getKey())
-                            .append(": arbforhold=")
-                            .append(arbeidsForholdId)
-                            .append('$')
-                            .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
-                }
-            }
-            progress.setAaregStatus(builder.substring(1));
         }
     }
 

@@ -16,6 +16,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.properties.CredentialsProps;
 import no.nav.dolly.properties.Environment;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @Service
 public class StsOidcService {
@@ -91,5 +93,13 @@ public class StsOidcService {
         }
         expiry.put(env, LocalDateTime.now().plusSeconds(((JsonNode) responseEntity.getBody()).get("expires_in").asLong()));
         idToken.put(env, "Bearer " + ((JsonNode) responseEntity.getBody()).get("access_token").asText());
+    }
+
+    public static String getUserIdToken() {
+        return "Bearer " + ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getIdToken();
+    }
+
+    public static String getUserPrinciple() {
+        return ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
     }
 }
