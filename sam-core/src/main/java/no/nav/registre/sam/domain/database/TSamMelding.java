@@ -23,10 +23,9 @@ import no.nav.registre.sam.utils.Utils;
 @Getter
 @Setter
 @ToString
-@Entity
+@Entity(name = "t_sam_melding")
 @AllArgsConstructor
 @Builder
-@Table(name = "t_sam_melding")
 public class TSamMelding {
 
     @Id

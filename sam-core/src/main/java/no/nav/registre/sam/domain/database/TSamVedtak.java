@@ -1,7 +1,6 @@
 package no.nav.registre.sam.domain.database;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Date;
@@ -23,10 +21,8 @@ import no.nav.registre.sam.utils.Utils;
 @Getter
 @Setter
 @ToString
-@Entity
+@Entity(name = "t_sam_vedtak")
 @AllArgsConstructor
-@Builder
-@Table(name = "t_sam_vedtak")
 public class TSamVedtak {
 
     @Id

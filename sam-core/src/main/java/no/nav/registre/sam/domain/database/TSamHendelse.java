@@ -21,9 +21,8 @@ import no.nav.registre.sam.utils.Utils;
 @Getter
 @Setter
 @ToString
-@Entity
+@Entity(name = "t_sam_hendelse")
 @AllArgsConstructor
-@Table(name = "t_sam_hendelse")
 public class TSamHendelse {
 
     @Id

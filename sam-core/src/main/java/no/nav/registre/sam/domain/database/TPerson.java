@@ -20,10 +20,9 @@ import no.nav.registre.sam.utils.Utils;
 @Getter
 @Setter
 @ToString
-@Entity
+@Entity(name = "t_person")
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "t_person")
 public class TPerson {
 
     @Id
