@@ -12,7 +12,9 @@ import RedigerTestbruker from './RedigerTestbruker'
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		testbruker: state.testbruker.items
+		testbruker: state.testbruker.items,
+		ident: ownProps.match.params.ident,
+		bestillinger: state.bestillingStatuser
 	}
 }
 

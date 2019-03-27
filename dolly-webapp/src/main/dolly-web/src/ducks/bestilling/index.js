@@ -152,7 +152,6 @@ export default handleActions(
 			state,
 			action
 		){
-			console.log('hei combine actions');
 			return initialState
 		}
 	},
@@ -358,10 +357,8 @@ export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const values = bestillingFormatter(currentBestilling)
 
 	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
-		console.log('hei');
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {
-		console.log('hei i sendBestilling');
 		return dispatch(actions.postBestilling(gruppeId, values))
 	} 
 }
