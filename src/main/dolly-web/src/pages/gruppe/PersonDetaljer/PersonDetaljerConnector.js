@@ -4,6 +4,7 @@ import DataMapper from '~/service/dataMapper'
 import { GET_KRR_TESTBRUKER, GET_SIGRUN_TESTBRUKER, GET_AAREG_TESTBRUKER } from '~/ducks/testBruker'
 import { FRIGJOER_TESTBRUKER } from '~/ducks/testBruker'
 import { createLoadingSelector } from '~/ducks/loading'
+import Formatters from '~/utils/DataFormatter'
 
 const loadingSelectorKrr = createLoadingSelector(GET_KRR_TESTBRUKER)
 const loadingSelectorSigrun = createLoadingSelector(GET_SIGRUN_TESTBRUKER)
@@ -17,7 +18,9 @@ const mapStateToProps = (state, ownProps) => ({
 	testIdent: state.gruppe.data[0].testidenter.find(
 		testIdent => testIdent.ident === ownProps.personId
 	),
-	bestillinger: state.bestillingStatuser
+	bestilling: state.bestillingStatuser.data.find(
+		bestilling => bestilling.id.toString() === Formatters.idUtenEllipse(ownProps.bestillingId)
+	)
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
