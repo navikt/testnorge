@@ -72,6 +72,9 @@ public class Bestilling {
     @Column(name = "TPSF_KRITERIER")
     private String tpsfKriterier;
 
+    @Column(name = "BEST_KRITERIER")
+    private String bestKriterier;
+
     @Column(name = "OPENAM_SENT")
     private String openamSent;
 

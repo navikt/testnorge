@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.domain.jpa.BestKriterier;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsBestilling;
@@ -146,7 +147,12 @@ public class TestgruppeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
-        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getAntall(), request.getEnvironments(), request.getTpsf(), null);
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getAntall(), request.getEnvironments(), request.getTpsf(),
+                BestKriterier.builder()
+                        .aareg(request.getAareg())
+                        .krrStub(request.getKrrstub())
+                        .sigrunStub(request.getSigrunstub())
+                        .build(), null);
 
         dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
@@ -157,7 +163,13 @@ public class TestgruppeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
-        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getOpprettFraIdenter().size(), request.getEnvironments(), request.getTpsf(), request.getOpprettFraIdenter());
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getOpprettFraIdenter().size(), request.getEnvironments(), request.getTpsf(),
+                BestKriterier.builder()
+                .aareg(request.getAareg())
+                .krrStub(request.getKrrstub())
+                .sigrunStub(request.getSigrunstub())
+                .build(),
+                request.getOpprettFraIdenter());
 
         dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
