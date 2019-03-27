@@ -4,7 +4,6 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,8 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
@@ -59,8 +58,8 @@ public class SigrunStubServiceTest {
     public void createSkattegrunnlag() {
         sigrunStubService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
 
-        ArgumentCaptor<HttpEntity> argCap = ArgumentCaptor.forClass(HttpEntity.class);
-        verify(restTemplate).exchange(anyString(), any(HttpMethod.class), argCap.capture(), eq(Object.class));
+        ArgumentCaptor<RequestEntity> argCap = ArgumentCaptor.forClass(RequestEntity.class);
+        verify(restTemplate).exchange(argCap.capture(), eq(Object.class));
 
         HttpEntity entity = argCap.getValue();
 
@@ -71,7 +70,7 @@ public class SigrunStubServiceTest {
     @Test
     public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() {
 
-        when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class), eq(Object.class))).thenReturn(ResponseEntity.badRequest().build());
+        when(restTemplate.exchange(any(RequestEntity.class), eq(Object.class))).thenReturn(ResponseEntity.badRequest().build());
         ResponseEntity entity = sigrunStubService.createSkattegrunnlag(singletonList(new RsOpprettSkattegrunnlag()));
 
         assertThat(entity.getStatusCode().value(), is(HttpStatus.BAD_REQUEST.value()));

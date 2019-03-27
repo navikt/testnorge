@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.aareg.AaregService;
-import no.nav.dolly.aareg.AaregWsConsumer;
 import no.nav.dolly.bestilling.krrstub.KrrStubResponseHandler;
 import no.nav.dolly.bestilling.krrstub.KrrStubService;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
@@ -78,9 +77,6 @@ public class DollyBestillingService {
 
     @Autowired
     private SigrunStubService sigrunStubService;
-
-    @Autowired
-    private AaregWsConsumer aaregWsConsumer;
 
     @Autowired
     private SigrunStubResponseHandler sigrunstubResponseHandler;
@@ -236,7 +232,7 @@ public class DollyBestillingService {
 
         handleSigrunstub(request.getSigrunstub(), ident, progress, true);
 
-        progress.setAaregStatus(aaregService.gjenopprettArbeidsforhold(request.getAareg(), newArrayList(bestilling.getMiljoer().split(",")), ident));
+        progress.setAaregStatus(aaregService.gjenopprettArbeidsforhold(request.getAareg(), request.getEnvironments(), ident));
 
         oppdaterProgress(bestilling, progress);
         clearCache();
