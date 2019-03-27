@@ -383,6 +383,5 @@ export const sendBestilling = gruppeId => async (dispatch, getState) => {
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {
 		return dispatch(actions.postBestilling(gruppeId, values))
-		// console.log('nei')
 	}
 }
