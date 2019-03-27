@@ -52,7 +52,7 @@ public class TSamMelding {
     private Timestamp datoOpprettet;
     @Column(name = "opprettet_av")
     private String opprettetAv;
-    @Column(name = "dato_endret")
+    @Column(name = "datoEndret")
     private Timestamp datoEndret;
     @Column(name = "endret_av")
     private String endretAv;

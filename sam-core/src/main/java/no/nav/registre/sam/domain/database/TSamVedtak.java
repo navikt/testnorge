@@ -54,8 +54,8 @@ public class TSamVedtak {
     private Timestamp datoOpprettet;
     @Column(name = "opprettet_av")
     private String opprettetAv;
-    @Column(name = "dato_endret")
-    private Timestamp dato_endret;
+    @Column(name = "datoEndret")
+    private Timestamp datoEndret;
     @Column(name = "endret_av")
     private String endretAv;
     @Column(name = "versjon")
@@ -74,7 +74,7 @@ public class TSamVedtak {
         this.datoTom = Utils.formatDate(obj.getDatoTom());
         this.datoOpprettet = Utils.formatDate(obj.getDatoOpprettet());
         this.opprettetAv = ("".equals(obj.getOpprettetAv())) ? "synt" : obj.getOpprettetAv();
-        this.dato_endret = Utils.formatDate(obj.getDatoEndret());
+        this.datoEndret = Utils.formatDate(obj.getDatoEndret());
         this.endretAv = "synt";
         this.versjon = (int) Double.parseDouble(obj.getVersjon());
     }
