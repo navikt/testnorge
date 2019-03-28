@@ -8,8 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
@@ -19,7 +17,6 @@ import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPerson;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 
 @Slf4j
 @Service
@@ -43,7 +40,7 @@ public class AaregService {
                 ResponseEntity<Object[]> response = ResponseEntity.ok(new Object[]{});
                 try {
                     response = aaregRestConsumer.readArbeidsforhold(ident, env);
-                } catch (HttpClientErrorException | DollyFunctionalException | ResourceAccessException e) {
+                } catch (RuntimeException e) {
                     log.error("Lesing av aareg i {} feilet, {}", env, e.getLocalizedMessage());
                 }
 
