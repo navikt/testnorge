@@ -19,6 +19,9 @@ const customStyles = {
 		width: '25%',
 		minWidth: '500px',
 		overflow: 'inherit'
+	},
+	overlay: {
+		background: 'rgba(0,0,0,0.75)',
 	}
 }
 
