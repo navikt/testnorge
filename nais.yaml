@@ -1,0 +1,31 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnorge-statisk-data-forvalter
+  namespace: default
+  labels:
+    team: orkestrator
+spec:
+  image: "docker.adeo.no:5000/registre/statisk-data-forvalter:1.0.0"
+  port: 8080
+  liveness:
+    path: /internal/isAlive
+    periodSeconds: 30
+  readiness:
+    path: /internal/isReady
+  prometheus:
+    path: /internal/prometheus
+  replicas:
+    min: 1
+    max: 2
+  vault:
+    enabled: true
+  resources:
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+  ingresses:
+    - "https://testnorge-statisk-data-forvalter.nais.preprod.local"
