@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.exceptions.FasitException;
 import no.nav.dolly.properties.ProvidersProps;
 
@@ -16,9 +15,6 @@ import no.nav.dolly.properties.ProvidersProps;
 public class FasitApiConsumer {
 
     private static final String FASIT_RESOURCE = "/api/v2/resources?alias=%s&type=%s&usage=false&page=0&pr_page=100";
-
-    @Autowired
-    MapperFacade mapperFacade;
 
     @Autowired
     private RestTemplate restTemplate;
