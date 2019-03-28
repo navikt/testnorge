@@ -96,6 +96,7 @@ public class FeilhaandteringCompTest {
         stubHodejegeren(gruppeId);
         stubTpsf(gruppeId);
         stubSendIderTilTps(gruppeId);
+        stubTpConsumer();
 
         stubTpsSynt(INNVANDRING.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json");
         stubTpsSynt(NAVNEENDRING_FOERSTE.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode06_2meldinger_Response.json");
@@ -104,7 +105,7 @@ public class FeilhaandteringCompTest {
         ResponseEntity response = syntetiseringController.genererSkdMeldinger(ordreRequest);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertEquals(4, listAppender.list.size());
+        assertEquals(5, listAppender.list.size());
         SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons = (SkdMeldingerTilTpsRespons) response.getBody();
         assertThat(skdMeldingerTilTpsRespons.getAntallSendte(), is(equalTo(2)));
         assertThat(listAppender.list.toString(), containsString("Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: []"));
@@ -187,7 +188,16 @@ public class FeilhaandteringCompTest {
     }
 
     private void stubSendIderTilTps(long gruppeId) {
-        stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send" + gruppeId))
+        stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/send/" + gruppeId))
                 .willReturn(aResponse().withStatus(OK)));
+    }
+
+    private void stubTpConsumer() {
+        stubFor(post(urlPathEqualTo("/tp/api/v1/orkestrering/opprettPersoner/" + miljoe))
+                .withRequestBody(equalToJson(
+                        "[\"" + expectedFnrFromIdentpool.get(0) + "\", \"" + expectedFnrFromIdentpool.get(1) + "\"]"))
+                .willReturn(ok()
+                        .withHeader("content-type", "application/json")
+                        .withBody("[\"" + expectedFnrFromIdentpool.get(1) + "\"]")));
     }
 }

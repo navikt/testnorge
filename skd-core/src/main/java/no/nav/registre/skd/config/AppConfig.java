@@ -10,7 +10,7 @@ import java.util.Random;
 public class AppConfig {
 
     @Bean
-    public RestTemplate restTemplateTpsf() {
+    public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate;
     }

@@ -68,6 +68,9 @@ public class SyntetiseringService {
     @Autowired
     private EksisterendeIdenterService eksisterendeIdenterService;
 
+    @Autowired
+    private TpService tpService;
+
     private List<String> feiledeEndringskoder;
 
     public ResponseEntity puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
@@ -83,6 +86,8 @@ public class SyntetiseringService {
         List<Long> idsLagretITpsfMenIkkeTps = new ArrayList<>();
         feiledeEndringskoder = new ArrayList<>();
 
+        List<String> nyeIdenterDenneEndringskoden;
+
         for (Endringskoder endringskode : sorterteEndringskoder) {
             List<Long> ids = new ArrayList<>();
             try {
@@ -90,12 +95,14 @@ public class SyntetiseringService {
                         antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
                 validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger, endringskode);
 
+                nyeIdenterDenneEndringskoden = new ArrayList<>();
+
                 if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
-                    nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger);
+                    nyeIdenterDenneEndringskoden.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger));
                 } else if (TILDELING_DNUMMER.equals(endringskode)) {
-                    nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger);
+                    nyeIdenterDenneEndringskoden.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger));
                 } else if (FOEDSELSMELDING.equals(endringskode)) {
-                    foedselService.behandleFoedselsmeldinger(FNR, syntetiserteSkdmeldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE));
+                    nyeIdenterDenneEndringskoden.addAll(foedselService.behandleFoedselsmeldinger(FNR, syntetiserteSkdmeldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE)));
                 } else {
                     eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, miljoe);
                 }
@@ -117,6 +124,13 @@ public class SyntetiseringService {
 
                 fjernBrukteIdenterFraListerMedIdenter(listerMedIdenter);
                 idsLagretITpsfMenIkkeTps.removeAll(ids);
+
+                if(!nyeIdenterDenneEndringskoden.isEmpty()) {
+                    List<String> feiledeTpIdenter = tpService.leggTilIdenterITp(nyeIdenterDenneEndringskoden, miljoe);
+                    if(!feiledeTpIdenter.isEmpty()) {
+                        log.error("Følgende identer kunne ikke lagres i TP: {}", feiledeTpIdenter.toString());
+                    }
+                }
             } catch (ManglendeInfoITpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
                         "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +

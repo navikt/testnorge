@@ -37,6 +37,8 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorge-hodejegeren.rest-api"
       resourceType: restservice
+    - alias: "testnorge-tp.rest-api"
+      resourceType: restservice
     - alias: "testnorge-properties"
       resourceType: applicationProperties
   exposed:
