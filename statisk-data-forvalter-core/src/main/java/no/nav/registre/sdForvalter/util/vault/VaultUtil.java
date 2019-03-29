@@ -1,4 +1,4 @@
-package no.nav.registre.sdForvalter.vault;
+package no.nav.registre.sdForvalter.util.vault;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
