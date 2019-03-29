@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-// import Select, { Async } from 'react-select'
 import Select from 'react-virtualized-select'
 import cn from 'classnames'
 import _get from 'lodash/get'
@@ -36,9 +35,9 @@ export default class DollySelect extends PureComponent {
 				</label>
 				<div className="dollyselect-input">
 					<Select
+						// Bruk optionHeight={}k for dynamisk height. Sjekk docs
 						async={loadOptions ? true : false}
 						loadOptions={loadOptions}
-						// optionHeight={} // Her kan vi styre dynamisk height
 						id={name}
 						name={name}
 						placeholder={placeholder}
