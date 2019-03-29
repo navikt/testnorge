@@ -93,6 +93,7 @@ public class TpService {
                 .datoEndret(timestamp)
                 .endretAv("synt")
                 .opprettetAv("synt")
+                .versjon("1")
                 .build())
                 .collect(Collectors.toSet());
 
