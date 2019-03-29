@@ -31,6 +31,7 @@ export default class Step2 extends PureComponent {
 	}
 
 	submit = values => {
+		console.log('this :', this)
 		this.props.setValues({ values })
 	}
 
@@ -76,7 +77,7 @@ export default class Step2 extends PureComponent {
 								onClickPrevious={() => this.onClickPrevious(formikProps.values)}
 							/>
 							{/* // Uncomment for debug formik */}
-							{/* <DisplayFormikState {...formikProps} /> */}
+							<DisplayFormikState {...formikProps} />
 						</Fragment>
 					)}
 				/>

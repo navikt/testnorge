@@ -25,7 +25,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Gatenavn',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		// validation: yup.string().required('Skriv minst tre bokstaver eller hent gyldig adresse'),
+		// validation: yup.string().required('Fyll ut eller hent gyldig adresse'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -37,7 +37,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Husnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		// validation: yup.string().required('Vennligst fyll ut eller hent gyldig adresse'),
+		// validation: yup.string().required('Fyll ut eller hent gyldig adresse'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -49,7 +49,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Postnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		// validation: yup.string().required('Vennligst fyll ut eller hent gyldig adresse'),
+		// validation: yup.string().required('Fyll ut eller hent gyldig adresse'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -61,7 +61,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Kommunenummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		// validation: yup.string().required('Vennligst fyll ut eller hent gyldig adresse'),
+		// validation: yup.string().required('Fyll ut eller hent gyldig adresse'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
