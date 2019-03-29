@@ -17,7 +17,34 @@ export default class Navigation extends PureComponent {
 	}
 
 	render() {
-		const { currentPage, isSubmitting, onClickNext, abortBestilling, onClickPrevious } = this.props
+		const {
+			currentPage,
+			isSubmitting,
+			onClickNext,
+			abortBestilling,
+			onClickPrevious,
+			FormikProps
+		} = this.props
+
+		// må endres slik at kun adresse-values blir berørt!!
+		let propsValues
+		let harGyldigAdresse = false
+
+		if (FormikProps) {
+			propsValues = FormikProps.values
+			console.log('propsValues :', propsValues)
+			if (
+				propsValues.boadresse_gateadresse &&
+				propsValues.boadresse_husnummer &&
+				propsValues.boadresse_kommunenr &&
+				propsValues.boadresse_postnr
+				// lag en prop for å ha valgt gyldig adresse!!
+			) {
+				harGyldigAdresse = true
+			}
+		}
+
+		// console.log('this navigation:', this)
 
 		const resetBestilling = () => {}
 
@@ -32,7 +59,16 @@ export default class Navigation extends PureComponent {
 						<NavButton direction="backward" onClick={onClickPrevious} />
 					)}
 
-					{!isPage.last(currentPage) && <NavButton direction="forward" onClick={onClickNext} />}
+					{!isPage.last(currentPage) &&
+						!propsValues && <NavButton direction="forward" onClick={onClickNext} />}
+
+					{!isPage.last(currentPage) &&
+						propsValues &&
+						harGyldigAdresse && <NavButton direction="forward" onClick={onClickNext} />}
+
+					{!isPage.last(currentPage) &&
+						propsValues &&
+						!harGyldigAdresse && <NavButton disabled direction="forward" onClick={onClickNext} />}
 
 					{isPage.last(currentPage) && (
 						<Knapp type="hoved" onClick={onClickNext} disabled={isSubmitting}>
