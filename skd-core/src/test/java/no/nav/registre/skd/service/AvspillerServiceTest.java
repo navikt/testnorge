@@ -17,8 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import no.nav.registre.skd.consumer.TpsfConsumer;
-import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
-import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AvspillerServiceTest {
@@ -32,14 +30,10 @@ public class AvspillerServiceTest {
     private Long avspillergruppeId = 10L;
     private String miljoe = "t1";
     private List<Long> avspillergruppeIder;
-    private SendToTpsRequest sendToTpsRequest;
-    private SkdMeldingerTilTpsRespons skdMeldingerTilTpsRespons;
 
     @Before
     public void setUp() {
         avspillergruppeIder = new ArrayList<>(Arrays.asList(123L, 234L));
-        sendToTpsRequest = new SendToTpsRequest(miljoe, avspillergruppeIder);
-        skdMeldingerTilTpsRespons = new SkdMeldingerTilTpsRespons();
     }
 
     @Test
