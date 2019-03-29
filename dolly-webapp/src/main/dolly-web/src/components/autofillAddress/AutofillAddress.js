@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import Knapp from 'nav-frontend-knapper'
-import FormikDollySelect from '~/components/fields/Select/Select'
+import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { TpsfApi, DollyApi } from '~/service/Api'
 import './AutofillAddress.less'
 import InputSelector from '~/components/fields/InputSelector'
@@ -16,7 +16,8 @@ const initialState = {
 	// boadresse_postnr: '',
 	// boadresse_kommunenr: '',
 	gyldigeAdresser: [],
-	gyldigeAdresserKey: 0
+	gyldigeAdresserKey: 0,
+	husnummerOptions: []
 }
 
 export default class AutofillAddress extends Component {
@@ -82,9 +83,22 @@ export default class AutofillAddress extends Component {
 		return options
 	}
 
+	fetchHusnr = () => {
+		const husnr = this.state.husnummerOptions
+		var options = []
+		husnr.forEach(nr => {
+			options.push({
+				label: nr,
+				value: nr
+			})
+		})
+		return options
+	}
+
 	onAdresseChangeHandler = input => {
 		const { formikProps } = this.props
 		const addressData = input.adrObject
+		console.log('input :', input)
 
 		let newAddressObject = {
 			boadresse_gateadresse: '',
@@ -94,7 +108,15 @@ export default class AutofillAddress extends Component {
 			boadresse_postnr: ''
 		}
 		if (addressData) {
-			let { adrnavn, husnrfra, gkode, pnr, knr } = addressData
+			let { adrnavn, husnrfra, husnrtil, gkode, pnr, knr } = addressData
+			console.log('husnrfra :', husnrfra)
+			console.log('husnrtil :', husnrtil)
+			let husnr = []
+			for (var i = husnrfra; i <= husnrtil; i++) {
+				husnr.push(parseInt(i))
+			}
+			console.log('husnr :', husnr)
+			this.setState({ husnummerOptions: husnr })
 
 			if (this.props.formikProps.values.boadresse_husnummer) {
 				husnrfra = this.props.formikProps.values.boadresse_husnummer
@@ -110,7 +132,13 @@ export default class AutofillAddress extends Component {
 			console.log('newAddressObject :', newAddressObject)
 		}
 
-		formikProps.setValues({ ...formikProps.values, ...newAddressObject })
+		formikProps.setValues({ ...formikProps.values, ...newAddressObject, boadresse_husnummer: '' })
+	}
+
+	onHusnrChangeHandler = input => {
+		console.log('input husnr:', input)
+		const { formikProps } = this.props
+		formikProps.setValues({ ...formikProps.values, boadresse_husnummer: input.value })
 	}
 
 	setQueryString = () => {
@@ -118,9 +146,9 @@ export default class AutofillAddress extends Component {
 		if (this.props.formikProps.values.boadresse_gateadresse) {
 			queryString += `&adresseNavnsok=${this.props.formikProps.values.boadresse_gateadresse}`
 		}
-		if (this.props.formikProps.values.boadresse_husnummer) {
-			queryString += `&husNrsok=${this.props.formikProps.values.boadresse_husnummer}`
-		}
+		// if (this.props.formikProps.values.boadresse_husnummer) {
+		// 	queryString += `&husNrsok=${this.props.formikProps.values.boadresse_husnummer}`
+		// }
 		if (this.props.formikProps.values.boadresse_postnr) {
 			queryString += `&postNrsok=${this.props.formikProps.values.boadresse_postnr}`
 		}
@@ -168,6 +196,8 @@ export default class AutofillAddress extends Component {
 	}
 
 	onClickEndreAdresse = () => {
+		const { formikProps } = this.props
+		formikProps.setValues({ ...formikProps.values, boadresse_husnummer: '' })
 		this.setState({ adresseValgt: false })
 	}
 
@@ -215,19 +245,34 @@ export default class AutofillAddress extends Component {
 
 	renderAdresseSelect = () => {
 		const gyldigeAdresser = this.fetchAdresser()
+		const husNummer = this.fetchHusnr()
 		return (
 			<div>
 				{this.state.adresseValgt && (
-					<div>
+					<div className="address-container">
 						<Field
-							name="generator-select"
+							className="gyldigadresse-select"
+							name="boadresse_gateadresse"
 							// key={this.state.gyldigeAdresserKey}
 							placeholder="Velg gyldig adresse..."
 							label=""
 							component={FormikDollySelect}
-							// onChange={this.onAdresseChangeHandler}
+							beforeChange={this.onAdresseChangeHandler}
 							options={gyldigeAdresser}
 						/>
+						{this.state.husnummerOptions && (
+							<div>
+								<Field
+									className="husnummer-select"
+									name="boadresse_husnummer"
+									placeholder="Velg husnummer..."
+									label=""
+									component={FormikDollySelect}
+									beforeChange={this.onHusnrChangeHandler}
+									options={husNummer}
+								/>
+							</div>
+						)}
 
 						<Knapp
 							className="generate-address"
@@ -244,33 +289,36 @@ export default class AutofillAddress extends Component {
 	}
 
 	renderSelect = item => {
+		// console.log('item :', item)
 		const selectProps = {
 			loadOptions: this.loadOptionsSelector(item.id),
 			placeholder: this.placeHolderGenerator(item.id)
 		}
 		const InputComponent = InputSelector(item.inputType)
 
-		if (item.inputType === 'text') {
+		if (item.id !== 'boadresse_husnummer') {
+			if (item.inputType === 'text') {
+				return (
+					<Field
+						key={item.id}
+						name={item.id}
+						label={item.label}
+						component={InputComponent}
+						// onBlur={this.sjekkGyldigAdresse}
+						placeholder={selectProps.placeholder}
+					/>
+				)
+			}
 			return (
 				<Field
 					key={item.id}
 					name={item.id}
 					label={item.label}
 					component={InputComponent}
-					// onBlur={this.sjekkGyldigAdresse}
-					placeholder={selectProps.placeholder}
+					{...selectProps}
 				/>
 			)
 		}
-		return (
-			<Field
-				key={item.id}
-				name={item.id}
-				label={item.label}
-				component={InputComponent}
-				{...selectProps}
-			/>
-		)
 	}
 
 	render() {

@@ -27,7 +27,6 @@ export default class DollySelect extends PureComponent {
 
 	render() {
 		const { name, label, placeholder, loadOptions, error, size, ...restProps } = this.props
-		console.log('this.props :', this.props)
 		return (
 			<div className={cn({ error: Boolean(error) }, size, 'skjemaelement dollyselect')}>
 				<label htmlFor={name} className="skjemaelement__label">
@@ -69,7 +68,6 @@ export default class DollySelect extends PureComponent {
 }
 
 export const FormikDollySelect = props => {
-	console.log('propjiujis :', props)
 	const { field, form, beforeChange, ...restProps } = props
 	const singleSelectChangeHandler = selected => {
 		form.setFieldValue(field.name, _get(selected, 'value', ''))
@@ -82,7 +80,6 @@ export const FormikDollySelect = props => {
 	const onChangeHandler = props.multi ? multiSelectChangeHandler : singleSelectChangeHandler
 
 	const onChange = selected => {
-		console.log('selected :', selected)
 		beforeChange && beforeChange(selected)
 		onChangeHandler(selected)
 	}
