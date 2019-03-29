@@ -48,7 +48,8 @@ const AttributtListe: Attributt[] = [
 		parent: 'boadresse',
 		label: 'Postnummer',
 		dataSource: DataSource.TPSF,
-		inputType: InputType.Text,
+		inputType: InputType.Select,
+		apiKodeverkId: 'Postnummer',
 		validation: yup.string().required('Vennligst fyll ut.'),
 		attributtType: AttributtType.SelectAndEdit
 	},

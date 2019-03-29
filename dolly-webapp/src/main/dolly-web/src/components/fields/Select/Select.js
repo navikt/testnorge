@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Select, { Async } from 'react-select'
+// import Select, { Async } from 'react-select'
+import Select from 'react-virtualized-select'
 import cn from 'classnames'
 import _get from 'lodash/get'
 
@@ -34,29 +35,19 @@ export default class DollySelect extends PureComponent {
 					{label}{' '}
 				</label>
 				<div className="dollyselect-input">
-					{loadOptions ? (
-						<Async
-							id={name}
-							name={name}
-							loadOptions={loadOptions}
-							placeholder={placeholder}
-							clearable
-							openOnFocus
-							{...this.translations}
-							{...restProps}
-						/>
-					) : (
-						<Select
-							id={name}
-							name={name}
-							placeholder={placeholder}
-							closeOnSelect={this.props.multi ? false : true}
-							clearable
-							openOnFocus
-							{...this.translations}
-							{...restProps}
-						/>
-					)}
+					<Select
+						async={loadOptions ? true : false}
+						loadOptions={loadOptions}
+						// optionHeight={} // Her kan vi styre dynamisk height
+						id={name}
+						name={name}
+						placeholder={placeholder}
+						closeOnSelect={this.props.multi ? false : true}
+						clearable
+						openOnFocus
+						{...this.translations}
+						{...restProps}
+					/>
 				</div>
 				{error && (
 					<div role="alert" aria-live="assertive">
