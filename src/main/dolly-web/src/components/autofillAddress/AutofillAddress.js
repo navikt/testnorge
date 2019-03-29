@@ -1,18 +1,20 @@
 import React, { Component, Fragment } from 'react'
 import Knapp from 'nav-frontend-knapper'
-import DollySelect from '~/components/fields/Select/Select'
-import Input from '~/components/fields/Input/Input'
+import FormikDollySelect from '~/components/fields/Select/Select'
 import { TpsfApi, DollyApi } from '~/service/Api'
 import './AutofillAddress.less'
 import InputSelector from '~/components/fields/InputSelector'
 import { Field } from 'formik'
+import LinkButton from '~/components/button/LinkButton/LinkButton'
 
 const initialState = {
 	isFetching: false,
-	boadresse_gateadresse: '',
-	boadresse_husnummer: '',
-	boadresse_postnr: '',
-	boadresse_kommunenr: '',
+	adresseValgt: false,
+	// erGyldig: true,
+	// boadresse_gateadresse: '',
+	// boadresse_husnummer: '',
+	// boadresse_postnr: '',
+	// boadresse_kommunenr: '',
 	gyldigeAdresser: [],
 	gyldigeAdresserKey: 0
 }
@@ -77,7 +79,7 @@ export default class AutofillAddress extends Component {
 				adrObject: adr
 			})
 		}
-		return Promise.resolve({ options: options })
+		return options
 	}
 
 	onAdresseChangeHandler = input => {
@@ -142,12 +144,20 @@ export default class AutofillAddress extends Component {
 				console.log('addressData :', addressData)
 				this.setState({ gyldigeAdresser: addressData })
 
-				const count = parseInt(generateAddressResponse.data.response.data1.antallForekomster)
+				// const count = parseInt(generateAddressResponse.data.response.data1.antallForekomster)
 
 				let status = generateAddressResponse.data.response.status.utfyllendeMelding
 
+				if (addressData === undefined) {
+					return this.setState({
+						isFetching: false,
+						status
+					})
+				}
+
 				return this.setState({
 					isFetching: false,
+					adresseValgt: true,
 					gyldigeAdresserKey: this.state.gyldigeAdresserKey + 1,
 					status
 				})
@@ -157,39 +167,101 @@ export default class AutofillAddress extends Component {
 		})
 	}
 
+	onClickEndreAdresse = () => {
+		this.setState({ adresseValgt: false })
+	}
+
+	clearAll = () => {
+		const { formikProps } = this.props
+		let newAddressObject = {
+			boadresse_gateadresse: '',
+			boadresse_husnummer: '',
+			boadresse_gatekode: '',
+			boadresse_kommunenr: '',
+			boadresse_postnr: ''
+		}
+		formikProps.setValues({ ...formikProps.values, ...newAddressObject })
+		// this.props.formikProps.values.forEach(value => (value = ''))
+	}
+
+	// sjekkGyldigAdresse = async () => {
+	// 	this.setState({ erGyldig: false })
+	// 	console.log('this.props.formikProps.values :', this.props.formikProps.values)
+	// 	const selectValues = this.props.formikProps.values
+
+	// 	const query = this.setQueryString()
+	// 	let generateAddressResponse
+	// 	generateAddressResponse = await TpsfApi.generateAddress(query)
+	// 	const addressData = generateAddressResponse.data.response.data1.adrData
+	// 	console.log('addressData :', addressData)
+
+	// 	// sjekk husnummer også
+	// 	if (addressData) {
+	// 		addressData.forEach(adresse => {
+	// 			if (
+	// 				selectValues.boadresse_gatekode == adresse.gkode &&
+	// 				selectValues.boadresse_kommunenr == adresse.knr &&
+	// 				selectValues.boadresse_postnr == adresse.pnr
+	// 			) {
+	// 				this.setState({ erGyldig: true })
+	// 			}
+	// 		})
+	// 	}
+
+	// 	if (this.state.erGyldig == true) {
+	// 		console.log('GYLDIG ADRESSE')
+	// 	} else console.log('UGYLDIG ADRESSE')
+	// }
+
 	renderAdresseSelect = () => {
+		const gyldigeAdresser = this.fetchAdresser()
 		return (
-			<DollySelect
-				key={this.state.gyldigeAdresserKey}
-				placeholder="Velg gyldig adresse..."
-				name="generator-select"
-				label=""
-				onChange={this.onAdresseChangeHandler}
-				loadOptions={this.fetchAdresser}
-			/>
+			<div>
+				{this.state.adresseValgt && (
+					<div>
+						<Field
+							name="generator-select"
+							// key={this.state.gyldigeAdresserKey}
+							placeholder="Velg gyldig adresse..."
+							label=""
+							component={FormikDollySelect}
+							// onChange={this.onAdresseChangeHandler}
+							options={gyldigeAdresser}
+						/>
+
+						<Knapp
+							className="generate-address"
+							type="standard"
+							mini
+							onClick={this.onClickEndreAdresse}
+						>
+							Endre adresse
+						</Knapp>
+					</div>
+				)}
+			</div>
 		)
 	}
 
 	renderSelect = item => {
-		// const input = this.state
 		const selectProps = {
 			loadOptions: this.loadOptionsSelector(item.id),
 			placeholder: this.placeHolderGenerator(item.id)
 		}
 		const InputComponent = InputSelector(item.inputType)
 
-		// if (item.id === 'boadresse_gateadresse' || item.id === 'boadresse_husnummer') {
-		// 	return (
-		// 		<Field
-		// 			key={item.id}
-		// 			name={item.id}
-		// 			label={item.label}
-		// 			component={InputComponent}
-		// 			placeholder={selectProps.placeholder}
-		// 		/>
-		// 	)
-		// }
-
+		if (item.inputType === 'text') {
+			return (
+				<Field
+					key={item.id}
+					name={item.id}
+					label={item.label}
+					component={InputComponent}
+					// onBlur={this.sjekkGyldigAdresse}
+					placeholder={selectProps.placeholder}
+				/>
+			)
+		}
 		return (
 			<Field
 				key={item.id}
@@ -203,24 +275,29 @@ export default class AutofillAddress extends Component {
 
 	render() {
 		const items = this.props.items
-		console.log('this :', this.props.formikProps.values)
+		// console.log('this :', this.props.formikProps.values)
 
 		return (
 			<Fragment>
-				<div className="address-container">
-					{items.map(item => item.inputType && this.renderSelect(item))}
-				</div>
+				{!this.state.adresseValgt && (
+					<div className="address-container">
+						{items.map(item => item.inputType && this.renderSelect(item))}
+						<LinkButton text="Nullstill alle" onClick={this.clearAll} />
+					</div>
+				)}
 				<div className="get-address-container">
-					<Knapp
-						className="generate-address"
-						type="standard"
-						autoDisableVedSpinner
-						mini
-						spinner={this.state.isFetching}
-						onClick={this.onClickHandler}
-					>
-						Hent gyldige adresser
-					</Knapp>
+					{!this.state.adresseValgt && (
+						<Knapp
+							className="generate-address"
+							type="standard"
+							autoDisableVedSpinner
+							mini
+							spinner={this.state.isFetching}
+							onClick={this.onClickHandler}
+						>
+							Hent gyldige adresser
+						</Knapp>
+					)}
 					{this.state.gyldigeAdresser &&
 						this.state.gyldigeAdresserKey > 0 &&
 						this.renderAdresseSelect()}
