@@ -2,11 +2,9 @@ package no.nav.registre.sdForvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.Entity;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,12 +31,18 @@ public class staticDataService {
         readAaregLocalFile();
         readDkifLocalFile();
         readTpsLocalFile();
+
+        log.info("___________DATABASE_INFO___________");
+        aaregRepository.findAll().forEach(d -> log.info(d.toString()));
+        dkifRepository.findAll().forEach(d -> log.info(d.toString()));
+        tpsRepository.findAll().forEach(d -> log.info(d.toString()));
+        log.info("___________DATABASE_INFO___________");
     }
 
     @SuppressWarnings(value = "unchecked")
     private void readAaregLocalFile() {
         try {
-            List<AaregModel> entities = (List<AaregModel>)(List<?>)DatabaseInitializer.initializeFromCsv("aareg,csv", ModelEnum.AAREG, ",");
+            List<AaregModel> entities = (List<AaregModel>) (List<?>) DatabaseInitializer.initializeFromCsv("statisk_data/aareg.csv", ModelEnum.AAREG, ";");
             aaregRepository.saveAll(entities);
         } catch (IOException e) {
             log.warn("Unable to read local file, expected this to be present when initializing.\nDatabase might not have been initialized with the correct values");
@@ -48,7 +52,7 @@ public class staticDataService {
     @SuppressWarnings(value = "unchecked")
     private void readTpsLocalFile() {
         try {
-            List<TpsModel> entities = (List<TpsModel>)(List<?>)DatabaseInitializer.initializeFromCsv("tps", ModelEnum.AAREG, ",");
+            List<TpsModel> entities = (List<TpsModel>) (List<?>) DatabaseInitializer.initializeFromCsv("statisk_data/tps.csv", ModelEnum.TPS, ";");
             tpsRepository.saveAll(entities);
         } catch (IOException e) {
             log.warn("Unable to read local file, expected this to be present when initializing.\nDatabase might not have been initialized with the correct values");
@@ -58,7 +62,7 @@ public class staticDataService {
     @SuppressWarnings(value = "unchecked")
     private void readDkifLocalFile() {
         try {
-            List<DkifModel> entities = (List<DkifModel>)(List<?>)DatabaseInitializer.initializeFromCsv("dkif", ModelEnum.AAREG, ",");
+            List<DkifModel> entities = (List<DkifModel>) (List<?>) DatabaseInitializer.initializeFromCsv("statisk_data/dkif.csv", ModelEnum.DKIF, ";");
             dkifRepository.saveAll(entities);
         } catch (IOException e) {
             log.warn("Unable to read local file, expected this to be present when initializing.\nDatabase might not have been initialized with the correct values");

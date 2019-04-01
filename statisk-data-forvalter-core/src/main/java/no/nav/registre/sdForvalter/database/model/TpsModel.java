@@ -6,22 +6,25 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
+import javax.persistence.Table;
 import java.util.List;
 
 import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
 @Entity
+@ToString
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
+@Table(name = "tps")
 public class TpsModel extends AuditModel implements CreatableFromString {
 
     @Id
@@ -30,11 +33,11 @@ public class TpsModel extends AuditModel implements CreatableFromString {
     @JsonProperty("fornavn")
     private String firstName;
     @JsonProperty("etternavn")
-    private String LastName;
+    private String lastName;
     @JsonProperty("addresse")
     private String address;
     @JsonProperty("postnr")
-    private int postNr;
+    private String postNr;
     @JsonProperty("by")
     private String city;
 
@@ -44,6 +47,10 @@ public class TpsModel extends AuditModel implements CreatableFromString {
         for (int i = 0; i < headers.size(); i++) {
             try {
                 String fieldName = headers.get(i);
+                if (input.size() != headers.size()) {
+                    if (input.size() == i || input.size() == 0)
+                        break;
+                }
                 String fieldValue = input.get(i);
 
                 switch (fieldName.toLowerCase()) {
@@ -60,7 +67,7 @@ public class TpsModel extends AuditModel implements CreatableFromString {
                         this.setAddress(fieldValue);
                         break;
                     case "postnr":
-                        this.setPostNr(Integer.getInteger(fieldValue));
+                        this.setPostNr(fieldValue);
                         break;
                     case "by":
                         this.setCity(fieldValue);
@@ -72,6 +79,9 @@ public class TpsModel extends AuditModel implements CreatableFromString {
                 log.warn("Mismatch between input data when creating from string for field: {}", headers.get(i));
                 log.warn(e.getMessage(), e);
             }
+        }
+        if ("".equals(this.fnr) || this.fnr == null) {
+            log.warn("Could not create fnr");
         }
     }
 }
