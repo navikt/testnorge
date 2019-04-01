@@ -33,6 +33,18 @@ public class AaregModel extends AuditModel implements CreatableFromString {
     @JsonProperty("orgId")
     private long orgId;
 
+//    @JsonProperty("enhetstype")
+//    private String type;
+//
+//    @JsonProperty("orgnavn")
+//    private String name;
+//
+//    @JsonProperty("knytning")
+//    private String connection;
+//
+//    @JsonProperty("beskrivelse")
+//    private String description;
+
     @Override
     public void updateFromString(List<String> input, List<String> headers) {
 
@@ -55,6 +67,18 @@ public class AaregModel extends AuditModel implements CreatableFromString {
                     case "orgid":
                         this.setOrgId(Long.valueOf(fieldValue.replaceAll("\\s+", "")));
                         break;
+//                    case "orgnavn":
+//                        this.setName(fieldValue);
+//                        break;
+//                    case "knytning":
+//                        this.setConnection(fieldValue);
+//                        break;
+//                    case "beskrivelse":
+//                        this.setDescription(fieldValue);
+//                        break;
+//                    case "enhetstype":
+//                        this.setType(fieldValue);
+//                        break;
                     default:
                         throw new NoSuchFieldException(fieldName);
                 }

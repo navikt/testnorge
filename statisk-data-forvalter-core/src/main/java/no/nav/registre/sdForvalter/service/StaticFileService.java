@@ -20,7 +20,7 @@ import no.nav.registre.sdForvalter.util.database.DatabaseInitializer;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class staticDataService {
+public class StaticFileService {
 
     private final AaregRepository aaregRepository;
     private final DkifRepository dkifRepository;
@@ -31,12 +31,6 @@ public class staticDataService {
         readAaregLocalFile();
         readDkifLocalFile();
         readTpsLocalFile();
-
-        log.info("___________DATABASE_INFO___________");
-        aaregRepository.findAll().forEach(d -> log.info(d.toString()));
-        dkifRepository.findAll().forEach(d -> log.info(d.toString()));
-        tpsRepository.findAll().forEach(d -> log.info(d.toString()));
-        log.info("___________DATABASE_INFO___________");
     }
 
     @SuppressWarnings(value = "unchecked")

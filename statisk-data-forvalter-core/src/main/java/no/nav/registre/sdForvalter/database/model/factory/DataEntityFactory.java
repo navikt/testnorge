@@ -1,4 +1,4 @@
-package no.nav.registre.sdForvalter.util.database;
+package no.nav.registre.sdForvalter.database.model.factory;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.DkifModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
 
-class DataEntityFactory {
+public class DataEntityFactory {
 
-    static Object create(ModelEnum dataType, List<String> content, List<String> headers) {
+    public static Object create(ModelEnum dataType, List<String> content, List<String> headers) {
         switch (dataType) {
             case AAREG:
                 AaregModel aaregModel = AaregModel.builder().build();

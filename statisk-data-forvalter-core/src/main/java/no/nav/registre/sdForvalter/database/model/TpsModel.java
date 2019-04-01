@@ -28,13 +28,14 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 public class TpsModel extends AuditModel implements CreatableFromString {
 
     @Id
+    @JsonProperty
     private String fnr;
 
     @JsonProperty("fornavn")
     private String firstName;
     @JsonProperty("etternavn")
     private String lastName;
-    @JsonProperty("addresse")
+    @JsonProperty("adresse")
     private String address;
     @JsonProperty("postnr")
     private String postNr;
@@ -63,7 +64,7 @@ public class TpsModel extends AuditModel implements CreatableFromString {
                     case "etternavn":
                         this.setLastName(fieldValue);
                         break;
-                    case "addresse":
+                    case "adresse":
                         this.setAddress(fieldValue);
                         break;
                     case "postnr":

@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.database.ModelEnum;
+import no.nav.registre.sdForvalter.database.model.factory.DataEntityFactory;
 
 @Slf4j
 public class DatabaseInitializer {
