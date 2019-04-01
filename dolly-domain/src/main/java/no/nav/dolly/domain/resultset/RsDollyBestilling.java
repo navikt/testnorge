@@ -30,4 +30,18 @@ public class RsDollyBestilling {
         }
         return aareg;
     }
+
+    public List<String> getEnvironments() {
+        if (isNull(environments)) {
+            environments = new ArrayList();
+        }
+        return environments;
+    }
+
+    public List<RsOpprettSkattegrunnlag> getSigrunstub() {
+        if (isNull(sigrunstub)) {
+            sigrunstub = new ArrayList();
+        }
+        return sigrunstub;
+    }
 }
