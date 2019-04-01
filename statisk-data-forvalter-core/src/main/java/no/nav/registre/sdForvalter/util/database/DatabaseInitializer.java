@@ -26,7 +26,8 @@ public class DatabaseInitializer {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputFS, StandardCharsets.ISO_8859_1));
 
         List<String> headers = Arrays.asList(br.readLine().split(splitToken));
-        List<Object> data = br.lines().map(line -> {
+
+        return br.lines().map(line -> {
             Object entity = null;
             try {
                 if (line.isEmpty()) {
@@ -43,8 +44,6 @@ public class DatabaseInitializer {
             }
             return entity;
         }).filter(Objects::nonNull).collect(Collectors.toList());
-
-        return data;
     }
 
 }

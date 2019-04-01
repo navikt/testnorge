@@ -13,7 +13,7 @@ public class SkdConsumer {
     private final RestTemplate restTemplate;
     private final String skdUrl;
 
-    public SkdConsumer(RestTemplate restTemplate, /**@Value("${testnorge-skd.rest.api.url}")*/@Value("abc") String skdUrl) {
+    public SkdConsumer(RestTemplate restTemplate, @Value("${testnorge-skd.rest.api.url}") String skdUrl) {
         this.restTemplate = restTemplate;
         this.skdUrl = skdUrl + "/v1";
     }
