@@ -137,8 +137,6 @@ export default class BestillingDetaljer extends PureComponent {
 	_renderGjenopprettModal = () => {
 		const { environments, id } = this.props.bestilling // miljø som ble bestilt i en bestilling
 
-		console.log('environments :', environments);
-		console.log('id :', id);
 		return (
 			<Fragment>
 				<div className="dollymodal">
