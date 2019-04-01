@@ -26,6 +26,7 @@ public class TpsfConsumer {
     private RestTemplate restTemplate;
     private UriTemplate uriTemplateSaveToTpsf;
     private UriTemplate uriTemplateSaveToTps;
+    private UriTemplate uriTemplateGetMeldingIder;
 
     public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
@@ -36,6 +37,7 @@ public class TpsfConsumer {
         this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
         this.uriTemplateSaveToTpsf = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/save/{gruppeId}");
         this.uriTemplateSaveToTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/send/{gruppeId}");
+        this.uriTemplateGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{gruppeId}");
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
@@ -52,5 +54,12 @@ public class TpsfConsumer {
         return restTemplate.postForObject(url,
                 sendToTpsRequest,
                 SkdMeldingerTilTpsRespons.class);
+    }
+
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
+    public List<Long> getMeldingIdsFromAvspillergruppe(Long gruppeId) {
+        URI url = uriTemplateGetMeldingIder.expand(gruppeId);
+        RequestEntity getRequest = RequestEntity.get(url).build();
+        return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
 }
