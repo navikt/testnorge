@@ -10,6 +10,7 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -43,6 +44,7 @@ import java.util.Random;
 import java.util.Set;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EksisterendeIdenterServiceTest {
@@ -80,6 +82,9 @@ public class EksisterendeIdenterServiceTest {
         Set<String> doedeIdenter = new LinkedHashSet<>();
         doedeIdenter.add("20044249948");
 
+        Set<String> foedteIdenter = new LinkedHashSet<>();
+        foedteIdenter.add("20044251231");
+
         when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(1L, Arrays.asList(
                 FOEDSELSMELDING.getAarsakskode(),
                 INNVANDRING.getAarsakskode(),
@@ -93,6 +98,8 @@ public class EksisterendeIdenterServiceTest {
         when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(3L, Arrays.asList(
                 Endringskoder.DOEDSMELDING.getAarsakskode(),
                 Endringskoder.UTVANDRING.getAarsakskode()), TRANSAKSJONSTYPE)).thenReturn(doedeIdenter);
+        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(3L, Arrays.asList(
+                FOEDSELSMELDING.getAarsakskode()), TRANSAKSJONSTYPE)).thenReturn(foedteIdenter);
 
         Map<String, String> status = new HashMap<>();
         status.put(DATO_DO, "");
@@ -192,6 +199,19 @@ public class EksisterendeIdenterServiceTest {
     }
 
     /**
+     * Scenario:
+     * Finn fødte identer
+     */
+    @Test
+    public void finnFoedteIdenterTest() {
+        List<String> foedte = eksisterendeIdenterService.finnFoedteIdenter(3L);
+        assertEquals(1, foedte.size());
+        assertThat(foedte, containsInAnyOrder(
+                "20044251231"
+        ));
+    }
+
+    /**
      * Gitt en liste med identer, skal systemet finne tilhørende nav-kontor og returnere et map med fnr-navKontor
      */
     @Test
@@ -230,5 +250,50 @@ public class EksisterendeIdenterServiceTest {
         verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
 
         assertThat(fnrMedStatusQuo.get(fnr1), equalTo(jsonNode));
+    }
+
+    @Test
+    public void shouldHandleEmptyRelasjon() throws IOException {
+        String fnr = "12090080405";
+        String miljoe = "t1";
+
+        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/tom_relasjon.json"));
+
+        when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
+        RelasjonsResponse response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
+
+        assertThat(response.getFnr(), equalTo(fnr));
+        assertThat(response.getRelasjoner().size(), is(0));
+    }
+
+    @Test
+    public void shouldHandleSingleRelasjon() throws IOException {
+        String fnr = "12090080405";
+        String miljoe = "t1";
+
+        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/relasjon.json"));
+
+        when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
+        RelasjonsResponse response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
+
+        assertThat(response.getFnr(), equalTo(fnr));
+        assertThat(response.getRelasjoner().size(), is(1));
+        assertThat(response.getRelasjoner().get(0).getFnrRelasjon(), equalTo("12021790069"));
+    }
+
+    @Test
+    public void shouldHandleMultipleRelasjoner() throws IOException {
+        String fnr = "12090080405";
+        String miljoe = "t1";
+
+        JsonNode jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/relasjoner.json"));
+
+        when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
+        RelasjonsResponse response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
+
+        assertThat(response.getFnr(), equalTo(fnr));
+        assertThat(response.getRelasjoner().size(), is(2));
+        assertThat(response.getRelasjoner().get(0).getFnrRelasjon(), equalTo("12021790069"));
+        assertThat(response.getRelasjoner().get(1).getFnrRelasjon(), equalTo("17120080318"));
     }
 }

@@ -11,6 +11,7 @@ import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKOD
 import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
+import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
+import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 
 @Service
 @Slf4j
@@ -35,6 +38,7 @@ public class EksisterendeIdenterService {
 
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
+    private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
     public static final String TRANSAKSJONSTYPE = "1";
 
     @Autowired
@@ -183,5 +187,54 @@ public class EksisterendeIdenterService {
                 gruppeId, Collections.singletonList(
                         Endringskoder.VIGSEL.getAarsakskode()),
                 TRANSAKSJONSTYPE));
+    }
+
+    public List<String> finnFoedteIdenter(Long gruppeId) {
+        return new ArrayList<>(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
+                gruppeId, Arrays.asList(FOEDSELSMELDING.getAarsakskode()),
+                TRANSAKSJONSTYPE
+        ));
+    }
+
+    public RelasjonsResponse hentRelasjoner(String ident, String miljoe) {
+        RelasjonsResponse relasjonsResponse = null;
+        try {
+            JsonNode statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident);
+            int antallRelasjoner = statusQuoTilIdent.findValue("antallRelasjoner").asInt();
+
+            if(antallRelasjoner == 1) {
+                relasjonsResponse = RelasjonsResponse.builder()
+                        .fnr(statusQuoTilIdent.findValue("fnr").asText())
+                        .relasjoner(Collections.singletonList(parseRelasjonNode(statusQuoTilIdent.findValue("relasjon")))).build();
+            } else if (antallRelasjoner > 1) {
+                ArrayNode relasjonNode = (ArrayNode) statusQuoTilIdent.findValue("relasjon");
+                List<Relasjon> relasjoner = new ArrayList<>(relasjonNode.size());
+                for(JsonNode relasjonselement : relasjonNode) {
+                    relasjoner.add(parseRelasjonNode(relasjonselement));
+                }
+                relasjonsResponse = RelasjonsResponse.builder().fnr(statusQuoTilIdent.findValue("fnr").asText()).relasjoner(relasjoner).build();
+            } else {
+                relasjonsResponse = RelasjonsResponse.builder().fnr(statusQuoTilIdent.findValue("fnr").asText()).relasjoner(new ArrayList<>()).build();
+            }
+        } catch (IOException e) {
+            log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
+        }
+        return relasjonsResponse;
+    }
+
+    private Relasjon parseRelasjonNode(JsonNode relasjonNode) {
+        return Relasjon.builder()
+                .kortnavn(relasjonNode.findValue("kortnavn").asText())
+                .datoDo(relasjonNode.findValue("datoDo").asText())
+                .typeRelBeskr(relasjonNode.findValue("typeRelBeskr").asText())
+                .mellomnavn(relasjonNode.findValue("mellomnavn").asText())
+                .etternavn(relasjonNode.findValue("etternavn").asText())
+                .adresseStatus(relasjonNode.findValue("adresseStatus").asInt())
+                .adrStatusBeskr(relasjonNode.findValue("adrStatusBeskr").asText())
+                .spesregType(relasjonNode.findValue("spesregType").asText())
+                .fornavn(relasjonNode.findValue("fornavn").asText())
+                .fnrRelasjon(relasjonNode.findValue("fnrRelasjon").asText())
+                .typeRelasjon(relasjonNode.findValue("typeRelasjon").asText())
+                .build();
     }
 }
