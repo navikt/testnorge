@@ -300,7 +300,7 @@ public class DollyBestillingService {
     }
 
     private void handleSigrunstub(List<RsOpprettSkattegrunnlag> opprettSkattegrunnlagList, String ident, BestillingProgress progress, boolean isOpprett) {
-        if (nonNull(opprettSkattegrunnlagList)) {
+        if (!opprettSkattegrunnlagList.isEmpty()) {
             for (RsOpprettSkattegrunnlag request : opprettSkattegrunnlagList) {
                 request.setPersonidentifikator(ident);
             }
