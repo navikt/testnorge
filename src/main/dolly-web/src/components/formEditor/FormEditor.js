@@ -15,6 +15,17 @@ import _xor from 'lodash/fp/xor'
 import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {
+	render() {
+		const { FormikProps, ClosePanels, AttributtListe } = this.props
+
+		// TODO: editMode burde være en props for hele klassen.
+		// editMode? renderEdit....: renderNormal
+		return AttributtListe.map(hovedKategori =>
+			// Ikke vis kategori som har default ikke-valgt radio button
+			this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
+		)
+	}
+
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
 		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributes } = this.props
 		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
@@ -51,6 +62,8 @@ export default class FormEditor extends PureComponent {
 			})
 		}
 
+		// console.log('hovedKategoriAttributes :', hovedKategoriAttributes)
+		// console.log('hasError :', hasError)
 		return (
 			<Panel
 				key={hovedKategori.id}
@@ -97,20 +110,49 @@ export default class FormEditor extends PureComponent {
 				<div className="subkategori-field-group">
 					{items.map(
 						item =>
-							isFieldarray
-								? FormEditorFieldArray(
-										item,
-										formikProps,
-										this.renderFieldComponent,
-										this.renderFieldSubItem,
-										this.props.editMode
-								  )
-								: this.renderFieldComponent(item, formikProps.values)
+							this._shouldRenderFieldComponent(items, item, formikProps.values)
+								? isFieldarray
+									? FormEditorFieldArray(
+											item,
+											formikProps,
+											this.renderFieldComponent,
+											this.renderFieldSubItem,
+											this._shouldRenderFieldComponent,
+											this.props.editMode
+									  )
+									: this.renderFieldComponent(item, formikProps.values)
+								: null
 					)}
 				</div>
 				{isAdresse && <AutofillAddress formikProps={formikProps} />}
 			</div>
 		)
+	}
+
+	_shouldRenderFieldComponent = (items, item, valgteVerdier, parentObject) => {
+		// Avhengigheter mellom valgte verdi og field
+		// AAREG
+
+		if (item.onlyShowAfterSelectedValue) {
+			// console.log('items :', items)
+			// console.log('valgteVerdier :', valgteVerdier)
+			// console.log('formik parentObj:', parentObject)
+
+			const { parentId, idx } = parentObject
+			const attributtId = item.onlyShowAfterSelectedValue.attributtId
+			const dependantAttributt = items.find(attributt => attributt.id === attributtId)
+			// console.log('seelctedAttributt :', dependantAttributt)
+
+			const valueIndex = item.onlyShowAfterSelectedValue.valueIndex
+
+			if (
+				valgteVerdier[parentId][idx][attributtId] !== dependantAttributt.options[valueIndex].value
+			) {
+				// console.log('happen')
+				return false
+			}
+		}
+		return true
 	}
 
 	renderFieldComponent = (item, valgteVerdier, parentObject) => {
@@ -208,14 +250,5 @@ export default class FormEditor extends PureComponent {
 			default:
 				return {}
 		}
-	}
-
-	render() {
-		const { FormikProps, ClosePanels, AttributtListe } = this.props
-
-		return AttributtListe.map(hovedKategori =>
-			// Ikke vis kategori som har default ikke-valgt radio button
-			this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
-		)
 	}
 }

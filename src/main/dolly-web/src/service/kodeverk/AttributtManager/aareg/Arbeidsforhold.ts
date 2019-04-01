@@ -3,7 +3,6 @@ import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import Formatters from '~/utils/DataFormatter'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
-import { NumberValidator } from '~/utils/Validator'
 import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
@@ -86,17 +85,36 @@ const AttributtListe: Attributt[] = [
 				hovedKategori: Kategorier.ArbeidOgInntekt,
 				subKategori: SubKategorier.Arbeidsforhold,
 				id: 'orgnummer',
-				label: 'Orgnummer/ident',
+				label: 'Orgnummer',
 				path: 'arbeidsgiver',
 				dataSource: DataSource.AAREG,
-				inputType: InputType.Number,
+				inputType: InputType.Text,
+				onlyShowAfterSelectedValue: { attributtId: 'aktoertype', valueIndex: 0 },
+				// Egen validation pga yup tror stor streng ikke er integer
+
+				validation: yup
+					.string()
+					.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
+					.test('len', 'Orgnummer må være et tall med 9 sifre', val => val.length === 9),
+				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.ArbeidOgInntekt,
+				subKategori: SubKategorier.Arbeidsforhold,
+				id: 'pers',
+				label: 'Arbeidsgiver ident',
+				path: 'arbeidsgiver',
+				dataSource: DataSource.AAREG,
+				inputType: InputType.Text,
 				inputTypeAttributes: {
 					min: 0
 				},
+				onlyShowAfterSelectedValue: { attributtId: 'aktoertype', valueIndex: 1 },
 				// Egen validation pga yup tror stor streng ikke er integer
-				validation: NumberValidator.required('Tast inn et gyldig orgnummer/ident')
-					.min(1, 'Tast inn et gyldig orgnummer/ident')
-					.max(99999999999, 'Ugyldig input'),
+				validation: yup
+					.string()
+					.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
+					.test('len', 'Ident må være et tall med 11 sifre', val => val.length === 11),
 				attributtType: AttributtType.SelectAndRead
 			}
 		]
