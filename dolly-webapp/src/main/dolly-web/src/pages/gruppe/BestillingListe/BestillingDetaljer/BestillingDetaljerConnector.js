@@ -8,7 +8,6 @@ import {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		miljoeStatusObj: miljoStatusSelector(ownProps.bestilling),
 		openAmState: state.openam,
 		openAm: ownProps.bestilling.openamSent
 	}

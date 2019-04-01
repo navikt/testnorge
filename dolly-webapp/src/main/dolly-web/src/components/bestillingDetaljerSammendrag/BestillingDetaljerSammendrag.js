@@ -86,8 +86,7 @@ export default class BestillingDetaljerSammendrag extends PureComponent {
 
     render() {
 
-		const {	bestilling,	type } = this.props
-		console.log('bestilling sammendrag :', bestilling);
+        const {	bestilling,	type } = this.props
 		const bestillingDetaljer = miljoeStatusSelector(bestilling)
 		const data = mapBestillingData(bestilling)
         const modal = type === 'modal'
