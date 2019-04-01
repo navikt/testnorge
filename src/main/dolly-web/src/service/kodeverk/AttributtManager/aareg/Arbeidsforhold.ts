@@ -24,8 +24,10 @@ const AttributtListe: Attributt[] = [
 				path: 'arbeidsavtale',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Select,
+				apiKodeverkId: 'Yrker',
 				options: SelectOptionsManager('yrke'),
 				validation: yup.string().required('Velg et yrke.'),
+				size: 'large',
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
