@@ -11,9 +11,11 @@ const FormEditorFieldArray = (
 	formikProps,
 	renderFieldComponent,
 	renderFieldSubItem,
+	shouldRenderFieldComponent,
 	editMode
 ) => {
 	const parentId = subKategori.id
+
 	return (
 		<div className="subkategori" key={parentId}>
 			<FieldArray
@@ -24,6 +26,7 @@ const FormEditorFieldArray = (
 						formikProps={formikProps}
 						renderFieldComponent={renderFieldComponent}
 						renderFieldSubItem={renderFieldSubItem}
+						shouldRenderFieldComponent={shouldRenderFieldComponent}
 						editMode={editMode}
 						arrayHelpers={arrayHelpers}
 					/>
@@ -38,6 +41,7 @@ export const FieldArrayComponent = ({
 	formikProps,
 	renderFieldComponent,
 	renderFieldSubItem,
+	shouldRenderFieldComponent,
 	editMode,
 	arrayHelpers
 }) => {
@@ -72,16 +76,23 @@ export const FieldArrayComponent = ({
 						<div key={idx}>
 							<div className="subkategori-field-group multi">
 								{items.map(item => {
-									// Add subKategori to ID
-									const fakeItem = {
-										...item,
-										id: `${parentId}[${idx}]${item.id}`
-									}
+									if (
+										shouldRenderFieldComponent(items, item, formikProps.values, {
+											parentId,
+											idx
+										})
+									) {
+										// Add subKategori to ID
+										const fakeItem = {
+											...item,
+											id: `${parentId}[${idx}]${item.id}`
+										}
 
-									return renderFieldComponent(fakeItem, formikProps.values, {
-										parentId,
-										idx
-									})
+										return renderFieldComponent(fakeItem, formikProps.values, {
+											parentId,
+											idx
+										})
+									}
 								})}
 								{/* REG-3377: Alex - Under utvikling */}
 								{/* {subItems && subItems.map(subItem => {
