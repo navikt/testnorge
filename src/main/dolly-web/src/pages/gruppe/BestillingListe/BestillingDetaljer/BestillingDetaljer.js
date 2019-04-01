@@ -13,7 +13,7 @@ import cn from 'classnames'
 import SendOpenAmConnector from '~/pages/gruppe/SendOpenAm/SendOpenAmConnector'
 import OpenAmStatusConnector from '~/pages/gruppe/OpenAmStatus/OpenAmStatusConnector'
 import DollyModal from '~/components/modal/DollyModal'
-import Feilmelding from '~/components/Feilmelding/Feilmelding'
+import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
 
 export default class BestillingDetaljer extends PureComponent {
 	constructor(props) {
@@ -35,13 +35,8 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-		const {
-			successEnvs,
-			failedEnvs,
-			avvikEnvs,
-			bestilling,
-			finnesFeilmelding
-		} = this.props.miljoeStatusObj
+
+		const bestilling = this.props.bestilling
 		const bestillingId = this.props.bestilling.id
 		const { openAm, openAmState } = this.props
 		const { modalOpen } = this.state
@@ -54,10 +49,10 @@ export default class BestillingDetaljer extends PureComponent {
 		// TODO: Reverse Map detail data here. Alex
 		return (
 			<div className="bestilling-detaljer">
-				{this._renderBestillingsDetaljer()}
-				{this._renderMiljoeStatus(successEnvs, failedEnvs, avvikEnvs)}
-				{finnesFeilmelding && this._renderErrorMessage(bestilling)}
-				{/* <div className="flexbox--align-center--justify-end"> */}
+				<BestillingDetaljerSammendrag 
+					bestilling={bestilling} 
+					type = 'panel'
+				/>
 				{openAm ? (
 					<div className="bestilling-detaljer">
 						<h3>Jira-lenker</h3>
@@ -123,50 +118,6 @@ export default class BestillingDetaljer extends PureComponent {
 		return temp
 	}
 
-	_renderBestillingsDetaljer = () => {
-		const { bestilling } = this.props
-		const data = mapBestillingData(bestilling)
-		return (
-			<Fragment>
-				<h3>Bestillingsdetaljer</h3>
-				<div className={'info-block'}>
-					{/* Husk å lage en sjekk om verdi finnes */}
-					{data ? (
-						data.map((kategori, j) => {
-							const bottomBorder = j != data.length - 1
-							const cssClass = cn('flexbox--align-center info-text', {
-								'bottom-border': bottomBorder
-							})
-							if (kategori.header) {
-								return (
-									<Fragment key={j}>
-										<h4>{kategori.header} </h4>
-										<div className={cssClass}>
-											{kategori.items.map((attributt, i) => {
-												if (attributt.value) {
-													return (
-														<StaticValue
-															header={attributt.label}
-															size="small"
-															value={attributt.value}
-															key={i}
-														/>
-													)
-												}
-											})}
-										</div>
-									</Fragment>
-								)
-							}
-						})
-					) : (
-						<p>Kunne ikke hente bestillingsdata</p>
-					)}
-				</div>
-			</Fragment>
-		)
-	}
-
 	_renderJiraLinks = openAm => {
 		const data = openAm.split(',')
 		const linkArray = data.map((respons, i) => {
@@ -186,6 +137,8 @@ export default class BestillingDetaljer extends PureComponent {
 	_renderGjenopprettModal = () => {
 		const { environments, id } = this.props.bestilling // miljø som ble bestilt i en bestilling
 
+		console.log('environments :', environments);
+		console.log('id :', id);
 		return (
 			<Fragment>
 				<div className="dollymodal">
@@ -241,42 +194,5 @@ export default class BestillingDetaljer extends PureComponent {
 
 	_onToggleModal = () => {
 		this.setState({ modalOpen: !this.state.modalOpen })
-	}
-
-	_renderErrorMessage = bestilling => {
-		return (
-			<Fragment>
-				<div className="flexbox--align-center error-header">
-					<Icon size={'16px'} kind={'report-problem-triangle'} />
-					<h3>Feilmeldinger</h3>
-				</div>
-				<Feilmelding bestilling={bestilling} />
-			</Fragment>
-		)
-	}
-
-	_renderMiljoeStatus = (successEnvs, failedEnvs, avvikEnvs) => {
-		const successEnvsStr = Formatters.arrayToString(successEnvs)
-		const failedEnvsStr = Formatters.arrayToString(failedEnvs)
-		const avvikEnvsStr = Formatters.arrayToString(avvikEnvs)
-
-		return (
-			<Fragment>
-				<h3>Miljøstatus</h3>
-				<div className={'flexbox--align-center info-block'}>
-					{successEnvsStr.length > 0 ? (
-						<StaticValue size={'medium'} header="Suksess" value={successEnvsStr} />
-					) : (
-						<StaticValue size={'medium'} header="Suksess" value={'Ingen'} />
-					)}
-					{failedEnvsStr.length > 0 && (
-						<StaticValue size={'medium'} header="Feilet" value={failedEnvsStr} />
-					)}
-					{avvikEnvsStr.length > 0 && (
-						<StaticValue size={'medium'} header="Avvik" value={avvikEnvsStr} />
-					)}
-				</div>
-			</Fragment>
-		)
 	}
 }
