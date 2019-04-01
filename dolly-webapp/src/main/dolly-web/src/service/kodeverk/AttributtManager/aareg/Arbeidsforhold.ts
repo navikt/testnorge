@@ -38,7 +38,7 @@ const AttributtListe: Attributt[] = [
 				path: 'ansettelsesPeriode',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Date,
-				validation: DateValidation,
+				validation: DateValidation(),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -48,7 +48,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Sluttdato',
 				path: 'ansettelsesPeriode',
 				dataSource: DataSource.AAREG,
-				validation: DateValidation,
+				validation: DateValidation(false),
 				inputType: InputType.Date,
 				attributtType: AttributtType.SelectAndRead
 			},

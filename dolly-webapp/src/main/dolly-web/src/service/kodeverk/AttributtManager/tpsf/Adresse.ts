@@ -73,7 +73,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Flyttedato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation,
+		validation: DateValidation(),
 		attributtType: AttributtType.SelectAndEdit,
 		dependentOn: 'boadresse'
 	}
