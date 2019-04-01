@@ -100,21 +100,6 @@ export const getAaregSuccessEnv = bestilling => {
 	return envs
 }
 
-const antallIdenterOpprettetFunk = bestilling => {
-	let identArray = []
-	bestilling.tpsfStatus &&
-		bestilling.tpsfStatus.map(status => {
-			Object.keys(status.environmentIdents).map(miljo => {
-				status.environmentIdents[miljo].map(ident => {
-					!identArray.includes(ident) && identArray.push(ident)
-				})
-			})
-		})
-	return identArray.length
-}
-
-const bestillingIkkeFerdig = item => !item.ferdig
-
 const mapItems = items => {
 	if (!items) return null
 	return items.map(item => {
@@ -135,6 +120,7 @@ const mapItems = items => {
 		}
 	})
 }
+const bestillingIkkeFerdig = item => !item.ferdig
 
 const avvikStatus = item => {
 	let avvik = false
