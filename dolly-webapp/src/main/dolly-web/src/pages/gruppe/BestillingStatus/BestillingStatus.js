@@ -6,6 +6,7 @@ import BestillingProgress from './BestillingProgress/BestillingProgress'
 import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
 import './BestillingStatus.less'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
+import miljoeStatusSelector from '../../../utils/MiljoeStatusSelector';
 
 export default class BestillingStatus extends PureComponent {
 	static propTypes = {
@@ -124,7 +125,8 @@ export default class BestillingStatus extends PureComponent {
 	}
 
 	render() {
-		const { miljoeStatusObj, isCanceling, bestilling } = this.props
+		const { isCanceling, bestilling } = this.props
+		const miljoeStatusObj = miljoeStatusSelector(bestilling)
 
 		if (isCanceling && this.state.showCancelLoadingMsg) {
 			return (
@@ -148,6 +150,7 @@ export default class BestillingStatus extends PureComponent {
 					bestilling && (
 						<MiljoeStatus
 							miljoeStatusObj={miljoeStatusObj}
+							bestilling={bestilling}
 							onCloseButton={() => this._onCloseMiljoeStatus()}
 						/>
 					)
