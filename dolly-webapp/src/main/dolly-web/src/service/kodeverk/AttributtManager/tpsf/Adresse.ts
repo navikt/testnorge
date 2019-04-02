@@ -25,7 +25,6 @@ const AttributtListe: Attributt[] = [
 		label: 'Gatenavn',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		// validation: yup.string().required('Fyll ut eller hent gyldig adresse'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -37,7 +36,6 @@ const AttributtListe: Attributt[] = [
 		label: 'Husnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		// validation: yup.string().required('Fyll ut eller hent gyldig adresse'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -49,7 +47,6 @@ const AttributtListe: Attributt[] = [
 		label: 'Postnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		// validation: yup.string().required('Fyll ut eller hent gyldig adresse'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -61,7 +58,6 @@ const AttributtListe: Attributt[] = [
 		label: 'Kommunenummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		// validation: yup.string().required('Fyll ut eller hent gyldig adresse'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -76,18 +72,6 @@ const AttributtListe: Attributt[] = [
 		attributtType: AttributtType.SelectAndEdit,
 		dependentOn: 'boadresse'
 	}
-	// {
-	// 	hovedKategori: Kategorier.Adresser,
-	// 	subKategori: SubKategorier.Boadresse,
-	// 	id: 'boadresse_gyldigadresse',
-	// 	path: 'boadresse.gyldigadresse',
-	// 	parent: 'boadresse',
-	// 	label: 'Gyldigadresse',
-	// 	dataSource: DataSource.TPSF,
-	// 	inputType: InputType.Select,
-	// 	validation: yup.string().required('Vennligst velg en gyldig adresse'),
-	// 	attributtType: AttributtType.SelectAndEdit
-	// }
 
 	// {
 	// 	hovedKategori: Kategorier.Adresser,

@@ -11,8 +11,6 @@ import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import Button from '~/components/button/Button'
 import _xor from 'lodash/fp/xor'
-import Knapp from 'nav-frontend-knapper'
-
 import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {

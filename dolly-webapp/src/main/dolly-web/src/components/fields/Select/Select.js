@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Select, { Async } from 'react-select'
 import cn from 'classnames'
 import _get from 'lodash/get'
-
 import './Select.less'
 
 export default class DollySelect extends PureComponent {
