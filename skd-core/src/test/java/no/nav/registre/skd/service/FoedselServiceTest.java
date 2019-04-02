@@ -1,6 +1,8 @@
 package no.nav.registre.skd.service;
 
 import static no.nav.registre.skd.consumer.requests.HentIdenterRequest.IdentType.FNR;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -81,6 +83,19 @@ public class FoedselServiceTest {
         assertTrue(opprettedeBarn.contains(barnFnr));
         assertEquals(barnFnr, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
         assertEquals(levendeIdenterINorge.get(0), ((RsMeldingstype1Felter) meldinger.get(0)).getMorsFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getMorsPersonnummer());
+    }
+
+    /**
+     * Testscenario: Systemet skal finne en far til barnet basert på mors alder og tidligere valgte mødre
+     */
+    @Test
+    public void shouldFindFatherForChild() {
+        String morFnr = "22061756889";
+        List<String> levendeIdenterINorge = new ArrayList<>(Arrays.asList("22061756889", "22051767891", "30111657809", "26101767990"));
+        List<String> moedre = new ArrayList<>(Arrays.asList("22061756889", "30111657809"));
+        String farFnr = foedselService.findFar(morFnr, levendeIdenterINorge, moedre);
+
+        assertThat(farFnr, equalTo("26101767990"));
     }
 
     /**
