@@ -5,8 +5,7 @@ import cn from 'classnames'
 import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
 import DollyModal from '~/components/modal/DollyModal'
-import BestillingDetaljerSammendrag from '../../../../components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag';
-import MiljoeStatusSelector from '../../../../utils/MiljoeStatusSelector';
+import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag';
 
 export default class MiljoeStatus extends PureComponent {
 	constructor(props) {
