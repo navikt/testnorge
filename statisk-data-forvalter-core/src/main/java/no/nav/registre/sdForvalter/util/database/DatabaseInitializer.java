@@ -33,6 +33,7 @@ public class DatabaseInitializer {
             try {
                 if (line.isEmpty()) {
                     log.warn("Read empty line");
+                    return null;
                 }
                 List<String> args = Arrays.asList(line.split(splitToken));
                 if (args.size() == 0) {

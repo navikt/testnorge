@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Set;
 
 import no.nav.registre.sdForvalter.database.model.AaregModel;
@@ -45,6 +47,21 @@ public class StaticDataProvider {
     @GetMapping(value = "/dkif")
     public ResponseEntity<Set<DkifModel>> getDkifStaticData() {
         return ResponseEntity.ok(staticDataService.getDkifData());
+    }
+
+    @PostMapping(value = "/tps")
+    public ResponseEntity storeStaticDataInTps(@Valid @RequestBody Set<TpsModel> data) {
+        return ResponseEntity.ok(staticDataService.saveInTps(data));
+    }
+
+    @PostMapping(value = "/aargg")
+    public ResponseEntity storeStaticDataInAaareg(@Valid @RequestBody Set<AaregModel> data) {
+        return ResponseEntity.ok(staticDataService.saveInAareg(data));
+    }
+
+    @PostMapping(value = "/dkif")
+    public ResponseEntity storeStaticData(@Valid @RequestBody Set<DkifModel> data) {
+        return ResponseEntity.ok(staticDataService.saveInDkif(data));
     }
 
 }

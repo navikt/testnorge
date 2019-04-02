@@ -28,13 +28,11 @@ public class SkdConsumer implements ConsumerInitializer {
     }
 
     /**
-     * @param data      Et set med meldinger som skal legges til i gruppen
+     * @param data      Et set med felter som skal legges til i gruppen
      * @param playgroup AvspillergruppeId som meldingene skal legges til på
      */
-    public void createTpsMessagesInGroup(Set<Object> data, Long playgroup) {
+    public void createTpsMessagesInGroup(Set<TpsModel> data, Long playgroup) {
         //TODO: Figure out how to create new TPS messages in the group
-        Set<TpsModel> tpsSet = (Set<TpsModel>) (Set<?>) data;
-
     }
 
     /**

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
@@ -46,5 +47,46 @@ public class StaticDataService {
         HashSet<DkifModel> dkifModels = new HashSet<>();
         dkifRepository.findAll().forEach(dkifModels::add);
         return dkifModels;
+    }
+
+    public Set<TpsModel> saveInTps(Set<TpsModel> data) {
+        Set<TpsModel> overlap = new HashSet<>();
+        Set<TpsModel> reduced = data.stream().filter(
+                t -> {
+                    if (tpsRepository.findById(t.getFnr()).isPresent()) {
+                        overlap.add(t);
+                        return false;
+                    }
+                    return true;
+                })
+                .collect(Collectors.toSet());
+        tpsRepository.saveAll(reduced);
+        return overlap;
+    }
+
+    public Set<AaregModel> saveInAareg(Set<AaregModel> data) {
+        Set<AaregModel> overlap = new HashSet<>();
+        Set<AaregModel> reduced = data.stream().filter(t -> {
+            if (tpsRepository.findById(t.getFnr()).isPresent()) {
+                overlap.add(t);
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toSet());
+        aaregRepository.saveAll(reduced);
+        return overlap;
+    }
+
+    public Set<DkifModel> saveInDkif(Set<DkifModel> data) {
+        Set<DkifModel> overlap = new HashSet<>();
+        Set<DkifModel> reduced = data.stream().filter(t -> {
+            if (tpsRepository.findById(t.getFnr()).isPresent()) {
+                overlap.add(t);
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toSet());
+        dkifRepository.saveAll(reduced);
+        return overlap;
     }
 }
