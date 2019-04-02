@@ -11,7 +11,8 @@ export enum InputType {
 export enum DataSource {
 	TPSF = 'TPSF',
 	SIGRUN = 'SIGRUN',
-	KRR = 'KRR'
+	KRR = 'KRR',
+	AAREG = 'AAREG'
 }
 
 export interface Options {
@@ -56,10 +57,20 @@ export interface Attributt {
 	validation?: yup.MixedSchema
 	parent?: string
 	items?: Attributt[]
+	subItems?: SubItem[]
 	dependentOn?: string // Er avhengig av en annen attributt for å kunne settes verdi på
 	dependentBy?: string // Er ikke avhengig, er attributten som ble settet av dependentOn
 	includeIf?: Attributt[]
-	transform?: (value:any, attributter:Attributt[]) => any;
+	sattForEksisterendeIdent?: boolean
+	transform?: (value: any, attributter: Attributt[]) => any
+}
+
+// Attributtene som er child av Attributt.Items. Eks: AAREG
+// TODO: Alex - trenger vi den?
+export interface SubItem {
+	id: string
+	label: string
+	items: Attributt[]
 }
 
 // Attributt grupper

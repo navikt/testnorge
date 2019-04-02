@@ -11,6 +11,7 @@ import AttributtListe from './Attributter'
 import { groupList, groupListByHovedKategori } from './GroupList'
 import DataFormatter from '~/utils/DataFormatter'
 import DataSourceMapper from '~/utils/DataSourceMapper'
+import BestillingMapper from '~/utils/BestillingMapper'
 import _set from 'lodash/set'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
@@ -27,18 +28,22 @@ export default class AttributtManager {
 			.filter(
 				attr =>
 					selectedIds.includes(attr.parent || attr.id) &&
-					(!attr.includeIf ||
-						attr.includeIf.every(e => selectedIds.includes(e.id)))
+					(!attr.includeIf || attr.includeIf.every(e => selectedIds.includes(e.id)))
 			)
 			.map(attr => {
-				return attr.items && attr.dataSource !== 'SIGRUN'
-					? Object.assign(Object.assign({}, attr), {
-						items: this.listAllSelectFilterItems(
-							selectedIds,
-							attr.items
-						)
-					})
-					: attr
+				// TODO: Ikke bærekraftig løsning. Refaktorerer AttributtSystemmet hvis det kommer flere slike registrer
+				if (attr.items) {
+					if (attr.dataSource === 'SIGRUN' || attr.dataSource === 'AAREG') {
+						return attr
+					} else {
+						// Eks: Barn som attributt må bli behandlet annerledes
+						return Object.assign(Object.assign({}, attr), {
+							items: this.listAllSelectFilterItems(selectedIds, attr.items)
+						})
+					}
+				} else {
+					return attr
+				}
 			})
 	}
 
@@ -46,16 +51,26 @@ export default class AttributtManager {
 		return AttributtListe.filter(f => !f.parent)
 	}
 
+	listAllExcludingChildrenAndEksisterendeIdentAttr(): Attributt[] {
+		return AttributtListe.filter(f => {
+			return !f.parent && !f.sattForEksisterendeIdent
+		})
+	}
+
 	listSelectedExcludingChildren(selectedIds: string[]): Attributt[] {
 		return AttributtListe.filter(f => !f.parent && selectedIds.includes(f.id))
 	}
 
 	//STEP 1
-	listSelectableAttributes(searchTerm: string): AttributtGruppe[] {
-		const list = this.listAllExcludingChildren()
-		return groupList(searchTerm ? list.filter(f =>
-			f.label.toLowerCase().includes(searchTerm.toLowerCase())
-		) : list)
+	listSelectableAttributes(searchTerm: string, identOpprettesFra: string): AttributtGruppe[] {
+		let list
+		identOpprettesFra === BestillingMapper('EKSIDENT')
+			? (list = this.listAllExcludingChildrenAndEksisterendeIdentAttr())
+			: (list = this.listAllExcludingChildren())
+
+		return groupList(
+			searchTerm ? list.filter(f => f.label.toLowerCase().includes(searchTerm.toLowerCase())) : list
+		)
 	}
 
 	listUtvalg(selectedIds: string[]): AttributtGruppeHovedKategori[] {
@@ -87,7 +102,8 @@ export default class AttributtManager {
 			// check for datasource
 			if (!dataSources.includes(dataSource)) return false
 
-			const dataSourceValues = values[DataSourceMapper(dataSource)][0] || values[DataSourceMapper(dataSource)][ident]
+			const dataSourceValues =
+				values[DataSourceMapper(dataSource)][0] || values[DataSourceMapper(dataSource)][ident]
 			// check for values
 			if (!dataSourceValues) return false
 
@@ -119,7 +135,8 @@ export default class AttributtManager {
 			// sjekk datasource
 			if (!dataSources.includes(dataSource)) return false
 
-			const dataSourceValues = values[DataSourceMapper(dataSource)][0] || values[DataSourceMapper(dataSource)][ident]
+			const dataSourceValues =
+				values[DataSourceMapper(dataSource)][0] || values[DataSourceMapper(dataSource)][ident]
 			// sjekk om liste av verdier finnes
 			if (!dataSourceValues) return false
 
@@ -132,16 +149,27 @@ export default class AttributtManager {
 		})
 	}
 
-	listEditableWithoutValue(values: object, ident: string, dataSources: string[]): AttributtGruppe[] {
+	listEditableWithoutValue(
+		values: object,
+		ident: string,
+		dataSources: string[]
+	): AttributtGruppe[] {
 		return groupList(this.listEditableWithoutValueFlat(values, ident, dataSources))
 	}
 
 	//TODO: Se om vi dette kan gjøres ryddigere, litt rotete pga tpsf er array mens andre registre er object
-	getInitialValuesForEditableItems(values: object, ident: string, dataSources: string[]): FormikValues {
+	getInitialValuesForEditableItems(
+		values: object,
+		ident: string,
+		dataSources: string[]
+	): FormikValues {
 		const editableAttributes = this.listEditableFlat(values, ident, dataSources)
 		return editableAttributes.reduce((prev, item) => {
 			const dataSource = DataSourceMapper(item.dataSource)
-			const sourceValues = dataSource === 'tpsf' ? values[dataSource][0] : values[dataSource] && values[dataSource][ident]
+			const sourceValues =
+				dataSource === 'tpsf'
+					? values[dataSource][0]
+					: values[dataSource] && values[dataSource][ident]
 
 			if (item.items) {
 				return this._setInitialArrayValuesFromServer(prev, item, sourceValues)
@@ -152,11 +180,15 @@ export default class AttributtManager {
 	}
 
 	getAttributtListByHovedkategori(hovedkategori: Kategori): string[] {
-		return AttributtListe.filter(attr => attr.hovedKategori.id === hovedkategori.id).map(attr => attr.id)
+		return AttributtListe.filter(attr => attr.hovedKategori.id === hovedkategori.id).map(
+			attr => attr.id
+		)
 	}
 
 	getParentAttributtListByHovedkategori(hovedkategori: Kategori): string[] {
-		return AttributtListe.filter(attr => attr.hovedKategori.id === hovedkategori.id && !attr.parent).map(attr => attr.id)
+		return AttributtListe.filter(
+			attr => attr.hovedKategori.id === hovedkategori.id && !attr.parent
+		).map(attr => attr.id)
 	}
 
 	getAttributtById(attributtId: string): Attributt {
@@ -165,34 +197,22 @@ export default class AttributtManager {
 
 	_createValidationObject(list: Attributt[], editMode = false): yup.MixedSchema {
 		// Reduce to item.id and validation to create a validation object
-		const validationObject = list.reduce(
-			(accumulator, currentObject) => {
-				if (currentObject.items) {
-					let itemsToValidate = currentObject.items
-					if (editMode)
-						itemsToValidate = itemsToValidate.filter(
-							attr =>
-								attr.attributtType !== AttributtType.SelectAndRead
-						)
-					const mapItemsToObject = this._mapArrayToObjectWithValidation(
-						itemsToValidate
+		const validationObject = list.reduce((accumulator, currentObject) => {
+			if (currentObject.items) {
+				let itemsToValidate = currentObject.items
+				if (editMode)
+					itemsToValidate = itemsToValidate.filter(
+						attr => attr.attributtType !== AttributtType.SelectAndRead
 					)
+				const mapItemsToObject = this._mapArrayToObjectWithValidation(itemsToValidate)
 
-					return {
-						...accumulator,
-						[currentObject.id]: yup
-							.array()
-							.of(yup.object().shape(mapItemsToObject))
-					}
+				return {
+					...accumulator,
+					[currentObject.id]: yup.array().of(yup.object().shape(mapItemsToObject))
 				}
-				return _set(
-					accumulator,
-					currentObject.id,
-					currentObject.validation
-				)
-			},
-			{}
-		)
+			}
+			return _set(accumulator, currentObject.id, currentObject.validation)
+		}, {})
 		return yup.object().shape(validationObject)
 	}
 
@@ -201,9 +221,7 @@ export default class AttributtManager {
 			// Array
 			if (item.items) {
 				const mapItemsToObject = this._mapArrayToObjectWithEmptyValues(item.items)
-				return this._setInitialArrayValue(prev, item.id, values, [
-					mapItemsToObject
-				])
+				return this._setInitialArrayValue(prev, item.id, values, [mapItemsToObject])
 			}
 			// Flattened object -> Ignore parent that has no inputType
 			if (!item.inputType) return prev
@@ -237,9 +255,7 @@ export default class AttributtManager {
 	_setInitialArrayValuesFromServer(currentObject, item, serverValues) {
 		// kanskje alle skal kunne redigeres
 		const itemArray = item.items
-		const editableAttributes = itemArray.filter(item =>
-			isAttributtEditable(item)
-		)
+		const editableAttributes = itemArray.filter(item => isAttributtEditable(item))
 		const arrayValues = serverValues.map(valueObj => {
 			return editableAttributes.reduce((prev, curr) => {
 				const currentPath = curr.editPath || curr.path
@@ -285,13 +301,11 @@ export default class AttributtManager {
 		}
 	}
 
-	listDependencies = selectedIds => selectedIds
-		.filter(id => DependencyTree[id])
-		.map(id =>
-			Object.values(DependencyTree[id]).reduce(
-				(res, val) => ({ ...res, [val.id]: val }),
-				{}
+	listDependencies = selectedIds =>
+		selectedIds
+			.filter(id => DependencyTree[id])
+			.map(id =>
+				Object.values(DependencyTree[id]).reduce((res, val) => ({ ...res, [val.id]: val }), {})
 			)
-		)
-		.reduce((res, acc) => ({ ...res, ...acc }), {})
+			.reduce((res, acc) => ({ ...res, ...acc }), {})
 }

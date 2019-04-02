@@ -5,7 +5,7 @@ import YearSelector from './YearMonthForm'
 import dateFnsFormat from 'date-fns/format'
 import dateFnsParse from 'date-fns/parse'
 import _isNil from 'lodash/isNil'
-import ValidationSchema, { defaultDateFormat } from './DateValidation'
+import DateValidation, { defaultDateFormat } from './DateValidation'
 import {
 	MONTHS,
 	WEEKDAYS_LONG,
@@ -83,7 +83,7 @@ export default class Datepicker extends Component {
 		}
 
 		// Do regex date validation (more expensive)
-		const valid = ValidationSchema.isValidSync(str)
+		const valid = DateValidation().isValidSync(str)
 		if (!valid) return undefined
 
 		// Parse date if all is good

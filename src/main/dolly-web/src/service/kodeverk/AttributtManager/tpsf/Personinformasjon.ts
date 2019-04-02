@@ -11,8 +11,9 @@ const AttributtListe: Attributt[] = [
 		label: 'Født etter',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation,
-		attributtType: AttributtType.SelectOnly
+		validation: DateValidation(),
+		attributtType: AttributtType.SelectOnly,
+		sattForEksisterendeIdent: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -21,8 +22,9 @@ const AttributtListe: Attributt[] = [
 		label: 'Født før',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation,
-		attributtType: AttributtType.SelectOnly
+		validation: DateValidation(),
+		attributtType: AttributtType.SelectOnly,
+		sattForEksisterendeIdent: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -31,7 +33,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Dødsdato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation,
+		validation: DateValidation(),
 		attributtType: AttributtType.SelectOnly
 	},
 	{
@@ -54,7 +56,8 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'Kjønnstyper',
 		// validation: yup.string().required('Velg kjønn.'),
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectAndEdit,
+		sattForEksisterendeIdent: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,

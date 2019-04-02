@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Knapp from 'nav-frontend-knapper'
 import NavButton from '~/components/button/NavButton/NavButton'
 import { isPage } from '~/pages/bestilling/Utils'
+import BestillingMapper from '~/utils/BestillingMapper'
 
 export default class Navigation extends PureComponent {
 	static propTypes = {
@@ -23,7 +24,9 @@ export default class Navigation extends PureComponent {
 			onClickNext,
 			abortBestilling,
 			onClickPrevious,
-			FormikProps
+			FormikProps,
+			identOpprettesFra,
+			eksisterendeIdentListe
 		} = this.props
 
 		const resetBestilling = () => {}
@@ -66,6 +69,12 @@ export default class Navigation extends PureComponent {
 					{!isPage.last(currentPage) &&
 						harAdresse &&
 						!harGyldigAdresse && <NavButton disabled direction="forward" onClick={onClickNext} />}
+					{!isPage.last(currentPage) &&
+						(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
+							(identOpprettesFra === BestillingMapper('EKSIDENT') &&
+								eksisterendeIdentListe.length > 0)) && (
+							<NavButton direction="forward" onClick={onClickNext} />
+						)}
 
 					{isPage.last(currentPage) && (
 						<Knapp type="hoved" onClick={onClickNext} disabled={isSubmitting}>
