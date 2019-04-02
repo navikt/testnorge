@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
+import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 import no.nav.registre.hodejegeren.service.Endringskoder;
@@ -106,5 +107,19 @@ public class HodejegerenController {
     public Map<String, JsonNode> hentEksisterendeIdenterMedStatusQuo(@PathVariable("avspillergruppeId") Long avspillergruppeId,
             @RequestParam("miljoe") String miljoe, @RequestParam("antallPersoner") int antallPersoner) {
         return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallPersoner);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man hente alle fødte personer fra en gitt avspillergruppe i TPSF.")
+    @GetMapping("api/v1/foedte-identer/{avspillergruppeId}")
+    public List<String> hentFoedteIdenter(@PathVariable Long avspillergruppeId) {
+        return eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man hente relasjonene til en ident i et gitt miljø i TPS.")
+    @GetMapping("api/v1/relasjoner-til-ident")
+    public RelasjonsResponse hentRelasjonerTilIdent(@RequestParam String ident, @RequestParam String miljoe) {
+        return eksisterendeIdenterService.hentRelasjoner(ident, miljoe);
     }
 }

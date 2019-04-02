@@ -136,4 +136,17 @@ public class HodejegerenControllerTest {
         hodejegerenController.hentEksisterendeIdenterMedStatusQuo(avspillergruppeId, miljoe, 1);
         verify(eksisterendeIdenterService).hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, 1);
     }
+
+    @Test
+    public void shouldHenteAlleFoedteIdenter() {
+        hodejegerenController.hentFoedteIdenter(avspillergruppeId);
+        verify(eksisterendeIdenterService).finnFoedteIdenter(avspillergruppeId);
+    }
+
+    @Test
+    public void shouldHenteRelasjonerTilIdent() {
+        String ident = "01010101010";
+        hodejegerenController.hentRelasjonerTilIdent(ident, miljoe);
+        verify(eksisterendeIdenterService).hentRelasjoner(ident, miljoe);
+    }
 }

@@ -1,0 +1,22 @@
+{
+  "response": {
+    "data1": {
+      "antallRelasjoner": 0,
+      "endringsDato": "2015-01-05",
+      "adresse": "TREDALSVEGEN 12 H0102",
+      "fnr": "12090080405",
+      "spesregType": "",
+      "typeAdresse": "OFFA",
+      "typeAdrBeskr": "Offisiell adresse",
+      "sivilstand": "GIFT",
+      "relasjoner": "",
+      "sivilstandBeskr": "Gift"
+    },
+    "status": {
+      "kode": "00",
+      "melding": " ",
+      "utfyllendeMelding": " "
+    },
+    "antallTotalt": 1
+  }
+}
