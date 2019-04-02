@@ -77,7 +77,7 @@ export const FieldArrayComponent = ({
 							<div className="subkategori-field-group multi">
 								{items.map(item => {
 									if (
-										shouldRenderFieldComponent(items, item, formikProps.values, {
+										shouldRenderFieldComponent(items, item, formikProps, {
 											parentId,
 											idx
 										})

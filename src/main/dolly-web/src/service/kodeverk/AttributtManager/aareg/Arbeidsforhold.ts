@@ -95,26 +95,23 @@ const AttributtListe: Attributt[] = [
 				validation: yup
 					.string()
 					.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
-					.test('len', 'Orgnummer må være et tall med 9 sifre', val => val.length === 9),
+					.test('len', 'Orgnummer må være et tall med 9 sifre', val => val && val.length === 9),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,
 				subKategori: SubKategorier.Arbeidsforhold,
-				id: 'pers',
+				id: 'ident',
 				label: 'Arbeidsgiver ident',
 				path: 'arbeidsgiver',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Text,
-				inputTypeAttributes: {
-					min: 0
-				},
 				onlyShowAfterSelectedValue: { attributtId: 'aktoertype', valueIndex: 1 },
 				// Egen validation pga yup tror stor streng ikke er integer
 				validation: yup
 					.string()
 					.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
-					.test('len', 'Ident må være et tall med 11 sifre', val => val.length === 11),
+					.test('len', 'Ident må være et tall med 11 sifre', val => val && val.length === 11),
 				attributtType: AttributtType.SelectAndRead
 			}
 		]
