@@ -51,6 +51,9 @@ public class ProvidersProps {
 
     @Getter
     @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Norg2 {
 
         private String url;
