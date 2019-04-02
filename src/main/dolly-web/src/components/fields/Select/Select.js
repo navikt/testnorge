@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-// import VirtualizedSelect from 'react-virtualized-select'
 import PropTypes from 'prop-types'
 import Select from 'react-virtualized-select'
 import cn from 'classnames'

@@ -60,21 +60,19 @@ export default class Navigation extends PureComponent {
 					)}
 
 					{!isPage.last(currentPage) &&
-						!harAdresse && <NavButton direction="forward" onClick={onClickNext} />}
+						(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
+							(identOpprettesFra === BestillingMapper('EKSIDENT') &&
+								eksisterendeIdentListe.length > 0)) &&
+						(!harAdresse || (harAdresse && harGyldigAdresse)) && (
+							<NavButton direction="forward" onClick={onClickNext} />
+						)}
 
-					{!isPage.last(currentPage) &&
-						harAdresse &&
-						harGyldigAdresse && <NavButton direction="forward" onClick={onClickNext} />}
-
-					{!isPage.last(currentPage) &&
-						harAdresse &&
-						!harGyldigAdresse && <NavButton disabled direction="forward" onClick={onClickNext} />}
 					{!isPage.last(currentPage) &&
 						(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
 							(identOpprettesFra === BestillingMapper('EKSIDENT') &&
-								eksisterendeIdentListe.length > 0)) && (
-							<NavButton direction="forward" onClick={onClickNext} />
-						)}
+								eksisterendeIdentListe.length > 0)) &&
+						harAdresse &&
+						!harGyldigAdresse && <NavButton disabled direction="forward" onClick={onClickNext} />}
 
 					{isPage.last(currentPage) && (
 						<Knapp type="hoved" onClick={onClickNext} disabled={isSubmitting}>
