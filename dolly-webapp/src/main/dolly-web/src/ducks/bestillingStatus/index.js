@@ -86,62 +86,18 @@ export const sokSelector = (items, searchStr) => {
 	})
 }
 
-// Selector
-export const miljoStatusSelector = bestilling => {
-	if (!bestilling) return null
-
-	const id = bestilling.id
-	let successEnvs = []
-	let failedEnvs = []
-	const finnesFeilmelding = avvikStatus(bestilling)
-	const antallIdenterOpprettet = antallIdenterOpprettetFunk(bestilling)
-
-	//Finn feilet og suksess miljø
-	bestilling.krrStubStatus && bestilling.krrStubStatus.map (status => {
-		(status.statusMelding == 'OK')
-			?	(!successEnvs.includes('Krr-stub') && successEnvs.push('Krr-stub'))
-			: 	(!failedEnvs.includes('Krr-stub') && failedEnvs.push('Krr-stub'))
-	})
-	bestilling.sigrunStubStatus && bestilling.sigrunStubStatus.map (status => {
-		if (status.statusMelding == 'OK') {
-			!successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')
-		} else {
-			!failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
-		}
-	})
-	bestilling.tpsfStatus && (bestilling.tpsfStatus.map (status => {
-		(status.statusMelding !== 'OK') && 
-			Object.keys(status.environmentIdents).map((miljo) => {
-				const lowMiljo = miljo.toLowerCase()
-				!failedEnvs.includes(lowMiljo) && failedEnvs.push(lowMiljo)
-			}) 
-	})) 
-	//Går gjennom TPSF-statuser igjen slik at ingen miljø er både suksess og feilet
-	bestilling.tpsfStatus && (bestilling.tpsfStatus.map (status => {
-		(status.statusMelding == 'OK') &&
-			Object.keys(status.environmentIdents).map((miljo) => {
-				const lowMiljo = miljo.toLowerCase()
-				!failedEnvs.includes(lowMiljo) && (
-					!successEnvs.includes(lowMiljo) && successEnvs.push(lowMiljo)
-				)
-			})
-	}))
-
-	//TODO: Hvis bestilling failer 100 % fra TPSF finnes ikke støtte for retry.
-
-	return { id, successEnvs, failedEnvs, bestilling, finnesFeilmelding, antallIdenterOpprettet }
-}
-
-const antallIdenterOpprettetFunk = bestilling => {
-	let identArray = []
-	bestilling.tpsfStatus && bestilling.tpsfStatus.map (status => {
-		Object.keys(status.environmentIdents).map((miljo) => {
-			status.environmentIdents[miljo].map((ident) => {
-				!identArray.includes(ident) && identArray.push(ident)
-			})
+// TODO: Flytt saanne medtoder i egen fil. Klassen begynner aa vaere litt stor?
+export const getAaregSuccessEnv = bestilling => {
+	let envs = []
+	bestilling.aaregStatus &&
+		bestilling.aaregStatus.length > 0 &&
+		bestilling.aaregStatus.forEach(status => {
+			if (status.statusMelding === 'OK') {
+				envs = Object.keys(status.environmentIdentsForhold)
+			}
 		})
-	})
-	return identArray.length
+
+	return envs
 }
 
 const mapItems = items => {
@@ -154,33 +110,39 @@ const mapItems = items => {
 			sistOppdatert: Formatters.formatDate(item.sistOppdatert),
 			ferdig: item.stoppet
 				? 'Stoppet'
-				: bestillingIkkeFerdig(item) 
-					? 'Pågår' 
+				: bestillingIkkeFerdig(item)
+					? 'Pågår'
 					: harIkkeIdenter(item)
 						? 'Feilet'
-						 : avvikStatus(item)
+						: avvikStatus(item)
 							? 'Avvik'
 							: 'Ferdig'
 		}
 	})
 }
+const bestillingIkkeFerdig = item => !item.ferdig
 
 const avvikStatus = item => {
 	let avvik = false
-	item.tpsfStatus && item.tpsfStatus.map (status => {
-		(status.statusMelding !== 'OK') && (avvik = true)
-	})
-	item.krrStubStatus && item.krrStubStatus.map(status => {
-		(status.statusMelding !== 'OK') && (avvik = true)
-	})
-	item.sigrunStubStatus && item.sigrunStubStatus.map(status => {
-		(status.statusMelding !== 'OK') && (avvik = true)
-	})
+	item.tpsfStatus &&
+		item.tpsfStatus.map(status => {
+			status.statusMelding !== 'OK' && (avvik = true)
+		})
+	item.aaregStatus &&
+		item.aaregStatus.map(status => {
+			status.statusMelding !== 'OK' && (avvik = true)
+		})
+	item.krrStubStatus &&
+		item.krrStubStatus.map(status => {
+			status.statusMelding !== 'OK' && (avvik = true)
+		})
+	item.sigrunStubStatus &&
+		item.sigrunStubStatus.map(status => {
+			status.statusMelding !== 'OK' && (avvik = true)
+		})
 	item.feil && (avvik = true)
 	return avvik
 }
-
-const bestillingIkkeFerdig = item => !(item.ferdig)
 
 const harIkkeIdenter = item => {
 	let feilet = true

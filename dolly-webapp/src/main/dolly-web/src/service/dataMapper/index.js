@@ -1,6 +1,12 @@
 import { createHeader as c } from './Utils'
 import Formatters from '~/utils/DataFormatter'
-import { mapTpsfData, mapSigrunData, mapKrrData, mapBestillingId } from './mapDetailedData'
+import {
+	mapTpsfData,
+	mapSigrunData,
+	mapKrrData,
+	mapBestillingId,
+	mapAaregData
+} from './mapDetailedData'
 
 const DataMapper = {
 	getHeaders() {
@@ -23,7 +29,6 @@ const DataMapper = {
 
 		const { gruppe, testbruker } = state
 
-		// TODO: Refactor, testbrukerIsFetched
 		if (!testbruker.items.tpsf) return null
 
 		return testbruker.items.tpsf.map(i => {
@@ -47,19 +52,23 @@ const DataMapper = {
 
 		const testIdent = gruppe.data[0].testidenter.find(testIdent => testIdent.ident === personId)
 
-		// TODO: Alex - hent bestillingId fra testIdent og legg til data
 		const tpsfData = testbruker.items.tpsf.find(item => item.ident === personId)
 		let data = mapTpsfData(tpsfData, testIdent)
 		const sigrunData = testbruker.items.sigrunstub && testbruker.items.sigrunstub[personId]
 		const krrData = testbruker.items.krrstub && testbruker.items.krrstub[personId]
+		const aaregData = testbruker.items.aareg && testbruker.items.aareg[personId]
 		var bestillingId = _findBestillingId(gruppe, personId)
 
+		if (aaregData) {
+			data.push(mapAaregData(aaregData))
+		}
 		if (sigrunData && sigrunData.length > 0) {
 			data.push(mapSigrunData(sigrunData))
 		}
 		if (krrData) {
 			data.push(mapKrrData(krrData))
 		}
+
 		if (bestillingId.length > 1) {
 			data.push(mapBestillingId(testIdent))
 		}

@@ -19,7 +19,7 @@
 			width: 200px;
 		}
 	}
-
+	
 	.oppsummering {
 		background-color: white;
 		padding: 20px;
@@ -75,6 +75,7 @@
 		}
 	}
 
+	
 	.step-navknapper {
 		display: flex;
 		flex-direction: row;
@@ -86,22 +87,26 @@
 		border-top: 1px solid @color-bg-grey-border;
 		padding: 10px 20px;
 		z-index: 2;
-
+		
 		@media @desktop, @desktop-xl {
 			padding: 10px @page-margin;
 		}
-
+		
 		> button {
 			margin-right: 10px;
 		}
-
+		
 		&--right {
 			margin-left: auto;
-
+			
 			:not(:last-child) {
 				margin-right: 5px;
 			}
 		}
+	}
+
+	.radiobuttons {
+		margin: 0 40px 15px 0;
 	}
 }
 

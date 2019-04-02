@@ -1,6 +1,6 @@
-package no.nav.dolly.domain.resultset;
+package no.nav.dolly.domain.resultset.aareg;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +13,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsIdentStatus {
+public class RsPeriode {
 
-    private String statusMelding;
-    private List<String> identer;
+    private LocalDateTime fom;
+    private LocalDateTime tom;
 }

@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.dolly</groupId>
         <artifactId>dolly</artifactId>
-        <version>test-768</version>
+        <version>test-842</version>
     </parent>
 
     <artifactId>dolly-domain</artifactId>
@@ -21,6 +21,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>no.nav.tjenester.domene.arbeidsforhold</groupId>
+            <artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
+            <classifier>jaxws</classifier>
         </dependency>
     </dependencies>
 

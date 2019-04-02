@@ -47,6 +47,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Postnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
+		apiKodeverkId: 'Postnummer',
+		// validation: yup.string().required('Vennligst fyll ut.'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -68,7 +70,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Flyttedato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation,
+		validation: DateValidation(),
 		attributtType: AttributtType.SelectAndEdit,
 		dependentOn: 'boadresse'
 	}

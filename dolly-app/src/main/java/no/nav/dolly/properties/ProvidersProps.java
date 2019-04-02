@@ -3,7 +3,10 @@ package no.nav.dolly.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -17,6 +20,7 @@ public class ProvidersProps {
     private KrrStub krrStub = new KrrStub();
     private Kodeverk kodeverk = new Kodeverk();
     private Norg2 norg2 = new Norg2();
+    private Fasit fasit = new Fasit();
 
     @Getter
     @Setter
@@ -47,7 +51,20 @@ public class ProvidersProps {
 
     @Getter
     @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Norg2 {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Fasit {
 
         private String url;
     }

@@ -36,7 +36,7 @@ export default class SendDoedsmelding extends PureComponent {
 				.required('Ident er et påkrevd felt.'),
 			handling: yup.string().required('Handling er et påkrevd felt.'),
 			miljoer: yup.string().required('Miljø er et påkrevd felt.'),
-			doedsdato: DateValidation
+			doedsdato: DateValidation()
 		})
 
 	createRequestObjects(values_obj) {
@@ -130,7 +130,7 @@ export default class SendDoedsmelding extends PureComponent {
 								showErrorMessageFoundIdent: true
 							})
 						} else if (res_environments.length === 1) {
-							miljoer.push({value: res_environments[0], label: res_environments[0]})
+							miljoer.push({ value: res_environments[0], label: res_environments[0] })
 						}
 
 						const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)

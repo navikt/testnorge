@@ -30,6 +30,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.aareg.AaregService;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
@@ -92,6 +93,9 @@ public class DollyBestillingServiceTest {
 
     @Mock
     private TpsfResponseHandler tpsfResponseHandler;
+
+    @Mock
+    private AaregService aaregService;
 
     @InjectMocks
     private DollyBestillingService dollyBestillingService;

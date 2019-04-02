@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsIdentStatus;
+import no.nav.dolly.domain.resultset.RsStatusIdent;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingKrrStubStatusMapperTest {
@@ -38,7 +38,7 @@ public class BestillingKrrStubStatusMapperTest {
     @Test
     public void krrStubStatusMap() {
 
-        List<RsIdentStatus> identStatuses = BestillingKrrStubStatusMapper.buildKrrStubStatusMap(RUN_STATUS);
+        List<RsStatusIdent> identStatuses = BestillingKrrStubStatusMapper.buildKrrStubStatusMap(RUN_STATUS);
 
         assertThat(identStatuses.get(0).getStatusMelding(), is(equalTo("FEIL")));
         assertThat(identStatuses.get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));

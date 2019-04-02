@@ -1,12 +1,11 @@
 import { connect } from 'react-redux'
 import TknrValue from './TknrValue'
-import { fetchKodeverk, kodeverkLabelSelector } from '~/ducks/kodeverk'
-import { getEnhetByTknr, tknrLabelSelector } from '~/ducks/tknr'
+import { getEnhetByTknr, oppslagLabelSelector } from '~/ducks/oppslag'
 
 const mapStateToProps = (state, ownProps) => {
-	const { tknr  } = ownProps
+	const { tknr } = ownProps
 	return {
-		tknrObject: tknrLabelSelector(state, tknr)
+		tknrObject: oppslagLabelSelector(state, 'tknr', tknr)
 	}
 }
 
