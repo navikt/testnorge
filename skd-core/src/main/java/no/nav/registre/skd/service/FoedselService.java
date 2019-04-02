@@ -59,14 +59,16 @@ public class FoedselService {
                 continue;
             }
 
-            if (barnFnr.length() != 11) { // TODO - Fjerne denne når feilen med tomme fnr er oppdaget/fikset
-                log.error("behandleFoedselsmeldinger: Feil på fnr {} fra ident-pool. Fnr har en lengde på {}", barnFnr, barnFnr.length());
-            }
-
             putFnrInnIMelding((RsMeldingstype1Felter) melding, barnFnr);
 
             ((RsMeldingstype1Felter) melding).setMorsFodselsdato(morFnr.substring(0, 6));
             ((RsMeldingstype1Felter) melding).setMorsPersonnummer(morFnr.substring(6));
+
+            String farFnr = findFar(morFnr, levendeIdenterINorge, moedre);
+            if(farFnr != null) {
+                ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(0, 6));
+                ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(6));
+            }
 
             barn.add(barnFnr);
         }
@@ -91,5 +93,21 @@ public class FoedselService {
         }
 
         return moedre;
+    }
+
+    /**
+     *
+     * @param morsFnr
+     * @param levendeIdenterINorge
+     * @param moedre
+     * @return Fnr til far til barn. Far er like gammel eller eldre enn mor. Far kan være mann eller kvinne.
+     */
+    public String findFar(String morsFnr, List<String> levendeIdenterINorge, List<String> moedre) {
+        for (String ident : levendeIdenterINorge) {
+            if (!moedre.contains(ident) && getFoedselsdatoFraFnr(ident).compareTo(getFoedselsdatoFraFnr(morsFnr)) >= 0) { // finn far som er like gammel eller eldre enn mor for enkelhets skyld
+                return ident;
+            }
+        }
+        return null;
     }
 }
