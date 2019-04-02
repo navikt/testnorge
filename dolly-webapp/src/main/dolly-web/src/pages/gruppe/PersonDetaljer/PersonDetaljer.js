@@ -7,7 +7,7 @@ import ConfirmTooltip from '~/components/confirmTooltip/ConfirmTooltip'
 import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
-import BestillingDetaljerModal from '~/components/bestillingDetaljerModal/BestillingDetaljerModal'
+import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
 import { getAaregSuccessEnv } from '~/ducks/bestillingStatus'
 
 const AttributtManagerInstance = new AttributtManager()
@@ -33,7 +33,7 @@ export default class PersonDetaljer extends PureComponent {
 	}
 
 	render() {
-		const { personData, editAction, frigjoerTestbruker } = this.props
+		const { personData, editAction, frigjoerTestbruker, bestilling } = this.props
 		const { modalOpen } = this.state
 
 		if (!personData) return null
@@ -67,7 +67,12 @@ export default class PersonDetaljer extends PureComponent {
 						isOpen={modalOpen}
 						onRequestClose={this.closeModal}
 						closeModal={this.closeModal}
-						content={this._renderBestillingDetaljerModal()}
+						content={
+							<BestillingDetaljerSammendrag 
+								bestilling={bestilling} 
+								type = 'modal'
+							/>
+						}
 						width={'60%'}
 					/>
 					<Button onClick={editAction} className="flexbox--align-center" kind="edit">
@@ -125,9 +130,4 @@ export default class PersonDetaljer extends PureComponent {
 			attributtManager={AttributtManagerInstance}
 		/>
 	)
-
-	_renderBestillingDetaljerModal = () => {
-		const { bestilling } = this.props
-		return <BestillingDetaljerModal bestilling={bestilling} />
-	}
 }

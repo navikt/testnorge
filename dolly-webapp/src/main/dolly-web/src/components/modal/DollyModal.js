@@ -13,7 +13,8 @@ const customStyles = {
 		transform: 'translate(-50%, -50%)',
 		width: '25%',
 		minWidth: '500px',
-		overflow: 'inherit',
+		overflow: 'auto',
+		maxHeight: '80%'
 	},
 	overlay: {
 		background: 'rgba(0,0,0,0.75)',
