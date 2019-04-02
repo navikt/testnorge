@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.AaregConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.DkifConsumer;
@@ -15,6 +16,7 @@ import no.nav.registre.sdForvalter.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.SamConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.SkdConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.TpConsumer;
+import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
 import no.nav.registre.sdForvalter.database.repository.DkifRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsRepository;
@@ -58,12 +60,12 @@ public class EnvironmentInitializationService {
     }
 
     private void initializeSkd(String environment) {
-        Set<Object> tpsSet = new HashSet<>();
+        Set<TpsModel> tpsSet = new HashSet<>();
         tpsRepository.findAll().forEach(tpsSet::add);
 
 
         Set<String> playgroupFnrs = hodejegerenConsumer.getPlaygroupFnrs(playgroupStaticData);
-        tpsSet.removeAll(playgroupFnrs);
+        tpsSet = tpsSet.parallelStream().filter(t -> playgroupFnrs.contains(t.getFnr())).collect(Collectors.toSet());
 
         skdConsumer.createTpsMessagesInGroup(tpsSet, playgroupStaticData);
 

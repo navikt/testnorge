@@ -17,8 +17,8 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
 @Entity
 @ToString
-@Getter
 @Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
