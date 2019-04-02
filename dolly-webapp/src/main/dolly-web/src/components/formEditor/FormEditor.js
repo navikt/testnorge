@@ -110,7 +110,7 @@ export default class FormEditor extends PureComponent {
 				<div className="subkategori-field-group">
 					{items.map(
 						item =>
-							this._shouldRenderFieldComponent(items, item, formikProps.values)
+							this._shouldRenderFieldComponent(items, item, formikProps)
 								? isFieldarray
 									? FormEditorFieldArray(
 											item,
@@ -129,29 +129,73 @@ export default class FormEditor extends PureComponent {
 		)
 	}
 
-	_shouldRenderFieldComponent = (items, item, valgteVerdier, parentObject) => {
-		// Avhengigheter mellom valgte verdi og field
-		// AAREG
+	// Avhengigheter mellom valgte verdi og field
+	// TODO: Vurder om denne løsningen er optimalt når AttributtSystem blir formatert
+	// Denne funksjonaliteten burde kanskje være i AttributtManager
+	// Denne metode er bygd med fokus for AAREG-felter.
+
+	_shouldRenderFieldComponent = (items, item, formikProps, parentObject) => {
+		const valgteVerdier = formikProps.values
+		const errors = formikProps.errors
+
+		// console.log('object :', formikProps)
 
 		if (item.onlyShowAfterSelectedValue) {
-			// console.log('items :', items)
-			// console.log('valgteVerdier :', valgteVerdier)
-			// console.log('formik parentObj:', parentObject)
-
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
 			const dependantAttributt = items.find(attributt => attributt.id === attributtId)
-			// console.log('seelctedAttributt :', dependantAttributt)
 
 			const valueIndex = item.onlyShowAfterSelectedValue.valueIndex
 
 			if (
 				valgteVerdier[parentId][idx][attributtId] !== dependantAttributt.options[valueIndex].value
 			) {
-				// console.log('happen')
+				delete valgteVerdier[parentId][idx][item.id]
+				// delete valgteVerdier[parentId][idx]['yrke']
+
+				if (errors[parentId] && errors[parentId][idx] && errors[parentId][idx][item.id]) {
+					delete errors[parentId][idx][item.id]
+
+					if (Object.keys(errors[parentId][idx]).length === 0) {
+						delete errors[parentId][idx]
+					}
+					let toDelete = true
+
+					// console.log('hei', Object.keys(errors[parentId][idx]))
+
+					errors[parentId].forEach(element => {
+						if (element) {
+							toDelete = false
+						}
+					})
+
+					toDelete && delete errors[parentId]
+				}
+
 				return false
 			}
 		}
+
+		// // Remove alle null-errors for the validation to pass through
+		// if (Object.keys(errors).length) {
+		// 	// console.log('happens')
+		// 	for (var error in errors) {
+		// 		console.log('error :', error)
+		// 		let toDelete = false
+		// 		if (errors[error] instanceof Array) {
+		// 			toDelete = true
+		// 			console.log('errors :', errors)
+		// 			console.log('errors[error] :', errors[error])
+		// 			errors[error].forEach(element => {
+		// 				console.log('Object.keys(element) :', Object.values(element))
+		// 				console.log('!Object.keys(element).length):', !Object.keys(element).length)
+		// 				if (Object.keys(element).length) toDelete = false
+		// 			})
+		// 			console.log('toDelete :', toDelete)
+		// 			toDelete && delete errors[error]
+		// 		}
+		// 	}
+		// }
 		return true
 	}
 
