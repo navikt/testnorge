@@ -35,7 +35,6 @@ export default class Step2 extends PureComponent {
 	}
 
 	submit = values => {
-		console.log('this :', this)
 		this.props.setValues({ values })
 	}
 
