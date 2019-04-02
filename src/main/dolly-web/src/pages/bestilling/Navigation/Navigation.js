@@ -26,27 +26,24 @@ export default class Navigation extends PureComponent {
 			FormikProps
 		} = this.props
 
-		// må endres slik at kun adresse-values blir berørt!!
-		let propsValues
+		const resetBestilling = () => {}
+
+		let harAdresse = false
 		let harGyldigAdresse = false
 
-		if (FormikProps) {
-			propsValues = FormikProps.values
-			console.log('propsValues :', propsValues)
-			if (
-				propsValues.boadresse_gateadresse &&
-				propsValues.boadresse_husnummer &&
-				propsValues.boadresse_kommunenr &&
-				propsValues.boadresse_postnr
-				// lag en prop for å ha valgt gyldig adresse!!
-			) {
-				harGyldigAdresse = true
+		if (FormikProps)
+			if ('boadresse_gateadresse' in FormikProps.values) {
+				console.log('propsValues :', FormikProps.values)
+				harAdresse = true
+				if (
+					FormikProps.values.boadresse_gateadresse &&
+					FormikProps.values.boadresse_husnummer &&
+					FormikProps.values.boadresse_kommunenr &&
+					FormikProps.values.boadresse_postnr
+				) {
+					harGyldigAdresse = true
+				}
 			}
-		}
-
-		// console.log('this navigation:', this)
-
-		const resetBestilling = () => {}
 
 		return (
 			<div className="step-navknapper">
@@ -60,14 +57,14 @@ export default class Navigation extends PureComponent {
 					)}
 
 					{!isPage.last(currentPage) &&
-						!propsValues && <NavButton direction="forward" onClick={onClickNext} />}
+						!harAdresse && <NavButton direction="forward" onClick={onClickNext} />}
 
 					{!isPage.last(currentPage) &&
-						propsValues &&
+						harAdresse &&
 						harGyldigAdresse && <NavButton direction="forward" onClick={onClickNext} />}
 
 					{!isPage.last(currentPage) &&
-						propsValues &&
+						harAdresse &&
 						!harGyldigAdresse && <NavButton disabled direction="forward" onClick={onClickNext} />}
 
 					{isPage.last(currentPage) && (
