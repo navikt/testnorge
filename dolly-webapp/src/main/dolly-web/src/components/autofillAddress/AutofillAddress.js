@@ -105,6 +105,7 @@ export default class AutofillAddress extends Component {
 
 		if (addressData) {
 			let { adrnavn, husnrfra, husnrtil, gkode, pnr, knr } = addressData
+			if (husnrfra === '') husnrfra = 1
 			let husnr = []
 			for (var i = husnrfra; i <= husnrtil; i++) {
 				husnr.push(parseInt(i))
