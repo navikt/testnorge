@@ -41,7 +41,7 @@ public class HodejegerenConsumerTest {
     public void shouldFindLevendeIdenter() {
         stubHodejegerenConsumer();
 
-        List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenter(gruppeId);
+        List<String> levendeIdenter = hodejegerenConsumer.finnFoedteIdenter(gruppeId);
 
         assertThat(levendeIdenter, hasItem(fnr1));
         assertThat(levendeIdenter, hasItem(fnr2));
@@ -56,7 +56,7 @@ public class HodejegerenConsumerTest {
 
         stubHodejegerenConsumerWithEmptyBody();
 
-        hodejegerenConsumer.finnLevendeIdenter(gruppeId);
+        hodejegerenConsumer.finnFoedteIdenter(gruppeId);
 
         assertThat(listAppender.list.size(), is(equalTo(1)));
         assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Hodejegeren: NullPointerException"));
