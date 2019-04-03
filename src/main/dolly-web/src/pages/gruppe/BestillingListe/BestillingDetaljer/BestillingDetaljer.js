@@ -1,5 +1,4 @@
 import React, { PureComponent, Fragment } from 'react'
-import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
 import './BestillingDetaljer.less'
 import Formatters from '~/utils/DataFormatter'
@@ -8,8 +7,6 @@ import Knapp from 'nav-frontend-knapper'
 import { Formik, FieldArray } from 'formik'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import * as yup from 'yup'
-import { mapBestillingData } from './BestillingDataMapper'
-import cn from 'classnames'
 import SendOpenAmConnector from '~/pages/gruppe/SendOpenAm/SendOpenAmConnector'
 import OpenAmStatusConnector from '~/pages/gruppe/OpenAmStatus/OpenAmStatusConnector'
 import DollyModal from '~/components/modal/DollyModal'
@@ -35,7 +32,6 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-
 		const bestilling = this.props.bestilling
 		const bestillingId = this.props.bestilling.id
 		const { openAm, openAmState } = this.props
@@ -49,10 +45,7 @@ export default class BestillingDetaljer extends PureComponent {
 		// TODO: Reverse Map detail data here. Alex
 		return (
 			<div className="bestilling-detaljer">
-				<BestillingDetaljerSammendrag 
-					bestilling={bestilling} 
-					type = 'panel'
-				/>
+				<BestillingDetaljerSammendrag bestilling={bestilling} type="panel" />
 				{openAm ? (
 					<div className="bestilling-detaljer">
 						<h3>Jira-lenker</h3>
