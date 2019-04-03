@@ -170,6 +170,7 @@ export default class FormEditor extends PureComponent {
 	}
 
 	extraComponentProps = (item, valgteVerdier, parentObject) => {
+		console.log('item :', item)
 		switch (item.inputType) {
 			case 'select': {
 				const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg..'

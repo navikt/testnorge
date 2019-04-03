@@ -60,6 +60,11 @@ export const SubKategorier: KategoriTypes = {
 		navn: 'Boadresse',
 		order: 10
 	},
+	Postadresse: {
+		id: 'postadresse',
+		navn: 'Postadresse',
+		order: 20
+	},
 	Partner: {
 		id: 'partner',
 		navn: 'Partner',
