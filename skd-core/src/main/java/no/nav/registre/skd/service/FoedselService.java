@@ -66,9 +66,8 @@ public class FoedselService {
 
             String farFnr = findFar(morFnr, levendeIdenterINorge, moedre);
             if (farFnr != null) {
-                log.info("Fant far til barn med fnr {}. morFnr: {}. farFnr: {}", barnFnr, morFnr, farFnr);
                 ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(0, 6));
-                ((RsMeldingstype1Felter) melding).setFarsFodselsdato(farFnr.substring(6));
+                ((RsMeldingstype1Felter) melding).setFarsPersonnummer(farFnr.substring(6));
             } else {
                 log.info("Kunne ikke finne far til barn med fnr {}. morFnr: {}", barnFnr, morFnr);
             }
