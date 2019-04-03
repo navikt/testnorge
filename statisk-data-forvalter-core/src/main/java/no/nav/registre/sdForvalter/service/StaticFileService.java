@@ -10,10 +10,10 @@ import java.util.List;
 
 import no.nav.registre.sdForvalter.database.ModelEnum;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
-import no.nav.registre.sdForvalter.database.model.DkifModel;
+import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
-import no.nav.registre.sdForvalter.database.repository.DkifRepository;
+import no.nav.registre.sdForvalter.database.repository.KrrRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsRepository;
 import no.nav.registre.sdForvalter.util.database.DatabaseInitializer;
 
@@ -23,7 +23,7 @@ import no.nav.registre.sdForvalter.util.database.DatabaseInitializer;
 public class StaticFileService {
 
     private final AaregRepository aaregRepository;
-    private final DkifRepository dkifRepository;
+    private final KrrRepository krrRepository;
     private final TpsRepository tpsRepository;
 
     @PostConstruct
@@ -56,8 +56,8 @@ public class StaticFileService {
     @SuppressWarnings(value = "unchecked")
     private void readDkifLocalFile() {
         try {
-            List<DkifModel> entities = (List<DkifModel>) (List<?>) DatabaseInitializer.initializeFromCsv("statisk_data/dkif.csv", ModelEnum.DKIF, ";");
-            dkifRepository.saveAll(entities);
+            List<KrrModel> entities = (List<KrrModel>) (List<?>) DatabaseInitializer.initializeFromCsv("statisk_data/dkif.csv", ModelEnum.DKIF, ";");
+            krrRepository.saveAll(entities);
         } catch (IOException e) {
             log.warn("Unable to read local file, expected this to be present when initializing.\nDatabase might not have been initialized with the correct values");
         }

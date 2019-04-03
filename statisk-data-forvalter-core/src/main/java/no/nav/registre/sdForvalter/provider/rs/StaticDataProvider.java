@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.Set;
 
 import no.nav.registre.sdForvalter.database.model.AaregModel;
-import no.nav.registre.sdForvalter.database.model.DkifModel;
+import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.service.EnvironmentInitializationService;
 import no.nav.registre.sdForvalter.service.StaticDataService;
@@ -45,7 +45,7 @@ public class StaticDataProvider {
     }
 
     @GetMapping(value = "/dkif")
-    public ResponseEntity<Set<DkifModel>> getDkifStaticData() {
+    public ResponseEntity<Set<KrrModel>> getDkifStaticData() {
         return ResponseEntity.ok(staticDataService.getDkifData());
     }
 
@@ -60,7 +60,7 @@ public class StaticDataProvider {
     }
 
     @PostMapping(value = "/dkif")
-    public ResponseEntity storeStaticData(@Valid @RequestBody Set<DkifModel> data) {
+    public ResponseEntity storeStaticData(@Valid @RequestBody Set<KrrModel> data) {
         return ResponseEntity.ok(staticDataService.saveInDkif(data));
     }
 

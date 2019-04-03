@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Slf4j
 @Component
-public class SamConsumer implements ConsumerInitializer {
+public class SamConsumer {
 
     private final RestTemplate restTemplate;
     private final String samUrl;
@@ -20,15 +20,13 @@ public class SamConsumer implements ConsumerInitializer {
         this.samUrl = samUrl + "/api/v1";
     }
 
-    public Set<Object> findFnrs(String environment) {
+    public Set<String> findFnrs(String environment) {
         //TODO: Add sam spesifics
         UriTemplate uriTemplate = new UriTemplate(samUrl + "/");
         return restTemplate.getForObject(uriTemplate.expand(environment), Set.class);
     }
 
-
-    @Override
-    public void send(Set<Object> data, String environment) {
+    public void send(Set<String> data, String environment) {
 
     }
 }
