@@ -25,7 +25,7 @@ export function mapBestillingData(bestillingData) {
 
 	// Gamle bestillinger har ikke tpsfKriterie
 	if (bestillingData.tpsfKriterier) {
-		const tpsfKriterier = bestillingData.tpsfKriterier && JSON.parse(bestillingData.tpsfKriterier)
+		const tpsfKriterier = JSON.parse(bestillingData.tpsfKriterier)
 		const personinfo = {
 			header: 'Personlig informasjon',
 			items: [
@@ -126,5 +126,31 @@ export function mapBestillingData(bestillingData) {
 			data.push(familie)
 		}
 	}
+
+	if (bestillingData.bestKriterier) {
+		const registreKriterier = JSON.parse(bestillingData.bestKriterier)
+
+		const sigrunStubKriterier = registreKriterier.sigrunStub && registreKriterier.sigrunStub
+		if (sigrunStubKriterier) {
+			console.log(sigrunStubKriterier, 'ha')
+			const sigrunStub = {
+				header: 'Inntekter',
+
+				itemRows: []
+			}
+
+			sigrunStubKriterier.forEach(inntekt => {
+				sigrunStub.itemRows.push([
+					{
+						label: 'År',
+						value: inntekt.inntektsaar
+					},
+					{ label: 2, value: 2 }
+				])
+			})
+			data.push(sigrunStub)
+		}
+	}
+
 	return data
 }
