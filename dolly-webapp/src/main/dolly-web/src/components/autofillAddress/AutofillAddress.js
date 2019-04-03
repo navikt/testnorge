@@ -17,6 +17,49 @@ const initialState = {
 export default class AutofillAddress extends Component {
 	state = { ...initialState }
 
+	render() {
+		const items = this.props.items
+		return (
+			<Fragment>
+				<div className="address-wrapper">
+					{!this.state.adresseValgt && (
+						<div className="address-container">
+							{items.map(
+								item =>
+									item.inputType && item.id !== 'boadresse_flyttedato' && this._renderSelect(item)
+							)}
+							<LinkButton text="Nullstill alle" onClick={this._clearAll} />
+						</div>
+					)}
+
+					<div className="address-container">
+						{!this.state.adresseValgt && (
+							<Knapp
+								className="generate-address-button"
+								type="standard"
+								autoDisableVedSpinner
+								mini
+								spinner={this.state.isFetching}
+								onClick={this._onClickGyldigAdresse}
+							>
+								Hent gyldige adresser
+							</Knapp>
+						)}
+						{this.state.gyldigeAdresser && this._renderAdresseSelect()}
+						{this.state.gyldigeAdresser === undefined && <p>Fant ingen gyldige adresser</p>}
+					</div>
+
+					<div className="address-container">
+						{items.map(
+							item =>
+								item.inputType && item.id === 'boadresse_flyttedato' && this._renderSelect(item)
+						)}
+					</div>
+				</div>
+			</Fragment>
+		)
+	}
+
 	_placeHolderGenerator = type => {
 		if (type === 'boadresse_postnr') return 'Velg postnummer...'
 		if (type === 'boadresse_kommunenr') return 'Velg kommunenummer...'
@@ -249,48 +292,5 @@ export default class AutofillAddress extends Component {
 				/>
 			)
 		}
-	}
-
-	render() {
-		const items = this.props.items
-		return (
-			<Fragment>
-				<div className="address-wrapper">
-					{!this.state.adresseValgt && (
-						<div className="address-container">
-							{items.map(
-								item =>
-									item.inputType && item.id !== 'boadresse_flyttedato' && this._renderSelect(item)
-							)}
-							<LinkButton text="Nullstill alle" onClick={this._clearAll} />
-						</div>
-					)}
-
-					<div className="address-container">
-						{!this.state.adresseValgt && (
-							<Knapp
-								className="generate-address-button"
-								type="standard"
-								autoDisableVedSpinner
-								mini
-								spinner={this.state.isFetching}
-								onClick={this._onClickGyldigAdresse}
-							>
-								Hent gyldige adresser
-							</Knapp>
-						)}
-						{this.state.gyldigeAdresser && this._renderAdresseSelect()}
-						{this.state.gyldigeAdresser === undefined && <p>Fant ingen gyldige adresser</p>}
-					</div>
-
-					<div className="address-container">
-						{items.map(
-							item =>
-								item.inputType && item.id === 'boadresse_flyttedato' && this._renderSelect(item)
-						)}
-					</div>
-				</div>
-			</Fragment>
-		)
 	}
 }

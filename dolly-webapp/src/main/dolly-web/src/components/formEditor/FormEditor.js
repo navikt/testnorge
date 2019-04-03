@@ -196,12 +196,13 @@ export default class FormEditor extends PureComponent {
 					}
 				}
 				if (item.apiKodeverkId) {
+					const showValueInLabel = item.apiKodeverkShowValueInLabel ? true : false
 					return {
 						placeholder: placeholder,
-						loadOptions: () =>
-							DollyApi.getKodeverkByNavn(item.apiKodeverkId).then(
-								DollyApi.Utils.NormalizeKodeverkForDropdown
-							)
+						loadOptions: async () => {
+							const res = await DollyApi.getKodeverkByNavn(item.apiKodeverkId)
+							return DollyApi.Utils.NormalizeKodeverkForDropdown(res, showValueInLabel)
+						}
 					}
 				} else {
 					return {
