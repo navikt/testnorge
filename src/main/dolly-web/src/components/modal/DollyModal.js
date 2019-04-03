@@ -13,7 +13,11 @@ const customStyles = {
 		transform: 'translate(-50%, -50%)',
 		width: '25%',
 		minWidth: '500px',
-		overflow: 'inherit'
+		overflow: 'auto',
+		maxHeight: '80%'
+	},
+	overlay: {
+		background: 'rgba(0,0,0,0.75)',
 	}
 }
 
@@ -26,7 +30,7 @@ export default class DollyModal extends PureComponent {
 		else customStyles.content.width = '25%'
 
 		return (
-			<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={onRequestClose} style={customStyles}>
+			<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={onRequestClose} style={customStyles}> 
 				<div className="dollymodal">
 					{content ? content : <p>Du må sende inn content som props</p>}
 					<Lukknapp onClick={closeModal} />

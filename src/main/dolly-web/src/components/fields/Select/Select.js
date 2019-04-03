@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import Select, { Async } from 'react-select'
+import Select from 'react-virtualized-select'
 import cn from 'classnames'
 import _get from 'lodash/get'
-
 import './Select.less'
 
 export default class DollySelect extends PureComponent {
@@ -27,36 +26,25 @@ export default class DollySelect extends PureComponent {
 
 	render() {
 		const { name, label, placeholder, loadOptions, error, size, ...restProps } = this.props
-
 		return (
 			<div className={cn({ error: Boolean(error) }, size, 'skjemaelement dollyselect')}>
 				<label htmlFor={name} className="skjemaelement__label">
 					{label}{' '}
 				</label>
 				<div className="dollyselect-input">
-					{loadOptions ? (
-						<Async
-							id={name}
-							name={name}
-							loadOptions={loadOptions}
-							placeholder={placeholder}
-							clearable
-							openOnFocus
-							{...this.translations}
-							{...restProps}
-						/>
-					) : (
-						<Select
-							id={name}
-							name={name}
-							placeholder={placeholder}
-							closeOnSelect={this.props.multi ? false : true}
-							clearable
-							openOnFocus
-							{...this.translations}
-							{...restProps}
-						/>
-					)}
+					<Select
+						// Bruk optionHeight={}k for dynamisk height. Sjekk docs
+						async={loadOptions ? true : false}
+						loadOptions={loadOptions}
+						id={name}
+						name={name}
+						placeholder={placeholder}
+						closeOnSelect={this.props.multi ? false : true}
+						clearable
+						openOnFocus
+						{...this.translations}
+						{...restProps}
+					/>
 				</div>
 				{error && (
 					<div role="alert" aria-live="assertive">
@@ -70,7 +58,6 @@ export default class DollySelect extends PureComponent {
 
 export const FormikDollySelect = props => {
 	const { field, form, beforeChange, ...restProps } = props
-
 	const singleSelectChangeHandler = selected => {
 		form.setFieldValue(field.name, _get(selected, 'value', ''))
 	}

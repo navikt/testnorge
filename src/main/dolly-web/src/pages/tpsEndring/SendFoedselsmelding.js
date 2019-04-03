@@ -41,7 +41,7 @@ export default class SendFoedselsmelding extends PureComponent {
 			identtype: yup.string().required('Identtype er ett påkrevd felt.'),
 			kjonn: yup.string().required('Kjønn er et påkrevd felt.'),
 			miljoer: yup.string().required('Miljø er et påkrevd felt.'),
-			foedselsdato: DateValidation,
+			foedselsdato: DateValidation(),
 			adresseFra: yup.string().required('Adresse er et påkrevd felt.')
 		})
 
@@ -149,7 +149,7 @@ export default class SendFoedselsmelding extends PureComponent {
 								showErrorMessageFoundIdent: true
 							})
 						} else if (res_environments.length === 1) {
-							miljoer.push({value: res_environments[0], label: res_environments[0]})
+							miljoer.push({ value: res_environments[0], label: res_environments[0] })
 						}
 
 						const displayEnvironmentsInDropdown = this.fillEnvironmentDropdown(res_environments)
