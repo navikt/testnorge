@@ -53,6 +53,7 @@ export default class AttributtManager {
 
 	listAllExcludingChildrenAndEksisterendeIdentAttr(): Attributt[] {
 		return AttributtListe.filter(f => {
+			console.log('f :', f)
 			return !f.parent && !f.sattForEksisterendeIdent
 		})
 	}
