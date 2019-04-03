@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
+import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
-import no.nav.registre.skd.service.AvspillerService;
+import no.nav.registre.skd.service.FasteMeldingerService;
 import no.nav.registre.skd.service.SyntetiseringService;
 
 @RestController
@@ -26,7 +29,7 @@ public class SyntetiseringController {
     private SyntetiseringService syntetiseringService;
 
     @Autowired
-    private AvspillerService avspillerService;
+    private FasteMeldingerService fasteMeldingerService;
 
     @LogExceptions
     @ApiOperation(value = "Her bestilles genererering av syntetiske meldinger for nye og eksisterende identer. "
@@ -44,8 +47,16 @@ public class SyntetiseringController {
     }
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man starte avspilling av en TPSF-avspillergruppe. Dette innebærer at alle skd-meldingene i en gitt gruppe sendes til TPS i et gitt miljø.")
     @PostMapping(value = "/startAvspilling/{avspillergruppeId}")
     public SkdMeldingerTilTpsRespons startAvspillingAvTpsfAvspillergruppe(@PathVariable Long avspillergruppeId, @RequestParam String miljoe) {
-        return avspillerService.startAvspillingAvTpsfAvspillergruppe(avspillergruppeId, miljoe);
+        return fasteMeldingerService.startAvspillingAvTpsfAvspillergruppe(avspillergruppeId, miljoe);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man legge nye identer inn i en gitt avspillergruppe i TPSF. Identene vil få opprettet en innvandringsmelding hver.")
+    @PostMapping(value = "/leggTilNyeMeldinger/{avspillergruppeId}")
+    public List<Long> leggTilNyeMeldingerIGruppe(@PathVariable Long avspillergruppeId, @RequestBody List<FastMeldingRequest> fasteMeldinger) {
+        return fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger);
     }
 }

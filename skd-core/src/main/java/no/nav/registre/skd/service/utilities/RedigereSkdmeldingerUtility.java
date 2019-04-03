@@ -5,7 +5,7 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 
 public class RedigereSkdmeldingerUtility {
 
-    private static final String STATSBORGER_KODE_NORGE = "000";
+    public static final String STATSBORGER_KODE_NORGE = "000";
 
     public static void putFnrInnIMelding(RsMeldingstype1Felter melding, String fnr) {
         melding.setFodselsdato(fnr.substring(0, 6));
