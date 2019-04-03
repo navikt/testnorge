@@ -20,7 +20,6 @@ import java.util.List;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
-import no.nav.registre.skd.skdmelding.RsMeldingstype;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FasteMeldingerServiceTest {
@@ -46,6 +45,7 @@ public class FasteMeldingerServiceTest {
     public void setUp() {
         avspillergruppeIder = new ArrayList<>(Arrays.asList(123L, 234L));
         fasteMeldinger = new ArrayList<>();
+        fasteMeldinger.add(new FastMeldingRequest());
     }
 
     @Test
@@ -60,12 +60,10 @@ public class FasteMeldingerServiceTest {
 
     @Test
     public void shouldOppretteMeldingerOgLeggeIGruppe() {
-        List<RsMeldingstype> meldinger = new ArrayList<>();
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1)).thenReturn(meldinger);
-
         fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger);
 
-        verify(validationService).logAndRemoveInvalidMessages(meldinger, Endringskoder.INNVANDRING);
+        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1);
+        verify(validationService).logAndRemoveInvalidMessages(anyList(), eq(Endringskoder.INNVANDRING));
         verify(tpsfConsumer).saveSkdEndringsmeldingerInTPSF(eq(avspillergruppeId), anyList());
     }
 }
