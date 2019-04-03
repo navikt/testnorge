@@ -36,7 +36,6 @@ export default class Navigation extends PureComponent {
 
 		if (FormikProps)
 			if ('boadresse_gateadresse' in FormikProps.values) {
-				console.log('propsValues :', FormikProps.values)
 				harAdresse = true
 				if (
 					FormikProps.values.boadresse_gateadresse &&
