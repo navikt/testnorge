@@ -13,6 +13,7 @@
     <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-statisk-data-forvalter</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
 
     <properties>
@@ -63,7 +64,6 @@
 
 
     <build>
-        <finalName>testnorge-statisk-data-forvalter</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

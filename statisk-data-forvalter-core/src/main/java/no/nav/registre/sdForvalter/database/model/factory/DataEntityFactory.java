@@ -4,7 +4,7 @@ import java.util.List;
 
 import no.nav.registre.sdForvalter.database.ModelEnum;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
-import no.nav.registre.sdForvalter.database.model.DkifModel;
+import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
 
 public class DataEntityFactory {
@@ -26,12 +26,12 @@ public class DataEntityFactory {
                 }
                 return tpsModel;
             case DKIF:
-                DkifModel dkifModel = DkifModel.builder().build();
-                dkifModel.updateFromString(content, headers);
-                if ("".equals(dkifModel.getFnr()) || dkifModel.getFnr() == null) {
+                KrrModel krrModel = KrrModel.builder().build();
+                krrModel.updateFromString(content, headers);
+                if ("".equals(krrModel.getFnr()) || krrModel.getFnr() == null) {
                     throw new IllegalArgumentException(String.format("Unable to create %s because it is missing FNR", dataType));
                 }
-                return dkifModel;
+                return krrModel;
         }
         throw new IllegalArgumentException(String.format("Unable to create model of type: %s", dataType));
     }

@@ -24,7 +24,7 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 @AllArgsConstructor
 @Slf4j
 @Table(name = "dkif")
-public class DkifModel extends AuditModel implements CreatableFromString {
+public class KrrModel extends AuditModel implements CreatableFromString {
 
     @Id
     private String fnr;

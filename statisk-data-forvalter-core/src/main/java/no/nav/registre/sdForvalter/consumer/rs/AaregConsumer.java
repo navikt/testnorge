@@ -7,9 +7,11 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Set;
 
+import no.nav.registre.sdForvalter.database.model.AaregModel;
+
 @Slf4j
 @Component
-public class AaregConsumer implements ConsumerInitializer {
+public class AaregConsumer {
 
     private final RestTemplate restTemplate;
     private final String aaregUrl;
@@ -19,9 +21,7 @@ public class AaregConsumer implements ConsumerInitializer {
         this.aaregUrl = aaregUrl + "/api/v1";
     }
 
-
-    @Override
-    public void send(Set<Object> data, String environment) {
+    public void send(Set<AaregModel> data, String environment) {
 
     }
 }

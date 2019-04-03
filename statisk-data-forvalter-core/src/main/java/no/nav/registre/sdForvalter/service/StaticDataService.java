@@ -9,12 +9,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.sdForvalter.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
-import no.nav.registre.sdForvalter.database.model.DkifModel;
+import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
-import no.nav.registre.sdForvalter.database.repository.DkifRepository;
+import no.nav.registre.sdForvalter.database.repository.KrrRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsRepository;
 
 @Slf4j
@@ -24,9 +23,7 @@ public class StaticDataService {
 
     private final AaregRepository aaregRepository;
     private final TpsRepository tpsRepository;
-    private final DkifRepository dkifRepository;
-
-    private final HodejegerenConsumer hodejegerenConsumer;
+    private final KrrRepository krrRepository;
 
     @Value("${tps.statisk.avspillergruppeId}")
     private Long playgroupStaticData;
@@ -43,10 +40,10 @@ public class StaticDataService {
         return aaregModels;
     }
 
-    public Set<DkifModel> getDkifData() {
-        HashSet<DkifModel> dkifModels = new HashSet<>();
-        dkifRepository.findAll().forEach(dkifModels::add);
-        return dkifModels;
+    public Set<KrrModel> getDkifData() {
+        HashSet<KrrModel> krrModels = new HashSet<>();
+        krrRepository.findAll().forEach(krrModels::add);
+        return krrModels;
     }
 
     public Set<TpsModel> saveInTps(Set<TpsModel> data) {
@@ -77,16 +74,16 @@ public class StaticDataService {
         return overlap;
     }
 
-    public Set<DkifModel> saveInDkif(Set<DkifModel> data) {
-        Set<DkifModel> overlap = new HashSet<>();
-        Set<DkifModel> reduced = data.stream().filter(t -> {
+    public Set<KrrModel> saveInDkif(Set<KrrModel> data) {
+        Set<KrrModel> overlap = new HashSet<>();
+        Set<KrrModel> reduced = data.stream().filter(t -> {
             if (tpsRepository.findById(t.getFnr()).isPresent()) {
                 overlap.add(t);
                 return false;
             }
             return true;
         }).collect(Collectors.toSet());
-        dkifRepository.saveAll(reduced);
+        krrRepository.saveAll(reduced);
         return overlap;
     }
 }

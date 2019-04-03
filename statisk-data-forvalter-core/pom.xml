@@ -91,6 +91,7 @@
     </dependencies>
 
     <build>
+        <finalName>testnorge-statisk-data-forvalter</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

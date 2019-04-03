@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Slf4j
 @Component
-public class TpConsumer implements ConsumerInitializer {
+public class TpConsumer {
 
     private final RestTemplate restTemplate;
     private final String tpUrl;
@@ -28,10 +28,9 @@ public class TpConsumer implements ConsumerInitializer {
      * @param data        Fnr som skal legges til i tp
      * @param environment Miljøet de skal legges til i
      */
-    @Override
-    public void send(Set<Object> data, String environment) {
+    public void send(Set<String> data, String environment) {
         UriTemplate uriTemplate = new UriTemplate(tpUrl + "/orkestrering/opprettPersoner/{miljoe}");
-        RequestEntity<Set<String>> requestEntity = new RequestEntity<>(HttpMethod.POST, uriTemplate.expand(environment));
+        RequestEntity<Set<String>> requestEntity = new RequestEntity<>(data, HttpMethod.POST, uriTemplate.expand(environment));
         ResponseEntity<Set> responseEntity = restTemplate.exchange(requestEntity, Set.class);
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
             log.warn("Noe skjedde med initialisering av TP i gitt miljø. Det kan være at databasen ikke er koblet opp til miljø {}", environment);
