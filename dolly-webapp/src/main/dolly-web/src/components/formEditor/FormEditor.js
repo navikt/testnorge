@@ -123,7 +123,6 @@ export default class FormEditor extends PureComponent {
 	}
 
 	renderFieldComponent = (item, formikProps, valgteVerdier, parentObject) => {
-		console.log('item :', item)
 		if (!item.inputType) return null
 
 		const InputComponent = InputSelector(item.inputType)
