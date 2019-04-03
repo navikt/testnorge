@@ -95,7 +95,7 @@ export default class FormEditor extends PureComponent {
 				<div className="subkategori" key={uniqueId}>
 					{!isFieldarray && <h4>{subKategori.navn}</h4>}
 					<div className="subkategori-field-group">
-						{this.renderAdresseFelt(items, formikProps)}
+						<AutofillAddress items={items} formikProps={formikProps} />
 					</div>
 				</div>
 			)
@@ -120,10 +120,6 @@ export default class FormEditor extends PureComponent {
 				</div>
 			</div>
 		)
-	}
-
-	renderAdresseFelt = (items, formikProps) => {
-		return <AutofillAddress items={items} formikProps={formikProps} />
 	}
 
 	renderFieldComponent = (item, formikProps, valgteVerdier, parentObject) => {

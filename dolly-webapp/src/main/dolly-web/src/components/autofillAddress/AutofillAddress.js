@@ -17,20 +17,20 @@ const initialState = {
 export default class AutofillAddress extends Component {
 	state = { ...initialState }
 
-	placeHolderGenerator = type => {
+	_placeHolderGenerator = type => {
 		if (type === 'boadresse_postnr') return 'Velg postnummer...'
 		if (type === 'boadresse_kommunenr') return 'Velg kommunenummer...'
 		if (type === 'boadresse_gateadresse') return 'Søk etter adresse...'
 		return ''
 	}
 
-	loadOptionsSelector = type => {
-		if (type === 'boadresse_postnr') return () => this.fetchKodeverk('Postnummer', type)
-		if (type === 'boadresse_kommunenr') return () => this.fetchKodeverk('Kommuner', type)
+	_loadOptionsSelector = type => {
+		if (type === 'boadresse_postnr') return () => this._fetchKodeverk('Postnummer', type)
+		if (type === 'boadresse_kommunenr') return () => this._fetchKodeverk('Kommuner', type)
 		return undefined
 	}
 
-	fetchKodeverk = (kodeverkNavn, type) => {
+	_fetchKodeverk = (kodeverkNavn, type) => {
 		return DollyApi.getKodeverkByNavn(kodeverkNavn).then(res => {
 			return {
 				options: res.data.koder.map(kode => ({
@@ -42,7 +42,7 @@ export default class AutofillAddress extends Component {
 		})
 	}
 
-	fetchAdresser = () => {
+	_fetchAdresser = () => {
 		const adr = this.state.gyldigeAdresser
 		var options = []
 		if (adr.length > 1) {
@@ -63,7 +63,7 @@ export default class AutofillAddress extends Component {
 		return options
 	}
 
-	fetchHusnr = () => {
+	_fetchHusnr = () => {
 		const husnr = this.state.husnummerOptions
 		var options = []
 		husnr.forEach(nr => {
@@ -75,7 +75,7 @@ export default class AutofillAddress extends Component {
 		return options
 	}
 
-	setQueryString = () => {
+	_setQueryString = () => {
 		let queryString = ''
 		if (this.props.formikProps.values.boadresse_gateadresse) {
 			queryString += `&adresseNavnsok=${this.props.formikProps.values.boadresse_gateadresse}`
@@ -89,7 +89,7 @@ export default class AutofillAddress extends Component {
 		return queryString
 	}
 
-	onAdresseChangeHandler = input => {
+	_onAdresseChangeHandler = input => {
 		const { formikProps } = this.props
 		let addressData = ''
 
@@ -126,17 +126,17 @@ export default class AutofillAddress extends Component {
 		formikProps.setValues({ ...formikProps.values, ...newAddressObject, boadresse_husnummer: '' })
 	}
 
-	onHusnrChangeHandler = input => {
+	_onHusnrChangeHandler = input => {
 		const { formikProps } = this.props
 		let husnrInput = ''
 		if (input) husnrInput = input.value
 		formikProps.setValues({ ...formikProps.values, boadresse_husnummer: husnrInput })
 	}
 
-	onClickGyldigAdresse = () => {
+	_onClickGyldigAdresse = () => {
 		return this.setState({ isFetching: true }, async () => {
 			try {
-				const query = this.setQueryString()
+				const query = this._setQueryString()
 				let generateAddressResponse
 
 				query.length > 0
@@ -165,13 +165,13 @@ export default class AutofillAddress extends Component {
 		})
 	}
 
-	onClickEndreAdresse = () => {
+	_onClickEndreAdresse = () => {
 		const { formikProps } = this.props
 		formikProps.setValues({ ...formikProps.values, boadresse_husnummer: '' })
 		this.setState({ adresseValgt: false })
 	}
 
-	clearAll = () => {
+	_clearAll = () => {
 		const { formikProps } = this.props
 		let newAddressObject = {
 			boadresse_gateadresse: '',
@@ -183,9 +183,9 @@ export default class AutofillAddress extends Component {
 		formikProps.setValues({ ...formikProps.values, ...newAddressObject })
 	}
 
-	renderAdresseSelect = () => {
-		const gyldigeAdresser = this.fetchAdresser()
-		const husNummer = this.fetchHusnr()
+	_renderAdresseSelect = () => {
+		const gyldigeAdresser = this._fetchAdresser()
+		const husNummer = this._fetchHusnr()
 		return (
 			<div>
 				{this.state.adresseValgt && (
@@ -196,7 +196,7 @@ export default class AutofillAddress extends Component {
 							placeholder="Velg gyldig adresse..."
 							label="Gyldig adresse"
 							component={FormikDollySelect}
-							beforeChange={this.onAdresseChangeHandler}
+							beforeChange={this._onAdresseChangeHandler}
 							options={gyldigeAdresser}
 						/>
 						{this.state.husnummerOptions && (
@@ -207,22 +207,22 @@ export default class AutofillAddress extends Component {
 									placeholder="Velg husnummer..."
 									label="Husnummer"
 									component={FormikDollySelect}
-									beforeChange={this.onHusnrChangeHandler}
+									beforeChange={this._onHusnrChangeHandler}
 									options={husNummer}
 								/>
 							</div>
 						)}
-						<LinkButton text="Endre adresse" onClick={this.onClickEndreAdresse} />
+						<LinkButton text="Endre adresse" onClick={this._onClickEndreAdresse} />
 					</div>
 				)}
 			</div>
 		)
 	}
 
-	renderSelect = item => {
+	_renderSelect = item => {
 		const selectProps = {
-			loadOptions: this.loadOptionsSelector(item.id),
-			placeholder: this.placeHolderGenerator(item.id)
+			loadOptions: this._loadOptionsSelector(item.id),
+			placeholder: this._placeHolderGenerator(item.id)
 		}
 		const InputComponent = InputSelector(item.inputType)
 
@@ -259,9 +259,9 @@ export default class AutofillAddress extends Component {
 						<div className="address-container">
 							{items.map(
 								item =>
-									item.inputType && item.id !== 'boadresse_flyttedato' && this.renderSelect(item)
+									item.inputType && item.id !== 'boadresse_flyttedato' && this._renderSelect(item)
 							)}
-							<LinkButton text="Nullstill alle" onClick={this.clearAll} />
+							<LinkButton text="Nullstill alle" onClick={this._clearAll} />
 						</div>
 					)}
 
@@ -273,19 +273,19 @@ export default class AutofillAddress extends Component {
 								autoDisableVedSpinner
 								mini
 								spinner={this.state.isFetching}
-								onClick={this.onClickGyldigAdresse}
+								onClick={this._onClickGyldigAdresse}
 							>
 								Hent gyldige adresser
 							</Knapp>
 						)}
-						{this.state.gyldigeAdresser && this.renderAdresseSelect()}
+						{this.state.gyldigeAdresser && this._renderAdresseSelect()}
 						{this.state.gyldigeAdresser === undefined && <p>Fant ingen gyldige adresser</p>}
 					</div>
 
 					<div className="address-container">
 						{items.map(
 							item =>
-								item.inputType && item.id === 'boadresse_flyttedato' && this.renderSelect(item)
+								item.inputType && item.id === 'boadresse_flyttedato' && this._renderSelect(item)
 						)}
 					</div>
 				</div>
