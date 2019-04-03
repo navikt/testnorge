@@ -1,8 +1,6 @@
 import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource, AttributtType } from '../Types'
-import Formatters from '~/utils/DataFormatter'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
-import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
 import * as yup from 'yup'
 
@@ -38,7 +36,7 @@ const AttributtListe: Attributt[] = [
 				editPath: 'grunnlag',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
-				size: 'large',
+				size: 'medium',
 				dependentOn: 'tjeneste',
 				validation: yup.string().required('Velg en type inntekt.'),
 				attributtType: AttributtType.SelectAndRead

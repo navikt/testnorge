@@ -11,7 +11,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Født etter',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation,
+		validation: DateValidation(),
 		attributtType: AttributtType.SelectOnly,
 		sattForEksisterendeIdent: true
 	},
@@ -22,7 +22,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Født før',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation,
+		validation: DateValidation(),
 		attributtType: AttributtType.SelectOnly,
 		sattForEksisterendeIdent: true
 	},
@@ -33,7 +33,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Dødsdato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation,
+		validation: DateValidation(),
 		attributtType: AttributtType.SelectOnly
 	},
 	{
