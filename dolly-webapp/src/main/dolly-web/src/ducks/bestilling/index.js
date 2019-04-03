@@ -179,7 +179,6 @@ const bestillingFormatter = bestillingState => {
 		eksisterendeIdentListe
 	} = bestillingState
 	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
-
 	let final_values = []
 
 	identOpprettesFra === BestillingMapper()
@@ -201,6 +200,7 @@ const bestillingFormatter = bestillingState => {
 	// TODO: SPECIAL HANDLING - Hva gjør vi her?
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
+		final_values.tpsf.boadresse.gatekode = values.boadresse_gatekode
 	}
 	console.log('POSTING BESTILLING', final_values)
 
