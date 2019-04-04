@@ -9,7 +9,7 @@ import java.util.List;
 
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
 import no.nav.registre.bisys.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.bisys.consumer.rs.responses.BidragsResponse;
+import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.consumer.rs.responses.relasjon.Relasjon;
 import no.nav.registre.bisys.consumer.rs.responses.relasjon.RelasjonsResponse;
 import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
@@ -19,8 +19,8 @@ import no.nav.registre.bisys.service.utils.Barn;
 @Slf4j
 public class SyntetiseringService {
 
-    private static final String RELASJON_MOR = "MORA";
-    private static final String RELASJON_FAR = "FARA";
+    public static final String RELASJON_MOR = "MORA";
+    public static final String RELASJON_FAR = "FARA";
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -28,11 +28,15 @@ public class SyntetiseringService {
     @Autowired
     private BisysSyntetisererenConsumer bisysSyntetisererenConsumer;
 
-    public List<BidragsResponse> genererBidragsmeldinger(SyntetiserBisysRequest syntetiserBisysRequest) {
+    public List<SyntetisertBidragsmelding> genererBidragsmeldinger(SyntetiserBisysRequest syntetiserBisysRequest) {
         List<String> identerMedFoedselsmelding = hodejegerenConsumer.finnFoedteIdenter(syntetiserBisysRequest.getAvspillergruppeId());
         List<Barn> utvalgteIdenter = velgUtGyldigeIdenter(syntetiserBisysRequest.getAntallNyeIdenter(), identerMedFoedselsmelding, syntetiserBisysRequest.getMiljoe());
 
-        List<BidragsResponse> bidragsmeldinger = bisysSyntetisererenConsumer.getSyntetiserteBidragsmeldinger(utvalgteIdenter.size());
+        if (utvalgteIdenter.size() < syntetiserBisysRequest.getAntallNyeIdenter()) {
+            log.warn("Fant ikke nok identer registrert med mor og far. Oppretter {} bidragsmelding(er).", utvalgteIdenter.size());
+        }
+
+        List<SyntetisertBidragsmelding> bidragsmeldinger = bisysSyntetisererenConsumer.getSyntetiserteBidragsmeldinger(utvalgteIdenter.size());
 
         setRelasjonerIBidragsmeldinger(utvalgteIdenter, bidragsmeldinger);
 
@@ -69,12 +73,8 @@ public class SyntetiseringService {
         return utvalgteIdenter;
     }
 
-    private void setRelasjonerIBidragsmeldinger(List<Barn> utvalgteIdenter, List<BidragsResponse> bidragsmeldinger) {
-        for (BidragsResponse bidragsMelding : bidragsmeldinger) {
-            if (utvalgteIdenter.isEmpty()) {
-                log.warn("Fant ikke nok identer registrert med mor og far.");
-                break;
-            }
+    private void setRelasjonerIBidragsmeldinger(List<Barn> utvalgteIdenter, List<SyntetisertBidragsmelding> bidragsmeldinger) {
+        for (SyntetisertBidragsmelding bidragsMelding : bidragsmeldinger) {
             Barn barn = utvalgteIdenter.remove(0);
             bidragsMelding.setBarnetsFnr(barn.getFnr());
             bidragsMelding.setBidragsmottaker(barn.getMorFnr());

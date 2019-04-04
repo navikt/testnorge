@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BidragsResponse {
+public class SyntetisertBidragsmelding {
 
     @JsonProperty("BA")
     private String barnetsFnr;

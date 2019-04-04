@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
-import no.nav.registre.bisys.consumer.rs.responses.BidragsResponse;
+import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
 import no.nav.registre.bisys.service.SyntetiseringService;
 
@@ -22,7 +22,7 @@ public class SyntetiseringController {
 
     @LogExceptions
     @PostMapping(value = "/generer")
-    public List<BidragsResponse> genererBidragsmeldinger(@RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
+    public List<SyntetisertBidragsmelding> genererBidragsmeldinger(@RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
         return syntetiseringService.genererBidragsmeldinger(syntetiserBisysRequest);
     }
 }
