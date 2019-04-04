@@ -137,6 +137,39 @@ export function mapTpsfData(tpsfData, testIdent) {
 			]
 		})
 	}
+
+	if (tpsfData.postadresse) {
+		data.push({
+			header: 'Postadresse',
+			data: [
+				{
+					parent: 'postadresse',
+					id: 'postLand',
+					label: 'Land',
+					value: tpsfData.postadresse.postLand
+				},
+				{
+					parent: 'postadresse',
+					id: 'postLinje1',
+					label: 'Adresselinje 1',
+					value: tpsfData.postadresse.postLinje1
+				},
+				{
+					parent: 'postadresse',
+					id: 'postLinje2',
+					label: 'Adresselinje 2',
+					value: tpsfData.postadresse.postLinje2
+				},
+				{
+					parent: 'postadresse',
+					id: 'postLinje3',
+					label: 'Adresselinje 3',
+					value: tpsfData.postadresse.postLinje3
+				}
+			]
+		})
+	}
+
 	if (tpsfData.relasjoner && tpsfData.relasjoner.length) {
 		data.push({
 			header: 'Familierelasjoner',

@@ -169,6 +169,7 @@ export default handleActions(
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
 const bestillingFormatter = bestillingState => {
+	console.log('bestillingState :', bestillingState)
 	const {
 		attributeIds,
 		antall,
@@ -198,10 +199,33 @@ const bestillingFormatter = bestillingState => {
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
 
+	console.log('final_values :', final_values)
+
 	// TODO: SPECIAL HANDLING - Hva gjør vi her?
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 	}
+	// if (_get(final_values, 'tpsf.postadresse.postLand')) {
+	// 	final_values.tpsf.postadresse.postLand = 'NORGE'
+	// }
+
+	// if (_get(final_values, 'tpsf.postadresse.postLand')) {
+	// 	final_values.tpsf.postadresse = [
+	// 		{
+	// 			postLand: '404',
+	// 			postLinje1: 'string',
+	// 			postLinje2: 'string',
+	// 			postLinje3: 'string'
+	// 		}
+	// 	]
+	// }
+
+	// if (_get(final_values, 'tpsf.postadresse.postLand')) {
+	// 	if (final_values.tpsf.postadresse.get())
+	// if
+	//		var re = /^\d{4}/;
+	// }
+
 	console.log('POSTING BESTILLING', final_values)
 
 	return final_values

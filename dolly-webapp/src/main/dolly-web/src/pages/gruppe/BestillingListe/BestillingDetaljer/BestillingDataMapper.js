@@ -74,7 +74,7 @@ export function mapBestillingData(bestillingData) {
 		data.push(personinfo)
 
 		if (tpsfKriterier.boadresse) {
-			const adresse = {
+			const boadresse = {
 				header: 'Bostedadresse',
 				items: [
 					{
@@ -102,7 +102,32 @@ export function mapBestillingData(bestillingData) {
 					}
 				]
 			}
-			data.push(adresse)
+			data.push(boadresse)
+		}
+
+		if (tpsfKriterier.postadresse) {
+			const postadresse = {
+				header: 'Postadresse',
+				items: [
+					{
+						label: 'Land',
+						value: tpsfKriterier.postadresse.postLand
+					},
+					{
+						label: 'Adresselinje 1',
+						value: tpsfKriterier.postadresse.postLinje1
+					},
+					{
+						label: 'Adresselinje 2',
+						value: tpsfKriterier.postadresse.postLinje2
+					},
+					{
+						label: 'Adresselinje 3',
+						value: tpsfKriterier.postadresse.postLinje3
+					}
+				]
+			}
+			data.push(postadresse)
 		}
 
 		if (tpsfKriterier.relasjoner) {

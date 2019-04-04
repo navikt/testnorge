@@ -97,8 +97,8 @@ const AttributtListe: Attributt[] = [
 		label: 'Land',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
-		apiKodeverkId: 'Statsborgerskap',
-		validation: yup.string().required('Vennligst fyll ut'),
+		apiKodeverkId: 'StatsborgerskapFreg',
+		// validation: yup.string().required('Vennligst fyll ut'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
