@@ -45,8 +45,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "Testnorge-Skd",
-                "Testnorge-Skd er adapteren for opprettelse av skd-meldinger som legges inn i en TPSF avspillergruppe og sendes til TPS. ",
+                "Testnorge-Bisys",
+                "Testnorge-Bisys er adapteren mellom orkestratoren og bisys for opprettelse av syntetiske bistandsmeldinger.",
                 "" + appVersion,
                 "https://nav.no",
                 new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-skd/browse", null),
