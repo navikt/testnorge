@@ -51,9 +51,9 @@ export default class BestillingDetaljerSammendrag extends PureComponent {
 					return (
 						<Fragment key={j}>
 							<h4>{kategori.header} </h4>
-							<div className={cssClass}>
-								{kategori.items &&
-									kategori.items.map((attributt, i) => {
+							{kategori.items && (
+								<div className={cssClass}>
+									{kategori.items.map((attributt, i) => {
 										if (attributt.value) {
 											return (
 												<StaticValue
@@ -65,12 +65,13 @@ export default class BestillingDetaljerSammendrag extends PureComponent {
 											)
 										}
 									})}
-							</div>
-							<div>
-								{kategori.itemRows &&
-									kategori.itemRows.map((row, i) => {
+								</div>
+							)}
+							{kategori.itemRows && (
+								<div className={'info-text bottom-border'}>
+									{kategori.itemRows.map((row, i) => {
 										return (
-											<div className={cssClass} key={i}>
+											<div className={'flexbox--align-center flexbox--wrap'} key={i}>
 												{row.map((attributt, j) => {
 													return (
 														<StaticValue
@@ -84,7 +85,8 @@ export default class BestillingDetaljerSammendrag extends PureComponent {
 											</div>
 										)
 									})}
-							</div>
+								</div>
+							)}
 						</Fragment>
 					)
 				}

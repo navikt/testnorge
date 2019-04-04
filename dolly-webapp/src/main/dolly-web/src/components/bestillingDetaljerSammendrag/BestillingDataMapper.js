@@ -129,8 +129,51 @@ export function mapBestillingData(bestillingData) {
 
 	if (bestillingData.bestKriterier) {
 		const registreKriterier = JSON.parse(bestillingData.bestKriterier)
-		const sigrunStubKriterier = registreKriterier.sigrunStub && registreKriterier.sigrunStub
 		console.log('registreKriterier :', registreKriterier)
+
+		const aaregKriterier = registreKriterier.aareg && registreKriterier.aareg
+		if (aaregKriterier) {
+			const aareg = {
+				header: 'Arbeidsforhold',
+				itemRows: []
+			}
+
+			aaregKriterier.forEach((arbeidsforhold, i) => {
+				aareg.itemRows.push([
+					{
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small'
+					},
+					{
+						label: 'Yrke',
+						// TODO: Apikodeverkid
+						value: arbeidsforhold.arbeidsavtale.yrke
+					},
+					{ label: 'Startdato', value: arbeidsforhold.ansettelsesPeriode.fom },
+					{
+						label: 'Sluttdato',
+						value: arbeidsforhold.ansettelsesPeriode.tom
+					},
+					{
+						label: 'Stillingprosent',
+						value: arbeidsforhold.arbeidsavtale.stillingsprosent
+					},
+					{
+						label: 'Type av arbeidsgiver',
+						value: arbeidsforhold.arbeidsgiver.aktoertype
+					},
+
+					{
+						label: 'Type av arbeidsgiver',
+						value: arbeidsforhold.arbeidsgiver.aktoertype
+					}
+				])
+			})
+
+			data.push(aareg)
+		}
+		const sigrunStubKriterier = registreKriterier.sigrunStub && registreKriterier.sigrunStub
 
 		if (sigrunStubKriterier) {
 			// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
@@ -175,6 +218,30 @@ export function mapBestillingData(bestillingData) {
 				])
 			})
 			data.push(sigrunStub)
+		}
+
+		const krrKriterier = registreKriterier.krrStub && registreKriterier.krrStub
+
+		if (krrKriterier) {
+			const krrStub = {
+				header: 'Kontaktinformasjon og reservasjon',
+				items: [
+					{
+						label: 'Mobilnummer',
+						value: krrKriterier.mobil
+					},
+					{
+						label: 'Epost',
+						value: krrKriterier.epost
+					},
+					{
+						label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
+						value: krrKriterier.reservert ? 'JA' : 'NEI'
+					}
+				]
+			}
+
+			data.push(krrStub)
 		}
 	}
 
