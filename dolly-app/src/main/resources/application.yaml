@@ -13,10 +13,10 @@ spring:
     username: DOLLY_U
     ? password
 
-#### APP DB ####
+      #### APP DB ####
 ? app.datasource.onsHosts
 
-#### NEW FREG-SECURITY #####
+  #### NEW FREG-SECURITY #####
 freg.security.oidc:
   idp:
     openAm:

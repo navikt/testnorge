@@ -35,13 +35,6 @@ fasitResources:
       issuerUrl: freg.security.oidc.idp.openam.issuerUrl
       jwksUrl: freg.security.oidc.idp.openam.jwksUrl
 
-  - alias: nav-sts-oidc
-    resourceType: OpenIdConnect
-    propertyMap:
-      hostUrl: freg.security.oidc.idp.navSts.hostUrl
-      issuerUrl: freg.security.oidc.idp.navSts.issuerUrl
-      jwksUrl: freg.security.oidc.idp.navSts.jwksUrl
-
   - alias: tpsf-host
     resourceType: baseurl
     propertyMap:
