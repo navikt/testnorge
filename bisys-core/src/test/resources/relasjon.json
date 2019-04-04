@@ -1,51 +1,31 @@
 {
-  "response": {
-    "data1": {
-      "antallRelasjoner": 2,
-      "endringsDato": "2017-12-08",
-      "adresse": "HOFFSVEIEN 30",
-      "fnr": 12090080405,
+  "fnr": "11021950000",
+  "relasjoner": [
+    {
+      "kortnavn": "SKATOLL ANSTENDIG",
+      "datoDo": "",
+      "typeRelBeskr": "Far til",
+      "mellomnavn": "",
+      "etternavn": "SKATOLL",
+      "adresseStatus": 0,
+      "adrStatusBeskr": "",
       "spesregType": "",
-      "typeAdresse": "OFFA",
-      "typeAdrBeskr": "Offisiell adresse",
-      "sivilstand": "GIFT",
-      "relasjoner": {
-        "relasjon": [
-          {
-            "kortnavn": "DATAMASKIN VERTIKAL",
-            "datoDo": "",
-            "typeRelBeskr": "Barn av",
-            "mellomnavn": "",
-            "etternavn": "DATAMASKIN",
-            "adresseStatus": 0,
-            "adrStatusBeskr": "",
-            "spesregType": "",
-            "fornavn": "VERTIKAL",
-            "fnrRelasjon": 12021790069,
-            "typeRelasjon": "BARN"
-          },
-          {
-            "kortnavn": "OPPOSISJON INNESLUTTET TY",
-            "datoDo": "",
-            "typeRelBeskr": "Ektefelle til",
-            "mellomnavn": "TYPISK",
-            "etternavn": "OPPOSISJON",
-            "adresseStatus": 0,
-            "adrStatusBeskr": "",
-            "spesregType": "",
-            "fornavn": "INNESLUTTET",
-            "fnrRelasjon": 17120080318,
-            "typeRelasjon": "EKTE"
-          }
-        ]
-      },
-      "sivilstandBeskr": "Gift"
+      "fornavn": "ANSTENDIG",
+      "fnrRelasjon": "16120680637",
+      "typeRelasjon": "FARA"
     },
-    "status": {
-      "kode": "00",
-      "melding": " ",
-      "utfyllendeMelding": " "
-    },
-    "antallTotalt": 1
-  }
+    {
+      "kortnavn": "BØTTE UVIRKSOM VISSEN",
+      "datoDo": "",
+      "typeRelBeskr": "Mor til",
+      "mellomnavn": "VISSEN",
+      "etternavn": "BØTTE",
+      "adresseStatus": 0,
+      "adrStatusBeskr": "",
+      "spesregType": "",
+      "fornavn": "UVIRKSOM",
+      "fnrRelasjon": "11020681073",
+      "typeRelasjon": "MORA"
+    }
+  ]
 }
