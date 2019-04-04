@@ -90,7 +90,7 @@ export default class FormEditor extends PureComponent {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
-
+		// console.log('isAdresse :', isAdresse)
 		return (
 			<div className="subkategori" key={uniqueId}>
 				{!isFieldarray && <h4>{subKategori.navn}</h4>}
@@ -170,10 +170,11 @@ export default class FormEditor extends PureComponent {
 	}
 
 	extraComponentProps = (item, valgteVerdier, parentObject) => {
-		console.log('item :', item)
+		// console.log('item :', item)
 		switch (item.inputType) {
 			case 'select': {
 				const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg..'
+
 				if (item.dependentOn) {
 					if (parentObject) {
 						// Sjekk if item er avhengig av en valgt verdi
@@ -187,6 +188,17 @@ export default class FormEditor extends PureComponent {
 					}
 				}
 				if (item.apiKodeverkId) {
+					// if (item.id === 'postadresse_postLand') {
+					// 	return {
+					// 		placeholder: placeholder,
+					// 		loadoptions: [
+					// 			{
+					// 				value: 'ALBANIA',
+					// 				label: 'ALBANIA'
+					// 			}
+					// 		]
+					// 	}
+					// }
 					return {
 						placeholder: placeholder,
 						loadOptions: () =>

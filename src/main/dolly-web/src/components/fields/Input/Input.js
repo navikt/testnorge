@@ -18,6 +18,8 @@ export default class DollyInput extends PureComponent {
 		const cssClass = cn(className, {
 			'label-offscreen': labelOffscreen
 		})
+		// console.log('this.props :', this.props)
+		// console.log('this :', this)
 
 		return <Input className={cssClass} {...restProps} />
 	}
@@ -37,6 +39,7 @@ export const FormikInput = props => {
 
 		return field.onChange(e)
 	}
+	// console.log('props :', props)
 
 	return (
 		<DollyInput
