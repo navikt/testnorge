@@ -1,5 +1,6 @@
 package no.nav.registre.bisys.provider.rs;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ public class SyntetiseringController {
     private SyntetiseringService syntetiseringService;
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man starte generering av syntetiske bidragsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø.")
     @PostMapping(value = "/generer")
     public List<SyntetisertBidragsmelding> genererBidragsmeldinger(@RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
         return syntetiseringService.genererBidragsmeldinger(syntetiserBisysRequest);
