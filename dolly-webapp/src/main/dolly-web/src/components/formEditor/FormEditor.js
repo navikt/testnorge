@@ -61,8 +61,6 @@ export default class FormEditor extends PureComponent {
 			})
 		}
 
-		// console.log('hovedKategoriAttributes :', hovedKategoriAttributes)
-		// console.log('hasError :', hasError)
 		return (
 			<Panel
 				key={hovedKategori.id}
@@ -147,8 +145,6 @@ export default class FormEditor extends PureComponent {
 		const valgteVerdier = formikProps.values
 		const errors = formikProps.errors
 
-		// console.log('object :', formikProps)
-
 		if (item.onlyShowAfterSelectedValue) {
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
@@ -160,7 +156,6 @@ export default class FormEditor extends PureComponent {
 				valgteVerdier[parentId][idx][attributtId] !== dependantAttributt.options[valueIndex].value
 			) {
 				delete valgteVerdier[parentId][idx][item.id]
-				// delete valgteVerdier[parentId][idx]['yrke']
 
 				if (errors[parentId] && errors[parentId][idx] && errors[parentId][idx][item.id]) {
 					delete errors[parentId][idx][item.id]
@@ -170,41 +165,17 @@ export default class FormEditor extends PureComponent {
 					}
 					let toDelete = true
 
-					// console.log('hei', Object.keys(errors[parentId][idx]))
-
 					errors[parentId].forEach(element => {
 						if (element) {
 							toDelete = false
 						}
 					})
-
 					toDelete && delete errors[parentId]
 				}
-
 				return false
 			}
 		}
 
-		// // Remove alle null-errors for the validation to pass through
-		// if (Object.keys(errors).length) {
-		// 	// console.log('happens')
-		// 	for (var error in errors) {
-		// 		console.log('error :', error)
-		// 		let toDelete = false
-		// 		if (errors[error] instanceof Array) {
-		// 			toDelete = true
-		// 			console.log('errors :', errors)
-		// 			console.log('errors[error] :', errors[error])
-		// 			errors[error].forEach(element => {
-		// 				console.log('Object.keys(element) :', Object.values(element))
-		// 				console.log('!Object.keys(element).length):', !Object.keys(element).length)
-		// 				if (Object.keys(element).length) toDelete = false
-		// 			})
-		// 			console.log('toDelete :', toDelete)
-		// 			toDelete && delete errors[error]
-		// 		}
-		// 	}
-		// }
 		return true
 	}
 
