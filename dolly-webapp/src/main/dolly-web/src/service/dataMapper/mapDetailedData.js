@@ -228,7 +228,7 @@ export function mapBestillingId(testIdent) {
 
 export function mapSigrunData(sigrunData) {
 	if (!sigrunData || sigrunData.length === 0) return null
-
+	console.log('sigrunData :', sigrunData)
 	return {
 		header: 'Inntekter',
 		multiple: true,
