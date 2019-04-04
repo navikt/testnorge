@@ -129,23 +129,49 @@ export function mapBestillingData(bestillingData) {
 
 	if (bestillingData.bestKriterier) {
 		const registreKriterier = JSON.parse(bestillingData.bestKriterier)
-
 		const sigrunStubKriterier = registreKriterier.sigrunStub && registreKriterier.sigrunStub
+		console.log('registreKriterier :', registreKriterier)
+
 		if (sigrunStubKriterier) {
-			console.log(sigrunStubKriterier, 'ha')
+			// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
+
+			let flatSigrunStubKriterier = []
+			sigrunStubKriterier.forEach(inntekt => {
+				inntekt.grunnlag.forEach(g => {
+					flatSigrunStubKriterier.push({
+						grunnlag: g.tekniskNavn,
+						inntektsaar: inntekt.inntektsaar,
+						tjeneste: inntekt.tjeneste,
+						verdi: g.verdi
+					})
+				})
+			})
+
 			const sigrunStub = {
 				header: 'Inntekter',
-
 				itemRows: []
 			}
 
-			sigrunStubKriterier.forEach(inntekt => {
+			flatSigrunStubKriterier.forEach((inntekt, i) => {
 				sigrunStub.itemRows.push([
+					{
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small'
+					},
 					{
 						label: 'År',
 						value: inntekt.inntektsaar
 					},
-					{ label: 2, value: 2 }
+					{ label: 'Beløp', value: inntekt.verdi },
+					{
+						label: 'Tjeneste',
+						value: inntekt.tjeneste
+					},
+					{
+						label: 'grunnlag',
+						value: inntekt.grunnlag
+					}
 				])
 			})
 			data.push(sigrunStub)

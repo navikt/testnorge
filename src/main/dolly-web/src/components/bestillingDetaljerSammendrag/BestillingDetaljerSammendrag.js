@@ -52,18 +52,38 @@ export default class BestillingDetaljerSammendrag extends PureComponent {
 						<Fragment key={j}>
 							<h4>{kategori.header} </h4>
 							<div className={cssClass}>
-								{kategori.items.map((attributt, i) => {
-									if (attributt.value) {
+								{kategori.items &&
+									kategori.items.map((attributt, i) => {
+										if (attributt.value) {
+											return (
+												<StaticValue
+													header={attributt.label}
+													size={attributt.width ? attributt.width : 'small'}
+													value={attributt.value}
+													key={i}
+												/>
+											)
+										}
+									})}
+							</div>
+							<div>
+								{kategori.itemRows &&
+									kategori.itemRows.map((row, i) => {
 										return (
-											<StaticValue
-												header={attributt.label}
-												size="small"
-												value={attributt.value}
-												key={i}
-											/>
+											<div className={cssClass} key={i}>
+												{row.map((attributt, j) => {
+													return (
+														<StaticValue
+															header={attributt.label}
+															size={attributt.width ? attributt.width : 'small'}
+															value={attributt.value}
+															key={j}
+														/>
+													)
+												})}
+											</div>
 										)
-									}
-								})}
+									})}
 							</div>
 						</Fragment>
 					)
