@@ -13,10 +13,10 @@ spring:
     username: DOLLY_U
     ? password
 
-#### APP DB ####
+      #### APP DB ####
 ? app.datasource.onsHosts
 
-#### NEW FREG-SECURITY #####
+  #### NEW FREG-SECURITY #####
 freg.security.oidc:
   idp:
     openAm:
@@ -33,7 +33,7 @@ freg.security.oidc:
     idToken:
       refresh-on-seconds-left: 300
       cookie-enabled: true
-      header-enabled: false
+      header-enabled: true
       validation:
         type: refreshing
 

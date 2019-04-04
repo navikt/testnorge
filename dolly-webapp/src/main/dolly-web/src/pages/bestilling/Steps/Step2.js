@@ -90,9 +90,10 @@ export default class Step2 extends PureComponent {
 							<NavigationConnector
 								onClickNext={formikProps.submitForm}
 								onClickPrevious={() => this.onClickPrevious(formikProps.values)}
+								FormikProps={formikProps}
 							/>
 							{/* // Uncomment for debug formik */}
-							<DisplayFormikState {...formikProps} />
+							{/* <DisplayFormikState {...formikProps} /> */}
 						</Fragment>
 					)}
 				/>

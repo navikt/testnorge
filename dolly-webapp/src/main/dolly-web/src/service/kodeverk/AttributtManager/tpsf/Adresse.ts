@@ -25,7 +25,6 @@ const AttributtListe: Attributt[] = [
 		label: 'Gatenavn',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst fyll ut'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -37,7 +36,6 @@ const AttributtListe: Attributt[] = [
 		label: 'Husnummer',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst fyll ut'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -50,7 +48,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Postnummer',
-		validation: yup.string().required('Vennligst fyll ut.'),
+		// validation: yup.string().required('Vennligst fyll ut.'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -61,8 +59,7 @@ const AttributtListe: Attributt[] = [
 		parent: 'boadresse',
 		label: 'Kommunenummer',
 		dataSource: DataSource.TPSF,
-		inputType: InputType.Text,
-		validation: yup.string().required('Vennligst fyll ut.'),
+		inputType: InputType.Select,
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -73,7 +70,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Flyttedato',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation,
+		validation: DateValidation(),
 		attributtType: AttributtType.SelectAndEdit,
 		dependentOn: 'boadresse'
 	}

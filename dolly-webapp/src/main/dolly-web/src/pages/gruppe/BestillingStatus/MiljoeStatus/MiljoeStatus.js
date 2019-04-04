@@ -5,7 +5,7 @@ import cn from 'classnames'
 import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
 import DollyModal from '~/components/modal/DollyModal'
-import BestillingDetaljerModal from '~/components/bestillingDetaljerModal/BestillingDetaljerModal'
+import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag';
 
 export default class MiljoeStatus extends PureComponent {
 	constructor(props) {
@@ -23,20 +23,23 @@ export default class MiljoeStatus extends PureComponent {
 	}
 
 	render() {
+
 		const {
-			id,
+			bestillingId,
 			successEnvs,
-			bestilling,
 			finnesFeilmelding,
-			antallIdenterOpprettet
+			antallIdenterOpprettet,
 		} = this.props.miljoeStatusObj
+
+		const bestilling = this.props.bestilling
+
 		const failed = true && successEnvs.length == 0 && !finnesFeilmelding
 		const { modalOpen } = this.state
 
 		return (
 			<div className="miljoe-status">
 				<div className="status-header">
-					<p>Bestilling #{id}</p>
+					<p>Bestilling #{bestillingId}</p> 
 					<h3>Bestillingsstatus</h3>
 					<div className="remove-button-container">
 						<Button kind="remove-circle" onClick={this.props.onCloseButton} />
@@ -63,7 +66,12 @@ export default class MiljoeStatus extends PureComponent {
 						isOpen={modalOpen}
 						onRequestClose={this.closeModal}
 						closeModal={this.closeModal}
-						content={<BestillingDetaljerModal bestilling={bestilling} />}
+						content={
+							<BestillingDetaljerSammendrag 
+								bestilling={bestilling} 
+								type = 'modal'
+							/>
+						}
 						width={'60%'}
 					/>
 				</div>
