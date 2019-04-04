@@ -14,13 +14,13 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.bisys.consumer.rs.responses.BidragsResponse;
+import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 
 @Component
 @Slf4j
 public class BisysSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<BidragsResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<BidragsResponse>>() {
+    private static final ParameterizedTypeReference<List<SyntetisertBidragsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<List<SyntetisertBidragsmelding>>() {
     };
 
     @Autowired
@@ -33,11 +33,11 @@ public class BisysSyntetisererenConsumer {
     }
 
     @Timed(value = "bisys.resource.latency", extraTags = { "operation", "bisys-syntetisereren" })
-    public List<BidragsResponse> getSyntetiserteBidragsmeldinger(int antallMeldinger) {
-        List<BidragsResponse> syntetiserteMeldinger = new ArrayList<>();
+    public List<SyntetisertBidragsmelding> getSyntetiserteBidragsmeldinger(int antallMeldinger) {
+        List<SyntetisertBidragsmelding> syntetiserteMeldinger = new ArrayList<>();
 
         RequestEntity getRequest = RequestEntity.get(url.expand(antallMeldinger)).build();
-        ResponseEntity<List<BidragsResponse>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        ResponseEntity<List<SyntetisertBidragsmelding>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
         if (response != null && response.getBody() != null) {
             syntetiserteMeldinger.addAll(response.getBody());

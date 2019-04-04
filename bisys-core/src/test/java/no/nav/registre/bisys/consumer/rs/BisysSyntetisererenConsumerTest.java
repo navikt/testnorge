@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import no.nav.registre.bisys.consumer.rs.responses.BidragsResponse;
+import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,7 +41,7 @@ public class BisysSyntetisererenConsumerTest {
     public void shouldGetSyntetiserteMeldinger() {
         stubBisysSyntetisererenConsumer();
 
-        List<BidragsResponse> syntetiserteBidragsmeldinger = bisysSyntetisererenConsumer.getSyntetiserteBidragsmeldinger(antallMeldinger);
+        List<SyntetisertBidragsmelding> syntetiserteBidragsmeldinger = bisysSyntetisererenConsumer.getSyntetiserteBidragsmeldinger(antallMeldinger);
 
         assertThat(syntetiserteBidragsmeldinger.get(0).getBarnetsFnr(), equalTo("01010101010"));
         assertThat(syntetiserteBidragsmeldinger.get(0).getBidragsmottaker(), equalTo("02020202020"));
@@ -49,7 +49,6 @@ public class BisysSyntetisererenConsumerTest {
         assertThat(syntetiserteBidragsmeldinger.get(1).getBarnetsFnr(), equalTo("04040404040"));
         assertThat(syntetiserteBidragsmeldinger.get(1).getBidragsmottaker(), equalTo("05050505050"));
         assertThat(syntetiserteBidragsmeldinger.get(1).getBidragspliktig(), equalTo("06060606060"));
-
     }
 
     @Test
@@ -79,5 +78,4 @@ public class BisysSyntetisererenConsumerTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
     }
-
 }
