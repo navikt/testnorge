@@ -3,11 +3,6 @@ import DataFormatter from '~/utils/DataFormatter'
 //liste over koder som må eksludert pga ingen støtte i TPSF/dolly
 const _excludeList = ['NULL', 'GLAD']
 
-const _mapperList = {
-	SPFO: 'KODE 7 - Sperret adresse, fortrolig',
-	SPSF: 'KODE 6 - Sperret adresse, strengt fortrolig'
-}
-
 export const NormalizeTeamListForDropdown = ({ data }) => ({
 	options: data.map(team => ({ value: team.id, label: team.navn }))
 })
@@ -51,13 +46,13 @@ export const SortKodeverkArray = data => {
 	return koderArray
 }
 
-export const NormalizeKodeverkForDropdown = ({ data }) => {
+export const NormalizeKodeverkForDropdown = ({ data }, showValueInLabel) => {
 	const sortedArray = SortKodeverkArray(data)
 
 	return {
 		options: sortedArray.filter(val => !_excludeList.includes(val.value)).map(kode => ({
 			value: kode.value,
-			label: kode.label
+			label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
 		}))
 	}
 }
