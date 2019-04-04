@@ -11,7 +11,6 @@ import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import Button from '~/components/button/Button'
 import _xor from 'lodash/fp/xor'
-
 import './FormEditor.less'
 
 export default class FormEditor extends PureComponent {
@@ -104,6 +103,17 @@ export default class FormEditor extends PureComponent {
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
 
+		if (isAdresse) {
+			return (
+				<div className="subkategori" key={uniqueId}>
+					{!isFieldarray && <h4>{subKategori.navn}</h4>}
+					<div className="subkategori-field-group">
+						<AutofillAddress items={items} formikProps={formikProps} />
+					</div>
+				</div>
+			)
+		}
+
 		return (
 			<div className="subkategori" key={uniqueId}>
 				{!isFieldarray && <h4>{subKategori.navn}</h4>}
@@ -124,7 +134,6 @@ export default class FormEditor extends PureComponent {
 								: null
 					)}
 				</div>
-				{isAdresse && <AutofillAddress formikProps={formikProps} />}
 			</div>
 		)
 	}
@@ -201,6 +210,7 @@ export default class FormEditor extends PureComponent {
 
 	renderFieldComponent = (item, valgteVerdier, parentObject) => {
 		if (!item.inputType) return null
+
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 
@@ -272,12 +282,13 @@ export default class FormEditor extends PureComponent {
 					}
 				}
 				if (item.apiKodeverkId) {
+					const showValueInLabel = item.apiKodeverkShowValueInLabel ? true : false
 					return {
 						placeholder: placeholder,
-						loadOptions: () =>
-							DollyApi.getKodeverkByNavn(item.apiKodeverkId).then(
-								DollyApi.Utils.NormalizeKodeverkForDropdown
-							)
+						loadOptions: async () => {
+							const res = await DollyApi.getKodeverkByNavn(item.apiKodeverkId)
+							return DollyApi.Utils.NormalizeKodeverkForDropdown(res, showValueInLabel)
+						}
 					}
 				} else {
 					return {

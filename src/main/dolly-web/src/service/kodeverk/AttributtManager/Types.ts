@@ -54,6 +54,7 @@ export interface Attributt {
 	options?: Options[]
 	format?: Function
 	apiKodeverkId?: string
+	apiKodeverkShowValueInLabel?: boolean
 	validation?: yup.MixedSchema
 	parent?: string
 	items?: Attributt[]

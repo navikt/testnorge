@@ -51,9 +51,9 @@ export default class AttributtManager {
 		return AttributtListe.filter(f => !f.parent)
 	}
 
-	listAllExcludingChildrenAndEksisterendeIdentAttr(): Attributt [] {
-		return AttributtListe.filter(f=> {
-			return (!f.parent && !f.sattForEksisterendeIdent)
+	listAllExcludingChildrenAndEksisterendeIdentAttr(): Attributt[] {
+		return AttributtListe.filter(f => {
+			return !f.parent && !f.sattForEksisterendeIdent
 		})
 	}
 
@@ -64,10 +64,10 @@ export default class AttributtManager {
 	//STEP 1
 	listSelectableAttributes(searchTerm: string, identOpprettesFra: string): AttributtGruppe[] {
 		let list
-		identOpprettesFra === BestillingMapper('EKSIDENT') ? 
-		list = this.listAllExcludingChildrenAndEksisterendeIdentAttr()
-		: list = this.listAllExcludingChildren()
-		
+		identOpprettesFra === BestillingMapper('EKSIDENT')
+			? (list = this.listAllExcludingChildrenAndEksisterendeIdentAttr())
+			: (list = this.listAllExcludingChildren())
+
 		return groupList(
 			searchTerm ? list.filter(f => f.label.toLowerCase().includes(searchTerm.toLowerCase())) : list
 		)
