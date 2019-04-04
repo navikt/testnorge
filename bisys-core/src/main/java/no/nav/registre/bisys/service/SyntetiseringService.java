@@ -54,9 +54,9 @@ public class SyntetiseringService {
             String farFnr = "";
 
             for (Relasjon relasjon : relasjoner) {
-                if (relasjon.getTypeRelasjon().equals(RELASJON_MOR)) {
+                if (RELASJON_MOR.equals(relasjon.getTypeRelasjon())) {
                     morFnr = relasjon.getFnrRelasjon();
-                } else if (relasjon.getTypeRelasjon().equals(RELASJON_FAR)) {
+                } else if (RELASJON_FAR.equals(relasjon.getTypeRelasjon())) {
                     farFnr = relasjon.getFnrRelasjon();
                 }
             }
