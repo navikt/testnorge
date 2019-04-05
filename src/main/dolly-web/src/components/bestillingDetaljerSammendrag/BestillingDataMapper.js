@@ -1,5 +1,54 @@
 import Formatters from '~/utils/DataFormatter'
 
+const _getTpsfBestillingData = data => {
+	return [
+		{
+			label: 'Identtype',
+			value: data.identtype
+		},
+		{
+			label: 'Født etter',
+			value: Formatters.formatDate(data.foedtEtter)
+		},
+		{
+			label: 'Født før',
+			value: Formatters.formatDate(data.foedtFoer)
+		},
+		{
+			label: 'Dødsdato',
+			value: Formatters.formatDate(data.doedsdato)
+		},
+		{
+			label: 'Statsborgerskap',
+			value: data.statsborgerskap,
+			apiKodeverkId: 'StatsborgerskapFreg'
+		},
+		{
+			label: 'Kjønn',
+			value: Formatters.kjonnToString(data.kjonn)
+		},
+		{
+			label: 'Sivilstand',
+			value: data.sivilstand,
+			apiKodeverkId: 'Sivilstander'
+		},
+		{
+			label: 'Diskresjonskoder',
+			value: data.spesreg,
+			apiKodeverkId: 'Diskresjonskoder'
+		},
+		{
+			label: 'Språk',
+			value: data.sprakKode,
+			apiKodeverkId: 'Språk'
+		},
+		{
+			label: 'Egenansatt',
+			value: Formatters.oversettBoolean(data.egenansattDatoFom)
+		}
+	]
+}
+
 export function mapBestillingData(bestillingData) {
 	if (!bestillingData) return null
 	const data = []
@@ -28,48 +77,7 @@ export function mapBestillingData(bestillingData) {
 		const tpsfKriterier = JSON.parse(bestillingData.tpsfKriterier)
 		const personinfo = {
 			header: 'Personlig informasjon',
-			items: [
-				{
-					label: 'Identtype',
-					value: tpsfKriterier.identtype
-				},
-				{
-					label: 'Født etter',
-					value: Formatters.formatDate(tpsfKriterier.foedtEtter)
-				},
-				{
-					label: 'Født før',
-					value: Formatters.formatDate(tpsfKriterier.foedtFoer)
-				},
-				{
-					label: 'Dødsdato',
-					value: Formatters.formatDate(tpsfKriterier.doedsdato)
-				},
-				{
-					label: 'Statsborgerskap',
-					value: tpsfKriterier.statsborgerskap
-				},
-				{
-					label: 'Kjønn',
-					value: Formatters.kjonnToString(tpsfKriterier.kjonn)
-				},
-				{
-					label: 'Sivilstand',
-					value: tpsfKriterier.sivilstand
-				},
-				{
-					label: 'Diskresjonskoder',
-					value: tpsfKriterier.spesreg
-				},
-				{
-					label: 'Språk',
-					value: tpsfKriterier.sprakKode
-				},
-				{
-					label: 'Egenansatt',
-					value: Formatters.oversettBoolean(tpsfKriterier.egenansattDatoFom)
-				}
-			]
+			items: _getTpsfBestillingData(tpsfKriterier)
 		}
 		data.push(personinfo)
 
@@ -106,30 +114,39 @@ export function mapBestillingData(bestillingData) {
 		}
 
 		if (tpsfKriterier.relasjoner) {
-			const familie = {
-				header: 'Familierelasjoner',
-				items: []
-			}
 			if (tpsfKriterier.relasjoner.partner) {
-				familie.items.push({
-					label: 'Partner',
-					value: 'Har partner'
-				})
+				const partner = {
+					header: 'Partner',
+					items: _getTpsfBestillingData(tpsfKriterier.relasjoner.partner)
+				}
+
+				data.push(partner)
 			}
+
 			if (tpsfKriterier.relasjoner.barn) {
-				let antallBarn = tpsfKriterier.relasjoner.barn.length.toString()
-				familie.items.push({
-					label: 'Barn',
-					value: 'Har ' + antallBarn + ' barn'
+				const barn = {
+					header: 'Barn',
+					itemRows: []
+				}
+
+				tpsfKriterier.relasjoner.barn.forEach((item, i) => {
+					barn.itemRows.push([
+						{
+							label: '',
+							value: `#${i + 1}`,
+							width: 'x-small'
+						},
+						..._getTpsfBestillingData(item)
+					])
 				})
+
+				data.push(barn)
 			}
-			data.push(familie)
 		}
 	}
 
 	if (bestillingData.bestKriterier) {
 		const registreKriterier = JSON.parse(bestillingData.bestKriterier)
-		console.log('registreKriterier :', registreKriterier)
 
 		const aaregKriterier = registreKriterier.aareg && registreKriterier.aareg
 		if (aaregKriterier) {
