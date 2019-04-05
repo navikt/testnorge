@@ -90,10 +90,12 @@ export default class Gruppe extends Component {
 						onClick={deleteGruppe}
 					/>
 					{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
-					<EksporterExcel 
-						testidenter = {gruppeArray[0].testidenter} 
-						gruppeId = {gruppeArray[0].id}
-					/>
+					{gruppeArray[0].testidenter &&
+						<EksporterExcel 
+							testidenter = {gruppeArray[0].testidenter} 
+							gruppeId = {gruppeArray[0].id}
+						/>
+					}
 				</Overskrift>
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
 				<GruppeDetaljer gruppe={gruppe} />
