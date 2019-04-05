@@ -13,10 +13,29 @@ export default class EksportExcel extends Component {
         };
     }
 
-    onClick = () => {
+    render () {
+        return ( 
+                this.state.loading
+                ?   <Loading label = "Eksporterer"/>
+                :   this.eksportereData()
+        )
+    }
+
+    _eksportereData = () => {
+        return (
+            <Fragment>
+                <Button className="flexbox--align-center gruppe-exceleksport" onClick = {() => this.onClick()}>
+                    <Icon size={'24px'} kind={'file-new-table'} className= "excelknapp"/>
+                    <span className= "excelknapp">EKSPORTER TIL CSV</span>
+                </Button>
+            </Fragment>
+        )
+    }
+
+    _onClick = () => {
         const identliste = this.getIdentliste()
        
-        return this.setState({loading: true}, async () => {
+        this.setState({loading: true}, async () => {
             try {
                 const data = await TpsfApi.getExcelForIdenter(identliste)                    
                 const href = "data:text/csv,\uFEFF" //uFEFF fikser æøå
@@ -31,16 +50,16 @@ export default class EksportExcel extends Component {
                 link.click()
                 document.body.removeChild(link)
 
-                return (this.setState({loading: false}))
+                this.setState({loading: false})
             }
             catch (err){
                 console.log('error: TpsfApi og nedlasting');
-                return this.setState({loading: false})
+                this.setState({loading: false})
             }
         })
     }
 
-    getIdentliste = () => {
+    _getIdentliste = () => {
         let identliste = []
         this.props.testidenter.map ( ident => {
             identliste.push(ident.ident)
@@ -48,7 +67,7 @@ export default class EksportExcel extends Component {
         return identliste
     }
 
-    getDato = () => {
+    _getDato = () => {
         const dato = new Date()
         let dd = String(dato.getDate())
         if (dd < 10) {dd = '0' + dd}
@@ -57,24 +76,5 @@ export default class EksportExcel extends Component {
         if (mm < 10) {mm = '0'+ mm}
 
         return String(dato.getFullYear()) + mm + dd
-    }
-    
-    eksportereData = () => {
-        return (
-            <Fragment>
-                <Button className="flexbox--align-center gruppe-exceleksport" onClick = {() => this.onClick()}>
-                    <Icon size={'24px'} kind={'file-new-table'} className= "excelknapp"/>
-                    <span className= "excelknapp">EKSPORTER TIL CSV</span>
-                </Button>
-            </Fragment>
-        )
-    }
-
-    render () {
-        return ( 
-                this.state.loading
-                ?   <Loading label = "Eksporterer"/>
-                :   this.eksportereData()
-        )
     }
 }
