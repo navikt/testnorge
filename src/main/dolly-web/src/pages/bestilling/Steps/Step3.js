@@ -14,7 +14,6 @@ import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 import BestillingMapper from '~/utils/BestillingMapper'
 
-
 export default class Step3 extends PureComponent {
 	static propTypes = {
 		identtype: PropTypes.string,
@@ -119,6 +118,8 @@ export default class Step3 extends PureComponent {
 			format: item.format
 		}
 
+		if (item.onlyShowAfterSelectedValue && !itemValue) return null
+
 		return (
 			<RemoveableField
 				removable={this.state.edit && this.props.selectedAttributeIds.indexOf(item.id) >= 0}
@@ -159,7 +160,14 @@ export default class Step3 extends PureComponent {
 	}
 
 	render() {
-		const { identtype, antall, environments, selectedAttributeIds, identOpprettesFra, eksisterendeIdentListe } = this.props
+		const {
+			identtype,
+			antall,
+			environments,
+			selectedAttributeIds,
+			identOpprettesFra,
+			eksisterendeIdentListe
+		} = this.props
 
 		this.SelectedAttributes = this.AttributtManager.listSelectedAttributesForValueSelection(
 			selectedAttributeIds
@@ -173,16 +181,16 @@ export default class Step3 extends PureComponent {
 
 				<div className="oppsummering">
 					<div className="oppsummering-blokk oppsummering-blokk-margin">
-					{identOpprettesFra === BestillingMapper() ?
-						<div className="grunnoppsett">
-							<StaticValue header="TYPE" value={identtype} />
-							<StaticValue header="ANTALL PERSONER" value={antall.toString()} />
-						</div>
-						:
-						<div className="grunnoppsett">
-							<StaticValue header="IDENTER" value={eksisterendeIdentListe}/>
-						</div>
-					}
+						{identOpprettesFra === BestillingMapper() ? (
+							<div className="grunnoppsett">
+								<StaticValue header="TYPE" value={identtype} />
+								<StaticValue header="ANTALL PERSONER" value={antall.toString()} />
+							</div>
+						) : (
+							<div className="grunnoppsett">
+								<StaticValue header="IDENTER" value={eksisterendeIdentListe} />
+							</div>
+						)}
 						{selectedAttributeIds.length > 0 && (
 							<div className="flexbox--align-center--justify-end edit-align-right">
 								<Button
