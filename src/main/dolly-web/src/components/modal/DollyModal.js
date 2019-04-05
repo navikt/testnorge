@@ -1,7 +1,10 @@
 import Modal from 'react-modal'
 import React, { PureComponent, Fragment } from 'react'
 import Lukknapp from 'nav-frontend-lukknapp'
+import Knapp from 'nav-frontend-knapper'
 import './DollyModal.less'
+import Button from '~/components/button/Button'
+
 
 const customStyles = {
 	content: {
@@ -22,18 +25,23 @@ const customStyles = {
 
 Modal.setAppElement('#root')
 
+
 export default class DollyModal extends PureComponent {
+
 	render() {
-		const { content, isOpen, onRequestClose, closeModal, width } = this.props
+		const { content, isOpen, onRequestClose, closeModal, width, children } = this.props
 		if (width) customStyles.content.width = width
 		else customStyles.content.width = '25%'
 
 		return (
 			<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={onRequestClose} style={customStyles}> 
-				<div className="dollymodal">
-					{content ? content : <p>Du må sende inn content som props</p>}
-					<Lukknapp onClick={closeModal} />
-				</div>
+			{children 
+				? 	<div className="dollymodal">{children}</div>
+				: 	<div className="dollymodal">
+						{content ? content : <p>Du må sende inn content som props</p>}
+						<Lukknapp onClick={closeModal} />
+					</div>
+			}
 			</Modal>
 		)
 	}
