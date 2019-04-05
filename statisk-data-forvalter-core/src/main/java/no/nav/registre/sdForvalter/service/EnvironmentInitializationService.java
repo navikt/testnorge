@@ -56,7 +56,10 @@ public class EnvironmentInitializationService {
         iniitalizeTp(environment, fnrs);
         initializeSam(environment, fnrs);
         initializeKrr();
-        initializeAareg(environment);
+        boolean didInitializeAareg = initializeAareg(environment);
+        if (!didInitializeAareg) {
+            log.warn("Fullførte ikke initialiseringen av miljøet: {} i Aareg", environment);
+        }
     }
 
     /**
@@ -88,10 +91,10 @@ public class EnvironmentInitializationService {
      *
      * @param environment Miljøet arbeidsforholdene skal legges til i
      */
-    private void initializeAareg(String environment) {
+    private boolean initializeAareg(String environment) {
         Set<AaregModel> aaregSet = new HashSet<>();
         aaregRepository.findAll().forEach(aaregSet::add);
-        aaregConsumer.send(aaregSet, environment);
+        return aaregConsumer.send(aaregSet, environment);
     }
 
     /**

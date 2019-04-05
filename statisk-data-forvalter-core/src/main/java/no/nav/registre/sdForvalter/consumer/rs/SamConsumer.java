@@ -21,7 +21,7 @@ public class SamConsumer {
     }
 
     public Set<String> findFnrs(String environment) {
-        //TODO: Add sam spesifics
+        //TODO: Add sam
         UriTemplate uriTemplate = new UriTemplate(samUrl + "/");
         return restTemplate.getForObject(uriTemplate.expand(environment), Set.class);
     }

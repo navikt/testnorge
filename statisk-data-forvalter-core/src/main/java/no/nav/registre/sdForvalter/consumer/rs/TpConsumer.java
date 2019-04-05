@@ -27,14 +27,17 @@ public class TpConsumer {
     /**
      * @param data        Fnr som skal legges til i tp
      * @param environment Miljøet de skal legges til i
+     * @return true hvis den ble lagret i tp, false hvis de ikke ble lagret
      */
-    public void send(Set<String> data, String environment) {
+    public boolean send(Set<String> data, String environment) {
         UriTemplate uriTemplate = new UriTemplate(tpUrl + "/orkestrering/opprettPersoner/{miljoe}");
         RequestEntity<Set<String>> requestEntity = new RequestEntity<>(data, HttpMethod.POST, uriTemplate.expand(environment));
         ResponseEntity<Set> responseEntity = restTemplate.exchange(requestEntity, Set.class);
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
             log.warn("Noe skjedde med initialisering av TP i gitt miljø. Det kan være at databasen ikke er koblet opp til miljø {}", environment);
+            return false;
         }
+        return true;
     }
 
     /**

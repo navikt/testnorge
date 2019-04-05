@@ -32,12 +32,12 @@ public class KrrConsumer {
     private final RestTemplate restTemplate;
     private final String krrUrl;
 
-    public KrrConsumer(RestTemplate restTemplate, @Value("${dkif.rest.api.url}") String krrUrl) {
+    public KrrConsumer(RestTemplate restTemplate, @Value("${krr-stub.rest.api.url}") String krrUrl) {
         this.restTemplate = restTemplate;
         this.krrUrl = krrUrl + "/api/v1";
     }
 
-    public void send(Set<KrrModel> data) {
+    public Set<String> send(Set<KrrModel> data) {
 
         String dateString = new Date(Instant.now().toEpochMilli()).toString();
 
@@ -63,14 +63,19 @@ public class KrrConsumer {
         httpHeaders.add("Nav-Call-Id", "Synt");
         httpHeaders.add("Nav-Consumer-Id", "Synt");
 
+        Set<String> createdInKrr = new HashSet<>();
         requestData.forEach(d -> {
             RequestEntity<KrrRequest> requestEntity = new RequestEntity<>(d, httpHeaders, HttpMethod.POST, uriTemplate.expand());
             ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
             if (response.getStatusCode() != HttpStatus.CREATED) {
                 log.warn("Klarte ikke opprette kontaktinformasjon i krr-stub");
+                return;
             }
+            createdInKrr.add(d.getFnr());
         });
+        return createdInKrr;
     }
+
 
     public Set<String> getContactInformation(Set<String> fnrs) {
 
