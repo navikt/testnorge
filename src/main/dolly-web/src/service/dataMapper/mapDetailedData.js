@@ -343,7 +343,7 @@ export function mapAaregData(aaregData) {
 					},
 					{
 						id: 'orgnr',
-						label: 'Offentlig Ident',
+						label: 'Arbeidsgiver Ident',
 						value: data.arbeidsgiver.offentligIdent
 					}
 				]
