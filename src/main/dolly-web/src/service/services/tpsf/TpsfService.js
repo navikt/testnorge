@@ -57,8 +57,18 @@ export default class TpsfService {
 		return Request.get(endpoint)
 	}
 
+	static generateRandomAddress() {
+		const endpoint = `${this.getTpsfUrl()}/gyldigadresse/tilfeldig?maxAntall=5`
+		return Request.get(endpoint)
+	}
+
 	static generateAddress(query) {
-		const endpoint = `${this.getTpsfUrl()}/gyldigadresse/tilfeldig?maxAntall=1${query}`
+		const endpoint = `${this.getTpsfUrl()}/gyldigadresse/autocomplete?maxRetur=5${query}`
+		return Request.get(endpoint)
+	}
+
+	static autocompleteAddress(adresseSok) {
+		const endpoint = this.getTpsfUrl() + '/gyldigadresse/autocomplete?adresseNavnsok=' + adresseSok
 		return Request.get(endpoint)
 	}
 

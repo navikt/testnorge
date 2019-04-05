@@ -1,206 +1,296 @@
 import React, { Component, Fragment } from 'react'
 import Knapp from 'nav-frontend-knapper'
-import { Radio } from 'nav-frontend-skjema'
-import Lukknapp from 'nav-frontend-lukknapp'
-import Modal from 'react-modal'
-import DollySelect from '~/components/fields/Select/Select'
+import { FormikDollySelect } from '~/components/fields/Select/Select'
 import { TpsfApi, DollyApi } from '~/service/Api'
-
 import './AutofillAddress.less'
-
-const customStyles = {
-	content: {
-		top: '50%',
-		left: '50%',
-		right: 'auto',
-		bottom: 'auto',
-		marginRight: '-50%',
-		transform: 'translate(-50%, -50%)',
-		width: '25%',
-		minWidth: '500px',
-		overflow: 'inherit'
-	},
-	overlay: {
-		background: 'rgba(0,0,0,0.75)',
-	}
-}
-
-Modal.setAppElement('#root')
+import InputSelector from '~/components/fields/InputSelector'
+import { Field } from 'formik'
+import LinkButton from '~/components/button/LinkButton/LinkButton'
 
 const initialState = {
 	isFetching: false,
-	type: 'random',
-	input: '',
-	status: ''
+	adresseValgt: false,
+	gyldigeAdresser: [],
+	husnummerOptions: []
 }
 
 export default class AutofillAddress extends Component {
-	state = { modalOpen: false, ...initialState }
+	state = { ...initialState }
 
-	open = () => {
-		this.setState({ modalOpen: true, ...initialState })
+	render() {
+		const items = this.props.items
+		return (
+			<Fragment>
+				<div className="address-wrapper">
+					{!this.state.adresseValgt && (
+						<div className="address-container">
+							{items.map(
+								item =>
+									item.inputType && item.id !== 'boadresse_flyttedato' && this._renderSelect(item)
+							)}
+							<LinkButton text="Nullstill alle" onClick={this._clearAll} />
+						</div>
+					)}
+
+					<div className="address-container">
+						{!this.state.adresseValgt && (
+							<Knapp
+								className="generate-address-button"
+								type="standard"
+								autoDisableVedSpinner
+								mini
+								spinner={this.state.isFetching}
+								onClick={this._onClickGyldigAdresse}
+							>
+								Hent gyldige adresser
+							</Knapp>
+						)}
+						{this.state.gyldigeAdresser && this._renderAdresseSelect()}
+						{this.state.gyldigeAdresser === undefined && <p>Fant ingen gyldige adresser</p>}
+					</div>
+
+					<div className="address-container">
+						{items.map(
+							item =>
+								item.inputType && item.id === 'boadresse_flyttedato' && this._renderSelect(item)
+						)}
+					</div>
+				</div>
+			</Fragment>
+		)
 	}
 
-	close = () => {
-		this.setState({ modalOpen: false })
-	}
-
-	chooseType = type => {
-		this.setState({ type, input: '' })
-	}
-
-	onInputChangeHandler = value => {
-		this.setState({ input: value })
-	}
-
-	placeHolderGenerator = () => {
-		const { type } = this.state
-		if (type === 'pnr') return 'Velg postnummer...'
-		if (type === 'knr') return 'Velg kommunenummer...'
+	_placeHolderGenerator = type => {
+		if (type === 'boadresse_postnr') return 'Velg postnummer...'
+		if (type === 'boadresse_kommunenr') return 'Velg kommunenummer...'
+		if (type === 'boadresse_gateadresse') return 'Søk etter adresse...'
 		return ''
 	}
 
-	loadOptionsSelector = () => {
-		const { type } = this.state
-		if (type === 'pnr') return () => this.fetchKodeverk('Postnummer')
-		if (type === 'knr') return () => this.fetchKodeverk('Kommuner')
+	_loadOptionsSelector = type => {
+		if (type === 'boadresse_postnr') return () => this._fetchKodeverk('Postnummer', type)
+		if (type === 'boadresse_kommunenr') return () => this._fetchKodeverk('Kommuner', type)
 		return undefined
 	}
 
-	fetchKodeverk = kodeverkNavn => {
+	_fetchKodeverk = (kodeverkNavn, type) => {
 		return DollyApi.getKodeverkByNavn(kodeverkNavn).then(res => {
 			return {
 				options: res.data.koder.map(kode => ({
 					label: `${kode.value} - ${kode.label}`,
-					value: kode.value
+					value: kode.value,
+					id: type
 				}))
 			}
 		})
 	}
 
-	setQueryString = () => {
-		const { input, type } = this.state
-		const value = input.value
-		switch (type) {
-			case 'pnr':
-				return `&postNr=${value}`
-			case 'knr':
-				return `&kommuneNr=${value}`
-			default:
-				return ''
+	_fetchAdresser = () => {
+		const adr = this.state.gyldigeAdresser
+		var options = []
+		if (adr.length > 1) {
+			adr.forEach(adresse => {
+				options.push({
+					label: adresse.adrnavn + ', ' + adresse.pnr + ' ' + adresse.psted,
+					value: adresse.adrnavn,
+					adrObject: adresse
+				})
+			})
+		} else {
+			options.push({
+				label: adr.adrnavn + ', ' + adr.pnr + ' ' + adr.psted,
+				value: adr.adrnavn,
+				adrObject: adr
+			})
 		}
+		return options
 	}
 
-	onClickHandler = () => {
-		const { formikProps } = this.props
+	_fetchHusnr = () => {
+		const husnr = this.state.husnummerOptions
+		var options = []
+		husnr.forEach(nr => {
+			options.push({
+				label: nr,
+				value: nr
+			})
+		})
+		return options
+	}
 
+	_setQueryString = () => {
+		let queryString = ''
+		if (this.props.formikProps.values.boadresse_gateadresse) {
+			queryString += `&adresseNavnsok=${this.props.formikProps.values.boadresse_gateadresse}`
+		}
+		if (this.props.formikProps.values.boadresse_postnr) {
+			queryString += `&postNrsok=${this.props.formikProps.values.boadresse_postnr}`
+		}
+		if (this.props.formikProps.values.boadresse_kommunenr) {
+			queryString += `&kommuneNrsok=${this.props.formikProps.values.boadresse_kommunenr}`
+		}
+		return queryString
+	}
+
+	_onAdresseChangeHandler = input => {
+		const { formikProps } = this.props
+		let addressData = ''
+
+		if (input) addressData = input.adrObject
+
+		let newAddressObject = {
+			boadresse_gateadresse: '',
+			boadresse_husnummer: '',
+			boadresse_gatekode: '',
+			boadresse_kommunenr: '',
+			boadresse_postnr: ''
+		}
+
+		if (addressData) {
+			let { adrnavn, husnrfra, husnrtil, gkode, pnr, knr } = addressData
+			if (husnrfra === '') husnrfra = 1
+			let husnr = []
+			for (var i = husnrfra; i <= husnrtil; i++) {
+				husnr.push(parseInt(i))
+			}
+			this.setState({ husnummerOptions: husnr })
+
+			if (this.props.formikProps.values.boadresse_husnummer) {
+				husnrfra = this.props.formikProps.values.boadresse_husnummer
+			}
+
+			newAddressObject = {
+				boadresse_gateadresse: adrnavn.toString(),
+				boadresse_husnummer: husnrfra.toString(),
+				boadresse_gatekode: gkode.toString(),
+				boadresse_kommunenr: knr.toString(),
+				boadresse_postnr: pnr.toString()
+			}
+		}
+		formikProps.setValues({ ...formikProps.values, ...newAddressObject, boadresse_husnummer: '' })
+	}
+
+	_onHusnrChangeHandler = input => {
+		const { formikProps } = this.props
+		let husnrInput = ''
+		if (input) husnrInput = input.value
+		formikProps.setValues({ ...formikProps.values, boadresse_husnummer: husnrInput })
+	}
+
+	_onClickGyldigAdresse = () => {
 		return this.setState({ isFetching: true }, async () => {
 			try {
-				const generateAddressResponse = await TpsfApi.generateAddress(this.setQueryString())
+				const query = this._setQueryString()
+				let generateAddressResponse
+
+				query.length > 0
+					? (generateAddressResponse = await TpsfApi.generateAddress(query))
+					: (generateAddressResponse = await TpsfApi.generateRandomAddress())
+
 				const addressData = generateAddressResponse.data.response.data1.adrData
-				const count = parseInt(generateAddressResponse.data.response.data1.antallForekomster)
+				this.setState({ gyldigeAdresser: addressData })
 
 				let status = generateAddressResponse.data.response.status.utfyllendeMelding
-				let newAddressObject = {
-					boadresse_gateadresse: '',
-					boadresse_husnummer: '',
-					boadresse_kommunenr: '',
-					boadresse_postnr: ''
+
+				if (addressData === undefined) {
+					return this.setState({
+						isFetching: false,
+						status
+					})
 				}
-
-				if (count > 0) {
-					const { adrnavn, husnrfra, pnr, knr } = addressData
-
-					newAddressObject = {
-						boadresse_gateadresse: adrnavn.toString(),
-						boadresse_husnummer: husnrfra.toString(),
-						boadresse_kommunenr: knr.toString(),
-						boadresse_postnr: pnr.toString()
-					}
-					status = ''
-				}
-
-				formikProps.setValues({ ...formikProps.values, ...newAddressObject })
-
-				return this.setState({ isFetching: false, modalOpen: false, status })
+				return this.setState({
+					isFetching: false,
+					adresseValgt: true,
+					status
+				})
 			} catch (err) {
-				return this.setState({ isFetching: false, modalOpen: false })
+				return this.setState({ isFetching: false })
 			}
 		})
 	}
 
-	renderSelect = () => {
-		const { type, input } = this.state
+	_onClickEndreAdresse = () => {
+		const { formikProps } = this.props
+		formikProps.setValues({ ...formikProps.values, boadresse_husnummer: '' })
+		this.setState({ adresseValgt: false })
+	}
 
-		const selectProps = {
-			loadOptions: this.loadOptionsSelector(),
-			placeholder: this.placeHolderGenerator(),
-			disabled: type === 'random'
+	_clearAll = () => {
+		const { formikProps } = this.props
+		let newAddressObject = {
+			boadresse_gateadresse: '',
+			boadresse_husnummer: '',
+			boadresse_gatekode: '',
+			boadresse_kommunenr: '',
+			boadresse_postnr: ''
 		}
-
-		return (
-			<DollySelect
-				key={type}
-				name="generator-select"
-				label="Velg verdi"
-				onChange={this.onInputChangeHandler}
-				value={input}
-				{...selectProps}
-			/>
-		)
+		formikProps.setValues({ ...formikProps.values, ...newAddressObject })
 	}
 
-	render() {
-		const { type, status } = this.state
-
+	_renderAdresseSelect = () => {
+		const gyldigeAdresser = this._fetchAdresser()
+		const husNummer = this._fetchHusnr()
 		return (
-			<Fragment>
-				<div className="generate-address-create">
-					<Knapp type="standard" mini onClick={this.open}>
-						Generer gyldig adresse
-					</Knapp>
-					{status && <span className="generate-address-create_status">{status}</span>}
-				</div>
-
-				<Modal
-					style={customStyles}
-					isOpen={this.state.modalOpen}
-					onRequestClose={this.close}
-					shouldCloseOnEsc
-				>
-					<div className="generate-address-container">
-						<form className="generate-address-form">
-							{this._renderRadioBtn(true, type, 'random', 'Tilfeldig')}
-							{this._renderRadioBtn(true, type, 'pnr', 'Postnummer')}
-							{this._renderRadioBtn(true, type, 'knr', 'Kommunenummer')}
-						</form>
-						{this.renderSelect()}
-						<Knapp
-							className="generate-address"
-							type="standard"
-							autoDisableVedSpinner
-							mini
-							spinner={this.state.isFetching}
-							onClick={this.onClickHandler}
-						>
-							Generer
-						</Knapp>
-						<Lukknapp onClick={this.close} />
+			<div>
+				{this.state.adresseValgt && (
+					<div className="address-container">
+						<Field
+							className="gyldigadresse-select"
+							name="boadresse_gateadresse"
+							placeholder="Velg gyldig adresse..."
+							label="Gyldig adresse"
+							component={FormikDollySelect}
+							beforeChange={this._onAdresseChangeHandler}
+							options={gyldigeAdresser}
+						/>
+						{this.state.husnummerOptions && (
+							<div>
+								<Field
+									className="husnummer-select"
+									name="boadresse_husnummer"
+									placeholder="Velg husnummer..."
+									label="Husnummer"
+									component={FormikDollySelect}
+									beforeChange={this._onHusnrChangeHandler}
+									options={husNummer}
+								/>
+							</div>
+						)}
+						<LinkButton text="Endre adresse" onClick={this._onClickEndreAdresse} />
 					</div>
-				</Modal>
-			</Fragment>
+				)}
+			</div>
 		)
 	}
 
-	_renderRadioBtn = (autoFocus, type, checkedType, label) => {
-		return (
-			<Radio
-				autoFocus={autoFocus ? autoFocus : false}
-				checked={type === checkedType}
-				label={label}
-				name={label}
-				onChange={() => this.chooseType(checkedType)}
-			/>
-		)
+	_renderSelect = item => {
+		const selectProps = {
+			loadOptions: this._loadOptionsSelector(item.id),
+			placeholder: this._placeHolderGenerator(item.id)
+		}
+		const InputComponent = InputSelector(item.inputType)
+
+		if (item.id !== 'boadresse_husnummer') {
+			if (item.inputType === 'text') {
+				return (
+					<Field
+						key={item.id}
+						name={item.id}
+						label={item.label}
+						component={InputComponent}
+						placeholder={selectProps.placeholder}
+					/>
+				)
+			}
+			return (
+				<Field
+					key={item.id}
+					name={item.id}
+					label={item.label}
+					component={InputComponent}
+					{...selectProps}
+				/>
+			)
+		}
 	}
 }

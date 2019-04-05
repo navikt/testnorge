@@ -4,32 +4,34 @@
 	}
 }
 
-.generate-address-container {
-	.lukknapp {
-		position: absolute;
-		right: 20px;
-		top: 15px;
-		z-index: 1;
-	}
-	.generate-address-form {
-		display: flex;
-		margin-bottom: 10px;
+.address-wrapper {
+	break-after: all;
+}
 
-		.skjemaelement:not(:last-child) {
-			margin-right: 15px;
-		}
+.address-container {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+
+	.generate-address-button {
+		margin: 8px 20px 15px 0;
+		height: 36px;
+	}
+
+	p {
+		color: #ba3a26;
+		margin: 8px 0 16px 0;
 	}
 
 	input {
-		width: 50%;
+		width: 200px;
 	}
 }
 
-// z-index to make sure overlay is always in front
-.ReactModal__Overlay {
-	z-index: 10;
+.gyldigadresse-select {
+	width: 350px;
 }
-// override to let modal stay in front of steg-indikator
-.stegindikator__steg {
-	z-index: 0;
+
+.husnummer-select {
+	width: 200px;
 }

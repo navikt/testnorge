@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Select from 'react-virtualized-select'
 import cn from 'classnames'
 import _get from 'lodash/get'
-
 import './Select.less'
 
 export default class DollySelect extends PureComponent {
@@ -27,7 +26,6 @@ export default class DollySelect extends PureComponent {
 
 	render() {
 		const { name, label, placeholder, loadOptions, error, size, ...restProps } = this.props
-
 		return (
 			<div className={cn({ error: Boolean(error) }, size, 'skjemaelement dollyselect')}>
 				<label htmlFor={name} className="skjemaelement__label">
@@ -60,7 +58,6 @@ export default class DollySelect extends PureComponent {
 
 export const FormikDollySelect = props => {
 	const { field, form, beforeChange, ...restProps } = props
-
 	const singleSelectChangeHandler = selected => {
 		form.setFieldValue(field.name, _get(selected, 'value', ''))
 	}
