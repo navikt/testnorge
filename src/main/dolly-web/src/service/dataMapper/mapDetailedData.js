@@ -140,25 +140,25 @@ export function mapTpsfData(tpsfData, testIdent) {
 					parent: 'postadresse',
 					id: 'postLand',
 					label: 'Land',
-					value: tpsfData.postadresse.postLand
+					value: tpsfData.postadresse[0].postLand
 				},
 				{
 					parent: 'postadresse',
 					id: 'postLinje1',
 					label: 'Adresselinje 1',
-					value: tpsfData.postadresse.postLinje1
+					value: tpsfData.postadresse[0].postLinje1
 				},
 				{
 					parent: 'postadresse',
 					id: 'postLinje2',
 					label: 'Adresselinje 2',
-					value: tpsfData.postadresse.postLinje2
+					value: tpsfData.postadresse[0].postLinje2
 				},
 				{
 					parent: 'postadresse',
 					id: 'postLinje3',
 					label: 'Adresselinje 3',
-					value: tpsfData.postadresse.postLinje3
+					value: tpsfData.postadresse[0].postLinje3
 				}
 			]
 		})

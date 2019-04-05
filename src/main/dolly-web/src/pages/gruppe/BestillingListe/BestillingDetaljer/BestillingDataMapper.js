@@ -111,19 +111,19 @@ export function mapBestillingData(bestillingData) {
 				items: [
 					{
 						label: 'Land',
-						value: tpsfKriterier.postadresse.postLand
+						value: tpsfKriterier.postadresse[0].postLand
 					},
 					{
 						label: 'Adresselinje 1',
-						value: tpsfKriterier.postadresse.postLinje1
+						value: tpsfKriterier.postadresse[0].postLinje1
 					},
 					{
 						label: 'Adresselinje 2',
-						value: tpsfKriterier.postadresse.postLinje2
+						value: tpsfKriterier.postadresse[0].postLinje2
 					},
 					{
 						label: 'Adresselinje 3',
-						value: tpsfKriterier.postadresse.postLinje3
+						value: tpsfKriterier.postadresse[0].postLinje3
 					}
 				]
 			}
