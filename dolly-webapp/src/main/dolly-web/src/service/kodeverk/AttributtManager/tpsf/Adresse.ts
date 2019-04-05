@@ -88,20 +88,20 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Postadresse,
-		id: 'postadresse_postLand',
+		id: 'postLand',
 		path: 'postadresse.postLand',
 		parent: 'postadresse',
 		label: 'Land',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'StatsborgerskapFreg',
-		// validation: yup.string().required('Vennligst fyll ut'),
+		validation: yup.string(),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Postadresse,
-		id: 'postadresse_postLinje1',
+		id: 'postLinje1',
 		path: 'postadresse.postLinje1',
 		parent: 'postadresse',
 		label: 'Adresselinje 1',
@@ -113,7 +113,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Postadresse,
-		id: 'postadresse_postLinje2',
+		id: 'postLinje2',
 		path: 'postadresse.postLinje2',
 		parent: 'postadresse',
 		label: 'Adresselinje 2',
@@ -125,7 +125,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Postadresse,
-		id: 'postadresse_postLinje3',
+		id: 'postLinje3',
 		path: 'postadresse.postLinje3',
 		parent: 'postadresse',
 		label: 'Adresselinje 3',

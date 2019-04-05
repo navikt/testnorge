@@ -29,7 +29,6 @@ export default class AttributtVelger extends Component {
 			this.state.search,
 			currentBestilling.identOpprettesFra
 		)
-		console.log('list :', list)
 		if (list.length === 0) return this.renderEmptyResult()
 		return list.map(hovedKategori => this.renderHovedKategori(hovedKategori))
 	}

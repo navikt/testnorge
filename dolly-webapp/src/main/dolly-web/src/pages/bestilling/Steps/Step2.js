@@ -10,6 +10,7 @@ import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Icon from '~/components/icon/Icon'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import BestillingMapper from '~/utils/BestillingMapper'
+import { TpsfApi } from '~/service/Api'
 
 export default class Step2 extends PureComponent {
 	static propTypes = {
@@ -34,12 +35,57 @@ export default class Step2 extends PureComponent {
 		)
 	}
 
+	state = {
+		gyldig: true
+	}
+
 	submit = values => {
+		if ('postLand' in values) {
+			if (this._sjekkPostadresse(values) === false) {
+				this.setState({ gyldig: false })
+				return
+			}
+			// sjekke postnr her?
+			// async???
+			let gyldigP = TpsfApi.checkPostnummer('0580')
+			// Flytt denne????
+		}
+		// console.log('step 2 this.props :', this.props)
+		// console.log('step 2 values :', values)
 		this.props.setValues({ values })
 	}
 
 	onClickPrevious = values => {
 		this.props.setValues({ values, goBack: true })
+	}
+
+	// Sjekk om fire første tegn i siste linje er tall
+	_sjekkPostadresse = values => {
+		let gyldigAdresse = true
+		const regex = /^\d{4}(\s|$)/
+
+		if (values['postLand'] === '') {
+			values['postLand'] = 'NOR'
+		}
+		if (values['postLand'] === '' || values['postLand'] === 'NOR') {
+			if (values['postLinje1'] && !values['postLinje2'] && !values['postLinje3']) {
+				if (regex.test(values['postLinje1']) === false) {
+					gyldigAdresse = false
+				}
+			} else if (values['postLinje1'] && values['postLinje2'] && !values['postLinje3']) {
+				if (regex.test(values['postLinje2']) === false) {
+					gyldigAdresse = false
+				}
+			} else if (values['postLinje1'] && values['postLinje2'] && values['postLinje3']) {
+				if (regex.test(values['postLinje3']) === false) {
+					gyldigAdresse = false
+				}
+			} else {
+				gyldigAdresse = false
+			}
+		}
+
+		return gyldigAdresse
 	}
 
 	render() {
@@ -78,13 +124,21 @@ export default class Step2 extends PureComponent {
 									opprette testpersoner med tilfeldige verdier.
 								</ContentContainer>
 							) : (
-								<FormEditor
-									AttributtListe={this.AttributtListe}
-									FormikProps={formikProps}
-									getAttributtListByHovedkategori={
-										this.AttributtManager.getAttributtListByHovedkategori
-									}
-								/>
+								<div>
+									<FormEditor
+										AttributtListe={this.AttributtListe}
+										FormikProps={formikProps}
+										getAttributtListByHovedkategori={
+											this.AttributtManager.getAttributtListByHovedkategori
+										}
+									>
+										{!this.state.gyldig && (
+											<div>
+												<p>Feil i adresse</p>
+											</div>
+										)}
+									</FormEditor>
+								</div>
 							)}
 
 							<NavigationConnector

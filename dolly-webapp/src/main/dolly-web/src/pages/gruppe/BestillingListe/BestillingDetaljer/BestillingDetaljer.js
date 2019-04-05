@@ -35,7 +35,6 @@ export default class BestillingDetaljer extends PureComponent {
 	}
 
 	render() {
-
 		const bestilling = this.props.bestilling
 		const bestillingId = this.props.bestilling.id
 		const { openAm, openAmState } = this.props
@@ -49,10 +48,7 @@ export default class BestillingDetaljer extends PureComponent {
 		// TODO: Reverse Map detail data here. Alex
 		return (
 			<div className="bestilling-detaljer">
-				<BestillingDetaljerSammendrag 
-					bestilling={bestilling} 
-					type = 'panel'
-				/>
+				<BestillingDetaljerSammendrag bestilling={bestilling} type="panel" />
 				{openAm ? (
 					<div className="bestilling-detaljer">
 						<h3>Jira-lenker</h3>
