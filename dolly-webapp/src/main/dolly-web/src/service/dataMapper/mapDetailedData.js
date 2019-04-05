@@ -116,12 +116,6 @@ export function mapTpsfData(tpsfData, testIdent) {
 				},
 				{
 					parent: 'boadresse',
-					id: 'gatekode',
-					label: 'Gatekode',
-					value: tpsfData.boadresse.gatekode
-				},
-				{
-					parent: 'boadresse',
 					id: 'postnr',
 					label: 'Postnummer',
 					extraLabel: tpsfData.boadresse.postnr,
