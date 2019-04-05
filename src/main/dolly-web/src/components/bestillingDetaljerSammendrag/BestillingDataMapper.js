@@ -264,7 +264,8 @@ export function mapBestillingData(bestillingData) {
 					},
 					{
 						label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
-						value: krrKriterier.reservert ? 'JA' : 'NEI'
+						value: krrKriterier.reservert ? 'JA' : 'NEI',
+						width: 'medium'
 					}
 				]
 			}

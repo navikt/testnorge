@@ -65,7 +65,7 @@ export default class BestillingDetaljerSammendrag extends PureComponent {
 								<div className={cn('info-text', { 'bottom-border': bottomBorder })}>
 									{kategori.itemRows.map((row, i) => {
 										return (
-											<div className={'flexbox--align-center flexbox--wrap'} key={i}>
+											<div className={'flexbox--align-start flexbox--wrap'} key={i}>
 												{row.map((attributt, j) => {
 													if (attributt.value) {
 														return this._renderStaticValue(attributt, j)
