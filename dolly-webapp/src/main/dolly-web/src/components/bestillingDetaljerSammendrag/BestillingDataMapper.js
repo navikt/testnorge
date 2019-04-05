@@ -145,15 +145,14 @@ export function mapBestillingData(bestillingData) {
 						value: `#${i + 1}`,
 						width: 'x-small'
 					},
+
 					{
-						label: 'Yrke',
-						// TODO: Apikodeverkid
-						value: arbeidsforhold.arbeidsavtale.yrke
+						label: 'Startdato',
+						value: arbeidsforhold.ansettelsesPeriode.fom.split('T')[0]
 					},
-					{ label: 'Startdato', value: arbeidsforhold.ansettelsesPeriode.fom },
 					{
 						label: 'Sluttdato',
-						value: arbeidsforhold.ansettelsesPeriode.tom
+						value: arbeidsforhold.ansettelsesPeriode.tom.split('T')[0]
 					},
 					{
 						label: 'Stillingprosent',
@@ -163,10 +162,20 @@ export function mapBestillingData(bestillingData) {
 						label: 'Type av arbeidsgiver',
 						value: arbeidsforhold.arbeidsgiver.aktoertype
 					},
-
 					{
-						label: 'Type av arbeidsgiver',
-						value: arbeidsforhold.arbeidsgiver.aktoertype
+						label: 'Orgnummer',
+						value: arbeidsforhold.arbeidsgiver.orgnummer
+					},
+					{
+						label: 'Arbeidsgiver Ident',
+						value: arbeidsforhold.arbeidsgiver.ident
+					},
+					{
+						label: 'Yrke',
+						value: arbeidsforhold.arbeidsavtale.yrke,
+						apiKodeverkId: 'Yrker',
+						width: 'xlarge',
+						showKodeverkValue: true
 					}
 				])
 			})
@@ -213,7 +222,9 @@ export function mapBestillingData(bestillingData) {
 					},
 					{
 						label: 'grunnlag',
-						value: inntekt.grunnlag
+						value: inntekt.grunnlag,
+						width: 'xlarge',
+						apiKodeverkId: inntekt.tjeneste
 					}
 				])
 			})
