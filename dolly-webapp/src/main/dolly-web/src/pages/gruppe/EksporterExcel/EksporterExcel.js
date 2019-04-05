@@ -17,14 +17,14 @@ export default class EksportExcel extends Component {
         return ( 
                 this.state.loading
                 ?   <Loading label = "Eksporterer"/>
-                :   this.eksportereData()
+                :   this._eksportereData()
         )
     }
 
     _eksportereData = () => {
         return (
             <Fragment>
-                <Button className="flexbox--align-center gruppe-exceleksport" onClick = {() => this.onClick()}>
+                <Button className="flexbox--align-center gruppe-exceleksport" onClick = {() => this._onClick()}>
                     <Icon size={'24px'} kind={'file-new-table'} className= "excelknapp"/>
                     <span className= "excelknapp">EKSPORTER TIL CSV</span>
                 </Button>
@@ -33,13 +33,13 @@ export default class EksportExcel extends Component {
     }
 
     _onClick = () => {
-        const identliste = this.getIdentliste()
+        const identliste = this._getIdentliste()
        
         this.setState({loading: true}, async () => {
             try {
                 const data = await TpsfApi.getExcelForIdenter(identliste)                    
                 const href = "data:text/csv,\uFEFF" //uFEFF fikser æøå
-                const dagensDato = this.getDato()
+                const dagensDato = this._getDato()
                 const link = document.createElement('a')
 
                 //Lager en link til nedlasting som aktiveres uten klikk
