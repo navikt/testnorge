@@ -64,7 +64,7 @@ export default class EksportExcel extends Component {
             <Fragment>
                 <Button className="flexbox--align-center gruppe-exceleksport" onClick = {() => this.onClick()}>
                     <Icon size={'24px'} kind={'file-new-table'} className= "excelknapp"/>
-                    <span className= "excelknapp">EKSPORTER SOM CSV</span>
+                    <span className= "excelknapp">EKSPORTER TIL CSV</span>
                 </Button>
             </Fragment>
         )
