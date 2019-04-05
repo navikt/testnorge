@@ -111,7 +111,7 @@ const AttributtListe: Attributt[] = [
 				// Egen validation pga yup tror stor streng ikke er integer
 				validation: yup
 					.string()
-					.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
+					.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
 					.test('len', 'Ident må være et tall med 11 sifre', val => val && val.length === 11),
 				attributtType: AttributtType.SelectAndRead
 			}
