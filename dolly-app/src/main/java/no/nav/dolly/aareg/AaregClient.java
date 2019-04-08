@@ -39,7 +39,7 @@ public class AaregClient implements ClientRegister {
 
             bestilling.getEnvironments().forEach(env -> {
 
-                ResponseEntity<Object[]> response = ResponseEntity.ok(new Object[]{});
+                ResponseEntity<Object[]> response = ResponseEntity.ok(new Object[] {});
                 try {
                     response = aaregRestConsumer.readArbeidsforhold(ident, env);
                 } catch (RuntimeException e) {
@@ -55,10 +55,8 @@ public class AaregClient implements ClientRegister {
                     for (int j = 0; j < response.getBody().length; j++) {
                         Map arbfFraAareg = (Map) response.getBody()[j];
 
-                        String orgIdentNummer = "Organisasjon".equals(getType(arbfFraAareg)) ? getOrgnummer(arbfFraAareg) : getPersonnummer(arbfFraAareg);
-
-                        if ((isMatchArbgivOrgnummer(arbfInput.getArbeidsgiver(), orgIdentNummer) ||
-                                isMatchArbgivPersonnummer(arbfInput.getArbeidsgiver(), orgIdentNummer)) &&
+                        if ((isMatchArbgivOrgnummer(arbfInput.getArbeidsgiver(), getIdentifyingNumber(arbfFraAareg)) ||
+                                isMatchArbgivPersonnummer(arbfInput.getArbeidsgiver(), getIdentifyingNumber(arbfFraAareg))) &&
                                 arbfInput.getArbeidsforholdID().equals(getArbforholdId(arbfFraAareg))) {
 
                             arbfInput.setArbeidsforholdIDnav(getNavArbfholdId(arbfFraAareg));
@@ -80,6 +78,10 @@ public class AaregClient implements ClientRegister {
         }
 
         progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
+    }
+
+    private static String getIdentifyingNumber(Map arbfFraAareg) {
+        return "Organisasjon".equals(getType(arbfFraAareg)) ? getOrgnummer(arbfFraAareg) : getPersonnummer(arbfFraAareg);
     }
 
     private static boolean isMatchArbgivOrgnummer(RsAktoer arbeidsgiver, String orgnummer) {
