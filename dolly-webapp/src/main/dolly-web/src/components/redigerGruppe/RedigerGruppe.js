@@ -101,7 +101,7 @@ export default class Rediger extends PureComponent {
 				.string()
 				.trim()
 				.required('Navn er et påkrevd felt')
-				.max(50, 'Maksimalt 30 bokstaver'),
+				.max(30, 'Maksimalt 30 bokstaver'),
 			teamId: yup
 				.number()
 				.required('Team er et påkrevd felt')
@@ -117,7 +117,7 @@ export default class Rediger extends PureComponent {
 					.string()
 					.trim()
 					.required('Teamnavn er et påkrevd felt')
-					.max(50, 'Maksimalt 30 bokstaver')
+					.max(30, 'Maksimalt 30 bokstaver')
 			}),
 			beskrivelse: yup.string().when('teamId', {
 				is: val => val === this.Teams.newTeam,
