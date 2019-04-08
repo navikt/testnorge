@@ -36,7 +36,7 @@ const AttributtListe: Attributt[] = [
 				editPath: 'grunnlag',
 				dataSource: DataSource.SIGRUN,
 				inputType: InputType.Select,
-				size: 'medium',
+				size: 'large',
 				dependentOn: 'tjeneste',
 				validation: yup.string().required('Velg en type inntekt.'),
 				attributtType: AttributtType.SelectAndRead

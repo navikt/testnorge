@@ -32,7 +32,10 @@ const selectOptions = {
 		{ value: '7421118', label: '7421118 - SNEKKER' }
 	],
 
-	aktoertype: [{ value: 'ORG', label: 'Organisasjon' }, { value: 'PERS', label: 'Person' }]
+	aktoertype: [
+		{ value: 'ORG', label: 'Organisasjon' },
+		{ value: 'PERS', label: 'Enkeltmannsforetak' }
+	]
 }
 
 const SelectOptionsManager = attributeId => {
