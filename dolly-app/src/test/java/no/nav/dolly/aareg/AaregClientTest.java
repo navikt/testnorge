@@ -18,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
@@ -26,7 +28,7 @@ import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPerson;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AaregServiceTest {
+public class AaregClientTest {
 
     private static final String IDENT = "111111111111";
     private static final String ENV = "u2";
@@ -40,13 +42,17 @@ public class AaregServiceTest {
     private AaregRestConsumer aaregRestConsumer;
 
     @InjectMocks
-    private AaregService aaregService;
+    private AaregClient aaregClient;
 
     @Test
     public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
 
         when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(new Object[] {}));
-        aaregService.gjenopprettArbeidsforhold(singletonList(RsArbeidsforhold.builder().build()), singletonList("u2"), IDENT);
+
+        aaregClient.gjenopprett(RsDollyBestilling.builder()
+                .aareg(singletonList(RsArbeidsforhold.builder().build()))
+                .environments(singletonList("u2")).build(), IDENT, new BestillingProgress());
+
         verify(aaregWsConsumer).opprettArbeidsforhold(any(RsAaregOpprettRequest.class));
     }
 
@@ -54,7 +60,11 @@ public class AaregServiceTest {
     public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_lesKasterException() {
 
         when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenThrow(new RuntimeException());
-        aaregService.gjenopprettArbeidsforhold(singletonList(RsArbeidsforhold.builder().build()), singletonList("u2"), IDENT);
+
+        aaregClient.gjenopprett(RsDollyBestilling.builder()
+                .aareg(singletonList(RsArbeidsforhold.builder().build()))
+                .environments(singletonList("u2")).build(), IDENT, new BestillingProgress());
+
         verify(aaregWsConsumer).opprettArbeidsforhold(any(RsAaregOpprettRequest.class));
     }
 
@@ -63,10 +73,11 @@ public class AaregServiceTest {
 
         when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(true)));
 
-        aaregService.gjenopprettArbeidsforhold(singletonList(RsArbeidsforhold.builder()
+        aaregClient.gjenopprett(RsDollyBestilling.builder().aareg(singletonList(RsArbeidsforhold.builder()
                 .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
                 .arbeidstaker(RsPerson.builder().ident(IDENT).build())
-                .build()), singletonList("u2"), IDENT);
+                .build())).environments(singletonList("u2")).build(), IDENT, new BestillingProgress());
+
         verify(aaregWsConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
     }
 
@@ -75,10 +86,11 @@ public class AaregServiceTest {
 
         when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(buildArbeidsforhold(false)));
 
-        aaregService.gjenopprettArbeidsforhold(singletonList(RsArbeidsforhold.builder()
+        aaregClient.gjenopprett(RsDollyBestilling.builder().aareg(singletonList(RsArbeidsforhold.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                 .arbeidstaker(RsPerson.builder().ident(IDENT).build())
-                .build()), singletonList("u2"), IDENT);
+                .build())).environments(singletonList("u2")).build(), IDENT, new BestillingProgress());
+
         verify(aaregWsConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
     }
 
@@ -90,16 +102,19 @@ public class AaregServiceTest {
         status.put(ENV, "OK");
         when(aaregWsConsumer.oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class))).thenReturn(status);
 
-        String result = aaregService.gjenopprettArbeidsforhold(singletonList(RsArbeidsforhold.builder()
+        BestillingProgress progress = new BestillingProgress();
+
+        aaregClient.gjenopprett(RsDollyBestilling.builder().aareg(singletonList(RsArbeidsforhold.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                 .arbeidstaker(RsPerson.builder().ident(IDENT).build())
-                .build()), singletonList("u2"), IDENT);
+                .build())).environments(singletonList("u2")).build(), IDENT, progress);
+
         verify(aaregWsConsumer).oppdaterArbeidsforhold(any(RsAaregOppdaterRequest.class));
-        assertThat(result, is(equalTo("u2: arbforhold=1$OK")));
+        assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
     }
 
-
     private Object[] buildArbeidsforhold(boolean isOrgnummer) {
+
         Map<String, Object> arbeidstaker = new HashMap<>();
         arbeidstaker.put("offentligIdent", IDENT);
         Map<String, Object> arbeidsgiver = new HashMap<>();

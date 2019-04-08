@@ -50,6 +50,9 @@ public class BestillingProgress {
     @Column(name = "AAREG_STATUS")
     private String aaregStatus;
 
+    @Column(name = "ARENASTUB_STATUS")
+    private String arenastubStatus;
+
     private String feil;
 
     public BestillingProgress(Long bestillingId, String ident) {

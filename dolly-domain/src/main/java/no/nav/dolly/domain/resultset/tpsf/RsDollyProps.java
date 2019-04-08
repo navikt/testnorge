@@ -13,4 +13,6 @@ public class RsDollyProps {
     private String sigrunStubUrl;
     private String krrStubUrl;
     private String kodeverkUrl;
+    private String norg2;
+    private String arenaStubUrl;
 }

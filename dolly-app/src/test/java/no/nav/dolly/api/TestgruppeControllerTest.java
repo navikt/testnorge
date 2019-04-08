@@ -1,7 +1,6 @@
 package no.nav.dolly.api;
 
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -126,9 +125,9 @@ public class TestgruppeControllerTest {
         int ant = 1;
         List<String> envir = singletonList("u");
 
-        RsDollyBestillingRequest dollyBestillingRequest = RsDollyBestillingRequest.builder()
-                .antall(ant)
-                .build();
+        RsDollyBestillingRequest dollyBestillingRequest = new RsDollyBestillingRequest();
+        dollyBestillingRequest.setAntall(ant);
+
         dollyBestillingRequest.setEnvironments(envir);
 
         Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();
@@ -162,8 +161,8 @@ public class TestgruppeControllerTest {
     public void oppretteIdentBestillingFraEksisterende() {
         List<String> envir = singletonList("u");
 
-        RsDollyBestillingFraIdenterRequest dollyBestillingsRequest = RsDollyBestillingFraIdenterRequest.builder()
-                .opprettFraIdenter(newArrayList(IDENT)).build();
+        RsDollyBestillingFraIdenterRequest dollyBestillingsRequest = new RsDollyBestillingFraIdenterRequest();
+        dollyBestillingsRequest.getOpprettFraIdenter().add(IDENT);
         dollyBestillingsRequest.setEnvironments(envir);
 
         Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();
