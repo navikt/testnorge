@@ -31,5 +31,7 @@ public class RsBestillingProgress {
 
     private String aaregStatus;
 
+    private String arenastubStatus;
+
     private List<String> feil;
 }

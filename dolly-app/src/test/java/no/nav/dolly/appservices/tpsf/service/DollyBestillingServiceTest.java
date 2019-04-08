@@ -30,7 +30,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.aareg.AaregService;
+import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
@@ -95,7 +95,7 @@ public class DollyBestillingServiceTest {
     private TpsfResponseHandler tpsfResponseHandler;
 
     @Mock
-    private AaregService aaregService;
+    private List<ClientRegister> clientRegisters;
 
     @InjectMocks
     private DollyBestillingService dollyBestillingService;
@@ -138,9 +138,9 @@ public class DollyBestillingServiceTest {
         status_SuccU1T2_FailQ3.put("t2", SUCCESS_CODE_TPS);
         status_SuccU1T2_FailQ3.put("q3", FAIL_CODE_TPS);
 
-        standardBestillingRequest_u1_t2_q3 = RsDollyBestillingRequest.builder()
-                .tpsf(new RsTpsfUtvidetBestilling())
-                .build();
+        standardBestillingRequest_u1_t2_q3 = new RsDollyBestillingRequest();
+        standardBestillingRequest_u1_t2_q3.setTpsf(new RsTpsfUtvidetBestilling());
+
         standardBestillingRequest_u1_t2_q3.setEnvironments(asList("u1", "t2", "q3"));
         standardBestillingRequest_u1_t2_q3.setAntall(1);
 
@@ -274,9 +274,8 @@ public class DollyBestillingServiceTest {
     @Test
     public void opprettPersonerByKriterierFraIdenterAsync_bestillingOk() {
 
-        RsDollyBestillingFraIdenterRequest bestillingFraIdenterRequest = RsDollyBestillingFraIdenterRequest.builder()
-                .opprettFraIdenter(STANDARD_IDENTER)
-                .build();
+        RsDollyBestillingFraIdenterRequest bestillingFraIdenterRequest = new RsDollyBestillingFraIdenterRequest();
+        bestillingFraIdenterRequest.getOpprettFraIdenter().addAll(STANDARD_IDENTER);
         bestillingFraIdenterRequest.setEnvironments(asList("u1", "t2", "q3"));
 
         RsSkdMeldingResponse response = RsSkdMeldingResponse.builder()
