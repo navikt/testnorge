@@ -37,6 +37,7 @@ Formatters.parseDate = date => {
 }
 
 Formatters.kjonnToString = (kjonn = '') => {
+	if (!kjonn) return kjonn
 	const _kjonn = kjonn.toLowerCase()
 	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
 	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
