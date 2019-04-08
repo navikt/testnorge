@@ -99,6 +99,7 @@ export default class Rediger extends PureComponent {
 		yup.object().shape({
 			navn: yup
 				.string()
+				.trim()
 				.required('Navn er et påkrevd felt')
 				.max(30, 'Maksimalt 30 bokstaver'),
 			teamId: yup
@@ -107,19 +108,22 @@ export default class Rediger extends PureComponent {
 				.nullable(),
 			hensikt: yup // .required('Du må velge hvilket team gruppen skal knyttes til'),
 				.string()
+				.trim()
 				.required('Gi en liten beskrivelse av hensikten med gruppen')
 				.max(200, 'Maksimalt 200 bokstaver'),
 			teamnavn: yup.string().when('teamId', {
 				is: val => val === this.Teams.newTeam,
 				then: yup
 					.string()
-					.required('Team navn er et påkrevd felt')
+					.trim()
+					.required('Teamnavn er et påkrevd felt')
 					.max(30, 'Maksimalt 30 bokstaver')
 			}),
 			beskrivelse: yup.string().when('teamId', {
 				is: val => val === this.Teams.newTeam,
 				then: yup
 					.string()
+					.trim()
 					.required('Gi en liten beskrivelse av teamet')
 					.max(200, 'Maksimalt 200 bokstaver')
 			})
