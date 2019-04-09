@@ -1,5 +1,6 @@
 import bestillingStatus from '../index'
-import { sokSelector, miljoStatusSelector } from '../index'
+//import { sokSelector, miljoStatusSelector } from '../index'
+import { sokSelector } from '~/ducks/bestillingStatus/utils'
 
 describe('bestillingStatusReducer', () => {
 	it('should return initial state', () => {

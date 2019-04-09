@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import BestillingListe from './BestillingListe'
-import { sokSelector } from '~/ducks/bestillingStatus'
+//import { sokSelector } from '~/ducks/bestillingStatus'
+import { sokSelector } from '~/ducks/bestillingStatus/utils'
 import { getEnvironments } from '~/ducks/environments'
 
 const mapStateToProps = (state, ownProps) => {
