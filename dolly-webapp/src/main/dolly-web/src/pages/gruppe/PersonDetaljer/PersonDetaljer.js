@@ -8,7 +8,7 @@ import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
 import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
-import { getAaregSuccessEnv } from '~/ducks/bestillingStatus'
+import { getAaregSuccessEnv, getKrrStubSuccess, getSigrunStubSuccess} from '~/ducks/bestillingStatus/utils'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -25,8 +25,8 @@ export default class PersonDetaljer extends PureComponent {
 	}
 
 	componentDidMount() {
-		this.props.getSigrunTestbruker()
-		this.props.getKrrTestbruker()
+		getSigrunStubSuccess(this.props.bestilling) && this.props.getSigrunTestbruker()
+		getKrrStubSuccess(this.props.bestilling) && this.props.getKrrTestbruker()
 
 		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.bestilling)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
