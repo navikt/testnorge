@@ -5,8 +5,18 @@ import { Radio } from 'nav-frontend-skjema'
 
 describe('AttributtVelger.js', () => {
 	const selectedIds = ['kjonn']
+	const currentBestilling = {
+		identOpprettesFra: 'nyIdent',
+		attributeIds: ['spraak', 'nasjonalitet']
+	}
 	const onToggle = jest.fn()
-	const rendered = shallow(<AttributtVelger selectedIds={selectedIds} onToggle={onToggle} />)
+	const rendered = shallow(
+		<AttributtVelger
+			currentBestilling={currentBestilling}
+			selectedIds={selectedIds}
+			onToggle={onToggle}
+		/>
+	)
 	it('should render', () => {
 		expect(rendered.find('.attributt-velger_panels').exists()).toBe(true)
 	})
@@ -44,27 +54,27 @@ describe('AttributtVelger.js', () => {
 		).toBe('Søket ga ingen treff')
 	})
 
-	const items = [{ id: 'alder', label: 'a' }, { id: 'kjonn', label: 'b' }]
-	const radioButtons = shallow(rendered.instance().renderRadioButtons(items))
-	it('should render radio buttons', () => {
-		expect(radioButtons.find(Radio).exists()).toBeTruthy()
-	})
+	// TODO: Skal vi ha radio buttons on step 2?
+	// const items = [{ id: 'alder', label: 'a' }, { id: 'kjonn', label: 'b' }]
+	// const radioButtons = shallow(rendered.instance().renderRadioButtons(items))
+	// it('should render radio buttons', () => {
+	// 	expect(radioButtons.find(Radio).exists()).toBeTruthy()
+	// })
 
-	it('radio buttons should have onChange function', () => {
-		expect(
-			radioButtons
-				.find(Radio)
-				.at(0)
-				.props().onChange
-		).toBeTruthy()
-	})
+	// it('radio buttons should have onChange function', () => {
+	// 	expect(
+	// 		radioButtons
+	// 			.find(Radio)
+	// 			.at(0)
+	// 			.props().onChange
+	// 	).toBeTruthy()
+	// })
+	// const selectedItem = { id: 'kjonn', label: 'b' }
 
-	const selectedItem = { id: 'kjonn', label: 'b' }
-
-	it('should change radio buttons onClick', () => {
-		rendered.instance().onChangeRadioGruppe(items, selectedItem)
-		expect(rendered.instance().props.onToggle).toBeCalled()
-	})
+	// it('should change radio buttons onClick', () => {
+	// 	rendered.instance().onChangeRadioGruppe(items, selectedItem)
+	// 	expect(rendered.instance().props.onToggle).toBeCalled()
+	// })
 
 	it('should has search function', () => {
 		const testdata = '1'
