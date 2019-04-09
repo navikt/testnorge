@@ -15,7 +15,7 @@ import java.util.Map;
 public class AntallTimerForTimeloennet {
 
     @JsonProperty("antallTimer")
-    private int antallTimer;
+    private Integer antallTimer;
 
     @JsonProperty("periode")
     private Map<String, String> periode;

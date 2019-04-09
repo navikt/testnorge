@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Arbeidsavtale {
 
     @JsonProperty("antallKonverterteTimer")
-    private int antallKonverterteTimer;
+    private Integer antallKonverterteTimer;
 
     @JsonProperty("arbeidstidsordning")
     private String arbeidstidsordning;
@@ -26,9 +26,6 @@ public class Arbeidsavtale {
 
     @JsonProperty("endringsdatoStillingsprosent")
     private String endringsdatoStillingsprosent;
-
-    @JsonProperty("sisteLoennsendringsdato")
-    private String sisteLoennsendringsdato;
 
     @JsonProperty("stillingsprosent")
     private Double stillingsprosent;

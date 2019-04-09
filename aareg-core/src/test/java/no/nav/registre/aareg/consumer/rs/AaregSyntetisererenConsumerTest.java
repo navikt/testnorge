@@ -63,7 +63,6 @@ public class AaregSyntetisererenConsumerTest {
         assertThat(result.get(1).getArbeidsforhold().getArbeidstaker().get("ident"), equalTo(fnrs.get(1)));
         assertThat(result.get(1).getArbeidsforhold().getArbeidsforholdID(), equalTo("oAq5SJgOPDHQnERi"));
         assertThat(result.get(1).getArbeidsforhold().getArbeidsforholdstype(), equalTo("ordinaertArbeidsforhold"));
-        assertThat(result.get(1).getArbeidsforhold().getArbeidsavtale().getSisteLoennsendringsdato(), equalTo("1985-08-01T00:00:00"));
         assertThat(result.get(1).getArbeidsforhold().getArbeidsavtale().getYrke(), equalTo("990458162"));
     }
 

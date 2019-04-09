@@ -28,7 +28,7 @@ public class Arbeidsforhold {
     private String arbeidsforholdID;
 
     @JsonProperty("arbeidsforholdIDnav")
-    private int arbeidsforholdIDnav;
+    private Integer arbeidsforholdIDnav;
 
     @JsonProperty("arbeidsforholdstype")
     private String arbeidsforholdstype;
