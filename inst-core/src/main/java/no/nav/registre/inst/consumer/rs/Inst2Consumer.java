@@ -26,7 +26,7 @@ public class Inst2Consumer {
     };
     private static final ParameterizedTypeReference<List<Institusjonsforholdsmelding>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<List<Institusjonsforholdsmelding>>() {
     };
-    private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_LEGG_TIL_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<Object>() {
+    private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE_LEGG_TIL_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<ResponseEntity>() {
     };
 
     @Autowired

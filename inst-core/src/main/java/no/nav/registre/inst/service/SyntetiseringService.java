@@ -83,8 +83,6 @@ public class SyntetiseringService {
             log.warn("Kunne ikke opprette institusjonsopphold på alle identer. Antall opphold opprettet: {}", responseEntities.size());
         }
 
-        log.info("Status fra syntetiserte opprettelser i inst2: {}", responseEntities);
-
         return responseEntities;
     }
 
