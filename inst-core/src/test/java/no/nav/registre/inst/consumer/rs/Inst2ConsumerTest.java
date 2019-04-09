@@ -13,7 +13,6 @@ import static no.nav.registre.inst.consumer.rs.testutils.ResourceUtils.getResour
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -81,7 +80,7 @@ public class Inst2ConsumerTest {
 
         ResponseEntity result = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, institusjonsforholdsmelding);
 
-        assertEquals(HttpStatus.CREATED, result.getStatusCode());
+        assertThat(result.getStatusCode(), is(HttpStatus.CREATED));
     }
 
     private void stubTokenProvider() {

@@ -38,7 +38,7 @@ public class SyntetiseringService {
         if (utvalgteIdenter.size() < syntetiserInstRequest.getAntallNyeIdenter()) {
             log.warn("Fant ikke nok ledige identer. Lager institusjonsforhold på {} identer.", utvalgteIdenter.size());
         }
-        if(utvalgteIdenter.isEmpty()) {
+        if (utvalgteIdenter.isEmpty()) {
             List<ResponseEntity> tomRespons = new ArrayList<>();
             tomRespons.add(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fant ingen ledige identer i avspillergruppe " + syntetiserInstRequest.getAvspillergruppeId()));
             return tomRespons;
@@ -66,6 +66,9 @@ public class SyntetiseringService {
         List<String> utvalgteIdenter = new ArrayList<>(identer);
 
         for (Institusjonsforholdsmelding institusjonsforholdsmelding : syntetiserteMeldinger) {
+            if (utvalgteIdenter.isEmpty()) {
+                break;
+            }
             String ident = utvalgteIdenter.remove(0);
             List<Institusjonsforholdsmelding> eksisterendeInstitusjonsforhold = hentInstitusjonsoppholdFraInst2(ident);
             if (!eksisterendeInstitusjonsforhold.isEmpty()) {
@@ -75,6 +78,12 @@ public class SyntetiseringService {
                 responseEntities.add(inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, institusjonsforholdsmelding));
             }
         }
+
+        if (responseEntities.size() < identer.size()) {
+            log.warn("Kunne ikke opprette institusjonsopphold på alle identer. Antall opphold opprettet: {}", responseEntities.size());
+        }
+
+        log.info("Status fra syntetiserte opprettelser i inst2: {}", responseEntities);
 
         return responseEntities;
     }
