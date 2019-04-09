@@ -13,7 +13,8 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Date,
 		validation: DateValidation(),
 		attributtType: AttributtType.SelectOnly,
-		sattForEksisterendeIdent: true
+		sattForEksisterendeIdent: true,
+		defaultValue: new Date().setFullYear(new Date().getFullYear() - 80)
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -24,7 +25,8 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Date,
 		validation: DateValidation(),
 		attributtType: AttributtType.SelectOnly,
-		sattForEksisterendeIdent: true
+		sattForEksisterendeIdent: true,
+		defaultValue: new Date()
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -34,7 +36,8 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
 		validation: DateValidation(),
-		attributtType: AttributtType.SelectOnly
+		attributtType: AttributtType.SelectOnly,
+		defaultValue: new Date()
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -44,7 +47,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'StatsborgerskapFreg',
-		// validation: yup.string().required('Krever et statsborgerskap.'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -55,7 +57,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Kjønnstyper',
-		// validation: yup.string().required('Velg kjønn.'),
 		attributtType: AttributtType.SelectAndEdit,
 		sattForEksisterendeIdent: true
 	},
@@ -67,7 +68,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Sivilstander',
-		// validation: yup.string().required('Velg sivilstand.'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -78,7 +78,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Diskresjonskoder',
-		// validation: yup.string().required('Velg diskresjonskoder.'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -89,7 +88,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Språk',
-		// validation: yup.string().required('Velg språk.'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -100,7 +98,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),
-		// validation: yup.string().required('Vennligst velg en verdi.'),
 		attributtType: AttributtType.SelectAndEdit,
 		transform: egenAnsatt => (egenAnsatt ? new Date() : null)
 	}

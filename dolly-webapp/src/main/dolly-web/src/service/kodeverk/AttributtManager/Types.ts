@@ -53,6 +53,7 @@ export interface Attributt {
 	inputTypeAttributes?: object
 	options?: Options[]
 	format?: Function
+	defaultValue?: any
 	apiKodeverkId?: string
 	apiKodeverkShowValueInLabel?: boolean
 	validation?: yup.MixedSchema
