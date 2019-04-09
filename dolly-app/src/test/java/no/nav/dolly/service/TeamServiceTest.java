@@ -256,4 +256,14 @@ public class TeamServiceTest {
         when(teamRepository.save(any(Team.class))).thenThrow(nonTransientDataAccessException);
         teamService.saveTeamToDB(new Team());
     }
+
+    @Test
+    public void fetchTeamsByMedlemskapInTeams_ok() {
+
+        String navIdent = "1";
+
+        teamService.fetchTeamsByMedlemskapInTeams(navIdent);
+
+        verify(teamRepository).findByMedlemmerNavIdentOrderByNavn(navIdent);
+    }
 }
