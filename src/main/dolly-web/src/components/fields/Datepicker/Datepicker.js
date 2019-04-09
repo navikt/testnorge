@@ -108,7 +108,7 @@ export default class Datepicker extends Component {
 					parseDate={this.parseDate}
 					onDayChange={this.handleOnDayChange}
 					onDayPickerHide={this.handleDayPickerHide}
-					placeholder="eks 01.01.2018"
+					placeholder="Ikke spesifisert"
 					inputProps={{
 						onKeyUp: this.handleKeyUp,
 						onFocus: this.handleFocus,
