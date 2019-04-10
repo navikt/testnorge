@@ -1,6 +1,6 @@
-import { mapTpsfData, mapSigrunData, mapKrrData } from '../mapDetailedData'
+import { mapTpsfData } from '../mapTpsDataToIdent'
 
-describe('mapDetailedData.js', () => {
+describe('mapTpsDataToIdent.js', () => {
 	describe('mapTpsfData', () => {
 		const testTpsfData = {
 			identtype: 'FNR',
@@ -8,11 +8,16 @@ describe('mapDetailedData.js', () => {
 			fornavn: 'OLA',
 			mellomnavn: 'MELLOMNAVN',
 			etternavn: 'NORDMANN',
+			gtRegel: 'A',
+			gtType: 'BYDEL',
+			gtVerdi: '030103',
 			kjonn: 'MENN',
 			alder: 20,
 			sivilstand: 'ENKE',
 			spesreg: 'KODE6',
-			relasjoner: []
+			relasjoner: [],
+			tknr: '0314',
+			egenAnsattDatoFom: '2019-04-10T12:55:14.896'
 		}
 
 		const testTpsfRes = [
@@ -57,19 +62,37 @@ describe('mapDetailedData.js', () => {
 					{
 						id: 'miljoer',
 						label: 'Miljøer',
-						value: 'T0, T1'
+						value: 't0, t1'
 					},
 					{
 						id: 'spesreg',
 						label: 'Diskresjonskoder',
 						value: 'KODE6'
+					},
+					{
+						apiKodeverkId: 'Bydeler',
+						extraLabel: 'Bydel',
+						id: 'gtVerdi',
+						label: 'Geo. Tilhør',
+						value: '030103'
+					},
+					{
+						id: 'tknr',
+						label: 'TK nummer',
+						tknr: '0314'
+					},
+					{
+						id: 'egenAnsattDatoFom',
+						label: 'Egenansatt',
+						value: 'JA'
 					}
 				]
 			}
 		]
 
-		const bestillingData = {
-			environments: ['t0', 't1']
+		const testIdent = {
+			ident: '123456789',
+			tpsfSuccessEnv: 't0,t1'
 		}
 
 		it('should return null without data', () => {
@@ -77,7 +100,7 @@ describe('mapDetailedData.js', () => {
 		})
 
 		it('should return tpsf-data', () => {
-			expect(mapTpsfData(testTpsfData, bestillingData)).toEqual(testTpsfRes)
+			expect(mapTpsfData(testTpsfData, testIdent)).toEqual(testTpsfRes)
 		})
 
 		it('should return tpsf-data with alle values', () => {
@@ -199,121 +222,8 @@ describe('mapDetailedData.js', () => {
 					})
 				}
 			]
-			expect(mapTpsfData(testTpsfDataAllValues, bestillingData)).toEqual(res)
-		})
-	})
 
-	describe('mapSigrunData', () => {
-		it('should return null without data', () => {
-			expect(mapSigrunData()).toBeNull()
-		})
-
-		it('should return sigrun-data ', () => {
-			const testSigrunData = [
-				{
-					personidentifikator: '010101987654',
-					inntektsaar: '2019',
-					tjeneste: 'testTjeneste',
-					grunnlag: 'testGrunnlag',
-					verdi: '999'
-				}
-			]
-			const res = {
-				header: 'Inntekter',
-				multiple: true,
-				data: testSigrunData.map(data => {
-					return {
-						parent: 'inntekter',
-						id: data.personidentifikator,
-						label: data.inntektsaar,
-						value: [
-							{
-								id: 'aar',
-								label: 'År',
-								value: '2019'
-							},
-							{
-								id: 'verdi',
-								label: 'Beløp',
-								value: '999'
-							},
-							,
-							{
-								id: 'tjeneste',
-								label: 'Tjeneste',
-								width: 'medium',
-								value: 'testTjeneste'
-							},
-
-							{
-								id: 'grunnlag',
-								label: 'Grunnlag',
-								width: 'xlarge',
-								value: 'Test Grunnlag'
-							}
-						]
-					}
-				})
-			}
-
-			expect(mapSigrunData(testSigrunData)).toEqual(res)
-		})
-	})
-
-	describe('mapKrrData', () => {
-		it('should return null without data', () => {
-			expect(mapKrrData()).toBeNull()
-		})
-
-		const testKrrData = { mobil: '987654312', epost: 'nav@nav.no', reservert: true }
-
-		it('should return krr-data with reservert', () => {
-			const testRes = {
-				header: 'Kontaktinformasjon og reservasjon',
-				data: [
-					{
-						id: 'mobil',
-						label: 'Mobilnummer',
-						value: '987654312'
-					},
-					{
-						id: 'epost',
-						label: 'Epost',
-						value: 'nav@nav.no'
-					},
-					{
-						id: 'reservert',
-						label: 'Reservert mot digitalkommunikasjon',
-						value: 'JA'
-					}
-				]
-			}
-			expect(mapKrrData(testKrrData)).toEqual(testRes)
-		})
-
-		it('should return krr-data without reservert', () => {
-			const testKrr2 = { ...testKrrData, reservert: false }
-			const testRes2 = {
-				header: 'Kontaktinformasjon og reservasjon',
-				data: [
-					{
-						id: 'mobil',
-						label: 'Mobilnummer',
-						value: '987654312'
-					},
-					{
-						id: 'epost',
-						label: 'Epost',
-						value: 'nav@nav.no'
-					},
-					{
-						id: 'reservert',
-						label: 'Reservert mot digitalkommunikasjon',
-						value: 'NEI'
-					}
-				]
-			}
-			expect(mapKrrData(testKrr2)).toEqual(testRes2)
+			expect(mapTpsfData(testTpsfDataAllValues, testIdent)).toEqual(res)
 		})
 	})
 })
