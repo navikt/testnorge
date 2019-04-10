@@ -65,7 +65,7 @@ public class TpConsumerTest {
         data.add("123");
         when(restTemplate.exchange(any(), (Class<Object>) any())).thenReturn(new ResponseEntity<>(data, HttpStatus.OK));
 
-        Set<Object> fnrs = tpConsumer.findFnrs(environment);
+        Set<String> fnrs = tpConsumer.findFnrs(environment);
         assertFalse(fnrs.isEmpty());
     }
 
@@ -73,7 +73,7 @@ public class TpConsumerTest {
     public void findFnrsFoundNone() {
         when(restTemplate.getForObject(any(), any())).thenReturn(Collections.emptySet());
 
-        Set<Object> fnrs = tpConsumer.findFnrs(environment);
+        Set<String> fnrs = tpConsumer.findFnrs(environment);
         assertTrue(fnrs.isEmpty());
     }
 }
