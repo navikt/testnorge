@@ -169,7 +169,6 @@ export default handleActions(
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
 const bestillingFormatter = bestillingState => {
-	console.log('bestillingState :', bestillingState)
 	const {
 		attributeIds,
 		antall,
