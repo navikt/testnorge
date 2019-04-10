@@ -255,7 +255,6 @@ export function mapBestillingId(testIdent) {
 
 export function mapSigrunData(sigrunData) {
 	if (!sigrunData || sigrunData.length === 0) return null
-
 	return {
 		header: 'Inntekter',
 		multiple: true,
@@ -377,7 +376,7 @@ export function mapAaregData(aaregData) {
 					},
 					{
 						id: 'orgnr',
-						label: 'Offentlig Ident',
+						label: 'Arbeidsgiver Ident',
 						value: data.arbeidsgiver.offentligIdent
 					}
 				]

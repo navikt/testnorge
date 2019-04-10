@@ -53,6 +53,7 @@ export interface Attributt {
 	inputTypeAttributes?: object
 	options?: Options[]
 	format?: Function
+	defaultValue?: any
 	apiKodeverkId?: string
 	apiKodeverkShowValueInLabel?: boolean
 	validation?: yup.MixedSchema
@@ -63,6 +64,7 @@ export interface Attributt {
 	dependentBy?: string // Er ikke avhengig, er attributten som ble settet av dependentOn
 	includeIf?: Attributt[]
 	sattForEksisterendeIdent?: boolean
+	onlyShowAfterSelectedValue?: Object // AAREG: Orgnummer/ident er avhengig av valgt verdi av "Type av arbeidsgiver". String = id, number = indexOf valgt verdi
 	transform?: (value: any, attributter: Attributt[]) => any
 }
 

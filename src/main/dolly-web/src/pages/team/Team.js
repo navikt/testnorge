@@ -71,7 +71,7 @@ class Team extends Component {
 						onClick={deleteTeam}
 					/>
 				</Overskrift>
-
+				<div style = {{width: '70%'}}>{team.beskrivelse}</div>
 				{visRedigerTeam && <RedigerTeamConnector team={team} />}
 
 				<Toolbar title="Medlemmer">
