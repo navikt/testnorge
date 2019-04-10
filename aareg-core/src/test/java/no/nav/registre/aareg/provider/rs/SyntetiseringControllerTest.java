@@ -39,11 +39,11 @@ public class SyntetiseringControllerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        when(syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest, lagreIAareg)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
+        when(syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, lagreIAareg)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
         ResponseEntity result = syntetiseringController.genererArbeidsforholdsmeldinger(lagreIAareg, syntetiserAaregRequest);
 
-        verify(syntetiseringService).opprettArbeidshistorikk(syntetiserAaregRequest, lagreIAareg);
+        verify(syntetiseringService).opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, lagreIAareg);
 
         assertThat(result.getStatusCode(), is(HttpStatus.OK));
     }

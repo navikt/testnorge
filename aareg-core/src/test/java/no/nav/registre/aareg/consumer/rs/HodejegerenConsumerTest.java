@@ -3,7 +3,7 @@ package no.nav.registre.aareg.consumer.rs;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,6 +32,8 @@ public class HodejegerenConsumerTest {
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
+
+    private static int MINIMUM_ALDER = 13;
 
     private long gruppeId = 10L;
     private String fnr1 = "01010101010";
@@ -63,14 +65,14 @@ public class HodejegerenConsumerTest {
     }
 
     private void stubHodejegerenConsumer() {
-        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/alle-levende-identer/" + gruppeId))
+        stubFor(get(urlEqualTo("/hodejegeren/api/v1/levende-identer-over-alder/" + gruppeId + "?minimumAlder=" + MINIMUM_ALDER))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
     }
 
     private void stubHodejegerenConsumerWithEmptyBody() {
-        stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/alle-levende-identer/" + gruppeId))
+        stubFor(get(urlEqualTo("/hodejegeren/api/v1/levende-identer-over-alder/" + gruppeId + "?minimumAlder=" + MINIMUM_ALDER))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
     }

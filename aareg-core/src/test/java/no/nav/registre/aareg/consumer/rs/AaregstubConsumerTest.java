@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
+import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -40,6 +42,7 @@ public class AaregstubConsumerTest {
 
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
+    private String fnr3 = "02020202020";
     private Boolean lagreIAareg = false;
 
     @Test
@@ -50,6 +53,7 @@ public class AaregstubConsumerTest {
 
         assertThat(response.get(0), equalTo(fnr1));
         assertThat(response.get(1), equalTo(fnr2));
+        assertThat(response.get(2), equalTo(fnr3));
     }
 
     @Test
@@ -58,9 +62,11 @@ public class AaregstubConsumerTest {
 
         stubAaregstubLagreConsumer();
 
-        List<String> identerSendtTilAaregstub = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
+        StatusFraAaregstubResponse statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
 
-        assertThat(identerSendtTilAaregstub.size(), equalTo(2));
+        assertThat(statusFraAaregstubResponse.getIdenterLagretIStub().size(), equalTo(2));
+        assertThat(statusFraAaregstubResponse.getIdenterLagretIStub().get(0), equalTo(fnr1));
+        assertThat(statusFraAaregstubResponse.getIdenterLagretIStub().get(1), equalTo(fnr2));
     }
 
     @Test
@@ -70,9 +76,11 @@ public class AaregstubConsumerTest {
 
         stubAaregstubLagreIAaregConsumer();
 
-        List<String> identerSendtTilAaregstub = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
+        StatusFraAaregstubResponse statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
 
-        assertThat(identerSendtTilAaregstub.size(), equalTo(2));
+        assertThat(statusFraAaregstubResponse.getIdenterLagretIAareg().size(), equalTo(2));
+        assertThat(statusFraAaregstubResponse.getIdenterLagretIAareg().get(0), equalTo(fnr1));
+        assertThat(statusFraAaregstubResponse.getIdenterLagretIAareg().get(1), equalTo(fnr2));
     }
 
     @Test
@@ -94,7 +102,7 @@ public class AaregstubConsumerTest {
         stubFor(get(urlPathEqualTo("/aaregstub/api/v1/hentAlleArbeidstakere"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
+                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\", \"" + fnr3 + "\"]")));
     }
 
     private void stubAaregstubLagreConsumer() {
@@ -102,7 +110,7 @@ public class AaregstubConsumerTest {
                 .withRequestBody(equalToJson("[]"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
+                        .withBody(getResourceFileContent("statusFraAaregstub.json"))));
     }
 
     private void stubAaregstubLagreIAaregConsumer() {
@@ -110,7 +118,7 @@ public class AaregstubConsumerTest {
                 .withRequestBody(equalToJson("[]"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
+                        .withBody(getResourceFileContent("statusFraAaregstub.json"))));
     }
 
     private void stubAaregstubWithEmptyBody() {

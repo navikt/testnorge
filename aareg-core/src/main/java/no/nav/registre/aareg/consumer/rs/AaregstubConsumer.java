@@ -15,12 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
+import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
 
 @Component
 @Slf4j
 public class AaregstubConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE_LAGRE = new ParameterizedTypeReference<List<String>>() {
+    private static final ParameterizedTypeReference<StatusFraAaregstubResponse> RESPONSE_TYPE_LAGRE = new ParameterizedTypeReference<StatusFraAaregstubResponse>() {
     };
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE_HENT_ARBEIDSTAKERE = new ParameterizedTypeReference<List<String>>() {
@@ -58,18 +59,17 @@ public class AaregstubConsumer {
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
-    public List<String> sendTilAaregstub(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold, Boolean lagreIAareg) {
+    public StatusFraAaregstubResponse sendTilAaregstub(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold, Boolean lagreIAareg) {
         RequestEntity postRequest = RequestEntity.post(sendTilAaregstubUrl.expand(lagreIAareg)).body(syntetiserteArbeidsforhold);
-        List<String> lagredeIdenter = new ArrayList<>();
-        ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LAGRE);
+        ResponseEntity<StatusFraAaregstubResponse> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LAGRE);
 
         if (response.getBody() != null) {
-            lagredeIdenter.addAll(response.getBody());
+            return response.getBody();
         } else {
             log.error("AaregstubConsumer.sendTilAaregstub: Kunne ikke hente response body fra Aaregstub: NullPointerException");
         }
 
-        return lagredeIdenter;
+        return StatusFraAaregstubResponse.builder().build();
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })

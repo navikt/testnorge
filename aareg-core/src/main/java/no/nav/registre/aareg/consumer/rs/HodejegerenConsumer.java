@@ -20,6 +20,7 @@ public class HodejegerenConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
     };
+    private static int MINIMUM_ALDER = 13;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -27,7 +28,7 @@ public class HodejegerenConsumer {
     private UriTemplate url;
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
-        this.url = new UriTemplate(hodejegerenServerUrl + "/v1/alle-levende-identer/{avspillergruppeId}");
+        this.url = new UriTemplate(hodejegerenServerUrl + "/v1/levende-identer-over-alder/{avspillergruppeId}?minimumAlder=" + MINIMUM_ALDER);
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })

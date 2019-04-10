@@ -5,16 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
+import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @Service
@@ -33,14 +36,14 @@ public class SyntetiseringService {
     @Autowired
     private Random rand;
 
-    public ResponseEntity opprettArbeidshistorikk(SyntetiserAaregRequest syntetiserAaregRequest, Boolean lagreIAareg) {
+    public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(SyntetiserAaregRequest syntetiserAaregRequest, Boolean lagreIAareg) {
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId());
         List<String> nyeIdenter = new ArrayList<>(syntetiserAaregRequest.getAntallNyeIdenter());
         List<String> utvalgteIdenter = new ArrayList<>(aaregstubConsumer.hentEksisterendeIdenter());
         levendeIdenter.removeAll(utvalgteIdenter);
 
         int antallNyeIdenter = syntetiserAaregRequest.getAntallNyeIdenter();
-        if(antallNyeIdenter > levendeIdenter.size()) {
+        if (antallNyeIdenter > levendeIdenter.size()) {
             antallNyeIdenter = levendeIdenter.size();
             log.info("Fant ikke nok ledige identer i avspillergruppe. Lager arbeidsforhold på {} identer.", antallNyeIdenter);
         }
@@ -51,19 +54,45 @@ public class SyntetiseringService {
 
         utvalgteIdenter.addAll(nyeIdenter);
         List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
-        for(ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforhold) {
+        for (ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforhold) {
             arbeidsforholdsResponse.setEnvironments(Arrays.asList(syntetiserAaregRequest.getMiljoe()));
         }
 
-        int antallIdenter = utvalgteIdenter.size();
-        utvalgteIdenter.removeAll(aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforhold, lagreIAareg));
+        StatusFraAaregstubResponse statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforhold, lagreIAareg);
 
-        if(utvalgteIdenter.isEmpty()) {
-            return ResponseEntity.ok().body(antallIdenter + " identer fikk opprettet arbeidsforhold og ble sendt til aareg-stub");
-        } else {
-            log.error("Noe feilet under lagring til aaregstub. Følgende identer ble ikke lagret: {}", utvalgteIdenter.toString());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(String.format("Noe feilet under lagring til aaregstub. Følgende identer ble ikke lagret: {%s}", utvalgteIdenter.toString()));
+        StringBuilder statusFraAaregstub = new StringBuilder();
+
+        if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterLagretIStub())) {
+            statusFraAaregstub
+                    .append("Identer som ble lagret i aaregstub: ")
+                    .append(statusFraAaregstubResponse.getIdenterLagretIStub().toString())
+                    .append(". ");
         }
+
+        if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterLagretIAareg())) {
+            statusFraAaregstub
+                    .append("Identer som ble sendt til aareg: ")
+                    .append(statusFraAaregstubResponse.getIdenterLagretIAareg().toString())
+                    .append(". ");
+        }
+
+        log.info(statusFraAaregstub.toString());
+
+        if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterSomIkkeKunneLagresIAareg())) {
+            StringBuilder statusFeiledeIdenter = new StringBuilder("Status på identer som ikke kunne sendes til aareg: ");
+            for (Map.Entry<String, String> feiletIdent : statusFraAaregstubResponse.getIdenterSomIkkeKunneLagresIAareg().entrySet()) {
+                statusFeiledeIdenter
+                        .append(feiletIdent.getKey())
+                        .append(" - ")
+                        .append(feiletIdent.getValue());
+            }
+            log.error(statusFeiledeIdenter.toString());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(String.format("Noe feilet under lagring til aaregstub. {%s}. {%s}",
+                    statusFeiledeIdenter.toString(),
+                    statusFraAaregstub.toString()));
+        }
+
+        return ResponseEntity.ok().body(statusFraAaregstub.toString());
     }
 
     public List<ResponseEntity> sendArbeidsforholdTilAareg(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {

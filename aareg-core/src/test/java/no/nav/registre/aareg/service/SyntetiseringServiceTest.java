@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,13 +24,16 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
+import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -74,9 +76,11 @@ public class SyntetiseringServiceTest {
 
     @Test
     public void shouldOppretteArbeidshistorikk() {
-        when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(new ArrayList<>(fnrs));
+        when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(StatusFraAaregstubResponse.builder()
+                .identerLagretIStub(Arrays.asList(fnr1))
+                .build());
 
-        ResponseEntity response = syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest, lagreIAareg);
+        ResponseEntity response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, lagreIAareg);
 
         verify(aaregstubConsumer).sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
@@ -84,9 +88,13 @@ public class SyntetiseringServiceTest {
 
     @Test
     public void shouldReturnErrorOnPartialResult() {
-        when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(new ArrayList<>(Arrays.asList(fnr1)));
+        Map<String, String> identerSomIkkeKunneLagres = new HashMap<>();
+        identerSomIkkeKunneLagres.put(fnr2, "Feil, OpprettArbeidsforholdUgyldigInput -> Ugyldig input");
+        when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(StatusFraAaregstubResponse.builder()
+                .identerSomIkkeKunneLagresIAareg(identerSomIkkeKunneLagres)
+                .build());
 
-        ResponseEntity response = syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest, lagreIAareg);
+        ResponseEntity response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, lagreIAareg);
 
         verify(aaregstubConsumer).sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
         assertThat(response.getStatusCode(), is(HttpStatus.CONFLICT));
@@ -100,11 +108,13 @@ public class SyntetiseringServiceTest {
         listAppender.start();
         logger.addAppender(listAppender);
 
+        when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(StatusFraAaregstubResponse.builder().build());
+
         syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, 3);
 
-        syntetiseringService.opprettArbeidshistorikk(syntetiserAaregRequest, lagreIAareg);
+        syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, lagreIAareg);
 
-        assertThat(listAppender.list.size(), CoreMatchers.is(equalTo(2)));
+        assertThat(listAppender.list.size(), is(equalTo(2)));
         assertThat(listAppender.list.get(0).toString(), containsString("Fant ikke nok ledige identer i avspillergruppe. Lager arbeidsforhold på " + antallMeldinger + " identer."));
     }
 }
