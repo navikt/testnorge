@@ -5,7 +5,8 @@ describe('gruppeReducer', () => {
 	const initialState = {
 		data: null,
 		createOrUpdateId: null, // null = ingen, -1 = opprett ny gruppe, '45235' (ex: 425323) = rediger
-		visning: 'mine'
+		visning: 'mine',
+		teamId: null
 	}
 
 	it('should return gruppe with initialstate', () => {
