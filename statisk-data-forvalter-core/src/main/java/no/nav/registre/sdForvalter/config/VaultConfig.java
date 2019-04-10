@@ -1,10 +1,10 @@
 package no.nav.registre.sdForvalter.config;
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
 import org.springframework.context.annotation.Configuration;
@@ -15,16 +15,12 @@ import org.springframework.vault.core.lease.event.SecretLeaseCreatedEvent;
 @Slf4j
 @Configuration
 @ConditionalOnClass(SecretLeaseContainer.class)
+@RequiredArgsConstructor
 public class VaultConfig implements InitializingBean {
 
-    @Autowired
-    private SecretLeaseContainer container;
-
-    @Autowired
-    private HikariDataSource hikariDataSource;
-
-    @Autowired
-    private VaultDatabaseProperties properties;
+    private final SecretLeaseContainer container;
+    private final HikariDataSource hikariDataSource;
+    private final VaultDatabaseProperties properties;
 
     @Override
     public void afterPropertiesSet() {

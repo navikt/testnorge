@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.database.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,15 +24,17 @@ import java.util.Date;
 )
 @Getter
 @Setter
-public abstract class AuditModel implements Serializable {
+abstract class AuditModel implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
+    @JsonIgnore
     private Date createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", nullable = false)
     @LastModifiedDate
+    @JsonIgnore
     private Date updatedAt;
 }
