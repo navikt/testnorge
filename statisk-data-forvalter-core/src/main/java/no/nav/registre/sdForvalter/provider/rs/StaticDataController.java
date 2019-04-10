@@ -61,7 +61,7 @@ public class StaticDataController {
 
     @PostMapping(value = "/dkif")
     public ResponseEntity storeStaticData(@Valid @RequestBody Set<KrrModel> data) {
-        return ResponseEntity.ok(staticDataService.saveInDkif(data));
+        return ResponseEntity.ok(staticDataService.saveInKrr(data));
     }
 
 }

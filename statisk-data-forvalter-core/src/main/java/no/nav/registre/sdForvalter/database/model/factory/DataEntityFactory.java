@@ -1,5 +1,7 @@
 package no.nav.registre.sdForvalter.database.model.factory;
 
+import static org.springframework.util.StringUtils.isEmpty;
+
 import java.util.List;
 
 import no.nav.registre.sdForvalter.database.ModelEnum;
@@ -14,21 +16,21 @@ public class DataEntityFactory {
             case AAREG:
                 AaregModel aaregModel = AaregModel.builder().build();
                 aaregModel.updateFromString(content, headers);
-                if ("".equals(aaregModel.getFnr()) || aaregModel.getFnr() == null) {
+                if (isEmpty(aaregModel.getFnr())) {
                     throw new IllegalArgumentException(String.format("Unable to create %s because it is missing FNR", dataType));
                 }
                 return aaregModel;
             case TPS:
                 TpsModel tpsModel = TpsModel.builder().build();
                 tpsModel.updateFromString(content, headers);
-                if ("".equals(tpsModel.getFnr()) || tpsModel.getFnr() == null) {
+                if (isEmpty(tpsModel.getFnr())) {
                     throw new IllegalArgumentException(String.format("Unable to create %s because it is missing FNR", dataType));
                 }
                 return tpsModel;
             case DKIF:
                 KrrModel krrModel = KrrModel.builder().build();
                 krrModel.updateFromString(content, headers);
-                if ("".equals(krrModel.getFnr()) || krrModel.getFnr() == null) {
+                if (isEmpty(krrModel.getFnr())) {
                     throw new IllegalArgumentException(String.format("Unable to create %s because it is missing FNR", dataType));
                 }
                 return krrModel;

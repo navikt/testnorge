@@ -64,7 +64,7 @@ public class StaticDataService {
     public Set<AaregModel> saveInAareg(Set<AaregModel> data) {
         Set<AaregModel> overlap = new HashSet<>();
         Set<AaregModel> reduced = data.stream().filter(t -> {
-            if (tpsRepository.findById(t.getFnr()).isPresent()) {
+            if (aaregRepository.findById(t.getFnr()).isPresent()) {
                 overlap.add(t);
                 return false;
             }
@@ -74,10 +74,10 @@ public class StaticDataService {
         return overlap;
     }
 
-    public Set<KrrModel> saveInDkif(Set<KrrModel> data) {
+    public Set<KrrModel> saveInKrr(Set<KrrModel> data) {
         Set<KrrModel> overlap = new HashSet<>();
         Set<KrrModel> reduced = data.stream().filter(t -> {
-            if (tpsRepository.findById(t.getFnr()).isPresent()) {
+            if (krrRepository.findById(t.getFnr()).isPresent()) {
                 overlap.add(t);
                 return false;
             }
