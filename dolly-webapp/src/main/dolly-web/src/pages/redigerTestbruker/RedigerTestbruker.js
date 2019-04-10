@@ -22,9 +22,6 @@ export default class RedigerTestbruker extends Component {
 
 	componentDidMount() {
 		this.props.getGruppe()
-		this.props.getTestbruker()
-		this.props.getSigrunTestbruker()
-		this.props.getKrrTestbruker()
 	}
 
 	submit = (values, attributtListe) => {
@@ -39,11 +36,11 @@ export default class RedigerTestbruker extends Component {
 		const { sigrunstub, krrstub } = testbruker
 
 		const dataSources = [DataSource.TPSF]
-		if (sigrunstub[match.params.ident] && sigrunstub[match.params.ident].length > 0) {
+		if (sigrunstub && sigrunstub[match.params.ident] && sigrunstub[match.params.ident].length > 0) {
 			dataSources.push(DataSource.SIGRUN)
 		}
 
-		if (krrstub[match.params.ident]) dataSources.push(DataSource.KRR)
+		if ( krrstub && krrstub[match.params.ident]) dataSources.push(DataSource.KRR)
 
 		return dataSources
 	}
@@ -115,9 +112,11 @@ export default class RedigerTestbruker extends Component {
 	render() {
 		const { testbruker, goBack, match, bestillinger } = this.props
 		const { tpsf, sigrunstub, krrstub } = testbruker
+
 		const { addedAttributes } = this.state
 
-		if (!tpsf || !sigrunstub || !krrstub) return null
+		// if (!tpsf || !sigrunstub || !krrstub) return null
+		if (!tpsf) return null
 
 		const dataSources = this._checkDataSources()
 		const attributtListe = this.AttributtManager.listEditable(
