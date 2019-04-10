@@ -118,6 +118,8 @@ export default class Step3 extends PureComponent {
 			format: item.format
 		}
 
+		if (item.onlyShowAfterSelectedValue && !itemValue) return null
+
 		return (
 			<RemoveableField
 				removable={this.state.edit && this.props.selectedAttributeIds.indexOf(item.id) >= 0}

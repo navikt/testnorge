@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +13,6 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RsDollyBestillingFraIdenterRequest extends RsDollyBestilling {

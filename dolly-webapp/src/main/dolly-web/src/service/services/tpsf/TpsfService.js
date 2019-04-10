@@ -81,4 +81,10 @@ export default class TpsfService {
 		const endpoint = `${this.getTpsfUrl()}/environments`
 		return Request.get(endpoint)
 	}
+
+	static getExcelForIdenter(userArray) {
+		if (!userArray) return
+		const endpoint = this.getTpsfUrl() + '/dolly/testdata/excel'
+		return Request.post(endpoint, userArray)
+	}
 }

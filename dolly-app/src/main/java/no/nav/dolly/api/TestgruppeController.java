@@ -47,8 +47,8 @@ public class TestgruppeController {
 
     private static final String ADRESSE_COMMON =
             "       &nbsp; &nbsp; \"postnr\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"kommunenr\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"flyttedato\": \"string\" <br />";
+                    + "     &nbsp; &nbsp; \"kommunenr\": \"string\", <br />"
+                    + "     &nbsp; &nbsp; \"flyttedato\": \"string\" <br />";
     private static final String BOADRESSE_COMMENT = "Json-parametere for boadresse har følgende parametre: <br />"
             + " For gateadresse:  <br />"
             + "     &nbsp; \"boadresse\": {<br />"
@@ -69,7 +69,7 @@ public class TestgruppeController {
 
     private static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br />";
 
-    private static final String BESTILLING_BESKRIVELSE =  BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER;
+    private static final String BESTILLING_BESKRIVELSE = BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER;
 
     @Autowired
     private TestgruppeService testgruppeService;
@@ -152,6 +152,7 @@ public class TestgruppeController {
                         .aareg(request.getAareg())
                         .krrStub(request.getKrrstub())
                         .sigrunStub(request.getSigrunstub())
+                        .arenaStub(request.getArenastub())
                         .build(), null);
 
         dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
@@ -165,10 +166,11 @@ public class TestgruppeController {
     public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request.getOpprettFraIdenter().size(), request.getEnvironments(), request.getTpsf(),
                 BestKriterier.builder()
-                .aareg(request.getAareg())
-                .krrStub(request.getKrrstub())
-                .sigrunStub(request.getSigrunstub())
-                .build(),
+                        .aareg(request.getAareg())
+                        .krrStub(request.getKrrstub())
+                        .sigrunStub(request.getSigrunstub())
+                        .arenaStub(request.getArenastub())
+                        .build(),
                 request.getOpprettFraIdenter());
 
         dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
