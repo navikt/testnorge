@@ -74,7 +74,7 @@ export default class TpsfService {
 
 	static checkPostnummer(postnummer) {
 		const endpoint = this.getTpsfUrl() + '/gyldigadresse/autocomplete?postNrsok=' + postnummer
-		console.log('endpoint :', endpoint)
+		return Request.get(endpoint)
 	}
 
 	static getTilgjengligeMiljoer() {

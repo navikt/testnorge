@@ -12,6 +12,7 @@ import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkVa
 import Button from '~/components/button/Button'
 import _xor from 'lodash/fp/xor'
 import './FormEditor.less'
+import Postadresse from '../postadresse/Postadresse'
 
 export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
@@ -87,8 +88,6 @@ export default class FormEditor extends PureComponent {
 	//Ny knapp ligger også på adressekategorien. Hvordan sortere hvilke attributt som skal være med?
 	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
-		console.log('items :', items)
-		console.log('subkategori :', subKategori)
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
 
@@ -104,25 +103,11 @@ export default class FormEditor extends PureComponent {
 		}
 
 		if (subKategori.id === 'postadresse') {
-			let adressefelter = []
-			items.map(
-				item => item.id !== 'postLand' && adressefelter.push(item, formikProps, formikProps.values)
-			)
 			return (
 				<div className="subkategori" key={uniqueId}>
 					{!isFieldarray && <h4>{subKategori.navn}</h4>}
 					<div className="subkategori-field-group">
-						<div className="subkategori-field-group">
-							{items.map(
-								item =>
-									item.id === 'postLand' &&
-									this.renderFieldComponent(item, formikProps, formikProps.values)
-							)}
-						</div>
-						{console.log('adressefelter :', adressefelter)}
-						<div className="postadresse-group">
-							{adressefelter.map(item => this.renderFieldComponent(item))}
-						</div>
+						<Postadresse items={items} formikProps={formikProps} />
 					</div>
 				</div>
 			)
@@ -151,7 +136,6 @@ export default class FormEditor extends PureComponent {
 
 	renderFieldComponent = (item, formikProps, valgteVerdier, parentObject) => {
 		if (!item.inputType) return null
-		console.log('item :', item)
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 
@@ -207,7 +191,6 @@ export default class FormEditor extends PureComponent {
 	}
 
 	extraComponentProps = (item, valgteVerdier, parentObject) => {
-		// console.log('item :', item)
 		switch (item.inputType) {
 			case 'select': {
 				const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg..'
@@ -225,17 +208,6 @@ export default class FormEditor extends PureComponent {
 					}
 				}
 				if (item.apiKodeverkId) {
-					// if (item.id === 'postadresse_postLand') {
-					// 	return {
-					// 		placeholder: placeholder,
-					// 		loadoptions: [
-					// 			{
-					// 				value: 'ALBANIA',
-					// 				label: 'ALBANIA'
-					// 			}
-					// 		]
-					// 	}
-					// }
 					const showValueInLabel = item.apiKodeverkShowValueInLabel ? true : false
 					return {
 						placeholder: placeholder,
