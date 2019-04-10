@@ -23,7 +23,7 @@ import no.nav.registre.sdForvalter.service.StaticDataService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/statiskData")
-public class StaticDataProvider {
+public class StaticDataController {
 
     private final EnvironmentInitializationService environmentInitializationService;
     private final StaticDataService staticDataService;
