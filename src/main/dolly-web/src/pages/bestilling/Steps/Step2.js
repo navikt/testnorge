@@ -84,15 +84,13 @@ export default class Step2 extends PureComponent {
 									opprette testpersoner med tilfeldige verdier.
 								</ContentContainer>
 							) : (
-								<div>
-									<FormEditor
-										AttributtListe={this.AttributtListe}
-										FormikProps={formikProps}
-										getAttributtListByHovedkategori={
-											this.AttributtManager.getAttributtListByHovedkategori
-										}
-									/>
-								</div>
+								<FormEditor
+									AttributtListe={this.AttributtListe}
+									FormikProps={formikProps}
+									getAttributtListByHovedkategori={
+										this.AttributtManager.getAttributtListByHovedkategori
+									}
+								/>
 							)}
 
 							<NavigationConnector

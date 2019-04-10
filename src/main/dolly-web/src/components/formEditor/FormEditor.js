@@ -193,6 +193,7 @@ export default class FormEditor extends PureComponent {
 
 	renderFieldComponent = (item, valgteVerdier, parentObject) => {
 		if (!item.inputType) return null
+
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 
