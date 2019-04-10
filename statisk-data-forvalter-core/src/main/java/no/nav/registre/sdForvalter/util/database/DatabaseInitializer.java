@@ -24,10 +24,12 @@ public class DatabaseInitializer {
     public static List<Object> initializeFromCsv(String staticFilePath, ModelEnum dataType, String splitToken) throws IOException {
         File inputF = new ClassPathResource(staticFilePath).getFile();
         InputStream inputFS = new FileInputStream(inputF);
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputFS, StandardCharsets.ISO_8859_1));
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputFS, StandardCharsets.UTF_8));
 
         List<String> headers = Arrays.asList(br.readLine().split(splitToken));
+        headers = headers.parallelStream().map(DatabaseInitializer::removeUTF8BOM).collect(Collectors.toList());
 
+        List<String> finalHeaders = headers;
         return br.lines().map(line -> {
             Object entity = null;
             try {
@@ -39,7 +41,7 @@ public class DatabaseInitializer {
                 if (args.size() == 0) {
                     log.warn("Split gave 0 inputs to creation of model");
                 }
-                entity = DataEntityFactory.create(dataType, args, headers);
+                entity = DataEntityFactory.create(dataType, args, finalHeaders);
             } catch (IllegalArgumentException e) {
                 log.warn("Manglende informasjon i datasettet");
                 log.warn(e.getMessage(), e);
@@ -48,4 +50,10 @@ public class DatabaseInitializer {
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+    private static String removeUTF8BOM(String s) {
+        if (s.startsWith("\uFEFF")) {
+            s = s.substring(1);
+        }
+        return s;
+    }
 }

@@ -24,7 +24,7 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-@Table(name = "aareg")
+@Table(name = "AAREG")
 public class AaregModel extends AuditModel implements CreatableFromString {
 
     @Id
