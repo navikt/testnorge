@@ -196,12 +196,17 @@ const bestillingFormatter = bestillingState => {
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
+	// console.log('final_values :', final_values)
 
 	// TODO: SPECIAL HANDLING - Hva gjør vi her?
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 		final_values.tpsf.boadresse.gatekode = values.boadresse_gatekode
 	}
+
+	// if(_get(final_values, 'tpsf.utenFastBopel')) {
+
+	// }
 	console.log('POSTING BESTILLING', final_values)
 
 	return final_values

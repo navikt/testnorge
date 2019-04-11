@@ -83,6 +83,17 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Diverse,
+		id: 'utenFastBopel',
+		label: 'Uten fast bopel',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		options: SelectOptionsManager('boolean'),
+		// apiKodeverkId: 'Diskresjonskoder',
+		attributtType: AttributtType.SelectAndRead
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
 		id: 'sprakKode',
 		label: 'Språk',
 		dataSource: DataSource.TPSF,
