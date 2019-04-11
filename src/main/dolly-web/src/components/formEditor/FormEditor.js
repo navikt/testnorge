@@ -7,6 +7,7 @@ import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
 import AutofillAddress from '~/components/autofillAddress/AutofillAddress'
+import UtenFastBopel from '~/components/utenFastBopel/UtenFastBopel'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import Button from '~/components/button/Button'
@@ -101,6 +102,10 @@ export default class FormEditor extends PureComponent {
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
 
+		// console.log('subKategori :', subKategori)
+		// console.log('items :', items)
+		// console.log('formikProps :', formikProps)
+
 		if (isAdresse) {
 			return (
 				<div className="subkategori" key={uniqueId}>
@@ -111,6 +116,21 @@ export default class FormEditor extends PureComponent {
 				</div>
 			)
 		}
+
+		// if (items[0].id === 'spesreg') {
+		// 	return (
+		// 		<div className="subkategori" key={uniqueId}>
+		// 			{!isFieldarray && <h4>{subKategori.navn}</h4>}
+		// 			<div className="subkategori-field-group">
+		// 				<Postadresse items={items} formikProps={formikProps} />
+		// 			</div>
+		// 		</div>
+		// 	)
+		// 	if (formikProps.values.spesreg === 'UFB') {
+
+		// 	}
+
+		// }
 
 		return (
 			<div className="subkategori" key={uniqueId}>
@@ -182,6 +202,9 @@ export default class FormEditor extends PureComponent {
 	renderFieldComponent = (item, valgteVerdier, parentObject) => {
 		if (!item.inputType) return null
 
+		// console.log('item :', item)
+		// console.log('valgteVerdier :', valgteVerdier)
+
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 
@@ -203,6 +226,10 @@ export default class FormEditor extends PureComponent {
 				return <KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
 			}
 			return <StaticValue {...staticValueProps} />
+		}
+
+		if (item.id === 'spesreg') {
+			return <UtenFastBopel item={item} valgteVerdier={valgteVerdier} />
 		}
 
 		return (
