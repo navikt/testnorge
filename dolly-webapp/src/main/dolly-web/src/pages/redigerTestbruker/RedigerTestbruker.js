@@ -20,8 +20,12 @@ export default class RedigerTestbruker extends Component {
 		}
 	}
 
-	componentDidMount() {
+	componentWillMount = async () => {
 		this.props.getGruppe()
+		const urlArray = (this.props.location.pathname.split('&')).splice(1)
+		urlArray.includes('tpsf') && await this.props.getTestbruker()
+		urlArray.includes('sigr') && await this.props.getSigrunTestbruker()
+		urlArray.includes('krr') && await this.props.getKrrTestbruker()
 	}
 
 	submit = (values, attributtListe) => {
@@ -114,10 +118,9 @@ export default class RedigerTestbruker extends Component {
 		const { tpsf, sigrunstub, krrstub } = testbruker
 
 		const { addedAttributes } = this.state
-
-		// if (!tpsf || !sigrunstub || !krrstub) return null
 		if (!tpsf) return null
 
+		
 		const dataSources = this._checkDataSources()
 		const attributtListe = this.AttributtManager.listEditable(
 			testbruker,
@@ -144,7 +147,6 @@ export default class RedigerTestbruker extends Component {
 
 		const attributtListeToEdit = this._getAttributtListeToEdit(attributtListe, addedAttributes, bestillinger)
 		
-
 		return (
 			<Formik
 				onSubmit={values => this.submit(values, attributtListeToEdit)}
