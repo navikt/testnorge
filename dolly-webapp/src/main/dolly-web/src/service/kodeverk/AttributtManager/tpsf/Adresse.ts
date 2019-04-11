@@ -84,7 +84,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		validation: yup.object(),
 		attributtType: AttributtType.SelectAndEdit
-		// dependentBy: 'boadresse_flyttedato'
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -120,7 +119,6 @@ const AttributtListe: Attributt[] = [
 		label: 'Adresselinje 2',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		// validation: yup.string().required('Vennligst fyll ut'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -132,7 +130,6 @@ const AttributtListe: Attributt[] = [
 		label: 'Adresselinje 3',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		// validation: yup.string().required('Vennligst fyll ut'),
 		attributtType: AttributtType.SelectAndEdit
 	}
 
