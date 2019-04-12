@@ -21,25 +21,26 @@ public class EnvironmentPropsControllerTest {
     private static final String SIGRUNSTUB = "sigrunstub";
     private static final String KRRSTUB = "krrstub";
     private static final String KODEVERK = "kodeverk";
+    private static final String ARENASTUB = "arenastub";
 
-    @Mock ProvidersProps providersProps;
+    @Mock
+    private ProvidersProps providersProps;
 
-    @InjectMocks EnvironmentPropsController environmentPropsController;
+    @InjectMocks
+    private EnvironmentPropsController environmentPropsController;
 
     @Before
-    public void setup(){
-        ProvidersProps.Tpsf tpsf = new ProvidersProps.Tpsf();
-        tpsf.setUrl(TPSF);
-        ProvidersProps.KrrStub krrStub = new ProvidersProps.KrrStub();
-        krrStub.setUrl(KRRSTUB);
-        ProvidersProps.SigrunStub sigrunStub = new ProvidersProps.SigrunStub();
-        sigrunStub.setUrl(SIGRUNSTUB);
-        ProvidersProps.Kodeverk kodeverk = new ProvidersProps.Kodeverk();
-        kodeverk.setUrl(KODEVERK);
-        when(providersProps.getTpsf()).thenReturn(tpsf);
-        when(providersProps.getKodeverk()).thenReturn(kodeverk);
-        when(providersProps.getSigrunStub()).thenReturn(sigrunStub);
-        when(providersProps.getKrrStub()).thenReturn(krrStub);
+    public void setup() {
+        when(providersProps.getTpsf()).thenReturn(ProvidersProps.Tpsf.builder()
+                .url(TPSF).build());
+        when(providersProps.getKodeverk()).thenReturn(ProvidersProps.Kodeverk.builder()
+                .url(KODEVERK).build());
+        when(providersProps.getSigrunStub()).thenReturn(ProvidersProps.SigrunStub.builder()
+                .url(SIGRUNSTUB).build());
+        when(providersProps.getKrrStub()).thenReturn(ProvidersProps.KrrStub.builder()
+                .url(KRRSTUB).build());
+        when(providersProps.getArenaStub()).thenReturn(ProvidersProps.ArenaStub.builder()
+                .url(ARENASTUB).build());
     }
 
     @Test
@@ -49,5 +50,6 @@ public class EnvironmentPropsControllerTest {
         assertThat(props.getKrrStubUrl(), is(KRRSTUB));
         assertThat(props.getTpsfUrl(), is(TPSF));
         assertThat(props.getSigrunStubUrl(), is(SIGRUNSTUB));
+        assertThat(props.getArenaStubUrl(), is(ARENASTUB));
     }
 }

@@ -23,7 +23,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
-import no.nav.dolly.domain.resultset.RsBestillingProgress;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 
@@ -47,29 +46,23 @@ public class BestillingController {
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
     public RsBestilling checkBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
-        List<RsBestillingProgress> progress = mapperFacade.mapAsList(progressService.fetchBestillingProgressByBestillingId(bestillingId), RsBestillingProgress.class);
-        RsBestilling rsBestilling = mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestilling.class);
-        rsBestilling.setBestillingProgress(progress);
-        return rsBestilling;
+        return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestilling.class);
     }
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
     public List<RsBestilling> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
-        List<RsBestilling> bestillinger = mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestilling.class);
-        bestillinger.forEach(rsBestilling -> rsBestilling.setBestillingProgress(
-                mapperFacade.mapAsList(progressService.fetchBestillingProgressByBestillingId(rsBestilling.getId()), RsBestillingProgress.class)));
-        return bestillinger;
+        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestilling.class);
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     public RsBestilling stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
         Bestilling bestilling = bestillingService.cancelBestilling(bestillingId);
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @PostMapping("/gjenopprett/{bestillingId}")
     public RsBestilling gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
         Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? newArrayList(miljoer.split(",")) : newArrayList());

@@ -23,6 +23,7 @@ public class EnvironmentPropsController {
                 .sigrunStubUrl(providersProps.getSigrunStub().getUrl())
                 .krrStubUrl(providersProps.getKrrStub().getUrl())
                 .kodeverkUrl(providersProps.getKodeverk().getUrl())
+                .arenaStubUrl(providersProps.getArenaStub().getUrl())
                 .build();
     }
 }

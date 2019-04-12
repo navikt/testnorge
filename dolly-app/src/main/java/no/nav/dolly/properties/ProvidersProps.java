@@ -21,15 +21,22 @@ public class ProvidersProps {
     private Kodeverk kodeverk = new Kodeverk();
     private Norg2 norg2 = new Norg2();
     private Fasit fasit = new Fasit();
+    private ArenaStub arenaStub = new ArenaStub();
 
     @Getter
     @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Tpsf {
         private String url;
     }
 
     @Getter
     @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class SigrunStub {
 
         private String url;
@@ -37,6 +44,9 @@ public class ProvidersProps {
 
     @Getter
     @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class KrrStub {
 
         private String url;
@@ -44,6 +54,9 @@ public class ProvidersProps {
 
     @Getter
     @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Kodeverk {
 
         private String url;
@@ -65,6 +78,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Fasit {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ArenaStub {
 
         private String url;
     }

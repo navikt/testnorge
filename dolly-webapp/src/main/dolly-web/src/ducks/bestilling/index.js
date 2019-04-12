@@ -202,6 +202,18 @@ const bestillingFormatter = bestillingState => {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 		final_values.tpsf.boadresse.gatekode = values.boadresse_gatekode
 	}
+
+	if (_get(final_values, 'tpsf.postadresse.postLand')) {
+		final_values.tpsf.postadresse = [
+			{
+				postLand: values.postLand,
+				postLinje1: values.postLinje1,
+				postLinje2: values.postLinje2,
+				postLinje3: values.postLinje3
+			}
+		]
+	}
+
 	console.log('POSTING BESTILLING', final_values)
 
 	return final_values
@@ -378,7 +390,6 @@ const _filterArrayAttributes = (values, selectedIds, filter, index) => {
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { currentBestilling } = getState()
 	const values = bestillingFormatter(currentBestilling)
-
 	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {

@@ -113,6 +113,31 @@ export function mapBestillingData(bestillingData) {
 			data.push(adresse)
 		}
 
+		if (tpsfKriterier.postadresse) {
+			const postadresse = {
+				header: 'Postadresse',
+				items: [
+					{
+						label: 'Land',
+						value: tpsfKriterier.postadresse[0].postLand
+					},
+					{
+						label: 'Adresselinje 1',
+						value: tpsfKriterier.postadresse[0].postLinje1
+					},
+					{
+						label: 'Adresselinje 2',
+						value: tpsfKriterier.postadresse[0].postLinje2
+					},
+					{
+						label: 'Adresselinje 3',
+						value: tpsfKriterier.postadresse[0].postLinje3
+					}
+				]
+			}
+			data.push(postadresse)
+		}
+
 		if (tpsfKriterier.relasjoner) {
 			if (tpsfKriterier.relasjoner.partner) {
 				const partner = {
