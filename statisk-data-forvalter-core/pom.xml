@@ -78,6 +78,10 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.freg</groupId>
+            <artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
+        </dependency>
 
         <!--NETWORK-->
         <dependency>
@@ -94,6 +98,16 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-contract-wiremock</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!--DOCUMENTATION-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
     </dependencies>
 

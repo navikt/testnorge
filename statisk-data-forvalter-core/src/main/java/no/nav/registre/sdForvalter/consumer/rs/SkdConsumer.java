@@ -26,7 +26,7 @@ public class SkdConsumer {
     private final RestTemplate restTemplate;
     private final String skdUrl;
 
-    public SkdConsumer(RestTemplate restTemplate, @Value("${testnorge-skd.rest.api.url}") String skdUrl) {
+    public SkdConsumer(RestTemplate restTemplate, @Value("${testnorge.skd.rest.api.url}") String skdUrl) {
         this.restTemplate = restTemplate;
         this.skdUrl = skdUrl + "/v1/syntetisering";
     }
@@ -36,10 +36,9 @@ public class SkdConsumer {
      * @param playgroup AvspillergruppeId som meldingene skal legges til på
      */
     public void createTpsMessagesInGroup(Set<TpsModel> data, Long playgroup) {
-        //TODO: Figure out how to create new TPS messages in the group
         Set<SkdRequest> requests = data.parallelStream().map(t -> SkdRequest.builder()
-                .dateOfBirth(t.getFnr().substring(0, 7))
-                .fnr(t.getFnr().substring(7))
+                .dateOfBirth(t.getFnr().substring(0, 6))
+                .fnr(t.getFnr().substring(6))
                 .address(t.getAddress())
                 .city(t.getCity())
                 .firstName(t.getFirstName())
@@ -47,7 +46,7 @@ public class SkdConsumer {
                 .postnr(t.getPostNr())
                 .build()).collect(Collectors.toSet());
 
-        UriTemplate uriTemplate = new UriTemplate(skdUrl + "/startAvspilling/{playgroup}");
+        UriTemplate uriTemplate = new UriTemplate(skdUrl + "/leggTilNyeMeldinger/{playgroup}");
         RequestEntity<Set<SkdRequest>> requestEntity = new RequestEntity<>(requests, HttpMethod.POST, uriTemplate.expand(playgroup));
         ResponseEntity<List> responseEntity = restTemplate.exchange(requestEntity, List.class);
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
@@ -60,8 +59,9 @@ public class SkdConsumer {
     /**
      * @param playgroup   AvspillergruppeId som skal spilles av når denne funksjonen er invokert
      * @param environment Miljøet som gruppen skal spilles av til
+     * @return Response fra skd
      */
-    public void send(Long playgroup, String environment) {
+    public SkdResponse send(Long playgroup, String environment) {
         UriTemplate uriTemplate = new UriTemplate(skdUrl + "/startAvspilling/{playgroup}?miljoe={environment}");
         RequestEntity<String> requestEntity = new RequestEntity<>(HttpMethod.POST, uriTemplate.expand(playgroup, environment));
         ResponseEntity<SkdResponse> responseEntity = restTemplate.exchange(requestEntity, SkdResponse.class);
@@ -72,5 +72,6 @@ public class SkdConsumer {
                 body.getFailedStatus().forEach(s -> log.warn("Status på feilende melding: {}", s));
             }
         }
+        return body;
     }
 }

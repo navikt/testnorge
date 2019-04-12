@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -63,7 +64,7 @@ public class TpConsumerTest {
     public void findFnrsFoundOne() {
         Set<String> data = new HashSet<>();
         data.add("123");
-        when(restTemplate.exchange(any(), (Class<Object>) any())).thenReturn(new ResponseEntity<>(data, HttpStatus.OK));
+        when(restTemplate.exchange(any(), any(), any(), (ParameterizedTypeReference<Object>) any())).thenReturn(new ResponseEntity<>(data, HttpStatus.OK));
 
         Set<String> fnrs = tpConsumer.findFnrs(environment);
         assertFalse(fnrs.isEmpty());
@@ -71,7 +72,7 @@ public class TpConsumerTest {
 
     @Test
     public void findFnrsFoundNone() {
-        when(restTemplate.getForObject(any(), any())).thenReturn(Collections.emptySet());
+        when(restTemplate.exchange(any(), any(), any(), (ParameterizedTypeReference<Object>) any())).thenReturn(new ResponseEntity<>(Collections.emptySet(), HttpStatus.OK));
 
         Set<String> fnrs = tpConsumer.findFnrs(environment);
         assertTrue(fnrs.isEmpty());

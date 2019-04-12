@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.util.vault;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
@@ -7,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+@Slf4j
 public final class VaultUtil {
 
     private static final String VAULT_TOKEN_PROPERTY = "VAULT_TOKEN";
@@ -33,5 +35,6 @@ public final class VaultUtil {
 
     public static void initCloudVaultToken() {
         System.setProperty("spring.cloud.vault.token", getVaultToken());
+        log.info(getVaultToken());
     }
 }

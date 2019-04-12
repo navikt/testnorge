@@ -21,9 +21,9 @@ public class AaregConsumer {
     private final RestTemplate restTemplate;
     private final String aaregUrl;
 
-    public AaregConsumer(RestTemplate restTemplate, @Value("${testnorge-aareg.rest.api.url}") String aaregUrl) {
+    public AaregConsumer(RestTemplate restTemplate, @Value("${testnorge.aareg.rest.api.url}") String aaregUrl) {
         this.restTemplate = restTemplate;
-        this.aaregUrl = aaregUrl + "/api/v1";
+        this.aaregUrl = aaregUrl + "/v1";
     }
 
     public boolean send(Set<AaregModel> data, String environment) {

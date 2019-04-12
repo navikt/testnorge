@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.Set;
 
+import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
@@ -22,44 +23,44 @@ import no.nav.registre.sdForvalter.service.StaticDataService;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/statiskData")
+@RequestMapping("/api/v1/statiskData")
 public class StaticDataController {
 
-    private final EnvironmentInitializationService environmentInitializationService;
     private final StaticDataService staticDataService;
 
-    @PostMapping(value = "/{miljoe}")
-    public ResponseEntity initializeInEnvironment(@PathVariable String miljoe) {
-        environmentInitializationService.initializeEnvironmentWithStaticData(miljoe);
-        return ResponseEntity.ok().build();
-    }
 
+    @LogExceptions
     @GetMapping(value = "/tps")
     public ResponseEntity<Set<TpsModel>> getTpsStaticData() {
         return ResponseEntity.ok(staticDataService.getLocalTpsDatabaseData());
     }
 
+    @LogExceptions
     @GetMapping(value = "/aareg")
     public ResponseEntity<Set<AaregModel>> getAaregStaticData() {
         return ResponseEntity.ok(staticDataService.getAaregData());
     }
 
-    @GetMapping(value = "/dkif")
+    @LogExceptions
+    @GetMapping(value = "/krr")
     public ResponseEntity<Set<KrrModel>> getDkifStaticData() {
         return ResponseEntity.ok(staticDataService.getDkifData());
     }
 
+    @LogExceptions
     @PostMapping(value = "/tps")
     public ResponseEntity storeStaticDataInTps(@Valid @RequestBody Set<TpsModel> data) {
         return ResponseEntity.ok(staticDataService.saveInTps(data));
     }
 
+    @LogExceptions
     @PostMapping(value = "/aargg")
     public ResponseEntity storeStaticDataInAaareg(@Valid @RequestBody Set<AaregModel> data) {
         return ResponseEntity.ok(staticDataService.saveInAareg(data));
     }
 
-    @PostMapping(value = "/dkif")
+    @LogExceptions
+    @PostMapping(value = "/krr")
     public ResponseEntity storeStaticData(@Valid @RequestBody Set<KrrModel> data) {
         return ResponseEntity.ok(staticDataService.saveInKrr(data));
     }

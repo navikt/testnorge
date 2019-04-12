@@ -68,18 +68,16 @@ public class EnvironmentInitializationService {
      * @param environment Miljø som de faste meldingene skal spilles av
      * @return Et set med fnrs som ekisterer i gruppen etter at den har blitt oppdatert
      */
-    private Set<String> initializeSkd(String environment) {
+    public Set<String> initializeSkd(String environment) {
         Set<TpsModel> tpsSet = new HashSet<>();
         tpsRepository.findAll().forEach(tpsSet::add);
 
         Set<String> playgroupFnrs = hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
-        tpsSet = tpsSet.parallelStream().filter(t -> playgroupFnrs.contains(t.getFnr())).collect(Collectors.toSet());
+        tpsSet = tpsSet.parallelStream().filter(t -> !playgroupFnrs.contains(t.getFnr())).collect(Collectors.toSet());
 
-        if (tpsSet.isEmpty()) {
-            return new HashSet<>();
+        if (!tpsSet.isEmpty()) {
+            skdConsumer.createTpsMessagesInGroup(tpsSet, staticDataPlaygroup);
         }
-
-        skdConsumer.createTpsMessagesInGroup(tpsSet, staticDataPlaygroup);
 
         skdConsumer.send(staticDataPlaygroup, environment);
 
@@ -91,7 +89,7 @@ public class EnvironmentInitializationService {
      *
      * @param environment Miljøet arbeidsforholdene skal legges til i
      */
-    private boolean initializeAareg(String environment) {
+    public boolean initializeAareg(String environment) {
         Set<AaregModel> aaregSet = new HashSet<>();
         aaregRepository.findAll().forEach(aaregSet::add);
         return aaregConsumer.send(aaregSet, environment);
@@ -100,7 +98,7 @@ public class EnvironmentInitializationService {
     /**
      * Metoden legger til dataen i databasen i krr hvis ikke fines fra før av
      */
-    private void initializeKrr() {
+    public void initializeKrr() {
         Set<KrrModel> dkifSet = new HashSet<>();
         krrRepository.findAll().forEach(dkifSet::add);
 

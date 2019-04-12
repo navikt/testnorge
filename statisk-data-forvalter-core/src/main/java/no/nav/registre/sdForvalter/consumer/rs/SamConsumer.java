@@ -22,9 +22,9 @@ public class SamConsumer {
     private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
     };
 
-    public SamConsumer(RestTemplate restTemplate, @Value("${testnorge-sam.rest.api.url}") String samUrl) {
+    public SamConsumer(RestTemplate restTemplate, @Value("${testnorge.sam.rest.api.url}") String samUrl) {
         this.restTemplate = restTemplate;
-        this.samUrl = samUrl + "/api/v1";
+        this.samUrl = samUrl + "/v1";
     }
 
     public Set<String> findFnrs(String environment) {

@@ -22,8 +22,7 @@ import no.nav.registre.sdForvalter.database.model.factory.DataEntityFactory;
 public class DatabaseInitializer {
 
     public static List<Object> initializeFromCsv(String staticFilePath, ModelEnum dataType, String splitToken) throws IOException {
-        File inputF = new ClassPathResource(staticFilePath).getFile();
-        InputStream inputFS = new FileInputStream(inputF);
+        InputStream inputFS = new ClassPathResource(staticFilePath).getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(inputFS, StandardCharsets.UTF_8));
 
         List<String> headers = Arrays.asList(br.readLine().split(splitToken));

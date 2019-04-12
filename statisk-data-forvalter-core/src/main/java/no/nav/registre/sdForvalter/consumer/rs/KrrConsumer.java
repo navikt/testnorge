@@ -32,9 +32,9 @@ public class KrrConsumer {
     private final RestTemplate restTemplate;
     private final String krrUrl;
 
-    public KrrConsumer(RestTemplate restTemplate, @Value("${krr-stub.rest.api.url}") String krrUrl) {
+    public KrrConsumer(RestTemplate restTemplate, @Value("${krr.stub.rest.api.url}") String krrUrl) {
         this.restTemplate = restTemplate;
-        this.krrUrl = krrUrl + "/api/v1";
+        this.krrUrl = krrUrl + "/v1";
     }
 
     public Set<String> send(Set<KrrModel> data) {
