@@ -54,7 +54,8 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		options: SelectOptionsManager('identtype'),
 		validation: yup.string().required('Velg identtype.'),
-		attributtType: AttributtType.SelectOnly
+		attributtType: AttributtType.SelectOnly,
+		defaultValue: 'FNR'
 	},
 	{
 		hovedKategori: Kategorier.FamilieRelasjoner,
@@ -77,7 +78,8 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Select,
 				options: SelectOptionsManager('identtype'),
 				validation: yup.string().required('Velg identtype.'),
-				attributtType: AttributtType.SelectOnly
+				attributtType: AttributtType.SelectOnly,
+				defaultValue: 'FNR'
 			}
 		].concat(barnAttributes)
 	}

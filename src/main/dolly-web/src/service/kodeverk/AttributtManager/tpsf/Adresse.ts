@@ -72,7 +72,8 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Date,
 		validation: DateValidation(),
 		attributtType: AttributtType.SelectAndEdit,
-		dependentOn: 'boadresse'
+		dependentOn: 'boadresse',
+		defaultValue: new Date()
 	}
 
 	// {

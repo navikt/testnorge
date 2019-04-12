@@ -230,6 +230,7 @@ export default class AttributtManager {
 			return this._setInitialValueFromState(prev, item, values)
 		}, {})
 	}
+
 	_setInitialValueFromState(currentObject, item, stateValues) {
 		let initialValue = this.initValueSelector(item)
 		const fromState = _get(stateValues, item.id)
@@ -286,17 +287,19 @@ export default class AttributtManager {
 	}
 
 	initValueSelector = item => {
-		// TODO: Åpne for defaultValue på Attributt?
-		if (item.id.includes('identtype')) {
-			return 'FNR'
-		}
-		// TODO: avklaring: skal alle datofelter settes automatisk til dagens dato?
 		switch (item.inputType) {
 			case 'date':
-				return DataFormatter.formatDate(new Date())
+				if (item.defaultValue) {
+					return DataFormatter.formatDate(item.defaultValue)
+				}
+				return ''
 			case 'number':
+				if (item.defaultValue) {
+					return item.defaultValue
+				}
 				return 0
 			default:
+				if (item.defaultValue) return item.defaultValue
 				return ''
 		}
 	}

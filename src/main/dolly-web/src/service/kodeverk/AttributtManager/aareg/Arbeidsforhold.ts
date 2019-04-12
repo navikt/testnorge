@@ -39,7 +39,8 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Date,
 				validation: DateValidation(),
-				attributtType: AttributtType.SelectAndRead
+				attributtType: AttributtType.SelectAndRead,
+				defaultValue: new Date().setFullYear(new Date().getFullYear() - 20)
 			},
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,
@@ -68,7 +69,8 @@ const AttributtListe: Attributt[] = [
 					.min(1, 'Stillingprosent kan ikke være mindre enn 1')
 					.max(100, 'Stillingen prosent kan ikke være større enn 100')
 					.required('Tast inn en gyldig stillingprosent'),
-				attributtType: AttributtType.SelectAndRead
+				attributtType: AttributtType.SelectAndRead,
+				defaultValue: 100
 			},
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,
