@@ -1,8 +1,8 @@
 import { TpsfApi } from '~/service/Api'
 
-const Adressesjekk = {}
+const PostadresseSjekk = {}
 
-Adressesjekk.sjekkPostadresse = async values => {
+PostadresseSjekk.sjekkPostadresse = async values => {
 	let gyldigAdresse = true
 	const regex = /^\d{4}(\s|$)/
 
@@ -10,21 +10,21 @@ Adressesjekk.sjekkPostadresse = async values => {
 		if (values['postLinje1'] && !values['postLinje2'] && !values['postLinje3']) {
 			if (
 				regex.test(!values['postLinje1']) ||
-				(await Adressesjekk.sjekkPostnummer(values['postLinje1'].substring(0, 4))) === '08'
+				(await PostadresseSjekk.sjekkPostnummer(values['postLinje1'].substring(0, 4))) === '08'
 			) {
 				gyldigAdresse = false
 			}
 		} else if (values['postLinje1'] && values['postLinje2'] && !values['postLinje3']) {
 			if (
 				regex.test(!values['postLinje2']) ||
-				(await Adressesjekk.sjekkPostnummer(values['postLinje2'].substring(0, 4))) === '08'
+				(await PostadresseSjekk.sjekkPostnummer(values['postLinje2'].substring(0, 4))) === '08'
 			) {
 				gyldigAdresse = false
 			}
 		} else if (values['postLinje1'] && values['postLinje2'] && values['postLinje3']) {
 			if (
 				regex.test(!values['postLinje3']) ||
-				(await Adressesjekk.sjekkPostnummer(values['postLinje3'].substring(0, 4))) === '08'
+				(await PostadresseSjekk.sjekkPostnummer(values['postLinje3'].substring(0, 4))) === '08'
 			) {
 				gyldigAdresse = false
 			}
@@ -35,10 +35,10 @@ Adressesjekk.sjekkPostadresse = async values => {
 	return gyldigAdresse
 }
 
-Adressesjekk.sjekkPostnummer = async postnummer => {
+PostadresseSjekk.sjekkPostnummer = async postnummer => {
 	let respons = await TpsfApi.checkPostnummer(postnummer)
 	const status = respons.data.response.status.kode
 	return status
 }
 
-export default Adressesjekk
+export default PostadresseSjekk
