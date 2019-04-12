@@ -10,7 +10,10 @@ describe('bestillingReducer', () => {
 		attributeIds: [],
 		environments: [],
 		identtype: '',
-		values: {}
+		values: {},
+		identOpprettesFra: 'nyIdent',
+		eksisterendeIdentListe: [],
+		ugyldigIdentListe: []
 	}
 
 	it('should set initial state', () => {
