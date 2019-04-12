@@ -10,13 +10,16 @@ export default class UtenFastBopel extends Component {
 	// }
 
 	render() {
+		// console.log('this :', this)
 		const item = this.props.item
 		const valgteVerdier = this.props.valgteVerdier
 		const InputComponent = InputSelector(item.inputType)
 		const InputComponentKommunenr = InputSelector('InputType.Select')
 		const componentProps = this.extraComponentProps(item)
+		const componentPropsKommunenr = this.extraComponentPropsKommunenr()
 
-		// clo
+		// console.log('item :', item)
+		// console.log('item.inputTypeAttributes :', item.inputTypeAttributes)
 
 		return (
 			<div>
@@ -43,8 +46,8 @@ export default class UtenFastBopel extends Component {
 							name={'boadresse_kommunenr'}
 							label={'Kommunenummer'}
 							component={InputComponentKommunenr}
-							// size={item.size}
-							// {...componentProps}
+							size={item.size}
+							{...componentPropsKommunenr}
 							// {...item.inputTypeAttributes}
 						/>
 						{/* <p>Velg kommunenummer</p> */}
@@ -76,6 +79,52 @@ export default class UtenFastBopel extends Component {
 		// )
 	}
 
+	extraComponentProps = item => {
+		if (item.inputType === 'select') {
+			const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg...'
+
+			if (item.apiKodeverkId) {
+				const showValueInLabel = item.apiKodeverkShowValueInLabel ? true : false
+				return {
+					placeholder: placeholder,
+					loadOptions: async () => {
+						const res = await DollyApi.getKodeverkByNavn(item.apiKodeverkId)
+						return DollyApi.Utils.NormalizeKodeverkForDropdown(res, showValueInLabel)
+					}
+				}
+			} else {
+				return {
+					placeholder: placeholder,
+					options: item.options
+				}
+			}
+		}
+		return { placeholder: item.label }
+	}
+
+	extraComponentPropsKommunenr = () => {
+		return {
+			placeholder: 'Velg kommunenummer...',
+			loadOptions: async () => {
+				const res = await DollyApi.getKodeverkByNavn('Kommuner')
+				return DollyApi.Utils.NormalizeKodeverkForDropdown(res, false)
+			}
+			// loadOptions: this._kodeverk()
+		}
+	}
+
+	// _kodeverk = () => {
+	// 	return DollyApi.getKodeverkByNavn('Kommuner').then(res => {
+	// 		return {
+	// 			options: res.data.koder.map(kode => ({
+	// 				label: `${kode.value} - ${kode.label}`,
+	// 				value: kode.value,
+	// 				id: 'boadresse_kommunenr'
+	// 			}))
+	// 		}
+	// 	})
+	// }
+
 	// renderFieldComponent = item => {
 	// 	if (!item.inputType) return null
 	// 	const InputComponent = InputSelector(item.inputType)
@@ -102,29 +151,6 @@ export default class UtenFastBopel extends Component {
 	// 		/>
 	// 	)
 	// }
-
-	extraComponentProps = item => {
-		if (item.inputType === 'select') {
-			const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg...'
-
-			if (item.apiKodeverkId) {
-				const showValueInLabel = item.apiKodeverkShowValueInLabel ? true : false
-				return {
-					placeholder: placeholder,
-					loadOptions: async () => {
-						const res = await DollyApi.getKodeverkByNavn(item.apiKodeverkId)
-						return DollyApi.Utils.NormalizeKodeverkForDropdown(res, showValueInLabel)
-					}
-				}
-			} else {
-				return {
-					placeholder: placeholder,
-					options: item.options
-				}
-			}
-		}
-		return { placeholder: item.label }
-	}
 
 	// checkValues = async () => {
 	// 	const values = this.props.formikProps.values

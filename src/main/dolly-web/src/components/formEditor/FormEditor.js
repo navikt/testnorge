@@ -17,7 +17,7 @@ import './FormEditor.less'
 export default class FormEditor extends PureComponent {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
-
+		console.log('this :', this)
 		// TODO: editMode burde være en props for hele klassen.
 		// editMode? renderEdit....: renderNormal
 		return AttributtListe.map(hovedKategori =>
@@ -204,6 +204,7 @@ export default class FormEditor extends PureComponent {
 
 		// console.log('item :', item)
 		// console.log('valgteVerdier :', valgteVerdier)
+		console.log('item.inputTypeAttributes :', item.inputTypeAttributes)
 
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
@@ -229,7 +230,7 @@ export default class FormEditor extends PureComponent {
 		}
 
 		if (item.id === 'spesreg') {
-			return <UtenFastBopel item={item} valgteVerdier={valgteVerdier} />
+			return <UtenFastBopel key={item.key || item.id} item={item} valgteVerdier={valgteVerdier} />
 		}
 
 		return (
