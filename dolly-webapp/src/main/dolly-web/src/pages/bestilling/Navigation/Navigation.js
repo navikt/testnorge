@@ -26,13 +26,16 @@ export default class Navigation extends PureComponent {
 			onClickPrevious,
 			FormikProps,
 			identOpprettesFra,
-			eksisterendeIdentListe
+			eksisterendeIdentListe,
+			gyldigPostadresse
 		} = this.props
 
 		const resetBestilling = () => {}
 
 		let harAdresse = false
 		let harGyldigAdresse = false
+
+		console.log('gyldigPostadresse :', gyldigPostadresse)
 
 		if (FormikProps)
 			if ('boadresse_gateadresse' in FormikProps.values) {
@@ -62,16 +65,19 @@ export default class Navigation extends PureComponent {
 						(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
 							(identOpprettesFra === BestillingMapper('EKSIDENT') &&
 								eksisterendeIdentListe.length > 0)) &&
-						(!harAdresse || (harAdresse && harGyldigAdresse)) && (
+						(!harAdresse || (harAdresse && harGyldigAdresse)) &&
+						(typeof gyldigPostadresse === 'undefined' || gyldigPostadresse === true) && (
 							<NavButton direction="forward" onClick={onClickNext} />
 						)}
 
-					{!isPage.last(currentPage) &&
+					{(!isPage.last(currentPage) &&
 						(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
 							(identOpprettesFra === BestillingMapper('EKSIDENT') &&
 								eksisterendeIdentListe.length > 0)) &&
-						harAdresse &&
-						!harGyldigAdresse && <NavButton disabled direction="forward" onClick={onClickNext} />}
+						(harAdresse && !harGyldigAdresse)) ||
+						(gyldigPostadresse === false && (
+							<NavButton disabled direction="forward" onClick={onClickNext} />
+						))}
 
 					{isPage.last(currentPage) && (
 						<Knapp type="hoved" onClick={onClickNext} disabled={isSubmitting}>
@@ -83,3 +89,6 @@ export default class Navigation extends PureComponent {
 		)
 	}
 }
+
+// (typeof gyldigPostadresse === 'undefined' || gyldigPostadresse === true)
+// gyldigPostadresse === false
