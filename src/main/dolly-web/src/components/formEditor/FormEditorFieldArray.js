@@ -47,7 +47,6 @@ export const FieldArrayComponent = ({
 }) => {
 	const { subKategori, items, subItems, id } = item
 
-	// console.log('item :', item)
 	const parentId = id
 	const parentAttributes = items.reduce((prev, curr) => {
 		return { ...prev, [curr.id]: Attributt.initValueSelector(curr) }
@@ -74,6 +73,7 @@ export const FieldArrayComponent = ({
 				formikValues.map((faKey, idx) => {
 					return (
 						<div key={idx}>
+							{idx !== 0 && <div className="field-array-line" />}
 							<div className="subkategori-field-group multi">
 								{items.map(item => {
 									if (
