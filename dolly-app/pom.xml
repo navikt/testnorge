@@ -7,7 +7,11 @@
     <parent>
         <groupId>no.nav.dolly</groupId>
         <artifactId>dolly</artifactId>
+<<<<<<< HEAD
         <version>1.11.0-SNAPSHOT</version>
+=======
+        <version>test-889</version>
+>>>>>>> 5384af9df5aeed6f0d36585c4a12aaf9c84d3ca0
     </parent>
 
     <artifactId>dolly-app</artifactId>
