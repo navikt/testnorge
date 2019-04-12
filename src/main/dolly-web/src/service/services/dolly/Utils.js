@@ -44,7 +44,7 @@ export const SortKodeverkArray = data => {
 	}
 
 	if (data.name === 'Yrker') {
-		//STYRK-koder blir lagt øverst i select yrke for å unngå loop i stort array.
+		// Noen utvalgte yrker der koden fra yrkeskodeverk tilsvarer STYRK-kode 
 		const spesKoder = [
 			{ value: '3231109', label: 'SYKEPLEIER' },
 			{ value: '7233108', label: 'SPESIALARBEIDER (LANDBRUKS- OG ANLEGGSMASKINMEKANIKK)' },
