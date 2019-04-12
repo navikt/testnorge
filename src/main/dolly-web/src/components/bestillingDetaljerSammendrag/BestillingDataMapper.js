@@ -194,7 +194,9 @@ export function mapBestillingData(bestillingData) {
 					},
 					{
 						label: 'Sluttdato',
-						value: arbeidsforhold.ansettelsesPeriode.tom.split('T')[0]
+						value:
+							arbeidsforhold.ansettelsesPeriode.tom &&
+							arbeidsforhold.ansettelsesPeriode.tom.split('T')[0]
 					},
 					{
 						label: 'Stillingprosent',
