@@ -3,7 +3,7 @@ import { DollyApi } from '~/service/Api'
 import './Postadresse.less'
 import InputSelector from '~/components/fields/InputSelector'
 import { Field } from 'formik'
-import Adressesjekk from '~/utils/SjekkPostadresse'
+import PostadresseSjekk from '~/utils/SjekkPostadresse'
 
 export default class Postadresse extends Component {
 	state = {
@@ -91,7 +91,7 @@ export default class Postadresse extends Component {
 			values['postLand'] = 'NOR'
 		}
 
-		if ((await Adressesjekk.sjekkPostadresse(values)) === false) {
+		if ((await PostadresseSjekk.sjekkPostadresse(values)) === false) {
 			this.setState({ gyldig: false })
 		} else this.setState({ gyldig: true })
 	}
