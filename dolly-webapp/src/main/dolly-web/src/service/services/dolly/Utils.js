@@ -43,6 +43,25 @@ export const SortKodeverkArray = data => {
 		})
 	}
 
+	if (data.name === 'Yrker') {
+		//STYRK-koder blir lagt øverst i select yrke for å unngå loop i stort array.
+		const spesKoder = [
+			{ value: '3231109', label: 'SYKEPLEIER' },
+			{ value: '7233108', label: 'SPESIALARBEIDER (LANDBRUKS- OG ANLEGGSMASKINMEKANIKK)' },
+			{ value: '7421118', label: 'SNEKKER' },
+			{ value: '2320102', label: 'LÆRER (VIDEREGÅENDE SKOLE)' },
+			{ value: '7216108', label: 'KAMMEROPERATØR' },
+			{ value: '2310114', label: 'HØYSKOLELÆRER' },
+			{ value: '5141103', label: 'FRISØR' },
+			{ value: '7125102', label: 'BYGNINGSSNEKKER' },
+			{ value: '5221126', label: 'BUTIKKMEDARBEIDER' },
+			{ value: '7217102', label: 'BILSKADEREPARATØR' },
+			{ value: '3310101', label: 'ALLMENNLÆRER' },
+			{ value: '2521106', label: 'ADVOKAT' }
+		]
+		spesKoder.map ( yrke => koderArray.unshift(yrke) )
+	}
+
 	return koderArray
 }
 
