@@ -12,6 +12,7 @@ import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkVa
 import Button from '~/components/button/Button'
 import _xor from 'lodash/fp/xor'
 import './FormEditor.less'
+import Postadresse from '../postadresse/Postadresse'
 
 export default class FormEditor extends PureComponent {
 	render() {
@@ -107,6 +108,17 @@ export default class FormEditor extends PureComponent {
 					{!isFieldarray && <h4>{subKategori.navn}</h4>}
 					<div className="subkategori-field-group">
 						<AutofillAddress items={items} formikProps={formikProps} />
+					</div>
+				</div>
+			)
+		}
+
+		if (subKategori.id === 'postadresse') {
+			return (
+				<div className="subkategori" key={uniqueId}>
+					{!isFieldarray && <h4>{subKategori.navn}</h4>}
+					<div className="subkategori-field-group">
+						<Postadresse items={items} formikProps={formikProps} />
 					</div>
 				</div>
 			)
@@ -240,6 +252,7 @@ export default class FormEditor extends PureComponent {
 		switch (item.inputType) {
 			case 'select': {
 				const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg..'
+
 				if (item.dependentOn) {
 					if (parentObject) {
 						// Sjekk if item er avhengig av en valgt verdi
