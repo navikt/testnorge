@@ -24,14 +24,14 @@ const mapStateToProps = state => ({
 	openAm: state.openam
 })
 
-const mapDispatchToProps = (dispatch, ownProps, state) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
 	const gruppeId = ownProps.match.params.gruppeId
 	return {
 		getGruppe: () => dispatch(getGruppe(gruppeId)),
 		deleteGruppe: () => dispatch(deleteGruppe(gruppeId)),
 		getBestillinger: () => dispatch(getBestillinger(gruppeId)),
 		createGroup: () => dispatch(showCreateOrEditGroup(-1)),
-		editTestbruker: (ident, sourceUrl) => dispatch(push(`/gruppe/${gruppeId}/testbruker/${ident}${sourceUrl}`)),
+		editTestbruker: (ident, dataSources) => dispatch(push(`/gruppe/${gruppeId}/testbruker/${ident}${dataSources}`)),
 		resetSearch: () => dispatch(resetSearch())
 	}
 }

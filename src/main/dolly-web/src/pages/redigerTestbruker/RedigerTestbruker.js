@@ -22,7 +22,8 @@ export default class RedigerTestbruker extends Component {
 
 	componentWillMount = async () => {
 		this.props.getGruppe()
-		const urlArray = (this.props.location.pathname.split('&')).splice(1)
+		const urlArray = this.props.match.params.datasources.split('&')
+
 		urlArray.includes('tpsf') && await this.props.getTestbruker()
 		urlArray.includes('sigr') && await this.props.getSigrunTestbruker()
 		urlArray.includes('krr') && await this.props.getKrrTestbruker()
@@ -116,10 +117,9 @@ export default class RedigerTestbruker extends Component {
 	render() {
 		const { testbruker, goBack, match, bestillinger } = this.props
 		const { tpsf, sigrunstub, krrstub } = testbruker
-
 		const { addedAttributes } = this.state
-		if (!tpsf) return null
 
+		if (!tpsf) return null
 		
 		const dataSources = this._checkDataSources()
 		const attributtListe = this.AttributtManager.listEditable(

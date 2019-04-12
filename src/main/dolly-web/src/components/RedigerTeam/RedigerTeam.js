@@ -34,7 +34,6 @@ export default class RedigerTeam extends PureComponent {
 
 	render() {
 		const { closeOpprettRedigerTeam, team, teamIsUpdating } = this.props
-
 		if (teamIsUpdating) {
 			return (
 				<div className="opprett-tabellrad loading">
@@ -53,7 +52,6 @@ export default class RedigerTeam extends PureComponent {
 				validationSchema={this.validation}
 				onSubmit={this.onHandleSubmit}
 				render={props => {
-					{console.log('this.validation ', this.validation)}
 					// const { values, touched, errors, dirty, isSubmitting } = props
 					return (
 						<Form className="opprett-tabellrad" autoComplete="off">
@@ -69,7 +67,7 @@ export default class RedigerTeam extends PureComponent {
 								</Knapp>
 							</div>
 
-							<DisplayFormikState {...props} />
+							{/* <DisplayFormikState {...props} /> */}
 						</Form>
 					)
 				}}
