@@ -2,7 +2,6 @@ import Formatters from '~/utils/DataFormatter'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 
-
 export const getAaregSuccessEnv = bestilling => {
 	let envs = []
 	bestilling.aaregStatus &&
@@ -16,27 +15,29 @@ export const getAaregSuccessEnv = bestilling => {
 	return envs
 }
 
-export const getKrrStubSuccess = bestilling => {
-	let krrSuccess = false
-	bestilling.krrStubStatus &&
-		bestilling.krrStubStatus.length > 0 &&
-		bestilling.krrStubStatus.forEach(status => {
-            status.statusMelding === 'OK' && (krrSuccess = true)
-		})
+// ? Disse er ikke i bruk lenge pga getGruppe/:gruppeID dekker behovet?. Ref PersonDetailjer.js
+// export const getKrrStubSuccess = bestilling => {
+// 	let krrSuccess = false
+// 	bestilling.krrStubStatus &&
+// 		bestilling.krrStubStatus.length > 0 &&
+// 		bestilling.krrStubStatus.forEach(status => {
+//             status.statusMelding === 'OK' && (krrSuccess = true)
+// 		})
 
-	return krrSuccess
-}
+// 	return krrSuccess
+// }
 
-export const getSigrunStubSuccess = bestilling => {
-	let sigrunSuccess = false
-	bestilling.sigrunStubStatus &&
-		bestilling.sigrunStubStatus.length > 0 &&
-		bestilling.sigrunStubStatus.forEach(status => {
-			status.statusMelding === 'OK' && (sigrunSuccess = true)
-		})
+// export const getSigrunStubSuccess = bestilling => {
+// 	let sigrunSuccess = false
+// 	bestilling.sigrunStubStatus &&
+// 		bestilling.sigrunStubStatus.length > 0 &&
+// 		bestilling.sigrunStubStatus.forEach(status => {
+// 			status.statusMelding === 'OK' && (sigrunSuccess = true)
+// 		})
 
-	return sigrunSuccess
-}
+// 	return sigrunSuccess
+// }
+
 export const sokSelector = (items, searchStr) => {
 	if (!items) return null
 	const mappedItems = mapItems(items)
