@@ -8,7 +8,11 @@ import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
 import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
-import { getAaregSuccessEnv } from '~/ducks/bestillingStatus'
+import {
+	getAaregSuccessEnv,
+	getKrrStubSuccess,
+	getSigrunStubSuccess
+} from '~/ducks/bestillingStatus/utils'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -25,9 +29,10 @@ export default class PersonDetaljer extends PureComponent {
 	}
 
 	componentDidMount() {
-		this.props.getSigrunTestbruker()
-		this.props.getKrrTestbruker()
+		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunTestbruker()
+		this.props.testIdent.krrstubStatus === 'OK' && this.props.getKrrTestbruker()
 
+		// TODO: Trenger ikke denne work-around lenge når getGruppe-request inneholder aaregStatus: OK
 		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.bestilling)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
 	}
@@ -67,12 +72,7 @@ export default class PersonDetaljer extends PureComponent {
 						isOpen={modalOpen}
 						onRequestClose={this.closeModal}
 						closeModal={this.closeModal}
-						content={
-							<BestillingDetaljerSammendrag 
-								bestilling={bestilling} 
-								type = 'modal'
-							/>
-						}
+						content={<BestillingDetaljerSammendrag bestilling={bestilling} type="modal" />}
 						width={'60%'}
 					/>
 					<Button onClick={editAction} className="flexbox--align-center" kind="edit">

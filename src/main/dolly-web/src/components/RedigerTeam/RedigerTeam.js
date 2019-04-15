@@ -22,10 +22,12 @@ export default class RedigerTeam extends PureComponent {
 		yup.object().shape({
 			navn: yup
 				.string()
+				.trim()
 				.required('Navn er et påkrevd felt')
-				.max(50, 'Maksimalt 30 bokstaver'),
+				.max(30, 'Maksimalt 30 bokstaver'),
 			beskrivelse: yup
 				.string()
+				.trim()
 				.required('Gi en liten beskrivelse av teamet')
 				.max(200, 'Maksimalt 200 bokstaver')
 		})
