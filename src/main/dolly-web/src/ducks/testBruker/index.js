@@ -42,6 +42,24 @@ export const GET_SIGRUN_TESTBRUKER = createAction(
 	async ident => {
 		try {
 			const res = await SigrunApi.getTestbruker(ident)
+
+			return res
+		} catch (err) {
+			return err
+		}
+	},
+	ident => ({
+		ident
+	})
+)
+
+export const GET_SIGRUN_SEKVENSNR = createAction(
+	'GET_SIGRUN_SEKVENSNR',
+	async ident => {
+		try {
+			const res = await SigrunApi.getSekvensnummer(ident)
+
+			console.log('sekvensnrRes :', sekvensnrRes)
 			return res
 		} catch (err) {
 			return err

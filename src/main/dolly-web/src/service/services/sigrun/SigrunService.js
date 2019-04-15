@@ -29,6 +29,16 @@ export default class SigrunService {
 		})
 	}
 
+	static getSekvensnummer(ident) {
+		const endpoint = this.getSigrunUrl() + '/api/v0/sekvensnummer/' + ident
+
+		console.log('getting sekvensnummer')
+		// TODO: CORS-policy må fjernes før vi kan kaller enepunktet
+		return Request.getWithoutCredentials(endpoint, {
+			headers: { personidentifikator: ident }
+		})
+	}
+
 	static updateTestbruker(data) {
 		const endpoint = this.getSigrunUrl() + '/testdata/oppdater'
 
