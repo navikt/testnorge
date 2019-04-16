@@ -71,7 +71,7 @@ public class EksisterendeIdenterService {
             henteAntall = collected.size();
         }
 
-        List<String> hentedeIdenter = new ArrayList<>();
+        List<String> hentedeIdenter = new ArrayList<>(henteAntall);
 
         for (int i = 0; i < henteAntall; i++) {
             int index = rand.nextInt(collected.size());
