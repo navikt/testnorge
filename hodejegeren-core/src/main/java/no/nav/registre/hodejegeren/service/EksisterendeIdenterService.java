@@ -62,7 +62,10 @@ public class EksisterendeIdenterService {
                 status = tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, gyldigIdent);
             } catch (IOException e) {
                 log.warn(e.getMessage(), e);
+            } catch (ManglendeInfoITpsException e) {
+                log.warn(e.getMessage());
             }
+
             return status != null && (status.get(DATO_DO) == null || status.get(DATO_DO).isEmpty());
         }).collect(Collectors.toList());
 
