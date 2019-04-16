@@ -64,10 +64,14 @@ public class HodejegerenController {
             + "Systemet sjekker status-quo på personen i det angitte miljø. En minimum alder på personene kan oppgis.")
     @GetMapping("api/v1/levende-identer/{avspillergruppeId}")
     public List<String> hentLevendeIdenter(@PathVariable("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe,
-            @RequestParam("antallPersoner") int antallPersoner, @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder) {
+            @RequestParam(value = "antallPersoner", required = false) Integer antallPersoner, @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder) {
         if (minimumAlder == null || minimumAlder < 0) {
             minimumAlder = 0;
         }
+        if (antallPersoner == null || antallPersoner < 0) {
+            antallPersoner = Integer.MAX_VALUE;
+        }
+
         return eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallPersoner, minimumAlder);
     }
 
