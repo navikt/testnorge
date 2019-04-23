@@ -10,13 +10,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import java.util.List;
+import java.util.ArrayList;
 
 import no.nav.registre.aaregstub.arbeidsforhold.contents.Arbeidsforhold;
 
@@ -35,13 +34,12 @@ public class ArbeidsforholdsResponse {
     private Long id;
 
     @JsonProperty("arbeidsforhold")
-    @OneToOne(mappedBy = "arbeidsforholdsResponsen", fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+    @OneToOne(mappedBy = "arbeidsforholdsResponsen", fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     private Arbeidsforhold arbeidsforhold;
 
     @JsonProperty("arkivreferanse")
     private String arkivreferanse;
 
     @JsonProperty("environments")
-    @Embedded
-    private List<Environment> environments;
+    private ArrayList<String> environments;
 }

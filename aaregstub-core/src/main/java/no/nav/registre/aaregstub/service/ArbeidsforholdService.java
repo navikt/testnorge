@@ -77,11 +77,18 @@ public class ArbeidsforholdService {
             if (lagreIAareg) {
                 DollyResponse dollyResponse = dollyConsumer.sendArbeidsforholdTilAareg(tokenObject, arbeidsforholdsResponse);
                 if (HttpStatus.CREATED.equals(dollyResponse.getHttpStatus())) {
-                    for (Environment miljoe : arbeidsforholdsResponse.getEnvironments()) {
-                        if ("OK".equals(dollyResponse.getStatusPerMiljoe().get(miljoe.getEnvironment()))) {
+//                    for (Environment miljoe : arbeidsforholdsResponse.getEnvironments()) {
+//                        if ("OK".equals(dollyResponse.getStatusPerMiljoe().get(miljoe.getEnvironment()))) {
+//                            identerLagretIAareg.add(ident);
+//                        } else {
+//                            identerIkkeLagretIAareg.put(ident, dollyResponse.getStatusPerMiljoe().get(miljoe.getEnvironment()));
+//                        }
+//                    }
+                    for (String miljoe : arbeidsforholdsResponse.getEnvironments()) {
+                        if ("OK".equals(dollyResponse.getStatusPerMiljoe().get(miljoe))) {
                             identerLagretIAareg.add(ident);
                         } else {
-                            identerIkkeLagretIAareg.put(ident, dollyResponse.getStatusPerMiljoe().get(miljoe.getEnvironment()));
+                            identerIkkeLagretIAareg.put(ident, dollyResponse.getStatusPerMiljoe().get(miljoe));
                         }
                     }
                 }
