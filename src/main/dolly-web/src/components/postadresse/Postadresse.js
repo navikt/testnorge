@@ -16,9 +16,9 @@ export default class Postadresse extends Component {
 
 		items.map(item => item.id !== 'postLand' && adressefelter.push(item))
 		return (
-			<div className="subkategori">
-				<div className="subkategori-field-group">
-					<div className="subkategori-field-group">
+			<div className="postadresse_subkategori">
+				<div className="postadresse_subkategori-field-group">
+					<div className="postadresse_subkategori-field-group">
 						{items.map(item => item.id === 'postLand' && this.renderFieldComponent(item))}
 					</div>
 					<div className="postadresse-group">
