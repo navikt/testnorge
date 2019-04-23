@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import no.nav.registre.aaregstub.arbeidsforhold.ArbeidsforholdsResponse;
-import no.nav.registre.aaregstub.arbeidsforhold.Environment;
 import no.nav.registre.aaregstub.arbeidsforhold.Ident;
 import no.nav.registre.aaregstub.arbeidsforhold.consumer.rs.DollyConsumer;
 import no.nav.registre.aaregstub.arbeidsforhold.consumer.rs.responses.DollyResponse;
@@ -26,7 +25,6 @@ import no.nav.registre.aaregstub.provider.rs.responses.StatusResponse;
 import no.nav.registre.aaregstub.repository.AntallTimerForTimeloennetRepository;
 import no.nav.registre.aaregstub.repository.ArbeidsavtaleRepository;
 import no.nav.registre.aaregstub.repository.ArbeidsforholdRepository;
-import no.nav.registre.aaregstub.repository.ArbeidsforholdsResponseRepository;
 import no.nav.registre.aaregstub.repository.IdentRepository;
 import no.nav.registre.aaregstub.repository.PermisjonRepository;
 import no.nav.registre.aaregstub.repository.UtenlandsoppholdRepository;
@@ -37,9 +35,6 @@ public class ArbeidsforholdService {
 
     @Autowired
     private IdentRepository identRepository;
-
-    @Autowired
-    private ArbeidsforholdsResponseRepository arbeidsforholdsResponseRepository;
 
     @Autowired
     private ArbeidsforholdRepository arbeidsforholdRepository;
@@ -77,11 +72,11 @@ public class ArbeidsforholdService {
             if (lagreIAareg) {
                 DollyResponse dollyResponse = dollyConsumer.sendArbeidsforholdTilAareg(tokenObject, arbeidsforholdsResponse);
                 if (HttpStatus.CREATED.equals(dollyResponse.getHttpStatus())) {
-                    for (Environment miljoe : arbeidsforholdsResponse.getEnvironments()) {
-                        if ("OK".equals(dollyResponse.getStatusPerMiljoe().get(miljoe.getEnvironment()))) {
+                    for (String miljoe : arbeidsforholdsResponse.getEnvironments()) {
+                        if ("OK".equals(dollyResponse.getStatusPerMiljoe().get(miljoe))) {
                             identerLagretIAareg.add(ident);
                         } else {
-                            identerIkkeLagretIAareg.put(ident, dollyResponse.getStatusPerMiljoe().get(miljoe.getEnvironment()));
+                            identerIkkeLagretIAareg.put(ident, dollyResponse.getStatusPerMiljoe().get(miljoe));
                         }
                     }
                 }
@@ -109,9 +104,6 @@ public class ArbeidsforholdService {
         if (arbeidsforhold != null) {
             String fnr = arbeidsforhold.getArbeidstaker().getIdent();
             arbeidsforhold.setIdenten(null);
-
-            Long arbeidsforholdsResponsId = arbeidsforhold.getArbeidsforholdsResponsen().getId();
-            arbeidsforhold.setArbeidsforholdsResponsen(null);
 
             Long arbeidsavtaleId = arbeidsforhold.getArbeidsavtale().getId();
             arbeidsforhold.setArbeidsavtale(null);
@@ -144,7 +136,6 @@ public class ArbeidsforholdService {
             }
 
             arbeidsavtaleRepository.deleteById(arbeidsavtaleId);
-            arbeidsforholdsResponseRepository.deleteById(arbeidsforholdsResponsId);
 
             Ident ident = identRepository.findByFnr(fnr).orElse(null);
 
@@ -193,9 +184,6 @@ public class ArbeidsforholdService {
                     opphold.setArbeidsforholdet(arbeidsforhold);
                 }
             }
-
-            arbeidsforhold.setArbeidsforholdsResponsen(arbeidsforholdsResponse);
-            arbeidsforholdsResponseRepository.save(arbeidsforholdsResponse);
 
             if (ident != null) {
                 ident.getArbeidsforhold().add(arbeidsforhold);

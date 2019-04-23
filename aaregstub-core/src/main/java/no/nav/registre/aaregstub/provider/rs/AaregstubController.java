@@ -43,7 +43,7 @@ public class AaregstubController {
     }
 
     @LogExceptions
-    @GetMapping(value = "/hentArbeidsforholdNy/{id}")
+    @GetMapping(value = "/hentArbeidsforhold/{id}")
     public Arbeidsforhold hentArbeidsforhold(@PathVariable Long id) {
         Optional<Arbeidsforhold> arbeidsforhold = arbeidsforholdService.hentArbeidsforhold(id);
         return arbeidsforhold.orElse(null);
