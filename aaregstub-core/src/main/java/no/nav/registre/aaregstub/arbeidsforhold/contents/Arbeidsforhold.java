@@ -25,7 +25,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.util.List;
 
-import no.nav.registre.aaregstub.arbeidsforhold.ArbeidsforholdsResponse;
 import no.nav.registre.aaregstub.arbeidsforhold.Ident;
 
 @Entity
@@ -42,12 +41,6 @@ public class Arbeidsforhold {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIgnore
     private Ident identen;
-
-    @OneToOne
-    @JoinColumn(name = "arbeidsforholdsResponse_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIgnore
-    private ArbeidsforholdsResponse arbeidsforholdsResponsen;
 
     @Id
     @GeneratedValue
