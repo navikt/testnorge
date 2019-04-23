@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,10 +37,9 @@ public class AaregstubController {
     }
 
     @LogExceptions
-    @GetMapping(value = "/hentIdentMedArbeidsforhold/{ident}")
-    public Ident hentIdentMedArbeidsforhold(@PathVariable String ident) {
-        Optional<Ident> identMedArbeidsforhold = arbeidsforholdService.hentIdentMedArbeidsforholdNy(ident);
-        return identMedArbeidsforhold.orElse(null);
+    @GetMapping(value = "/hentArbeidsforholdIder")
+    public List<BigInteger> hentArbeidsforholdIder() {
+        return arbeidsforholdService.hentAlleArbeidsforholdIder();
     }
 
     @LogExceptions
@@ -50,16 +50,23 @@ public class AaregstubController {
     }
 
     @LogExceptions
+    @Transactional
+    @DeleteMapping(value = "/slettArbeidsforhold/{id}")
+    public void slettArbeidsforhold(@PathVariable Long id) {
+        arbeidsforholdService.slettArbeidsforhold(id);
+    }
+
+    @LogExceptions
     @GetMapping(value = "/hentAlleArbeidstakere")
     public List<String> hentAlleArbeidstakere() {
         return arbeidsforholdService.hentAlleArbeidstakere();
     }
 
     @LogExceptions
-    @Transactional
-    @DeleteMapping(value = "/slettArbeidsforhold/{id}")
-    public void slettArbeidsforhold(@PathVariable Long id) {
-        arbeidsforholdService.slettArbeidsforhold(id);
+    @GetMapping(value = "/hentIdentMedArbeidsforhold/{ident}")
+    public Ident hentIdentMedArbeidsforhold(@PathVariable String ident) {
+        Optional<Ident> identMedArbeidsforhold = arbeidsforholdService.hentIdentMedArbeidsforholdNy(ident);
+        return identMedArbeidsforhold.orElse(null);
     }
 
     @LogExceptions

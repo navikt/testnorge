@@ -26,6 +26,7 @@ public class AaregstubControllerTest {
 
     private Long id = 2L;
     private String fnr = "01010101010";
+    private String miljoe = "t1";
     private List<ArbeidsforholdsResponse> arbeidsforholdsmeldinger;
     private Boolean lagreIAareg = false;
 
@@ -41,6 +42,12 @@ public class AaregstubControllerTest {
     }
 
     @Test
+    public void shouldGetAllArbeidsforholdIds() {
+        aaregstubController.hentArbeidsforholdIder();
+        verify(arbeidsforholdService).hentAlleArbeidsforholdIder();
+    }
+
+    @Test
     public void shouldGetArbeidsforhold() {
         aaregstubController.hentArbeidsforhold(id);
         verify(arbeidsforholdService).hentArbeidsforhold(id);
@@ -53,14 +60,26 @@ public class AaregstubControllerTest {
     }
 
     @Test
+    public void shouldGetAlleArbeidstakere() {
+        aaregstubController.hentAlleArbeidstakere();
+        verify(arbeidsforholdService).hentAlleArbeidstakere();
+    }
+
+    @Test
     public void shouldGetIdentMedArbeidsforhold() {
         aaregstubController.hentIdentMedArbeidsforhold(fnr);
         verify(arbeidsforholdService).hentIdentMedArbeidsforholdNy(fnr);
     }
 
     @Test
-    public void shouldGetAlleArbeidstakere() {
-        aaregstubController.hentAlleArbeidstakere();
-        verify(arbeidsforholdService).hentAlleArbeidstakere();
+    public void shouldSendArbeidsforholdTilAareg() {
+        aaregstubController.sendArbeidsforholdTilAareg(arbeidsforholdsmeldinger);
+        verify(arbeidsforholdService).sendArbeidsforholdTilAareg(arbeidsforholdsmeldinger);
+    }
+
+    @Test
+    public void shouldGetArbeidsforholdFromAareg() {
+        aaregstubController.hentArbeidsforholdFraAareg(fnr, miljoe);
+        verify(arbeidsforholdService).hentArbeidsforholdFraAareg(fnr, miljoe);
     }
 }

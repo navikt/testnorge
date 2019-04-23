@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -92,6 +93,10 @@ public class ArbeidsforholdService {
 
     public Optional<Ident> hentIdentMedArbeidsforholdNy(String ident) {
         return identRepository.findByFnr(ident);
+    }
+
+    public List<BigInteger> hentAlleArbeidsforholdIder() {
+        return arbeidsforholdRepository.getAllIds();
     }
 
     public Optional<Arbeidsforhold> hentArbeidsforhold(Long id) {
