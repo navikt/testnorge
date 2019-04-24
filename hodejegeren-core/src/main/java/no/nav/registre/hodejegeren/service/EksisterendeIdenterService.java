@@ -51,47 +51,37 @@ public class EksisterendeIdenterService {
     private Random rand;
 
     public List<String> hentLevendeIdenterIGruppeOgSjekkStatusQuo(Long gruppeId, String miljoe, int henteAntall, int minimumAlder) {
-        List<String> hentedeIdenter = new ArrayList<>(henteAntall);
         List<String> gyldigeIdenter = finnAlleIdenterOverAlder(gruppeId, minimumAlder);
-        if (henteAntall > gyldigeIdenter.size()) {
-            log.info("Antall ønskede identer å hente er større enn myndige identer i avspillergruppe. - HenteAntall:{} MyndigeIdenter:{}", henteAntall, gyldigeIdenter.size());
-            henteAntall = gyldigeIdenter.size();
-        }
 
         if (gyldigeIdenter.isEmpty()) {
-            return hentedeIdenter;
+            return Collections.emptyList();
         }
-
-        int index = rand.nextInt(gyldigeIdenter.size());
-        String ident = gyldigeIdenter.get(index);
-
-        int identerFeilet = 0;
-
-        while (hentedeIdenter.size() != henteAntall) {
+        List<String> collected = gyldigeIdenter.parallelStream().filter(gyldigIdent -> {
+            Map<String, String> status = null;
             try {
-                Map<String, String> status = tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, ident);
-                if (status.get(DATO_DO) == null || status.get(DATO_DO).isEmpty()) {
-                    hentedeIdenter.add(ident);
-                } else {
-                    identerFeilet++;
-                }
+                status = tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, gyldigIdent);
             } catch (IOException e) {
                 log.warn(e.getMessage(), e);
-                identerFeilet++;
             } catch (ManglendeInfoITpsException e) {
                 log.warn(e.getMessage());
-                identerFeilet++;
             }
-            gyldigeIdenter.remove(index);
-            if (gyldigeIdenter.isEmpty()) {
-                if (hentedeIdenter.size() != henteAntall) {
-                    log.info("Fant ikke ønsket antall identer fordi status i TPS og TPSF ikke samsvarte. - Antall identer som feilet: {}", identerFeilet);
-                }
-                break;
-            }
-            index = rand.nextInt(gyldigeIdenter.size());
-            ident = gyldigeIdenter.get(index);
+
+            return status != null && (status.get(DATO_DO) == null || status.get(DATO_DO).isEmpty());
+        }).collect(Collectors.toList());
+
+        if (collected.size() < henteAntall) {
+            log.info("Antall ønskede identer å hente er større enn myndige identer i avspillergruppe. - HenteAntall:{} MyndigeIdenter:{}", henteAntall, collected.size());
+            henteAntall = collected.size();
         }
+
+        List<String> hentedeIdenter = new ArrayList<>(henteAntall);
+
+        for (int i = 0; i < henteAntall; i++) {
+            int index = rand.nextInt(collected.size());
+            hentedeIdenter.add(collected.get(index));
+            collected.remove(index);
+        }
+
         return hentedeIdenter;
     }
 
@@ -202,14 +192,14 @@ public class EksisterendeIdenterService {
             JsonNode statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident);
             int antallRelasjoner = statusQuoTilIdent.findValue("antallRelasjoner").asInt();
 
-            if(antallRelasjoner == 1) {
+            if (antallRelasjoner == 1) {
                 relasjonsResponse = RelasjonsResponse.builder()
                         .fnr(statusQuoTilIdent.findValue("fnr").asText())
                         .relasjoner(Collections.singletonList(parseRelasjonNode(statusQuoTilIdent.findValue("relasjon")))).build();
             } else if (antallRelasjoner > 1) {
                 ArrayNode relasjonNode = (ArrayNode) statusQuoTilIdent.findValue("relasjon");
                 List<Relasjon> relasjoner = new ArrayList<>(relasjonNode.size());
-                for(JsonNode relasjonselement : relasjonNode) {
+                for (JsonNode relasjonselement : relasjonNode) {
                     relasjoner.add(parseRelasjonNode(relasjonselement));
                 }
                 relasjonsResponse = RelasjonsResponse.builder().fnr(statusQuoTilIdent.findValue("fnr").asText()).relasjoner(relasjoner).build();
