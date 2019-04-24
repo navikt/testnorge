@@ -46,6 +46,7 @@ public class SigrunServiceTest {
 
     private List poppSyntetisererenResponse;
     private String testdataEier = "test";
+    private String miljoe = "t1";
 
     @Before
     public void setUp() throws IOException {
@@ -62,12 +63,12 @@ public class SigrunServiceTest {
         List<String> fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
         when(poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(fnrs)).thenReturn(poppSyntetisererenResponse);
-        when(sigrunStubConsumer.sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier)).thenReturn(ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK));
+        when(sigrunStubConsumer.sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier, miljoe)).thenReturn(ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK));
 
-        ResponseEntity actualResponse = sigrunService.genererPoppmeldingerOgSendTilSigrunStub(fnrs, testdataEier);
+        ResponseEntity actualResponse = sigrunService.genererPoppmeldingerOgSendTilSigrunStub(fnrs, testdataEier, miljoe);
 
         verify(poppSyntetisererenConsumer).hentPoppMeldingerFromSyntRest(fnrs);
-        verify(sigrunStubConsumer).sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier);
+        verify(sigrunStubConsumer).sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier, miljoe);
         assertThat(actualResponse.getBody(), equalTo(HttpStatus.OK));
     }
 
@@ -78,7 +79,7 @@ public class SigrunServiceTest {
 
         SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(123L, "t1", 2);
 
-        when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer()).thenReturn(eksisterendeIdenter);
+        when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe)).thenReturn(eksisterendeIdenter);
         when(hodejegerenConsumer.finnLevendeIdenter(syntetiserPoppRequest)).thenReturn(nyeIdenter);
 
         List<String> resultat = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest);

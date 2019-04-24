@@ -27,7 +27,7 @@ public class SigrunService {
     private SigrunStubConsumer sigrunStubConsumer;
 
     public List<String> finnEksisterendeOgNyeIdenter(SyntetiserPoppRequest syntetiserPoppRequest) {
-        List<String> eksisterendeIdenter = finnEksisterendeIdenter();
+        List<String> eksisterendeIdenter = finnEksisterendeIdenter(syntetiserPoppRequest.getMiljoe());
         List<String> nyeIdenter = finnLevendeIdenter(syntetiserPoppRequest);
 
         int antallIdenterAlleredeIStub = 0;
@@ -47,17 +47,17 @@ public class SigrunService {
         return eksisterendeIdenter;
     }
 
-    public ResponseEntity genererPoppmeldingerOgSendTilSigrunStub(List<String> identer, String testdataEier) {
+    public ResponseEntity genererPoppmeldingerOgSendTilSigrunStub(List<String> identer, String testdataEier, String miljoe) {
         List<Map<String, Object>> syntetiserteMeldinger = finnSyntetiserteMeldinger(identer);
-        return sigrunStubConsumer.sendDataTilSigrunstub(syntetiserteMeldinger, testdataEier);
+        return sigrunStubConsumer.sendDataTilSigrunstub(syntetiserteMeldinger, testdataEier, miljoe);
     }
 
     private List<Map<String, Object>> finnSyntetiserteMeldinger(List<String> fnrs) {
         return poppSyntRestConsumer.hentPoppMeldingerFromSyntRest(fnrs);
     }
 
-    private List<String> finnEksisterendeIdenter() {
-        return sigrunStubConsumer.hentEksisterendePersonidentifikatorer();
+    private List<String> finnEksisterendeIdenter(String miljoe) {
+        return sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe);
     }
 
     private List<String> finnLevendeIdenter(SyntetiserPoppRequest syntetiserPoppRequest) {

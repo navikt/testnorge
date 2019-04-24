@@ -34,10 +34,10 @@ public class SyntetiseringControllerTest {
         SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(123L, "t1", fnrs.size());
 
         when(sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest)).thenReturn(fnrs);
-        when(sigrunService.genererPoppmeldingerOgSendTilSigrunStub(fnrs, "test")).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
+        when(sigrunService.genererPoppmeldingerOgSendTilSigrunStub(fnrs, "test", syntetiserPoppRequest.getMiljoe())).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
         syntetiseringController.generatePopp("test", syntetiserPoppRequest);
 
-        verify(sigrunService).genererPoppmeldingerOgSendTilSigrunStub(fnrs, "test");
+        verify(sigrunService).genererPoppmeldingerOgSendTilSigrunStub(fnrs, "test", syntetiserPoppRequest.getMiljoe());
     }
 }
