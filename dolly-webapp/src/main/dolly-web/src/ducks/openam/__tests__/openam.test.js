@@ -3,7 +3,7 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 
 describe('openamReducer', () => {
 	const initialState = {
-		response: null
+		responses: []
 	}
 
 	it('should set initial state', () => {
@@ -18,14 +18,14 @@ describe('openamReducer', () => {
 	})
 
 	it('should handle success', () => {
-		const testdata = 'testdata'
+		const testdata = ['testdata']
 		const action = {
 			type: 'POST_OPEN_AM_SUCCESS',
 			payload: testdata
 		}
 
 		const res = {
-			response: testdata
+			responses: testdata
 		}
 		expect(openam({}, action)).toEqual(res)
 	})

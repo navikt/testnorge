@@ -6,7 +6,8 @@ describe('testBrukerReducer', () => {
 		items: {
 			tpsf: null,
 			sigrunstub: null,
-			krrstub: null
+			krrstub: null,
+			aareg: null,
 		}
 	}
 	it('should return initial state', () => {
@@ -47,7 +48,7 @@ describe('testBrukerReducer', () => {
 		}
 
 		const res = {
-			items: { tpsf: null, sigrunstub: { [testident]: testdata }, krrstub: null }
+			items: { tpsf: null, sigrunstub: { [testident]: testdata }, krrstub: null, aareg: null }
 		}
 
 		expect(testBruker(initialState, action)).toEqual(res)
@@ -69,7 +70,8 @@ describe('testBrukerReducer', () => {
 				sigrunstub: null,
 				krrstub: {
 					[testident]: testident
-				}
+				},
+				aareg: null
 			}
 		}
 
