@@ -37,7 +37,7 @@ public class AaregstubConsumer {
     private UriTemplate hentAlleArbeidstakereUrl;
     private UriTemplate sendTilAaregUrl;
 
-    public AaregstubConsumer(@Value("${testnorge-aaregstub.rest-api.url}") String aaregstubServerUrl) {
+    public AaregstubConsumer(@Value("${aaregstub.rest.api.url}") String aaregstubServerUrl) {
         this.sendTilAaregstubUrl = new UriTemplate(aaregstubServerUrl + "/v1/lagreArbeidsforhold?lagreIAareg={lagreIAareg}");
         this.hentAlleArbeidstakereUrl = new UriTemplate(aaregstubServerUrl + "/v1/hentAlleArbeidstakere");
         this.sendTilAaregUrl = new UriTemplate(aaregstubServerUrl + "/v1/sendArbeidsforholdTilAareg");
