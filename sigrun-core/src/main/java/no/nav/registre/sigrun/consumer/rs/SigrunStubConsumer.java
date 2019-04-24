@@ -25,15 +25,15 @@ public class SigrunStubConsumer {
     @Autowired
     private RestTemplate restTemplate;
 
-    private UriTemplate sigrunBaseUrl;
+    private String sigrunBaseUrl;
 
     public SigrunStubConsumer(@Value("${sigrunstub.url}") String sigrunServerUrl) {
-        this.sigrunBaseUrl = new UriTemplate(sigrunServerUrl);
+        this.sigrunBaseUrl = sigrunServerUrl;
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
-    public List<String> hentEksisterendePersonidentifikatorer() {
-        UriTemplate hentFnrUrl = new UriTemplate(sigrunBaseUrl + "testdata/hentPersonidentifikatorer");
+    public List<String> hentEksisterendePersonidentifikatorer(String miljoe) {
+        UriTemplate hentFnrUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/hentPersonidentifikatorer");
         RequestEntity getRequest = RequestEntity.get(hentFnrUrl.expand()).build();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
@@ -49,8 +49,8 @@ public class SigrunStubConsumer {
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
-    public ResponseEntity sendDataTilSigrunstub(List<Map<String, Object>> meldinger, String testdataEier) {
-        UriTemplate sendDataUrl = new UriTemplate(sigrunBaseUrl + "testdata/opprettBolk");
+    public ResponseEntity sendDataTilSigrunstub(List<Map<String, Object>> meldinger, String testdataEier, String miljoe) {
+        UriTemplate sendDataUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/opprettBolk");
         RequestEntity postRequest = RequestEntity.post(sendDataUrl.expand()).header("testdataEier", testdataEier).body(meldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
