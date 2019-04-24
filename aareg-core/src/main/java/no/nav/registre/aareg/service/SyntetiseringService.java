@@ -65,14 +65,14 @@ public class SyntetiseringService {
         if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterLagretIStub())) {
             statusFraAaregstub
                     .append("Identer som ble lagret i aaregstub: ")
-                    .append(statusFraAaregstubResponse.getIdenterLagretIStub().toString())
+                    .append(statusFraAaregstubResponse.getIdenterLagretIStub())
                     .append(". ");
         }
 
         if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterLagretIAareg())) {
             statusFraAaregstub
                     .append("Identer som ble sendt til aareg: ")
-                    .append(statusFraAaregstubResponse.getIdenterLagretIAareg().toString())
+                    .append(statusFraAaregstubResponse.getIdenterLagretIAareg())
                     .append(". ");
         }
 
