@@ -16,15 +16,21 @@ describe('mapDetailedData.js', () => {
 					verdi: '999'
 				}
 			]
-			const res = {
+			
+			const res = { 
 				header: 'Inntekter',
 				multiple: true,
-				data: testSigrunData.map(data => {
+				data: testSigrunData.map( (data,i) => {
 					return {
 						parent: 'inntekter',
 						id: data.personidentifikator,
-						label: data.inntektsaar,
 						value: [
+							{
+								id: 'id',
+								label: '',
+								value: `#${i + 1}`,
+								width: 'x-small'
+							},
 							{
 								id: 'aar',
 								label: 'År',
