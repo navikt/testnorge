@@ -75,7 +75,8 @@ public class SyntetiseringService {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", ident);
             } else {
                 institusjonsforholdsmelding.setPersonident(ident);
-                responseEntities.add(inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, institusjonsforholdsmelding));
+                ResponseEntity response = inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, institusjonsforholdsmelding);
+                responseEntities.add(ResponseEntity.status(response.getStatusCode()).body(response.getBody()));
             }
         }
 
