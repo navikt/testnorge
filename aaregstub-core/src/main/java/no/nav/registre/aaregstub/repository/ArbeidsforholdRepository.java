@@ -12,6 +12,6 @@ import no.nav.registre.aaregstub.arbeidsforhold.contents.Arbeidsforhold;
 public interface ArbeidsforholdRepository extends CrudRepository<Arbeidsforhold, Long> {
 
     @Timed(value = "aaregstub.resource.latency", extraTags = { "operation", "database" })
-    @Query(nativeQuery = true, value = "select distinct(a.id) from arbeidsforhold a")
+    @Query(nativeQuery = true, value = "select distinct(a.id) from arbeidsforhold a order by a.id asc ")
     List<BigInteger> getAllIds();
 }
