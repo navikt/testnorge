@@ -57,7 +57,14 @@ public class TpsStatusQuoService {
         } else {
             JsonNode statusQuoFromTPS = root.findValue(felt);
             if (statusQuoFromTPS == null) {
-                throw new ManglendeInfoITpsException("Kunne ikke finne status quo på person med fnr " + fnr + " for felt '" + felt + "'. Utfyllende melding fra TPS: " + root.findValue("utfyllendeMelding").asText());
+                JsonNode utfyllendeMelding = root.findValue("utfyllendeMelding");
+                if (utfyllendeMelding == null) {
+                    throw new ManglendeInfoITpsException(
+                            "Kunne ikke finne status quo på person med fnr " + fnr + " for felt '" + felt);
+                } else {
+                    throw new ManglendeInfoITpsException(
+                            "Kunne ikke finne status quo på person med fnr " + fnr + " for felt '" + felt + "'. Utfyllende melding fra TPS: " + utfyllendeMelding.asText());
+                }
             }
             return statusQuoFromTPS.asText();
         }
