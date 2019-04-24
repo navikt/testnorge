@@ -4,13 +4,6 @@ import com.google.common.collect.Lists;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.mq.consumer.MessageQueue;
-import no.nav.identpool.mq.factory.MessageQueueFactory;
-import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.service.support.QueueContext;
-import no.nav.identpool.tps.xml.NavnOpplysning;
-import no.nav.tps.ctg.m201.domain.StatusFraTPSType;
-import no.nav.tps.ctg.m201.domain.TpsPersonData;
 import org.springframework.stereotype.Service;
 
 import javax.jms.JMSException;
@@ -21,6 +14,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.mq.consumer.MessageQueue;
+import no.nav.identpool.mq.factory.MessageQueueFactory;
+import no.nav.identpool.service.support.QueueContext;
+import no.nav.identpool.tps.xml.NavnOpplysning;
+import no.nav.tps.ctg.m201.domain.StatusFraTPSType;
+import no.nav.tps.ctg.m201.domain.TpsPersonData;
 
 @Slf4j
 @Service
@@ -35,6 +36,7 @@ public class IdentTpsService {
 
     private MessageQueue messageQueue;
 
+    @Timed(value = "ident_pool.resource.latency", extraTags = { "operation", "TPS" })
     public Set<TpsStatus> checkIdentsInTps(List<String> idents) {
         List<String> environments = QueueContext.getSuccessfulEnvs();
 
@@ -60,7 +62,7 @@ public class IdentTpsService {
                 .collect(Collectors.toSet());
     }
 
-    @Timed(value = "ident-pool.resource.latency", extraTags = { "operation", "TPS" })
+    @Timed(value = "ident_pool.resource.latency", extraTags = { "operation", "TPS" })
     private Set<TpsStatus> checkInEnvironment(String env, List<String> nonExisting) {
         Set<TpsStatus> statusSet = new HashSet<>();
         try {
