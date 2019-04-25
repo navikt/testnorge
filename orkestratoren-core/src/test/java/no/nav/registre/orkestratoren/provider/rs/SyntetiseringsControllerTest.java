@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
@@ -20,6 +21,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
@@ -46,6 +48,9 @@ public class SyntetiseringsControllerTest {
 
     @Mock
     private InstSyntPakkenService instSyntPakkenService;
+
+    @Mock
+    private BisysSyntPakkenService bisysSyntPakkenService;
 
     @Mock
     private TpSyntPakkenService tpSyntPakkenService;
@@ -145,6 +150,21 @@ public class SyntetiseringsControllerTest {
         syntetiseringsController.opprettInstitutjonsforholdIInst(syntetiserInstRequest);
 
         verify(instSyntPakkenService).genererInstitusjonsforhold(syntetiserInstRequest);
+    }
+
+    /**
+     * Scenario: HVIS syntetiseringskontrolleren får et request om å generere bistandsforhold i bisys, skal metoden kalle på
+     * {@link BisysSyntPakkenService#genererBistandsmeldinger}.
+     */
+    @Test
+    public void shouldProduceBistandsmeldingerInBisys() {
+        int antallNyeIdenter = 2;
+
+        SyntetiserBisysRequest syntetiserBisysRequest = new SyntetiserBisysRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+
+        syntetiseringsController.opprettBistandsmeldingerIBisys(syntetiserBisysRequest);
+
+        verify(bisysSyntPakkenService).genererBistandsmeldinger(syntetiserBisysRequest);
     }
 
     /**

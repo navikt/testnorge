@@ -23,6 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
@@ -51,6 +52,9 @@ public class JobControllerTest {
     private InstSyntPakkenService instSyntPakkenService;
 
     @Mock
+    private BisysSyntPakkenService bisysSyntPakkenService;
+
+    @Mock
     private TpSyntPakkenService tpSyntPakkenService;
 
     @InjectMocks
@@ -71,7 +75,6 @@ public class JobControllerTest {
         ReflectionTestUtils.setField(jobController, "instbatchAvspillergruppeId", avspillergruppeId);
         ReflectionTestUtils.setField(jobController, "inntektbatchAvspillergruppeId", avspillergruppeId);
         ReflectionTestUtils.setField(jobController, "instbatchMiljoe", miljoer);
-        ReflectionTestUtils.setField(jobController, "tpAntallPersoner", 3);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallMeldingerPerEndringskode", antallMeldingerPerEndringskode);
@@ -113,6 +116,12 @@ public class JobControllerTest {
     public void shouldStartInstBatch() {
         jobController.instSyntBatch();
         verify(instSyntPakkenService).genererInstitusjonsforhold(any());
+    }
+
+    @Test
+    public void shouldStartBisysBatch() {
+        jobController.bisysSyntBatch();
+        verify(bisysSyntPakkenService).genererBistandsmeldinger(any());
     }
 
     @Test
