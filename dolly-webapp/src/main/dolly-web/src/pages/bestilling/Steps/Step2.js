@@ -10,7 +10,6 @@ import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Icon from '~/components/icon/Icon'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import BestillingMapper from '~/utils/BestillingMapper'
-import PostadresseSjekk from '~/utils/SjekkPostadresse'
 
 export default class Step2 extends PureComponent {
 	static propTypes = {
@@ -18,10 +17,6 @@ export default class Step2 extends PureComponent {
 		antall: PropTypes.number,
 		selectedAttributeIds: PropTypes.array,
 		setValues: PropTypes.func
-	}
-
-	state = {
-		gyldigPostadresse: true
 	}
 
 	constructor(props) {
@@ -39,13 +34,7 @@ export default class Step2 extends PureComponent {
 		)
 	}
 
-	submit = async values => {
-		if ('postLand' in values) {
-			if ((await PostadresseSjekk.sjekkPostadresse(values)) === false) {
-				this.setState({ gyldigPostadresse: false })
-				return
-			} else this.setState({ gyldigPostadresse: true })
-		}
+	submit = values => {
 		this.props.setValues({ values })
 	}
 
@@ -61,8 +50,6 @@ export default class Step2 extends PureComponent {
 			identOpprettesFra,
 			eksisterendeIdentListe
 		} = this.props
-
-		const gyldigPostadresse = this.state.gyldigPostadresse
 
 		return (
 			<div className="bestilling-step2">
@@ -104,7 +91,6 @@ export default class Step2 extends PureComponent {
 								onClickNext={formikProps.submitForm}
 								onClickPrevious={() => this.onClickPrevious(formikProps.values)}
 								FormikProps={formikProps}
-								gyldigPostadresse={gyldigPostadresse}
 							/>
 							{/* // Uncomment for debug formik */}
 							{/* <DisplayFormikState {...formikProps} /> */}

@@ -6,8 +6,21 @@ import { Field } from 'formik'
 import PostadresseSjekk from '~/utils/SjekkPostadresse'
 
 export default class Postadresse extends Component {
+	constructor(props) {
+		super(props)
+		this._isMounted = false
+	}
+
 	state = {
 		gyldig: true
+	}
+
+	componentDidMount() {
+		this._isMounted = true
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false
 	}
 
 	render() {
@@ -92,7 +105,13 @@ export default class Postadresse extends Component {
 		}
 
 		if ((await PostadresseSjekk.sjekkPostadresse(values)) === false) {
-			this.setState({ gyldig: false })
-		} else this.setState({ gyldig: true })
+			if (this._isMounted) {
+				this.setState({ gyldig: false })
+			}
+		} else {
+			if (this._isMounted) {
+				this.setState({ gyldig: true })
+			}
+		}
 	}
 }
