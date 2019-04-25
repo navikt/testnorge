@@ -8,11 +8,7 @@ import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
 import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
-import {
-	getAaregSuccessEnv,
-	getKrrStubSuccess,
-	getSigrunStubSuccess
-} from '~/ducks/bestillingStatus/utils'
+import { getAaregSuccessEnv } from '~/ducks/bestillingStatus/utils'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -31,9 +27,7 @@ export default class PersonDetaljer extends PureComponent {
 	componentDidMount() {
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunTestbruker()
 		this.props.testIdent.krrstubStatus === 'OK' && this.props.getKrrTestbruker()
-
-		// TODO: Trenger ikke denne work-around lenge når getGruppe-request inneholder aaregStatus: OK
-		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.bestilling)
+		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
 	}
 
