@@ -4,8 +4,18 @@ import Knapp from 'nav-frontend-knapper'
 import NavButton from '~/components/button/NavButton/NavButton'
 import { isPage } from '~/pages/bestilling/Utils'
 import BestillingMapper from '~/utils/BestillingMapper'
+import PostadresseSjekk from '~/utils/SjekkPostadresse'
 
 export default class Navigation extends PureComponent {
+	constructor(props) {
+		super(props)
+		this._isMounted = false
+	}
+
+	state = {
+		harGyldigPostAdresse: false
+	}
+
 	static propTypes = {
 		isSubmitting: PropTypes.bool,
 		currentPage: PropTypes.number.isRequired,
@@ -17,6 +27,14 @@ export default class Navigation extends PureComponent {
 		isSubmitting: false
 	}
 
+	componentDidMount() {
+		this._isMounted = true
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false
+	}
+
 	render() {
 		const {
 			currentPage,
@@ -26,18 +44,17 @@ export default class Navigation extends PureComponent {
 			onClickPrevious,
 			FormikProps,
 			identOpprettesFra,
-			eksisterendeIdentListe,
-			gyldigPostadresse
+			eksisterendeIdentListe
 		} = this.props
 
 		const resetBestilling = () => {}
 
 		let harAdresse = false
 		let harGyldigAdresse = false
+		let harPostAdresse = false
+		var videreKnapp = <NavButton direction="forward" onClick={onClickNext} />
 
-		console.log('gyldigPostadresse :', gyldigPostadresse)
-
-		if (FormikProps)
+		if (FormikProps) {
 			if ('boadresse_gateadresse' in FormikProps.values) {
 				harAdresse = true
 				if (
@@ -47,38 +64,31 @@ export default class Navigation extends PureComponent {
 					FormikProps.values.boadresse_postnr
 				) {
 					harGyldigAdresse = true
-				}
+				} else harGyldigAdresse = false
 			}
+			if ('postLand' in FormikProps.values) {
+				harPostAdresse = true
+				this._sjekkGyldigAdresse(FormikProps.values)
+			}
+		}
+
+		if ((harAdresse && !harGyldigAdresse) || (harPostAdresse && !this.state.harGyldigPostAdresse)) {
+			videreKnapp = <NavButton disabled direction="forward" onClick={onClickNext} />
+		} else videreKnapp = <NavButton direction="forward" onClick={onClickNext} />
 
 		return (
 			<div className="step-navknapper">
 				<Knapp type="standard" onClick={abortBestilling}>
 					AVBRYT
 				</Knapp>
-
 				<div className="step-navknapper--right">
 					{!isPage.first(currentPage) && (
 						<NavButton direction="backward" onClick={onClickPrevious} />
 					)}
-
 					{!isPage.last(currentPage) &&
 						(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
 							(identOpprettesFra === BestillingMapper('EKSIDENT') &&
-								eksisterendeIdentListe.length > 0)) &&
-						(!harAdresse || (harAdresse && harGyldigAdresse)) &&
-						(typeof gyldigPostadresse === 'undefined' || gyldigPostadresse === true) && (
-							<NavButton direction="forward" onClick={onClickNext} />
-						)}
-
-					{(!isPage.last(currentPage) &&
-						(identOpprettesFra !== BestillingMapper('EKSIDENT') ||
-							(identOpprettesFra === BestillingMapper('EKSIDENT') &&
-								eksisterendeIdentListe.length > 0)) &&
-						(harAdresse && !harGyldigAdresse)) ||
-						(gyldigPostadresse === false && (
-							<NavButton disabled direction="forward" onClick={onClickNext} />
-						))}
-
+								eksisterendeIdentListe.length > 0)) && <span>{videreKnapp} </span>}
 					{isPage.last(currentPage) && (
 						<Knapp type="hoved" onClick={onClickNext} disabled={isSubmitting}>
 							OPPRETT
@@ -88,7 +98,16 @@ export default class Navigation extends PureComponent {
 			</div>
 		)
 	}
-}
 
-// (typeof gyldigPostadresse === 'undefined' || gyldigPostadresse === true)
-// gyldigPostadresse === false
+	_sjekkGyldigAdresse = async values => {
+		if ((await PostadresseSjekk.sjekkPostadresse(values)) === true) {
+			if (this._isMounted) {
+				this.setState({ harGyldigPostAdresse: true })
+			}
+		} else {
+			if (this._isMounted) {
+				this.setState({ harGyldigPostAdresse: false })
+			}
+		}
+	}
+}
