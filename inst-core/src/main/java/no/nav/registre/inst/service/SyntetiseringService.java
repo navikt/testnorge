@@ -64,6 +64,7 @@ public class SyntetiseringService {
         Map<String, Object> tokenObject = hentTokenTilInst2();
         List<ResponseEntity> responseEntities = new ArrayList<>();
         List<String> utvalgteIdenter = new ArrayList<>(identer);
+        int antallOppholdOpprettet = 0;
 
         for (Institusjonsforholdsmelding institusjonsforholdsmelding : syntetiserteMeldinger) {
             if (utvalgteIdenter.isEmpty()) {
@@ -77,11 +78,14 @@ public class SyntetiseringService {
                 institusjonsforholdsmelding.setPersonident(ident);
                 ResponseEntity response = inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, institusjonsforholdsmelding);
                 responseEntities.add(ResponseEntity.status(response.getStatusCode()).body(response.getBody()));
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    antallOppholdOpprettet++;
+                }
             }
         }
 
-        if (responseEntities.size() < identer.size()) {
-            log.warn("Kunne ikke opprette institusjonsopphold på alle identer. Antall opphold opprettet: {}", responseEntities.size());
+        if (antallOppholdOpprettet < identer.size()) {
+            log.warn("Kunne ikke opprette institusjonsopphold på alle identer. Antall opphold opprettet: {}", antallOppholdOpprettet);
         }
 
         return responseEntities;

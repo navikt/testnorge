@@ -93,7 +93,8 @@ public class Inst2Consumer {
         try {
             return restTemplate.exchange(postRequest, RESPONSE_TYPE_LEGG_TIL_INSTITUSJONSOPPHOLD);
         } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke legge til institusjonsopphold i inst2 - {}", e.getResponseBodyAsString(), e);
+            log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident {} med tssEksternId {} - {}",
+                    institusjonsforholdsmelding.getPersonident(), institusjonsforholdsmelding.getTssEksternId(), e.getResponseBodyAsString(), e);
             return ResponseEntity.status(e.getStatusCode()).headers(e.getResponseHeaders()).body(e.getResponseBodyAsString());
         }
     }
