@@ -1,4 +1,4 @@
-package no.nav.registre.orkestratoren.service;
+package no.nav.registre.orkestratoren.service.utils;
 
 import java.time.LocalDate;
 

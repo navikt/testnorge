@@ -6,6 +6,8 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
+import no.nav.registre.orkestratoren.service.utils.FnrUtility;
+
 public class FnrUtilityTest {
 
     @Test

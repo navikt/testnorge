@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
@@ -25,6 +26,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
@@ -53,6 +55,9 @@ public class SyntetiseringsController {
 
     @Autowired
     private InstSyntPakkenService instSyntPakkenService;
+
+    @Autowired
+    private BisysSyntPakkenService bisysSyntPakkenService;
 
     @Autowired
     private TpSyntPakkenService tpSyntPakkenService;
@@ -97,6 +102,12 @@ public class SyntetiseringsController {
     @PostMapping(value = "inst/institusjonsforhold/generer")
     public ResponseEntity opprettInstitutjonsforholdIInst(@RequestBody SyntetiserInstRequest syntetiserInstRequest) {
         return instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
+    }
+
+    @LogExceptions
+    @PostMapping(value = "inst/bistandsmeldinger/generer")
+    public ResponseEntity opprettBistandsmeldingerIBisys(@RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
+        return bisysSyntPakkenService.genererBistandsmeldinger(syntetiserBisysRequest);
     }
 
     @LogExceptions

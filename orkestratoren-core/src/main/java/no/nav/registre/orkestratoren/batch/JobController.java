@@ -1,7 +1,9 @@
 package no.nav.registre.orkestratoren.batch;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -10,11 +12,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
@@ -22,6 +24,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
@@ -61,6 +64,9 @@ public class JobController {
     @Value("${instbatch.antallNyeIdenter}")
     private int instbatchAntallNyeIdenter;
 
+    @Value("${bisysbatch.antallNyeIdenter}")
+    private int bisysbatchAntallNyeIdenter;
+
     @Value("${tpbatch.antallPersoner}")
     private int tpAntallPersoner;
 
@@ -83,9 +89,12 @@ public class JobController {
     private InstSyntPakkenService instSyntPakkenService;
 
     @Autowired
+    private BisysSyntPakkenService bisysSyntPakkenService;
+
+    @Autowired
     private TpSyntPakkenService tpSyntPakkenService;
 
-    @Scheduled(cron = "${tpsbatch.cron:0 0 0 * * *}")
+    @Scheduled(cron = "${tpsbatch.cron}")
     public void tpsSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             try {
@@ -96,14 +105,14 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${inntektbatch.cron:0 0 1 1 * *}")
+    @Scheduled(cron = "${inntektbatch.cron}")
     public void arenaInntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(inntektbatchAvspillergruppeId);
         String arenaInntektId = arenaInntektSyntPakkenService.genererInntektsmeldinger(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", arenaInntektId);
     }
 
-    @Scheduled(cron = "${eiabatch.cron:0 0 0 * * *}")
+    @Scheduled(cron = "${eiabatch.cron}")
     public void eiaSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserEiaRequest request = new SyntetiserEiaRequest(entry.getKey(), entry.getValue(), antallSykemeldinger);
@@ -113,7 +122,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${poppbatch.cron:0 0 1 1 5 *}")
+    @Scheduled(cron = "${poppbatch.cron}")
     public void poppSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(entry.getKey(), entry.getValue(), poppbatchAntallNyeIdenter);
@@ -122,7 +131,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${aaregbatch.cron:0 0 1 1 * *}")
+    @Scheduled(cron = "${aaregbatch.cron}")
     public void aaregSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(entry.getKey(), entry.getValue(), aaregbatchAntallNyeIdenter);
@@ -130,7 +139,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${instbatch.cron:0 0 0 * * *}")
+    @Scheduled(cron = "${instbatch.cron}")
     public void instSyntBatch() {
         for (String miljoe : instbatchMiljoe) {
             SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(instbatchAvspillergruppeId, miljoe, instbatchAntallNyeIdenter);
@@ -138,7 +147,14 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${tpbatch.cron:0 0 0 1 5 *}")
+    public void bisysSyntBatch() {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            SyntetiserBisysRequest syntetiserBisysRequest = new SyntetiserBisysRequest(entry.getKey(), entry.getValue(), bisysbatchAntallNyeIdenter);
+            bisysSyntPakkenService.genererBistandsmeldinger(syntetiserBisysRequest);
+        }
+    }
+
+    @Scheduled(cron = "${tpbatch.cron}")
     public void tpSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserTpRequest request = new SyntetiserTpRequest(entry.getKey(), entry.getValue(), tpAntallPersoner);
