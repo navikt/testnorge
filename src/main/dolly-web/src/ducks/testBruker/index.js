@@ -98,7 +98,8 @@ export const FRIGJOER_TESTBRUKER = createAction(
 export default function testbrukerReducer(state = initialState, action) {
 	switch (action.type) {
 		case LOCATION_CHANGE:
-			return initialState
+			if (!action.payload.location.pathname.match(/testbruker/gi)) return initialState
+			else return state
 		case success(GET_TPSF_TESTBRUKERE):
 			return { ...state, items: { ...state.items, tpsf: action.payload.data } }
 		case success(FRIGJOER_TESTBRUKER):
