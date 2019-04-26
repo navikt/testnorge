@@ -6,7 +6,7 @@ metadata:
   labels:
     team: orkestrator
 spec:
-  image: "docker.adeo.no:5000/registre/testnorge-statisk-data-forvalter:1.0.10"
+  image: "docker.adeo.no:5000/registre/testnorge-statisk-data-forvalter:1.0.11"
   port: 8080
   liveness:
     path: /internal/isAlive
@@ -17,7 +17,7 @@ spec:
     path: /internal/prometheus
   replicas:
     min: 1
-    max: 2
+    max: 1
   vault:
     enabled: true
   resources:

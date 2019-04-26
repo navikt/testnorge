@@ -31,9 +31,19 @@ public class HodejegerenConsumer {
      * @param playgroupId AvspillergruppeId som man ønsker å hente fnr fra
      * @return Et set med fnr som eksisterer i gruppen
      */
+    @SuppressWarnings("Duplicates")
     public Set<String> getPlaygroupFnrs(Long playgroupId) {
         UriTemplate uriTemplate = new UriTemplate(hodejegerenUrl + "/alle-identer/{avspillergruppeId}");
         ResponseEntity<Set<String>> response = restTemplate.exchange(uriTemplate.expand(playgroupId), HttpMethod.GET, null, RESPONSE_TYPE_SET);
+        if (response.getBody() != null) {
+            return response.getBody();
+        }
+        return Collections.emptySet();
+    }
+
+    public Set<String> getLivingFnrs(Long playgroupId, String environment) {
+        UriTemplate uriTemplate = new UriTemplate(hodejegerenUrl + "/levende-identer/{avspillergruppeId}?miljoe={miljoe}");
+        ResponseEntity<Set<String>> response = restTemplate.exchange(uriTemplate.expand(playgroupId, environment), HttpMethod.GET, null, RESPONSE_TYPE_SET);
         if (response.getBody() != null) {
             return response.getBody();
         }

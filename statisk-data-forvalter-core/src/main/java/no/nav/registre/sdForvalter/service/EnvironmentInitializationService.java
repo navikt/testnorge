@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -52,13 +53,18 @@ public class EnvironmentInitializationService {
           Some methods may fail if at the very least TPS (SKD) have not been created.
           TP and SAM are also critical databases for the fag applications
         */
-        Set<String> fnrs = initializeSkd(environment);
+        Set<String> missingFnrs = initializeSkd(environment);
+        if (missingFnrs.size() != 0) {
+            log.warn("Identer som ikke ble opprettet i tps: {}, disse burde sjekkes på nytt etter en liten stund, se hodejegeren", missingFnrs);
+        }
+
+        Set<String> fnrs = hodejegerenConsumer.getLivingFnrs(staticDataPlaygroup, environment);
         iniitalizeTp(environment, fnrs);
         initializeSam(environment, fnrs);
         initializeKrr();
-        boolean didInitializeAareg = initializeAareg(environment);
-        if (!didInitializeAareg) {
-            log.warn("Fullførte ikke initialiseringen av miljøet: {} i Aareg", environment);
+        Map<String, String> aaregStatusMap = initializeAareg(environment);
+        if (!aaregStatusMap.isEmpty()) {
+            log.warn("Fullførte ikke initialiseringen av miljøet: {} i Aareg, feilet på identer {}", environment, aaregStatusMap);
         }
     }
 
@@ -66,7 +72,7 @@ public class EnvironmentInitializationService {
      * Metoden oppretter nye meldinger for de som ikke har meldinger fra før av og spiller av disse i gitt miljø
      *
      * @param environment Miljø som de faste meldingene skal spilles av
-     * @return Et set med fnrs som ekisterer i gruppen etter at den har blitt oppdatert
+     * @return Et set som inneholder de identene som ikke har blitt opprettet i tps
      */
     public Set<String> initializeSkd(String environment) {
         Set<TpsModel> tpsSet = new HashSet<>();
@@ -81,7 +87,9 @@ public class EnvironmentInitializationService {
 
         skdConsumer.send(staticDataPlaygroup, environment);
 
-        return hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
+        Set<String> livingFnrs = hodejegerenConsumer.getLivingFnrs(staticDataPlaygroup, environment);
+
+        return playgroupFnrs.parallelStream().filter(t -> !livingFnrs.contains(t)).collect(Collectors.toSet());
     }
 
     /**
@@ -89,7 +97,7 @@ public class EnvironmentInitializationService {
      *
      * @param environment Miljøet arbeidsforholdene skal legges til i
      */
-    public boolean initializeAareg(String environment) {
+    public Map<String, String> initializeAareg(String environment) {
         Set<AaregModel> aaregSet = new HashSet<>();
         aaregRepository.findAll().forEach(aaregSet::add);
         return aaregConsumer.send(aaregSet, environment);

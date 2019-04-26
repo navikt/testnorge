@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Set;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.sdForvalter.service.EnvironmentInitializationService;
-
 
 @Slf4j
 @RestController
@@ -34,7 +34,6 @@ public class OrkestreringsController {
         return ResponseEntity.ok().build();
     }
 
-
     @ApiOperation(value = "Legger til nye identer fra faste data og spiller av til gitt miljø", consumes = "TPSF, Testnorge-SKD")
     @PostMapping(value = "/tps/{miljoe}")
     public ResponseEntity<Set<String>> initializeTps(@PathVariable String miljoe) {
@@ -43,7 +42,7 @@ public class OrkestreringsController {
 
     @ApiOperation(value = "Legger til arbeidsforhold i Aareg-stub", consumes = "Testnorge-aaregstub")
     @PostMapping(value = "/aareg/{miljoe}")
-    public ResponseEntity<Boolean> initializeAareg(@PathVariable String miljoe) {
+    public ResponseEntity<Map<String, String>> initializeAareg(@PathVariable String miljoe) {
         return ResponseEntity.ok(environmentInitializationService.initializeAareg(miljoe));
     }
 

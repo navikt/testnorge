@@ -49,6 +49,7 @@ public class TpConsumer {
      * @param environment Miljøet som skal brukes for å finne fnr
      * @return Et set med fnr som finnes i gitt miljø
      */
+    @SuppressWarnings("Duplicates")
     public Set<String> findFnrs(String environment) {
         UriTemplate uriTemplate = new UriTemplate(tpUrl + "/orkestrering/personer/{miljoe}");
         ResponseEntity<Set<String>> response = restTemplate.exchange(uriTemplate.expand(environment), HttpMethod.GET, null, RESPONSE_TYPE_SET);
