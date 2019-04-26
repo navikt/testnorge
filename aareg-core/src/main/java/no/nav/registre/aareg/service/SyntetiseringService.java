@@ -118,7 +118,7 @@ public class SyntetiseringService {
                     String pdName = pd.getName();
                     Object originalPropertyValue = original.getPropertyValue(pdName);
                     Object syntPropertyValue = synt.getPropertyValue(pdName);
-                    if (!pdName.equals("class") && originalPropertyValue == null && syntPropertyValue != null) {
+                    if (originalPropertyValue == null && syntPropertyValue != null && !"class".equals(pdName)) {
                         original.setPropertyValue(pd.getName(), syntPropertyValue);
                     }
                 }
