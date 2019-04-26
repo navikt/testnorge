@@ -196,7 +196,6 @@ const bestillingFormatter = bestillingState => {
 	// mandatory
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
-	// console.log('final_values :', final_values)
 
 	// TODO: SPECIAL HANDLING - Hva gjør vi her?
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
@@ -204,8 +203,20 @@ const bestillingFormatter = bestillingState => {
 		final_values.tpsf.boadresse.gatekode = values.boadresse_gatekode
 	}
 
-	// if(_get(final_values, 'tpsf.utenFastBopel')) {
+	// console.log('values :', values)
+	// console.log('final_values :', final_values)
+	// // console.log("_get('final_values', tpsf.spesreg) :", _get(final_values, 'tpsf.spesreg'))
 
+	// // if(_get(final_values, 'tpsf.utenFastBopel')) {
+	// if (_get(final_values, 'tpsf.spesreg') === 'UFB' && values.boadresse_kommunenr) {
+	// 	final_values = _set(final_values, 'tpsf.boadresse.adresseId', 0)
+	// 	final_values = _set(final_values, 'tpsf.boadresse.personId', 0)
+	// 	final_values = _set(final_values, 'tpsf.boadresse.postnr', 'string')
+	// 	final_values = _set(final_values, 'tpsf.boadresse.kommunenr', values.boadresse_kommunenr)
+	// 	// final_values.tpsf.boadresse = {}
+	// 	// final_values.tpsf.boadresse.kommunenr = values.boadresse_kommunenr
+	// 	// var obj = {key1: "value1", key2: "value2"};
+	// 	// Object.assign(final_values.tpsf, {(boadresse.kommunenr): (values.boadresse_kommunenr)})
 	// }
 	console.log('POSTING BESTILLING', final_values)
 
