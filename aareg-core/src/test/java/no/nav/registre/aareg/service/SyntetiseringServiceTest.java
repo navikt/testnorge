@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,9 @@ import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
+import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidsforhold;
+import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidsgiver;
+import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidstaker;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -116,5 +120,47 @@ public class SyntetiseringServiceTest {
 
         assertThat(listAppender.list.size(), is(equalTo(2)));
         assertThat(listAppender.list.get(0).toString(), containsString("Fant ikke nok ledige identer i avspillergruppe. Lager arbeidsforhold på " + antallMeldinger + " identer."));
+    }
+
+    @Test
+    public void shouldSendArbeidsforholdToAareg() {
+        String arbeidsforholdId = "123";
+        List<ArbeidsforholdsResponse> arbeidsforhold = new ArrayList<>();
+        ArbeidsforholdsResponse nyttArbeidsforhold = ArbeidsforholdsResponse.builder()
+                .environments(Collections.singletonList(miljoe))
+                .arbeidsforhold(Arbeidsforhold.builder()
+                        .arbeidsgiver(Arbeidsgiver.builder()
+                                .aktoertype("ORG")
+                                .orgnummer("111222333")
+                                .build())
+                        .arbeidstaker(Arbeidstaker.builder()
+                                .aktoertype("PERS")
+                                .ident(fnr1)
+                                .identtype("FNR")
+                                .build())
+                        .build())
+                .build();
+        arbeidsforhold.add(nyttArbeidsforhold);
+
+        ArbeidsforholdsResponse syntetisertArbeidsforhold = ArbeidsforholdsResponse.builder()
+                .arbeidsforhold(Arbeidsforhold.builder()
+                        .arbeidsforholdID(arbeidsforholdId)
+                        .arbeidsgiver(Arbeidsgiver.builder()
+                                .aktoertype("ORG")
+                                .orgnummer("111222333")
+                                .build())
+                        .arbeidstaker(Arbeidstaker.builder()
+                                .aktoertype("PERS")
+                                .ident(fnr2)
+                                .identtype("FNR")
+                                .build())
+                        .build())
+                .build();
+
+        when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(Collections.singletonList(syntetisertArbeidsforhold));
+
+        syntetiseringService.sendArbeidsforholdTilAareg(arbeidsforhold, true);
+
+        verify(aaregstubConsumer).sendTilAaregstub(arbeidsforhold, true);
     }
 }

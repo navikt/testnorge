@@ -27,20 +27,15 @@ public class AaregstubConsumer {
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE_HENT_ARBEIDSTAKERE = new ParameterizedTypeReference<List<String>>() {
     };
 
-    private static final ParameterizedTypeReference<List<ResponseEntity>> RESPONSE_TYPE_SEND_TIL_AAREG = new ParameterizedTypeReference<List<ResponseEntity>>() {
-    };
-
     @Autowired
     private RestTemplate restTemplate;
 
     private UriTemplate sendTilAaregstubUrl;
     private UriTemplate hentAlleArbeidstakereUrl;
-    private UriTemplate sendTilAaregUrl;
 
     public AaregstubConsumer(@Value("${aaregstub.rest.api.url}") String aaregstubServerUrl) {
         this.sendTilAaregstubUrl = new UriTemplate(aaregstubServerUrl + "/v1/lagreArbeidsforhold?lagreIAareg={lagreIAareg}");
         this.hentAlleArbeidstakereUrl = new UriTemplate(aaregstubServerUrl + "/v1/hentAlleArbeidstakere");
-        this.sendTilAaregUrl = new UriTemplate(aaregstubServerUrl + "/v1/sendArbeidsforholdTilAareg");
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
@@ -70,20 +65,5 @@ public class AaregstubConsumer {
         }
 
         return StatusFraAaregstubResponse.builder().build();
-    }
-
-    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
-    public List<ResponseEntity> sendArbeidsforholdTilAareg(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
-        RequestEntity postRequest = RequestEntity.post(sendTilAaregUrl.expand()).body(syntetiserteArbeidsforhold);
-        List<ResponseEntity> responses = new ArrayList<>();
-        ResponseEntity<List<ResponseEntity>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_SEND_TIL_AAREG);
-
-        if (response.getBody() != null) {
-            responses.addAll(response.getBody());
-        } else {
-            log.error("AaregstubConsumer.sendArbeidsforholdTilAareg: Kunne ikke hente response body fra Aaregstub: NullPointerException");
-        }
-
-        return responses;
     }
 }

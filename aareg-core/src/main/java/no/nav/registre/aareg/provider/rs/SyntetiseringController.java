@@ -12,6 +12,7 @@ import java.util.List;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
+import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.service.SyntetiseringService;
 
@@ -30,7 +31,7 @@ public class SyntetiseringController {
 
     @LogExceptions
     @PostMapping(value = "/sendTilAareg")
-    public List<ResponseEntity> sendArbeidsforholdTilAareg(@RequestBody List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
-        return syntetiseringService.sendArbeidsforholdTilAareg(syntetiserteArbeidsforhold);
+    public StatusFraAaregstubResponse sendArbeidsforholdTilAareg(@RequestParam(required = false, defaultValue = "false") Boolean fyllUtArbeidsforhold, @RequestBody List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
+        return syntetiseringService.sendArbeidsforholdTilAareg(syntetiserteArbeidsforhold, fyllUtArbeidsforhold);
     }
 }

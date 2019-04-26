@@ -14,6 +14,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.service.SyntetiseringService;
 
@@ -31,10 +35,14 @@ public class SyntetiseringControllerTest {
     private String miljoe = "t1";
     private int antallMeldinger = 2;
     private Boolean lagreIAareg = false;
+    private boolean fyllUtArbeidsforhold = true;
+    private List<ArbeidsforholdsResponse> arbeidsforhold;
 
     @Before
     public void setUp() {
         syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallMeldinger);
+        arbeidsforhold = new ArrayList<>();
+        arbeidsforhold.add(new ArbeidsforholdsResponse());
     }
 
     @Test
@@ -46,5 +54,12 @@ public class SyntetiseringControllerTest {
         verify(syntetiseringService).opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, lagreIAareg);
 
         assertThat(result.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
+    public void shouldSendArbeidsforholdTilAaregstub() {
+        syntetiseringController.sendArbeidsforholdTilAareg(fyllUtArbeidsforhold, arbeidsforhold);
+
+        verify(syntetiseringService).sendArbeidsforholdTilAareg(arbeidsforhold, fyllUtArbeidsforhold);
     }
 }

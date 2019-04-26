@@ -2,21 +2,22 @@ package no.nav.registre.aareg.consumer.rs.responses.contents;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Arbeidsforhold {
 
     @JsonProperty("ansettelsesPeriode")
-    private Map<String, String> ansettelsesPeriode;
+    private AnsettelsesPeriode ansettelsesPeriode;
 
     @JsonProperty("antallTimerForTimeloennet")
     private List<AntallTimerForTimeloennet> antallTimerForTimeloennet;
@@ -34,10 +35,10 @@ public class Arbeidsforhold {
     private String arbeidsforholdstype;
 
     @JsonProperty("arbeidsgiver")
-    private Map<String, String> arbeidsgiver;
+    private Arbeidsgiver arbeidsgiver;
 
     @JsonProperty("arbeidstaker")
-    private Map<String, String> arbeidstaker;
+    private Arbeidstaker arbeidstaker;
 
     @JsonProperty("permisjon")
     private List<Permisjon> permisjon;

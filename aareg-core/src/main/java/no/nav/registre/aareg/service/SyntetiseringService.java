@@ -1,23 +1,28 @@
 package no.nav.registre.aareg.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
+import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidsforhold;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @Service
@@ -95,7 +100,33 @@ public class SyntetiseringService {
         return ResponseEntity.ok().body(statusFraAaregstub.toString());
     }
 
-    public List<ResponseEntity> sendArbeidsforholdTilAareg(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
-        return aaregstubConsumer.sendArbeidsforholdTilAareg(syntetiserteArbeidsforhold);
+    public StatusFraAaregstubResponse sendArbeidsforholdTilAareg(List<ArbeidsforholdsResponse> arbeidsforhold, boolean fyllUtArbeidsforhold) {
+        if (fyllUtArbeidsforhold) {
+            List<String> identer = arbeidsforhold.stream().map(x -> x.getArbeidsforhold().getArbeidstaker().getIdent()).collect(Collectors.toList());
+
+            List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(identer);
+
+            for (int i = 0; i < arbeidsforhold.size() && i < syntetiserteArbeidsforhold.size(); i++) {
+                Arbeidsforhold syntetisertArbeidsforhold = syntetiserteArbeidsforhold.get(i).getArbeidsforhold();
+                Arbeidsforhold originaltArbeidsforhold = arbeidsforhold.get(i).getArbeidsforhold();
+
+                BeanWrapper original = new BeanWrapperImpl(originaltArbeidsforhold);
+                BeanWrapper synt = new BeanWrapperImpl(syntetisertArbeidsforhold);
+                PropertyDescriptor[] syntPropertyDescriptors = synt.getPropertyDescriptors();
+
+                for (PropertyDescriptor pd : syntPropertyDescriptors) {
+                    String pdName = pd.getName();
+                    Object originalPropertyValue = original.getPropertyValue(pdName);
+                    Object syntPropertyValue = synt.getPropertyValue(pdName);
+                    if (!pdName.equals("class") && originalPropertyValue == null && syntPropertyValue != null) {
+                        original.setPropertyValue(pd.getName(), syntPropertyValue);
+                    }
+                }
+            }
+
+            return aaregstubConsumer.sendTilAaregstub(arbeidsforhold, true);
+        } else {
+            return aaregstubConsumer.sendTilAaregstub(arbeidsforhold, true);
+        }
     }
 }
