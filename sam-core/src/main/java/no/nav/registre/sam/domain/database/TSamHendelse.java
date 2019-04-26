@@ -19,7 +19,6 @@ import no.nav.registre.sam.utils.Utils;
 
 @Getter
 @Setter
-@ToString
 @Entity(name = "t_sam_hendelse")
 @AllArgsConstructor
 public class TSamHendelse {
@@ -29,26 +28,37 @@ public class TSamHendelse {
     @SequenceGenerator(name = "p_seq", sequenceName = "S_SAM_HENDELSE", allocationSize = 1)
     @Column(name = "sam_hendelse_id")
     private int samHendelseId;
+
     @Column(name = "person_id")
     private int personId;
+
     @Column(name = "k_tp_art")
     private String kTpArt;
+
     @Column(name = "k_sam_hendelse_t")
     private String kSamHendelseT;
+
     @Column(name = "k_kanal_t")
     private String kKanalT;
+
     @Column(name = "tss_ekstern_id_fk")
     private String tssEksternIdFk;
+
     @Column(name = "sam_melding_id_fk")
     private String samMeldingIdFk;
+
     @Column(name = "dato_opprettet")
     private Timestamp datoOpprettet;
+
     @Column(name = "opprettet_av")
     private String opprettetAv;
+
     @Column(name = "datoEndret")
     private Timestamp datoEndret;
+
     @Column(name = "endret_av")
     private String endretAv;
+
     @Column(name = "versjon")
     private int versjon;
 
@@ -64,5 +74,21 @@ public class TSamHendelse {
         this.datoEndret = Utils.formatDate(obj.getDatoEndret());
         this.endretAv = "synt";
         this.versjon = (int) Double.parseDouble(obj.getVersjon());
+    }
+
+    public Timestamp getDatoOpprettet() {
+        return new Timestamp(datoOpprettet.getTime());
+    }
+
+    public void setDatoOpprettet(Timestamp datoOpprettet) {
+        this.datoOpprettet = new Timestamp(datoOpprettet.getTime());
+    }
+
+    public Timestamp getDatoEndret() {
+        return new Timestamp(datoEndret.getTime());
+    }
+
+    public void setDatoEndret(Timestamp datoEndret) {
+        this.datoEndret = new Timestamp(datoEndret.getTime());
     }
 }

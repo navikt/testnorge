@@ -2,7 +2,6 @@ package no.nav.registre.sam.domain.database;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +18,6 @@ import no.nav.registre.sam.utils.Utils;
 
 @Getter
 @Setter
-@ToString
 @Entity(name = "t_sam_vedtak")
 public class TSamVedtak {
 
