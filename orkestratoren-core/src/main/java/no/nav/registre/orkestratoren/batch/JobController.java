@@ -94,7 +94,7 @@ public class JobController {
     @Autowired
     private TpSyntPakkenService tpSyntPakkenService;
 
-    @Scheduled(cron = "${tpsbatch.cron}")
+    @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             try {
@@ -105,14 +105,14 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${inntektbatch.cron}")
+    @Scheduled(cron = "0 0 1 1 * *")
     public void arenaInntektSyntBatch() {
         SyntetiserInntektsmeldingRequest request = new SyntetiserInntektsmeldingRequest(inntektbatchAvspillergruppeId);
         String arenaInntektId = arenaInntektSyntPakkenService.genererInntektsmeldinger(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", arenaInntektId);
     }
 
-    @Scheduled(cron = "${eiabatch.cron}")
+    @Scheduled(cron = "0 0 0 * * *")
     public void eiaSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserEiaRequest request = new SyntetiserEiaRequest(entry.getKey(), entry.getValue(), antallSykemeldinger);
@@ -122,7 +122,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${poppbatch.cron}")
+    @Scheduled(cron = "0 0 1 1 5 *")
     public void poppSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(entry.getKey(), entry.getValue(), poppbatchAntallNyeIdenter);
@@ -131,7 +131,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${aaregbatch.cron}")
+    @Scheduled(cron = "0 0 0 * * *")
     public void aaregSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(entry.getKey(), entry.getValue(), aaregbatchAntallNyeIdenter);
@@ -139,7 +139,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${instbatch.cron}")
+    @Scheduled(cron = "0 0 0 * * *")
     public void instSyntBatch() {
         for (String miljoe : instbatchMiljoe) {
             SyntetiserInstRequest syntetiserInstRequest = new SyntetiserInstRequest(instbatchAvspillergruppeId, miljoe, instbatchAntallNyeIdenter);
@@ -154,7 +154,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "${tpbatch.cron}")
+    @Scheduled(cron = "0 0 0 1 5 *")
     public void tpSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserTpRequest request = new SyntetiserTpRequest(entry.getKey(), entry.getValue(), tpAntallPersoner);
