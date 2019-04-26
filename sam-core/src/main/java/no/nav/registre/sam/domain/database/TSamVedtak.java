@@ -1,6 +1,5 @@
 package no.nav.registre.sam.domain.database;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,7 +21,6 @@ import no.nav.registre.sam.utils.Utils;
 @Setter
 @ToString
 @Entity(name = "t_sam_vedtak")
-@AllArgsConstructor
 public class TSamVedtak {
 
     @Id
@@ -30,34 +28,49 @@ public class TSamVedtak {
     @SequenceGenerator(name = "p_seq", sequenceName = "S_SAM_VEDTAK", allocationSize = 1)
     @Column(name = "sam_vedtak_id")
     private int samVedtakId;
+
     @Column(name = "person_id")
     private int personId;
+
     @Column(name = "k_fagomrade")
     private String kFagomraade;
+
     @Column(name = "k_vedtak_status")
     private String kVedtakStatus;
+
     @Column(name = "k_art")
     private String kArt;
+
     @Column(name = "fag_vedtak_id_fk")
     private Integer fagVedtakIdFk;
+
     @Column(name = "sak_id_fk")
     private Integer sakIdFk;
+
     @Column(name = "purring")
     private String purring;
+
     @Column(name = "etterbetaling")
     private String etterbetaling;
+
     @Column(name = "dato_fom")
     private Date datoFom;
+
     @Column(name = "dato_tom")
     private Date datoTom;
+
     @Column(name = "dato_opprettet")
     private Timestamp datoOpprettet;
+
     @Column(name = "opprettet_av")
     private String opprettetAv;
+
     @Column(name = "datoEndret")
     private Timestamp datoEndret;
+
     @Column(name = "endret_av")
     private String endretAv;
+
     @Column(name = "versjon")
     private int versjon;
 
@@ -77,5 +90,21 @@ public class TSamVedtak {
         this.datoEndret = Utils.formatDate(obj.getDatoEndret());
         this.endretAv = "synt";
         this.versjon = (int) Double.parseDouble(obj.getVersjon());
+    }
+
+    public Timestamp getDatoOpprettet() {
+        return new Timestamp(datoOpprettet.getTime());
+    }
+
+    public void setDatoOpprettet(Timestamp datoOpprettet) {
+        this.datoOpprettet = new Timestamp(datoOpprettet.getTime());
+    }
+
+    public Timestamp getDatoEndret() {
+        return new Timestamp(datoEndret.getTime());
+    }
+
+    public void setDatoEndret(Timestamp datoEndret) {
+        this.datoEndret = new Timestamp(datoEndret.getTime());
     }
 }

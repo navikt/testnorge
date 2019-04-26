@@ -1,6 +1,7 @@
 package no.nav.registre.sam.domain.database;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import no.nav.registre.sam.utils.Utils;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "t_person")
 public class TPerson {
@@ -53,8 +55,16 @@ public class TPerson {
         this.versjon = 1;
     }
 
+    public Timestamp getDatoOpprettet() {
+        return new Timestamp(datoOpprettet.getTime());
+    }
+
     public void setDatoOpprettet(Timestamp datoOpprettet) {
         this.datoOpprettet = new Timestamp(datoOpprettet.getTime());
+    }
+
+    public Timestamp getDatoEndret() {
+        return new Timestamp(datoEndret.getTime());
     }
 
     public void setDatoEndret(Timestamp datoEndret) {
