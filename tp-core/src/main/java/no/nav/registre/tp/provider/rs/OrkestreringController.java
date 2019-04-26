@@ -47,5 +47,4 @@ public class OrkestreringController {
         List<String> feilet = fnrs.parallelStream().filter(fnr -> !people.contains(fnr)).collect(Collectors.toList());
         return ResponseEntity.ok(feilet);
     }
-
 }
