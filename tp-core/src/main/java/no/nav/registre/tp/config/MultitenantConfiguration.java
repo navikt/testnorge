@@ -23,7 +23,8 @@ public class MultitenantConfiguration {
 
     private final DataSourceProperties properties;
     private final Environment environment;
-    @Value("${environments}")
+
+    @Value("#{'${environments}'.split(', ')}")
     private List<String> databaseEnvironments;
 
     /**
