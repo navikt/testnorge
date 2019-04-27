@@ -319,6 +319,11 @@ export function mapKrrData(krrData) {
 				id: 'reservert',
 				label: 'Reservert mot digitalkommunikasjon',
 				value: krrData.reservert ? 'JA' : 'NEI'
+			},
+			{
+				id: 'gyldigFra',
+				label: 'Gyldig Fra',
+				value: Formatters.formatDate(krrData.gyldigFra)
 			}
 		]
 	}
