@@ -285,6 +285,12 @@ const getValues = (attributeList, values) => {
 			return _set(accumulator, pathPrefix, dataArr)
 		}
 
+		if (pathPrefix === DataSourceMapper('KRR')) {
+			// console.log('value :', value)
+
+			return _set(accumulator, pathPrefix, value[0])
+		}
+
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
 }
@@ -292,6 +298,7 @@ const getValues = (attributeList, values) => {
 // Transform attributes before order is sent
 // Date, boolean...
 const _transformAttributt = (attribute, attributes, value) => {
+	// console.log('attribute, attributes, value :', attribute, attributes, value)
 	if (attribute.dataSource === 'SIGRUN') {
 		return value
 	} else if (attribute.dataSource === 'AAREG') {
@@ -311,19 +318,40 @@ const _transformAttributt = (attribute, attributes, value) => {
 
 		return valueDeepCopy
 	} else if (attribute.items) {
+		// TODO: Single and multiple items
+
 		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
-		return value.map(val =>
-			Object.assign(
-				{},
-				...Object.entries(val).map(([key, value]) => {
-					let pathId = attributeList[key].path.split('.')
-					return {
-						//  Hente kun siste key, f.eks barn.kjønn => kjønn
-						[pathId[pathId.length - 1]]: _transformAttributt(attributeList[key], attributes, value)
-					}
-				})
+
+		if (attribute.isMultiple) {
+			return value.map(val =>
+				Object.assign(
+					{},
+					...Object.entries(val).map(([key, value]) => {
+						let pathId = attributeList[key].path.split('.')
+						return {
+							//  Hente kun siste key, f.eks barn.kjønn => kjønn
+							[pathId[pathId.length - 1]]: _transformAttributt(
+								attributeList[key],
+								attributes,
+								value
+							)
+						}
+					})
+				)
 			)
-		)
+		} else {
+			console.log('value', value)
+			return value.map(val =>
+				Object.assign(
+					{},
+					...Object.entries(val).map(([key, value]) => {
+						return {
+							[key]: _transformAttributt(attributeList[key], attributes, value)
+						}
+					})
+				)
+			)
+		}
 	} else if (attribute.transform) {
 		// Only affects attributes that has property "transform: (value: any, attributter: Attributt[]) => any"
 		value = attribute.transform(value, attributes)

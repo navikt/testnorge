@@ -66,6 +66,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		attributtType: AttributtType.SelectOnly,
 		sattForEksisterendeIdent: true,
+		isMultiple: true,
 		items: [
 			{
 				hovedKategori: Kategorier.FamilieRelasjoner,

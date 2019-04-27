@@ -20,10 +20,10 @@ export default class FormEditor extends PureComponent {
 
 		// TODO: editMode burde være en props for hele klassen.
 		// editMode? renderEdit....: renderNormal
-		return AttributtListe.map(hovedKategori =>
+		return AttributtListe.map(hovedKategori => {
 			// Ikke vis kategori som har default ikke-valgt radio button
-			this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
-		)
+			return this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
+		})
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
@@ -57,8 +57,11 @@ export default class FormEditor extends PureComponent {
 			AttributtListeToAdd.forEach(item => {
 				item.hovedKategori.id === hovedKategori.id &&
 					item.items.forEach(subkatItem => {
-						let addedAttrIKategori = [] 
-						AddedAttributes.map (attr => attr.hovedKategori.id === item.hovedKategori.id && addedAttrIKategori.push(attr))
+						let addedAttrIKategori = []
+						AddedAttributes.map(
+							attr =>
+								attr.hovedKategori.id === item.hovedKategori.id && addedAttrIKategori.push(attr)
+						)
 						notYetAddedAttributes = _xor(subkatItem.items, addedAttrIKategori)
 					})
 			})
