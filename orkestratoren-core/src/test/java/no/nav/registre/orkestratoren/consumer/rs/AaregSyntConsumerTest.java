@@ -53,7 +53,7 @@ public class AaregSyntConsumerTest {
     public void shouldStartSyntetisering() {
         stubAaregSyntConsumer();
 
-        ResponseEntity response = aaregSyntConsumer.startSyntetisering(syntetiserAaregRequest);
+        ResponseEntity response = aaregSyntConsumer.startSyntetisering(syntetiserAaregRequest, false);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }

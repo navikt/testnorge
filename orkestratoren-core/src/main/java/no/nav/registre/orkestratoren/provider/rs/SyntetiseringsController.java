@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -94,8 +95,8 @@ public class SyntetiseringsController {
 
     @LogExceptions
     @PostMapping(value = "aareg/arbeidsforhold/generer")
-    public ResponseEntity opprettArbeidsforholdIAareg(@RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
-        return aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
+    public ResponseEntity opprettArbeidsforholdIAareg(@RequestParam boolean lagreIAareg, @RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
+        return aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, lagreIAareg);
     }
 
     @LogExceptions

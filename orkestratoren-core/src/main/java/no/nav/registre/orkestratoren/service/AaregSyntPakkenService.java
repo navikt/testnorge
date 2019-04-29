@@ -13,7 +13,7 @@ public class AaregSyntPakkenService {
     @Autowired
     private AaregSyntConsumer aaregSyntConsumer;
 
-    public ResponseEntity genererArbeidsforholdsmeldinger(SyntetiserAaregRequest syntetiserAaregRequest) {
-        return aaregSyntConsumer.startSyntetisering(syntetiserAaregRequest);
+    public ResponseEntity genererArbeidsforholdsmeldinger(SyntetiserAaregRequest syntetiserAaregRequest, boolean lagreIAareg) {
+        return aaregSyntConsumer.startSyntetisering(syntetiserAaregRequest, lagreIAareg);
     }
 }
