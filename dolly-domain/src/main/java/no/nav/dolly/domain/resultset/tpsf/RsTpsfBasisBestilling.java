@@ -32,6 +32,8 @@ public class RsTpsfBasisBestilling {
 
     private LocalDateTime doedsdato;
 
+    private String sivilstand;
+
     private List<Sivilstatus> sivilstatus;
 
     private LocalDateTime regdato;
