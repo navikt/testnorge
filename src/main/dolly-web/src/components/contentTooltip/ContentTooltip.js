@@ -20,7 +20,7 @@ export default class ContentTooltip extends PureComponent {
 		this.setState({ isOpen: !this.state.isOpen })
 	}
 	render() {
-		const { children } = this.props
+		const { children, hideText } = this.props
 
 		return (
 			<div className="flexbox--align-center content-tooltip" onClick={this._handleOnClick}>
@@ -28,7 +28,7 @@ export default class ContentTooltip extends PureComponent {
 					{this._renderHjelpeIkon()}
 					{this.state.isOpen && this._renderHjelpeTekst(children)}
 				</div>
-				<p className="clickable-text-small">Info</p>
+				{!hideText && <p className="clickable-text-small">Info</p>}
 			</div>
 		)
 	}
@@ -47,8 +47,6 @@ export default class ContentTooltip extends PureComponent {
 				kind="help-circle"
 				className="hjelpetekst__anchor"
 				focusable="false"
-				height="32"
-				width="32"
 				viewBox="0 0 18.22 18.22"
 			>
 				<title>Hjelp</title>

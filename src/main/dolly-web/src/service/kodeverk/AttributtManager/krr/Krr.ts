@@ -22,7 +22,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Mobilnummer',
 				dataSource: DataSource.KRR,
 				inputType: InputType.Text,
-				validation: yup.string().required('Vennligst oppgi mobilnummer'),
+				validation: yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -32,7 +32,6 @@ const AttributtListe: Attributt[] = [
 				label: 'E-postadresse',
 				dataSource: DataSource.KRR,
 				inputType: InputType.Text,
-				validation: yup.string().email('Vennligst fyll ut'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -43,7 +42,6 @@ const AttributtListe: Attributt[] = [
 				label: 'Reservert mot digitalkommunikasjon',
 				inputType: InputType.Select,
 				options: SelectOptionsManager('boolean'),
-				validation: yup.string().required('Vennligst velg en verdi'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
