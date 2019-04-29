@@ -135,7 +135,7 @@ public class JobController {
     public void aaregSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(entry.getKey(), entry.getValue(), aaregbatchAntallNyeIdenter);
-            aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
+            aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, true);
         }
     }
 

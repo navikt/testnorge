@@ -132,9 +132,9 @@ public class SyntetiseringsControllerTest {
 
         SyntetiserAaregRequest syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        syntetiseringsController.opprettArbeidsforholdIAareg(syntetiserAaregRequest);
+        syntetiseringsController.opprettArbeidsforholdIAareg(false, syntetiserAaregRequest);
 
-        verify(aaregSyntPakkenService).genererArbeidsforholdsmeldinger(syntetiserAaregRequest);
+        verify(aaregSyntPakkenService).genererArbeidsforholdsmeldinger(syntetiserAaregRequest, false);
     }
 
     /**

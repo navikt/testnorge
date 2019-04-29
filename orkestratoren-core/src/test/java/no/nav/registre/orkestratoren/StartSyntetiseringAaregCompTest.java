@@ -57,7 +57,7 @@ public class StartSyntetiseringAaregCompTest {
         stubTestnorgeAareg();
 
         SyntetiserAaregRequest ordreRequest = new SyntetiserAaregRequest(gruppeId, miljoe1, antallNyeIdenter);
-        ResponseEntity response = syntetiseringsController.opprettArbeidsforholdIAareg(ordreRequest);
+        ResponseEntity response = syntetiseringsController.opprettArbeidsforholdIAareg( false, ordreRequest);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
