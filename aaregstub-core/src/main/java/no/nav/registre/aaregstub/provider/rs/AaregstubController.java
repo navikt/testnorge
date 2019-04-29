@@ -1,5 +1,6 @@
 package no.nav.registre.aaregstub.provider.rs;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,18 +32,21 @@ public class AaregstubController {
     private ArbeidsforholdService arbeidsforholdService;
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man lagre arbeidsforhold i stubben. Boolean-verdien 'lagreIAareg' bestemmer om arbeidsforholdene også skal sendes til aareg.")
     @PostMapping(value = "/lagreArbeidsforhold")
     public StatusResponse lagreArbeidsforhold(@RequestParam("lagreIAareg") Boolean lagreIAareg, @RequestBody List<ArbeidsforholdsResponse> arbeidsforholdsmeldinger) {
         return arbeidsforholdService.lagreArbeidsforhold(arbeidsforholdsmeldinger, lagreIAareg);
     }
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man hente ut alle arbeidsforhold-idene som er lagret i stubben.")
     @GetMapping(value = "/hentArbeidsforholdIder")
     public List<BigInteger> hentArbeidsforholdIder() {
         return arbeidsforholdService.hentAlleArbeidsforholdIder();
     }
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man hente ut arbeidsforholdet med den angitte id-en.")
     @GetMapping(value = "/hentArbeidsforhold/{id}")
     public Arbeidsforhold hentArbeidsforhold(@PathVariable Long id) {
         Optional<Arbeidsforhold> arbeidsforhold = arbeidsforholdService.hentArbeidsforhold(id);
@@ -50,6 +54,7 @@ public class AaregstubController {
     }
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man slette arbeidsforholdet med den angitte id-en fra stubben. Arbeidsforholdet blir ikke slettet fra aareg hvis det er lagret der.")
     @Transactional
     @DeleteMapping(value = "/slettArbeidsforhold/{id}")
     public void slettArbeidsforhold(@PathVariable Long id) {
@@ -57,12 +62,14 @@ public class AaregstubController {
     }
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man hente ut alle identene som har fått opprettet arbeidsforhold i stubben.")
     @GetMapping(value = "/hentAlleArbeidstakere")
     public List<String> hentAlleArbeidstakere() {
         return arbeidsforholdService.hentAlleArbeidstakere();
     }
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man hente ut alle arbeidsforholdene som er opprettet i stubben på en gitt ident.")
     @GetMapping(value = "/hentIdentMedArbeidsforhold/{ident}")
     public Ident hentIdentMedArbeidsforhold(@PathVariable String ident) {
         Optional<Ident> identMedArbeidsforhold = arbeidsforholdService.hentIdentMedArbeidsforholdNy(ident);
@@ -70,12 +77,14 @@ public class AaregstubController {
     }
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man sende arbeidsforhold til aareg, uten at de lagres i stubben.")
     @PostMapping(value = "/sendArbeidsforholdTilAareg")
     public List<DollyResponse> sendArbeidsforholdTilAareg(@RequestBody List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
         return arbeidsforholdService.sendArbeidsforholdTilAareg(syntetiserteArbeidsforhold);
     }
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man hente arbeidsforholdene på en ident direkte fra aareg, gitt identifikasjonsnummer og miljø.")
     @GetMapping(value = "hentArbeidsforholdFraAareg")
     public Object hentArbeidsforholdFraAareg(@RequestParam String ident, @RequestParam String miljoe) {
         return arbeidsforholdService.hentArbeidsforholdFraAareg(ident, miljoe);
