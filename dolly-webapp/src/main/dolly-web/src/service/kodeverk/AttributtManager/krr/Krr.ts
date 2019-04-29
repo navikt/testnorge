@@ -9,7 +9,7 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.KontaktInfo,
 		subKategori: SubKategorier.Krr,
-		id: 'rrgr',
+		id: 'krr',
 		label: 'Har kontakt og reservasjon',
 		dataSource: DataSource.KRR,
 		attributtType: AttributtType.SelectAndEdit,
