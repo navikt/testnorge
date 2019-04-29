@@ -33,15 +33,18 @@ export default class AttributtManager {
 			.map(attr => {
 				// TODO: Ikke bærekraftig løsning. Refaktorerer AttributtSystemmet hvis det kommer flere slike registrer
 				if (attr.items) {
-					return attr
-					// if (attr.dataSource === 'SIGRUN' || attr.dataSource === 'AAREG') {
-					// 	return attr
-					// } else {
-					// 	// Eks: Barn som attributt må bli behandlet annerledes
-					// 	return Object.assign(Object.assign({}, attr), {
-					// 		items: this.listAllSelectFilterItems(selectedIds, attr.items)
-					// 	})
-					// }
+					if (
+						attr.dataSource === 'SIGRUN' ||
+						attr.dataSource === 'AAREG' ||
+						attr.dataSource === 'KRR'
+					) {
+						return attr
+					} else {
+						// Eks: Barn som attributt må bli behandlet annerledes
+						return Object.assign(Object.assign({}, attr), {
+							items: this.listAllSelectFilterItems(selectedIds, attr.items)
+						})
+					}
 				} else {
 					return attr
 				}

@@ -75,7 +75,6 @@ export default class FormEditor extends PureComponent {
 				errors={hasError}
 			>
 				{items.map((item, idx) => {
-					console.log('item :', item)
 					return this.renderFieldContainer(item, idx, formikProps)
 				})}
 

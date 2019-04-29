@@ -1,4 +1,4 @@
-// TODO: Hvis denne er kun bruk under PersonDetailjer, flytt den dit
+// TODO: Hvis denne klassen kun bruk av PersonDetailjer, flytt den dit
 import { createHeader as c } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import {
