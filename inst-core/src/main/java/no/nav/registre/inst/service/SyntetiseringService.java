@@ -43,8 +43,10 @@ public class SyntetiseringService {
             tomRespons.add(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fant ingen ledige identer i avspillergruppe " + syntetiserInstRequest.getAvspillergruppeId()));
             return tomRespons;
         }
-        List<Institusjonsforholdsmelding> syntetiserteMeldinger = instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(utvalgteIdenter.size());
-        return leggTilSyntetisertInstitusjonsoppholdIInst2(utvalgteIdenter, syntetiserteMeldinger);
+
+        Map<String, Object> tokenObject = hentTokenTilInst2();
+        List<Institusjonsforholdsmelding> syntetiserteMeldinger = validerOgFjernUgyldigeMeldinger(tokenObject, instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(utvalgteIdenter.size()));
+        return leggTilSyntetisertInstitusjonsoppholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger);
     }
 
     private List<String> finnLevendeIdenter(SyntetiserInstRequest syntetiserInstRequest) {
@@ -60,8 +62,7 @@ public class SyntetiseringService {
         return utvalgteIdenter;
     }
 
-    private List<ResponseEntity> leggTilSyntetisertInstitusjonsoppholdIInst2(List<String> identer, List<Institusjonsforholdsmelding> syntetiserteMeldinger) {
-        Map<String, Object> tokenObject = hentTokenTilInst2();
+    private List<ResponseEntity> leggTilSyntetisertInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, List<String> identer, List<Institusjonsforholdsmelding> syntetiserteMeldinger) {
         List<ResponseEntity> responseEntities = new ArrayList<>();
         List<String> utvalgteIdenter = new ArrayList<>(identer);
         int antallOppholdOpprettet = 0;
@@ -71,7 +72,7 @@ public class SyntetiseringService {
                 break;
             }
             String ident = utvalgteIdenter.remove(0);
-            List<Institusjonsforholdsmelding> eksisterendeInstitusjonsforhold = hentInstitusjonsoppholdFraInst2(ident);
+            List<Institusjonsforholdsmelding> eksisterendeInstitusjonsforhold = hentInstitusjonsoppholdFraInst2(tokenObject, ident);
             if (!eksisterendeInstitusjonsforhold.isEmpty()) {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", ident);
             } else {
@@ -91,8 +92,7 @@ public class SyntetiseringService {
         return responseEntities;
     }
 
-    private List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(String ident) {
-        Map<String, Object> tokenObject = hentTokenTilInst2();
+    private List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident) {
         List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(tokenObject, ident);
         for (Institusjonsforholdsmelding melding : institusjonsforholdsmeldinger) {
             melding.setPersonident(ident);
@@ -102,5 +102,23 @@ public class SyntetiseringService {
 
     private Map<String, Object> hentTokenTilInst2() {
         return inst2Consumer.hentTokenTilInst2();
+    }
+
+    private List<Institusjonsforholdsmelding> validerOgFjernUgyldigeMeldinger(Map<String, Object> tokenObject, List<Institusjonsforholdsmelding> syntetiserteMeldinger) {
+        List<Institusjonsforholdsmelding> gyldigeSyntetiserteMeldinger = new ArrayList<>(syntetiserteMeldinger.size());
+
+        for (Institusjonsforholdsmelding melding : syntetiserteMeldinger) {
+            String tssEksternId = melding.getTssEksternId();
+            String startdato = melding.getStartdato();
+            String faktiskSluttdato = melding.getFaktiskSluttdato();
+            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, startdato) && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, faktiskSluttdato)) {
+                gyldigeSyntetiserteMeldinger.add(melding);
+            } else {
+                log.warn("Institusjon med tssEksternIdd {} er ikke gyldig med startdato {} og faktiskSluttdato {}. Hopper over melding."
+                        , tssEksternId, startdato, faktiskSluttdato);
+            }
+        }
+
+        return gyldigeSyntetiserteMeldinger;
     }
 }

@@ -28,6 +28,8 @@ public class Inst2Consumer {
     };
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_LEGG_TIL_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<Object>() {
     };
+    private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_SJEKK_INSTITUSJON = new ParameterizedTypeReference<Object>() {
+    };
 
     @Autowired
     private RestTemplate restTemplate;
@@ -37,6 +39,7 @@ public class Inst2Consumer {
     private String password;
     private UriTemplate hentInstitusjonsoppholdUrl;
     private UriTemplate leggTilInstitusjonsforholdUrl;
+    private UriTemplate sjekkInstitusjonUrl;
 
     public Inst2Consumer(
             @Value("${freg-token-provider-v1.url}") String tokenProviderServerUrl,
@@ -48,6 +51,7 @@ public class Inst2Consumer {
         this.password = password;
         this.hentInstitusjonsoppholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold");
         this.leggTilInstitusjonsforholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold?validatePeriod=true");
+        this.sjekkInstitusjonUrl = new UriTemplate(inst2ServerUrl + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}");
     }
 
     public Map<String, Object> hentTokenTilInst2() {
@@ -97,5 +101,18 @@ public class Inst2Consumer {
                     institusjonsforholdsmelding.getPersonident(), institusjonsforholdsmelding.getTssEksternId(), e.getResponseBodyAsString(), e);
             return ResponseEntity.status(e.getStatusCode()).headers(e.getResponseHeaders()).body(e.getResponseBodyAsString());
         }
+    }
+
+    public boolean finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String tssEksternId, String date) {
+        RequestEntity getRequest = RequestEntity.get(sjekkInstitusjonUrl.expand(tssEksternId, date))
+                .header("accept", "*/*")
+                .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
+                .header("Nav-Call-Id", "orkestratoren")
+                .header("Nav-Consumer-Id", "orkestratoren")
+                .build();
+
+        ResponseEntity<Object> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_SJEKK_INSTITUSJON);
+
+        return response.getStatusCode().is2xxSuccessful();
     }
 }

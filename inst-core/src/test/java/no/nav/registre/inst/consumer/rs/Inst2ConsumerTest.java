@@ -46,6 +46,8 @@ public class Inst2ConsumerTest {
     private String id = "orkestratoren";
     private String fnr1 = "01010101010";
     private Map<String, Object> token;
+    private String tssEksternId = "123";
+    private String date = "2019-01-01";
 
     @Before
     public void setUp() throws IOException {
@@ -83,6 +85,15 @@ public class Inst2ConsumerTest {
         assertThat(result.getStatusCode(), is(HttpStatus.CREATED));
     }
 
+    @Test
+    public void shouldCheckWhetherInstitusjonIsValidOnDate() {
+        stubFindInstitusjon();
+
+        boolean finnes = inst2Consumer.finnesInstitusjonPaaDato(token, tssEksternId, date);
+
+        assertThat(finnes, is(true));
+    }
+
     private void stubTokenProvider() {
         stubFor(get(urlPathEqualTo("/freg-token-provider/token/user"))
                 .withHeader("accept", equalTo("*/*"))
@@ -116,4 +127,20 @@ public class Inst2ConsumerTest {
                         .withStatus(HttpStatus.CREATED.value())));
     }
 
+    private void stubFindInstitusjon() {
+        stubFor(get(urlEqualTo("/inst2/web/api/institusjon/oppslag/tssEksternId/" + tssEksternId + "?date=" + date))
+                .withHeader("accept", equalTo("*/*"))
+                .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
+                .withHeader("Nav-Call-Id", equalTo(id))
+                .withHeader("Nav-Consumer-Id", equalTo(id))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"institusjonsnavn\": \"Institusjon1\","
+                                + "  \"institusjonsnummer\": \"0123\","
+                                + "  \"organisasjonsnummer\": \"808\","
+                                + "  \"avdelinger\": [{"
+                                + "      \"avdelingsnummer\": \"01\","
+                                + "      \"tssEksternid\": \"" + tssEksternId + "\""
+                                + "    }]}")));
+    }
 }
