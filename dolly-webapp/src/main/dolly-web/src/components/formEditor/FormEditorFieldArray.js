@@ -106,13 +106,14 @@ x`
 									return renderFieldSubItem(fakeSubItem)
 								})} */}
 
-								{!editMode && (
-									<Button
-										className="field-group-remove"
-										kind="remove-circle"
-										onClick={e => arrayHelpers.remove(idx)}
-									/>
-								)}
+								{!editMode &&
+									item.isMultiple && (
+										<Button
+											className="field-group-remove"
+											kind="remove-circle"
+											onClick={e => arrayHelpers.remove(idx)}
+										/>
+									)}
 							</div>
 							{/* REG-3377: Alex - Under utvikling */}
 
