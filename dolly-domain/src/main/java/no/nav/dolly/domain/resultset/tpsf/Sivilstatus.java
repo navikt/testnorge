@@ -18,4 +18,5 @@ public class Sivilstatus {
 
     private String sivilstand;
     private String datoSivilstand;
+    private RsRelasjon partner;
 }

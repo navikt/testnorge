@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -18,6 +19,8 @@ import lombok.Setter;
 public class RsTpsfUtvidetBestilling extends RsTpsfBasisBestilling {
 
     private RsSimpleRelasjoner relasjoner;
+
+    List<RsRelasjon> barn;
 
     private String identtype;
 
