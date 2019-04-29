@@ -7,17 +7,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RsSimpleDollyRequest {
+public class RsRelasjon {
 
     private String identtype;
 
-    private Character kjonn;
+    private String kjonn;
 
     private LocalDateTime foedtEtter;
 
     private LocalDateTime foedtFoer;
-
-    private int antall;
 
     private String sprakKode;
 
