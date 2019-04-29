@@ -39,8 +39,8 @@ freg.security.oidc:
 
 providers:
   tpsf:
-#    url: https://tps-forvalteren-u2.nais.preprod.local
-    url: http://localhost:8050
+    url: https://tps-forvalteren-u2.nais.preprod.local
+#    url: http://localhost:8050
   sigrunstub:
     url: https://sigrun-skd-stub.nais.preprod.local
   krrstub:
