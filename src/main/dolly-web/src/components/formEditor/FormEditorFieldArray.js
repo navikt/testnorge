@@ -102,7 +102,7 @@ export const FieldArrayComponent = ({
 										...subItem,
 										id: `${parentId}[${idx}]${subItem.id}`
 									}
-
+x`
 									return renderFieldSubItem(fakeSubItem)
 								})} */}
 
@@ -136,15 +136,16 @@ export const FieldArrayComponent = ({
 				<p className="ingen-verdi-melding">Ingen verdi lagt til</p>
 			)}
 
-			{!editMode && (
-				<Button
-					className="flexbox--align-center field-group-add"
-					kind="add-circle"
-					onClick={createDefaultObject}
-				>
-					{subKategori.navn.toUpperCase()}
-				</Button>
-			)}
+			{!editMode &&
+				item.isMultiple && (
+					<Button
+						className="flexbox--align-center field-group-add"
+						kind="add-circle"
+						onClick={createDefaultObject}
+					>
+						{subKategori.navn.toUpperCase()}
+					</Button>
+				)}
 		</Fragment>
 	)
 }

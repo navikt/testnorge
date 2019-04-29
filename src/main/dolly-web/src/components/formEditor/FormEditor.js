@@ -75,6 +75,7 @@ export default class FormEditor extends PureComponent {
 				errors={hasError}
 			>
 				{items.map((item, idx) => {
+					console.log('item :', item)
 					return this.renderFieldContainer(item, idx, formikProps)
 				})}
 
@@ -106,6 +107,7 @@ export default class FormEditor extends PureComponent {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
+		const isMultiple = items[0].isMultiple
 
 		if (isAdresse) {
 			return (
