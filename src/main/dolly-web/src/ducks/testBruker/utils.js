@@ -60,3 +60,13 @@ const _findEnvironmentsForIdent = (state, ident) => {
 
 	return bestillingObj.environments
 }
+
+export const mapSigrunSekvensnummer = (inntektData, sekvensData) => {
+	const data = inntektData.map(i => {
+		const sekvens = sekvensData.find(s => s.gjelderPeriode === i.inntektsaar)
+		const sekvensnummer = sekvens && sekvens.sekvensnummer.toString()
+		return { ...i, sekvensnummer }
+	})
+
+	return data
+}
