@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.krrstub;
 
 import static java.util.Objects.nonNull;
 
-import java.time.ZonedDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,6 @@ public class KrrStubClient implements ClientRegister {
             try {
                 DigitalKontaktdataRequest digitalKontaktdataRequest = mapperFacade.map(bestilling.getKrrstub(), DigitalKontaktdataRequest.class);
                 digitalKontaktdataRequest.setPersonident(ident);
-                digitalKontaktdataRequest.setGyldigFra(ZonedDateTime.now());
                 ResponseEntity krrstubResponse = krrStubConsumer.createDigitalKontaktdata(progress.getBestillingId(), digitalKontaktdataRequest);
                 progress.setKrrstubStatus(krrStubResponseHandler.extractResponse(krrstubResponse));
 

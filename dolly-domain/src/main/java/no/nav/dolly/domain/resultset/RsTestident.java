@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,4 +19,6 @@ public class RsTestident {
     private String tpsfSuccessEnv;
     private String krrstubStatus;
     private String sigrunstubStatus;
+    private String arenastubStatus;
+    private List<RsStatusMiljoeIdentForhold> aaregStatus;
 }
