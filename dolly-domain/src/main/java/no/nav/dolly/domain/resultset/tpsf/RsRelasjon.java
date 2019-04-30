@@ -1,23 +1,24 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.RsAdresse;
+import no.nav.dolly.domain.resultset.RsPostadresse;
 
 @Getter
 @Setter
-public class RsSimpleDollyRequest {
+public class RsRelasjon {
 
     private String identtype;
 
-    private Character kjonn;
+    private String kjonn;
 
     private LocalDateTime foedtEtter;
 
     private LocalDateTime foedtFoer;
-
-    private int antall;
 
     private String sprakKode;
 
@@ -36,4 +37,8 @@ public class RsSimpleDollyRequest {
     private LocalDateTime egenAnsattDatoTom;
 
     private Boolean utenFastBopel;
+
+    private RsAdresse boadresse;
+
+    private List<RsPostadresse> postadresse;
 }
