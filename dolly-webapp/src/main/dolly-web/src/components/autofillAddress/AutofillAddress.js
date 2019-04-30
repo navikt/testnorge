@@ -10,6 +10,8 @@ import LinkButton from '~/components/button/LinkButton/LinkButton'
 const initialState = {
 	isFetching: false,
 	adresseValgt: false,
+	tilbakeEndreAdresse: false,
+	harSjekketValues: false,
 	gyldigeAdresser: [],
 	husnummerOptions: []
 }
@@ -19,6 +21,8 @@ export default class AutofillAddress extends Component {
 
 	render() {
 		const items = this.props.items
+		!this.state.harSjekketValues && this._checkCurrentValues()
+
 		return (
 			<Fragment>
 				<div className="address-wrapper">
@@ -135,6 +139,7 @@ export default class AutofillAddress extends Component {
 	_onAdresseChangeHandler = input => {
 		const { formikProps } = this.props
 		let addressData = ''
+		let husnr = []
 
 		if (input) addressData = input.adrObject
 
@@ -149,7 +154,7 @@ export default class AutofillAddress extends Component {
 		if (addressData) {
 			let { adrnavn, husnrfra, husnrtil, gkode, pnr, knr } = addressData
 			if (husnrfra === '') husnrfra = 1
-			let husnr = []
+
 			for (var i = husnrfra; i <= husnrtil; i++) {
 				husnr.push(parseInt(i))
 			}
@@ -167,7 +172,13 @@ export default class AutofillAddress extends Component {
 				boadresse_postnr: pnr.toString()
 			}
 		}
-		formikProps.setValues({ ...formikProps.values, ...newAddressObject, boadresse_husnummer: '' })
+		formikProps.setValues({
+			...formikProps.values,
+			...newAddressObject,
+			boadresse_husnummer: '',
+			adr: this.state.gyldigeAdresser,
+			nr: husnr
+		})
 	}
 
 	_onHusnrChangeHandler = input => {
@@ -212,7 +223,27 @@ export default class AutofillAddress extends Component {
 	_onClickEndreAdresse = () => {
 		const { formikProps } = this.props
 		formikProps.setValues({ ...formikProps.values, boadresse_husnummer: '' })
-		this.setState({ adresseValgt: false })
+		this.setState({ adresseValgt: false, tilbakeEndreAdresse: false, gyldigeAdresser: [] })
+	}
+
+	_checkCurrentValues = () => {
+		const { values } = this.props
+		const { formikProps } = this.props
+		const adr = values.adr
+		const nr = values.nr
+		this.setState({ harSjekketValues: true })
+
+		values.boadresse_gateadresse &&
+			values.boadresse_husnummer &&
+			values.boadresse_kommunenr &&
+			values.boadresse_postnr &&
+			this.setState({
+				adresseValgt: true,
+				tilbakeEndreAdresse: true,
+				gyldigeAdresser: adr,
+				husnummerOptions: nr
+			})
+		formikProps.setValues({ ...formikProps.values, adr: adr, nr: nr })
 	}
 
 	_clearAll = () => {
@@ -232,7 +263,7 @@ export default class AutofillAddress extends Component {
 		const husNummer = this._fetchHusnr()
 		return (
 			<div>
-				{this.state.adresseValgt && (
+				{(this.state.adresseValgt || this.state.tilbakeEndreAdresse) && (
 					<div className="address-container">
 						<Field
 							className="gyldigadresse-select"
