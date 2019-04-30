@@ -20,7 +20,7 @@ export default ({ brukerData }) => {
 					Testdatagrupper
 				</NavLink>
 				<NavLink to="/team">Team</NavLink>
-				<NavLink to="/tpsendring">TPS-Endringsmelding</NavLink>
+				<NavLink to="/tpsendring">Endringsmelding</NavLink>
 				{/* <NavLink to="/kømanager">Kømanager</NavLink> */}
 				<a href="/swagger-ui.html" target="_blank">
 					API-dok
