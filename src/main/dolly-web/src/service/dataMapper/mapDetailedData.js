@@ -307,6 +307,8 @@ export function mapKrrData(krrData) {
 
 	return {
 		header: 'Kontaktinformasjon og reservasjon',
+		informasjonstekst:
+			'Dataene her blir lagt i Krr-stub og blir kun distribuert til Q2. Dersom du har behov for dataen i andre miljøer må du opprette en manuell testdatabestilling i REG-spacet i Jira',
 		data: [
 			{
 				id: 'mobil',
@@ -322,6 +324,11 @@ export function mapKrrData(krrData) {
 				id: 'reservert',
 				label: 'Reservert mot digitalkommunikasjon',
 				value: krrData.reservert ? 'JA' : 'NEI'
+			},
+			{
+				id: 'gyldigFra',
+				label: 'Gyldig Fra',
+				value: Formatters.formatDate(krrData.gyldigFra)
 			}
 		]
 	}

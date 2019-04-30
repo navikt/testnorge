@@ -1,3 +1,4 @@
+// TODO: Hvis denne klassen kun bruk av PersonDetailjer, flytt den dit
 import { createHeader as c } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import {
@@ -49,7 +50,7 @@ const DataMapper = {
 
 		const { personId } = ownProps
 		if (!testbruker.items || !testbruker.items.tpsf) return null
-		
+
 		const testIdent = gruppe.data[0].testidenter.find(testIdent => testIdent.ident === personId)
 		const tpsfData = testbruker.items.tpsf.find(item => item.ident === personId)
 		if (!tpsfData) return null
