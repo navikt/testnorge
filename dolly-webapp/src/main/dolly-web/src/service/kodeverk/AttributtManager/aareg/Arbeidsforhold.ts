@@ -12,6 +12,7 @@ const AttributtListe: Attributt[] = [
 		id: 'arbeidsforhold',
 		label: 'Har arbeidsforhold',
 		dataSource: DataSource.AAREG,
+		isMultiple: true,
 		attributtType: AttributtType.SelectAndEdit,
 		validation: yup.object(),
 		items: [
