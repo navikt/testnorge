@@ -51,9 +51,6 @@ export default class Navigation extends PureComponent {
 			// values
 		} = this.props
 
-		// console.log('onClickPrevious :', onClickPrevious)
-		// console.log('values :', values)
-
 		const resetBestilling = () => {}
 		var videreKnapp = <NavButton direction="forward" onClick={onClickNext} />
 
