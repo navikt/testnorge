@@ -30,6 +30,7 @@ export default class PersonDetaljer extends PureComponent {
 
 	componentDidMount() {
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunTestbruker()
+		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunSekvensnr()
 		this.props.testIdent.krrstubStatus === 'OK' && this.props.getKrrTestbruker()
 
 		// TODO: Trenger ikke denne work-around lenge når getGruppe-request inneholder aaregStatus: OK
