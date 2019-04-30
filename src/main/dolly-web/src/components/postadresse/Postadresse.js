@@ -4,6 +4,7 @@ import './Postadresse.less'
 import InputSelector from '~/components/fields/InputSelector'
 import { Field } from 'formik'
 import PostadresseSjekk from '~/utils/SjekkPostadresse'
+import Loading from '~/components/loading/Loading'
 
 export default class Postadresse extends Component {
 	constructor(props) {
@@ -12,7 +13,8 @@ export default class Postadresse extends Component {
 	}
 
 	state = {
-		gyldig: true
+		gyldig: true,
+		isChecking: false
 	}
 
 	componentDidMount() {
@@ -27,6 +29,8 @@ export default class Postadresse extends Component {
 		const items = this.props.items
 		let adressefelter = []
 
+		// this.checkValues()
+
 		items.map(item => item.id !== 'postLand' && adressefelter.push(item))
 		return (
 			<div className="postadresse_subkategori">
@@ -36,6 +40,12 @@ export default class Postadresse extends Component {
 					</div>
 					<div className="postadresse-group">
 						{adressefelter.map(item => this.renderFieldComponent(item))}
+						{!this.state.gyldig &&
+							this.state.isChecking && (
+								<div>
+									<Loading label="Validerer postadresse..." />
+								</div>
+							)}
 					</div>
 				</div>
 				<div>
@@ -98,6 +108,7 @@ export default class Postadresse extends Component {
 	}
 
 	checkValues = async () => {
+		this.setState({ isChecking: true })
 		const values = this.props.formikProps.values
 
 		if (values['postLand'] === '') {
@@ -107,10 +118,12 @@ export default class Postadresse extends Component {
 		if ((await PostadresseSjekk.sjekkPostadresse(values)) === false) {
 			if (this._isMounted) {
 				this.setState({ gyldig: false })
+				this.setState({ isChecking: false })
 			}
 		} else {
 			if (this._isMounted) {
 				this.setState({ gyldig: true })
+				this.setState({ isChecking: false })
 			}
 		}
 	}

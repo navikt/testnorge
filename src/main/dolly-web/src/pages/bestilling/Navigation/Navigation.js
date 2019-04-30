@@ -10,9 +10,12 @@ export default class Navigation extends PureComponent {
 	constructor(props) {
 		super(props)
 		this._isMounted = false
+		this._harBoAdresse = false
+		this._harPostAdresse = false
 	}
 
 	state = {
+		harGyldigBoAdresse: false,
 		harGyldigPostAdresse: false
 	}
 
@@ -45,34 +48,37 @@ export default class Navigation extends PureComponent {
 			FormikProps,
 			identOpprettesFra,
 			eksisterendeIdentListe
+			// values
 		} = this.props
 
-		const resetBestilling = () => {}
+		// console.log('onClickPrevious :', onClickPrevious)
+		// console.log('values :', values)
 
-		let harAdresse = false
-		let harGyldigAdresse = false
-		let harPostAdresse = false
+		const resetBestilling = () => {}
 		var videreKnapp = <NavButton direction="forward" onClick={onClickNext} />
 
 		if (FormikProps) {
 			if ('boadresse_gateadresse' in FormikProps.values) {
-				harAdresse = true
+				this._harBoAdresse = true
 				if (
 					FormikProps.values.boadresse_gateadresse &&
 					FormikProps.values.boadresse_husnummer &&
 					FormikProps.values.boadresse_kommunenr &&
 					FormikProps.values.boadresse_postnr
 				) {
-					harGyldigAdresse = true
-				} else harGyldigAdresse = false
+					this.setState({ harGyldigBoAdresse: true })
+				} else this.setState({ harGyldigBoAdresse: false })
 			}
 			if ('postLand' in FormikProps.values) {
-				harPostAdresse = true
+				this._harPostAdresse = true
 				this._sjekkGyldigAdresse(FormikProps.values)
 			}
 		}
 
-		if ((harAdresse && !harGyldigAdresse) || (harPostAdresse && !this.state.harGyldigPostAdresse)) {
+		if (
+			(this._harBoAdresse && !this.state.harGyldigBoAdresse) ||
+			(this._harPostAdresse && !this.state.harGyldigPostAdresse)
+		) {
 			videreKnapp = <NavButton disabled direction="forward" onClick={onClickNext} />
 		} else videreKnapp = <NavButton direction="forward" onClick={onClickNext} />
 
