@@ -17,7 +17,6 @@ import Postadresse from '../postadresse/Postadresse'
 export default class FormEditor extends PureComponent {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
-		// console.log('this :', this)
 		// TODO: editMode burde være en props for hele klassen.
 		// editMode? renderEdit....: renderNormal
 		return AttributtListe.map(hovedKategori =>
@@ -57,8 +56,11 @@ export default class FormEditor extends PureComponent {
 			AttributtListeToAdd.forEach(item => {
 				item.hovedKategori.id === hovedKategori.id &&
 					item.items.forEach(subkatItem => {
-						let addedAttrIKategori = [] 
-						AddedAttributes.map (attr => attr.hovedKategori.id === item.hovedKategori.id && addedAttrIKategori.push(attr))
+						let addedAttrIKategori = []
+						AddedAttributes.map(
+							attr =>
+								attr.hovedKategori.id === item.hovedKategori.id && addedAttrIKategori.push(attr)
+						)
 						notYetAddedAttributes = _xor(subkatItem.items, addedAttrIKategori)
 					})
 			})
