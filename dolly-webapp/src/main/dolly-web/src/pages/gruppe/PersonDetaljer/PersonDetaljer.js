@@ -9,6 +9,7 @@ import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
 import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
 import { getAaregSuccessEnv } from '~/ducks/bestillingStatus/utils'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -51,7 +52,13 @@ export default class PersonDetaljer extends PureComponent {
 						} else {
 							return (
 								<div key={idx} className="person-details_content">
-									<h3>{i.header}</h3>
+									<h3 className="flexbox--align-center">
+										{i.header}
+										{i.informasjonstekst && (
+											<ContentTooltip hideText>{i.informasjonstekst} </ContentTooltip>
+										)}
+									</h3>
+
 									{this._renderPersonInfoBlockHandler(i)}
 								</div>
 							)
