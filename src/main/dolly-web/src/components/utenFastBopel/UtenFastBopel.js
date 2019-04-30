@@ -5,18 +5,31 @@ import { Field } from 'formik'
 import Button from '~/components/button/Button'
 
 export default class UtenFastBopel extends Component {
-	// state = {
-	// 	gyldig: true
-	// }
+	state = {
+		ufb: false
+	}
 
 	render() {
-		// console.log('this :', this)
+		console.log('this :', this)
+		console.log('this.props :', this.props)
 		const item = this.props.item
 		const valgteVerdier = this.props.valgteVerdier
 		const InputComponent = InputSelector(item.inputType)
 		const InputComponentKommunenr = InputSelector('InputType.Select')
 		const componentProps = this.extraComponentProps(item)
 		const componentPropsKommunenr = this.extraComponentPropsKommunenr()
+
+		const { attributeIds } = this.props
+		// const { values } = this.props
+
+		// valgteVerdier.spesreg === 'UFB'
+		// // 	? (this.setState({ ufb: true }), attributeIds.setValues(...attributeIds, 'boadresse'))
+		// 	: this.setState({ ufb: false })
+
+		valgteVerdier.spesreg === 'UFB' &&
+			!attributeIds.includes('boadresse') &&
+			attributeIds.push('boadresse')
+		// values.setValues({ ...values, boadresse_postnr: '0580' })
 
 		// console.log('item :', item)
 		// console.log('item.inputTypeAttributes :', item.inputTypeAttributes)
@@ -50,6 +63,15 @@ export default class UtenFastBopel extends Component {
 							{...componentPropsKommunenr}
 							// {...item.inputTypeAttributes}
 						/>
+						{/* <Field
+							key={'boadresse_postnr'}
+							name={'boadresse_postnr'}
+							label={'Postnummer'}
+							component={InputComponentKommunenr}
+							size={item.size}
+							// {...componentPropsPostnr}
+							// {...item.inputTypeAttributes}
+						/> */}
 						{/* <p>Velg kommunenummer</p> */}
 					</div>
 				)}
