@@ -8,7 +8,7 @@ export default class TPSEndring extends PureComponent {
 	render() {
 		return (
 			<Fragment>
-				<Overskrift label={'Send TPS-endringsmelding'} />
+				<Overskrift label={'Send Endringsmelding'} />
 				<SendFoedselsmelding />
 				<SendDoedsmelding />
 			</Fragment>

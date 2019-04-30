@@ -56,8 +56,10 @@ export default class FormEditor extends PureComponent {
 		if (AttributtListeToAdd) {
 			AttributtListeToAdd.forEach(item => {
 				item.hovedKategori.id === hovedKategori.id &&
-					item.items.forEach(item => {
-						notYetAddedAttributes = _xor(item.items, AddedAttributes)
+					item.items.forEach(subkatItem => {
+						let addedAttrIKategori = [] 
+						AddedAttributes.map (attr => attr.hovedKategori.id === item.hovedKategori.id && addedAttrIKategori.push(attr))
+						notYetAddedAttributes = _xor(subkatItem.items, addedAttrIKategori)
 					})
 			})
 		}
