@@ -12,6 +12,7 @@ const AttributtListe: Attributt[] = [
 		id: 'arbeidsforhold',
 		label: 'Har arbeidsforhold',
 		dataSource: DataSource.AAREG,
+		isMultiple: true,
 		attributtType: AttributtType.SelectAndEdit,
 		validation: yup.object(),
 		items: [
@@ -25,7 +26,6 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Select,
 				apiKodeverkId: 'Yrker',
 				apiKodeverkShowValueInLabel: true,
-				options: SelectOptionsManager('yrke'),
 				validation: yup.string().required('Velg et yrke.'),
 				size: 'large',
 				attributtType: AttributtType.SelectAndRead
@@ -39,7 +39,8 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Date,
 				validation: DateValidation(),
-				attributtType: AttributtType.SelectAndRead
+				attributtType: AttributtType.SelectAndRead,
+				defaultValue: new Date().setFullYear(new Date().getFullYear() - 20)
 			},
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,
@@ -68,7 +69,8 @@ const AttributtListe: Attributt[] = [
 					.min(1, 'Stillingprosent kan ikke være mindre enn 1')
 					.max(100, 'Stillingen prosent kan ikke være større enn 100')
 					.required('Tast inn en gyldig stillingprosent'),
-				attributtType: AttributtType.SelectAndRead
+				attributtType: AttributtType.SelectAndRead,
+				defaultValue: 100
 			},
 			{
 				hovedKategori: Kategorier.ArbeidOgInntekt,

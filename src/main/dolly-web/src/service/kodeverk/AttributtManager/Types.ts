@@ -53,11 +53,13 @@ export interface Attributt {
 	inputTypeAttributes?: object
 	options?: Options[]
 	format?: Function
+	defaultValue?: any
 	apiKodeverkId?: string
 	apiKodeverkShowValueInLabel?: boolean
 	validation?: yup.MixedSchema
 	parent?: string
 	items?: Attributt[]
+	isMultiple?: boolean
 	subItems?: SubItem[]
 	dependentOn?: string // Er avhengig av en annen attributt for å kunne settes verdi på
 	dependentBy?: string // Er ikke avhengig, er attributten som ble settet av dependentOn
