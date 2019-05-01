@@ -57,7 +57,7 @@ public class BrukerServiceTest {
     private TestgruppeService gruppeService;
 
     @InjectMocks
-    private BrukerService service;
+    private BrukerService brukerService;
 
     @Before
     public void setup() {
@@ -67,40 +67,40 @@ public class BrukerServiceTest {
     @Test
     public void opprettBruker_kallerRepositorySave() {
         RsBruker b = new RsBruker();
-        service.opprettBruker(new RsBruker());
+        brukerService.opprettBruker(new RsBruker());
         verify(brukerRepository).save(any());
     }
 
     @Test
     public void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerErFunnet() {
         when(brukerRepository.findBrukerByNavIdent(any())).thenReturn(new Bruker());
-        Bruker b = service.fetchBruker("test");
+        Bruker b = brukerService.fetchBruker("test");
         assertThat(b, is(notNullValue()));
     }
 
     @Test(expected = NotFoundException.class)
     public void fetchBruker_kasterExceptionHvisIngenBrukerFunnet() {
         when(brukerRepository.findBrukerByNavIdent(any())).thenReturn(null);
-        Bruker b = service.fetchBruker("test");
+        Bruker b = brukerService.fetchBruker("test");
         assertThat(b, is(notNullValue()));
     }
 
     @Test
     public void getBruker_KallerRepoHentBrukere() {
-        service.fetchBrukere();
+        brukerService.fetchBrukere();
         verify(brukerRepository).findAllByOrderByNavIdent();
     }
 
     @Test
     public void fetchOrCreateBruker_saveKallesVedNotFoundException() {
-        service.fetchOrCreateBruker("tullestring");
+        brukerService.fetchOrCreateBruker("tullestring");
         verify(brukerRepository).save(any());
     }
 
     @Test(expected = ConstraintViolationException.class)
     public void saveBrukerTilDB_kasterExceptionNarDBConstrainBrytes() {
         when(brukerRepository.save(any(Bruker.class))).thenThrow(DataIntegrityViolationException.class);
-        service.saveBrukerTilDB(new Bruker());
+        brukerService.saveBrukerTilDB(new Bruker());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class BrukerServiceTest {
         when(brukerRepository.findBrukerByNavIdent(navident)).thenReturn(bruker);
         when(teamService.fetchTeamsByMedlemskapInTeams(navident)).thenReturn(teamList);
 
-        BrukerMedTeamsOgFavoritter res = service.getBrukerMedTeamsOgFavoritter(navident);
+        BrukerMedTeamsOgFavoritter res = brukerService.getBrukerMedTeamsOgFavoritter(navident);
 
         assertThat(res.getBruker(), is(bruker));
         assertThat(res.getTeams().size(), is(1));
@@ -134,7 +134,7 @@ public class BrukerServiceTest {
         when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(bruker);
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
-        Bruker hentetBruker = service.leggTilFavoritt(ID);
+        Bruker hentetBruker = brukerService.leggTilFavoritt(ID);
 
         verify(brukerRepository).save(bruker);
 
@@ -162,7 +162,7 @@ public class BrukerServiceTest {
         when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(bruker);
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
-        Bruker hentetBruker = service.fjernFavoritt(ID);
+        Bruker hentetBruker = brukerService.fjernFavoritt(ID);
 
         verify(brukerRepository).save(bruker);
 
@@ -175,5 +175,43 @@ public class BrukerServiceTest {
         )));
 
         assertThat(testgruppe.getFavorisertAv().isEmpty(), is(true));
+    }
+
+    @Test
+    public void leggTilTeam() {
+
+        Bruker bruker = new Bruker();
+
+        brukerService.leggTilTeam(bruker, new Team());
+
+        verify(brukerRepository).save(bruker);
+    }
+
+    @Test
+    public void fetchBrukere() {
+
+        brukerService.fetchBrukere();
+
+        verify(brukerRepository).findAllByOrderByNavIdent();
+    }
+
+    @Test
+    public void sletteBrukerFavoritterByTeamId() {
+
+        long teamId = 1L;
+
+        brukerService.sletteBrukerFavoritterByTeamId(teamId);
+
+        verify(brukerRepository).deleteBrukerFavoritterByTeamId(teamId);
+    }
+
+    @Test
+    public void sletteBrukerFavoritterByGroupId() {
+
+        long groupId = 1L;
+
+        brukerService.sletteBrukerFavoritterByGroupId(groupId);
+
+        verify(brukerRepository).deleteBrukerFavoritterByGroupId(groupId);
     }
 }

@@ -1,9 +1,10 @@
 import bestillingStatus from '../index'
-import { sokSelector, miljoStatusSelector } from '../index'
+//import { sokSelector, miljoStatusSelector } from '../index'
+import { sokSelector } from '~/ducks/bestillingStatus/utils'
 
 describe('bestillingStatusReducer', () => {
 	it('should return initial state', () => {
-		expect(bestillingStatus(undefined, {})).toEqual({ny: []})
+		expect(bestillingStatus(undefined, {})).toEqual({ ny: [] })
 	})
 
 	it('should handle a success action', () => {
@@ -56,7 +57,6 @@ describe('bestillingStatusReducer', () => {
 // 	expect(sokSelector(testitems, 'ferdig')).toEqual(res)
 // 	expect(sokSelector(null)).toEqual(null)
 // })
-
 
 //FJERNET FRA DUCK
 

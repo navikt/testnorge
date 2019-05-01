@@ -105,4 +105,44 @@ public class IdentServiceTest {
 
         verify(identRepository, times(2)).deleteTestidentByIdent(anyString());
     }
+
+    @Test
+    public void slettTestident_ok() {
+
+        String ident = "1";
+
+        identService.slettTestident(ident);
+
+        verify(identRepository).deleteTestidentByIdent(ident);
+    }
+
+    @Test
+    public void slettTestidenterByGruppeId_ok() {
+
+        long gruppeId = 1L;
+
+        identService.slettTestidenterByGruppeId(gruppeId);
+
+        verify(identRepository).deleteTestidentByTestgruppeId(gruppeId);
+    }
+
+    @Test
+    public void slettTestidenterByTeamId_ok() {
+
+        long teamId = 1L;
+
+        identService.slettTestidenterByTeamId(teamId);
+
+        verify(identRepository).deleteTestidentByTestgruppeTeamtilhoerighetId(teamId);
+    }
+
+    @Test
+    public void slettTestidenter_ok() {
+
+        long bestillingId = 1L;
+
+        identService.slettTestidenter(bestillingId);
+
+        verify(identRepository).deleteTestidentsByBestillingId(bestillingId);
+    }
 }

@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		deleteGruppe: () => dispatch(deleteGruppe(gruppeId)),
 		getBestillinger: () => dispatch(getBestillinger(gruppeId)),
 		createGroup: () => dispatch(showCreateOrEditGroup(-1)),
-		editTestbruker: ident => dispatch(push(`/gruppe/${gruppeId}/testbruker/${ident}`)),
+		editTestbruker: (ident, dataSources) => dispatch(push(`/gruppe/${gruppeId}/testbruker/${ident}${dataSources}`)),
 		resetSearch: () => dispatch(resetSearch())
 	}
 }

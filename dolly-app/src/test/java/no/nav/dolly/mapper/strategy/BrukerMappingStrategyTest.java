@@ -1,14 +1,14 @@
 package no.nav.dolly.mapper.strategy;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.util.Sets.newHashSet;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,9 +20,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsTestgruppe;
+import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
@@ -49,44 +47,33 @@ public class BrukerMappingStrategyTest {
 
     @Before
     public void setUpHappyPath() {
-        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy(), new TeamMappingStrategy());
+        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new BrukerMappingStrategy(), new TeamMappingStrategy());
     }
 
     @Test
-    public void testy(){
-        Bruker bruker = Bruker.builder().navIdent("ident").build();
-        Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
-        Set<Testident> identer = singleton(testident);
+    public void mapBruker(){
 
-        Team team = Team.builder()
-                .navn("team")
-                .datoOpprettet(LocalDate.of(2000, 1, 1))
-                .eier(bruker)
-                .id(1L)
-                .medlemmer(singletonList(bruker))
-                .beskrivelse("besk")
+        Bruker bruker1 = Bruker.builder().navIdent("ident").build();
+        Bruker bruker2 = Bruker.builder().navIdent("ident")
+                .favoritter(newHashSet(singletonList(Testgruppe.builder()
+                        .id(2L)
+                        .testidenter(singleton(TestidentBuilder.builder().ident("1").build().convertToRealTestident()))
+                        .teamtilhoerighet(Team.builder()
+                                .navn("team")
+                                .id(1L)
+                                .medlemmer(singletonList(bruker1))
+                                .beskrivelse("besk")
+                                .build())
+                        .build())))
+                .teams(newHashSet(asList(Team.builder().id(1L).navn("test").build())))
                 .build();
 
-        Testgruppe testgruppe = Testgruppe.builder()
-                .sistEndretAv(bruker)
-                .datoEndret(LocalDate.of(2000, 1, 1))
-                .opprettetAv(bruker)
-                .id(2L)
-                .testidenter(identer)
-                .navn("gruppe")
-                .teamtilhoerighet(team)
-                .build();
+        RsBrukerTeamAndGruppeIDs rsBruker = mapper.map(bruker2, RsBrukerTeamAndGruppeIDs.class);
 
-        bruker.setFavoritter(newHashSet(singletonList(testgruppe)));
-
-        RsBruker rsBruker = mapper.map(bruker, RsBruker.class);
-
-        ArrayList<RsTestgruppe> favoritterInBruker = new ArrayList(rsBruker.getFavoritter());
-
-        assertThat(bruker.getNavIdent(), is("ident"));
         assertThat(rsBruker.getNavIdent(), is("ident"));
-        assertThat(favoritterInBruker.get(0).getNavn(), is("gruppe"));
-        assertThat(favoritterInBruker.get(0).getId(), is(2L));
-        assertThat(favoritterInBruker.get(0).getTeam().getNavn(), is(team.getNavn()));
+        assertThat(rsBruker.getFavoritter().get(0), is("2"));
+        assertThat(rsBruker.getTeams(), hasSize(1));
+        assertThat(rsBruker.getTeams().get(0).getId(), is(equalTo(1L)));
+        assertThat(rsBruker.getTeams().get(0).getNavn(), is(equalTo("test")));
     }
 }

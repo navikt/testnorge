@@ -33,7 +33,11 @@ export default class AttributtManager {
 			.map(attr => {
 				// TODO: Ikke bærekraftig løsning. Refaktorerer AttributtSystemmet hvis det kommer flere slike registrer
 				if (attr.items) {
-					if (attr.dataSource === 'SIGRUN' || attr.dataSource === 'AAREG') {
+					if (
+						attr.dataSource === 'SIGRUN' ||
+						attr.dataSource === 'AAREG' ||
+						attr.dataSource === 'KRR'
+					) {
 						return attr
 					} else {
 						// Eks: Barn som attributt må bli behandlet annerledes
@@ -230,6 +234,7 @@ export default class AttributtManager {
 			return this._setInitialValueFromState(prev, item, values)
 		}, {})
 	}
+
 	_setInitialValueFromState(currentObject, item, stateValues) {
 		let initialValue = this.initValueSelector(item)
 		const fromState = _get(stateValues, item.id)
@@ -286,17 +291,19 @@ export default class AttributtManager {
 	}
 
 	initValueSelector = item => {
-		// TODO: Åpne for defaultValue på Attributt?
-		if (item.id.includes('identtype')) {
-			return 'FNR'
-		}
-		// TODO: avklaring: skal alle datofelter settes automatisk til dagens dato?
 		switch (item.inputType) {
 			case 'date':
-				return DataFormatter.formatDate(new Date())
+				if (item.defaultValue) {
+					return DataFormatter.formatDate(item.defaultValue)
+				}
+				return ''
 			case 'number':
+				if (item.defaultValue) {
+					return item.defaultValue
+				}
 				return 0
 			default:
+				if (item.defaultValue) return item.defaultValue
 				return ''
 		}
 	}
