@@ -1,10 +1,10 @@
 package no.nav.registre.sam.database;
 
-import no.nav.registre.sam.domain.database.TPerson;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
+import no.nav.registre.sam.domain.database.TPerson;
 
-public interface TPersonRepository extends CrudRepository<TPerson, Number> {
+public interface TPersonRepository extends CrudRepository<TPerson, Long> {
+
     TPerson findByFnrFK(String fnrFK);
 }

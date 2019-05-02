@@ -1,7 +1,11 @@
 package no.nav.registre.sam.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -9,8 +13,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class SyntetisertSamObject {
+
     @JsonProperty("ANTALL_FORSOK")
-    private String antallForsøk;
+    private String antallForsoek;
     @JsonProperty("DATO_ENDRET")
     private String datoEndret;
     @JsonProperty("DATO_FOM")
@@ -32,7 +37,7 @@ public class SyntetisertSamObject {
     @JsonProperty("K_ART")
     private String kArt;
     @JsonProperty("K_FAGOMRADE")
-    private String kFagområde;
+    private String kFagomraade;
     @JsonProperty("K_KANAL_T")
     private String kKanalT;
     @JsonProperty("K_MELDING_STATUS")

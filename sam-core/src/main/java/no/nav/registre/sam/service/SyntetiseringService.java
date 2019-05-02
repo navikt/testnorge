@@ -1,5 +1,14 @@
 package no.nav.registre.sam.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
+import java.util.List;
+
 import no.nav.registre.sam.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sam.consumer.rs.SamSyntetisererenConsumer;
 import no.nav.registre.sam.database.TPersonRepository;
@@ -7,68 +16,63 @@ import no.nav.registre.sam.database.TSamHendelseRepository;
 import no.nav.registre.sam.database.TSamMeldingRepository;
 import no.nav.registre.sam.database.TSamVedtakRepository;
 import no.nav.registre.sam.domain.SyntetisertSamObject;
-import no.nav.registre.sam.domain.database.*;
+import no.nav.registre.sam.domain.database.TPerson;
+import no.nav.registre.sam.domain.database.TSamHendelse;
+import no.nav.registre.sam.domain.database.TSamMelding;
+import no.nav.registre.sam.domain.database.TSamVedtak;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
+@Slf4j
 public class SyntetiseringService {
 
-    @Autowired
-    SamSyntetisererenConsumer samSyntRestConsumer;
+    public static final String ENDRET_OPPRETTET_AV = "Orkestratoren";
 
     @Autowired
-    HodejegerenConsumer hodejegerenConsumer;
+    private SamSyntetisererenConsumer samSyntRestConsumer;
 
     @Autowired
-    TPersonRepository tPersonRepository;
+    private HodejegerenConsumer hodejegerenConsumer;
 
     @Autowired
-    TSamHendelseRepository tSamHendelseRepository;
+    private TPersonRepository tPersonRepository;
 
     @Autowired
-    TSamMeldingRepository tSamMeldingRepository;
+    private TSamHendelseRepository tSamHendelseRepository;
 
     @Autowired
-    TSamVedtakRepository tSamVedtakRepository;
+    private TSamMeldingRepository tSamMeldingRepository;
 
-    public ResponseEntity finnSyntetiserteMeldinger(List<String> identer) {
-        try{
-            List<SyntetisertSamObject> syntetiserteMeldinger = samSyntRestConsumer.hentSammeldingerFromSyntRest(identer.size());
-            try {
-                lagreSyntetiserteMeldinger(syntetiserteMeldinger, identer);
-                return ResponseEntity.status(HttpStatus.OK).build();
-            } catch (Exception e) {
-                System.out.println(e.toString());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-        } catch (Exception e) {
-            System.out.println(e.toString());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    @Autowired
+    private TSamVedtakRepository tSamVedtakRepository;
+
+    public ResponseEntity opprettOgLagreSyntetiserteSamordningsmeldinger(List<String> identer) {
+        List<SyntetisertSamObject> syntetiserteMeldinger = samSyntRestConsumer.hentSammeldingerFromSyntRest(identer.size());
+        lagreSyntetiserteMeldinger(syntetiserteMeldinger, identer);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     public List<String> finnLevendeIdenter(SyntetiserSamRequest request) {
         return hodejegerenConsumer.finnLevendeIdenter(request);
     }
 
-    public void lagreSyntetiserteMeldinger(List<SyntetisertSamObject> syntetiserteMeldinger, List<String> identer){
-        if (syntetiserteMeldinger.size() != identer.size()){
-            throw new IndexOutOfBoundsException("Feil! Antall identer og antall syntetiske meldinger stemmer ikke overens");
+    public void lagreSyntetiserteMeldinger(List<SyntetisertSamObject> syntetiserteMeldinger, List<String> identer) {
+        if (syntetiserteMeldinger.size() != identer.size()) {
+            log.warn("Mottok ikke riktig antall syntetiske samordningsmeldinger fra sam-syntetisereren. Antall forespurt: {}, antall mottatt: {}", identer.size(), syntetiserteMeldinger.size());
         }
-        for (int i = 0; i < identer.size(); i++){
+
+        for (int i = 0; i < identer.size() && i < syntetiserteMeldinger.size(); i++) {
             TPerson person = tPersonRepository.findByFnrFK(identer.get(i));
-            if (person == null){
+            if (person == null) {
                 person = tPersonRepository.save(new TPerson(identer.get(i)));
             }
-            tSamHendelseRepository.save(new TSamHendelse(syntetiserteMeldinger.get(i), person));
-            TSamVedtak tSamVedtak = tSamVedtakRepository.save(new TSamVedtak(syntetiserteMeldinger.get(i), person));
-            tSamMeldingRepository.save(new TSamMelding(syntetiserteMeldinger.get(i), tSamVedtak));
+            try {
+                tSamHendelseRepository.save(new TSamHendelse(syntetiserteMeldinger.get(i), person));
+                TSamVedtak tSamVedtak = tSamVedtakRepository.save(new TSamVedtak(syntetiserteMeldinger.get(i), person));
+                tSamMeldingRepository.save(new TSamMelding(syntetiserteMeldinger.get(i), tSamVedtak));
+            } catch (ParseException e) {
+                log.error("Parse-error ved opprettelse av samordning for ident {}", person.getFnrFK(), e);
+            }
         }
     }
 }

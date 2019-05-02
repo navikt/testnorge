@@ -2,7 +2,6 @@ package no.nav.registre.sam.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,6 +13,8 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 
 @Component
 @Slf4j
@@ -42,10 +43,6 @@ public class HodejegerenConsumer {
 
         List<String> identer = new ArrayList<>();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());
-        }
 
         if (response.getBody() != null) {
             identer.addAll(response.getBody());
