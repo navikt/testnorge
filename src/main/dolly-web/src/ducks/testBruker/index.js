@@ -6,7 +6,11 @@ import { DataSource } from '~/service/kodeverk/AttributtManager/Types'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _merge from 'lodash/merge'
-import { mapIdentAndEnvironementForTps, mapValuesFromDataSource } from './utils'
+import {
+	mapIdentAndEnvironementForTps,
+	mapValuesFromDataSource,
+	mapSigrunSekvensnummer
+} from './utils'
 import { DollyApi } from '~/service/Api'
 
 const initialState = {
@@ -42,6 +46,22 @@ export const GET_SIGRUN_TESTBRUKER = createAction(
 	async ident => {
 		try {
 			const res = await SigrunApi.getTestbruker(ident)
+
+			return res
+		} catch (err) {
+			return err
+		}
+	},
+	ident => ({
+		ident
+	})
+)
+
+export const GET_SIGRUN_SEKVENSNR = createAction(
+	'GET_SIGRUN_SEKVENSNR',
+	async ident => {
+		try {
+			const res = await SigrunApi.getSekvensnummer(ident)
 			return res
 		} catch (err) {
 			return err
@@ -121,6 +141,19 @@ export default function testbrukerReducer(state = initialState, action) {
 					sigrunstub: {
 						...state.items.sigrunstub,
 						[action.meta.ident]: action.payload && action.payload.data
+					}
+				}
+			}
+		case success(GET_SIGRUN_SEKVENSNR):
+			const inntektData = state.items.sigrunstub[action.meta.ident]
+			const sekvensData = action.payload && action.payload.data
+			return {
+				...state,
+				items: {
+					...state.items,
+					sigrunstub: {
+						...state.items.sigrunstub,
+						[action.meta.ident]: mapSigrunSekvensnummer(inntektData, sekvensData)
 					}
 				}
 			}

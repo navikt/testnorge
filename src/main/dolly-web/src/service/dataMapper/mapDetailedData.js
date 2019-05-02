@@ -279,14 +279,17 @@ export function mapSigrunData(sigrunData) {
 						label: 'Beløp',
 						value: data.verdi
 					},
-					,
+					{
+						id: 'sekvensnr',
+						label: 'Sekvensnummer',
+						value: data.sekvensnummer
+					},
 					{
 						id: 'tjeneste',
 						label: 'Tjeneste',
 						width: 'medium',
 						value: data.tjeneste
 					},
-
 					{
 						id: 'grunnlag',
 						label: 'Grunnlag',
