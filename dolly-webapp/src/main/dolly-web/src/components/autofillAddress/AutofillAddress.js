@@ -19,9 +19,12 @@ const initialState = {
 export default class AutofillAddress extends Component {
 	state = { ...initialState }
 
+	componentDidMount() {
+		!this.state.harSjekketValues && this._checkCurrentValues()
+	}
+
 	render() {
 		const items = this.props.items
-		!this.state.harSjekketValues && this._checkCurrentValues()
 
 		return (
 			<Fragment>
@@ -231,6 +234,7 @@ export default class AutofillAddress extends Component {
 		const { formikProps } = this.props
 		const adr = values.adr
 		const nr = values.nr
+
 		this.setState({ harSjekketValues: true })
 
 		values.boadresse_gateadresse &&
@@ -243,7 +247,13 @@ export default class AutofillAddress extends Component {
 				gyldigeAdresser: adr,
 				husnummerOptions: nr
 			})
-		formikProps.setValues({ ...formikProps.values, adr: adr, nr: nr })
+
+		formikProps.setValues({
+			...formikProps.values,
+			boadresse_gatekode: values.boadresse_gatekode,
+			adr: adr,
+			nr: nr
+		})
 	}
 
 	_clearAll = () => {
