@@ -7,19 +7,19 @@ describe('bestillingStatusReducer', () => {
 		expect(bestillingStatus(undefined, {})).toEqual({ ny: [] })
 	})
 
-	it('should handle a success action', () => {
-		const testdata = { id: 1, data: 'test' }
-		const action = {
-			type: 'GET_BESTILLING_STATUS_SUCCESS',
-			payload: { data: testdata }
-		}
+	// it('should handle a success action', () => {
+	// 	const testdata = { id: 1, data: 'test' }
+	// 	const action = {
+	// 		type: 'GET_BESTILLING_STATUS_SUCCESS',
+	// 		payload: { data: testdata }
+	// 	}
 
-		const res = {
-			[testdata.id]: testdata
-		}
+	// 	const res = {
+	// 		[testdata.id]: testdata
+	// 	}
 
-		expect(bestillingStatus({}, action)).toEqual(res)
-	})
+	// 	expect(bestillingStatus({}, action)).toEqual(res)
+	// })
 })
 
 //FLYTTET FRA DUCK TIL EGEN FIL
