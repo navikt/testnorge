@@ -19,7 +19,7 @@ export default class DollyInput extends PureComponent {
 			'label-offscreen': labelOffscreen
 		})
 
-		return <Input className={cssClass} {...restProps} />
+		return <Input placeholder="Ikke spesifisert" className={cssClass} {...restProps} />
 	}
 }
 
