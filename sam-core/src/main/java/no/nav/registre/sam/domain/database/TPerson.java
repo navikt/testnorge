@@ -1,5 +1,7 @@
 package no.nav.registre.sam.domain.database;
 
+import static no.nav.registre.sam.service.SyntetiseringService.ENDRET_OPPRETTET_AV;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import java.sql.Timestamp;
 
-import no.nav.registre.sam.utils.Utils;
+import no.nav.registre.sam.utils.DateUtils;
 
 @Getter
 @Setter
@@ -46,10 +48,10 @@ public class TPerson {
 
     public TPerson(String fnrFK) {
         this.fnrFK = fnrFK;
-        this.datoOpprettet = Utils.getTodaysDate();
-        this.opprettetAv = "synt";
-        this.datoEndret = Utils.getTodaysDate();
-        this.endretAv = "synt";
+        this.datoOpprettet = DateUtils.getTodaysDate();
+        this.opprettetAv = ENDRET_OPPRETTET_AV;
+        this.datoEndret = DateUtils.getTodaysDate();
+        this.endretAv = ENDRET_OPPRETTET_AV;
         this.versjon = 1;
     }
 

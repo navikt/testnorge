@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Utils {
+public class DateUtils {
 
     public static Timestamp formatTimestamp(String dateString) throws ParseException {
         if ("".equals(dateString)) {

@@ -1,5 +1,7 @@
 package no.nav.registre.sam.domain.database;
 
+import static no.nav.registre.sam.service.SyntetiseringService.ENDRET_OPPRETTET_AV;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +17,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 
 import no.nav.registre.sam.domain.SyntetisertSamObject;
-import no.nav.registre.sam.utils.Utils;
+import no.nav.registre.sam.utils.DateUtils;
 
 @Getter
 @Setter
@@ -76,14 +78,14 @@ public class TSamMelding {
         this.kKanalT = obj.getKKanalT();
         this.kMeldingStatus = obj.getKMeldingStatus();
         this.tssEksternIdFk = obj.getTssEksternIdFk();
-        this.datoSendt = Utils.formatDate(obj.getDatoSendt());
-        this.datoSvart = Utils.formatDate(obj.getDatoSvart());
-        this.datoPurret = Utils.formatDate(obj.getDatoPurret());
+        this.datoSendt = DateUtils.formatDate(obj.getDatoSendt());
+        this.datoSvart = DateUtils.formatDate(obj.getDatoSvart());
+        this.datoPurret = DateUtils.formatDate(obj.getDatoPurret());
         this.refusjonskrav = obj.getRefusjonskrav();
-        this.datoOpprettet = Utils.formatTimestamp(obj.getDatoOpprettet());
-        this.opprettetAv = ("".equals(obj.getOpprettetAv())) ? "synt" : obj.getOpprettetAv();
-        this.datoEndret = Utils.formatTimestamp(obj.getDatoEndret());
-        this.endretAv = "synt";
+        this.datoOpprettet = DateUtils.formatTimestamp(obj.getDatoOpprettet());
+        this.opprettetAv = ("".equals(obj.getOpprettetAv())) ? ENDRET_OPPRETTET_AV : obj.getOpprettetAv();
+        this.datoEndret = DateUtils.formatTimestamp(obj.getDatoEndret());
+        this.endretAv = ENDRET_OPPRETTET_AV;
         this.versjon = (int) Double.parseDouble(obj.getVersjon());
         this.antallForsoek = (int) Double.parseDouble(obj.getVersjon());
     }

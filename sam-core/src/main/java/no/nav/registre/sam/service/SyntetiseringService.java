@@ -26,6 +26,8 @@ import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 @Slf4j
 public class SyntetiseringService {
 
+    public static final String ENDRET_OPPRETTET_AV = "Orkestratoren";
+
     @Autowired
     private SamSyntetisererenConsumer samSyntRestConsumer;
 
