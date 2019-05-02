@@ -11,9 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.Date;
 
 import no.nav.registre.sam.domain.SyntetisertSamObject;
 import no.nav.registre.sam.utils.Utils;
@@ -82,16 +82,36 @@ public class TSamMelding {
         this.datoSvart = Utils.formatDate(obj.getDatoSvart());
         this.datoPurret = Utils.formatDate(obj.getDatoPurret());
         this.refusjonskrav = obj.getRefusjonskrav();
-        this.datoOpprettet = Utils.formatDate(obj.getDatoOpprettet());
+        this.datoOpprettet = Utils.formatTimestamp(obj.getDatoOpprettet());
         this.opprettetAv = ("".equals(obj.getOpprettetAv())) ? "synt" : obj.getOpprettetAv();
-        this.datoEndret = Utils.formatDate(obj.getDatoEndret());
+        this.datoEndret = Utils.formatTimestamp(obj.getDatoEndret());
         this.endretAv = "synt";
         this.versjon = (int) Double.parseDouble(obj.getVersjon());
         this.antallForsoek = (int) Double.parseDouble(obj.getVersjon());
     }
 
-    public void setDatoOpprettet(Timestamp datoOpprettet) {
-        this.datoOpprettet = new Timestamp(datoOpprettet.getTime());
+    public Date getDatoSendt() {
+        return new Date(datoSendt.getTime());
+    }
+
+    public void setDatoSendt(Date datoSendt) {
+        this.datoSendt = new Date(datoSendt.getTime());
+    }
+
+    public Date getDatoSvart() {
+        return new Date(datoSvart.getTime());
+    }
+
+    public void setDatoSvart(Date datoSvart) {
+        this.datoSvart = new Date(datoSvart.getTime());
+    }
+
+    public Date getDatoPurret() {
+        return new Date(datoPurret.getTime());
+    }
+
+    public void setDatoPurret(Date datoPurret) {
+        this.datoPurret = new Date(datoPurret.getTime());
     }
 
     public Timestamp getDatoEndret() {
@@ -104,5 +124,10 @@ public class TSamMelding {
 
     public Timestamp getDatoOpprettet() {
         return new Timestamp(datoOpprettet.getTime());
+    }
+
+    public void setDatoOpprettet(Timestamp datoOpprettet) {
+        this.datoPurret = new Date(123L);
+        this.datoOpprettet = new Timestamp(datoOpprettet.getTime());
     }
 }

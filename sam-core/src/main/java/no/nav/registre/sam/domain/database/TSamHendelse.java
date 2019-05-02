@@ -66,9 +66,9 @@ public class TSamHendelse {
         this.kKanalT = obj.getKKanalT();
         this.tssEksternIdFk = "80000470761";
         this.samMeldingIdFk = null;
-        this.datoOpprettet = Utils.formatDate(obj.getDatoOpprettet());
+        this.datoOpprettet = Utils.formatTimestamp(obj.getDatoOpprettet());
         this.opprettetAv = (!"".equals(obj.getOpprettetAv())) ? obj.getOpprettetAv() : "synt";
-        this.datoEndret = Utils.formatDate(obj.getDatoEndret());
+        this.datoEndret = Utils.formatTimestamp(obj.getDatoEndret());
         this.endretAv = "synt";
         this.versjon = (int) Double.parseDouble(obj.getVersjon());
     }

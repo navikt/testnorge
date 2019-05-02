@@ -9,9 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.Date;
 
 import no.nav.registre.sam.domain.SyntetisertSamObject;
 import no.nav.registre.sam.utils.Utils;
@@ -83,11 +83,27 @@ public class TSamVedtak {
         this.etterbetaling = obj.getEtterbetaling();
         this.datoFom = Utils.formatDate(obj.getDatoFom());
         this.datoTom = Utils.formatDate(obj.getDatoTom());
-        this.datoOpprettet = Utils.formatDate(obj.getDatoOpprettet());
+        this.datoOpprettet = Utils.formatTimestamp(obj.getDatoOpprettet());
         this.opprettetAv = ("".equals(obj.getOpprettetAv())) ? "synt" : obj.getOpprettetAv();
-        this.datoEndret = Utils.formatDate(obj.getDatoEndret());
+        this.datoEndret = Utils.formatTimestamp(obj.getDatoEndret());
         this.endretAv = "synt";
         this.versjon = (int) Double.parseDouble(obj.getVersjon());
+    }
+
+    public Date getDatoFom() {
+        return new Date(datoFom.getTime());
+    }
+
+    public void setDatoFom(Date datoFom) {
+        this.datoFom = new Date(datoFom.getTime());
+    }
+
+    public Date getDatoTom() {
+        return new Date(datoTom.getTime());
+    }
+
+    public void setDatoTom(Date datoTom) {
+        this.datoTom = new Date(datoTom.getTime());
     }
 
     public Timestamp getDatoOpprettet() {
