@@ -29,10 +29,10 @@ public class TSamVedtak {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "p_seq")
     @SequenceGenerator(name = "p_seq", sequenceName = "S_SAM_VEDTAK", allocationSize = 1)
     @Column(name = "sam_vedtak_id")
-    private int samVedtakId;
+    private Long samVedtakId;
 
     @Column(name = "person_id")
-    private int personId;
+    private Long personId;
 
     @Column(name = "k_fagomrade")
     private String kFagomraade;

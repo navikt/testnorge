@@ -26,7 +26,7 @@ public class TPerson {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "p_seq")
     @SequenceGenerator(name = "p_seq", sequenceName = "S_PERSON", allocationSize = 1)
     @Column(name = "person_id")
-    private int personId;
+    private Long personId;
 
     @Column(name = "fnr_fk")
     private String fnrFK;

@@ -28,10 +28,10 @@ public class TSamHendelse {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "p_seq")
     @SequenceGenerator(name = "p_seq", sequenceName = "S_SAM_HENDELSE", allocationSize = 1)
     @Column(name = "sam_hendelse_id")
-    private int samHendelseId;
+    private Long samHendelseId;
 
     @Column(name = "person_id")
-    private int personId;
+    private Long personId;
 
     @Column(name = "k_tp_art")
     private String kTpArt;
