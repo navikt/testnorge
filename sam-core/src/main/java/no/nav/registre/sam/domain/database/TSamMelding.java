@@ -1,8 +1,7 @@
 package no.nav.registre.sam.domain.database;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -20,9 +19,8 @@ import no.nav.registre.sam.utils.Utils;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity(name = "t_sam_melding")
-@AllArgsConstructor
-@Builder
 public class TSamMelding {
 
     @Id

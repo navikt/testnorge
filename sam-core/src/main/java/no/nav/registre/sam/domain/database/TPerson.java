@@ -10,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 import java.sql.Timestamp;
 
 import no.nav.registre.sam.utils.Utils;
@@ -18,8 +17,7 @@ import no.nav.registre.sam.utils.Utils;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name = "t_person")
+@Entity(name = "t_person")
 public class TPerson {
 
     @Id
