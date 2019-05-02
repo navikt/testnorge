@@ -9,11 +9,6 @@ describe('RedigerGruppe component', () => {
 			expect(wrapper.exists()).toBeTruthy()
 		})
 
-        it('should render RedigerGruppe comp', () => {
-			const wrapper = shallow(<RedigerGruppe />)
-			expect(wrapper.exists()).toBeTruthy()
-        })
-        
 		// it('should render searchstring', () => {
 		// 	const testValue = 'text'
 		// 	const wrapper = shallow(<SearchField searchText={testValue} />)
