@@ -29,6 +29,13 @@ export default class SigrunService {
 		})
 	}
 
+	static getSekvensnummer(ident) {
+		const endpoint = this.getSigrunUrl() + '/api/v0/sekvensnummer/' + ident
+		return Request.getWithoutCredentials(endpoint, {
+			headers: { personidentifikator: ident }
+		})
+	}
+
 	static updateTestbruker(data) {
 		const endpoint = this.getSigrunUrl() + '/testdata/oppdater'
 
