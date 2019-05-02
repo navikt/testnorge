@@ -4,7 +4,7 @@ import Knapp from 'nav-frontend-knapper'
 import NavButton from '~/components/button/NavButton/NavButton'
 import { isPage } from '~/pages/bestilling/Utils'
 import BestillingMapper from '~/utils/BestillingMapper'
-import PostadresseSjekk from '~/utils/SjekkPostadresse'
+import { sjekkPostadresse } from '~/utils/SjekkPostadresse'
 
 export default class Navigation extends PureComponent {
 	constructor(props) {
@@ -12,10 +12,10 @@ export default class Navigation extends PureComponent {
 		this._isMounted = false
 		this._harBoAdresse = false
 		this._harPostAdresse = false
+		this._harGyldigBoadresse = false
 	}
 
 	state = {
-		harGyldigBoAdresse: false,
 		harGyldigPostAdresse: false
 	}
 
@@ -48,32 +48,23 @@ export default class Navigation extends PureComponent {
 			FormikProps,
 			identOpprettesFra,
 			eksisterendeIdentListe
-			// values
 		} = this.props
 
-		const resetBestilling = () => {}
 		var videreKnapp = <NavButton direction="forward" onClick={onClickNext} />
 
 		if (FormikProps) {
 			if ('boadresse_gateadresse' in FormikProps.values) {
 				this._harBoAdresse = true
-				if (
-					FormikProps.values.boadresse_gateadresse &&
-					FormikProps.values.boadresse_husnummer &&
-					FormikProps.values.boadresse_kommunenr &&
-					FormikProps.values.boadresse_postnr
-				) {
-					this.setState({ harGyldigBoAdresse: true })
-				} else this.setState({ harGyldigBoAdresse: false })
+				this._sjekkGyldigBoAdresse(FormikProps.values)
 			}
 			if ('postLand' in FormikProps.values) {
 				this._harPostAdresse = true
-				this._sjekkGyldigAdresse(FormikProps.values)
+				this._sjekkGyldigPostAdresse(FormikProps.values)
 			}
 		}
 
 		if (
-			(this._harBoAdresse && !this.state.harGyldigBoAdresse) ||
+			(this._harBoAdresse && !this._harGyldigBoAdresse) ||
 			(this._harPostAdresse && !this.state.harGyldigPostAdresse)
 		) {
 			videreKnapp = <NavButton disabled direction="forward" onClick={onClickNext} />
@@ -102,8 +93,21 @@ export default class Navigation extends PureComponent {
 		)
 	}
 
-	_sjekkGyldigAdresse = async values => {
-		if ((await PostadresseSjekk.sjekkPostadresse(values)) === true) {
+	_sjekkGyldigBoAdresse = values => {
+		if (
+			values.boadresse_gateadresse &&
+			values.boadresse_husnummer &&
+			values.boadresse_kommunenr &&
+			values.boadresse_postnr
+		) {
+			this._harGyldigBoAdresse = true
+		} else {
+			this._harGyldigBoAdresse = false
+		}
+	}
+
+	_sjekkGyldigPostAdresse = async values => {
+		if ((await sjekkPostadresse(values)) === true) {
 			if (this._isMounted) {
 				this.setState({ harGyldigPostAdresse: true })
 			}

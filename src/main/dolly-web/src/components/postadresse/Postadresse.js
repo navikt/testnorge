@@ -3,7 +3,7 @@ import { DollyApi } from '~/service/Api'
 import './Postadresse.less'
 import InputSelector from '~/components/fields/InputSelector'
 import { Field } from 'formik'
-import PostadresseSjekk from '~/utils/SjekkPostadresse'
+import { sjekkPostadresse } from '~/utils/SjekkPostadresse'
 import Loading from '~/components/loading/Loading'
 
 export default class Postadresse extends Component {
@@ -28,8 +28,6 @@ export default class Postadresse extends Component {
 	render() {
 		const items = this.props.items
 		let adressefelter = []
-
-		// this.checkValues()
 
 		items.map(item => item.id !== 'postLand' && adressefelter.push(item))
 		return (
@@ -115,7 +113,7 @@ export default class Postadresse extends Component {
 			values['postLand'] = 'NOR'
 		}
 
-		if ((await PostadresseSjekk.sjekkPostadresse(values)) === false) {
+		if ((await sjekkPostadresse(values)) === false) {
 			if (this._isMounted) {
 				this.setState({ gyldig: false })
 				this.setState({ isChecking: false })
