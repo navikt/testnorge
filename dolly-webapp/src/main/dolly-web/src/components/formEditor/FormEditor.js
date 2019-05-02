@@ -6,7 +6,7 @@ import { AttributtType } from '~/service/kodeverk/AttributtManager/Types'
 import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
-import AutofillAddress from '~/components/autofillAddress/AutofillAddress'
+import AutofillAddressConnector from '~/components/autofillAddress/AutofillAddressConnector'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import Button from '~/components/button/Button'
@@ -17,7 +17,6 @@ import Postadresse from '../postadresse/Postadresse'
 export default class FormEditor extends PureComponent {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
-
 		// TODO: editMode burde være en props for hele klassen.
 		// editMode? renderEdit....: renderNormal
 		return AttributtListe.map(hovedKategori => {
@@ -113,7 +112,7 @@ export default class FormEditor extends PureComponent {
 				<div className="subkategori" key={uniqueId}>
 					{!isFieldarray && <h4>{subKategori.navn}</h4>}
 					<div className="subkategori-field-group">
-						<AutofillAddress items={items} formikProps={formikProps} />
+						<AutofillAddressConnector items={items} formikProps={formikProps} />
 					</div>
 				</div>
 			)
