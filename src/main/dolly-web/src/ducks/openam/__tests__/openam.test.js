@@ -10,23 +10,23 @@ describe('openamReducer', () => {
 		expect(openam(undefined, {})).toEqual(initialState)
 	})
 
-	it('should set initial state on request', () => {
-		const action = {
-			type: 'POST_OPEN_AM_REQUEST'
-		}
-		expect(openam({}, action)).toEqual(initialState)
-	})
+	// it('should set initial state on request', () => {
+	// 	const action = {
+	// 		type: 'POST_OPEN_AM_REQUEST'
+	// 	}
+	// 	expect(openam({}, action)).toEqual(initialState)
+	// })
 
-	it('should handle success', () => {
-		const testdata = ['testdata']
-		const action = {
-			type: 'POST_OPEN_AM_SUCCESS',
-			payload: testdata
-		}
+	// it('should handle success', () => {
+	// 	const testdata = ['testdata']
+	// 	const action = {
+	// 		type: 'POST_OPEN_AM_SUCCESS',
+	// 		payload: testdata
+	// 	}
 
-		const res = {
-			responses: testdata
-		}
-		expect(openam({}, action)).toEqual(res)
-	})
+	// 	const res = {
+	// 		responses: testdata
+	// 	}
+	// 	expect(openam({}, action)).toEqual(res)
+	// })
 })

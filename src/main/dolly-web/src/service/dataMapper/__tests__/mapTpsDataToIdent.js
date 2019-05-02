@@ -1,5 +1,6 @@
 import { mapTpsfData } from '../mapTpsDataToIdent'
 
+// TODO: Skriver om testen naar
 describe('mapTpsDataToIdent.js', () => {
 	describe('mapTpsfData', () => {
 		const testTpsfData = {
@@ -17,7 +18,8 @@ describe('mapTpsDataToIdent.js', () => {
 			spesreg: 'KODE6',
 			relasjoner: [],
 			tknr: '0314',
-			egenAnsattDatoFom: '2019-04-10T12:55:14.896'
+			egenAnsattDatoFom: '2019-04-10T12:55:14.896',
+			sprakKode: 'English'
 		}
 
 		const testTpsfRes = [
@@ -145,44 +147,49 @@ describe('mapTpsDataToIdent.js', () => {
 							id: 'statsborgerskap',
 							label: 'Statsborgerskap',
 							value: 'NOR'
+						},
+						{
+							id: 'sprakKode',
+							label: 'Språk',
+							value: 'English'
 						}
 					]
 				},
-				{
-					header: 'Bostedadresse',
-					data: [
-						{
-							parent: 'boadresse',
-							id: 'gateadresse',
-							label: 'Gatenavn',
-							value: 'SANNERGATA'
-						},
-						{
-							parent: 'boadresse',
-							id: 'husnummer',
-							label: 'Husnummer',
-							value: 'H0101'
-						},
-						{
-							parent: 'boadresse',
-							id: 'gatekode',
-							label: 'Gatekode',
-							value: '2'
-						},
-						{
-							parent: 'boadresse',
-							id: 'postnr',
-							label: 'Postnummer',
-							value: '1234'
-						},
-						{
-							parent: 'boadresse',
-							id: 'flyttedato',
-							label: 'Flyttedato',
-							value: '03.11.1903'
-						}
-					]
-				},
+				// {
+				// 	header: 'Bostedadresse',
+				// 	data: [
+				// 		{
+				// 			parent: 'boadresse',
+				// 			id: 'gateadresse',
+				// 			label: 'Gatenavn',
+				// 			value: 'SANNERGATA'
+				// 		},
+				// 		{
+				// 			parent: 'boadresse',
+				// 			id: 'husnummer',
+				// 			label: 'Husnummer',
+				// 			value: 'H0101'
+				// 		},
+				// 		{
+				// 			parent: 'boadresse',
+				// 			id: 'gatekode',
+				// 			label: 'Gatekode',
+				// 			value: '2'
+				// 		},
+				// 		{
+				// 			parent: 'boadresse',
+				// 			id: 'postnr',
+				// 			label: 'Postnummer',
+				// 			value: '1234'
+				// 		},
+				// 		{
+				// 			parent: 'boadresse',
+				// 			id: 'flyttedato',
+				// 			label: 'Flyttedato',
+				// 			value: '03.11.1903'
+				// 		}
+				// 	]
+				// },
 				{
 					header: 'Familierelasjoner',
 					multiple: true,

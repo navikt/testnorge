@@ -11,7 +11,7 @@ import Table from '~/components/table/Table'
 
 // import './RedigerGruppe.less'
 
-export default class Rediger extends PureComponent {
+export default class RedigerGruppe extends PureComponent {
 	static propTypes = {
 		gruppe: PropTypes.shape({
 			id: PropTypes.number,
@@ -34,6 +34,78 @@ export default class Rediger extends PureComponent {
 
 	erRedigering = Boolean(getIn(this.props.gruppe, 'id', false))
 	Teams = Object.freeze({ currentUser: -1, newTeam: -2 })
+
+	render() {
+		const { currentUserId, gruppe, createOrUpdateFetching, error } = this.props
+
+		if (createOrUpdateFetching) {
+			return (
+				<Table.Row>
+					<Loading label="oppdaterer gruppe" />
+				</Table.Row>
+			)
+		}
+
+		let initialValues = {
+			navn: getIn(gruppe, 'navn', ''),
+			teamId: getIn(gruppe, 'team.id', null),
+			hensikt: getIn(gruppe, 'hensikt', ''),
+			teamnavn: getIn(gruppe, 'teamnavn', ''),
+			beskrivelse: getIn(gruppe, 'beskrivelse', '')
+		}
+
+		let buttons = (
+			<Fragment>
+				<Knapp mini type="standard" htmlType="button" onClick={() => this.onCancel()}>
+					Avbryt
+				</Knapp>
+				<Knapp mini type="hoved" htmlType="submit">
+					{this.erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
+				</Knapp>
+			</Fragment>
+		)
+
+		return (
+			<Formik
+				initialValues={initialValues}
+				validationSchema={this.validation}
+				onSubmit={this.onHandleSubmit}
+				render={props => {
+					const { values, touched, errors, dirty, isSubmitting } = props
+					return (
+						<Form className="opprett-tabellrad" autoComplete="off">
+							<div className="fields">
+								<Field name="navn" label="NAVN" autoFocus component={FormikInput} />
+								<Field name="hensikt" label="HENSIKT" component={FormikInput} />
+								<Field
+									name="teamId"
+									label="VELG TEAM"
+									beforeChange={option => this.onBeforeChange(option)}
+									component={FormikDollySelect}
+									loadOptions={() =>
+										DollyApi.getTeamsByUserId(currentUserId).then(res => this.loadOptions(res))
+									}
+								/>
+								{!this.state.teamToggle && buttons}
+							</div>
+							{this.state.teamToggle && (
+								<div className="fields">
+									<Field name="teamnavn" label="team navn" component={FormikInput} />
+									<Field name="beskrivelse" label="team beskrivelse" component={FormikInput} />
+									{buttons}
+								</div>
+							)}
+							{error && (
+								<div className="opprett-error">
+									<span>{error.message}</span>
+								</div>
+							)}
+						</Form>
+					)
+				}}
+			/>
+		)
+	}
 
 	onHandleSubmit = async (values, actions) => {
 		const { createGruppe, updateGruppe, gruppe } = this.props
@@ -128,76 +200,4 @@ export default class Rediger extends PureComponent {
 					.max(200, 'Maksimalt 200 bokstaver')
 			})
 		})
-
-	render() {
-		const { currentUserId, gruppe, createOrUpdateFetching, error } = this.props
-
-		if (createOrUpdateFetching) {
-			return (
-				<Table.Row>
-					<Loading label="oppdaterer gruppe" />
-				</Table.Row>
-			)
-		}
-
-		let initialValues = {
-			navn: getIn(gruppe, 'navn', ''),
-			teamId: getIn(gruppe, 'team.id', null),
-			hensikt: getIn(gruppe, 'hensikt', ''),
-			teamnavn: getIn(gruppe, 'teamnavn', ''),
-			beskrivelse: getIn(gruppe, 'beskrivelse', '')
-		}
-
-		let buttons = (
-			<Fragment>
-				<Knapp mini type="standard" htmlType="button" onClick={() => this.onCancel()}>
-					Avbryt
-				</Knapp>
-				<Knapp mini type="hoved" htmlType="submit">
-					{this.erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
-				</Knapp>
-			</Fragment>
-		)
-
-		return (
-			<Formik
-				initialValues={initialValues}
-				validationSchema={this.validation}
-				onSubmit={this.onHandleSubmit}
-				render={props => {
-					const { values, touched, errors, dirty, isSubmitting } = props
-					return (
-						<Form className="opprett-tabellrad" autoComplete="off">
-							<div className="fields">
-								<Field name="navn" label="NAVN" autoFocus component={FormikInput} />
-								<Field name="hensikt" label="HENSIKT" component={FormikInput} />
-								<Field
-									name="teamId"
-									label="VELG TEAM"
-									beforeChange={option => this.onBeforeChange(option)}
-									component={FormikDollySelect}
-									loadOptions={() =>
-										DollyApi.getTeamsByUserId(currentUserId).then(res => this.loadOptions(res))
-									}
-								/>
-								{!this.state.teamToggle && buttons}
-							</div>
-							{this.state.teamToggle && (
-								<div className="fields">
-									<Field name="teamnavn" label="team navn" component={FormikInput} />
-									<Field name="beskrivelse" label="team beskrivelse" component={FormikInput} />
-									{buttons}
-								</div>
-							)}
-							{error && (
-								<div className="opprett-error">
-									<span>{error.message}</span>
-								</div>
-							)}
-						</Form>
-					)
-				}}
-			/>
-		)
-	}
 }
