@@ -1,4 +1,4 @@
-package no.nav.registre.skd.provider.rs;
+package no.nav.registre.skd.consumer;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
