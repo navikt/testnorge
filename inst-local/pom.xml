@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.registre</groupId>
         <artifactId>testnorge-inst</artifactId>
-        <version>1.0.9</version>
+        <version>1.0.10</version>
     </parent>
 
     <artifactId>inst-local</artifactId>
