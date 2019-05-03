@@ -14,13 +14,13 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.sam.domain.SyntetisertSamObject;
+import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
 
 @Component
 @Slf4j
 public class SamSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<SyntetisertSamObject>> RESPONSE_TYPE = new ParameterizedTypeReference<List<SyntetisertSamObject>>() {
+    private static final ParameterizedTypeReference<List<SyntetisertSamordningsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<List<SyntetisertSamordningsmelding>>() {
     };
 
     @Autowired
@@ -33,12 +33,12 @@ public class SamSyntetisererenConsumer {
     }
 
     @Timed(value = "sam.resource.latency", extraTags = { "operation", "sam-syntetisereren" })
-    public List<SyntetisertSamObject> hentSammeldingerFromSyntRest(int numToGenerate) {
+    public List<SyntetisertSamordningsmelding> hentSammeldingerFromSyntRest(int numToGenerate) {
         RequestEntity getRequest = RequestEntity.get(url.expand(numToGenerate)).build();
 
-        List<SyntetisertSamObject> syntetiserteMeldinger = new ArrayList<>();
+        List<SyntetisertSamordningsmelding> syntetiserteMeldinger = new ArrayList<>();
 
-        ResponseEntity<List<SyntetisertSamObject>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        ResponseEntity<List<SyntetisertSamordningsmelding>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
         if (response != null && response.getBody() != null) {
             syntetiserteMeldinger.addAll(response.getBody());
         } else {

@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SyntetisertSamObject {
+public class SyntetisertSamordningsmelding {
 
     @JsonProperty("ANTALL_FORSOK")
     private String antallForsoek;

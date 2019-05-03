@@ -15,7 +15,7 @@ import javax.persistence.SequenceGenerator;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
-import no.nav.registre.sam.domain.SyntetisertSamObject;
+import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
 import no.nav.registre.sam.utils.DateUtils;
 
 @Getter
@@ -63,12 +63,12 @@ public class TSamHendelse {
     @Column(name = "versjon")
     private int versjon;
 
-    public TSamHendelse(SyntetisertSamObject obj, TPerson tPerson) throws ParseException {
+    public TSamHendelse(SyntetisertSamordningsmelding obj, TPerson tPerson) throws ParseException {
         this.personId = tPerson.getPersonId();
         this.kTpArt = obj.getKTPArt();
         this.kSamHendelseT = obj.getKSamHendelseT();
         this.kKanalT = obj.getKKanalT();
-        this.tssEksternIdFk = "80000470761";
+        this.tssEksternIdFk = obj.getTssEksternIdFk();
         this.samMeldingIdFk = null;
         this.datoOpprettet = DateUtils.formatTimestamp(obj.getDatoOpprettet());
         this.opprettetAv = (!"".equals(obj.getOpprettetAv())) ? obj.getOpprettetAv() : ENDRET_OPPRETTET_AV;

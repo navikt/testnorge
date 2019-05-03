@@ -16,7 +16,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
-import no.nav.registre.sam.domain.SyntetisertSamObject;
+import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
 import no.nav.registre.sam.utils.DateUtils;
 
 @Getter
@@ -76,7 +76,7 @@ public class TSamVedtak {
     @Column(name = "versjon")
     private int versjon;
 
-    public TSamVedtak(SyntetisertSamObject obj, TPerson tPerson) throws ParseException {
+    public TSamVedtak(SyntetisertSamordningsmelding obj, TPerson tPerson) throws ParseException {
         this.personId = tPerson.getPersonId();
         this.kFagomraade = obj.getKFagomraade();
         this.kVedtakStatus = obj.getKVedtakStatus();

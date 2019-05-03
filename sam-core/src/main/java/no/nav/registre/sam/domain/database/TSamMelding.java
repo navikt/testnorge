@@ -16,7 +16,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
-import no.nav.registre.sam.domain.SyntetisertSamObject;
+import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
 import no.nav.registre.sam.utils.DateUtils;
 
 @Getter
@@ -73,7 +73,7 @@ public class TSamMelding {
     @Column(name = "antall_forsok")
     private int antallForsoek;
 
-    public TSamMelding(SyntetisertSamObject obj, TSamVedtak tSamVedtak) throws ParseException {
+    public TSamMelding(SyntetisertSamordningsmelding obj, TSamVedtak tSamVedtak) throws ParseException {
         this.samVedtakId = tSamVedtak.getSamVedtakId();
         this.kKanalT = obj.getKKanalT();
         this.kMeldingStatus = obj.getKMeldingStatus();

@@ -15,7 +15,7 @@ import no.nav.registre.sam.database.TPersonRepository;
 import no.nav.registre.sam.database.TSamHendelseRepository;
 import no.nav.registre.sam.database.TSamMeldingRepository;
 import no.nav.registre.sam.database.TSamVedtakRepository;
-import no.nav.registre.sam.domain.SyntetisertSamObject;
+import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
 import no.nav.registre.sam.domain.database.TPerson;
 import no.nav.registre.sam.domain.database.TSamHendelse;
 import no.nav.registre.sam.domain.database.TSamMelding;
@@ -29,7 +29,7 @@ public class SyntetiseringService {
     public static final String ENDRET_OPPRETTET_AV = "Orkestratoren";
 
     @Autowired
-    private SamSyntetisererenConsumer samSyntRestConsumer;
+    private SamSyntetisererenConsumer samSyntetisererenConsumer;
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -47,7 +47,7 @@ public class SyntetiseringService {
     private TSamVedtakRepository tSamVedtakRepository;
 
     public ResponseEntity opprettOgLagreSyntetiserteSamordningsmeldinger(List<String> identer) {
-        List<SyntetisertSamObject> syntetiserteMeldinger = samSyntRestConsumer.hentSammeldingerFromSyntRest(identer.size());
+        List<SyntetisertSamordningsmelding> syntetiserteMeldinger = samSyntetisererenConsumer.hentSammeldingerFromSyntRest(identer.size());
         lagreSyntetiserteMeldinger(syntetiserteMeldinger, identer);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -56,7 +56,7 @@ public class SyntetiseringService {
         return hodejegerenConsumer.finnLevendeIdenter(request);
     }
 
-    public void lagreSyntetiserteMeldinger(List<SyntetisertSamObject> syntetiserteMeldinger, List<String> identer) {
+    public void lagreSyntetiserteMeldinger(List<SyntetisertSamordningsmelding> syntetiserteMeldinger, List<String> identer) {
         if (syntetiserteMeldinger.size() != identer.size()) {
             log.warn("Mottok ikke riktig antall syntetiske samordningsmeldinger fra sam-syntetisereren. Antall forespurt: {}, antall mottatt: {}", identer.size(), syntetiserteMeldinger.size());
         }
