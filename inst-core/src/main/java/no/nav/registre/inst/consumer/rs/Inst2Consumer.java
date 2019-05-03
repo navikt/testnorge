@@ -111,8 +111,12 @@ public class Inst2Consumer {
                 .header("Nav-Consumer-Id", "orkestratoren")
                 .build();
 
-        ResponseEntity<Object> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_SJEKK_INSTITUSJON);
-
-        return response.getStatusCode().is2xxSuccessful();
+        try {
+            restTemplate.exchange(getRequest, RESPONSE_TYPE_SJEKK_INSTITUSJON);
+            return true;
+        } catch (HttpStatusCodeException e) {
+            log.warn("", e);
+            return false;
+        }
     }
 }
