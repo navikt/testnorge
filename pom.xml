@@ -11,7 +11,7 @@
 
     <groupId>no.nav.registre</groupId>
     <artifactId>orkestratoren</artifactId>
-    <version>1.8.3</version>
+    <version>1.9.0</version>
     <packaging>pom</packaging>
 
     <name>orkestratoren</name>

@@ -23,6 +23,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
@@ -31,6 +32,7 @@ import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
+import no.nav.registre.orkestratoren.service.SamSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
@@ -63,6 +65,9 @@ public class SyntetiseringsController {
     @Autowired
     private TpSyntPakkenService tpSyntPakkenService;
 
+    @Autowired
+    private SamSyntPakkenService samSyntPakkenService;
+
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity opprettSkdmeldingerITPS(@RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest) {
@@ -94,26 +99,32 @@ public class SyntetiseringsController {
     }
 
     @LogExceptions
-    @PostMapping(value = "aareg/arbeidsforhold/generer")
+    @PostMapping(value = "/aareg/arbeidsforhold/generer")
     public ResponseEntity opprettArbeidsforholdIAareg(@RequestParam boolean lagreIAareg, @RequestBody SyntetiserAaregRequest syntetiserAaregRequest) {
         return aaregSyntPakkenService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, lagreIAareg);
     }
 
     @LogExceptions
-    @PostMapping(value = "inst/institusjonsforhold/generer")
+    @PostMapping(value = "/inst/institusjonsforhold/generer")
     public ResponseEntity opprettInstitutjonsforholdIInst(@RequestBody SyntetiserInstRequest syntetiserInstRequest) {
         return instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
     }
 
     @LogExceptions
-    @PostMapping(value = "inst/bistandsmeldinger/generer")
+    @PostMapping(value = "/bisys/bistandsmeldinger/generer")
     public ResponseEntity opprettBistandsmeldingerIBisys(@RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
         return bisysSyntPakkenService.genererBistandsmeldinger(syntetiserBisysRequest);
     }
 
     @LogExceptions
-    @PostMapping(value = "tp/ytelser/generer")
+    @PostMapping(value = "/tp/ytelser/generer")
     public ResponseEntity opprettYtelserITp(@RequestBody SyntetiserTpRequest request) {
         return tpSyntPakkenService.genererTp(request);
+    }
+
+    @LogExceptions
+    @PostMapping(value = "/sam/samordningsmeldinger/generer")
+    public ResponseEntity opprettSamordningsmeldingerISam(@RequestBody SyntetiserSamRequest syntetiserSamRequest) {
+        return samSyntPakkenService.genererSamordningsmeldinger(syntetiserSamRequest);
     }
 }
