@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class SyntetiseringServiceTest {
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyMap(), eq(meldinger.get(0)))).thenReturn(ResponseEntity.ok().body(meldinger.get(0)));
-        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString())).thenReturn(true);
+        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString())).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest);
 
@@ -95,7 +96,7 @@ public class SyntetiseringServiceTest {
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), anyString())).thenReturn(meldinger);
-        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString())).thenReturn(true);
+        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString())).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest);
 
