@@ -25,7 +25,7 @@ const routes = [
 		component: Bestilling
 	},
 	{
-		path: '/gruppe/:gruppeId/testbruker/:ident',
+		path: '/gruppe/:gruppeId/testbruker/:ident&:datasources',
 		exact: true,
 		breadcrumb: 'Rediger',
 		component: RedigerTestbrukerConnector

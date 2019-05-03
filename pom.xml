@@ -37,7 +37,7 @@
             </properties>
         </profile>
         <!--One or more profiles can be deactivated using the command line by prefixing their identifier with either the character '!' or '-' as shown below:-->
-        <!--mvn groupId:artsifactId:goal -P !profile-1,!profile-2-->
+        <!--mvn groupId:artifactId:goal -P !profile-1,!profile-2-->
         <profile>
             <id>build-web-preinstalled</id>
             <activation>
