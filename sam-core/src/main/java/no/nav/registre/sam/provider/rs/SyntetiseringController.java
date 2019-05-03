@@ -1,5 +1,6 @@
 package no.nav.registre.sam.provider.rs;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ public class SyntetiseringController {
     private SyntetiseringService syntetiseringService;
 
     @LogExceptions
+    @ApiOperation(value = "Her kan man starte generering av syntetiske samordningsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø.")
     @PostMapping(value = "/generer")
     public ResponseEntity genererSamordningsmeldinger(@RequestBody SyntetiserSamRequest syntetiserSamRequest) {
         List<String> identer = syntetiseringService.finnLevendeIdenter(syntetiserSamRequest);
