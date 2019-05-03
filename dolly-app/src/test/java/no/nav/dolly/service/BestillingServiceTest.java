@@ -26,6 +26,7 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -105,7 +106,8 @@ public class BestillingServiceTest {
 
         when(testgruppeService.fetchTestgruppeById(gruppeId)).thenReturn(gruppe);
 
-        bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(), antallIdenter, null);
+        bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
+                RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null);
 
         ArgumentCaptor<Bestilling> argCap = ArgumentCaptor.forClass(Bestilling.class);
         verify(bestillingRepository).save(argCap.capture());
