@@ -102,17 +102,18 @@ export const FieldArrayComponent = ({
 										...subItem,
 										id: `${parentId}[${idx}]${subItem.id}`
 									}
-
+x`
 									return renderFieldSubItem(fakeSubItem)
 								})} */}
 
-								{!editMode && (
-									<Button
-										className="field-group-remove"
-										kind="remove-circle"
-										onClick={e => arrayHelpers.remove(idx)}
-									/>
-								)}
+								{!editMode &&
+									item.isMultiple && (
+										<Button
+											className="field-group-remove"
+											kind="remove-circle"
+											onClick={e => arrayHelpers.remove(idx)}
+										/>
+									)}
 							</div>
 							{/* REG-3377: Alex - Under utvikling */}
 
@@ -136,15 +137,16 @@ export const FieldArrayComponent = ({
 				<p className="ingen-verdi-melding">Ingen verdi lagt til</p>
 			)}
 
-			{!editMode && (
-				<Button
-					className="flexbox--align-center field-group-add"
-					kind="add-circle"
-					onClick={createDefaultObject}
-				>
-					{subKategori.navn.toUpperCase()}
-				</Button>
-			)}
+			{!editMode &&
+				item.isMultiple && (
+					<Button
+						className="flexbox--align-center field-group-add"
+						kind="add-circle"
+						onClick={createDefaultObject}
+					>
+						{subKategori.navn.toUpperCase()}
+					</Button>
+				)}
 		</Fragment>
 	)
 }
