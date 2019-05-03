@@ -20,7 +20,7 @@ import no.nav.dolly.domain.jpa.BestKriterier;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -69,6 +69,10 @@ public class BestillingService {
         return bestillingRepository.findBestillingByGruppeOrderById(testgruppeService.fetchTestgruppeById(gruppeId));
     }
 
+    public List<Bestilling> fetchMalBestillinger() {
+        return bestillingRepository.findMalBestilling().orElseThrow(() -> new NotFoundException("Ingen mal-bestilling funnet"));
+    }
+
     @Transactional
     public Bestilling cancelBestilling(Long bestillingId) {
         Optional<BestillingKontroll> bestillingKontroll = bestillingKontrollRepository.findByBestillingIdOrderByBestillingId(bestillingId);
@@ -94,20 +98,24 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(Long gruppeId, Integer antallIdenter, List<String> miljoer,
-            RsTpsfBasisBestilling tpsfBestilling, BestKriterier bestKriterier, List<String> opprettFraIdenter) {
+    public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, Integer antall, List<String> opprettfraIdenter) {
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
-                        .antallIdenter(antallIdenter)
+                        .antallIdenter(antall)
                         .sistOppdatert(now())
-                        .miljoer(join(",", miljoer))
-                        .tpsfKriterier(nonNull(tpsfBestilling) ? toJson(tpsfBestilling) : null)
-                        .bestKriterier(nonNull(bestKriterier) ? toJson(bestKriterier) : null)
-                        .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
-                        .build()
-        );
+                        .miljoer(join(",", request.getEnvironments()))
+                        .tpsfKriterier(toJson(request.getTpsf()))
+                        .bestKriterier(toJson(BestKriterier.builder()
+                                .aareg(request.getAareg())
+                                .krrStub(request.getKrrstub())
+                                .sigrunStub(request.getSigrunstub())
+                                .arenaStub(request.getArenastub())
+                                .build()))
+                        .opprettFraIdenter(nonNull(opprettfraIdenter) ? join(",", opprettfraIdenter) : null)
+                        .malBestillingNavn(request.getMalBestillingNavn())
+                        .build());
     }
 
     @Transactional
@@ -124,6 +132,7 @@ public class BestillingService {
                 Bestilling.builder()
                         .gruppe(bestilling.getGruppe())
                         .antallIdenter(bestilling.getAntallIdenter())
+                        .opprettFraIdenter(bestilling.getOpprettFraIdenter())
                         .sistOppdatert(now())
                         .miljoer(miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
                         .opprettetFraId(bestillingId)
@@ -135,8 +144,10 @@ public class BestillingService {
 
     private String toJson(Object object) {
         try {
-            return objectMapper.writer().writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+            if (nonNull(object)) {
+                return objectMapper.writer().writeValueAsString(object);
+            }
+        } catch (JsonProcessingException | RuntimeException e) {
             log.debug("Konvertering til Json feilet", e);
         }
         return null;

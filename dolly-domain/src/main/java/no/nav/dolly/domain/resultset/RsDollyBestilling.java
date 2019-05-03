@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenastub.RsArenadata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 
 @Getter
 @Setter
@@ -23,6 +24,9 @@ import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 public class RsDollyBestilling {
 
     private List<String> environments;
+    private String malBestillingNavn;
+
+    private RsTpsfBasisBestilling tpsf;
     private List<RsOpprettSkattegrunnlag> sigrunstub;
     private RsDigitalKontaktdata krrstub;
     private List<RsArbeidsforhold> aareg;

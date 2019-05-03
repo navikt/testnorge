@@ -44,6 +44,8 @@ public class RsBestilling {
     private String openamSent;
     private String opprettFraIdenter;
 
+    private String malBestillingNavn;
+
     public List<String> getEnvironments() {
         if (isNull(environments)) {
             environments = new ArrayList<>();
