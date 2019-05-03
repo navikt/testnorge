@@ -1,7 +1,6 @@
 package no.nav.registre.orkestratoren.batch;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -29,6 +28,7 @@ import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
+import no.nav.registre.orkestratoren.service.SamSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
@@ -58,6 +58,9 @@ public class JobControllerTest {
 
     @Mock
     private TpSyntPakkenService tpSyntPakkenService;
+
+    @Mock
+    private SamSyntPakkenService samSyntPakkenService;
 
     @InjectMocks
     private JobController jobController;
@@ -130,5 +133,11 @@ public class JobControllerTest {
     public void shouldStartTpBatch() {
         jobController.tpSyntBatch();
         verify(tpSyntPakkenService).genererTp(any());
+    }
+
+    @Test
+    public void shouldStartSamBatch() {
+        jobController.samSyntBatch();
+        verify(samSyntPakkenService).genererSamordningsmeldinger(any());
     }
 }

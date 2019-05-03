@@ -21,6 +21,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
@@ -28,6 +29,7 @@ import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
+import no.nav.registre.orkestratoren.service.SamSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
@@ -70,6 +72,9 @@ public class JobController {
     @Value("${tpbatch.antallPersoner}")
     private int tpAntallPersoner;
 
+    @Value("${sambatch.antallMeldinger}")
+    private int samAntallMeldinger;
+
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
 
@@ -93,6 +98,9 @@ public class JobController {
 
     @Autowired
     private TpSyntPakkenService tpSyntPakkenService;
+
+    @Autowired
+    private SamSyntPakkenService samSyntPakkenService;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
@@ -162,6 +170,14 @@ public class JobController {
             if (!entity.getStatusCode().is2xxSuccessful()) {
                 log.error("Klarte ikke å fullføre syntetisering i TP batch kjøring");
             }
+        }
+    }
+
+    @Scheduled(cron = "0 0 1 1 * *")
+    public void samSyntBatch() {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            SyntetiserSamRequest syntetiserSamRequest = new SyntetiserSamRequest(entry.getKey(), entry.getValue(), samAntallMeldinger);
+            samSyntPakkenService.genererSamordningsmeldinger(syntetiserSamRequest);
         }
     }
 }
