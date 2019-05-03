@@ -1,6 +1,8 @@
 package no.nav.registre.sam.comptests;
 
 import static no.nav.registre.sam.service.SyntetiseringService.ENDRET_OPPRETTET_AV;
+import static no.nav.registre.sam.testutils.DateUtils.formatDate;
+import static no.nav.registre.sam.testutils.DateUtils.formatTimestamp;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -17,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import wiremock.com.google.common.io.Resources;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,12 +75,14 @@ public class SamordningCompTest {
     }
 
     @Test
-    public void shouldLagreSyntetiserteSamordningsmeldinger() {
+    public void shouldLagreSyntetiserteSamordningsmeldinger() throws ParseException {
         syntetiseringService.lagreSyntetiserteMeldinger(syntetiserteSamordningsmeldinger, identer);
 
         TPerson person1 = tPersonRepository.findByFnrFK(fnr1);
         TPerson person2 = tPersonRepository.findByFnrFK(fnr2);
         assertThat(person1.getFnrFK(), equalTo(fnr1));
+        assertThat(person1.getEndretAv(), equalTo(ENDRET_OPPRETTET_AV));
+        assertThat(person1.getOpprettetAv(), equalTo(ENDRET_OPPRETTET_AV));
         assertThat(person2.getFnrFK(), equalTo(fnr2));
 
         TSamHendelse tSamHendelse = tSamHendelseRepository.findById(1L).orElse(null);
@@ -88,6 +93,8 @@ public class SamordningCompTest {
         assertThat(tSamHendelse.getTssEksternIdFk(), equalTo(syntetiserteSamordningsmeldinger.get(0).getTssEksternIdFk()));
         assertThat(tSamHendelse.getOpprettetAv(), equalTo(ENDRET_OPPRETTET_AV));
         assertThat(tSamHendelse.getEndretAv(), equalTo(ENDRET_OPPRETTET_AV));
+        assertThat(tSamHendelse.getDatoEndret().toString(), equalTo(formatTimestamp(syntetiserteSamordningsmeldinger.get(0).getDatoEndret()).toString()));
+        assertThat(tSamHendelse.getDatoOpprettet().toString(), equalTo(formatTimestamp(syntetiserteSamordningsmeldinger.get(0).getDatoOpprettet()).toString()));
 
         TSamMelding tSamMelding = tSamMeldingRepository.findById(1L).orElse(null);
         assertThat(tSamMelding, notNullValue());
@@ -97,6 +104,11 @@ public class SamordningCompTest {
         assertThat(tSamMelding.getKMeldingStatus(), equalTo(syntetiserteSamordningsmeldinger.get(0).getKMeldingStatus()));
         assertThat(tSamMelding.getRefusjonskrav(), equalTo(syntetiserteSamordningsmeldinger.get(0).getRefusjonskrav()));
         assertThat(tSamMelding.getTssEksternIdFk(), equalTo(syntetiserteSamordningsmeldinger.get(0).getTssEksternIdFk()));
+        assertThat(tSamMelding.getDatoEndret().toString(), equalTo(formatTimestamp(syntetiserteSamordningsmeldinger.get(0).getDatoEndret()).toString()));
+        assertThat(tSamMelding.getDatoOpprettet().toString(), equalTo(formatTimestamp(syntetiserteSamordningsmeldinger.get(0).getDatoOpprettet()).toString()));
+        assertThat(tSamMelding.getDatoPurret().toString(), equalTo(formatDate(syntetiserteSamordningsmeldinger.get(0).getDatoPurret()).toString()));
+        assertThat(tSamMelding.getDatoSendt().toString(), equalTo(formatDate(syntetiserteSamordningsmeldinger.get(0).getDatoSendt()).toString()));
+        assertThat(tSamMelding.getDatoSvart().toString(), equalTo(formatDate(syntetiserteSamordningsmeldinger.get(0).getDatoSvart()).toString()));
 
         TSamVedtak tSamVedtak = tSamVedtakRepository.findById(1L).orElse(null);
         assertThat(tSamVedtak, notNullValue());
@@ -107,5 +119,9 @@ public class SamordningCompTest {
         assertThat(tSamVedtak.getKFagomraade(), equalTo(syntetiserteSamordningsmeldinger.get(0).getKFagomraade()));
         assertThat(tSamVedtak.getKVedtakStatus(), equalTo(syntetiserteSamordningsmeldinger.get(0).getKVedtakStatus()));
         assertThat(tSamVedtak.getPurring(), equalTo(syntetiserteSamordningsmeldinger.get(0).getPurring()));
+        assertThat(tSamVedtak.getDatoEndret().toString(), equalTo(formatTimestamp(syntetiserteSamordningsmeldinger.get(0).getDatoEndret()).toString()));
+        assertThat(tSamVedtak.getDatoOpprettet().toString(), equalTo(formatTimestamp(syntetiserteSamordningsmeldinger.get(0).getDatoOpprettet()).toString()));
+        assertThat(tSamVedtak.getDatoFom().toString(), equalTo(formatDate(syntetiserteSamordningsmeldinger.get(0).getDatoFom()).toString()));
+        assertThat(tSamVedtak.getDatoTom().toString(), equalTo(formatDate(syntetiserteSamordningsmeldinger.get(0).getDatoTom()).toString()));
     }
 }
