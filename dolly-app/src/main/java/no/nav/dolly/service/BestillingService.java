@@ -21,6 +21,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -98,7 +99,7 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, Integer antall, List<String> opprettfraIdenter) {
+    public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall, List<String> opprettFraIdenter) {
         Testgruppe gruppe = testgruppeService.fetchTestgruppeById(gruppeId);
         return saveBestillingToDB(
                 Bestilling.builder()
@@ -106,14 +107,14 @@ public class BestillingService {
                         .antallIdenter(antall)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
-                        .tpsfKriterier(toJson(request.getTpsf()))
+                        .tpsfKriterier(toJson(tpsf))
                         .bestKriterier(toJson(BestKriterier.builder()
                                 .aareg(request.getAareg())
                                 .krrStub(request.getKrrstub())
                                 .sigrunStub(request.getSigrunstub())
                                 .arenaStub(request.getArenastub())
                                 .build()))
-                        .opprettFraIdenter(nonNull(opprettfraIdenter) ? join(",", opprettfraIdenter) : null)
+                        .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
                         .build());
     }
