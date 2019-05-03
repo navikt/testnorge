@@ -6,6 +6,7 @@ import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,14 +17,15 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -52,6 +54,9 @@ public class BestillingServiceTest {
     @Mock
     private BestillingProgressRepository bestillingProgressRepository;
 
+    @Mock
+    private ObjectMapper objectMapper;
+
     @InjectMocks
     private BestillingService bestillingService;
 
@@ -66,7 +71,7 @@ public class BestillingServiceTest {
 
     @Test
     public void fetchBestillingByIdKasterReturnererBestillingHvisBestillingErFunnet() throws Exception {
-        Bestilling mock = Mockito.mock(Bestilling.class);
+        Bestilling mock = mock(Bestilling.class);
         Optional<Bestilling> bes = Optional.of(mock);
 
         when(bestillingRepository.findById(any())).thenReturn(bes);
@@ -84,7 +89,7 @@ public class BestillingServiceTest {
 
     @Test
     public void fetchBestillingerByGruppeIdBlirKaltMedGittFunnetTestgruppeOgReturnererBestillinger() {
-        Testgruppe gruppe = Mockito.mock(Testgruppe.class);
+        Testgruppe gruppe = mock(Testgruppe.class);
         when(testgruppeService.fetchTestgruppeById(any())).thenReturn(gruppe);
 
         bestillingService.fetchBestillingerByGruppeId(1l);
@@ -94,13 +99,13 @@ public class BestillingServiceTest {
     @Test
     public void saveBestillingByGruppeIdAndAntallIdenterInkludererAlleMiljoerOgIdenterIBestilling() {
         long gruppeId = 1l;
-        Testgruppe gruppe = Mockito.mock(Testgruppe.class);
+        Testgruppe gruppe = mock(Testgruppe.class);
         List<String> miljoer = asList("a1", "b2", "c3", "d4");
         int antallIdenter = 4;
 
         when(testgruppeService.fetchTestgruppeById(gruppeId)).thenReturn(gruppe);
 
-        bestillingService.saveBestilling(gruppeId, antallIdenter, miljoer, null, null, null);
+        bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(), antallIdenter, null);
 
         ArgumentCaptor<Bestilling> argCap = ArgumentCaptor.forClass(Bestilling.class);
         verify(bestillingRepository).save(argCap.capture());
@@ -157,8 +162,8 @@ public class BestillingServiceTest {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(
                 Bestilling.builder().ferdig(true)
-                .gruppe(Testgruppe.builder().build())
-                .build()));
+                        .gruppe(Testgruppe.builder().build())
+                        .build()));
 
         bestillingService.createBestillingForGjenopprett(BEST_ID, singletonList("u1"));
     }
