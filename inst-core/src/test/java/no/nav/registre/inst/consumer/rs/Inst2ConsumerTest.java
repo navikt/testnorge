@@ -89,9 +89,9 @@ public class Inst2ConsumerTest {
     public void shouldCheckWhetherInstitusjonIsValidOnDate() {
         stubFindInstitusjon();
 
-        boolean finnes = inst2Consumer.finnesInstitusjonPaaDato(token, tssEksternId, date);
+        HttpStatus responseStatus = inst2Consumer.finnesInstitusjonPaaDato(token, tssEksternId, date);
 
-        assertThat(finnes, is(true));
+        assertThat(responseStatus, is(HttpStatus.OK));
     }
 
     private void stubTokenProvider() {

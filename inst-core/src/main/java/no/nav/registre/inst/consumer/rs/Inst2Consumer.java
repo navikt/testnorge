@@ -103,7 +103,7 @@ public class Inst2Consumer {
         }
     }
 
-    public boolean finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String tssEksternId, String date) {
+    public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String tssEksternId, String date) {
         RequestEntity getRequest = RequestEntity.get(sjekkInstitusjonUrl.expand(tssEksternId, date))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
@@ -112,11 +112,11 @@ public class Inst2Consumer {
                 .build();
 
         try {
-            restTemplate.exchange(getRequest, RESPONSE_TYPE_SJEKK_INSTITUSJON);
-            return true;
+            ResponseEntity<Object> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_SJEKK_INSTITUSJON);
+            return response.getStatusCode();
         } catch (HttpStatusCodeException e) {
             log.warn("", e);
-            return false;
+            return e.getStatusCode();
         }
     }
 }
