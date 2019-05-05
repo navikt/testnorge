@@ -2,8 +2,6 @@ import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
 export function mapTpsfData(tpsfData, testIdent) {
-	console.log('tpsfData :', tpsfData)
-	console.log('testIdent :', testIdent)
 	if (!tpsfData) return null
 	let data
 	data = [

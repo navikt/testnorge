@@ -3,11 +3,26 @@ import { DollyApi } from '~/service/Api'
 import './Postadresse.less'
 import InputSelector from '~/components/fields/InputSelector'
 import { Field } from 'formik'
-import PostadresseSjekk from '~/utils/SjekkPostadresse'
+import { sjekkPostadresse } from '~/utils/SjekkPostadresse'
+import Loading from '~/components/loading/Loading'
 
 export default class Postadresse extends Component {
+	constructor(props) {
+		super(props)
+		this._isMounted = false
+	}
+
 	state = {
-		gyldig: true
+		gyldig: true,
+		isChecking: false
+	}
+
+	componentDidMount() {
+		this._isMounted = true
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false
 	}
 
 	render() {
@@ -16,13 +31,19 @@ export default class Postadresse extends Component {
 
 		items.map(item => item.id !== 'postLand' && adressefelter.push(item))
 		return (
-			<div className="subkategori">
-				<div className="subkategori-field-group">
-					<div className="subkategori-field-group">
+			<div className="postadresse_subkategori">
+				<div className="postadresse_subkategori-field-group">
+					<div className="postadresse_subkategori-field-group">
 						{items.map(item => item.id === 'postLand' && this.renderFieldComponent(item))}
 					</div>
 					<div className="postadresse-group">
 						{adressefelter.map(item => this.renderFieldComponent(item))}
+						{!this.state.gyldig &&
+							this.state.isChecking && (
+								<div>
+									<Loading label="Validerer postadresse..." />
+								</div>
+							)}
 					</div>
 				</div>
 				<div>
@@ -85,14 +106,23 @@ export default class Postadresse extends Component {
 	}
 
 	checkValues = async () => {
+		this.setState({ isChecking: true })
 		const values = this.props.formikProps.values
 
 		if (values['postLand'] === '') {
 			values['postLand'] = 'NOR'
 		}
 
-		if ((await PostadresseSjekk.sjekkPostadresse(values)) === false) {
-			this.setState({ gyldig: false })
-		} else this.setState({ gyldig: true })
+		if ((await sjekkPostadresse(values)) === false) {
+			if (this._isMounted) {
+				this.setState({ gyldig: false })
+				this.setState({ isChecking: false })
+			}
+		} else {
+			if (this._isMounted) {
+				this.setState({ gyldig: true })
+				this.setState({ isChecking: false })
+			}
+		}
 	}
 }
