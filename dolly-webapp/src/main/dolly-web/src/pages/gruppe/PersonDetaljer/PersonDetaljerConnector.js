@@ -1,7 +1,12 @@
 import { connect } from 'react-redux'
 import PersonDetaljer from './PersonDetaljer'
 import DataMapper from '~/service/dataMapper'
-import { GET_KRR_TESTBRUKER, GET_SIGRUN_TESTBRUKER, GET_AAREG_TESTBRUKER } from '~/ducks/testBruker'
+import {
+	GET_KRR_TESTBRUKER,
+	GET_SIGRUN_TESTBRUKER,
+	GET_SIGRUN_SEKVENSNR,
+	GET_AAREG_TESTBRUKER
+} from '~/ducks/testBruker'
 import { FRIGJOER_TESTBRUKER } from '~/ducks/testBruker'
 import { createLoadingSelector } from '~/ducks/loading'
 import Formatters from '~/utils/DataFormatter'
@@ -27,6 +32,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getKrrTestbruker: () => dispatch(GET_KRR_TESTBRUKER(ownProps.personId)),
 		getSigrunTestbruker: () => dispatch(GET_SIGRUN_TESTBRUKER(ownProps.personId)),
+		getSigrunSekvensnr: () => dispatch(GET_SIGRUN_SEKVENSNR(ownProps.personId)),
 		getAaregTestbruker: env => dispatch(GET_AAREG_TESTBRUKER(ownProps.personId, env)),
 		frigjoerTestbruker: () => dispatch(FRIGJOER_TESTBRUKER(ownProps.personId))
 	}

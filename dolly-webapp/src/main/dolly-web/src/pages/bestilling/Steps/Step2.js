@@ -10,7 +10,6 @@ import ContentContainer from '~/components/contentContainer/ContentContainer'
 import Icon from '~/components/icon/Icon'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 import BestillingMapper from '~/utils/BestillingMapper'
-import PostadresseSjekk from '~/utils/SjekkPostadresse'
 
 export default class Step2 extends PureComponent {
 	static propTypes = {
@@ -35,12 +34,7 @@ export default class Step2 extends PureComponent {
 		)
 	}
 
-	submit = async values => {
-		if ('postLand' in values) {
-			if ((await PostadresseSjekk.sjekkPostadresse(values)) === false) {
-				return
-			}
-		}
+	submit = values => {
 		this.props.setValues({ values })
 	}
 

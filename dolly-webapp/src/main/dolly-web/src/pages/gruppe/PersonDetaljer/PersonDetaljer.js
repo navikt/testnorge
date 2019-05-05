@@ -27,6 +27,7 @@ export default class PersonDetaljer extends PureComponent {
 
 	componentDidMount() {
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunTestbruker()
+		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunSekvensnr()
 		this.props.testIdent.krrstubStatus === 'OK' && this.props.getKrrTestbruker()
 		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
