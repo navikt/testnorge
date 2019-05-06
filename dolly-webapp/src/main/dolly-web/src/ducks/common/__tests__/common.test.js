@@ -53,16 +53,16 @@ describe('commonReducer - redirectReducer', () => {
 		expect(redirectReducer({}, action)).toEqual(res)
 	})
 
-	it('should handle bestilling success', () => {
-		const action = {
-			type: success(bestillingActions.postBestilling),
-			meta: { gruppeId: testId }
-		}
+	// it('should handle bestilling success', () => {
+	// 	const action = {
+	// 		type: success(bestillingActions.postBestilling),
+	// 		meta: { gruppeId: testId }
+	// 	}
 
-		const res = `/gruppe/${testId}`
+	// 	const res = `/gruppe/${testId}`
 
-		expect(redirectReducer({}, action)).toEqual(res)
-	})
+	// 	expect(redirectReducer({}, action)).toEqual(res)
+	// })
 
 	it('should handle delete group success', () => {
 		const action = {

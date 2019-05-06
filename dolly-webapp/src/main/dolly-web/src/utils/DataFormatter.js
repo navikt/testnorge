@@ -16,6 +16,7 @@ Formatters.formatIdentNr = ident => {
 }
 
 Formatters.formatAlder = (alder, dodsdato) => {
+	if (!alder) return ''
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 

@@ -11,7 +11,6 @@ export default class Feilmelding extends Component {
 		const { bestilling } = this.props
 		let cssClass = 'feil-container feil-container_border'
 		const stubStatus = this._finnStubStatus(bestilling)
-
 		// TODO: Refaktor
 		const finnesTPSFEllerStub =
 			(bestilling.tpsfStatus && this._finnTpsfFeilStatus(bestilling.tpsfStatus).length > 0) ||
@@ -179,7 +178,7 @@ export default class Feilmelding extends Component {
 						<span className="feil-kolonne_liten" />
 						<span className="feil-kolonne_stor">
 							{this.antallIdenterOpprettet(bestilling)} av {bestilling.antallIdenter} bestilte
-							identer ble opprettet i TPS
+							identer ble opprettet i TPSF
 						</span>
 					</span>
 				</div>
