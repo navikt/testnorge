@@ -111,11 +111,9 @@ public class SyntetiseringService {
             String tssEksternId = melding.getTssEksternId();
             String startdato = melding.getStartdato();
             String faktiskSluttdato = melding.getFaktiskSluttdato();
-            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, startdato).is2xxSuccessful() && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, faktiskSluttdato).is2xxSuccessful()) {
+            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, startdato).is2xxSuccessful() && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, faktiskSluttdato)
+                    .is2xxSuccessful()) {
                 gyldigeSyntetiserteMeldinger.add(melding);
-            } else {
-                log.warn("Institusjon med tssEksternIdd {} er ikke gyldig med startdato {} og faktiskSluttdato {}. Hopper over melding."
-                        , tssEksternId, startdato, faktiskSluttdato);
             }
         }
 
