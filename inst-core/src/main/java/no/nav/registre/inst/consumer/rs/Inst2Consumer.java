@@ -115,7 +115,7 @@ public class Inst2Consumer {
             ResponseEntity<Object> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_SJEKK_INSTITUSJON);
             return response.getStatusCode();
         } catch (HttpStatusCodeException e) {
-            log.warn("", e);
+            log.warn("Institusjon med tssEksternId {} er ikke gyldig på dato {}", tssEksternId, date, e);
             return e.getStatusCode();
         }
     }
