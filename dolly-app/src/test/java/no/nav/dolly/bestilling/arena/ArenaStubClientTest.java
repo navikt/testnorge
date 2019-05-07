@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.arenastub.RsArenadata;
 
@@ -50,7 +51,8 @@ public class ArenaStubClientTest {
         when(arenaStubConsumer.postArenadata(any(RsArenadata.class))).thenReturn(responseEntity);
         when(responseEntity.getStatusCode()).thenReturn(HttpStatus.OK);
 
-        arenaStubClient.gjenopprett(RsDollyBestilling.builder().arenastub(new RsArenadata()).build(), IDENT, progress);
+        arenaStubClient.gjenopprett(RsDollyBestilling.builder().arenastub(new RsArenadata()).build(),
+                NorskIdent.builder().ident(IDENT).build(), progress);
 
         assertThat(progress.getArenastubStatus(), is(equalTo(HttpStatus.OK.name())));
         verify(arenaStubConsumer).deleteIdent(IDENT);
@@ -63,7 +65,8 @@ public class ArenaStubClientTest {
         BestillingProgress progress = new BestillingProgress();
         when(arenaStubConsumer.postArenadata(any(RsArenadata.class))).thenThrow(httpClientErrorException);
         when(httpClientErrorException.getMessage()).thenReturn("An error has occured");
-        arenaStubClient.gjenopprett(RsDollyBestilling.builder().arenastub(new RsArenadata()).build(), IDENT, progress);
+        arenaStubClient.gjenopprett(RsDollyBestilling.builder().arenastub(new RsArenadata()).build(),
+                NorskIdent.builder().ident(IDENT).build(), progress);
 
         assertThat(progress.getArenastubStatus(), is(equalTo("Feil: " + ERROR_MSG)));
         verify(arenaStubConsumer).deleteIdent(IDENT);

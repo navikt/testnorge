@@ -53,6 +53,10 @@ providers:
     url: https://fasit.adeo.no
   arenastub:
     url: https://arena-forvalteren.nais.preprod.local
+  pdlForvalter:
+    url: https://person-testdata.nais.preprod.local
+  personOppslag:
+    url: https://person-oppslag.nais.preprod.local
 
 credentials:
   preprodEnv:
