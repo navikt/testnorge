@@ -1,5 +1,7 @@
 package no.nav.registre.aareg.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -13,7 +15,6 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -84,16 +85,10 @@ public class SyntetiseringService {
         log.info(statusFraAaregstub.toString());
 
         if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterSomIkkeKunneLagresIAareg())) {
-            StringBuilder statusFeiledeIdenter = new StringBuilder("Status på identer som ikke kunne sendes til aareg: ");
-            for (Map.Entry<String, String> feiletIdent : statusFraAaregstubResponse.getIdenterSomIkkeKunneLagresIAareg().entrySet()) {
-                statusFeiledeIdenter
-                        .append(feiletIdent.getKey())
-                        .append(" - ")
-                        .append(feiletIdent.getValue());
-            }
-            log.error(statusFeiledeIdenter.toString());
+            JsonNode statusFeilmeldinger = new ObjectMapper().valueToTree(statusFraAaregstubResponse.getIdenterSomIkkeKunneLagresIAareg());
+            log.error("Status på identer som ikke kunne sendes til aareg: {}", statusFeilmeldinger);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(String.format("Noe feilet under lagring til aaregstub. {%s}. {%s}",
-                    statusFeiledeIdenter.toString(),
+                    statusFeilmeldinger.toString(),
                     statusFraAaregstub.toString()));
         }
 
