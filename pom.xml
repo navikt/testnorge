@@ -12,7 +12,7 @@
 
     <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-inst</artifactId>
-    <version>1.0.12</version>
+    <version>1.0.13</version>
     <packaging>pom</packaging>
 
     <name>testnorge-inst</name>
