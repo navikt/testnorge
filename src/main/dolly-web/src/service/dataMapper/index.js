@@ -1,14 +1,9 @@
-// TODO: Hvis denne klassen kun bruk av PersonDetailjer, flytt den dit
-import { createHeader as c } from './Utils'
+import { createHeader as c, mapBestillingId } from './Utils'
 import Formatters from '~/utils/DataFormatter'
-import {
-	mapTpsfData,
-	mapSigrunData,
-	mapKrrData,
-	mapBestillingId,
-	mapAaregData
-} from './mapDetailedData'
+import { mapTpsfData } from './mapTpsDataToIdent'
 
+import { mapKrrData, mapSigrunData, mapAaregData } from './mapRegistreDataToIdent'
+// * Mapper testperson-data for å vise under testpersonliste
 const DataMapper = {
 	getHeaders() {
 		return [

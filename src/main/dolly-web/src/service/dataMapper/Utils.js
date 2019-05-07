@@ -21,3 +21,16 @@ export const relasjonTranslator = relasjon => {
 			return 'Ukjent relasjon'
 	}
 }
+
+export function mapBestillingId(testIdent) {
+	if (!testIdent) return null
+	return {
+		header: 'Tidligere bestilling-ID',
+		data: [
+			{
+				id: 'bestillingID',
+				value: testIdent.bestillingId.slice(1).join(', ')
+			}
+		]
+	}
+}
