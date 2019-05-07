@@ -10,6 +10,7 @@ import '~/pages/bestilling/Bestilling.less'
 import NyIdent from '~/components/opprettIdent/NyIdent.js'
 import EksisterendeIdentConnector from '~/components/opprettIdent/EksisterendeIdentConnector'
 import BestillingMapper from '~/utils/BestillingMapper'
+import { FormikDollySelect } from '~/components/fields/Select/Select'
 
 class Step1 extends Component {
 	static propTypes = {
@@ -28,6 +29,7 @@ class Step1 extends Component {
 	}
 
 	_renderRadioBtn = (checkedType, label) => {
+		console.log('identOpprettesFra :', this.props.identOpprettesFra)
 		return (
 			<Radio
 				checked={this.props.identOpprettesFra === checkedType}
@@ -42,6 +44,35 @@ class Step1 extends Component {
 	}
 
 	render() {
+		const { identOpprettesFra, eksisterendeIdentListe } = this.props
+
+		return (
+			<div className="bestilling-step1">
+				<div className="flexbox--space">
+					<Overskrift label="Velg egenskaper" />
+				</div>
+				<form className="flexbox">
+					<span className="bestilling-page radiobuttons">
+						{this._renderRadioBtn(BestillingMapper(), 'NY TESTIDENT')}
+					</span>
+					<span className="bestilling-page radiobuttons">
+						{this._renderRadioBtn(BestillingMapper('EKSIDENT'), 'EKSISTERENDE TESTIDENT')}
+					</span>
+					<span className="bestilling-page radiobuttons">
+						{this._renderRadioBtn(BestillingMapper('MAL'), 'MALBESTILLING')}
+					</span>
+				</form>
+				{this._renderAttributtVelger()}
+				<NavigationConnector
+					onClickNext={this._onSubmitForm}
+					eksisterendeIdentListe={eksisterendeIdentListe}
+					identOpprettesFra={identOpprettesFra}
+				/>
+			</div>
+		)
+	}
+
+	_renderAttributtVelger = () => {
 		const {
 			selectedAttributeIds,
 			toggleAttributeSelection,
@@ -52,24 +83,20 @@ class Step1 extends Component {
 			eksisterendeIdentListe
 		} = this.props
 
-		return (
-			<div className="bestilling-step1">
-				<div className="flexbox--space">
-					<Overskrift label="Velg egenskaper" />
-				</div>
-				<form className="flexbox">
-					<span className = 'bestilling-page radiobuttons'>{this._renderRadioBtn(BestillingMapper(), 'NY TESTIDENT')}</span>
-					<span className = 'bestilling-page radiobuttons'>{this._renderRadioBtn(BestillingMapper('EKSIDENT'), 'EKSISTERENDE TESTIDENT')}</span>
-				</form>
-				{identOpprettesFra === BestillingMapper() ?
+		switch (identOpprettesFra) {
+			case BestillingMapper():
+				return (
 					<NyIdent
 						selectedAttributeIds={selectedAttributeIds}
 						toggleAttributeSelection={toggleAttributeSelection}
 						uncheckAllAttributes={uncheckAllAttributes}
 						checkAttributeArray={checkAttributeArray}
 						uncheckAttributeArray={uncheckAttributeArray}
-					/> 
-					: <EksisterendeIdentConnector
+					/>
+				)
+			case BestillingMapper('EKSIDENT'):
+				return (
+					<EksisterendeIdentConnector
 						selectedAttributeIds={selectedAttributeIds}
 						toggleAttributeSelection={toggleAttributeSelection}
 						uncheckAllAttributes={uncheckAllAttributes}
@@ -77,10 +104,20 @@ class Step1 extends Component {
 						uncheckAttributeArray={uncheckAttributeArray}
 						identOpprettesFra={identOpprettesFra}
 					/>
-				}
-		<NavigationConnector onClickNext={this._onSubmitForm} eksisterendeIdentListe={eksisterendeIdentListe} identOpprettesFra={identOpprettesFra}/>
-		</div>
-		)
+				)
+			case BestillingMapper('MAL'):
+				return (
+					<Field
+						name="maler"
+						label="Velg en mal"
+						className="dollyselect medium"
+						component={FormikDollySelect}
+						options={[{ value: 'Beregnet skatt', label: 'Beregnet ef' }]}
+					/>
+				)
+			default:
+				break
+		}
 	}
 }
 
