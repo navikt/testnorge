@@ -12,6 +12,10 @@ public class Validation {
             "2410", "2510", "2610", "2810", "2910", "3210", "3410", "3810", "3910", "4010", "4110", "4310",
             "4410", "4710", "4910", "5110", "5610", "9110"));
 
+
+    private final List<String> NavEndringskoder = new ArrayList<>(Arrays.asList("Z010", "Z510", "Z310", "ZM10", "Z610", "ZV10", "ZD10", "1810",
+            "Z810"));
+
     public Validation() {
     }
 
@@ -58,7 +62,20 @@ public class Validation {
         return false;
     }
 
+    public boolean validateNavEndringskode(String endringskode) {
+        for (String s : NavEndringskoder) {
+            if (endringskode.equals(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<String> getEndringskoder() {
         return endringskoder;
+    }
+
+    public List<String> getNavEndringskoder() {
+        return NavEndringskoder;
     }
 }
