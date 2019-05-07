@@ -21,6 +21,8 @@ import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 @Slf4j
 public class SyntetiseringService {
 
+    private static final int ANTALL_FORSOEK = 3;
+
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
 
@@ -45,8 +47,16 @@ public class SyntetiseringService {
         }
 
         Map<String, Object> tokenObject = hentTokenTilInst2();
-        List<Institusjonsforholdsmelding> syntetiserteMeldinger = validerOgFjernUgyldigeMeldinger(tokenObject, instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(utvalgteIdenter.size()));
+        List<Institusjonsforholdsmelding> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, utvalgteIdenter.size());
         return leggTilSyntetisertInstitusjonsoppholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger);
+    }
+
+    private List<Institusjonsforholdsmelding> hentSyntetiserteInstitusjonsforholdsmeldinger(Map<String, Object> tokenObject, int antallMeldinger) {
+        List<Institusjonsforholdsmelding> syntetiserteMeldinger = new ArrayList<>(antallMeldinger);
+        for (int i = 0; i < ANTALL_FORSOEK && syntetiserteMeldinger.size() < antallMeldinger; i++) {
+            syntetiserteMeldinger.addAll(validerOgFjernUgyldigeMeldinger(tokenObject, instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger - syntetiserteMeldinger.size())));
+        }
+        return syntetiserteMeldinger;
     }
 
     private List<String> finnLevendeIdenter(SyntetiserInstRequest syntetiserInstRequest) {
