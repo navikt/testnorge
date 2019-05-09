@@ -76,7 +76,7 @@ public class DollyConsumer {
     }
 
     @Timed(value = "aaregstub.resource.latency", extraTags = { "operation", "dolly" })
-    public Object hentArbeidsforholdFraAareg(Map<String, Object> tokenObject, String fnr, String miljoe) {
+    public ResponseEntity<Object> hentArbeidsforholdFraAareg(Map<String, Object> tokenObject, String fnr, String miljoe) {
         UriTemplate hentArbeidsforholdUrl = new UriTemplate(aaregcontrollerIDollyUrl.toString() + "?ident={fnr}&environment={miljoe}");
         RequestEntity getRequest = RequestEntity.get(hentArbeidsforholdUrl.expand(fnr, miljoe))
                 .header(AUTHORIZATION, tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))

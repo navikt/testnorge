@@ -89,4 +89,11 @@ public class AaregstubController {
     public Object hentArbeidsforholdFraAareg(@RequestParam String ident, @RequestParam String miljoe) {
         return arbeidsforholdService.hentArbeidsforholdFraAareg(ident, miljoe);
     }
+
+    @LogExceptions
+    @ApiOperation(value = "Gitt en liste med identer og miljø, returnerer endepunktet identene som ligger lagret i aareg.")
+    @PostMapping(value = "sjekkStatusMotAareg")
+    public List<String> sjekkStatusMotAareg(@RequestParam String miljoe, @RequestBody List<String> identer) {
+        return arbeidsforholdService.sjekkStatusMotAareg(identer, miljoe);
+    }
 }

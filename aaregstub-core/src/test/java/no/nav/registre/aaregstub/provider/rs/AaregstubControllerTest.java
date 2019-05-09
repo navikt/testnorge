@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.aaregstub.arbeidsforhold.ArbeidsforholdsResponse;
@@ -81,5 +82,12 @@ public class AaregstubControllerTest {
     public void shouldGetArbeidsforholdFromAareg() {
         aaregstubController.hentArbeidsforholdFraAareg(fnr, miljoe);
         verify(arbeidsforholdService).hentArbeidsforholdFraAareg(fnr, miljoe);
+    }
+
+    @Test
+    public void shouldCheckStatusInAareg() {
+        List<String> identer = new ArrayList<>(Collections.singleton(fnr));
+        aaregstubController.sjekkStatusMotAareg(miljoe, identer);
+        verify(arbeidsforholdService).sjekkStatusMotAareg(identer, miljoe);
     }
 }
