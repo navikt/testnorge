@@ -1,13 +1,9 @@
-import { createHeader as c } from './Utils'
+import { createHeader as c, mapBestillingId } from './Utils'
 import Formatters from '~/utils/DataFormatter'
-import {
-	mapTpsfData,
-	mapSigrunData,
-	mapKrrData,
-	mapBestillingId,
-	mapAaregData
-} from './mapDetailedData'
+import { mapTpsfData } from './mapTpsDataToIdent'
 
+import { mapKrrData, mapSigrunData, mapAaregData } from './mapRegistreDataToIdent'
+// * Mapper testperson-data for å vise under testpersonliste
 const DataMapper = {
 	getHeaders() {
 		return [
@@ -49,7 +45,7 @@ const DataMapper = {
 
 		const { personId } = ownProps
 		if (!testbruker.items || !testbruker.items.tpsf) return null
-		
+
 		const testIdent = gruppe.data[0].testidenter.find(testIdent => testIdent.ident === personId)
 		const tpsfData = testbruker.items.tpsf.find(item => item.ident === personId)
 		if (!tpsfData) return null

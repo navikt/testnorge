@@ -248,8 +248,8 @@ public class DollyBestillingService {
             List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
             List<String> failureMiljoer = extraxtFailureMiljoForHovedperson(hovedperson, response);
 
+            identService.saveIdentTilGruppe(hovedperson, testgruppe);
             if (!successMiljoer.isEmpty()) {
-                identService.saveIdentTilGruppe(hovedperson, testgruppe);
                 progress.setTpsfSuccessEnv(join(",", successMiljoer));
             }
             if (!failureMiljoer.isEmpty()) {

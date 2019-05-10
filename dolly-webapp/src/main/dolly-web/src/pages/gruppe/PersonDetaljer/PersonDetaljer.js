@@ -8,7 +8,8 @@ import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
 import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
-import { getAaregSuccessEnv } from '~/ducks/bestillingStatus'
+import { getAaregSuccessEnv } from '~/ducks/bestillingStatus/utils'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -25,10 +26,10 @@ export default class PersonDetaljer extends PureComponent {
 	}
 
 	componentDidMount() {
-		this.props.getSigrunTestbruker()
-		this.props.getKrrTestbruker()
-
-		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.bestilling)
+		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunTestbruker()
+		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunSekvensnr()
+		this.props.testIdent.krrstubStatus === 'OK' && this.props.getKrrTestbruker()
+		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
 	}
 
@@ -52,7 +53,13 @@ export default class PersonDetaljer extends PureComponent {
 						} else {
 							return (
 								<div key={idx} className="person-details_content">
-									<h3>{i.header}</h3>
+									<h3 className="flexbox--align-center">
+										{i.header}
+										{i.informasjonstekst && (
+											<ContentTooltip hideText>{i.informasjonstekst} </ContentTooltip>
+										)}
+									</h3>
+
 									{this._renderPersonInfoBlockHandler(i)}
 								</div>
 							)
@@ -67,12 +74,7 @@ export default class PersonDetaljer extends PureComponent {
 						isOpen={modalOpen}
 						onRequestClose={this.closeModal}
 						closeModal={this.closeModal}
-						content={
-							<BestillingDetaljerSammendrag 
-								bestilling={bestilling} 
-								type = 'modal'
-							/>
-						}
+						content={<BestillingDetaljerSammendrag bestilling={bestilling} type="modal" />}
 						width={'60%'}
 					/>
 					<Button onClick={editAction} className="flexbox--align-center" kind="edit">

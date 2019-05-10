@@ -16,6 +16,7 @@ Formatters.formatIdentNr = ident => {
 }
 
 Formatters.formatAlder = (alder, dodsdato) => {
+	if (!alder) return ''
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 
@@ -50,6 +51,8 @@ Formatters.kjonnToStringBarn = (kjonn = '') => {
 }
 
 Formatters.arrayToString = (array, separator = ',') => {
+	if (!array) return null
+
 	return array.reduce((accumulator, nextString, idx) => {
 		return `${accumulator}${accumulator ? separator : ''}${
 			idx === 0 ? '' : ' '
@@ -58,18 +61,25 @@ Formatters.arrayToString = (array, separator = ',') => {
 }
 
 Formatters.camelCaseToLabel = camelCase => {
+	if (!camelCase) return null
+
 	return _startCase(camelCase)
 }
 
 Formatters.kodeverkLabel = kodeverk => {
+	if (!kodeverk) return null
 	return kodeverk.substring(kodeverk.indexOf('-') + 1)
 }
 
 Formatters.oversettBoolean = value => {
+	if (!value) return null
+
 	return value === true ? 'Ja' : value === false ? 'Nei' : value
 }
 
 Formatters.gtApiKodeverkId = gtType => {
+	if (!gtType) return null
+
 	let gtApiKodeverkId = ''
 	switch (gtType) {
 		case 'KNR':
@@ -87,6 +97,8 @@ Formatters.gtApiKodeverkId = gtType => {
 }
 
 Formatters.gtTypeLabel = gtType => {
+	if (!gtType) return null
+
 	let gtTypeLabel = ''
 	switch (gtType) {
 		case 'KNR':
@@ -114,6 +126,8 @@ Formatters.sort2DArray = (array, i) => {
 }
 
 Formatters.flat2DArray = (array, i) => {
+	if (!array) return null
+
 	array.forEach(person => {
 		if (person[i].includes(',')) {
 			const arrayValues = person[i].split(',')
@@ -124,16 +138,21 @@ Formatters.flat2DArray = (array, i) => {
 }
 
 Formatters.getIdLengde = id => {
+	if (!id) return null
+
 	var forste = id.split(' ')
 	return forste[0].length
 }
 
 Formatters.idUtenEllipse = id => {
+	if (!id) return null
+
 	var lengde = Formatters.getIdLengde(id)
 	return id.substr(0, lengde)
 }
 
 Formatters.commaToSpace = streng => {
+	if (!streng) return null
 	return streng.split(',').join(', ')
 }
 

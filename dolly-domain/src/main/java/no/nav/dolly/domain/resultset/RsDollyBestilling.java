@@ -23,6 +23,8 @@ import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 public class RsDollyBestilling {
 
     private List<String> environments;
+    private String malBestillingNavn;
+
     private List<RsOpprettSkattegrunnlag> sigrunstub;
     private RsDigitalKontaktdata krrstub;
     private List<RsArbeidsforhold> aareg;

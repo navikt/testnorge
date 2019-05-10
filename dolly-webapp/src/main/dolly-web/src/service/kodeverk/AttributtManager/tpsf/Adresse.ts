@@ -74,6 +74,63 @@ const AttributtListe: Attributt[] = [
 		attributtType: AttributtType.SelectAndEdit,
 		dependentOn: 'boadresse',
 		defaultValue: new Date()
+	},
+	{
+		hovedKategori: Kategorier.Adresser,
+		subKategori: SubKategorier.Postadresse,
+		id: 'postadresse',
+		path: 'postadresse',
+		label: 'Har postadresse',
+		dataSource: DataSource.TPSF,
+		validation: yup.object(),
+		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.Adresser,
+		subKategori: SubKategorier.Postadresse,
+		id: 'postLand',
+		path: 'postadresse.postLand',
+		parent: 'postadresse',
+		label: 'Land',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		apiKodeverkId: 'StatsborgerskapFreg',
+		validation: yup.string(),
+		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.Adresser,
+		subKategori: SubKategorier.Postadresse,
+		id: 'postLinje1',
+		path: 'postadresse.postLinje1',
+		parent: 'postadresse',
+		label: 'Adresselinje 1',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Text,
+		validation: yup.string().required('Vennligst fyll ut'),
+		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.Adresser,
+		subKategori: SubKategorier.Postadresse,
+		id: 'postLinje2',
+		path: 'postadresse.postLinje2',
+		parent: 'postadresse',
+		label: 'Adresselinje 2',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Text,
+		attributtType: AttributtType.SelectAndEdit
+	},
+	{
+		hovedKategori: Kategorier.Adresser,
+		subKategori: SubKategorier.Postadresse,
+		id: 'postLinje3',
+		path: 'postadresse.postLinje3',
+		parent: 'postadresse',
+		label: 'Adresselinje 3',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Text,
+		attributtType: AttributtType.SelectAndEdit
 	}
 
 	// {

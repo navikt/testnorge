@@ -20,14 +20,16 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
-import no.nav.dolly.domain.jpa.BestKriterier;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import no.nav.dolly.domain.resultset.RsTestident;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -126,13 +128,13 @@ public class TestgruppeControllerTest {
         List<String> envir = singletonList("u");
 
         RsDollyBestillingRequest dollyBestillingRequest = new RsDollyBestillingRequest();
+        dollyBestillingRequest.setTpsf(RsTpsfUtvidetBestilling.builder().build());
         dollyBestillingRequest.setAntall(ant);
-
         dollyBestillingRequest.setEnvironments(envir);
 
         Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();
 
-        when(bestillingService.saveBestilling(eq(GRUPPE_ID), eq(ant), anyList(), any(), any(BestKriterier.class), any())).thenReturn(bestilling);
+        when(bestillingService.saveBestilling(eq(GRUPPE_ID), any(RsDollyBestilling.class), any(RsTpsfUtvidetBestilling.class), eq(ant), eq(null))).thenReturn(bestilling);
 
         controller.opprettIdentBestilling(GRUPPE_ID, dollyBestillingRequest);
         verify(dollyBestillingService).opprettPersonerByKriterierAsync(GRUPPE_ID, dollyBestillingRequest, bestilling);
@@ -163,11 +165,12 @@ public class TestgruppeControllerTest {
 
         RsDollyBestillingFraIdenterRequest dollyBestillingsRequest = new RsDollyBestillingFraIdenterRequest();
         dollyBestillingsRequest.getOpprettFraIdenter().add(IDENT);
+        dollyBestillingsRequest.setTpsf(RsTpsfUtvidetBestilling.builder().build());
         dollyBestillingsRequest.setEnvironments(envir);
 
         Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();
 
-        when(bestillingService.saveBestilling(eq(GRUPPE_ID), eq(1), anyList(), any(), any(BestKriterier.class), anyList())).thenReturn(bestilling);
+        when(bestillingService.saveBestilling(eq(GRUPPE_ID), any(RsDollyBestilling.class), any(RsTpsfBasisBestilling.class), eq(null), anyList())).thenReturn(bestilling);
 
         controller.opprettIdentBestillingFraIdenter(GRUPPE_ID, dollyBestillingsRequest);
         verify(dollyBestillingService).opprettPersonerFraIdenterMedKriterierAsync(GRUPPE_ID, dollyBestillingsRequest, bestilling);

@@ -6,24 +6,24 @@ import { AttributtType } from '~/service/kodeverk/AttributtManager/Types'
 import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
-import AutofillAddress from '~/components/autofillAddress/AutofillAddress'
-import UtenFastBopel from '~/components/utenFastBopel/UtenFastBopel'
+import AutofillAddressConnector from '~/components/autofillAddress/AutofillAddressConnector'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
 import Button from '~/components/button/Button'
 import _xor from 'lodash/fp/xor'
 import './FormEditor.less'
 import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
+import Postadresse from '../postadresse/Postadresse'
 
 export default class FormEditor extends PureComponent {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
 		// TODO: editMode burde være en props for hele klassen.
 		// editMode? renderEdit....: renderNormal
-		return AttributtListe.map(hovedKategori =>
+		return AttributtListe.map(hovedKategori => {
 			// Ikke vis kategori som har default ikke-valgt radio button
-			this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
-		)
+			return this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
+		})
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
@@ -56,8 +56,13 @@ export default class FormEditor extends PureComponent {
 		if (AttributtListeToAdd) {
 			AttributtListeToAdd.forEach(item => {
 				item.hovedKategori.id === hovedKategori.id &&
-					item.items.forEach(item => {
-						notYetAddedAttributes = _xor(item.items, AddedAttributes)
+					item.items.forEach(subkatItem => {
+						let addedAttrIKategori = []
+						AddedAttributes.map(
+							attr =>
+								attr.hovedKategori.id === item.hovedKategori.id && addedAttrIKategori.push(attr)
+						)
+						notYetAddedAttributes = _xor(subkatItem.items, addedAttrIKategori)
 					})
 			})
 		}
@@ -101,13 +106,25 @@ export default class FormEditor extends PureComponent {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
+		const isMultiple = items[0].isMultiple
 
 		if (isAdresse) {
 			return (
 				<div className="subkategori" key={uniqueId}>
 					{!isFieldarray && <h4>{subKategori.navn}</h4>}
 					<div className="subkategori-field-group">
-						<AutofillAddress items={items} formikProps={formikProps} />
+						<AutofillAddressConnector items={items} formikProps={formikProps} />
+					</div>
+				</div>
+			)
+		}
+
+		if (subKategori.id === 'postadresse') {
+			return (
+				<div className="subkategori" key={uniqueId}>
+					{!isFieldarray && <h4>{subKategori.navn}</h4>}
+					<div className="subkategori-field-group">
+						<Postadresse items={items} formikProps={formikProps} />
 					</div>
 				</div>
 			)
@@ -255,6 +272,7 @@ export default class FormEditor extends PureComponent {
 		switch (item.inputType) {
 			case 'select': {
 				const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg..'
+
 				if (item.dependentOn) {
 					if (parentObject) {
 						// Sjekk if item er avhengig av en valgt verdi

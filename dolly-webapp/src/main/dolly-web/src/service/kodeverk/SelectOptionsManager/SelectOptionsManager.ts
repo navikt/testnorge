@@ -17,21 +17,6 @@ const selectOptions = {
 	],
 
 	// AAREG
-	yrke: [
-		{ value: '2310114', label: '2310114 - HØYSKOLELÆRER' },
-		{ value: '2320102', label: '2320102 - LÆRER (VIDEREGÅENDE SKOLE)' },
-		{ value: '2521106', label: '2521106 - ADVOKAT' },
-		{ value: '3231109', label: '3231109 - SYKEPLEIER' },
-		{ value: '3310101', label: '3310101 - ALLMENNLÆRER' },
-		{ value: '5141103', label: '5141103 - FRISØR' },
-		{ value: '5221126', label: '5221126 - BUTIKKMEDARBEIDER' },
-		{ value: '7125102', label: '7125102 - BYGNINGSSNEKKER' },
-		{ value: '7216108', label: '7216108 - KAMMEROPERATØR' },
-		{ value: '7217102', label: '7217102 - BILSKADEREPARATØR' },
-		{ value: '7233108', label: '7233108 - SPESIALARBEIDER (LANDBRUKS- OG ANLEGGSMASKINMEKANIKK)' },
-		{ value: '7421118', label: '7421118 - SNEKKER' }
-	],
-
 	aktoertype: [
 		{ value: 'ORG', label: 'Organisasjon' },
 		{ value: 'PERS', label: 'Enkeltmannsforetak' }
