@@ -35,10 +35,12 @@ export default class Step2 extends PureComponent {
 	}
 
 	submit = values => {
+		values = this._checkValues(values)
 		this.props.setValues({ values })
 	}
 
 	onClickPrevious = values => {
+		values = this._checkValues(values)
 		this.props.setValues({ values, goBack: true })
 	}
 
@@ -93,11 +95,29 @@ export default class Step2 extends PureComponent {
 								FormikProps={formikProps}
 							/>
 							{/* // Uncomment for debug formik */}
-							<DisplayFormikState {...formikProps} />
+							{/* <DisplayFormikState {...formikProps} /> */}
 						</Fragment>
 					)}
 				/>
 			</div>
 		)
+	}
+
+	_checkValues = values => {
+		if (values.spesreg !== 'UFB') {
+			delete values['ufb_kommunenr']
+			delete values['utenFastBopel']
+			delete values['spesreg2']
+		}
+
+		if (values.spesreg === 'UFB' && values.utenFastBopel) {
+			delete values['utenFastBopel']
+		}
+
+		if (values.spesreg === 'UFB' && values.spesreg2) {
+			values.spesreg = values.spesreg2
+			values['utenFastBopel'] = true
+		}
+		return values
 	}
 }

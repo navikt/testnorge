@@ -19,7 +19,6 @@ export default class AutofillAddress extends Component {
 
 	render() {
 		const items = this.props.items
-		console.log('items :', items)
 		return (
 			<Fragment>
 				<div className="address-wrapper">
