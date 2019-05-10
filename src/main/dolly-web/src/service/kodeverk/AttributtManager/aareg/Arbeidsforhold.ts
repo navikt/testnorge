@@ -12,6 +12,7 @@ const AttributtListe: Attributt[] = [
 		id: 'arbeidsforhold',
 		label: 'Har arbeidsforhold',
 		dataSource: DataSource.AAREG,
+		isMultiple: true,
 		attributtType: AttributtType.SelectAndEdit,
 		validation: yup.object(),
 		items: [
@@ -25,7 +26,6 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Select,
 				apiKodeverkId: 'Yrker',
 				apiKodeverkShowValueInLabel: true,
-				options: SelectOptionsManager('yrke'),
 				validation: yup.string().required('Velg et yrke.'),
 				size: 'large',
 				attributtType: AttributtType.SelectAndRead
