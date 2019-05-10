@@ -72,7 +72,6 @@ export default class AttributtVelger extends Component {
 
 	renderItem = item => {
 		const { attributeIds } = this.props.currentBestilling
-		// console.log('item :', item)
 		// Dependency system, finner ut om attributtene kan toggles
 		const disabled = item.dependentOn
 			? !attributeIds.includes(item.dependentOn)

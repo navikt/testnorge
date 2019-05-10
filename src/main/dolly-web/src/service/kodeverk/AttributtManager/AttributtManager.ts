@@ -24,9 +24,6 @@ export default class AttributtManager {
 	}
 
 	listAllSelectFilterItems(selectedIds: string[], attributter: Attributt[]): Attributt[] {
-		// console.log('selectedIds', selectedIds)
-
-		// console.log('AttributeListe :', AttributtListe)
 		return attributter
 			.filter(
 				attr =>
