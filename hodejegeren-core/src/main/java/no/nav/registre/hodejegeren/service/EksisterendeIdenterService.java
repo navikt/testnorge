@@ -138,9 +138,30 @@ public class EksisterendeIdenterService {
         return utvalgteIdenterMedStatusQuo;
     }
 
+    public Map<String, JsonNode> hentAdressePaaIdenter(String miljoe, List<String> identer) {
+        Map<String, JsonNode> utvalgteIdenterMedStatusQuo = new HashMap<>(identer.size());
+
+        for (String ident : identer) {
+            try {
+                JsonNode infoOnRoutineName = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
+                JsonNode bostedsAdresse = infoOnRoutineName.findValue("bostedsAdresse");
+                utvalgteIdenterMedStatusQuo.put(ident, bostedsAdresse);
+            } catch (IOException e) {
+                log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
+            }
+        }
+        return utvalgteIdenterMedStatusQuo;
+    }
+
     public List<String> finnAlleIdenterOverAlder(Long avspillergruppeId, int minimumAlder) {
         List<String> identer = finnLevendeIdenter(avspillergruppeId);
         return identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
+    }
+
+    public List<String> finnAlleIdenterIAldersgruppe(Long avspillergruppeId, int minimumAlder, int maksimumAlder) {
+        List<String> identer = finnLevendeIdenter(avspillergruppeId);
+        List<String> identerOverAlder = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
+        return identerOverAlder.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isAfter(LocalDate.now().minusYears(maksimumAlder))).collect(Collectors.toList());
     }
 
     public List<String> finnAlleIdenter(Long gruppeId) {

@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
@@ -37,6 +38,7 @@ public class HodejegerenControllerTest {
     private Endringskoder endringskode;
     private int antallIdenter;
     private int minimumAlder;
+    private int maksimumAlder;
     private List<String> myndigeIdenter;
 
     @Before
@@ -47,6 +49,7 @@ public class HodejegerenControllerTest {
         endringskode = Endringskoder.FOEDSELSMELDING;
         antallIdenter = 10;
         minimumAlder = 18;
+        maksimumAlder = 67;
         myndigeIdenter = new ArrayList<>();
         myndigeIdenter.add(fnr);
     }
@@ -132,9 +135,23 @@ public class HodejegerenControllerTest {
     }
 
     @Test
+    public void shouldHenteAlleIdenterIAldersgruppe() {
+        MockHttpServletResponse resp = new MockHttpServletResponse();
+        hodejegerenController.hentAlleIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder, resp);
+        verify(eksisterendeIdenterService).finnAlleIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
+    }
+
+    @Test
     public void shouldHenteIdenterMedStatusQuo() {
         hodejegerenController.hentEksisterendeIdenterMedStatusQuo(avspillergruppeId, miljoe, 1);
         verify(eksisterendeIdenterService).hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, 1);
+    }
+
+    @Test
+    public void shouldHenteAdresserPaaIdenter() {
+        List<String> identer = new ArrayList<>(Collections.singleton(fnr));
+        hodejegerenController.hentAdressePaaIdenter(miljoe, identer);
+        verify(eksisterendeIdenterService).hentAdressePaaIdenter(miljoe, identer);
     }
 
     @Test
