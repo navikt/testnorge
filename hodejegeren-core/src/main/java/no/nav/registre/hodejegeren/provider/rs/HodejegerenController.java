@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -76,7 +78,7 @@ public class HodejegerenController {
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her kan man hente ut alle levende identer over en viss alder")
+    @ApiOperation(value = "Her kan man hente ut alle levende identer over en viss alder.")
     @GetMapping("api/v1/levende-identer-over-alder/{avspillergruppeId}")
     public List<String> hentAlleLevendeIdenterOverAlder(@PathVariable Long avspillergruppeId, @RequestParam int minimumAlder, HttpServletResponse response) {
         if (minimumAlder < 0) {
@@ -84,6 +86,17 @@ public class HodejegerenController {
             return new ArrayList<>();
         }
         return eksisterendeIdenterService.finnAlleIdenterOverAlder(avspillergruppeId, minimumAlder);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man hente ut alle levende identer i en viss aldersgruppe.")
+    @GetMapping("api/v1/levende-identer-i-aldersgruppe/{avspillergruppeId}")
+    public List<String> hentAlleIdenterIAldersgruppe(@PathVariable Long avspillergruppeId, @RequestParam int minimumAlder, @RequestParam int maksimumAlder, HttpServletResponse response) {
+        if (minimumAlder < 0 || maksimumAlder < 0) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new ArrayList<>();
+        }
+        return eksisterendeIdenterService.finnAlleIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
     }
 
     @LogExceptions
@@ -111,6 +124,13 @@ public class HodejegerenController {
     public Map<String, JsonNode> hentEksisterendeIdenterMedStatusQuo(@PathVariable("avspillergruppeId") Long avspillergruppeId,
             @RequestParam("miljoe") String miljoe, @RequestParam("antallPersoner") int antallPersoner) {
         return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallPersoner);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man hente adresseinformasjon til gitte identer i et gitt miljø.")
+    @PostMapping("api/v1/adresse-paa-identer")
+    public Map<String, JsonNode> hentAdressePaaIdenter(@RequestParam String miljoe, @RequestBody List<String> identer) {
+        return eksisterendeIdenterService.hentAdressePaaIdenter(miljoe, identer);
     }
 
     @LogExceptions

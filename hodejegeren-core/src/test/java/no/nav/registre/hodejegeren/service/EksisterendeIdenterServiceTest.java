@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -250,6 +251,20 @@ public class EksisterendeIdenterServiceTest {
         verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
 
         assertThat(fnrMedStatusQuo.get(fnr1), equalTo(jsonNode));
+    }
+
+    @Test
+    public void shouldHenteAdresserPaaIdent() throws IOException {
+        URL jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
+        JsonNode jsonNode = new ObjectMapper().readTree(jsonContent);
+        String fnr1 = "23048801390";
+        List<String> identer = new ArrayList<>(Collections.singleton(fnr1));
+
+        when(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, identer.get(0))).thenReturn(jsonNode);
+
+        Map<String, JsonNode> adressePaaIdenter = eksisterendeIdenterService.hentAdressePaaIdenter(miljoe, identer);
+
+        assertThat(adressePaaIdenter.get("23048801390").findValue("boAdresse1").asText(), equalTo("WALLDORFERSTRABE 1289"));
     }
 
     @Test
