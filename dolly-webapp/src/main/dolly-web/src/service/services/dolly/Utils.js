@@ -48,9 +48,25 @@ export const SortKodeverkArray = data => {
 
 export const NormalizeKodeverkForDropdown = ({ data }, showValueInLabel) => {
 	const sortedArray = SortKodeverkArray(data)
-
 	return {
 		options: sortedArray.filter(val => !_excludeList.includes(val.value)).map(kode => ({
+			value: kode.value,
+			label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
+		}))
+	}
+}
+
+export const NormalizeKodeverkForDropdownUtenUfb = ({ data }, showValueInLabel) => {
+	const sortedArray = SortKodeverkArray(data)
+	let filteredSortedArray = []
+	sortedArray.map(
+		diskresjonskode =>
+			diskresjonskode.value !== 'UFB' &&
+			diskresjonskode.value !== 'SPSF' &&
+			filteredSortedArray.push(diskresjonskode)
+	)
+	return {
+		options: filteredSortedArray.filter(val => !_excludeList.includes(val.value)).map(kode => ({
 			value: kode.value,
 			label: showValueInLabel ? kode.value + ' - ' + kode.label : kode.label
 		}))
@@ -70,5 +86,6 @@ export const NormalizeBrukerListForDropdown = (data, teamMembers) => {
 export default {
 	NormalizeTeamListForDropdown,
 	NormalizeBrukerListForDropdown,
-	NormalizeKodeverkForDropdown
+	NormalizeKodeverkForDropdown,
+	NormalizeKodeverkForDropdownUtenUfb
 }

@@ -24,9 +24,11 @@ export default class AttributtVelger extends Component {
 	searchOnChange = e => this.setState({ search: e.target.value })
 
 	renderPanels = () => {
-
-		const {currentBestilling} = this.props
-		const list = this.AttributtManager.listSelectableAttributes(this.state.search, currentBestilling.identOpprettesFra)
+		const { currentBestilling } = this.props
+		const list = this.AttributtManager.listSelectableAttributes(
+			this.state.search,
+			currentBestilling.identOpprettesFra
+		)
 
 		if (list.length === 0) return this.renderEmptyResult()
 		return list.map(hovedKategori => this.renderHovedKategori(hovedKategori))
@@ -71,7 +73,7 @@ export default class AttributtVelger extends Component {
 
 	renderItem = item => {
 		const { attributeIds } = this.props.currentBestilling
-
+		// console.log('item :', item)
 		// Dependency system, finner ut om attributtene kan toggles
 		const disabled = item.dependentOn
 			? !attributeIds.includes(item.dependentOn)
@@ -80,6 +82,8 @@ export default class AttributtVelger extends Component {
 			: false
 
 		const dependentBy = item.dependentBy ? item.dependentBy : null
+
+		if (item.id === 'ufb_kommunenr' || item.id === 'utenFastBopel') return
 
 		return (
 			<Checkbox

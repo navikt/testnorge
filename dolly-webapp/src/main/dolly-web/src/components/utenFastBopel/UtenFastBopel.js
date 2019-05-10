@@ -3,105 +3,119 @@ import { DollyApi } from '~/service/Api'
 import InputSelector from '~/components/fields/InputSelector'
 import { Field } from 'formik'
 import Button from '~/components/button/Button'
+import { FormikDollySelect } from '../fields/Select/Select'
+import './UtenFastBopel.less'
 
 export default class UtenFastBopel extends Component {
 	state = {
-		ufb: false
+		harEkstraDiskresjonskode: false
+	}
+
+	componentDidMount() {
+		const { values, valgteVerdier } = this.props
+		if (values.spesreg && values.spesreg2) {
+			this.setState({ harEkstraDiskresjonskode: true })
+		}
+
+		if (values.utenFastBopel === true) {
+			valgteVerdier.spesreg = 'UFB'
+		}
+	}
+
+	componentDidUpdate(prevProps) {
+		const ufbKmnrProps = this.props.valgteVerdier.ufb_kommunenr
+		if (ufbKmnrProps && !this.props.attributeIds.includes('ufb_kommunenr')) {
+			this.props.toggleAttribute('ufb_kommunenr')
+		}
+
+		if (!ufbKmnrProps && this.props.attributeIds.includes('ufb_kommunenr')) {
+			this.props.toggleAttribute('ufb_kommunenr')
+		}
 	}
 
 	render() {
-		console.log('this :', this)
-		console.log('this.props :', this.props)
+		const { values } = this.props
 		const item = this.props.item
 		const valgteVerdier = this.props.valgteVerdier
 		const InputComponent = InputSelector(item.inputType)
-		const InputComponentKommunenr = InputSelector('InputType.Select')
-		const componentProps = this.extraComponentProps(item)
-		const componentPropsKommunenr = this.extraComponentPropsKommunenr()
+		const componentProps = this._extraComponentProps(item, 'm_ufb')
+		const componentPropsUtenUfb = this._extraComponentProps(item, 'u_ufb')
 
-		const { attributeIds } = this.props
-		// const { values } = this.props
+		item.id === 'utenFastBopel' && (valgteVerdier.spesreg = 'UFB')
 
-		// valgteVerdier.spesreg === 'UFB'
-		// // 	? (this.setState({ ufb: true }), attributeIds.setValues(...attributeIds, 'boadresse'))
-		// 	: this.setState({ ufb: false })
-
-		valgteVerdier.spesreg === 'UFB' &&
-			!attributeIds.includes('boadresse') &&
-			attributeIds.push('boadresse')
-		// values.setValues({ ...values, boadresse_postnr: '0580' })
-
-		// console.log('item :', item)
-		// console.log('item.inputTypeAttributes :', item.inputTypeAttributes)
+		values.spesreg2 && (valgteVerdier['spesreg2'] = values.spesreg2)
 
 		return (
-			<div>
-				<Field
-					key={item.key || item.id}
-					name={item.id}
-					label={item.label}
-					component={InputComponent}
-					size={item.size}
-					{...componentProps}
-					{...item.inputTypeAttributes}
-				/>
-				{valgteVerdier.spesreg === 'UFB' && (
-					<div>
-						<Button
-							className="flexbox--align-center field-group-add"
-							kind="add-circle"
-							// onClick={createDefaultObject}
-						>
-							DISKRESJONSKODE
-						</Button>
+			<div className="diskresjonskoder">
+				<div>
+					<Field
+						className={'input-boks'}
+						key={'spesreg'}
+						name={'spesreg'}
+						label={'Diskresjonskoder'}
+						component={InputComponent}
+						size={item.size}
+						{...componentProps}
+						{...item.inputTypeAttributes}
+					/>
+					{valgteVerdier.spesreg === 'UFB' &&
+						!this.state.harEkstraDiskresjonskode && (
+							<Button
+								className="flexbox--align-center field-group-add"
+								kind="add-circle"
+								onClick={this._onClickEkstraDiskresjonskode}
+							>
+								DISKRESJONSKODE
+							</Button>
+						)}
+					{valgteVerdier.spesreg === 'UFB' &&
+						this.state.harEkstraDiskresjonskode && (
+							<div className="ekstra-diskresjonskode">
+								<Field
+									key={'spesreg'}
+									name={'spesreg2'}
+									label={''}
+									component={InputComponent}
+									size={item.size}
+									{...componentPropsUtenUfb}
+								/>
+								<Button className="x-knapp" kind="remove-circle" onClick={this._onRemoveButton} />
+							</div>
+						)}
+				</div>
+
+				<div>
+					{valgteVerdier.spesreg === 'UFB' && (
 						<Field
-							key={'boadresse_kommunenr'}
-							name={'boadresse_kommunenr'}
+							key={'ufb_kommunenr'}
+							name={'ufb_kommunenr'}
 							label={'Kommunenummer'}
-							component={InputComponentKommunenr}
+							placeholder={'Velg kommunenummer...'}
+							component={FormikDollySelect}
 							size={item.size}
-							{...componentPropsKommunenr}
-							// {...item.inputTypeAttributes}
+							loadOptions={this._extraComponentPropsKommunenr}
 						/>
-						{/* <Field
-							key={'boadresse_postnr'}
-							name={'boadresse_postnr'}
-							label={'Postnummer'}
-							component={InputComponentKommunenr}
-							size={item.size}
-							// {...componentPropsPostnr}
-							// {...item.inputTypeAttributes}
-						/> */}
-						{/* <p>Velg kommunenummer</p> */}
-					</div>
-				)}
+					)}
+				</div>
 			</div>
 		)
-
-		// const items = this.props.items
-		// let adressefelter = []
-
-		// items.map(item => item.id !== 'postLand' && adressefelter.push(item))
-		// return (
-		// 	<div className="subkategori">
-		// 		<div className="subkategori-field-group">
-		// 			<div className="subkategori-field-group">
-		// 				{items.map(item => item.id === 'postLand' && this.renderFieldComponent(item))}
-		// 			</div>
-		// 			<div className="postadresse-group">
-		// 				{adressefelter.map(item => this.renderFieldComponent(item))}
-		// 			</div>
-		// 		</div>
-		// 		<div>
-		// 			{!this.state.gyldig && (
-		// 				<p>I norske postadresser må siste utfylte linje starte med et gyldig postnummer</p>
-		// 			)}
-		// 		</div>
-		// 	</div>
-		// )
 	}
 
-	extraComponentProps = item => {
+	_onClickEkstraDiskresjonskode = () => {
+		const { attributeIds, valgteVerdier } = this.props
+		this.setState({ harEkstraDiskresjonskode: true })
+		attributeIds.push('utenFastBopel')
+		valgteVerdier['utenFastBopel'] = true
+	}
+
+	_onRemoveButton = () => {
+		const { values, valgteVerdier } = this.props
+		this.setState({ harEkstraDiskresjonskode: false })
+		values.spesreg2 = ''
+		valgteVerdier.spesreg2 = ''
+	}
+
+	_extraComponentProps = (item, type) => {
 		if (item.inputType === 'select') {
 			const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg...'
 
@@ -111,7 +125,11 @@ export default class UtenFastBopel extends Component {
 					placeholder: placeholder,
 					loadOptions: async () => {
 						const res = await DollyApi.getKodeverkByNavn(item.apiKodeverkId)
-						return DollyApi.Utils.NormalizeKodeverkForDropdown(res, showValueInLabel)
+						if (type === 'm_ufb') {
+							return DollyApi.Utils.NormalizeKodeverkForDropdown(res, showValueInLabel)
+						} else if (type === 'u_ufb') {
+							return DollyApi.Utils.NormalizeKodeverkForDropdownUtenUfb(res, showValueInLabel)
+						}
 					}
 				}
 			} else {
@@ -124,65 +142,15 @@ export default class UtenFastBopel extends Component {
 		return { placeholder: item.label }
 	}
 
-	extraComponentPropsKommunenr = () => {
-		return {
-			placeholder: 'Velg kommunenummer...',
-			loadOptions: async () => {
-				const res = await DollyApi.getKodeverkByNavn('Kommuner')
-				return DollyApi.Utils.NormalizeKodeverkForDropdown(res, false)
+	_extraComponentPropsKommunenr = () => {
+		return DollyApi.getKodeverkByNavn('Kommuner').then(res => {
+			return {
+				options: res.data.koder.map(kode => ({
+					label: `${kode.value} - ${kode.label}`,
+					value: kode.value,
+					id: 'boadresse_kommunenr'
+				}))
 			}
-			// loadOptions: this._kodeverk()
-		}
+		})
 	}
-
-	// _kodeverk = () => {
-	// 	return DollyApi.getKodeverkByNavn('Kommuner').then(res => {
-	// 		return {
-	// 			options: res.data.koder.map(kode => ({
-	// 				label: `${kode.value} - ${kode.label}`,
-	// 				value: kode.value,
-	// 				id: 'boadresse_kommunenr'
-	// 			}))
-	// 		}
-	// 	})
-	// }
-
-	// renderFieldComponent = item => {
-	// 	if (!item.inputType) return null
-	// 	const InputComponent = InputSelector(item.inputType)
-	// 	const componentProps = this.extraComponentProps(item)
-	// 	let label = ''
-
-	// 	if (item.label === 'Land') {
-	// 		label = 'Land'
-	// 	} else if (item.label === 'Adresselinje 1') {
-	// 		label = 'Adresse'
-	// 	}
-
-	// 	return (
-	// 		<Field
-	// 			key={item.key || item.id}
-	// 			name={item.id}
-	// 			label={label}
-	// 			component={InputComponent}
-	// 			onBlur={this.checkValues}
-	// 			size={item.size}
-	// 			options={item.options}
-	// 			{...componentProps}
-	// 			{...item.inputTypeAttributes}
-	// 		/>
-	// 	)
-	// }
-
-	// checkValues = async () => {
-	// 	const values = this.props.formikProps.values
-
-	// 	if (values['postLand'] === '') {
-	// 		values['postLand'] = 'NOR'
-	// 	}
-
-	// 	if ((await Adressesjekk.sjekkPostadresse(values)) === false) {
-	// 		this.setState({ gyldig: false })
-	// 	} else this.setState({ gyldig: true })
-	// }
 }

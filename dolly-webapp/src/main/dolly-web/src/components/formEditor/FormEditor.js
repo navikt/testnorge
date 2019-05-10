@@ -18,7 +18,6 @@ import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
 export default class FormEditor extends PureComponent {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
-		// console.log('this :', this)
 		// TODO: editMode burde være en props for hele klassen.
 		// editMode? renderEdit....: renderNormal
 		return AttributtListe.map(hovedKategori =>
@@ -103,10 +102,6 @@ export default class FormEditor extends PureComponent {
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
 
-		// console.log('subKategori :', subKategori)
-		// console.log('items :', items)
-		// console.log('formikProps :', formikProps)
-
 		if (isAdresse) {
 			return (
 				<div className="subkategori" key={uniqueId}>
@@ -117,21 +112,6 @@ export default class FormEditor extends PureComponent {
 				</div>
 			)
 		}
-
-		// if (items[0].id === 'spesreg') {
-		// 	return (
-		// 		<div className="subkategori" key={uniqueId}>
-		// 			{!isFieldarray && <h4>{subKategori.navn}</h4>}
-		// 			<div className="subkategori-field-group">
-		// 				<Postadresse items={items} formikProps={formikProps} />
-		// 			</div>
-		// 		</div>
-		// 	)
-		// 	if (formikProps.values.spesreg === 'UFB') {
-
-		// 	}
-
-		// }
 
 		return (
 			<div className="subkategori" key={uniqueId}>
@@ -203,10 +183,6 @@ export default class FormEditor extends PureComponent {
 	renderFieldComponent = (item, valgteVerdier, parentObject) => {
 		if (!item.inputType) return null
 
-		// console.log('item :', item)
-		// console.log('valgteVerdier :', valgteVerdier)
-		// console.log('item.inputTypeAttributes :', item.inputTypeAttributes)
-
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 
@@ -229,7 +205,7 @@ export default class FormEditor extends PureComponent {
 			}
 			return <StaticValue {...staticValueProps} />
 		}
-		// riktig å ha den her???
+
 		if (item.id === 'spesreg') {
 			return (
 				<UtenFastBopelConnector
@@ -238,6 +214,10 @@ export default class FormEditor extends PureComponent {
 					valgteVerdier={valgteVerdier}
 				/>
 			)
+		}
+
+		if (item.id === 'ufb_kommunenr' || item.id === 'utenFastBopel') {
+			return
 		}
 
 		return (
