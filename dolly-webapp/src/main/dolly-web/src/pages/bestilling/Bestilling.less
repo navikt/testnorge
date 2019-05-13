@@ -4,11 +4,10 @@
 	margin-top: 30px;
 	margin-bottom: 100px;
 
-	.input-fnr,
-	.input-num-person {
+	.input-field {
 		width: 200px;
 		flex-grow: 0;
-		margin-left: 20px;
+		margin-right: 20px;
 	}
 
 	.grunnoppsett {
@@ -19,7 +18,7 @@
 			width: 200px;
 		}
 	}
-	
+
 	.oppsummering {
 		background-color: white;
 		padding: 20px;
@@ -42,7 +41,7 @@
 			flex-wrap: wrap;
 
 			.edit-align-right {
-				flex: 1
+				flex: 1;
 			}
 
 			.static-value {
@@ -75,7 +74,6 @@
 		}
 	}
 
-	
 	.step-navknapper {
 		display: flex;
 		flex-direction: row;
@@ -87,18 +85,18 @@
 		border-top: 1px solid @color-bg-grey-border;
 		padding: 10px 20px;
 		z-index: 2;
-		
+
 		@media @desktop, @desktop-xl {
 			padding: 10px @page-margin;
 		}
-		
+
 		> button {
 			margin-right: 10px;
 		}
-		
+
 		&--right {
 			margin-left: auto;
-			
+
 			:not(:last-child) {
 				margin-right: 5px;
 			}
@@ -122,5 +120,20 @@
 		svg {
 			margin-right: 5px;
 		}
+	}
+}
+
+.bestilling-step3 {
+	.input-container {
+		// display: flex;
+		// justify-content: flex-end;
+	}
+
+	.input-mal-field {
+		h3 {
+			margin: 10px 0;
+		}
+		background-color: white;
+		padding: 10px 20px;
 	}
 }

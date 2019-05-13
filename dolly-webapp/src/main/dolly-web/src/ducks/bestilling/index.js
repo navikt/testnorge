@@ -17,7 +17,8 @@ export const actions = createActions(
 	{
 		POST_BESTILLING_FRA_EKSISTERENDE_IDENTER: (gruppeId, value) =>
 			DollyApi.createBestillingFraEksisterendeIdenter(gruppeId, value),
-		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values)
+		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values),
+		GET_BESTILLING_MALER: () => DollyApi.getBestillingMaler()
 	},
 	'NEXT_PAGE',
 	'PREV_PAGE',
@@ -32,6 +33,7 @@ export const actions = createActions(
 	'START_BESTILLING',
 	'SET_IDENT_OPPRETTES_FRA',
 	'SET_IDENT_LISTER',
+	'SET_BESTILLING_MAL',
 	'ABORT_BESTILLING'
 )
 
@@ -44,7 +46,9 @@ const initialState = {
 	values: {},
 	identOpprettesFra: BestillingMapper(),
 	eksisterendeIdentListe: [],
-	ugyldigIdentListe: []
+	ugyldigIdentListe: [],
+	maler: [],
+	malBestillingNavn: ''
 }
 
 export default handleActions(
@@ -75,6 +79,7 @@ export default handleActions(
 			return { ...state, attributeIds: [] }
 		},
 		[actions.checkAttributeArray](state, action) {
+			console.log('action.payload :', action.payload)
 			return { ...state, attributeIds: _union(state.attributeIds, action.payload) }
 		},
 		[actions.uncheckAttributeArray](state, action) {
@@ -86,6 +91,12 @@ export default handleActions(
 				identtype: action.payload.identtype,
 				antall: action.payload.antall,
 				page: state.page + 1
+			}
+		},
+		[success(actions.getBestillingMaler)](state, action) {
+			return {
+				...state,
+				maler: action.payload && action.payload.data
 			}
 		},
 		[actions.setEnvironments](state, action) {
@@ -144,6 +155,13 @@ export default handleActions(
 				ugyldigIdentListe: action.payload.ugyldigIdentListe
 			}
 		},
+		[actions.setBestillingMal](state, action) {
+			console.log(action.payload)
+			return {
+				...state,
+				malBestillingNavn: action.payload
+			}
+		},
 		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestilling))](
 			state,
 			action
@@ -173,7 +191,8 @@ const bestillingFormatter = bestillingState => {
 		identtype,
 		values,
 		identOpprettesFra,
-		eksisterendeIdentListe
+		eksisterendeIdentListe,
+		malBestillingNavn
 	} = bestillingState
 	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
 	let final_values = []
@@ -211,6 +230,9 @@ const bestillingFormatter = bestillingState => {
 		]
 	}
 
+	if (malBestillingNavn !== '') {
+		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
+	}
 	console.log('POSTING BESTILLING', final_values)
 
 	return final_values

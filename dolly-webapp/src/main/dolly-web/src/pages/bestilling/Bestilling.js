@@ -39,8 +39,9 @@ export default class Bestilling extends PureComponent {
 			sendBestilling,
 			environments,
 			eksisterendeIdentListe,
-			identOpprettesFra, 
-			setIdentOpprettesFra
+			identOpprettesFra,
+			setIdentOpprettesFra,
+			setBestillingMal
 		} = this.props
 
 		return (
@@ -92,6 +93,7 @@ export default class Bestilling extends PureComponent {
 						values={values}
 						sendBestilling={sendBestilling}
 						setEnvironments={setEnvironments}
+						setBestillingMal={setBestillingMal}
 						environments={environments}
 						deleteValues={deleteValues}
 						deleteValuesArray={deleteValuesArray}

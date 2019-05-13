@@ -7,8 +7,9 @@ import { Field, withFormik } from 'formik'
 import { animateScroll } from 'react-scroll'
 import { Radio } from 'nav-frontend-skjema'
 import '~/pages/bestilling/Bestilling.less'
-import NyIdent from '~/components/opprettIdent/NyIdent.js'
-import EksisterendeIdentConnector from '~/components/opprettIdent/EksisterendeIdentConnector'
+import NyIdentConnector from './NyIdent/NyIdentConnector.js'
+import EksisterendeIdentConnector from './EksisterendeIdent/EksisterendeIdentConnector'
+// import MalBestillingConnector from '~/components/opprettIdent/MalBestillingConnector'
 import BestillingMapper from '~/utils/BestillingMapper'
 import { FormikDollySelect } from '~/components/fields/Select/Select'
 
@@ -29,7 +30,7 @@ class Step1 extends Component {
 	}
 
 	_renderRadioBtn = (checkedType, label) => {
-		console.log('identOpprettesFra :', this.props.identOpprettesFra)
+		// console.log('identOpprettesFra :', this.props.identOpprettesFra)
 		return (
 			<Radio
 				checked={this.props.identOpprettesFra === checkedType}
@@ -45,7 +46,7 @@ class Step1 extends Component {
 
 	render() {
 		const { identOpprettesFra, eksisterendeIdentListe } = this.props
-
+		// console.log(this.props)
 		return (
 			<div className="bestilling-step1">
 				<div className="flexbox--space">
@@ -80,18 +81,19 @@ class Step1 extends Component {
 			checkAttributeArray,
 			uncheckAttributeArray,
 			identOpprettesFra,
-			eksisterendeIdentListe
+			values
 		} = this.props
 
 		switch (identOpprettesFra) {
 			case BestillingMapper():
 				return (
-					<NyIdent
+					<NyIdentConnector
 						selectedAttributeIds={selectedAttributeIds}
 						toggleAttributeSelection={toggleAttributeSelection}
 						uncheckAllAttributes={uncheckAllAttributes}
 						checkAttributeArray={checkAttributeArray}
 						uncheckAttributeArray={uncheckAttributeArray}
+						malBestillingNavn={values.mal}
 					/>
 				)
 			case BestillingMapper('EKSIDENT'):
@@ -105,16 +107,17 @@ class Step1 extends Component {
 						identOpprettesFra={identOpprettesFra}
 					/>
 				)
-			case BestillingMapper('MAL'):
-				return (
-					<Field
-						name="maler"
-						label="Velg en mal"
-						className="dollyselect medium"
-						component={FormikDollySelect}
-						options={[{ value: 'Beregnet skatt', label: 'Beregnet ef' }]}
-					/>
-				)
+			// case BestillingMapper('MAL'):
+			// 	return (
+			// 		<MalBestillingConnector
+			// 			selectedAttributeIds={selectedAttributeIds}
+			// 			toggleAttributeSelection={toggleAttributeSelection}
+			// 			uncheckAllAttributes={uncheckAllAttributes}
+			// 			checkAttributeArray={checkAttributeArray}
+			// 			uncheckAttributeArray={uncheckAttributeArray}
+			// 			mal={values.mal}
+			// 		/>
+			// 	)
 			default:
 				break
 		}
@@ -126,6 +129,7 @@ export default withFormik({
 	mapPropsToValues: props => ({
 		identtype: props.identtype || 'FNR', // default to FNR
 		antall: props.antall
+		// mal: props.maler
 	}),
 	validationSchema: yup.object().shape({
 		antall: yup

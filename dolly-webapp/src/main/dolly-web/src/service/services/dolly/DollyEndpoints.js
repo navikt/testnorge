@@ -41,7 +41,7 @@ class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestilling`
 	}
 
-	static gruppeBestillingFraEksisterendeIdenter (gruppeId){
+	static gruppeBestillingFraEksisterendeIdenter(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestilling/fraidenter`
 	}
 
@@ -99,6 +99,10 @@ class DollyEndpoints {
 
 	static bestillingStatus(bestillingId) {
 		return `${bestillingBase}/${bestillingId}`
+	}
+
+	static bestillingMal() {
+		return bestillingBase + '/malbestilling'
 	}
 
 	static gjenopprettBestilling(bestillingId, envs) {
