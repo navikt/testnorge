@@ -52,4 +52,10 @@ public class OrkestreringsController {
         environmentInitializationService.initializeKrr();
         return ResponseEntity.ok().build();
     }
+
+    @ApiOperation(value = "Legger til faste kontaktreservasjoner i digital-kontaktinformasjon", consumes = "Dkif-forvalter")
+    @PostMapping(value = "/dkif/{miljoe}")
+    public ResponseEntity initializeDkif(@PathVariable String miljoe) {
+        return ResponseEntity.ok(environmentInitializationService.initializeDkif(miljoe));
+    }
 }

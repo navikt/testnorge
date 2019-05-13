@@ -28,6 +28,7 @@
 
     <dependencyManagement>
         <dependencies>
+
             <!--LOGGING-->
             <dependency>
                 <groupId>net.logstash.logback</groupId>

@@ -9,11 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.time.Instant;
-import java.util.Date;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +41,7 @@ public class KrrConsumer {
 
     public Set<String> send(Set<KrrModel> data) {
 
-        String dateString = new Date(Instant.now().toEpochMilli()).toString();
+        String dateString = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).toString();
 
         Set<KrrRequest> requestData = data.parallelStream().map(k -> {
             KrrRequest.KrrRequestBuilder builder = KrrRequest.builder();
@@ -55,13 +57,15 @@ public class KrrConsumer {
             }
             builder.reserved(k.isReserved());
             builder.fnr(k.getFnr());
+            builder.validFrom(dateString);
+            builder.sdpProvider(null);
+            builder.sdpAddress(null);
+
             return builder.build();
         }).collect(Collectors.toSet());
 
         UriTemplate uriTemplate = new UriTemplate(krrUrl + "/kontaktinformasjon");
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Nav-Call-Id", "Synt");
-        httpHeaders.add("Nav-Consumer-Id", "Synt");
+        HttpHeaders httpHeaders = buildDefaultHeaders();
 
         Set<String> createdInKrr = new HashSet<>();
         requestData.forEach(d -> {
@@ -81,22 +85,31 @@ public class KrrConsumer {
 
         Set<String> existing = new HashSet<>();
 
-        UriTemplate uriTemplate = new UriTemplate(krrUrl + "/kontaktinformasjon");
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Nav-Call-Id", "Synt");
-        httpHeaders.add("Nav-Consumer-Id", "Synt");
+        UriTemplate uriTemplate = new UriTemplate(krrUrl + "/person/kontaktinformasjon");
+        HttpHeaders httpHeaders = buildDefaultHeaders();
 
         fnrs.forEach(fnr -> {
             httpHeaders.add("Nav-Personident", fnr);
             RequestEntity requestEntity = new RequestEntity<>(httpHeaders, HttpMethod.GET, uriTemplate.expand());
-            ResponseEntity<List<KrrRequest>> response = restTemplate.exchange(requestEntity, RESPONSE_TYPE);
-            if (response.getStatusCode() == HttpStatus.OK) {
-                if (response.getBody() != null) {
-                    existing.addAll(response.getBody().stream().map(KrrRequest::getFnr).collect(Collectors.toSet()));
+            try {
+                ResponseEntity<List<KrrRequest>> response = restTemplate.exchange(requestEntity, RESPONSE_TYPE);
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    if (response.getBody() != null) {
+                        existing.addAll(response.getBody().stream().map(KrrRequest::getFnr).collect(Collectors.toSet()));
+                    }
                 }
+            } catch (HttpClientErrorException ignored) {
+                log.info("Fant ikke person {}", fnr);
             }
         });
 
         return existing;
+    }
+
+    private HttpHeaders buildDefaultHeaders() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Nav-Call-Id", "Synt");
+        httpHeaders.add("Nav-Consumer-Id", "Synt");
+        return httpHeaders;
     }
 }

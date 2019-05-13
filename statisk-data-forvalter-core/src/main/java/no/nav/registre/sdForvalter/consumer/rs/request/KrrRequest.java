@@ -27,7 +27,7 @@ public class KrrRequest {
 
     @JsonProperty("epost")
     private String email;
-    @JsonProperty("epostOppdatert")
+    @JsonProperty("epostVerifisert")
     private String emailValidatedDate;
     @JsonProperty("epostOppdatert")
     private String emailUpdated;
@@ -42,7 +42,7 @@ public class KrrRequest {
     @JsonProperty("sdpAdresse")
     private String sdpAddress;
     @JsonProperty("sdpLeverandoer")
-    private int sdpProvider;
+    private Integer sdpProvider;
 
 
 }
