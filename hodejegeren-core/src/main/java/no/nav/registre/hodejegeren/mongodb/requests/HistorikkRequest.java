@@ -1,4 +1,4 @@
-package no.nav.registre.hodejegeren.mongodb;
+package no.nav.registre.hodejegeren.mongodb.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,16 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import no.nav.registre.hodejegeren.mongodb.Kilde;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Kilde {
+public class HistorikkRequest {
 
-    private String navn;
-
-    private List<Data> data;
+    private String id;
+    private Kilde kilde;
 }
