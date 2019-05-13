@@ -6,10 +6,24 @@ import { FormikInput } from '~/components/fields/Input/Input'
 import { Field, withFormik } from 'formik'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
+import { getAttributesFromMal } from './MalbestillingUtils'
 
 export default class NyIdent extends Component {
 	constructor(props) {
 		super(props)
+	}
+
+	componentDidMount() {
+		this.props.getBestillingMaler()
+		this.props.maler.length > 0 && this._formatMalerOptions()
+	}
+
+	componentDidUpdate(prevProps) {
+		console.log('this.props :', this.props)
+		const { mal } = this.props
+		if (mal !== prevProps.mal) {
+			this.props.checkAttributeArray(getAttributesFromMal(mal))
+		}
 	}
 
 	render() {
@@ -18,7 +32,9 @@ export default class NyIdent extends Component {
 			toggleAttributeSelection,
 			uncheckAllAttributes,
 			checkAttributeArray,
-			uncheckAttributeArray
+			uncheckAttributeArray,
+			mal,
+			maler
 		} = this.props
 
 		return (
@@ -27,18 +43,28 @@ export default class NyIdent extends Component {
 					<Field
 						name="identtype"
 						label="Velg identtype"
+						className="input-field"
 						component={FormikDollySelect}
 						options={SelectOptionsManager('identtype')}
 					/>
 					<Field
 						name="antall"
 						label="Antall personer"
-						className="input-num-person"
+						className="input-field"
 						type="number"
 						min="0"
 						component={FormikInput}
 					/>
-					<ContentTooltip>
+
+					<Field
+						name="mal"
+						label="MALER"
+						className="input-field"
+						component={FormikDollySelect}
+						placeholder="Mal ikke valgt"
+						options={this._formatMalerOptions(maler)}
+					/>
+					{/* <ContentTooltip>
 						<span>
 							Fødselsnummer er et ellevesifret registreringsnummer som tildeles av den norske stat
 							til alle landets innbyggere. Nummeret skiller enkeltpersoner fra hverandre, men kan
@@ -53,8 +79,9 @@ export default class NyIdent extends Component {
 						>
 							Les mer
 						</a>
-					</ContentTooltip>
+					</ContentTooltip> */}
 				</div>
+				{/* {mal && this._showMalSpecs(maler, mal)} */}
 				<AttributtVelgerConnector
 					onToggle={toggleAttributeSelection}
 					uncheckAllAttributes={uncheckAllAttributes}
@@ -63,6 +90,26 @@ export default class NyIdent extends Component {
 					selectedIds={selectedAttributeIds}
 				/>
 			</Fragment>
+		)
+	}
+
+	_formatMalerOptions = () => {
+		const { maler } = this.props
+		console.log('maler :', maler)
+		return maler.map(mal => {
+			return { value: mal.malBestillingNavn, label: mal.malBestillingNavn }
+		})
+	}
+
+	_showMalSpecs = (maler, mal) => {
+		console.log(mal, 'mal')
+		const res = maler.find(m => m.malBestillingNavn === mal)
+
+		return (
+			<div>
+				<p>{res.tpsfKriterier}</p>
+				<p>{res.bestKriterier}</p>
+			</div>
 		)
 	}
 }
