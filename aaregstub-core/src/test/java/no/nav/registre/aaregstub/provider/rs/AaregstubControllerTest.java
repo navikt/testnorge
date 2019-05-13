@@ -69,7 +69,7 @@ public class AaregstubControllerTest {
     @Test
     public void shouldGetIdentMedArbeidsforhold() {
         aaregstubController.hentIdentMedArbeidsforhold(fnr);
-        verify(arbeidsforholdService).hentIdentMedArbeidsforholdNy(fnr);
+        verify(arbeidsforholdService).hentIdentMedArbeidsforhold(fnr);
     }
 
     @Test

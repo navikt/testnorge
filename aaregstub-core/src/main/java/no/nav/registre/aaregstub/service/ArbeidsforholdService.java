@@ -91,7 +91,7 @@ public class ArbeidsforholdService {
                 .build();
     }
 
-    public Optional<Ident> hentIdentMedArbeidsforholdNy(String ident) {
+    public Optional<Ident> hentIdentMedArbeidsforhold(String ident) {
         return identRepository.findByFnr(ident);
     }
 
@@ -182,6 +182,31 @@ public class ArbeidsforholdService {
             }
         }
         return identerIAareg;
+    }
+
+    public List<String> synkroniserMedAareg(String miljoe) {
+        List<String> identerIStub = hentAlleArbeidstakere();
+        List<String> identerIAareg = sjekkStatusMotAareg(identerIStub, miljoe);
+
+        identerIStub.removeAll(identerIAareg);
+
+        List<Long> arbeidsforholdSomSkalFjernes = new ArrayList<>();
+
+        for (String ident : identerIStub) {
+            Ident identMedArbeidsforhold = hentIdentMedArbeidsforhold(ident).orElse(null);
+            if (identMedArbeidsforhold != null) {
+                List<Arbeidsforhold> arbeidsforholdeneTilIdent = identMedArbeidsforhold.getArbeidsforhold();
+                for (Arbeidsforhold arbeidsforhold : arbeidsforholdeneTilIdent) {
+                    arbeidsforholdSomSkalFjernes.add(arbeidsforhold.getId());
+                }
+            }
+        }
+
+        for(Long id : arbeidsforholdSomSkalFjernes) {
+            slettArbeidsforhold(id);
+        }
+
+        return identerIStub;
     }
 
     private void behandleNyttArbeidsforhold(List<ArbeidsforholdsResponse> arbeidsforholdsmeldinger) {

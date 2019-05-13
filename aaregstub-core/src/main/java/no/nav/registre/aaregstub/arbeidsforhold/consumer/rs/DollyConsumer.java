@@ -4,6 +4,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -20,6 +22,7 @@ import no.nav.registre.aaregstub.arbeidsforhold.ArbeidsforholdsResponse;
 import no.nav.registre.aaregstub.arbeidsforhold.consumer.rs.responses.DollyResponse;
 
 @Component
+@Slf4j
 public class DollyConsumer {
 
     private static final ParameterizedTypeReference<Map<String, Object>> RESPONSE_TYPE_HENT_TOKEN = new ParameterizedTypeReference<Map<String, Object>>() {
@@ -81,6 +84,13 @@ public class DollyConsumer {
         RequestEntity getRequest = RequestEntity.get(hentArbeidsforholdUrl.expand(fnr, miljoe))
                 .header(AUTHORIZATION, tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .build();
-        return restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        ResponseEntity<Object> response;
+        try {
+            response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
+        } catch (HttpStatusCodeException e) {
+            response = ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+            log.warn("Kunne ikke finne arbeidsforhold på ident {} i miljø {} i aareg", fnr, miljoe, e);
+        }
+        return response;
     }
 }
