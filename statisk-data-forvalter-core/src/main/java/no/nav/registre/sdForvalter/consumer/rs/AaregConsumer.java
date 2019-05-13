@@ -32,7 +32,7 @@ public class AaregConsumer {
 
     public AaregConsumer(RestTemplate restTemplate, @Value("${testnorge.aareg.rest.api.url}") String aaregUrl) {
         this.restTemplate = restTemplate;
-        this.aaregUrl = aaregUrl + "/v1";
+        this.aaregUrl = aaregUrl + "/v1/syntetisering";
     }
 
     public Map<String, String> send(Set<AaregModel> data, String environment) {
