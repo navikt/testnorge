@@ -33,5 +33,7 @@ public class RsBestillingProgress {
 
     private String arenastubStatus;
 
+    private String pdlforvalterStatus;
+
     private List<String> feil;
 }

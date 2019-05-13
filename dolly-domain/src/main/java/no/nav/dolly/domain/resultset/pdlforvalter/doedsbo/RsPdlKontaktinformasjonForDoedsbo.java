@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,20 +14,19 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlKontaktinformasjonForDoedsbo {
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class RsPdlKontaktinformasjonForDoedsbo {
 
     private String adresselinje1;
     private String adresselinje2;
     private PdlOrganisasjon advokatSomAdressat;
-    private LocalDate gyldigFom;
-    private LocalDate gyldigTom;
-    private String ident;
-    private String kilde;
+    private LocalDateTime gyldigFom;
+    private LocalDateTime gyldigTom;
     private PdlKontaktpersonMedIdNummer kontaktpersonMedIdNummerSomAdressat;
-    private PdlKontaktpersonUtenIdNummerSomAdressat kontaktpersonUtenIdNummerSomAdressat;
+    private RsPdlKontaktpersonUtenIdNummerSomAdressat kontaktpersonUtenIdNummerSomAdressat;
     private String landkode;
     private PdlOrganisasjon organisasjonSomAdressat;
     private String postnummer;
     private PdlSkifteform skifteform;
-    private LocalDate utstedtDato;
+    private LocalDateTime utstedtDato;
 }

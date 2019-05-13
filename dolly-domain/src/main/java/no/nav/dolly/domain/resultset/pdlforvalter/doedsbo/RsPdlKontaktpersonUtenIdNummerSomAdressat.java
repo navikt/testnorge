@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlAdvokatSomErAdressat {
+public class RsPdlKontaktpersonUtenIdNummerSomAdressat {
 
-    private PdlPersonnavn kontaktPerson;
-    private String organisasjonsNavn;
-    private String organsisajonsNummer;
+    private LocalDateTime foedselsDato;
+    private PdlPersonnavn navn;
 }

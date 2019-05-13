@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlOrganisasjonSomAdressat {
+public class PdlOrganisasjon {
 
     private PdlPersonnavn kontaktPerson;
     private String organisasjonsNavn;

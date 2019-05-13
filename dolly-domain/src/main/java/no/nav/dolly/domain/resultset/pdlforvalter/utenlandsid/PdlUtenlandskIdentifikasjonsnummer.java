@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.pdlforvalter.folkeregister;
+package no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid;
 
 import java.time.LocalDate;
 
@@ -7,19 +7,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.IdentType;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlFolkeregisterIdent {
+public class PdlUtenlandskIdentifikasjonsnummer {
 
     private LocalDate gyldigFom;
+    private LocalDate gyldigTom;
     private String ident;
+    private String idnumertype;
     private String idnummer;
     private String kilde;
-    private String status;
-    private IdentType type;
+    private String utstederland;
 }

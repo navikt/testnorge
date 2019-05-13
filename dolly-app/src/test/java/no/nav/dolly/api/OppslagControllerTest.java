@@ -15,12 +15,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.ResponseEntity;
 
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.kodeverk.KodeverkConsumer;
 import no.nav.dolly.kodeverk.KodeverkMapper;
 import no.nav.dolly.norg2.Norg2Consumer;
 import no.nav.dolly.norg2.Norg2EnhetResponse;
+import no.nav.dolly.personoppslag.PersonoppslagConsumer;
 import no.nav.tjenester.kodeverk.api.v1.Betydning;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
@@ -30,6 +32,8 @@ public class OppslagControllerTest {
     private static final String STANDARD_KODEVERK_NAME = "name";
     private static final String TKNR = "0123";
     private static final String ENHET_NAVN = "Nav Sagene";
+    private static final String IDENT = "12345678901";
+    private static final String OPPLYSNINGER = "Personopplysninger";
 
     @Mock
     private KodeverkConsumer kodeverkConsumer;
@@ -51,6 +55,9 @@ public class OppslagControllerTest {
 
     @Mock
     private GetKodeverkKoderBetydningerResponse getKodeverkKoderBetydningerResponse;
+
+    @Mock
+    private PersonoppslagConsumer personoppslagConsumer;
 
     @Test
     public void fetchKodeverkByName_happyPath() {
@@ -81,5 +88,16 @@ public class OppslagControllerTest {
         assertThat(target.getEnhetNr(), is(equalTo(TKNR)));
         assertThat(target.getNavn(), is(equalTo(ENHET_NAVN)));
         verify(norg2Consumer).fetchEnhetByEnhetNr(TKNR);
+    }
+
+    @Test
+    public void oppslagPerson_happyPath() {
+
+        when(personoppslagConsumer.fetchPerson(IDENT)).thenReturn(ResponseEntity.ok(OPPLYSNINGER));
+
+        ResponseEntity response = oppslagController.personoppslag(IDENT);
+
+        verify(personoppslagConsumer).fetchPerson(IDENT);
+        assertThat(response.getBody(), is(equalTo(OPPLYSNINGER)));
     }
 }
