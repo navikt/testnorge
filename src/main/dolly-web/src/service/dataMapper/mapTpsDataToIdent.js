@@ -4,7 +4,6 @@ import Formatters from '~/utils/DataFormatter'
 export function mapTpsfData(tpsfData, testIdent) {
 	if (!tpsfData) return null
 	let data
-	console.log('tpsfData :', tpsfData)
 	data = [
 		{
 			header: 'Personlig informasjon',
@@ -44,7 +43,6 @@ export function mapTpsfData(tpsfData, testIdent) {
 					label: 'Sivilstand',
 					value: tpsfData.sivilstand
 				},
-
 				{
 					id: 'miljoer',
 					label: 'Miljøer',
