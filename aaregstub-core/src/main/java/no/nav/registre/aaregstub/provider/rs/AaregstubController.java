@@ -72,7 +72,7 @@ public class AaregstubController {
     @ApiOperation(value = "Her kan man hente ut alle arbeidsforholdene som er opprettet i stubben på en gitt ident.")
     @GetMapping(value = "/hentIdentMedArbeidsforhold/{ident}")
     public Ident hentIdentMedArbeidsforhold(@PathVariable String ident) {
-        Optional<Ident> identMedArbeidsforhold = arbeidsforholdService.hentIdentMedArbeidsforholdNy(ident);
+        Optional<Ident> identMedArbeidsforhold = arbeidsforholdService.hentIdentMedArbeidsforhold(ident);
         return identMedArbeidsforhold.orElse(null);
     }
 
@@ -95,5 +95,13 @@ public class AaregstubController {
     @PostMapping(value = "sjekkStatusMotAareg")
     public List<String> sjekkStatusMotAareg(@RequestParam String miljoe, @RequestBody List<String> identer) {
         return arbeidsforholdService.sjekkStatusMotAareg(identer, miljoe);
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "I det gitte miljøet vil metoden rydde opp i stubben, slik at kun arbeidsforhold som også ligger i aareg beholdes. "
+            + "Returnerer listen over identer som er fjernet fra stubben.")
+    @PostMapping(value = "synkroniserMedAareg")
+    public List<String> synkroniserMedAareg(@RequestParam String miljoe) {
+        return arbeidsforholdService.synkroniserMedAareg(miljoe);
     }
 }
