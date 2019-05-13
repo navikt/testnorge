@@ -4,6 +4,7 @@ import Formatters from '~/utils/DataFormatter'
 export function mapTpsfData(tpsfData, testIdent) {
 	if (!tpsfData) return null
 	let data
+	console.log('tpsfData :', tpsfData)
 	data = [
 		{
 			header: 'Personlig informasjon',
@@ -53,6 +54,11 @@ export function mapTpsfData(tpsfData, testIdent) {
 					id: 'spesreg',
 					label: 'Diskresjonskoder',
 					value: tpsfData.spesreg
+				},
+				{
+					id: 'utenFastBopel',
+					label: 'Uten fast bopel',
+					value: Formatters.oversettBoolean(tpsfData.utenFastBopel)
 				},
 				{
 					id: 'gtVerdi',
