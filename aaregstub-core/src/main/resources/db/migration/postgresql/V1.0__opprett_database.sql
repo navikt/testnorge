@@ -23,18 +23,25 @@ create table arbeidsavtale
 );
 create table arbeidsforhold
 (
-    id                      bigint not null,
-    ansettelsesperiode_fom  varchar(255),
-    ansettelsesperiode_tom  varchar(255),
-    arbeidsforholdid        varchar(255),
-    arbeidsforholdidnav     integer,
-    arbeidsforholdstype     varchar(255),
-    arbeidsgiver_aktoertype varchar(255),
-    arbeidsgiver_orgnummer  varchar(255),
-    arbeidstaker_aktoertype varchar(255),
-    arbeidstaker_ident      varchar(255),
-    arbeidstaker_identtype  varchar(255),
-    ident_fnr               varchar(255),
+    id                          bigint not null,
+    ansettelsesperiode_fom      varchar(255),
+    ansettelsesperiode_tom      varchar(255),
+    arbeidsforholdid            varchar(255),
+    arbeidsforholdidnav         integer,
+    arbeidsforholdstype         varchar(255),
+    arbeidsgiver_aktoertype     varchar(255),
+    arbeidsgiver_orgnummer      varchar(255),
+    arbeidstaker_aktoertype     varchar(255),
+    arbeidstaker_ident          varchar(255),
+    arbeidstaker_identtype      varchar(255),
+    arbeidsforholds_response_id bigint,
+    ident_fnr                   varchar(255),
+    primary key (id)
+);
+create table arbeidsforholds_response
+(
+    id             bigint not null,
+    arkivreferanse varchar(255),
     primary key (id)
 );
 create table ident
@@ -66,6 +73,8 @@ alter table antall_timer_for_timeloennet
     add constraint FKehnx6exl7on45he1hb9vqu0u4 foreign key (arbeidsforhold_id) references arbeidsforhold;
 alter table arbeidsavtale
     add constraint FK1qd2o8a54yy4q523ttk8j1tof foreign key (arbeidsforhold_id) references arbeidsforhold;
+alter table arbeidsforhold
+    add constraint FKkxbmv1ekpvenvpn48kmshtkcx foreign key (arbeidsforholds_response_id) references arbeidsforholds_response;
 alter table arbeidsforhold
     add constraint FKssvb8o4teii1tje3sqq81n7hv foreign key (ident_fnr) references ident;
 alter table permisjon

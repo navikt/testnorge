@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -90,8 +91,12 @@ public class ArbeidsforholdService {
                 .build();
     }
 
-    public Optional<Ident> hentIdentMedArbeidsforholdNy(String ident) {
+    public Optional<Ident> hentIdentMedArbeidsforhold(String ident) {
         return identRepository.findByFnr(ident);
+    }
+
+    public List<BigInteger> hentAlleArbeidsforholdIder() {
+        return arbeidsforholdRepository.getAllIds();
     }
 
     public Optional<Arbeidsforhold> hentArbeidsforhold(Long id) {
@@ -154,6 +159,56 @@ public class ArbeidsforholdService {
         return identRepository.getAllDistinctIdents();
     }
 
+    public List<DollyResponse> sendArbeidsforholdTilAareg(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
+        List<DollyResponse> responses = new ArrayList<>(syntetiserteArbeidsforhold.size());
+        Map<String, Object> tokenObject = hentTokenTilDolly();
+        for (ArbeidsforholdsResponse syntetisertArbeidsforhold : syntetiserteArbeidsforhold) {
+            responses.add(dollyConsumer.sendArbeidsforholdTilAareg(tokenObject, syntetisertArbeidsforhold));
+        }
+        return responses;
+    }
+
+    public Object hentArbeidsforholdFraAareg(String ident, String miljoe) {
+        Map<String, Object> tokenObject = hentTokenTilDolly();
+        return dollyConsumer.hentArbeidsforholdFraAareg(tokenObject, ident, miljoe).getBody();
+    }
+
+    public List<String> sjekkStatusMotAareg(List<String> identer, String miljoe) {
+        Map<String, Object> tokenObject = hentTokenTilDolly();
+        List<String> identerIAareg = new ArrayList<>();
+        for (String ident : identer) {
+            if (dollyConsumer.hentArbeidsforholdFraAareg(tokenObject, ident, miljoe).getStatusCode().is2xxSuccessful()) {
+                identerIAareg.add(ident);
+            }
+        }
+        return identerIAareg;
+    }
+
+    public List<String> synkroniserMedAareg(String miljoe) {
+        List<String> identerIStub = hentAlleArbeidstakere();
+        List<String> identerIAareg = sjekkStatusMotAareg(identerIStub, miljoe);
+
+        identerIStub.removeAll(identerIAareg);
+
+        List<Long> arbeidsforholdSomSkalFjernes = new ArrayList<>();
+
+        for (String ident : identerIStub) {
+            Ident identMedArbeidsforhold = hentIdentMedArbeidsforhold(ident).orElse(null);
+            if (identMedArbeidsforhold != null) {
+                List<Arbeidsforhold> arbeidsforholdeneTilIdent = identMedArbeidsforhold.getArbeidsforhold();
+                for (Arbeidsforhold arbeidsforhold : arbeidsforholdeneTilIdent) {
+                    arbeidsforholdSomSkalFjernes.add(arbeidsforhold.getId());
+                }
+            }
+        }
+
+        for(Long id : arbeidsforholdSomSkalFjernes) {
+            slettArbeidsforhold(id);
+        }
+
+        return identerIStub;
+    }
+
     private void behandleNyttArbeidsforhold(List<ArbeidsforholdsResponse> arbeidsforholdsmeldinger) {
         for (ArbeidsforholdsResponse arbeidsforholdsResponse : arbeidsforholdsmeldinger) {
             Arbeidsforhold arbeidsforhold = arbeidsforholdsResponse.getArbeidsforhold();
@@ -195,20 +250,6 @@ public class ArbeidsforholdService {
 
             identRepository.save(ident);
         }
-    }
-
-    public List<DollyResponse> sendArbeidsforholdTilAareg(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
-        List<DollyResponse> responses = new ArrayList<>(syntetiserteArbeidsforhold.size());
-        Map<String, Object> tokenObject = hentTokenTilDolly();
-        for (ArbeidsforholdsResponse syntetisertArbeidsforhold : syntetiserteArbeidsforhold) {
-            responses.add(dollyConsumer.sendArbeidsforholdTilAareg(tokenObject, syntetisertArbeidsforhold));
-        }
-        return responses;
-    }
-
-    public Object hentArbeidsforholdFraAareg(String ident, String miljoe) {
-        Map<String, Object> tokenObject = hentTokenTilDolly();
-        return dollyConsumer.hentArbeidsforholdFraAareg(tokenObject, ident, miljoe);
     }
 
     private List<String> sjekkOmIdenterErLagret(List<String> identer) {
