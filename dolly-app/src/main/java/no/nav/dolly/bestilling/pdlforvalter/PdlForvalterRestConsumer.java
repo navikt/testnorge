@@ -19,6 +19,7 @@ import no.nav.dolly.sts.StsOidcService;
 @Service
 public class PdlForvalterRestConsumer {
 
+    private static final String NAV_PERSONIDENT = "Nav-Personident";
     private static final String PDL_BESTILLING_FOLKEREGISTER_IDENT_URL = "/api/v1/bestilling/folkeregisterident";
     private static final String PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL = "/api/v1/bestilling/kontaktinformasjonfordoedsbo";
     private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER = "/api/v1/bestilling/utenlandsidentifikasjonsnummer";
@@ -40,19 +41,21 @@ public class PdlForvalterRestConsumer {
                 .body(folkeregisterIdent), String.class);
     }
 
-    public ResponseEntity postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo) {
+    public ResponseEntity postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, String ident) {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL))
                 .contentType(APPLICATION_JSON)
                 .header(AUTHORIZATION, stsOidcService.getIdToken("q"))
+                .header(NAV_PERSONIDENT, ident)
                 .body(kontaktinformasjonForDoedsbo), String.class);
     }
 
-    public ResponseEntity postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer) {
+    public ResponseEntity postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer, String ident) {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER))
                 .contentType(APPLICATION_JSON)
                 .header(AUTHORIZATION, stsOidcService.getIdToken("q"))
+                .header(NAV_PERSONIDENT, ident)
                 .body(utenlandskIdentifikasjonsnummer), String.class);
     }
 }

@@ -53,13 +53,12 @@ public class PdlForvalterClient implements ClientRegister {
         if (nonNull(utenlandskIdentifikasjonsnummer)) {
             try {
                 utenlandskIdentifikasjonsnummer.setKilde(KILDE);
-                utenlandskIdentifikasjonsnummer.setIdent(ident);
                 utenlandskIdentifikasjonsnummer.setGyldigFom(nullcheckSetDefaultValue(
                         utenlandskIdentifikasjonsnummer.getGyldigFom(), LocalDate.now()
                 ));
 
                 appendName(UTENLANDS_IDENTIFIKASJONSNUMMER, status);
-                ResponseEntity<String> response = pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(utenlandskIdentifikasjonsnummer);
+                ResponseEntity<String> response = pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(utenlandskIdentifikasjonsnummer, ident);
 
                 appendOkStatus(response.getBody(), status);
 
@@ -76,11 +75,10 @@ public class PdlForvalterClient implements ClientRegister {
         if (nonNull(kontaktinformasjonForDoedsbo)) {
             try {
                 kontaktinformasjonForDoedsbo.setKilde(KILDE);
-                kontaktinformasjonForDoedsbo.setIdent(ident);
                 kontaktinformasjonForDoedsbo.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjonForDoedsbo.getUtstedtDato(), LocalDate.now()));
 
                 appendName(KONTAKTINFORMASJON_DOEDSBO, status);
-                ResponseEntity<String> response = pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsbo);
+                ResponseEntity<String> response = pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsbo, ident);
 
                 appendOkStatus(response.getBody(), status);
 
@@ -122,7 +120,7 @@ public class PdlForvalterClient implements ClientRegister {
     }
 
     private static void appendOkStatus(String body, StringBuilder builder) {
-        builder.append("&status: OK, hendelsesId:")
+        builder.append("&status: OK, hendelsesId: ")
                 .append(trimHendelseId(body));
     }
 
@@ -133,13 +131,15 @@ public class PdlForvalterClient implements ClientRegister {
 
         if (exception instanceof HttpClientErrorException) {
             String responseBody = ((HttpClientErrorException) exception).getResponseBodyAsString();
-            builder.append(" - message: ")
-                    .append(responseBody.substring(responseBody.indexOf("message") + 9, responseBody.indexOf("path") - 2));
+            if (responseBody.indexOf("message") != -1) {
+                builder.append(" - message: ")
+                        .append(responseBody.substring(responseBody.indexOf("message") + 9, responseBody.indexOf("path") - 2));
+            }
         }
         builder.append(')');
     }
 
     private static String trimHendelseId(String jsonNode) {
-        return jsonNode.substring(jsonNode.indexOf(':') + 2, jsonNode.length() - 2);
+        return jsonNode.substring(jsonNode.indexOf(':')).length() > 3 ? jsonNode.substring(jsonNode.indexOf(':') + 2, jsonNode.length() - 2) : "";
     }
 }

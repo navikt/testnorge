@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.folkeregister.PdlFolkeregisterIdent;
@@ -24,6 +23,7 @@ import no.nav.dolly.sts.StsOidcService;
 @RunWith(MockitoJUnitRunner.class)
 public class PdlForvalterRestConsumerTest {
 
+    private static final String IDENT = "11111111111";
     private static final String PDL_URL = "http://pdl.nav.no";
 
     @Mock
@@ -46,28 +46,28 @@ public class PdlForvalterRestConsumerTest {
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(String.class));
     }
 
     @Test
     public void postKontaktinformasjonForDoedsbo_OK() {
         when(providersProps.getPdlForvalter()).thenReturn(ProvidersProps.PdlForvalter.builder().url(PDL_URL).build());
 
-        pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build());
+        pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(String.class));
     }
 
     @Test
     public void postUtenlandskIdentifikasjonsnummer_OK() {
         when(providersProps.getPdlForvalter()).thenReturn(ProvidersProps.PdlForvalter.builder().url(PDL_URL).build());
 
-        pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build());
+        pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(String.class));
     }
 }

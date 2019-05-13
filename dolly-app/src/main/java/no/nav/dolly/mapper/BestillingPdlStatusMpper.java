@@ -30,7 +30,7 @@ public final class BestillingPdlStatusMpper {
                                 String[] status = melding[1].split(",");
 
                                 if (msgStatusIdents.containsKey(melding[0])) {
-                                    msgStatusIdents.get(melding[0]).get(status[0]).add(progress.getIdent());
+                                    appendStatusIdent(msgStatusIdents.get(melding[0]), progress, status[0]);
                                 } else {
                                     Map<String, List<String>> statusIdent = new HashMap();
                                     statusIdent.put(status[0], newArrayList(progress.getIdent()));
@@ -43,6 +43,15 @@ public final class BestillingPdlStatusMpper {
         });
 
         return prepareResult(msgStatusIdents);
+    }
+
+    private static void appendStatusIdent(Map<String, List<String>> stringListMap, BestillingProgress progress, String status) {
+
+        if (stringListMap.containsKey(status)) {
+            stringListMap.get(status).add(progress.getIdent());
+        } else {
+            stringListMap.put(status, newArrayList(progress.getIdent()));
+        }
     }
 
     private static List<RsMeldingStatusIdent> prepareResult(Map<String, Map<String, List<String>>> msgStatusIdents) {

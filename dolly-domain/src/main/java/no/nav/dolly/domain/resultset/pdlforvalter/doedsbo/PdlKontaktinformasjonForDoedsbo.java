@@ -20,7 +20,6 @@ public class PdlKontaktinformasjonForDoedsbo {
     private PdlOrganisasjon advokatSomAdressat;
     private LocalDate gyldigFom;
     private LocalDate gyldigTom;
-    private String ident;
     private String kilde;
     private PdlKontaktpersonMedIdNummer kontaktpersonMedIdNummerSomAdressat;
     private PdlKontaktpersonUtenIdNummerSomAdressat kontaktpersonUtenIdNummerSomAdressat;
