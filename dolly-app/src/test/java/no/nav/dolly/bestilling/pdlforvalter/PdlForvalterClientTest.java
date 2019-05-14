@@ -1,11 +1,13 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -33,6 +35,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 @RunWith(MockitoJUnitRunner.class)
 public class PdlForvalterClientTest {
 
+    private static final String ENV = "q2";
     private static final String IDENT = "11111111111";
     private static final String HENDELSE_ID_FOLKEREGISTER = "{hendelsesId:\"1\"}";
     private static final String HENDELSE_ID_KONTAKT_DOEDSBO = "{hendelsesId:\"222\"}";
@@ -64,12 +67,14 @@ public class PdlForvalterClientTest {
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder().build());
         when(pdlForvalterRestConsumer.postFolkeregisterIdent(any(PdlFolkeregisterIdent.class))).thenReturn(ResponseEntity.ok(HENDELSE_ID_FOLKEREGISTER));
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder().pdlforvalter(
-                RsPdldata.builder().build()).build(),
+        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
+                        .environments(singletonList(ENV))
+                        .pdlforvalter(RsPdldata.builder().build()).build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
-        verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
+        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
+        verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
 
         assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelsesId: 444"
                 + "$FolkeregisterIdent&status: OK, hendelsesId: 1")));
@@ -84,12 +89,15 @@ public class PdlForvalterClientTest {
         when(pdlForvalterRestConsumer.postFolkeregisterIdent(any(PdlFolkeregisterIdent.class)))
                 .thenThrow(new HttpClientErrorException(BAD_REQUEST, FEIL_FOLKEREGISTER_IDENT));
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder().pdlforvalter(
-                RsPdldata.builder().build()).build(),
+        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
+                        .environments(singletonList(ENV))
+                        .pdlforvalter(RsPdldata.builder().build())
+                        .build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
-        verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
+        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
+        verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
 
         assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelsesId: 444"
                 + "$FolkeregisterIdent&status: Feil (400 Feil i request)")));
@@ -105,11 +113,14 @@ public class PdlForvalterClientTest {
         when(pdlForvalterRestConsumer.postFolkeregisterIdent(any(PdlFolkeregisterIdent.class))).thenReturn(ResponseEntity.ok(HENDELSE_ID_FOLKEREGISTER));
         when(pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT))).thenReturn(ResponseEntity.ok(HENDELSE_ID_KONTAKT_DOEDSBO));
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder().pdlforvalter(
-                RsPdldata.builder().build()).build(),
+        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
+                        .environments(singletonList(ENV))
+                        .pdlforvalter(RsPdldata.builder().build())
+                        .build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
+        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
         verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(pdlForvalterRestConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
@@ -128,11 +139,14 @@ public class PdlForvalterClientTest {
         when(pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT)))
                 .thenThrow(new HttpClientErrorException(INTERNAL_SERVER_ERROR, FEIL_KONTAKT_DOEDSBO));
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder().pdlforvalter(
-                RsPdldata.builder().build()).build(),
+        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
+                        .environments(singletonList(ENV))
+                        .pdlforvalter(RsPdldata.builder().build())
+                        .build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
+        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
         verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(pdlForvalterRestConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
@@ -151,11 +165,14 @@ public class PdlForvalterClientTest {
         when(pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(HENDELSE_ID_UTENLANDSID));
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder().pdlforvalter(
-                RsPdldata.builder().build()).build(),
+        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
+                        .environments(singletonList(ENV))
+                        .pdlforvalter(RsPdldata.builder().build())
+                        .build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
+        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
         verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(pdlForvalterRestConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
@@ -174,16 +191,32 @@ public class PdlForvalterClientTest {
         when(pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.ALREADY_REPORTED, FEIL_UTENLANDS_IDENT));
 
-        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder().pdlforvalter(
-                RsPdldata.builder().build()).build(),
+        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
+                        .environments(singletonList(ENV))
+                        .pdlforvalter(RsPdldata.builder().build())
+                        .build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
+        verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
         verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(pdlForvalterRestConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
         assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelsesId: 444"
                 + "$FolkeregisterIdent&status: OK, hendelsesId: "
                 + "1$UtenlandskIdentifikasjonsnummer&status: Feil (208 Opplysning er allerede innmeldt)")));
+    }
+
+    @Test
+    public void gjenopprett_ikkeRelvantMiljoe() {
+
+        BestillingProgress progress = new BestillingProgress();
+
+        pdlForvalterClient.gjenopprett(RsDollyBestilling.builder()
+                        .pdlforvalter(RsPdldata.builder().build()).build(),
+                NorskIdent.builder().build(), progress);
+
+        verifyZeroInteractions(mapperFacade);
+        verifyZeroInteractions(pdlForvalterRestConsumer);
     }
 }

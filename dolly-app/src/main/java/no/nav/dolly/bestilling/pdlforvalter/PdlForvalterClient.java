@@ -1,9 +1,9 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
+import static java.time.LocalDate.now;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
-import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,6 +30,7 @@ public class PdlForvalterClient implements ClientRegister {
     private static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
     private static final String KILDE = "Dolly";
     private static final String IBRUK = "iBruk";
+    private static final String SYNTH_ENV = "q2";
 
     @Autowired
     private PdlForvalterRestConsumer pdlForvalterRestConsumer;
@@ -39,28 +40,31 @@ public class PdlForvalterClient implements ClientRegister {
 
     @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
-        StringBuilder status = new StringBuilder();
-        Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
+        if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
 
-        sendDeleteIdent(norskIdent, status);
-        sendFolkeregisterIdent(norskIdent, status);
-        sendUtenlandsid(pdldata.getUtenlandskIdentifikasjonsnummer(), norskIdent.getIdent(), status);
-        sendDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), norskIdent.getIdent(), status);
+            Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
 
-        progress.setPdlforvalterStatus(status.substring(1));
+            StringBuilder status = new StringBuilder();
+            sendDeleteIdent(norskIdent, status);
+            sendFolkeregisterIdent(norskIdent, status);
+            sendUtenlandsid(pdldata.getUtenlandskIdentifikasjonsnummer(), norskIdent, status);
+            sendDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), norskIdent, status);
+
+            progress.setPdlforvalterStatus(status.substring(1));
+        }
     }
 
-    private void sendUtenlandsid(PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer, String ident, StringBuilder status) {
+    private void sendUtenlandsid(PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer, NorskIdent norskIdent, StringBuilder status) {
 
         if (nonNull(utenlandskIdentifikasjonsnummer)) {
             try {
-                utenlandskIdentifikasjonsnummer.setKilde(KILDE);
-                utenlandskIdentifikasjonsnummer.setGyldigFom(nullcheckSetDefaultValue(
-                        utenlandskIdentifikasjonsnummer.getGyldigFom(), LocalDate.now()
-                ));
-
                 appendName(UTENLANDS_IDENTIFIKASJONSNUMMER, status);
-                ResponseEntity<String> response = pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(utenlandskIdentifikasjonsnummer, ident);
+
+                utenlandskIdentifikasjonsnummer.setKilde(KILDE);
+                utenlandskIdentifikasjonsnummer.setGyldigFom(
+                        nullcheckSetDefaultValue(utenlandskIdentifikasjonsnummer.getGyldigFom(), now()));
+                ResponseEntity<String> response =
+                        pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(utenlandskIdentifikasjonsnummer, norskIdent.getIdent());
 
                 appendOkStatus(response.getBody(), status);
 
@@ -72,15 +76,16 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, String ident, StringBuilder status) {
+    private void sendDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, NorskIdent norskIdent, StringBuilder status) {
 
         if (nonNull(kontaktinformasjonForDoedsbo)) {
             try {
-                kontaktinformasjonForDoedsbo.setKilde(KILDE);
-                kontaktinformasjonForDoedsbo.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjonForDoedsbo.getUtstedtDato(), LocalDate.now()));
-
                 appendName(KONTAKTINFORMASJON_DOEDSBO, status);
-                ResponseEntity<String> response = pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsbo, ident);
+
+                kontaktinformasjonForDoedsbo.setKilde(KILDE);
+                kontaktinformasjonForDoedsbo.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjonForDoedsbo.getUtstedtDato(), now()));
+                ResponseEntity<String> response =
+                        pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsbo, norskIdent.getIdent());
 
                 appendOkStatus(response.getBody(), status);
 
@@ -96,9 +101,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         try {
             appendName(DELETE_IDENT, status);
-
             ResponseEntity<String> response = pdlForvalterRestConsumer.deleteIdent(norskIdent.getIdent());
-
             appendOkStatus(response.getBody(), status);
 
         } catch (Exception e) {
@@ -116,7 +119,7 @@ public class PdlForvalterClient implements ClientRegister {
             ResponseEntity<String> response = pdlForvalterRestConsumer.postFolkeregisterIdent(PdlFolkeregisterIdent.builder()
                     .ident(norskIdent.getIdent())
                     .idnummer(norskIdent.getIdent())
-                    .gyldigFom(LocalDate.now())
+                    .gyldigFom(now())
                     .type(norskIdent.getIdentType())
                     .status(IBRUK)
                     .kilde(KILDE)
@@ -157,6 +160,7 @@ public class PdlForvalterClient implements ClientRegister {
     }
 
     private static String trimHendelseId(String jsonNode) {
-        return jsonNode.substring(jsonNode.indexOf(':')).length() > 3 ? jsonNode.substring(jsonNode.indexOf(':') + 2, jsonNode.length() - 2) : "";
+        return nonNull(jsonNode) && jsonNode.substring(jsonNode.indexOf(':')).length() > 3 ?
+                jsonNode.substring(jsonNode.indexOf(':') + 2, jsonNode.length() - 2) : "";
     }
 }

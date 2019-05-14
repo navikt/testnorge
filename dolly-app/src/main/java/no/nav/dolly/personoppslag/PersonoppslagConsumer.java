@@ -24,6 +24,7 @@ public class PersonoppslagConsumer {
     private static final String TEMA = "Tema";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String PERSONOPPSLAG_URL = "/api/v1/oppslag";
+    private static final String ENV_PREPROD = "q";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -38,9 +39,9 @@ public class PersonoppslagConsumer {
 
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getPersonOppslag().getUrl() + PERSONOPPSLAG_URL))
-                .header(AUTHORIZATION, stsOidcService.getIdToken("q"))
+                .header(AUTHORIZATION, stsOidcService.getIdToken(ENV_PREPROD))
                 .header(NAV_CALL_ID, "Dolly: " + UUID.randomUUID().toString())
-                .header(NAV_CONSUMER_TOKEN, stsOidcService.getIdToken("q"))
+                .header(NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(ENV_PREPROD))
                 .header(NAV_PERSON_IDENT, ident)
                 .header(OPPLYSNINGSTYPER, "KontaktinformasjonForDoedsbo,UtenlandskIdentifikasjonsnummer")
                 .header(TEMA, GEN.name())
