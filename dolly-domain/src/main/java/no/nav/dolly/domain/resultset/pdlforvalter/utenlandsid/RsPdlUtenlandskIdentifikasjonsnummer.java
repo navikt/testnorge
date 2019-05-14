@@ -17,7 +17,7 @@ public class RsPdlUtenlandskIdentifikasjonsnummer {
 
     private LocalDateTime gyldigFom;
     private LocalDateTime gyldigTom;
-    private String idnumertype;
+    private String idnummertype;
     private String idnummer;
     private String utstederland;
 }

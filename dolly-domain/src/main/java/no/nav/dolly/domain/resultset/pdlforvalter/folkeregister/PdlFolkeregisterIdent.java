@@ -17,7 +17,6 @@ import no.nav.dolly.domain.resultset.IdentType;
 public class PdlFolkeregisterIdent {
 
     private LocalDate gyldigFom;
-    private String ident;
     private String idnummer;
     private String kilde;
     private String status;

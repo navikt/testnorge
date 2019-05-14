@@ -17,7 +17,7 @@ public class PdlUtenlandskIdentifikasjonsnummer {
 
     private LocalDate gyldigFom;
     private LocalDate gyldigTom;
-    private String idnumertype;
+    private String idnummertype;
     private String idnummer;
     private String kilde;
     private String utstederland;

@@ -17,7 +17,9 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
+import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.folkeregister.PdlFolkeregisterIdent;
+import no.nav.dolly.kodeverk.KodeverkConsumer;
 
 @Slf4j
 @Service
@@ -31,12 +33,16 @@ public class PdlForvalterClient implements ClientRegister {
     private static final String IBRUK = "iBruk";
     private static final String SYNTH_ENV = "q2";
     private static final String HENDELSE_ID = "hendelseId";
+    private static final String POSTNUMMER = "Postnummer";
 
     @Autowired
     private PdlForvalterRestConsumer pdlForvalterRestConsumer;
 
     @Autowired
     private MapperFacade mapperFacade;
+
+    @Autowired
+    private KodeverkConsumer kodeverkConsumer;
 
     @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
@@ -82,11 +88,13 @@ public class PdlForvalterClient implements ClientRegister {
             try {
                 appendName(KONTAKTINFORMASJON_DOEDSBO, status);
 
-                pdldata.getKontaktinformasjonForDoedsbo().setKilde(KILDE);
-                pdldata.getKontaktinformasjonForDoedsbo().setUtstedtDato(
-                        nullcheckSetDefaultValue(pdldata.getKontaktinformasjonForDoedsbo().getUtstedtDato(), now()));
+                PdlKontaktinformasjonForDoedsbo kontaktinformasjon = pdldata.getKontaktinformasjonForDoedsbo();
+                kontaktinformasjon.setKilde(KILDE);
+                kontaktinformasjon.setUtstedtDato(
+                        nullcheckSetDefaultValue(kontaktinformasjon.getUtstedtDato(), now()));
+                kontaktinformasjon.setPoststedsnavn(getPoststed(kontaktinformasjon.getPostnummer()));
                 ResponseEntity<JsonNode> response =
-                        pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), norskIdent.getIdent());
+                        pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjon, norskIdent.getIdent());
 
                 appendOkStatus(response.getBody(), status);
 
@@ -95,6 +103,15 @@ public class PdlForvalterClient implements ClientRegister {
                 appendErrorStatus(exception, status);
                 log.error(exception.getMessage(), exception);
             }
+        }
+    }
+
+    private String getPoststed(String postnummer) {
+        try {
+            return kodeverkConsumer.fetchKodeverkByName(POSTNUMMER).getBetydninger().get(postnummer).get(0).getBeskrivelser().get("nb").getTekst();
+        } catch (RuntimeException e) {
+            log.error(e.getMessage(), e);
+            return "Poststed ikke funnet";
         }
     }
 
@@ -118,7 +135,6 @@ public class PdlForvalterClient implements ClientRegister {
             appendName(FOLKEREGISTER_IDENT, status);
 
             ResponseEntity<JsonNode> response = pdlForvalterRestConsumer.postFolkeregisterIdent(PdlFolkeregisterIdent.builder()
-                    .ident(norskIdent.getIdent())
                     .idnummer(norskIdent.getIdent())
                     .gyldigFom(now())
                     .type(norskIdent.getIdentType())

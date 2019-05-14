@@ -26,6 +26,7 @@ public class PdlKontaktinformasjonForDoedsbo {
     private String landkode;
     private PdlOrganisasjon organisasjonSomAdressat;
     private String postnummer;
+    private String poststedsnavn;
     private PdlSkifteform skifteform;
     private LocalDate utstedtDato;
 }
