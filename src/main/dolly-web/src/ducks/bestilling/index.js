@@ -33,7 +33,8 @@ export const actions = createActions(
 	'START_BESTILLING',
 	'SET_IDENT_OPPRETTES_FRA',
 	'SET_IDENT_LISTER',
-	'SET_BESTILLING_MAL',
+	'SET_BESTILLING_FRA_MAL',
+	'CREATE_BESTILLING_MAL',
 	'ABORT_BESTILLING'
 )
 
@@ -48,7 +49,8 @@ const initialState = {
 	eksisterendeIdentListe: [],
 	ugyldigIdentListe: [],
 	maler: [],
-	malBestillingNavn: ''
+	malBestillingNavn: '',
+	currentMal: ''
 }
 
 export default handleActions(
@@ -79,7 +81,6 @@ export default handleActions(
 			return { ...state, attributeIds: [] }
 		},
 		[actions.checkAttributeArray](state, action) {
-			console.log('action.payload :', action.payload)
 			return { ...state, attributeIds: _union(state.attributeIds, action.payload) }
 		},
 		[actions.uncheckAttributeArray](state, action) {
@@ -155,8 +156,18 @@ export default handleActions(
 				ugyldigIdentListe: action.payload.ugyldigIdentListe
 			}
 		},
-		[actions.setBestillingMal](state, action) {
-			console.log(action.payload)
+		[actions.setBestillingFraMal](state, action) {
+			return {
+				...state,
+				antall: action.payload.antallIdenter,
+				attributeIds: action.payload.attributeIds,
+				environments: action.payload.environments,
+				identtype: action.payload.identtype,
+				values: action.payload.values,
+				currentMal: action.payload.currentMal
+			}
+		},
+		[actions.createBestillingMal](state, action) {
 			return {
 				...state,
 				malBestillingNavn: action.payload

@@ -1,14 +1,12 @@
-// disse er ikke attributtene, de
-// const _excludeListe =
+import Formatters from '~/utils/DataFormatter'
 
 export const getAttributesFromMal = mal => {
-	console.log('mal :', mal)
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
 	const bestKriterier = JSON.parse(mal.bestKriterier)
 
-	let identtype = ''
-	console.log(tpsfKriterier)
-	console.log(bestKriterier)
+	// console.log('tpsf', tpsfKriterier)
+	// console.log('best', bestKriterier)
+
 	let attrArray = []
 	attrArray = Object.keys(tpsfKriterier).filter(k => {
 		if (k !== 'identtype' && k !== 'relasjoner' && k !== 'regdato') {
@@ -33,6 +31,7 @@ export const getAttributesFromMal = mal => {
 				break
 			case 'sigrunStub':
 				attrArray.push('inntekt')
+				break
 			case 'krrStub':
 				attrArray.push('krr')
 			default:
@@ -44,7 +43,44 @@ export const getAttributesFromMal = mal => {
 	return attrArray
 }
 
-export const getValuesFromMal = (tpsfKriterier, bestKriterie) => {
-	let reduxStateValue = []
-	console.log('get Values from Mal')
+export const getValuesFromMal = mal => {
+	return { spesreg: 'svalbard' }
+	const dateAttributes = ['foedtFoer', 'foedtEtter', 'doedsdato', 'fom', 'tom']
+
+	let reduxStateValue = {}
+	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
+
+	const tpsfValuesArray = Object.entries(tpsfKriterier)
+
+	tpsfValuesArray.forEach(v => {
+		if (v[1]) {
+			const key = v[0]
+			let value = v[1]
+			if (dateAttributes.includes(key)) {
+				value = Formatters.formatDate(value)
+			} else if (key === 'egenAnsattDatoFom') {
+				value = true
+			}
+
+			Object.assign(reduxStateValue, {
+				[key]: value
+			})
+
+			// Partner
+
+			// Barn
+		}
+	})
+
+	// if (k !== 'identtype' && k !== 'relasjoner' && k !== 'regdato') {
+	// 	return k
+	// }
+	// })
+
+	// Object.assign(reduxStateValue, {
+	// 	spesreg: 'svalbard'
+	// })
+
+	console.log('reduxStateValue :', reduxStateValue)
+	return reduxStateValue
 }

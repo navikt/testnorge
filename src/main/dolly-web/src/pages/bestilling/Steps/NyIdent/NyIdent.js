@@ -6,7 +6,7 @@ import { FormikInput } from '~/components/fields/Input/Input'
 import { Field, withFormik } from 'formik'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
-import { getAttributesFromMal } from './MalbestillingUtils'
+import { getAttributesFromMal, getValuesFromMal } from './MalbestillingUtils'
 
 export default class NyIdent extends Component {
 	constructor(props) {
@@ -19,10 +19,18 @@ export default class NyIdent extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		console.log('this.props :', this.props)
-		const { mal } = this.props
-		if (mal !== prevProps.mal) {
-			this.props.checkAttributeArray(getAttributesFromMal(mal))
+		const { maler, mal, resetForm } = this.props
+		console.log({ mal, maler })
+		if (mal && mal !== prevProps.mal) {
+			this.props.setBestillingFraMal({
+				antallIdenter: 22,
+				identtype: 'DNR',
+				attributeIds: getAttributesFromMal(mal),
+				environments: mal.environments,
+				values: getValuesFromMal(mal),
+				currentMal: mal.malBestillingNavn
+			})
+			// resetForm()
 		}
 	}
 
@@ -33,8 +41,9 @@ export default class NyIdent extends Component {
 			uncheckAllAttributes,
 			checkAttributeArray,
 			uncheckAttributeArray,
-			mal,
-			maler
+			maler,
+			antall,
+			identtype
 		} = this.props
 
 		return (
@@ -46,6 +55,7 @@ export default class NyIdent extends Component {
 						className="input-field"
 						component={FormikDollySelect}
 						options={SelectOptionsManager('identtype')}
+						// value={identtype || 'FNR'}
 					/>
 					<Field
 						name="antall"
@@ -54,6 +64,7 @@ export default class NyIdent extends Component {
 						type="number"
 						min="0"
 						component={FormikInput}
+						// value={antall || 1}
 					/>
 
 					<Field
@@ -95,7 +106,6 @@ export default class NyIdent extends Component {
 
 	_formatMalerOptions = () => {
 		const { maler } = this.props
-		console.log('maler :', maler)
 		return maler.map(mal => {
 			return { value: mal.malBestillingNavn, label: mal.malBestillingNavn }
 		})

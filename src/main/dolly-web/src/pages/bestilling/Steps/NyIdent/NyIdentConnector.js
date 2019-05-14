@@ -14,8 +14,8 @@ const mapDispatchToProps = dispatch => ({
 	getBestillingMaler: () => {
 		dispatch(actions.getBestillingMaler())
 	},
-	checkAttributeArray: array => {
-		dispatch(actions.checkAttributeArray(array))
+	setBestillingFraMal: payload => {
+		dispatch(actions.setBestillingFraMal(payload))
 	},
 	setValues: values => {
 		dispatch(actions.setValues(values))

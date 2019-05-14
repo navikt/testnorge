@@ -41,11 +41,12 @@ const configureReduxStore = history => {
 	]
 
 	// Add redux logger if not in production
-	if (process.env.NODE_ENV !== `production`) {
-		const createLogger = require(`redux-logger`).createLogger
-		const logger = createLogger({ collapsed: true })
-		allMiddleware.push(logger)
-	}
+	// ? Denne logger på console det samme som redux chrome-extension. Kommenter bort?
+	// if (process.env.NODE_ENV !== `production`) {
+	// 	const createLogger = require(`redux-logger`).createLogger
+	// 	const logger = createLogger({ collapsed: true })
+	// 	allMiddleware.push(logger)
+	// }
 
 	const rootReducer = history =>
 		combineReducers({

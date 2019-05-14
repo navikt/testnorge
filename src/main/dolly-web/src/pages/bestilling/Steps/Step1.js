@@ -30,7 +30,6 @@ class Step1 extends Component {
 	}
 
 	_renderRadioBtn = (checkedType, label) => {
-		// console.log('identOpprettesFra :', this.props.identOpprettesFra)
 		return (
 			<Radio
 				checked={this.props.identOpprettesFra === checkedType}
@@ -45,8 +44,8 @@ class Step1 extends Component {
 	}
 
 	render() {
-		const { identOpprettesFra, eksisterendeIdentListe } = this.props
-		// console.log(this.props)
+		const { identOpprettesFra, eksisterendeIdentListe, antall } = this.props
+
 		return (
 			<div className="bestilling-step1">
 				<div className="flexbox--space">
@@ -81,8 +80,11 @@ class Step1 extends Component {
 			checkAttributeArray,
 			uncheckAttributeArray,
 			identOpprettesFra,
-			values
+			values,
+			resetForm
 		} = this.props
+
+		console.log('values :', values)
 
 		switch (identOpprettesFra) {
 			case BestillingMapper():
@@ -94,6 +96,7 @@ class Step1 extends Component {
 						checkAttributeArray={checkAttributeArray}
 						uncheckAttributeArray={uncheckAttributeArray}
 						malBestillingNavn={values.mal}
+						resetForm={resetForm}
 					/>
 				)
 			case BestillingMapper('EKSIDENT'):
@@ -126,11 +129,15 @@ class Step1 extends Component {
 
 export default withFormik({
 	displayName: 'BestillingStep1',
-	mapPropsToValues: props => ({
-		identtype: props.identtype || 'FNR', // default to FNR
-		antall: props.antall
-		// mal: props.maler
-	}),
+	enableReinitialize: true,
+	mapPropsToValues: props => {
+		// console.log('NY props', props)
+		return {
+			identtype: props.identtype || 'FNR', // default to FNR
+			antall: props.antall,
+			mal: props.currentMal
+		}
+	},
 	validationSchema: yup.object().shape({
 		antall: yup
 			.number()
@@ -141,6 +148,7 @@ export default withFormik({
 		identtype: yup.string().required('Velg en identtype')
 	}),
 	handleSubmit: (values, { props, setSubmitting, setErrors }) => {
+		console.log(values, 'values')
 		props.startBestilling(values)
 	}
 })(Step1)
