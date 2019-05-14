@@ -32,7 +32,6 @@ public class PdlForvalterClient implements ClientRegister {
     private static final String IBRUK = "iBruk";
     private static final String SYNTH_ENV = "q2";
     private static final String HENDELSE_ID = "hendelseId";
-    private static final String POSTNUMMER = "Postnummer";
 
     @Autowired
     private PdlForvalterRestConsumer pdlForvalterRestConsumer;
