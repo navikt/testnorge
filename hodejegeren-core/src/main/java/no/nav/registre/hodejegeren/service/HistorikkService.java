@@ -53,7 +53,7 @@ public class HistorikkService {
         for (HistorikkRequest historikkRequest : historikkRequests) {
             String id = historikkRequest.getId();
             String navnPaaNyKilde = historikkRequest.getKilde().getNavn();
-            List<Data> nyData = new ArrayList<>();
+            List<Data> nyData = new ArrayList<>(historikkRequest.getKilde().getData().size());
 
             LocalDateTime opprettelsesTidspunkt = LocalDateTime.now();
             for (Object o : historikkRequest.getKilde().getData()) {
