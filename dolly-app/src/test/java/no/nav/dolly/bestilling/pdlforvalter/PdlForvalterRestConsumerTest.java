@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -38,9 +39,14 @@ public class PdlForvalterRestConsumerTest {
     @InjectMocks
     private PdlForvalterRestConsumer pdlForvalterRestConsumer;
 
+    @Before
+    public void setup() {
+
+        when(providersProps.getPdlForvalter()).thenReturn(ProvidersProps.PdlForvalter.builder().url(PDL_URL).build());
+    }
+
     @Test
     public void postFolkeregisterIdent_OK() {
-        when(providersProps.getPdlForvalter()).thenReturn(ProvidersProps.PdlForvalter.builder().url(PDL_URL).build());
 
         pdlForvalterRestConsumer.postFolkeregisterIdent(PdlFolkeregisterIdent.builder().build());
 
@@ -51,7 +57,6 @@ public class PdlForvalterRestConsumerTest {
 
     @Test
     public void postKontaktinformasjonForDoedsbo_OK() {
-        when(providersProps.getPdlForvalter()).thenReturn(ProvidersProps.PdlForvalter.builder().url(PDL_URL).build());
 
         pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build(), IDENT);
 
@@ -62,9 +67,18 @@ public class PdlForvalterRestConsumerTest {
 
     @Test
     public void postUtenlandskIdentifikasjonsnummer_OK() {
-        when(providersProps.getPdlForvalter()).thenReturn(ProvidersProps.PdlForvalter.builder().url(PDL_URL).build());
 
         pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build(), IDENT);
+
+        verify(providersProps).getPdlForvalter();
+        verify(stsOidcService).getIdToken(anyString());
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(String.class));
+    }
+
+    @Test
+    public void deleteIdent() {
+
+        pdlForvalterRestConsumer.deleteIdent(IDENT);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -32,11 +33,11 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 @RunWith(MockitoJUnitRunner.class)
 public class PdlForvalterClientTest {
 
-//    {"hendelseId":"862ea9af-6daa-41b1-9fd9-2f52206768a6"}
     private static final String IDENT = "11111111111";
     private static final String HENDELSE_ID_FOLKEREGISTER = "{hendelsesId:\"1\"}";
     private static final String HENDELSE_ID_KONTAKT_DOEDSBO = "{hendelsesId:\"222\"}";
     private static final String HENDELSE_ID_UTENLANDSID = "{hendelsesId:\"333\"}";
+    private static final String HENDELSE_ID_SLETTING = "{hendelsesId:\"444\"}";
     private static final String FEIL_FOLKEREGISTER_IDENT = "Feil i request";
     private static final String FEIL_KONTAKT_DOEDSBO = "En feil har oppstått";
     private static final String FEIL_UTENLANDS_IDENT = "Opplysning er allerede innmeldt";
@@ -50,6 +51,11 @@ public class PdlForvalterClientTest {
     @InjectMocks
     private PdlForvalterClient pdlForvalterClient;
 
+    @Before
+    public void setup() {
+        when(pdlForvalterRestConsumer.deleteIdent(eq(IDENT))).thenReturn(ResponseEntity.ok(HENDELSE_ID_SLETTING));
+    }
+
     @Test
     public void gjenopprett_folkeregisterIdent_OK() {
 
@@ -60,12 +66,13 @@ public class PdlForvalterClientTest {
 
         pdlForvalterClient.gjenopprett(RsDollyBestilling.builder().pdlforvalter(
                 RsPdldata.builder().build()).build(),
-                NorskIdent.builder().build(), progress);
+                NorskIdent.builder().ident(IDENT).build(), progress);
 
         verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("FolkeregisterIdent&status: OK, hendelsesId: 1")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelsesId: 444"
+                + "$FolkeregisterIdent&status: OK, hendelsesId: 1")));
     }
 
     @Test
@@ -79,12 +86,13 @@ public class PdlForvalterClientTest {
 
         pdlForvalterClient.gjenopprett(RsDollyBestilling.builder().pdlforvalter(
                 RsPdldata.builder().build()).build(),
-                NorskIdent.builder().build(), progress);
+                NorskIdent.builder().ident(IDENT).build(), progress);
 
         verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("FolkeregisterIdent&status: Feil (400 Feil i request)")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelsesId: 444"
+                + "$FolkeregisterIdent&status: Feil (400 Feil i request)")));
     }
 
     @Test
@@ -105,8 +113,8 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(pdlForvalterRestConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("FolkeregisterIdent&status: OK, hendelsesId: 1"
-                + "$KontaktinformasjonForDoedsbo&status: OK, hendelsesId: 222")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelsesId: 444"
+                + "$FolkeregisterIdent&status: OK, hendelsesId: 1$KontaktinformasjonForDoedsbo&status: OK, hendelsesId: 222")));
     }
 
     @Test
@@ -128,8 +136,8 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(pdlForvalterRestConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("FolkeregisterIdent&status: OK, hendelsesId: 1"
-                + "$KontaktinformasjonForDoedsbo&status: Feil (500 En feil har oppstått)")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelsesId: 444"
+                + "$FolkeregisterIdent&status: OK, hendelsesId: 1$KontaktinformasjonForDoedsbo&status: Feil (500 En feil har oppstått)")));
     }
 
     @Test
@@ -151,8 +159,8 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(pdlForvalterRestConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("FolkeregisterIdent&status: OK, hendelsesId: 1"
-                + "$UtenlandskIdentifikasjonsnummer&status: OK, hendelsesId: 333")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelsesId: 444"
+                + "$FolkeregisterIdent&status: OK, hendelsesId: 1$UtenlandskIdentifikasjonsnummer&status: OK, hendelsesId: 333")));
     }
 
     @Test
@@ -174,7 +182,8 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterRestConsumer).postFolkeregisterIdent(any(PdlFolkeregisterIdent.class));
         verify(pdlForvalterRestConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("FolkeregisterIdent&status: OK, hendelsesId: 1"
-                + "$UtenlandskIdentifikasjonsnummer&status: Feil (208 Opplysning er allerede innmeldt)")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelsesId: 444"
+                + "$FolkeregisterIdent&status: OK, hendelsesId: "
+                + "1$UtenlandskIdentifikasjonsnummer&status: Feil (208 Opplysning er allerede innmeldt)")));
     }
 }

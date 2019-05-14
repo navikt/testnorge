@@ -24,6 +24,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 @Service
 public class PdlForvalterClient implements ClientRegister {
 
+    private static final String DELETE_IDENT = "DeleteIdent";
     private static final String FOLKEREGISTER_IDENT = "FolkeregisterIdent";
     private static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
     private static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
@@ -41,6 +42,7 @@ public class PdlForvalterClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
         Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
 
+        sendDeleteIdent(norskIdent, status);
         sendFolkeregisterIdent(norskIdent, status);
         sendUtenlandsid(pdldata.getUtenlandskIdentifikasjonsnummer(), norskIdent.getIdent(), status);
         sendDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), norskIdent.getIdent(), status);
@@ -90,10 +92,25 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
+    private void sendDeleteIdent(NorskIdent norskIdent, StringBuilder status) {
+
+        try {
+            appendName(DELETE_IDENT, status);
+
+            ResponseEntity<String> response = pdlForvalterRestConsumer.deleteIdent(norskIdent.getIdent());
+
+            appendOkStatus(response.getBody(), status);
+
+        } catch (Exception e) {
+
+            appendErrorStatus(e, status);
+            log.error(e.getMessage(), e);
+        }
+    }
+
     private void sendFolkeregisterIdent(NorskIdent norskIdent, StringBuilder status) {
 
         try {
-
             appendName(FOLKEREGISTER_IDENT, status);
 
             ResponseEntity<String> response = pdlForvalterRestConsumer.postFolkeregisterIdent(PdlFolkeregisterIdent.builder()
