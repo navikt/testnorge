@@ -41,7 +41,9 @@ export default class Bestilling extends PureComponent {
 			eksisterendeIdentListe,
 			identOpprettesFra,
 			setIdentOpprettesFra,
-			setBestillingMal
+			createBestillingMal,
+			maler,
+			currentMal
 		} = this.props
 
 		return (
@@ -61,6 +63,7 @@ export default class Bestilling extends PureComponent {
 					<Steg1
 						identtype={identtype}
 						antall={antall}
+						currentMal={currentMal}
 						selectedAttributeIds={attributeIds}
 						startBestilling={startBestilling}
 						toggleAttributeSelection={toggleAttribute}
@@ -93,12 +96,13 @@ export default class Bestilling extends PureComponent {
 						values={values}
 						sendBestilling={sendBestilling}
 						setEnvironments={setEnvironments}
-						setBestillingMal={setBestillingMal}
+						createBestillingMal={createBestillingMal}
 						environments={environments}
 						deleteValues={deleteValues}
 						deleteValuesArray={deleteValuesArray}
 						identOpprettesFra={identOpprettesFra}
 						eksisterendeIdentListe={this.props.eksisterendeIdentListe.join(', ')}
+						maler={maler}
 					/>
 				)}
 			</div>

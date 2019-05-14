@@ -29,7 +29,7 @@ export default class Step3 extends PureComponent {
 
 	constructor(props) {
 		super(props)
-		this.state = { edit: false }
+		this.state = { edit: false, showMalNavnError: false }
 		this.AttributtManager = new AttributtManager()
 		this.EnvValidation = yup.object().shape({
 			environments: yup.array().required('Velg minst ett miljø'),
@@ -94,7 +94,7 @@ export default class Step3 extends PureComponent {
 					onSubmit={this.submit}
 					validationSchema={this.EnvValidation}
 					render={formikProps => {
-						console.log(formikProps, 'forkni')
+						// console.log(formikProps, 'forkni')
 						return (
 							<Fragment>
 								<div className="input-container">
@@ -126,6 +126,7 @@ export default class Step3 extends PureComponent {
 	}
 
 	_renderInputMal = values => {
+		const { showMalNavnError } = this.state
 		return (
 			<div className="input-mal-field">
 				<h3>Mal</h3>
@@ -148,13 +149,26 @@ export default class Step3 extends PureComponent {
 						/>
 					)}
 				</div>
+				{showMalNavnError && (
+					<span style={{ color: 'red' }}>Mal navn finnes allerede. Oppgi et nytt navn</span>
+				)}
 			</div>
 		)
 	}
 
 	submit = values => {
+		const { maler } = this.props
+		if (values.malNavn && values.malNavn !== '') {
+			this.setState({ showMalNavnError: false })
+			maler.forEach(mal => {
+				if (mal.malBestillingNavn === values.malNavn) {
+					this.setState({ showMalNavnError: true })
+				}
+			})
+		}
+
 		this.props.setEnvironments({ values: values.environments })
-		this.props.setBestillingMal(values.malNavn)
+		this.props.createBestillingMal(values.malNavn)
 		this.props.sendBestilling()
 	}
 

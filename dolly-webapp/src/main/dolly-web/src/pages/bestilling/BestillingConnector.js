@@ -13,7 +13,9 @@ const mapStateToProps = state => {
 		identtype: state.currentBestilling.identtype,
 		values: state.currentBestilling.values,
 		identOpprettesFra: state.currentBestilling.identOpprettesFra,
-		eksisterendeIdentListe: state.currentBestilling.eksisterendeIdentListe
+		eksisterendeIdentListe: state.currentBestilling.eksisterendeIdentListe,
+		maler: state.currentBestilling.maler,
+		currentMal: state.currentBestilling.currentMal
 	}
 }
 
