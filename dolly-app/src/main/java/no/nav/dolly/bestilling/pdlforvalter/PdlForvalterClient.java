@@ -19,7 +19,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.folkeregister.PdlFolkeregisterIdent;
-import no.nav.dolly.kodeverk.KodeverkConsumer;
 
 @Slf4j
 @Service
@@ -40,9 +39,6 @@ public class PdlForvalterClient implements ClientRegister {
 
     @Autowired
     private MapperFacade mapperFacade;
-
-    @Autowired
-    private KodeverkConsumer kodeverkConsumer;
 
     @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
@@ -92,7 +88,6 @@ public class PdlForvalterClient implements ClientRegister {
                 kontaktinformasjon.setKilde(KILDE);
                 kontaktinformasjon.setUtstedtDato(
                         nullcheckSetDefaultValue(kontaktinformasjon.getUtstedtDato(), now()));
-                kontaktinformasjon.setPoststedsnavn(getPoststed(kontaktinformasjon.getPostnummer()));
                 ResponseEntity<JsonNode> response =
                         pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjon, norskIdent.getIdent());
 
@@ -103,15 +98,6 @@ public class PdlForvalterClient implements ClientRegister {
                 appendErrorStatus(exception, status);
                 log.error(exception.getMessage(), exception);
             }
-        }
-    }
-
-    private String getPoststed(String postnummer) {
-        try {
-            return kodeverkConsumer.fetchKodeverkByName(POSTNUMMER).getBetydninger().get(postnummer).get(0).getBeskrivelser().get("nb").getTekst();
-        } catch (RuntimeException e) {
-            log.error(e.getMessage(), e);
-            return "Poststed ikke funnet";
         }
     }
 
