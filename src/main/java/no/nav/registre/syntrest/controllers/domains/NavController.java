@@ -38,7 +38,7 @@ public class NavController extends RootController {
     @GetMapping(value = "/nav/{endringskode}")
     public ResponseEntity generateNav(@PathVariable String endringskode, @RequestParam String numToGenerate) throws IOException, ApiException {
         if (!validation.validateNavEndringskode(endringskode)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Not a valid endringskode. Needs to be one of " + validation.getNavEndringskoder().toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Not a valid endringskode (!). Needs to be one of " + validation.getNavEndringskoder().toString());
         }
         Map<String, String> requestParams = new HashMap<>();
         requestParams.put("endringskode", endringskode);
