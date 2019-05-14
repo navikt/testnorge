@@ -1,7 +1,7 @@
 package no.nav.registre.hodejegeren.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -48,7 +48,6 @@ public class HistorikkServiceTest {
     private List<SyntHistorikk> lagretHistorikk;
     private HistorikkRequest historikkRequest1;
     private HistorikkRequest historikkRequest2;
-    private List<HistorikkRequest> historikkRequests;
 
     @Before
     public void setUp() throws IOException {
@@ -67,7 +66,6 @@ public class HistorikkServiceTest {
 
         historikkRequest1 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk-request1.json")), HistorikkRequest.class);
         historikkRequest2 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk-request2.json")), HistorikkRequest.class);
-        historikkRequests = new ArrayList<>(Arrays.asList(historikkRequest1, historikkRequest2));
     }
 
     @Test
@@ -103,9 +101,12 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldLeggeTilHistorikkPaaIdent() {
-        List<String> identerLagtTil = historikkService.leggTilHistorikkPaaIdent(historikkRequests);
+        List<String> identerLagtTil = historikkService.leggTilHistorikkPaaIdent(historikkRequest1);
+        assertThat(identerLagtTil, contains(id1));
 
-        assertThat(identerLagtTil, containsInAnyOrder(id1, id2));
+        identerLagtTil = historikkService.leggTilHistorikkPaaIdent(historikkRequest2);
+        assertThat(identerLagtTil, contains(id2));
+
         verify(syntHistorikkRepository, times(2)).save(any());
     }
 
@@ -135,6 +136,6 @@ public class HistorikkServiceTest {
     public void shouldReturnErrorOnUnsuccessfulDeleteOfKilde() {
         ResponseEntity response = historikkService.slettKilde(id1, "bisys");
         assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_FOUND));
-        assertThat(response.getBody().toString(), containsString("Fant ingen kilde med navn 'bisys' tilhørende id '" + id1 + "'"));
+        assertThat(response.getBody().toString(), containsString("Fant ingen identMedData med navn 'bisys' tilhørende id '" + id1 + "'"));
     }
 }

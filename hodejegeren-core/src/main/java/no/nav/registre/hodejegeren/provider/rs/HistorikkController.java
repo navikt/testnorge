@@ -35,7 +35,7 @@ public class HistorikkController {
     }
 
     @PostMapping(value = "")
-    public List<String> leggTilHistorikk(@RequestBody List<HistorikkRequest> historikkRequests) {
+    public List<String> leggTilHistorikk(@RequestBody HistorikkRequest historikkRequests) {
         return historikkService.leggTilHistorikkPaaIdent(historikkRequests);
     }
 

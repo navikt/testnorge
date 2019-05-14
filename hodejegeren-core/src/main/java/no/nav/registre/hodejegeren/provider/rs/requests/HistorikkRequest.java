@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,6 +15,6 @@ import lombok.Setter;
 @Builder
 public class HistorikkRequest {
 
-    private String id;
-    private KildeRequest kilde;
+    private String kilde;
+    private List<DataRequest> identMedData;
 }

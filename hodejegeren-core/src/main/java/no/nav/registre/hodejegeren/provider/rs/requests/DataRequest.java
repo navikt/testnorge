@@ -13,8 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KildeRequest {
+public class DataRequest {
 
-    private String navn;
+    private String id;
     private List<Object> data;
 }

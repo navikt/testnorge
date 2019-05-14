@@ -8,10 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
 
@@ -40,9 +36,9 @@ public class HistorikkControllerTest {
 
     @Test
     public void shouldLeggeTilHistorikk() {
-        List<HistorikkRequest> historikkRequests = new ArrayList<>(Collections.singletonList(HistorikkRequest.builder().build()));
-        historikkController.leggTilHistorikk(historikkRequests);
-        verify(historikkService).leggTilHistorikkPaaIdent(historikkRequests);
+        HistorikkRequest historikkRequest = HistorikkRequest.builder().build();
+        historikkController.leggTilHistorikk(historikkRequest);
+        verify(historikkService).leggTilHistorikkPaaIdent(historikkRequest);
     }
 
     @Test
@@ -53,7 +49,7 @@ public class HistorikkControllerTest {
 
     @Test
     public void shouldSletteKilde() {
-        String navnPaaKilde = "kilde";
+        String navnPaaKilde = "identMedData";
         historikkController.slettKilde(id, navnPaaKilde);
         verify(historikkService).slettKilde(id, navnPaaKilde);
     }
