@@ -53,7 +53,18 @@ public class HistorikkService {
         List<String> opprettedeIder = new ArrayList<>();
         for (HistorikkRequest historikkRequest : historikkRequests) {
             String id = historikkRequest.getId();
-            Kilde kilde = historikkRequest.getKilde();
+            Kilde kilde = Kilde.builder()
+                    .navn(historikkRequest.getKilde().getNavn())
+                    .data(new ArrayList<>())
+                    .build();
+
+            for (Object o : historikkRequest.getKilde().getData()) {
+                kilde.getData().add(Data.builder()
+                        .innhold(o)
+                        .datoOpprettet(LocalDateTime.now())
+                        .datoEndret(LocalDateTime.now())
+                        .build());
+            }
 
             SyntHistorikk eksisterendeHistorikk = hentHistorikkMedId(id);
             if (eksisterendeHistorikk != null) {

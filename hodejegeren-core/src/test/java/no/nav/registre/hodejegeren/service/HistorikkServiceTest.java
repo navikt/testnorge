@@ -53,8 +53,8 @@ public class HistorikkServiceTest {
     @Before
     public void setUp() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        syntHistorikk1 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk1.json")), SyntHistorikk.class);
-        syntHistorikk2 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk2.json")), SyntHistorikk.class);
+        syntHistorikk1 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk1.json")), SyntHistorikk.class);
+        syntHistorikk2 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk2.json")), SyntHistorikk.class);
 
         lagretHistorikk = new ArrayList<>(Arrays.asList(syntHistorikk1, syntHistorikk2));
 
@@ -65,8 +65,8 @@ public class HistorikkServiceTest {
         when(syntHistorikkRepository.save(syntHistorikk1)).thenReturn(syntHistorikk1);
         when(syntHistorikkRepository.save(syntHistorikk2)).thenReturn(syntHistorikk2);
 
-        historikkRequest1 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk-request1.json")), HistorikkRequest.class);
-        historikkRequest2 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk-request2.json")), HistorikkRequest.class);
+        historikkRequest1 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk-request1.json")), HistorikkRequest.class);
+        historikkRequest2 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk-request2.json")), HistorikkRequest.class);
         historikkRequests = new ArrayList<>(Arrays.asList(historikkRequest1, historikkRequest2));
     }
 
