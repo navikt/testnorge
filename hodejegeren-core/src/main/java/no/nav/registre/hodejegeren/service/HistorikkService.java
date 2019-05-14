@@ -112,6 +112,7 @@ public class HistorikkService {
             for (Kilde kilde : kilder) {
                 if (kilde.getNavn().equals(navnPaaKilde)) {
                     kildeSomSkalSlettes = kilde;
+                    break;
                 }
             }
 
