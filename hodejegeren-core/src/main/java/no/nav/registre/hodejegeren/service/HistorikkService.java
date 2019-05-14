@@ -83,44 +83,6 @@ public class HistorikkService {
         return opprettedeIder;
     }
 
-    //    public List<String> leggTilHistorikkPaaIdent(List<HistorikkRequest> historikkRequests) {
-    //        List<String> opprettedeIder = new ArrayList<>();
-    //        for (HistorikkRequest historikkRequest : historikkRequests) {
-    //            String id = historikkRequest.getId();
-    //            String navnPaaNyKilde = historikkRequest.getIdentMedData().getNavn();
-    //            List<Data> nyData = new ArrayList<>(historikkRequest.getIdentMedData().getData().size());
-    //
-    //            LocalDateTime opprettelsesTidspunkt = LocalDateTime.now();
-    //            for (Object o : historikkRequest.getIdentMedData().getData()) {
-    //                nyData.add(Data.builder()
-    //                        .innhold(o)
-    //                        .datoOpprettet(opprettelsesTidspunkt)
-    //                        .datoEndret(opprettelsesTidspunkt)
-    //                        .build());
-    //            }
-    //
-    //            SyntHistorikk eksisterendeHistorikk = hentHistorikkMedId(id);
-    //            if (eksisterendeHistorikk != null) {
-    //                Map<String, List<Data>> eksisterendeKilder = eksisterendeHistorikk.getKilder();
-    //
-    //                List<Data> eksisterendeData = eksisterendeKilder.get(navnPaaNyKilde);
-    //                if (eksisterendeData != null) {
-    //                    eksisterendeData.addAll(nyData);
-    //                } else {
-    //                    eksisterendeKilder.put(navnPaaNyKilde, nyData);
-    //                }
-    //
-    //                opprettedeIder.add(syntHistorikkRepository.save(eksisterendeHistorikk).getId());
-    //            } else {
-    //                Map<String, List<Data>> nyKilde = new HashMap<>();
-    //                nyKilde.put(navnPaaNyKilde, nyData);
-    //                opprettedeIder.add(opprettHistorikk(SyntHistorikk.builder().id(id).kilder(nyKilde).build()).getId());
-    //            }
-    //        }
-    //
-    //        return opprettedeIder;
-    //    }
-
     public ResponseEntity slettHistorikk(String id) {
         SyntHistorikk historikk = syntHistorikkRepository.findById(id).orElse(null);
         if (historikk != null) {
