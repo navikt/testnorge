@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.folkeregister.PdlFolkeregisterIdent;
@@ -52,7 +53,7 @@ public class PdlForvalterRestConsumerTest {
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(String.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class PdlForvalterRestConsumerTest {
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(String.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
     }
 
     @Test
@@ -72,7 +73,7 @@ public class PdlForvalterRestConsumerTest {
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(String.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
     }
 
     @Test
@@ -82,6 +83,6 @@ public class PdlForvalterRestConsumerTest {
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(String.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
     }
 }
