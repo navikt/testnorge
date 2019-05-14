@@ -93,11 +93,12 @@ public class HistorikkServiceTest {
         SyntHistorikk historikk2 = historikkService.opprettHistorikk(syntHistorikk2);
 
         assertThat(historikk1.getId(), equalTo(syntHistorikk1.getId()));
-        assertThat(historikk1.getKilder().get(0).getData().get(0).getDatoOpprettet(), is(notNullValue()));
-        assertThat(historikk1.getKilder().get(0).getData().get(0).getDatoEndret(), is(notNullValue()));
+
+        assertThat(historikk1.getKilder().get("aareg").get(0).getDatoOpprettet(), is(notNullValue()));
+        assertThat(historikk1.getKilder().get("aareg").get(0).getDatoEndret(), is(notNullValue()));
         assertThat(historikk2.getId(), equalTo(syntHistorikk2.getId()));
-        assertThat(historikk2.getKilder().get(0).getData().get(0).getDatoOpprettet(), is(notNullValue()));
-        assertThat(historikk2.getKilder().get(0).getData().get(0).getDatoEndret(), is(notNullValue()));
+        assertThat(historikk2.getKilder().get("aareg").get(0).getDatoOpprettet(), is(notNullValue()));
+        assertThat(historikk2.getKilder().get("aareg").get(0).getDatoEndret(), is(notNullValue()));
     }
 
     @Test

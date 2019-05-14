@@ -1,82 +1,76 @@
 {
   "id": "01010101010",
-  "kilder": [
-    {
-      "navn": "aareg",
-      "data": [
-        {
-          "innhold": {
-            "arbeidsforhold": {
-              "ansettelsesPeriode": {
-                "fom": "2016-07-01T00:00:00"
-              },
-              "arbeidsavtale": {
-                "arbeidstidsordning": "ikkeSkift",
-                "avtaltArbeidstimerPerUke": 37.5,
-                "stillingsprosent": 0,
-                "endringsdatoStillingsprosent": "2016-07-01T00:00:00",
-                "yrke": "4129101"
-              },
-              "arbeidsforholdID": "NjeFBZmNLg0GHQYh",
-              "arbeidsforholdstype": "ordinaertArbeidsforhold",
-              "arbeidsgiver": {
-                "aktoertype": "ORG",
-                "orgnummer": "973993224"
-              },
-              "arbeidstaker": {
-                "aktoertype": "PERS",
-                "ident": "01010101010",
-                "identtype": "FNR"
-              }
-            }
-          }
-        },
-        {
-          "innhold": {
-            "arbeidsforhold": {
-              "ansettelsesPeriode": {
-                "fom": "2015-07-01T00:00:00"
-              },
-              "arbeidsavtale": {
-                "arbeidstidsordning": "ikkeSkift",
-                "avtaltArbeidstimerPerUke": 37.5,
-                "stillingsprosent": 0,
-                "endringsdatoStillingsprosent": "2015-07-01T00:00:00",
-                "yrke": "4129100"
-              },
-              "arbeidsforholdID": "NjeFBZmNLg0GHQYn",
-              "arbeidsforholdstype": "ordinaertArbeidsforhold",
-              "arbeidsgiver": {
-                "aktoertype": "ORG",
-                "orgnummer": "973993223"
-              },
-              "arbeidstaker": {
-                "aktoertype": "PERS",
-                "ident": "01010101010",
-                "identtype": "FNR"
-              }
+  "kilder": {
+    "aareg": [
+      {
+        "innhold": {
+          "arbeidsforhold": {
+            "ansettelsesPeriode": {
+              "fom": "2016-07-01T00:00:00"
+            },
+            "arbeidsavtale": {
+              "arbeidstidsordning": "ikkeSkift",
+              "avtaltArbeidstimerPerUke": 37.5,
+              "stillingsprosent": 0,
+              "endringsdatoStillingsprosent": "2016-07-01T00:00:00",
+              "yrke": "4129101"
+            },
+            "arbeidsforholdID": "NjeFBZmNLg0GHQYh",
+            "arbeidsforholdstype": "ordinaertArbeidsforhold",
+            "arbeidsgiver": {
+              "aktoertype": "ORG",
+              "orgnummer": "973993224"
+            },
+            "arbeidstaker": {
+              "aktoertype": "PERS",
+              "ident": "01010101010",
+              "identtype": "FNR"
             }
           }
         }
-      ]
-    },
-    {
-      "navn": "inst",
-      "data": [
-        {
-          "innhold": {
-            "dato_fom": "01.11.2010",
-            "dato_tom": "",
-            "dato_tom_forventet": "",
-            "k_kilde_inst_t": "IT",
-            "k_opphold_inst_t": "AS",
-            "k_pas_ka_inst_t": "A",
-            "k_varig_inst_t": "L",
-            "overfort": 0,
-            "tss_ekstern_id_fk": 80000465001
+      },
+      {
+        "innhold": {
+          "arbeidsforhold": {
+            "ansettelsesPeriode": {
+              "fom": "2015-07-01T00:00:00"
+            },
+            "arbeidsavtale": {
+              "arbeidstidsordning": "ikkeSkift",
+              "avtaltArbeidstimerPerUke": 37.5,
+              "stillingsprosent": 0,
+              "endringsdatoStillingsprosent": "2015-07-01T00:00:00",
+              "yrke": "4129100"
+            },
+            "arbeidsforholdID": "NjeFBZmNLg0GHQYn",
+            "arbeidsforholdstype": "ordinaertArbeidsforhold",
+            "arbeidsgiver": {
+              "aktoertype": "ORG",
+              "orgnummer": "973993223"
+            },
+            "arbeidstaker": {
+              "aktoertype": "PERS",
+              "ident": "01010101010",
+              "identtype": "FNR"
+            }
           }
         }
-      ]
-    }
-  ]
+      }
+    ],
+    "inst": [
+      {
+        "innhold": {
+          "dato_fom": "01.11.2010",
+          "dato_tom": "",
+          "dato_tom_forventet": "",
+          "k_kilde_inst_t": "IT",
+          "k_opphold_inst_t": "AS",
+          "k_pas_ka_inst_t": "A",
+          "k_varig_inst_t": "L",
+          "overfort": 0,
+          "tss_ekstern_id_fk": 80000465001
+        }
+      }
+    ]
+  }
 }

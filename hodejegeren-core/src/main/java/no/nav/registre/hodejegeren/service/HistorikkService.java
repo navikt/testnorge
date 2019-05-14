@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.hodejegeren.mongodb.Data;
-import no.nav.registre.hodejegeren.mongodb.Kilde;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikkRepository;
 import no.nav.registre.hodejegeren.mongodb.requests.HistorikkRequest;
@@ -34,9 +34,8 @@ public class HistorikkService {
     }
 
     public SyntHistorikk opprettHistorikk(@RequestBody SyntHistorikk syntHistorikk) {
-        List<Kilde> kilder = syntHistorikk.getKilder();
-        for (Kilde kilde : kilder) {
-            List<Data> data = kilde.getData();
+        Map<String, List<Data>> kilder = syntHistorikk.getKilder();
+        for (List<Data> data : kilder.values()) {
             for (Data d : data) {
                 if (d.getDatoOpprettet() == null) {
                     d.setDatoOpprettet(LocalDateTime.now());
@@ -53,39 +52,34 @@ public class HistorikkService {
         List<String> opprettedeIder = new ArrayList<>();
         for (HistorikkRequest historikkRequest : historikkRequests) {
             String id = historikkRequest.getId();
-            Kilde kilde = Kilde.builder()
-                    .navn(historikkRequest.getKilde().getNavn())
-                    .data(new ArrayList<>())
-                    .build();
+            String navnPaaNyKilde = historikkRequest.getKilde().getNavn();
+            List<Data> nyData = new ArrayList<>();
 
+            LocalDateTime opprettelsesTidspunkt = LocalDateTime.now();
             for (Object o : historikkRequest.getKilde().getData()) {
-                kilde.getData().add(Data.builder()
+                nyData.add(Data.builder()
                         .innhold(o)
-                        .datoOpprettet(LocalDateTime.now())
-                        .datoEndret(LocalDateTime.now())
+                        .datoOpprettet(opprettelsesTidspunkt)
+                        .datoEndret(opprettelsesTidspunkt)
                         .build());
             }
 
             SyntHistorikk eksisterendeHistorikk = hentHistorikkMedId(id);
             if (eksisterendeHistorikk != null) {
-                List<Kilde> eksisterendeKilder = eksisterendeHistorikk.getKilder();
+                Map<String, List<Data>> eksisterendeKilder = eksisterendeHistorikk.getKilder();
 
-                boolean kildeEksisterer = false;
-                for (Kilde eksisterendeKilde : eksisterendeKilder) {
-                    if (eksisterendeKilde.getNavn().equals(kilde.getNavn())) {
-                        eksisterendeKilde.getData().addAll(kilde.getData());
-                        kildeEksisterer = true;
-                        break;
-                    }
-                }
-
-                if (!kildeEksisterer) {
-                    eksisterendeHistorikk.getKilder().add(kilde);
+                List<Data> eksisterendeData = eksisterendeKilder.get(navnPaaNyKilde);
+                if (eksisterendeData != null) {
+                    eksisterendeData.addAll(nyData);
+                } else {
+                    eksisterendeKilder.put(navnPaaNyKilde, nyData);
                 }
 
                 opprettedeIder.add(syntHistorikkRepository.save(eksisterendeHistorikk).getId());
             } else {
-                opprettedeIder.add(opprettHistorikk(SyntHistorikk.builder().id(id).kilder(Collections.singletonList(kilde)).build()).getId());
+                Map<String, List<Data>> nyKilde = new HashMap<>();
+                nyKilde.put(navnPaaNyKilde, nyData);
+                opprettedeIder.add(opprettHistorikk(SyntHistorikk.builder().id(id).kilder(nyKilde).build()).getId());
             }
         }
 
@@ -106,25 +100,14 @@ public class HistorikkService {
         SyntHistorikk historikk = syntHistorikkRepository.findById(id).orElse(null);
 
         if (historikk != null) {
-            List<Kilde> kilder = historikk.getKilder();
-            Kilde kildeSomSkalSlettes = null;
-
-            for (Kilde kilde : kilder) {
-                if (kilde.getNavn().equals(navnPaaKilde)) {
-                    kildeSomSkalSlettes = kilde;
-                    break;
-                }
-            }
-
-            if (kildeSomSkalSlettes != null) {
-                kilder.remove(kildeSomSkalSlettes);
-
+            Map<String, List<Data>> eksisterendeKilder = historikk.getKilder();
+            if (eksisterendeKilder.containsKey(navnPaaKilde)) {
+                eksisterendeKilder.remove(navnPaaKilde);
                 if (historikk.getKilder().isEmpty()) {
                     slettHistorikk(id);
                 } else {
                     syntHistorikkRepository.save(historikk);
                 }
-
                 return ResponseEntity.ok(String.format("Kilde '%s' tilhørende id '%s' ble slettet", navnPaaKilde, id));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Fant ingen kilde med navn '%s' tilhørende id '%s'", navnPaaKilde, id));

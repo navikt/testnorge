@@ -1,37 +1,34 @@
 {
   "id": "02020202020",
-  "kilder": [
-    {
-      "navn": "aareg",
-      "data": [
-        {
-          "innhold": {
-            "arbeidsforhold": {
-              "ansettelsesPeriode": {
-                "fom": "2014-08-01T00:00:00"
-              },
-              "arbeidsavtale": {
-                "arbeidstidsordning": "ikkeSkift",
-                "avtaltArbeidstimerPerUke": 37.5,
-                "stillingsprosent": 0,
-                "endringsdatoStillingsprosent": "2016-07-01T00:00:00",
-                "yrke": "4129102"
-              },
-              "arbeidsforholdID": "NjeFBZmNLg0GHQYn",
-              "arbeidsforholdstype": "ordinaertArbeidsforhold",
-              "arbeidsgiver": {
-                "aktoertype": "ORG",
-                "orgnummer": "973993225"
-              },
-              "arbeidstaker": {
-                "aktoertype": "PERS",
-                "ident": "02020202020",
-                "identtype": "FNR"
-              }
+  "kilder": {
+    "aareg": [
+      {
+        "innhold": {
+          "arbeidsforhold": {
+            "ansettelsesPeriode": {
+              "fom": "2014-08-01T00:00:00"
+            },
+            "arbeidsavtale": {
+              "arbeidstidsordning": "ikkeSkift",
+              "avtaltArbeidstimerPerUke": 37.5,
+              "stillingsprosent": 0,
+              "endringsdatoStillingsprosent": "2016-07-01T00:00:00",
+              "yrke": "4129102"
+            },
+            "arbeidsforholdID": "NjeFBZmNLg0GHQYn",
+            "arbeidsforholdstype": "ordinaertArbeidsforhold",
+            "arbeidsgiver": {
+              "aktoertype": "ORG",
+              "orgnummer": "973993225"
+            },
+            "arbeidstaker": {
+              "aktoertype": "PERS",
+              "ident": "02020202020",
+              "identtype": "FNR"
             }
           }
         }
-      ]
-    }
-  ]
+      }
+    ]
+  }
 }
