@@ -9,6 +9,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.folkeregister.PdlFolkeregisterIdent;
@@ -39,7 +40,7 @@ public class PdlForvalterRestConsumer {
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_SLETTING_URL))
                 .header(AUTHORIZATION, stsOidcService.getIdToken("q"))
                 .header(NAV_PERSONIDENT, ident)
-                .build(), String.class);
+                .build(), JsonNode.class);
     }
 
     public ResponseEntity postFolkeregisterIdent(PdlFolkeregisterIdent folkeregisterIdent) {
@@ -47,7 +48,7 @@ public class PdlForvalterRestConsumer {
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOLKEREGISTER_IDENT_URL))
                 .contentType(APPLICATION_JSON)
                 .header(AUTHORIZATION, stsOidcService.getIdToken("q"))
-                .body(folkeregisterIdent), String.class);
+                .body(folkeregisterIdent), JsonNode.class);
     }
 
     public ResponseEntity postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, String ident) {
@@ -56,7 +57,7 @@ public class PdlForvalterRestConsumer {
                 .contentType(APPLICATION_JSON)
                 .header(AUTHORIZATION, stsOidcService.getIdToken("q"))
                 .header(NAV_PERSONIDENT, ident)
-                .body(kontaktinformasjonForDoedsbo), String.class);
+                .body(kontaktinformasjonForDoedsbo), JsonNode.class);
     }
 
     public ResponseEntity postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer, String ident) {
@@ -65,6 +66,6 @@ public class PdlForvalterRestConsumer {
                 .contentType(APPLICATION_JSON)
                 .header(AUTHORIZATION, stsOidcService.getIdToken("q"))
                 .header(NAV_PERSONIDENT, ident)
-                .body(utenlandskIdentifikasjonsnummer), String.class);
+                .body(utenlandskIdentifikasjonsnummer), JsonNode.class);
     }
 }

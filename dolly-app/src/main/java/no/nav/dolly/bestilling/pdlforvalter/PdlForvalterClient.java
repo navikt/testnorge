@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -16,9 +17,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
-import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.folkeregister.PdlFolkeregisterIdent;
-import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 
 @Slf4j
 @Service
@@ -31,6 +30,7 @@ public class PdlForvalterClient implements ClientRegister {
     private static final String KILDE = "Dolly";
     private static final String IBRUK = "iBruk";
     private static final String SYNTH_ENV = "q2";
+    private static final String HENDELSE_ID = "hendelseId";
 
     @Autowired
     private PdlForvalterRestConsumer pdlForvalterRestConsumer;
@@ -47,28 +47,28 @@ public class PdlForvalterClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
             sendDeleteIdent(norskIdent, status);
             sendFolkeregisterIdent(norskIdent, status);
-            sendUtenlandsid(pdldata.getUtenlandskIdentifikasjonsnummer(), norskIdent, status);
-            sendDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), norskIdent, status);
+            sendUtenlandsid(pdldata, norskIdent, status);
+            sendDoedsbo(pdldata, norskIdent, status);
 
             progress.setPdlforvalterStatus(status.substring(1));
         }
     }
 
-    private void sendUtenlandsid(PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer, NorskIdent norskIdent, StringBuilder status) {
+    private void sendUtenlandsid(Pdldata pdldata, NorskIdent norskIdent, StringBuilder status) {
 
-        if (nonNull(utenlandskIdentifikasjonsnummer)) {
+        if (nonNull(pdldata) && nonNull(pdldata.getUtenlandskIdentifikasjonsnummer())) {
             try {
                 appendName(UTENLANDS_IDENTIFIKASJONSNUMMER, status);
 
-                utenlandskIdentifikasjonsnummer.setKilde(KILDE);
-                utenlandskIdentifikasjonsnummer.setGyldigFom(
-                        nullcheckSetDefaultValue(utenlandskIdentifikasjonsnummer.getGyldigFom(), now()));
-                ResponseEntity<String> response =
-                        pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(utenlandskIdentifikasjonsnummer, norskIdent.getIdent());
+                pdldata.getUtenlandskIdentifikasjonsnummer().setKilde(KILDE);
+                pdldata.getUtenlandskIdentifikasjonsnummer().setGyldigFom(
+                        nullcheckSetDefaultValue(pdldata.getUtenlandskIdentifikasjonsnummer().getGyldigFom(), now()));
+                ResponseEntity<JsonNode> response =
+                        pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(pdldata.getUtenlandskIdentifikasjonsnummer(), norskIdent.getIdent());
 
                 appendOkStatus(response.getBody(), status);
 
-            } catch (Exception exception) {
+            } catch (RuntimeException exception) {
 
                 appendErrorStatus(exception, status);
                 log.error(exception.getMessage(), exception);
@@ -76,20 +76,21 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, NorskIdent norskIdent, StringBuilder status) {
+    private void sendDoedsbo(Pdldata pdldata, NorskIdent norskIdent, StringBuilder status) {
 
-        if (nonNull(kontaktinformasjonForDoedsbo)) {
+        if (nonNull(pdldata) && nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
             try {
                 appendName(KONTAKTINFORMASJON_DOEDSBO, status);
 
-                kontaktinformasjonForDoedsbo.setKilde(KILDE);
-                kontaktinformasjonForDoedsbo.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjonForDoedsbo.getUtstedtDato(), now()));
-                ResponseEntity<String> response =
-                        pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsbo, norskIdent.getIdent());
+                pdldata.getKontaktinformasjonForDoedsbo().setKilde(KILDE);
+                pdldata.getKontaktinformasjonForDoedsbo().setUtstedtDato(
+                        nullcheckSetDefaultValue(pdldata.getKontaktinformasjonForDoedsbo().getUtstedtDato(), now()));
+                ResponseEntity<JsonNode> response =
+                        pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), norskIdent.getIdent());
 
                 appendOkStatus(response.getBody(), status);
 
-            } catch (Exception exception) {
+            } catch (RuntimeException exception) {
 
                 appendErrorStatus(exception, status);
                 log.error(exception.getMessage(), exception);
@@ -101,10 +102,10 @@ public class PdlForvalterClient implements ClientRegister {
 
         try {
             appendName(DELETE_IDENT, status);
-            ResponseEntity<String> response = pdlForvalterRestConsumer.deleteIdent(norskIdent.getIdent());
+            ResponseEntity<JsonNode> response = pdlForvalterRestConsumer.deleteIdent(norskIdent.getIdent());
             appendOkStatus(response.getBody(), status);
 
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
 
             appendErrorStatus(e, status);
             log.error(e.getMessage(), e);
@@ -116,7 +117,7 @@ public class PdlForvalterClient implements ClientRegister {
         try {
             appendName(FOLKEREGISTER_IDENT, status);
 
-            ResponseEntity<String> response = pdlForvalterRestConsumer.postFolkeregisterIdent(PdlFolkeregisterIdent.builder()
+            ResponseEntity<JsonNode> response = pdlForvalterRestConsumer.postFolkeregisterIdent(PdlFolkeregisterIdent.builder()
                     .ident(norskIdent.getIdent())
                     .idnummer(norskIdent.getIdent())
                     .gyldigFom(now())
@@ -127,7 +128,7 @@ public class PdlForvalterClient implements ClientRegister {
 
             appendOkStatus(response.getBody(), status);
 
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
 
             appendErrorStatus(e, status);
             log.error(e.getMessage(), e);
@@ -139,9 +140,14 @@ public class PdlForvalterClient implements ClientRegister {
                 .append(utenlandsIdentifikasjonsnummer);
     }
 
-    private static void appendOkStatus(String body, StringBuilder builder) {
-        builder.append("&status: OK, hendelsesId: ")
-                .append(trimHendelseId(body));
+    private static void appendOkStatus(JsonNode jsonNode, StringBuilder builder) {
+        builder.append("&status: OK");
+        if (nonNull(jsonNode) && nonNull(jsonNode.get(HENDELSE_ID))) {
+            builder.append(", ")
+                    .append(HENDELSE_ID)
+                    .append(": ")
+                    .append(jsonNode.get(HENDELSE_ID));
+        }
     }
 
     private static void appendErrorStatus(Exception exception, StringBuilder builder) {
@@ -151,16 +157,11 @@ public class PdlForvalterClient implements ClientRegister {
 
         if (exception instanceof HttpClientErrorException) {
             String responseBody = ((HttpClientErrorException) exception).getResponseBodyAsString();
-            if (responseBody.indexOf("message") != -1) {
+            if (responseBody.contains("message")) {
                 builder.append(" - message: ")
                         .append(responseBody.substring(responseBody.indexOf("message") + 9, responseBody.indexOf("path") - 2));
             }
         }
         builder.append(')');
-    }
-
-    private static String trimHendelseId(String jsonNode) {
-        return nonNull(jsonNode) && jsonNode.substring(jsonNode.indexOf(':')).length() > 3 ?
-                jsonNode.substring(jsonNode.indexOf(':') + 2, jsonNode.length() - 2) : "";
     }
 }
