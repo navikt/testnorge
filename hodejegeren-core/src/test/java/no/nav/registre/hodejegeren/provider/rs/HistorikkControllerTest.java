@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
-import no.nav.registre.hodejegeren.mongodb.requests.HistorikkRequest;
+import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,13 +43,6 @@ public class HistorikkControllerTest {
         List<HistorikkRequest> historikkRequests = new ArrayList<>(Collections.singletonList(HistorikkRequest.builder().build()));
         historikkController.leggTilHistorikk(historikkRequests);
         verify(historikkService).leggTilHistorikkPaaIdent(historikkRequests);
-    }
-
-    @Test
-    public void shouldOppretteHistorikk() {
-        SyntHistorikk syntHistorikk = SyntHistorikk.builder().build();
-        historikkController.opprettHistorikk(syntHistorikk);
-        verify(historikkService).opprettHistorikk(syntHistorikk);
     }
 
     @Test

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
-import no.nav.registre.hodejegeren.mongodb.requests.HistorikkRequest;
+import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
 
 @RestController
@@ -24,32 +24,27 @@ public class HistorikkController {
     @Autowired
     private HistorikkService historikkService;
 
-    @GetMapping(value = "hentAllHistorikk")
+    @GetMapping(value = "")
     public List<SyntHistorikk> hentAllHistorikk() {
         return historikkService.hentAllHistorikk();
     }
 
-    @GetMapping(value = "hentHistorikkMedId/{id}")
+    @GetMapping(value = "{id}")
     public SyntHistorikk hentHistorikkMedId(@PathVariable String id) {
         return historikkService.hentHistorikkMedId(id);
     }
 
-    @PostMapping(value = "leggTil")
+    @PostMapping(value = "")
     public List<String> leggTilHistorikk(@RequestBody List<HistorikkRequest> historikkRequests) {
         return historikkService.leggTilHistorikkPaaIdent(historikkRequests);
     }
 
-    @PostMapping(value = "opprettHistorikk")
-    public SyntHistorikk opprettHistorikk(@RequestBody SyntHistorikk syntHistorikk) {
-        return historikkService.opprettHistorikk(syntHistorikk);
-    }
-
-    @DeleteMapping(value = "slettHistorikk/{id}")
+    @DeleteMapping(value = "{id}")
     public ResponseEntity slettHistorikk(@PathVariable String id) {
         return historikkService.slettHistorikk(id);
     }
 
-    @DeleteMapping(value = "slettKilde/{id}")
+    @DeleteMapping(value = "kilde/{id}")
     public ResponseEntity slettKilde(@PathVariable String id, @RequestParam String navnPaaKilde) {
         return historikkService.slettKilde(id, navnPaaKilde);
     }

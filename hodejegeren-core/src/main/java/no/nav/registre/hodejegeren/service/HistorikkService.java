@@ -1,9 +1,9 @@
 package no.nav.registre.hodejegeren.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,16 +14,13 @@ import java.util.Map;
 import no.nav.registre.hodejegeren.mongodb.Data;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikkRepository;
-import no.nav.registre.hodejegeren.mongodb.requests.HistorikkRequest;
+import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 
+@RequiredArgsConstructor
 @Service
 public class HistorikkService {
 
     private final SyntHistorikkRepository syntHistorikkRepository;
-
-    public HistorikkService(SyntHistorikkRepository syntHistorikkRepository) {
-        this.syntHistorikkRepository = syntHistorikkRepository;
-    }
 
     public List<SyntHistorikk> hentAllHistorikk() {
         return syntHistorikkRepository.findAll();
@@ -33,7 +30,7 @@ public class HistorikkService {
         return syntHistorikkRepository.findById(id).orElse(null);
     }
 
-    public SyntHistorikk opprettHistorikk(@RequestBody SyntHistorikk syntHistorikk) {
+    public SyntHistorikk opprettHistorikk(SyntHistorikk syntHistorikk) {
         Map<String, List<Data>> kilder = syntHistorikk.getKilder();
         for (List<Data> data : kilder.values()) {
             for (Data d : data) {

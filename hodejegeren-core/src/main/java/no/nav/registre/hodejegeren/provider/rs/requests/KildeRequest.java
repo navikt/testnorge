@@ -1,4 +1,4 @@
-package no.nav.registre.hodejegeren.mongodb.requests;
+package no.nav.registre.hodejegeren.provider.rs.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

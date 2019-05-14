@@ -30,7 +30,7 @@ import java.util.Optional;
 
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikkRepository;
-import no.nav.registre.hodejegeren.mongodb.requests.HistorikkRequest;
+import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HistorikkServiceTest {
