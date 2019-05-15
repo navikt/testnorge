@@ -84,7 +84,7 @@ class Step1 extends Component {
 			resetForm
 		} = this.props
 
-		console.log('values :', values)
+		// console.log('values :', values)
 
 		switch (identOpprettesFra) {
 			case BestillingMapper():

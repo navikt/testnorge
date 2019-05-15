@@ -20,10 +20,9 @@ export default class NyIdent extends Component {
 
 	componentDidUpdate(prevProps) {
 		const { maler, mal, resetForm } = this.props
-		console.log({ mal, maler })
 		if (mal && mal !== prevProps.mal) {
 			this.props.setBestillingFraMal({
-				antallIdenter: 22,
+				antallIdenter: mal.antallIdenter,
 				identtype: 'DNR',
 				attributeIds: getAttributesFromMal(mal),
 				environments: mal.environments,
