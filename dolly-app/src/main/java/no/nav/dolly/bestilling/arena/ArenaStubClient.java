@@ -30,7 +30,7 @@ public class ArenaStubClient implements ClientRegister {
 
             } catch (RuntimeException e) {
                 progress.setArenastubStatus(format("Feil: %s", e.getMessage()));
-                log.error("Feilet å oppdatere ArenaStub: ", e);
+                log.error("Feilet å oppdatere ArenaForvalter: ", e);
             }
         }
     }

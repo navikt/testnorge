@@ -39,7 +39,7 @@ public class EnvironmentPropsControllerTest {
                 .url(SIGRUNSTUB).build());
         when(providersProps.getKrrStub()).thenReturn(ProvidersProps.KrrStub.builder()
                 .url(KRRSTUB).build());
-        when(providersProps.getArenaStub()).thenReturn(ProvidersProps.ArenaStub.builder()
+        when(providersProps.getArenaForvalter()).thenReturn(ProvidersProps.ArenaForvalter.builder()
                 .url(ARENASTUB).build());
     }
 

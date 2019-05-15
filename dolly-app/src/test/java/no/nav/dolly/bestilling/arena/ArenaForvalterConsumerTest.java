@@ -19,7 +19,7 @@ import no.nav.dolly.domain.resultset.arenastub.RsArenadata;
 import no.nav.dolly.properties.ProvidersProps;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ArenaStubConsumerTest {
+public class ArenaForvalterConsumerTest {
 
     private static final String IDENT = "12423353";
 
@@ -34,7 +34,7 @@ public class ArenaStubConsumerTest {
 
     @Before
     public void setup() {
-        when(providersProps.getArenaStub()).thenReturn(ProvidersProps.ArenaStub.builder().url("baseUrl").build());
+        when(providersProps.getArenaForvalter()).thenReturn(ProvidersProps.ArenaForvalter.builder().url("baseUrl").build());
     }
 
     @Test
@@ -42,7 +42,7 @@ public class ArenaStubConsumerTest {
 
         arenaStubConsumer.deleteIdent(IDENT);
 
-        verify(providersProps).getArenaStub();
+        verify(providersProps).getArenaForvalter();
         verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
     }
 
@@ -51,7 +51,7 @@ public class ArenaStubConsumerTest {
 
         arenaStubConsumer.postArenadata(RsArenadata.builder().personident(IDENT).build());
 
-        verify(providersProps).getArenaStub();
+        verify(providersProps).getArenaForvalter();
         verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
     }
 }

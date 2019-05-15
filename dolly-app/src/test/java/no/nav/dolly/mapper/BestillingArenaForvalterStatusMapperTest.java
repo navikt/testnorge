@@ -15,7 +15,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusIdent;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BestillingArenaStubStatusMapperTest {
+public class BestillingArenaForvalterStatusMapperTest {
 
     private static final List<BestillingProgress> RUN_STATUS = newArrayList(
             BestillingProgress.builder().ident("IDENT_1")

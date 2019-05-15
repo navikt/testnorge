@@ -23,7 +23,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.arenastub.RsArenadata;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ArenaStubClientTest {
+public class ArenaForvalterClientTest {
 
     private static final String IDENT = "12423353";
     private static final String ERROR_MSG = "An error has occured";

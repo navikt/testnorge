@@ -31,7 +31,7 @@ public class ArenaStubConsumer {
 
     public ResponseEntity deleteIdent(String ident) {
         return restTemplate.exchange(RequestEntity.delete(
-                URI.create(format("%s%s?personident=%s", providersProps.getArenaStub().getUrl(), ARENA_BRUKER_URL, ident)))
+                URI.create(format("%s%s?personident=%s", providersProps.getArenaForvalter().getUrl(), ARENA_BRUKER_URL, ident)))
                 .header(NAV_CALL_ID, getCallId())
                 .header(NAV_CONSUMER_ID, "Dolly")
                 .build(), JsonNode.class);
@@ -39,7 +39,7 @@ public class ArenaStubConsumer {
 
     public ResponseEntity postArenadata(RsArenadata arenadata) {
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getArenaStub().getUrl() + ARENA_BRUKER_URL))
+                URI.create(providersProps.getArenaForvalter().getUrl() + ARENA_BRUKER_URL))
                 .header(NAV_CALL_ID, getCallId())
                 .header(NAV_CONSUMER_ID, "Dolly")
                 .body(ArenaNyeBrukereRequest.builder()
