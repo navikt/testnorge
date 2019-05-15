@@ -82,7 +82,7 @@ public class TpsStatusQuoService {
         return tpsServiceRoutineCache.get(routineName);
     }
 
-    private void resetCache() {
+    public void resetCache() {
         this.tpsServiceRoutineCache = new HashMap<>();
     }
 }

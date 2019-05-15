@@ -129,6 +129,7 @@ public class EksisterendeIdenterService {
         for (int i = 0; i < antallIdenter; i++) {
             String tilfeldigIdent = alleIdenter.remove(rand.nextInt(alleIdenter.size()));
             try {
+                tpsStatusQuoService.resetCache();
                 utvalgteIdenterMedStatusQuo.put(tilfeldigIdent, tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, tilfeldigIdent));
             } catch (IOException e) {
                 log.error("Kunne ikke hente status quo på ident {} - ", tilfeldigIdent, e);
@@ -143,6 +144,7 @@ public class EksisterendeIdenterService {
 
         for (String ident : identer) {
             try {
+                tpsStatusQuoService.resetCache();
                 JsonNode infoOnRoutineName = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
                 JsonNode bostedsAdresse = infoOnRoutineName.findValue("bostedsAdresse");
                 utvalgteIdenterMedStatusQuo.put(ident, bostedsAdresse);
@@ -210,6 +212,7 @@ public class EksisterendeIdenterService {
     public RelasjonsResponse hentRelasjoner(String ident, String miljoe) {
         RelasjonsResponse relasjonsResponse = null;
         try {
+            tpsStatusQuoService.resetCache();
             JsonNode statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident);
             int antallRelasjoner = statusQuoTilIdent.findValue("antallRelasjoner").asInt();
 
