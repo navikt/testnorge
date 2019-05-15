@@ -44,43 +44,65 @@ export const getAttributesFromMal = mal => {
 }
 
 export const getValuesFromMal = mal => {
-	return { spesreg: 'svalbard' }
 	const dateAttributes = ['foedtFoer', 'foedtEtter', 'doedsdato', 'fom', 'tom']
 
 	let reduxStateValue = {}
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
+	console.log('TCL: tpsfKriterier', tpsfKriterier)
 
 	const tpsfValuesArray = Object.entries(tpsfKriterier)
 
-	tpsfValuesArray.forEach(v => {
-		if (v[1]) {
-			const key = v[0]
-			let value = v[1]
-			if (dateAttributes.includes(key)) {
-				value = Formatters.formatDate(value)
-			} else if (key === 'egenAnsattDatoFom') {
-				value = true
-			}
+	console.log('TCL: tpsfValuesArray', tpsfValuesArray)
 
-			Object.assign(reduxStateValue, {
-				[key]: value
-			})
+	// TODO: Alex - lag rekrusiv funksjon for dette
 
-			// Partner
-
-			// Barn
-		}
-	})
-
-	// if (k !== 'identtype' && k !== 'relasjoner' && k !== 'regdato') {
-	// 	return k
-	// }
-	// })
-
-	// Object.assign(reduxStateValue, {
-	// 	spesreg: 'svalbard'
-	// })
+	_mapValuesToObject(reduxStateValue, tpsfValuesArray)
 
 	console.log('reduxStateValue :', reduxStateValue)
 	return reduxStateValue
+}
+
+const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
+	valueArray.forEach(v => {
+		const key = v[0]
+		if (key === 'regdato') return
+
+		let value = v[1]
+		if (value) {
+			// Formater values før vi lager objekt
+			value = _formatValueForObject(key, value)
+			if (key === 'relasjoner') {
+				value.partner &&
+					_mapValuesToObject(objectToAssign, Object.entries(value.partner), 'partner_')
+
+				if (value.barn && value.barn.length > 0) {
+					let barnObjectsArray = []
+					value.barn.forEach(v => {
+						let barnObject = {}
+						_mapValuesToObject(barnObject, Object.entries(v), 'barn_')
+						barnObjectsArray.push(barnObject)
+					})
+					Object.assign(objectToAssign, {
+						barn: barnObjectsArray
+					})
+				}
+			} else {
+				Object.assign(objectToAssign, {
+					[keyPrefix + key]: value
+				})
+			}
+		}
+	})
+}
+
+const _formatValueForObject = (key, value) => {
+	const dateAttributes = ['foedtFoer', 'foedtEtter', 'doedsdato', 'fom', 'tom']
+
+	if (dateAttributes.includes(key)) {
+		value = Formatters.formatDate(value)
+	} else if (key === 'egenAnsattDatoFom') {
+		value = true
+	}
+
+	return value
 }
