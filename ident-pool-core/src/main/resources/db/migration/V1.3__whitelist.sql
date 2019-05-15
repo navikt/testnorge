@@ -1,8 +1,7 @@
 create table WHITELIST
 (
-  ID    NUMBER PRIMARY KEY,
-  FNR   varchar(255),
-  WHITE boolean not null
+  ID  NUMBER PRIMARY KEY,
+  FNR varchar(255)
 );
 
 ALTER TABLE WHITELIST
