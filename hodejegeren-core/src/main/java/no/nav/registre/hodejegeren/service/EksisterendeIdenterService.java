@@ -11,7 +11,9 @@ import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKOD
 import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -142,12 +144,17 @@ public class EksisterendeIdenterService {
     public Map<String, JsonNode> hentAdressePaaIdenter(String miljoe, List<String> identer) {
         Map<String, JsonNode> utvalgteIdenterMedStatusQuo = new HashMap<>(identer.size());
 
+        ObjectNode navnOgAdresse = new ObjectMapper().createObjectNode();
+
         for (String ident : identer) {
             try {
                 tpsStatusQuoService.resetCache();
                 JsonNode infoOnRoutineName = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
-                JsonNode bostedsAdresse = infoOnRoutineName.findValue("bostedsAdresse");
-                utvalgteIdenterMedStatusQuo.put(ident, bostedsAdresse);
+
+                navnOgAdresse.set("personnavn", infoOnRoutineName.findValue("personnavn"));
+                navnOgAdresse.set("bostedsAdresse", infoOnRoutineName.findValue("bostedsAdresse"));
+
+                utvalgteIdenterMedStatusQuo.put(ident, navnOgAdresse);
             } catch (IOException e) {
                 log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
             }

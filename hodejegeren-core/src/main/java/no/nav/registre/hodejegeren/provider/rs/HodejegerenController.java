@@ -127,7 +127,7 @@ public class HodejegerenController {
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her kan man hente adresseinformasjon til gitte identer i et gitt miljø.")
+    @ApiOperation(value = "Her kan man hente navn- og adresseinformasjon til gitte identer i et gitt miljø.")
     @PostMapping("api/v1/adresse-paa-identer")
     public Map<String, JsonNode> hentAdressePaaIdenter(@RequestParam String miljoe, @RequestBody List<String> identer) {
         return eksisterendeIdenterService.hentAdressePaaIdenter(miljoe, identer);
