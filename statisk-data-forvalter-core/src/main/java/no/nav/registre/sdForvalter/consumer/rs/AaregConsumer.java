@@ -49,7 +49,7 @@ public class AaregConsumer {
                 Collections.singletonList(environment)
         )).collect(Collectors.toList());
 
-        UriTemplate uriTemplate = new UriTemplate(aaregUrl + "/sendToAareg?fyllUtArbeidsforhold=true");
+        UriTemplate uriTemplate = new UriTemplate(aaregUrl + "/sendTilAareg?fyllUtArbeidsforhold=true");
         RequestEntity<List<AaregRequest>> request = new RequestEntity<>(requestBody, HttpMethod.POST, uriTemplate.expand(environment));
         ResponseEntity<AaregResponse> response = restTemplate.exchange(request, AaregResponse.class);
         if (!response.getStatusCode().is2xxSuccessful()) {
