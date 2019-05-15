@@ -1,8 +1,11 @@
 create table WHITELIST
 (
-  FNR   varchar(11) primary key,
+  ID    NUMBER PRIMARY KEY,
+  FNR   varchar(255),
   WHITE boolean not null
 );
 
 ALTER TABLE WHITELIST
   ADD CONSTRAINT Unique_FNR UNIQUE (FNR);
+
+CREATE SEQUENCE WHITELIST_SEQ START WITH 1;
