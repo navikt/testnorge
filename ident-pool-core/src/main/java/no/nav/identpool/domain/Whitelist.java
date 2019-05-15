@@ -27,6 +27,4 @@ public class Whitelist {
 
     private String fnr;
 
-    private boolean white;
-
 }
