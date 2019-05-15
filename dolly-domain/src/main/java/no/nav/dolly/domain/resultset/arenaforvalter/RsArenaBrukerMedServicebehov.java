@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.arenastub;
+package no.nav.dolly.domain.resultset.arenaforvalter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsArenadata {
+public class RsArenaBrukerMedServicebehov implements RsArenadata {
 
     @JsonIgnore
     private String personident;

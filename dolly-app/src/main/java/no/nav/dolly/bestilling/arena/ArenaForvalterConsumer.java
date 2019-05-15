@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.arena;
 import static java.lang.String.format;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
@@ -12,16 +11,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import no.nav.dolly.domain.resultset.arenastub.ArenaNyeBrukereRequest;
-import no.nav.dolly.domain.resultset.arenastub.RsArenadata;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukereMedServicebehov;
+import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Service
-public class ArenaStubConsumer {
+public class ArenaForvalterConsumer {
 
-    private static final String ARENA_BRUKER_URL = "/api/v1/bruker";
+    private static final String ARENABRUKER_MED_SERVICEBEHOV_URL = "/api/v1/bruker";
+    private static final String ARENABRUKER_UTEN_SERVICEBEHOV_URL = "/api/v1/brukerUtenServiceBehov";
     private static final String NAV_CALL_ID = "Nav-Call-Id";
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
+    private static final String KILDE = "Dolly";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -31,22 +32,23 @@ public class ArenaStubConsumer {
 
     public ResponseEntity deleteIdent(String ident) {
         return restTemplate.exchange(RequestEntity.delete(
-                URI.create(format("%s%s?personident=%s", providersProps.getArenaForvalter().getUrl(), ARENA_BRUKER_URL, ident)))
+                URI.create(format("%s%s?personident=%s", providersProps.getArenaForvalter().getUrl(), ARENABRUKER_MED_SERVICEBEHOV_URL, ident)))
                 .header(NAV_CALL_ID, getCallId())
-                .header(NAV_CONSUMER_ID, "Dolly")
+                .header(NAV_CONSUMER_ID, KILDE)
                 .build(), JsonNode.class);
     }
 
-    public ResponseEntity postArenadata(RsArenadata arenadata) {
+    public ResponseEntity postArenadata(Arenadata arenadata) {
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getArenaForvalter().getUrl() + ARENA_BRUKER_URL))
+                URI.create(providersProps.getArenaForvalter().getUrl() +
+                        (arenadata instanceof ArenaBrukereMedServicebehov ? ARENABRUKER_MED_SERVICEBEHOV_URL : ARENABRUKER_UTEN_SERVICEBEHOV_URL)))
                 .header(NAV_CALL_ID, getCallId())
-                .header(NAV_CONSUMER_ID, "Dolly")
-                .body(ArenaNyeBrukereRequest.builder()
-                        .nyeBrukere(Collections.singletonList(arenadata)).build()), JsonNode.class);
+                .header(NAV_CONSUMER_ID, KILDE)
+                .body(arenadata), JsonNode.class);
     }
 
+
     private static String getCallId() {
-        return format("Dolly: %s", UUID.randomUUID().toString());
+        return "Dolly: " + UUID.randomUUID().toString();
     }
 }

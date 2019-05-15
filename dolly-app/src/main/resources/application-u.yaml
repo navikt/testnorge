@@ -51,7 +51,7 @@ providers:
     url: https://app-q1.adeo.no/norg2
   fasit:
     url: https://fasit.adeo.no
-  arenastub:
+  arenaForvalter:
     url: https://arena-forvalteren.nais.preprod.local
 
 credentials:

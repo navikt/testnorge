@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.arena;
 
+import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -15,7 +16,8 @@ import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import no.nav.dolly.domain.resultset.arenastub.RsArenadata;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukereUtenServicebehov;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaBrukerUtenServicebehov;
 import no.nav.dolly.properties.ProvidersProps;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,7 +32,7 @@ public class ArenaForvalterConsumerTest {
     private ProvidersProps providersProps;
 
     @InjectMocks
-    private ArenaStubConsumer arenaStubConsumer;
+    private ArenaForvalterConsumer arenaStubConsumer;
 
     @Before
     public void setup() {
@@ -49,7 +51,9 @@ public class ArenaForvalterConsumerTest {
     @Test
     public void postArenadata() {
 
-        arenaStubConsumer.postArenadata(RsArenadata.builder().personident(IDENT).build());
+        arenaStubConsumer.postArenadata(ArenaBrukereUtenServicebehov.builder()
+                .nyeBrukereUtenServiceBehov(singletonList(RsArenaBrukerUtenServicebehov.builder().personident(IDENT).build()))
+                .build());
 
         verify(providersProps).getArenaForvalter();
         verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));

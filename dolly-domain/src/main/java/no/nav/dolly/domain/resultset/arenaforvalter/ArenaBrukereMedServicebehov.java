@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.arenastub;
+package no.nav.dolly.domain.resultset.arenaforvalter;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArenaNyeBrukereRequest {
+public class ArenaBrukereMedServicebehov implements Arenadata {
 
     private List<RsArenadata> nyeBrukere;
 }
