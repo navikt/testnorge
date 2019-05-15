@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PdlOrganisasjon {
 
-    private PdlPersonnavn kontaktPerson;
-    private String organisasjonsNavn;
-    private String organisasjonsNummer;
+    private PdlPersonnavn kontaktperson;
+    private String organisasjonsnavn;
+    private String organisasjonsnummer;
 }

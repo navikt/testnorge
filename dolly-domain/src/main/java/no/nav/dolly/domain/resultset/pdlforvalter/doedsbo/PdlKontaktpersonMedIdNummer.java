@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PdlKontaktpersonMedIdNummer {
 
-    private String idNummer;
+    private String idnummer;
 }

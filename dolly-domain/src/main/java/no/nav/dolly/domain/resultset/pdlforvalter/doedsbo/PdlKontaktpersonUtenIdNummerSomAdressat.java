@@ -13,6 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PdlKontaktpersonUtenIdNummerSomAdressat {
 
-        private LocalDate foedselsDato;
+        private LocalDate foedselsdato;
         private PdlPersonnavn navn;
 }
