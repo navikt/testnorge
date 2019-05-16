@@ -54,7 +54,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         } else if (nonNull(bestilling.getPdlforvalter())) {
 
-            status.append("$Info: Bestilling ble ikke utført til ArenaForvalter da miljø '")
+            status.append("$PdlForvalter&status: Feil: Bestilling ble ikke utført til ArenaForvalter da miljø '")
                     .append(SYNTH_ENV)
                     .append("' ikke er valgt");
         }
