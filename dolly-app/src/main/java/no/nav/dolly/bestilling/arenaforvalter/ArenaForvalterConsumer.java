@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.arena;
+package no.nav.dolly.bestilling.arenaforvalter;
 
 import static java.lang.String.format;
 

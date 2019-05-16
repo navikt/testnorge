@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.arena;
+package no.nav.dolly.bestilling.arenaforvalter;
 
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
@@ -11,6 +11,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukereMedServicebehov;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukereUtenServicebehov;
@@ -27,7 +28,8 @@ public class ArenaForvalterClient implements ClientRegister {
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, String ident, BestillingProgress progress) {
+    @Override
+    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
         if (nonNull(bestilling.getArenaForvalter())) {
 
@@ -35,17 +37,17 @@ public class ArenaForvalterClient implements ClientRegister {
 
             if (bestilling.getEnvironments().contains(ARENA_FORVALTER_ENV)) {
 
-                deleteArenadata(ident, status);
+                deleteArenadata(norskIdent.getIdent(), status);
 
                 if (bestilling.getArenaForvalter() instanceof RsArenaBrukerUtenServicebehov) {
 
-                    ((RsArenaBrukerUtenServicebehov) bestilling.getArenaForvalter()).setPersonident(ident);
+                    ((RsArenaBrukerUtenServicebehov) bestilling.getArenaForvalter()).setPersonident(norskIdent.getIdent());
                     sendArenadata(ArenaBrukereUtenServicebehov.builder()
                             .nyeBrukereUtenServiceBehov(singletonList(bestilling.getArenaForvalter()))
                             .build(), status);
                 } else {
 
-                    ((RsArenaBrukerMedServicebehov) bestilling.getArenaForvalter()).setPersonident(ident);
+                    ((RsArenaBrukerMedServicebehov) bestilling.getArenaForvalter()).setPersonident(norskIdent.getIdent());
                     sendArenadata(ArenaBrukereMedServicebehov.builder()
                             .nyeBrukere(singletonList(bestilling.getArenaForvalter()))
                             .build(), status);
