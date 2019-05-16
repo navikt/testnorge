@@ -119,7 +119,7 @@ public class SyntetiseringService {
 
         return responseEntities;
     }
-    
+
 
     private List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident) {
         List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(tokenObject, ident);
