@@ -113,6 +113,7 @@ public class BestillingService {
                                 .krrStub(request.getKrrstub())
                                 .sigrunStub(request.getSigrunstub())
                                 .arenaStub(request.getArenastub())
+                                .pdlforvalter(request.getPdlforvalter())
                                 .build()))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())

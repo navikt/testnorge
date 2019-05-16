@@ -53,6 +53,9 @@ public class BestillingProgress {
     @Column(name = "ARENASTUB_STATUS")
     private String arenastubStatus;
 
+    @Column(name = "PDLFORVALTER_STATUS")
+    private String pdlforvalterStatus;
+
     private String feil;
 
     public BestillingProgress(Long bestillingId, String ident) {

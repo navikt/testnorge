@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 
@@ -38,7 +39,7 @@ public class SigrunStubClientTest {
     @Test
     public void gjenopprett_ingendata() {
 
-        sigrunStubClient.gjenopprett(new RsDollyBestilling(), IDENT, new BestillingProgress());
+        sigrunStubClient.gjenopprett(new RsDollyBestilling(), NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
     }
 
     @Test
@@ -48,7 +49,7 @@ public class SigrunStubClientTest {
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenThrow(HttpClientErrorException.class);
 
         sigrunStubClient.gjenopprett(RsDollyBestilling.builder()
-                .sigrunstub(singletonList(new RsOpprettSkattegrunnlag())).build(), IDENT, progress);
+                .sigrunstub(singletonList(new RsOpprettSkattegrunnlag())).build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
         assertThat(progress.getSigrunstubStatus(), containsString("Feil:"));
     }
@@ -62,7 +63,7 @@ public class SigrunStubClientTest {
         when(sigrunStubResponseHandler.extractResponse(any())).thenReturn("OK");
 
         sigrunStubClient.gjenopprett(RsDollyBestilling.builder()
-                .sigrunstub(singletonList(new RsOpprettSkattegrunnlag())).build(), IDENT, progress);
+                .sigrunstub(singletonList(new RsOpprettSkattegrunnlag())).build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
         verify(sigrunStubConsumer).createSkattegrunnlag(anyList());
         verify(sigrunStubResponseHandler).extractResponse(any());

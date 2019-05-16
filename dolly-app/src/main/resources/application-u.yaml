@@ -4,6 +4,7 @@ server.port: 8080
 APP_NAME: dolly
 environment: localhost
 APP_VERSION: ${application.version}
+fasit.environment.name: u2
 
 spring:
   datasource:
@@ -53,6 +54,10 @@ providers:
     url: https://fasit.adeo.no
   arenastub:
     url: https://arena-forvalteren.nais.preprod.local
+  pdlForvalter:
+    url: https://person-testdata.nais.preprod.local
+  personOppslag:
+    url: https://person-oppslag.nais.preprod.local
 
 credentials:
   preprodEnv:

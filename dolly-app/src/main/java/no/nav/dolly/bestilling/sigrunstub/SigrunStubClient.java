@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 
@@ -17,12 +18,12 @@ public class SigrunStubClient implements ClientRegister {
     @Autowired
     private SigrunStubResponseHandler sigrunStubResponseHandler;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, String ident, BestillingProgress progress) {
+    @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {
                 for (RsOpprettSkattegrunnlag request : bestilling.getSigrunstub()) {
-                    request.setPersonidentifikator(ident);
+                    request.setPersonidentifikator(norskIdent.getIdent());
                 }
 
                 // Alle skattegrunnlag har samme ident

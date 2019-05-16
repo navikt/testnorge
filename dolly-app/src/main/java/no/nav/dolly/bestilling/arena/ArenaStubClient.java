@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 
 @Slf4j
@@ -19,12 +20,12 @@ public class ArenaStubClient implements ClientRegister {
     @Autowired
     private ArenaStubConsumer arenaStubConsumer;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, String ident, BestillingProgress progress) {
+    @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
         if (nonNull(bestilling.getArenastub())) {
             try {
-                arenaStubConsumer.deleteIdent(ident);
-                bestilling.getArenastub().setPersonident(ident);
+                arenaStubConsumer.deleteIdent(norskIdent.getIdent());
+                bestilling.getArenastub().setPersonident(norskIdent.getIdent());
                 ResponseEntity response = arenaStubConsumer.postArenadata(bestilling.getArenastub());
                 progress.setArenastubStatus(response.getStatusCode().name());
 

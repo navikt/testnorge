@@ -36,6 +36,7 @@ public class RsBestilling {
     private Set<RsStatusIdent> sigrunStubStatus;
     private Set<RsStatusMiljoeIdentForhold> aaregStatus;
     private Set<RsStatusIdent> arenaStubStatus;
+    private Set<RsMeldingStatusIdent> pdlforvalterStatus;
 
     private List<RsBestillingProgress> bestillingProgress;
     private Long opprettetFraId;
@@ -93,5 +94,12 @@ public class RsBestilling {
             arenaStubStatus = new HashSet();
         }
         return arenaStubStatus;
+    }
+
+    public Set<RsMeldingStatusIdent> getPdlforvalterStatus() {
+        if (isNull(pdlforvalterStatus)) {
+            pdlforvalterStatus = new HashSet();
+        }
+        return pdlforvalterStatus;
     }
 }
