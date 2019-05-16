@@ -9,11 +9,19 @@ import org.springframework.web.client.HttpServerErrorException;
 import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import no.nav.registre.tp.Forhold;
+import no.nav.registre.tp.FulltForhold;
+import no.nav.registre.tp.Kilde;
+import no.nav.registre.tp.Person;
+import no.nav.registre.tp.TpSaveInHodejegerenRequest;
+import no.nav.registre.tp.Ytelse;
 import no.nav.registre.tp.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.tp.consumer.rs.TpSyntConsumer;
 import no.nav.registre.tp.database.models.HistorikkComposityKey;
@@ -39,6 +47,8 @@ public class TpService {
 
     private final TpSyntConsumer tpSyntConsumer;
     private final HodejegerenConsumer hodejegerenConsumer;
+
+    private static final String TP_NAME = "tp";
 
     public int initializeTpDbForEnvironment(Long id, String env) {
         Set<String> allIdentities = hodejegerenConsumer.getAllIdentities(new SyntetiseringsRequest(id, env, 0));
@@ -69,9 +79,73 @@ public class TpService {
             log.warn(formated);
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, formated);
         }
+
+        List<FullSavedForhold> savedForhold = new ArrayList<>(ids.size());
+
         for (int i = 0; i < ids.size(); i++) {
-            createFullRelation(ids.get(i), ytelser.get(i));
+            savedForhold.add(createFullRelation(ids.get(i), ytelser.get(i)));
         }
+
+        List<TpSaveInHodejegerenRequest> hodejegerenRequests = savedForhold.parallelStream().map(f -> TpSaveInHodejegerenRequest.builder()
+                .id(f.tPerson.getFnrFk())
+                .kilde(
+                        Kilde.builder()
+                                .navn(TP_NAME)
+                                .data(
+                                        Collections.singletonList(
+                                                FulltForhold.builder()
+                                                        .forhold(
+                                                                Forhold.builder()
+                                                                        .datoBrukFom(f.tForhold.getDatoBrukFom())
+                                                                        .datoBrukTom(f.tForhold.getDatoBrukTom())
+                                                                        .datoEndret(f.tForhold.getDatoEndret())
+                                                                        .datoOpprettet(f.tForhold.getDatoOpprettet())
+                                                                        .datoSamtykkeGitt(f.tForhold.getDatoSamtykkeGitt())
+                                                                        .endretAv(f.tForhold.getEndretAv())
+                                                                        .erGyldig(f.tForhold.getErGyldig())
+                                                                        .harUtlandPensj(f.tForhold.getHarUtlandPensj())
+                                                                        .kilde(f.tForhold.getKKildeTpT())
+                                                                        .tssEksternIdFk(f.tForhold.getTssEksternIdFk())
+                                                                        .opprettetAv(f.tForhold.getOpprettetAv())
+                                                                        .versjon(f.tForhold.getVersjon())
+                                                                        .build()
+                                                        )
+                                                        .person(
+                                                                Person.builder()
+                                                                        .datoEndret(f.tPerson.getDatoEndret())
+                                                                        .datoOpprettet(f.tPerson.getDatoOpprettet())
+                                                                        .endretAv(f.tPerson.getEndretAv())
+                                                                        .fnrFk(f.tPerson.getFnrFk())
+                                                                        .versjon(f.tPerson.getVersjon())
+                                                                        .build()
+                                                        )
+                                                        .ytelse(
+                                                                Ytelse.builder()
+                                                                        .datoBrukFom(f.tYtelse.getDatoBrukFom())
+                                                                        .datoBrukTom(f.tYtelse.getDatoBrukTom())
+                                                                        .datoEndret(f.tYtelse.getDatoEndret())
+                                                                        .datoInnmYtelFom(f.tYtelse.getDatoInnmYtelFom())
+                                                                        .datoYtelIverFom(f.tYtelse.getDatoYtelIverFom())
+                                                                        .datoYtelIverTom(f.tYtelse.getDatoYtelIverTom())
+                                                                        .datoOpprettet(f.tYtelse.getDatoOpprettet())
+                                                                        .endretAv(f.tYtelse.getEndretAv())
+                                                                        .erGyldig(f.tYtelse.getErGyldig())
+                                                                        .kYtelseT(f.tYtelse.getKYtelseT())
+                                                                        .meldingsType(f.tYtelse.getKMeldingT())
+                                                                        .opprettetAv(f.tYtelse.getOpprettetAv())
+                                                                        .versjon(f.tYtelse.getVersjon())
+                                                                        .build()
+                                                        )
+                                                        .build()
+                                        )
+                                ).build()
+                ).build()).collect(Collectors.toList());
+
+        Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequests);
+        if (savedIds.isEmpty()) {
+            log.warn("Kunne ikke lagre historikk på noen identer");
+        }
+
     }
 
     public List<TForhold> getForhold() {
@@ -114,7 +188,7 @@ public class TpService {
         return tPersonRepository.save(person);
     }
 
-    private void saveForhold(TPerson person, TYtelse ytelse) {
+    private TForhold saveForhold(TPerson person, TYtelse ytelse) {
 
         String endretAv = "INFOTRYGD";
 
@@ -144,10 +218,13 @@ public class TpService {
                 .build());
 
         tForholdYtelseHistorikkRepository.save(new TForholdYtelseHistorikk(new HistorikkComposityKey(savedForhold.getForholdId(), ytelse.getYtelseId())));
-
+        return savedForhold;
     }
 
-    private void createFullRelation(String fnr, TYtelse ytelse) {
+    private FullSavedForhold createFullRelation(String fnr, TYtelse ytelse) {
+
+        FullSavedForhold fullSavedForhold = new FullSavedForhold();
+
         Timestamp timestamp = Timestamp.from(Instant.now());
         TPerson tPerson = savePerson(TPerson.builder()
                 .fnrFk(fnr)
@@ -158,7 +235,19 @@ public class TpService {
                 .opprettetAv("synt")
                 .build());
         TYtelse tYtelse = saveYtelse(ytelse);
-        saveForhold(tPerson, tYtelse);
+        TForhold tForhold = saveForhold(tPerson, tYtelse);
+
+        fullSavedForhold.tPerson = tPerson;
+        fullSavedForhold.tForhold = tForhold;
+        fullSavedForhold.tYtelse = tYtelse;
+
+        return fullSavedForhold;
     }
 
+    private class FullSavedForhold {
+
+        TForhold tForhold;
+        TPerson tPerson;
+        TYtelse tYtelse;
+    }
 }

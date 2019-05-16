@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import java.sql.Timestamp;
 
 @Entity(name = "T_PERSON")
 @Data
@@ -24,9 +25,9 @@ public class TPerson {
     @Id
     private Integer personId;
     private String fnrFk;
-    private java.sql.Timestamp datoOpprettet;
+    private Timestamp datoOpprettet;
     private String opprettetAv;
-    private java.sql.Timestamp datoEndret;
+    private Timestamp datoEndret;
     private String endretAv;
     private String versjon;
 

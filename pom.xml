@@ -19,6 +19,7 @@
     <modules>
         <module>tp-core</module>
         <module>tp-local</module>
+        <module>tp-domain</module>
     </modules>
 
     <properties>
@@ -68,15 +69,18 @@
         </dependencies>
     </dependencyManagement>
 
-    <build>
-        <finalName>testnorge-tp-app</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
+    <distributionManagement>
+        <repository>
+            <id>m2internal</id>
+            <name>NAV Maven2 Internal Repository</name>
+            <url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
+        </repository>
+        <snapshotRepository>
+            <id>m2snapshot</id>
+            <name>NAV Maven2 Snapshot Repository</name>
+            <url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
