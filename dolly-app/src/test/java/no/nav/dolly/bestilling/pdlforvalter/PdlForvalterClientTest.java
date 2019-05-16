@@ -228,6 +228,7 @@ public class PdlForvalterClientTest {
         verifyZeroInteractions(mapperFacade);
         verifyZeroInteractions(pdlForvalterRestConsumer);
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("Info: Bestilling ble ikke utført til ArenaForvalter da miljø 'q2' ikke er valgt")));
+        assertThat(progress.getPdlforvalterStatus(),
+                is(equalTo("PdlForvalter&status: Feil: Bestilling ble ikke sendt til ArenaForvalter da miljø 'q2' ikke er valgt")));
     }
 }
