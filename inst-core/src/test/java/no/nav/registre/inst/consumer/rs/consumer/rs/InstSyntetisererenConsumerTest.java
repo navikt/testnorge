@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.is;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import no.nav.registre.inst.Institusjonsforholdsmelding;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
-import no.nav.registre.inst.institusjonsforhold.Institusjonsforholdsmelding;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
