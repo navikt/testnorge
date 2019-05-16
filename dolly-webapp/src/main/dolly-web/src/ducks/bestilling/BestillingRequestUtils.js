@@ -34,15 +34,18 @@ export const getValues = (attributeList, values) => {
 		if (pathPrefix === DataSourceMapper('AAREG')) {
 			// TODO: Alex, construct a json-object before array
 			let dataArr = []
-
 			value.forEach(element => {
 				let aaregObj = {}
 				attribute.items.forEach(item => {
 					const path = item.path
 					const id = item.id
-					let keyValue = element[id]
-
-					Object.assign(aaregObj, { [path]: { ...aaregObj[path], [id]: keyValue } })
+					const keyValue = findAaregKeyValue(item, element)
+					if (item.id === 'utenlandsopphold' || item.id === 'permisjon') {
+						if ((keyValue && keyValue.length < 1) || !keyValue) return
+					}
+					item.subItems
+						? Object.assign(aaregObj, { [path]: keyValue })
+						: Object.assign(aaregObj, { [path]: { ...aaregObj[path], [id]: keyValue } })
 				})
 
 				// aktorID = PERS
@@ -64,6 +67,19 @@ export const getValues = (attributeList, values) => {
 						avtaltArbeidstimerPerUke: 37.5
 					}
 				})
+				// if (aaregObj.utenlandsopphold && aaregObj.utenlandsopphold.length < 1) {
+				// 	const { utenlandsopphold, ...aaregUten } = aaregObj
+				// }
+				if (aaregObj.permisjon) {
+					aaregObj.permisjon.map((perm, idx) => {
+						perm.permisjonOgPermittering &&
+							Object.assign(aaregObj.permisjon[idx], {
+								...aaregObj.permisjon[idx],
+								['permisjonsId']: idx.toString()
+							})
+					})
+				}
+
 				dataArr.push(aaregObj)
 			})
 			return _set(accumulator, pathPrefix, dataArr)
@@ -96,10 +112,35 @@ const _transformAttributt = (attribute, attributes, value) => {
 					valueDeepCopy[i] = transformedElement
 				})
 			}
+
+			if (item.subItems) {
+				// finn inputType 'date' i subItems
+				const subKategoriId = item.id
+				valueDeepCopy.map((element, idx) => {
+					let transformed = Object.assign(element)
+					if (element[subKategoriId] !== '' && element[subKategoriId][0] !== '') {
+						let subsubArray = []
+						console.log('element :', element)
+						console.log('subKategoriId :', subKategoriId)
+						console.log('element[subKategoriId] :', element[subKategoriId])
+						element[subKategoriId].map(rad => {
+							subsubArray.push(parseSubItemDate(item, rad, Object.assign(rad)))
+						})
+
+						transformed = {
+							...transformed,
+							[item.id]: subsubArray
+						}
+					}
+					//else valueDeepCopy[idx][subKategoriId] = null // Hvordan burde den være?
+					valueDeepCopy[idx] = transformed
+				})
+			}
 		})
 
 		return valueDeepCopy
-	} else if (attribute.items) {
+	}
+	if (attribute.items) {
 		// TODO: Single and multiple items
 
 		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
@@ -194,4 +235,42 @@ export const _filterArrayAttributes = (values, selectedIds, filter, index) => {
 				: copy,
 		attributeIds: attributeIds.filter(attr => !dependencies[attr])
 	}
+}
+
+export const findAaregKeyValue = (item, element) => {
+	let keys = []
+	if (item.subItems && element[item.id] !== '') {
+		let periodekey = 'periode'
+		item.subItems[0].subSubKategori.id === 'permisjon' && (periodekey = 'permisjonsPeriode')
+		//element[item.id] !== '' &&
+		element[item.id].map((subitem, idx) => {
+			let key = {}
+			Object.keys(subitem).map(itemkey => {
+				itemkey !== 'fom' && itemkey !== 'tom'
+					? Object.assign(key, { [itemkey]: element[item.id][idx][itemkey] })
+					: Object.assign(key, {
+							[periodekey]: {
+								['fom']: element[item.id][idx].fom,
+								['tom']: element[item.id][idx].tom
+							}
+					  })
+			})
+			keys.push(key)
+		})
+		return keys
+	}
+	return element[item.id]
+}
+
+export const parseSubItemDate = (item, rad, radTransformation) => {
+	item.subItems.map(subItem => {
+		if (subItem.inputType === 'date') {
+			radTransformation = {
+				...radTransformation,
+				[subItem.id]: DataFormatter.parseDate(rad[subItem.id])
+			}
+		}
+	})
+
+	return radTransformation
 }

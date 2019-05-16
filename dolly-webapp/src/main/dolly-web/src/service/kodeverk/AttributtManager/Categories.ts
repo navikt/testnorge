@@ -100,6 +100,19 @@ export const SubKategorier: KategoriTypes = {
 	}
 }
 
+export const SubSubKategorier: KategoriTypes = {
+	Permisjon: {
+		id: 'permisjon',
+		navn: 'Permisjon',
+		order: 10
+	},
+	Utenlandsopphold: {
+		id: 'utenlandsopphold',
+		navn: 'Utenlandsopphold',
+		order: 10
+	}
+}
+
 // Sub-items?
 // TODO: Alex - trenger vi den?
 export const SubItem: KategoriTypes = {
