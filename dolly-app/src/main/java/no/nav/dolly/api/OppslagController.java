@@ -5,6 +5,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import no.nav.dolly.kodeverk.KodeverkConsumer;
 import no.nav.dolly.kodeverk.KodeverkMapper;
 import no.nav.dolly.norg2.Norg2Consumer;
 import no.nav.dolly.norg2.Norg2EnhetResponse;
+import no.nav.dolly.personoppslag.PersonoppslagConsumer;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
 @RestController
@@ -22,13 +24,16 @@ import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 public class OppslagController {
 
     @Autowired
-    KodeverkMapper kodeverkMapper;
+    private KodeverkMapper kodeverkMapper;
 
     @Autowired
-    KodeverkConsumer kodeverkConsumer;
+    private KodeverkConsumer kodeverkConsumer;
 
     @Autowired
-    Norg2Consumer norg2Consumer;
+    private Norg2Consumer norg2Consumer;
+
+    @Autowired
+    private PersonoppslagConsumer personoppslagConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -41,5 +46,10 @@ public class OppslagController {
     @GetMapping("/norg2/enhet/{tknr}")
     public Norg2EnhetResponse fetchEnhetByTknr(@PathVariable("tknr") String tknr) {
         return norg2Consumer.fetchEnhetByEnhetNr(tknr);
+    }
+
+    @GetMapping("/personoppslag/ident/{ident}")
+    public ResponseEntity personoppslag(@PathVariable("ident") String ident) {
+        return personoppslagConsumer.fetchPerson(ident);
     }
 }

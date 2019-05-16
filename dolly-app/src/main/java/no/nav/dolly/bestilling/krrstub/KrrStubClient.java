@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 
@@ -26,13 +27,13 @@ public class KrrStubClient implements ClientRegister {
     @Autowired
     private MapperFacade mapperFacade;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, String ident, BestillingProgress progress) {
+    @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
         if (nonNull(bestilling.getKrrstub())) {
 
             try {
                 DigitalKontaktdataRequest digitalKontaktdataRequest = mapperFacade.map(bestilling.getKrrstub(), DigitalKontaktdataRequest.class);
-                digitalKontaktdataRequest.setPersonident(ident);
+                digitalKontaktdataRequest.setPersonident(norskIdent.getIdent());
                 ResponseEntity krrstubResponse = krrStubConsumer.createDigitalKontaktdata(progress.getBestillingId(), digitalKontaktdataRequest);
                 progress.setKrrstubStatus(krrStubResponseHandler.extractResponse(krrstubResponse));
 

@@ -29,7 +29,7 @@ public class AaregController {
             + "&nbsp;&nbsp;&nbsp; arbeidstidsordning: (Arbeidstidsordninger) <br />"
             + "&nbsp;&nbsp;&nbsp; avlønningstype: (Avlønningstyper) <br />"
             + "&nbsp;&nbsp;&nbsp; identtype: (Personidenter) <br />"
-            + "&nbsp;&nbsp;&nbsp; land: (Landkoder) <br />"
+            + "&nbsp;&nbsp;&nbsp; land: (LandkoderISO2) <br />"
             + "&nbsp;&nbsp;&nbsp; permisjonOgPermittering: (PermisjonsOgPermitteringsBeskrivelse) <br />"
             + "&nbsp;&nbsp;&nbsp; yrke; (Yrker) <br /><br />"
             + "Alle datofelter har forventet innhold \"yyyy-MM-ddT00:00:00\". <br /> <br />"

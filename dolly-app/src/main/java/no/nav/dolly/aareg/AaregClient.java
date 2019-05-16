@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
@@ -31,7 +32,7 @@ public class AaregClient implements ClientRegister {
     @Autowired
     private AaregWsConsumer aaregWsConsumer;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, String ident, BestillingProgress progress) {
+    @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
         StringBuilder result = new StringBuilder();
 
@@ -41,7 +42,7 @@ public class AaregClient implements ClientRegister {
 
                 ResponseEntity<Object[]> response = ResponseEntity.ok(new Object[] {});
                 try {
-                    response = aaregRestConsumer.readArbeidsforhold(ident, env);
+                    response = aaregRestConsumer.readArbeidsforhold(norskIdent.getIdent(), env);
                 } catch (RuntimeException e) {
                     log.error("Lesing av aareg i {} feilet, {}", env, e.getLocalizedMessage());
                 }
@@ -49,7 +50,7 @@ public class AaregClient implements ClientRegister {
                 for (int i = 0; i < bestilling.getAareg().size(); i++) {
                     RsArbeidsforhold arbfInput = bestilling.getAareg().get(i);
                     arbfInput.setArbeidsforholdID(Integer.toString(i + 1));
-                    arbfInput.setArbeidstaker(RsPerson.builder().ident(ident).build());
+                    arbfInput.setArbeidstaker(RsPerson.builder().ident(norskIdent.getIdent()).build());
 
                     boolean found = false;
                     for (int j = 0; j < response.getBody().length; j++) {

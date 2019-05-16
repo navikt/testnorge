@@ -19,6 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
@@ -43,7 +44,7 @@ public class KrrStubClientTest {
 
     @Test
     public void gjenopprett_ingendata() {
-        krrStubClient.gjenopprett(new RsDollyBestilling(), IDENT, new BestillingProgress());
+        krrStubClient.gjenopprett(new RsDollyBestilling(), NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
 
         verify(krrStubConsumer, times(0)).createDigitalKontaktdata(anyLong(), any(DigitalKontaktdataRequest.class));
     }
@@ -55,9 +56,9 @@ public class KrrStubClientTest {
                 .thenReturn(new DigitalKontaktdataRequest());
         when(krrStubConsumer.createDigitalKontaktdata(anyLong(), any(DigitalKontaktdataRequest.class))).thenReturn(ResponseEntity.ok(""));
 
-        krrStubClient.gjenopprett(RsDollyBestilling.builder()
-                .krrstub(new RsDigitalKontaktdata())
-                .build(), IDENT, BestillingProgress.builder().bestillingId(BESTILLING_ID).build());
+        krrStubClient.gjenopprett(RsDollyBestilling.builder().krrstub(new RsDigitalKontaktdata()).build(),
+                NorskIdent.builder().ident(IDENT).build(),
+                BestillingProgress.builder().bestillingId(BESTILLING_ID).build());
 
         verify(krrStubConsumer).createDigitalKontaktdata(anyLong(), any(DigitalKontaktdataRequest.class));
         verify(krrStubResponseHandler).extractResponse(any(ResponseEntity.class));
@@ -73,7 +74,7 @@ public class KrrStubClientTest {
 
         krrStubClient.gjenopprett(RsDollyBestilling.builder()
                 .krrstub(new RsDigitalKontaktdata())
-                .build(), IDENT, progress);
+                .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
         verify(krrStubConsumer).createDigitalKontaktdata(anyLong(), any(DigitalKontaktdataRequest.class));
         verify(krrStubResponseHandler, times(0)).extractResponse(any(ResponseEntity.class));
