@@ -84,19 +84,17 @@ export default class UtenFastBopel extends Component {
 						)}
 				</div>
 
-				<div>
-					{valgteVerdier.spesreg === 'UFB' && (
-						<Field
-							key={'ufb_kommunenr'}
-							name={'ufb_kommunenr'}
-							label={'Kommunenummer'}
-							placeholder={'Velg kommunenummer...'}
-							component={FormikDollySelect}
-							size={item.size}
-							loadOptions={this._extraComponentPropsKommunenr}
-						/>
-					)}
-				</div>
+				{valgteVerdier.spesreg === 'UFB' && (
+					<Field
+						key={'ufb_kommunenr'}
+						name={'ufb_kommunenr'}
+						label={'Kommunenummer'}
+						placeholder={'Velg kommunenummer...'}
+						component={FormikDollySelect}
+						size={item.size}
+						loadOptions={this._extraComponentPropsKommunenr}
+					/>
+				)}
 			</div>
 		)
 	}
