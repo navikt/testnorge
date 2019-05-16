@@ -59,7 +59,7 @@ public class PdlForvalterClient implements ClientRegister {
                     .append("' ikke er valgt");
         }
 
-        progress.setPdlforvalterStatus(status.substring(1));
+        progress.setPdlforvalterStatus(status.length() > 0 ? status.substring(1) : null);
     }
 
     private void sendUtenlandsid(Pdldata pdldata, NorskIdent norskIdent, StringBuilder status) {
