@@ -16,6 +16,7 @@ describe('mapTpsDataToIdent.js', () => {
 			alder: 20,
 			sivilstand: 'ENKE',
 			spesreg: 'KODE6',
+			utenFastBopel: 'JA',
 			relasjoner: [],
 			tknr: '0314',
 			egenAnsattDatoFom: '2019-04-10T12:55:14.896',
@@ -70,6 +71,11 @@ describe('mapTpsDataToIdent.js', () => {
 						id: 'spesreg',
 						label: 'Diskresjonskoder',
 						value: 'KODE6'
+					},
+					{
+						id: 'utenFastBopel',
+						label: 'Uten fast bopel',
+						value: 'JA'
 					},
 					{
 						apiKodeverkId: 'Bydeler',
