@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.soap.SOAPFaultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,9 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeids
 public class AaregWsConsumer {
 
     private static final String STATUS_OK = "OK";
-    private static final String TEKNISK_FEIL_OPPRETTING ="Feil: Teknisk feil ved oppretting mot Aareg";
-    private static final String TEKNISK_FEIL_OPPDATERING = "Feil: Teknisk feil ved oppdatering mot Aareg";
+    private static final String TEKNISK_FEIL_OPPRETTING = "Feil: Teknisk feil ved oppretting mot AAREG";
+    private static final String TEKNISK_FEIL_OPPDATERING = "Feil: Teknisk feil ved oppdatering mot AAREG";
+    private static final String SOAP_FAULT_EXCEPTION = "Feil: AAREG teknisk feil/unntak: ";
 
     @Autowired
     private BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
@@ -51,9 +53,12 @@ public class AaregWsConsumer {
                 status.put(env, STATUS_OK);
             } catch (OpprettArbeidsforholdSikkerhetsbegrensning | OpprettArbeidsforholdUgyldigInput | DollyFunctionalException error) {
                 status.put(env, extractError(error));
+            } catch (SOAPFaultException sfe) {
+                status.put(env, SOAP_FAULT_EXCEPTION + sfe.getMessage());
+                log.error(TEKNISK_FEIL_OPPRETTING, sfe);
             } catch (RuntimeException re) {
-                log.error(TEKNISK_FEIL_OPPRETTING, re);
                 status.put(env, TEKNISK_FEIL_OPPRETTING + ", se logg!");
+                log.error(TEKNISK_FEIL_OPPRETTING, re);
             }
         });
 
@@ -74,9 +79,12 @@ public class AaregWsConsumer {
                 status.put(env, STATUS_OK);
             } catch (OppdaterArbeidsforholdArbeidsforholdIkkeFunnet | OppdaterArbeidsforholdSikkerhetsbegrensning | OppdaterArbeidsforholdUgyldigInput | DollyFunctionalException error) {
                 status.put(env, extractError(error));
+            } catch (SOAPFaultException sfe) {
+                status.put(env, SOAP_FAULT_EXCEPTION + sfe.getMessage());
+                log.error(TEKNISK_FEIL_OPPDATERING, sfe);
             } catch (RuntimeException re) {
-                log.error(TEKNISK_FEIL_OPPDATERING, re);
                 status.put(env, TEKNISK_FEIL_OPPDATERING + ", se logg!");
+                log.error(TEKNISK_FEIL_OPPDATERING, re);
             }
         });
 

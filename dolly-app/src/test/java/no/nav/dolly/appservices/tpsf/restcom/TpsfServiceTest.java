@@ -2,6 +2,7 @@ package no.nav.dolly.appservices.tpsf.restcom;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
+import static no.nav.dolly.domain.resultset.IdentType.FNR;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,7 +67,7 @@ public class TpsfServiceTest {
 
     @Test
     public void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter(){
-        standardTpsfBestilling.setIdenttype("FNR");
+        standardTpsfBestilling.setIdenttype(FNR);
 
         Object s = "body";
         ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);

@@ -12,6 +12,7 @@ import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkVa
 import Button from '~/components/button/Button'
 import _xor from 'lodash/fp/xor'
 import './FormEditor.less'
+import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
 import Postadresse from '../postadresse/Postadresse'
 
 export default class FormEditor extends PureComponent {
@@ -220,6 +221,20 @@ export default class FormEditor extends PureComponent {
 				return <KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
 			}
 			return <StaticValue {...staticValueProps} />
+		}
+
+		if (item.id === 'spesreg') {
+			return (
+				<UtenFastBopelConnector
+					key={item.key || item.id}
+					item={item}
+					valgteVerdier={valgteVerdier}
+				/>
+			)
+		}
+
+		if (item.id === 'ufb_kommunenr' || item.id === 'utenFastBopel') {
+			return
 		}
 
 		return (

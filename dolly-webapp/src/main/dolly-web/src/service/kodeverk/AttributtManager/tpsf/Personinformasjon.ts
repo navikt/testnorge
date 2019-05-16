@@ -73,16 +73,6 @@ const AttributtListe: Attributt[] = [
 	{
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Diverse,
-		id: 'spesreg',
-		label: 'Diskresjonskoder',
-		dataSource: DataSource.TPSF,
-		inputType: InputType.Select,
-		apiKodeverkId: 'Diskresjonskoder',
-		attributtType: AttributtType.SelectAndEdit
-	},
-	{
-		hovedKategori: Kategorier.PersInfo,
-		subKategori: SubKategorier.Diverse,
 		id: 'sprakKode',
 		label: 'Språk',
 		dataSource: DataSource.TPSF,
@@ -100,6 +90,35 @@ const AttributtListe: Attributt[] = [
 		options: SelectOptionsManager('boolean'),
 		attributtType: AttributtType.SelectAndEdit,
 		transform: egenAnsatt => (egenAnsatt ? new Date() : null)
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'utenFastBopel',
+		label: 'Uten fast bopel',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		options: SelectOptionsManager('boolean'),
+		attributtType: AttributtType.SelectAndRead
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'ufb_kommunenr',
+		label: 'Kommunenummer',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		attributtType: AttributtType.EditOnly
+	},
+	{
+		hovedKategori: Kategorier.PersInfo,
+		subKategori: SubKategorier.Diverse,
+		id: 'spesreg',
+		label: 'Diskresjonskoder',
+		dataSource: DataSource.TPSF,
+		inputType: InputType.Select,
+		apiKodeverkId: 'Diskresjonskoder',
+		attributtType: AttributtType.SelectAndEdit
 	}
 
 	// TODO: Skal vi få tilbake alder?
