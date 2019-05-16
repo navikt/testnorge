@@ -31,8 +31,14 @@ fasitResources:
   used:
     - alias: "testnorge-hodejegeren.rest-api"
       resourceType: restservice
+    - alias: "tps-forvalteren.rest-api"
+      resourceType: restservice
+    - alias: "testnorges.ida.credential.tpsf"
+      resourceType: credential
+    - alias: "SFE_ENDRINGSMELDING"
+      resourceType: Queue
   exposed:
-   - alias: testnorge-nav-endringsmeldinger.rest-api
-     description: På denne base-url finner du swagger-dokumentasjon av REST-tjenesten.
-     resourceType: restservice
-     path: /api
+    - alias: testnorge-nav-endringsmeldinger.rest-api
+      description: På denne base-url finner du swagger-dokumentasjon av REST-tjenesten.
+      resourceType: restservice
+      path: /api
