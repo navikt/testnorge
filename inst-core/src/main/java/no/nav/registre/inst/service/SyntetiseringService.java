@@ -1,20 +1,20 @@
 package no.nav.registre.inst.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.InstSaveInHodejegerenRequest;
+import no.nav.registre.inst.Institusjonsforholdsmelding;
+import no.nav.registre.inst.Kilde;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
-import no.nav.registre.inst.institusjonsforhold.Institusjonsforholdsmelding;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 
 @Service
@@ -22,6 +22,8 @@ import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 public class SyntetiseringService {
 
     private static final int ANTALL_FORSOEK = 3;
+
+    private static final String INST_NAME = "inst";
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -75,6 +77,7 @@ public class SyntetiseringService {
     private List<ResponseEntity> leggTilSyntetisertInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, List<String> identer, List<Institusjonsforholdsmelding> syntetiserteMeldinger) {
         List<ResponseEntity> responseEntities = new ArrayList<>();
         List<String> utvalgteIdenter = new ArrayList<>(identer);
+        List<Institusjonsforholdsmelding> historikkSomSkalLagres = new ArrayList<>();
         int antallOppholdOpprettet = 0;
 
         for (Institusjonsforholdsmelding institusjonsforholdsmelding : syntetiserteMeldinger) {
@@ -91,8 +94,23 @@ public class SyntetiseringService {
                 responseEntities.add(ResponseEntity.status(response.getStatusCode()).body(response.getBody()));
                 if (response.getStatusCode().is2xxSuccessful()) {
                     antallOppholdOpprettet++;
+                    historikkSomSkalLagres.add(institusjonsforholdsmelding);
                 }
             }
+        }
+
+        List<InstSaveInHodejegerenRequest> hodejegerenRequests = historikkSomSkalLagres.parallelStream().map(f -> InstSaveInHodejegerenRequest.builder()
+                .id(f.getPersonident())
+                .kilde(
+                        Kilde.builder()
+                                .navn(INST_NAME)
+                                .data(historikkSomSkalLagres)
+                                .build()
+                ).build()).collect(Collectors.toList());
+
+        Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequests);
+        if (savedIds.isEmpty()) {
+            log.warn("Kunne ikke lagre historikk på noen identer");
         }
 
         if (antallOppholdOpprettet < identer.size()) {
@@ -101,6 +119,7 @@ public class SyntetiseringService {
 
         return responseEntities;
     }
+    
 
     private List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident) {
         List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(tokenObject, ident);
