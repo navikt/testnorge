@@ -23,7 +23,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
-import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 
 @Transactional
@@ -33,9 +32,6 @@ public class BestillingController {
 
     @Autowired
     private MapperFacade mapperFacade;
-
-    @Autowired
-    private BestillingProgressService progressService;
 
     @Autowired
     private BestillingService bestillingService;
@@ -68,5 +64,11 @@ public class BestillingController {
         Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? newArrayList(miljoer.split(",")) : newArrayList());
         dollyBestillingService.gjenopprettBestillingAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
+    }
+
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @GetMapping("/malbestilling")
+    public List<RsBestilling> getMalBestillinger() {
+        return mapperFacade.mapAsList(bestillingService.fetchMalBestillinger(), RsBestilling.class);
     }
 }

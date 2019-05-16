@@ -88,4 +88,12 @@ public class BestillingControllerTest {
         verify(dollyBestillingService).gjenopprettBestillingAsync(any(Bestilling.class));
         verify(mapperFacade).map(any(Bestilling.class), eq(RsBestilling.class));
     }
+
+    @Test
+    public void malBestillingNavnOk() {
+        bestillingController.getMalBestillinger();
+
+        verify(bestillingService).fetchMalBestillinger();
+        verify(mapperFacade).mapAsList(anyList(), eq(RsBestilling.class));
+    }
 }
