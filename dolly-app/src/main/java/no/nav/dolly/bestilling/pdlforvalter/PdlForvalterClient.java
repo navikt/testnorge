@@ -41,18 +41,25 @@ public class PdlForvalterClient implements ClientRegister {
 
     @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
+        StringBuilder status = new StringBuilder();
+
         if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
 
             Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
 
-            StringBuilder status = new StringBuilder();
             sendDeleteIdent(norskIdent, status);
             sendFolkeregisterIdent(norskIdent, status);
             sendUtenlandsid(pdldata, norskIdent, status);
             sendDoedsbo(pdldata, norskIdent, status);
 
-            progress.setPdlforvalterStatus(status.substring(1));
+        } else if (nonNull(bestilling.getPdlforvalter())) {
+
+            status.append("$Info: Bestilling ble ikke utført til ArenaForvalter da miljø '")
+                    .append(SYNTH_ENV)
+                    .append("' ikke er valgt");
         }
+
+        progress.setPdlforvalterStatus(status.substring(1));
     }
 
     private void sendUtenlandsid(Pdldata pdldata, NorskIdent norskIdent, StringBuilder status) {

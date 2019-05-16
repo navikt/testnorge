@@ -23,7 +23,7 @@ public class PersonoppslagConsumer {
     private static final String OPPLYSNINGSTYPER = "Opplysningstyper";
     private static final String TEMA = "Tema";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
-    private static final String PERSONOPPSLAG_URL = "/api/v1/oppslag";
+    private static final String PERSONOPPSLAG_URL = "/api/v1/oppslag?historikk=true";
     private static final String ENV_PREPROD = "q";
 
     @Autowired
