@@ -50,3 +50,27 @@
 	border-top: 1px solid @color-bg-divider;
 	padding: 10px 0;
 }
+
+.subItems {
+	//display: flex;
+	padding-left: 60px;
+
+	.subItem-header {
+		flex-direction: column;
+	}
+
+	.subitems-container {
+		display: flex;
+		flex-wrap: wrap;
+
+		.subitems {
+			flex-direction: row;
+		}
+		.nummer {
+			padding: 10px;
+		}
+	}
+	.subitem-container-button {
+		display: flex;
+	}
+}

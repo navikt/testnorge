@@ -221,9 +221,8 @@ export function mapBestillingData(bestillingData) {
 						width: 'xlarge',
 						showKodeverkValue: true
 					}
-				])
+				]) //INGVILD: MÅ ENDRES.
 			})
-
 			data.push(aareg)
 		}
 		const sigrunStubKriterier = registreKriterier.sigrunStub && registreKriterier.sigrunStub
