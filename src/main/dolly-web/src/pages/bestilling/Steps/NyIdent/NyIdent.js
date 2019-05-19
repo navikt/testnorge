@@ -23,12 +23,13 @@ export default class NyIdent extends Component {
 		if (mal && mal !== prevProps.mal) {
 			this.props.setBestillingFraMal({
 				antallIdenter: mal.antallIdenter,
-				identtype: 'DNR',
+				identtype: JSON.parse(mal.tpsfKriterier).identtype || 'FNR',
 				attributeIds: getAttributesFromMal(mal),
 				environments: mal.environments,
 				values: getValuesFromMal(mal),
 				currentMal: mal.malBestillingNavn
 			})
+
 			// resetForm()
 		}
 	}
@@ -65,13 +66,12 @@ export default class NyIdent extends Component {
 						component={FormikInput}
 						// value={antall || 1}
 					/>
-
 					<Field
 						name="mal"
 						label="MALER"
 						className="input-field"
 						component={FormikDollySelect}
-						placeholder="Mal ikke valgt"
+						placeholder={maler.length > 0 ? 'Mal ikke valgt' : 'Ingen maler'}
 						options={this._formatMalerOptions(maler)}
 					/>
 					{/* <ContentTooltip>
