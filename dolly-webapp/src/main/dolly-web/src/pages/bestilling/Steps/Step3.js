@@ -263,6 +263,9 @@ export default class Step3 extends PureComponent {
 			>
 				{item.apiKodeverkId ? (
 					<KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
+				) : // * Trenger stoette for apiKodeverkId som er avhengig av andre attributt. Decamelize for bedre ux imidlertig
+				item.id === 'typeinntekt' ? (
+					<StaticValue {...staticValueProps} value={Formatters.decamelize(itemValue, ' ')} />
 				) : (
 					<StaticValue {...staticValueProps} />
 				)}
