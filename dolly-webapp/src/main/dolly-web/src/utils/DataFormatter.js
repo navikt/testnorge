@@ -37,6 +37,16 @@ Formatters.parseDate = date => {
 	return new Date(Date.UTC(parts[2], parts[1] - 1, parts[0]))
 }
 
+Formatters.decamelize = (str, separator) => {
+	separator = typeof separator === 'undefined' ? '_' : separator
+
+	const res = str
+		.replace(/([a-z\d])([A-Z])/g, '$1' + separator + '$2')
+		.replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + separator + '$2')
+
+	return res.charAt(0).toUpperCase() + res.slice(1)
+}
+
 Formatters.kjonnToString = (kjonn = '') => {
 	if (!kjonn) return kjonn
 	const _kjonn = kjonn.toLowerCase()
