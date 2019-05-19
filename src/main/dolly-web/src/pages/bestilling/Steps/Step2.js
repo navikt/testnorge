@@ -95,7 +95,7 @@ export default class Step2 extends PureComponent {
 								FormikProps={formikProps}
 							/>
 							{/* // Uncomment for debug formik */}
-							{/* <DisplayFormikState {...formikProps} /> */}
+							<DisplayFormikState {...formikProps} />
 						</Fragment>
 					)}
 				/>

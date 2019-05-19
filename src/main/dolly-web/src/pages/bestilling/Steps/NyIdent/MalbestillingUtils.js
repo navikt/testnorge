@@ -4,9 +4,6 @@ export const getAttributesFromMal = mal => {
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
 	const bestKriterier = JSON.parse(mal.bestKriterier)
 
-	// console.log('tpsf', tpsfKriterier)
-	// console.log('best', bestKriterier)
-
 	let attrArray = []
 	attrArray = Object.keys(tpsfKriterier).filter(k => {
 		if (k !== 'identtype' && k !== 'relasjoner' && k !== 'regdato') {
@@ -19,36 +16,24 @@ export const getAttributesFromMal = mal => {
 		tpsfKriterier.relasjoner.partner && attrArray.push('partner')
 	}
 
-	// tpsfKriterier.keys(attr => {
-	// 	if(attr === "")
-	// });
-
 	// TODO: Nå som disse id-ene er brukt flere steder på prosjektet gjennom mappingen, vurder å lage en constant klasse
 	Object.keys(bestKriterier).forEach(reg => {
 		attrArray.push(_mapRegistreKey(reg))
 	})
 
-	console.log('attrArray :', attrArray)
 	return attrArray
 }
 
 export const getValuesFromMal = mal => {
 	let reduxStateValue = {}
 	const tpsfKriterierArray = Object.entries(JSON.parse(mal.tpsfKriterier))
-
-	// console.log('TCL: tpsfKriterier', tpsfKriterier)
-	// console.log('TCL: tpsfValuesArray', Object.entries(tpsfKriterier))
+	console.log('LOG: tpsfKriterierArray', tpsfKriterierArray)
 
 	const bestKriterierArray = Object.entries(JSON.parse(mal.bestKriterier))
-
-	console.log('bestKriterier', bestKriterierArray)
-
-	// TODO: Alex - lag rekrusiv funksjon for dette
 
 	_mapValuesToObject(reduxStateValue, tpsfKriterierArray)
 
 	bestKriterierArray.forEach(reg => {
-		console.log('reg :', reg)
 		// *Spesiell tilfelle for Krr-stub
 		let valueArray = _mapRegistreValue(reg[0], reg[1])
 		if (Array.isArray(valueArray)) {
@@ -56,60 +41,57 @@ export const getValuesFromMal = mal => {
 		}
 	})
 
-	// _mapValuesToObject(reduxStateValue, bestKriterierArray)
-
 	console.log('reduxStateValue :', reduxStateValue)
 
 	return reduxStateValue
 }
 
-const _mapValuesToObject = (objectToAssign, valueArray, customKeyPrefix = '') => {
+const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 	valueArray.forEach(v => {
 		let key = v[0]
 
-		if (key === 'regdato' || key === 'identtype') return
+		if (key === 'regdato') return
+
 		let value = v[1]
+
 		if (value) {
-			// Formater values før vi lager objekt
+			let customKeyPrefix = keyPrefix
+			if (keyPrefix === 'barn_' && key === 'identtype') {
+				customKeyPrefix = ''
+			}
 			value = _formatValueForObject(key, value)
-			if (key === 'relasjoner') {
-				value.partner &&
-					_mapValuesToObject(objectToAssign, Object.entries(value.partner), 'partner_')
 
-				if (value.barn && Array.isArray(value.barn)) {
-					// TODO: Samme greia som register? . Alex - lag funksjon
-
-					console.log(value.barn, 'value barn')
-					_mapArrayValuesToObject(objectToAssign, value.barn, 'barn', 'barn_')
-					// let barnObjectsArray = []
-					// value.barn.forEach(v => {
-					// 	let barnObject = {}
-					// 	_mapValuesToObject(barnObject, Object.entries(v), 'barn_')
-					// 	barnObjectsArray.push(barnObject)
-					// })
-					// Object.assign(objectToAssign, {
-					// 	barn: barnObjectsArray
-					// })
-				}
+			if (key === 'boadresse') {
+				//TODO: boAdresse fungerer ikke ennaa
+				// _mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
+			} else if (key === 'postadresse') {
+				_mapValuesToObject(objectToAssign, Object.entries(value[0]))
 			} else {
-				Object.assign(objectToAssign, {
-					[customKeyPrefix + key]: value
-				})
+				// Formater values før vi lager objekt
+				if (key === 'relasjoner') {
+					value.partner &&
+						_mapValuesToObject(objectToAssign, Object.entries(value.partner), 'partner_')
+
+					if (value.barn && Array.isArray(value.barn)) {
+						_mapArrayValuesToObject(objectToAssign, value.barn, 'barn', 'barn_')
+					}
+				} else {
+					Object.assign(objectToAssign, {
+						[customKeyPrefix + key]: value
+					})
+				}
 			}
 		}
 	})
 }
 
-const _mapArrayValuesToObject = (objectToAssign, valueArray, key, customKeyPrefix = '') => {
+const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = '') => {
 	const mappedKey = _mapRegistreKey(key)
-
-	console.log(key, mappedKey)
-
 	let valueArrayObj = []
 
 	valueArray.forEach(v => {
 		let childObj = {}
-		_mapValuesToObject(childObj, Object.entries(v), customKeyPrefix)
+		_mapValuesToObject(childObj, Object.entries(v), keyPrefix)
 		valueArrayObj.push(childObj)
 	})
 	Object.assign(objectToAssign, {
@@ -131,7 +113,6 @@ const _formatValueForObject = (key, value) => {
 
 const _mapRegistreKey = key => {
 	// TODO: Nå som disse id-ene er brukt flere steder på prosjektet gjennom mappingen, vurder å lage en constant klasse
-
 	switch (key) {
 		case 'aareg':
 			return 'arbeidsforhold'
