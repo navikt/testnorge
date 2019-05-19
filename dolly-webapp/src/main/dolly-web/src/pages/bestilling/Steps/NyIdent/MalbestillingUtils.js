@@ -16,7 +16,6 @@ export const getAttributesFromMal = mal => {
 		tpsfKriterier.relasjoner.partner && attrArray.push('partner')
 	}
 
-	// TODO: Nå som disse id-ene er brukt flere steder på prosjektet gjennom mappingen, vurder å lage en constant klasse
 	Object.keys(bestKriterier).forEach(reg => {
 		attrArray.push(_mapRegistreKey(reg))
 	})
@@ -27,22 +26,16 @@ export const getAttributesFromMal = mal => {
 export const getValuesFromMal = mal => {
 	let reduxStateValue = {}
 	const tpsfKriterierArray = Object.entries(JSON.parse(mal.tpsfKriterier))
-	console.log('LOG: tpsfKriterierArray', tpsfKriterierArray)
-
 	const bestKriterierArray = Object.entries(JSON.parse(mal.bestKriterier))
 
 	_mapValuesToObject(reduxStateValue, tpsfKriterierArray)
 
 	bestKriterierArray.forEach(reg => {
-		// *Spesiell tilfelle for Krr-stub
 		let valueArray = _mapRegistreValue(reg[0], reg[1])
 		if (Array.isArray(valueArray)) {
 			_mapArrayValuesToObject(reduxStateValue, valueArray, reg[0])
 		}
 	})
-
-	console.log('reduxStateValue :', reduxStateValue)
-
 	return reduxStateValue
 }
 

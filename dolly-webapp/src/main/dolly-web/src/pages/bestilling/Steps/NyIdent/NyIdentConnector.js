@@ -5,9 +5,6 @@ import NyIdent from './NyIdent'
 const mapStateToProps = (state, ownProps) => ({
 	maler: state.currentBestilling.maler,
 	mal: state.currentBestilling.maler.find(m => m.malBestillingNavn === ownProps.malBestillingNavn)
-
-	// eksisterendeIdentListe: state.currentBestilling.eksisterendeIdentListe,
-	// ugyldigIdentListe: state.currentBestilling.ugyldigIdentListe
 })
 
 const mapDispatchToProps = dispatch => ({

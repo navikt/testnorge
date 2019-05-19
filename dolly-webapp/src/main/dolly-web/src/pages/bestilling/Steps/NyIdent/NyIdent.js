@@ -29,7 +29,7 @@ export default class NyIdent extends Component {
 				values: getValuesFromMal(mal),
 				currentMal: mal.malBestillingNavn
 			})
-
+			// TODO: Naar malen er valgt bort - formik burde resettes til null verdi igjen
 			// resetForm()
 		}
 	}
@@ -91,7 +91,6 @@ export default class NyIdent extends Component {
 						</a>
 					</ContentTooltip> */}
 				</div>
-				{/* {mal && this._showMalSpecs(maler, mal)} */}
 				<AttributtVelgerConnector
 					onToggle={toggleAttributeSelection}
 					uncheckAllAttributes={uncheckAllAttributes}
@@ -111,7 +110,6 @@ export default class NyIdent extends Component {
 	}
 
 	_showMalSpecs = (maler, mal) => {
-		console.log(mal, 'mal')
 		const res = maler.find(m => m.malBestillingNavn === mal)
 
 		return (
