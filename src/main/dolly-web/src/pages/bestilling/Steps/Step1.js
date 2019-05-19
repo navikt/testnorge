@@ -58,9 +58,6 @@ class Step1 extends Component {
 					<span className="bestilling-page radiobuttons">
 						{this._renderRadioBtn(BestillingMapper('EKSIDENT'), 'EKSISTERENDE TESTIDENT')}
 					</span>
-					<span className="bestilling-page radiobuttons">
-						{this._renderRadioBtn(BestillingMapper('MAL'), 'MALBESTILLING')}
-					</span>
 				</form>
 				{this._renderAttributtVelger()}
 				<NavigationConnector
@@ -83,8 +80,6 @@ class Step1 extends Component {
 			values,
 			resetForm
 		} = this.props
-
-		// console.log('values :', values)
 
 		switch (identOpprettesFra) {
 			case BestillingMapper():
@@ -110,17 +105,6 @@ class Step1 extends Component {
 						identOpprettesFra={identOpprettesFra}
 					/>
 				)
-			// case BestillingMapper('MAL'):
-			// 	return (
-			// 		<MalBestillingConnector
-			// 			selectedAttributeIds={selectedAttributeIds}
-			// 			toggleAttributeSelection={toggleAttributeSelection}
-			// 			uncheckAllAttributes={uncheckAllAttributes}
-			// 			checkAttributeArray={checkAttributeArray}
-			// 			uncheckAttributeArray={uncheckAttributeArray}
-			// 			mal={values.mal}
-			// 		/>
-			// 	)
 			default:
 				break
 		}
