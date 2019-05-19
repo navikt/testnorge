@@ -43,7 +43,6 @@ export function mapTpsfData(tpsfData, testIdent) {
 					label: 'Sivilstand',
 					value: tpsfData.sivilstand
 				},
-
 				{
 					id: 'miljoer',
 					label: 'Miljøer',
@@ -53,6 +52,11 @@ export function mapTpsfData(tpsfData, testIdent) {
 					id: 'spesreg',
 					label: 'Diskresjonskoder',
 					value: tpsfData.spesreg
+				},
+				{
+					id: 'utenFastBopel',
+					label: 'Uten fast bopel',
+					value: Formatters.oversettBoolean(tpsfData.utenFastBopel)
 				},
 				{
 					id: 'gtVerdi',

@@ -253,6 +253,7 @@ export default class Step3 extends PureComponent {
 		}
 
 		if (item.onlyShowAfterSelectedValue && !itemValue) return null
+		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
 
 		return (
 			<RemoveableField
