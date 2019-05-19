@@ -9,9 +9,7 @@ import { Radio } from 'nav-frontend-skjema'
 import '~/pages/bestilling/Bestilling.less'
 import NyIdentConnector from './NyIdent/NyIdentConnector.js'
 import EksisterendeIdentConnector from './EksisterendeIdent/EksisterendeIdentConnector'
-// import MalBestillingConnector from '~/components/opprettIdent/MalBestillingConnector'
 import BestillingMapper from '~/utils/BestillingMapper'
-import { FormikDollySelect } from '~/components/fields/Select/Select'
 
 class Step1 extends Component {
 	static propTypes = {
@@ -115,7 +113,6 @@ export default withFormik({
 	displayName: 'BestillingStep1',
 	enableReinitialize: true,
 	mapPropsToValues: props => {
-		// console.log('NY props', props)
 		return {
 			identtype: props.identtype || 'FNR', // default to FNR
 			antall: props.antall,
@@ -132,7 +129,6 @@ export default withFormik({
 		identtype: yup.string().required('Velg en identtype')
 	}),
 	handleSubmit: (values, { props, setSubmitting, setErrors }) => {
-		console.log(values, 'values')
 		props.startBestilling(values)
 	}
 })(Step1)
