@@ -18,7 +18,18 @@ export const actions = createActions(
 		POST_BESTILLING_FRA_EKSISTERENDE_IDENTER: (gruppeId, value) =>
 			DollyApi.createBestillingFraEksisterendeIdenter(gruppeId, value),
 		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values),
-		GET_BESTILLING_MALER: () => DollyApi.getBestillingMaler()
+		GET_BESTILLING_MALER: async () => {
+			try {
+				const res = await DollyApi.getBestillingMaler()
+				return res
+			} catch (err) {
+				if (err.response && err.response.status === 404) {
+					//*Ingen maler
+					return { data: [] }
+				}
+				return err
+			}
+		}
 	},
 	'NEXT_PAGE',
 	'PREV_PAGE',
