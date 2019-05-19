@@ -109,7 +109,6 @@ const _transformAttributt = (attribute, attributes, value) => {
 				Object.assign(
 					{},
 					...Object.entries(val).map(([key, value]) => {
-						console.log({ key, value })
 						if (!attributeList[key]) return
 						let pathId = attributeList[key].path.split('.')
 						return {

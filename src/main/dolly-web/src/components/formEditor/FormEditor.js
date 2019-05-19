@@ -233,7 +233,7 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 
-		if (item.id === 'ufb_kommunenr' || item.id === 'utenFastBopel') {
+		if (item.id === 'ufb_kommunenr' || item.id.includes('utenFastBopel')) {
 			return
 		}
 
