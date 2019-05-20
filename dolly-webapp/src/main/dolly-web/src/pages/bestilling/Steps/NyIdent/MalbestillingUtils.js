@@ -36,6 +36,8 @@ export const getValuesFromMal = mal => {
 			_mapArrayValuesToObject(reduxStateValue, valueArray, reg[0])
 		}
 	})
+
+	console.log('reduStateValue :', reduxStateValue)
 	return reduxStateValue
 }
 
@@ -56,7 +58,7 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 
 			if (key === 'boadresse') {
 				//TODO: boAdresse fungerer ikke ennaa
-				// _mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
+				_mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
 			} else if (key === 'postadresse') {
 				_mapValuesToObject(objectToAssign, Object.entries(value[0]))
 			} else {
@@ -121,6 +123,32 @@ const _mapRegistreKey = key => {
 const _mapRegistreValue = (key, value) => {
 	switch (key) {
 		case 'aareg':
+			// arbeidsforhold[
+			// 	{
+			// 	  "yrke": "3310101",
+			// 	  "fom": "20.05.1999",
+			// 	  "tom": "",
+			// 	  "stillingsprosent": 100,
+			// 	  "aktoertype": "PERS",
+			// 	  "permisjon": [
+			// 		{
+			// 		  "permisjonOgPermittering": "permisjonVedMilitaertjeneste",
+			// 		  "fom": "01.05.2017",
+			// 		  "tom": "01.05.2017",
+			// 		  "permisjonsprosent": 100
+			// 		}
+			// 	  ],
+			// 	  "utenlandsopphold": [
+			// 		{
+			// 		  "land": "DZ",
+			// 		  "fom": "20.05.2019",
+			// 		  "tom": "10.05.2019"
+			// 		}
+			// 	  ],
+			// 	  "ident": "25016214941"
+			// 	}
+			//   ]
+
 			return value
 		case 'sigrunStub':
 			let mappedValue = []
