@@ -157,7 +157,8 @@ public class TestgruppeController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
-        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(), null, request.getOpprettFraIdenter());
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(),
+                request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter());
 
         dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
         return mapperFacade.map(bestilling, RsBestilling.class);
