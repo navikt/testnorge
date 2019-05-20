@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
+import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
@@ -74,6 +76,12 @@ public class SyntetiseringsController {
         return tpsSyntPakkenService.genererSkdmeldinger(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
                 syntetiserSkdmeldingerRequest.getMiljoe(),
                 syntetiserSkdmeldingerRequest.getAntallMeldingerPerEndringskode());
+    }
+
+    @LogExceptions
+    @PostMapping(value = "/nav/endringsmeldinger/generer")
+    public List<RsPureXmlMessageResponse> opprettNavmeldingerITPS(@RequestBody SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest) {
+        return tpsSyntPakkenService.genererNavmeldinger(syntetiserNavmeldingerRequest);
     }
 
     @LogExceptions

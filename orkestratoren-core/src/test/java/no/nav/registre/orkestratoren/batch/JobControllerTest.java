@@ -82,7 +82,7 @@ public class JobControllerTest {
         ReflectionTestUtils.setField(jobController, "instbatchMiljoe", miljoer);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
-        ReflectionTestUtils.setField(jobController, "antallMeldingerPerEndringskode", antallMeldingerPerEndringskode);
+        ReflectionTestUtils.setField(jobController, "antallSkdmeldingerPerEndringskode", antallMeldingerPerEndringskode);
 
         when(tpSyntPakkenService.genererTp(any())).thenReturn(new ResponseEntity(HttpStatus.OK));
     }
@@ -91,6 +91,12 @@ public class JobControllerTest {
     public void shouldStartTpsBatch() {
         jobController.tpsSyntBatch();
         verify(tpsSyntPakkenService).genererSkdmeldinger(avspillergruppeId, miljoer.get(0), antallMeldingerPerEndringskode);
+    }
+
+    @Test
+    public void shouldStartNavBatch() {
+        jobController.navSyntBatch();
+        verify(tpsSyntPakkenService).genererNavmeldinger(any());
     }
 
     @Test
