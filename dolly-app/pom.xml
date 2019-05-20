@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.dolly</groupId>
         <artifactId>dolly</artifactId>
-        <version>test-947</version>
+        <version>test-949</version>
     </parent>
 
     <artifactId>dolly-app</artifactId>
