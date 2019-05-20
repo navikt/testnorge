@@ -105,14 +105,18 @@ export default class DollyService {
 		return Request.put(Endpoints.removeFavorite(), { gruppeId: groupId })
 	}
 
-	// Kodeverk
+	//* Kodeverk
 	static getKodeverkByNavn(kodeverkNavn) {
 		return Request.get(Endpoints.kodeverkByNavn(kodeverkNavn))
 	}
 
-	// Bestilling
+	//* Bestilling
 	static getBestillinger(gruppeId) {
 		return Request.get(Endpoints.bestillinger(gruppeId))
+	}
+
+	static getBestillingMaler() {
+		return Request.get(Endpoints.bestillingMal())
 	}
 
 	static getBestillingStatus(bestillingId) {
