@@ -3,6 +3,7 @@ package no.nav.registre.sam.consumer.rs;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sam.SamSaveInHodejegerenRequest;
+import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,8 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
-
 @Component
 @Slf4j
 public class HodejegerenConsumer {
@@ -29,7 +28,8 @@ public class HodejegerenConsumer {
 
     private final String hodejegerenSaveHistorikk;
 
-    private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {};
+    private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
+    };
 
     @Autowired
     private RestTemplate restTemplate;
@@ -39,10 +39,10 @@ public class HodejegerenConsumer {
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
         this.url = new UriTemplate(hodejegerenServerUrl +
                 "/v1/levende-identer/{avspillergruppeId}?miljoe={miljoe}&antallPersoner={antallIdenter}");
-        this.hodejegerenSaveHistorikk = hodejegerenServerUrl + "/v1/historikk/";
+        this.hodejegerenSaveHistorikk = hodejegerenServerUrl + "/v1/historikk";
     }
 
-    @Timed(value = "sam.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "sam.resource.latency", extraTags = {"operation", "hodejegeren"})
     public List<String> finnLevendeIdenter(SyntetiserSamRequest syntetiserSamRequest) {
         RequestEntity getRequest = RequestEntity.get(url.expand(
                 syntetiserSamRequest.getAvspillergruppeId(),
@@ -62,7 +62,7 @@ public class HodejegerenConsumer {
         return identer;
     }
 
-    @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "tp.resource.latency", extraTags = {"operation", "hodejegeren"})
     public Set<String> saveHistory(List<SamSaveInHodejegerenRequest> requests) {
 
         RequestEntity<List<SamSaveInHodejegerenRequest>> body = RequestEntity.post(URI.create(hodejegerenSaveHistorikk)).body(requests);

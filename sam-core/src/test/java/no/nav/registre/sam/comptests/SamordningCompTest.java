@@ -1,13 +1,16 @@
 package no.nav.registre.sam.comptests;
 
-import static no.nav.registre.sam.service.SyntetiseringService.ENDRET_OPPRETTET_AV;
-import static no.nav.registre.sam.testutils.DateUtils.formatDate;
-import static no.nav.registre.sam.testutils.DateUtils.formatTimestamp;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.sam.SyntetisertSamordningsmelding;
+import no.nav.registre.sam.database.TPersonRepository;
+import no.nav.registre.sam.database.TSamHendelseRepository;
+import no.nav.registre.sam.database.TSamMeldingRepository;
+import no.nav.registre.sam.database.TSamVedtakRepository;
+import no.nav.registre.sam.domain.database.TPerson;
+import no.nav.registre.sam.domain.database.TSamHendelse;
+import no.nav.registre.sam.domain.database.TSamMelding;
+import no.nav.registre.sam.domain.database.TSamVedtak;
+import no.nav.registre.sam.service.SyntetiseringService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,16 +26,15 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.sam.database.TPersonRepository;
-import no.nav.registre.sam.database.TSamHendelseRepository;
-import no.nav.registre.sam.database.TSamMeldingRepository;
-import no.nav.registre.sam.database.TSamVedtakRepository;
-import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
-import no.nav.registre.sam.domain.database.TPerson;
-import no.nav.registre.sam.domain.database.TSamHendelse;
-import no.nav.registre.sam.domain.database.TSamMelding;
-import no.nav.registre.sam.domain.database.TSamVedtak;
-import no.nav.registre.sam.service.SyntetiseringService;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static no.nav.registre.sam.service.SyntetiseringService.ENDRET_OPPRETTET_AV;
+import static no.nav.registre.sam.testutils.DateUtils.formatDate;
+import static no.nav.registre.sam.testutils.DateUtils.formatTimestamp;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -76,6 +78,7 @@ public class SamordningCompTest {
 
     @Test
     public void shouldLagreSyntetiserteSamordningsmeldinger() throws ParseException {
+        stubFor(post("/hodejegeren/api/v1/historikk").willReturn(ok().withHeader("Content-Type", "application/json")));
         syntetiseringService.lagreSyntetiserteMeldinger(syntetiserteSamordningsmeldinger, identer);
 
         TPerson person1 = tPersonRepository.findByFnrFK(fnr1);

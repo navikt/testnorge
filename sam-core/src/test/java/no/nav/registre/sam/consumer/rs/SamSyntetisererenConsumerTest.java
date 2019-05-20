@@ -1,18 +1,9 @@
 package no.nav.registre.sam.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static no.nav.registre.sam.testutils.ResourceUtils.getResourceFileContent;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import no.nav.registre.sam.SyntetisertSamordningsmelding;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,11 +16,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static no.nav.registre.sam.testutils.ResourceUtils.getResourceFileContent;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class SamSyntetisererenConsumerTest {
 
@@ -38,11 +37,13 @@ public class SamSyntetisererenConsumerTest {
 
     int antallMeldinger = 2;
 
+
     @Test
     public void shouldGetSyntetiserteMeldinger() {
         stubSamSyntetisererenConsumer();
 
         List<SyntetisertSamordningsmelding> response = samSyntetisererenConsumer.hentSammeldingerFromSyntRest(antallMeldinger);
+        System.out.println(response);
 
         assertThat(response.get(0).getDatoEndret(), equalTo("10.02.2010"));
         assertThat(response.get(0).getKSamHendelseT(), equalTo("VEDTAKNAV"));

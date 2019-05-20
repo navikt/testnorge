@@ -1,6 +1,5 @@
 package no.nav.registre.sam.service;
 
-import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sam.Kilde;
 import no.nav.registre.sam.SamSaveInHodejegerenRequest;
@@ -22,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -91,11 +89,11 @@ public class SyntetiseringService {
                         .id(f.getKey())
                         .kilde(
                                 Kilde.builder()
-                                .navn(SAM_NAME)
-                                .data(Collections.singletonList(f.getValue()))
-                                .build()
+                                        .navn(SAM_NAME)
+                                        .data(Collections.singletonList(f.getValue()))
+                                        .build()
                         ).build()
-        ).collect(Collectors.toList());
+                ).collect(Collectors.toList());
 
         Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequests);
         if (savedIds.isEmpty()) {
