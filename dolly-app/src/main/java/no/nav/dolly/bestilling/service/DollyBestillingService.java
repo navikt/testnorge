@@ -10,6 +10,8 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.domain.resultset.IdentType.DNR;
+import static no.nav.dolly.domain.resultset.IdentType.FNR;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -32,6 +34,7 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -157,7 +160,9 @@ public class DollyBestillingService {
 
             sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
 
-            gjenopprettNonTpsf(bestillingProgress.getIdent(), bestilling, progress);
+            gjenopprettNonTpsf(NorskIdent.builder().ident(bestillingProgress.getIdent())
+                    .identType(Character.getType(bestillingProgress.getIdent().charAt(0)) > 3 ? DNR : FNR)
+                    .build(), bestilling, progress);
 
             oppdaterProgress(bestilling, progress);
             clearCache();
@@ -166,14 +171,15 @@ public class DollyBestillingService {
         clearCache();
     }
 
-    private void gjenopprettNonTpsf(String ident, Bestilling bestilling, BestillingProgress progress) {
+    private void gjenopprettNonTpsf(NorskIdent norskIdent, Bestilling bestilling, BestillingProgress progress) {
 
         if (nonNull(bestilling.getBestKriterier())) {
             try {
                 RsDollyBestilling bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
                 bestKriterier.setEnvironments(asList(bestilling.getMiljoer().split(",")));
 
-                clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, ident, progress));
+                clientRegisters.forEach(clientRegister ->
+                        clientRegister.gjenopprett(bestKriterier, norskIdent, progress));
 
                 oppdaterProgress(bestilling, progress);
 
@@ -207,7 +213,8 @@ public class DollyBestillingService {
 
         sendIdenterTilTPS(request.getEnvironments(), bestilteIdenter, testgruppe, progress);
 
-        clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(request, ident, progress));
+        clientRegisters.forEach(clientRegister ->
+                clientRegister.gjenopprett(request, NorskIdent.builder().ident(ident).identType(tpsfBestilling.getIdenttype()).build(), progress));
 
         oppdaterProgress(bestilling, progress);
     }
@@ -248,8 +255,8 @@ public class DollyBestillingService {
             List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
             List<String> failureMiljoer = extraxtFailureMiljoForHovedperson(hovedperson, response);
 
+            identService.saveIdentTilGruppe(hovedperson, testgruppe);
             if (!successMiljoer.isEmpty()) {
-                identService.saveIdentTilGruppe(hovedperson, testgruppe);
                 progress.setTpsfSuccessEnv(join(",", successMiljoer));
             }
             if (!failureMiljoer.isEmpty()) {

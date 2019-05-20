@@ -1,358 +1,0 @@
-[WARNING] 
-[WARNING] Some problems were encountered while building the effective settings
-[WARNING] Unrecognised tag: 'properties' (position: START_TAG seen ...</profiles>\r\n\r\n\t<properties>... @92:14)  @ C:\Users\f148888\.m2\settings.xml, line 92, column 14
-[WARNING] 
-[INFO] Scanning for projects...
-[INFO] ------------------------------------------------------------------------
-[INFO] Reactor Build Order:
-[INFO] 
-[INFO] dolly
-[INFO] dolly-app
-[INFO] dolly-webapp
-[INFO] dolly-test
-Downloading: http://maven.adeo.no/nexus/content/groups/public/org/jetbrains/kotlin/kotlin-maven-plugin/1.2.21/kotlin-maven-plugin-1.2.21.pom
-3/6 KB   6/6 KB            Downloaded: http://maven.adeo.no/nexus/content/groups/public/org/jetbrains/kotlin/kotlin-maven-plugin/1.2.21/kotlin-maven-plugin-1.2.21.pom (6 KB at 31.4 KB/sec)
-Downloading: http://maven.adeo.no/nexus/content/groups/public/org/jetbrains/kotlin/kotlin-project/1.2.21/kotlin-project-1.2.21.pom
-4/10 KB   8/10 KB   10/10 KB              Downloaded: http://maven.adeo.no/nexus/content/groups/public/org/jetbrains/kotlin/kotlin-project/1.2.21/kotlin-project-1.2.21.pom (10 KB at 115.0 KB/sec)
-Downloading: http://maven.adeo.no/nexus/content/groups/public/org/jetbrains/kotlin/kotlin-maven-plugin/1.2.21/kotlin-maven-plugin-1.2.21.jar
-2/71 KB    6/71 KB   10/71 KB   14/71 KB   18/71 KB   22/71 KB   26/71 KB   30/71 KB   34/71 KB   38/71 KB   42/71 KB   46/71 KB   50/71 KB   54/71 KB   58/71 KB   62/71 KB   66/71 KB   70/71 KB   71/71 KB              Downloaded: http://maven.adeo.no/nexus/content/groups/public/org/jetbrains/kotlin/kotlin-maven-plugin/1.2.21/kotlin-maven-plugin-1.2.21.jar (71 KB at 824.5 KB/sec)
-Downloading: http://maven.adeo.no/nexus/content/groups/public/org/jooq/jooq-codegen-maven/3.10.5/jooq-codegen-maven-3.10.5.pom
-2/4 KB     4/4 KB            Downloaded: http://maven.adeo.no/nexus/content/groups/public/org/jooq/jooq-codegen-maven/3.10.5/jooq-codegen-maven-3.10.5.pom (4 KB at 31.2 KB/sec)
-Downloading: http://maven.adeo.no/nexus/content/groups/public/org/jooq/jooq-parent/3.10.5/jooq-parent-3.10.5.pom
-4/11 KB   8/11 KB   11/11 KB              Downloaded: http://maven.adeo.no/nexus/content/groups/public/org/jooq/jooq-parent/3.10.5/jooq-parent-3.10.5.pom (11 KB at 129.4 KB/sec)
-Downloading: http://maven.adeo.no/nexus/content/groups/public/org/jooq/jooq-codegen-maven/3.10.5/jooq-codegen-maven-3.10.5.jar
-4/16 KB    8/16 KB   12/16 KB   16/16 KB              Downloaded: http://maven.adeo.no/nexus/content/groups/public/org/jooq/jooq-codegen-maven/3.10.5/jooq-codegen-maven-3.10.5.jar (16 KB at 114.5 KB/sec)
-[INFO]                                                                         
-[INFO] ------------------------------------------------------------------------
-[INFO] Building dolly 0.0.1-SNAPSHOT
-[INFO] ------------------------------------------------------------------------
-[INFO] 
-[INFO] --- maven-dependency-plugin:3.0.1:tree (default-cli) @ dolly ---
-[INFO] no.nav:dolly:pom:0.0.1-SNAPSHOT
-[INFO] +- org.springframework.boot:spring-boot-devtools:jar:2.0.0.RELEASE:compile (optional) 
-[INFO] |  +- org.springframework.boot:spring-boot:jar:2.0.0.RELEASE:compile
-[INFO] |  |  +- org.springframework:spring-core:jar:5.0.4.RELEASE:compile
-[INFO] |  |  |  \- org.springframework:spring-jcl:jar:5.0.4.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-context:jar:5.0.4.RELEASE:compile
-[INFO] |  \- org.springframework.boot:spring-boot-autoconfigure:jar:2.0.0.RELEASE:compile
-[INFO] +- org.projectlombok:lombok:jar:1.16.20:compile (optional) 
-[INFO] +- no.nav.freg:abac-spring:jar:1.4.3:compile
-[INFO] |  \- no.nav.freg:abac-core:jar:1.4.3:compile
-[INFO] |     \- no.nav.abac.policies:abac-attribute-constants:jar:3.2.8:compile
-[INFO] \- org.springframework.boot:spring-boot-starter-security:jar:2.0.0.RELEASE:compile
-[INFO]    +- org.springframework.boot:spring-boot-starter:jar:2.0.0.RELEASE:compile
-[INFO]    |  +- org.springframework.boot:spring-boot-starter-logging:jar:2.0.0.RELEASE:compile
-[INFO]    |  |  +- ch.qos.logback:logback-classic:jar:1.2.3:compile
-[INFO]    |  |  |  +- ch.qos.logback:logback-core:jar:1.2.3:compile
-[INFO]    |  |  |  \- org.slf4j:slf4j-api:jar:1.7.25:compile
-[INFO]    |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.10.0:compile
-[INFO]    |  |  |  \- org.apache.logging.log4j:log4j-api:jar:2.10.0:compile
-[INFO]    |  |  \- org.slf4j:jul-to-slf4j:jar:1.7.25:compile
-[INFO]    |  +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
-[INFO]    |  \- org.yaml:snakeyaml:jar:1.19:runtime
-[INFO]    +- org.springframework:spring-aop:jar:5.0.4.RELEASE:compile
-[INFO]    |  \- org.springframework:spring-beans:jar:5.0.4.RELEASE:compile
-[INFO]    +- org.springframework.security:spring-security-config:jar:5.0.3.RELEASE:compile
-[INFO]    |  \- org.springframework.security:spring-security-core:jar:5.0.3.RELEASE:compile
-[INFO]    \- org.springframework.security:spring-security-web:jar:5.0.3.RELEASE:compile
-[INFO]       +- org.springframework:spring-expression:jar:5.0.4.RELEASE:compile
-[INFO]       \- org.springframework:spring-web:jar:5.0.4.RELEASE:compile
-[INFO]                                                                         
-[INFO] ------------------------------------------------------------------------
-[INFO] Building dolly-app 0.0.1-SNAPSHOT
-[INFO] ------------------------------------------------------------------------
-[INFO] 
-[INFO] --- maven-dependency-plugin:3.0.1:tree (default-cli) @ dolly-app ---
-[INFO] no.nav:dolly-app:jar:0.0.1-SNAPSHOT
-[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:2.0.0.RELEASE:compile
-[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:2.0.0.RELEASE:compile
-[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:2.0.0.RELEASE:compile
-[INFO] |  |  |  +- ch.qos.logback:logback-classic:jar:1.2.3:compile
-[INFO] |  |  |  |  \- ch.qos.logback:logback-core:jar:1.2.3:compile
-[INFO] |  |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.10.0:compile
-[INFO] |  |  |  |  \- org.apache.logging.log4j:log4j-api:jar:2.10.0:compile
-[INFO] |  |  |  \- org.slf4j:jul-to-slf4j:jar:1.7.25:compile
-[INFO] |  |  +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
-[INFO] |  |  \- org.yaml:snakeyaml:jar:1.19:runtime
-[INFO] |  +- org.springframework.boot:spring-boot-starter-json:jar:2.0.0.RELEASE:compile
-[INFO] |  |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.9.4:compile
-[INFO] |  |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.9.4:compile
-[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.9.4:compile
-[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.9.4:compile
-[INFO] |  |  \- com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.9.4:compile
-[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:2.0.0.RELEASE:compile
-[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:8.5.28:compile
-[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:8.5.28:compile
-[INFO] |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:8.5.28:compile
-[INFO] |  +- org.hibernate.validator:hibernate-validator:jar:6.0.7.Final:compile
-[INFO] |  |  +- javax.validation:validation-api:jar:2.0.1.Final:compile
-[INFO] |  |  \- org.jboss.logging:jboss-logging:jar:3.3.2.Final:compile
-[INFO] |  +- org.springframework:spring-web:jar:5.0.4.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-beans:jar:5.0.4.RELEASE:compile
-[INFO] |  \- org.springframework:spring-webmvc:jar:5.0.4.RELEASE:compile
-[INFO] |     +- org.springframework:spring-context:jar:5.0.4.RELEASE:compile
-[INFO] |     \- org.springframework:spring-expression:jar:5.0.4.RELEASE:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-test:jar:2.0.0.RELEASE:test
-[INFO] |  +- org.springframework.boot:spring-boot-test:jar:2.0.0.RELEASE:test
-[INFO] |  +- org.springframework.boot:spring-boot-test-autoconfigure:jar:2.0.0.RELEASE:test
-[INFO] |  +- com.jayway.jsonpath:json-path:jar:2.4.0:test
-[INFO] |  |  \- net.minidev:json-smart:jar:2.3:test
-[INFO] |  |     \- net.minidev:accessors-smart:jar:1.2:test
-[INFO] |  |        \- org.ow2.asm:asm:jar:5.0.4:test
-[INFO] |  +- junit:junit:jar:4.12:test
-[INFO] |  +- org.assertj:assertj-core:jar:3.9.1:test
-[INFO] |  +- org.mockito:mockito-core:jar:2.15.0:test
-[INFO] |  |  +- net.bytebuddy:byte-buddy:jar:1.7.10:test
-[INFO] |  |  +- net.bytebuddy:byte-buddy-agent:jar:1.7.10:test
-[INFO] |  |  \- org.objenesis:objenesis:jar:2.6:test
-[INFO] |  +- org.hamcrest:hamcrest-core:jar:1.3:test
-[INFO] |  +- org.hamcrest:hamcrest-library:jar:1.3:test
-[INFO] |  +- org.skyscreamer:jsonassert:jar:1.5.0:test
-[INFO] |  |  \- com.vaadin.external.google:android-json:jar:0.0.20131108.vaadin1:test
-[INFO] |  +- org.springframework:spring-core:jar:5.0.4.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-jcl:jar:5.0.4.RELEASE:compile
-[INFO] |  +- org.springframework:spring-test:jar:5.0.4.RELEASE:test
-[INFO] |  \- org.xmlunit:xmlunit-core:jar:2.5.1:test
-[INFO] +- no.nav.freg:freg-security-oidc:jar:2.1.0:compile
-[INFO] |  \- org.bitbucket.b_c:jose4j:jar:0.6.3:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-data-jpa:jar:2.0.0.RELEASE:compile
-[INFO] |  +- org.springframework.boot:spring-boot-starter-aop:jar:2.0.0.RELEASE:compile
-[INFO] |  |  \- org.aspectj:aspectjweaver:jar:1.8.13:compile
-[INFO] |  +- org.springframework.boot:spring-boot-starter-jdbc:jar:2.0.0.RELEASE:compile
-[INFO] |  |  +- com.zaxxer:HikariCP:jar:2.7.8:compile
-[INFO] |  |  \- org.springframework:spring-jdbc:jar:5.0.4.RELEASE:compile
-[INFO] |  +- org.hibernate:hibernate-core:jar:5.2.14.Final:compile
-[INFO] |  |  +- org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar:1.0.0.Final:compile
-[INFO] |  |  +- antlr:antlr:jar:2.7.7:compile
-[INFO] |  |  +- org.jboss:jandex:jar:2.0.3.Final:compile
-[INFO] |  |  +- dom4j:dom4j:jar:1.6.1:compile
-[INFO] |  |  \- org.hibernate.common:hibernate-commons-annotations:jar:5.0.1.Final:compile
-[INFO] |  +- javax.transaction:javax.transaction-api:jar:1.2:compile
-[INFO] |  +- org.springframework.data:spring-data-jpa:jar:2.0.5.RELEASE:compile
-[INFO] |  |  +- org.springframework.data:spring-data-commons:jar:2.0.5.RELEASE:compile
-[INFO] |  |  +- org.springframework:spring-orm:jar:5.0.4.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-tx:jar:5.0.4.RELEASE:compile
-[INFO] |  \- org.springframework:spring-aspects:jar:5.0.4.RELEASE:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-actuator:jar:2.0.0.RELEASE:compile
-[INFO] |  +- org.springframework.boot:spring-boot-actuator-autoconfigure:jar:2.0.0.RELEASE:compile
-[INFO] |  |  \- org.springframework.boot:spring-boot-actuator:jar:2.0.0.RELEASE:compile
-[INFO] |  \- io.micrometer:micrometer-core:jar:1.0.1:compile
-[INFO] |     +- org.hdrhistogram:HdrHistogram:jar:2.1.10:compile
-[INFO] |     \- org.latencyutils:LatencyUtils:jar:2.0.3:compile
-[INFO] +- org.flywaydb:flyway-core:jar:5.0.7:compile
-[INFO] +- io.micrometer:micrometer-registry-prometheus:jar:1.0.1:compile
-[INFO] |  \- io.prometheus:simpleclient_common:jar:0.2.0:compile
-[INFO] |     \- io.prometheus:simpleclient:jar:0.2.0:compile
-[INFO] +- io.springfox:springfox-swagger2:jar:2.4.0:compile
-[INFO] |  +- io.swagger:swagger-annotations:jar:1.5.6:compile
-[INFO] |  +- io.swagger:swagger-models:jar:1.5.6:compile
-[INFO] |  |  \- com.fasterxml.jackson.core:jackson-annotations:jar:2.9.0:compile
-[INFO] |  +- io.springfox:springfox-spi:jar:2.4.0:compile
-[INFO] |  |  \- io.springfox:springfox-core:jar:2.4.0:compile
-[INFO] |  +- io.springfox:springfox-schema:jar:2.4.0:compile
-[INFO] |  +- io.springfox:springfox-swagger-common:jar:2.4.0:compile
-[INFO] |  +- io.springfox:springfox-spring-web:jar:2.4.0:compile
-[INFO] |  +- com.google.guava:guava:jar:18.0:compile
-[INFO] |  +- com.fasterxml:classmate:jar:1.3.4:compile
-[INFO] |  +- org.slf4j:slf4j-api:jar:1.7.25:compile
-[INFO] |  +- org.springframework.plugin:spring-plugin-core:jar:1.2.0.RELEASE:compile
-[INFO] |  \- org.springframework.plugin:spring-plugin-metadata:jar:1.2.0.RELEASE:compile
-[INFO] +- io.springfox:springfox-swagger-ui:jar:2.4.0:compile
-[INFO] +- ma.glasnost.orika:orika-core:jar:1.5.2:compile
-[INFO] |  +- org.javassist:javassist:jar:3.19.0-GA:compile
-[INFO] |  +- com.thoughtworks.paranamer:paranamer:jar:2.8:compile
-[INFO] |  +- com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:jar:1.4.2:compile
-[INFO] |  +- com.carrotsearch:java-sizeof:jar:0.0.4:compile
-[INFO] |  \- org.codehaus.janino:janino:jar:3.0.8:compile
-[INFO] |     \- org.codehaus.janino:commons-compiler:jar:3.0.8:compile
-[INFO] +- com.h2database:h2:jar:1.4.196:compile
-[INFO] +- org.springframework.boot:spring-boot-devtools:jar:2.0.0.RELEASE:compile (optional) 
-[INFO] |  +- org.springframework.boot:spring-boot:jar:2.0.0.RELEASE:compile
-[INFO] |  \- org.springframework.boot:spring-boot-autoconfigure:jar:2.0.0.RELEASE:compile
-[INFO] +- org.projectlombok:lombok:jar:1.16.20:compile (optional) 
-[INFO] +- no.nav.freg:abac-spring:jar:1.4.3:compile
-[INFO] |  \- no.nav.freg:abac-core:jar:1.4.3:compile
-[INFO] |     \- no.nav.abac.policies:abac-attribute-constants:jar:3.2.8:compile
-[INFO] \- org.springframework.boot:spring-boot-starter-security:jar:2.0.0.RELEASE:compile
-[INFO]    +- org.springframework:spring-aop:jar:5.0.4.RELEASE:compile
-[INFO]    +- org.springframework.security:spring-security-config:jar:5.0.3.RELEASE:compile
-[INFO]    |  \- org.springframework.security:spring-security-core:jar:5.0.3.RELEASE:compile
-[INFO]    \- org.springframework.security:spring-security-web:jar:5.0.3.RELEASE:compile
-[INFO]                                                                         
-[INFO] ------------------------------------------------------------------------
-[INFO] Building dolly-webapp 0.0.1-SNAPSHOT
-[INFO] ------------------------------------------------------------------------
-[INFO] 
-[INFO] --- maven-dependency-plugin:3.0.1:tree (default-cli) @ dolly-webapp ---
-[INFO] no.nav:dolly-webapp:jar:0.0.1-SNAPSHOT
-[INFO] +- org.springframework.boot:spring-boot-devtools:jar:2.0.0.RELEASE:compile (optional) 
-[INFO] |  +- org.springframework.boot:spring-boot:jar:2.0.0.RELEASE:compile
-[INFO] |  |  +- org.springframework:spring-core:jar:5.0.4.RELEASE:compile
-[INFO] |  |  |  \- org.springframework:spring-jcl:jar:5.0.4.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-context:jar:5.0.4.RELEASE:compile
-[INFO] |  \- org.springframework.boot:spring-boot-autoconfigure:jar:2.0.0.RELEASE:compile
-[INFO] +- org.projectlombok:lombok:jar:1.16.20:compile (optional) 
-[INFO] +- no.nav.freg:abac-spring:jar:1.4.3:compile
-[INFO] |  \- no.nav.freg:abac-core:jar:1.4.3:compile
-[INFO] |     \- no.nav.abac.policies:abac-attribute-constants:jar:3.2.8:compile
-[INFO] \- org.springframework.boot:spring-boot-starter-security:jar:2.0.0.RELEASE:compile
-[INFO]    +- org.springframework.boot:spring-boot-starter:jar:2.0.0.RELEASE:compile
-[INFO]    |  +- org.springframework.boot:spring-boot-starter-logging:jar:2.0.0.RELEASE:compile
-[INFO]    |  |  +- ch.qos.logback:logback-classic:jar:1.2.3:compile
-[INFO]    |  |  |  +- ch.qos.logback:logback-core:jar:1.2.3:compile
-[INFO]    |  |  |  \- org.slf4j:slf4j-api:jar:1.7.25:compile
-[INFO]    |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.10.0:compile
-[INFO]    |  |  |  \- org.apache.logging.log4j:log4j-api:jar:2.10.0:compile
-[INFO]    |  |  \- org.slf4j:jul-to-slf4j:jar:1.7.25:compile
-[INFO]    |  +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
-[INFO]    |  \- org.yaml:snakeyaml:jar:1.19:runtime
-[INFO]    +- org.springframework:spring-aop:jar:5.0.4.RELEASE:compile
-[INFO]    |  \- org.springframework:spring-beans:jar:5.0.4.RELEASE:compile
-[INFO]    +- org.springframework.security:spring-security-config:jar:5.0.3.RELEASE:compile
-[INFO]    |  \- org.springframework.security:spring-security-core:jar:5.0.3.RELEASE:compile
-[INFO]    \- org.springframework.security:spring-security-web:jar:5.0.3.RELEASE:compile
-[INFO]       +- org.springframework:spring-expression:jar:5.0.4.RELEASE:compile
-[INFO]       \- org.springframework:spring-web:jar:5.0.4.RELEASE:compile
-[INFO]                                                                         
-[INFO] ------------------------------------------------------------------------
-[INFO] Building dolly-test 0.0.1-SNAPSHOT
-[INFO] ------------------------------------------------------------------------
-Downloading: http://maven.adeo.no/nexus/content/groups/public-snapshots/no/nav/dolly-app/0.0.1-SNAPSHOT/maven-metadata.xml
-Downloading: http://maven.adeo.no/nexus/content/groups/public/no/nav/dolly-app/0.0.1-SNAPSHOT/maven-metadata.xml
-                      [INFO] 
-[INFO] --- maven-dependency-plugin:3.0.1:tree (default-cli) @ dolly-test ---
-Downloading: http://maven.adeo.no/nexus/content/groups/public-snapshots/no/nav/dolly-app/0.0.1-SNAPSHOT/dolly-app-0.0.1-SNAPSHOT-tests.jar
-Downloading: http://maven.adeo.no/nexus/content/groups/public-snapshots/no/nav/dolly-app/0.0.1-SNAPSHOT/dolly-app-0.0.1-SNAPSHOT.jar
-                      Downloading: http://maven.adeo.no/nexus/content/groups/public/no/nav/dolly-app/0.0.1-SNAPSHOT/dolly-app-0.0.1-SNAPSHOT.jar
-Downloading: http://maven.adeo.no/nexus/content/groups/public/no/nav/dolly-app/0.0.1-SNAPSHOT/dolly-app-0.0.1-SNAPSHOT-tests.jar
-                      [INFO] no.nav:dolly-test:jar:0.0.1-SNAPSHOT
-[INFO] +- no.nav:dolly-app:jar:0.0.1-SNAPSHOT:test
-[INFO] |  +- no.nav.freg:freg-security-oidc:jar:2.1.0:test
-[INFO] |  |  \- org.bitbucket.b_c:jose4j:jar:0.6.3:test
-[INFO] |  +- io.micrometer:micrometer-registry-prometheus:jar:1.0.1:test
-[INFO] |  |  \- io.prometheus:simpleclient_common:jar:0.2.0:test
-[INFO] |  |     \- io.prometheus:simpleclient:jar:0.2.0:test
-[INFO] |  +- io.springfox:springfox-swagger2:jar:2.4.0:test
-[INFO] |  |  +- io.swagger:swagger-annotations:jar:1.5.6:test
-[INFO] |  |  +- io.swagger:swagger-models:jar:1.5.6:test
-[INFO] |  |  |  \- com.fasterxml.jackson.core:jackson-annotations:jar:2.9.0:compile
-[INFO] |  |  +- io.springfox:springfox-spi:jar:2.4.0:test
-[INFO] |  |  |  \- io.springfox:springfox-core:jar:2.4.0:test
-[INFO] |  |  +- io.springfox:springfox-schema:jar:2.4.0:test
-[INFO] |  |  +- io.springfox:springfox-swagger-common:jar:2.4.0:test
-[INFO] |  |  +- io.springfox:springfox-spring-web:jar:2.4.0:test
-[INFO] |  |  +- com.google.guava:guava:jar:18.0:test
-[INFO] |  |  +- com.fasterxml:classmate:jar:1.3.4:compile
-[INFO] |  |  +- org.springframework.plugin:spring-plugin-core:jar:1.2.0.RELEASE:test
-[INFO] |  |  \- org.springframework.plugin:spring-plugin-metadata:jar:1.2.0.RELEASE:test
-[INFO] |  \- io.springfox:springfox-swagger-ui:jar:2.4.0:test
-[INFO] +- no.nav:dolly-app:jar:tests:0.0.1-SNAPSHOT:test
-[INFO] +- com.h2database:h2:jar:1.4.196:test
-[INFO] +- org.springframework.boot:spring-boot-starter-test:jar:2.0.0.RELEASE:test
-[INFO] |  +- org.springframework.boot:spring-boot-starter:jar:2.0.0.RELEASE:compile
-[INFO] |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:2.0.0.RELEASE:compile
-[INFO] |  |  |  +- ch.qos.logback:logback-classic:jar:1.2.3:compile
-[INFO] |  |  |  |  \- ch.qos.logback:logback-core:jar:1.2.3:compile
-[INFO] |  |  |  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.10.0:compile
-[INFO] |  |  |  |  \- org.apache.logging.log4j:log4j-api:jar:2.10.0:compile
-[INFO] |  |  |  \- org.slf4j:jul-to-slf4j:jar:1.7.25:compile
-[INFO] |  |  +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
-[INFO] |  |  \- org.yaml:snakeyaml:jar:1.19:runtime
-[INFO] |  +- org.springframework.boot:spring-boot-test:jar:2.0.0.RELEASE:test
-[INFO] |  +- org.springframework.boot:spring-boot-test-autoconfigure:jar:2.0.0.RELEASE:test
-[INFO] |  +- com.jayway.jsonpath:json-path:jar:2.4.0:test
-[INFO] |  |  \- net.minidev:json-smart:jar:2.3:test
-[INFO] |  |     \- net.minidev:accessors-smart:jar:1.2:test
-[INFO] |  |        \- org.ow2.asm:asm:jar:5.0.4:test
-[INFO] |  +- junit:junit:jar:4.12:test
-[INFO] |  +- org.assertj:assertj-core:jar:3.9.1:test
-[INFO] |  +- org.mockito:mockito-core:jar:2.15.0:test
-[INFO] |  |  +- net.bytebuddy:byte-buddy:jar:1.7.10:test
-[INFO] |  |  +- net.bytebuddy:byte-buddy-agent:jar:1.7.10:test
-[INFO] |  |  \- org.objenesis:objenesis:jar:2.6:test
-[INFO] |  +- org.hamcrest:hamcrest-core:jar:1.3:test
-[INFO] |  +- org.hamcrest:hamcrest-library:jar:1.3:test
-[INFO] |  +- org.skyscreamer:jsonassert:jar:1.5.0:test
-[INFO] |  |  \- com.vaadin.external.google:android-json:jar:0.0.20131108.vaadin1:test
-[INFO] |  +- org.springframework:spring-core:jar:5.0.4.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-jcl:jar:5.0.4.RELEASE:compile
-[INFO] |  +- org.springframework:spring-test:jar:5.0.4.RELEASE:test
-[INFO] |  \- org.xmlunit:xmlunit-core:jar:2.5.1:test
-[INFO] +- org.springframework.boot:spring-boot-starter-web:jar:2.0.0.RELEASE:test
-[INFO] |  +- org.springframework.boot:spring-boot-starter-json:jar:2.0.0.RELEASE:test
-[INFO] |  |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.9.4:compile
-[INFO] |  |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.9.4:compile
-[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:2.9.4:test
-[INFO] |  |  +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.9.4:runtime
-[INFO] |  |  \- com.fasterxml.jackson.module:jackson-module-parameter-names:jar:2.9.4:test
-[INFO] |  +- org.springframework.boot:spring-boot-starter-tomcat:jar:2.0.0.RELEASE:test
-[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-core:jar:8.5.28:test
-[INFO] |  |  +- org.apache.tomcat.embed:tomcat-embed-el:jar:8.5.28:test
-[INFO] |  |  \- org.apache.tomcat.embed:tomcat-embed-websocket:jar:8.5.28:test
-[INFO] |  +- org.hibernate.validator:hibernate-validator:jar:6.0.7.Final:test
-[INFO] |  |  +- javax.validation:validation-api:jar:2.0.1.Final:test
-[INFO] |  |  \- org.jboss.logging:jboss-logging:jar:3.3.2.Final:compile
-[INFO] |  +- org.springframework:spring-web:jar:5.0.4.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-beans:jar:5.0.4.RELEASE:compile
-[INFO] |  \- org.springframework:spring-webmvc:jar:5.0.4.RELEASE:test
-[INFO] |     +- org.springframework:spring-context:jar:5.0.4.RELEASE:compile
-[INFO] |     \- org.springframework:spring-expression:jar:5.0.4.RELEASE:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-data-jpa:jar:2.0.0.RELEASE:compile
-[INFO] |  +- org.springframework.boot:spring-boot-starter-aop:jar:2.0.0.RELEASE:compile
-[INFO] |  |  \- org.aspectj:aspectjweaver:jar:1.8.13:compile
-[INFO] |  +- org.springframework.boot:spring-boot-starter-jdbc:jar:2.0.0.RELEASE:compile
-[INFO] |  |  +- com.zaxxer:HikariCP:jar:2.7.8:compile
-[INFO] |  |  \- org.springframework:spring-jdbc:jar:5.0.4.RELEASE:compile
-[INFO] |  +- org.hibernate:hibernate-core:jar:5.2.14.Final:compile
-[INFO] |  |  +- org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar:1.0.0.Final:compile
-[INFO] |  |  +- antlr:antlr:jar:2.7.7:compile
-[INFO] |  |  +- org.jboss:jandex:jar:2.0.3.Final:compile
-[INFO] |  |  +- dom4j:dom4j:jar:1.6.1:compile
-[INFO] |  |  \- org.hibernate.common:hibernate-commons-annotations:jar:5.0.1.Final:compile
-[INFO] |  +- javax.transaction:javax.transaction-api:jar:1.2:compile
-[INFO] |  +- org.springframework.data:spring-data-jpa:jar:2.0.5.RELEASE:compile
-[INFO] |  |  +- org.springframework.data:spring-data-commons:jar:2.0.5.RELEASE:compile
-[INFO] |  |  +- org.springframework:spring-orm:jar:5.0.4.RELEASE:compile
-[INFO] |  |  \- org.springframework:spring-tx:jar:5.0.4.RELEASE:compile
-[INFO] |  \- org.springframework:spring-aspects:jar:5.0.4.RELEASE:compile
-[INFO] +- org.springframework.boot:spring-boot-starter-actuator:jar:2.0.0.RELEASE:compile
-[INFO] |  +- org.springframework.boot:spring-boot-actuator-autoconfigure:jar:2.0.0.RELEASE:compile
-[INFO] |  |  \- org.springframework.boot:spring-boot-actuator:jar:2.0.0.RELEASE:compile
-[INFO] |  \- io.micrometer:micrometer-core:jar:1.0.1:compile
-[INFO] |     +- org.hdrhistogram:HdrHistogram:jar:2.1.10:compile
-[INFO] |     \- org.latencyutils:LatencyUtils:jar:2.0.3:compile
-[INFO] +- org.flywaydb:flyway-core:jar:5.0.7:compile
-[INFO] +- ma.glasnost.orika:orika-core:jar:1.5.2:compile
-[INFO] |  +- org.javassist:javassist:jar:3.19.0-GA:compile
-[INFO] |  +- com.thoughtworks.paranamer:paranamer:jar:2.8:compile
-[INFO] |  +- org.slf4j:slf4j-api:jar:1.7.25:compile
-[INFO] |  +- com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:jar:1.4.2:compile
-[INFO] |  +- com.carrotsearch:java-sizeof:jar:0.0.4:compile
-[INFO] |  \- org.codehaus.janino:janino:jar:3.0.8:compile
-[INFO] |     \- org.codehaus.janino:commons-compiler:jar:3.0.8:compile
-[INFO] +- org.springframework.boot:spring-boot-devtools:jar:2.0.0.RELEASE:compile (optional) 
-[INFO] |  +- org.springframework.boot:spring-boot:jar:2.0.0.RELEASE:compile
-[INFO] |  \- org.springframework.boot:spring-boot-autoconfigure:jar:2.0.0.RELEASE:compile
-[INFO] +- org.projectlombok:lombok:jar:1.16.20:compile (optional) 
-[INFO] +- no.nav.freg:abac-spring:jar:1.4.3:compile
-[INFO] |  \- no.nav.freg:abac-core:jar:1.4.3:compile
-[INFO] |     \- no.nav.abac.policies:abac-attribute-constants:jar:3.2.8:compile
-[INFO] \- org.springframework.boot:spring-boot-starter-security:jar:2.0.0.RELEASE:compile
-[INFO]    +- org.springframework:spring-aop:jar:5.0.4.RELEASE:compile
-[INFO]    +- org.springframework.security:spring-security-config:jar:5.0.3.RELEASE:compile
-[INFO]    |  \- org.springframework.security:spring-security-core:jar:5.0.3.RELEASE:compile
-[INFO]    \- org.springframework.security:spring-security-web:jar:5.0.3.RELEASE:compile
-[INFO] ------------------------------------------------------------------------
-[INFO] Reactor Summary:
-[INFO] 
-[INFO] dolly .............................................. SUCCESS [  3.704 s]
-[INFO] dolly-app .......................................... SUCCESS [  0.504 s]
-[INFO] dolly-webapp ....................................... SUCCESS [  0.026 s]
-[INFO] dolly-test ......................................... SUCCESS [  0.871 s]
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 7.290 s
-[INFO] Finished at: 2018-06-14T16:53:26+02:00
-[INFO] Final Memory: 32M/258M
-[INFO] ------------------------------------------------------------------------

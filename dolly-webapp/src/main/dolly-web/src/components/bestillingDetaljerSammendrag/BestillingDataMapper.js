@@ -38,6 +38,10 @@ const _getTpsfBestillingData = data => {
 			apiKodeverkId: 'Diskresjonskoder'
 		},
 		{
+			label: 'Uten fast bopel',
+			value: Formatters.oversettBoolean(data.utenFastBopel)
+		},
+		{
 			label: 'Språk',
 			value: data.sprakKode,
 			apiKodeverkId: 'Språk'

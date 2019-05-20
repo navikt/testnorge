@@ -29,7 +29,7 @@ public class KodeverkConsumer {
     private RestTemplate restTemplate;
 
     @Autowired
-    ProvidersProps providersProps;
+    private ProvidersProps providersProps;
 
     public GetKodeverkKoderBetydningerResponse fetchKodeverkByName(String navn) {
         String url = providersProps.getKodeverk().getUrl() + getKodeverksnavnUrl(navn) + KODEVERK_URL_QUERY_PARAMS_EKSKLUDER_UGYLDIGE_SPRAAK_NB;
