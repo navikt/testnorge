@@ -1,4 +1,4 @@
-import { Kategorier, SubKategorier } from '../Categories'
+import { Kategorier, SubKategorier, SubSubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import Formatters from '~/utils/DataFormatter'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
@@ -116,43 +116,132 @@ const AttributtListe: Attributt[] = [
 					.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
 					.test('len', 'Ident må være et tall med 11 sifre', val => val && val.length === 11),
 				attributtType: AttributtType.SelectAndRead
+			},
+			{
+				hovedKategori: Kategorier.ArbeidOgInntekt,
+				subKategori: SubKategorier.Arbeidsforhold,
+				id: 'permisjon',
+				label: 'Permisjon',
+				path: 'permisjon',
+				dataSource: DataSource.AAREG,
+				attributtType: AttributtType.SelectAndRead,
+				informasjonstekst:
+					'Permisjonen må ha start- og sluttdato innenfor tidsrommet til arbeidsforholdet.',
+				subItems: [
+					{
+						hovedKategori: Kategorier.ArbeidOgInntekt,
+						subKategori: SubKategorier.Arbeidsforhold,
+						subSubKategori: SubSubKategorier.Permisjon,
+						id: 'permisjonOgPermittering',
+						label: 'Type',
+						path: 'type',
+						size: 'medium',
+						dataSource: DataSource.AAREG,
+						validation: yup.string().required('Velg en type permisjon.'),
+						inputType: InputType.Select,
+						apiKodeverkId: 'PermisjonsOgPermitteringsBeskrivelse',
+						attributtType: AttributtType.SelectAndRead
+					},
+					{
+						hovedKategori: Kategorier.ArbeidOgInntekt,
+						subKategori: SubKategorier.Arbeidsforhold,
+						subSubKategori: SubSubKategorier.Permisjon,
+						id: 'fom',
+						label: 'Startdato',
+						path: 'permisjonsperiode.startdato',
+						validation: DateValidation(),
+						dataSource: DataSource.AAREG,
+						inputType: InputType.Date,
+						attributtType: AttributtType.SelectAndRead
+						//defaultValue: new Date().setFullYear(new Date().getFullYear() - 20)
+					},
+					{
+						hovedKategori: Kategorier.ArbeidOgInntekt,
+						subKategori: SubKategorier.Arbeidsforhold,
+						subSubKategori: SubSubKategorier.Permisjon,
+						id: 'tom',
+						label: 'Sluttdato',
+						path: 'permisjonsperiode.sluttdato',
+						validation: DateValidation(),
+						dataSource: DataSource.AAREG,
+						inputType: InputType.Date,
+						attributtType: AttributtType.SelectAndRead
+					},
+					{
+						hovedKategori: Kategorier.ArbeidOgInntekt,
+						subKategori: SubKategorier.Arbeidsforhold,
+						subSubKategori: SubSubKategorier.Permisjon,
+						id: 'permisjonsprosent',
+						label: 'Permisjonsprosent',
+						path: 'permisjonsprosent',
+						dataSource: DataSource.AAREG,
+						inputType: InputType.Number,
+						size: 'small',
+						inputTypeAttributes: {
+							min: 0
+						},
+						validation: yup
+							.number()
+							.min(1, 'Stillingprosent kan ikke være mindre enn 1')
+							.max(100, 'Stillingen prosent kan ikke være større enn 100')
+							.required('Tast inn en gyldig stillingprosent'),
+						attributtType: AttributtType.SelectAndRead,
+						defaultValue: 100
+					}
+				]
+			},
+			{
+				hovedKategori: Kategorier.ArbeidOgInntekt,
+				subKategori: SubKategorier.Arbeidsforhold,
+				id: 'utenlandsopphold',
+				label: 'Utenlandsopphold',
+				path: 'utenlandsopphold',
+				dataSource: DataSource.AAREG,
+				attributtType: AttributtType.SelectAndRead,
+				informasjonstekst:
+					'Utenlandsoppholdet må ha start- og sluttdato innenfor samme kalendermåned i tidsrommet til arbeidsforholdet.',
+				subItems: [
+					{
+						hovedKategori: Kategorier.ArbeidOgInntekt,
+						subKategori: SubKategorier.Arbeidsforhold,
+						subSubKategori: SubSubKategorier.Utenlandsopphold,
+						id: 'land',
+						label: 'Land',
+						path: 'utenlandsopphold.land',
+						dataSource: DataSource.AAREG,
+						inputType: InputType.Select,
+						validation: yup.string().required('Velg et land.'),
+						apiKodeverkId: 'LandkoderISO2',
+						attributtType: AttributtType.SelectAndRead
+					},
+					{
+						hovedKategori: Kategorier.ArbeidOgInntekt,
+						subKategori: SubKategorier.Arbeidsforhold,
+						subSubKategori: SubSubKategorier.Utenlandsopphold,
+						id: 'fom',
+						label: 'Startdato',
+						path: 'utenlandsopphold.startdato',
+						validation: DateValidation(),
+						dataSource: DataSource.AAREG,
+						inputType: InputType.Date,
+						attributtType: AttributtType.SelectAndRead,
+						defaultValue: new Date().setFullYear(new Date().getFullYear())
+					},
+					{
+						hovedKategori: Kategorier.ArbeidOgInntekt,
+						subKategori: SubKategorier.Arbeidsforhold,
+						subSubKategori: SubSubKategorier.Utenlandsopphold,
+						id: 'tom',
+						label: 'Sluttdato',
+						path: 'utenlandsopphold.sluttdato',
+						//validation: DateValidation(false),
+						dataSource: DataSource.AAREG,
+						inputType: InputType.Date,
+						attributtType: AttributtType.SelectAndRead
+					}
+				]
 			}
 		]
-
-		// subItems: [
-		// 	{
-		// 		id: 'permisjon',
-		// 		label: 'Permisjon',
-		// 		items: [
-		// 			{
-		// 				hovedKategori: Kategorier.ArbeidOgInntekt,
-		// 				subKategori: SubKategorier.Arbeidsforhold,
-		// 				id: 'type',
-		// 				label: 'Type',
-		// 				path: 'ikkesett',
-		// 				dataSource: DataSource.AAREG,
-		// 				inputType: InputType.Text,
-		// 				attributtType: AttributtType.SelectAndRead
-		// 			}
-		// 		]
-		// 	},
-		// 	{
-		// 		id: 'Utenlandsopphold',
-		// 		label: 'Utenlandsopphold',
-		// 		items: [
-		// 			{
-		// 				hovedKategori: Kategorier.ArbeidOgInntekt,
-		// 				subKategori: SubKategorier.Arbeidsforhold,
-		// 				id: 'type',
-		// 				label: 'Type',
-		// 				path: 'ikkesett',
-		// 				dataSource: DataSource.AAREG,
-		// 				inputType: InputType.Text,
-		// 				attributtType: AttributtType.SelectAndRead
-		// 			}
-		// 		]
-		// 	}
-		// ]
 	}
 ]
 

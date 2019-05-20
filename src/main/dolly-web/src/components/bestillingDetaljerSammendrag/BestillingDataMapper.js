@@ -224,10 +224,17 @@ export function mapBestillingData(bestillingData) {
 						apiKodeverkId: 'Yrker',
 						width: 'xlarge',
 						showKodeverkValue: true
+					},
+					{
+						label: 'Permisjon',
+						value: arbeidsforhold.permisjon && arbeidsforhold.permisjon.length
+					},
+					{
+						label: 'Utenlandsopphold',
+						value: arbeidsforhold.utenlandsopphold && arbeidsforhold.utenlandsopphold.length
 					}
 				])
 			})
-
 			data.push(aareg)
 		}
 		const sigrunStubKriterier = registreKriterier.sigrunStub && registreKriterier.sigrunStub

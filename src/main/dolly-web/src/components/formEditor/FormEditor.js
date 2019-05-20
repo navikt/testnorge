@@ -29,7 +29,6 @@ export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
 		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributes } = this.props
 		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
-
 		const hasError = hovedKategoriAttributes.some(attr => {
 			const error = formikProps.errors[attr]
 			if (error) {
@@ -144,7 +143,8 @@ export default class FormEditor extends PureComponent {
 											this.renderFieldComponent,
 											this.renderFieldSubItem,
 											this._shouldRenderFieldComponent,
-											this.props.editMode
+											this.props.editMode,
+											this._shouldRenderSubItem
 									  )
 									: this.renderFieldComponent(item, formikProps.values)
 								: null
@@ -197,9 +197,14 @@ export default class FormEditor extends PureComponent {
 		return true
 	}
 
+	_shouldRenderSubItem = (item, formikProps, idx) => {
+		const subitemId = item.id
+		const subKatId = item.subKategori.id
+		return Boolean(formikProps.values[subKatId][idx][subitemId][0])
+	}
+
 	renderFieldComponent = (item, valgteVerdier, parentObject) => {
 		if (!item.inputType) return null
-
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 
@@ -250,22 +255,85 @@ export default class FormEditor extends PureComponent {
 		)
 	}
 
-	renderFieldSubItem = item => {
-		const InputComponent = InputSelector(item.inputType)
-
+	renderFieldSubItem = (formikProps, item, subRad, parentId, idx, jdx) => {
 		return (
-			/* REG-3377: Alex - Under utvikling */
-			<p>{item.id}</p>
-			// <Field
-			// 	key={item.key || item.id}
-			// 	name={item.id}
-			// 	label={item.label}
-			// 	component={InputComponent}
-			// 	size={item.size}
-			// 	{...componentProps}
-			// 	{...item.inputTypeAttributes}
-			// />
+			<Fragment>
+				<div className="subitems-container">
+					<h5 className="nummer">#{jdx + 1}</h5>
+					{Object.keys(subRad).map(subKey => {
+						return item.subItems.map(subsubItem => {
+							const componentProps = this.extraComponentProps(subsubItem, formikProps.values, {
+								parentId,
+								idx
+							})
+							if (subsubItem.id === subKey) {
+								const fakeItem = {
+									...subsubItem,
+									id: `${parentId}[${idx}]${item.id}[${jdx}]${subKey}`
+								}
+								const valgtVerdi = formikProps.values.arbeidsforhold[idx][item.id][jdx][subKey]
+								const InputComponent = InputSelector(fakeItem.inputType)
+								return (
+									<Field
+										key={fakeItem.key || fakeItem.id}
+										name={fakeItem.id}
+										label={fakeItem.label}
+										component={InputComponent}
+										size={fakeItem.size}
+										validate={this.validationSub}
+										//validate={this.validationFunction(valgtVerdi, fakeItem.inputType)}
+										{...componentProps}
+										{...fakeItem.inputTypeAttributes}
+									/>
+								)
+							}
+						})
+					})}
+				</div>
+			</Fragment>
 		)
+	}
+
+	// Ingvild: Forsøker å lage en mer presis validering
+	// validationFunction = (valgtVerdi, inputType) => {
+	// 	let error
+	// 	switch (inputType) {
+	// 		case 'date': {
+	// 			if (valgtVerdi === '') {
+	// 				error = 'Vennligst fyll inn dato'
+	// 				return error
+	// 			}
+	// 			return
+	// 		}
+	// 		case 'select': {
+	// 			if (valgtVerdi === '') {
+	// 				error = 'Vennligst fyll inn'
+	// 				return error
+	// 			}
+	// 			return
+	// 		}
+	// 	}
+	// }
+	validationSub = value => {
+		let error
+		if (value === '') {
+			error = 'Vennligst fyll inn'
+		}
+		return error
+	}
+
+	validSwitch = item => {
+		let error
+		switch (item) {
+			case 'permisjonOgPermittering': {
+				if (value === '') {
+					error = 'Fyll inn permisjonstype'
+				}
+			}
+			default:
+				error = 'Fyll inn'
+		}
+		return error
 	}
 
 	extraComponentProps = (item, valgteVerdier, parentObject) => {
