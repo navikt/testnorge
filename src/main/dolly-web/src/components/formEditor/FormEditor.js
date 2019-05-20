@@ -28,7 +28,6 @@ export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
 		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributes } = this.props
 		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
-		// Ingvild: Påvirke hasError slik at den viser subItem-error også
 		const hasError = hovedKategoriAttributes.some(attr => {
 			const error = formikProps.errors[attr]
 			if (error) {
@@ -257,7 +256,7 @@ export default class FormEditor extends PureComponent {
 									...subsubItem,
 									id: `${parentId}[${idx}]${item.id}[${jdx}]${subKey}`
 								}
-
+								const valgtVerdi = formikProps.values.arbeidsforhold[idx][item.id][jdx][subKey]
 								const InputComponent = InputSelector(fakeItem.inputType)
 								return (
 									<Field
@@ -267,6 +266,7 @@ export default class FormEditor extends PureComponent {
 										component={InputComponent}
 										size={fakeItem.size}
 										validate={this.validationSub}
+										//validate={this.validationFunction(valgtVerdi, fakeItem.inputType)}
 										{...componentProps}
 										{...fakeItem.inputTypeAttributes}
 									/>
@@ -279,10 +279,29 @@ export default class FormEditor extends PureComponent {
 		)
 	}
 
+	// Ingvild: Forsøker å lage en mer presis validering
+	// validationFunction = (valgtVerdi, inputType) => {
+	// 	let error
+	// 	switch (inputType) {
+	// 		case 'date': {
+	// 			if (valgtVerdi === '') {
+	// 				error = 'Vennligst fyll inn dato'
+	// 				return error
+	// 			}
+	// 			return
+	// 		}
+	// 		case 'select': {
+	// 			if (valgtVerdi === '') {
+	// 				error = 'Vennligst fyll inn'
+	// 				return error
+	// 			}
+	// 			return
+	// 		}
+	// 	}
+	// }
 	validationSub = value => {
 		let error
 		if (value === '') {
-			// error = errormsg
 			error = 'Vennligst fyll inn'
 		}
 		return error
