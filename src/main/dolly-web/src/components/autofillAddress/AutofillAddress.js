@@ -21,6 +21,10 @@ export default class AutofillAddress extends Component {
 
 	componentDidMount() {
 		!this.state.harSjekketValues && this._checkCurrentValues()
+
+		if (this.props.currentMal) {
+			console.log('currentMal :', this.props.currentMal)
+		}
 	}
 
 	render() {
@@ -51,6 +55,7 @@ export default class AutofillAddress extends Component {
 								Hent gyldige adresser
 							</Knapp>
 						)}
+						{/* {this.state.gyldigeAdresser && this._renderAdresseSelect()} */}
 						{this.state.gyldigeAdresser && this._renderAdresseSelect()}
 						{this.state.gyldigeAdresser === undefined && <p>Fant ingen gyldige adresser</p>}
 					</div>
@@ -201,6 +206,7 @@ export default class AutofillAddress extends Component {
 					: (generateAddressResponse = await TpsfApi.generateRandomAddress())
 
 				const addressData = generateAddressResponse.data.response.data1.adrData
+				console.log('addressData', addressData)
 				this.setState({ gyldigeAdresser: addressData })
 
 				let status = generateAddressResponse.data.response.status.utfyllendeMelding
