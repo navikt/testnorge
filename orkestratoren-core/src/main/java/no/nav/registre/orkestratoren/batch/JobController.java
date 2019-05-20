@@ -20,6 +20,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
@@ -43,7 +44,10 @@ public class JobController {
     private Map<Long, String> avspillergruppeIdMedMiljoe;
 
     @Value("#{${batch.antallMeldingerPerEndringskode}}")
-    private Map<String, Integer> antallMeldingerPerEndringskode;
+    private Map<String, Integer> antallSkdmeldingerPerEndringskode;
+
+    @Value("#{${batch.navMeldinger}}")
+    private Map<String, Integer> antallNavmeldingerPerEndringskode;
 
     @Value("${eiabatch.antallSykemeldinger}")
     private int antallSykemeldinger;
@@ -106,10 +110,22 @@ public class JobController {
     public void tpsSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             try {
-                tpsSyntPakkenService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallMeldingerPerEndringskode);
+                tpsSyntPakkenService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallSkdmeldingerPerEndringskode);
             } catch (HttpStatusCodeException e) {
                 log.warn(e.getResponseBodyAsString(), e);
             }
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void navSyntBatch() {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
+                    .avspillergruppeId(entry.getKey())
+                    .miljoe(entry.getValue())
+                    .antallMeldingerPerEndringskode(antallNavmeldingerPerEndringskode)
+                    .build();
+            tpsSyntPakkenService.genererNavmeldinger(syntetiserNavmeldingerRequest);
         }
     }
 

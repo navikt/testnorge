@@ -16,6 +16,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
@@ -77,6 +78,24 @@ public class SyntetiseringsControllerTest {
         syntetiseringsController.opprettSkdmeldingerITPS(syntetiserSkdmeldingerRequest);
 
         verify(tpsSyntPakkenService).genererSkdmeldinger(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
+    }
+
+    /**
+     * Scenario: HVIS syntetiseringskontrolleren får et request om å opprette nav-endringsmeldinger, skal metoden kalle på
+     * {@link TpsSyntPakkenService#genererNavmeldinger}
+     */
+    @Test
+    public void shouldProduceNavmeldinger() {
+        Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
+        antallMeldingerPerEndringskode.put("Z010", 20);
+
+        SyntetiserNavmeldingerRequest syntetiserNavmeldingerRequest = new SyntetiserNavmeldingerRequest(avspillergruppeId,
+                miljoe,
+                antallMeldingerPerEndringskode);
+
+        syntetiseringsController.opprettNavmeldingerITPS(syntetiserNavmeldingerRequest);
+
+        verify(tpsSyntPakkenService).genererNavmeldinger(syntetiserNavmeldingerRequest);
     }
 
     /**

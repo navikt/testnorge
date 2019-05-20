@@ -109,7 +109,7 @@ public class StartSyntetiseringSkdCompTest {
         assertThat(jobController.getAvspillergruppeIdMedMiljoe().values().toString(), containsString(miljoe1));
         assertThat(jobController.getAvspillergruppeIdMedMiljoe().values().toString(), containsString(miljoe2));
 
-        Map<String, Integer> testMap = new HashMap<>(jobController.getAntallMeldingerPerEndringskode());
+        Map<String, Integer> testMap = new HashMap<>(jobController.getAntallSkdmeldingerPerEndringskode());
 
         assertTrue(testMap.containsKey(endringskode1));
         assertEquals(antallEndringskode1, testMap.get(endringskode1).intValue());
