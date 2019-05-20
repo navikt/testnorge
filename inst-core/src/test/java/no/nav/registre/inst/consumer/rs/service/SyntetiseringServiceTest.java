@@ -2,6 +2,7 @@ package no.nav.registre.inst.consumer.rs.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -84,6 +85,7 @@ public class SyntetiseringServiceTest {
         verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
         verify(inst2Consumer).hentTokenTilInst2();
         verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), anyString());
+        verify(hodejegerenConsumer).saveHistory(any());
     }
 
     @Test
