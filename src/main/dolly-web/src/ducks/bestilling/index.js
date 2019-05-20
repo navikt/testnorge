@@ -199,7 +199,11 @@ const bestillingFormatter = bestillingState => {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 		final_values.tpsf.boadresse.gatekode = values.boadresse_gatekode
 	}
-
+	if (_get(final_values, 'tpsf.ufb_kommunenr')) {
+		final_values = _set(final_values, 'tpsf.boadresse.adressetype', 'GATE')
+		final_values = _set(final_values, 'tpsf.boadresse.kommunenr', values.ufb_kommunenr)
+		delete final_values['tpsf']['ufb_kommunenr']
+	}
 	if (_get(final_values, 'tpsf.postadresse.postLand')) {
 		final_values.tpsf.postadresse = [
 			{

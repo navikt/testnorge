@@ -146,6 +146,7 @@ const _transformAttributt = (attribute, attributes, value) => {
 				Object.assign(
 					{},
 					...Object.entries(val).map(([key, value]) => {
+						if (!attributeList[key]) return
 						let pathId = attributeList[key].path.split('.')
 						return {
 							//  Hente kun siste key, f.eks barn.kjønn => kjønn

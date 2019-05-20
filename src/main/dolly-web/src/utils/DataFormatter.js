@@ -37,6 +37,16 @@ Formatters.parseDate = date => {
 	return new Date(Date.UTC(parts[2], parts[1] - 1, parts[0]))
 }
 
+Formatters.decamelize = (str, separator) => {
+	separator = typeof separator === 'undefined' ? '_' : separator
+
+	const res = str
+		.replace(/([a-z\d])([A-Z])/g, '$1' + separator + '$2')
+		.replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + separator + '$2')
+
+	return res.charAt(0).toUpperCase() + res.slice(1)
+}
+
 Formatters.kjonnToString = (kjonn = '') => {
 	if (!kjonn) return kjonn
 	const _kjonn = kjonn.toLowerCase()
@@ -51,6 +61,8 @@ Formatters.kjonnToStringBarn = (kjonn = '') => {
 }
 
 Formatters.arrayToString = (array, separator = ',') => {
+	if (!array) return null
+
 	return array.reduce((accumulator, nextString, idx) => {
 		return `${accumulator}${accumulator ? separator : ''}${
 			idx === 0 ? '' : ' '
@@ -59,18 +71,25 @@ Formatters.arrayToString = (array, separator = ',') => {
 }
 
 Formatters.camelCaseToLabel = camelCase => {
+	if (!camelCase) return null
+
 	return _startCase(camelCase)
 }
 
 Formatters.kodeverkLabel = kodeverk => {
+	if (!kodeverk) return null
 	return kodeverk.substring(kodeverk.indexOf('-') + 1)
 }
 
 Formatters.oversettBoolean = value => {
+	if (!value) return null
+
 	return value === true ? 'Ja' : value === false ? 'Nei' : value
 }
 
 Formatters.gtApiKodeverkId = gtType => {
+	if (!gtType) return null
+
 	let gtApiKodeverkId = ''
 	switch (gtType) {
 		case 'KNR':
@@ -88,6 +107,8 @@ Formatters.gtApiKodeverkId = gtType => {
 }
 
 Formatters.gtTypeLabel = gtType => {
+	if (!gtType) return null
+
 	let gtTypeLabel = ''
 	switch (gtType) {
 		case 'KNR':
@@ -115,6 +136,8 @@ Formatters.sort2DArray = (array, i) => {
 }
 
 Formatters.flat2DArray = (array, i) => {
+	if (!array) return null
+
 	array.forEach(person => {
 		if (person[i].includes(',')) {
 			const arrayValues = person[i].split(',')
@@ -125,16 +148,21 @@ Formatters.flat2DArray = (array, i) => {
 }
 
 Formatters.getIdLengde = id => {
+	if (!id) return null
+
 	var forste = id.split(' ')
 	return forste[0].length
 }
 
 Formatters.idUtenEllipse = id => {
+	if (!id) return null
+
 	var lengde = Formatters.getIdLengde(id)
 	return id.substr(0, lengde)
 }
 
 Formatters.commaToSpace = streng => {
+	if (!streng) return null
 	return streng.split(',').join(', ')
 }
 
