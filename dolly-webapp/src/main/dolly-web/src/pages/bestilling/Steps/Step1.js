@@ -75,8 +75,7 @@ class Step1 extends Component {
 			checkAttributeArray,
 			uncheckAttributeArray,
 			identOpprettesFra,
-			values,
-			resetForm
+			values
 		} = this.props
 
 		switch (identOpprettesFra) {
@@ -89,7 +88,6 @@ class Step1 extends Component {
 						checkAttributeArray={checkAttributeArray}
 						uncheckAttributeArray={uncheckAttributeArray}
 						malBestillingNavn={values.mal}
-						resetForm={resetForm}
 					/>
 				)
 			case BestillingMapper('EKSIDENT'):
