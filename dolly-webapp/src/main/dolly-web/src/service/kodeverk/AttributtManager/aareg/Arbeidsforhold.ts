@@ -125,6 +125,8 @@ const AttributtListe: Attributt[] = [
 				path: 'permisjon',
 				dataSource: DataSource.AAREG,
 				attributtType: AttributtType.SelectAndRead,
+				informasjonstekst:
+					'Permisjonen må ha start- og sluttdato innenfor tidsrommet til arbeidsforholdet.',
 				subItems: [
 					{
 						hovedKategori: Kategorier.ArbeidOgInntekt,
@@ -150,8 +152,8 @@ const AttributtListe: Attributt[] = [
 						validation: DateValidation(),
 						dataSource: DataSource.AAREG,
 						inputType: InputType.Date,
-						attributtType: AttributtType.SelectAndRead,
-						defaultValue: new Date().setFullYear(new Date().getFullYear() - 20)
+						attributtType: AttributtType.SelectAndRead
+						//defaultValue: new Date().setFullYear(new Date().getFullYear() - 20)
 					},
 					{
 						hovedKategori: Kategorier.ArbeidOgInntekt,
@@ -160,6 +162,7 @@ const AttributtListe: Attributt[] = [
 						id: 'tom',
 						label: 'Sluttdato',
 						path: 'permisjonsperiode.sluttdato',
+						validation: DateValidation(),
 						dataSource: DataSource.AAREG,
 						inputType: InputType.Date,
 						attributtType: AttributtType.SelectAndRead
@@ -195,6 +198,8 @@ const AttributtListe: Attributt[] = [
 				path: 'utenlandsopphold',
 				dataSource: DataSource.AAREG,
 				attributtType: AttributtType.SelectAndRead,
+				informasjonstekst:
+					'Utenlandsoppholdet må ha start- og sluttdato innenfor samme kalendermåned i tidsrommet til arbeidsforholdet.',
 				subItems: [
 					{
 						hovedKategori: Kategorier.ArbeidOgInntekt,

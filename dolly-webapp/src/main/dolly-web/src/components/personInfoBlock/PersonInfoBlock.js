@@ -32,17 +32,18 @@ export default class PersonInfoBlock extends PureComponent {
 									subBlock.value,
 									subBlock.label,
 									idx,
-									idx !== data.length - 1
+									subItems.length > 0 ? false : idx !== data.length - 1
 								)}
 								{subItems &&
 									subItems.length > 0 &&
-									subItems.map((subItem, idx) => {
+									subItems.map((subItem, jdx) => {
 										return this.renderSubItems(
 											subBlock.parent,
 											subItem.id,
 											subItem.label,
 											subItem.value,
-											idx
+											jdx,
+											jdx === subItems.length - 1 && idx !== data.length - 1
 										)
 									})}
 							</Fragment>
@@ -55,11 +56,14 @@ export default class PersonInfoBlock extends PureComponent {
 		return this.renderPersonInfoBlock(data)
 	}
 
-	renderSubItems = (parent, subItemId, header, data, idx, kdx, bottomBorder) => {
+	renderSubItems = (parent, subItemId, header, data, idx, bottomBorder) => {
 		// Tar inn alle permisjoner eller utenlandsopphold
+		const cssClass = cn('person-info-subItems', {
+			'bottom-border': bottomBorder
+		})
 		const attributt = this.props.attributtManager.getAttributtById(parent)
 		return (
-			<div key={idx} className="person-info-subItems">
+			<div key={idx} className={cssClass}>
 				<h4>{header}</h4>
 				<Fragment>
 					{data.map((subItem, kdx) => {

@@ -120,9 +120,6 @@ const _transformAttributt = (attribute, attributes, value) => {
 					let transformed = Object.assign(element)
 					if (element[subKategoriId] !== '' && element[subKategoriId][0] !== '') {
 						let subsubArray = []
-						console.log('element :', element)
-						console.log('subKategoriId :', subKategoriId)
-						console.log('element[subKategoriId] :', element[subKategoriId])
 						element[subKategoriId].map(rad => {
 							subsubArray.push(parseSubItemDate(item, rad, Object.assign(rad)))
 						})
@@ -132,7 +129,6 @@ const _transformAttributt = (attribute, attributes, value) => {
 							[item.id]: subsubArray
 						}
 					}
-					//else valueDeepCopy[idx][subKategoriId] = null // Hvordan burde den være?
 					valueDeepCopy[idx] = transformed
 				})
 			}

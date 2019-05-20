@@ -3,6 +3,7 @@ import { FieldArray } from 'formik'
 import { DollyApi } from '~/service/Api'
 import Button from '~/components/button/Button'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 const Attributt = new AttributtManager()
 
@@ -108,7 +109,14 @@ export const FieldArrayComponent = ({
 																return (
 																	<div key={jdx} className="subItems">
 																		<div className="subItem-header">
-																			{jdx === 0 && <h4>{item.label}</h4>}{' '}
+																			<div style={{ display: 'flex' }}>
+																				{jdx === 0 && <h4>{item.label}</h4>}
+																				{item.informasjonstekst && (
+																					<ContentTooltip>
+																						<span>{item.informasjonstekst}</span>
+																					</ContentTooltip>
+																				)}
+																			</div>
 																		</div>
 																		<div className="subitem-container-button">
 																			{renderFieldSubItem(
