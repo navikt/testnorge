@@ -52,7 +52,6 @@ export default class Step2 extends PureComponent {
 			identOpprettesFra,
 			eksisterendeIdentListe
 		} = this.props
-
 		return (
 			<div className="bestilling-step2">
 				<div className="content-header">
