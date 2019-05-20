@@ -43,6 +43,7 @@ export interface Attributt {
 	hovedKategori: Kategori
 	size?: String
 	subKategori: Kategori
+	subSubKategori?: Kategori
 	id: string
 	path?: string
 	editPath?: string
@@ -60,17 +61,19 @@ export interface Attributt {
 	parent?: string
 	items?: Attributt[]
 	isMultiple?: boolean
-	subItems?: SubItem[]
+	subItems?: Attributt[]
 	dependentOn?: string // Er avhengig av en annen attributt for å kunne settes verdi på
 	dependentBy?: string // Er ikke avhengig, er attributten som ble settet av dependentOn
 	includeIf?: Attributt[]
 	sattForEksisterendeIdent?: boolean
 	onlyShowAfterSelectedValue?: Object // AAREG: Orgnummer/ident er avhengig av valgt verdi av "Type av arbeidsgiver". String = id, number = indexOf valgt verdi
 	transform?: (value: any, attributter: Attributt[]) => any
+	informasjonstekst?: String
 }
 
 // Attributtene som er child av Attributt.Items. Eks: AAREG
 // TODO: Alex - trenger vi den?
+
 export interface SubItem {
 	id: string
 	label: string

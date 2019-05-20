@@ -48,7 +48,6 @@ export function mapSigrunData(sigrunData) {
 
 export function mapKrrData(krrData) {
 	if (!krrData) return null
-
 	return {
 		header: 'Kontaktinformasjon og reservasjon',
 		data: [
@@ -69,6 +68,76 @@ export function mapKrrData(krrData) {
 			}
 		]
 	}
+}
+
+export function mapSubItemAaregData(data) {
+	if (!data) return null
+	let subItemArray = []
+	data.utenlandsopphold &&
+		subItemArray.push({
+			id: 'utenlandsopphold',
+			label: 'Utenlandsopphold',
+			subItem: true,
+			value: data.utenlandsopphold.map((subdata, k) => {
+				return [
+					{
+						id: 'id',
+						label: '',
+						value: `#${k + 1}`,
+						width: 'x-small'
+					},
+					{
+						id: 'land',
+						label: 'Land',
+						value: subdata.landkode
+					},
+					{
+						id: 'fom',
+						label: 'Startdato',
+						value: subdata.periode.fom
+					},
+					{
+						id: 'tom',
+						label: 'Sluttdato',
+						value: subdata.periode.tom
+					}
+				]
+			})
+		})
+
+	data.permisjonPermitteringer &&
+		subItemArray.push({
+			id: 'permisjon',
+			label: 'Permisjon',
+			subItem: true,
+			value: data.permisjonPermitteringer.map((subdata, k) => {
+				return [
+					{
+						id: 'id',
+						label: '',
+						value: `#${k + 1}`,
+						width: 'x-small'
+					},
+					{
+						id: 'permisjonOgPermittering',
+						label: 'Permisjonstype',
+						value: subdata.type,
+						width: 'medium'
+					},
+					{
+						id: 'fom',
+						label: 'Startdato',
+						value: subdata.periode.fom
+					},
+					{
+						id: 'tom',
+						label: 'Sluttdato',
+						value: subdata.periode.tom
+					}
+				]
+			})
+		})
+	return subItemArray
 }
 
 export function mapAaregData(aaregData) {
@@ -126,7 +195,7 @@ export function mapAaregData(aaregData) {
 						label: 'Arbeidsgiver Ident',
 						value: data.arbeidsgiver.offentligIdent
 					}
-				]
+				].concat(mapSubItemAaregData(data))
 			}
 		})
 	}
