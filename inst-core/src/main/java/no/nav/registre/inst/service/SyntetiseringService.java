@@ -4,18 +4,21 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.InstSaveInHodejegerenRequest;
 import no.nav.registre.inst.Institusjonsforholdsmelding;
 import no.nav.registre.inst.Kilde;
+import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.inst.consumer.rs.Inst2Consumer;
+import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
+import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.inst.consumer.rs.Inst2Consumer;
-import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
-import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 
 @Service
 @Slf4j
