@@ -1,4 +1,4 @@
-package no.nav.registre.sam.domain;
+package no.nav.registre.sam;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

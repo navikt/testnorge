@@ -1,10 +1,10 @@
 package no.nav.registre.sam.domain.database;
 
-import static no.nav.registre.sam.service.SyntetiseringService.ENDRET_OPPRETTET_AV;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.registre.sam.SyntetisertSamordningsmelding;
+import no.nav.registre.sam.utils.DateUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,8 +15,7 @@ import javax.persistence.SequenceGenerator;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
-import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
-import no.nav.registre.sam.utils.DateUtils;
+import static no.nav.registre.sam.service.SyntetiseringService.ENDRET_OPPRETTET_AV;
 
 @Getter
 @Setter
