@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -107,7 +108,7 @@ public class SyntetiseringService {
                 .kilde(
                         Kilde.builder()
                                 .navn(INST_NAME)
-                                .data(historikkSomSkalLagres)
+                                .data(Collections.singletonList(f))
                                 .build()
                 ).build()).collect(Collectors.toList());
 

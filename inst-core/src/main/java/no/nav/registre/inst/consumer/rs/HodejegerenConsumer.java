@@ -32,15 +32,16 @@ public class HodejegerenConsumer {
 
     private final String hodejegerenSaveHistorikk;
 
-    private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {};
+    private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
+    };
 
 
-        public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
+    public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
         this.url = new UriTemplate(hodejegerenServerUrl + "/v1/alle-levende-identer/{avspillergruppeId}");
         this.hodejegerenSaveHistorikk = hodejegerenServerUrl + "/v1/historikk/";
     }
 
-    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "aareg.resource.latency", extraTags = {"operation", "hodejegeren"})
     public List<String> finnLevendeIdenter(Long avspillergruppeId) {
         RequestEntity getRequest = RequestEntity.get(url.expand(avspillergruppeId.toString())).build();
         List<String> levendeIdenter = new ArrayList<>();
@@ -55,7 +56,7 @@ public class HodejegerenConsumer {
         return levendeIdenter;
     }
 
-    @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "tp.resource.latency", extraTags = {"operation", "hodejegeren"})
     public Set<String> saveHistory(List<InstSaveInHodejegerenRequest> requests) {
 
         RequestEntity<List<InstSaveInHodejegerenRequest>> body = RequestEntity.post(URI.create(hodejegerenSaveHistorikk)).body(requests);
