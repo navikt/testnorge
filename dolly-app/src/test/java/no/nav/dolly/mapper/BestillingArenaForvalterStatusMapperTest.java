@@ -19,19 +19,19 @@ public class BestillingArenaForvalterStatusMapperTest {
 
     private static final List<BestillingProgress> RUN_STATUS = newArrayList(
             BestillingProgress.builder().ident("IDENT_1")
-                    .arenastubStatus("OK")
+                    .arenaforvalterStatus("OK")
                     .build(),
             BestillingProgress.builder().ident("IDENT_2")
-                    .arenastubStatus("FEIL")
+                    .arenaforvalterStatus("FEIL")
                     .build(),
             BestillingProgress.builder().ident("IDENT_3")
-                    .arenastubStatus("OK")
+                    .arenaforvalterStatus("OK")
                     .build(),
             BestillingProgress.builder().ident("IDENT_4")
-                    .arenastubStatus("FEIL")
+                    .arenaforvalterStatus("FEIL")
                     .build(),
             BestillingProgress.builder().ident("IDENT_5")
-                    .arenastubStatus("OK")
+                    .arenaforvalterStatus("OK")
                     .build()
     );
 

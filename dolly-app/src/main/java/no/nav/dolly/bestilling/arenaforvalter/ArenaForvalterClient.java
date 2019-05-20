@@ -3,21 +3,25 @@ package no.nav.dolly.bestilling.arenaforvalter;
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.UTEN_SERVICEBEHOV;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukerMedServicebehov;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukerUtenServicebehov;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukereMedServicebehov;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukereUtenServicebehov;
-import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
-import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaBrukerMedServicebehov;
-import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaBrukerUtenServicebehov;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaServicedata;
 
 @Slf4j
 @Service
@@ -28,6 +32,9 @@ public class ArenaForvalterClient implements ClientRegister {
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
 
+    @Autowired
+    private MapperFacade mapperFacade;
+
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
@@ -37,19 +44,20 @@ public class ArenaForvalterClient implements ClientRegister {
 
             if (bestilling.getEnvironments().contains(ARENA_FORVALTER_ENV)) {
 
-                deleteArenadata(norskIdent.getIdent(), status);
+                bestilling.getArenaForvalter().setPersonident(norskIdent.getIdent());
+                checkAndDeleteArenadata(norskIdent.getIdent(), status);
 
-                if (bestilling.getArenaForvalter() instanceof RsArenaBrukerUtenServicebehov) {
+                if (UTEN_SERVICEBEHOV.equals(bestilling.getArenaForvalter().getArenaBrukertype())) {
 
-                    ((RsArenaBrukerUtenServicebehov) bestilling.getArenaForvalter()).setPersonident(norskIdent.getIdent());
                     sendArenadata(ArenaBrukereUtenServicebehov.builder()
-                            .nyeBrukereUtenServiceBehov(singletonList(bestilling.getArenaForvalter()))
+                            .nyeBrukereUtenServiceBehov(singletonList(
+                                    mapperFacade.map(bestilling.getArenaForvalter(), ArenaBrukerUtenServicebehov.class)))
                             .build(), status);
                 } else {
 
-                    ((RsArenaBrukerMedServicebehov) bestilling.getArenaForvalter()).setPersonident(norskIdent.getIdent());
                     sendArenadata(ArenaBrukereMedServicebehov.builder()
-                            .nyeBrukere(singletonList(bestilling.getArenaForvalter()))
+                            .nyeBrukere(singletonList(
+                                    mapperFacade.map(bestilling.getArenaForvalter(), ArenaBrukerMedServicebehov.class)))
                             .build(), status);
                 }
 
@@ -57,30 +65,33 @@ public class ArenaForvalterClient implements ClientRegister {
 
                 status.append(format("$Info: Brukere ikke opprettet i ArenaForvalter da miljø '%s' ikke er valgt", ARENA_FORVALTER_ENV));
             }
-            progress.setArenastubStatus(status.substring(1));
+            progress.setArenaforvalterStatus(status.substring(1));
         }
     }
 
-    private void deleteArenadata(String ident, StringBuilder status) {
-        try {
-            status.append("$arenaDeleteBruker&status: ");
+    private void checkAndDeleteArenadata(String ident, StringBuilder status) {
 
-            arenaForvalterConsumer.deleteIdent(ident);
-            status.append("OK");
+        try {
+            ResponseEntity<JsonNode> response = arenaForvalterConsumer.getIdent(ident);
+
+            if (response.getBody().get("arbeidsokerList").size() > 0) {
+                arenaForvalterConsumer.deleteIdent(ident);
+            }
 
         } catch (RuntimeException e) {
 
+            status.append("$arenabruker&status: ");
             appendErrorText(status, e);
-            log.error("Feilet å slette ident i ArenaForvalter: ", e);
+            log.error("Feilet å lese eller slette ident i ArenaForvalter: ", e);
         }
     }
 
-    private void sendArenadata(Arenadata arenadata, StringBuilder status) {
+    private void sendArenadata(ArenaServicedata arenaServicedata, StringBuilder status) {
 
         try {
             status.append("$arenaOpprettBruker&status: ");
 
-            arenaForvalterConsumer.postArenadata(arenadata);
+            arenaForvalterConsumer.postArenadata(arenaServicedata);
             status.append("OK");
 
         } catch (RuntimeException e) {

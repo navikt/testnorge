@@ -21,13 +21,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaServicedata;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
-import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaBrukerMedServicebehov;
-import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaBrukerUtenServicebehov;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaForvalterClientTest {
@@ -52,38 +54,52 @@ public class ArenaForvalterClientTest {
     @Mock
     private ResponseEntity responseEntity;
 
+    @Mock
+    private JsonNode jsonNode;
+
+    @Mock
+    private ArrayNode arrayNode;
+
+    @Mock
+    private MapperFacade mapperFacade;
+
     @Test
     public void gjenopprett_Ok() {
 
         BestillingProgress progress = new BestillingProgress();
-        when(arenaForvalterConsumer.postArenadata(any(Arenadata.class))).thenReturn(responseEntity);
+        when(arenaForvalterConsumer.postArenadata(any(ArenaServicedata.class))).thenReturn(responseEntity);
 
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                .arenaForvalter(RsArenaBrukerMedServicebehov.builder().build())
+                .arenaForvalter(Arenadata.builder().build())
                 .environments(singletonList(ARENA_ENV))
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenastubStatus(), is(equalTo("arenaDeleteBruker&status: OK$arenaOpprettBruker&status: OK")));
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("arenaDeleteBruker&status: OK$arenaOpprettBruker&status: OK")));
         verify(arenaForvalterConsumer).deleteIdent(IDENT);
-        verify(arenaForvalterConsumer).postArenadata(any(Arenadata.class));
+        verify(arenaForvalterConsumer).postArenadata(any(ArenaServicedata.class));
     }
 
     @Test
     public void gjenopprett_Feil() {
 
         BestillingProgress progress = new BestillingProgress();
-        when(arenaForvalterConsumer.postArenadata(any(Arenadata.class))).thenThrow(httpClientErrorException);
+        when(arenaForvalterConsumer.postArenadata(any(ArenaServicedata.class))).thenThrow(httpClientErrorException);
         when(httpClientErrorException.getMessage()).thenReturn(format("%s %s", HttpStatus.BAD_REQUEST, ERROR_CAUSE));
         when(httpClientErrorException.getResponseBodyAsString()).thenReturn(ERROR_MSG);
+
+        when(arenaForvalterConsumer.getIdent(IDENT)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(jsonNode);
+        when(jsonNode.get("arbeidsokerList")).thenReturn(arrayNode);
+
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                .arenaForvalter(RsArenaBrukerUtenServicebehov.builder().build())
+                .arenaForvalter(Arenadata.builder().build())
                 .environments(singletonList(ARENA_ENV))
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenastubStatus(), is(equalTo("arenaDeleteBruker&status: OK"
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("arenaDeleteBruker&status: OK"
                 + "$arenaOpprettBruker&status: FEIL: 400 Bad request (An error has occured)")));
         verify(arenaForvalterConsumer).deleteIdent(IDENT);
-        verify(arenaForvalterConsumer).postArenadata(any(Arenadata.class));
+        verify(arenaForvalterConsumer).postArenadata(any(ArenaServicedata.class));
     }
 
     @Test
@@ -91,10 +107,10 @@ public class ArenaForvalterClientTest {
 
         BestillingProgress progress = new BestillingProgress();
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                        .arenaForvalter(RsArenaBrukerUtenServicebehov.builder().build()).build(),
+                        .arenaForvalter(Arenadata.builder().build()).build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenastubStatus(), is(equalTo("Info: Brukere ikke opprettet i ArenaForvalter da miljø 'q2' ikke er valgt")));
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("Info: Brukere ikke opprettet i ArenaForvalter da miljø 'q2' ikke er valgt")));
     }
 
     @Test
@@ -105,6 +121,6 @@ public class ArenaForvalterClientTest {
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
         verifyZeroInteractions(arenaForvalterConsumer);
-        assertThat(progress.getArenastubStatus(), is(nullValue()));
+        assertThat(progress.getArenaforvalterStatus(), is(nullValue()));
     }
 }

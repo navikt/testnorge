@@ -21,11 +21,11 @@ public final class BestillingArenaStubStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getArenastubStatus())) {
-                if (statusMap.containsKey(progress.getArenastubStatus())) {
-                    statusMap.get(progress.getArenastubStatus()).add(progress.getIdent());
+            if (nonNull(progress.getArenaforvalterStatus())) {
+                if (statusMap.containsKey(progress.getArenaforvalterStatus())) {
+                    statusMap.get(progress.getArenaforvalterStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getArenastubStatus(), Lists.newArrayList(progress.getIdent()));
+                    statusMap.put(progress.getArenaforvalterStatus(), Lists.newArrayList(progress.getIdent()));
                 }
             }
         });

@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArenaBrukereUtenServicebehov implements Arenadata {
+public class ArenaBrukereUtenServicebehov implements ArenaServicedata {
 
-    private List<RsArenadata> nyeBrukereUtenServiceBehov;
+    private List<ArenaBrukerUtenServicebehov> nyeBrukereUtenServiceBehov;
 }

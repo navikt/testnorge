@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukereMedServicebehov;
-import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaServicedata;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Service
@@ -30,6 +30,14 @@ public class ArenaForvalterConsumer {
     @Autowired
     private ProvidersProps providersProps;
 
+    public ResponseEntity getIdent(String ident) {
+        return restTemplate.exchange(RequestEntity.get(
+                URI.create(format("%s%s?filter-personident=%s", providersProps.getArenaForvalter().getUrl(), ARENABRUKER_MED_SERVICEBEHOV_URL, ident)))
+                .header(NAV_CALL_ID, getCallId())
+                .header(NAV_CONSUMER_ID, KILDE)
+                .build(), JsonNode.class);
+    }
+
     public ResponseEntity deleteIdent(String ident) {
         return restTemplate.exchange(RequestEntity.delete(
                 URI.create(format("%s%s?personident=%s", providersProps.getArenaForvalter().getUrl(), ARENABRUKER_MED_SERVICEBEHOV_URL, ident)))
@@ -38,13 +46,13 @@ public class ArenaForvalterConsumer {
                 .build(), JsonNode.class);
     }
 
-    public ResponseEntity postArenadata(Arenadata arenadata) {
+    public ResponseEntity postArenadata(ArenaServicedata arenaServicedata) {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getArenaForvalter().getUrl() +
-                        (arenadata instanceof ArenaBrukereMedServicebehov ? ARENABRUKER_MED_SERVICEBEHOV_URL : ARENABRUKER_UTEN_SERVICEBEHOV_URL)))
+                        (arenaServicedata instanceof ArenaBrukereMedServicebehov ? ARENABRUKER_MED_SERVICEBEHOV_URL : ARENABRUKER_UTEN_SERVICEBEHOV_URL)))
                 .header(NAV_CALL_ID, getCallId())
                 .header(NAV_CONSUMER_ID, KILDE)
-                .body(arenadata), JsonNode.class);
+                .body(arenaServicedata), JsonNode.class);
     }
 
 
