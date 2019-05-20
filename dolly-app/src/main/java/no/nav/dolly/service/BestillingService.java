@@ -112,7 +112,7 @@ public class BestillingService {
                                 .aareg(request.getAareg())
                                 .krrStub(request.getKrrstub())
                                 .sigrunStub(request.getSigrunstub())
-                                .arenaStub(request.getArenaForvalter())
+                                .arenaforvalter(request.getArenaForvalter())
                                 .pdlforvalter(request.getPdlforvalter())
                                 .build()))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)

@@ -11,9 +11,9 @@ import java.util.Map;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
 
-public final class BestillingPdlStatusMpper {
+public final class BestillingPdlForvalterStatusMpper {
 
-    private BestillingPdlStatusMpper() {
+    private BestillingPdlForvalterStatusMpper() {
     }
 
     public static List<RsMeldingStatusIdent> buildPdldataStatusMap(List<BestillingProgress> progressList) {

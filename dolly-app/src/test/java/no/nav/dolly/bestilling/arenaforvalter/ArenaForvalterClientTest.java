@@ -34,7 +34,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaForvalterClientTest {
 
-    private static final String IDENT = "12423353";
+    private static final String IDENT = "12423353112";
     private static final String ARENA_ENV = "q2";
     private static final String ERROR_CAUSE = "Bad request";
     private static final String ERROR_MSG = "An error has occured";
@@ -69,12 +69,17 @@ public class ArenaForvalterClientTest {
         BestillingProgress progress = new BestillingProgress();
         when(arenaForvalterConsumer.postArenadata(any(ArenaServicedata.class))).thenReturn(responseEntity);
 
+        when(arenaForvalterConsumer.getIdent(IDENT)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(jsonNode);
+        when(jsonNode.get("arbeidsokerList")).thenReturn(arrayNode);
+        when(arrayNode.size()).thenReturn(1);
+
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
                 .arenaForvalter(Arenadata.builder().build())
                 .environments(singletonList(ARENA_ENV))
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("arenaDeleteBruker&status: OK$arenaOpprettBruker&status: OK")));
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("arenaOpprettBruker&status: OK")));
         verify(arenaForvalterConsumer).deleteIdent(IDENT);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaServicedata.class));
     }
@@ -96,9 +101,8 @@ public class ArenaForvalterClientTest {
                 .environments(singletonList(ARENA_ENV))
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("arenaDeleteBruker&status: OK"
-                + "$arenaOpprettBruker&status: FEIL: 400 Bad request (An error has occured)")));
-        verify(arenaForvalterConsumer).deleteIdent(IDENT);
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("arenaOpprettBruker&status: FEIL: 400 Bad request (An error has occured)")));
+        verify(arenaForvalterConsumer).getIdent(IDENT);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaServicedata.class));
     }
 

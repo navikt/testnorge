@@ -11,12 +11,12 @@ import com.google.common.collect.Lists;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusIdent;
 
-public final class BestillingArenaStubStatusMapper {
+public final class BestillingArenaForvalterStatusMapper {
 
-    private BestillingArenaStubStatusMapper() {
+    private BestillingArenaForvalterStatusMapper() {
     }
 
-    public static List<RsStatusIdent> buildArenaStubStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusIdent> buildArenaForvalterStatusMap(List<BestillingProgress> progressList) {
 
         Map<String, List<String>> statusMap = new HashMap<>();
 

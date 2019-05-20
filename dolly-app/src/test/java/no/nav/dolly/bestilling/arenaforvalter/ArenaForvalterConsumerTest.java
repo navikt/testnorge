@@ -32,7 +32,7 @@ public class ArenaForvalterConsumerTest {
     private ProvidersProps providersProps;
 
     @InjectMocks
-    private ArenaForvalterConsumer arenaStubConsumer;
+    private ArenaForvalterConsumer arenaForvalterConsumer;
 
     @Before
     public void setup() {
@@ -42,7 +42,7 @@ public class ArenaForvalterConsumerTest {
     @Test
     public void deleteIdent() {
 
-        arenaStubConsumer.deleteIdent(IDENT);
+        arenaForvalterConsumer.deleteIdent(IDENT);
 
         verify(providersProps).getArenaForvalter();
         verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
@@ -51,7 +51,7 @@ public class ArenaForvalterConsumerTest {
     @Test
     public void postArenadata() {
 
-        arenaStubConsumer.postArenadata(ArenaBrukereUtenServicebehov.builder()
+        arenaForvalterConsumer.postArenadata(ArenaBrukereUtenServicebehov.builder()
                 .nyeBrukereUtenServiceBehov(singletonList(ArenaBrukerUtenServicebehov.builder().personident(IDENT).build()))
                 .build());
 

@@ -29,7 +29,7 @@ public class BestKriterier {
     private List<RsArbeidsforhold> aareg;
     private RsDigitalKontaktdata krrStub;
     private List<RsOpprettSkattegrunnlag> sigrunStub;
-    private Arenadata arenaStub;
+    private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;
 
     public List<RsArbeidsforhold> getAareg() {

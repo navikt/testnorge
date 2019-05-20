@@ -36,9 +36,9 @@ public class BestillingArenaForvalterStatusMapperTest {
     );
 
     @Test
-    public void buildArenaStubStatusMap() {
+    public void buildArenaForvalterStatusMap() {
 
-        List<RsStatusIdent> identStatuses = BestillingArenaStubStatusMapper.buildArenaStubStatusMap(RUN_STATUS);
+        List<RsStatusIdent> identStatuses = BestillingArenaForvalterStatusMapper.buildArenaForvalterStatusMap(RUN_STATUS);
 
         assertThat(identStatuses.get(0).getStatusMelding(), is(equalTo("FEIL")));
         assertThat(identStatuses.get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));

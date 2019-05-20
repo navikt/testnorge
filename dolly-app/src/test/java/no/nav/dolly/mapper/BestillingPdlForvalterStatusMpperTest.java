@@ -14,7 +14,7 @@ import org.junit.Test;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
 
-public class BestillingPdlStatusMpperTest {
+public class BestillingPdlForvalterStatusMpperTest {
 
     private static final String IDENT_1 = "111";
     private static final String IDENT_2 = "222";
@@ -30,7 +30,7 @@ public class BestillingPdlStatusMpperTest {
     @Test
     public void buildPdldataStatusMap_emptyList() {
 
-        List<RsMeldingStatusIdent> resultat = BestillingPdlStatusMpper.buildPdldataStatusMap(newArrayList(BestillingProgress.builder().build()));
+        List<RsMeldingStatusIdent> resultat = BestillingPdlForvalterStatusMpper.buildPdldataStatusMap(newArrayList(BestillingProgress.builder().build()));
 
         assertThat(resultat, is(emptyList()));
     }
@@ -38,7 +38,7 @@ public class BestillingPdlStatusMpperTest {
     @Test
     public void buildPdldataStatusMap_SingleStatus() {
 
-        List<RsMeldingStatusIdent> resultat = BestillingPdlStatusMpper.buildPdldataStatusMap(
+        List<RsMeldingStatusIdent> resultat = BestillingPdlForvalterStatusMpper.buildPdldataStatusMap(
                 newArrayList(BestillingProgress.builder()
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_1)
@@ -59,7 +59,7 @@ public class BestillingPdlStatusMpperTest {
     @Test
     public void buildPdldataStatusMap_MultipleStatus() {
 
-        List<RsMeldingStatusIdent> resultat = BestillingPdlStatusMpper.buildPdldataStatusMap(
+        List<RsMeldingStatusIdent> resultat = BestillingPdlForvalterStatusMpper.buildPdldataStatusMap(
                 newArrayList(BestillingProgress.builder()
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_1)
