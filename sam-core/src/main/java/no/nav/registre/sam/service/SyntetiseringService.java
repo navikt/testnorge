@@ -85,7 +85,7 @@ public class SyntetiseringService {
             }
         }
 
-        List<IdentMedData> identerMedData = new ArrayList<>();
+        List<IdentMedData> identerMedData = new ArrayList<>(historikkSomSkalLagres.size());
         for(Map.Entry<String, SyntetisertSamordningsmelding> personInfo : historikkSomSkalLagres.entrySet()){
             identerMedData.add(new IdentMedData(personInfo.getKey(), new ArrayList<>(Arrays.asList(personInfo.getValue()))));
         }
