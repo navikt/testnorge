@@ -3,6 +3,7 @@ package no.nav.registre.sigrun.service;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,6 +70,7 @@ public class SigrunServiceTest {
 
         verify(poppSyntetisererenConsumer).hentPoppMeldingerFromSyntRest(fnrs);
         verify(sigrunStubConsumer).sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier, miljoe);
+        verify(hodejegerenConsumer).saveHistory(any());
         assertThat(actualResponse.getBody(), equalTo(HttpStatus.OK));
     }
 
