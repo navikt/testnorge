@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +88,7 @@ public class SyntetiseringService {
 
         List<IdentMedData> identerMedData = new ArrayList<>();
         for(Map.Entry<String, SyntetisertSamordningsmelding> personInfo : historikkSomSkalLagres.entrySet()){
-            identerMedData.add(new IdentMedData(personInfo.getKey(), Collections.singletonList(personInfo.getValue())));
+            identerMedData.add(new IdentMedData(personInfo.getKey(), new ArrayList<>(Arrays.asList(personInfo.getValue()))));
         }
         SamSaveInHodejegerenRequest hodejegerenRequests = new SamSaveInHodejegerenRequest(SAM_NAME, identerMedData);
 
