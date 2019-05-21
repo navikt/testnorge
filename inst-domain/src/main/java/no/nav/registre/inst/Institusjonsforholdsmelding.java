@@ -1,4 +1,4 @@
-package no.nav.registre.inst.institusjonsforhold;
+package no.nav.registre.inst;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;

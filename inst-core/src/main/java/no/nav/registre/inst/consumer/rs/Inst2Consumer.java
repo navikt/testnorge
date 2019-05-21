@@ -1,6 +1,7 @@
 package no.nav.registre.inst.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.Institusjonsforholdsmelding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,8 +16,6 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import no.nav.registre.inst.institusjonsforhold.Institusjonsforholdsmelding;
 
 @Component
 @Slf4j
