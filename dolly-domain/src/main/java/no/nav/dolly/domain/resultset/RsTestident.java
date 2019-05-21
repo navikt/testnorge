@@ -19,7 +19,7 @@ public class RsTestident {
     private String tpsfSuccessEnv;
     private String krrstubStatus;
     private String sigrunstubStatus;
-    private String arenaforvalterStatus;
+    private List<RsMeldingStatusIdent> arenaforvalterStatus;
     private List<RsStatusMiljoeIdentForhold> aaregStatus;
     private List<RsMeldingStatusIdent> pdlforvalterStatus;
 }

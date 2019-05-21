@@ -11,6 +11,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -22,7 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -55,13 +57,16 @@ public class ArenaForvalterClientTest {
     private ResponseEntity responseEntity;
 
     @Mock
-    private JsonNode jsonNode;
-
-    @Mock
-    private ArrayNode arrayNode;
-
-    @Mock
     private MapperFacade mapperFacade;
+
+    @Before
+    public void setup() throws Exception {
+        when(arenaForvalterConsumer.getIdent(IDENT)).thenReturn(responseEntity);
+        when(arenaForvalterConsumer.deleteIdent(IDENT)).thenReturn(responseEntity);
+        when(responseEntity.hasBody()).thenReturn(true);
+        when(responseEntity.getBody()).thenReturn(buildJsonResult());
+        when(responseEntity.getStatusCode()).thenReturn(HttpStatus.OK);
+    }
 
     @Test
     public void gjenopprett_Ok() {
@@ -69,17 +74,12 @@ public class ArenaForvalterClientTest {
         BestillingProgress progress = new BestillingProgress();
         when(arenaForvalterConsumer.postArenadata(any(ArenaServicedata.class))).thenReturn(responseEntity);
 
-        when(arenaForvalterConsumer.getIdent(IDENT)).thenReturn(responseEntity);
-        when(responseEntity.getBody()).thenReturn(jsonNode);
-        when(jsonNode.get("arbeidsokerList")).thenReturn(arrayNode);
-        when(arrayNode.size()).thenReturn(1);
-
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
                 .arenaforvalter(Arenadata.builder().build())
                 .environments(singletonList(ARENA_ENV))
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("arenaOpprettBruker&status: OK")));
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("HentBruker&status: OK$InaktiverBruker&status: OK$OpprettNyBruker&status: OK")));
         verify(arenaForvalterConsumer).deleteIdent(IDENT);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaServicedata.class));
     }
@@ -92,16 +92,13 @@ public class ArenaForvalterClientTest {
         when(httpClientErrorException.getMessage()).thenReturn(format("%s %s", HttpStatus.BAD_REQUEST, ERROR_CAUSE));
         when(httpClientErrorException.getResponseBodyAsString()).thenReturn(ERROR_MSG);
 
-        when(arenaForvalterConsumer.getIdent(IDENT)).thenReturn(responseEntity);
-        when(responseEntity.getBody()).thenReturn(jsonNode);
-        when(jsonNode.get("arbeidsokerList")).thenReturn(arrayNode);
-
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
                 .arenaforvalter(Arenadata.builder().build())
                 .environments(singletonList(ARENA_ENV))
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("arenaOpprettBruker&status: FEIL: 400 Bad request (An error has occured)")));
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo(
+                "HentBruker&status: OK$InaktiverBruker&status: OK$OpprettNyBruker&status: FEIL: 400 Bad request (An error has occured)")));
         verify(arenaForvalterConsumer).getIdent(IDENT);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaServicedata.class));
     }
@@ -114,7 +111,7 @@ public class ArenaForvalterClientTest {
                         .arenaforvalter(Arenadata.builder().build()).build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("arenaforvalter&Status: Feil: Brukere ikke opprettet i ArenaForvalter da miljø 'q2' ikke er valgt")));
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("ArenaForvalter&Status: Feil: Brukere ikke opprettet i ArenaForvalter da miljø 'q2' ikke er valgt")));
     }
 
     @Test
@@ -126,5 +123,11 @@ public class ArenaForvalterClientTest {
 
         verifyZeroInteractions(arenaForvalterConsumer);
         assertThat(progress.getArenaforvalterStatus(), is(nullValue()));
+    }
+
+    private JsonNode buildJsonResult() throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readTree("{\"arbeidsokerList\": [{\"status\":\"OK\"}]}");
     }
 }

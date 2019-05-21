@@ -5,6 +5,7 @@ import static java.lang.String.join;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
+import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class TestIdentMappingStrategy implements MappingStrategy {
                             rsTestIdent.setTpsfSuccessEnv(join(",", environments));
                             rsTestIdent.setKrrstubStatus(bestillinger.get(0).getKrrstubStatus());
                             rsTestIdent.setSigrunstubStatus(bestillinger.get(0).getSigrunstubStatus());
-                            rsTestIdent.setArenaforvalterStatus(bestillinger.get(0).getArenaforvalterStatus());
+                            rsTestIdent.setArenaforvalterStatus(buildArenaStatusMap(bestillinger));
                             rsTestIdent.setAaregStatus(buildAaregStatusMap(bestillinger));
                             rsTestIdent.setPdlforvalterStatus(buildPdldataStatusMap(bestillinger));
                         }

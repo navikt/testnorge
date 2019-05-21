@@ -47,57 +47,62 @@ public class ArenaForvalterClient implements ClientRegister {
                 bestilling.getArenaforvalter().setPersonident(norskIdent.getIdent());
                 checkAndDeleteArenadata(norskIdent.getIdent(), status);
 
-                if (UTEN_SERVICEBEHOV.equals(bestilling.getArenaforvalter().getArenaBrukertype())) {
+                sendArenadata(UTEN_SERVICEBEHOV.equals(bestilling.getArenaforvalter().getArenaBrukertype()) ?
 
-                    sendArenadata(ArenaBrukereUtenServicebehov.builder()
-                            .nyeBrukereUtenServiceBehov(singletonList(
-                                    mapperFacade.map(bestilling.getArenaforvalter(), ArenaBrukerUtenServicebehov.class)))
-                            .build(), status);
-                } else {
+                                ArenaBrukereUtenServicebehov.builder()
+                                        .nyeBrukereUtenServiceBehov(singletonList(
+                                                mapperFacade.map(bestilling.getArenaforvalter(), ArenaBrukerUtenServicebehov.class)))
+                                        .build() :
 
-                    sendArenadata(ArenaBrukereMedServicebehov.builder()
-                            .nyeBrukere(singletonList(
-                                    mapperFacade.map(bestilling.getArenaforvalter(), ArenaBrukerMedServicebehov.class)))
-                            .build(), status);
-                }
+                                ArenaBrukereMedServicebehov.builder()
+                                        .nyeBrukere(singletonList(
+                                                mapperFacade.map(bestilling.getArenaforvalter(), ArenaBrukerMedServicebehov.class)))
+                                        .build()
+
+                        , status);
 
             } else {
 
-                status.append(format("$arenaforvalter&Status: Feil: Brukere ikke opprettet i ArenaForvalter da miljø '%s' ikke er valgt", ARENA_FORVALTER_ENV));
+                status.append(format("$ArenaForvalter&Status: Feil: Brukere ikke opprettet i ArenaForvalter da miljø '%s' ikke er valgt", ARENA_FORVALTER_ENV));
             }
             progress.setArenaforvalterStatus(status.substring(1));
         }
+
     }
 
     private void checkAndDeleteArenadata(String ident, StringBuilder status) {
 
         try {
+            status.append("$HentBruker&status: ");
             ResponseEntity<JsonNode> response = arenaForvalterConsumer.getIdent(ident);
+            status.append(response.getStatusCode().getReasonPhrase());
 
-            if (response.getBody().get("arbeidsokerList").size() > 0) {
-                arenaForvalterConsumer.deleteIdent(ident);
+            if (response.hasBody() && response.getBody().get("arbeidsokerList").size() > 0) {
+                status.append("$InaktiverBruker&status: ");
+                ResponseEntity<JsonNode> deleteResponse = arenaForvalterConsumer.deleteIdent(ident);
+                status.append(deleteResponse.getStatusCode().getReasonPhrase());
             }
 
         } catch (RuntimeException e) {
 
-            status.append("$arenaforvalter&status: ");
+            status.append("$ArenaForvalter&status: ");
             appendErrorText(status, e);
-            log.error("Feilet å lese eller slette ident i ArenaForvalter: ", e);
+            log.error("Feilet å hente eller inaktivere bruker i ArenaForvalter: ", e);
         }
     }
 
     private void sendArenadata(ArenaServicedata arenaServicedata, StringBuilder status) {
 
         try {
-            status.append("$arenaOpprettBruker&status: ");
+            status.append("$OpprettNyBruker&status: ");
 
-            arenaForvalterConsumer.postArenadata(arenaServicedata);
-            status.append("OK");
+            ResponseEntity<JsonNode> response = arenaForvalterConsumer.postArenadata(arenaServicedata);
+            status.append(response.hasBody() ? response.getBody().get("arbeidsokerList").get(0).get("status").asText() : "Ukjent");
 
         } catch (RuntimeException e) {
 
             appendErrorText(status, e);
-            log.error("Feilet å legge inn bruker i ArenaForvalter: ", e);
+            log.error("Feilet å legge inn ny bruker i ArenaForvalter: ", e);
         }
     }
 

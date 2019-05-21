@@ -17,7 +17,7 @@ public final class BestillingArenaforvalterStatusMapper {
     private BestillingArenaforvalterStatusMapper() {
     }
 
-    public static List<RsMeldingStatusIdent> buildArenaforvalterStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsMeldingStatusIdent> buildArenaStatusMap(List<BestillingProgress> progressList) {
 
         //  melding     status      ident
         Map<String, Map<String, List<String>>> msgStatusIdents = new HashMap();
