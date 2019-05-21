@@ -6,6 +6,7 @@ import './AutofillAddress.less'
 import InputSelector from '~/components/fields/InputSelector'
 import { Field } from 'formik'
 import LinkButton from '~/components/button/LinkButton/LinkButton'
+import FilledAddress from './FilledAddress'
 
 const initialState = {
 	isFetching: false,
@@ -27,8 +28,20 @@ export default class AutofillAddress extends Component {
 		}
 	}
 
+	componentDidUpdate(prevProps) {
+		const { values } = this.props
+		if (values !== prevProps.values) {
+			this.setState({ ...initialState })
+			this._checkCurrentValues()
+		}
+	}
+
 	render() {
-		const items = this.props.items
+		const { currentMal, items, values, formikProps, setValues } = this.props
+		if (currentMal && values.boadresse_gatekode) {
+			return <FilledAddress values={values} setValues={setValues} />
+		}
+
 		return (
 			<Fragment>
 				<div className="address-wrapper">
@@ -206,7 +219,6 @@ export default class AutofillAddress extends Component {
 					: (generateAddressResponse = await TpsfApi.generateRandomAddress())
 
 				const addressData = generateAddressResponse.data.response.data1.adrData
-				console.log('addressData', addressData)
 				this.setState({ gyldigeAdresser: addressData })
 
 				let status = generateAddressResponse.data.response.status.utfyllendeMelding
