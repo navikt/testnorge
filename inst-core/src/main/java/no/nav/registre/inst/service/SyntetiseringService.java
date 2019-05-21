@@ -1,9 +1,9 @@
 package no.nav.registre.inst.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.IdentMedData;
 import no.nav.registre.inst.InstSaveInHodejegerenRequest;
 import no.nav.registre.inst.Institusjonsforholdsmelding;
-import no.nav.registre.inst.Kilde;
 import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -103,16 +102,13 @@ public class SyntetiseringService {
             }
         }
 
-        List<InstSaveInHodejegerenRequest> hodejegerenRequests = historikkSomSkalLagres.parallelStream().map(f -> InstSaveInHodejegerenRequest.builder()
-                .id(f.getPersonident())
-                .kilde(
-                        Kilde.builder()
-                                .navn(INST_NAME)
-                                .data(Collections.singletonList(f))
-                                .build()
-                ).build()).collect(Collectors.toList());
+        List<IdentMedData> identerMedData = new ArrayList<>();
+        for (Institusjonsforholdsmelding institusjonsforholdsmelding : historikkSomSkalLagres){
+            identerMedData.add(new IdentMedData(institusjonsforholdsmelding.getPersonident(), Collections.singletonList(institusjonsforholdsmelding)));
+        }
+        InstSaveInHodejegerenRequest hodejegerenRequest = new InstSaveInHodejegerenRequest(INST_NAME, identerMedData);
 
-        Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequests);
+        Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequest);
         if (savedIds.isEmpty()) {
             log.warn("Kunne ikke lagre historikk på noen identer");
         }

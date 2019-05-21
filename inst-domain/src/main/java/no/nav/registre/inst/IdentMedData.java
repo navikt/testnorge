@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-public class Kilde {
-        private String navn;
-        private List<Institusjonsforholdsmelding> data;
+public class IdentMedData {
+    private String id;
+    private List<Institusjonsforholdsmelding> data;
 }
