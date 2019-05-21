@@ -16,7 +16,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
-import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
+import no.nav.registre.sam.SyntetisertSamordningsmelding;
 import no.nav.registre.sam.utils.DateUtils;
 
 @Getter
