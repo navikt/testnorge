@@ -102,7 +102,7 @@ public class SyntetiseringService {
             }
         }
 
-        List<IdentMedData> identerMedData = new ArrayList<>();
+        List<IdentMedData> identerMedData = new ArrayList<>(historikkSomSkalLagres.size());
         for (Institusjonsforholdsmelding institusjonsforholdsmelding : historikkSomSkalLagres){
             identerMedData.add(new IdentMedData(institusjonsforholdsmelding.getPersonident(), Collections.singletonList(institusjonsforholdsmelding)));
         }
