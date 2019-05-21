@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,22 +27,22 @@ public class HodejegerenConsumer {
     @Autowired
     private RestTemplate restTemplate;
 
-    private UriTemplate url;
+    private UriTemplate hentLevendeIdenterUrl;
 
-    private final String hodejegerenSaveHistorikk;
+    private UriTemplate hodejegerenSaveHistorikk;
 
     private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
     };
 
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
-        this.url = new UriTemplate(hodejegerenServerUrl + "/v1/alle-levende-identer/{avspillergruppeId}");
-        this.hodejegerenSaveHistorikk = hodejegerenServerUrl + "/v1/historikk/";
+        this.hentLevendeIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/alle-levende-identer/{avspillergruppeId}");
+        this.hodejegerenSaveHistorikk = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/");
     }
 
     @Timed(value = "aareg.resource.latency", extraTags = {"operation", "hodejegeren"})
     public List<String> finnLevendeIdenter(Long avspillergruppeId) {
-        RequestEntity getRequest = RequestEntity.get(url.expand(avspillergruppeId.toString())).build();
+        RequestEntity getRequest = RequestEntity.get(hentLevendeIdenterUrl.expand(avspillergruppeId.toString())).build();
         List<String> levendeIdenter = new ArrayList<>();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
@@ -57,11 +56,11 @@ public class HodejegerenConsumer {
     }
 
     @Timed(value = "tp.resource.latency", extraTags = {"operation", "hodejegeren"})
-    public Set<String> saveHistory(List<InstSaveInHodejegerenRequest> requests) {
+    public Set<String> saveHistory(InstSaveInHodejegerenRequest request) {
 
-        RequestEntity<List<InstSaveInHodejegerenRequest>> body = RequestEntity.post(URI.create(hodejegerenSaveHistorikk)).body(requests);
+        RequestEntity<InstSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
 
-        ResponseEntity<Set<String>> response = restTemplate.exchange(body, RESPONSE_TYPE_SET);
+        ResponseEntity<Set<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_SET);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();

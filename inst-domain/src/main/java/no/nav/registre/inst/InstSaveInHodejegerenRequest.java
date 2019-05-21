@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
 public class InstSaveInHodejegerenRequest {
-    private String id;
-    private Kilde kilde;
+    private String kilde;
+    private List<IdentMedData> data;
 }
