@@ -60,7 +60,6 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 			value = _formatValueForObject(key, value)
 
 			if (key === 'boadresse') {
-				//TODO: boAdresse fungerer ikke ennaa
 				_mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
 			} else if (key === 'postadresse') {
 				_mapValuesToObject(objectToAssign, Object.entries(value[0]))

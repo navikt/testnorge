@@ -22,10 +22,6 @@ export default class AutofillAddress extends Component {
 
 	componentDidMount() {
 		!this.state.harSjekketValues && this._checkCurrentValues()
-
-		if (this.props.currentMal) {
-			console.log('currentMal :', this.props.currentMal)
-		}
 	}
 
 	componentDidUpdate(prevProps) {
@@ -68,7 +64,6 @@ export default class AutofillAddress extends Component {
 								Hent gyldige adresser
 							</Knapp>
 						)}
-						{/* {this.state.gyldigeAdresser && this._renderAdresseSelect()} */}
 						{this.state.gyldigeAdresser && this._renderAdresseSelect()}
 						{this.state.gyldigeAdresser === undefined && <p>Fant ingen gyldige adresser</p>}
 					</div>
