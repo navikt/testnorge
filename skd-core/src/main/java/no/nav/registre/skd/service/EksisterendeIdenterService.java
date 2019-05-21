@@ -163,9 +163,6 @@ public class EksisterendeIdenterService {
             String identPartner;
 
             identPartner = statusQuoIdent.get(FNR_RELASJON);
-            if (identPartner.length() != 11) { // TODO - Fjerne denne når feilen med tomme fnr er oppdaget/fikset
-                log.error("behandleSeperasjonSkilsmisse: Feil på fnr {} fra FNR_RELASJON. Fnr har en lengde på {}", identPartner, identPartner.length());
-            }
 
             statusQuoPartnerIdent = getStatusQuoPaaIdent(endringskode, environment, identPartner);
 
@@ -219,7 +216,7 @@ public class EksisterendeIdenterService {
             if (KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(statusQuoIdent.get(SIVILSTAND))) {
                 identPartner = statusQuoIdent.get(FNR_RELASJON);
 
-                if (identPartner.length() != 11) { // TODO - Fjerne denne når feilen med tomme fnr er oppdaget/fikset
+                if (identPartner.length() != 11) {
                     log.warn("behandleDoedsmelding: Feil på fnr {} fra FNR_RELASJON. Fnr har en lengde på {}. Hopper over sivilstandendringsmelding på partner.",
                             identPartner, identPartner.length());
                     putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
@@ -294,9 +291,6 @@ public class EksisterendeIdenterService {
             }
             randomIndex = rand.nextInt(identer.size());
             randomIdent = identer.remove(randomIndex);
-            if (randomIdent.length() != 11) { // TODO - Fjerne denne når feilen med tomme fnr er oppdaget/fikset
-                log.error("findExistingPersonStatusInTps: Feil på fnr {} i randomIdent. Fnr har en lengde på {}", randomIdent, randomIdent.length());
-            }
             try {
                 statusQuoIdent = getStatusQuoPaaIdent(endringskode, environment, randomIdent);
                 break;
