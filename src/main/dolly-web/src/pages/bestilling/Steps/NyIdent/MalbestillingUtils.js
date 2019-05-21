@@ -11,6 +11,10 @@ export const getAttributesFromMal = mal => {
 		}
 	})
 
+	if (tpsfKriterier.boadresse) {
+		tpsfKriterier.boadresse.flyttedato && attrArray.push('boadresse_flyttedato')
+	}
+
 	if (tpsfKriterier.relasjoner) {
 		tpsfKriterier.relasjoner.barn && attrArray.push('barn')
 		tpsfKriterier.relasjoner.partner && attrArray.push('partner')
@@ -37,7 +41,6 @@ export const getValuesFromMal = mal => {
 		}
 	})
 
-	console.log('reduStateValue :', reduxStateValue)
 	return reduxStateValue
 }
 
@@ -95,7 +98,15 @@ const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = ''
 }
 
 const _formatValueForObject = (key, value) => {
-	const dateAttributes = ['foedtFoer', 'foedtEtter', 'doedsdato', 'fom', 'tom', 'gyldigFra']
+	const dateAttributes = [
+		'foedtFoer',
+		'foedtEtter',
+		'doedsdato',
+		'fom',
+		'tom',
+		'gyldigFra',
+		'flyttedato'
+	]
 
 	if (dateAttributes.includes(key)) {
 		value = Formatters.formatDate(value)
@@ -124,7 +135,6 @@ const _mapRegistreValue = (key, value) => {
 	let mappedValue = []
 	switch (key) {
 		case 'aareg':
-			console.log('value :', value)
 			value.forEach(arb => {
 				let arbObj = {
 					yrke: arb.arbeidsavtale.yrke,
@@ -156,31 +166,6 @@ const _mapRegistreValue = (key, value) => {
 
 				mappedValue.push(arbObj)
 			})
-			// arbeidsforhold[
-			// 	{
-			// 	  "yrke": "3310101",
-			// 	  "fom": "20.05.1999",
-			// 	  "tom": "",
-			// 	  "stillingsprosent": 100,
-			// 	  "aktoertype": "PERS",
-			// 	  "permisjon": [
-			// 		{
-			// 		  "permisjonOgPermittering": "permisjonVedMilitaertjeneste",
-			// 		  "fom": "01.05.2017",
-			// 		  "tom": "01.05.2017",
-			// 		  "permisjonsprosent": 100
-			// 		}
-			// 	  ],
-			// 	  "utenlandsopphold": [
-			// 		{
-			// 		  "land": "DZ",
-			// 		  "fom": "20.05.2019",
-			// 		  "tom": "10.05.2019"
-			// 		}
-			// 	  ],
-			// 	  "ident": "25016214941"
-			// 	}
-			//   ]
 
 			return mappedValue
 		case 'sigrunStub':
