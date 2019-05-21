@@ -77,7 +77,7 @@ public class ArenaForvalterClient implements ClientRegister {
             ResponseEntity<JsonNode> response = arenaForvalterConsumer.getIdent(ident);
             status.append(response.getStatusCode().getReasonPhrase());
 
-            if (response.hasBody() && response.getBody().get("arbeidsokerList").size() > 0) {
+            if (response.hasBody() && nonNull(response.getBody().get("arbeidsokerList")) && response.getBody().get("arbeidsokerList").size() > 0) {
                 status.append("$InaktiverBruker&status: ");
                 ResponseEntity<JsonNode> deleteResponse = arenaForvalterConsumer.deleteIdent(ident);
                 status.append(deleteResponse.getStatusCode().getReasonPhrase());
@@ -97,7 +97,8 @@ public class ArenaForvalterClient implements ClientRegister {
             status.append("$OpprettNyBruker&status: ");
 
             ResponseEntity<JsonNode> response = arenaForvalterConsumer.postArenadata(arenaServicedata);
-            status.append(response.hasBody() ? response.getBody().get("arbeidsokerList").get(0).get("status").asText() : "Ukjent");
+            status.append(response.hasBody() && nonNull(response.getBody().get("arbeidsokerList")) ?
+                    response.getBody().get("arbeidsokerList").get(0).get("status").asText() : "Ukjent");
 
         } catch (RuntimeException e) {
 

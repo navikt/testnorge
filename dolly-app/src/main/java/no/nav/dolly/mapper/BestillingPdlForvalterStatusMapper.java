@@ -9,14 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingPdlForvalterStatusMapper {
-
-    private BestillingPdlForvalterStatusMapper() {
-
-    }
 
     public static List<RsMeldingStatusIdent> buildPdldataStatusMap(List<BestillingProgress> progressList) {
 

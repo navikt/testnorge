@@ -8,14 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
 
-public class BestillingMeldingStatusIdentMapper {
-
-    private BestillingMeldingStatusIdentMapper() {
-
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class BestillingMeldingStatusIdentMapper {
 
     protected static Consumer<String> resolveStatus(Map<String, Map<String, List<String>>> msgStatusIdents, BestillingProgress progress) {
 
