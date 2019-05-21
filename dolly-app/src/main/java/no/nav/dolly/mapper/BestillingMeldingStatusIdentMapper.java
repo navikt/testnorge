@@ -16,7 +16,7 @@ import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingMeldingStatusIdentMapper {
 
-    protected static Consumer<String> resolveStatus(Map<String, Map<String, List<String>>> msgStatusIdents, BestillingProgress progress) {
+    public static Consumer<String> resolveStatus(Map<String, Map<String, List<String>>> msgStatusIdents, BestillingProgress progress) {
 
         return message -> {
             String[] melding = message.split("\\&");
@@ -34,16 +34,7 @@ public final class BestillingMeldingStatusIdentMapper {
         };
     }
 
-    protected static void appendStatusIdent(Map<String, List<String>> stringListMap, BestillingProgress progress, String status) {
-
-        if (stringListMap.containsKey(status)) {
-            stringListMap.get(status).add(progress.getIdent());
-        } else {
-            stringListMap.put(status, newArrayList(progress.getIdent()));
-        }
-    }
-
-    protected static List<RsMeldingStatusIdent> prepareResult(Map<String, Map<String, List<String>>> msgStatusIdents) {
+    public static List<RsMeldingStatusIdent> prepareResult(Map<String, Map<String, List<String>>> msgStatusIdents) {
 
         List<RsMeldingStatusIdent> result = new ArrayList();
         msgStatusIdents.keySet().forEach(melding ->
@@ -52,5 +43,14 @@ public final class BestillingMeldingStatusIdentMapper {
                         .statusIdent(msgStatusIdents.get(melding))
                         .build()));
         return result;
+    }
+
+    private static void appendStatusIdent(Map<String, List<String>> stringListMap, BestillingProgress progress, String status) {
+
+        if (stringListMap.containsKey(status)) {
+            stringListMap.get(status).add(progress.getIdent());
+        } else {
+            stringListMap.put(status, newArrayList(progress.getIdent()));
+        }
     }
 }
