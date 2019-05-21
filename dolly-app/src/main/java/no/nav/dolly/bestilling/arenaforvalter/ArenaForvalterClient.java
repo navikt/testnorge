@@ -38,32 +38,32 @@ public class ArenaForvalterClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
-        if (nonNull(bestilling.getArenaForvalter())) {
+        if (nonNull(bestilling.getArenaforvalter())) {
 
             StringBuilder status = new StringBuilder();
 
             if (bestilling.getEnvironments().contains(ARENA_FORVALTER_ENV)) {
 
-                bestilling.getArenaForvalter().setPersonident(norskIdent.getIdent());
+                bestilling.getArenaforvalter().setPersonident(norskIdent.getIdent());
                 checkAndDeleteArenadata(norskIdent.getIdent(), status);
 
-                if (UTEN_SERVICEBEHOV.equals(bestilling.getArenaForvalter().getArenaBrukertype())) {
+                if (UTEN_SERVICEBEHOV.equals(bestilling.getArenaforvalter().getArenaBrukertype())) {
 
                     sendArenadata(ArenaBrukereUtenServicebehov.builder()
                             .nyeBrukereUtenServiceBehov(singletonList(
-                                    mapperFacade.map(bestilling.getArenaForvalter(), ArenaBrukerUtenServicebehov.class)))
+                                    mapperFacade.map(bestilling.getArenaforvalter(), ArenaBrukerUtenServicebehov.class)))
                             .build(), status);
                 } else {
 
                     sendArenadata(ArenaBrukereMedServicebehov.builder()
                             .nyeBrukere(singletonList(
-                                    mapperFacade.map(bestilling.getArenaForvalter(), ArenaBrukerMedServicebehov.class)))
+                                    mapperFacade.map(bestilling.getArenaforvalter(), ArenaBrukerMedServicebehov.class)))
                             .build(), status);
                 }
 
             } else {
 
-                status.append(format("$Info: Brukere ikke opprettet i ArenaForvalter da miljø '%s' ikke er valgt", ARENA_FORVALTER_ENV));
+                status.append(format("$arenaforvalter&Status: Feil: Brukere ikke opprettet i ArenaForvalter da miljø '%s' ikke er valgt", ARENA_FORVALTER_ENV));
             }
             progress.setArenaforvalterStatus(status.substring(1));
         }
@@ -80,7 +80,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
         } catch (RuntimeException e) {
 
-            status.append("$arenabruker&status: ");
+            status.append("$arenaforvalter&status: ");
             appendErrorText(status, e);
             log.error("Feilet å lese eller slette ident i ArenaForvalter: ", e);
         }

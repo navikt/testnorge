@@ -21,7 +21,7 @@ public class EnvironmentPropsControllerTest {
     private static final String SIGRUNSTUB = "sigrunstub";
     private static final String KRRSTUB = "krrstub";
     private static final String KODEVERK = "kodeverk";
-    private static final String ARENAFORVALTER = "arenaForvalter";
+    private static final String ARENAFORVALTER = "arenaforvalter";
 
     @Mock
     private ProvidersProps providersProps;

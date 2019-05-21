@@ -29,7 +29,7 @@ public class RsDollyBestilling {
     private List<RsOpprettSkattegrunnlag> sigrunstub;
     private RsDigitalKontaktdata krrstub;
     private List<RsArbeidsforhold> aareg;
-    private Arenadata arenaForvalter;
+    private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;
 
     public List<RsArbeidsforhold> getAareg() {

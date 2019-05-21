@@ -5,7 +5,7 @@ import static java.lang.String.join;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
-import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMpper.buildPdldataStatusMap;
+import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
 
 import java.util.ArrayList;
 import java.util.Comparator;

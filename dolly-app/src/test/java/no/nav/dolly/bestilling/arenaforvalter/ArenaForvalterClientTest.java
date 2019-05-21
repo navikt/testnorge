@@ -75,7 +75,7 @@ public class ArenaForvalterClientTest {
         when(arrayNode.size()).thenReturn(1);
 
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                .arenaForvalter(Arenadata.builder().build())
+                .arenaforvalter(Arenadata.builder().build())
                 .environments(singletonList(ARENA_ENV))
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
@@ -97,7 +97,7 @@ public class ArenaForvalterClientTest {
         when(jsonNode.get("arbeidsokerList")).thenReturn(arrayNode);
 
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                .arenaForvalter(Arenadata.builder().build())
+                .arenaforvalter(Arenadata.builder().build())
                 .environments(singletonList(ARENA_ENV))
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
@@ -111,10 +111,10 @@ public class ArenaForvalterClientTest {
 
         BestillingProgress progress = new BestillingProgress();
         arenaForvalterClient.gjenopprett(RsDollyBestilling.builder()
-                        .arenaForvalter(Arenadata.builder().build()).build(),
+                        .arenaforvalter(Arenadata.builder().build()).build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("Info: Brukere ikke opprettet i ArenaForvalter da miljø 'q2' ikke er valgt")));
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("arenaforvalter&Status: Feil: Brukere ikke opprettet i ArenaForvalter da miljø 'q2' ikke er valgt")));
     }
 
     @Test

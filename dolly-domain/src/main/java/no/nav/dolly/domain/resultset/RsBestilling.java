@@ -35,7 +35,7 @@ public class RsBestilling {
     private Set<RsStatusIdent> krrStubStatus;
     private Set<RsStatusIdent> sigrunStubStatus;
     private Set<RsStatusMiljoeIdentForhold> aaregStatus;
-    private Set<RsStatusIdent> arenaforvalterStatus;
+    private Set<RsMeldingStatusIdent> arenaforvalterStatus;
     private Set<RsMeldingStatusIdent> pdlforvalterStatus;
 
     private List<RsBestillingProgress> bestillingProgress;
@@ -89,7 +89,7 @@ public class RsBestilling {
         return aaregStatus;
     }
 
-    public Set<RsStatusIdent> getArenaforvalterStatus() {
+    public Set<RsMeldingStatusIdent> getArenaforvalterStatus() {
         if (isNull(arenaforvalterStatus)) {
             arenaforvalterStatus = new HashSet();
         }
