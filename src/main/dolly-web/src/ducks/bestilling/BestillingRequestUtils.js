@@ -2,6 +2,7 @@ import DataFormatter from '~/utils/DataFormatter'
 import DataSourceMapper from '~/utils/DataSourceMapper'
 import _groupBy from 'lodash/groupBy'
 import _set from 'lodash/set'
+import _isEmpty from 'lodash/isEmpty'
 
 // TODO: Kan getValues og transformAttributt merges?
 export const getValues = (attributeList, values) => {
@@ -41,7 +42,7 @@ export const getValues = (attributeList, values) => {
 					const id = item.id
 					const keyValue = findAaregKeyValue(item, element)
 					if (item.id === 'utenlandsopphold' || item.id === 'permisjon') {
-						if ((keyValue && keyValue.length < 1) || !keyValue) return
+						if (!keyValue || _isEmpty(keyValue[0])) return
 					}
 					item.subItems
 						? Object.assign(aaregObj, { [path]: keyValue })
@@ -67,9 +68,6 @@ export const getValues = (attributeList, values) => {
 						avtaltArbeidstimerPerUke: 37.5
 					}
 				})
-				// if (aaregObj.utenlandsopphold && aaregObj.utenlandsopphold.length < 1) {
-				// 	const { utenlandsopphold, ...aaregUten } = aaregObj
-				// }
 				if (aaregObj.permisjon) {
 					aaregObj.permisjon.map((perm, idx) => {
 						perm.permisjonOgPermittering &&

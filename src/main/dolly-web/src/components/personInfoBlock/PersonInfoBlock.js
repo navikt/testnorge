@@ -25,9 +25,8 @@ export default class PersonInfoBlock extends PureComponent {
 							v.subItem && subItems.push(v)
 							return !v.subItem
 						})
-
 						return (
-							<Fragment>
+							<Fragment key={idx}>
 								{this.renderPersonInfoBlock(
 									subBlock.value,
 									subBlock.label,
@@ -72,14 +71,15 @@ export default class PersonInfoBlock extends PureComponent {
 								{subItem.map((v, k) => {
 									// map gjennom attributt
 									let apiKodeverkId
-									attributt.items.map(item => {
-										item.path.includes(subItemId) &&
-											item.subItems.map(subsubItem => {
-												subsubItem.id === v.id &&
-													subsubItem.apiKodeverkId &&
-													(apiKodeverkId = subsubItem.apiKodeverkId)
-											})
-									})
+									attributt &&
+										attributt.items.map(item => {
+											item.path.includes(subItemId) &&
+												item.subItems.map(subsubItem => {
+													subsubItem.id === v.id &&
+														subsubItem.apiKodeverkId &&
+														(apiKodeverkId = subsubItem.apiKodeverkId)
+												})
+										})
 									const staticValueProps = {
 										key: k,
 										size: v.width && v.width,
