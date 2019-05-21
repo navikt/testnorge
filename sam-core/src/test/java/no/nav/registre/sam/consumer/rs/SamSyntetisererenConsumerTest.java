@@ -43,7 +43,6 @@ public class SamSyntetisererenConsumerTest {
         stubSamSyntetisererenConsumer();
 
         List<SyntetisertSamordningsmelding> response = samSyntetisererenConsumer.hentSammeldingerFromSyntRest(antallMeldinger);
-        System.out.println(response);
 
         assertThat(response.get(0).getDatoEndret(), equalTo("10.02.2010"));
         assertThat(response.get(0).getKSamHendelseT(), equalTo("VEDTAKNAV"));

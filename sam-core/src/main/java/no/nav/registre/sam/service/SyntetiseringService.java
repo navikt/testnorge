@@ -1,7 +1,7 @@
 package no.nav.registre.sam.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sam.Kilde;
+import no.nav.registre.sam.IdentMedData;
 import no.nav.registre.sam.SamSaveInHodejegerenRequest;
 import no.nav.registre.sam.SyntetisertSamordningsmelding;
 import no.nav.registre.sam.consumer.rs.HodejegerenConsumer;
@@ -21,11 +21,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -84,16 +85,11 @@ public class SyntetiseringService {
             }
         }
 
-        List<SamSaveInHodejegerenRequest> hodejegerenRequests = historikkSomSkalLagres.entrySet().parallelStream()
-                .map(f -> SamSaveInHodejegerenRequest.builder()
-                        .id(f.getKey())
-                        .kilde(
-                                Kilde.builder()
-                                        .navn(SAM_NAME)
-                                        .data(Collections.singletonList(f.getValue()))
-                                        .build()
-                        ).build()
-                ).collect(Collectors.toList());
+        List<IdentMedData> identerMedData = new ArrayList<>();
+        for(Map.Entry<String, SyntetisertSamordningsmelding> personInfo : historikkSomSkalLagres.entrySet()){
+            identerMedData.add(new IdentMedData(personInfo.getKey(), Collections.singletonList(personInfo.getValue())));
+        }
+        SamSaveInHodejegerenRequest hodejegerenRequests = new SamSaveInHodejegerenRequest(SAM_NAME, identerMedData);
 
         Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequests);
         if (savedIds.isEmpty()) {

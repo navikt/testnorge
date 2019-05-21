@@ -26,25 +26,25 @@ public class HodejegerenConsumer {
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
     };
 
-    private final String hodejegerenSaveHistorikk;
-
     private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
     };
 
     @Autowired
     private RestTemplate restTemplate;
 
-    private UriTemplate url;
+    private UriTemplate hentLevendeIdenterUrl;
+
+    private UriTemplate hodejegerenSaveHistorikk;
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
-        this.url = new UriTemplate(hodejegerenServerUrl +
+        this.hentLevendeIdenterUrl = new UriTemplate(hodejegerenServerUrl +
                 "/v1/levende-identer/{avspillergruppeId}?miljoe={miljoe}&antallPersoner={antallIdenter}");
-        this.hodejegerenSaveHistorikk = hodejegerenServerUrl + "/v1/historikk";
+        this.hodejegerenSaveHistorikk = new UriTemplate(hodejegerenServerUrl + "/v1/historikk");
     }
 
     @Timed(value = "sam.resource.latency", extraTags = {"operation", "hodejegeren"})
     public List<String> finnLevendeIdenter(SyntetiserSamRequest syntetiserSamRequest) {
-        RequestEntity getRequest = RequestEntity.get(url.expand(
+        RequestEntity getRequest = RequestEntity.get(hentLevendeIdenterUrl.expand(
                 syntetiserSamRequest.getAvspillergruppeId(),
                 syntetiserSamRequest.getMiljoe(),
                 syntetiserSamRequest.getAntallMeldinger()))
@@ -62,12 +62,12 @@ public class HodejegerenConsumer {
         return identer;
     }
 
-    @Timed(value = "tp.resource.latency", extraTags = {"operation", "hodejegeren"})
-    public Set<String> saveHistory(List<SamSaveInHodejegerenRequest> requests) {
+    @Timed(value = "sam.resource.latency", extraTags = {"operation", "hodejegeren"})
+    public Set<String> saveHistory(SamSaveInHodejegerenRequest request) {
 
-        RequestEntity<List<SamSaveInHodejegerenRequest>> body = RequestEntity.post(URI.create(hodejegerenSaveHistorikk)).body(requests);
+        RequestEntity<SamSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
 
-        ResponseEntity<Set<String>> response = restTemplate.exchange(body, RESPONSE_TYPE_SET);
+        ResponseEntity<Set<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_SET);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
