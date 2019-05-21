@@ -121,8 +121,41 @@ const _mapRegistreKey = key => {
 }
 
 const _mapRegistreValue = (key, value) => {
+	let mappedValue = []
 	switch (key) {
 		case 'aareg':
+			console.log('value :', value)
+			value.forEach(arb => {
+				let arbObj = {
+					yrke: arb.arbeidsavtale.yrke,
+					fom: Formatters.formatDate(arb.ansettelsesPeriode.fom),
+					tom: Formatters.formatDate(arb.ansettelsesPeriode.tom),
+					stillingsprosent: arb.arbeidsavtale.stillingsprosent,
+					aktoertype: arb.arbeidsgiver.aktoertype,
+					permisjon:
+						arb.permisjon &&
+						arb.permisjon.map(per => ({
+							permisjonOgPermittering: per.permisjonOgPermittering,
+							fom: Formatters.formatDate(per.permisjonsPeriode.fom),
+							tom: Formatters.formatDate(per.permisjonsPeriode.tom),
+							permisjonsprosent: per.permisjonsprosent
+						})),
+					utenlandsopphold:
+						arb.utenlandsopphold &&
+						arb.utenlandsopphold.map(utl => ({
+							land: utl.land,
+							fom: Formatters.formatDate(utl.periode.fom),
+							tom: Formatters.formatDate(utl.periode.tom)
+						}))
+				}
+
+				if (arb.arbeidsgiver.aktoertype === 'ORG') {
+					arbObj = { ...arbObj, orgnummer: arb.arbeidsgiver.orgnummer }
+				} else if (arb.arbeidsgiver.aktoertype === 'PERS')
+					arbObj = { ...arbObj, ident: arb.arbeidsgiver.ident }
+
+				mappedValue.push(arbObj)
+			})
 			// arbeidsforhold[
 			// 	{
 			// 	  "yrke": "3310101",
@@ -149,9 +182,8 @@ const _mapRegistreValue = (key, value) => {
 			// 	}
 			//   ]
 
-			return value
+			return mappedValue
 		case 'sigrunStub':
-			let mappedValue = []
 			value.forEach(inntekt => {
 				inntekt.grunnlag.forEach(g => {
 					mappedValue.push({
