@@ -111,11 +111,12 @@ export const FieldArrayComponent = ({
 																		<div className="subItem-header">
 																			<div style={{ display: 'flex' }}>
 																				{jdx === 0 && <h4>{item.label}</h4>}
-																				{item.informasjonstekst && (
-																					<ContentTooltip>
-																						<span>{item.informasjonstekst}</span>
-																					</ContentTooltip>
-																				)}
+																				{jdx === 0 &&
+																					item.informasjonstekst && (
+																						<ContentTooltip>
+																							<span>{item.informasjonstekst}</span>
+																						</ContentTooltip>
+																					)}
 																			</div>
 																		</div>
 																		<div className="subitem-container-button">
