@@ -21,7 +21,7 @@ public class ProvidersProps {
     private Kodeverk kodeverk = new Kodeverk();
     private Norg2 norg2 = new Norg2();
     private Fasit fasit = new Fasit();
-    private ArenaStub arenaStub = new ArenaStub();
+    private ArenaForvalter arenaForvalter = new ArenaForvalter();
     private PdlForvalter pdlForvalter = new PdlForvalter();
     private PersonOppslag personOppslag = new PersonOppslag();
 
@@ -89,7 +89,7 @@ public class ProvidersProps {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ArenaStub {
+    public static class ArenaForvalter {
 
         private String url;
     }

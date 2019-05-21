@@ -21,7 +21,7 @@ public class EnvironmentPropsControllerTest {
     private static final String SIGRUNSTUB = "sigrunstub";
     private static final String KRRSTUB = "krrstub";
     private static final String KODEVERK = "kodeverk";
-    private static final String ARENASTUB = "arenastub";
+    private static final String ARENAFORVALTER = "arenaforvalter";
 
     @Mock
     private ProvidersProps providersProps;
@@ -39,8 +39,8 @@ public class EnvironmentPropsControllerTest {
                 .url(SIGRUNSTUB).build());
         when(providersProps.getKrrStub()).thenReturn(ProvidersProps.KrrStub.builder()
                 .url(KRRSTUB).build());
-        when(providersProps.getArenaStub()).thenReturn(ProvidersProps.ArenaStub.builder()
-                .url(ARENASTUB).build());
+        when(providersProps.getArenaForvalter()).thenReturn(ProvidersProps.ArenaForvalter.builder()
+                .url(ARENAFORVALTER).build());
     }
 
     @Test
@@ -50,6 +50,6 @@ public class EnvironmentPropsControllerTest {
         assertThat(props.getKrrStubUrl(), is(KRRSTUB));
         assertThat(props.getTpsfUrl(), is(TPSF));
         assertThat(props.getSigrunStubUrl(), is(SIGRUNSTUB));
-        assertThat(props.getArenaStubUrl(), is(ARENASTUB));
+        assertThat(props.getArenaForvalterUrl(), is(ARENAFORVALTER));
     }
 }

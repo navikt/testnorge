@@ -1,6 +1,4 @@
-package no.nav.dolly.domain.resultset.arenastub;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+package no.nav.dolly.domain.resultset.arenaforvalter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,10 +11,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsArenadata {
+public class ArenaBrukerMedServicebehov {
 
-    @JsonIgnore
     private String personident;
-
     private Kvalifiseringsgruppe kvalifiseringsgruppe;
 }

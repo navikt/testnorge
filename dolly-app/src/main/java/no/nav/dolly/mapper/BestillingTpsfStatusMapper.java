@@ -10,15 +10,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusMiljoeIdent;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingTpsfStatusMapper {
 
     private static final String SUCCESS = "OK";
-
-    private BestillingTpsfStatusMapper() {
-    }
 
     public static List<RsStatusMiljoeIdent> buildTpsfStatusMap(List<BestillingProgress> progressList) {
         Map<String, Map<String, Set<String>>> errorEnvIdents = new HashMap<>();

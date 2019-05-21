@@ -70,10 +70,10 @@ fasitResources:
     propertyMap:
       url: providers.fasit.url
 
-  - alias: arenaStub.host
+  - alias: arenaForvalter.host
     resourceType: baseurl
     propertyMap:
-      url: providers.arenaStub.url
+      url: providers.arenaForvalter.url
 
   - alias: pdlForvalter.host
     resourceType: baseurl
