@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdlforvalter;
 
 import static java.time.LocalDate.now;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,8 +93,9 @@ public class PdlForvalterClient implements ClientRegister {
 
                 PdlKontaktinformasjonForDoedsbo kontaktinformasjon = pdldata.getKontaktinformasjonForDoedsbo();
                 kontaktinformasjon.setKilde(KILDE);
-                kontaktinformasjon.setUtstedtDato(
-                        nullcheckSetDefaultValue(kontaktinformasjon.getUtstedtDato(), now()));
+                kontaktinformasjon.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjon.getUtstedtDato(), now()));
+                kontaktinformasjon.setLandkode(blankcheckSetDefaultValue(kontaktinformasjon.getLandkode(), "NOR"));
+
                 ResponseEntity<JsonNode> response =
                         pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjon, norskIdent.getIdent());
 
