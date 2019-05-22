@@ -1,6 +1,7 @@
 package no.nav.registre.skd.provider.rs;
 
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
@@ -52,7 +53,7 @@ public class SyntetiseringControllerTest {
     @Test
     public void shouldGenerereSkdMeldingerOgSendeIdenterTilHodejegeren() {
         syntetiseringController.genererSkdMeldinger(genereringsOrdreRequest);
-        verify(hodejegerDatabaseService).sendIdenterMedSkdMeldingerTilHodejegeren(anyList());
+        verify(hodejegerDatabaseService).sendIdenterMedSkdMeldingerTilHodejegeren(anyList(), eq(miljoe));
         verify(syntetiseringService).puttIdenterIMeldingerOgLagre(genereringsOrdreRequest);
     }
 

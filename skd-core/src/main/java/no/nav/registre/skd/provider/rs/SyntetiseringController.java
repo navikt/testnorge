@@ -48,7 +48,7 @@ public class SyntetiseringController {
     @PostMapping(value = "/generer")
     public ResponseEntity genererSkdMeldinger(@RequestBody GenereringsOrdreRequest genereringsOrdreRequest) {
         ResponseEntity genererSkdMeldingerResponse = syntetiseringService.puttIdenterIMeldingerOgLagre(genereringsOrdreRequest);
-        hodejegerDatabaseService.sendIdenterMedSkdMeldingerTilHodejegeren(syntetiseringService.getIdenterMedSkdMeldinger());
+        hodejegerDatabaseService.sendIdenterMedSkdMeldingerTilHodejegeren(syntetiseringService.getIdenterMedSkdMeldinger(), genereringsOrdreRequest.getMiljoe());
         return genererSkdMeldingerResponse;
     }
 

@@ -145,7 +145,6 @@ public class FeilhaandteringCompTest {
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/status-quo/NAVNEENDRING_FOERSTE/t10/01010101010"))
                 .willReturn(aResponse().withStatus(500).withBody("{\"message\":\"" + testfeilmelding + "\"}")));
 
-
     }
 
     private void stubTpsf(long gruppeId) {
@@ -191,7 +190,7 @@ public class FeilhaandteringCompTest {
     }
 
     private void stubHodejegerenSendIdenter(String okJsonResponse) {
-        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/historikk/skd/oppdaterStatus"))
+        stubFor(post(urlEqualTo("/hodejegeren/api/v1/historikk/skd/oppdaterStatus?miljoe=" + miljoe))
                 .willReturn(okJson(okJsonResponse)));
     }
 

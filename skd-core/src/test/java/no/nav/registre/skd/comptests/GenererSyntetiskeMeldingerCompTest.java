@@ -168,7 +168,7 @@ public class GenererSyntetiskeMeldingerCompTest {
     }
 
     private void stubHodejegerenSendIdenter(String okJsonResponse) {
-        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/historikk/skd/oppdaterStatus"))
+        stubFor(post(urlEqualTo("/hodejegeren/api/v1/historikk/skd/oppdaterStatus?miljoe=" + miljoe))
                 .willReturn(okJson(okJsonResponse)));
     }
 }

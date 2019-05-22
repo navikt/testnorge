@@ -15,8 +15,8 @@ public class HodejegerDatabaseService {
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
 
-    public void sendIdenterMedSkdMeldingerTilHodejegeren(List<String> identerMedSkdMeldinger) {
-        identerMedSkdMeldinger.removeAll(hodejegerenConsumer.sendIdenterMedSkdMeldingerTilHodejegeren(identerMedSkdMeldinger));
+    public void sendIdenterMedSkdMeldingerTilHodejegeren(List<String> identerMedSkdMeldinger, String miljoe) {
+        identerMedSkdMeldinger.removeAll(hodejegerenConsumer.sendIdenterMedSkdMeldingerTilHodejegeren(identerMedSkdMeldinger, miljoe));
         if (!identerMedSkdMeldinger.isEmpty()) {
             log.warn("Følgende identer ble ikke oppdatert i Hodejeger-databasen: {}", identerMedSkdMeldinger.toString());
         }
