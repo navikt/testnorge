@@ -2,6 +2,8 @@ package no.nav.registre.aareg.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
+import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,9 +15,6 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
-import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
 
 @Component
 @Slf4j
@@ -38,7 +37,7 @@ public class AaregstubConsumer {
         this.hentAlleArbeidstakereUrl = new UriTemplate(aaregstubServerUrl + "/v1/hentAlleArbeidstakere");
     }
 
-    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
+    @Timed(value = "aareg.resource.latency", extraTags = {"operation", "aaregstub"})
     public List<String> hentEksisterendeIdenter() {
         RequestEntity getRequest = RequestEntity.get(hentAlleArbeidstakereUrl.expand()).build();
         List<String> eksisterendeIdenter = new ArrayList<>();
@@ -53,7 +52,7 @@ public class AaregstubConsumer {
         return eksisterendeIdenter;
     }
 
-    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
+    @Timed(value = "aareg.resource.latency", extraTags = {"operation", "aaregstub"})
     public StatusFraAaregstubResponse sendTilAaregstub(List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold, Boolean lagreIAareg) {
         RequestEntity postRequest = RequestEntity.post(sendTilAaregstubUrl.expand(lagreIAareg)).body(syntetiserteArbeidsforhold);
         ResponseEntity<StatusFraAaregstubResponse> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_LAGRE);

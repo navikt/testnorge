@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -12,6 +13,9 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import no.nav.registre.aareg.domain.Arbeidsforhold;
+import no.nav.registre.aareg.domain.Arbeidsgiver;
+import no.nav.registre.aareg.domain.Arbeidstaker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,9 +39,6 @@ import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
-import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidsforhold;
-import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidsgiver;
-import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidstaker;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @RunWith(MockitoJUnitRunner.class)

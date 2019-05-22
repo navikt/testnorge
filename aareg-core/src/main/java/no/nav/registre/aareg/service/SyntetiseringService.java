@@ -72,7 +72,6 @@ public class SyntetiseringService {
         StatusFraAaregstubResponse statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforhold, lagreIAareg);
 
         StringBuilder statusFraAaregstub = new StringBuilder();
-        List<String> identerLagretIAareg = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterLagretIStub())) {
             statusFraAaregstub
@@ -82,20 +81,21 @@ public class SyntetiseringService {
         }
 
         if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterLagretIAareg())) {
-            identerLagretIAareg.addAll(statusFraAaregstubResponse.getIdenterLagretIAareg());
             statusFraAaregstub
                     .append("Identer som ble sendt til aareg: ")
-                    .append(identerLagretIAareg)
+                    .append(statusFraAaregstubResponse.getIdenterLagretIAareg())
                     .append(". ");
         }
 
-        List<IdentMedData> arbeidsforholdLagretIAareg = finnArbeidsforholdLagretIAareg(identerLagretIAareg, syntetiserteArbeidsforhold);
+        List<IdentMedData> arbeidsforholdLagretIAareg = finnArbeidsforholdLagretIAareg(statusFraAaregstubResponse.getIdenterLagretIAareg(), syntetiserteArbeidsforhold);
 
-        AaregSaveInHodejegerenRequest hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, arbeidsforholdLagretIAareg);
+        if (!arbeidsforholdLagretIAareg.isEmpty()) {
+            AaregSaveInHodejegerenRequest hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, arbeidsforholdLagretIAareg);
 
-        Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequest);
-        if (savedIds.isEmpty()) {
-            log.warn("Kunne ikke lagre historikk på noen identer");
+            Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequest);
+            if (savedIds.isEmpty()) {
+                log.warn("Kunne ikke lagre historikk på noen identer");
+            }
         }
 
         log.info(statusFraAaregstub.toString());
@@ -113,11 +113,18 @@ public class SyntetiseringService {
 
     public List<IdentMedData> finnArbeidsforholdLagretIAareg(List<String> fnrs, List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
         List<IdentMedData> arbeidsforholdFunnet = new ArrayList<>();
-        for (String fnr : fnrs) {
-            for (ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforhold) {
-                if (fnr == arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent()) {
-                    arbeidsforholdFunnet.add(new IdentMedData(fnr, Collections.singletonList(arbeidsforholdsResponse.getArbeidsforhold())));
-                    break;
+        if (fnrs != null) {
+            for (String fnr : fnrs) {
+                for (ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforhold) {
+                    if (arbeidsforholdsResponse != null
+                            && arbeidsforholdsResponse.getArbeidsforhold() != null
+                            && arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker() != null
+                            && arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent() != null) {
+                        if (fnr == arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent()) {
+                            arbeidsforholdFunnet.add(new IdentMedData(fnr, Collections.singletonList(arbeidsforholdsResponse.getArbeidsforhold())));
+                            break;
+                        }
+                    }
                 }
             }
         }
