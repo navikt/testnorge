@@ -126,6 +126,8 @@ public class GenererSyntetiskeMeldingerCompTest {
 
         // Hodejegeren henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubHodejegerenHentGifteIdenter(gruppeId, "[]");
+
+        stubHodejegerenSendIdenter("[]");
     }
 
     private void stubTpsf(long gruppeId) {
@@ -162,6 +164,11 @@ public class GenererSyntetiskeMeldingerCompTest {
 
     private void stubHodejegerenHentGifteIdenter(long gruppeId, String okJsonResponse) {
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/gifte-identer/" + gruppeId))
+                .willReturn(okJson(okJsonResponse)));
+    }
+
+    private void stubHodejegerenSendIdenter(String okJsonResponse) {
+        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/historikk/skd/oppdaterStatus"))
                 .willReturn(okJson(okJsonResponse)));
     }
 }

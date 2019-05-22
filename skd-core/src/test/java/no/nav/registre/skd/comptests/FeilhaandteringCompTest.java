@@ -140,8 +140,11 @@ public class FeilhaandteringCompTest {
         // Henter liste over alle gifte identer i avspillergruppa hos TPSF:
         stubHodejegerenHentGifteIdenter(gruppeId, "[\n\"55555555555\",\n\"66666666666\"\n]");
 
+        stubHodejegerenSendIdenter("[]");
+
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/status-quo/NAVNEENDRING_FOERSTE/t10/01010101010"))
                 .willReturn(aResponse().withStatus(500).withBody("{\"message\":\"" + testfeilmelding + "\"}")));
+
 
     }
 
@@ -184,6 +187,11 @@ public class FeilhaandteringCompTest {
 
     private void stubHodejegerenHentGifteIdenter(long gruppeId, String okJsonResponse) {
         stubFor(get(urlPathEqualTo("/hodejegeren/api/v1/gifte-identer/" + gruppeId))
+                .willReturn(okJson(okJsonResponse)));
+    }
+
+    private void stubHodejegerenSendIdenter(String okJsonResponse) {
+        stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/historikk/skd/oppdaterStatus"))
                 .willReturn(okJson(okJsonResponse)));
     }
 

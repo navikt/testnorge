@@ -19,6 +19,7 @@ import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.service.FasteMeldingerService;
+import no.nav.registre.skd.service.HodejegerDatabaseService;
 import no.nav.registre.skd.service.SyntetiseringService;
 
 @RestController
@@ -27,6 +28,9 @@ public class SyntetiseringController {
 
     @Autowired
     private SyntetiseringService syntetiseringService;
+
+    @Autowired
+    private HodejegerDatabaseService hodejegerDatabaseService;
 
     @Autowired
     private FasteMeldingerService fasteMeldingerService;
@@ -43,7 +47,9 @@ public class SyntetiseringController {
     @ApiResponses(value = { @ApiResponse(code = 201, message = "De opprettede skdmeldingene ble lagret på disse id-ene i TPSF") })
     @PostMapping(value = "/generer")
     public ResponseEntity genererSkdMeldinger(@RequestBody GenereringsOrdreRequest genereringsOrdreRequest) {
-        return syntetiseringService.puttIdenterIMeldingerOgLagre(genereringsOrdreRequest);
+        ResponseEntity genererSkdMeldingerResponse = syntetiseringService.puttIdenterIMeldingerOgLagre(genereringsOrdreRequest);
+        hodejegerDatabaseService.sendIdenterMedSkdMeldingerTilHodejegeren(syntetiseringService.getIdenterMedSkdMeldinger());
+        return genererSkdMeldingerResponse;
     }
 
     @LogExceptions

@@ -1,5 +1,6 @@
 package no.nav.registre.skd.provider.rs;
 
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
@@ -17,6 +18,7 @@ import java.util.Map;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.service.FasteMeldingerService;
+import no.nav.registre.skd.service.HodejegerDatabaseService;
 import no.nav.registre.skd.service.SyntetiseringService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -24,6 +26,9 @@ public class SyntetiseringControllerTest {
 
     @Mock
     private SyntetiseringService syntetiseringService;
+
+    @Mock
+    private HodejegerDatabaseService hodejegerDatabaseService;
 
     @Mock
     private FasteMeldingerService fasteMeldingerService;
@@ -45,9 +50,9 @@ public class SyntetiseringControllerTest {
     }
 
     @Test
-    public void shouldGenerereSkdMeldinger() {
+    public void shouldGenerereSkdMeldingerOgSendeIdenterTilHodejegeren() {
         syntetiseringController.genererSkdMeldinger(genereringsOrdreRequest);
-
+        verify(hodejegerDatabaseService).sendIdenterMedSkdMeldingerTilHodejegeren(anyList());
         verify(syntetiseringService).puttIdenterIMeldingerOgLagre(genereringsOrdreRequest);
     }
 

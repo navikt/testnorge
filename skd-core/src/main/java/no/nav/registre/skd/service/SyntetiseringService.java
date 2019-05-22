@@ -8,6 +8,7 @@ import static no.nav.registre.skd.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.skd.service.Endringskoder.TILDELING_DNUMMER;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -73,6 +74,9 @@ public class SyntetiseringService {
 
     private List<String> feiledeEndringskoder;
 
+    @Getter
+    private List<String> identerMedSkdMeldinger;
+
     public ResponseEntity puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         final Map<String, Integer> antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
         final List<Endringskoder> sorterteEndringskoder = filtrerOgSorterBestilteEndringskoder(antallMeldingerPerEndringskode.keySet());
@@ -85,6 +89,7 @@ public class SyntetiseringService {
         HttpStatus httpStatus = HttpStatus.CREATED;
         List<Long> idsLagretITpsfMenIkkeTps = new ArrayList<>();
         feiledeEndringskoder = new ArrayList<>();
+        identerMedSkdMeldinger = new ArrayList<>();
 
         List<String> nyeIdenterDenneEndringskoden;
 
@@ -107,6 +112,9 @@ public class SyntetiseringService {
                     eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, miljoe);
                 }
 
+                identerMedSkdMeldinger.addAll(nyeIdenterDenneEndringskoden);
+                identerMedSkdMeldinger.addAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
+
                 ids = lagreSkdEndringsmeldingerITpsf(endringskode, syntetiserteSkdmeldinger, genereringsOrdreRequest);
                 idsLagretITpsfMenIkkeTps.addAll(ids);
 
@@ -125,37 +133,41 @@ public class SyntetiseringService {
                 fjernBrukteIdenterFraListerMedIdenter(listerMedIdenter);
                 idsLagretITpsfMenIkkeTps.removeAll(ids);
 
-                if(!nyeIdenterDenneEndringskoden.isEmpty()) {
+                if (!nyeIdenterDenneEndringskoden.isEmpty()) {
                     List<String> feiledeTpIdenter = tpService.leggTilIdenterITp(nyeIdenterDenneEndringskoden, miljoe);
-                    if(!feiledeTpIdenter.isEmpty()) {
+                    if (!feiledeTpIdenter.isEmpty()) {
                         log.error("Følgende identer kunne ikke lagres i TP: {}", feiledeTpIdenter.toString());
                     }
                 }
             } catch (ManglendeInfoITpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
                         "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
-                                ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps) + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
+                                ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)
+                                + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
                         endringskode.getEndringskode());
             } catch (KunneIkkeSendeTilTpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
                         "KunneIkkeSendeTilTpsException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
-                        ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps) + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
+                                ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)
+                                + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
                         endringskode.getEndringskode());
             } catch (HttpStatusCodeException e) {
                 log.error(hentMeldingFraJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
-                log.warn("HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: {} - Skdmeldinger som ble lagret i TPSF: {}",
+                log.warn(
+                        "HttpStatusCodeException på endringskode {} i avspillergruppe {}. Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: {} - Skdmeldinger som ble lagret i TPSF: {}",
                         endringskode.getEndringskode(), genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps), lagGrupperAvIder(ids));
                 feiledeEndringskoder.add(endringskode.getEndringskode());
                 httpStatus = HttpStatus.CONFLICT;
             } catch (RuntimeException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
                         "RuntimeException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
-                        ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)  + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
+                                ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)
+                                + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
                         endringskode.getEndringskode());
             }
         }
 
-        if(!feiledeEndringskoder.isEmpty()) {
+        if (!feiledeEndringskoder.isEmpty()) {
             log.warn("Endringskoder som feilet i denne kjøringen: {}", feiledeEndringskoder);
         }
 
