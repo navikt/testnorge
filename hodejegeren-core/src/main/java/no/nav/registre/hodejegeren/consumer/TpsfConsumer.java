@@ -20,7 +20,6 @@ import java.util.Set;
 public class TpsfConsumer {
 
     private RestTemplate restTemplate;
-    private ObjectMapper objectMapper = new ObjectMapper();
     private String urlGetIdenter;
     private String urlServiceRoutine;
 
@@ -48,6 +47,6 @@ public class TpsfConsumer {
         } else if (response.isEmpty()) {
             log.warn("Respons fra TPS er tom for rutine {} på fnr {}", routineName, fnr);
         }
-        return objectMapper.readTree(response);
+        return new ObjectMapper().readTree(response);
     }
 }

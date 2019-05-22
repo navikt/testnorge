@@ -111,6 +111,20 @@ public class HistorikkServiceTest {
     }
 
     @Test
+    public void shouldOppretteSkdHistorikk() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SyntHistorikk skdHistorikk = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/skd-historikk.json")), SyntHistorikk.class);
+        when(syntHistorikkRepository.findById(id1)).thenReturn(Optional.empty());
+        when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
+        HistorikkRequest skdHistorikkRequest = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/skd-historikk-request.json")), HistorikkRequest.class);
+
+        List<String> identerLagtTil = historikkService.oppdaterSkdHistorikk(skdHistorikkRequest);
+        assertThat(identerLagtTil, contains(id1));
+
+        verify(syntHistorikkRepository).save(any());
+    }
+
+    @Test
     public void shouldSletteHistorikk() {
         ResponseEntity response = historikkService.slettHistorikk(id1);
         verify(syntHistorikkRepository).deleteById(id1);

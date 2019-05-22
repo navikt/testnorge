@@ -35,8 +35,17 @@ public class HistorikkController {
     }
 
     @PostMapping(value = "")
-    public List<String> leggTilHistorikk(@RequestBody HistorikkRequest historikkRequests) {
-        return historikkService.leggTilHistorikkPaaIdent(historikkRequests);
+    public List<String> leggTilHistorikk(@RequestBody HistorikkRequest historikkRequest) {
+        if ("skd".equals(historikkRequest.getKilde())) {
+            return historikkService.oppdaterSkdHistorikk(historikkRequest);
+        } else {
+            return historikkService.leggTilHistorikkPaaIdent(historikkRequest);
+        }
+    }
+
+    @PostMapping(value = "skd/oppdaterStatus")
+    public List<String> oppdaterSkdStatus(@RequestParam String miljoe, @RequestBody List<String> identer) {
+        return historikkService.oppdaterSkdStatusPaaIdenter(identer, miljoe);
     }
 
     @DeleteMapping(value = "{id}")

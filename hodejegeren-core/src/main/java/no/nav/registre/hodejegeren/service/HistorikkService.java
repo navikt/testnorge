@@ -1,12 +1,21 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.ROUTINE_KERNINFO;
+import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.ROUTINE_PERSRELA;
+import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,12 +23,19 @@ import java.util.Map;
 import no.nav.registre.hodejegeren.mongodb.Data;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikkRepository;
+import no.nav.registre.hodejegeren.mongodb.tpsStatusQuo.Kjerneinfo.Kjerneinformasjon;
+import no.nav.registre.hodejegeren.mongodb.tpsStatusQuo.Personrelasjon.Relasjonsinformasjon;
+import no.nav.registre.hodejegeren.mongodb.tpsStatusQuo.StatusQuo;
 import no.nav.registre.hodejegeren.provider.rs.requests.DataRequest;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class HistorikkService {
+
+    @Autowired
+    private TpsStatusQuoService tpsStatusQuoService;
 
     private final SyntHistorikkRepository syntHistorikkRepository;
 
@@ -81,6 +97,51 @@ public class HistorikkService {
             }
         }
         return opprettedeIder;
+    }
+
+    public List<String> oppdaterSkdHistorikk(HistorikkRequest historikkRequest) {
+        ObjectMapper mapper = new ObjectMapper();
+        List<DataRequest> identMedData = historikkRequest.getIdentMedData();
+        List<String> opprettedeIder = new ArrayList<>();
+        for (DataRequest ident : identMedData) {
+            SyntHistorikk syntHistorikk = hentHistorikkMedId(ident.getId());
+            if (syntHistorikk != null) {
+                Data eksisterendeSkdData = syntHistorikk.getKilder().get(historikkRequest.getKilde()).get(0);
+                eksisterendeSkdData.setInnhold(mapper.convertValue(historikkRequest.getIdentMedData().get(0).getData().get(0), StatusQuo.class));
+                eksisterendeSkdData.setDatoEndret(LocalDateTime.now());
+                opprettedeIder.add(syntHistorikkRepository.save(syntHistorikk).getId());
+            } else {
+                StatusQuo statusQuo = new ObjectMapper().convertValue(historikkRequest.getIdentMedData().get(0).getData().get(0), StatusQuo.class);
+                historikkRequest.getIdentMedData().get(0).setData(Collections.singletonList(statusQuo));
+                opprettedeIder.addAll(leggTilHistorikkPaaIdent(historikkRequest));
+            }
+        }
+        return opprettedeIder;
+    }
+
+    public List<String> oppdaterSkdStatusPaaIdenter(List<String> identer, String miljoe) {
+        ObjectMapper mapper = new ObjectMapper();
+        List<String> oppdaterteIdenter = new ArrayList<>();
+        for (String ident : identer) {
+            try {
+                StatusQuo statusQuo = StatusQuo.builder()
+                        .kjerneinformasjon(mapper.convertValue(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident).findValue("data1"), Kjerneinformasjon.class))
+                        .relasjonsinformasjon(mapper.convertValue(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident).findValue("data1"), Relasjonsinformasjon.class))
+                        .build();
+
+                HistorikkRequest historikkRequest = HistorikkRequest.builder()
+                        .kilde("skd")
+                        .identMedData(Collections.singletonList(DataRequest.builder()
+                                .id(ident)
+                                .data(Collections.singletonList(statusQuo))
+                                .build()))
+                        .build();
+                oppdaterteIdenter.addAll(oppdaterSkdHistorikk(historikkRequest));
+            } catch (IOException e) {
+                log.error("Kunne ikke lese status quo på ident {} i miljø {}.", ident, miljoe, e);
+            }
+        }
+        return oppdaterteIdenter;
     }
 
     public ResponseEntity slettHistorikk(String id) {

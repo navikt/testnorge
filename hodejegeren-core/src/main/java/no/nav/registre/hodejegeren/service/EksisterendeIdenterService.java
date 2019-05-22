@@ -38,9 +38,9 @@ import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsRespo
 @Slf4j
 public class EksisterendeIdenterService {
 
-    private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
-    private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
-    private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
+    public static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
+    public static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
+    public static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
     public static final String TRANSAKSJONSTYPE = "1";
 
     @Autowired

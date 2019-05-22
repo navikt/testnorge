@@ -1,4 +1,4 @@
-package no.nav.registre.hodejegeren;
+package no.nav.registre.hodejegeren.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
