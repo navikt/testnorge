@@ -1,4 +1,4 @@
-package no.nav.registre.aareg.consumer.rs.responses.contents;
+package no.nav.registre.aareg.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

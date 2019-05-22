@@ -3,6 +3,15 @@ package no.nav.registre.aareg.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
+import no.nav.registre.aareg.IdentMedData;
+import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
+import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
+import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
+import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
+import no.nav.registre.aareg.domain.Arbeidsforhold;
+import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +23,17 @@ import org.springframework.util.CollectionUtils;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
-import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
-import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
-import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
-import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidsforhold;
-import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @Service
 @Slf4j
 public class SyntetiseringService {
+
+    private static final String AAREG_NAME = "aareg";
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -67,6 +72,7 @@ public class SyntetiseringService {
         StatusFraAaregstubResponse statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforhold, lagreIAareg);
 
         StringBuilder statusFraAaregstub = new StringBuilder();
+        List<String> identerLagretIAareg = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterLagretIStub())) {
             statusFraAaregstub
@@ -76,10 +82,20 @@ public class SyntetiseringService {
         }
 
         if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterLagretIAareg())) {
+            identerLagretIAareg.addAll(statusFraAaregstubResponse.getIdenterLagretIAareg());
             statusFraAaregstub
                     .append("Identer som ble sendt til aareg: ")
-                    .append(statusFraAaregstubResponse.getIdenterLagretIAareg())
+                    .append(identerLagretIAareg)
                     .append(". ");
+        }
+
+        List<IdentMedData> arbeidsforholdLagretIAareg = finnArbeidsforholdLagretIAareg(identerLagretIAareg, syntetiserteArbeidsforhold);
+
+        AaregSaveInHodejegerenRequest hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, arbeidsforholdLagretIAareg);
+
+        Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequest);
+        if (savedIds.isEmpty()) {
+            log.warn("Kunne ikke lagre historikk på noen identer");
         }
 
         log.info(statusFraAaregstub.toString());
@@ -93,6 +109,19 @@ public class SyntetiseringService {
         }
 
         return ResponseEntity.ok().body(statusFraAaregstub.toString());
+    }
+
+    public List<IdentMedData> finnArbeidsforholdLagretIAareg(List<String> fnrs, List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
+        List<IdentMedData> arbeidsforholdFunnet = new ArrayList<>();
+        for (String fnr : fnrs) {
+            for (ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforhold) {
+                if (fnr == arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent()) {
+                    arbeidsforholdFunnet.add(new IdentMedData(fnr, Collections.singletonList(arbeidsforholdsResponse.getArbeidsforhold())));
+                    break;
+                }
+            }
+        }
+        return arbeidsforholdFunnet;
     }
 
     public StatusFraAaregstubResponse sendArbeidsforholdTilAareg(List<ArbeidsforholdsResponse> arbeidsforhold, boolean fyllUtArbeidsforhold) {

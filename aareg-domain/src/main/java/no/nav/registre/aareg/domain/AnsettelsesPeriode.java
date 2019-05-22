@@ -1,4 +1,4 @@
-package no.nav.registre.aareg.consumer.rs.responses.contents;
+package no.nav.registre.aareg.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,11 +12,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Arbeidsgiver {
+public class AnsettelsesPeriode {
 
-    @JsonProperty("aktoertype")
-    private String aktoertype;
+    @JsonProperty("fom")
+    private String fom;
 
-    @JsonProperty("orgnummer")
-    private String orgnummer;
+    @JsonProperty("tom")
+    private String tom;
 }

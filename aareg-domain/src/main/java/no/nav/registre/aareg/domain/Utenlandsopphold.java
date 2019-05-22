@@ -1,22 +1,22 @@
-package no.nav.registre.aareg.consumer.rs.responses.contents;
+package no.nav.registre.aareg.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Map;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class AnsettelsesPeriode {
+public class Utenlandsopphold {
 
-    @JsonProperty("fom")
-    private String fom;
+    @JsonProperty("land")
+    private String land;
 
-    @JsonProperty("tom")
-    private String tom;
+    @JsonProperty("periode")
+    private Map<String, String> periode;
 }
