@@ -95,52 +95,28 @@ export const FieldArrayComponent = ({
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
 					return (
-						<div key={idx}>
-							{idx !== 0 && <div className="field-array-line" />}
-							<div style={{ display: 'flex' }}>
+						<Fragment key={idx}>
+							<div className="flexbox">
+								{idx !== 0 && <div className="field-array-line" />}
 								<div className="subkategori-field-group multi">
 									{items.map((item, kdx) => {
-										if (item.subItems)
+										if (item.subItems && shouldRenderSubItem(item, formikProps, idx))
+											// Render array i array. F.eks. permisjon under arbeidsforhold
 											return (
 												<div key={kdx}>
 													{faKey[item.id] &&
 														faKey[item.id].map((subRad, jdx) => {
-															if (shouldRenderSubItem(item, formikProps, idx)) {
-																return (
-																	<div key={jdx} className="subItems">
-																		<div className="subItem-header">
-																			<div style={{ display: 'flex' }}>
-																				{jdx === 0 && <h4>{item.label}</h4>}
-																				{jdx === 0 &&
-																					item.informasjonstekst && (
-																						<ContentTooltip>
-																							<span>{item.informasjonstekst}</span>
-																						</ContentTooltip>
-																					)}
-																			</div>
-																		</div>
-																		<div className="subitem-container-button">
-																			{renderFieldSubItem(
-																				formikProps,
-																				item,
-																				subRad,
-																				parentId,
-																				idx,
-																				jdx
-																			)}
-																			{!editMode && (
-																				<Button
-																					className="field-group-remove"
-																					kind="remove-circle"
-																					onClick={() => removeSubItem(idx, jdx, item.id)}
-																					title="Fjern"
-																					children={item.label.toUpperCase()}
-																				/>
-																			)}
-																		</div>
-																	</div>
-																)
-															}
+															return renderHeaderSubFieldButton(
+																renderFieldSubItem,
+																removeSubItem,
+																formikProps,
+																item,
+																subRad,
+																parentId,
+																editMode,
+																idx,
+																jdx
+															)
 														})}
 												</div>
 											)
@@ -155,7 +131,6 @@ export const FieldArrayComponent = ({
 												...item,
 												id: `${parentId}[${idx}]${item.id}`
 											}
-
 											return (
 												<div key={kdx}>
 													{renderFieldComponent(fakeItem, formikProps.values, {
@@ -182,34 +157,11 @@ export const FieldArrayComponent = ({
 							</div>
 							{items.map((item, ndx) => {
 								return (
-									item.subItems && (
-										<Button
-											className="flexbox--align-center field-group-add"
-											kind="add-circle"
-											onClick={() => createSubItem(item, idx)}
-											key={ndx}
-										>
-											{item.label.toUpperCase()}
-										</Button>
-									)
+									item.subItems &&
+									addButton(() => createSubItem(item, idx), item.label.toUpperCase(), ndx)
 								)
 							})}
-							{/* REG-3377: Alex - Under utvikling */}
-
-							{/*Attributtene med items og subItems, f.eks AAREGs */}
-							{/* {!editMode &&
-								subItems &&
-								subItems.map((subItem, i) => (
-									<Button
-										className="flexbox--align-center field-group-add"
-										kind="add-circle"
-										key={i}
-										onClick={() => createSubItem(idx, i)}
-									>
-										{subItem.label}
-									</Button>
-								))} */}
-						</div>
+						</Fragment>
 					)
 				})
 			) : (
@@ -217,18 +169,60 @@ export const FieldArrayComponent = ({
 			)}
 
 			{!editMode &&
-				item.isMultiple && (
-					<Button
-						className="flexbox--align-center field-group-add"
-						kind="add-circle"
-						onClick={createDefaultObject}
-						// key={idx}
-					>
-						{subKategori.navn.toUpperCase()}
-					</Button>
-				)}
+				item.isMultiple &&
+				addButton(createDefaultObject, subKategori.navn.toUpperCase())}
 		</Fragment>
 	)
 }
 
+export const addButton = (onClick, header, key) => {
+	return (
+		<Button
+			className="flexbox--align-center field-group-add"
+			kind="add-circle"
+			onClick={onClick}
+			key={key}
+		>
+			{header}
+		</Button>
+	)
+}
+export const renderHeaderSubFieldButton = (
+	renderFieldSubItem,
+	removeSubItem,
+	formikProps,
+	item,
+	subRad,
+	parentId,
+	editMode,
+	idx,
+	jdx
+) => {
+	return (
+		<div key={jdx} className="subItems">
+			{jdx === 0 && (
+				<div className="flexbox">
+					<h4>{item.label}</h4>
+					{item.informasjonstekst && (
+						<ContentTooltip>
+							<span>{item.informasjonstekst}</span>
+						</ContentTooltip>
+					)}
+				</div>
+			)}
+			<div className="subitem-container-button">
+				{renderFieldSubItem(formikProps, item, subRad, parentId, idx, jdx)}
+				{!editMode && (
+					<Button
+						className="field-group-remove"
+						kind="remove-circle"
+						onClick={() => removeSubItem(idx, jdx, item.id)}
+						title="Fjern"
+						children={item.label.toUpperCase()}
+					/>
+				)}
+			</div>
+		</div>
+	)
+}
 export default FormEditorFieldArray
