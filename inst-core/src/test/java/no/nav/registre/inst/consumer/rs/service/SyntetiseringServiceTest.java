@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import no.nav.registre.inst.Institusjonsforholdsmelding;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import no.nav.registre.inst.Institusjonsforholdsmelding;
 import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
