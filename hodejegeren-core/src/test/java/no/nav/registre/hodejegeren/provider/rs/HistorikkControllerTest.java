@@ -45,6 +45,13 @@ public class HistorikkControllerTest {
     }
 
     @Test
+    public void shouldLeggeTilSkdHistorikk() {
+        HistorikkRequest historikkRequest = HistorikkRequest.builder().kilde("skd").build();
+        historikkController.leggTilHistorikk(historikkRequest);
+        verify(historikkService).oppdaterSkdHistorikk(historikkRequest);
+    }
+
+    @Test
     public void shouldOppdatereSkdStatus() {
         List<String> identer = new ArrayList<>();
         String miljoe = "t1";

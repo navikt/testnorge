@@ -37,7 +37,7 @@ public class TpsStatusQuoService {
             JsonNode root = getInfoOnRoutineName(routineName, AKSJONSKODE, environment, fnr);
 
             if (root == null) {
-                log.error("Fant ikke rutine {} på fnr {}", routineName, fnr);
+                log.error("Fant ikke rutine {} på fnr {}", routineName.replaceAll("[\r\n]",""), fnr.replaceAll("[\r\n]",""));
 
                 throw new ManglendeInfoITpsException("Fant ikke rutine " + routineName + " på fnr " + fnr);
             } else {

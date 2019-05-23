@@ -4,6 +4,7 @@ import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.ROU
 import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.ROUTINE_PERSRELA;
 import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 public class HistorikkService {
 
     @Autowired
-    private TpsStatusQuoService tpsStatusQuoService;
+    private final TpsStatusQuoService tpsStatusQuoService;
 
     private final SyntHistorikkRepository syntHistorikkRepository;
 
@@ -122,11 +123,16 @@ public class HistorikkService {
     public List<String> oppdaterSkdStatusPaaIdenter(List<String> identer, String miljoe) {
         ObjectMapper mapper = new ObjectMapper();
         List<String> oppdaterteIdenter = new ArrayList<>();
+        StatusQuo statusQuo;
         for (String ident : identer) {
             try {
-                StatusQuo statusQuo = StatusQuo.builder()
-                        .kjerneinformasjon(mapper.convertValue(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident).findValue("data1"), Kjerneinformasjon.class))
-                        .relasjonsinformasjon(mapper.convertValue(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident).findValue("data1"), Relasjonsinformasjon.class))
+                statusQuo = StatusQuo.builder()
+                        .kjerneinformasjon(mapper
+                                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                                .convertValue(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident).findValue("data1"), Kjerneinformasjon.class))
+                        .relasjonsinformasjon(mapper
+                                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                                .convertValue(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident).findValue("data1"), Relasjonsinformasjon.class))
                         .build();
 
                 HistorikkRequest historikkRequest = HistorikkRequest.builder()
@@ -138,7 +144,7 @@ public class HistorikkService {
                         .build();
                 oppdaterteIdenter.addAll(oppdaterSkdHistorikk(historikkRequest));
             } catch (IOException e) {
-                log.error("Kunne ikke lese status quo på ident {} i miljø {}.", ident, miljoe, e);
+                log.error("Kunne ikke lese status quo på ident {} i miljø {}.", ident.replaceAll("[\r\n]", ""), miljoe.replaceAll("[\r\n]", ""), e);
             }
         }
         return oppdaterteIdenter;
