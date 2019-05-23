@@ -23,8 +23,10 @@ import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 public class TpsStatusQuoService {
 
     public static final String AKSJONSKODE = "B0";
+
     @Autowired
     private TpsfConsumer tpsfConsumer;
+
     private Map<String, JsonNode> tpsServiceRoutineCache;
 
     public Map<String, String> hentStatusQuo(String routineName, List<String> feltnavn, String environment, String fnr) throws IOException {

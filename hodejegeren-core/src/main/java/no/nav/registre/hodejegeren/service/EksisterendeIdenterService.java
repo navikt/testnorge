@@ -41,7 +41,7 @@ public class EksisterendeIdenterService {
     public static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     public static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
     public static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
-    private static final String TRANSAKSJONSTYPE = "1";
+    public static final String TRANSAKSJONSTYPE = "1";
 
     @Autowired
     private TpsfConsumer tpsfConsumer;
