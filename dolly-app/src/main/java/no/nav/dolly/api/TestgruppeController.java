@@ -66,7 +66,7 @@ public class TestgruppeController {
             + "     &nbsp; &nbsp; \"undernr\": \"string\", <br />"
             + ADRESSE_COMMON + "} <br /> <br />";
 
-    private static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br /><br /><br />";
+    private static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br /><br />";
 
     private static final String FULLT_NAVN =
             "     &nbsp; &nbsp; &nbsp; \"etternavn\": \"string\", <br />"
@@ -77,7 +77,7 @@ public class TestgruppeController {
 
     private static final String EPILOG = "     &nbsp; } </br /></br />";
 
-    private static final String KONTAKTINFORMASJON_DOEDSBO = "Feltet adressat i kontakinformasjon for dødsbo kan ha en av fire objektyper: <br />"
+    private static final String KONTAKTINFORMASJON_DOEDSBO = "For kontakinformasjon for dødsbo kan feltet <b>adressat</b> ha en av fire objektyper: <br />"
             + "For organisasjon eller advokat:<br />"
             + ADRESSAT
             + "     &nbsp; &nbsp; \"adressatType\": \"ORGANISASJON/ADVOKAT\", <br />"
@@ -95,7 +95,7 @@ public class TestgruppeController {
             + "For kontaktperson uten ID:<br />"
             + ADRESSAT
             + "     &nbsp; &nbsp; \"adressatType\": \"PERSON_UTENID\", <br />"
-            + "     &nbsp; &nbsp; \"kontaktperson\": { <br />"
+            + "     &nbsp; &nbsp; \"navn\": { <br />"
             + FULLT_NAVN
             + "     &nbsp; &nbsp; }, </br />"
             + "     &nbsp; &nbsp; \"foedselsdato\": \"string\" <br />"
