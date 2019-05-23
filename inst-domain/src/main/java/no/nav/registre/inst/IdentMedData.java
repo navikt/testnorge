@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class IdentMedData {
+
     private String id;
     private List<Institusjonsforholdsmelding> data;
 }

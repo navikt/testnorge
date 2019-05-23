@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class InstSaveInHodejegerenRequest {
+
     private String kilde;
-    private List<IdentMedData> data;
+    private List<IdentMedData> identMedData;
 }

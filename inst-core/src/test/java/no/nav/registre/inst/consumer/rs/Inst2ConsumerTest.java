@@ -17,7 +17,6 @@ import static org.hamcrest.Matchers.is;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.inst.Institusjonsforholdsmelding;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +31,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import no.nav.registre.inst.Institusjonsforholdsmelding;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
