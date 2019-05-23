@@ -227,9 +227,11 @@ export default class Step3 extends PureComponent {
 
 	renderSubKategori = ({ subKategori, items }) => {
 		const { values } = this.props
-
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
+		}
+		if (subKategori.id === 'arena') {
+			return items[0].items.map(item => this.renderItem(item, values))
 		}
 		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
@@ -244,7 +246,16 @@ export default class Step3 extends PureComponent {
 
 		if (!item.inputType) return null
 
-		const itemValue = Formatters.oversettBoolean(_get(stateValues, item.id))
+		let itemValue = Formatters.oversettBoolean(_get(stateValues, item.id))
+
+		if (item.dataSource === 'ARENA') {
+			item.id === 'arenaBrukertype'
+				? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
+						_get(stateValues['arenaforvalter'][0], item.id)
+				  ))
+				: (itemValue = _get(stateValues['arenaforvalter'][0], item.id))
+		}
+
 		const staticValueProps = {
 			key: item.id,
 			header: item.label,

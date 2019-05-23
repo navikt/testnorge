@@ -70,6 +70,25 @@ export function mapKrrData(krrData) {
 	}
 }
 
+export function mapArenaData(arenaData, kvalifiseringsgruppe) {
+	if (!arenaData) return null
+	return {
+		header: 'Arena',
+		data: [
+			{
+				id: 'brukertype',
+				label: 'Brukertype',
+				value: Formatters.booleanToServicebehov(arenaData.servicebehov)
+			},
+			kvalifiseringsgruppe && {
+				id: 'servicebehov',
+				label: 'Servicebehov',
+				value: kvalifiseringsgruppe
+			}
+		]
+	}
+}
+
 export function mapSubItemAaregData(data) {
 	if (!data) return null
 	let subItemArray = []

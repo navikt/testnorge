@@ -207,6 +207,10 @@ export default class FormEditor extends PureComponent {
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
+		let disabled = false
+		// console.log('item :', item)
+		// console.log('valgteVerdier :', valgteVerdier)
+		// console.log('this.props :', this.props)
 
 		if (this.props.editMode && AttributtType.SelectAndRead === item.attributtType) {
 			let valgtVerdi = valgteVerdier[item.id]
@@ -238,6 +242,13 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 
+		if (
+			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&
+			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'MED_SERVICEBEHOV'
+		) {
+			disabled = true
+		}
+
 		if (item.id === 'ufb_kommunenr' || item.id.includes('utenFastBopel')) {
 			return
 		}
@@ -249,6 +260,7 @@ export default class FormEditor extends PureComponent {
 				label={item.label}
 				component={InputComponent}
 				size={item.size}
+				disabled={disabled}
 				{...componentProps}
 				{...item.inputTypeAttributes}
 			/>

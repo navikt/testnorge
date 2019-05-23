@@ -1,4 +1,4 @@
-import { TpsfApi, SigrunApi, KrrApi } from '~/service/Api'
+import { TpsfApi, SigrunApi, KrrApi, ArenaApi } from '~/service/Api'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import { createAction } from 'redux-actions'
 import success from '~/utils/SuccessAction'
@@ -18,6 +18,7 @@ const initialState = {
 		tpsf: null,
 		sigrunstub: null,
 		krrstub: null,
+		arenaforvalteren: null,
 		aareg: null
 	}
 }
@@ -84,6 +85,21 @@ export const GET_KRR_TESTBRUKER = createAction(
 				//ERROR 404 betyr at det ikke finnes data for identen, fake opp datastruktur slik at reducer blir consistent
 				return { data: [null] }
 			}
+			return err
+		}
+	},
+	ident => ({
+		ident
+	})
+)
+
+export const GET_ARENA_TESTBRUKER = createAction(
+	'GET_ARENA_TESTBRUKER',
+	async ident => {
+		try {
+			const res = await ArenaApi.getTestbruker(ident)
+			return res
+		} catch (err) {
 			return err
 		}
 	},
@@ -168,6 +184,18 @@ export default function testbrukerReducer(state = initialState, action) {
 					}
 				}
 			}
+		case success(GET_ARENA_TESTBRUKER):
+			return {
+				...state,
+				items: {
+					...state.items,
+					arenaforvalteren: {
+						...state.items.arenaforvalteren,
+						[action.meta.ident]: action.payload && action.payload
+						// [action.meta.ident]: action.payload.data && action.payload.data[0]
+					}
+				}
+			}
 
 		case success(GET_AAREG_TESTBRUKER):
 			return {
@@ -229,6 +257,8 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 			)
 			promiseList.push(krrStubRequest)
 		}
+
+		//ARENA-FORVALTEREN???
 
 		//SIGRUN-STUB - multiple values
 		const sigrunstubAtributtListe = attributtListe.filter(
