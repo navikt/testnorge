@@ -145,9 +145,10 @@ public class EksisterendeIdenterService {
         Map<String, JsonNode> utvalgteIdenterMedStatusQuo = new HashMap<>(identer.size());
 
         ObjectNode navnOgAdresse;
+        ObjectMapper mapper = new ObjectMapper();
         for (String ident : identer) {
             tpsStatusQuoService.resetCache();
-            navnOgAdresse = new ObjectMapper().createObjectNode();
+            navnOgAdresse = mapper.createObjectNode();
             try {
                 JsonNode infoOnRoutineName = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
 

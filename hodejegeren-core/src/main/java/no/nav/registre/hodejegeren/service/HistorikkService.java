@@ -5,6 +5,7 @@ import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.ROU
 import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -112,7 +113,7 @@ public class HistorikkService {
                 eksisterendeSkdData.setDatoEndret(LocalDateTime.now());
                 opprettedeIder.add(syntHistorikkRepository.save(syntHistorikk).getId());
             } else {
-                StatusQuo statusQuo = new ObjectMapper().convertValue(historikkRequest.getIdentMedData().get(0).getData().get(0), StatusQuo.class);
+                StatusQuo statusQuo = mapper.convertValue(historikkRequest.getIdentMedData().get(0).getData().get(0), StatusQuo.class);
                 historikkRequest.getIdentMedData().get(0).setData(Collections.singletonList(statusQuo));
                 opprettedeIder.addAll(leggTilHistorikkPaaIdent(historikkRequest));
             }
@@ -125,26 +126,40 @@ public class HistorikkService {
         List<String> oppdaterteIdenter = new ArrayList<>();
         StatusQuo statusQuo;
         for (String ident : identer) {
+            JsonNode kerninfo = null;
+            JsonNode persrela = null;
             try {
-                statusQuo = StatusQuo.builder()
-                        .kjerneinformasjon(mapper
-                                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                .convertValue(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident).findValue("data1"), Kjerneinformasjon.class))
-                        .relasjonsinformasjon(mapper
-                                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                .convertValue(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident).findValue("data1"), Relasjonsinformasjon.class))
-                        .build();
-
-                HistorikkRequest historikkRequest = HistorikkRequest.builder()
-                        .kilde("skd")
-                        .identMedData(Collections.singletonList(DataRequest.builder()
-                                .id(ident)
-                                .data(Collections.singletonList(statusQuo))
-                                .build()))
-                        .build();
-                oppdaterteIdenter.addAll(oppdaterSkdHistorikk(historikkRequest));
+                kerninfo = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident).findValue("data1");
+                persrela = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident).findValue("data1");
+                tpsStatusQuoService.resetCache();
             } catch (IOException e) {
                 log.error("Kunne ikke lese status quo på ident {} i miljø {}.", ident.replaceAll("[\r\n]", ""), miljoe.replaceAll("[\r\n]", ""), e);
+            }
+
+            if (kerninfo != null && persrela != null) {
+                try {
+                    statusQuo = StatusQuo.builder()
+                            .kjerneinformasjon(mapper
+                                    .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                                    .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
+                                    .convertValue(kerninfo, Kjerneinformasjon.class))
+                            .relasjonsinformasjon(mapper
+                                    .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                                    .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
+                                    .convertValue(persrela, Relasjonsinformasjon.class))
+                            .build();
+
+                    HistorikkRequest historikkRequest = HistorikkRequest.builder()
+                            .kilde("skd")
+                            .identMedData(Collections.singletonList(DataRequest.builder()
+                                    .id(ident)
+                                    .data(Collections.singletonList(statusQuo))
+                                    .build()))
+                            .build();
+                    oppdaterteIdenter.addAll(oppdaterSkdHistorikk(historikkRequest));
+                } catch (IllegalArgumentException e) {
+                    log.error("Kunne ikke oppdatere skd til ident {}", ident, e);
+                }
             }
         }
         return oppdaterteIdenter;
