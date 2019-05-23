@@ -66,9 +66,41 @@ public class TestgruppeController {
             + "     &nbsp; &nbsp; \"undernr\": \"string\", <br />"
             + ADRESSE_COMMON + "} <br /> <br />";
 
-    private static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br />";
+    private static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br /><br /><br />";
 
-    private static final String BESTILLING_BESKRIVELSE = BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER;
+    private static final String FULLT_NAVN =
+            "     &nbsp; &nbsp; &nbsp; \"etternavn\": \"string\", <br />"
+            + "     &nbsp; &nbsp; &nbsp; \"fornavn\": \"string\", <br />"
+            + "     &nbsp; &nbsp; &nbsp; \"mellomnavn\": \"string\" <br />";
+
+    private static final String ADRESSAT = "&nbsp;   \"adressat\": {<br />";
+
+    private static final String EPILOG = "     &nbsp; } </br /></br />";
+
+    private static final String KONTAKTINFORMASJON_DOEDSBO = "Feltet adressat i kontakinformasjon for dødsbo kan ha en av fire objektyper: <br />"
+            + "For organisasjon eller advokat:<br />"
+            + ADRESSAT
+            + "     &nbsp; &nbsp; \"adressatType\": \"ORGANISASJON/ADVOKAT\", <br />"
+            + "     &nbsp; &nbsp; \"kontaktperson\": { <br />"
+            + FULLT_NAVN
+            + "     &nbsp; &nbsp; }, </br />"
+            + "     &nbsp; &nbsp; \"organisajonsnavn\": \"string\", <br />"
+            + "     &nbsp; &nbsp; \"organisajonsnummer\": \"string\" <br />"
+            + EPILOG
+            + "For kontaktperson med ID:<br />"
+            + ADRESSAT
+            + "     &nbsp; &nbsp; \"adressatType\": \"PERSON_MEDID\", <br />"
+            + "     &nbsp; &nbsp; \"idnummer\": \"string\"<br />"
+            + EPILOG
+            + "For kontaktperson uten ID:<br />"
+            + ADRESSAT
+            + "     &nbsp; &nbsp; \"adressatType\": \"PERSON_UTENID\", <br />"
+            + "     &nbsp; &nbsp; \"kontaktperson\": { <br />"
+            + FULLT_NAVN
+            + "     &nbsp; &nbsp; }, </br />"
+            + "     &nbsp; &nbsp; \"foedselsdato\": \"string\" <br />"
+            + EPILOG;
+    private static final String BESTILLING_BESKRIVELSE = BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO;
 
     @Autowired
     private TestgruppeService testgruppeService;
