@@ -33,6 +33,8 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorges.ida.credential.tpsf"
       resourceType: credential
+    - alias: "hodejegeren.db.credential"
+      resourceType: credential
   exposed:
    - alias: testnorge-hodejegeren.rest-api
      description: På denne base-url finner du swagger-dokumentasjon av REST-tjenesten.
