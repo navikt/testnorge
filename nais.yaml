@@ -31,6 +31,8 @@ fasitResources:
   used:
     - alias: "tps-forvalteren.rest-api"
       resourceType: restservice
+    - alias: "testnorge-properties"
+      resourceType: applicationProperties
     - alias: "testnorges.ida.credential.tpsf"
       resourceType: credential
     - alias: "hodejegeren.db.credential"
