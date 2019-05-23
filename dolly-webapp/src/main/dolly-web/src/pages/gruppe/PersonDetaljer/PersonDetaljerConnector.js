@@ -5,7 +5,8 @@ import {
 	GET_KRR_TESTBRUKER,
 	GET_SIGRUN_TESTBRUKER,
 	GET_SIGRUN_SEKVENSNR,
-	GET_AAREG_TESTBRUKER
+	GET_AAREG_TESTBRUKER,
+	GET_ARENA_TESTBRUKER
 } from '~/ducks/testBruker'
 import { FRIGJOER_TESTBRUKER } from '~/ducks/testBruker'
 import { createLoadingSelector } from '~/ducks/loading'
@@ -14,11 +15,13 @@ import Formatters from '~/utils/DataFormatter'
 const loadingSelectorKrr = createLoadingSelector(GET_KRR_TESTBRUKER)
 const loadingSelectorSigrun = createLoadingSelector(GET_SIGRUN_TESTBRUKER)
 const loadingSelectorAareg = createLoadingSelector(GET_AAREG_TESTBRUKER)
+const loadingSelectorArena = createLoadingSelector(GET_ARENA_TESTBRUKER)
 
 const mapStateToProps = (state, ownProps) => ({
 	isFetchingKrr: loadingSelectorKrr(state),
 	isFetchingSigrun: loadingSelectorSigrun(state),
 	isFetchingAareg: loadingSelectorAareg(state),
+	isFetchingArena: loadingSelectorArena(state),
 	personData: DataMapper.getDetailedData(state, ownProps),
 	testIdent: state.gruppe.data[0].testidenter.find(
 		testIdent => testIdent.ident === ownProps.personId
@@ -33,6 +36,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		getKrrTestbruker: () => dispatch(GET_KRR_TESTBRUKER(ownProps.personId)),
 		getSigrunTestbruker: () => dispatch(GET_SIGRUN_TESTBRUKER(ownProps.personId)),
 		getSigrunSekvensnr: () => dispatch(GET_SIGRUN_SEKVENSNR(ownProps.personId)),
+		getArenaTestbruker: () => dispatch(GET_ARENA_TESTBRUKER(ownProps.personId)),
 		getAaregTestbruker: env => dispatch(GET_AAREG_TESTBRUKER(ownProps.personId, env)),
 		frigjoerTestbruker: () => dispatch(FRIGJOER_TESTBRUKER(ownProps.personId))
 	}

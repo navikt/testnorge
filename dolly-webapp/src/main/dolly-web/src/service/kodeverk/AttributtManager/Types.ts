@@ -12,7 +12,8 @@ export enum DataSource {
 	TPSF = 'TPSF',
 	SIGRUN = 'SIGRUN',
 	KRR = 'KRR',
-	AAREG = 'AAREG'
+	AAREG = 'AAREG',
+	ARENA = 'ARENA'
 }
 
 export interface Options {

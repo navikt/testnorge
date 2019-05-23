@@ -3,7 +3,7 @@ import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
-import * as yup from 'yup'
+// import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
 	{
@@ -13,7 +13,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Har kontakt og reservasjon',
 		dataSource: DataSource.KRR,
 		attributtType: AttributtType.SelectAndEdit,
-		validation: yup.object(),
+		// validation: yup.object(),
 		items: [
 			{
 				hovedKategori: Kategorier.KontaktInfo,
@@ -22,7 +22,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Mobilnummer',
 				dataSource: DataSource.KRR,
 				inputType: InputType.Text,
-				validation: yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
+				// validation: yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
