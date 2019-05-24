@@ -16,9 +16,6 @@ export default class ContentTooltip extends PureComponent {
 		isOpen: false
 	}
 
-	_handleOnClick = () => {
-		this.setState({ isOpen: !this.state.isOpen })
-	}
 	render() {
 		const { children, hideText } = this.props
 
@@ -31,6 +28,10 @@ export default class ContentTooltip extends PureComponent {
 				{!hideText && <p className="clickable-text-small">Info</p>}
 			</div>
 		)
+	}
+
+	_handleOnClick = () => {
+		this.setState({ isOpen: !this.state.isOpen })
 	}
 
 	_renderHjelpeIkon = () => (
