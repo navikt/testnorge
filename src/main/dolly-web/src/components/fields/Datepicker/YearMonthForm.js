@@ -9,21 +9,21 @@ export default function YearMonthForm({ date, localeUtils, onChange, fromMonth, 
 
 	years = years.reverse()
 
-	const save = (year, month) => onChange(new Date(year, month))
+	const _save = (year, month) => onChange(new Date(year, month))
 
-	const handleMonthChange = e => save(date.getFullYear(), e.target.value)
-	const handleYearChange = e => save(e.target.value, date.getMonth())
+	const _handleMonthChange = e => _save(date.getFullYear(), e.target.value)
+	const _handleYearChange = e => _save(e.target.value, date.getMonth())
 
 	return (
 		<div className="DayPicker-Caption">
-			<select name="month" onChange={handleMonthChange} value={date.getMonth()}>
+			<select name="month" onChange={_handleMonthChange} value={date.getMonth()}>
 				{MONTHS.map((month, i) => (
 					<option key={month} value={i}>
 						{month}
 					</option>
 				))}
 			</select>
-			<select name="year" onChange={handleYearChange} value={date.getFullYear()}>
+			<select name="year" onChange={_handleYearChange} value={date.getFullYear()}>
 				{years.map(year => (
 					<option key={year} value={year}>
 						{year}

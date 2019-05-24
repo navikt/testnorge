@@ -13,9 +13,9 @@ export default class PersonInfoBlock extends PureComponent {
 	}
 
 	render() {
-		const { header, data, multiple } = this.props
+		const { data, multiple } = this.props
 		if (multiple) {
-			// Multiple: Eksempel: flere inntekter.
+			// *Multiple: Eksempel: flere inntekter.
 			return (
 				<Fragment>
 					{data.map((subBlock, idx) => {
