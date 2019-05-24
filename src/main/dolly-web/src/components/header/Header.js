@@ -21,15 +21,15 @@ export default ({ brukerData }) => {
 				</NavLink>
 				<NavLink to="/team">Team</NavLink>
 				<NavLink to="/tpsendring">Endringsmelding</NavLink>
-				{/* <NavLink to="/kømanager">Kømanager</NavLink> */}
 				<a href="/swagger-ui.html" target="_blank">
 					API-dok
 				</a>
 			</div>
 
-			<NavLink to="/profil" className="header-user-name">
-				<Icon kind="user" size="20" /> {brukerData.navIdent}
-			</NavLink>
+			<div className="flexbox--align-center">
+				<Icon kind="user" size="20" />
+				<p>{brukerData.navIdent}</p>
+			</div>
 		</header>
 	)
 }
