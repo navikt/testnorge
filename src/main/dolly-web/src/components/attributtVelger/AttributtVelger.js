@@ -6,6 +6,8 @@ import Utvalg from './Utvalg/Utvalg'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { AttributtManager } from '~/service/Kodeverk'
 import './AttributtVelger.less'
+
+// TODO: Dennen klassen er litt for stor. Vurder aa dele opp
 export default class AttributtVelger extends Component {
 	static propTypes = {
 		onToggle: PropTypes.func.isRequired,
@@ -19,6 +21,26 @@ export default class AttributtVelger extends Component {
 
 	state = {
 		search: ''
+	}
+
+	render() {
+		const { selectedIds, uncheckAllAttributes } = this.props
+
+		return (
+			<div className="attributt-velger">
+				<Input
+					label="Søk attributter"
+					labelOffscreen
+					placeholder="Søk etter egenskaper"
+					className="attributt-velger_search"
+					onChange={this.searchOnChange}
+				/>
+				<div className="flexbox">
+					<div className="attributt-velger_panels">{this.renderPanels()}</div>
+					<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />
+				</div>
+			</div>
+		)
 	}
 
 	searchOnChange = e => this.setState({ search: e.target.value })
@@ -111,24 +133,4 @@ export default class AttributtVelger extends Component {
 	}
 
 	renderEmptyResult = () => <p>Søket ga ingen treff</p>
-
-	render() {
-		const { selectedIds, uncheckAllAttributes } = this.props
-
-		return (
-			<div className="attributt-velger">
-				<Input
-					label="Søk attributter"
-					labelOffscreen
-					placeholder="Søk etter egenskaper"
-					className="attributt-velger_search"
-					onChange={this.searchOnChange}
-				/>
-				<div className="flexbox">
-					<div className="attributt-velger_panels">{this.renderPanels()}</div>
-					<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />
-				</div>
-			</div>
-		)
-	}
 }

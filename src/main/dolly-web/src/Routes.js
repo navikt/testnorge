@@ -1,5 +1,4 @@
 import React from 'react'
-
 import Gruppe from './pages/gruppe/GruppeConnector'
 import GruppeOversikt from './pages/gruppeOversikt/GruppeOversiktConnector'
 import Bestilling from './pages/bestilling/BestillingConnector'
