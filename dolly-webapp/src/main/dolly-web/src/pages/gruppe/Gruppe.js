@@ -34,7 +34,7 @@ export default class Gruppe extends Component {
 	componentDidMount() {
 		this.props.getGruppe()
 		this.props.getBestillinger()
-		this.props.getArenaTest('20056412876')
+		// this.props.getArenaTest('20056412876')
 	}
 
 	render() {
