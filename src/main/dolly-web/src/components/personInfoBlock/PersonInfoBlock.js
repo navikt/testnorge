@@ -117,19 +117,22 @@ export default class PersonInfoBlock extends PureComponent {
 			<div key={idx} className="person-info-block">
 				{header && <h4 className="person-info-block_multiple">{header}</h4>}
 				<div className={cssClassContent}>
+					{/* {console.log('data :', data)} */}
 					{data.map((v, k) => {
+						// console.log('v :', v)
+						// console.log('k :', k)
 						const staticValueProps = {
 							key: k,
-							size: v.width && v.width,
-							header: v.label,
+							size: v && v.width && v.width,
+							header: v && v.label,
 							headerType: 'h4',
-							value: v.value
+							value: v && v.value
 						}
 						// Spesiell tilfeller for gtVerdi og tknr
-						const apiKodeverkId = v.apiKodeverkId ? v.apiKodeverkId : null
-						const tknr = v.tknr ? v.tknr : null
+						const apiKodeverkId = v && v.apiKodeverkId ? v.apiKodeverkId : null
+						const tknr = v && v.tknr ? v.tknr : null
 						// finn tilhørende attributt
-						const attributt = this.props.attributtManager.getAttributtById(v.id)
+						const attributt = this.props.attributtManager.getAttributtById(v && v.id)
 						if (attributt && attributt.apiKodeverkId && v.value) {
 							return (
 								<KodeverkValueConnector
@@ -148,7 +151,7 @@ export default class PersonInfoBlock extends PureComponent {
 						} else if (tknr) {
 							return <TknrValueConnector tknr={tknr} {...staticValueProps} />
 						}
-						return v.value && <StaticValue {...staticValueProps} />
+						return v && v.value && <StaticValue {...staticValueProps} />
 					})}
 				</div>
 			</div>

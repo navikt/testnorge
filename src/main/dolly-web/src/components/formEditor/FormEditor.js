@@ -208,9 +208,9 @@ export default class FormEditor extends PureComponent {
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 		let disabled = false
-		// console.log('item :', item)
-		// console.log('valgteVerdier :', valgteVerdier)
-		// console.log('this.props :', this.props)
+		console.log('item :', item)
+		console.log('valgteVerdier :', valgteVerdier)
+		console.log('this.props :', this.props)
 
 		if (this.props.editMode && AttributtType.SelectAndRead === item.attributtType) {
 			let valgtVerdi = valgteVerdier[item.id]

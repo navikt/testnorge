@@ -36,6 +36,7 @@ const AttributtListe: Attributt[] = [
 				size: 'large',
 				// validation: yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
 				options: SelectOptionsManager('kvalifiseringsgruppe'),
+				// dependentOn: 'arenaBrukertype',
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]
