@@ -94,7 +94,7 @@ export default class Step2 extends PureComponent {
 								FormikProps={formikProps}
 							/>
 							{/* // Uncomment for debug formik */}
-							{/* <DisplayFormikState {...formikProps} /> */}
+							<DisplayFormikState {...formikProps} />
 						</Fragment>
 					)}
 				/>
@@ -103,6 +103,7 @@ export default class Step2 extends PureComponent {
 	}
 
 	_checkValues = values => {
+		console.log('values :', values)
 		if (values.spesreg !== 'UFB') {
 			delete values['ufb_kommunenr']
 			delete values['utenFastBopel']
