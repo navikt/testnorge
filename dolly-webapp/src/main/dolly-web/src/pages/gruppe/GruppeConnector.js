@@ -5,7 +5,8 @@ import {
 	getGruppe,
 	showCreateOrEditGroup,
 	deleteGruppe,
-	nyeBestillingerSelector
+	nyeBestillingerSelector,
+	getArenaTest
 } from '~/ducks/gruppe'
 import { getBestillinger, getBestillingStatus } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
@@ -27,11 +28,13 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const gruppeId = ownProps.match.params.gruppeId
 	return {
+		getArenaTest: ident => dispatch(getArenaTest(ident)),
 		getGruppe: () => dispatch(getGruppe(gruppeId)),
 		deleteGruppe: () => dispatch(deleteGruppe(gruppeId)),
 		getBestillinger: () => dispatch(getBestillinger(gruppeId)),
 		createGroup: () => dispatch(showCreateOrEditGroup(-1)),
-		editTestbruker: (ident, dataSources) => dispatch(push(`/gruppe/${gruppeId}/testbruker/${ident}${dataSources}`)),
+		editTestbruker: (ident, dataSources) =>
+			dispatch(push(`/gruppe/${gruppeId}/testbruker/${ident}${dataSources}`)),
 		resetSearch: () => dispatch(resetSearch())
 	}
 }
