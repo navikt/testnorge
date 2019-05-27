@@ -29,7 +29,9 @@ export default class PersonDetaljer extends PureComponent {
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunTestbruker()
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunSekvensnr()
 		this.props.testIdent.krrstubStatus === 'OK' && this.props.getKrrTestbruker()
-		this.props.testIdent.arenaforvalterStatus[1].statusIdent['status: OK'] &&
+		console.log('object :', this.props.testIdent.arenaforvalterStatus)
+		this.props.testIdent.arenaforvalterStatus.length >= 2 &&
+			// this.props.testIdent.arenaforvalterStatus[1].statusIdent['status: OK'] &&
 			this.props.getArenaTestbruker()
 		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
