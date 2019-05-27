@@ -34,6 +34,7 @@ export default class Gruppe extends Component {
 	componentDidMount() {
 		this.props.getGruppe()
 		this.props.getBestillinger()
+		this.props.getArenaTest('20056412876')
 	}
 
 	render() {
@@ -82,27 +83,29 @@ export default class Gruppe extends Component {
 
 		return (
 			<div className="gruppe-container">
-					<div className = "header-valg">
-						<div> 
-							<Overskrift label={gruppe.navn} actions={groupActions}>
-								<ConfirmTooltip
-									label="SLETT"
-									className="flexbox--align-center"
-									message={'Vil du slette denne testdatagruppen?'}
-									onClick={deleteGruppe}
-								/>
-								{!gruppe.erMedlemAvTeamSomEierGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
-							</Overskrift>
-						</div>
-						<div className = "hoyre">
-							{gruppeArray[0].testidenter &&
-								<EksporterExcel 
-									testidenter = {gruppeArray[0].testidenter} 
-									gruppeId = {gruppeArray[0].id}
-								/>
-							}
-						</div>
+				<div className="header-valg">
+					<div>
+						<Overskrift label={gruppe.navn} actions={groupActions}>
+							<ConfirmTooltip
+								label="SLETT"
+								className="flexbox--align-center"
+								message={'Vil du slette denne testdatagruppen?'}
+								onClick={deleteGruppe}
+							/>
+							{!gruppe.erMedlemAvTeamSomEierGruppe && (
+								<FavoriteButtonConnector groupId={gruppe.id} />
+							)}
+						</Overskrift>
 					</div>
+					<div className="hoyre">
+						{gruppeArray[0].testidenter && (
+							<EksporterExcel
+								testidenter={gruppeArray[0].testidenter}
+								gruppeId={gruppeArray[0].id}
+							/>
+						)}
+					</div>
+				</div>
 				{createOrUpdateId && <RedigerGruppeConnector gruppe={gruppe} />}
 				<GruppeDetaljer gruppe={gruppe} />
 

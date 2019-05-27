@@ -1,4 +1,4 @@
-import { DollyApi } from '~/service/Api'
+import { DollyApi, ArenaApi } from '~/service/Api'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
@@ -8,6 +8,7 @@ import _find from 'lodash/find'
 
 // GET
 export const getGruppe = createAction('GET_GRUPPE', DollyApi.getGruppeById)
+export const getArenaTest = createAction('GET_ARENA', ArenaApi.getTestbruker)
 export const getGrupper = createAction('GET_GRUPPER', DollyApi.getGrupper)
 export const getGrupperByTeamId = createAction('GET_GRUPPER_BY_TEAM_ID', DollyApi.getGruppeByTeamId)
 export const getGrupperByUserId = createAction('GET_GRUPPER_BY_USER_ID', DollyApi.getGruppeByUserId)
@@ -24,7 +25,6 @@ export const createTeam = createAction('CREATE_TEAM', DollyApi.createTeam)
 export const showCreateOrEditGroup = createAction('TOGGLE_SHOW_CREATE_OR_EDIT')
 export const closeCreateOrEdit = createAction('CANCEL_CREATE_OR_EDIT')
 export const settVisning = createAction('SETT_VISNING')
-
 
 const initialState = {
 	data: null,
