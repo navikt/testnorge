@@ -74,9 +74,6 @@ public class SyntetiseringService {
 
     private List<String> feiledeEndringskoder;
 
-    @Getter
-    private List<String> identerMedSkdMeldinger;
-
     public ResponseEntity puttIdenterIMeldingerOgLagre(GenereringsOrdreRequest genereringsOrdreRequest) {
         final Map<String, Integer> antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
         final List<Endringskoder> sorterteEndringskoder = filtrerOgSorterBestilteEndringskoder(antallMeldingerPerEndringskode.keySet());
@@ -89,7 +86,6 @@ public class SyntetiseringService {
         HttpStatus httpStatus = HttpStatus.CREATED;
         List<Long> idsLagretITpsfMenIkkeTps = new ArrayList<>();
         feiledeEndringskoder = new ArrayList<>();
-        identerMedSkdMeldinger = new ArrayList<>();
 
         List<String> nyeIdenterDenneEndringskoden;
 
@@ -111,9 +107,6 @@ public class SyntetiseringService {
                 } else {
                     eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, miljoe);
                 }
-
-                identerMedSkdMeldinger.addAll(nyeIdenterDenneEndringskoden);
-                identerMedSkdMeldinger.addAll(listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN));
 
                 ids = lagreSkdEndringsmeldingerITpsf(endringskode, syntetiserteSkdmeldinger, genereringsOrdreRequest);
                 idsLagretITpsfMenIkkeTps.addAll(ids);

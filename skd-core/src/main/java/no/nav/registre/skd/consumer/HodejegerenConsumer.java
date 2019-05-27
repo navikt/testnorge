@@ -34,14 +34,12 @@ public class HodejegerenConsumer {
     private UriTemplate doedeIdenterUrl;
     private UriTemplate gifteIdenterUrl;
     private UriTemplate statusQuoUrl;
-    private UriTemplate sendIdenterUrl;
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
         this.levendeIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/alle-levende-identer/{avspillergruppeId}");
         this.doedeIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/doede-identer/{avspillergruppeId}");
         this.gifteIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/gifte-identer/{avspillergruppeId}");
         this.statusQuoUrl = new UriTemplate(hodejegerenServerUrl + "/v1/status-quo?endringskode={endringskode}&miljoe={miljoe}&fnr={fnr}");
-        this.sendIdenterUrl = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/skd/oppdaterStatus?miljoe={miljoe}");
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
@@ -118,10 +116,5 @@ public class HodejegerenConsumer {
         }
 
         return statusQuo;
-    }
-
-    public List<String> sendIdenterMedSkdMeldingerTilHodejegeren(List<String> identerMedSkdMeldinger, String miljoe) {
-        RequestEntity postRequest = RequestEntity.post(sendIdenterUrl.expand(miljoe)).body(identerMedSkdMeldinger);
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE_LIST).getBody();
     }
 }
