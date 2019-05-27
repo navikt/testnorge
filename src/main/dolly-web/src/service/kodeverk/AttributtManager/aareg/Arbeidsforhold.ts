@@ -124,6 +124,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Permisjon',
 				path: 'permisjon',
 				dataSource: DataSource.AAREG,
+				isMultiple: true,
 				attributtType: AttributtType.SelectAndRead,
 				informasjonstekst:
 					'Permisjonen må ha start- og sluttdato innenfor tidsrommet til arbeidsforholdet.',

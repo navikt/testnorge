@@ -20,7 +20,17 @@ const selectOptions = {
 	aktoertype: [
 		{ value: 'ORG', label: 'Organisasjon' },
 		{ value: 'PERS', label: 'Enkeltmannsforetak' }
-	]
+	],
+
+	//PDL
+	adressattype: [
+		{ value: 'ADVOKAT', label: 'Advokat' },
+		{ value: 'ORGANISASJON', label: 'Organisasjon' },
+		{ value: 'PERSON_MEDID', label: 'Kontaktperson med id' },
+		{ value: 'PERSON_UTENID', label: 'Kontaktperson uten id' }
+	],
+
+	skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }]
 }
 
 const SelectOptionsManager = attributeId => {

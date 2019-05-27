@@ -69,6 +69,7 @@ export interface Attributt {
 	onlyShowAfterSelectedValue?: Object // AAREG: Orgnummer/ident er avhengig av valgt verdi av "Type av arbeidsgiver". String = id, number = indexOf valgt verdi
 	transform?: (value: any, attributter: Attributt[]) => any
 	informasjonstekst?: String
+	subGruppe?: String
 }
 
 // Attributtene som er child av Attributt.Items. Eks: AAREG

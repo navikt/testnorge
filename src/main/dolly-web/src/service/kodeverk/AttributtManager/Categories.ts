@@ -36,6 +36,14 @@ export const Kategorier: KategoriTypes = {
 			'KRR - benyttes for offentlige virksomheter for å avklare om den enkelte bruker har reservert seg mot digital kommunikasjon eller ikke. I tillegg skal varslene som sendes til bruker benytte den kontaktinformasjonen som ligger i registeret. Dette kan enten være mobiltelefonnummer for utsendelse av sms, eller epostadresse for utsendelse av epost. \n' +
 			'Dataene her blir lagt i Krr-stub og blir kun distribuert til Q2. Dersom du har behov for dataen i andre miljøer må du opprette en manuell testdatabestilling i REG-spacet i Jira.',
 		order: 50
+	},
+	Doedsbo: {
+		id: 'doedsbo',
+		navn: 'Kontaktinformasjon for dødsbo',
+		informasjonstekst:
+			'KRR - benyttes for offentlige virksomheter for å avklare om den enkelte bruker har reservert seg mot digital kommunikasjon eller ikke. I tillegg skal varslene som sendes til bruker benytte den kontaktinformasjonen som ligger i registeret. Dette kan enten være mobiltelefonnummer for utsendelse av sms, eller epostadresse for utsendelse av epost. \n' +
+			'Dataene her blir lagt i Krr-stub og blir kun distribuert til Q2. Dersom du har behov for dataen i andre miljøer må du opprette en manuell testdatabestilling i REG-spacet i Jira.',
+		order: 50
 	}
 }
 
@@ -97,6 +105,18 @@ export const SubKategorier: KategoriTypes = {
 		navn: '',
 		order: 10,
 		showInSummary: true
+	},
+	Doedsbo: {
+		id: 'doedsbo',
+		navn: 'Kontaktinformasjon for dødsboet',
+		order: 10,
+		showInSummary: true
+	},
+	Adressat: {
+		id: 'adressat',
+		navn: 'Adressat',
+		order: 10,
+		showInSummary: true
 	}
 }
 
@@ -109,6 +129,11 @@ export const SubSubKategorier: KategoriTypes = {
 	Utenlandsopphold: {
 		id: 'utenlandsopphold',
 		navn: 'Utenlandsopphold',
+		order: 10
+	},
+	Adressat: {
+		id: 'adressat',
+		navn: 'Adressat',
 		order: 10
 	}
 }
