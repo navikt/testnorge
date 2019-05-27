@@ -20,6 +20,7 @@ export default class FormEditor extends PureComponent {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
 		// TODO: editMode burde være en props for hele klassen.
 		// editMode? renderEdit....: renderNormal
+		console.log('formikProps :', FormikProps)
 		return AttributtListe.map(hovedKategori => {
 			// Ikke vis kategori som har default ikke-valgt radio button
 			return this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
@@ -30,6 +31,7 @@ export default class FormEditor extends PureComponent {
 		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributes } = this.props
 		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
 		const hasError = hovedKategoriAttributes.some(attr => {
+			console.log('attr :', attr)
 			const error = formikProps.errors[attr]
 			if (error) {
 				const touched = formikProps.touched[attr]
@@ -133,22 +135,26 @@ export default class FormEditor extends PureComponent {
 			<div className="subkategori" key={uniqueId}>
 				{!isFieldarray && <h4>{subKategori.navn}</h4>}
 				<div className="subkategori-field-group">
-					{items.map(
-						item =>
-							this._shouldRenderFieldComponent(items, item, formikProps)
-								? isFieldarray
-									? FormEditorFieldArray(
-											item,
-											formikProps,
-											this.renderFieldComponent,
-											this.renderFieldSubItem,
-											this._shouldRenderFieldComponent,
-											this.props.editMode,
-											this._shouldRenderSubItem
-									  )
-									: this.renderFieldComponent(item, formikProps.values)
-								: null
-					)}
+					{items[0].subGruppe
+						? this._renderSubGruppe(items[0], formikProps)
+						: items.map(item => {
+								console.log('items formfiild:', items)
+								return this._shouldRenderFieldComponent(items, item, formikProps)
+									? // ? item.subGruppe === 'true'
+									  // 	? this._renderSubGruppe(item, formikProps)
+									  isFieldarray
+										? FormEditorFieldArray(
+												item,
+												formikProps,
+												this.renderFieldComponent,
+												this.renderFieldSubItem,
+												this._shouldRenderFieldComponent,
+												this.props.editMode,
+												this._shouldRenderSubItem
+										  )
+										: this.renderFieldComponent(item, formikProps.values)
+									: null
+						  })}
 				</div>
 			</div>
 		)
@@ -201,6 +207,48 @@ export default class FormEditor extends PureComponent {
 		const subitemId = item.id
 		const subKatId = item.subKategori.id
 		return Boolean(formikProps.values[subKatId][idx][subitemId][0])
+	}
+
+	_renderSubGruppe = (item, formikProps) => {
+		// For gruppering av felter i f.eks dødsbo (adressat, adresse, annet)
+		const subGruppeArray = this._structureSubGruppe(item)
+		return (
+			<div className="subGruppe">
+				<h4>{item.subKategori.navn}</h4>
+				{subGruppeArray.map((subGruppe, idx) => {
+					return (
+						<div key={idx} className="subGruppe">
+							<h4>{subGruppe.navn}</h4>
+							<div className="items">
+								{subGruppe.items.map(subitem => {
+									return this.renderFieldComponent(subitem, formikProps.value)
+								})}
+							</div>
+						</div>
+					)
+				})}
+			</div>
+		)
+	}
+
+	_structureSubGruppe = item => {
+		console.log('item :', item)
+		let subGruppeArray = []
+		item.items.map(subitem => {
+			if (subGruppeArray.length < 1) {
+				subGruppeArray.push({ navn: subitem.subGruppe, items: [subitem] })
+			} else {
+				let nyGruppe = true
+				subGruppeArray.map(subGrupper => {
+					if (subitem.subGruppe === subGrupper.navn) {
+						subGrupper.items.push(subitem)
+						nyGruppe = false
+					}
+				})
+				nyGruppe && subGruppeArray.push({ navn: subitem.subGruppe, items: [subitem] })
+			}
+		})
+		return subGruppeArray
 	}
 
 	renderFieldComponent = (item, valgteVerdier, parentObject) => {
@@ -342,6 +390,9 @@ export default class FormEditor extends PureComponent {
 				const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg..'
 
 				if (item.dependentOn) {
+					console.log('parentObject :', parentObject)
+					console.log('item :', item)
+					console.log('valgteVerdier :', valgteVerdier)
 					if (parentObject) {
 						// Sjekk if item er avhengig av en valgt verdi
 						const { parentId, idx } = parentObject
@@ -349,6 +400,7 @@ export default class FormEditor extends PureComponent {
 						item.apiKodeverkId = valgtVerdi
 						// Override for force rerender av react select
 						item.key = valgtVerdi
+						console.log('item :', item)
 					} else {
 						// TODO: Implement når vi trenger avhengighet mellom flat attributter
 					}

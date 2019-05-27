@@ -100,6 +100,7 @@ export const FieldArrayComponent = ({
 							<div style={{ display: 'flex' }}>
 								<div className="subkategori-field-group multi">
 									{items.map((item, kdx) => {
+<<<<<<< Updated upstream
 										if (item.subItems)
 											return (
 												<div key={kdx}>
@@ -144,6 +145,58 @@ export const FieldArrayComponent = ({
 												</div>
 											)
 										else if (
+=======
+										console.log('item :', item)
+										if (item.subItems) {
+											if (!item.isMultiple) {
+												// return createSubItem(item, idx)
+											} else {
+												return (
+													<div key={kdx}>
+														{faKey[item.id] &&
+															faKey[item.id].map((subRad, jdx) => {
+																if (shouldRenderSubItem(item, formikProps, idx)) {
+																	return (
+																		<div key={jdx} className="subItems">
+																			<div className="subItem-header">
+																				<div style={{ display: 'flex' }}>
+																					{jdx === 0 && <h4>{item.label}</h4>}
+																					{item.informasjonstekst && (
+																						<ContentTooltip>
+																							<span>{item.informasjonstekst}</span>
+																						</ContentTooltip>
+																					)}
+																				</div>
+																			</div>
+																			<div className="subitem-container-button">
+																				{renderFieldSubItem(
+																					formikProps,
+																					item,
+																					subRad,
+																					parentId,
+																					idx,
+																					jdx
+																				)}
+																				{!editMode &&
+																					item.isMultiple && (
+																						<Button
+																							className="field-group-remove"
+																							kind="remove-circle"
+																							onClick={() => removeSubItem(idx, jdx, item.id)}
+																							title="Fjern"
+																							children={item.label.toUpperCase()}
+																						/>
+																					)}
+																			</div>
+																		</div>
+																	)
+																}
+															})}
+													</div>
+												)
+											}
+										} else if (
+>>>>>>> Stashed changes
 											shouldRenderFieldComponent(items, item, formikProps, {
 												parentId,
 												idx
@@ -154,7 +207,11 @@ export const FieldArrayComponent = ({
 												...item,
 												id: `${parentId}[${idx}]${item.id}`
 											}
+<<<<<<< Updated upstream
 
+=======
+											console.log('fakeItem :', fakeItem)
+>>>>>>> Stashed changes
 											return (
 												<div key={kdx}>
 													{renderFieldComponent(fakeItem, formikProps.values, {
@@ -181,7 +238,12 @@ export const FieldArrayComponent = ({
 							</div>
 							{items.map((item, ndx) => {
 								return (
+<<<<<<< Updated upstream
 									item.subItems && (
+=======
+									item.subItems &&
+									item.isMultiple && (
+>>>>>>> Stashed changes
 										<Button
 											className="flexbox--align-center field-group-add"
 											kind="add-circle"
