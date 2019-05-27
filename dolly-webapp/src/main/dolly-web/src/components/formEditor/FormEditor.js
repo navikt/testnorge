@@ -129,6 +129,12 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 
+		if ('arenaforvalter' in formikProps.values) {
+			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'UTEN_SERVICEBEHOV') {
+				formikProps.values['arenaforvalter'][0]['kvalifiseringsgruppe'] = ''
+			}
+		}
+
 		return (
 			<div className="subkategori" key={uniqueId}>
 				{!isFieldarray && <h4>{subKategori.navn}</h4>}
@@ -208,9 +214,6 @@ export default class FormEditor extends PureComponent {
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
 		let disabled = false
-		console.log('item :', item)
-		console.log('valgteVerdier :', valgteVerdier)
-		console.log('this.props :', this.props)
 
 		if (this.props.editMode && AttributtType.SelectAndRead === item.attributtType) {
 			let valgtVerdi = valgteVerdier[item.id]

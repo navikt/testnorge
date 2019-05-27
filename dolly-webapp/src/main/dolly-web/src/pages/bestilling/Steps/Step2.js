@@ -103,7 +103,6 @@ export default class Step2 extends PureComponent {
 	}
 
 	_checkValues = values => {
-		console.log('values :', values)
 		if (values.spesreg !== 'UFB') {
 			delete values['ufb_kommunenr']
 			delete values['utenFastBopel']

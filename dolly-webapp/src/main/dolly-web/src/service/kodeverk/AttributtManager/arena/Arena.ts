@@ -1,9 +1,9 @@
 import { Kategorier, SubKategorier } from '../Categories'
 import { Attributt, InputType, DataSource, AttributtType } from '../Types'
 import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
-import DateValidation from '~/components/fields/Datepicker/DateValidation'
+// import DateValidation from '~/components/fields/Datepicker/DateValidation'
 
-// import * as yup from 'yup'
+import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
 	{
@@ -12,8 +12,8 @@ const AttributtListe: Attributt[] = [
 		id: 'arenaforvalter',
 		label: 'Er arbeidssøker',
 		dataSource: DataSource.ARENA,
-		attributtType: AttributtType.SelectAndEdit,
 		// validation: yup.object(),
+		attributtType: AttributtType.SelectAndEdit,
 		items: [
 			{
 				hovedKategori: Kategorier.Arena,
@@ -22,8 +22,8 @@ const AttributtListe: Attributt[] = [
 				label: 'Brukertype',
 				dataSource: DataSource.ARENA,
 				inputType: InputType.Select,
-				// validation: yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
 				options: SelectOptionsManager('arenaBrukertype'),
+				validation: yup.string().required('Velg en brukertype'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -34,7 +34,10 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.ARENA,
 				inputType: InputType.Select,
 				size: 'large',
-				// validation: yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
+				// validation: yup.when('arenaBrukertype', {
+				// 	is: 'MED_SERVICEBEHOV',
+				// 	then: yup.string().required()
+				// }),
 				options: SelectOptionsManager('kvalifiseringsgruppe'),
 				// dependentOn: 'arenaBrukertype',
 				attributtType: AttributtType.SelectAndEdit
