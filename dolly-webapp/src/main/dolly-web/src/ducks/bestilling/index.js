@@ -258,7 +258,9 @@ const bestillingFormatter = bestillingState => {
 	if (malBestillingNavn !== '') {
 		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
 	}
-	console.log('POSTING BESTILLING', final_values)
+
+	// * Denne kan beholdes for enklere debug på u2/prod
+	console.info('POSTING BESTILLING', final_values)
 
 	return final_values
 }

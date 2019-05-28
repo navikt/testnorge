@@ -80,7 +80,7 @@ export const GET_KRR_TESTBRUKER = createAction(
 			return res
 		} catch (err) {
 			if (err.response && err.response.status === 404) {
-				console.log(err.response.data.melding)
+				console.error(err.response.data.melding)
 				//ERROR 404 betyr at det ikke finnes data for identen, fake opp datastruktur slik at reducer blir consistent
 				return { data: [null] }
 			}
@@ -256,7 +256,7 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 
 		dispatch(updateTestbrukerSuccess())
 	} catch (error) {
-		console.log(error)
+		console.error(error)
 		dispatch(updateTestbrukerError())
 	}
 }

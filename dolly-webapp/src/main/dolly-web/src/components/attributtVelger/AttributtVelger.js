@@ -6,8 +6,6 @@ import Utvalg from './Utvalg/Utvalg'
 import Checkbox from '~/components/fields/Checkbox/Checkbox'
 import { AttributtManager } from '~/service/Kodeverk'
 import './AttributtVelger.less'
-
-// TODO: Dennen klassen er litt for stor. Vurder aa dele opp
 export default class AttributtVelger extends Component {
 	static propTypes = {
 		onToggle: PropTypes.func.isRequired,
@@ -33,29 +31,29 @@ export default class AttributtVelger extends Component {
 					labelOffscreen
 					placeholder="Søk etter egenskaper"
 					className="attributt-velger_search"
-					onChange={this.searchOnChange}
+					onChange={this._searchOnChange}
 				/>
 				<div className="flexbox">
-					<div className="attributt-velger_panels">{this.renderPanels()}</div>
+					<div className="attributt-velger_panels">{this._renderPanels()}</div>
 					<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />
 				</div>
 			</div>
 		)
 	}
 
-	searchOnChange = e => this.setState({ search: e.target.value })
+	_searchOnChange = e => this.setState({ search: e.target.value })
 
-	renderPanels = () => {
+	_renderPanels = () => {
 		const { currentBestilling } = this.props
 		const list = this.AttributtManager.listSelectableAttributes(
 			this.state.search,
 			currentBestilling.identOpprettesFra
 		)
-		if (list.length === 0) return this.renderEmptyResult()
-		return list.map(hovedKategori => this.renderHovedKategori(hovedKategori))
+		if (list.length === 0) return this._renderEmptyResult()
+		return list.map(hovedKategori => this._renderHovedKategori(hovedKategori))
 	}
 
-	renderHovedKategori = ({ hovedKategori, items }) => {
+	_renderHovedKategori = ({ hovedKategori, items }) => {
 		const { uncheckAttributeArray, checkAttributeArray } = this.props
 		const name = hovedKategori.navn
 		const hovedKategoriItems = this.AttributtManager.getParentAttributtListByHovedkategori(
@@ -72,29 +70,29 @@ export default class AttributtVelger extends Component {
 			>
 				<fieldset name={name}>
 					<div className="attributt-velger_panelcontent">
-						{items.map((subKategori, idx) => this.renderSubKategori(subKategori, idx))}
+						{items.map((subKategori, idx) => this._renderSubKategori(subKategori, idx))}
 					</div>
 				</fieldset>
 			</Panel>
 		)
 	}
 
-	renderSubKategori = ({ subKategori, items }, idx) => {
+	_renderSubKategori = ({ subKategori, items }, idx) => {
 		return (
 			<Fragment key={idx}>
 				{subKategori && subKategori.navn != '' && <h3>{subKategori.navn}</h3>}
 				<fieldset name={subKategori.navn}>
 					<div className="attributt-velger_panelsubcontent">
-						{items.map(item => this.renderItem(item))}
+						{items.map(item => this._renderItem(item))}
 					</div>
 				</fieldset>
 			</Fragment>
 		)
 	}
 
-	renderItem = item => {
+	_renderItem = item => {
 		const { attributeIds } = this.props.currentBestilling
-		// Dependency system, finner ut om attributtene kan toggles
+		// *Dependency system, finner ut om attributtene kan toggles
 		const disabled = item.dependentOn
 			? !attributeIds.includes(item.dependentOn)
 				? true
@@ -132,5 +130,5 @@ export default class AttributtVelger extends Component {
 		isChecked && this.props.onToggle(dependentBy)
 	}
 
-	renderEmptyResult = () => <p>Søket ga ingen treff</p>
+	_renderEmptyResult = () => <p>Søket ga ingen treff</p>
 }
