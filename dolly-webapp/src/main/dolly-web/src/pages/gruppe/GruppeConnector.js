@@ -5,8 +5,7 @@ import {
 	getGruppe,
 	showCreateOrEditGroup,
 	deleteGruppe,
-	nyeBestillingerSelector,
-	getArenaTest
+	nyeBestillingerSelector
 } from '~/ducks/gruppe'
 import { getBestillinger, getBestillingStatus } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
@@ -28,7 +27,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const gruppeId = ownProps.match.params.gruppeId
 	return {
-		getArenaTest: ident => dispatch(getArenaTest(ident)),
 		getGruppe: () => dispatch(getGruppe(gruppeId)),
 		deleteGruppe: () => dispatch(deleteGruppe(gruppeId)),
 		getBestillinger: () => dispatch(getBestillinger(gruppeId)),
