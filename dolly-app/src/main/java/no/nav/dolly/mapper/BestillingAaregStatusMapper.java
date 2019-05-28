@@ -10,14 +10,13 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections4.list.TreeList;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusMiljoeIdentForhold;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingAaregStatusMapper {
-
-    private BestillingAaregStatusMapper() {
-
-    }
 
     public static List<RsStatusMiljoeIdentForhold> buildAaregStatusMap(List<BestillingProgress> progressList) {
         //  status     miljø       ident       forhold

@@ -1,6 +1,4 @@
-package no.nav.dolly.domain.resultset.arenastub;
-
-import java.util.List;
+package no.nav.dolly.domain.resultset.arenaforvalter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArenaNyeBrukereRequest {
+public class ArenaBrukerUtenServicebehov {
 
-    private List<RsArenadata> nyeBrukere;
+    private String personident;
 }

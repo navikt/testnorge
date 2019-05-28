@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +13,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlKontaktpersonMedIdNummer extends PdlSomAdressat {
+public class PdlKontaktpersonUtenIdNummer {
 
-    private String idnummer;
+        private LocalDate foedselsdato;
+        private PdlPersonnavn navn;
 }

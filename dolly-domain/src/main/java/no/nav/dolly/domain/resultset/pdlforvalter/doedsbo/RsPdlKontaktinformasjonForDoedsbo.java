@@ -19,13 +19,10 @@ public class RsPdlKontaktinformasjonForDoedsbo {
 
     private String adresselinje1;
     private String adresselinje2;
-    private PdlOrganisasjon advokatSomAdressat;
+    private PdlSomAdressat adressat;
     private LocalDateTime gyldigFom;
     private LocalDateTime gyldigTom;
-    private PdlKontaktpersonMedIdNummer kontaktpersonMedIdNummerSomAdressat;
-    private RsPdlKontaktpersonUtenIdNummerSomAdressat kontaktpersonUtenIdNummerSomAdressat;
     private String landkode;
-    private PdlOrganisasjon organisasjonSomAdressat;
     private String postnummer;
     private String poststedsnavn;
     private PdlSkifteform skifteform;
