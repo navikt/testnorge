@@ -112,14 +112,3 @@ export const SubSubKategorier: KategoriTypes = {
 		order: 10
 	}
 }
-
-// Sub-items?
-// TODO: Alex - trenger vi den?
-export const SubItem: KategoriTypes = {
-	Permisjon: {
-		id: 'permisjon',
-		navn: 'Permisjon',
-		order: 10,
-		showInSummary: true
-	}
-}

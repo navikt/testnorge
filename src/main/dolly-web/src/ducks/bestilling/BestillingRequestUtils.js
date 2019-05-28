@@ -96,7 +96,6 @@ export const getValues = (attributeList, values) => {
 // Transform attributes before order is sent
 // Date, boolean...
 const _transformAttributt = (attribute, attributes, value) => {
-	// console.log('attribute, attributes, value :', attribute, attributes, value)
 	if (attribute.dataSource === 'SIGRUN') {
 		return value
 	} else if (attribute.dataSource === 'AAREG') {
