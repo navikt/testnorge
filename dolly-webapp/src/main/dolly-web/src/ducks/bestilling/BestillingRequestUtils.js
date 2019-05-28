@@ -124,8 +124,6 @@ const _transformAttributt = (attribute, attributes, value) => {
 						element[subKategoriId][0] !== ''
 					) {
 						let subsubArray = []
-
-						console.log('element :', element)
 						element[subKategoriId].map(rad => {
 							rad && subsubArray.push(parseSubItemDate(item, rad, Object.assign(rad)))
 						})
