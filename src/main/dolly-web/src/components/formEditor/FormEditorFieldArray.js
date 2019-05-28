@@ -193,21 +193,6 @@ export const FieldArrayComponent = ({
 									)
 								)
 							})}
-							{/* REG-3377: Alex - Under utvikling */}
-
-							{/*Attributtene med items og subItems, f.eks AAREGs */}
-							{/* {!editMode &&
-								subItems &&
-								subItems.map((subItem, i) => (
-									<Button
-										className="flexbox--align-center field-group-add"
-										kind="add-circle"
-										key={i}
-										onClick={() => createSubItem(idx, i)}
-									>
-										{subItem.label}
-									</Button>
-								))} */}
 						</div>
 					)
 				})

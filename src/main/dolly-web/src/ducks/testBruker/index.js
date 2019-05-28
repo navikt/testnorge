@@ -201,7 +201,6 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 		const sendToTpsBody = mapIdentAndEnvironementForTps(state, ident)
 		let tpsfJsonToSend = _merge(tpsfCurrentValues, tpsfBody)
 
-		// TODO: Hvis det dukker opp flere slike tilfelle, vurder å expande AttributeSystem
 		// KUN FOR egen ansatt - spesielt tilfelle
 		if (tpsfJsonToSend.egenAnsattDatoFom) {
 			tpsfJsonToSend.egenAnsattDatoFom = new Date()

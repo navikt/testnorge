@@ -74,7 +74,6 @@ const AttributtListe: Attributt[] = [
 					.number()
 					.integer('Ugyldig årstall')
 					.required('Tast inn et gyldig år')
-					// TODO: Henter inn gyldigFra fra kodeverk?
 					.min(2017, 'Inntektsår må være 2017 eller senere')
 					.max(2100, 'Inntektsår må være tidligere enn 2100'),
 				attributtType: AttributtType.SelectAndRead
