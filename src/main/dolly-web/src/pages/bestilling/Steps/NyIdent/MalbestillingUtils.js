@@ -143,19 +143,28 @@ const _mapRegistreValue = (key, value) => {
 					aktoertype: arb.arbeidsgiver.aktoertype,
 					permisjon:
 						arb.permisjon &&
-						arb.permisjon.map(per => ({
-							permisjonOgPermittering: per.permisjonOgPermittering,
-							fom: Formatters.formatDate(per.permisjonsPeriode.fom),
-							tom: Formatters.formatDate(per.permisjonsPeriode.tom),
-							permisjonsprosent: per.permisjonsprosent
-						})),
+						arb.permisjon.map(per => {
+							console.log('per :', per)
+							if (per.permisjonsId !== null) {
+								return {
+									permisjonOgPermittering: per.permisjonOgPermittering,
+									fom: Formatters.formatDate(per.permisjonsPeriode.fom),
+									tom: Formatters.formatDate(per.permisjonsPeriode.tom),
+									permisjonsprosent: per.permisjonsprosent
+								}
+							}
+						}),
 					utenlandsopphold:
 						arb.utenlandsopphold &&
-						arb.utenlandsopphold.map(utl => ({
-							land: utl.land,
-							fom: Formatters.formatDate(utl.periode.fom),
-							tom: Formatters.formatDate(utl.periode.tom)
-						}))
+						arb.utenlandsopphold.map(utl => {
+							if (utl.land) {
+								return {
+									land: utl.land,
+									fom: Formatters.formatDate(utl.periode.fom),
+									tom: Formatters.formatDate(utl.periode.tom)
+								}
+							}
+						})
 				}
 
 				if (arb.arbeidsgiver.aktoertype === 'ORG') {
