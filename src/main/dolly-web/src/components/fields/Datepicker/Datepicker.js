@@ -96,7 +96,7 @@ export default class Datepicker extends Component {
 	}
 
 	render() {
-		const { label, error, value, disabled } = this.props
+		const { label, error, value, disabled, form } = this.props
 
 		return (
 			<div className="dolly-datepicker" ref={node => (this.containerNode = node)}>
@@ -112,6 +112,7 @@ export default class Datepicker extends Component {
 					inputProps={{
 						onKeyUp: this.handleKeyUp,
 						onFocus: this.handleFocus,
+						onBlur: () => form.setFieldTouched(this.props.name, true),
 						disabled: disabled,
 						feil: this.state.active ? null : error,
 						label: label
@@ -144,22 +145,51 @@ export default class Datepicker extends Component {
 
 export const FormikDatepicker = props => {
 	const { field, form, ...restProps } = props
+	let child, parent, grandparent, feilmelding
+
+	const arr = field.name.split('[')
+	if (arr.length === 1) {
+		if (form.touched[field.name] && form.errors[field.name]) {
+			feilmelding = form.errors[field.name]
+		}
+	} else if (arr.length === 2) {
+		parent = arr[0]
+		child = arr[1].split(']')[1]
+		if (
+			form.touched[parent] &&
+			form.touched[parent][0][child] &&
+			form.errors[parent] &&
+			form.errors[parent][0][child]
+		) {
+			feilmelding = form.errors[parent][0][child]
+		}
+	} else if (arr.length === 3) {
+		grandparent = arr[0]
+		parent = arr[1].split(']')[1]
+		child = arr[2].split(']')[1]
+		if (
+			form.touched[grandparent] &&
+			form.touched[grandparent][0][parent] &&
+			form.touched[grandparent][0][parent][0][child] &&
+			form.errors[grandparent] &&
+			form.errors[grandparent][0][parent] &&
+			form.errors[grandparent][0][parent][0][child]
+		) {
+			feilmelding = form.errors[grandparent][0][parent][0][child]
+		}
+	}
 
 	return (
 		<Datepicker
 			name={field.name}
+			childname={child}
 			value={field.value}
+			form={form}
 			onChange={dato => {
 				form.setFieldValue(field.name, dato)
 				form.setFieldTouched(field.name, true)
 			}}
-			error={
-				form.touched[field.name] && form.errors[field.name]
-					? {
-							feilmelding: form.errors[field.name]
-					  }
-					: null
-			}
+			error={feilmelding ? { feilmelding: feilmelding } : null}
 			{...restProps}
 		/>
 	)
