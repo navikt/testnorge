@@ -120,7 +120,6 @@ export default handleActions(
 		},
 		[actions.setValues](state, action) {
 			// Remove empty values
-
 			let copy = JSON.parse(JSON.stringify(action.payload.values))
 			Object.entries(copy).forEach(([key, value]) => {
 				if (value === '') {
@@ -131,7 +130,7 @@ export default handleActions(
 			return {
 				...state,
 				values: action.payload.values,
-				page: (state.page += action.payload.goBack ? -1 : 1)
+				page: action.payload.keepPage ? state.page : (state.page += action.payload.goBack ? -1 : 1)
 			}
 		},
 		[actions.deleteValues](state, action) {

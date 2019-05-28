@@ -118,10 +118,14 @@ const _transformAttributt = (attribute, attributes, value) => {
 				const subKategoriId = item.id
 				valueDeepCopy.map((element, idx) => {
 					let transformed = Object.assign(element)
-					if (element[subKategoriId] !== '' && element[subKategoriId][0] !== '') {
+					if (
+						element[subKategoriId] &&
+						element[subKategoriId] !== '' &&
+						element[subKategoriId][0] !== ''
+					) {
 						let subsubArray = []
 						element[subKategoriId].map(rad => {
-							subsubArray.push(parseSubItemDate(item, rad, Object.assign(rad)))
+							rad && subsubArray.push(parseSubItemDate(item, rad, Object.assign(rad)))
 						})
 
 						transformed = {
@@ -240,20 +244,21 @@ export const findAaregKeyValue = (item, element) => {
 		let periodekey = 'periode'
 		item.subItems[0].subSubKategori.id === 'permisjon' && (periodekey = 'permisjonsPeriode')
 		//element[item.id] !== '' &&
-		element[item.id].map((subitem, idx) => {
-			let key = {}
-			Object.keys(subitem).map(itemkey => {
-				itemkey !== 'fom' && itemkey !== 'tom'
-					? Object.assign(key, { [itemkey]: element[item.id][idx][itemkey] })
-					: Object.assign(key, {
-							[periodekey]: {
-								['fom']: element[item.id][idx].fom,
-								['tom']: element[item.id][idx].tom
-							}
-					  })
+		element[item.id] &&
+			element[item.id].map((subitem, idx) => {
+				let key = {}
+				Object.keys(subitem).map(itemkey => {
+					itemkey !== 'fom' && itemkey !== 'tom'
+						? Object.assign(key, { [itemkey]: element[item.id][idx][itemkey] })
+						: Object.assign(key, {
+								[periodekey]: {
+									['fom']: element[item.id][idx].fom,
+									['tom']: element[item.id][idx].tom
+								}
+						  })
+				})
+				keys.push(key)
 			})
-			keys.push(key)
-		})
 		return keys
 	}
 	return element[item.id]

@@ -27,7 +27,7 @@ export default class PersonInfoBlock extends PureComponent {
 						})
 
 						return (
-							<Fragment>
+							<Fragment key={idx}>
 								{this.renderPersonInfoBlock(
 									subBlock.value,
 									subBlock.label,
