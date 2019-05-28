@@ -18,7 +18,7 @@ import Postadresse from '../postadresse/Postadresse'
 export default class FormEditor extends PureComponent {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
-		// TODO: editMode burde være en props for hele klassen.
+		// TODO: Vurder å lage en egen component for redigering
 		// editMode? renderEdit....: renderNormal
 		return AttributtListe.map(hovedKategori => {
 			// Ikke vis kategori som har default ikke-valgt radio button
@@ -153,8 +153,7 @@ export default class FormEditor extends PureComponent {
 	}
 
 	// Avhengigheter mellom valgte verdi og field
-	// TODO: Vurder om denne løsningen er optimalt når AttributtSystem blir formatert
-	// Denne funksjonaliteten burde kanskje være i AttributtManager
+	// ? Denne funksjonaliteten burde kanskje være i AttributtManager
 	// Denne metode er bygd med fokus for AAREG-felter.
 
 	_shouldRenderFieldComponent = (items, item, formikProps, parentObject) => {
