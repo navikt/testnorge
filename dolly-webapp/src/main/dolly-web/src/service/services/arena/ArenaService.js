@@ -10,7 +10,6 @@ export default class ArenaService {
 	}
 
 	static getTestbruker(ident) {
-		console.log('ident :', ident)
 		return Request.getWithoutCredentials(
 			`${this.getArenaUrl()}/bruker?filter-personident=${ident}&page=0`,
 			{

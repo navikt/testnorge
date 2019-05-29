@@ -70,11 +70,10 @@ const DataMapper = {
 		}
 		if (arenaData) {
 			// Workaround for å hente servicebehov-type fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
-			const bestKriterier = bestillingStatuser.data.find(
-				bestilling => bestilling.id === bestillingId[0]
-			).bestKriterier
-			const index = bestKriterier.indexOf('kvalifiseringsgruppe') + 22
-			var kvalifiseringsgruppe = bestKriterier.substring(index, index + 7).replace(/\W/g, '')
+			const bestKriterier = JSON.parse(
+				bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).bestKriterier
+			)
+			var kvalifiseringsgruppe = bestKriterier.arenaforvalter.kvalifiseringsgruppe
 			if (kvalifiseringsgruppe === 'null') {
 				kvalifiseringsgruppe = null
 			}

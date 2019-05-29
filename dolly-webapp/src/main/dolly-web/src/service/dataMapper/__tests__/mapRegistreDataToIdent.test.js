@@ -1,4 +1,4 @@
-import { mapSigrunData, mapKrrData } from '../mapRegistreDataToIdent'
+import { mapSigrunData, mapKrrData, mapArenaData } from '../mapRegistreDataToIdent'
 
 describe('mapDetailedData.js', () => {
 	describe('mapSigrunData', () => {
@@ -16,11 +16,11 @@ describe('mapDetailedData.js', () => {
 					verdi: '999'
 				}
 			]
-			
-			const res = { 
+
+			const res = {
 				header: 'Inntekter',
 				multiple: true,
-				data: testSigrunData.map( (data,i) => {
+				data: testSigrunData.map((data, i) => {
 					return {
 						parent: 'inntekter',
 						id: data.personidentifikator,
@@ -118,6 +118,50 @@ describe('mapDetailedData.js', () => {
 				]
 			}
 			expect(mapKrrData(testKrr2)).toEqual(testRes2)
+		})
+	})
+
+	describe('mapArenaData', () => {
+		it('should return null without data', () => {
+			expect(mapArenaData()).toBeNull()
+		})
+
+		const testArenaData1 = { data: { arbeidsokerList: { 0: { servicebehov: true } } } }
+		const testKvalifiseringsgruppe1 = 'BFORM'
+
+		it('should return arena-data with servicebehov', () => {
+			const testRes1 = {
+				header: 'Arena',
+				data: [
+					{
+						id: 'brukertype',
+						label: 'Brukertype',
+						value: 'Med servicebehov'
+					},
+					{
+						id: 'servicebehov',
+						label: 'Servicebehov',
+						value: 'BFORM'
+					}
+				]
+			}
+			expect(mapArenaData(testArenaData1, testKvalifiseringsgruppe1)).toEqual(testRes1)
+		})
+
+		it('should return arena-data without servicebehov', () => {
+			const testArenaData2 = { data: { arbeidsokerList: { 0: { servicebehov: false } } } }
+			const testRes2 = {
+				header: 'Arena',
+				data: [
+					{
+						id: 'brukertype',
+						label: 'Brukertype',
+						value: 'Uten servicebehov'
+					},
+					undefined
+				]
+			}
+			expect(mapArenaData(testArenaData2)).toEqual(testRes2)
 		})
 	})
 })

@@ -72,13 +72,15 @@ export function mapKrrData(krrData) {
 
 export function mapArenaData(arenaData, kvalifiseringsgruppe) {
 	if (!arenaData) return null
+	if (arenaData['data']['arbeidsokerList'].length === 0) return null
+	const brukertype = arenaData['data']['arbeidsokerList'][0].servicebehov
 	return {
 		header: 'Arena',
 		data: [
 			{
 				id: 'brukertype',
 				label: 'Brukertype',
-				value: Formatters.booleanToServicebehov(arenaData.servicebehov)
+				value: Formatters.booleanToServicebehov(brukertype)
 			},
 			kvalifiseringsgruppe && {
 				id: 'servicebehov',

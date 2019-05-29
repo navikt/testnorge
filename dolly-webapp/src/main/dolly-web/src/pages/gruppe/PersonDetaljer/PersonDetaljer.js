@@ -29,10 +29,7 @@ export default class PersonDetaljer extends PureComponent {
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunTestbruker()
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunSekvensnr()
 		this.props.testIdent.krrstubStatus === 'OK' && this.props.getKrrTestbruker()
-		console.log('object :', this.props.testIdent.arenaforvalterStatus)
-		this.props.testIdent.arenaforvalterStatus.length >= 2 &&
-			// this.props.testIdent.arenaforvalterStatus[1].statusIdent['status: OK'] &&
-			this.props.getArenaTestbruker()
+		this.props.testIdent.arenaforvalterStatus && this.props.getArenaTestbruker()
 		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
 	}
@@ -44,6 +41,7 @@ export default class PersonDetaljer extends PureComponent {
 		return (
 			<div className="person-details">
 				{personData.map((i, idx) => {
+					if (i === null) return null
 					if (i.data.length < 0) return null
 					if (i.data.length > 0) {
 						if (i.data[0].id == 'bestillingID') {
