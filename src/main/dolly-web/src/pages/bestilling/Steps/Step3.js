@@ -94,7 +94,6 @@ export default class Step3 extends PureComponent {
 					onSubmit={this.submit}
 					validationSchema={this.EnvValidation}
 					render={formikProps => {
-						// console.log(formikProps, 'forkni')
 						return (
 							<Fragment>
 								<div className="input-container">

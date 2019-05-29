@@ -6,7 +6,7 @@ import BestillingProgress from './BestillingProgress/BestillingProgress'
 import MiljoeStatus from './MiljoeStatus/MiljoeStatus'
 import './BestillingStatus.less'
 import ContentContainer from '~/components/contentContainer/ContentContainer'
-import miljoeStatusSelector from '../../../utils/MiljoeStatusSelector';
+import miljoeStatusSelector from '../../../utils/MiljoeStatusSelector'
 
 export default class BestillingStatus extends PureComponent {
 	static propTypes = {
@@ -55,7 +55,7 @@ export default class BestillingStatus extends PureComponent {
 			}
 			this.updateStatus(data)
 		} catch (error) {
-			console.log('error', error)
+			console.error(err)
 		}
 	}
 

@@ -1,4 +1,3 @@
-
 const avvikStatus = item => {
 	let avvik = false
 	item.tpsfStatus &&
@@ -35,7 +34,7 @@ const antallIdenterOpprettetFunk = bestilling => {
 }
 
 const miljoeStatusSelector = bestilling => {
-    if (!bestilling) return null
+	if (!bestilling) return null
 
 	const bestillingId = bestilling.id
 	let successEnvs = []
@@ -44,7 +43,7 @@ const miljoeStatusSelector = bestilling => {
 	const finnesFeilmelding = avvikStatus(bestilling)
 	const antallIdenterOpprettet = antallIdenterOpprettetFunk(bestilling)
 
-	// TODO: Kan disse 2 loops forenklet?
+	// TODO: Refactor, forenkler disse kodene
 	bestilling.tpsfStatus &&
 		bestilling.tpsfStatus.map(status => {
 			status.statusMelding !== 'OK' &&
@@ -108,7 +107,7 @@ const miljoeStatusSelector = bestilling => {
 		avvikEnvs,
 		finnesFeilmelding,
 		antallIdenterOpprettet
-    }
+	}
 }
 
-export default (miljoeStatusSelector)
+export default miljoeStatusSelector

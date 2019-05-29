@@ -54,31 +54,9 @@ describe('AttributtVelger.js', () => {
 		).toBe('Søket ga ingen treff')
 	})
 
-	// TODO: Skal vi ha radio buttons on step 2?
-	// const items = [{ id: 'alder', label: 'a' }, { id: 'kjonn', label: 'b' }]
-	// const radioButtons = shallow(rendered.instance().renderRadioButtons(items))
-	// it('should render radio buttons', () => {
-	// 	expect(radioButtons.find(Radio).exists()).toBeTruthy()
-	// })
-
-	// it('radio buttons should have onChange function', () => {
-	// 	expect(
-	// 		radioButtons
-	// 			.find(Radio)
-	// 			.at(0)
-	// 			.props().onChange
-	// 	).toBeTruthy()
-	// })
-	// const selectedItem = { id: 'kjonn', label: 'b' }
-
-	// it('should change radio buttons onClick', () => {
-	// 	rendered.instance().onChangeRadioGruppe(items, selectedItem)
-	// 	expect(rendered.instance().props.onToggle).toBeCalled()
-	// })
-
 	it('should has search function', () => {
 		const testdata = '1'
-		const radioButtons = rendered.instance().searchOnChange({ target: { value: testdata } })
+		const searchedOn1 = rendered.instance()._searchOnChange({ target: { value: testdata } })
 		expect(rendered.state().search).toEqual(testdata)
 	})
 })

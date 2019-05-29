@@ -21,6 +21,6 @@ const _sjekkPostnummer = async postnummer => {
 		const res = await TpsfApi.checkPostnummer(postnummer)
 		return regex.test(postnummer) && res.data.response.status.kode === '04'
 	} catch (err) {
-		console.log('err :', err)
+		console.error(err)
 	}
 }
