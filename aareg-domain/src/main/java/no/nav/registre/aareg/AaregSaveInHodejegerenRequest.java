@@ -15,5 +15,5 @@ import lombok.Setter;
 @Setter
 public class AaregSaveInHodejegerenRequest {
     private String kilde;
-    private List<IdentMedData> data;
+    private List<IdentMedData> identMedData;
 }
