@@ -3,15 +3,6 @@ package no.nav.registre.aareg.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
-import no.nav.registre.aareg.IdentMedData;
-import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
-import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
-import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
-import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
-import no.nav.registre.aareg.domain.Arbeidsforhold;
-import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +19,16 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
+import no.nav.registre.aareg.IdentMedData;
+import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
+import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
+import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
+import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
+import no.nav.registre.aareg.domain.Arbeidsforhold;
+import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @Service
 @Slf4j
@@ -119,11 +120,10 @@ public class SyntetiseringService {
                     if (arbeidsforholdsResponse != null
                             && arbeidsforholdsResponse.getArbeidsforhold() != null
                             && arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker() != null
-                            && arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent() != null) {
-                        if (fnr == arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent()) {
-                            arbeidsforholdFunnet.add(new IdentMedData(fnr, Collections.singletonList(arbeidsforholdsResponse.getArbeidsforhold())));
-                            break;
-                        }
+                            && arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent() != null
+                            && fnr.equals(arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent())) {
+                        arbeidsforholdFunnet.add(new IdentMedData(fnr, Collections.singletonList(arbeidsforholdsResponse.getArbeidsforhold())));
+                        break;
                     }
                 }
             }
