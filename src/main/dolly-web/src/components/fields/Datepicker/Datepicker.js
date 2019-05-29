@@ -145,9 +145,12 @@ export default class Datepicker extends Component {
 
 export const FormikDatepicker = props => {
 	const { field, form, ...restProps } = props
-	let child, parent, grandparent, feilmelding
+	let child, parent, grandparent, idx, jdx, feilmelding
 
 	const arr = field.name.split('[')
+	console.log('form :', form)
+	console.log('field :', field)
+	console.log('arr :', arr)
 	if (arr.length === 1) {
 		if (form.touched[field.name] && form.errors[field.name]) {
 			feilmelding = form.errors[field.name]
@@ -155,27 +158,38 @@ export const FormikDatepicker = props => {
 	} else if (arr.length === 2) {
 		parent = arr[0]
 		child = arr[1].split(']')[1]
+		idx = arr[1].split(']')[0]
+		console.log('child :', child)
+		console.log('idx :', idx)
 		if (
 			form.touched[parent] &&
-			form.touched[parent][0][child] &&
+			form.touched[parent][idx] &&
+			form.touched[parent][idx][child] &&
 			form.errors[parent] &&
-			form.errors[parent][0][child]
+			form.errors[parent][idx] &&
+			form.errors[parent][idx][child]
 		) {
-			feilmelding = form.errors[parent][0][child]
+			feilmelding = form.errors[parent][idx][child]
 		}
 	} else if (arr.length === 3) {
 		grandparent = arr[0]
 		parent = arr[1].split(']')[1]
+		idx = arr[1].split(']')[0]
 		child = arr[2].split(']')[1]
+		jdx = arr[1].split(']')[0]
+		console.log('jdx :', jdx)
 		if (
 			form.touched[grandparent] &&
-			form.touched[grandparent][0][parent] &&
-			form.touched[grandparent][0][parent][0][child] &&
+			form.touched[grandparent][idx] &&
+			form.touched[grandparent][idx][parent] &&
+			form.touched[grandparent][idx][parent][jdx] &&
+			form.touched[grandparent][idx][parent][jdx][child] &&
 			form.errors[grandparent] &&
-			form.errors[grandparent][0][parent] &&
-			form.errors[grandparent][0][parent][0][child]
+			form.errors[grandparent][idx] &&
+			form.errors[grandparent][idx][parent] &&
+			form.errors[grandparent][idx][parent][jdx][child]
 		) {
-			feilmelding = form.errors[grandparent][0][parent][0][child]
+			feilmelding = form.errors[grandparent][idx][parent][jdx][child]
 		}
 	}
 
