@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.hodejegeren.TpsPersonDokument;
 import no.nav.registre.hodejegeren.mongodb.Data;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikkRepository;
@@ -119,6 +120,25 @@ public class HistorikkService {
             }
         }
         return opprettedeIder;
+    }
+
+    public List<String> oppdaterTpsPersonDokument(String ident, TpsPersonDokument tpsPersonDokument) {
+        SyntHistorikk syntHistorikk = hentHistorikkMedId(ident);
+        if (syntHistorikk != null) {
+            Data eksisterendeSkdData = syntHistorikk.getKilder().get("skd").get(0);
+            eksisterendeSkdData.setInnhold(tpsPersonDokument);
+            eksisterendeSkdData.setDatoEndret(LocalDateTime.now());
+            return Collections.singletonList(syntHistorikkRepository.save(syntHistorikk).getId());
+        } else {
+            HistorikkRequest historikkRequest = HistorikkRequest.builder()
+                    .kilde("skd")
+                    .identMedData(Collections.singletonList(DataRequest.builder()
+                            .id(ident)
+                            .data(Collections.singletonList(tpsPersonDokument))
+                            .build()))
+                    .build();
+            return leggTilHistorikkPaaIdent(historikkRequest);
+        }
     }
 
     public List<String> oppdaterSkdStatusPaaIdenter(List<String> identer, String miljoe) {

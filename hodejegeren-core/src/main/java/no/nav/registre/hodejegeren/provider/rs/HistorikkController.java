@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
+import no.nav.registre.hodejegeren.TpsPersonDokument;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
 
@@ -46,6 +47,11 @@ public class HistorikkController {
     @PostMapping(value = "skd/oppdaterStatus")
     public List<String> oppdaterSkdStatus(@RequestParam String miljoe, @RequestBody List<String> identer) {
         return historikkService.oppdaterSkdStatusPaaIdenter(identer, miljoe);
+    }
+
+    @PostMapping(value = "skd/oppdaterDokument/{ident}")
+    public List<String> oppdaterTpsPersonDokument(@PathVariable String ident, @RequestBody TpsPersonDokument tpsPersonDokument) {
+        return historikkService.oppdaterTpsPersonDokument(ident, tpsPersonDokument);
     }
 
     @DeleteMapping(value = "{id}")
