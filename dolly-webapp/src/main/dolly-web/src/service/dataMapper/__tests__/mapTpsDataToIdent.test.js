@@ -1,6 +1,5 @@
 import { mapTpsfData } from '../mapTpsDataToIdent'
 
-// TODO: Skriver om testen naar
 describe('mapTpsDataToIdent.js', () => {
 	describe('mapTpsfData', () => {
 		const testTpsfData = {

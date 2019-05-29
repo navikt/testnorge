@@ -16,7 +16,6 @@ export const SortKodeverkArray = data => {
 		spesKoder.forEach(value => {
 			for (var i = 0; i < koderArray.length - 1; i++) {
 				const temp = koderArray[i]
-				// TODO: Fjern dette etter kodeverk har fjernet typo
 				if (value == temp.value) {
 					if (value == 'NB') temp.label = 'Norwegian, Bokmål'
 					if (value == 'NN') temp.label = 'Norwegian, Nynorsk'
@@ -44,7 +43,7 @@ export const SortKodeverkArray = data => {
 	}
 
 	if (data.name === 'Yrker') {
-		// Noen utvalgte yrker der koden fra yrkeskodeverk tilsvarer STYRK-kode 
+		// Noen utvalgte yrker der koden fra yrkeskodeverk tilsvarer STYRK-kode
 		const spesKoder = [
 			{ value: '3231109', label: 'SYKEPLEIER' },
 			{ value: '7233108', label: 'SPESIALARBEIDER (LANDBRUKS- OG ANLEGGSMASKINMEKANIKK)' },
@@ -59,7 +58,7 @@ export const SortKodeverkArray = data => {
 			{ value: '3310101', label: 'ALLMENNLÆRER' },
 			{ value: '2521106', label: 'ADVOKAT' }
 		]
-		spesKoder.map ( yrke => koderArray.unshift(yrke) )
+		spesKoder.map(yrke => koderArray.unshift(yrke))
 	}
 
 	return koderArray

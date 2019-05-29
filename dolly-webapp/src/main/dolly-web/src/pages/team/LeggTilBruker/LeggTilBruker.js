@@ -29,14 +29,7 @@ export default class RedigerTeam extends PureComponent {
 		})
 
 	render() {
-		const { createOrUpdateFetching, closeLeggTilBruker, teamMembers } = this.props
-		// if (createOrUpdateFetching) {
-		// 	return (
-		// 		<Table.Row>
-		// 			<Loading label="oppdaterer gruppe" />
-		// 		</Table.Row>
-		// 	)
-		// }
+		const { closeLeggTilBruker, teamMembers } = this.props
 
 		let initialValues = {
 			navIdent: ''
@@ -71,8 +64,6 @@ export default class RedigerTeam extends PureComponent {
 									Avbryt
 								</Knapp>
 							</div>
-
-							{/* <DisplayFormikState {...props} /> */}
 						</Form>
 					)
 				}}
