@@ -30,6 +30,10 @@ public class HistorikkService {
         return syntHistorikkRepository.findAll();
     }
 
+    public SyntHistorikk hentHistorikkMedId(String id) {
+        return syntHistorikkRepository.findById(id).orElse(null);
+    }
+
     public List<SyntHistorikk> hentHistorikkMedKilde(String kilde) {
         return syntHistorikkRepository.findAllByKildenavn(kilde);
     }
@@ -41,10 +45,6 @@ public class HistorikkService {
             ids.add(historikk.getId());
         }
         return ids;
-    }
-
-    public SyntHistorikk hentHistorikkMedId(String id) {
-        return syntHistorikkRepository.findById(id).orElse(null);
     }
 
     public SyntHistorikk opprettHistorikk(SyntHistorikk syntHistorikk) {

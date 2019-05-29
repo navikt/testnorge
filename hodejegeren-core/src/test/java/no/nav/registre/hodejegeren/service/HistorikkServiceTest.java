@@ -38,9 +38,6 @@ public class HistorikkServiceTest {
     @Mock
     private SyntHistorikkRepository syntHistorikkRepository;
 
-    @Mock
-    private TpsStatusQuoService tpsStatusQuoService;
-
     @InjectMocks
     private HistorikkService historikkService;
 
@@ -64,6 +61,9 @@ public class HistorikkServiceTest {
         when(syntHistorikkRepository.findById(id1)).thenReturn(Optional.ofNullable(lagretHistorikk.get(0)));
         when(syntHistorikkRepository.findById(id2)).thenReturn(Optional.ofNullable(lagretHistorikk.get(1)));
 
+        when(syntHistorikkRepository.findAllByKildenavn("aareg")).thenReturn(lagretHistorikk);
+        when(syntHistorikkRepository.findAllIdsByKildenavn("aareg")).thenReturn(lagretHistorikk);
+
         when(syntHistorikkRepository.save(syntHistorikk1)).thenReturn(syntHistorikk1);
         when(syntHistorikkRepository.save(syntHistorikk2)).thenReturn(syntHistorikk2);
 
@@ -86,6 +86,22 @@ public class HistorikkServiceTest {
 
         assertThat(historikk1.getId(), equalTo(id1));
         assertThat(historikk2.getId(), equalTo(id2));
+    }
+
+    @Test
+    public void shouldHenteHistorikkMedKilde() {
+        List<SyntHistorikk> historikkMedKilde = historikkService.hentHistorikkMedKilde("aareg");
+
+        assertThat(historikkMedKilde.get(0).getId(), equalTo(id1));
+        assertThat(historikkMedKilde.get(1).getId(), equalTo(id2));
+    }
+
+    @Test
+    public void shouldHenteIdsMedKilde() {
+        List<String> idsMedKilde = historikkService.hentIdsMedKilde("aareg");
+
+        assertThat(idsMedKilde.get(0), equalTo(id1));
+        assertThat(idsMedKilde.get(1), equalTo(id2));
     }
 
     @Test
