@@ -1,8 +1,5 @@
 package no.nav.registre.hodejegeren.service;
 
-import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.ROUTINE_KERNINFO;
-import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.ROUTINE_PERSRELA;
-import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
@@ -28,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,43 +111,6 @@ public class HistorikkServiceTest {
         assertThat(identerLagtTil, contains(id2));
 
         verify(syntHistorikkRepository, times(2)).save(any());
-    }
-
-    @Test
-    public void shouldOppretteSkdHistorikk() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        SyntHistorikk skdHistorikk = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/skd-historikk.json")), SyntHistorikk.class);
-        when(syntHistorikkRepository.findById(id1)).thenReturn(Optional.empty());
-        when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
-        HistorikkRequest skdHistorikkRequest = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/skd-historikk-request.json")), HistorikkRequest.class);
-
-        List<String> identerLagtTil = historikkService.oppdaterSkdHistorikk(skdHistorikkRequest);
-        assertThat(identerLagtTil, contains(id1));
-
-        verify(syntHistorikkRepository).save(any());
-    }
-
-    @Test
-    public void shouldOppdatereSkdStatus() throws IOException {
-        List<String> identer = new ArrayList<>(Collections.singleton(id1));
-        String miljoe = "t1";
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        SyntHistorikk skdHistorikk = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/skd-historikk.json")), SyntHistorikk.class);
-
-        when(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, id1)).thenReturn(objectMapper.readTree(Resources.getResource("historikk/kerninfo.json")));
-        when(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, id1)).thenReturn(objectMapper.readTree(Resources.getResource("historikk/persrela.json")));
-        when(syntHistorikkRepository.findById(id1)).thenReturn(Optional.empty());
-        when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
-
-        List<String> oppdaterteIdenter = historikkService.oppdaterSkdStatusPaaIdenter(identer, miljoe);
-
-        assertThat(oppdaterteIdenter, contains(id1));
-
-        verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, id1);
-        verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, id1);
-        verify(syntHistorikkRepository, times(2)).findById(id1);
-        verify(syntHistorikkRepository).save(any());
     }
 
     @Test

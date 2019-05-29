@@ -1,5 +1,6 @@
 package no.nav.registre.hodejegeren.provider.rs;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,13 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.TpsPersonDokument;
+import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
 
+@Slf4j
 @RestController
 @RequestMapping("api/v1/historikk")
 public class HistorikkController {
@@ -38,15 +41,11 @@ public class HistorikkController {
     @PostMapping(value = "")
     public List<String> leggTilHistorikk(@RequestBody HistorikkRequest historikkRequest) {
         if ("skd".equals(historikkRequest.getKilde())) {
-            return historikkService.oppdaterSkdHistorikk(historikkRequest);
+            log.error("Skd historikk opprettes gjennom persondokumenter fra orkestratoren.");
+            return new ArrayList<>();
         } else {
             return historikkService.leggTilHistorikkPaaIdent(historikkRequest);
         }
-    }
-
-    @PostMapping(value = "skd/oppdaterStatus")
-    public List<String> oppdaterSkdStatus(@RequestParam String miljoe, @RequestBody List<String> identer) {
-        return historikkService.oppdaterSkdStatusPaaIdenter(identer, miljoe);
     }
 
     @PostMapping(value = "skd/oppdaterDokument/{ident}")
