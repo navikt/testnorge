@@ -117,10 +117,7 @@ export default class PersonInfoBlock extends PureComponent {
 			<div key={idx} className="person-info-block">
 				{header && <h4 className="person-info-block_multiple">{header}</h4>}
 				<div className={cssClassContent}>
-					{/* {console.log('data :', data)} */}
 					{data.map((v, k) => {
-						// console.log('v :', v)
-						// console.log('k :', k)
 						const staticValueProps = {
 							key: k,
 							size: v && v.width && v.width,
