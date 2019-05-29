@@ -144,7 +144,6 @@ const _mapRegistreValue = (key, value) => {
 					permisjon:
 						arb.permisjon &&
 						arb.permisjon.map(per => {
-							console.log('per :', per)
 							if (per.permisjonsId !== null) {
 								return {
 									permisjonOgPermittering: per.permisjonOgPermittering,

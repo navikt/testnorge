@@ -77,14 +77,6 @@ describe('testBrukerReducer', () => {
 
 		expect(testBruker(initialState, action)).toEqual(res)
 	})
-
-	it('should update testbruker', () => {
-		const action = {
-			type: 'UPDATE_TESTBRUKER_SUCCESS'
-		}
-		console.log('update testbruker not correctly implemented')
-		expect(testBruker({}, {})).toEqual({})
-	})
 })
 
 describe('testBruker-sokSelector', () => {

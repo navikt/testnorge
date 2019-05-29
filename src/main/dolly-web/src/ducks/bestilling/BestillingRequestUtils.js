@@ -32,7 +32,6 @@ export const getValues = (attributeList, values) => {
 		}
 
 		if (pathPrefix === DataSourceMapper('AAREG')) {
-			// TODO: Alex, construct a json-object before array
 			let dataArr = []
 			value.forEach(element => {
 				let aaregObj = {}
@@ -49,7 +48,6 @@ export const getValues = (attributeList, values) => {
 				})
 
 				// aktorID = PERS
-				// TODO: bytt heller inputfelte som ny attribute
 				if (aaregObj.arbeidsgiver.aktoertype == 'PERS') {
 					const aktoertype = aaregObj.arbeidsgiver.aktoertype
 					const arbeidsgiverIdent = aaregObj.arbeidsgiver.ident
@@ -96,7 +94,6 @@ export const getValues = (attributeList, values) => {
 // Transform attributes before order is sent
 // Date, boolean...
 const _transformAttributt = (attribute, attributes, value) => {
-	// console.log('attribute, attributes, value :', attribute, attributes, value)
 	if (attribute.dataSource === 'SIGRUN') {
 		return value
 	} else if (attribute.dataSource === 'AAREG') {
@@ -141,8 +138,6 @@ const _transformAttributt = (attribute, attributes, value) => {
 		return valueDeepCopy
 	}
 	if (attribute.items) {
-		// TODO: Single and multiple items
-
 		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
 
 		if (attribute.isMultiple) {

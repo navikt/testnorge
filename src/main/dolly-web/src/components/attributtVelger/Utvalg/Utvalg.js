@@ -46,7 +46,6 @@ export default class Utvalg extends PureComponent {
 	renderEmptyResult = () => <span className="utvalg--empty-result">Ingenting er valgt</span>
 
 	render() {
-		// TODO: Legg til remove button
 		return (
 			<div className="utvalg">
 				<h2>Du har lagt til følgende egenskaper:</h2>

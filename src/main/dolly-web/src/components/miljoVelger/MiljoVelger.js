@@ -11,6 +11,20 @@ export default class MiljoVelger extends Component {
 		heading: PropTypes.string
 	}
 
+	render() {
+		const { heading, arrayHelpers, environments } = this.props
+		if (!environments) return null
+
+		const order = ['U', 'T', 'Q']
+		return (
+			<div className="miljo-velger">
+				<h2>{heading}</h2>
+				{order.map(type => this.renderEnvCategory(environments[type], type))}
+				{this.renderError(arrayHelpers)}
+			</div>
+		)
+	}
+
 	isChecked = id => this.props.arrayValues.includes(id)
 	add = id => this.props.arrayHelpers.push(id)
 	remove = id => this.props.arrayHelpers.remove(this.props.arrayValues.indexOf(id))
@@ -76,19 +90,5 @@ export default class MiljoVelger extends Component {
 			)
 		}
 		return false
-	}
-
-	render() {
-		const { heading, arrayHelpers, environments } = this.props
-		if (!environments) return null
-
-		const order = ['U', 'T', 'Q']
-		return (
-			<div className="miljo-velger">
-				<h2>{heading}</h2>
-				{order.map(type => this.renderEnvCategory(environments[type], type))}
-				{this.renderError(arrayHelpers)}
-			</div>
-		)
 	}
 }

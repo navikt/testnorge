@@ -5,7 +5,7 @@ import cn from 'classnames'
 import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
 import DollyModal from '~/components/modal/DollyModal'
-import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag';
+import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
 
 export default class MiljoeStatus extends PureComponent {
 	constructor(props) {
@@ -23,12 +23,11 @@ export default class MiljoeStatus extends PureComponent {
 	}
 
 	render() {
-
 		const {
 			bestillingId,
 			successEnvs,
 			finnesFeilmelding,
-			antallIdenterOpprettet,
+			antallIdenterOpprettet
 		} = this.props.miljoeStatusObj
 
 		const bestilling = this.props.bestilling
@@ -39,7 +38,7 @@ export default class MiljoeStatus extends PureComponent {
 		return (
 			<div className="miljoe-status">
 				<div className="status-header">
-					<p>Bestilling #{bestillingId}</p> 
+					<p>Bestilling #{bestillingId}</p>
 					<h3>Bestillingsstatus</h3>
 					<div className="remove-button-container">
 						<Button kind="remove-circle" onClick={this.props.onCloseButton} />
@@ -51,7 +50,6 @@ export default class MiljoeStatus extends PureComponent {
 						? this._renderFailureMessage(bestilling, antallIdenterOpprettet)
 						: this._renderStatus(bestilling, antallIdenterOpprettet)}
 				</div>
-				{/* TODO: Alex - condition for feil i hele bestillingen her */}
 				{bestilling.feil && (
 					<div className="flexbox--all-center overall-feil-container">
 						<Icon size={'16px'} kind={'report-problem-triangle'} />
@@ -66,12 +64,7 @@ export default class MiljoeStatus extends PureComponent {
 						isOpen={modalOpen}
 						onRequestClose={this.closeModal}
 						closeModal={this.closeModal}
-						content={
-							<BestillingDetaljerSammendrag 
-								bestilling={bestilling} 
-								type = 'modal'
-							/>
-						}
+						content={<BestillingDetaljerSammendrag bestilling={bestilling} type="modal" />}
 						width={'60%'}
 					/>
 				</div>

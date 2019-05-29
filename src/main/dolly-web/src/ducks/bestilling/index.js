@@ -234,7 +234,8 @@ const bestillingFormatter = bestillingState => {
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
 
-	// TODO: SPECIAL HANDLING - Hva gjør vi her?
+	// ? Vi trenger ikke nødvendigvis generisk løsning når det er så veldig mange spesiall tilfeller
+	// ? Forslag: lage en hjelpeklasse
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 		final_values.tpsf.boadresse.gatekode = values.boadresse_gatekode
@@ -258,7 +259,9 @@ const bestillingFormatter = bestillingState => {
 	if (malBestillingNavn !== '') {
 		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
 	}
-	console.log('POSTING BESTILLING', final_values)
+
+	// * Denne kan beholdes for enklere debug på u2/prod
+	console.info('POSTING BESTILLING', final_values)
 
 	return final_values
 }
