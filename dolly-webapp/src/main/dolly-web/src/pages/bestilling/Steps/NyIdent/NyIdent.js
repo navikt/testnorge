@@ -19,18 +19,28 @@ export default class NyIdent extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		const { maler, mal, resetForm } = this.props
-		if (mal && mal !== prevProps.mal) {
-			this.props.setBestillingFraMal({
-				antallIdenter: mal.antallIdenter,
-				identtype: JSON.parse(mal.tpsfKriterier).identtype || 'FNR',
-				attributeIds: getAttributesFromMal(mal),
-				environments: mal.environments,
-				values: getValuesFromMal(mal),
-				currentMal: mal.malBestillingNavn
-			})
-			// TODO: Naar malen er valgt bort - formik burde resettes til null verdi igjen
-			// resetForm()
+		const { mal } = this.props
+
+		if (mal !== prevProps.mal) {
+			if (!mal) {
+				this.props.setBestillingFraMal({
+					antallIdenter: 1,
+					identtype: '',
+					attributeIds: [],
+					environments: [],
+					values: {},
+					currentMal: ''
+				})
+			} else {
+				this.props.setBestillingFraMal({
+					antallIdenter: mal.antallIdenter,
+					identtype: JSON.parse(mal.tpsfKriterier).identtype || 'FNR',
+					attributeIds: getAttributesFromMal(mal),
+					environments: mal.environments,
+					values: getValuesFromMal(mal),
+					currentMal: mal.malBestillingNavn
+				})
+			}
 		}
 	}
 

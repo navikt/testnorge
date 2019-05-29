@@ -25,7 +25,6 @@ export const showCreateOrEditGroup = createAction('TOGGLE_SHOW_CREATE_OR_EDIT')
 export const closeCreateOrEdit = createAction('CANCEL_CREATE_OR_EDIT')
 export const settVisning = createAction('SETT_VISNING')
 
-
 const initialState = {
 	data: null,
 	createOrUpdateId: null, // null = ingen, -1 = opprett ny gruppe, '45235' (ex: 425323) = rediger

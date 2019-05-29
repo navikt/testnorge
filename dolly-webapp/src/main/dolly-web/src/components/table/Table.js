@@ -57,7 +57,6 @@ class TableRow extends PureComponent {
 				<div className={columnsClass} {...rowProps}>
 					{children}
 					<Table.Column className="dot-body-row-actioncolumn">
-						{/* {editAction && <Button kind="edit" onClick={editAction} />} */}
 						{deleteAction && (
 							<ConfirmTooltip
 								className="flexbox--align-center"
@@ -143,13 +142,10 @@ class TableColumn extends PureComponent {
 		} = this.props
 		const cssClass = cn('dot-column', `col${width}`, className)
 
-		const iconKind = sortOrder === 'asc' ? 'arrow-up' : 'arrow-down'
-
 		const render = value ? value : children
 		return (
 			<div className={cssClass} {...restProps}>
 				{render}
-				{/* {sortOrder && <Icon size={16} kind={iconKind} />} */}
 			</div>
 		)
 	}

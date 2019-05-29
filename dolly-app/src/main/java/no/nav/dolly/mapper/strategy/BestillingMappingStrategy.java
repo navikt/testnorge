@@ -1,9 +1,9 @@
 package no.nav.dolly.mapper.strategy;
 
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
-import static no.nav.dolly.mapper.BestillingArenaStubStatusMapper.buildArenaStubStatusMap;
+import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
-import static no.nav.dolly.mapper.BestillingPdlStatusMpper.buildPdldataStatusMap;
+import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 
@@ -30,7 +30,7 @@ public class BestillingMappingStrategy implements MappingStrategy {
                         rsBestilling.getKrrStubStatus().addAll(buildKrrStubStatusMap(bestilling.getProgresser()));
                         rsBestilling.getSigrunStubStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
                         rsBestilling.getAaregStatus().addAll(buildAaregStatusMap(bestilling.getProgresser()));
-                        rsBestilling.getArenaStubStatus().addAll(buildArenaStubStatusMap(bestilling.getProgresser()));
+                        rsBestilling.getArenaforvalterStatus().addAll(buildArenaStatusMap(bestilling.getProgresser()));
                         rsBestilling.getPdlforvalterStatus().addAll(buildPdldataStatusMap(bestilling.getProgresser()));
                     }
                 })

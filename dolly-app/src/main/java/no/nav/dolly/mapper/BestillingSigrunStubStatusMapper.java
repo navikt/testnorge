@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import com.google.common.collect.Lists;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusIdent;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingSigrunStubStatusMapper {
-
-    private BestillingSigrunStubStatusMapper() {
-    }
 
     public static List<RsStatusIdent> buildSigrunStubStatusMap(List<BestillingProgress> progressList) {
 

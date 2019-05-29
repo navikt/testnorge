@@ -17,12 +17,12 @@ public class PdlKontaktinformasjonForDoedsbo {
 
     private String adresselinje1;
     private String adresselinje2;
-    private PdlOrganisasjon advokatSomAdressat;
+    private PdlAdvokat advokatSomAdressat;
     private LocalDate gyldigFom;
     private LocalDate gyldigTom;
     private String kilde;
     private PdlKontaktpersonMedIdNummer kontaktpersonMedIdNummerSomAdressat;
-    private PdlKontaktpersonUtenIdNummerSomAdressat kontaktpersonUtenIdNummerSomAdressat;
+    private PdlKontaktpersonUtenIdNummer kontaktpersonUtenIdNummerSomAdressat;
     private String landkode;
     private PdlOrganisasjon organisasjonSomAdressat;
     private String postnummer;

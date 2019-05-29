@@ -83,7 +83,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Har postadresse',
 		dataSource: DataSource.TPSF,
 		validation: yup.object(),
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectAndRead
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -96,7 +96,7 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		apiKodeverkId: 'StatsborgerskapFreg',
 		validation: yup.string(),
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectAndRead
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -108,7 +108,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
 		validation: yup.string().required('Vennligst fyll ut'),
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectAndRead
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -119,7 +119,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Adresselinje 2',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectAndRead
 	},
 	{
 		hovedKategori: Kategorier.Adresser,
@@ -130,7 +130,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Adresselinje 3',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Text,
-		attributtType: AttributtType.SelectAndEdit
+		attributtType: AttributtType.SelectAndRead
 	}
 
 	// {
