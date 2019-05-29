@@ -95,7 +95,6 @@ Formatters.oversettBoolean = value => {
 }
 
 Formatters.booleanToServicebehov = value => {
-	if (!value) return null
 	return value === true ? 'Med servicebehov' : value === false ? 'Uten servicebehov' : value
 }
 

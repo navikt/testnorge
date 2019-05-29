@@ -192,7 +192,6 @@ export default function testbrukerReducer(state = initialState, action) {
 					arenaforvalteren: {
 						...state.items.arenaforvalteren,
 						[action.meta.ident]: action.payload && action.payload
-						// [action.meta.ident]: action.payload.data && action.payload.data[0]
 					}
 				}
 			}
@@ -257,8 +256,6 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 			)
 			promiseList.push(krrStubRequest)
 		}
-
-		//ARENA-FORVALTEREN???
 
 		//SIGRUN-STUB - multiple values
 		const sigrunstubAtributtListe = attributtListe.filter(
