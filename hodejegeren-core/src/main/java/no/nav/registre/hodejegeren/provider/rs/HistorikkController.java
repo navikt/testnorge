@@ -33,6 +33,16 @@ public class HistorikkController {
         return historikkService.hentAllHistorikk();
     }
 
+    @GetMapping(value = "medKilde")
+    public List<SyntHistorikk> hentHistorikkmedKilde(@RequestParam String kilde) {
+        return historikkService.hentHistorikkMedKilde(kilde);
+    }
+
+    @GetMapping(value = "idsMedKilde")
+    public List<String> hentIdsMedKilde(@RequestParam String kilde) {
+        return historikkService.hentIdsMedKilde(kilde);
+    }
+
     @GetMapping(value = "{id}")
     public SyntHistorikk hentHistorikkMedId(@PathVariable String id) {
         return historikkService.hentHistorikkMedId(id);

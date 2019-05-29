@@ -9,12 +9,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import no.nav.registre.hodejegeren.TpsPersonDokument;
 import no.nav.registre.hodejegeren.mongodb.Data;
+import no.nav.registre.hodejegeren.mongodb.Kilde;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikkRepository;
 import no.nav.registre.hodejegeren.provider.rs.requests.DataRequest;
@@ -31,14 +30,27 @@ public class HistorikkService {
         return syntHistorikkRepository.findAll();
     }
 
+    public List<SyntHistorikk> hentHistorikkMedKilde(String kilde) {
+        return syntHistorikkRepository.findAllByKildenavn(kilde);
+    }
+
+    public List<String> hentIdsMedKilde(String kilde) {
+        List<String> ids = new ArrayList<>();
+        List<SyntHistorikk> historikkByKildenavn = syntHistorikkRepository.findAllIdsByKildenavn(kilde);
+        for (SyntHistorikk historikk : historikkByKildenavn) {
+            ids.add(historikk.getId());
+        }
+        return ids;
+    }
+
     public SyntHistorikk hentHistorikkMedId(String id) {
         return syntHistorikkRepository.findById(id).orElse(null);
     }
 
     public SyntHistorikk opprettHistorikk(SyntHistorikk syntHistorikk) {
-        Map<String, List<Data>> kilder = syntHistorikk.getKilder();
-        for (List<Data> data : kilder.values()) {
-            for (Data d : data) {
+        List<Kilde> kilder = syntHistorikk.getKilder();
+        for (Kilde kilde : kilder) {
+            for (Data d : kilde.getData()) {
                 if (d.getDatoOpprettet() == null) {
                     d.setDatoOpprettet(LocalDateTime.now());
                 }
@@ -68,20 +80,24 @@ public class HistorikkService {
             }
             SyntHistorikk eksisterendeHistorikk = hentHistorikkMedId(id);
             if (eksisterendeHistorikk != null) {
-                Map<String, List<Data>> eksisterendeKilder = eksisterendeHistorikk.getKilder();
+                List<Kilde> eksisterendeKilder = eksisterendeHistorikk.getKilder();
+                List<Data> eksisterendeData = null;
+                for (Kilde k : eksisterendeKilder) {
+                    if (historikkRequest.getKilde().equals(k.getNavn())) {
+                        eksisterendeData = k.getData();
+                    }
+                }
 
-                List<Data> eksisterendeData = eksisterendeKilder.get(historikkRequest.getKilde());
                 if (eksisterendeData != null) {
                     eksisterendeData.addAll(nyData);
                 } else {
-                    eksisterendeKilder.put(historikkRequest.getKilde(), nyData);
+                    eksisterendeKilder.add(Kilde.builder().navn(historikkRequest.getKilde()).data(nyData).build());
                 }
 
                 opprettedeIder.add(syntHistorikkRepository.save(eksisterendeHistorikk).getId());
             } else {
-                Map<String, List<Data>> nyKilde = new HashMap<>();
-                nyKilde.put(historikkRequest.getKilde(), nyData);
-                opprettedeIder.add(opprettHistorikk(SyntHistorikk.builder().id(id).kilder(nyKilde).build()).getId());
+                Kilde nyKilde = Kilde.builder().navn(historikkRequest.getKilde()).data(nyData).build();
+                opprettHistorikk(SyntHistorikk.builder().id(id).kilder(Collections.singletonList(nyKilde)).build());
             }
         }
         return opprettedeIder;
@@ -90,19 +106,22 @@ public class HistorikkService {
     public List<String> oppdaterTpsPersonDokument(String ident, TpsPersonDokument tpsPersonDokument) {
         SyntHistorikk syntHistorikk = hentHistorikkMedId(ident);
         if (syntHistorikk != null) {
-            Data eksisterendeSkdData = syntHistorikk.getKilder().get("skd").get(0);
-            eksisterendeSkdData.setInnhold(tpsPersonDokument);
-            eksisterendeSkdData.setDatoEndret(LocalDateTime.now());
-            return Collections.singletonList(syntHistorikkRepository.save(syntHistorikk).getId());
+            Kilde kilde = null;
+            for (Kilde k : syntHistorikk.getKilder()) {
+                if ("skd".equals(k.getNavn())) {
+                    kilde = k;
+                }
+            }
+            if (kilde != null) {
+                Data eksisterendeSkdData = kilde.getData().get(0);
+                eksisterendeSkdData.setInnhold(tpsPersonDokument);
+                eksisterendeSkdData.setDatoEndret(LocalDateTime.now());
+                return Collections.singletonList(syntHistorikkRepository.save(syntHistorikk).getId());
+            } else {
+                return leggTilSkdData(ident, tpsPersonDokument);
+            }
         } else {
-            HistorikkRequest historikkRequest = HistorikkRequest.builder()
-                    .kilde("skd")
-                    .identMedData(Collections.singletonList(DataRequest.builder()
-                            .id(ident)
-                            .data(Collections.singletonList(tpsPersonDokument))
-                            .build()))
-                    .build();
-            return leggTilHistorikkPaaIdent(historikkRequest);
+            return leggTilSkdData(ident, tpsPersonDokument);
         }
     }
 
@@ -120,9 +139,15 @@ public class HistorikkService {
         SyntHistorikk historikk = syntHistorikkRepository.findById(id).orElse(null);
 
         if (historikk != null) {
-            Map<String, List<Data>> eksisterendeKilder = historikk.getKilder();
-            if (eksisterendeKilder.containsKey(navnPaaKilde)) {
-                eksisterendeKilder.remove(navnPaaKilde);
+            List<Kilde> kilder = historikk.getKilder();
+            Kilde kilde = null;
+            for (Kilde k : kilder) {
+                if (navnPaaKilde.equals(k.getNavn())) {
+                    kilde = k;
+                }
+            }
+            if (kilde != null) {
+                kilder.remove(kilde);
                 if (historikk.getKilder().isEmpty()) {
                     slettHistorikk(id);
                 } else {
@@ -135,5 +160,16 @@ public class HistorikkService {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Fant ingen historikk tilhørende id '%s'", id));
         }
+    }
+
+    private List<String> leggTilSkdData(String ident, TpsPersonDokument tpsPersonDokument) {
+        HistorikkRequest historikkRequest = HistorikkRequest.builder()
+                .kilde("skd")
+                .identMedData(Collections.singletonList(DataRequest.builder()
+                        .id(ident)
+                        .data(Collections.singletonList(tpsPersonDokument))
+                        .build()))
+                .build();
+        return leggTilHistorikkPaaIdent(historikkRequest);
     }
 }
