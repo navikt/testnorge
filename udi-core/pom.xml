@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>udi-stub</artifactId>
+        <groupId>no.nav.registre</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>udi-core</artifactId>
+
+
+    <dependencies>
+        <!--Utility-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!--SPRING-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+
+        <!--DOCUMENTATION-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+
+
+        <!--SOAP-->
+        <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+         <plugins>
+             <plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>jaxb2-maven-plugin</artifactId>
+                 <version>1.6</version>
+                 <executions>
+                     <execution>
+                         <id>xjc</id>
+                         <goals>
+                             <goal>xjc</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+                 <configuration>
+                     <schemaDirectory>${project.basedir}/src/main/resources/informasjon</schemaDirectory>
+                     <outputDirectory>${project.basedir}/src/main/java/no/nav/registre/core/provider/web</outputDirectory>
+                     <clearOutputDir>false</clearOutputDir>
+                 </configuration>
+             </plugin>
+         </plugins>
+    </build>
+</project>
