@@ -97,7 +97,7 @@ public class HistorikkService {
                 opprettedeIder.add(syntHistorikkRepository.save(eksisterendeHistorikk).getId());
             } else {
                 Kilde nyKilde = Kilde.builder().navn(historikkRequest.getKilde()).data(nyData).build();
-                opprettHistorikk(SyntHistorikk.builder().id(id).kilder(Collections.singletonList(nyKilde)).build());
+                opprettedeIder.add(opprettHistorikk(SyntHistorikk.builder().id(id).kilder(Collections.singletonList(nyKilde)).build()).getId());
             }
         }
         return opprettedeIder;

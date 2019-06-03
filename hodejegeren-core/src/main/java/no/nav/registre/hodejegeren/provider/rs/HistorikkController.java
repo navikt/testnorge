@@ -34,7 +34,7 @@ public class HistorikkController {
     }
 
     @GetMapping(value = "medKilde")
-    public List<SyntHistorikk> hentHistorikkmedKilde(@RequestParam String kilde) {
+    public List<SyntHistorikk> hentHistorikkMedKilde(@RequestParam String kilde) {
         return historikkService.hentHistorikkMedKilde(kilde);
     }
 
