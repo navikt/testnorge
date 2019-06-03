@@ -2,7 +2,6 @@ package no.nav.registre.aareg.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,6 +14,8 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
 
 @Component
 @Slf4j
@@ -40,7 +41,7 @@ public class HodejegerenConsumer {
         this.hodejegerenSaveHistorikk = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/");
     }
 
-    @Timed(value = "aareg.resource.latency", extraTags = {"operation", "hodejegeren"})
+    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> finnLevendeIdenter(Long avspillergruppeId) {
         RequestEntity getRequest = RequestEntity.get(hentLevendeIdenterUrl.expand(avspillergruppeId.toString())).build();
         List<String> levendeIdenter = new ArrayList<>();
@@ -55,7 +56,7 @@ public class HodejegerenConsumer {
         return levendeIdenter;
     }
 
-    @Timed(value = "aareg.resource.latency", extraTags = {"operation", "hodejegeren"})
+    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
     public Set<String> saveHistory(AaregSaveInHodejegerenRequest request) {
 
         RequestEntity<AaregSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);

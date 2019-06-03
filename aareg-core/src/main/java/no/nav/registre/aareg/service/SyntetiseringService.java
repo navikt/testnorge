@@ -117,9 +117,7 @@ public class SyntetiseringService {
         if (fnrs != null) {
             for (String fnr : fnrs) {
                 for (ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforhold) {
-                    if (arbeidsforholdsResponse != null
-                            && arbeidsforholdsResponse.getArbeidsforhold() != null
-                            && arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker() != null
+                    if (arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker() != null
                             && arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent() != null
                             && fnr.equals(arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent())) {
                         arbeidsforholdFunnet.add(new IdentMedData(fnr, Collections.singletonList(arbeidsforholdsResponse.getArbeidsforhold())));
