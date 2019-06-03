@@ -46,6 +46,7 @@
         <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
         <springfox.version>2.4.0</springfox.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
+        <person-tps-avstemming-v1.version>1.0.1</person-tps-avstemming-v1.version>
     </properties>
 
     <dependencyManagement>

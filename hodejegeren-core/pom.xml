@@ -80,6 +80,11 @@
             <groupId>no.nav.registre</groupId>
             <artifactId>inst-domain</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.person.tps.tjenester</groupId>
+            <artifactId>person-tps-avstemming-v1</artifactId>
+            <version>${person-tps-avstemming-v1.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

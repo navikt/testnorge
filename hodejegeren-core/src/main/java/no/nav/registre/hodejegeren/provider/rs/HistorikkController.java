@@ -1,6 +1,7 @@
 package no.nav.registre.hodejegeren.provider.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -66,7 +67,7 @@ public class HistorikkController {
 
     @LogExceptions
     @PostMapping(value = "skd/oppdaterDokument/{ident}")
-    public List<String> oppdaterTpsPersonDokument(@PathVariable String ident, @RequestBody TpsPersonDokument tpsPersonDokument) {
+    public List<String> oppdaterTpsPersonDokument(@PathVariable String ident, @RequestBody TpsPersonDokumentType tpsPersonDokument) {
         return historikkService.oppdaterTpsPersonDokument(ident, tpsPersonDokument);
     }
 

@@ -2,6 +2,7 @@ package no.nav.registre.hodejegeren.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -104,7 +105,7 @@ public class HistorikkService {
         return opprettedeIder;
     }
 
-    public List<String> oppdaterTpsPersonDokument(String ident, TpsPersonDokument tpsPersonDokument) {
+    public List<String> oppdaterTpsPersonDokument(String ident, TpsPersonDokumentType tpsPersonDokument) {
         SyntHistorikk syntHistorikk = hentHistorikkMedId(ident);
         if (syntHistorikk != null) {
             Kilde kilde = null;
@@ -165,7 +166,7 @@ public class HistorikkService {
         }
     }
 
-    private List<String> leggTilSkdData(String ident, TpsPersonDokument tpsPersonDokument) {
+    private List<String> leggTilSkdData(String ident, TpsPersonDokumentType tpsPersonDokument) {
         HistorikkRequest historikkRequest = HistorikkRequest.builder()
                 .kilde("skd")
                 .identMedData(Collections.singletonList(DataRequest.builder()
