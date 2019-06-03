@@ -6,7 +6,7 @@ import { getCurrentBruker } from '~/ducks/bruker'
 import ConfigService from '~/service/Config'
 
 const mapStateToProps = state => ({
-	router: state.router, // Need to use this to tell mapStateToProps if url changes
+	router: state.router,
 	brukerData: state.bruker.brukerData,
 	redirectTo: state.common.redirectTo,
 	applicationError: applicationErrorSelector(state),

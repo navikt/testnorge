@@ -56,7 +56,7 @@ export default class EksisterendeIdent extends Component {
 					identListe: identListe
 				})
 			} catch (err) {
-				console.log('error TPSFApi')
+				console.error('error TPSFApi')
 				return this.setState({ loading: false })
 			}
 		})

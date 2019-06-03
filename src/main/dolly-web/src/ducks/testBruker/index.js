@@ -80,7 +80,7 @@ export const GET_KRR_TESTBRUKER = createAction(
 			return res
 		} catch (err) {
 			if (err.response && err.response.status === 404) {
-				console.log(err.response.data.melding)
+				console.error(err.response.data.melding)
 				//ERROR 404 betyr at det ikke finnes data for identen, fake opp datastruktur slik at reducer blir consistent
 				return { data: [null] }
 			}
@@ -201,7 +201,6 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 		const sendToTpsBody = mapIdentAndEnvironementForTps(state, ident)
 		let tpsfJsonToSend = _merge(tpsfCurrentValues, tpsfBody)
 
-		// TODO: Hvis det dukker opp flere slike tilfelle, vurder å expande AttributeSystem
 		// KUN FOR egen ansatt - spesielt tilfelle
 		if (tpsfJsonToSend.egenAnsattDatoFom) {
 			tpsfJsonToSend.egenAnsattDatoFom = new Date()
@@ -256,7 +255,7 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 
 		dispatch(updateTestbrukerSuccess())
 	} catch (error) {
-		console.log(error)
+		console.error(error)
 		dispatch(updateTestbrukerError())
 	}
 }

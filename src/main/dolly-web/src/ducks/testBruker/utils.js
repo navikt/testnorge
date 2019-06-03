@@ -2,7 +2,6 @@ import _set from 'lodash/set'
 import DataFormatter from '~/utils/DataFormatter'
 
 export const mapValuesFromDataSource = (values, attributtListe, dataSource) => {
-	//TODO: Teste når Sigrid og Krr er tilbake
 	let temp = false
 	const filteredAttributtListe = attributtListe.filter(item => {
 		temp = false

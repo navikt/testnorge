@@ -50,7 +50,7 @@ export default class EksportExcel extends Component {
 
 				this.setState({ loading: false })
 			} catch (err) {
-				console.log('error: TpsfApi og nedlasting')
+				console.error('error: TpsfApi og nedlasting')
 				this.setState({ loading: false })
 			}
 		})

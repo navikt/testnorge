@@ -17,8 +17,4 @@ describe('Header.js', () => {
 	it('should render a home button', () => {
 		expect(wrapper.find('.home-nav').exists()).toBeTruthy()
 	})
-
-	it('should render a profile button', () => {
-		expect(wrapper.find('.header-user-name').exists()).toBeTruthy()
-	})
 })

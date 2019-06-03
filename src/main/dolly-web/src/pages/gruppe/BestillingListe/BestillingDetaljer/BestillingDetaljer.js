@@ -42,7 +42,6 @@ export default class BestillingDetaljer extends PureComponent {
 			openAmRes = openAmState.responses.find(response => response.id == bestillingId)
 		}
 
-		// TODO: Reverse Map detail data here. Alex
 		return (
 			<div className="bestilling-detaljer">
 				<BestillingDetaljerSammendrag bestilling={bestilling} type="panel" />
