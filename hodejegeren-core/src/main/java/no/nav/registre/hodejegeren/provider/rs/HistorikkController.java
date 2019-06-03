@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.TpsPersonDokument;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
@@ -28,26 +29,31 @@ public class HistorikkController {
     @Autowired
     private HistorikkService historikkService;
 
+    @LogExceptions
     @GetMapping(value = "")
     public List<SyntHistorikk> hentAllHistorikk() {
         return historikkService.hentAllHistorikk();
     }
 
+    @LogExceptions
     @GetMapping(value = "medKilde")
     public List<SyntHistorikk> hentHistorikkMedKilde(@RequestParam String kilde) {
         return historikkService.hentHistorikkMedKilde(kilde);
     }
 
+    @LogExceptions
     @GetMapping(value = "idsMedKilde")
     public List<String> hentIdsMedKilde(@RequestParam String kilde) {
         return historikkService.hentIdsMedKilde(kilde);
     }
 
+    @LogExceptions
     @GetMapping(value = "{id}")
     public SyntHistorikk hentHistorikkMedId(@PathVariable String id) {
         return historikkService.hentHistorikkMedId(id);
     }
 
+    @LogExceptions
     @PostMapping(value = "")
     public List<String> leggTilHistorikk(@RequestBody HistorikkRequest historikkRequest) {
         if ("skd".equals(historikkRequest.getKilde())) {
@@ -58,16 +64,19 @@ public class HistorikkController {
         }
     }
 
+    @LogExceptions
     @PostMapping(value = "skd/oppdaterDokument/{ident}")
     public List<String> oppdaterTpsPersonDokument(@PathVariable String ident, @RequestBody TpsPersonDokument tpsPersonDokument) {
         return historikkService.oppdaterTpsPersonDokument(ident, tpsPersonDokument);
     }
 
+    @LogExceptions
     @DeleteMapping(value = "{id}")
     public ResponseEntity slettHistorikk(@PathVariable String id) {
         return historikkService.slettHistorikk(id);
     }
 
+    @LogExceptions
     @DeleteMapping(value = "kilde/{id}")
     public ResponseEntity slettKilde(@PathVariable String id, @RequestParam String navnPaaKilde) {
         return historikkService.slettKilde(id, navnPaaKilde);
