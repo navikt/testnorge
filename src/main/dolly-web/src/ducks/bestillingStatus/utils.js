@@ -78,6 +78,10 @@ const avvikStatus = item => {
 		item.sigrunStubStatus.map(status => {
 			status.statusMelding !== 'OK' && (avvik = true)
 		})
+	item.arenaforvalterStatus &&
+		item.arenaforvalterStatus.map(status => {
+			!status['statusIdent']['status: OK'] && (avvik = true)
+		})
 	item.feil && (avvik = true)
 	return avvik
 }

@@ -11,6 +11,7 @@ export default class Feilmelding extends Component {
 		const { bestilling } = this.props
 		let cssClass = 'feil-container feil-container_border'
 		const stubStatus = this._finnStubStatus(bestilling)
+		const arenaStatus = this._finnArenaStatus(bestilling)
 		// TODO: Refaktor
 		const finnesTPSFEllerStub =
 			(bestilling.tpsfStatus && this._finnTpsfFeilStatus(bestilling.tpsfStatus).length > 0) ||
@@ -56,6 +57,7 @@ export default class Feilmelding extends Component {
 					})}
 				{/*Feilmeldinger fra Sigrun- og krrStub */}
 				{stubStatus && this._renderStubStatus(stubStatus, cssClass)}
+				{arenaStatus && this._renderArenaStatus(arenaStatus)}
 			</div>
 		)
 	}
@@ -90,6 +92,21 @@ export default class Feilmelding extends Component {
 		}
 
 		return stubStatus
+	}
+
+	_finnArenaStatus = bestilling => {
+		let arenaStatus = []
+		const arenaforvalterStatus = { navn: 'ARENA', status: bestilling.arenaforvalterStatus }
+
+		arenaforvalterStatus.status &&
+			arenaforvalterStatus.status.map(melding => {
+				let feilmelding
+				if (!melding['statusIdent']['status: OK']) {
+					feilmelding = melding
+				}
+				feilmelding && arenaStatus.push(feilmelding)
+			})
+		return arenaStatus
 	}
 
 	_renderTPSFStatus = (tpsfFeil, cssClass, i) => {
@@ -165,6 +182,33 @@ export default class Feilmelding extends Component {
 				</div>
 			)
 		})
+	}
+
+	_renderArenaStatus = arenaStatus => {
+		return (
+			<Fragment>
+				<h5>ARENA</h5>
+				{arenaStatus.map((feilmelding, i) => {
+					return (
+						<Fragment key={i}>
+							<div className="feil-container">
+								<span className="feil-kolonne_stor">
+									{feilmelding['melding'] + ': ' + Object.keys(feilmelding['statusIdent'])}
+								</span>
+								<div className="feil-kolonne_stor">
+									<span className="feil-container">
+										<span className="feil-kolonne_liten"> </span>
+										<span className="feil-kolonne_stor">
+											{Object.values(feilmelding['statusIdent'])}
+										</span>
+									</span>
+								</div>
+							</div>
+						</Fragment>
+					)
+				})}
+			</Fragment>
+		)
 	}
 
 	_renderGenerelleFeil = (bestilling, cssClass, finnesTPSFEllerStub) => {
