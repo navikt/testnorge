@@ -1,7 +1,5 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,10 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PdlUtenlandskIdentifikasjonsnummer {
 
-    private LocalDate gyldigFom;
-    private LocalDate gyldigTom;
-    private String idnummertype;
-    private String idnummer;
+    private String identifikasjonsnummer;
     private String kilde;
+    private Boolean opphoert;
     private String utstederland;
 }

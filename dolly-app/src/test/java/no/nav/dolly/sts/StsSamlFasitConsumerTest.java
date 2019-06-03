@@ -26,6 +26,7 @@ import no.nav.dolly.properties.Environment;
 public class StsSamlFasitConsumerTest {
 
     private static final Environment ENV = Environment.TEST;
+    private static final String SAML_ALIAS = "securityTokenService";
 
     @Mock
     private FasitApiConsumer fasitApiConsumer;
@@ -58,6 +59,7 @@ public class StsSamlFasitConsumerTest {
         when(fasitApiConsumer.fetchResources(anyString(), anyString())).thenReturn(
                 new FasitResourceWithUnmappedProperties[] {
                         FasitResourceWithUnmappedProperties.builder()
+                                .alias(SAML_ALIAS)
                                 .scope(FasitResourceScope.builder()
                                         .zone("fss")
                                         .environment("t1")
