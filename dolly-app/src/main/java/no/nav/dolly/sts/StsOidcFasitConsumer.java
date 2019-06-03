@@ -39,7 +39,8 @@ public class StsOidcFasitConsumer {
                     FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(OIDC_ALIAS, REST_SERVICE);
 
                     urlOidcPerEnv = asList(fasitResources).stream()
-                            .filter(resource -> FAGSYSTEM.equals(resource.getScope().getZone()) &&
+                            .filter(resource -> OIDC_ALIAS.equals(resource.getAlias()) &&
+                                    FAGSYSTEM.equals(resource.getScope().getZone()) &&
                                     isNull(resource.getScope().getApplication()) &&
                                     isNull(resource.getScope().getEnvironment()))
                             .collect(Collectors.toMap(

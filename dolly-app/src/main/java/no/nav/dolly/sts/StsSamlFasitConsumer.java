@@ -56,7 +56,8 @@ public class StsSamlFasitConsumer {
                 FasitResourceWithUnmappedProperties[] fasitResources = fasitApiConsumer.fetchResources(SAML_ALIAS, BASE_URL);
 
                 urlSamlPerEnv = asList(fasitResources).stream()
-                        .filter(resource -> FAGSYSTEM.equals(resource.getScope().getZone()) &&
+                        .filter(resource -> SAML_ALIAS.equals(resource.getAlias()) &&
+                                FAGSYSTEM.equals(resource.getScope().getZone()) &&
                                 isNull(resource.getScope().getApplication()) &&
                                 nonNull(resource.getScope().getEnvironment()))
                         .collect(Collectors.toMap(
