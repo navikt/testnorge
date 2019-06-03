@@ -78,6 +78,11 @@
             <version>2.9.8</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+        <dependency>
             <groupId>no.nav.person.tps.tjenester</groupId>
             <artifactId>person-tps-avstemming-v1</artifactId>
             <version>${person-tps-avstemming-v1.version}</version>
