@@ -6,7 +6,7 @@
     <parent>
         <artifactId>testnorge-aareg</artifactId>
         <groupId>no.nav.registre</groupId>
-        <version>1.4.2</version>
+        <version>1.5.0</version>
     </parent>
 
     <artifactId>aareg-domain</artifactId>
