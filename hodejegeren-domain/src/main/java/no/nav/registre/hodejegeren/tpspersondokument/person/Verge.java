@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.XmlType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "verge", namespace = "http://www.rtv.no/NamespaceTPS", propOrder = {
+@XmlType(name = "verge", propOrder = {
         "vergeSaksid",
         "vergeId",
         "vergeType",
@@ -58,27 +58,27 @@ import javax.xml.bind.annotation.XmlType;
 @Builder
 public class Verge {
 
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeSaksid;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeId;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeType;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeSakstype;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeMandattype;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeEmbete;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeVedtakDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeFnr;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeFraDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeTilDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String vergeKilde;
 
     /**

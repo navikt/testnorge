@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "utad", namespace = "http://www.rtv.no/NamespaceTPS", propOrder = {
+@XmlType(name = "utad", propOrder = {
         "utadAdresse1",
         "utadAdresse2",
         "utadAdresse3",
@@ -54,23 +54,23 @@ import javax.xml.bind.annotation.XmlType;
 @Builder
 public class Utad {
 
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String utadAdresse1;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String utadAdresse2;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String utadAdresse3;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String utadAdresseDatoTom;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String utadLand;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String utadAdresseFraDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String utadAdresseTilDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String utadKilde;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String utadRegistrertAv;
 
     /**

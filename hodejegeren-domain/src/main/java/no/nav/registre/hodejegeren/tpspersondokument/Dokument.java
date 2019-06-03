@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "dokument", namespace = "http://www.rtv.no/NamespaceTPS", propOrder = {
+@XmlType(name = "dokument", propOrder = {
         "dokumentstatus",
         "dokumentutfyllendemelding",
         "dokumenttidspunkt",
@@ -50,19 +50,19 @@ import javax.xml.bind.annotation.XmlType;
 @Builder
 public class Dokument {
 
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String dokumentstatus;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String dokumentutfyllendemelding;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String dokumenttidspunkt;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String dokumenthistorikk;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String dokumentFraDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String dokumentTilDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String dokumentKilde;
 
     /**

@@ -36,7 +36,7 @@ import no.nav.registre.hodejegeren.tpspersondokument.Relasjon;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tpsPersonDokument", namespace = "http://www.rtv.no/NamespaceTPS", propOrder = {
+@XmlType(name = "tpsPersonDokument", propOrder = {
         "dokument",
         "person",
         "relasjon"
@@ -46,11 +46,11 @@ import no.nav.registre.hodejegeren.tpspersondokument.Relasjon;
 @Builder
 public class TpsPersonDokument {
 
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected Dokument dokument;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected Person person;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Relasjon> relasjon;
 
     /**

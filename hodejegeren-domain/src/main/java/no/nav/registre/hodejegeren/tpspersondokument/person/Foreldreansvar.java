@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "foreldreansvar", namespace = "http://www.rtv.no/NamespaceTPS", propOrder = {
+@XmlType(name = "foreldreansvar", propOrder = {
         "foreldreAnsvar",
         "foreldreAnsvarFraDato",
         "foreldreAnsvarTilDato",
@@ -46,15 +46,15 @@ import javax.xml.bind.annotation.XmlType;
 @Builder
 public class Foreldreansvar {
 
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String foreldreAnsvar;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String foreldreAnsvarFraDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String foreldreAnsvarTilDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String foreldreAnsvarKilde;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String forreldreAnsvarRegistrertAv;
 
     /**

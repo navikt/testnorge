@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "telefonPrivat", namespace = "http://www.rtv.no/NamespaceTPS", propOrder = {
+@XmlType(name = "telefonPrivat", propOrder = {
         "tlfPrivatRetningslinje",
         "tlfPrivatNummer",
         "tlfPrivatFraDato",
@@ -46,17 +46,17 @@ import javax.xml.bind.annotation.XmlType;
 @Builder
 public class TelefonPrivat {
 
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tlfPrivatRetningslinje;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tlfPrivatNummer;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tlfPrivatFraDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tlfPrivatTilDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tlfPrivatKilde;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tlfPrivatRegistrertAv;
 
     /**

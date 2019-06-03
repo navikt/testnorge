@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "prioritertadresse", namespace = "http://www.rtv.no/NamespaceTPS", propOrder = {
+@XmlType(name = "prioritertadresse", propOrder = {
         "prioritertAdresse",
         "prioritertAdresseFraDato",
         "prioritertAdresseTilDato",
@@ -42,13 +42,13 @@ import javax.xml.bind.annotation.XmlType;
 @Builder
 public class Prioritertadresse {
 
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String prioritertAdresse;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String prioritertAdresseFraDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String prioritertAdresseTilDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String prioritertAdresseKilde;
 
     /**

@@ -91,7 +91,7 @@ import no.nav.registre.hodejegeren.tpspersondokument.person.Verge;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "person", namespace = "http://www.rtv.no/NamespaceTPS", propOrder = {
+@XmlType(name = "person", propOrder = {
         "meldingId",
         "personidTPS",
         "personIdent",
@@ -128,65 +128,65 @@ import no.nav.registre.hodejegeren.tpspersondokument.person.Verge;
 @Builder
 public class Person {
 
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected BigInteger meldingId;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected BigInteger personidTPS;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<PersonIdent> personIdent;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<PersonIdentStatus> personIdentstatus;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<PersonInfo> personInfo;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<PersonStatus> personStatus;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Navn> navn;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Spraak> spraak;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Sivilstand> sivilstand;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Statsborger> statsborger;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Dod> dod;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Telefon> telefon;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Tknr> tknr;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<SpesReg> spesReg;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Tiltak> tiltak;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Egenansatt> egenansatt;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Boadresse> boadresse;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Prioritertadresse> prioritertadresse;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Geti> geti;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Foreldreansvar> foreldreansvar;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Oppholdstillatelse> oppholdstillatelse;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Gironummer> gironummer;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Tillegg> tillegg;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Utad> utad;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Post> post;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Migrasjon> migrasjon;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Verge> vergemaal;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Behov> behov;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Utlandbank> utlandbank;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS")
+    @XmlElement()
     protected List<Utlandinfo> utlandinfo;
 
     /**

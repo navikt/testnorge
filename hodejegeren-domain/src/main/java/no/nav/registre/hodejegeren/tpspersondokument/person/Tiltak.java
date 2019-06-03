@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "tiltak", namespace = "http://www.rtv.no/NamespaceTPS", propOrder = {
+@XmlType(name = "tiltak", propOrder = {
         "tiltak",
         "tiltakFraDato",
         "tiltakTilDato",
@@ -44,15 +44,15 @@ import javax.xml.bind.annotation.XmlType;
 @Builder
 public class Tiltak {
 
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tiltak;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tiltakFraDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tiltakTilDato;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tiltakKilde;
-    @XmlElement(namespace = "http://www.rtv.no/NamespaceTPS", required = true)
+    @XmlElement(required = true)
     protected String tiltakRegistrertAv;
 
     /**
