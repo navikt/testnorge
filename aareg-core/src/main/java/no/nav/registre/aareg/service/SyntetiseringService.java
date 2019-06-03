@@ -87,8 +87,23 @@ public class SyntetiseringService {
                     .append(". ");
         }
 
-        List<IdentMedData> arbeidsforholdLagretIAareg = finnArbeidsforholdLagretIAareg(statusFraAaregstubResponse.getIdenterLagretIAareg(), syntetiserteArbeidsforhold);
+        lagreArbeidsforholdIHodejegeren(statusFraAaregstubResponse, syntetiserteArbeidsforhold);
 
+        log.info(statusFraAaregstub.toString());
+
+        if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterSomIkkeKunneLagresIAareg())) {
+            JsonNode statusFeilmeldinger = new ObjectMapper().valueToTree(statusFraAaregstubResponse.getIdenterSomIkkeKunneLagresIAareg());
+            log.error("Status på identer som ikke kunne sendes til aareg: {}", statusFeilmeldinger);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(String.format("Noe feilet under lagring til aaregstub. {%s}. {%s}",
+                    statusFeilmeldinger.toString(),
+                    statusFraAaregstub.toString()));
+        }
+
+        return ResponseEntity.ok().body(statusFraAaregstub.toString());
+    }
+
+    private void lagreArbeidsforholdIHodejegeren(StatusFraAaregstubResponse statusFraAaregstubResponse, List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
+        List<IdentMedData> arbeidsforholdLagretIAareg = finnArbeidsforholdLagretIAareg(statusFraAaregstubResponse.getIdenterLagretIAareg(), syntetiserteArbeidsforhold);
         if (!arbeidsforholdLagretIAareg.isEmpty()) {
             AaregSaveInHodejegerenRequest hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, arbeidsforholdLagretIAareg);
 
@@ -104,21 +119,9 @@ public class SyntetiseringService {
                 log.warn("Kunne ikke lagre historikk på alle identer. Identer som ikke ble lagret: {}", identerSomIkkeBleLagret);
             }
         }
-
-        log.info(statusFraAaregstub.toString());
-
-        if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterSomIkkeKunneLagresIAareg())) {
-            JsonNode statusFeilmeldinger = new ObjectMapper().valueToTree(statusFraAaregstubResponse.getIdenterSomIkkeKunneLagresIAareg());
-            log.error("Status på identer som ikke kunne sendes til aareg: {}", statusFeilmeldinger);
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(String.format("Noe feilet under lagring til aaregstub. {%s}. {%s}",
-                    statusFeilmeldinger.toString(),
-                    statusFraAaregstub.toString()));
-        }
-
-        return ResponseEntity.ok().body(statusFraAaregstub.toString());
     }
 
-    public List<IdentMedData> finnArbeidsforholdLagretIAareg(List<String> fnrs, List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
+    private List<IdentMedData> finnArbeidsforholdLagretIAareg(List<String> fnrs, List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
         List<IdentMedData> arbeidsforholdFunnet = new ArrayList<>();
         if (fnrs != null) {
             for (String fnr : fnrs) {
