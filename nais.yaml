@@ -65,7 +65,7 @@ fasitResources:
     - alias: "ork_TPS_PERSONDOKUMENT"
       resourceType: Channel
       propertyMap:
-        channelName: channel.channelName
+        name: channel.channelName
         queueManager: channel.queueManager
   exposed:
    - alias: testnorge-orkestratoren.rest-api
