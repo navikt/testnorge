@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
@@ -93,9 +92,16 @@ public class SyntetiseringService {
         if (!arbeidsforholdLagretIAareg.isEmpty()) {
             AaregSaveInHodejegerenRequest hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, arbeidsforholdLagretIAareg);
 
-            Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequest);
-            if (savedIds.isEmpty()) {
-                log.warn("Kunne ikke lagre historikk på noen identer");
+            List<String> lagredeIdenter = hodejegerenConsumer.saveHistory(hodejegerenRequest);
+
+            List<IdentMedData> identerMedData = hodejegerenRequest.getIdentMedData();
+            if (lagredeIdenter.size() < identerMedData.size()) {
+                List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
+                for (IdentMedData ident : identerMedData) {
+                    identerSomIkkeBleLagret.add(ident.getId());
+                }
+                identerSomIkkeBleLagret.removeAll(lagredeIdenter);
+                log.warn("Kunne ikke lagre historikk på alle identer. Identer som ikke ble lagret: {}", identerSomIkkeBleLagret);
             }
         }
 
