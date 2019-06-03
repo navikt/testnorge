@@ -39,8 +39,8 @@ public class HistorikkService {
     }
 
     public List<String> hentIdsMedKilde(String kilde) {
-        List<String> ids = new ArrayList<>();
         List<SyntHistorikk> historikkByKildenavn = syntHistorikkRepository.findAllIdsByKildenavn(kilde);
+        List<String> ids = new ArrayList<>(historikkByKildenavn.size());
         for (SyntHistorikk historikk : historikkByKildenavn) {
             ids.add(historikk.getId());
         }
@@ -85,6 +85,7 @@ public class HistorikkService {
                 for (Kilde k : eksisterendeKilder) {
                     if (historikkRequest.getKilde().equals(k.getNavn())) {
                         eksisterendeData = k.getData();
+                        break;
                     }
                 }
 
@@ -110,6 +111,7 @@ public class HistorikkService {
             for (Kilde k : syntHistorikk.getKilder()) {
                 if ("skd".equals(k.getNavn())) {
                     kilde = k;
+                    break;
                 }
             }
             if (kilde != null) {
@@ -144,6 +146,7 @@ public class HistorikkService {
             for (Kilde k : kilder) {
                 if (navnPaaKilde.equals(k.getNavn())) {
                     kilde = k;
+                    break;
                 }
             }
             if (kilde != null) {
