@@ -42,6 +42,5 @@ export default handleActions(
 
 //thunk
 export const sendToOpenAm = bestillingId => (dispatch, getState) => {
-	const { gruppe, bestillingStatuser } = getState()
 	return dispatch(postOpenAm(bestillingId))
 }

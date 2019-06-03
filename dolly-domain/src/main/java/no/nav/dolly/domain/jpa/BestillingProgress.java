@@ -50,8 +50,8 @@ public class BestillingProgress {
     @Column(name = "AAREG_STATUS")
     private String aaregStatus;
 
-    @Column(name = "ARENASTUB_STATUS")
-    private String arenastubStatus;
+    @Column(name = "ARENAFORVALTER_STATUS")
+    private String arenaforvalterStatus;
 
     @Column(name = "PDLFORVALTER_STATUS")
     private String pdlforvalterStatus;

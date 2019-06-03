@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.arenastub;
+package no.nav.dolly.domain.resultset.arenaforvalter;
 
 public enum Kvalifiseringsgruppe {
 

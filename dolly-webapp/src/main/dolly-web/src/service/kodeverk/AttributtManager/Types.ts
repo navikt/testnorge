@@ -71,15 +71,6 @@ export interface Attributt {
 	informasjonstekst?: String
 }
 
-// Attributtene som er child av Attributt.Items. Eks: AAREG
-// TODO: Alex - trenger vi den?
-
-export interface SubItem {
-	id: string
-	label: string
-	items: Attributt[]
-}
-
 // Attributt grupper
 export interface AttributtGruppe {
 	hovedKategori: Kategori

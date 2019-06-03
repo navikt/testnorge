@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
-import no.nav.dolly.domain.resultset.arenastub.RsArenadata;
+import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
@@ -29,7 +29,7 @@ public class BestKriterier {
     private List<RsArbeidsforhold> aareg;
     private RsDigitalKontaktdata krrStub;
     private List<RsOpprettSkattegrunnlag> sigrunStub;
-    private RsArenadata arenaStub;
+    private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;
 
     public List<RsArbeidsforhold> getAareg() {
