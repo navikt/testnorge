@@ -12,8 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import io.micrometer.core.annotation.Timed;
-
-import no.nav.registre.hodejegeren.TpsPersonDokument;
+import no.rtv.namespacetps.TpsPersonDokumentType;
 
 @Component
 public class HodejegerenConsumer {
@@ -31,7 +30,7 @@ public class HodejegerenConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
-    public List<String> sendTpsPersondokumentTilHodejegeren(TpsPersonDokument tpsPersonDokument) {
+    public List<String> sendTpsPersondokumentTilHodejegeren(TpsPersonDokumentType tpsPersonDokument) {
         String ident = tpsPersonDokument.getPerson().getPersonIdent().get(0).getPersonIdent();
         RequestEntity postRequest = RequestEntity.post(sendTilHodejegerenUrl.expand(ident)).contentType(MediaType.APPLICATION_JSON).body(tpsPersonDokument);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();

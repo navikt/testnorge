@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import no.nav.registre.orkestratoren.batch.JobController;
@@ -23,6 +24,8 @@ public class AppConfig {
 
     @Bean
     XmlMapper xmlMapper() {
-        return new XmlMapper();
+        XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        return xmlMapper;
     }
 }

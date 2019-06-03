@@ -5,8 +5,9 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import no.nav.registre.hodejegeren.TpsPersonDokument;
 import no.nav.registre.orkestratoren.config.exception.UnrecoverableException;
+
+import no.rtv.namespacetps.TpsPersonDokumentType;
 
 @Component
 public class PersondokumentConverter {
@@ -14,9 +15,9 @@ public class PersondokumentConverter {
     @Autowired
     private XmlMapper xmlMapper;
 
-    public TpsPersonDokument convert(String message) {
+    public TpsPersonDokumentType convert(String message) {
         try {
-            return xmlMapper.readValue(message, TpsPersonDokument.class);
+            return xmlMapper.readValue(message, TpsPersonDokumentType.class);
         } catch (Exception e) {
             throw new UnrecoverableException("Feilet å konvertere tps persondokument", e);
         }
