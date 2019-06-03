@@ -59,7 +59,7 @@ public class HodejegerenConsumerTest {
     public void shouldSendPersondokumentTilHodejegeren() {
         stubHodejegerenConsumer();
 
-        List<String> identer = hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument);
+        List<String> identer = hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument, fnr);
 
         assertThat(identer, contains(fnr));
     }
