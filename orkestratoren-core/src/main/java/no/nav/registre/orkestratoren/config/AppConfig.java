@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 import no.nav.registre.orkestratoren.batch.JobController;
 import no.nav.registre.orkestratoren.provider.rs.InternalController;
 
@@ -17,5 +19,10 @@ public class AppConfig {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    XmlMapper xmlMapper() {
+        return new XmlMapper();
     }
 }

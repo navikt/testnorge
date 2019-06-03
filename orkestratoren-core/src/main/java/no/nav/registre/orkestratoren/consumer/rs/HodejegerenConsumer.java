@@ -2,14 +2,16 @@ package no.nav.registre.orkestratoren.consumer.rs;
 
 import java.util.List;
 
-import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
+
+import io.micrometer.core.annotation.Timed;
 
 import no.nav.registre.hodejegeren.TpsPersonDokument;
 
@@ -31,7 +33,7 @@ public class HodejegerenConsumer {
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> sendTpsPersondokumentTilHodejegeren(TpsPersonDokument tpsPersonDokument) {
         String ident = tpsPersonDokument.getPerson().getPersonIdent().get(0).getPersonIdent();
-        RequestEntity postRequest = RequestEntity.post(sendTilHodejegerenUrl.expand(ident)).body(tpsPersonDokument);
+        RequestEntity postRequest = RequestEntity.post(sendTilHodejegerenUrl.expand(ident)).contentType(MediaType.APPLICATION_JSON).body(tpsPersonDokument);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }

@@ -3,6 +3,7 @@ package no.nav.registre.orkestratoren.consumer.rs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class AaregSyntConsumer {
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "aareg" })
     public ResponseEntity startSyntetisering(SyntetiserAaregRequest syntetiserAaregRequest, boolean lagreIAareg) {
-        RequestEntity postRequest = RequestEntity.post(url.expand(lagreIAareg)).body(syntetiserAaregRequest);
+        RequestEntity postRequest = RequestEntity.post(url.expand(lagreIAareg)).contentType(MediaType.APPLICATION_JSON).body(syntetiserAaregRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 }
