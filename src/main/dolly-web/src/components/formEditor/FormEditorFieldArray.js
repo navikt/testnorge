@@ -204,9 +204,8 @@ export const renderHeaderSubFieldButton = (
 				<div className="flexbox">
 					<h4>{item.label}</h4>
 					{item.informasjonstekst && (
-						<ContentTooltip>
-							<span>{item.informasjonstekst}</span>
-						</ContentTooltip>
+						//Fjernes når (/hvis) vi får inn validering av datoer på tvers av items
+						<h5 className="infotekst">{item.informasjonstekst}</h5>
 					)}
 				</div>
 			)}
