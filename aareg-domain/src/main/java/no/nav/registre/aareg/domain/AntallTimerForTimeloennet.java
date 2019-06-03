@@ -1,4 +1,4 @@
-package no.nav.registre.aareg.consumer.rs.responses.contents;
+package no.nav.registre.aareg.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -12,10 +12,10 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Utenlandsopphold {
+public class AntallTimerForTimeloennet {
 
-    @JsonProperty("land")
-    private String land;
+    @JsonProperty("antallTimer")
+    private Integer antallTimer;
 
     @JsonProperty("periode")
     private Map<String, String> periode;

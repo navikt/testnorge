@@ -6,10 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.registre.aareg.domain.Arbeidsforhold;
 
 import java.util.List;
-
-import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidsforhold;
 
 @Getter
 @Setter

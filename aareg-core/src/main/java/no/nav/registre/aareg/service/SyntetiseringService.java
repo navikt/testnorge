@@ -14,21 +14,26 @@ import org.springframework.util.CollectionUtils;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
+import no.nav.registre.aareg.IdentMedData;
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
-import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidsforhold;
+import no.nav.registre.aareg.domain.Arbeidsforhold;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @Service
 @Slf4j
 public class SyntetiseringService {
+
+    private static final String AAREG_NAME = "aareg";
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -82,6 +87,8 @@ public class SyntetiseringService {
                     .append(". ");
         }
 
+        lagreArbeidsforholdIHodejegeren(statusFraAaregstubResponse, syntetiserteArbeidsforhold);
+
         log.info(statusFraAaregstub.toString());
 
         if (!CollectionUtils.isEmpty(statusFraAaregstubResponse.getIdenterSomIkkeKunneLagresIAareg())) {
@@ -93,6 +100,42 @@ public class SyntetiseringService {
         }
 
         return ResponseEntity.ok().body(statusFraAaregstub.toString());
+    }
+
+    private void lagreArbeidsforholdIHodejegeren(StatusFraAaregstubResponse statusFraAaregstubResponse, List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
+        List<IdentMedData> arbeidsforholdLagretIAareg = finnArbeidsforholdLagretIAareg(statusFraAaregstubResponse.getIdenterLagretIAareg(), syntetiserteArbeidsforhold);
+        if (!arbeidsforholdLagretIAareg.isEmpty()) {
+            AaregSaveInHodejegerenRequest hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, arbeidsforholdLagretIAareg);
+
+            List<String> lagredeIdenter = hodejegerenConsumer.saveHistory(hodejegerenRequest);
+
+            List<IdentMedData> identerMedData = hodejegerenRequest.getIdentMedData();
+            if (lagredeIdenter.size() < identerMedData.size()) {
+                List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
+                for (IdentMedData ident : identerMedData) {
+                    identerSomIkkeBleLagret.add(ident.getId());
+                }
+                identerSomIkkeBleLagret.removeAll(lagredeIdenter);
+                log.warn("Kunne ikke lagre historikk på alle identer. Identer som ikke ble lagret: {}", identerSomIkkeBleLagret);
+            }
+        }
+    }
+
+    private List<IdentMedData> finnArbeidsforholdLagretIAareg(List<String> fnrs, List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold) {
+        List<IdentMedData> arbeidsforholdFunnet = new ArrayList<>();
+        if (fnrs != null) {
+            for (String fnr : fnrs) {
+                for (ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforhold) {
+                    if (arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker() != null
+                            && arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent() != null
+                            && fnr.equals(arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent())) {
+                        arbeidsforholdFunnet.add(new IdentMedData(fnr, Collections.singletonList(arbeidsforholdsResponse.getArbeidsforhold())));
+                        break;
+                    }
+                }
+            }
+        }
+        return arbeidsforholdFunnet;
     }
 
     public StatusFraAaregstubResponse sendArbeidsforholdTilAareg(List<ArbeidsforholdsResponse> arbeidsforhold, boolean fyllUtArbeidsforhold) {

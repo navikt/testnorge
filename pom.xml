@@ -20,7 +20,22 @@
     <modules>
         <module>aareg-core</module>
         <module>aareg-local</module>
+        <module>aareg-domain</module>
     </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>m2internal</id>
+            <name>NAV Maven2 Internal Repository</name>
+            <url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
+        </repository>
+        <snapshotRepository>
+            <id>m2snapshot</id>
+            <name>NAV Maven2 Snapshot Repository</name>
+            <url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
         <application.version>${project.version}</application.version>
@@ -52,25 +67,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <rules>
-                                <dependencyConvergence/>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    
 </project>

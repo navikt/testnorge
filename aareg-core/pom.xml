@@ -66,20 +66,25 @@
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.logback.encoder.version}</version>
         </dependency>
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>aareg-domain</artifactId>
+            <version>1.4.2</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
+        <finalName>testnorge-aareg-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
+                        <id>repackage</id>
                         <configuration>
-                            <finalName>testnorge-aareg-app</finalName>
+                            <classifier>exec</classifier>
                         </configuration>
                     </execution>
                 </executions>

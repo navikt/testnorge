@@ -35,9 +35,9 @@ import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
-import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidsforhold;
-import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidsgiver;
-import no.nav.registre.aareg.consumer.rs.responses.contents.Arbeidstaker;
+import no.nav.registre.aareg.domain.Arbeidsforhold;
+import no.nav.registre.aareg.domain.Arbeidsgiver;
+import no.nav.registre.aareg.domain.Arbeidstaker;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 
 @RunWith(MockitoJUnitRunner.class)
