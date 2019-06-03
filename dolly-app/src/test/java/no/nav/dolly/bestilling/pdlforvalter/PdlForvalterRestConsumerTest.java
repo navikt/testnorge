@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
-import no.nav.dolly.domain.resultset.pdlforvalter.folkeregister.PdlFolkeregisterIdent;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.sts.StsOidcService;
@@ -44,16 +43,6 @@ public class PdlForvalterRestConsumerTest {
     public void setup() {
 
         when(providersProps.getPdlForvalter()).thenReturn(ProvidersProps.PdlForvalter.builder().url(PDL_URL).build());
-    }
-
-    @Test
-    public void postFolkeregisterIdent_OK() {
-
-        pdlForvalterRestConsumer.postFolkeregisterIdent(PdlFolkeregisterIdent.builder().build());
-
-        verify(providersProps).getPdlForvalter();
-        verify(stsOidcService).getIdToken(anyString());
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
     }
 
     @Test
