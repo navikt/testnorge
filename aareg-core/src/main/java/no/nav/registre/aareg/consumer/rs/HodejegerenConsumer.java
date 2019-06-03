@@ -61,11 +61,6 @@ public class HodejegerenConsumer {
 
         RequestEntity<AaregSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
 
-        ResponseEntity<Set<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_SET);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            return response.getBody();
-        }
-        return Collections.emptySet();
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE_SET).getBody();
     }
 }
