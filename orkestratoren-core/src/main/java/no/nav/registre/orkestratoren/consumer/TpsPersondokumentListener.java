@@ -16,7 +16,7 @@ public class TpsPersondokumentListener {
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
 
-    @JmsListener(destination = "${ork_TPS_PERSONDOKUMENT.queueName}")
+    @JmsListener(destination = "${ork_TPS_PERSONDOKUMENT.queue.queueName}")
     public void lesFraKoe(TpsPersonDokument tpsPersonDokument) {
         log.info("Lese persondokument fra kø");
         hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument);

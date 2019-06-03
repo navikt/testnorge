@@ -55,8 +55,14 @@ fasitResources:
       resourceType: QueueManager
     - alias: "ork_TPS_PERSONDOKUMENT"
       resourceType: Queue
+      propertyMap:
+        queueName: queue.queueName
+        queueManager: queue.queueManager
     - alias: "ork_TPS_PERSONDOKUMENT"
       resourceType: Channel
+      propertyMap:
+        channelName: channel.channelName
+        queueManager: channel.queueManager
   exposed:
    - alias: testnorge-orkestratoren.rest-api
      description: På denne base-url finner du swagger-dokumentasjon av REST-tjenesten.
