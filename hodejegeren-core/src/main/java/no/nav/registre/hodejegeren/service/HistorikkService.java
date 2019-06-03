@@ -1,33 +1,21 @@
 package no.nav.registre.hodejegeren.service;
 
-import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.ROUTINE_KERNINFO;
-import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.ROUTINE_PERSRELA;
-import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import no.nav.registre.hodejegeren.TpsPersonDokument;
 import no.nav.registre.hodejegeren.mongodb.Data;
+import no.nav.registre.hodejegeren.mongodb.Kilde;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikkRepository;
-import no.nav.registre.hodejegeren.mongodb.tpsStatusQuo.Kjerneinfo.Kjerneinformasjon;
-import no.nav.registre.hodejegeren.mongodb.tpsStatusQuo.Personrelasjon.Relasjonsinformasjon;
-import no.nav.registre.hodejegeren.mongodb.tpsStatusQuo.StatusQuo;
 import no.nav.registre.hodejegeren.provider.rs.requests.DataRequest;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 
@@ -35,9 +23,6 @@ import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 @RequiredArgsConstructor
 @Service
 public class HistorikkService {
-
-    @Autowired
-    private final TpsStatusQuoService tpsStatusQuoService;
 
     private final SyntHistorikkRepository syntHistorikkRepository;
 
@@ -49,10 +34,23 @@ public class HistorikkService {
         return syntHistorikkRepository.findById(id).orElse(null);
     }
 
+    public List<SyntHistorikk> hentHistorikkMedKilde(String kilde) {
+        return syntHistorikkRepository.findAllByKildenavn(kilde);
+    }
+
+    public List<String> hentIdsMedKilde(String kilde) {
+        List<SyntHistorikk> historikkByKildenavn = syntHistorikkRepository.findAllIdsByKildenavn(kilde);
+        List<String> ids = new ArrayList<>(historikkByKildenavn.size());
+        for (SyntHistorikk historikk : historikkByKildenavn) {
+            ids.add(historikk.getId());
+        }
+        return ids;
+    }
+
     public SyntHistorikk opprettHistorikk(SyntHistorikk syntHistorikk) {
-        Map<String, List<Data>> kilder = syntHistorikk.getKilder();
-        for (List<Data> data : kilder.values()) {
-            for (Data d : data) {
+        List<Kilde> kilder = syntHistorikk.getKilder();
+        for (Kilde kilde : kilder) {
+            for (Data d : kilde.getData()) {
                 if (d.getDatoOpprettet() == null) {
                     d.setDatoOpprettet(LocalDateTime.now());
                 }
@@ -82,87 +80,51 @@ public class HistorikkService {
             }
             SyntHistorikk eksisterendeHistorikk = hentHistorikkMedId(id);
             if (eksisterendeHistorikk != null) {
-                Map<String, List<Data>> eksisterendeKilder = eksisterendeHistorikk.getKilder();
+                List<Kilde> eksisterendeKilder = eksisterendeHistorikk.getKilder();
+                List<Data> eksisterendeData = null;
+                for (Kilde k : eksisterendeKilder) {
+                    if (historikkRequest.getKilde().equals(k.getNavn())) {
+                        eksisterendeData = k.getData();
+                        break;
+                    }
+                }
 
-                List<Data> eksisterendeData = eksisterendeKilder.get(historikkRequest.getKilde());
                 if (eksisterendeData != null) {
                     eksisterendeData.addAll(nyData);
                 } else {
-                    eksisterendeKilder.put(historikkRequest.getKilde(), nyData);
+                    eksisterendeKilder.add(Kilde.builder().navn(historikkRequest.getKilde()).data(nyData).build());
                 }
 
                 opprettedeIder.add(syntHistorikkRepository.save(eksisterendeHistorikk).getId());
             } else {
-                Map<String, List<Data>> nyKilde = new HashMap<>();
-                nyKilde.put(historikkRequest.getKilde(), nyData);
-                opprettedeIder.add(opprettHistorikk(SyntHistorikk.builder().id(id).kilder(nyKilde).build()).getId());
+                Kilde nyKilde = Kilde.builder().navn(historikkRequest.getKilde()).data(nyData).build();
+                opprettedeIder.add(opprettHistorikk(SyntHistorikk.builder().id(id).kilder(Collections.singletonList(nyKilde)).build()).getId());
             }
         }
         return opprettedeIder;
     }
 
-    public List<String> oppdaterSkdHistorikk(HistorikkRequest historikkRequest) {
-        ObjectMapper mapper = new ObjectMapper();
-        List<DataRequest> identMedData = historikkRequest.getIdentMedData();
-        List<String> opprettedeIder = new ArrayList<>();
-        for (DataRequest ident : identMedData) {
-            SyntHistorikk syntHistorikk = hentHistorikkMedId(ident.getId());
-            if (syntHistorikk != null) {
-                Data eksisterendeSkdData = syntHistorikk.getKilder().get(historikkRequest.getKilde()).get(0);
-                eksisterendeSkdData.setInnhold(mapper.convertValue(historikkRequest.getIdentMedData().get(0).getData().get(0), StatusQuo.class));
-                eksisterendeSkdData.setDatoEndret(LocalDateTime.now());
-                opprettedeIder.add(syntHistorikkRepository.save(syntHistorikk).getId());
-            } else {
-                StatusQuo statusQuo = mapper.convertValue(historikkRequest.getIdentMedData().get(0).getData().get(0), StatusQuo.class);
-                historikkRequest.getIdentMedData().get(0).setData(Collections.singletonList(statusQuo));
-                opprettedeIder.addAll(leggTilHistorikkPaaIdent(historikkRequest));
-            }
-        }
-        return opprettedeIder;
-    }
-
-    public List<String> oppdaterSkdStatusPaaIdenter(List<String> identer, String miljoe) {
-        ObjectMapper mapper = new ObjectMapper();
-        List<String> oppdaterteIdenter = new ArrayList<>();
-        StatusQuo statusQuo;
-        for (String ident : identer) {
-            JsonNode kerninfo = null;
-            JsonNode persrela = null;
-            try {
-                kerninfo = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident).findValue("data1");
-                persrela = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident).findValue("data1");
-                tpsStatusQuoService.resetCache();
-            } catch (IOException e) {
-                log.error("Kunne ikke lese status quo på ident {} i miljø {}.", ident.replaceAll("[\r\n]", ""), miljoe.replaceAll("[\r\n]", ""), e);
-            }
-
-            if (kerninfo != null && persrela != null) {
-                try {
-                    statusQuo = StatusQuo.builder()
-                            .kjerneinformasjon(mapper
-                                    .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                    .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
-                                    .convertValue(kerninfo, Kjerneinformasjon.class))
-                            .relasjonsinformasjon(mapper
-                                    .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                    .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
-                                    .convertValue(persrela, Relasjonsinformasjon.class))
-                            .build();
-
-                    HistorikkRequest historikkRequest = HistorikkRequest.builder()
-                            .kilde("skd")
-                            .identMedData(Collections.singletonList(DataRequest.builder()
-                                    .id(ident)
-                                    .data(Collections.singletonList(statusQuo))
-                                    .build()))
-                            .build();
-                    oppdaterteIdenter.addAll(oppdaterSkdHistorikk(historikkRequest));
-                } catch (IllegalArgumentException e) {
-                    log.error("Kunne ikke oppdatere skd til ident {}", ident, e);
+    public List<String> oppdaterTpsPersonDokument(String ident, TpsPersonDokument tpsPersonDokument) {
+        SyntHistorikk syntHistorikk = hentHistorikkMedId(ident);
+        if (syntHistorikk != null) {
+            Kilde kilde = null;
+            for (Kilde k : syntHistorikk.getKilder()) {
+                if ("skd".equals(k.getNavn())) {
+                    kilde = k;
+                    break;
                 }
             }
+            if (kilde != null) {
+                Data eksisterendeSkdData = kilde.getData().get(0);
+                eksisterendeSkdData.setInnhold(tpsPersonDokument);
+                eksisterendeSkdData.setDatoEndret(LocalDateTime.now());
+                return Collections.singletonList(syntHistorikkRepository.save(syntHistorikk).getId());
+            } else {
+                return leggTilSkdData(ident, tpsPersonDokument);
+            }
+        } else {
+            return leggTilSkdData(ident, tpsPersonDokument);
         }
-        return oppdaterteIdenter;
     }
 
     public ResponseEntity slettHistorikk(String id) {
@@ -179,9 +141,16 @@ public class HistorikkService {
         SyntHistorikk historikk = syntHistorikkRepository.findById(id).orElse(null);
 
         if (historikk != null) {
-            Map<String, List<Data>> eksisterendeKilder = historikk.getKilder();
-            if (eksisterendeKilder.containsKey(navnPaaKilde)) {
-                eksisterendeKilder.remove(navnPaaKilde);
+            List<Kilde> kilder = historikk.getKilder();
+            Kilde kilde = null;
+            for (Kilde k : kilder) {
+                if (navnPaaKilde.equals(k.getNavn())) {
+                    kilde = k;
+                    break;
+                }
+            }
+            if (kilde != null) {
+                kilder.remove(kilde);
                 if (historikk.getKilder().isEmpty()) {
                     slettHistorikk(id);
                 } else {
@@ -194,5 +163,16 @@ public class HistorikkService {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Fant ingen historikk tilhørende id '%s'", id));
         }
+    }
+
+    private List<String> leggTilSkdData(String ident, TpsPersonDokument tpsPersonDokument) {
+        HistorikkRequest historikkRequest = HistorikkRequest.builder()
+                .kilde("skd")
+                .identMedData(Collections.singletonList(DataRequest.builder()
+                        .id(ident)
+                        .data(Collections.singletonList(tpsPersonDokument))
+                        .build()))
+                .build();
+        return leggTilHistorikkPaaIdent(historikkRequest);
     }
 }

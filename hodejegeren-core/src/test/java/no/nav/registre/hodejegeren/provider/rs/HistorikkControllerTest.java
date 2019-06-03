@@ -8,9 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
 
@@ -42,21 +39,6 @@ public class HistorikkControllerTest {
         HistorikkRequest historikkRequest = HistorikkRequest.builder().build();
         historikkController.leggTilHistorikk(historikkRequest);
         verify(historikkService).leggTilHistorikkPaaIdent(historikkRequest);
-    }
-
-    @Test
-    public void shouldLeggeTilSkdHistorikk() {
-        HistorikkRequest historikkRequest = HistorikkRequest.builder().kilde("skd").build();
-        historikkController.leggTilHistorikk(historikkRequest);
-        verify(historikkService).oppdaterSkdHistorikk(historikkRequest);
-    }
-
-    @Test
-    public void shouldOppdatereSkdStatus() {
-        List<String> identer = new ArrayList<>();
-        String miljoe = "t1";
-        historikkController.oppdaterSkdStatus(miljoe, identer);
-        verify(historikkService).oppdaterSkdStatusPaaIdenter(identer, miljoe);
     }
 
     @Test

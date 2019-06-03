@@ -25,5 +25,5 @@ public class SyntHistorikk {
 
     private LocalDateTime datoRekvirert;
 
-    private Map<String, List<Data>> kilder;
+    private List<Kilde> kilder;
 }
