@@ -62,6 +62,16 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>hodejegeren-domain</artifactId>
+        </dependency>
+
+        <!--> Lese fra kø </!-->
+        <dependency>
+            <groupId>com.ibm.mq</groupId>
+            <artifactId>mq-jms-spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
