@@ -16,6 +16,11 @@ const avvikStatus = item => {
 		item.sigrunStubStatus.map(status => {
 			status.statusMelding !== 'OK' && (avvik = true)
 		})
+	item.arenaforvalterStatus &&
+		item.arenaforvalterStatus.map(status => {
+			!status['statusIdent']['status: OK'] && (avvik = true)
+		})
+
 	item.feil && (avvik = true)
 	return avvik
 }
@@ -77,6 +82,14 @@ const miljoeStatusSelector = bestilling => {
 				!successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')
 			} else {
 				!failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
+			}
+		})
+	bestilling.arenaforvalterStatus &&
+		bestilling.arenaforvalterStatus.map(status => {
+			if (status['statusIdent']['status: OK']) {
+				!successEnvs.includes('Arena') && successEnvs.push('Arena')
+			} else {
+				!failedEnvs.includes('Arena') && failedEnvs.push('Arena')
 			}
 		})
 

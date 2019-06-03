@@ -42,7 +42,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.KRR,
 				label: 'Reservert mot digitalkommunikasjon',
 				inputType: InputType.Select,
-				validation: yup.boolean(),
+				validation: yup.string().required('Vennligst velg'),
 				options: SelectOptionsManager('boolean'),
 				attributtType: AttributtType.SelectAndEdit
 			},
