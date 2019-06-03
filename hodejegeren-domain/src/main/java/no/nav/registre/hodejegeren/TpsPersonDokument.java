@@ -12,9 +12,9 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.hodejegeren.tpsPersonDokument.Dokument;
-import no.nav.registre.hodejegeren.tpsPersonDokument.Person;
-import no.nav.registre.hodejegeren.tpsPersonDokument.Relasjon;
+import no.nav.registre.hodejegeren.tpspersondokument.Dokument;
+import no.nav.registre.hodejegeren.tpspersondokument.Person;
+import no.nav.registre.hodejegeren.tpspersondokument.Relasjon;
 
 /**
  * <p>Java class for tpsPersonDokumentType complex type.
@@ -22,7 +22,7 @@ import no.nav.registre.hodejegeren.tpsPersonDokument.Relasjon;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
- * &lt;complexType name="tpsPersonDokument">
+ * &lt;complexType name="tpspersondokument">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
