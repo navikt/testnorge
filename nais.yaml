@@ -53,6 +53,10 @@ fasitResources:
       resourceType: applicationProperties
     - alias: "mqGateway02"
       resourceType: QueueManager
+      propertyMap:
+        name: ibm.mq.queueManager
+        hostname: ibm.mq.hostname
+        port: ibm.mq.port
     - alias: "ork_TPS_PERSONDOKUMENT"
       resourceType: Queue
       propertyMap:
