@@ -258,6 +258,7 @@ const bestillingFormatter = bestillingState => {
 	if (_get(final_values, 'arenaforvalter')) {
 		if (_get(final_values, 'arenaforvalter.arenaBrukertype') !== 'MED_SERVICEBEHOV') {
 			final_values.arenaforvalter = {
+				inaktiveringDato: final_values.arenaforvalter.inaktiveringDato,
 				arenaBrukertype: 'UTEN_SERVICEBEHOV'
 			}
 		}
