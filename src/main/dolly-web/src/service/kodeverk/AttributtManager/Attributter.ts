@@ -6,7 +6,7 @@ import TpsfRelasjon from './tpsf/Relasjon'
 import Krr from './krr/Krr'
 import Arbeidsforhold from './aareg/Arbeidsforhold'
 import SigrunInntekt from './sigrun/Inntekt'
-import Doedsbo from './pdl/Doedsbo'
+import Doedsbo from './pdlf/Doedsbo'
 
 const AttributtListe: Attributt[] = [
 	...TpsfPersoninformasjon,

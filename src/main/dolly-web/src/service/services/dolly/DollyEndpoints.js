@@ -11,6 +11,7 @@ const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
 const norg2Base = `${uri}/norg2`
 const aaregBase = `${uri}/aareg/arbeidsforhold`
+const personoppslagBase = `${uri}/personoppslag`
 
 class DollyEndpoints {
 	static gruppe() {
@@ -143,6 +144,10 @@ class DollyEndpoints {
 
 	static arbeidsforholdByIdent(ident, env) {
 		return `${aaregBase}?ident=${ident}&environment=${env}`
+	}
+
+	static personoppslag(ident) {
+		return `${personoppslagBase}/ident/${ident}`
 	}
 }
 

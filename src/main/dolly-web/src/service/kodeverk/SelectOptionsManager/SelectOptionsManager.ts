@@ -22,7 +22,7 @@ const selectOptions = {
 		{ value: 'PERS', label: 'Enkeltmannsforetak' }
 	],
 
-	//PDL
+	//PDLF
 	adressattype: [
 		{ value: 'ADVOKAT', label: 'Advokat' },
 		{ value: 'ORGANISASJON', label: 'Organisasjon' },

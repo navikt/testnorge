@@ -14,13 +14,15 @@ import _xor from 'lodash/fp/xor'
 import './FormEditor.less'
 import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
 import Postadresse from '../postadresse/Postadresse'
+import Doedsbo from '~/components/doedsbo/Doedsbo'
 
 export default class FormEditor extends PureComponent {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
+		// console.log('AttributtListe :', AttributtListe)
 		// TODO: editMode burde være en props for hele klassen.
 		// editMode? renderEdit....: renderNormal
-		console.log('formikProps :', FormikProps)
+		// console.log('formikProps :', FormikProps)
 		return AttributtListe.map(hovedKategori => {
 			// Ikke vis kategori som har default ikke-valgt radio button
 			return this.renderHovedKategori(hovedKategori, FormikProps, ClosePanels)
@@ -31,7 +33,6 @@ export default class FormEditor extends PureComponent {
 		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributes } = this.props
 		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
 		const hasError = hovedKategoriAttributes.some(attr => {
-			console.log('attr :', attr)
 			const error = formikProps.errors[attr]
 			if (error) {
 				const touched = formikProps.touched[attr]
@@ -106,13 +107,14 @@ export default class FormEditor extends PureComponent {
 	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
 		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
-		const isFieldarray = Boolean(items[0].items)
+		console.log('items kkk:', items)
+		// const isFieldarray = Boolean(items[0].items)
 		const isMultiple = items[0].isMultiple
 
 		if (isAdresse) {
 			return (
 				<div className="subkategori" key={uniqueId}>
-					{!isFieldarray && <h4>{subKategori.navn}</h4>}
+					<h4>{subKategori.navn}</h4>
 					<div className="subkategori-field-group">
 						<AutofillAddressConnector items={items} formikProps={formikProps} />
 					</div>
@@ -123,38 +125,61 @@ export default class FormEditor extends PureComponent {
 		if (subKategori.id === 'postadresse') {
 			return (
 				<div className="subkategori" key={uniqueId}>
-					{!isFieldarray && <h4>{subKategori.navn}</h4>}
+					<h4>{subKategori.navn}</h4>
 					<div className="subkategori-field-group">
 						<Postadresse items={items} formikProps={formikProps} />
 					</div>
 				</div>
 			)
 		}
+		console.log('subKategori :', subKategori)
+		console.log('items :', items)
+		if (subKategori.id === 'doedsbo') {
+			const doedsboArray = this._structureSubGruppe(items[0])
+			console.log('doedsboArray :', doedsboArray)
+			doedsboArray.map(item => {
+				return (
+					<div>
+						<h4>{item.navn}</h4>
+						{FormEditorFieldArray(
+							item,
+							formikProps,
+							this.renderFieldComponent,
+							this.renderFieldSubItem,
+							this._shouldRenderFieldComponent,
+							this.props.editMode,
+							this._shouldRenderSubItem
+						)}
+					</div>
+				)
+			})
+		}
 
 		return (
 			<div className="subkategori" key={uniqueId}>
-				{!isFieldarray && <h4>{subKategori.navn}</h4>}
+				<h4>{subKategori.navn}</h4>
 				<div className="subkategori-field-group">
-					{items[0].subGruppe
-						? this._renderSubGruppe(items[0], formikProps)
-						: items.map(item => {
-								console.log('items formfiild:', items)
-								return this._shouldRenderFieldComponent(items, item, formikProps)
-									? // ? item.subGruppe === 'true'
-									  // 	? this._renderSubGruppe(item, formikProps)
-									  isFieldarray
-										? FormEditorFieldArray(
-												item,
-												formikProps,
-												this.renderFieldComponent,
-												this.renderFieldSubItem,
-												this._shouldRenderFieldComponent,
-												this.props.editMode,
-												this._shouldRenderSubItem
-										  )
-										: this.renderFieldComponent(item, formikProps.values)
-									: null
-						  })}
+					{items.map(item => {
+						console.log('item foran:', item)
+						console.log('doedsboArray :', this._structureSubGruppe(item))
+
+						const isFieldarray = Boolean(item.items)
+						return this._shouldRenderFieldComponent(items, item, formikProps)
+							? // ? item.subGruppe === 'true'
+							  // 	? this._renderSubGruppe(item, formikProps)
+							  isFieldarray
+								? FormEditorFieldArray(
+										item,
+										formikProps,
+										this.renderFieldComponent,
+										this.renderFieldSubItem,
+										this._shouldRenderFieldComponent,
+										this.props.editMode,
+										this._shouldRenderSubItem
+								  )
+								: this.renderFieldComponent(item, formikProps.values)
+							: null
+					})}
 				</div>
 			</div>
 		)
@@ -168,39 +193,68 @@ export default class FormEditor extends PureComponent {
 	_shouldRenderFieldComponent = (items, item, formikProps, parentObject) => {
 		const valgteVerdier = formikProps.values
 		const errors = formikProps.errors
+		let shouldRender = true
 
 		if (item.onlyShowAfterSelectedValue) {
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
 			const dependantAttributt = items.find(attributt => attributt.id === attributtId)
 
-			const valueIndex = item.onlyShowAfterSelectedValue.valueIndex
+			let foundIndex = false
+			item.onlyShowAfterSelectedValue.valueIndex.map(index => {
+				valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
+					(foundIndex = true)
+			})
 
-			if (
-				valgteVerdier[parentId][idx][attributtId] !== dependantAttributt.options[valueIndex].value
-			) {
-				delete valgteVerdier[parentId][idx][item.id]
-
-				if (errors[parentId] && errors[parentId][idx] && errors[parentId][idx][item.id]) {
-					delete errors[parentId][idx][item.id]
-
-					if (Object.keys(errors[parentId][idx]).length === 0) {
-						delete errors[parentId][idx]
-					}
-					let toDelete = true
-
-					errors[parentId].forEach(element => {
-						if (element) {
-							toDelete = false
-						}
-					})
-					toDelete && delete errors[parentId]
-				}
-				return false
+			if (!foundIndex) {
+				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
+				shouldRender = false
 			}
 		}
 
-		return true
+		if (item.onlyShowDependentOnOtherValue) {
+			const { parentId, idx } = parentObject
+			let deleteValidation = true
+			const attributtId = item.onlyShowDependentOnOtherValue.attributtId
+			const dependantAttributt = items.find(attributt => attributt.id === attributtId)
+			const valgtVerdi = formikProps.values[parentId][idx][attributtId]
+			const dependentValue = item.onlyShowDependentOnOtherValue.value
+			const exceptValue = item.onlyShowDependentOnOtherValue.exceptValue
+
+			dependentValue &&
+				dependentValue.map(value => value === valgtVerdi && (deleteValidation = false))
+
+			let exception = false
+			exceptValue && exceptValue.map(value => value === valgtVerdi && (exception = true))
+
+			if (exceptValue) deleteValidation = exception
+
+			if (deleteValidation) {
+				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
+				shouldRender = false
+			}
+		}
+		return shouldRender
+	}
+
+	_deleteValidation = (item, valgteVerdier, errors, parentId, idx) => {
+		delete valgteVerdier[parentId][idx][item.id]
+
+		if (errors[parentId] && errors[parentId][idx] && errors[parentId][idx][item.id]) {
+			delete errors[parentId][idx][item.id]
+
+			if (Object.keys(errors[parentId][idx]).length === 0) {
+				delete errors[parentId][idx]
+			}
+			let toDelete = true
+
+			errors[parentId].forEach(element => {
+				if (element) {
+					toDelete = false
+				}
+			})
+			toDelete && delete errors[parentId]
+		}
 	}
 
 	_shouldRenderSubItem = (item, formikProps, idx) => {
@@ -232,8 +286,8 @@ export default class FormEditor extends PureComponent {
 	}
 
 	_structureSubGruppe = item => {
-		console.log('item :', item)
 		let subGruppeArray = []
+		console.log('item :', item)
 		item.items.map(subitem => {
 			if (subGruppeArray.length < 1) {
 				subGruppeArray.push({ navn: subitem.subGruppe, items: [subitem] })
@@ -390,9 +444,9 @@ export default class FormEditor extends PureComponent {
 				const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg..'
 
 				if (item.dependentOn) {
-					console.log('parentObject :', parentObject)
-					console.log('item :', item)
-					console.log('valgteVerdier :', valgteVerdier)
+					// console.log('parentObject :', parentObject)
+					// console.log('item :', item)
+					// console.log('valgteVerdier :', valgteVerdier)
 					if (parentObject) {
 						// Sjekk if item er avhengig av en valgt verdi
 						const { parentId, idx } = parentObject

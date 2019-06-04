@@ -89,6 +89,51 @@ export const getValues = (attributeList, values) => {
 			return _set(accumulator, pathPrefix, value[0])
 		}
 
+		if (pathPrefix === DataSourceMapper('PDLF')) {
+			const doedsboValues = values.kontaktinformasjonForDoedsbo[0]
+			const navnObj = deletePropertiesWithoutValues({
+				fornavn: doedsboValues.fornavn,
+				mellomnavn: doedsboValues.mellomnavn,
+				etternavn: doedsboValues.etternavn
+			})
+			const adressatObj = {
+				adressatType: doedsboValues.adressatType
+			}
+
+			if (adressatObj.adressatType === 'PERSON_MEDID')
+				Object.assign(adressatObj, { idnummer: doedsboValues.idnummer })
+			else if (adressatObj.adressatType === 'PERSON_UTENID')
+				Object.assign(adressatObj, { foedselsdato: doedsboValues.foedselsdato, navn: navnObj })
+			else if (adressatObj.adressatType === 'ADVOKAT')
+				Object.assign(adressatObj, {
+					organisasjonsnavn: doedsboValues.advokat_orgnavn,
+					organisajonsnummer: doedsboValues.advokat_orgnr,
+					kontaktperson: navnObj
+				})
+			else if (adressatObj.adressatType === 'ORGANISASJON')
+				Object.assign(adressatObj, {
+					organisasjonsnavn: doedsboValues.org_orgnavn,
+					organisajonsnummer: doedsboValues.org_orgnummer,
+					kontaktperson: navnObj
+				})
+
+			const doedsboObj = { adressat: deletePropertiesWithoutValues(adressatObj) }
+			const otherAttributes = attribute.items.filter(
+				item => !item.path || (item.path && !item.path.includes('adressat'))
+			)
+			otherAttributes.map(item => {
+				let addedItem = { [item.id]: doedsboValues[item.id] }
+				if (item.id.includes('_')) addedItem = { [item.id.split('_')[1]]: doedsboValues[item.id] }
+				else if (item.inputType === 'date')
+					addedItem = { [item.id]: DataFormatter.parseDate(doedsboValues[item.id]) }
+
+				doedsboValues[item.id] && Object.assign(doedsboObj, addedItem)
+			})
+
+			//fiks adresse
+			return _set(accumulator, pathPrefix, { kontaktinformasjonForDoedsbo: doedsboObj })
+		}
+
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
 }
@@ -270,4 +315,9 @@ export const parseSubItemDate = (item, rad, radTransformation) => {
 	})
 
 	return radTransformation
+}
+
+export const deletePropertiesWithoutValues = obj => {
+	Object.keys(obj).map(key => !obj[key] && delete obj[key])
+	return obj
 }

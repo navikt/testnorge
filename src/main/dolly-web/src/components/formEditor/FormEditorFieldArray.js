@@ -4,6 +4,7 @@ import { DollyApi } from '~/service/Api'
 import Button from '~/components/button/Button'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
+import cn from 'classnames'
 
 const Attributt = new AttributtManager()
 
@@ -89,9 +90,13 @@ export const FieldArrayComponent = ({
 		arrayHelpers.replace(itemIndex, { ...valueCopy, [subItem]: subItemArr })
 	}
 	const formikValues = formikProps.values[parentId]
+	let subLabelArray = []
+	// console.log('subKategori :', subKategori)
+	// console.log('items :', items)
+	// console.log('item :', item)
 	return (
 		<Fragment>
-			<h4>{subKategori.navn}</h4>
+			{/* <h4>{subKategori.navn}</h4> */}
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
 					return (
@@ -100,55 +105,59 @@ export const FieldArrayComponent = ({
 							<div style={{ display: 'flex' }}>
 								<div className="subkategori-field-group multi">
 									{items.map((item, kdx) => {
-										console.log('item :', item)
+										if (
+											item.subKategori.id !== subKategori.navn &&
+											!subLabelArray.includes(item.subKategori.id)
+										) {
+											subLabelArray.push(item.subKategori.id)
+											var visUnderoverskrift = true
+										}
 										if (item.subItems) {
-											if (!item.isMultiple) {
-												// return createSubItem(item, idx)
-											} else {
-												return (
-													<div key={kdx}>
-														{faKey[item.id] &&
-															faKey[item.id].map((subRad, jdx) => {
-																if (shouldRenderSubItem(item, formikProps, idx)) {
-																	return (
-																		<div key={jdx} className="subItems">
-																			<div className="subItem-header">
-																				<div style={{ display: 'flex' }}>
-																					{jdx === 0 && <h4>{item.label}</h4>}
-																					{item.informasjonstekst && (
-																						<ContentTooltip>
-																							<span>{item.informasjonstekst}</span>
-																						</ContentTooltip>
-																					)}
-																				</div>
-																			</div>
-																			<div className="subitem-container-button">
-																				{renderFieldSubItem(
-																					formikProps,
-																					item,
-																					subRad,
-																					parentId,
-																					idx,
-																					jdx
+											return (
+												<div key={kdx}>
+													{visUnderoverskrift && <h4>{item.subKategori.navn}</h4>}
+													{faKey[item.id] &&
+														faKey[item.id].map((subRad, jdx) => {
+															if (shouldRenderSubItem(item, formikProps, idx)) {
+																return (
+																	<div key={jdx} className="subItems">
+																		<div className="subItem-header">
+																			<div style={{ display: 'flex' }}>
+																				{jdx === 0 && <h4>{item.label}</h4>}
+																				{item.informasjonstekst && (
+																					<ContentTooltip>
+																						<span>{item.informasjonstekst}</span>
+																					</ContentTooltip>
 																				)}
-																				{!editMode &&
-																					item.isMultiple && (
-																						<Button
-																							className="field-group-remove"
-																							kind="remove-circle"
-																							onClick={() => removeSubItem(idx, jdx, item.id)}
-																							title="Fjern"
-																							children={item.label.toUpperCase()}
-																						/>
-																					)}
 																			</div>
 																		</div>
-																	)
-																}
-															})}
-													</div>
-												)
-											}
+																		<div className="subitem-container-button">
+																			{renderFieldSubItem(
+																				formikProps,
+																				item,
+																				subRad,
+																				parentId,
+																				idx,
+																				jdx
+																			)}
+																			{!editMode && (
+																				//item.isMultiple &&
+																				<Button
+																					className="field-group-remove"
+																					kind="remove-circle"
+																					onClick={() => removeSubItem(idx, jdx, item.id)}
+																					title="Fjern"
+																					children={item.label.toUpperCase()}
+																				/>
+																			)}
+																		</div>
+																	</div>
+																)
+															}
+														})}
+												</div>
+											)
+											//}
 										} else if (
 											shouldRenderFieldComponent(items, item, formikProps, {
 												parentId,
@@ -160,9 +169,9 @@ export const FieldArrayComponent = ({
 												...item,
 												id: `${parentId}[${idx}]${item.id}`
 											}
-											console.log('fakeItem :', fakeItem)
 											return (
-												<div key={kdx}>
+												<div key={kdx} className="flexbox">
+													{/* {visUnderoverskrift && <h4>{item.subKategori.navn}</h4>} */}
 													{renderFieldComponent(fakeItem, formikProps.values, {
 														parentId,
 														idx
@@ -187,8 +196,8 @@ export const FieldArrayComponent = ({
 							</div>
 							{items.map((item, ndx) => {
 								return (
-									item.subItems &&
-									item.isMultiple && (
+									item.subItems && (
+										// item.isMultiple &&
 										<Button
 											className="flexbox--align-center field-group-add"
 											kind="add-circle"

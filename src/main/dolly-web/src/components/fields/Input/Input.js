@@ -34,17 +34,18 @@ export const FormikInput = props => {
 			e.target.value = value ? value : 0
 			return field.onChange(e)
 		}
-
+		form.setFieldTouched(field.name, true)
 		return field.onChange(e)
 	}
-
+	console.log(field.name, ': form :', form)
 	return (
 		<DollyInput
 			name={field.name}
 			value={initialValue}
 			onChange={field.onChange}
 			onChange={onChangeHandler}
-			onBlur={field.onBlur}
+			//onBlur={field.onBlur}
+			onBlur={() => form.setFieldTouched(field.name, true)}
 			feil={
 				_get(form.touched, field.name) && _get(form.errors, field.name)
 					? { feilmelding: _get(form.errors, field.name) }

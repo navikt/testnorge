@@ -12,7 +12,8 @@ export enum DataSource {
 	TPSF = 'TPSF',
 	SIGRUN = 'SIGRUN',
 	KRR = 'KRR',
-	AAREG = 'AAREG'
+	AAREG = 'AAREG',
+	PDLF = 'PDLF'
 }
 
 export interface Options {
@@ -67,6 +68,7 @@ export interface Attributt {
 	includeIf?: Attributt[]
 	sattForEksisterendeIdent?: boolean
 	onlyShowAfterSelectedValue?: Object // AAREG: Orgnummer/ident er avhengig av valgt verdi av "Type av arbeidsgiver". String = id, number = indexOf valgt verdi
+	onlyShowDependentOnOtherValue?: Object //Dødsbo: Vise postnummer kodeverk hvis land=NOR. {attributtId: , dependentValue: [], except: []}
 	transform?: (value: any, attributter: Attributt[]) => any
 	informasjonstekst?: String
 	subGruppe?: String

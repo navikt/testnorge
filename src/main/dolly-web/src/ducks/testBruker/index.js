@@ -107,6 +107,21 @@ export const GET_AAREG_TESTBRUKER = createAction(
 	})
 )
 
+export const GET_PERSONOPPSLAG_TESTBRUKER = createAction(
+	'GET_PERSONOPPSLAG_TESTBRUKER',
+	async (ident, env) => {
+		try {
+			const res = await DollyApi.getPersonFraPersonoppslag(ident)
+			return res
+		} catch (err) {
+			return err
+		}
+	},
+	ident => ({
+		ident
+	})
+)
+
 export const FRIGJOER_TESTBRUKER = createAction(
 	'FRIGJOER_TESTBRUKER',
 	identId => DollyApi.deleteTestIdent(identId),
