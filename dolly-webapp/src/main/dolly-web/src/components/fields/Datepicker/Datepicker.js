@@ -112,7 +112,6 @@ export default class Datepicker extends Component {
 					inputProps={{
 						onKeyUp: this.handleKeyUp,
 						onFocus: this.handleFocus,
-						onBlur: () => form.setFieldTouched(this.props.name, true),
 						disabled: disabled,
 						feil: this.state.active ? null : error,
 						label: label
@@ -147,10 +146,9 @@ export const FormikDatepicker = props => {
 	const { field, form, ...restProps } = props
 	let child, parent, grandparent, idx, jdx, feilmelding
 
+	//TODO: Burde forenkles
+	// Validering av tomt datofelt i undergrupper. F.eks. startdato for permisjon under arbeidsforhold
 	const arr = field.name.split('[')
-	console.log('form :', form)
-	console.log('field :', field)
-	console.log('arr :', arr)
 	if (arr.length === 1) {
 		if (form.touched[field.name] && form.errors[field.name]) {
 			feilmelding = form.errors[field.name]
@@ -159,8 +157,6 @@ export const FormikDatepicker = props => {
 		parent = arr[0]
 		child = arr[1].split(']')[1]
 		idx = arr[1].split(']')[0]
-		console.log('child :', child)
-		console.log('idx :', idx)
 		if (
 			form.touched[parent] &&
 			form.touched[parent][idx] &&
@@ -177,7 +173,6 @@ export const FormikDatepicker = props => {
 		idx = arr[1].split(']')[0]
 		child = arr[2].split(']')[1]
 		jdx = arr[1].split(']')[0]
-		console.log('jdx :', jdx)
 		if (
 			form.touched[grandparent] &&
 			form.touched[grandparent][idx] &&
@@ -198,7 +193,6 @@ export const FormikDatepicker = props => {
 			name={field.name}
 			childname={child}
 			value={field.value}
-			form={form}
 			onChange={dato => {
 				form.setFieldValue(field.name, dato)
 				form.setFieldTouched(field.name, true)
