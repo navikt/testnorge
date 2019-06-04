@@ -205,7 +205,7 @@ export default handleActions(
 // - kanskje flyttes ut til egen fil (er jo bare en formatter og ikke thunk)
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
-const bestillingFormatter = bestillingState => {
+const bestillingFormatter = (bestillingState, oppslag) => {
 	const {
 		attributeIds,
 		antall,
@@ -216,6 +216,7 @@ const bestillingFormatter = bestillingState => {
 		eksisterendeIdentListe,
 		malBestillingNavn
 	} = bestillingState
+
 	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
 	let final_values = []
 
@@ -259,14 +260,24 @@ const bestillingFormatter = bestillingState => {
 	if (malBestillingNavn !== '') {
 		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
 	}
+
+	final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
+		oppslag.Postnummer.koder.map(postnummer => {
+			postnummer.value === final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
+				(final_values = _set(
+					final_values,
+					'pdlforvalter.kontaktinformasjonForDoedsbo.poststedsnavn',
+					postnummer.label
+				))
+		})
 	console.log('POSTING BESTILLING', final_values)
 
 	return final_values
 }
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
-	const { currentBestilling } = getState()
-	const values = bestillingFormatter(currentBestilling)
+	const { currentBestilling, oppslag } = getState()
+	const values = bestillingFormatter(currentBestilling, oppslag)
 	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {

@@ -23,6 +23,12 @@ export const getEnhetByTknr = createAction('GET_TKNR', async tknr => {
 	}
 })
 
+export const getPersonFraPersonoppslag = createAction(
+	'GET_PERSON_FRA_PERSONOPPSLAG',
+	ident => DollyApi.getPersonFraPersonoppslag(ident),
+	ident => ({ ident })
+)
+
 const initialState = {}
 
 export default handleActions(
