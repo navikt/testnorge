@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 import no.nav.registre.tp.Forhold;
 import no.nav.registre.tp.FulltForhold;
-import no.nav.registre.tp.Kilde;
+import no.nav.registre.tp.IdentMedData;
 import no.nav.registre.tp.Person;
 import no.nav.registre.tp.TpSaveInHodejegerenRequest;
 import no.nav.registre.tp.Ytelse;
@@ -86,66 +86,73 @@ public class TpService {
             savedForhold.add(createFullRelation(ids.get(i), ytelser.get(i)));
         }
 
-        List<TpSaveInHodejegerenRequest> hodejegerenRequests = savedForhold.parallelStream().map(f -> TpSaveInHodejegerenRequest.builder()
+        List<IdentMedData> identerMedData = savedForhold.parallelStream().map(f -> IdentMedData.builder()
                 .id(f.tPerson.getFnrFk())
-                .kilde(
-                        Kilde.builder()
-                                .navn(TP_NAME)
-                                .data(
-                                        Collections.singletonList(
-                                                FulltForhold.builder()
-                                                        .forhold(
-                                                                Forhold.builder()
-                                                                        .datoBrukFom(f.tForhold.getDatoBrukFom())
-                                                                        .datoBrukTom(f.tForhold.getDatoBrukTom())
-                                                                        .datoEndret(f.tForhold.getDatoEndret())
-                                                                        .datoOpprettet(f.tForhold.getDatoOpprettet())
-                                                                        .datoSamtykkeGitt(f.tForhold.getDatoSamtykkeGitt())
-                                                                        .endretAv(f.tForhold.getEndretAv())
-                                                                        .erGyldig(f.tForhold.getErGyldig())
-                                                                        .harUtlandPensj(f.tForhold.getHarUtlandPensj())
-                                                                        .kilde(f.tForhold.getKKildeTpT())
-                                                                        .tssEksternIdFk(f.tForhold.getTssEksternIdFk())
-                                                                        .opprettetAv(f.tForhold.getOpprettetAv())
-                                                                        .versjon(f.tForhold.getVersjon())
-                                                                        .build()
-                                                        )
-                                                        .person(
-                                                                Person.builder()
-                                                                        .datoEndret(f.tPerson.getDatoEndret())
-                                                                        .datoOpprettet(f.tPerson.getDatoOpprettet())
-                                                                        .endretAv(f.tPerson.getEndretAv())
-                                                                        .fnrFk(f.tPerson.getFnrFk())
-                                                                        .versjon(f.tPerson.getVersjon())
-                                                                        .build()
-                                                        )
-                                                        .ytelse(
-                                                                Ytelse.builder()
-                                                                        .datoBrukFom(f.tYtelse.getDatoBrukFom())
-                                                                        .datoBrukTom(f.tYtelse.getDatoBrukTom())
-                                                                        .datoEndret(f.tYtelse.getDatoEndret())
-                                                                        .datoInnmYtelFom(f.tYtelse.getDatoInnmYtelFom())
-                                                                        .datoYtelIverFom(f.tYtelse.getDatoYtelIverFom())
-                                                                        .datoYtelIverTom(f.tYtelse.getDatoYtelIverTom())
-                                                                        .datoOpprettet(f.tYtelse.getDatoOpprettet())
-                                                                        .endretAv(f.tYtelse.getEndretAv())
-                                                                        .erGyldig(f.tYtelse.getErGyldig())
-                                                                        .kYtelseT(f.tYtelse.getKYtelseT())
-                                                                        .meldingsType(f.tYtelse.getKMeldingT())
-                                                                        .opprettetAv(f.tYtelse.getOpprettetAv())
-                                                                        .versjon(f.tYtelse.getVersjon())
-                                                                        .build()
-                                                        )
+                .data(
+                        Collections.singletonList(
+                                FulltForhold.builder()
+                                        .forhold(
+                                                Forhold.builder()
+                                                        .datoBrukFom(f.tForhold.getDatoBrukFom())
+                                                        .datoBrukTom(f.tForhold.getDatoBrukTom())
+                                                        .datoEndret(f.tForhold.getDatoEndret())
+                                                        .datoOpprettet(f.tForhold.getDatoOpprettet())
+                                                        .datoSamtykkeGitt(f.tForhold.getDatoSamtykkeGitt())
+                                                        .endretAv(f.tForhold.getEndretAv())
+                                                        .erGyldig(f.tForhold.getErGyldig())
+                                                        .harUtlandPensj(f.tForhold.getHarUtlandPensj())
+                                                        .kilde(f.tForhold.getKKildeTpT())
+                                                        .tssEksternIdFk(f.tForhold.getTssEksternIdFk())
+                                                        .opprettetAv(f.tForhold.getOpprettetAv())
+                                                        .versjon(f.tForhold.getVersjon())
                                                         .build()
                                         )
-                                ).build()
-                ).build()).collect(Collectors.toList());
+                                        .person(
+                                                Person.builder()
+                                                        .datoEndret(f.tPerson.getDatoEndret())
+                                                        .datoOpprettet(f.tPerson.getDatoOpprettet())
+                                                        .endretAv(f.tPerson.getEndretAv())
+                                                        .fnrFk(f.tPerson.getFnrFk())
+                                                        .versjon(f.tPerson.getVersjon())
+                                                        .build()
+                                        )
+                                        .ytelse(
+                                                Ytelse.builder()
+                                                        .datoBrukFom(f.tYtelse.getDatoBrukFom())
+                                                        .datoBrukTom(f.tYtelse.getDatoBrukTom())
+                                                        .datoEndret(f.tYtelse.getDatoEndret())
+                                                        .datoInnmYtelFom(f.tYtelse.getDatoInnmYtelFom())
+                                                        .datoYtelIverFom(f.tYtelse.getDatoYtelIverFom())
+                                                        .datoYtelIverTom(f.tYtelse.getDatoYtelIverTom())
+                                                        .datoOpprettet(f.tYtelse.getDatoOpprettet())
+                                                        .endretAv(f.tYtelse.getEndretAv())
+                                                        .erGyldig(f.tYtelse.getErGyldig())
+                                                        .kYtelseT(f.tYtelse.getKYtelseT())
+                                                        .meldingsType(f.tYtelse.getKMeldingT())
+                                                        .opprettetAv(f.tYtelse.getOpprettetAv())
+                                                        .versjon(f.tYtelse.getVersjon())
+                                                        .build()
+                                        )
+                                        .build()
+                        )
+                ).build()
+        ).collect(Collectors.toList());
 
-        Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequests);
-        if (savedIds.isEmpty()) {
-            log.warn("Kunne ikke lagre historikk på noen identer");
+        TpSaveInHodejegerenRequest tpSaveInHodejegerenRequest = TpSaveInHodejegerenRequest.builder()
+                .kilde(TP_NAME)
+                .identMedData(identerMedData)
+                .build();
+
+        List<String> savedIds = hodejegerenConsumer.saveHistory(tpSaveInHodejegerenRequest);
+
+        if (savedIds.size() < identerMedData.size()) {
+            List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
+            for (IdentMedData ident : identerMedData) {
+                identerSomIkkeBleLagret.add(ident.getId());
+            }
+            identerSomIkkeBleLagret.removeAll(savedIds);
+            log.warn("Kunne ikke lagre historikk på alle identer. Identer som ikke ble lagret: {}", identerSomIkkeBleLagret);
         }
-
     }
 
     public List<TForhold> getForhold() {

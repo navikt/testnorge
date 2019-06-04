@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -13,7 +15,6 @@ import lombok.Setter;
 @Setter
 public class TpSaveInHodejegerenRequest {
 
-    private String id;
-    private Kilde kilde;
-
+    private String kilde;
+    private List<IdentMedData> identMedData;
 }

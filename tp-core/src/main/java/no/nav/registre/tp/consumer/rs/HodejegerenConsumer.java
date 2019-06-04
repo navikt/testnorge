@@ -14,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -68,16 +67,11 @@ public class HodejegerenConsumer {
     }
 
     @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
-    public Set<String> saveHistory(List<TpSaveInHodejegerenRequest> requests) {
+    public List<String> saveHistory(TpSaveInHodejegerenRequest request) {
 
-        RequestEntity<List<TpSaveInHodejegerenRequest>> body = RequestEntity.post(URI.create(hodejegerenSaveHistorikk)).body(requests);
+        RequestEntity<TpSaveInHodejegerenRequest> postRequest = RequestEntity.post(URI.create(hodejegerenSaveHistorikk)).body(request);
 
-        ResponseEntity<Set<String>> response = restTemplate.exchange(body, RESPONSE_TYPE_SET);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            return response.getBody();
-        }
-        return Collections.emptySet();
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 
 }

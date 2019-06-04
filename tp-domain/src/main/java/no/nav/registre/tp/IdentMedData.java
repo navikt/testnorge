@@ -8,14 +8,13 @@ import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
-public class Kilde {
+public class IdentMedData {
 
-    private String navn;
-
+    private String id;
     private List<FulltForhold> data;
 }
