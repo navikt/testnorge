@@ -7,12 +7,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import no.rtv.namespacetps.PersonType;
-import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,9 +19,9 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import no.nav.registre.hodejegeren.TpsPersonDokument;
-import no.nav.registre.hodejegeren.tpspersondokument.Person;
-import no.nav.registre.hodejegeren.tpspersondokument.person.PersonIdent;
+import no.rtv.namespacetps.PersonIdentType;
+import no.rtv.namespacetps.PersonType;
+import no.rtv.namespacetps.TpsPersonDokumentType;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,17 +37,17 @@ public class HodejegerenConsumerTest {
 
     @Before
     public void setUp() {
-        PersonIdent personIdent = new PersonIdent();
+        PersonIdentType personIdent = new PersonIdentType();
         personIdent.setPersonIdent(fnr);
-//        Person person = Person.builder()
-//                .personIdent(new ArrayList<>(Collections.singletonList(personIdent)))
-//                .build();
+        // Person person = Person.builder()
+        // .personIdent(new ArrayList<>(Collections.singletonList(personIdent)))
+        // .build();
         tpsPersonDokument = new TpsPersonDokumentType();
         PersonType person = new PersonType();
         tpsPersonDokument.setPerson(person);
-//        tpsPersonDokument = TpsPersonDokument.builder()
-//                .person(person)
-//                .build();
+        // tpsPersonDokument = TpsPersonDokument.builder()
+        // .person(person)
+        // .build();
     }
 
     @Ignore

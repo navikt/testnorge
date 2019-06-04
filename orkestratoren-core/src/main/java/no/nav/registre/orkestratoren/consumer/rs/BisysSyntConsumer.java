@@ -17,7 +17,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest
 @Component
 public class BisysSyntConsumer {
 
-    private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE = new ParameterizedTypeReference<ResponseEntity>() {
+    private static final ParameterizedTypeReference<Object> RESPONSE_TYPE = new ParameterizedTypeReference<Object>() {
     };
 
     @Autowired
@@ -30,7 +30,7 @@ public class BisysSyntConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "bisys" })
-    public ResponseEntity startSyntetisering(SyntetiserBisysRequest syntetiserBisysRequest) {
+    public Object startSyntetisering(SyntetiserBisysRequest syntetiserBisysRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserBisysRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }

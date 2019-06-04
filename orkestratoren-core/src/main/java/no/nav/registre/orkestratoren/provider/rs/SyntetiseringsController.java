@@ -120,7 +120,7 @@ public class SyntetiseringsController {
 
     @LogExceptions
     @PostMapping(value = "/bisys/bistandsmeldinger/generer")
-    public ResponseEntity opprettBistandsmeldingerIBisys(@RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
+    public Object opprettBistandsmeldingerIBisys(@RequestBody SyntetiserBisysRequest syntetiserBisysRequest) {
         return bisysSyntPakkenService.genererBistandsmeldinger(syntetiserBisysRequest);
     }
 

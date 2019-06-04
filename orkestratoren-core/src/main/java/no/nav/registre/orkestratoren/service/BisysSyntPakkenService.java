@@ -13,7 +13,7 @@ public class BisysSyntPakkenService {
     @Autowired
     private BisysSyntConsumer bisysSyntConsumer;
 
-    public ResponseEntity genererBistandsmeldinger(SyntetiserBisysRequest syntetiserBisysRequest) {
+    public Object genererBistandsmeldinger(SyntetiserBisysRequest syntetiserBisysRequest) {
         return bisysSyntConsumer.startSyntetisering(syntetiserBisysRequest);
     }
 }

@@ -52,7 +52,7 @@ public class BisysSyntConsumerTest {
     public void shouldStartSyntetisering() {
         stubBisysSyntConsumer();
 
-        ResponseEntity response = bisysSyntConsumer.startSyntetisering(syntetiserBisysRequest);
+        ResponseEntity response = (ResponseEntity) bisysSyntConsumer.startSyntetisering(syntetiserBisysRequest);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }
