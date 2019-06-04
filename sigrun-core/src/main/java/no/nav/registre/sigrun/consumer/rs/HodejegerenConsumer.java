@@ -2,7 +2,6 @@ package no.nav.registre.sigrun.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sigrun.SigrunSaveInHodejegerenRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,10 +12,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
+import no.nav.registre.sigrun.SigrunSaveInHodejegerenRequest;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 
 @Component
@@ -24,9 +22,6 @@ import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 public class HodejegerenConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
-    };
-
-    private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
     };
 
     @Autowired
@@ -66,16 +61,11 @@ public class HodejegerenConsumer {
         return identer;
     }
 
-    @Timed(value = "sigrun.resource.latency", extraTags = {"operation", "hodejegeren"})
-    public Set<String> saveHistory(SigrunSaveInHodejegerenRequest request) {
+    @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "hodejegeren" })
+    public List<String> saveHistory(SigrunSaveInHodejegerenRequest request) {
 
         RequestEntity<SigrunSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
 
-        ResponseEntity<Set<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_SET);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            return response.getBody();
-        }
-        return Collections.emptySet();
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }

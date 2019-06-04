@@ -1,8 +1,6 @@
 package no.nav.registre.sigrun.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sigrun.IdentMedData;
-import no.nav.registre.sigrun.SigrunSaveInHodejegerenRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,8 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import no.nav.registre.sigrun.IdentMedData;
+import no.nav.registre.sigrun.SigrunSaveInHodejegerenRequest;
 import no.nav.registre.sigrun.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
@@ -56,19 +55,25 @@ public class SigrunService {
 
     public ResponseEntity genererPoppmeldingerOgSendTilSigrunStub(List<String> identer, String testdataEier, String miljoe) {
         List<Map<String, Object>> syntetiserteMeldinger = finnSyntetiserteMeldinger(identer);
-        ResponseEntity response =  sigrunStubConsumer.sendDataTilSigrunstub(syntetiserteMeldinger, testdataEier, miljoe);
-        if (response.getStatusCode().is2xxSuccessful()){
+        ResponseEntity response = sigrunStubConsumer.sendDataTilSigrunstub(syntetiserteMeldinger, testdataEier, miljoe);
+        if (response.getStatusCode().is2xxSuccessful()) {
             List<IdentMedData> identerMedData = new ArrayList<>(identer.size());
-            if (identer.size() == syntetiserteMeldinger.size()){
-                for (int i = 0; i < identer.size(); i++){
+            if (identer.size() == syntetiserteMeldinger.size()) {
+                for (int i = 0; i < identer.size(); i++) {
                     identerMedData.add(new IdentMedData(identer.get(i), Collections.singletonList(syntetiserteMeldinger.get(i))));
                 }
             }
             SigrunSaveInHodejegerenRequest hodejegerenRequest = new SigrunSaveInHodejegerenRequest(SIGRUN_NAME, identerMedData);
 
-            Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequest);
-            if (savedIds.isEmpty()) {
-                log.warn("Kunne ikke lagre historikk på noen identer");
+            List<String> lagredeIdenter = hodejegerenConsumer.saveHistory(hodejegerenRequest);
+
+            if (lagredeIdenter.size() < identerMedData.size()) {
+                List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
+                for (IdentMedData ident : identerMedData) {
+                    identerSomIkkeBleLagret.add(ident.getId());
+                }
+                identerSomIkkeBleLagret.removeAll(lagredeIdenter);
+                log.warn("Kunne ikke lagre historikk på alle identer. Identer som ikke ble lagret: {}", identerSomIkkeBleLagret);
             }
         }
         return response;
