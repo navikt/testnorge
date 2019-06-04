@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.hodejegeren.TpsPersonDokument;
 import no.nav.registre.hodejegeren.mongodb.Data;
 import no.nav.registre.hodejegeren.mongodb.Kilde;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;

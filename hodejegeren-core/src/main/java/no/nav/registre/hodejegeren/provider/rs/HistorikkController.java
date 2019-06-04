@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
-import no.nav.registre.hodejegeren.TpsPersonDokument;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;

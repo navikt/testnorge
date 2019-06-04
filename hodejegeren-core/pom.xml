@@ -72,12 +72,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.registre</groupId>
-            <artifactId>hodejegeren-domain</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.registre</groupId>
             <artifactId>inst-domain</artifactId>
         </dependency>
         <dependency>
@@ -88,16 +82,17 @@
     </dependencies>
 
     <build>
-        <finalName>testnorge-hodejegeren-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
                         <configuration>
-                            <classifier>exec</classifier>
+                            <finalName>testnorge-hodejegeren-app</finalName>
                         </configuration>
                     </execution>
                 </executions>
