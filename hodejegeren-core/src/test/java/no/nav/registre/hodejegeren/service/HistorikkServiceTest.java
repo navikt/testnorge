@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
+import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,11 +24,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.registre.hodejegeren.mongodb.Data;
+import no.nav.registre.hodejegeren.mongodb.Kilde;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikkRepository;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
@@ -128,6 +132,58 @@ public class HistorikkServiceTest {
         assertThat(identerLagtTil, contains(id2));
 
         verify(syntHistorikkRepository, times(2)).save(any());
+    }
+
+    @Test
+    public void shouldOppdatereTpsPersonDokument() {
+        LocalDateTime datoOpprettet = LocalDateTime.of(2000, 1, 1, 1, 1);
+        String skdFnr = "03030303030";
+        List<Data> data = new ArrayList<>();
+        data.add(Data.builder().datoOpprettet(datoOpprettet).datoEndret(datoOpprettet).build());
+        List<Kilde> kilder = new ArrayList<>();
+        kilder.add(Kilde.builder()
+                .navn("skd")
+                .data(data)
+                .build());
+        SyntHistorikk skdHistorikk = SyntHistorikk.builder()
+                .id(skdFnr)
+                .kilder(kilder)
+                .build();
+
+        when(syntHistorikkRepository.findById(skdFnr)).thenReturn(Optional.ofNullable(skdHistorikk));
+        when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
+
+        TpsPersonDokumentType tpsPersonDokumentType = new TpsPersonDokumentType();
+        List<String> identerOppdatert = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
+
+        assertThat(identerOppdatert, contains(skdFnr));
+
+        verify(syntHistorikkRepository).findById(skdFnr);
+        verify(syntHistorikkRepository).save(any());
+    }
+
+    @Test
+    public void shouldOppretteNyttSkdDokument() {
+        String skdFnr = "03030303030";
+        List<Kilde> kilder = new ArrayList<>();
+        kilder.add(Kilde.builder()
+                .navn("skd")
+                .build());
+        SyntHistorikk skdHistorikk = SyntHistorikk.builder()
+                .id(skdFnr)
+                .kilder(kilder)
+                .build();
+
+        when(syntHistorikkRepository.findById(skdFnr)).thenReturn(Optional.empty());
+        when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
+
+        TpsPersonDokumentType tpsPersonDokumentType = new TpsPersonDokumentType();
+        List<String> identerLagtTil = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
+
+        assertThat(identerLagtTil, contains(skdFnr));
+
+        verify(syntHistorikkRepository, times(2)).findById(skdFnr);
+        verify(syntHistorikkRepository).save(any());
     }
 
     @Test
