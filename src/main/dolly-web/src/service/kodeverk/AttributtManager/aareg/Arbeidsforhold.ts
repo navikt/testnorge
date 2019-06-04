@@ -198,7 +198,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.AAREG,
 				attributtType: AttributtType.SelectAndRead,
 				informasjonstekst:
-					'Start- og sluttdato må både være innenfor samme kalendermåned og perioden til arbeidsforholdet',
+					'Start- og sluttdato må både være innenfor samme kalendermåned i samme år og perioden til arbeidsforholdet',
 				subItems: [
 					{
 						hovedKategori: Kategorier.ArbeidOgInntekt,
@@ -233,7 +233,7 @@ const AttributtListe: Attributt[] = [
 						id: 'tom',
 						label: 'Sluttdato',
 						path: 'utenlandsopphold.sluttdato',
-						//validation: DateValidation(false),
+						validation: DateValidation(false),
 						dataSource: DataSource.AAREG,
 						inputType: InputType.Date,
 						attributtType: AttributtType.SelectAndRead
