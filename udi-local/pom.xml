@@ -18,6 +18,13 @@
             <artifactId>udi-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!--DATABASE-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
 

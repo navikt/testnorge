@@ -28,5 +28,5 @@
 mvnw
 mvnw.cmd
 
-udi-core/src/main/java/no/nav/registre/core/provider/web/no/udi/*
-udi-core/src/main/java/no/nav/registre/core/provider/web/v1/mt_1067_nav/no/udi/*
+udi-core/src/main/java/no/udi/*
+udi-core/src/main/java/v1/mt_1067_nav/no/udi/*
