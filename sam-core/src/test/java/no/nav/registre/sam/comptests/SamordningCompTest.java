@@ -78,7 +78,8 @@ public class SamordningCompTest {
 
     @Test
     public void shouldLagreSyntetiserteSamordningsmeldinger() throws ParseException {
-        stubFor(post("/hodejegeren/api/v1/historikk").willReturn(ok().withHeader("Content-Type", "application/json")));
+        stubHodejegerenConsumer();
+
         syntetiseringService.lagreSyntetiserteMeldinger(syntetiserteSamordningsmeldinger, identer);
 
         TPerson person1 = tPersonRepository.findByFnrFK(fnr1);
@@ -126,5 +127,12 @@ public class SamordningCompTest {
         assertThat(tSamVedtak.getDatoOpprettet().toString(), equalTo(formatTimestamp(syntetiserteSamordningsmeldinger.get(0).getDatoOpprettet()).toString()));
         assertThat(tSamVedtak.getDatoFom().toString(), equalTo(formatDate(syntetiserteSamordningsmeldinger.get(0).getDatoFom()).toString()));
         assertThat(tSamVedtak.getDatoTom().toString(), equalTo(formatDate(syntetiserteSamordningsmeldinger.get(0).getDatoTom()).toString()));
+    }
+
+    private void stubHodejegerenConsumer() {
+        stubFor(post("/hodejegeren/api/v1/historikk")
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
     }
 }

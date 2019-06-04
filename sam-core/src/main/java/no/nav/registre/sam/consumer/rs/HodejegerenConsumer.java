@@ -2,8 +2,6 @@ package no.nav.registre.sam.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sam.SamSaveInHodejegerenRequest;
-import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,18 +12,16 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+
+import no.nav.registre.sam.SamSaveInHodejegerenRequest;
+import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 
 @Component
 @Slf4j
 public class HodejegerenConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
-    };
-
-    private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
     };
 
     @Autowired
@@ -41,7 +37,7 @@ public class HodejegerenConsumer {
         this.hodejegerenSaveHistorikk = new UriTemplate(hodejegerenServerUrl + "/v1/historikk");
     }
 
-    @Timed(value = "sam.resource.latency", extraTags = {"operation", "hodejegeren"})
+    @Timed(value = "sam.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> finnLevendeIdenter(SyntetiserSamRequest syntetiserSamRequest) {
         RequestEntity getRequest = RequestEntity.get(hentLevendeIdenterUrl.expand(
                 syntetiserSamRequest.getAvspillergruppeId(),
@@ -61,16 +57,11 @@ public class HodejegerenConsumer {
         return identer;
     }
 
-    @Timed(value = "sam.resource.latency", extraTags = {"operation", "hodejegeren"})
-    public Set<String> saveHistory(SamSaveInHodejegerenRequest request) {
+    @Timed(value = "sam.resource.latency", extraTags = { "operation", "hodejegeren" })
+    public List<String> saveHistory(SamSaveInHodejegerenRequest request) {
 
         RequestEntity<SamSaveInHodejegerenRequest> postRequest = RequestEntity.post(hodejegerenSaveHistorikk.expand()).body(request);
 
-        ResponseEntity<Set<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE_SET);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            return response.getBody();
-        }
-        return Collections.emptySet();
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }

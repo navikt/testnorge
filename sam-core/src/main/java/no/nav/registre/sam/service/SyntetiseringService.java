@@ -1,6 +1,18 @@
 package no.nav.registre.sam.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import no.nav.registre.sam.IdentMedData;
 import no.nav.registre.sam.SamSaveInHodejegerenRequest;
 import no.nav.registre.sam.SyntetisertSamordningsmelding;
@@ -15,18 +27,6 @@ import no.nav.registre.sam.domain.database.TSamHendelse;
 import no.nav.registre.sam.domain.database.TSamMelding;
 import no.nav.registre.sam.domain.database.TSamVedtak;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -86,14 +86,20 @@ public class SyntetiseringService {
         }
 
         List<IdentMedData> identerMedData = new ArrayList<>(historikkSomSkalLagres.size());
-        for(Map.Entry<String, SyntetisertSamordningsmelding> personInfo : historikkSomSkalLagres.entrySet()){
+        for (Map.Entry<String, SyntetisertSamordningsmelding> personInfo : historikkSomSkalLagres.entrySet()) {
             identerMedData.add(new IdentMedData(personInfo.getKey(), new ArrayList<>(Arrays.asList(personInfo.getValue()))));
         }
         SamSaveInHodejegerenRequest hodejegerenRequests = new SamSaveInHodejegerenRequest(SAM_NAME, identerMedData);
 
-        Set<String> savedIds = hodejegerenConsumer.saveHistory(hodejegerenRequests);
-        if (savedIds.isEmpty()) {
-            log.warn("Kunne ikke lagre historikk på noen identer");
+        List<String> lagredeIdenter = hodejegerenConsumer.saveHistory(hodejegerenRequests);
+
+        if (lagredeIdenter.size() < identerMedData.size()) {
+            List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
+            for (IdentMedData ident : identerMedData) {
+                identerSomIkkeBleLagret.add(ident.getId());
+            }
+            identerSomIkkeBleLagret.removeAll(lagredeIdenter);
+            log.warn("Kunne ikke lagre historikk på alle identer. Identer som ikke ble lagret: {}", identerSomIkkeBleLagret);
         }
     }
 }
