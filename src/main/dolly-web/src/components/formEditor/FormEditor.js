@@ -249,6 +249,13 @@ export default class FormEditor extends PureComponent {
 			disabled = true
 		}
 
+		if (
+			item.id === 'arenaforvalter[0]inaktiveringDato' &&
+			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'UTEN_SERVICEBEHOV'
+		) {
+			disabled = true
+		}
+
 		if (item.id === 'ufb_kommunenr' || item.id.includes('utenFastBopel')) {
 			return
 		}
