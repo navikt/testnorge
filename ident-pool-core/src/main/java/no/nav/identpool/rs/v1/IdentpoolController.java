@@ -2,12 +2,10 @@ package no.nav.identpool.rs.v1;
 
 import static no.nav.identpool.util.PersonidentUtil.validate;
 
-import java.time.LocalDate;
-import java.util.List;
-import javax.validation.Valid;
-
-import no.nav.identpool.rs.v1.support.HentIdenterRequest;
-import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
+import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
+
 import no.nav.identpool.domain.Ident;
+import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
+import no.nav.identpool.rs.v1.support.HentIdenterRequest;
+import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import no.nav.identpool.service.IdentpoolService;
 
 @Slf4j
@@ -68,5 +68,11 @@ public class IdentpoolController {
     @ApiOperation(value = "returnerer identer som er ledige og født mellom to datoer")
     public List<String> erLedige(@RequestParam int fromYear, @RequestParam int toYear) {
         return identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(fromYear, 1, 1), LocalDate.of(toYear, 1, 1));
+    }
+
+    @GetMapping("/whitelist")
+    @ApiOperation(value = "returnerer en list over whitelisted identer")
+    public List<String> hentWhitelist() {
+        return identpoolService.hentWhitelist();
     }
 }

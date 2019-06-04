@@ -24,6 +24,7 @@ import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.repository.WhitelistRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import no.nav.identpool.util.IdentGeneratorUtil;
@@ -40,6 +41,7 @@ public class IdentpoolService {
     private final IdentRepository identRepository;
     private final IdentTpsService identTpsService;
     private final IdentGeneratorService identGeneratorService;
+    private final WhitelistRepository whitelistRepository;
 
     public List<String> rekvirer(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
         Iterable<Ident> identEntities = identRepository.findAll(
@@ -160,6 +162,14 @@ public class IdentpoolService {
                 filter(i -> i.getFoedselsdato().isAfter(from) && i.getFoedselsdato().isBefore(to)).
                 map(Ident::getPersonidentifikator).
                 collect(Collectors.toList());
+    }
+
+    public List<String> hentWhitelist() {
+        List<String> whiteFnrs = new ArrayList<>();
+        whitelistRepository.findAll().forEach(
+                whitelist -> whiteFnrs.add(whitelist.getFnr())
+        );
+        return whiteFnrs;
     }
 
     private List<String> hentIdenterFraTps(HentIdenterRequest request) {
