@@ -2,6 +2,7 @@ package no.nav.registre.hodejegeren.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -27,8 +28,10 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import no.nav.registre.hodejegeren.mongodb.Data;
 import no.nav.registre.hodejegeren.mongodb.Kilde;
@@ -65,7 +68,6 @@ public class HistorikkServiceTest {
         when(syntHistorikkRepository.findById(id1)).thenReturn(Optional.ofNullable(lagretHistorikk.get(0)));
         when(syntHistorikkRepository.findById(id2)).thenReturn(Optional.ofNullable(lagretHistorikk.get(1)));
 
-        when(syntHistorikkRepository.findAllByKildenavn("aareg")).thenReturn(lagretHistorikk);
         when(syntHistorikkRepository.findAllIdsByKildenavn("aareg")).thenReturn(lagretHistorikk);
 
         when(syntHistorikkRepository.save(syntHistorikk1)).thenReturn(syntHistorikk1);
@@ -94,18 +96,17 @@ public class HistorikkServiceTest {
 
     @Test
     public void shouldHenteHistorikkMedKilde() {
-        List<SyntHistorikk> historikkMedKilde = historikkService.hentHistorikkMedKilde("aareg");
+        List<SyntHistorikk> historikkMedKilde = historikkService.hentHistorikkMedKilder(Collections.singletonList("aareg"));
 
-        assertThat(historikkMedKilde.get(0).getId(), equalTo(id1));
-        assertThat(historikkMedKilde.get(1).getId(), equalTo(id2));
+        List<String> historikkIds = new ArrayList<>(Arrays.asList(historikkMedKilde.get(0).getId(), historikkMedKilde.get(1).getId()));
+        assertThat(historikkIds, containsInAnyOrder(id1, id2));
     }
 
     @Test
     public void shouldHenteIdsMedKilde() {
-        List<String> idsMedKilde = historikkService.hentIdsMedKilde("aareg");
+        Set<String> idsMedKilde = historikkService.hentIdsMedKilder(Collections.singletonList("aareg"));
 
-        assertThat(idsMedKilde.get(0), equalTo(id1));
-        assertThat(idsMedKilde.get(1), equalTo(id2));
+        assertThat(idsMedKilde, containsInAnyOrder(id1, id2));
     }
 
     @Test

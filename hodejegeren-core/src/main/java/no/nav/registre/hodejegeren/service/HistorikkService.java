@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import no.nav.registre.hodejegeren.mongodb.Data;
 import no.nav.registre.hodejegeren.mongodb.Kilde;
@@ -34,17 +36,30 @@ public class HistorikkService {
         return syntHistorikkRepository.findById(id).orElse(null);
     }
 
-    public List<SyntHistorikk> hentHistorikkMedKilde(String kilde) {
-        return syntHistorikkRepository.findAllByKildenavn(kilde);
+    public List<SyntHistorikk> hentHistorikkMedKilder(List<String> kilder) {
+        Set<String> idsMedAlleKilder = hentIdsMedKilder(kilder);
+        List<SyntHistorikk> historikkMedAlleKilder = new ArrayList<>(idsMedAlleKilder.size());
+        for (String id : idsMedAlleKilder) {
+            historikkMedAlleKilder.add(hentHistorikkMedId(id));
+        }
+        return historikkMedAlleKilder;
     }
 
-    public List<String> hentIdsMedKilde(String kilde) {
-        List<SyntHistorikk> historikkByKildenavn = syntHistorikkRepository.findAllIdsByKildenavn(kilde);
-        List<String> ids = new ArrayList<>(historikkByKildenavn.size());
-        for (SyntHistorikk historikk : historikkByKildenavn) {
-            ids.add(historikk.getId());
+    public Set<String> hentIdsMedKilder(List<String> kilder) {
+        Set<String> idsMedAlleKilder = new HashSet<>();
+        for (String kilde : kilder) {
+            List<SyntHistorikk> historikkByKildenavn = syntHistorikkRepository.findAllIdsByKildenavn(kilde);
+            Set<String> ids = new HashSet<>(historikkByKildenavn.size());
+            for (SyntHistorikk historikk : historikkByKildenavn) {
+                ids.add(historikk.getId());
+            }
+            if (idsMedAlleKilder.isEmpty()) {
+                idsMedAlleKilder.addAll(ids);
+            } else {
+                idsMedAlleKilder.retainAll(ids);
+            }
         }
-        return ids;
+        return idsMedAlleKilder;
     }
 
     public SyntHistorikk opprettHistorikk(SyntHistorikk syntHistorikk) {

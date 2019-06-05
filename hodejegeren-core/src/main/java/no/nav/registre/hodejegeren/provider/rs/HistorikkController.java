@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
@@ -37,14 +38,14 @@ public class HistorikkController {
 
     @LogExceptions
     @GetMapping(value = "medKilde")
-    public List<SyntHistorikk> hentHistorikkMedKilde(@RequestParam String kilde) {
-        return historikkService.hentHistorikkMedKilde(kilde);
+    public List<SyntHistorikk> hentHistorikkMedKilde(@RequestParam List<String> kilder) {
+        return historikkService.hentHistorikkMedKilder(kilder);
     }
 
     @LogExceptions
     @GetMapping(value = "idsMedKilde")
-    public List<String> hentIdsMedKilde(@RequestParam String kilde) {
-        return historikkService.hentIdsMedKilde(kilde);
+    public Set<String> hentIdsMedKilde(@RequestParam List<String> kilder) {
+        return historikkService.hentIdsMedKilder(kilder);
     }
 
     @LogExceptions

@@ -8,6 +8,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
 
@@ -26,6 +30,20 @@ public class HistorikkControllerTest {
     public void shouldHenteAllHistorikk() {
         historikkController.hentAllHistorikk();
         verify(historikkService).hentAllHistorikk();
+    }
+
+    @Test
+    public void shouldHenteHistorikkMedKilder() {
+        List<String> kilder = new ArrayList<>(Arrays.asList("aareg", "inst"));
+        historikkController.hentHistorikkMedKilde(kilder);
+        verify(historikkService).hentHistorikkMedKilder(kilder);
+    }
+
+    @Test
+    public void shouldHenteIdsMedKilder() {
+        List<String> kilder = new ArrayList<>(Arrays.asList("aareg", "inst"));
+        historikkController.hentIdsMedKilde(kilder);
+        verify(historikkService).hentIdsMedKilder(kilder);
     }
 
     @Test

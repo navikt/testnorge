@@ -9,9 +9,6 @@ import java.util.List;
 @Repository
 public interface SyntHistorikkRepository extends MongoRepository<SyntHistorikk, String> {
 
-    @Query(value = "{'kilder.navn' : ?0}")
-    List<SyntHistorikk> findAllByKildenavn(String kilde);
-
     @Query(value = "{'kilder.navn' : ?0}", fields = "{'_id':1}")
     List<SyntHistorikk> findAllIdsByKildenavn(String kilde);
 }
