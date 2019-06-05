@@ -6,13 +6,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +35,7 @@ import no.nav.registre.endringsmeldinger.consumer.rs.TpsfConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.requests.SendTilTpsRequest;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
 import no.nav.registre.endringsmeldinger.provider.rs.requests.SyntetiserNavEndringsmeldingerRequest;
+import no.nav.registre.endringsmeldinger.provider.rs.responses.StatusFraFeiledeMeldingerTpsResponse;
 
 @Service
 @Slf4j
@@ -87,12 +95,15 @@ public class EndringsmeldingService {
             responses.add(sendEndringsmeldingerTilTps(sendTilTpsRequest));
         }
 
+        List<String> statusFraFeiledeMeldinger = trekkUtStatusFraTps(responses).getOffentligIdentMedUtfyllendeMelding();
+
+        log.info("Antall meldinger sendt til TPS: {}. Antall feilede meldinger: {}. Status på feilede meldinger: {}", responses.size(), statusFraFeiledeMeldinger.size(), statusFraFeiledeMeldinger.toString());
+
         return responses;
     }
 
     private RsPureXmlMessageResponse sendEndringsmeldingerTilTps(SendTilTpsRequest sendTilTpsRequest) {
         RsPureXmlMessageResponse rsPureXmlMessageResponse = tpsfConsumer.sendEndringsmeldingTilTps(sendTilTpsRequest);
-        log.info("Endringsmelding sendt til tps: {}", rsPureXmlMessageResponse.getXml());
         return rsPureXmlMessageResponse;
     }
 
@@ -115,5 +126,27 @@ public class EndringsmeldingService {
     private List<Endringskoder> filtrerEndringskoder(Set<String> endringskoder) {
         List<Endringskoder> filtrerteEndringskoder = Arrays.asList(Endringskoder.values());
         return filtrerteEndringskoder.stream().filter(kode -> endringskoder.contains(kode.getEndringskode())).collect(Collectors.toList());
+    }
+
+    private StatusFraFeiledeMeldingerTpsResponse trekkUtStatusFraTps(List<RsPureXmlMessageResponse> responses) {
+        StatusFraFeiledeMeldingerTpsResponse statusFraFeiledeMeldinger = StatusFraFeiledeMeldingerTpsResponse.builder().offentligIdentMedUtfyllendeMelding(new ArrayList<>()).build();
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        for (RsPureXmlMessageResponse rsPureXmlMessageResponse : responses) {
+            try {
+                builder = factory.newDocumentBuilder();
+                Document document = builder.parse(new InputSource(new StringReader(rsPureXmlMessageResponse.getXml())));
+                if (!"00".equals(document.getElementsByTagName("returStatus").item(0).getTextContent())) {
+                    String offentligIdent = document.getElementsByTagName("offentligIdent").item(0).getTextContent();
+                    String utfyllendeMelding = document.getElementsByTagName("utfyllendeMelding").item(0).getTextContent();
+                    statusFraFeiledeMeldinger.getOffentligIdentMedUtfyllendeMelding().add(String.format("%s - %s", offentligIdent, utfyllendeMelding));
+                }
+            } catch (ParserConfigurationException | SAXException | IOException e) {
+                log.warn("Kunne ikke hente status på sendt melding.", e);
+            }
+        }
+
+        return statusFraFeiledeMeldinger;
     }
 }

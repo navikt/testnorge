@@ -114,6 +114,13 @@ public class EndringsmeldingServiceTest {
                         + "            <datoTelefon>2017-10-30</datoTelefon>\n"
                         + "        </endreTelefon>\n"
                         + "    </sfeAjourforing>\n"
+                        + "    <sfeTilbakeMelding>\n"
+                        + "        <svarStatus>\n"
+                        + "            <returStatus>00</returStatus>\n"
+                        + "            <returMelding></returMelding>\n"
+                        + "            <utfyllendeMelding></utfyllendeMelding>\n"
+                        + "        </svarStatus>\n"
+                        + "    </sfeTilbakeMelding>\n"
                         + "</sfePersonData>")
                 .build();
 
