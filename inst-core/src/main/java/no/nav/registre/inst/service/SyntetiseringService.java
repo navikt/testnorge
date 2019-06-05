@@ -128,10 +128,14 @@ public class SyntetiseringService {
 
     private List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident) {
         List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(tokenObject, ident);
-        for (Institusjonsforholdsmelding melding : institusjonsforholdsmeldinger) {
-            melding.setPersonident(ident);
+        if (institusjonsforholdsmeldinger != null) {
+            for (Institusjonsforholdsmelding melding : institusjonsforholdsmeldinger) {
+                melding.setPersonident(ident);
+            }
+            return new ArrayList<>(institusjonsforholdsmeldinger);
+        } else {
+            return new ArrayList<>();
         }
-        return new ArrayList<>(institusjonsforholdsmeldinger);
     }
 
     private Map<String, Object> hentTokenTilInst2() {
@@ -145,8 +149,8 @@ public class SyntetiseringService {
             String tssEksternId = melding.getTssEksternId();
             String startdato = melding.getStartdato();
             String faktiskSluttdato = melding.getFaktiskSluttdato();
-            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, startdato).is2xxSuccessful() && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, faktiskSluttdato)
-                    .is2xxSuccessful()) {
+            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, startdato).is2xxSuccessful()
+                    && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, faktiskSluttdato).is2xxSuccessful()) {
                 gyldigeSyntetiserteMeldinger.add(melding);
             }
         }
