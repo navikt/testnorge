@@ -50,10 +50,16 @@ export const SubKategorier: KategoriTypes = {
 		navn: 'Nasjonalitet',
 		order: 20
 	},
+	UtenlandsId: {
+		id: 'utenlandskIdentifikasjonsnummer',
+		navn: 'Utenlands-ID',
+		order: 30,
+		showInSummary: true
+	},
 	Diverse: {
 		id: 'diverse',
 		navn: 'Diverse',
-		order: 30
+		order: 40
 	},
 	Boadresse: {
 		id: 'boadresse',
