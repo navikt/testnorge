@@ -162,6 +162,17 @@ public class SyntetiseringService {
                 }
             }
 
+            List<ArbeidsforholdsResponse> ugyldigeArbeidsforhold = new ArrayList<>();
+
+            for(ArbeidsforholdsResponse arbeidsforholdsResponse : arbeidsforhold) {
+                if(arbeidsforholdsResponse.getArbeidsforhold().getArbeidsavtale() == null) {
+                    log.warn("Arbeidsavtale er null for arbeidstaker med id {}. Hopper over opprettelse.", arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent());
+                    ugyldigeArbeidsforhold.add(arbeidsforholdsResponse);
+                }
+            }
+
+            arbeidsforhold.removeAll(ugyldigeArbeidsforhold);
+
             return aaregstubConsumer.sendTilAaregstub(arbeidsforhold, true);
         } else {
             return aaregstubConsumer.sendTilAaregstub(arbeidsforhold, true);
