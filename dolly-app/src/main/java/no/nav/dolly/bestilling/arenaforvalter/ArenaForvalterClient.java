@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
@@ -38,7 +39,9 @@ public class ArenaForvalterClient implements ClientRegister {
 
             StringBuilder status = new StringBuilder();
 
-            List<String> environments = arenaForvalterConsumer.getEnvironments().getBody();
+            ResponseEntity<List> envResponse = arenaForvalterConsumer.getEnvironments();
+            List<String> environments = envResponse.hasBody() ? arenaForvalterConsumer.getEnvironments().getBody() : emptyList();
+
             List<String> availEnvironments = new ArrayList(environments);
 
             availEnvironments.retainAll(bestilling.getEnvironments());

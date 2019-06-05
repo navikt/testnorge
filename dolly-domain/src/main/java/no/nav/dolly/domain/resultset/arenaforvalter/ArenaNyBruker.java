@@ -15,6 +15,6 @@ public class ArenaNyBruker {
 
     private String personident;
     private String miljoe;
-    private Kvalifiseringsgruppe kvalifiseringsgruppe;
+    private ArenaKvalifiseringsgruppe arenaKvalifiseringsgruppe;
     private ArenaBrukerUtenServicebehov utenServicebehov;
 }
