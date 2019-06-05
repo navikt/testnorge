@@ -47,15 +47,9 @@ public class OrkestreringsController {
     }
 
     @ApiOperation(value = "Legger til faste kontaktreservasjoner i krr-stub", consumes = "Krr-stub, Aktørregisteret")
-    @PostMapping(value = "/krr/{miljoe}")
-    public ResponseEntity initializeKrr(@PathVariable String miljoe) {
+    @PostMapping(value = "/krr")
+    public ResponseEntity initializeKrr() {
         environmentInitializationService.initializeKrr();
         return ResponseEntity.ok().build();
-    }
-
-    @ApiOperation(value = "Legger til faste kontaktreservasjoner i digital-kontaktinformasjon", consumes = "Dkif-forvalter")
-    @PostMapping(value = "/dkif/{miljoe}")
-    public ResponseEntity initializeDkif(@PathVariable String miljoe) {
-        return ResponseEntity.ok(environmentInitializationService.initializeDkif(miljoe));
     }
 }

@@ -5,15 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.AaregConsumer;
-import no.nav.registre.sdForvalter.consumer.rs.DkifForvalterConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.KrrConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.SamConsumer;
@@ -41,7 +38,6 @@ public class EnvironmentInitializationService {
     private final HodejegerenConsumer hodejegerenConsumer;
     private final TpConsumer tpConsumer;
     private final SamConsumer samConsumer;
-    private final DkifForvalterConsumer dkifForvalterConsumer;
 
     @Value("${tps.statisk.avspillergruppeId}")
     private Long staticDataPlaygroup;
@@ -65,11 +61,7 @@ public class EnvironmentInitializationService {
         Set<String> fnrs = hodejegerenConsumer.getLivingFnrs(staticDataPlaygroup, environment);
         iniitalizeTp(environment, fnrs);
         initializeSam(environment, fnrs);
-        if ("q2".equals(environment)) {
-            initializeKrr();
-        } else {
-            initializeDkif(environment);
-        }
+        initializeKrr();
         Map<String, String> aaregStatusMap = initializeAareg(environment);
         if (!aaregStatusMap.isEmpty()) {
             log.warn("Fullførte ikke initialiseringen av miljøet: {} i Aareg, feilet på identer {}", environment, aaregStatusMap);
@@ -126,13 +118,6 @@ public class EnvironmentInitializationService {
             return;
         }
         krrConsumer.send(dkifSet);
-    }
-
-    public Set<String> initializeDkif(String environment) {
-        Iterable<KrrModel> all = krrRepository.findAll();
-        List<KrrModel> krrModels = new ArrayList<>();
-        all.forEach(krrModels::add);
-        return dkifForvalterConsumer.send(krrModels, environment);
     }
 
     private void iniitalizeTp(String environment, Set<String> fnrs) {
