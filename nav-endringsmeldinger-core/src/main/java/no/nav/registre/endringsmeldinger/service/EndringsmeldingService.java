@@ -1,5 +1,6 @@
 package no.nav.registre.endringsmeldinger.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageR
 import no.nav.registre.endringsmeldinger.provider.rs.requests.SyntetiserNavEndringsmeldingerRequest;
 
 @Service
+@Slf4j
 public class EndringsmeldingService {
 
     private static final Long TIMEOUT_SEKUNDER = 5L;
@@ -89,7 +91,9 @@ public class EndringsmeldingService {
     }
 
     private RsPureXmlMessageResponse sendEndringsmeldingerTilTps(SendTilTpsRequest sendTilTpsRequest) {
-        return tpsfConsumer.sendEndringsmeldingTilTps(sendTilTpsRequest);
+        RsPureXmlMessageResponse rsPureXmlMessageResponse = tpsfConsumer.sendEndringsmeldingTilTps(sendTilTpsRequest);
+        log.info("Endringsmelding sendt til tps: {}", rsPureXmlMessageResponse.getXml());
+        return rsPureXmlMessageResponse;
     }
 
     private List<String> hentLevendeIdenter(SyntetiserNavEndringsmeldingerRequest syntetiserNavEndringsmeldingerRequest) {
