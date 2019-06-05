@@ -26,7 +26,7 @@ public class ArenaMappingStrategy implements MappingStrategy {
                         if (UTEN_SERVICEBEHOV.equals(arenadata.getArenaBrukertype())) {
                             arenaNyBruker.setUtenServicebehov(new ArenaBrukerUtenServicebehov());
 
-                            arenaNyBruker.setArenaKvalifiseringsgruppe(IKVAL);
+                            arenaNyBruker.setKvalifiseringsgruppe(IKVAL);
                             if (nonNull(arenadata.getInaktiveringDato())) {
                                 arenaNyBruker.getUtenServicebehov().setStansDato(arenadata.getInaktiveringDato().toLocalDate());
                             }

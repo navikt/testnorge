@@ -41,7 +41,7 @@ public class ArenaMappingStrategyTest {
                 .build(), no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker.class);
 
         assertThat(arenaNyBruker.getUtenServicebehov().getStansDato(), is(equalTo(TIME_NOW.toLocalDate())));
-        assertThat(arenaNyBruker.getArenaKvalifiseringsgruppe(), is(equalTo(IKVAL)));
+        assertThat(arenaNyBruker.getKvalifiseringsgruppe(), is(equalTo(IKVAL)));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class ArenaMappingStrategyTest {
                 .build(), no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker.class);
 
         assertThat(arenaNyBruker.getUtenServicebehov().getStansDato(), is(nullValue()));
-        assertThat(arenaNyBruker.getArenaKvalifiseringsgruppe(), is(equalTo(IKVAL)));
+        assertThat(arenaNyBruker.getKvalifiseringsgruppe(), is(equalTo(IKVAL)));
     }
 
     @Test
@@ -60,10 +60,10 @@ public class ArenaMappingStrategyTest {
 
         ArenaNyBruker arenaNyBruker = mapperFacade.map(Arenadata.builder()
                 .arenaBrukertype(MED_SERVICEBEHOV)
-                .arenaKvalifiseringsgruppe(VARIG)
+                .kvalifiseringsgruppe(VARIG)
                 .build(), no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker.class);
 
         assertThat(arenaNyBruker.getUtenServicebehov(), is(nullValue()));
-        assertThat(arenaNyBruker.getArenaKvalifiseringsgruppe(), is(equalTo(VARIG)));
+        assertThat(arenaNyBruker.getKvalifiseringsgruppe(), is(equalTo(VARIG)));
     }
 }

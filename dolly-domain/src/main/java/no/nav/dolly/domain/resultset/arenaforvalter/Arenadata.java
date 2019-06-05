@@ -20,6 +20,6 @@ public class Arenadata {
     private String personident;
 
     private ArenaBrukertype arenaBrukertype;
-    private ArenaKvalifiseringsgruppe arenaKvalifiseringsgruppe;
+    private ArenaKvalifiseringsgruppe kvalifiseringsgruppe;
     private LocalDateTime inaktiveringDato;
 }
