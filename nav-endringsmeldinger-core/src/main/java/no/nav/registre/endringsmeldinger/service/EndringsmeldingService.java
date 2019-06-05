@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -63,7 +64,6 @@ public class EndringsmeldingService {
         final List<Endringskoder> filtrerteEndringskoder = filtrerEndringskoder(antallMeldingerPerEndringskode.keySet());
         List<String> utvalgteIdenter = hentLevendeIdenter(syntetiserNavEndringsmeldingerRequest);
         List<SendTilTpsRequest> sendTilTpsRequests = new ArrayList<>(utvalgteIdenter.size());
-        List<RsPureXmlMessageResponse> responses = new ArrayList<>();
 
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer = tf.newTransformer();
@@ -91,13 +91,19 @@ public class EndringsmeldingService {
             }
         }
 
+        List<RsPureXmlMessageResponse> responses = new ArrayList<>(sendTilTpsRequests.size());
+
         for (SendTilTpsRequest sendTilTpsRequest : sendTilTpsRequests) {
             responses.add(sendEndringsmeldingerTilTps(sendTilTpsRequest));
         }
 
-        List<String> statusFraFeiledeMeldinger = trekkUtStatusFraTps(responses).getOffentligIdentMedUtfyllendeMelding();
+        try {
+            List<String> statusFraFeiledeMeldinger = trekkUtStatusFraTps(responses).getOffentligIdentMedUtfyllendeMelding();
 
-        log.info("Antall meldinger sendt til TPS: {}. Antall feilede meldinger: {}. Status på feilede meldinger: {}", responses.size(), statusFraFeiledeMeldinger.size(), statusFraFeiledeMeldinger.toString());
+            log.info("Antall meldinger sendt til TPS: {}. Antall feilede meldinger: {}. Status på feilede meldinger: {}", responses.size(), statusFraFeiledeMeldinger.size(), statusFraFeiledeMeldinger.toString());
+        } catch (ParserConfigurationException e) {
+            log.warn("Kunne ikke opprette XML-parser", e);
+        }
 
         return responses;
     }
@@ -128,10 +134,11 @@ public class EndringsmeldingService {
         return filtrerteEndringskoder.stream().filter(kode -> endringskoder.contains(kode.getEndringskode())).collect(Collectors.toList());
     }
 
-    private StatusFraFeiledeMeldingerTpsResponse trekkUtStatusFraTps(List<RsPureXmlMessageResponse> responses) {
+    private StatusFraFeiledeMeldingerTpsResponse trekkUtStatusFraTps(List<RsPureXmlMessageResponse> responses) throws ParserConfigurationException {
         StatusFraFeiledeMeldingerTpsResponse statusFraFeiledeMeldinger = StatusFraFeiledeMeldingerTpsResponse.builder().offentligIdentMedUtfyllendeMelding(new ArrayList<>()).build();
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder builder;
         for (RsPureXmlMessageResponse rsPureXmlMessageResponse : responses) {
             try {
