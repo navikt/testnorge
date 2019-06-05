@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.registre</groupId>
         <artifactId>testnorge-nav-endringsmeldinger</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.0.3</version>
     </parent>
 
     <artifactId>nav-endringsmeldinger-core</artifactId>
