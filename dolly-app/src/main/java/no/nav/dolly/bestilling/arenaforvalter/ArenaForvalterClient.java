@@ -1,15 +1,14 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import static java.lang.String.format;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.UTEN_SERVICEBEHOV;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -17,17 +16,15 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukerMedServicebehov;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukerUtenServicebehov;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukereMedServicebehov;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukereUtenServicebehov;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaServicedata;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 
 @Slf4j
 @Service
 public class ArenaForvalterClient implements ClientRegister {
 
-    private static final String ARENA_FORVALTER_ENV = "q2";
+    private static final String STATUS = "$Status: ";
 
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
@@ -42,66 +39,97 @@ public class ArenaForvalterClient implements ClientRegister {
 
             StringBuilder status = new StringBuilder();
 
-            if (bestilling.getEnvironments().contains(ARENA_FORVALTER_ENV)) {
+            ResponseEntity<List> envResponse = arenaForvalterConsumer.getEnvironments();
+            List<String> environments = envResponse.hasBody() ? envResponse.getBody() : emptyList();
 
-                bestilling.getArenaforvalter().setPersonident(norskIdent.getIdent());
-                checkAndDeleteArenadata(norskIdent.getIdent(), status);
+            List<String> availEnvironments = new ArrayList(environments);
 
-                sendArenadata(UTEN_SERVICEBEHOV.equals(bestilling.getArenaforvalter().getArenaBrukertype()) ?
+            availEnvironments.retainAll(bestilling.getEnvironments());
 
-                                ArenaBrukereUtenServicebehov.builder()
-                                        .nyeBrukereUtenServiceBehov(singletonList(
-                                                mapperFacade.map(bestilling.getArenaforvalter(), ArenaBrukerUtenServicebehov.class)))
-                                        .build() :
+            if (!availEnvironments.isEmpty()) {
 
-                                ArenaBrukereMedServicebehov.builder()
-                                        .nyeBrukere(singletonList(
-                                                mapperFacade.map(bestilling.getArenaforvalter(), ArenaBrukerMedServicebehov.class)))
-                                        .build()
+                ResponseEntity<ArenaArbeidssokerBruker> existingServicebruker = fetchServiceBruker(norskIdent.getIdent(), availEnvironments, status);
+                deleteServicebruker(norskIdent.getIdent(), availEnvironments, status, existingServicebruker);
 
-                        , status);
+                ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
+                availEnvironments.forEach(environment -> {
+                    ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
+                    arenaNyBruker.setPersonident(norskIdent.getIdent());
+                    arenaNyBruker.setMiljoe(environment);
+                    arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
+                });
 
-            } else {
-
-                status.append(format("$ArenaForvalter&Status: Feil: Brukere ikke opprettet i ArenaForvalter da miljø '%s' ikke er valgt", ARENA_FORVALTER_ENV));
+                sendArenadata(arenaNyeBrukere, status);
             }
+
+            List<String> notSupportedEnvironments = new ArrayList(bestilling.getEnvironments());
+            notSupportedEnvironments.removeAll(environments);
+            notSupportedEnvironments.forEach(environment ->
+                    status.append(',')
+                            .append(environment)
+                            .append("$Status: Feil: Miljø ikke støttet"));
+
             progress.setArenaforvalterStatus(status.substring(1));
         }
-
     }
 
-    private void checkAndDeleteArenadata(String ident, StringBuilder status) {
+    private void deleteServicebruker(String ident, List<String> availEnvironments, StringBuilder status, ResponseEntity<ArenaArbeidssokerBruker> response) {
+
+        if (response.hasBody() && !response.getBody().getArbeidsokerList().isEmpty()) {
+            response.getBody().getArbeidsokerList().forEach(arbeidssoker -> {
+                if (availEnvironments.contains(arbeidssoker.getMiljoe())) {
+                    try {
+                        arenaForvalterConsumer.deleteIdent(ident, arbeidssoker.getMiljoe());
+
+                    } catch (RuntimeException e) {
+                        status.append(',')
+                                .append(arbeidssoker.getMiljoe())
+                                .append(STATUS);
+                        appendErrorText(status, e);
+                        log.error("Feilet å inaktivere bruker: {}, miljø: {} i ArenaForvalter: ", arbeidssoker.getPersonident(), arbeidssoker.getMiljoe(), e);
+                    }
+                }
+            });
+        }
+    }
+
+    private ResponseEntity<ArenaArbeidssokerBruker> fetchServiceBruker(String ident, List<String> availEnvironments, StringBuilder status) {
 
         try {
-            status.append("$HentBruker&status: ");
-            ResponseEntity<JsonNode> response = arenaForvalterConsumer.getIdent(ident);
-            status.append(response.getStatusCode().getReasonPhrase());
+            return arenaForvalterConsumer.getIdent(ident);
 
-            if (response.hasBody() && response.getBody().get("arbeidsokerList").size() > 0) {
-                status.append("$InaktiverBruker&status: ");
-                ResponseEntity<JsonNode> deleteResponse = arenaForvalterConsumer.deleteIdent(ident);
-                status.append(deleteResponse.getStatusCode().getReasonPhrase());
+        } catch (RuntimeException e) {
+            availEnvironments.forEach(environment -> {
+                status.append(',')
+                        .append(environment)
+                        .append(STATUS);
+                appendErrorText(status, e);
+            });
+            log.error("Feilet å hente bruker: {} i ArenaForvalter", ident, e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    private void sendArenadata(ArenaNyeBrukere arenaNyeBrukere, StringBuilder status) {
+
+        try {
+            ResponseEntity<ArenaArbeidssokerBruker> response = arenaForvalterConsumer.postArenadata(arenaNyeBrukere);
+            if (response.hasBody()) {
+                response.getBody().getArbeidsokerList().forEach(arbeidsoker ->
+                        status.append(',')
+                                .append(arbeidsoker.getMiljoe())
+                                .append(STATUS)
+                                .append(arbeidsoker.getStatus()));
             }
 
         } catch (RuntimeException e) {
 
-            status.append("$ArenaForvalter&status: ");
-            appendErrorText(status, e);
-            log.error("Feilet å hente eller inaktivere bruker i ArenaForvalter: ", e);
-        }
-    }
-
-    private void sendArenadata(ArenaServicedata arenaServicedata, StringBuilder status) {
-
-        try {
-            status.append("$OpprettNyBruker&status: ");
-
-            ResponseEntity<JsonNode> response = arenaForvalterConsumer.postArenadata(arenaServicedata);
-            status.append(response.hasBody() ? response.getBody().get("arbeidsokerList").get(0).get("status").asText() : "Ukjent");
-
-        } catch (RuntimeException e) {
-
-            appendErrorText(status, e);
+            arenaNyeBrukere.getNyeBrukere().forEach(bruker -> {
+                status.append(',')
+                        .append(bruker.getMiljoe())
+                        .append(STATUS);
+                appendErrorText(status, e);
+            });
             log.error("Feilet å legge inn ny bruker i ArenaForvalter: ", e);
         }
     }

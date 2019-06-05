@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
+import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -19,5 +20,6 @@ public class Arenadata {
     private String personident;
 
     private ArenaBrukertype arenaBrukertype;
-    private Kvalifiseringsgruppe kvalifiseringsgruppe;
+    private ArenaKvalifiseringsgruppe arenaKvalifiseringsgruppe;
+    private LocalDateTime inaktiveringDato;
 }
