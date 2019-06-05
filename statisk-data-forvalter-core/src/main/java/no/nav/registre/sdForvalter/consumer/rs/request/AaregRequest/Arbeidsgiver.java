@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Arbeidsgiver {
 
     @JsonProperty("aktoertype")
-    private final AktoerType aktoerType = ORG;
+    private final AktoerType aktoertype = ORG;
 
     @JsonProperty("orgnummer")
     private String orgnummer;
