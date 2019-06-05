@@ -6,6 +6,8 @@ const DataSourceMapper = data => {
 			return 'krrstub'
 		case 'AAREG':
 			return 'aareg'
+		case 'PDLF':
+			return 'pdlforvalter'
 		default:
 			return 'tpsf'
 	}

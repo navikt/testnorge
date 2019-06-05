@@ -87,6 +87,10 @@ export const getValues = (attributeList, values) => {
 			return _set(accumulator, pathPrefix, value[0])
 		}
 
+		if (pathPrefix === DataSourceMapper('PDLF')) {
+			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value[0])
+		}
+
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
 }
