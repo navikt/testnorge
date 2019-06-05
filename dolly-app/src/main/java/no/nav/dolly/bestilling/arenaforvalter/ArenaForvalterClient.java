@@ -40,7 +40,7 @@ public class ArenaForvalterClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
 
             ResponseEntity<List> envResponse = arenaForvalterConsumer.getEnvironments();
-            List<String> environments = envResponse.hasBody() ? arenaForvalterConsumer.getEnvironments().getBody() : emptyList();
+            List<String> environments = envResponse.hasBody() ? envResponse.getBody() : emptyList();
 
             List<String> availEnvironments = new ArrayList(environments);
 
