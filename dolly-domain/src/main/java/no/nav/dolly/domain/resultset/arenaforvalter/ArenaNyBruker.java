@@ -1,7 +1,5 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +11,10 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArenaBrukereMedServicebehov implements ArenaServicedata {
+public class ArenaNyBruker {
 
-    private List<ArenaBrukerMedServicebehov> nyeBrukere;
+    private String personident;
+    private String miljoe;
+    private Kvalifiseringsgruppe kvalifiseringsgruppe;
+    private ArenaBrukerUtenServicebehov utenServicebehov;
 }
