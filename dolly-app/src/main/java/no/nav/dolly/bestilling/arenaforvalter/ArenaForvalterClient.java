@@ -24,8 +24,6 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 @Service
 public class ArenaForvalterClient implements ClientRegister {
 
-    private static final String STATUS = "$Status: ";
-
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
 
@@ -67,7 +65,7 @@ public class ArenaForvalterClient implements ClientRegister {
             notSupportedEnvironments.forEach(environment ->
                     status.append(',')
                             .append(environment)
-                            .append("$Status: Feil: Miljø ikke støttet"));
+                            .append("$Feil: Miljø ikke støttet"));
 
             progress.setArenaforvalterStatus(status.substring(1));
         }
@@ -84,7 +82,7 @@ public class ArenaForvalterClient implements ClientRegister {
                     } catch (RuntimeException e) {
                         status.append(',')
                                 .append(arbeidssoker.getMiljoe())
-                                .append(STATUS);
+                                .append('$');
                         appendErrorText(status, e);
                         log.error("Feilet å inaktivere bruker: {}, miljø: {} i ArenaForvalter: ", arbeidssoker.getPersonident(), arbeidssoker.getMiljoe(), e);
                     }
@@ -102,7 +100,7 @@ public class ArenaForvalterClient implements ClientRegister {
             availEnvironments.forEach(environment -> {
                 status.append(',')
                         .append(environment)
-                        .append(STATUS);
+                        .append('$');
                 appendErrorText(status, e);
             });
             log.error("Feilet å hente bruker: {} i ArenaForvalter", ident, e);
@@ -118,7 +116,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 response.getBody().getArbeidsokerList().forEach(arbeidsoker ->
                         status.append(',')
                                 .append(arbeidsoker.getMiljoe())
-                                .append(STATUS)
+                                .append('$')
                                 .append(arbeidsoker.getStatus()));
             }
 
@@ -127,7 +125,7 @@ public class ArenaForvalterClient implements ClientRegister {
             arenaNyeBrukere.getNyeBrukere().forEach(bruker -> {
                 status.append(',')
                         .append(bruker.getMiljoe())
-                        .append(STATUS);
+                        .append('$');
                 appendErrorText(status, e);
             });
             log.error("Feilet å legge inn ny bruker i ArenaForvalter: ", e);
@@ -135,12 +133,12 @@ public class ArenaForvalterClient implements ClientRegister {
     }
 
     private void appendErrorText(StringBuilder status, RuntimeException e) {
-        status.append("FEIL: ")
+        status.append("Feil: ")
                 .append(e.getMessage());
 
         if (e instanceof HttpClientErrorException) {
             status.append(" (")
-                    .append(((HttpClientErrorException) e).getResponseBodyAsString())
+                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',','='))
                     .append(')');
         }
     }

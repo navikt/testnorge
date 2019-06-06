@@ -21,5 +21,5 @@ public class RsTestident {
     private String sigrunstubStatus;
     private List<RsMeldingStatusIdent> arenaforvalterStatus;
     private List<RsStatusMiljoeIdentForhold> aaregStatus;
-    private List<RsMeldingStatusIdent> pdlforvalterStatus;
+    private RsPdlForvalterStatus pdlforvalterStatus;
 }

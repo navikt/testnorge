@@ -24,8 +24,9 @@ public final class BestillingArenaforvalterStatusMapper {
             if (nonNull(progress.getArenaforvalterStatus())) {
                 newArrayList(progress.getArenaforvalterStatus().split(",")).forEach(
                         entry -> {
-                            String environment = entry.split("\\$")[0];
-                            String status = entry.split("\\$")[1];
+                            String[] envStatus = entry.split("\\$");
+                            String environment = envStatus[0];
+                            String status = (envStatus.length > 1 ? envStatus[1] : "").replace('=',',');
                             buildStatusMap(statusEnvIdents, status, environment, progress.getIdent());
                         });
             }

@@ -19,7 +19,7 @@ public class BestillingArenaforvalterStatusMapperTest {
 
     private static final List<BestillingProgress> RUN_STATUS = newArrayList(
             BestillingProgress.builder().ident("IDENT_1")
-                    .arenaforvalterStatus("t4$Status: OK,t3$Status: Feil: Miljø ikke støttet")
+                    .arenaforvalterStatus("t4$OK,t3$Feil: Miljø ikke støttet")
                     .build()
     );
 
@@ -28,10 +28,10 @@ public class BestillingArenaforvalterStatusMapperTest {
 
         List<RsMeldingStatusIdent> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(RUN_STATUS);
 
-        assertThat(identStatuses.get(0).getMelding(), is(equalTo("Status: Feil: Miljø ikke støttet")));
-        assertThat(identStatuses.get(0).getStatusIdent().get("t3"), containsInAnyOrder("IDENT_1"));
+        assertThat(identStatuses.get(0).getStatus(), is(equalTo("Feil: Miljø ikke støttet")));
+        assertThat(identStatuses.get(0).getEnvIdent().get("t3"), containsInAnyOrder("IDENT_1"));
 
-        assertThat(identStatuses.get(1).getMelding(), is(equalTo("Status: OK")));
-        assertThat(identStatuses.get(1).getStatusIdent().get("t4"), containsInAnyOrder("IDENT_1"));
+        assertThat(identStatuses.get(1).getStatus(), is(equalTo("OK")));
+        assertThat(identStatuses.get(1).getEnvIdent().get("t4"), containsInAnyOrder("IDENT_1"));
     }
 }
