@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.endringsmeldinger.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.NavEndringsmeldingerSyntetisererenConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.TpsfConsumer;
+import no.nav.registre.endringsmeldinger.consumer.rs.exceptions.SyntetiseringsException;
 import no.nav.registre.endringsmeldinger.consumer.rs.requests.SendTilTpsRequest;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
 import no.nav.registre.endringsmeldinger.provider.rs.requests.SyntetiserNavEndringsmeldingerRequest;
@@ -71,23 +72,27 @@ public class EndringsmeldingService {
         transformer.setOutputProperty(OutputKeys.INDENT, "no");
 
         for (Endringskoder endringskode : filtrerteEndringskoder) {
-            List<Document> syntetiserteNavEndringsmeldinger = navEndringsmeldingerSyntetisererenConsumer
-                    .getSyntetiserteNavEndringsmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode())).getBody();
+            try {
+                List<Document> syntetiserteNavEndringsmeldinger = navEndringsmeldingerSyntetisererenConsumer
+                        .getSyntetiserteNavEndringsmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode())).getBody();
 
-            if (syntetiserteNavEndringsmeldinger != null) {
-                for (Document document : syntetiserteNavEndringsmeldinger) {
-                    Node offentligIdent = document.getElementsByTagName("offentligIdent").item(0);
-                    offentligIdent.setTextContent(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
-                    StringWriter stringWriter = new StringWriter();
-                    transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
-                    String output = stringWriter.toString().replaceAll("\n|\r", "");
-                    sendTilTpsRequests.add(SendTilTpsRequest.builder()
-                            .miljoe(syntetiserNavEndringsmeldingerRequest.getMiljoe())
-                            .ko(queueName)
-                            .melding(output)
-                            .timeout(TIMEOUT_SEKUNDER)
-                            .build());
+                if (syntetiserteNavEndringsmeldinger != null) {
+                    for (Document document : syntetiserteNavEndringsmeldinger) {
+                        Node offentligIdent = document.getElementsByTagName("offentligIdent").item(0);
+                        offentligIdent.setTextContent(utvalgteIdenter.remove(rand.nextInt(utvalgteIdenter.size())));
+                        StringWriter stringWriter = new StringWriter();
+                        transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
+                        String output = stringWriter.toString().replaceAll("\n|\r", "");
+                        sendTilTpsRequests.add(SendTilTpsRequest.builder()
+                                .miljoe(syntetiserNavEndringsmeldingerRequest.getMiljoe())
+                                .ko(queueName)
+                                .melding(output)
+                                .timeout(TIMEOUT_SEKUNDER)
+                                .build());
+                    }
                 }
+            } catch (SyntetiseringsException e) {
+                log.warn("Kunne ikke hente syntetisert nav-endringsmelding for endringskode {}. ", endringskode.getEndringskode(), e);
             }
         }
 
@@ -99,7 +104,6 @@ public class EndringsmeldingService {
 
         try {
             List<String> statusFraFeiledeMeldinger = trekkUtStatusFraTps(responses).getOffentligIdentMedUtfyllendeMelding();
-
             log.info("Antall meldinger sendt til TPS: {}. Antall feilede meldinger: {}. Status på feilede meldinger: {}", responses.size(), statusFraFeiledeMeldinger.size(), statusFraFeiledeMeldinger.toString());
         } catch (ParserConfigurationException e) {
             log.warn("Kunne ikke opprette XML-parser", e);

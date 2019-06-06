@@ -7,12 +7,13 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import org.w3c.dom.Document;
 
 import java.util.List;
+
+import no.nav.registre.endringsmeldinger.consumer.rs.exceptions.SyntetiseringsException;
 
 @Slf4j
 @Component
@@ -35,9 +36,8 @@ public class NavEndringsmeldingerSyntetisererenConsumer {
         ResponseEntity<List<Document>> response;
         try {
             response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
-        } catch (HttpStatusCodeException e) {
-            log.warn("Kunne ikke hente syntetisert nav-endringsmelding. ", e);
-            return ResponseEntity.status(e.getStatusCode()).build();
+        } catch (Exception e) {
+            throw new SyntetiseringsException(e.getMessage(), e.getCause());
         }
         return response;
     }
