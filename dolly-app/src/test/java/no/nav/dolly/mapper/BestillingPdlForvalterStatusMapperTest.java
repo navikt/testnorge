@@ -3,6 +3,7 @@ package no.nav.dolly.mapper;
 import static org.assertj.core.util.Lists.emptyList;
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
@@ -28,8 +29,7 @@ public class BestillingPdlForvalterStatusMapperTest {
 
         RsPdlForvalterStatus resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(newArrayList(BestillingProgress.builder().build()));
 
-        assertThat(resultat.getUtenlandsid(), is(emptyList()));
-        assertThat(resultat.getKontaktinfoDoedsbo(), is(emptyList()));
+        assertThat(resultat, is(nullValue()));
     }
 
     @Test

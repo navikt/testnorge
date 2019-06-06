@@ -38,10 +38,12 @@ public final class BestillingPdlForvalterStatusMapper {
 
     private static RsPdlForvalterStatus prepareResult(Map<String, Map<String, List<String>>> msgStatusIdents) {
 
-        return RsPdlForvalterStatus.builder()
-                .kontaktinfoDoedsbo(buildMessageStatus(msgStatusIdents.get(KONTAKTINFORMASJON_DOEDSBO)))
-                .utenlandsid(buildMessageStatus(msgStatusIdents.get(UTENLANDS_IDENTIFIKASJONSNUMMER)))
-                .build();
+        return msgStatusIdents.containsKey(KONTAKTINFORMASJON_DOEDSBO) || msgStatusIdents.containsKey(UTENLANDS_IDENTIFIKASJONSNUMMER) ?
+                RsPdlForvalterStatus.builder()
+                        .kontaktinfoDoedsbo(buildMessageStatus(msgStatusIdents.get(KONTAKTINFORMASJON_DOEDSBO)))
+                        .utenlandsid(buildMessageStatus(msgStatusIdents.get(UTENLANDS_IDENTIFIKASJONSNUMMER)))
+                        .build()
+                : null;
     }
 
     private static List<RsStatusIdent> buildMessageStatus(Map<String, List<String>> statusIdent) {
