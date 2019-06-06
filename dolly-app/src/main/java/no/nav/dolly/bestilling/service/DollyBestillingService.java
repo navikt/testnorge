@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.service;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
@@ -13,19 +12,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.resultset.IdentType.DNR;
 import static no.nav.dolly.domain.resultset.IdentType.FNR;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -49,6 +36,19 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 @Slf4j
 @Service
@@ -130,7 +130,7 @@ public class DollyBestillingService {
 
             int loopCount = 0;
             while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < identer.size()) {
-                tpsfBestilling.setOpprettFraIdenter(newArrayList(identer.get(loopCount)));
+                tpsfBestilling.setOpprettFraIdenter(asList(identer.get(loopCount)));
                 preparePerson(request, bestilling, testgruppe, tpsfBestilling);
                 clearCache();
                 loopCount++;
@@ -158,7 +158,7 @@ public class DollyBestillingService {
             String hovedPersonIdent = getHovedpersonAvBestillingsidenter(identer);
             BestillingProgress progress = new BestillingProgress(bestilling.getId(), hovedPersonIdent);
 
-            sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
+            sendIdenterTilTPS(asList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
 
             gjenopprettNonTpsf(NorskIdent.builder().ident(bestillingProgress.getIdent())
                     .identType(Character.getType(bestillingProgress.getIdent().charAt(0)) > 3 ? DNR : FNR)
@@ -275,7 +275,7 @@ public class DollyBestillingService {
     }
 
     private List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        Set<String> successMiljoer = new TreeSet();
+        Set<String> successMiljoer = new TreeSet<>();
 
         // Add successful messages
         addSuccessfulMessages(hovedperson, response, successMiljoer);
@@ -283,7 +283,7 @@ public class DollyBestillingService {
         // Remove unsuccessful messages
         removeUnsuccessfulMessages(hovedperson, response, successMiljoer);
 
-        return newArrayList(successMiljoer);
+        return new ArrayList<>(successMiljoer);
     }
 
     private void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
@@ -311,13 +311,13 @@ public class DollyBestillingService {
     }
 
     private List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        Map<String, List<String>> failures = new TreeMap();
+        Map<String, List<String>> failures = new TreeMap<>();
 
         addFeilmeldingSkdMeldinger(hovedperson, response.getSendSkdMeldingTilTpsResponsene(), failures);
 
         addFeilmeldingServicerutiner(hovedperson, response.getServiceRoutineStatusResponsene(), failures);
 
-        List<String> errors = newArrayList();
+        List<String> errors = new ArrayList<>();
         failures.keySet().forEach(miljoe -> errors.add(format(OUT_FMT, miljoe, join(" + ", failures.get(miljoe)))));
 
         return errors;
@@ -328,7 +328,7 @@ public class DollyBestillingService {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
                     if (!entry.getValue().contains(SUCCESS) && !failures.containsKey(entry.getKey())) {
-                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
+                        failures.put(entry.getKey(), singletonList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
                     } else if (!entry.getValue().contains(SUCCESS)) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue()));
                     }
@@ -342,7 +342,7 @@ public class DollyBestillingService {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
                     if (!SUCCESS.equals(entry.getValue()) && !failures.containsKey(entry.getKey())) {
-                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
+                        failures.put(entry.getKey(), singletonList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
                     } else if (!SUCCESS.equals(entry.getValue())) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue()));
                     }

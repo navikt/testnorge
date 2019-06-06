@@ -1,16 +1,17 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingArenaforvalterStatusMapper {
@@ -18,11 +19,11 @@ public final class BestillingArenaforvalterStatusMapper {
     public static List<RsMeldingStatusIdent> buildArenaStatusMap(List<BestillingProgress> progressList) {
 
         // status    environment    ident
-        Map<String, Map<String, List<String>>> statusEnvIdents = new HashMap();
+        Map<String, Map<String, List<String>>> statusEnvIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (nonNull(progress.getArenaforvalterStatus())) {
-                newArrayList(progress.getArenaforvalterStatus().split(",")).forEach(
+                asList(progress.getArenaforvalterStatus().split(",")).forEach(
                         entry -> {
                             String environment = entry.split("\\$")[0];
                             String status = entry.split("\\$")[1];
@@ -40,11 +41,11 @@ public final class BestillingArenaforvalterStatusMapper {
             if (statusEnvIdents.get(status).containsKey(environment)) {
                 statusEnvIdents.get(status).get(environment).add(ident);
             } else {
-                statusEnvIdents.get(status).put(environment, newArrayList(ident));
+                statusEnvIdents.get(status).put(environment, singletonList(ident));
             }
         } else {
-            Map envIdent = new HashMap();
-            envIdent.put(environment, newArrayList(ident));
+            Map<String, List<String>> envIdent = new HashMap<>();
+            envIdent.put(environment, singletonList(ident));
             statusEnvIdents.put(status, envIdent);
         }
     }

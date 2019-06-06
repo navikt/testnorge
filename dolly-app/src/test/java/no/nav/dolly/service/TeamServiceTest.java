@@ -1,10 +1,10 @@
 package no.nav.dolly.service;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static no.nav.dolly.util.ListUtil.listOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -13,8 +13,18 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-import java.util.Optional;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.RsBruker;
+import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TeamRepository;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,18 +39,8 @@ import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.TeamRepository;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import java.util.List;
+import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TeamServiceTest {
@@ -188,11 +188,11 @@ public class TeamServiceTest {
         Bruker b1 = Bruker.builder().navIdent(CURRENT_BRUKER_IDENT).build();
         Bruker b2 = Bruker.builder().navIdent(NAVIDENT_2).build();
 
-        Team team = Team.builder().navn("t").medlemmer(newArrayList(b1, b2)).build();
+        Team team = Team.builder().navn("t").medlemmer(listOf(b1, b2)).build();
 
         Optional<Team> opMedTeam = of(team);
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
-        teamService.fjernMedlemmer(TEAM_ID, singletonList(CURRENT_BRUKER_IDENT));
+        teamService.fjernMedlemmer(TEAM_ID, listOf(CURRENT_BRUKER_IDENT));
 
         Team savedTeam = captureTheTeamSavedToRepo();
 
@@ -210,7 +210,7 @@ public class TeamServiceTest {
         when(teamRepository.findById(TEAM_ID)).thenReturn(of(
                 Team.builder()
                         .id(TEAM_ID)
-                        .medlemmer(newArrayList(Bruker.builder()
+                        .medlemmer(listOf(Bruker.builder()
                                 .navIdent(CURRENT_BRUKER_IDENT)
                                 .build()))
                         .build()));

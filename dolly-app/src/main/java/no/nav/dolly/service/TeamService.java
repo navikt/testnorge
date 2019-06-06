@@ -1,20 +1,10 @@
 package no.nav.dolly.service;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -29,6 +19,15 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 //TODO Burde gjore at alle returnerer team istedenfor "json/POJO" representasjonen av de.
 
@@ -58,7 +57,7 @@ public class TeamService {
                 .beskrivelse(opprettTeam.getBeskrivelse())
                 .datoOpprettet(LocalDate.now())
                 .eier(currentBruker)
-                .medlemmer(newArrayList(currentBruker))
+                .medlemmer(singletonList(currentBruker))
                 .build()
         );
 
@@ -71,7 +70,7 @@ public class TeamService {
             throw new NotFoundException("Team ikke funnet for denne IDen: " + id);
         }
 
-        Collections.sort(team.get().getMedlemmer(), (Bruker br1, Bruker br2) -> br1.getNavIdent().compareToIgnoreCase(br2.getNavIdent()));
+        team.get().getMedlemmer().sort((Bruker br1, Bruker br2) -> br1.getNavIdent().compareToIgnoreCase(br2.getNavIdent()));
         return team.get();
     }
 

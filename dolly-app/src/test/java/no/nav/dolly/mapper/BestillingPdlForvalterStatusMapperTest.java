@@ -1,18 +1,19 @@
 package no.nav.dolly.mapper;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.util.Lists.emptyList;
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 
-import java.util.List;
-import org.junit.Test;
-
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
+import org.junit.Test;
+
+import java.util.List;
 
 public class BestillingPdlForvalterStatusMapperTest {
 
@@ -30,7 +31,7 @@ public class BestillingPdlForvalterStatusMapperTest {
     @Test
     public void buildPdldataStatusMap_emptyList() {
 
-        List<RsMeldingStatusIdent> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(newArrayList(BestillingProgress.builder().build()));
+        List<RsMeldingStatusIdent> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(singletonList(BestillingProgress.builder().build()));
 
         assertThat(resultat, is(emptyList()));
     }
@@ -39,7 +40,7 @@ public class BestillingPdlForvalterStatusMapperTest {
     public void buildPdldataStatusMap_SingleStatus() {
 
         List<RsMeldingStatusIdent> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(
-                newArrayList(BestillingProgress.builder()
+                asList(BestillingProgress.builder()
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_1)
                                 .build(),
@@ -60,7 +61,7 @@ public class BestillingPdlForvalterStatusMapperTest {
     public void buildPdldataStatusMap_MultipleStatus() {
 
         List<RsMeldingStatusIdent> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(
-                newArrayList(BestillingProgress.builder()
+                asList(BestillingProgress.builder()
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_1)
                                 .build(),

@@ -19,7 +19,7 @@ import no.nav.dolly.repository.TeamRepository;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestConfig.class)
 @ActiveProfiles(value = "test")
-public abstract class InMememoryDbTestSetup {
+public abstract class InMemoryDbTestSetup {
 
     @Autowired
     public BrukerRepository brukerRepository;

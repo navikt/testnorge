@@ -3,7 +3,6 @@ package no.nav.dolly.appservices.tpsf.service;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -15,19 +14,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -52,6 +38,19 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DollyBestillingServiceTest {
@@ -288,7 +287,7 @@ public class DollyBestillingServiceTest {
 
         when(tpsfService.checkEksisterendeIdenter(STANDARD_IDENTER)).thenReturn(
                 CheckStatusResponse.builder().statuser(
-                        newArrayList(IdentStatus.builder().available(true).ident(IDENT_1).status(STATUS).build(),
+                        asList(IdentStatus.builder().available(true).ident(IDENT_1).status(STATUS).build(),
                                 IdentStatus.builder().available(true).ident(IDENT_2).status(STATUS).build(),
                                 IdentStatus.builder().available(true).ident(IDENT_3).status(STATUS).build()))
                         .build());

@@ -12,10 +12,6 @@
 
     <artifactId>dolly-app</artifactId>
 
-    <properties>
-        <springfox-swagger.version>2.4.0</springfox-swagger.version>
-    </properties>
-
     <dependencies>
 
         <dependency>

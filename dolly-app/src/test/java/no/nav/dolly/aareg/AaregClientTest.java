@@ -1,22 +1,13 @@
 package no.nav.dolly.aareg;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singletonList;
+import static no.nav.dolly.util.ListUtil.listOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-import java.util.Map;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
@@ -27,6 +18,15 @@ import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPerson;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregClientTest {
@@ -48,7 +48,7 @@ public class AaregClientTest {
     @Test
     public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
 
-        when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(new Object[] {}));
+        when(aaregRestConsumer.readArbeidsforhold(IDENT, ENV)).thenReturn(ResponseEntity.ok(new Object[]{}));
 
         aaregClient.gjenopprett(RsDollyBestilling.builder()
                         .aareg(singletonList(RsArbeidsforhold.builder().build()))
@@ -137,6 +137,6 @@ public class AaregClientTest {
         arbeidsforhold.put("arbeidstaker", arbeidstaker);
         arbeidsforhold.put("navArbeidsforholdId", NAV_ARBFORHOLD_ID);
 
-        return newArrayList(arbeidsforhold).toArray();
+        return listOf(arbeidsforhold).toArray();
     }
 }

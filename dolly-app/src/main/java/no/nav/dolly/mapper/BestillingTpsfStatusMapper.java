@@ -1,19 +1,20 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
+//TODO Replace google
 import static com.google.common.collect.Sets.newHashSet;
+import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusMiljoeIdent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusMiljoeIdent;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingTpsfStatusMapper {
@@ -25,14 +26,14 @@ public final class BestillingTpsfStatusMapper {
 
         progressList.forEach(progress -> {
             if (nonNull(progress.getFeil())) {
-                newArrayList(progress.getFeil().split(",")).forEach(error -> {
+                asList(progress.getFeil().split(",")).forEach(error -> {
                     String environ = error.split(":", 2)[0];
                     String errMsg = error.split(":", 2)[1].trim();
                     checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsg);
                 });
             }
             if (nonNull(progress.getTpsfSuccessEnv())) {
-                newArrayList(progress.getTpsfSuccessEnv().split(",")).forEach(environ ->
+                asList(progress.getTpsfSuccessEnv().split(",")).forEach(environ ->
                         checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, SUCCESS)
                 );
             }
@@ -57,7 +58,7 @@ public final class BestillingTpsfStatusMapper {
                 errorEnvIdents.get(status).put(environ, newHashSet(ident));
             }
         } else {
-            Map<String, Set<String>> entry = new HashMap();
+            Map<String, Set<String>> entry = new HashMap<>();
             entry.put(environ, newHashSet(ident));
             errorEnvIdents.put(status, entry);
         }

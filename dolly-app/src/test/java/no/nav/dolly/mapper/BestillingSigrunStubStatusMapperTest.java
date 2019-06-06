@@ -1,23 +1,23 @@
 package no.nav.dolly.mapper;
 
-import static org.assertj.core.util.Lists.newArrayList;
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 
-import java.util.List;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusIdent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusIdent;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingSigrunStubStatusMapperTest {
 
-    private static final List<BestillingProgress> RUN_STATUS = newArrayList(
+    private static final List<BestillingProgress> RUN_STATUS = asList(
             BestillingProgress.builder().ident("IDENT_1")
                     .sigrunstubStatus("OK")
                     .build(),

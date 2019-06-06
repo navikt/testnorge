@@ -2,12 +2,14 @@ package no.nav.dolly.repository;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Lists.newArrayList;
+import static no.nav.dolly.util.ListUtil.listOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.time.LocalDate;
-import java.util.List;
+import no.nav.dolly.LocalAppStarter;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import no.nav.dolly.LocalAppStarter;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
+import java.time.LocalDate;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = LocalAppStarter.class)
@@ -67,14 +67,14 @@ public class TeamRepositoryTest {
         Bruker bruker = Bruker.builder().navIdent("ident").build();
         Bruker brukerEier = Bruker.builder().navIdent("eier").build();
 
-        brukerRepository.saveAll(newArrayList(bruker, brukerEier));
+        brukerRepository.saveAll(listOf(bruker, brukerEier));
         List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
 
         Team team = Team.builder()
                 .navn("team")
                 .datoOpprettet(LocalDate.of(2000, 1, 1))
                 .eier(brukere.get(0))
-                .medlemmer(newArrayList(brukere.get(1)))
+                .medlemmer(listOf(brukere.get(1)))
                 .beskrivelse("besk")
                 .build();
 
@@ -98,7 +98,7 @@ public class TeamRepositoryTest {
 
         gruppeRepository.save(testgruppe);
 
-        foundTeam.setGrupper(newArrayList(testgruppe));
+        foundTeam.setGrupper(listOf(testgruppe));
         teamRepository.save(foundTeam);
 
         foundTeam = teamRepository.findAllByOrderByNavn().get(0);

@@ -24,10 +24,10 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.regression.InMememoryDbTestSetup;
+import no.nav.dolly.regression.InMemoryDbTestSetup;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
-public abstract class RestTestBase extends InMememoryDbTestSetup {
+public abstract class RestTestBase extends InMemoryDbTestSetup {
 
     @Autowired(required = false)
     private WebApplicationContext webApplicationContext;

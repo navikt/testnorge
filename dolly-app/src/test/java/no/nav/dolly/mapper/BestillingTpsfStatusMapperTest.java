@@ -1,24 +1,24 @@
 package no.nav.dolly.mapper;
 
-import static org.assertj.core.util.Lists.newArrayList;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-import java.util.List;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusMiljoeIdent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusMiljoeIdent;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingTpsfStatusMapperTest {
 
-    private static final List<BestillingProgress> ERROR_STATUS = newArrayList(
+    private static final List<BestillingProgress> ERROR_STATUS = asList(
             BestillingProgress.builder().ident("IDENT_1")
                     .feil("u5: FEIL: Data om innvandring var ikke utfylt,t0: FEIL: Data om innvandring var ikke utfylt,t1: FEIL: Data om innvandring var ikke utfylt,q0: FEIL: Data om innvandring var ikke utfylt\n")
                     .build(),

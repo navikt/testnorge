@@ -1,17 +1,17 @@
 package no.nav.dolly.mapper;
 
 import static java.util.Objects.nonNull;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.google.common.collect.Lists;
+import static no.nav.dolly.util.ListUtil.listOf;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusIdent;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingKrrStubStatusMapper {
@@ -25,17 +25,17 @@ public final class BestillingKrrStubStatusMapper {
                 if (statusMap.containsKey(progress.getKrrstubStatus())) {
                     statusMap.get(progress.getKrrstubStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getKrrstubStatus(), Lists.newArrayList(progress.getIdent()));
+                    statusMap.put(progress.getKrrstubStatus(), listOf(progress.getIdent()));
                 }
             }
         });
 
         List<RsStatusIdent> identStatus = new ArrayList<>();
         statusMap.forEach((key, value) ->
-            identStatus.add(RsStatusIdent.builder()
-                    .statusMelding(key)
-                    .identer(value)
-                    .build())
+                identStatus.add(RsStatusIdent.builder()
+                        .statusMelding(key)
+                        .identer(value)
+                        .build())
         );
         return identStatus;
     }
