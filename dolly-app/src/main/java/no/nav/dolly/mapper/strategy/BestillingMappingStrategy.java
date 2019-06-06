@@ -31,7 +31,7 @@ public class BestillingMappingStrategy implements MappingStrategy {
                         rsBestilling.getSigrunStubStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
                         rsBestilling.getAaregStatus().addAll(buildAaregStatusMap(bestilling.getProgresser()));
                         rsBestilling.getArenaforvalterStatus().addAll(buildArenaStatusMap(bestilling.getProgresser()));
-                        rsBestilling.getPdlforvalterStatus().addAll(buildPdldataStatusMap(bestilling.getProgresser()));
+                        rsBestilling.setPdlforvalterStatus(buildPdldataStatusMap(bestilling.getProgresser()));
                     }
                 })
                 .byDefault()
