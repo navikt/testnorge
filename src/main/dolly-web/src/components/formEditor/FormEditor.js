@@ -131,6 +131,9 @@ export default class FormEditor extends PureComponent {
 			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'UTEN_SERVICEBEHOV') {
 				formikProps.values['arenaforvalter'][0]['kvalifiseringsgruppe'] = ''
 			}
+			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'MED_SERVICEBEHOV') {
+				formikProps.values['arenaforvalter'][0]['inaktiveringDato'] = ''
+			}
 		}
 
 		return (

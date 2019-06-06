@@ -80,7 +80,7 @@ const avvikStatus = item => {
 		})
 	item.arenaforvalterStatus &&
 		item.arenaforvalterStatus.map(status => {
-			!status['statusIdent']['status: OK'] && (avvik = true)
+			status.status !== 'OK' && (avvik = true)
 		})
 	item.feil && (avvik = true)
 	return avvik

@@ -69,15 +69,13 @@ const DataMapper = {
 			data.push(mapKrrData(krrData))
 		}
 		if (arenaData) {
-			// Workaround for å hente servicebehov-type fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
+			// Workaround for å hente servicebehov-type og inaktiveringsdato fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
 			const bestKriterier = JSON.parse(
 				bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).bestKriterier
 			)
 			var kvalifiseringsgruppe = bestKriterier.arenaforvalter.kvalifiseringsgruppe
-			if (kvalifiseringsgruppe === 'null') {
-				kvalifiseringsgruppe = null
-			}
-			data.push(mapArenaData(arenaData, kvalifiseringsgruppe))
+			var inaktiveringDato = bestKriterier.arenaforvalter.inaktiveringDato
+			data.push(mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato))
 		}
 		if (bestillingId.length > 1) {
 			data.push(mapBestillingId(testIdent))

@@ -18,7 +18,7 @@ const avvikStatus = item => {
 		})
 	item.arenaforvalterStatus &&
 		item.arenaforvalterStatus.map(status => {
-			!status['statusIdent']['status: OK'] && (avvik = true)
+			status.status !== 'OK' && (avvik = true)
 		})
 
 	item.feil && (avvik = true)
@@ -86,7 +86,7 @@ const miljoeStatusSelector = bestilling => {
 		})
 	bestilling.arenaforvalterStatus &&
 		bestilling.arenaforvalterStatus.map(status => {
-			if (status['statusIdent']['status: OK']) {
+			if (status.status == 'OK') {
 				!successEnvs.includes('Arena') && successEnvs.push('Arena')
 			} else {
 				!failedEnvs.includes('Arena') && failedEnvs.push('Arena')

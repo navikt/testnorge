@@ -324,6 +324,10 @@ export function mapBestillingData(bestillingData) {
 					{
 						label: 'Servicebehov',
 						value: arenaKriterier.kvalifiseringsgruppe
+					},
+					{
+						label: 'Inaktiv fra dato',
+						value: Formatters.formatDate(arenaKriterier.inaktiveringDato)
 					}
 				]
 			}
