@@ -8,7 +8,7 @@ import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
 import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
-import { getAaregSuccessEnv } from '~/ducks/bestillingStatus/utils'
+import { getAaregSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 const AttributtManagerInstance = new AttributtManager()
@@ -29,6 +29,9 @@ export default class PersonDetaljer extends PureComponent {
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunTestbruker()
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunSekvensnr()
 		this.props.testIdent.krrstubStatus === 'OK' && this.props.getKrrTestbruker()
+		this.props.testIdent.pdlforvalterStatus &&
+			getPdlforvalterStatusOK(this.props.testIdent.pdlforvalterStatus) &&
+			this.props.getPdlfTestbruker()
 		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
 	}
@@ -36,7 +39,7 @@ export default class PersonDetaljer extends PureComponent {
 	render() {
 		const { personData, editAction, frigjoerTestbruker, bestilling } = this.props
 		const { modalOpen } = this.state
-
+		console.log('this.props.testIdent :', this.props.testIdent)
 		if (!personData) return null
 		return (
 			<div className="person-details">

@@ -261,7 +261,9 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
 	}
 
-	final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
+	final_values.pdlforvalter &&
+		final_values.pdlforvalter.kontaktinformasjonForDoedsbo &&
+		final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
 		oppslag.Postnummer.koder.map(postnummer => {
 			postnummer.value === final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
 				(final_values = _set(

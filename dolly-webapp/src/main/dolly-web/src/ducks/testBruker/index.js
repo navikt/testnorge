@@ -107,8 +107,8 @@ export const GET_AAREG_TESTBRUKER = createAction(
 	})
 )
 
-export const GET_PERSONOPPSLAG_TESTBRUKER = createAction(
-	'GET_PERSONOPPSLAG_TESTBRUKER',
+export const GET_TESTBRUKER_PERSONOPPSLAG = createAction(
+	'GET_TESTBRUKER_PERSONOPPSLAG',
 	async (ident, env) => {
 		try {
 			const res = await DollyApi.getPersonFraPersonoppslag(ident)
@@ -191,6 +191,17 @@ export default function testbrukerReducer(state = initialState, action) {
 					...state.items,
 					aareg: {
 						...state.items.aareg,
+						[action.meta.ident]: action.payload && action.payload.data
+					}
+				}
+			}
+		case success(GET_TESTBRUKER_PERSONOPPSLAG):
+			return {
+				...state,
+				items: {
+					...state.items,
+					pdlforvalter: {
+						...state.items.pdlforvalter,
 						[action.meta.ident]: action.payload && action.payload.data
 					}
 				}

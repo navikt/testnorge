@@ -103,7 +103,10 @@ export const getValues = (attributeList, values) => {
 			if (adressatObj.adressatType === 'PERSON_MEDID')
 				Object.assign(adressatObj, { idnummer: doedsboValues.idnummer })
 			else if (adressatObj.adressatType === 'PERSON_UTENID')
-				Object.assign(adressatObj, { foedselsdato: doedsboValues.foedselsdato, navn: navnObj })
+				Object.assign(adressatObj, {
+					foedselsdato: DataFormatter.parseDate(doedsboValues.foedselsdato),
+					navn: navnObj
+				})
 			else if (adressatObj.adressatType === 'ADVOKAT')
 				Object.assign(adressatObj, {
 					organisasjonsnavn: doedsboValues.advokat_orgnavn,

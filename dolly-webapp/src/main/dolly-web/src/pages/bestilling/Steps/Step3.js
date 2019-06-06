@@ -199,6 +199,15 @@ export default class Step3 extends PureComponent {
 		)
 	}
 
+	renderSubKategori = ({ subKategori, items }) => {
+		const { values } = this.props
+
+		if (!subKategori.showInSummary) {
+			return items.map(item => this.renderItem(item, values))
+		}
+		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
+	}
+
 	renderSubKategoriBlokk = (header, items, values) => {
 		if (!items.every(nested => nested.items)) {
 			let removable = !items.every(item => this.props.selectedAttributeIds.includes(item.id))
@@ -223,15 +232,6 @@ export default class Step3 extends PureComponent {
 				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
 			</div>
 		)
-	}
-
-	renderSubKategori = ({ subKategori, items }) => {
-		const { values } = this.props
-
-		if (!subKategori.showInSummary) {
-			return items.map(item => this.renderItem(item, values))
-		}
-		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
 	renderItem = (item, stateValues) => {

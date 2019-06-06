@@ -91,12 +91,10 @@ export const FieldArrayComponent = ({
 	}
 	const formikValues = formikProps.values[parentId]
 	let subLabelArray = []
-	// console.log('subKategori :', subKategori)
-	// console.log('items :', items)
-	// console.log('item :', item)
 	return (
 		<Fragment>
 			{/* <h4>{subKategori.navn}</h4> */}
+			{/* Fjernet underoverskriften. Kan være feil */}
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
 					return (
@@ -171,11 +169,15 @@ export const FieldArrayComponent = ({
 											}
 											return (
 												<div key={kdx} className="flexbox">
-													{/* {visUnderoverskrift && <h4>{item.subKategori.navn}</h4>} */}
-													{renderFieldComponent(fakeItem, formikProps.values, {
-														parentId,
-														idx
-													})}
+													{renderFieldComponent(
+														fakeItem,
+														formikProps.values,
+														{
+															parentId,
+															idx
+														},
+														formikProps
+													)}
 												</div>
 											)
 										}

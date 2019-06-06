@@ -7,7 +7,7 @@ import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
 	{
-		hovedKategori: Kategorier.PersInfo,
+		hovedKategori: Kategorier.KontaktInfoDoedsbo,
 		subKategori: SubKategorier.Doedsbo,
 		id: 'kontaktinformasjonForDoedsbo',
 		label: 'Har kontaktinformasjon for dødsbo',
@@ -17,7 +17,7 @@ const AttributtListe: Attributt[] = [
 		validation: yup.object(),
 		items: [
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'adressatType',
 				label: 'Adressattype',
@@ -31,7 +31,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'idnummer',
 				label: 'Fnr/dnr',
@@ -47,7 +47,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'foedselsdato',
 				label: 'Fødselsdato',
@@ -60,7 +60,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'fornavn',
 				label: 'Fornavn',
@@ -73,7 +73,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'mellomnavn',
 				label: 'mellomnavn',
@@ -85,7 +85,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'etternavn',
 				label: 'Etternavn',
@@ -98,7 +98,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'org_orgnavn',
 				label: 'Organisasjonsnavn',
@@ -111,7 +111,7 @@ const AttributtListe: Attributt[] = [
 				validation: yup.string().required('Vennligst fyll inn organisasjonsnavn')
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'advokat_orgnavn',
 				label: 'Organisasjonsnavn',
@@ -123,7 +123,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'org_orgnr',
 				label: 'Organisasjonsnummer',
@@ -140,7 +140,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'advokat_orgnr',
 				label: 'Organisasjonsnummer',
@@ -157,11 +157,12 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'landkode',
 				parent: 'adresse',
 				label: 'Land',
+				subGruppe: 'Adresse',
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Select,
 				apiKodeverkId: 'Landkoder',
@@ -170,35 +171,38 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'adresselinje1',
 				path: 'adresse.adresselinje1',
 				parent: 'adresse',
 				label: 'Adresselinje 1',
+				subGruppe: 'Adresse',
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Text,
 				validation: yup.string().required('Vennligst fyll ut'),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'adresselinje2',
 				path: 'adresse.adresselinje2',
 				parent: 'adresse',
 				label: 'Adresselinje 2',
+				subGruppe: 'Adresse',
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Text,
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'postnummer',
 				path: 'adresse.postnummer',
 				parent: 'adresse',
 				label: 'Postnummer og -sted',
+				subGruppe: 'Adresse',
 				dataSource: DataSource.PDLF, //endres
 				apiKodeverkShowValueInLabel: true,
 				inputType: InputType.Select,
@@ -208,28 +212,30 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'utenlandsk_postnummer',
 				path: 'adresse.utenlandsk_postnummer',
 				parent: 'adresse',
 				label: 'Postnummer',
+				subGruppe: 'Adresse',
 				dataSource: DataSource.PDLF, //endres
 				inputType: InputType.Text,
 				onlyShowDependentOnOtherValue: { attributtId: 'landkode', exceptValue: ['NOR', ''] },
 				validation: yup
 					.string()
-					.matches(/^[0-9]*$/, 'Postnummeret må være et tall med 4 sifre')
-					.test('len', 'Postnummeret må være et tall med 4 sifre', val => val && val.length === 4),
+					.required('Vennligst fyll inn postnummer')
+					.matches(/^[0-9]*$/, 'Fyll inn postnummer'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'utenlandsk_poststedsnavn',
 				path: 'adresse.utenlandsk_poststed',
 				parent: 'adresse',
 				label: 'Poststed',
+				subGruppe: 'Adresse',
 				dataSource: DataSource.PDLF,
 				validation: yup.string().required('Vennligst fyll inn poststed'),
 				onlyShowDependentOnOtherValue: { attributtId: 'landkode', exceptValue: ['NOR', ''] },
@@ -237,10 +243,11 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Diverse,
 				id: 'skifteform',
 				label: 'Skifteform',
+				subGruppe: 'Annet',
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Select,
 				validation: yup.string().required('Vennligst velg'),
@@ -248,10 +255,11 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Diverse,
 				id: 'utstedtDato',
 				label: 'Skifteform utstedt',
+				subGruppe: 'Annet',
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Date,
 				validation: DateValidation(),
@@ -259,10 +267,11 @@ const AttributtListe: Attributt[] = [
 				defaultValue: new Date()
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Diverse,
 				id: 'gyldigFom',
 				label: 'Gyldig fra',
+				subGruppe: 'Annet',
 				dataSource: DataSource.PDLF,
 				validation: DateValidation(),
 				inputType: InputType.Date,
@@ -270,10 +279,11 @@ const AttributtListe: Attributt[] = [
 				defaultValue: new Date()
 			},
 			{
-				hovedKategori: Kategorier.PersInfo,
+				hovedKategori: Kategorier.KontaktInfoDoedsbo,
 				subKategori: SubKategorier.Diverse,
 				id: 'gyldigTom',
 				label: 'Gyldig til',
+				subGruppe: 'Annet',
 				dataSource: DataSource.PDLF,
 				validation: DateValidation(false),
 				inputType: InputType.Date,
