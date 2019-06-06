@@ -37,10 +37,11 @@ export const Kategorier: KategoriTypes = {
 			'Dataene her blir lagt i Krr-stub og blir kun distribuert til Q2. Dersom du har behov for dataen i andre miljøer må du opprette en manuell testdatabestilling i REG-spacet i Jira.',
 		order: 50
 	},
-	Persondataløsningen: {
-		id: 'pdl',
-		navn: 'Persondataløsningen',
-		informasjonstekst: 'Data blir lagt i persondataløsningen.',
+	KontaktInfoDoedsbo: {
+		id: 'kontaktinfoDoedsbo',
+		navn: 'Kontaktinformasjon for dødsbo',
+		informasjonstekst:
+			'Kontaktinformasjon for dødsbo. Blir kun distribuert til Q2, og dette miljøet må derfor velges.',
 		order: 50
 	}
 }
@@ -58,8 +59,8 @@ export const SubKategorier: KategoriTypes = {
 	},
 	Doedsbo: {
 		id: 'doedsbo',
-		navn: 'Kontaktinformasjon for dødsbo',
-		order: 10,
+		navn: '',
+		order: 20,
 		showInSummary: true
 	},
 	Adressat: {

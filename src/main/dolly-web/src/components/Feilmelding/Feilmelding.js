@@ -11,12 +11,14 @@ export default class Feilmelding extends Component {
 		const { bestilling } = this.props
 		let cssClass = 'feil-container feil-container_border'
 		const stubStatus = this._finnStubStatus(bestilling)
+		const pdlforvalterStatus = this._finnPdlforvalterStatus(bestilling)
 		// TODO: Refaktor
 		const finnesTPSFEllerStub =
 			(bestilling.tpsfStatus && this._finnTpsfFeilStatus(bestilling.tpsfStatus).length > 0) ||
 			stubStatus.length > 0 ||
-			(bestilling.aaregStatus && this._finnTpsfFeilStatus(bestilling.aaregStatus).length > 0)
-
+			(bestilling.aaregStatus && this._finnTpsfFeilStatus(bestilling.aaregStatus).length > 0) ||
+			pdlforvalterStatus.length > 0
+		console.log('pdlforvalterStatus :', pdlforvalterStatus)
 		return (
 			<div className="feil-melding">
 				{/*Generelle feilmeldinger */}
@@ -56,6 +58,7 @@ export default class Feilmelding extends Component {
 					})}
 				{/*Feilmeldinger fra Sigrun- og krrStub */}
 				{stubStatus && this._renderStubStatus(stubStatus, cssClass)}
+				{pdlforvalterStatus && this._renderStubStatus(pdlforvalterStatus, cssClass)}
 			</div>
 		)
 	}
@@ -73,9 +76,11 @@ export default class Feilmelding extends Component {
 
 	_finnStubStatus = bestilling => {
 		let stubStatus = []
+		console.log('bestilling :', bestilling)
 		//const tpsfFeilStatus = this.finnTpsfFeilStatus(bestilling.tpsfStatus)
 		const krrStubStatus = { navn: 'KRRSTUB', status: bestilling.krrStubStatus }
 		const sigrunStubStatus = { navn: 'SIGRUNSTUB', status: bestilling.sigrunStubStatus }
+		// const pdlforvalterkStatus = {navn: 'PDLFORVALTER', status: bestilling.pdlforvalterStatus}
 
 		// Legger til feilmeldinger fra krrStub og sigrunStub i et array
 		{
@@ -90,6 +95,23 @@ export default class Feilmelding extends Component {
 		}
 
 		return stubStatus
+	}
+
+	_finnPdlforvalterStatus = bestilling => {
+		let pdlfStatuser = []
+
+		Object.keys(bestilling.pdlforvalterStatus).map(pdlfAttr => {
+			bestilling.pdlforvalterStatus[pdlfAttr].map(status => {
+				// if (status.statusMelding !== 'OK') {
+				pdlfStatuser.push({
+					navn: 'PDL-forvalter',
+					status: pdlfAttr + ': ' + status.statusMelding
+				})
+				// }
+			})
+		})
+
+		return pdlfStatuser
 	}
 
 	_renderTPSFStatus = (tpsfFeil, cssClass, i) => {

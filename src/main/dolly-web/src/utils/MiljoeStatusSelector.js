@@ -1,4 +1,3 @@
-
 const avvikStatus = item => {
 	let avvik = false
 	item.tpsfStatus &&
@@ -16,6 +15,13 @@ const avvikStatus = item => {
 	item.sigrunStubStatus &&
 		item.sigrunStubStatus.map(status => {
 			status.statusMelding !== 'OK' && (avvik = true)
+		})
+	item.pdlforvalterStatus &&
+		Object.keys(item.pdlforvalterStatus).map(pdlAttr => {
+			item.pdlforvalterStatus[pdlAttr].map(status => {
+				status.statusMelding === 'OK' && (avvik = true)
+				//ingvild
+			})
 		})
 	item.feil && (avvik = true)
 	return avvik
@@ -35,7 +41,7 @@ const antallIdenterOpprettetFunk = bestilling => {
 }
 
 const miljoeStatusSelector = bestilling => {
-    if (!bestilling) return null
+	if (!bestilling) return null
 
 	const bestillingId = bestilling.id
 	let successEnvs = []
@@ -80,6 +86,12 @@ const miljoeStatusSelector = bestilling => {
 				!failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
 			}
 		})
+	// bestilling.pdlforvalterStatus &&
+	// 	bestilling.pdlforvalterStatus.map(status => {
+	// 		status.statusMelding === 'OK'
+	// 			? !successEnvs.includes('Pdl-forvalter') && successEnvs.push('Pdl-forvalter')
+	// 			: !failedEnvs.includes('Pdl-forvalter') && failedEnvs.push('Pdl-forvalter')
+	// 	})
 
 	let aaregHasOneSuccessEnv = false
 	let aaregFailed = false
@@ -108,7 +120,7 @@ const miljoeStatusSelector = bestilling => {
 		avvikEnvs,
 		finnesFeilmelding,
 		antallIdenterOpprettet
-    }
+	}
 }
 
-export default (miljoeStatusSelector)
+export default miljoeStatusSelector

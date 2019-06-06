@@ -1,8 +1,9 @@
 import { createHeader as c, mapBestillingId } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
-
+import { mapPdlfData } from './mapPdlDataToIdent'
 import { mapKrrData, mapSigrunData, mapAaregData } from './mapRegistreDataToIdent'
+
 // * Mapper testperson-data for å vise under testpersonliste
 const DataMapper = {
 	getHeaders() {
@@ -55,6 +56,7 @@ const DataMapper = {
 		const sigrunData = testbruker.items.sigrunstub && testbruker.items.sigrunstub[personId]
 		const krrData = testbruker.items.krrstub && testbruker.items.krrstub[personId]
 		const aaregData = testbruker.items.aareg && testbruker.items.aareg[personId]
+		const pdlfData = testbruker.items.pdlforvalter && testbruker.items.pdlforvalter[personId]
 		var bestillingId = _findBestillingId(gruppe, personId)
 
 		if (aaregData) {
@@ -66,11 +68,13 @@ const DataMapper = {
 		if (krrData) {
 			data.push(mapKrrData(krrData))
 		}
+		if (pdlfData) {
+			data.push(mapPdlfData(pdlfData))
+		}
 
 		if (bestillingId.length > 1) {
 			data.push(mapBestillingId(testIdent))
 		}
-
 		return data
 	}
 }
