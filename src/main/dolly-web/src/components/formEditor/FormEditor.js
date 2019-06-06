@@ -344,20 +344,6 @@ export default class FormEditor extends PureComponent {
 		return error
 	}
 
-	validSwitch = item => {
-		let error
-		switch (item) {
-			case 'permisjonOgPermittering': {
-				if (value === '') {
-					error = 'Fyll inn permisjonstype'
-				}
-			}
-			default:
-				error = 'Fyll inn'
-		}
-		return error
-	}
-
 	extraComponentProps = (item, valgteVerdier, parentObject) => {
 		switch (item.inputType) {
 			case 'select': {

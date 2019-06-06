@@ -97,7 +97,6 @@ export function mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato) 
 }
 
 export function mapSubItemAaregData(data) {
-	if (!data) return null
 	let subItemArray = []
 	data.utenlandsopphold &&
 		subItemArray.push({
@@ -176,7 +175,7 @@ export function mapAaregData(aaregData) {
 			return {
 				parent: 'arbeidsforhold',
 				id: data.arbeidsforholdId,
-				label: data.inntektsaar,
+				label: 'Arbeidsforhold',
 				value: [
 					{
 						id: 'id',
