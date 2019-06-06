@@ -70,7 +70,7 @@ export function mapKrrData(krrData) {
 	}
 }
 
-export function mapArenaData(arenaData, kvalifiseringsgruppe) {
+export function mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato) {
 	if (!arenaData) return null
 	if (arenaData['data']['arbeidsokerList'].length === 0) return null
 	const brukertype = arenaData['data']['arbeidsokerList'][0].servicebehov
@@ -86,6 +86,11 @@ export function mapArenaData(arenaData, kvalifiseringsgruppe) {
 				id: 'servicebehov',
 				label: 'Servicebehov',
 				value: kvalifiseringsgruppe
+			},
+			inaktiveringDato && {
+				id: 'inaktiveringDato',
+				label: 'Inaktiv fra dato',
+				value: Formatters.formatDate(inaktiveringDato)
 			}
 		]
 	}
