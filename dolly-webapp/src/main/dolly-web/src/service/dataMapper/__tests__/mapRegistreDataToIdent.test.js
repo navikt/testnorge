@@ -1,6 +1,7 @@
 import {
 	mapSigrunData,
 	mapKrrData,
+	mapArenaData,
 	mapAaregData,
 	mapSubItemAaregData
 } from '../mapRegistreDataToIdent'
@@ -126,6 +127,57 @@ describe('mapDetailedData.js', () => {
 		})
 	})
 
+	describe('mapArenaData', () => {
+		it('should return null without data', () => {
+			expect(mapArenaData()).toBeNull()
+		})
+
+		const testArenaData1 = { data: { arbeidsokerList: { 0: { servicebehov: true } } } }
+		const testKvalifiseringsgruppe1 = 'BFORM'
+		const testDato1 = null
+
+		it('should return arena-data with servicebehov', () => {
+			const testRes1 = {
+				header: 'Arena',
+				data: [
+					{
+						id: 'brukertype',
+						label: 'Brukertype',
+						value: 'Med servicebehov'
+					},
+					{
+						id: 'servicebehov',
+						label: 'Servicebehov',
+						value: 'BFORM'
+					},
+					null
+				]
+			}
+			expect(mapArenaData(testArenaData1, testKvalifiseringsgruppe1, testDato1)).toEqual(testRes1)
+		})
+
+		it('should return arena-data without servicebehov', () => {
+			const testArenaData2 = { data: { arbeidsokerList: { 0: { servicebehov: false } } } }
+			const testKvalifiseringsgruppe2 = null
+			const testDato2 = '2019-06-04T00:00:00'
+			const testRes2 = {
+				header: 'Arena',
+				data: [
+					{
+						id: 'brukertype',
+						label: 'Brukertype',
+						value: 'Uten servicebehov'
+					},
+					null,
+					{
+						id: 'inaktiveringDato',
+						label: 'Inaktiv fra dato',
+						value: '04.06.2019'
+					}
+				]
+			}
+			expect(mapArenaData(testArenaData2, testKvalifiseringsgruppe2, testDato2)).toEqual(testRes2)
+		})
 	describe('mapAaregData', () => {
 		it('should return null without data', () => {
 			expect(mapAaregData()).toBeNull()

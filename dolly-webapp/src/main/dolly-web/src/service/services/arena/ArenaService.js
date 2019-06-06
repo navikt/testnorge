@@ -11,7 +11,7 @@ export default class ArenaService {
 
 	static getTestbruker(ident) {
 		return Request.getWithoutCredentials(
-			`https://arena-forvalteren.nais.preprod.local/bruker?filter-personident=${ident}&page=0`,
+			`${this.getArenaUrl()}/bruker?filter-personident=${ident}&page=0`,
 			{
 				headers: {
 					'Nav-Call-Id': 'dolly-frontend',
