@@ -98,6 +98,26 @@ Formatters.booleanToServicebehov = value => {
 	return value === true ? 'Med servicebehov' : value === false ? 'Uten servicebehov' : value
 }
 
+Formatters.servicebehovKodeTilBeskrivelse = value => {
+	if (!value) return null
+	let beskrivelse = value
+	switch (value) {
+		case 'IKVAL':
+			beskrivelse = 'IKVAL - Standardinnsats'
+			break
+		case 'BFORM':
+			beskrivelse = 'BFORM - Situasjonsbestemt innsats'
+			break
+		case 'BATT':
+			beskrivelse = 'BATT - Spesielt tilpasset innsats'
+			break
+		case 'VARIG':
+			beskrivelse = 'VARIG - Varig tilpasset innsats'
+			break
+	}
+	return beskrivelse
+}
+
 Formatters.gtApiKodeverkId = gtType => {
 	if (!gtType) return null
 
