@@ -26,6 +26,7 @@ import no.nav.dolly.properties.Environment;
 public class StsOidcFasitConsumerTest {
 
     private static final Environment ENV = Environment.TEST;
+    private static final String OIDC_ALIAS = "security-token-service-token";
 
     @Mock
     private FasitApiConsumer fasitApiConsumer;
@@ -58,6 +59,7 @@ public class StsOidcFasitConsumerTest {
         when(fasitApiConsumer.fetchResources(anyString(), anyString())).thenReturn(
                 new FasitResourceWithUnmappedProperties[] {
                         FasitResourceWithUnmappedProperties.builder()
+                                .alias(OIDC_ALIAS)
                                 .scope(FasitResourceScope.builder()
                                         .zone("fss")
                                         .environmentclass("t")

@@ -1,5 +1,7 @@
 package no.nav.dolly.mapper.strategy;
 
+import static no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo.Adressat;
+
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
@@ -24,23 +26,29 @@ public class PdlDoedsboMappingStrategy implements MappingStrategy {
                             PdlKontaktinformasjonForDoedsbo pdlKontaktinformasjonForDoedsbo, MappingContext context) {
 
                         if (rsPdlKontaktinformasjonForDoedsbo.getAdressat() instanceof PdlOrganisasjon) {
-                            pdlKontaktinformasjonForDoedsbo.setOrganisasjonSomAdressat(
-                                    mapperFacade.map(rsPdlKontaktinformasjonForDoedsbo.getAdressat(), PdlOrganisasjon.class));
-
+                            pdlKontaktinformasjonForDoedsbo.setAdressat(Adressat.builder()
+                                    .organisasjonSomAdressat(
+                                            mapperFacade.map(rsPdlKontaktinformasjonForDoedsbo.getAdressat(), PdlOrganisasjon.class))
+                                    .build());
                         } else if (rsPdlKontaktinformasjonForDoedsbo.getAdressat() instanceof PdlAdvokat) {
-                            pdlKontaktinformasjonForDoedsbo.setAdvokatSomAdressat(
-                                    mapperFacade.map(rsPdlKontaktinformasjonForDoedsbo.getAdressat(), PdlAdvokat.class));
+                            pdlKontaktinformasjonForDoedsbo.setAdressat(Adressat.builder()
+                                    .advokatSomAdressat(
+                                            mapperFacade.map(rsPdlKontaktinformasjonForDoedsbo.getAdressat(), PdlAdvokat.class))
+                                    .build());
 
                         } else if (rsPdlKontaktinformasjonForDoedsbo.getAdressat() instanceof PdlKontaktpersonMedIdNummer) {
-                            pdlKontaktinformasjonForDoedsbo.setKontaktpersonMedIdNummerSomAdressat(
-                                    mapperFacade.map(rsPdlKontaktinformasjonForDoedsbo.getAdressat(), PdlKontaktpersonMedIdNummer.class));
+                            pdlKontaktinformasjonForDoedsbo.setAdressat(Adressat.builder()
+                                    .kontaktpersonMedIdNummerSomAdressat(
+                                            mapperFacade.map(rsPdlKontaktinformasjonForDoedsbo.getAdressat(), PdlKontaktpersonMedIdNummer.class))
+                                    .build());
 
                         } else if (rsPdlKontaktinformasjonForDoedsbo.getAdressat() instanceof RsPdlKontaktpersonUtenIdNummer) {
-                            pdlKontaktinformasjonForDoedsbo.setKontaktpersonUtenIdNummerSomAdressat(
-                                    mapperFacade.map(rsPdlKontaktinformasjonForDoedsbo.getAdressat(), PdlKontaktpersonUtenIdNummer.class));
+                            pdlKontaktinformasjonForDoedsbo.setAdressat(Adressat.builder()
+                                    .kontaktpersonUtenIdNummerSomAdressat(
+                                            mapperFacade.map(rsPdlKontaktinformasjonForDoedsbo.getAdressat(), PdlKontaktpersonUtenIdNummer.class))
+                                    .build());
                         }
                     }
-
                 })
                 .byDefault()
                 .register();

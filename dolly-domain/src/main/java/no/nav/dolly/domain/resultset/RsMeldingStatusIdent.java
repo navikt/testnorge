@@ -16,6 +16,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsMeldingStatusIdent {
 
-    private String melding;
-    private Map<String, List<String>> statusIdent;
+    private String status;
+    private Map<String, List<String>> envIdent;
 }
