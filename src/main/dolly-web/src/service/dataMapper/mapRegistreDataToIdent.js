@@ -85,7 +85,7 @@ export function mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato) 
 			kvalifiseringsgruppe && {
 				id: 'servicebehov',
 				label: 'Servicebehov',
-				value: kvalifiseringsgruppe
+				value: Formatters.servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)
 			},
 			inaktiveringDato && {
 				id: 'inaktiveringDato',
