@@ -3,14 +3,17 @@ package no.nav.dolly.service;
 import static com.google.common.base.Charsets.UTF_8;
 import static java.lang.String.format;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.List;
-import org.json.JSONException;
-import org.json.JSONObject;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.jira.AllowedValue;
+import no.nav.dolly.domain.jira.Field;
+import no.nav.dolly.domain.jira.Fields;
+import no.nav.dolly.domain.jira.JiraResponse;
+import no.nav.dolly.domain.jira.Project;
+import no.nav.dolly.domain.resultset.RsOpenAmResponse;
+import no.nav.dolly.exceptions.JiraException;
+import no.nav.dolly.jira.JiraConsumer;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
@@ -22,15 +25,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.resultset.RsOpenAmResponse;
-import no.nav.dolly.exceptions.JiraException;
-import no.nav.dolly.jira.JiraConsumer;
-import no.nav.dolly.domain.jira.AllowedValue;
-import no.nav.dolly.domain.jira.Field;
-import no.nav.dolly.domain.jira.Fields;
-import no.nav.dolly.domain.jira.JiraResponse;
-import no.nav.dolly.domain.jira.Project;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.List;
 
 @Slf4j
 @Service
