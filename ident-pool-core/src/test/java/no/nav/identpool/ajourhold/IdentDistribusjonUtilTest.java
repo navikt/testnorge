@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 class IdentDistribusjonUtilTest {
     @Test
-    void totaltAntallPersonerPerDagSkalSummereTilCa800000() {
+    void totaltAntallPersonerPerDagSkalSummereTilCa40000() {
         int sum = 0;
         int antallPersonerPerDag;
         for (int age = 0; age < 100; age = age + 10) {
@@ -22,7 +22,7 @@ class IdentDistribusjonUtilTest {
             }
         }
 
-        assertThat(sum, is(greaterThan(700000)));
-        assertThat(sum, is(lessThan(800000)));
+        assertThat(sum, is(greaterThan(30000)));
+        assertThat(sum, is(lessThan(40000)));
     }
 }
