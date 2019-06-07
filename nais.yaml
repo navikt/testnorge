@@ -1,4 +1,5 @@
 name: ident-pool
+team: registre
 image: "docker.adeo.no:5000/registre/ident-pool"
 replicas:
   min: 1
