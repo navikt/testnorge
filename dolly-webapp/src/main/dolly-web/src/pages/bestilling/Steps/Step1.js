@@ -7,8 +7,8 @@ import { Field, withFormik } from 'formik'
 import { animateScroll } from 'react-scroll'
 import { Radio } from 'nav-frontend-skjema'
 import '~/pages/bestilling/Bestilling.less'
-import NyIdent from '~/components/opprettIdent/NyIdent.js'
-import EksisterendeIdentConnector from '~/components/opprettIdent/EksisterendeIdentConnector'
+import NyIdentConnector from './NyIdent/NyIdentConnector.js'
+import EksisterendeIdentConnector from './EksisterendeIdent/EksisterendeIdentConnector'
 import BestillingMapper from '~/utils/BestillingMapper'
 
 class Step1 extends Component {
@@ -42,15 +42,7 @@ class Step1 extends Component {
 	}
 
 	render() {
-		const {
-			selectedAttributeIds,
-			toggleAttributeSelection,
-			uncheckAllAttributes,
-			checkAttributeArray,
-			uncheckAttributeArray,
-			identOpprettesFra,
-			eksisterendeIdentListe
-		} = this.props
+		const { identOpprettesFra, eksisterendeIdentListe, antall } = this.props
 
 		return (
 			<div className="bestilling-step1">
@@ -58,18 +50,49 @@ class Step1 extends Component {
 					<Overskrift label="Velg egenskaper" />
 				</div>
 				<form className="flexbox">
-					<span className = 'bestilling-page radiobuttons'>{this._renderRadioBtn(BestillingMapper(), 'NY TESTIDENT')}</span>
-					<span className = 'bestilling-page radiobuttons'>{this._renderRadioBtn(BestillingMapper('EKSIDENT'), 'EKSISTERENDE TESTIDENT')}</span>
+					<span className="bestilling-page radiobuttons">
+						{this._renderRadioBtn(BestillingMapper(), 'NY TESTIDENT')}
+					</span>
+					<span className="bestilling-page radiobuttons">
+						{this._renderRadioBtn(BestillingMapper('EKSIDENT'), 'EKSISTERENDE TESTIDENT')}
+					</span>
 				</form>
-				{identOpprettesFra === BestillingMapper() ?
-					<NyIdent
+				{this._renderAttributtVelger()}
+				<NavigationConnector
+					onClickNext={this._onSubmitForm}
+					eksisterendeIdentListe={eksisterendeIdentListe}
+					identOpprettesFra={identOpprettesFra}
+				/>
+			</div>
+		)
+	}
+
+	_renderAttributtVelger = () => {
+		const {
+			selectedAttributeIds,
+			toggleAttributeSelection,
+			uncheckAllAttributes,
+			checkAttributeArray,
+			uncheckAttributeArray,
+			identOpprettesFra,
+			values
+		} = this.props
+
+		switch (identOpprettesFra) {
+			case BestillingMapper():
+				return (
+					<NyIdentConnector
 						selectedAttributeIds={selectedAttributeIds}
 						toggleAttributeSelection={toggleAttributeSelection}
 						uncheckAllAttributes={uncheckAllAttributes}
 						checkAttributeArray={checkAttributeArray}
 						uncheckAttributeArray={uncheckAttributeArray}
-					/> 
-					: <EksisterendeIdentConnector
+						malBestillingNavn={values.mal}
+					/>
+				)
+			case BestillingMapper('EKSIDENT'):
+				return (
+					<EksisterendeIdentConnector
 						selectedAttributeIds={selectedAttributeIds}
 						toggleAttributeSelection={toggleAttributeSelection}
 						uncheckAllAttributes={uncheckAllAttributes}
@@ -77,19 +100,23 @@ class Step1 extends Component {
 						uncheckAttributeArray={uncheckAttributeArray}
 						identOpprettesFra={identOpprettesFra}
 					/>
-				}
-		<NavigationConnector onClickNext={this._onSubmitForm} eksisterendeIdentListe={eksisterendeIdentListe} identOpprettesFra={identOpprettesFra}/>
-		</div>
-		)
+				)
+			default:
+				break
+		}
 	}
 }
 
 export default withFormik({
 	displayName: 'BestillingStep1',
-	mapPropsToValues: props => ({
-		identtype: props.identtype || 'FNR', // default to FNR
-		antall: props.antall
-	}),
+	enableReinitialize: true,
+	mapPropsToValues: props => {
+		return {
+			identtype: props.identtype || 'FNR', // default to FNR
+			antall: props.antall,
+			mal: props.currentMal
+		}
+	},
 	validationSchema: yup.object().shape({
 		antall: yup
 			.number()

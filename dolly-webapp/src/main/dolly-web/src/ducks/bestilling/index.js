@@ -17,7 +17,19 @@ export const actions = createActions(
 	{
 		POST_BESTILLING_FRA_EKSISTERENDE_IDENTER: (gruppeId, value) =>
 			DollyApi.createBestillingFraEksisterendeIdenter(gruppeId, value),
-		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values)
+		POST_BESTILLING: (gruppeId, values) => DollyApi.createBestilling(gruppeId, values),
+		GET_BESTILLING_MALER: async () => {
+			try {
+				const res = await DollyApi.getBestillingMaler()
+				return res
+			} catch (err) {
+				if (err.response && err.response.status === 404) {
+					//*Ingen maler
+					return { data: [] }
+				}
+				return err
+			}
+		}
 	},
 	'NEXT_PAGE',
 	'PREV_PAGE',
@@ -32,6 +44,8 @@ export const actions = createActions(
 	'START_BESTILLING',
 	'SET_IDENT_OPPRETTES_FRA',
 	'SET_IDENT_LISTER',
+	'SET_BESTILLING_FRA_MAL',
+	'CREATE_BESTILLING_MAL',
 	'ABORT_BESTILLING'
 )
 
@@ -44,7 +58,10 @@ const initialState = {
 	values: {},
 	identOpprettesFra: BestillingMapper(),
 	eksisterendeIdentListe: [],
-	ugyldigIdentListe: []
+	ugyldigIdentListe: [],
+	maler: [],
+	malBestillingNavn: '',
+	currentMal: ''
 }
 
 export default handleActions(
@@ -88,6 +105,12 @@ export default handleActions(
 				page: state.page + 1
 			}
 		},
+		[success(actions.getBestillingMaler)](state, action) {
+			return {
+				...state,
+				maler: action.payload && action.payload.data
+			}
+		},
 		[actions.setEnvironments](state, action) {
 			return {
 				...state,
@@ -97,7 +120,6 @@ export default handleActions(
 		},
 		[actions.setValues](state, action) {
 			// Remove empty values
-
 			let copy = JSON.parse(JSON.stringify(action.payload.values))
 			Object.entries(copy).forEach(([key, value]) => {
 				if (value === '') {
@@ -108,7 +130,7 @@ export default handleActions(
 			return {
 				...state,
 				values: action.payload.values,
-				page: (state.page += action.payload.goBack ? -1 : 1)
+				page: action.payload.keepPage ? state.page : (state.page += action.payload.goBack ? -1 : 1)
 			}
 		},
 		[actions.deleteValues](state, action) {
@@ -144,6 +166,23 @@ export default handleActions(
 				ugyldigIdentListe: action.payload.ugyldigIdentListe
 			}
 		},
+		[actions.setBestillingFraMal](state, action) {
+			return {
+				...state,
+				antall: action.payload.antallIdenter,
+				attributeIds: action.payload.attributeIds,
+				environments: action.payload.environments,
+				identtype: action.payload.identtype,
+				values: action.payload.values,
+				currentMal: action.payload.currentMal
+			}
+		},
+		[actions.createBestillingMal](state, action) {
+			return {
+				...state,
+				malBestillingNavn: action.payload
+			}
+		},
 		[combineActions(actions.abortBestilling, LOCATION_CHANGE, success(actions.postBestilling))](
 			state,
 			action
@@ -173,7 +212,8 @@ const bestillingFormatter = bestillingState => {
 		identtype,
 		values,
 		identOpprettesFra,
-		eksisterendeIdentListe
+		eksisterendeIdentListe,
+		malBestillingNavn
 	} = bestillingState
 	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
 	let final_values = []
@@ -194,7 +234,8 @@ const bestillingFormatter = bestillingState => {
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
 
-	// TODO: SPECIAL HANDLING - Hva gjør vi her?
+	// ? Vi trenger ikke nødvendigvis generisk løsning når det er så veldig mange spesiall tilfeller
+	// ? Forslag: lage en hjelpeklasse
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 		final_values.tpsf.boadresse.gatekode = values.boadresse_gatekode
@@ -214,8 +255,20 @@ const bestillingFormatter = bestillingState => {
 			}
 		]
 	}
+	if (_get(final_values, 'arenaforvalter')) {
+		if (_get(final_values, 'arenaforvalter.arenaBrukertype') !== 'MED_SERVICEBEHOV') {
+			final_values.arenaforvalter = {
+				inaktiveringDato: final_values.arenaforvalter.inaktiveringDato,
+				arenaBrukertype: 'UTEN_SERVICEBEHOV'
+			}
+		}
+	}
+	if (malBestillingNavn !== '') {
+		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
+	}
 
-	console.log('POSTING BESTILLING', final_values)
+	// * Denne kan beholdes for enklere debug på u2/prod
+	console.info('POSTING BESTILLING', final_values)
 
 	return final_values
 }

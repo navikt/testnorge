@@ -15,8 +15,9 @@ export default class Feilmelding extends Component {
 		const finnesTPSFEllerStub =
 			(bestilling.tpsfStatus && this._finnTpsfFeilStatus(bestilling.tpsfStatus).length > 0) ||
 			stubStatus.length > 0 ||
-			(bestilling.aaregStatus && this._finnTpsfFeilStatus(bestilling.aaregStatus).length > 0)
-
+			(bestilling.aaregStatus && this._finnTpsfFeilStatus(bestilling.aaregStatus).length > 0) ||
+			(bestilling.arenaforvalterStatus &&
+				this._finnTpsfFeilStatus(bestilling.arenaforvalterStatus).length > 0)
 		return (
 			<div className="feil-melding">
 				{/*Generelle feilmeldinger */}
@@ -54,6 +55,17 @@ export default class Feilmelding extends Component {
 						}
 						return this._renderAaregStatus(feil, cssClass, i)
 					})}
+				{bestilling.arenaforvalterStatus &&
+					this._finnTpsfFeilStatus(bestilling.arenaforvalterStatus).map((feil, i) => {
+						if (stubStatus.length < 1) {
+							const bottomBorder =
+								i != this._finnTpsfFeilStatus(bestilling.arenaforvalterStatus).length - 1
+							cssClass = cn('feil-container', {
+								'feil-container feil-container_border': bottomBorder
+							})
+						}
+						return this._renderArenaStatus(feil, cssClass, i)
+					})}
 				{/*Feilmeldinger fra Sigrun- og krrStub */}
 				{stubStatus && this._renderStubStatus(stubStatus, cssClass)}
 			</div>
@@ -63,7 +75,10 @@ export default class Feilmelding extends Component {
 	_finnTpsfFeilStatus = tpsfStatus => {
 		let tpsfFeil = []
 		tpsfStatus.map(status => {
-			if (status.statusMelding !== 'OK') {
+			if (status.statusMelding && status.statusMelding !== 'OK') {
+				tpsfFeil.push(status)
+			}
+			if (status.status && status.status !== 'OK') {
 				tpsfFeil.push(status)
 			}
 		})
@@ -90,6 +105,18 @@ export default class Feilmelding extends Component {
 		}
 
 		return stubStatus
+	}
+
+	_finnArenaStatus = bestilling => {
+		let arenaStatus = []
+		const arenaforvalterStatus = { navn: 'ARENA', status: bestilling.arenaforvalterStatus }
+		arenaforvalterStatus.status &&
+			arenaforvalterStatus.status.map(miljo => {
+				if (miljo.status !== 'OK') {
+					arenaStatus.push(miljo)
+				}
+			})
+		return arenaStatus
 	}
 
 	_renderTPSFStatus = (tpsfFeil, cssClass, i) => {
@@ -165,6 +192,34 @@ export default class Feilmelding extends Component {
 				</div>
 			)
 		})
+	}
+
+	_renderArenaStatus = (arenaFeil, cssClass, i) => {
+		return (
+			<Fragment key={i}>
+				<h5>ARENA</h5>
+				<div className={cssClass}>
+					<span className="feil-kolonne_stor">{arenaFeil.status}</span>
+					<div className="feil-kolonne_stor" key={i}>
+						{Object.keys(arenaFeil.envIdent).map((miljo, idx) => {
+							let identerPerMiljo = []
+							arenaFeil.envIdent[miljo].map(ident => {
+								!identerPerMiljo.includes(ident) && identerPerMiljo.push(ident)
+							})
+
+							const miljoUpperCase = miljo.toUpperCase()
+							const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
+							return (
+								<span className="feil-container" key={idx}>
+									<span className="feil-kolonne_liten">{miljoUpperCase}</span>
+									<span className="feil-kolonne_stor">{identerPerMiljoStr}</span>
+								</span>
+							)
+						})}
+					</div>
+				</div>
+			</Fragment>
+		)
 	}
 
 	_renderGenerelleFeil = (bestilling, cssClass, finnesTPSFEllerStub) => {

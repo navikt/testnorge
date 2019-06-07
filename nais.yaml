@@ -70,10 +70,20 @@ fasitResources:
     propertyMap:
       url: providers.fasit.url
 
-  - alias: arenaStub.host
+  - alias: arenaForvalter.host
     resourceType: baseurl
     propertyMap:
-      url: providers.arenaStub.url
+      url: providers.arenaForvalter.url
+
+  - alias: pdlForvalter.host
+    resourceType: baseurl
+    propertyMap:
+      url: providers.pdlForvalter.url
+
+  - alias: personOppslag.host
+    resourceType: baseurl
+    propertyMap:
+      url: providers.personOppslag.url
 
   - alias: srvdolly-test-env
     resourceType: credential

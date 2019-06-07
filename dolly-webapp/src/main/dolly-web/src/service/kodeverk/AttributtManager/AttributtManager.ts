@@ -31,12 +31,13 @@ export default class AttributtManager {
 					(!attr.includeIf || attr.includeIf.every(e => selectedIds.includes(e.id)))
 			)
 			.map(attr => {
-				// TODO: Ikke bærekraftig løsning. Refaktorerer AttributtSystemmet hvis det kommer flere slike registrer
+				// TODO: Ikke bærekraftig løsning. Refactor
 				if (attr.items) {
 					if (
 						attr.dataSource === 'SIGRUN' ||
 						attr.dataSource === 'AAREG' ||
-						attr.dataSource === 'KRR'
+						attr.dataSource === 'KRR' ||
+						attr.dataSource === 'ARENA'
 					) {
 						return attr
 					} else {

@@ -6,6 +6,7 @@ import './AutofillAddress.less'
 import InputSelector from '~/components/fields/InputSelector'
 import { Field } from 'formik'
 import LinkButton from '~/components/button/LinkButton/LinkButton'
+import FilledAddress from './FilledAddress'
 
 const initialState = {
 	isFetching: false,
@@ -23,8 +24,20 @@ export default class AutofillAddress extends Component {
 		!this.state.harSjekketValues && this._checkCurrentValues()
 	}
 
+	componentDidUpdate(prevProps) {
+		const { values } = this.props
+		if (values !== prevProps.values) {
+			this.setState({ ...initialState })
+			this._checkCurrentValues()
+		}
+	}
+
 	render() {
-		const items = this.props.items
+		const { currentMal, items, values, formikProps, setValues } = this.props
+		if (currentMal && values.boadresse_gatekode) {
+			return <FilledAddress values={values} setValues={setValues} />
+		}
+
 		return (
 			<Fragment>
 				<div className="address-wrapper">

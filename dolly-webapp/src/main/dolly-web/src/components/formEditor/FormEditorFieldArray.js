@@ -3,6 +3,7 @@ import { FieldArray } from 'formik'
 import { DollyApi } from '~/service/Api'
 import Button from '~/components/button/Button'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
+import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 const Attributt = new AttributtManager()
 
@@ -12,7 +13,8 @@ const FormEditorFieldArray = (
 	renderFieldComponent,
 	renderFieldSubItem,
 	shouldRenderFieldComponent,
-	editMode
+	editMode,
+	shouldRenderSubItem
 ) => {
 	const parentId = subKategori.id
 
@@ -27,6 +29,7 @@ const FormEditorFieldArray = (
 						renderFieldComponent={renderFieldComponent}
 						renderFieldSubItem={renderFieldSubItem}
 						shouldRenderFieldComponent={shouldRenderFieldComponent}
+						shouldRenderSubItem={shouldRenderSubItem}
 						editMode={editMode}
 						arrayHelpers={arrayHelpers}
 					/>
@@ -42,6 +45,7 @@ export const FieldArrayComponent = ({
 	renderFieldComponent,
 	renderFieldSubItem,
 	shouldRenderFieldComponent,
+	shouldRenderSubItem,
 	editMode,
 	arrayHelpers
 }) => {
@@ -49,88 +53,115 @@ export const FieldArrayComponent = ({
 
 	const parentId = id
 	const parentAttributes = items.reduce((prev, curr) => {
-		return { ...prev, [curr.id]: Attributt.initValueSelector(curr) }
+		return {
+			...prev,
+			[curr.id]: Boolean(curr.subItems)
+				? [Attributt.initValueSelector(curr)]
+				: Attributt.initValueSelector(curr)
+		}
 	}, {})
-
 	const createDefaultObject = () => arrayHelpers.push({ ...parentAttributes })
-	const createSubItem = (itemIndex, subItemIndex) => {
-		const subItemAttributes = subItems[subItemIndex].items.reduce((prev, curr) => {
+
+	const createSubItem = (subitem, itemIndex) => {
+		let subItemArray = subitem.subItems
+		const subItemId = subitem.id
+
+		const subItemAttributes = subItemArray.reduce((prev, curr) => {
 			return { ...prev, [curr.id]: Attributt.initValueSelector(curr) }
 		}, {})
 
-		let valueCopy = JSON.parse(JSON.stringify(formikProps.values[parentId][0]))
+		let valueCopy = JSON.parse(JSON.stringify(formikProps.values[parentId][itemIndex]))
+		let subArray = valueCopy[subItemId]
 
-		const subItemId = subItems[subItemIndex].id
-		arrayHelpers.replace(itemIndex, { ...valueCopy, [subItemId]: subItemAttributes })
+		if (subArray && subArray.length > 0 && subArray[0] != '') {
+			subArray.push(subItemAttributes)
+		} else {
+			subArray = [subItemAttributes]
+		}
+		arrayHelpers.replace(itemIndex, { ...valueCopy, [subItemId]: subArray })
 	}
 
-	const formikValues = formikProps.values[parentId]
+	const removeSubItem = (itemIndex, subItemIndex, subItem) => {
+		const valueCopy = Object.assign(formikProps.values[parentId][itemIndex])
+		let subItemArr = valueCopy[subItem]
+		subItemArr && subItemArr.splice(subItemIndex, 1)
 
+		arrayHelpers.replace(itemIndex, { ...valueCopy, [subItem]: subItemArr })
+	}
+	const formikValues = formikProps.values[parentId]
 	return (
 		<Fragment>
 			<h4>{subKategori.navn}</h4>
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
 					return (
-						<div key={idx}>
-							{idx !== 0 && <div className="field-array-line" />}
-							<div className="subkategori-field-group multi">
-								{items.map(item => {
-									if (
-										shouldRenderFieldComponent(items, item, formikProps, {
-											parentId,
-											idx
-										})
-									) {
-										// Add subKategori to ID
-										const fakeItem = {
-											...item,
-											id: `${parentId}[${idx}]${item.id}`
+						<Fragment key={idx}>
+							<div className="flexbox">
+								{idx !== 0 && <div className="field-array-line" />}
+								<div className="subkategori-field-group multi">
+									{items.map((item, kdx) => {
+										if (item.subItems && shouldRenderSubItem(item, formikProps, idx))
+											// Render array i array. F.eks. permisjon under arbeidsforhold
+											return (
+												<div key={kdx}>
+													{faKey[item.id] &&
+														faKey[item.id].map((subRad, jdx) => {
+															return renderHeaderSubFieldButton(
+																renderFieldSubItem,
+																removeSubItem,
+																formikProps,
+																item,
+																subRad,
+																parentId,
+																editMode,
+																idx,
+																jdx
+															)
+														})}
+												</div>
+											)
+										else if (
+											shouldRenderFieldComponent(items, item, formikProps, {
+												parentId,
+												idx
+											})
+										) {
+											// Add subKategori to ID
+											const fakeItem = {
+												...item,
+												id: `${parentId}[${idx}]${item.id}`
+											}
+											return (
+												<div key={kdx}>
+													{renderFieldComponent(fakeItem, formikProps.values, {
+														parentId,
+														idx
+													})}
+												</div>
+											)
 										}
-
-										return renderFieldComponent(fakeItem, formikProps.values, {
-											parentId,
-											idx
-										})
-									}
-								})}
-								{/* REG-3377: Alex - Under utvikling */}
-								{/* {subItems && subItems.map(subItem => {
-									// console.log('subItem :', subItem)
-
-									const fakeSubItem = {
-										...subItem,
-										id: `${parentId}[${idx}]${subItem.id}`
-									}
-x`
-									return renderFieldSubItem(fakeSubItem)
-								})} */}
-
-								{!editMode &&
-									item.isMultiple && (
-										<Button
-											className="field-group-remove"
-											kind="remove-circle"
-											onClick={e => arrayHelpers.remove(idx)}
-										/>
-									)}
+									})}
+								</div>
+								<div>
+									{!editMode &&
+										item.isMultiple && (
+											<Button
+												className="field-group-remove"
+												kind="remove-circle"
+												onClick={e => arrayHelpers.remove(idx)}
+												title="Fjern"
+												children={subKategori.navn.toUpperCase()}
+											/>
+										)}
+								</div>
 							</div>
-							{/* REG-3377: Alex - Under utvikling */}
-
-							{/*Attributtene med items og subItems, f.eks AAREGs */}
-							{/* {!editMode &&
-								subItems &&
-								subItems.map((subItem, i) => (
-									<Button
-										className="flexbox--align-center field-group-add"
-										kind="add-circle"
-										key={i}
-										onClick={() => createSubItem(idx, i)}
-									>
-										{subItem.label}
-									</Button>
-								))} */}
-						</div>
+							{items.map((item, ndx) => {
+								return (
+									item.subItems &&
+									addButton(() => createSubItem(item, idx), item.label.toUpperCase(), ndx)
+								)
+							})}
+						</Fragment>
 					)
 				})
 			) : (
@@ -138,17 +169,59 @@ x`
 			)}
 
 			{!editMode &&
-				item.isMultiple && (
-					<Button
-						className="flexbox--align-center field-group-add"
-						kind="add-circle"
-						onClick={createDefaultObject}
-					>
-						{subKategori.navn.toUpperCase()}
-					</Button>
-				)}
+				item.isMultiple &&
+				addButton(createDefaultObject, subKategori.navn.toUpperCase())}
 		</Fragment>
 	)
 }
 
+export const addButton = (onClick, header, key) => {
+	return (
+		<Button
+			className="flexbox--align-center field-group-add"
+			kind="add-circle"
+			onClick={onClick}
+			key={key}
+		>
+			{header}
+		</Button>
+	)
+}
+export const renderHeaderSubFieldButton = (
+	renderFieldSubItem,
+	removeSubItem,
+	formikProps,
+	item,
+	subRad,
+	parentId,
+	editMode,
+	idx,
+	jdx
+) => {
+	return (
+		<div key={jdx} className="subItems">
+			{jdx === 0 && (
+				<div className="flexbox">
+					<h4>{item.label}</h4>
+					{item.informasjonstekst && (
+						//Fjernes når (/hvis) vi får inn validering av datoer på tvers av items
+						<h5 className="infotekst">{item.informasjonstekst}</h5>
+					)}
+				</div>
+			)}
+			<div className="subitem-container-button">
+				{renderFieldSubItem(formikProps, item, subRad, parentId, idx, jdx)}
+				{!editMode && (
+					<Button
+						className="field-group-remove"
+						kind="remove-circle"
+						onClick={() => removeSubItem(idx, jdx, item.id)}
+						title="Fjern"
+						children={item.label.toUpperCase()}
+					/>
+				)}
+			</div>
+		</div>
+	)
+}
 export default FormEditorFieldArray

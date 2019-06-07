@@ -11,8 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
-import no.nav.dolly.domain.resultset.arenastub.RsArenadata;
+import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
+import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 
 @Getter
@@ -28,7 +29,8 @@ public class RsDollyBestilling {
     private List<RsOpprettSkattegrunnlag> sigrunstub;
     private RsDigitalKontaktdata krrstub;
     private List<RsArbeidsforhold> aareg;
-    private RsArenadata arenastub;
+    private Arenadata arenaforvalter;
+    private RsPdldata pdlforvalter;
 
     public List<RsArbeidsforhold> getAareg() {
         if (isNull(aareg)) {

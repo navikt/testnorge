@@ -9,10 +9,13 @@ import Overskrift from '~/components/overskrift/Overskrift'
 import NavigationConnector from '../Navigation/NavigationConnector'
 import MiljoVelgerConnector from '~/components/miljoVelger/MiljoVelgerConnector'
 import { AttributtManager } from '~/service/Kodeverk'
-import { Formik, FieldArray } from 'formik'
+import { Field, Formik, FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 import BestillingMapper from '~/utils/BestillingMapper'
+import { FormikInput } from '~/components/fields/Input/Input'
+import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
+import { FormikDollySelect } from '~/components/fields/Select/Select'
 
 export default class Step3 extends PureComponent {
 	static propTypes = {
@@ -26,15 +29,145 @@ export default class Step3 extends PureComponent {
 
 	constructor(props) {
 		super(props)
-		this.state = { edit: false }
+		this.state = { edit: false, showMalNavnError: false }
 		this.AttributtManager = new AttributtManager()
 		this.EnvValidation = yup.object().shape({
-			environments: yup.array().required('Velg minst ett miljø')
+			environments: yup.array().required('Velg minst ett miljø'),
+			nyMal: yup.boolean(),
+			malNavn: yup.string().when('nyMal', {
+				is: nyMal => nyMal === true,
+				then: yup.string().required('Malnavn er påkrevd'),
+				otherwise: yup.string()
+			})
 		})
 	}
 
+	render() {
+		const {
+			identtype,
+			antall,
+			environments,
+			selectedAttributeIds,
+			identOpprettesFra,
+			eksisterendeIdentListe
+		} = this.props
+
+		this.SelectedAttributes = this.AttributtManager.listSelectedAttributesForValueSelection(
+			selectedAttributeIds
+		)
+
+		return (
+			<div className="bestilling-step3">
+				<div className="content-header">
+					<Overskrift label="Oppsummering" />
+				</div>
+
+				<div className="oppsummering">
+					<div className="oppsummering-blokk oppsummering-blokk-margin">
+						{identOpprettesFra === BestillingMapper() ? (
+							<div className="grunnoppsett">
+								<StaticValue header="TYPE" value={identtype} />
+								<StaticValue header="ANTALL PERSONER" value={antall.toString()} />
+							</div>
+						) : (
+							<div className="grunnoppsett">
+								<StaticValue header="IDENTER" value={eksisterendeIdentListe} />
+							</div>
+						)}
+						{selectedAttributeIds.length > 0 && (
+							<div className="flexbox--align-center--justify-end edit-align-right">
+								<Button
+									className="flexbox--align-center"
+									kind="eraser"
+									onClick={() => this.setState({ edit: !this.state.edit })}
+								>
+									FJERN ATTRIBUTTER
+								</Button>
+							</div>
+						)}
+					</div>
+					{this.renderValues()}
+				</div>
+
+				<Formik
+					initialValues={{ environments, malNavn: '' }}
+					onSubmit={this.submit}
+					validationSchema={this.EnvValidation}
+					render={formikProps => {
+						return (
+							<Fragment>
+								<div className="input-container">
+									<FieldArray
+										name="environments"
+										render={arrayHelpers => (
+											<MiljoVelgerConnector
+												heading="Hvilke testmiljø vil du opprette testpersonene i?"
+												arrayHelpers={arrayHelpers}
+												arrayValues={formikProps.values.environments}
+											/>
+										)}
+									/>
+									{this._renderInputMal(formikProps.values)}
+								</div>
+
+								<NavigationConnector
+									onClickNext={formikProps.submitForm}
+									onClickPrevious={() => {
+										this.onClickPrevious(formikProps.values.environments)
+									}}
+								/>
+							</Fragment>
+						)
+					}}
+				/>
+			</div>
+		)
+	}
+
+	_renderInputMal = values => {
+		const { showMalNavnError } = this.state
+		return (
+			<div className="input-mal-field">
+				<h3>Mal</h3>
+				<div className="flexbox">
+					<Field
+						name="nyMal"
+						label="Lagrer som mal"
+						className="input-field"
+						component={FormikDollySelect}
+						options={SelectOptionsManager('boolean')}
+						value={values.nyMal || false}
+					/>
+					{values.nyMal && (
+						<Field
+							name="malNavn"
+							label="Mal navn"
+							className="input-field"
+							type="string"
+							component={FormikInput}
+						/>
+					)}
+				</div>
+				{showMalNavnError && (
+					<span style={{ color: 'red' }}>Mal navn finnes allerede. Oppgi et nytt navn</span>
+				)}
+			</div>
+		)
+	}
+
 	submit = values => {
+		const { maler } = this.props
+		if (values.malNavn && values.malNavn !== '') {
+			this.setState({ showMalNavnError: false })
+			maler.forEach(mal => {
+				if (mal.malBestillingNavn === values.malNavn) {
+					this.setState({ showMalNavnError: true })
+				}
+			})
+		}
+
 		this.props.setEnvironments({ values: values.environments })
+		this.props.createBestillingMal(values.malNavn)
 		this.props.sendBestilling()
 	}
 
@@ -93,9 +226,11 @@ export default class Step3 extends PureComponent {
 
 	renderSubKategori = ({ subKategori, items }) => {
 		const { values } = this.props
-
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
+		}
+		if (subKategori.id === 'arena') {
+			return items[0].items.map(item => this.renderItem(item, values))
 		}
 		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
@@ -110,7 +245,16 @@ export default class Step3 extends PureComponent {
 
 		if (!item.inputType) return null
 
-		const itemValue = Formatters.oversettBoolean(_get(stateValues, item.id))
+		let itemValue = Formatters.oversettBoolean(_get(stateValues, item.id))
+
+		if (item.dataSource === 'ARENA') {
+			item.id === 'arenaBrukertype'
+				? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
+						_get(stateValues['arenaforvalter'][0], item.id)
+				  ))
+				: (itemValue = _get(stateValues['arenaforvalter'][0], item.id))
+		}
+
 		const staticValueProps = {
 			key: item.id,
 			header: item.label,
@@ -129,6 +273,9 @@ export default class Step3 extends PureComponent {
 			>
 				{item.apiKodeverkId ? (
 					<KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
+				) : // * Trenger stoette for apiKodeverkId som er avhengig av andre attributt. Decamelize for bedre ux imidlertig
+				item.id === 'typeinntekt' ? (
+					<StaticValue {...staticValueProps} value={Formatters.decamelize(itemValue, ' ')} />
 				) : (
 					<StaticValue {...staticValueProps} />
 				)}
@@ -158,83 +305,5 @@ export default class Step3 extends PureComponent {
 
 	onClickPrevious = values => {
 		this.props.setEnvironments({ values, goBack: true })
-	}
-
-	render() {
-		const {
-			identtype,
-			antall,
-			environments,
-			selectedAttributeIds,
-			identOpprettesFra,
-			eksisterendeIdentListe
-		} = this.props
-
-		this.SelectedAttributes = this.AttributtManager.listSelectedAttributesForValueSelection(
-			selectedAttributeIds
-		)
-
-		return (
-			<div className="bestilling-step3">
-				<div className="content-header">
-					<Overskrift label="Oppsummering" />
-				</div>
-
-				<div className="oppsummering">
-					<div className="oppsummering-blokk oppsummering-blokk-margin">
-						{identOpprettesFra === BestillingMapper() ? (
-							<div className="grunnoppsett">
-								<StaticValue header="TYPE" value={identtype} />
-								<StaticValue header="ANTALL PERSONER" value={antall.toString()} />
-							</div>
-						) : (
-							<div className="grunnoppsett">
-								<StaticValue header="IDENTER" value={eksisterendeIdentListe} />
-							</div>
-						)}
-						{selectedAttributeIds.length > 0 && (
-							<div className="flexbox--align-center--justify-end edit-align-right">
-								<Button
-									className="flexbox--align-center"
-									kind="eraser"
-									onClick={() => this.setState({ edit: !this.state.edit })}
-								>
-									FJERN ATTRIBUTTER
-								</Button>
-							</div>
-						)}
-					</div>
-					{this.renderValues()}
-				</div>
-
-				<Formik
-					initialValues={{ environments }}
-					onSubmit={this.submit}
-					validationSchema={this.EnvValidation}
-					render={formikProps => {
-						return (
-							<Fragment>
-								<FieldArray
-									name="environments"
-									render={arrayHelpers => (
-										<MiljoVelgerConnector
-											heading="Hvilke testmiljø vil du opprette testpersonene i?"
-											arrayHelpers={arrayHelpers}
-											arrayValues={formikProps.values.environments}
-										/>
-									)}
-								/>
-								<NavigationConnector
-									onClickNext={formikProps.submitForm}
-									onClickPrevious={() => {
-										this.onClickPrevious(formikProps.values.environments)
-									}}
-								/>
-							</Fragment>
-						)
-					}}
-				/>
-			</div>
-		)
 	}
 }

@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsAdresse;
 import no.nav.dolly.domain.resultset.RsPostadresse;
 
@@ -31,7 +32,7 @@ public class TpsfBestilling {
 
     private RsSimpleRelasjoner relasjoner;
 
-    private String identtype;
+    private IdentType identtype;
 
     private LocalDateTime foedtEtter;
 
