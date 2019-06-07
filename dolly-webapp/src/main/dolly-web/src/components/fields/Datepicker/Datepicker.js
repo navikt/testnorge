@@ -182,6 +182,7 @@ export const FormikDatepicker = props => {
 			form.errors[grandparent] &&
 			form.errors[grandparent][idx] &&
 			form.errors[grandparent][idx][parent] &&
+			form.errors[grandparent][idx][parent][jdx] &&
 			form.errors[grandparent][idx][parent][jdx][child]
 		) {
 			feilmelding = form.errors[grandparent][idx][parent][jdx][child]
