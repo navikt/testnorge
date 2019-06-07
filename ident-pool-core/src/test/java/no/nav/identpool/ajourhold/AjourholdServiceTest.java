@@ -86,7 +86,7 @@ class AjourholdServiceTest {
         });
         ajourholdService.generateForYear(1941, Identtype.FNR);
         verify(identRepository, times(2)).saveAll(anyIterable());
-        assertThat(entities.size(), is(365 * 30));
+        assertThat(entities.size(), is(365 * 2));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.FNR)));
         entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.FNR)));
         entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG)));
@@ -100,7 +100,7 @@ class AjourholdServiceTest {
         });
         ajourholdService.generateForYear(1941, Identtype.DNR);
         verify(identRepository, times(2)).saveAll(anyIterable());
-        assertThat(entities.size(), is(365 * 30));
+        assertThat(entities.size(), is(365 * 2));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
         entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.DNR)));
         entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)));
@@ -117,7 +117,7 @@ class AjourholdServiceTest {
         ajourholdService.current = dayOfYear;
         ajourholdService.generateForYear(1941, Identtype.DNR);
         verify(identRepository, times(2)).saveAll(anyIterable());
-        assertThat(entities.size(), is(dayOfYear.minusDays(1).getDayOfYear() * 30));
+        assertThat(entities.size(), is(dayOfYear.minusDays(1).getDayOfYear() * 2));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
         entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.DNR)));
         entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)));

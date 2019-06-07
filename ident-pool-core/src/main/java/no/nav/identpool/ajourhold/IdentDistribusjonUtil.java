@@ -5,7 +5,7 @@ import static java.time.LocalDate.now;
 public final class IdentDistribusjonUtil {
 
     // empiriske konstanter for å få til en fin chi^2-fordeling
-    private static final double C1 = 240_000;
+    private static final double C1 = 4_000;
     private static final double C2 = 5;
     private static final double C3 = 40;
     private static final double C4 = 2;
