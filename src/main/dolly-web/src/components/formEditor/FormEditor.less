@@ -12,7 +12,7 @@
 		flex-wrap: wrap;
 		align-content: center;
 		.skjemaelement {
-			margin-right: 38px;
+			margin-right: 25px;
 
 			&.static {
 				label {
@@ -49,4 +49,36 @@
 .field-array-line {
 	border-top: 1px solid @color-bg-divider;
 	padding: 10px 0;
+}
+
+.subItems {
+	//display: flex;
+	padding-left: 60px;
+
+	.subItem-header {
+		flex-direction: column;
+		display: flex;
+	}
+
+	.subitems-container {
+		display: flex;
+		flex-wrap: wrap;
+
+		.subitems {
+			flex-direction: row;
+		}
+		.nummer {
+			padding: 10px;
+		}
+	}
+	.subitem-container-button {
+		display: flex;
+	}
+
+	.infotekst {
+		display: flex;
+		align-items: center;
+		color: red;
+		margin: 17px;
+	}
 }

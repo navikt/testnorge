@@ -18,7 +18,7 @@ import Postadresse from '../postadresse/Postadresse'
 export default class FormEditor extends PureComponent {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
-		// TODO: editMode burde være en props for hele klassen.
+		// TODO: Vurder å lage en egen component for redigering
 		// editMode? renderEdit....: renderNormal
 		return AttributtListe.map(hovedKategori => {
 			// Ikke vis kategori som har default ikke-valgt radio button
@@ -29,7 +29,6 @@ export default class FormEditor extends PureComponent {
 	renderHovedKategori = ({ hovedKategori, items }, formikProps, closePanels) => {
 		const { getAttributtListByHovedkategori, AttributtListeToAdd, AddedAttributes } = this.props
 		const hovedKategoriAttributes = getAttributtListByHovedkategori(hovedKategori)
-
 		const hasError = hovedKategoriAttributes.some(attr => {
 			const error = formikProps.errors[attr]
 			if (error) {
@@ -103,10 +102,8 @@ export default class FormEditor extends PureComponent {
 
 	//Ny knapp ligger også på adressekategorien. Hvordan sortere hvilke attributt som skal være med?
 	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
-		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		const isFieldarray = Boolean(items[0].items)
-		const isMultiple = items[0].isMultiple
 
 		if (isAdresse) {
 			return (
@@ -130,6 +127,15 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 
+		if ('arenaforvalter' in formikProps.values) {
+			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'UTEN_SERVICEBEHOV') {
+				formikProps.values['arenaforvalter'][0]['kvalifiseringsgruppe'] = ''
+			}
+			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'MED_SERVICEBEHOV') {
+				formikProps.values['arenaforvalter'][0]['inaktiveringDato'] = ''
+			}
+		}
+
 		return (
 			<div className="subkategori" key={uniqueId}>
 				{!isFieldarray && <h4>{subKategori.navn}</h4>}
@@ -144,7 +150,8 @@ export default class FormEditor extends PureComponent {
 											this.renderFieldComponent,
 											this.renderFieldSubItem,
 											this._shouldRenderFieldComponent,
-											this.props.editMode
+											this.props.editMode,
+											this._shouldRenderSubItem
 									  )
 									: this.renderFieldComponent(item, formikProps.values)
 								: null
@@ -155,8 +162,7 @@ export default class FormEditor extends PureComponent {
 	}
 
 	// Avhengigheter mellom valgte verdi og field
-	// TODO: Vurder om denne løsningen er optimalt når AttributtSystem blir formatert
-	// Denne funksjonaliteten burde kanskje være i AttributtManager
+	// ? Denne funksjonaliteten burde kanskje være i AttributtManager
 	// Denne metode er bygd med fokus for AAREG-felter.
 
 	_shouldRenderFieldComponent = (items, item, formikProps, parentObject) => {
@@ -197,11 +203,17 @@ export default class FormEditor extends PureComponent {
 		return true
 	}
 
+	_shouldRenderSubItem = (item, formikProps, idx) => {
+		const subitemId = item.id
+		const subKatId = item.subKategori.id
+		return Boolean(formikProps.values[subKatId][idx][subitemId][0])
+	}
+
 	renderFieldComponent = (item, valgteVerdier, parentObject) => {
 		if (!item.inputType) return null
-
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
+		let disabled = false
 
 		if (this.props.editMode && AttributtType.SelectAndRead === item.attributtType) {
 			let valgtVerdi = valgteVerdier[item.id]
@@ -233,7 +245,21 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 
-		if (item.id === 'ufb_kommunenr' || item.id === 'utenFastBopel') {
+		if (
+			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&
+			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'MED_SERVICEBEHOV'
+		) {
+			disabled = true
+		}
+
+		if (
+			item.id === 'arenaforvalter[0]inaktiveringDato' &&
+			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'UTEN_SERVICEBEHOV'
+		) {
+			disabled = true
+		}
+
+		if (item.id === 'ufb_kommunenr' || item.id.includes('utenFastBopel')) {
 			return
 		}
 
@@ -244,28 +270,78 @@ export default class FormEditor extends PureComponent {
 				label={item.label}
 				component={InputComponent}
 				size={item.size}
+				disabled={disabled}
 				{...componentProps}
 				{...item.inputTypeAttributes}
 			/>
 		)
 	}
 
-	renderFieldSubItem = item => {
-		const InputComponent = InputSelector(item.inputType)
-
+	renderFieldSubItem = (formikProps, item, subRad, parentId, idx, jdx) => {
 		return (
-			/* REG-3377: Alex - Under utvikling */
-			<p>{item.id}</p>
-			// <Field
-			// 	key={item.key || item.id}
-			// 	name={item.id}
-			// 	label={item.label}
-			// 	component={InputComponent}
-			// 	size={item.size}
-			// 	{...componentProps}
-			// 	{...item.inputTypeAttributes}
-			// />
+			<Fragment>
+				<div className="subitems-container">
+					<h5 className="nummer">#{jdx + 1}</h5>
+					{Object.keys(subRad).map(subKey => {
+						return item.subItems.map(subsubItem => {
+							const componentProps = this.extraComponentProps(subsubItem, formikProps.values, {
+								parentId,
+								idx
+							})
+							if (subsubItem.id === subKey) {
+								const fakeItem = {
+									...subsubItem,
+									id: `${parentId}[${idx}]${item.id}[${jdx}]${subKey}`
+								}
+								const valgtVerdi = formikProps.values.arbeidsforhold[idx][item.id][jdx][subKey]
+								const InputComponent = InputSelector(fakeItem.inputType)
+								return (
+									<Field
+										key={fakeItem.key || fakeItem.id}
+										name={fakeItem.id}
+										label={fakeItem.label}
+										component={InputComponent}
+										size={fakeItem.size}
+										validate={this.validationSub}
+										//validate={this.validationFunction(valgtVerdi, fakeItem.inputType)}
+										{...componentProps}
+										{...fakeItem.inputTypeAttributes}
+									/>
+								)
+							}
+						})
+					})}
+				</div>
+			</Fragment>
 		)
+	}
+
+	// Ingvild: Forsøker å lage en mer presis validering
+	// validationFunction = (valgtVerdi, inputType) => {
+	// 	let error
+	// 	switch (inputType) {
+	// 		case 'date': {
+	// 			if (valgtVerdi === '') {
+	// 				error = 'Vennligst fyll inn dato'
+	// 				return error
+	// 			}
+	// 			return
+	// 		}
+	// 		case 'select': {
+	// 			if (valgtVerdi === '') {
+	// 				error = 'Vennligst fyll inn'
+	// 				return error
+	// 			}
+	// 			return
+	// 		}
+	// 	}
+	// }
+	validationSub = value => {
+		let error
+		if (value === '') {
+			error = 'Vennligst fyll inn'
+		}
+		return error
 	}
 
 	extraComponentProps = (item, valgteVerdier, parentObject) => {
@@ -282,7 +358,7 @@ export default class FormEditor extends PureComponent {
 						// Override for force rerender av react select
 						item.key = valgtVerdi
 					} else {
-						// TODO: Implement når vi trenger avhengighet mellom flat attributter
+						// ? Implement når vi trenger avhengighet mellom flat attributter
 					}
 				}
 				if (item.apiKodeverkId) {

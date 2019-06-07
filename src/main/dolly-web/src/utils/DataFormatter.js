@@ -1,6 +1,7 @@
 import dateFnsFormat from 'date-fns/format'
 import dateFnsParse from 'date-fns/parse'
 import _startCase from 'lodash/startCase'
+import _capitalize from 'lodash/capitalize'
 
 import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
 
@@ -37,6 +38,16 @@ Formatters.parseDate = date => {
 	return new Date(Date.UTC(parts[2], parts[1] - 1, parts[0]))
 }
 
+Formatters.decamelize = (str, separator) => {
+	separator = typeof separator === 'undefined' ? '_' : separator
+
+	const res = str
+		.replace(/([a-z\d])([A-Z])/g, '$1' + separator + '$2')
+		.replace(/([A-Z]+)([A-Z][a-z\d]+)/g, '$1' + separator + '$2')
+
+	return res.charAt(0).toUpperCase() + res.slice(1)
+}
+
 Formatters.kjonnToString = (kjonn = '') => {
 	if (!kjonn) return kjonn
 	const _kjonn = kjonn.toLowerCase()
@@ -66,6 +77,12 @@ Formatters.camelCaseToLabel = camelCase => {
 	return _startCase(camelCase)
 }
 
+Formatters.uppercaseAndUnderscoreToCapitalized = value => {
+	if (!value) return null
+	const clean = _startCase(value)
+	return _capitalize(clean)
+}
+
 Formatters.kodeverkLabel = kodeverk => {
 	if (!kodeverk) return null
 	return kodeverk.substring(kodeverk.indexOf('-') + 1)
@@ -75,6 +92,30 @@ Formatters.oversettBoolean = value => {
 	if (!value) return null
 
 	return value === true ? 'Ja' : value === false ? 'Nei' : value
+}
+
+Formatters.booleanToServicebehov = value => {
+	return value === true ? 'Med servicebehov' : value === false ? 'Uten servicebehov' : value
+}
+
+Formatters.servicebehovKodeTilBeskrivelse = value => {
+	if (!value) return null
+	let beskrivelse = value
+	switch (value) {
+		case 'IKVAL':
+			beskrivelse = 'IKVAL - Standardinnsats'
+			break
+		case 'BFORM':
+			beskrivelse = 'BFORM - Situasjonsbestemt innsats'
+			break
+		case 'BATT':
+			beskrivelse = 'BATT - Spesielt tilpasset innsats'
+			break
+		case 'VARIG':
+			beskrivelse = 'VARIG - Varig tilpasset innsats'
+			break
+	}
+	return beskrivelse
 }
 
 Formatters.gtApiKodeverkId = gtType => {

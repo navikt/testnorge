@@ -48,7 +48,6 @@ export function mapSigrunData(sigrunData) {
 
 export function mapKrrData(krrData) {
 	if (!krrData) return null
-
 	return {
 		header: 'Kontaktinformasjon og reservasjon',
 		data: [
@@ -71,6 +70,101 @@ export function mapKrrData(krrData) {
 	}
 }
 
+export function mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato) {
+	if (!arenaData) return null
+	if (arenaData['data']['arbeidsokerList'].length === 0) return null
+	const brukertype = arenaData['data']['arbeidsokerList'][0].servicebehov
+	return {
+		header: 'Arena',
+		data: [
+			{
+				id: 'brukertype',
+				label: 'Brukertype',
+				value: Formatters.booleanToServicebehov(brukertype)
+			},
+			kvalifiseringsgruppe && {
+				id: 'servicebehov',
+				label: 'Servicebehov',
+				value: Formatters.servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)
+			},
+			inaktiveringDato && {
+				id: 'inaktiveringDato',
+				label: 'Inaktiv fra dato',
+				value: Formatters.formatDate(inaktiveringDato)
+			}
+		]
+	}
+}
+
+export function mapSubItemAaregData(data) {
+	let subItemArray = []
+	data.utenlandsopphold &&
+		subItemArray.push({
+			id: 'utenlandsopphold',
+			label: 'Utenlandsopphold',
+			subItem: true,
+			value: data.utenlandsopphold.map((subdata, k) => {
+				return [
+					{
+						id: 'id',
+						label: '',
+						value: `#${k + 1}`,
+						width: 'x-small'
+					},
+					{
+						id: 'land',
+						label: 'Land',
+						value: subdata.landkode
+					},
+					{
+						id: 'fom',
+						label: 'Startdato',
+						value: subdata.periode.fom
+					},
+					{
+						id: 'tom',
+						label: 'Sluttdato',
+						value: subdata.periode.tom
+					}
+				]
+			})
+		})
+
+	data.permisjonPermitteringer &&
+		subItemArray.push({
+			id: 'permisjon',
+			label: 'Permisjon',
+			subItem: true,
+			value: data.permisjonPermitteringer.map((subdata, k) => {
+				return [
+					{
+						id: 'id',
+						label: '',
+						value: `#${k + 1}`,
+						width: 'x-small'
+					},
+					{
+						id: 'permisjonOgPermittering',
+						label: 'Permisjonstype',
+						value: subdata.type,
+						width: 'medium'
+					},
+					{
+						id: 'fom',
+						label: 'Startdato',
+						value: subdata.periode.fom
+					},
+					{
+						id: 'tom',
+						label: 'Sluttdato',
+						value: subdata.periode.tom
+					}
+				]
+			})
+		})
+	return subItemArray
+}
+
 export function mapAaregData(aaregData) {
 	if (!aaregData) return null
 
@@ -81,7 +175,7 @@ export function mapAaregData(aaregData) {
 			return {
 				parent: 'arbeidsforhold',
 				id: data.arbeidsforholdId,
-				label: data.inntektsaar,
+				label: 'Arbeidsforhold',
 				value: [
 					{
 						id: 'id',
@@ -126,7 +220,7 @@ export function mapAaregData(aaregData) {
 						label: 'Arbeidsgiver Ident',
 						value: data.arbeidsgiver.offentligIdent
 					}
-				]
+				].concat(mapSubItemAaregData(data))
 			}
 		})
 	}

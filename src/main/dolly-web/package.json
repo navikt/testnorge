@@ -21,7 +21,6 @@
 		"font-awesome": "^4.7.0",
 		"formik": "^1.2.0",
 		"history": "^4.7.2",
-		"jest-single-file-coverage": "^1.0.2",
 		"less": "^3.0.4",
 		"lodash": "^4.17.10",
 		"nav-frontend-alertstriper-style": "^0.2.34",

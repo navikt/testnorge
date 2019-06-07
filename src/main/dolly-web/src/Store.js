@@ -3,7 +3,6 @@ import thunkMiddleware from 'redux-thunk'
 import promiseMiddleware from 'redux-promise-middleware'
 import { connectRouter, routerMiddleware, LOCATION_CHANGE } from 'connected-react-router'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
-
 import bestillingReducer from './ducks/bestilling'
 import gruppeReducer from './ducks/gruppe'
 import teamsReducer from './ducks/teams'
@@ -25,7 +24,6 @@ const locationMiddleware = store => next => action => {
 		const prevPath = store.getState().router.location.pathname
 		const nextPath = action.payload.location.pathname
 		if (prevPath === nextPath) {
-			// console.log('cancel location change - same path')
 			return false
 		}
 	}
@@ -40,12 +38,8 @@ const configureReduxStore = history => {
 		routerMiddleware(history)
 	]
 
-	// Add redux logger if not in production
-	if (process.env.NODE_ENV !== `production`) {
-		const createLogger = require(`redux-logger`).createLogger
-		const logger = createLogger({ collapsed: true })
-		allMiddleware.push(logger)
-	}
+	// * Trenger ikke denne hvis du foretrekker redux chrome-extension.
+	// addReduxLoggerToConsole(allMiddleware)
 
 	const rootReducer = history =>
 		combineReducers({
@@ -67,6 +61,14 @@ const configureReduxStore = history => {
 		})
 
 	return createStore(rootReducer(history), composeWithDevTools(applyMiddleware(...allMiddleware)))
+}
+
+const addReduxLoggerToConsole = allMiddleware => {
+	if (process.env.NODE_ENV !== `production`) {
+		const createLogger = require(`redux-logger`).createLogger
+		const logger = createLogger({ collapsed: true })
+		allMiddleware.push(logger)
+	}
 }
 
 export default configureReduxStore(history)
