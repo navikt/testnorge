@@ -47,5 +47,67 @@ describe('PersonInfoBlock.js', () => {
 		it('should render multiple infoblocks', () => {
 			expect(wrapper.find('.person-info-block')).toHaveLength(data.length)
 		})
+		// it('should render subItem-block', () => {
+		// 	expect(wrapper.find('.person-info-subItems').exists()).toBe(false)
+		// })
+	})
+	describe('rendering infoblock with subitems', () => {
+		const attributtManager = {
+			getAttributtById: jest.fn()
+		}
+
+		const data = [
+			{
+				parent: 'pappa',
+				id: 'pappa',
+				value: [
+					{
+						id: 'arbeidsforhold',
+						label: 'arbforhold',
+						subItem: true,
+						value: [
+							[
+								{
+									id: '1',
+									label: 'hei',
+									value: '123'
+								},
+								{
+									id: '2',
+									label: 'hallo',
+									value: '987'
+								}
+							]
+						]
+					},
+					{
+						id: 'arbeidsforhold',
+						label: 'arbforhold',
+						subItem: true,
+						value: [
+							[
+								{
+									id: '4',
+									label: 'hei2',
+									value: '12365'
+								},
+								{
+									id: '5',
+									label: 'hallo2',
+									value: '98765'
+								}
+							]
+						]
+					}
+				]
+			}
+		]
+
+		const wrapper = shallow(
+			<PersonInfoBlock data={data} multiple attributtManager={attributtManager} />
+		)
+		it('should render subItem-block', () => {
+			expect(wrapper.find('.person-info-subItems').exists()).toBe(true)
+		})
 	})
 })

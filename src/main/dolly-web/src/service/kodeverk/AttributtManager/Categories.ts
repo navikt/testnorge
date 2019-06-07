@@ -36,6 +36,11 @@ export const Kategorier: KategoriTypes = {
 			'KRR - benyttes for offentlige virksomheter for å avklare om den enkelte bruker har reservert seg mot digital kommunikasjon eller ikke. I tillegg skal varslene som sendes til bruker benytte den kontaktinformasjonen som ligger i registeret. Dette kan enten være mobiltelefonnummer for utsendelse av sms, eller epostadresse for utsendelse av epost. \n' +
 			'Dataene her blir lagt i Krr-stub og blir kun distribuert til Q2. Dersom du har behov for dataen i andre miljøer må du opprette en manuell testdatabestilling i REG-spacet i Jira.',
 		order: 50
+	},
+	Arena: {
+		id: 'arena',
+		navn: 'Arena',
+		order: 60
 	}
 }
 
@@ -100,6 +105,13 @@ export const SubKategorier: KategoriTypes = {
 
 	Krr: {
 		id: 'krr',
+		navn: '',
+		order: 10,
+		showInSummary: true
+	},
+
+	Arena: {
+		id: 'arena',
 		navn: '',
 		order: 10,
 		showInSummary: true
