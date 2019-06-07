@@ -13,7 +13,8 @@ export enum DataSource {
 	SIGRUN = 'SIGRUN',
 	KRR = 'KRR',
 	AAREG = 'AAREG',
-	PDLF = 'PDLF'
+	PDLF = 'PDLF',
+	ARENA = 'ARENA'
 }
 
 export interface Options {

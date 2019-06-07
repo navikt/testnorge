@@ -310,6 +310,29 @@ export function mapBestillingData(bestillingData) {
 
 			data.push(krrStub)
 		}
+
+		const arenaKriterier = registreKriterier.arenaforvalter && registreKriterier.arenaforvalter
+
+		if (arenaKriterier) {
+			const arenaforvalter = {
+				header: 'Arena',
+				items: [
+					{
+						label: 'Brukertype',
+						value: Formatters.uppercaseAndUnderscoreToCapitalized(arenaKriterier.arenaBrukertype)
+					},
+					{
+						label: 'Servicebehov',
+						value: arenaKriterier.kvalifiseringsgruppe
+					},
+					{
+						label: 'Inaktiv fra dato',
+						value: Formatters.formatDate(arenaKriterier.inaktiveringDato)
+					}
+				]
+			}
+			data.push(arenaforvalter)
+		}
 	}
 
 	return data

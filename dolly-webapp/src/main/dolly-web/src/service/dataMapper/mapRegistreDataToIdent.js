@@ -70,8 +70,33 @@ export function mapKrrData(krrData) {
 	}
 }
 
+export function mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato) {
+	if (!arenaData) return null
+	if (arenaData['data']['arbeidsokerList'].length === 0) return null
+	const brukertype = arenaData['data']['arbeidsokerList'][0].servicebehov
+	return {
+		header: 'Arena',
+		data: [
+			{
+				id: 'brukertype',
+				label: 'Brukertype',
+				value: Formatters.booleanToServicebehov(brukertype)
+			},
+			kvalifiseringsgruppe && {
+				id: 'servicebehov',
+				label: 'Servicebehov',
+				value: Formatters.servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)
+			},
+			inaktiveringDato && {
+				id: 'inaktiveringDato',
+				label: 'Inaktiv fra dato',
+				value: Formatters.formatDate(inaktiveringDato)
+			}
+		]
+	}
+}
+
 export function mapSubItemAaregData(data) {
-	if (!data) return null
 	let subItemArray = []
 	data.utenlandsopphold &&
 		subItemArray.push({
@@ -150,7 +175,7 @@ export function mapAaregData(aaregData) {
 			return {
 				parent: 'arbeidsforhold',
 				id: data.arbeidsforholdId,
-				label: data.inntektsaar,
+				label: 'Arbeidsforhold',
 				value: [
 					{
 						id: 'id',

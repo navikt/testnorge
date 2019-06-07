@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,5 +15,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ArenaBrukerUtenServicebehov {
 
-    private String personident;
+    private LocalDate stansDato;
 }
