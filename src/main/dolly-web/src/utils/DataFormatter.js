@@ -89,7 +89,7 @@ Formatters.kodeverkLabel = kodeverk => {
 }
 
 Formatters.oversettBoolean = value => {
-	if (!value) return null
+	if (value === null) return null
 
 	return value === true ? 'Ja' : value === false ? 'Nei' : value
 }

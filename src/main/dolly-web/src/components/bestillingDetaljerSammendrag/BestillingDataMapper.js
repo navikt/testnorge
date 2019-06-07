@@ -83,6 +83,35 @@ export function mapBestillingData(bestillingData) {
 			header: 'Personlig informasjon',
 			items: _getTpsfBestillingData(tpsfKriterier)
 		}
+		// For å mappe utenlands-ID under personlig informasjon
+		if (bestillingData.bestKriterier) {
+			const registreKriterier = JSON.parse(bestillingData.bestKriterier)
+			const pdlforvalter = registreKriterier.pdlforvalter && registreKriterier.pdlforvalter
+			if (pdlforvalter) {
+				const pdlf = {
+					items: [
+						{
+							label: 'Utenlands-ID',
+							value: pdlforvalter.utenlandskIdentifikasjonsnummer.identifikasjonsnummer
+						},
+						{
+							label: 'Utenlands-ID opphørt',
+							value: Formatters.oversettBoolean(
+								pdlforvalter.utenlandskIdentifikasjonsnummer.opphoert
+							)
+						},
+						{
+							label: 'Utstederland (ID)',
+							value: pdlforvalter.utenlandskIdentifikasjonsnummer.utstederland,
+							apiKodeverkId: 'StatsborgerskapFreg'
+						}
+					]
+				}
+				pdlf.items.forEach(item => {
+					personinfo.items.push(item)
+				})
+			}
+		}
 		data.push(personinfo)
 
 		if (tpsfKriterier.boadresse) {
