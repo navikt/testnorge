@@ -6,7 +6,7 @@ metadata:
   labels:
     team: orkestrator
 spec:
-  image: "docker.adeo.no:5000/registre/testnorge-statisk-data-forvalter:1.2.0-1"
+  image: "docker.adeo.no:5000/registre/testnorge-statisk-data-forvalter:1.2.0-2"
   port: 8080
   liveness:
     path: /internal/isAlive

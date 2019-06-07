@@ -100,7 +100,12 @@ public class EnvironmentInitializationService {
     public Map<String, String> initializeAareg(String environment) {
         Set<AaregModel> aaregSet = new HashSet<>();
         aaregRepository.findAll().forEach(aaregSet::add);
-        return aaregConsumer.send(aaregSet, environment);
+
+        Set<String> fnrs = aaregConsumer.finnPersonerUtenArbeidsforhold(aaregSet.parallelStream().map(AaregModel::getFnr).collect(Collectors.toSet()), environment);
+
+        Set<AaregModel> models = aaregSet.parallelStream().filter(a -> fnrs.contains(a.getFnr())).collect(Collectors.toSet());
+
+        return aaregConsumer.send(models, environment);
     }
 
     /**
