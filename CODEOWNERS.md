@@ -1,2 +1,1 @@
-* @navikt/orkestrator
-* @navikt/team_synt
+* @navikt/synt
