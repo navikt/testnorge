@@ -8,8 +8,9 @@ Applikasjonen eksponerer SOAP tjenesten person status fra UDI, men med egne data
 
 Data opprettes via REST-tjenesten
 
-For dokumentasjon av applikasjonen sine endepunkter: /swagger-ui.html
-WSDL: /ws
+For dokumentasjon av applikasjonen sine endepunkter: `/swagger-ui.html`
+
+`WSDL: /ws`
 
 ## Deployment
 
