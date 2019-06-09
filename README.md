@@ -11,3 +11,9 @@ The application exposes a SOAP service which provides immigration statuses for p
 `/swagger-ui.html`
 
 `WSDL: /ws`
+
+## Deployment
+
+The application can be deployed locally with an in memory h2 database. There is also a main class that is implemented with a vault and postgresql integration.
+
+Further integrations can be implemented by creating a new submodule.
