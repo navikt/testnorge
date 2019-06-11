@@ -22,5 +22,8 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>udi-stub</finalName>
+    </build>
 
 </project>

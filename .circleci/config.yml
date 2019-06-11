@@ -21,7 +21,7 @@ jobs:
             - ~/.m2
           key: udi-stub-{{ checksum "pom.xml" }}
       - run: mvn package
-      - store_test_result:
+      - store_test_results:
           path: target/surefire-reports
       - run:
           name: Copy jars to workspace
