@@ -76,9 +76,13 @@ jobs:
           fingerprints:
             - "4e:8f:f6:8d:bb:77:2a:54:f6:a7:17:45:59:62:af:2c"
       - run:
+          name: Decrypt private key
+          command: |
+            openssl enc -aes-256-cbc -d -in .circleci/orkestratorenci.2019-06-11.private-key.pem.enc -out priv.private_key.pem -k $DECRYPT_ACCESS_TOKEN_PASSWORD
+      - run:
           name: Create deployment request for development
           command: |
-            deployment-cli deploy create --cluster=dev-fss --repository=$DOCKER_IMG_NAME --team=orkestrator -r=nais.yaml --version=${CIRCLE_SHA1} --appid=32721 --key-base64=$GITHUB_APP_KEY --username=$NAV_USERNAME
+            deployment-cli deploy create --cluster=dev-fss --repository=$DOCKER_IMG_NAME --team=orkestrator -r=nais.yaml --version=${CIRCLE_SHA1} --appid=32721 --key-base64=priv.private_key.pem --username=$NAV_USERNAME
 workflows:
   version: 2
   build_and_deploy:
