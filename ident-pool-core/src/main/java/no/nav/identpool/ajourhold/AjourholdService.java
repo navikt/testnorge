@@ -103,9 +103,11 @@ public class AjourholdService {
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
 
-        for(String ident : ledig) {
-            if(rekvirert.contains(ident)) {
+        for (String ident : ledig) {
+            if (rekvirert.contains(ident)) {
                 log.warn("Ident {} er markert som rekvirert, men blir lagret som LEDIG", ident);
+            } else {
+                log.info("Ident {} er ikke markert som rekvirert. Lagres som LEDIG", ident);
             }
         }
 
