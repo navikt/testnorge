@@ -79,9 +79,11 @@ jobs:
           name: Decrypt private key
           command: |
             openssl enc -aes-256-cbc -d -in .circleci/orkestratorenci.2019-06-11.private-key.pem.enc -out priv.private_key.pem -k $DECRYPT_ACCESS_TOKEN_PASSWORD
+            mv priv.private_key.pem /tmp/workspace/
       - run:
           name: Create deployment request for development
           command: |
+            ls -lah
             deployment-cli deploy create --cluster=dev-fss --repository=$DOCKER_IMG_NAME --team=orkestrator -r=nais.yaml --version=${CIRCLE_SHA1} --appid=32721 --key-base64=priv.private_key.pem --username=$NAV_USERNAME
 workflows:
   version: 2
