@@ -24,8 +24,11 @@ jobs:
       - store_test_results:
           path: target/surefire-reports
       - run:
-          name: Copy jars to workspace
+          name: Copy cloud jar to workspace
           command: cp udi-cloud/target/*.jar /tmp/workspace
+      - run:
+          name: Copy core jar to workspace
+          command: cp udi-core/target/*.jar /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths: '*.jar'
