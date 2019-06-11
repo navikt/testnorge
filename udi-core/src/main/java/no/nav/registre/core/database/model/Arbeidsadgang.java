@@ -24,7 +24,7 @@ import javax.persistence.OneToOne;
 @Builder
 @Setter
 @Getter
-public class ArbeidsAdgang {
+public class Arbeidsadgang {
 
     @GeneratedValue
     @Id

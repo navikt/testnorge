@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import no.nav.registre.core.database.model.Alias;
-import no.nav.registre.core.database.model.ArbeidsAdgang;
+import no.nav.registre.core.database.model.Arbeidsadgang;
 import no.nav.registre.core.database.model.Avgjoerelse;
 import no.nav.registre.core.database.model.OppholdsStatus;
 import no.nav.registre.core.database.model.Person;
@@ -53,16 +53,16 @@ public class PersonService {
     public Person opprettPerson(Person person) {
         if (person.getOppholdsStatus() != null)
             person.getOppholdsStatus().setPerson(person);
-        if (person.getArbeidsAdgang() != null)
-            person.getArbeidsAdgang().setPerson(person);
+        if (person.getArbeidsadgang() != null)
+            person.getArbeidsadgang().setPerson(person);
         return personRepository.save(person);
     }
 
-    public ArbeidsAdgang opprettArbeidsAdgang(String fnr, ArbeidsAdgang arbeidsAdgang) {
+    public Arbeidsadgang opprettArbeidsAdgang(String fnr, Arbeidsadgang arbeidsadgang) {
         Optional<Person> person = personRepository.findById(fnr);
         if (person.isPresent()) {
-            arbeidsAdgang.setPerson(person.get());
-            return arbeidsAdgangRepository.save(arbeidsAdgang);
+            arbeidsadgang.setPerson(person.get());
+            return arbeidsAdgangRepository.save(arbeidsadgang);
         }
         return null;
     }
@@ -110,9 +110,9 @@ public class PersonService {
         return optionalPerson.map(Person::getAliaser).orElse(null);
     }
 
-    public ArbeidsAdgang findArbeidsAdgangByFnr(String fnr) {
+    public Arbeidsadgang findArbeidsAdgangByFnr(String fnr) {
         Optional<Person> optionalPerson = personRepository.findById(fnr);
-        return optionalPerson.map(Person::getArbeidsAdgang).orElse(null);
+        return optionalPerson.map(Person::getArbeidsadgang).orElse(null);
     }
 
     private JaNeiUavklart convertFraBool(Boolean avklart) {

@@ -56,7 +56,7 @@ public class Person {
     )
     @Builder.Default
     @JsonManagedReference
-    private ArbeidsAdgang arbeidsAdgang = null;
+    private Arbeidsadgang arbeidsadgang = null;
 
     @OneToOne(
             fetch = FetchType.LAZY,
@@ -73,13 +73,20 @@ public class Person {
     private Boolean flyktning;
 
     private JaNeiUavklart soeksnadOmBeskyttelseUnderBehandling;
-    private Date soeknadsDato;
+    private Date soknadDato;
 
-    private void setSoeknadsDato(Date date) {
-        soeknadsDato = new Date(date.toInstant().getEpochSecond());
+    public Date getSoknadDato() {
+        if (this.soknadDato == null) {
+            return null;
+        }
+        return new Date(this.soknadDato.toInstant().getEpochSecond());
     }
 
-    private Date getSoeknadsDato() {
-        return new Date(soeknadsDato.toInstant().getEpochSecond());
+    public void setSoknadDato(Date dato) {
+        if (dato == null) {
+            this.soknadDato = null;
+        } else {
+            this.soknadDato = new Date(dato.toInstant().getEpochSecond());
+        }
     }
 }

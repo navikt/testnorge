@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
+import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdstillatelse;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -19,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.sql.Date;
 
 @Entity
 @NoArgsConstructor
@@ -47,11 +49,11 @@ public class OppholdsStatus {
     @AttributeOverrides(
             value = {
                     @AttributeOverride(name = "fra", column = @Column(name = "efta_beslutning_om_oppholdsrett_fra")),
-                    @AttributeOverride(name = "til", column = @Column(name = "efta_beslutning_om_oppholdsrett_oppholds_til")),
-                    @AttributeOverride(name = "effektuering", column = @Column(name = "efta_beslutning_om_oppholdsrett_oppholds_effektuering"))
+                    @AttributeOverride(name = "til", column = @Column(name = "efta_beslutning_om_oppholdsrett_oppholds_til"))
             }
     )
     private Periode eoSellerEFTABeslutningOmOppholdsrettPeriode;
+    private Date eoSellerEFTABeslutningOmOppholdsrettEffektuering;
 
     @Embedded
     @AttributeOverrides(
@@ -65,11 +67,11 @@ public class OppholdsStatus {
     @AttributeOverrides(
             value = {
                     @AttributeOverride(name = "fra", column = @Column(name = "efta_vedtak_om_varig_oppholdsrett_fra")),
-                    @AttributeOverride(name = "til", column = @Column(name = "efta_vedtak_om_varig_oppholdsrett_til")),
-                    @AttributeOverride(name = "effektueringsdato", column = @Column(name = "efta_vedtak_om_varig_oppholdsrett_effektuering"))
+                    @AttributeOverride(name = "til", column = @Column(name = "efta_vedtak_om_varig_oppholdsrett_til"))
             }
     )
     private Periode eoSellerEFTAVedtakOmVarigOppholdsrettPeriode;
+    private Date eoSellerEFTAVedtakOmVarigOppholdsrettEffektuering;
 
     @Embedded
     @AttributeOverrides(
@@ -77,17 +79,17 @@ public class OppholdsStatus {
                     @AttributeOverride(name = "value", column = @Column(name = "efta_oppholdstillatels_value"))
             }
     )
-    private EOSellerEFTAGrunnlagskategoriOppholdsrett eoSellerEFTAOppholdstillatelse;
+    private EOSellerEFTAGrunnlagskategoriOppholdstillatelse eoSellerEFTAOppholdstillatelse;
 
     @Embedded
     @AttributeOverrides(
             value = {
                     @AttributeOverride(name = "fra", column = @Column(name = "efta_oppholdstillatels_fra")),
-                    @AttributeOverride(name = "til", column = @Column(name = "efta_oppholdstillatels_til")),
-                    @AttributeOverride(name = "effektueringsdato", column = @Column(name = "efta_oppholdstillatels_effektuering"))
+                    @AttributeOverride(name = "til", column = @Column(name = "efta_oppholdstillatels_til"))
             }
     )
     private Periode eoSellerEFTAOppholdstillatelsePeriode;
+    private Date eoSellerEFTAOppholdstillatelseEffektuering;
 
     private String oppholdSammeVilkaar;
 
@@ -96,10 +98,10 @@ public class OppholdsStatus {
             value = {
                     @AttributeOverride(name = "fra", column = @Column(name = "opphold_samme_vilkaar_fra")),
                     @AttributeOverride(name = "til", column = @Column(name = "opphold_samme_vilkaar_til")),
-                    @AttributeOverride(name = "effektueringsdato", column = @Column(name = "opphold_samme_vilkaar_effektuering"))
             }
     )
     private Periode oppholdSammeVilkaarPeriode;
+    private Date oppholdSammeVilkaarEffektuering;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "person_fnr", nullable = false)

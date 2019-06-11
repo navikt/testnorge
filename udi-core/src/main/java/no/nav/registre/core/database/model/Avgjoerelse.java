@@ -86,8 +86,7 @@ public class Avgjoerelse {
     @AttributeOverrides(
             value = {
                     @AttributeOverride(name = "fra", column = @Column(name = "utfall_fra")),
-                    @AttributeOverride(name = "til", column = @Column(name = "utfall_til")),
-                    @AttributeOverride(name = "effektueringsdato", column = @Column(name = "utfall_effektueringsdato"))
+                    @AttributeOverride(name = "til", column = @Column(name = "utfall_til"))
             }
     )
     Periode utfallPeriode;
@@ -108,13 +107,12 @@ public class Avgjoerelse {
     @AttributeOverrides(
             value = {
                     @AttributeOverride(name = "fra", column = @Column(name = "tillatelse_fra")),
-                    @AttributeOverride(name = "til", column = @Column(name = "tillatelse_til")),
-                    @AttributeOverride(name = "effektueringsdato", column = @Column(name = "tillatelse_effektueringsdato"))
+                    @AttributeOverride(name = "til", column = @Column(name = "tillatelse_til"))
             }
     )
     Periode tillatelsePeriode;
 
-
+    private Date effektueringsDato;
     private Date avgjoerelsesDato;
     private Date iverksettelseDato;
     private Date utreisefristDato;
