@@ -83,7 +83,7 @@ jobs:
           name: Create deployment request for development
           command: |
             ls -lah
-            deployment-cli deploy create --cluster=dev-fss --repository=$DOCKER_IMG_NAME --team=orkestrator -r=nais.yaml --version=${CIRCLE_SHA1} --appid=32721 --key-base64=priv.private_key.pem --username=$NAV_USERNAME
+            deployment-cli deploy create --cluster=dev-fss --repository=udi-stub --team=orkestrator -r=nais.yaml --version=${CIRCLE_SHA1} --appid=32721 --key-base64=priv.private_key.pem
 workflows:
   version: 2
   build_and_deploy:
