@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,23 +33,25 @@ public class NyeIdenterService {
 
     public List<String> settInnNyeIdenterITrans1Meldinger(String miljoe, HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger) {
         int antallNyeIdenter = meldinger.size();
+        List<String> identerLagtTil = new ArrayList<>(antallNyeIdenter);
         HentIdenterRequest request = HentIdenterRequest.builder()
                 .antall(antallNyeIdenter)
                 .identtype(identType)
                 .foedtEtter(LocalDate.now().minusYears(90)).build();
-        List<String> identer = identPoolConsumer.hentNyeIdenter(request);
+        List<String> identerFraIdentpool = identPoolConsumer.hentNyeIdenter(request);
         for (int i = 0; i < antallNyeIdenter; i++) {
-            String ident = identer.get(i);
+            String ident = identerFraIdentpool.get(i);
             Map<String, String> statusQuoFraEndringskode = hodejegerenConsumer.getStatusQuoFraEndringskode(Endringskoder.UREGISTRERT_PERSON, miljoe, ident);
             if (statusQuoFraEndringskode.isEmpty()) {
-                putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identer.get(i));
+                putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identerFraIdentpool.get(i));
                 if (Endringskoder.INNVANDRING.getAarsakskode().equals(meldinger.get(i).getAarsakskode())) {
                     meldinger.add(opprettStatsborgerendringsmelding((RsMeldingstype1Felter) meldinger.get(i)));
                 }
+                identerLagtTil.add(ident);
             } else {
                 log.error("Ident {} eksisterte allerede i miljø. Hopper over opprettelse", ident);
             }
         }
-        return identer;
+        return identerLagtTil;
     }
 }
