@@ -33,6 +33,7 @@ public class NyeIdenterService {
 
     public List<String> settInnNyeIdenterITrans1Meldinger(String miljoe, HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger) {
         int antallNyeIdenter = meldinger.size();
+        List<RsMeldingstype> meldingerSomSkalFjernes = new ArrayList<>();
         List<String> identerLagtTil = new ArrayList<>(antallNyeIdenter);
         HentIdenterRequest request = HentIdenterRequest.builder()
                 .antall(antallNyeIdenter)
@@ -49,8 +50,12 @@ public class NyeIdenterService {
                 }
                 identerLagtTil.add(ident);
             } else {
-                log.error("Ident {} eksisterte allerede i miljø. Hopper over opprettelse", ident);
+                meldingerSomSkalFjernes.add(meldinger.get(i));
             }
+        }
+        meldinger.removeAll(meldingerSomSkalFjernes);
+        if(meldingerSomSkalFjernes.size() > 0) {
+            log.info("{} identer eksisterte allerede i miljø. Opprettet {} meldinger.", meldingerSomSkalFjernes.size(), meldinger.size());
         }
         return identerLagtTil;
     }
