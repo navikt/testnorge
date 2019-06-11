@@ -75,7 +75,7 @@ jobs:
       - run:
           name: Create deployment request for development
           command: |
-            deployment-cli deploy create --cluster=dev-fss --repository=$DOCKER_IMG_NAME --team=orkestrator -r=nais.yaml --version=${CIRCLE_SHA1}
+            deployment-cli deploy create --cluster=dev-fss --repository=$DOCKER_IMG_NAME --team=orkestrator -r=nais.yaml --version=${CIRCLE_SHA1} --appid=32721 --key-base64 $GITHUB_APP_KEY --username=$NAV_USERNAME
 workflows:
   version: 2
   build_and_deploy:
