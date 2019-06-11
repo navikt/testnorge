@@ -51,6 +51,10 @@ jobs:
           command: |
             cp /tmp/workspace/*.jar .
       - run:
+          name: List jar files
+          command: |
+            ls -lah
+      - run:
           name: Build and push to docker hub
           command: |
             VERSION="$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)"
