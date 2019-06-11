@@ -14,8 +14,8 @@ jobs:
           command: mkdir -p /tmp/workspace
       - restore_cache:
           keys: udi-stub-{{ checksum "pom.xml" }}
-      - run:
-          mvn dependency:go-offline
+      #      - run:
+      #          mvn dependency:go-offline
       - save_cache:
           paths:
             - ~/.m2
