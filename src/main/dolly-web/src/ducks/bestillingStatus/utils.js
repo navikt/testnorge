@@ -90,7 +90,7 @@ const avvikStatus = item => {
 		})
 	item.pdlforvalterStatus &&
 		Object.keys(item.pdlforvalterStatus).map(pdlAttr => {
-			// Looper gjennom pdl-attributter. F.eks. dødsbo, utenlandsid
+			// Looper gjennom pdl-attributter. F.eks. generell pdl, dødsbo, utenlandsid
 			item.pdlforvalterStatus[pdlAttr].map(status => {
 				status.statusMelding !== 'OK' && (avvik = true)
 			})

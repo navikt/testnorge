@@ -223,14 +223,6 @@ export default class FormEditor extends PureComponent {
 			exceptValue && exceptValue.map(value => value === valgtVerdi && (exception = true))
 
 			if (exceptValue) deleteValidation = exception
-			console.log(
-				'Object.keys(formikProps.values[parentId][idx]) :',
-				Object.keys(formikProps.values[parentId][idx])
-			)
-			console.log(
-				'!Object.keys(formikProps.values[parentId][idx]).includes(item.id) :',
-				!Object.keys(formikProps.values[parentId][idx]).includes(item.id)
-			)
 			if (deleteValidation) {
 				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
 				shouldRender = false
@@ -243,7 +235,6 @@ export default class FormEditor extends PureComponent {
 
 	_setFieldValue = (formikProps, parentId, idx, itemId) => {
 		const path = parentId + '[' + idx + '].' + itemId
-		console.log('path :', path)
 		formikProps.setFieldValue(path, '', true)
 	}
 	_deleteValidation = (item, valgteVerdier, errors, parentId, idx) => {
