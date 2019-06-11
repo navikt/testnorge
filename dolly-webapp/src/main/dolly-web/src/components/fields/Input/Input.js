@@ -37,7 +37,6 @@ export const FormikInput = props => {
 		form.setFieldTouched(field.name, true)
 		return field.onChange(e)
 	}
-	console.log(field.name, ': form :', form)
 	return (
 		<DollyInput
 			name={field.name}

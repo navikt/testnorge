@@ -3,7 +3,6 @@ import Formatters from '~/utils/DataFormatter'
 export const getAttributesFromMal = mal => {
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
 	const bestKriterier = JSON.parse(mal.bestKriterier)
-
 	let attrArray = []
 	attrArray = Object.keys(tpsfKriterier).filter(k => {
 		if (k !== 'identtype' && k !== 'relasjoner' && k !== 'regdato') {
@@ -16,10 +15,15 @@ export const getAttributesFromMal = mal => {
 		tpsfKriterier.relasjoner.partner && attrArray.push('partner')
 	}
 
+	if (bestKriterier.pdlforvalter) {
+		Object.keys(bestKriterier.pdlforvalter).map(pdlattr => {
+			attrArray.push(pdlattr)
+		})
+	}
+
 	Object.keys(bestKriterier).forEach(reg => {
 		attrArray.push(_mapRegistreKey(reg))
 	})
-
 	return attrArray
 }
 
@@ -31,9 +35,12 @@ export const getValuesFromMal = mal => {
 	_mapValuesToObject(reduxStateValue, tpsfKriterierArray)
 
 	bestKriterierArray.forEach(reg => {
-		let valueArray = _mapRegistreValue(reg[0], reg[1])
+		const pdlforvalter = reg[0] === 'pdlforvalter'
+		const navn = pdlforvalter ? Object.keys(reg[1])[0] : reg[0]
+		const values = pdlforvalter ? reg[1][navn] : reg[1]
+		let valueArray = _mapRegistreValue(navn, values)
 		if (Array.isArray(valueArray)) {
-			_mapArrayValuesToObject(reduxStateValue, valueArray, reg[0])
+			_mapArrayValuesToObject(reduxStateValue, valueArray, navn)
 		}
 	})
 	return reduxStateValue
@@ -46,7 +53,6 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 		if (key === 'regdato') return
 
 		let value = v[1]
-
 		if (value) {
 			let customKeyPrefix = keyPrefix
 			if (keyPrefix === 'barn_' && key === 'identtype') {
@@ -79,7 +85,9 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 }
 
 const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = '') => {
-	const mappedKey = _mapRegistreKey(key)
+	//Må se på hvordan det skal gjøres når utenlandsID kommer inn
+	const mappedKey =
+		key === 'pdlforvalter' ? _mapRegistreKey(Object.keys(valueArray[0])[0]) : _mapRegistreKey(key)
 	let valueArrayObj = []
 
 	valueArray.forEach(v => {
@@ -93,7 +101,18 @@ const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = ''
 }
 
 const _formatValueForObject = (key, value) => {
-	const dateAttributes = ['foedtFoer', 'foedtEtter', 'doedsdato', 'fom', 'tom', 'gyldigFra']
+	const dateAttributes = [
+		'foedtFoer',
+		'foedtEtter',
+		'doedsdato',
+		'fom',
+		'tom',
+		'gyldigFra',
+		'gyldigFom',
+		'gyldigTom',
+		'utstedtDato',
+		'foedselsdato'
+	]
 
 	if (dateAttributes.includes(key)) {
 		value = Formatters.formatDate(value)
@@ -113,6 +132,8 @@ const _mapRegistreKey = key => {
 			return 'inntekt'
 		case 'krrStub':
 			return 'krr'
+		case 'kontaktinformasjonForDoedsbo':
+			return 'kontaktinformasjonForDoedsbo'
 		default:
 			return key
 	}
@@ -137,6 +158,28 @@ const _mapRegistreValue = (key, value) => {
 			return mappedValue
 		case 'krrStub':
 			return [value]
+		case 'kontaktinformasjonForDoedsbo':
+			const mapObj = {}
+			Object.entries(value).map(attr => {
+				attr[0] === 'adressat'
+					? Object.entries(value[attr[0]]).map(adressatAttr => {
+							if (adressatAttr[0] === 'kontaktperson' || adressatAttr[0] === 'navn') {
+								Object.entries(value[attr[0]][adressatAttr[0]]).map(navn => {
+									mapObj[navn[0]] = navn[1]
+								})
+							} else if (adressatAttr[0] === 'organisasjonsnavn') {
+								value[attr[0]].adressatType === 'ADVOKAT'
+									? (mapObj['advokat_orgnavn'] = adressatAttr[1])
+									: (mapObj['org_orgnavn'] = adressatAttr[1])
+							} else if (adressatAttr[0] === 'organisasjonsnummer') {
+								value[attr[0]].adressatType === 'ADVOKAT'
+									? (mapObj['advokat_orgnr'] = adressatAttr[1])
+									: (mapObj['org_orgnr'] = adressatAttr[1])
+							} else mapObj[adressatAttr[0]] = adressatAttr[1]
+					  })
+					: (mapObj[attr[0]] = attr[1])
+			})
+			return [mapObj]
 		default:
 			return value
 	}

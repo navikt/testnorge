@@ -145,6 +145,7 @@ export const getValues = (attributeList, values) => {
 // Date, boolean...
 const _transformAttributt = (attribute, attributes, value) => {
 	// console.log('attribute, attributes, value :', attribute, attributes, value)
+	if (!attribute) return null
 	if (attribute.dataSource === 'SIGRUN') {
 		return value
 	} else if (attribute.dataSource === 'AAREG') {
@@ -208,7 +209,7 @@ const _transformAttributt = (attribute, attributes, value) => {
 				)
 			)
 		} else {
-			return value.map(val =>
+			return value.map(val => {
 				Object.assign(
 					{},
 					...Object.entries(val).map(([key, value]) => {
@@ -217,7 +218,7 @@ const _transformAttributt = (attribute, attributes, value) => {
 						}
 					})
 				)
-			)
+			})
 		}
 	} else if (attribute.transform) {
 		// Only affects attributes that has property "transform: (value: any, attributter: Attributt[]) => any"

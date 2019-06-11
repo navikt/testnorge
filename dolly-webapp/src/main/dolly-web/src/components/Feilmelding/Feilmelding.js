@@ -11,14 +11,14 @@ export default class Feilmelding extends Component {
 		const { bestilling } = this.props
 		let cssClass = 'feil-container feil-container_border'
 		const stubStatus = this._finnStubStatus(bestilling)
-		const pdlforvalterStatus = this._finnPdlforvalterStatus(bestilling)
+		const pdlforvalterStatus =
+			bestilling.pdlforvalterStatus && this._finnPdlforvalterStatus(bestilling)
 		// TODO: Refaktor
 		const finnesTPSFEllerStub =
 			(bestilling.tpsfStatus && this._finnTpsfFeilStatus(bestilling.tpsfStatus).length > 0) ||
 			stubStatus.length > 0 ||
 			(bestilling.aaregStatus && this._finnTpsfFeilStatus(bestilling.aaregStatus).length > 0) ||
 			pdlforvalterStatus.length > 0
-		console.log('pdlforvalterStatus :', pdlforvalterStatus)
 		return (
 			<div className="feil-melding">
 				{/*Generelle feilmeldinger */}
@@ -76,11 +76,9 @@ export default class Feilmelding extends Component {
 
 	_finnStubStatus = bestilling => {
 		let stubStatus = []
-		console.log('bestilling :', bestilling)
 		//const tpsfFeilStatus = this.finnTpsfFeilStatus(bestilling.tpsfStatus)
 		const krrStubStatus = { navn: 'KRRSTUB', status: bestilling.krrStubStatus }
 		const sigrunStubStatus = { navn: 'SIGRUNSTUB', status: bestilling.sigrunStubStatus }
-		// const pdlforvalterkStatus = {navn: 'PDLFORVALTER', status: bestilling.pdlforvalterStatus}
 
 		// Legger til feilmeldinger fra krrStub og sigrunStub i et array
 		{
@@ -102,12 +100,16 @@ export default class Feilmelding extends Component {
 
 		Object.keys(bestilling.pdlforvalterStatus).map(pdlfAttr => {
 			bestilling.pdlforvalterStatus[pdlfAttr].map(status => {
-				// if (status.statusMelding !== 'OK') {
-				pdlfStatuser.push({
-					navn: 'PDL-forvalter',
-					status: pdlfAttr + ': ' + status.statusMelding
-				})
-				// }
+				if (status.statusMelding !== 'OK') {
+					pdlfStatuser.push({
+						navn: 'PDL-forvalter',
+						status:
+							pdlfAttr === 'pdlForvalter'
+								? status.statusMelding
+								: pdlfAttr + ': ' + status.statusMelding,
+						identer: status.identer
+					})
+				}
 			})
 		})
 
@@ -169,7 +171,8 @@ export default class Feilmelding extends Component {
 	_renderStubStatus = (stubStatus, cssClass) => {
 		return stubStatus.map((stub, i) => {
 			const stubNavn = stub.navn
-			const identer = Formatters.arrayToString(stub.status[0].identer)
+			const identer = Formatters.arrayToString(stub.status[0].identer || stub.identer)
+			const statusmelding = stub.status[0].statusMelding || stub.status
 			//Ha linje mellom feilmeldingene, men ikke etter den siste
 			const bottomBorder = i != stubStatus.length - 1
 			cssClass = cn('feil-container', {
@@ -177,7 +180,7 @@ export default class Feilmelding extends Component {
 			})
 			return (
 				<div className={cssClass} key={i}>
-					<div className="feil-kolonne_stor">{stub.status[0].statusMelding}</div>
+					<div className="feil-kolonne_stor">{statusmelding}</div>
 					<div className="feil-kolonne_stor">
 						<span className="feil-container">
 							<span className="feil-kolonne_liten">{stubNavn}</span>

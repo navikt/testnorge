@@ -94,7 +94,6 @@ export default class Step3 extends PureComponent {
 					onSubmit={this.submit}
 					validationSchema={this.EnvValidation}
 					render={formikProps => {
-						// console.log(formikProps, 'forkni')
 						return (
 							<Fragment>
 								<div className="input-container">
@@ -237,6 +236,7 @@ export default class Step3 extends PureComponent {
 	renderItem = (item, stateValues) => {
 		if (item.items) {
 			const valueArray = _get(this.props.values, item.id)
+
 			return valueArray.map((values, idx) => {
 				return this.renderSubKategoriBlokk(idx + 1, item.items, values)
 			})
