@@ -70,9 +70,13 @@
                      </execution>
                  </executions>
                  <configuration>
-                     <schemaDirectory>${project.basedir}/src/main/resources/informasjon</schemaDirectory>
+                     <sources>
+                         <source>${project.basedir}/src/main/resources/informasjon</source>
+                     </sources>
                      <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
                      <clearOutputDir>false</clearOutputDir>
+                     <generateEpisode>false</generateEpisode>
+                     <addGeneratedAnnotation>true</addGeneratedAnnotation>
                  </configuration>
              </plugin>
          </plugins>
