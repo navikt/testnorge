@@ -3,6 +3,7 @@ package no.nav.dolly.mapper;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KONTAKTINFORMASJON_DOEDSBO;
+import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.PDL_FORVALTER;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.UTENLANDS_IDENTIFIKASJONSNUMMER;
 import static no.nav.dolly.mapper.BestillingMeldingStatusIdentMapper.resolveStatus;
 
@@ -38,10 +39,12 @@ public final class BestillingPdlForvalterStatusMapper {
 
     private static RsPdlForvalterStatus prepareResult(Map<String, Map<String, List<String>>> msgStatusIdents) {
 
-        return msgStatusIdents.containsKey(KONTAKTINFORMASJON_DOEDSBO) || msgStatusIdents.containsKey(UTENLANDS_IDENTIFIKASJONSNUMMER) ?
+        return msgStatusIdents.containsKey(KONTAKTINFORMASJON_DOEDSBO) || msgStatusIdents.containsKey(UTENLANDS_IDENTIFIKASJONSNUMMER)
+                || msgStatusIdents.containsKey(PDL_FORVALTER) ?
                 RsPdlForvalterStatus.builder()
                         .kontaktinfoDoedsbo(buildMessageStatus(msgStatusIdents.get(KONTAKTINFORMASJON_DOEDSBO)))
                         .utenlandsid(buildMessageStatus(msgStatusIdents.get(UTENLANDS_IDENTIFIKASJONSNUMMER)))
+                        .pdlForvalter(buildMessageStatus(msgStatusIdents.get(PDL_FORVALTER)))
                         .build()
                 : null;
     }

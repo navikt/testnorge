@@ -22,6 +22,7 @@ public class RsPdlForvalterStatus {
 
     private List<RsStatusIdent> kontaktinfoDoedsbo;
     private List<RsStatusIdent> utenlandsid;
+    private List<RsStatusIdent> pdlForvalter;
 
     public List<RsStatusIdent> getKontaktinfoDoedsbo() {
         if (isNull(kontaktinfoDoedsbo)) {
@@ -35,5 +36,12 @@ public class RsPdlForvalterStatus {
             utenlandsid = new ArrayList();
         }
         return utenlandsid;
+    }
+
+    public List<RsStatusIdent> getPdlForvalter() {
+        if (isNull(pdlForvalter)) {
+            pdlForvalter = new ArrayList();
+        }
+        return pdlForvalter;
     }
 }
