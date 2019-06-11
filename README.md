@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/navikt/UDI-stub/tree/master.svg?style=svg)](https://circleci.com/gh/navikt/UDI-stub/tree/master)
+Master: [![CircleCI](https://circleci.com/gh/navikt/UDI-stub/tree/master.svg?style=svg)](https://circleci.com/gh/navikt/UDI-stub/tree/master)
 # UDI-stub
 
 UDI-stub stubs the services NAV uses which are exposed by UDI. The application also provides REST endpoints to store new people in the database.
