@@ -2,9 +2,10 @@ package no.nav.registre.orkestratoren.consumer;
 
 import static java.lang.String.format;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -36,14 +37,14 @@ public class TpsPersondokumentListener {
     @Value("#{${batch.avspillergruppeId.miljoe}}")
     private Map<Long, String> avspillergruppeIdMedMiljoe;
 
-    private List<String> alleOrkestrerteIdenter;
+    private Set<String> alleOrkestrerteIdenter;
 
     @JmsListener(destination = "${queue.queueName}")
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "TPS" })
     public void lesFraKoe(Message message) throws JMSException {
         if (alleOrkestrerteIdenter == null) {
             log.info("Ingen identer er cachet. Henter orkestrerte identer fra hodejegeren.");
-            alleOrkestrerteIdenter = new ArrayList<>();
+            alleOrkestrerteIdenter = new HashSet<>();
         }
         try {
             String persondokumentAsXml = ((TextMessage) message).getText();
@@ -58,8 +59,6 @@ public class TpsPersondokumentListener {
 
                 if (alleOrkestrerteIdenter.contains(personIdent)) {
                     hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersondokument, personIdent);
-                } else {
-                    log.info("Oppdatert persondokument på ident som ikke orkestreres: {}. Oppdatering lagres ikke i hodejegeren.", personIdent);
                 }
             }
         } catch (RuntimeException e) {
@@ -67,16 +66,11 @@ public class TpsPersondokumentListener {
         }
     }
 
-    public void sjekkOmIdentLiggerICacheOgOppdater(String personIdent) {
+    private void sjekkOmIdentLiggerICacheOgOppdater(String personIdent) {
         if (!alleOrkestrerteIdenter.contains(personIdent)) {
-            log.info("Cachen inneholder ikke personIdent {}. Oppdaterer cache.", personIdent);
             for (Long avspillergruppeId : avspillergruppeIdMedMiljoe.keySet()) {
                 List<String> orkestrerteIdenter = hodejegerenConsumer.finnAlleIdenter(avspillergruppeId);
-                for (String ident : orkestrerteIdenter) {
-                    if (!alleOrkestrerteIdenter.contains(ident)) {
-                        alleOrkestrerteIdenter.add(ident);
-                    }
-                }
+                alleOrkestrerteIdenter.addAll(orkestrerteIdenter);
             }
         }
     }
