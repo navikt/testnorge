@@ -4,6 +4,7 @@ import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
 
 import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.service.IdentTpsService;
 import no.nav.identpool.util.IdentGeneratorUtil;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AjourholdService {
@@ -100,6 +102,12 @@ public class AjourholdService {
                 .filter(i -> !i.isInUse())
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
+
+        for(String ident : ledig) {
+            if(rekvirert.contains(ident)) {
+                log.warn("Ident {} er markert som rekvirert, men blir lagret som LEDIG", ident);
+            }
+        }
 
         newIdentCount += ledig.size();
         saveIdents(ledig, Rekvireringsstatus.LEDIG, null);
