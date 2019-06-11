@@ -62,7 +62,7 @@ jobs:
             echo "Extracted version = \"$VERSION\""
             echo "Extracted git hash = \"$GIT_HASH\""
             docker build -t hub.docker.com/navikt/udi-stub/app:latest -f Dockerhub.dockerfile .
-            echo "$DOCKER_PASSWORD" | docker login docker.pkg.github.com -u "$DOCKER_USERNAME" --password-stdin
+            echo "$DOCKER_PASSWORD" | docker login hub.docker.com -u "$DOCKER_USERNAME" --password-stdin
             docker push hub.docker.com/navikt/udi-stub/app:latest
   deploy_preprod:
     docker:
