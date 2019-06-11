@@ -1,15 +1,88 @@
-# Use the latest 2.1 version of CircleCI pipeline processing engine, see https://circleci.com/docs/2.0/configuration-reference/
 version: 2.1
 
-# Use a package of configuration called an orb, see https://circleci.com/docs/2.0/orb-intro/
-orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.3.1
+defaults:
+  docker:
+    - image: circleci/openjdk:8-jdk
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - run:
+          name: Create workspace
+          command: mkdir -p /tmp/workspace
+      - restore_cache:
+          keys: udi-stub-{{ checksum "pom.xml" }}
+      - run:
+          mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: udi-stub-{{ checksum "pom.xml" }}
+      - run: mvn package
+      - store_test_result:
+          path: target/surefire-reports
+      - run:
+          name: Copy jars to workspace
+          command: cp udi-cloud/target/*.jar /tmp/workspace
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths: '*.jar'
 
-# Orchestrate or schedule a set of jobs, see https://circleci.com/docs/2.0/workflows/
+      - store_artifacts:
+          path: udi-cloud/target/*.jar
+          destination: udi-stub.jar
+
+  release:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Copy jar to expected path
+          command: |
+            cp /tmp/workspace/*.jar .
+      - run:
+          name: Build and push to docker hub
+          command: |
+            VERSION="$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)"
+            GIT_HASH="$(git rev-parse HEAD)"
+            echo "Extracted version = \"$VERSION\""
+            echo "Extracted git hash = \"$GIT_HASH\""
+            docker build -t docker.pkg.github.com/navikt/udi-stub/app:latest -f Dockerfile .
+            echo "$DOCKER_PASSWORD_GITHUB" | docker login docker.pkg.github.com -u "$DOCKER_USERNAME_GITHUB" --password-stdin
+            docker push docker.pkg.github.com/navikt/udi-stub/app:latest
+  deploy_preprod:
+    docker:
+      - image: navikt/deployment-cli:v0.1.5
+    environment:
+      - DOCKER_IMG_NAME: navikt/udi-stub
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Create deployment request for development
+          command: |
+            deployment-cli deploy create --cluster=dev-fss --repository=$DOCKER_IMG_NAME --team=orkestrator -r=nais.yaml --version=${CIRCLE_SHA1}
 workflows:
-  # Name the workflow "Welcome"
-  Welcome:
-    # Run the welcome/run job in its own container
+  version: 2
+  build_and_deploy:
     jobs:
-      - welcome/run
+      - build
+      - release:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - deploy_preprod:
+          requires:
+            - release
+          filters:
+            branches:
+              only: master
