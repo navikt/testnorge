@@ -1,5 +1,6 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -10,7 +11,6 @@ import static org.hamcrest.Matchers.contains;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,9 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import no.rtv.namespacetps.PersonIdentType;
-import no.rtv.namespacetps.PersonType;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import no.rtv.namespacetps.TpsPersonDokumentType;
 
 @RunWith(SpringRunner.class)
@@ -37,22 +38,11 @@ public class HodejegerenConsumerTest {
 
     @Before
     public void setUp() {
-        PersonIdentType personIdent = new PersonIdentType();
-        personIdent.setPersonIdent(fnr);
-        // Person person = Person.builder()
-        // .personIdent(new ArrayList<>(Collections.singletonList(personIdent)))
-        // .build();
         tpsPersonDokument = new TpsPersonDokumentType();
-        PersonType person = new PersonType();
-        tpsPersonDokument.setPerson(person);
-        // tpsPersonDokument = TpsPersonDokument.builder()
-        // .person(person)
-        // .build();
     }
 
-    @Ignore
     @Test
-    public void shouldSendPersondokumentTilHodejegeren() {
+    public void shouldSendPersondokumentTilHodejegeren() throws JsonProcessingException {
         stubHodejegerenConsumer();
 
         List<String> identer = hodejegerenConsumer.sendTpsPersondokumentTilHodejegeren(tpsPersonDokument, fnr);
@@ -60,10 +50,15 @@ public class HodejegerenConsumerTest {
         assertThat(identer, contains(fnr));
     }
 
-    private void stubHodejegerenConsumer() {
+    private void stubHodejegerenConsumer() throws JsonProcessingException {
         stubFor(post(urlPathEqualTo("/hodejegeren/api/v1/historikk/skd/oppdaterDokument/" + fnr))
+                .withRequestBody(equalToJson(asJsonString(tpsPersonDokument)))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[\"" + fnr + "\"]")));
+    }
+
+    private static String asJsonString(final Object object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
     }
 }
