@@ -13,7 +13,7 @@ jobs:
           name: Create workspace
           command: mkdir -p /tmp/workspace
       - restore_cache:
-          keys: udi-stub-{{ checksum "pom.xml" }}
+          key: udi-stub-{{ checksum "pom.xml" }}
       #      - run:
       #          mvn dependency:go-offline
       - save_cache:
