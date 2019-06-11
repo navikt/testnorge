@@ -23,7 +23,7 @@
     </dependencies>
 
     <build>
-        <finalName>udi-stub</finalName>
+        <finalName>UDI-stub</finalName>
     </build>
 
 </project>

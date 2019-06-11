@@ -61,9 +61,9 @@ jobs:
             GIT_HASH="$(git rev-parse HEAD)"
             echo "Extracted version = \"$VERSION\""
             echo "Extracted git hash = \"$GIT_HASH\""
-            docker build -t docker.pkg.github.com/navikt/udi-stub/app:latest -f Dockerfile .
+            docker build -t docker.pkg.github.com/navikt/UDI-stub/app:latest -f Dockerfile .
             echo "$DOCKER_PASSWORD_GITHUB" | docker login docker.pkg.github.com -u "$DOCKER_USERNAME_GITHUB" --password-stdin
-            docker push docker.pkg.github.com/navikt/udi-stub/app:latest
+            docker push docker.pkg.github.com/navikt/UDI-stub/app:latest
   deploy_preprod:
     docker:
       - image: navikt/deployment-cli:v0.1.5
