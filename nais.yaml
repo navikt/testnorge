@@ -49,8 +49,26 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorge-sam.rest-api"
       resourceType: restservice
+    - alias: "testnorge-hodejegeren.rest-api"
+      resourceType: restservice
     - alias: "orkestratorensProperties"
       resourceType: applicationProperties
+    - alias: "mqGateway02"
+      resourceType: QueueManager
+      propertyMap:
+        name: ibm.mq.queueManager
+        hostname: ibm.mq.hostname
+        port: ibm.mq.port
+    - alias: "ork_TPS_PERSONDOKUMENT"
+      resourceType: Queue
+      propertyMap:
+        queueName: queue.queueName
+        queueManager: queue.queueManager
+    - alias: "ork_TPS_PERSONDOKUMENT"
+      resourceType: Channel
+      propertyMap:
+        name: channel.channelName
+        queueManager: channel.queueManager
   exposed:
    - alias: testnorge-orkestratoren.rest-api
      description: På denne base-url finner du swagger-dokumentasjon av REST-tjenesten.

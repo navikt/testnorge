@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -26,12 +27,11 @@ public class TestnorgeTpConsumer {
     }
 
     public ResponseEntity startSyntetisering(SyntetiserTpRequest request) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).body(request);
+        RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(request);
         ResponseEntity<String> response = restTemplate.exchange(postRequest, String.class);
         if (response.getStatusCode() != HttpStatus.OK) {
             log.error("Klarte ikke syntetisere tp");
         }
         return response;
     }
-
 }
