@@ -79,7 +79,7 @@ jobs:
           name: Decrypt private key
           command: |
             openssl enc -aes-256-cbc -d -in .circleci/orkestratorenci.2019-06-11.private-key.pem.enc -out priv.private_key.pem -k $DECRYPT_ACCESS_TOKEN_PASSWORD
-            mv priv.private_key.pem /tmp/workspace/
+            mv priv.private_key.pem /tmp/workspace/priv.private_key.pem
       - run:
           name: Create deployment request for development
           command: |
