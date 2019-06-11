@@ -11,10 +11,8 @@ import javax.jms.TextMessage;
 
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.wmq.v6.jms.internal.JMSC;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Retryable;
 
-@Slf4j
 public class DefaultMessageQueue implements MessageQueue {
 
     private static final int MAX_RETRIES = 4;
@@ -75,9 +73,7 @@ public class DefaultMessageQueue implements MessageQueue {
             producer.send(requestMessage);
 
             String attributes = String.format("JMSCorrelationID='%s'", requestMessage.getJMSMessageID());
-            String response = consumerReceive(session, responseDestination, attributes);
-            log.info("Leste fra TPS: {}", response);
-            return response;
+            return consumerReceive(session, responseDestination, attributes);
         }
     }
 
