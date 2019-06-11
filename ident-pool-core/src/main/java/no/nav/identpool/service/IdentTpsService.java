@@ -40,6 +40,8 @@ public class IdentTpsService {
     public Set<TpsStatus> checkIdentsInTps(List<String> idents) {
         List<String> environments = QueueContext.getSuccessfulEnvs();
 
+        log.info("Sjekker status på identer i miljøer {}", environments.toString());
+
         Set<TpsStatus> identSet = populateDefaultValues(idents);
 
         for (String env : environments) {
@@ -105,6 +107,12 @@ public class IdentTpsService {
                         statusSet.add(new TpsStatus(personData.getFnr(), Boolean.TRUE));
                     } else if (TPS_ENDRET_I_BRUK.equals(svarStatus.getReturStatus())) {
                         statusSet.add(new TpsStatus(personData.getForespurtFnr(), Boolean.TRUE));
+                    }
+
+                    if (svarStatus == null) {
+                        log.info("Fikk nullstatus på ident {}", personData.getFnr());
+                    } else {
+                        log.info("Fikk status {} på ident {}", svarStatus.getReturStatus(), personData.getFnr());
                     }
                 });
         return statusSet;
