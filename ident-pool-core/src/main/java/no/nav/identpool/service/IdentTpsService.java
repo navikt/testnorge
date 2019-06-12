@@ -75,7 +75,7 @@ public class IdentTpsService {
                 try {
                     TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
                     if (data.getTpsSvar().getIngenReturData() == null) {
-                        usedIdents = findUsedIdents(data);
+                        usedIdents.addAll(findUsedIdents(data));
                     }
                 } catch (DataBindingException ex) {
                     log.info(response);
