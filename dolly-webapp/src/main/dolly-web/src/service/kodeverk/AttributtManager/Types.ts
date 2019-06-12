@@ -13,7 +13,8 @@ export enum DataSource {
 	SIGRUN = 'SIGRUN',
 	KRR = 'KRR',
 	AAREG = 'AAREG',
-	PDLF = 'PDLF'
+	PDLF = 'PDLF',
+	ARENA = 'ARENA'
 }
 
 export interface Options {
@@ -72,15 +73,6 @@ export interface Attributt {
 	transform?: (value: any, attributter: Attributt[]) => any
 	informasjonstekst?: String
 	subGruppe?: String
-}
-
-// Attributtene som er child av Attributt.Items. Eks: AAREG
-// TODO: Alex - trenger vi den?
-
-export interface SubItem {
-	id: string
-	label: string
-	items: Attributt[]
 }
 
 // Attributt grupper

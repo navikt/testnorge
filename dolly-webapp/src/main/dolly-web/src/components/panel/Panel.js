@@ -27,7 +27,7 @@ export default class Panel extends Component {
 		open: this.props.startOpen
 	}
 
-	toggle = event => this.setState({ open: !this.state.open })
+	_toggle = event => this.setState({ open: !this.state.open })
 
 	render() {
 		const {
@@ -37,7 +37,7 @@ export default class Panel extends Component {
 			children,
 			errors,
 			checkAttributeArray,
-			uncheckAttributeArray, 
+			uncheckAttributeArray,
 			informasjonstekst
 		} = this.props
 
@@ -55,7 +55,7 @@ export default class Panel extends Component {
 					{heading}
 					{informasjonstekst && (
 						<ContentTooltip>
-								<span>{informasjonstekst}</span>
+							<span>{informasjonstekst}</span>
 						</ContentTooltip>
 					)}
 					{errors && (
@@ -68,7 +68,7 @@ export default class Panel extends Component {
 						{uncheckAttributeArray && (
 							<LinkButton text="Fjern alle" onClick={uncheckAttributeArray} />
 						)}
-						<ExpandButton expanded={panelIsOpen} onClick={this.toggle} />
+						<ExpandButton expanded={panelIsOpen} onClick={this._toggle} />
 					</span>
 				</div>
 				{panelIsOpen && <div className="panel-content">{renderContent}</div>}

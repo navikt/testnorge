@@ -8,6 +8,8 @@ const DataSourceMapper = data => {
 			return 'aareg'
 		case 'PDLF':
 			return 'pdlforvalter'
+		case 'ARENA':
+			return 'arenaforvalter'
 		default:
 			return 'tpsf'
 	}

@@ -2,12 +2,14 @@ import DataFormatter from '~/utils/DataFormatter'
 import DataSourceMapper from '~/utils/DataSourceMapper'
 import _groupBy from 'lodash/groupBy'
 import _set from 'lodash/set'
+import _isEmpty from 'lodash/isEmpty'
 
 // TODO: Kan getValues og transformAttributt merges?
 export const getValues = (attributeList, values) => {
 	return attributeList.reduce((accumulator, attribute) => {
 		let value = _transformAttributt(attribute, attributeList, values[attribute.id])
 		const pathPrefix = DataSourceMapper(attribute.dataSource)
+
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
 			let tjenester = Object.keys(groupByTjeneste)
@@ -32,7 +34,6 @@ export const getValues = (attributeList, values) => {
 		}
 
 		if (pathPrefix === DataSourceMapper('AAREG')) {
-			// TODO: Alex, construct a json-object before array
 			let dataArr = []
 			value.forEach(element => {
 				let aaregObj = {}
@@ -41,7 +42,7 @@ export const getValues = (attributeList, values) => {
 					const id = item.id
 					const keyValue = findAaregKeyValue(item, element)
 					if (item.id === 'utenlandsopphold' || item.id === 'permisjon') {
-						if ((keyValue && keyValue.length < 1) || !keyValue) return
+						if (!keyValue || _isEmpty(keyValue[0])) return
 					}
 					item.subItems
 						? Object.assign(aaregObj, { [path]: keyValue })
@@ -49,7 +50,6 @@ export const getValues = (attributeList, values) => {
 				})
 
 				// aktorID = PERS
-				// TODO: bytt heller inputfelte som ny attribute
 				if (aaregObj.arbeidsgiver.aktoertype == 'PERS') {
 					const aktoertype = aaregObj.arbeidsgiver.aktoertype
 					const arbeidsgiverIdent = aaregObj.arbeidsgiver.ident
@@ -67,9 +67,6 @@ export const getValues = (attributeList, values) => {
 						avtaltArbeidstimerPerUke: 37.5
 					}
 				})
-				// if (aaregObj.utenlandsopphold && aaregObj.utenlandsopphold.length < 1) {
-				// 	const { utenlandsopphold, ...aaregUten } = aaregObj
-				// }
 				if (aaregObj.permisjon) {
 					aaregObj.permisjon.map((perm, idx) => {
 						perm.permisjonOgPermittering &&
@@ -136,6 +133,9 @@ export const getValues = (attributeList, values) => {
 			//fiks adresse
 			return _set(accumulator, pathPrefix, { kontaktinformasjonForDoedsbo: doedsboObj })
 		}
+		if (pathPrefix === DataSourceMapper('ARENA')) {
+			return _set(accumulator, pathPrefix, value[0])
+		}
 
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
@@ -167,10 +167,14 @@ const _transformAttributt = (attribute, attributes, value) => {
 				const subKategoriId = item.id
 				valueDeepCopy.map((element, idx) => {
 					let transformed = Object.assign(element)
-					if (element[subKategoriId] !== '' && element[subKategoriId][0] !== '') {
+					if (
+						element[subKategoriId] &&
+						element[subKategoriId] !== '' &&
+						element[subKategoriId][0] !== ''
+					) {
 						let subsubArray = []
 						element[subKategoriId].map(rad => {
-							subsubArray.push(parseSubItemDate(item, rad, Object.assign(rad)))
+							rad && subsubArray.push(parseSubItemDate(item, rad, Object.assign(rad)))
 						})
 
 						transformed = {
@@ -186,8 +190,6 @@ const _transformAttributt = (attribute, attributes, value) => {
 		return valueDeepCopy
 	}
 	if (attribute.items) {
-		// TODO: Single and multiple items
-
 		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
 
 		if (attribute.isMultiple) {
@@ -289,20 +291,21 @@ export const findAaregKeyValue = (item, element) => {
 		let periodekey = 'periode'
 		item.subItems[0].subSubKategori.id === 'permisjon' && (periodekey = 'permisjonsPeriode')
 		//element[item.id] !== '' &&
-		element[item.id].map((subitem, idx) => {
-			let key = {}
-			Object.keys(subitem).map(itemkey => {
-				itemkey !== 'fom' && itemkey !== 'tom'
-					? Object.assign(key, { [itemkey]: element[item.id][idx][itemkey] })
-					: Object.assign(key, {
-							[periodekey]: {
-								['fom']: element[item.id][idx].fom,
-								['tom']: element[item.id][idx].tom
-							}
-					  })
+		element[item.id] &&
+			element[item.id].map((subitem, idx) => {
+				let key = {}
+				Object.keys(subitem).map(itemkey => {
+					itemkey !== 'fom' && itemkey !== 'tom'
+						? Object.assign(key, { [itemkey]: element[item.id][idx][itemkey] })
+						: Object.assign(key, {
+								[periodekey]: {
+									['fom']: element[item.id][idx].fom,
+									['tom']: element[item.id][idx].tom
+								}
+						  })
+				})
+				keys.push(key)
 			})
-			keys.push(key)
-		})
 		return keys
 	}
 	return element[item.id]

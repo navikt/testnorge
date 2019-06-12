@@ -39,8 +39,8 @@ public final class BestillingMeldingStatusIdentMapper {
         List<RsMeldingStatusIdent> result = new ArrayList();
         msgStatusIdents.keySet().forEach(melding ->
                 result.add(RsMeldingStatusIdent.builder()
-                        .melding(melding)
-                        .statusIdent(msgStatusIdents.get(melding))
+                        .status(melding)
+                        .envIdent(msgStatusIdents.get(melding))
                         .build()));
         return result;
     }

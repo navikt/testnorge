@@ -24,9 +24,9 @@ export default class RedigerTestbruker extends Component {
 		this.props.getGruppe()
 		const urlArray = this.props.match.params.datasources.split('&')
 
-		urlArray.includes('tpsf') && await this.props.getTestbruker()
-		urlArray.includes('sigr') && await this.props.getSigrunTestbruker()
-		urlArray.includes('krr') && await this.props.getKrrTestbruker()
+		urlArray.includes('tpsf') && (await this.props.getTestbruker())
+		urlArray.includes('sigr') && (await this.props.getSigrunTestbruker())
+		urlArray.includes('krr') && (await this.props.getKrrTestbruker())
 	}
 
 	submit = (values, attributtListe) => {
@@ -45,7 +45,7 @@ export default class RedigerTestbruker extends Component {
 			dataSources.push(DataSource.SIGRUN)
 		}
 
-		if ( krrstub && krrstub[match.params.ident]) dataSources.push(DataSource.KRR)
+		if (krrstub && krrstub[match.params.ident]) dataSources.push(DataSource.KRR)
 
 		return dataSources
 	}
@@ -59,13 +59,15 @@ export default class RedigerTestbruker extends Component {
 		let AttributtListeToEdit = []
 		if (bestillinger.data) {
 			const eksisterendeIdentBestilling = this._typeBestilling(bestillinger)
-			eksisterendeIdentBestilling && (finalAttributtListe = this._fjernSattForEksisterendeIdentAttr(AttributtListe))
+			eksisterendeIdentBestilling &&
+				(finalAttributtListe = this._fjernSattForEksisterendeIdentAttr(AttributtListe))
 		}
 
-		finalAttributtListe.length < 1 && AttributtListe.map (element => {
-			finalAttributtListe.push(element)
-		})
-		
+		finalAttributtListe.length < 1 &&
+			AttributtListe.map(element => {
+				finalAttributtListe.push(element)
+			})
+
 		if (AddedAttributes && AddedAttributes.length > 0) {
 			let tempElement = null
 			finalAttributtListe.forEach(element => {
@@ -86,27 +88,27 @@ export default class RedigerTestbruker extends Component {
 		return finalAttributtListe
 	}
 
-	_typeBestilling = (bestillinger) => {
+	_typeBestilling = bestillinger => {
 		let opprettetFraEksisterendeIdent = false
-		bestillinger.data.map (bestilling => {
+		bestillinger.data.map(bestilling => {
 			if (bestilling.opprettFraIdenter) {
 				const opprettFraIdenterArr = bestilling.opprettFraIdenter.split(',')
-					opprettFraIdenterArr.map ( ident => {
-						ident === this.props.ident && (opprettetFraEksisterendeIdent = true)
-					})
+				opprettFraIdenterArr.map(ident => {
+					ident === this.props.ident && (opprettetFraEksisterendeIdent = true)
+				})
 			}
 		})
 		return opprettetFraEksisterendeIdent
 	}
 
-	_fjernSattForEksisterendeIdentAttr = (AttributtListe) => {
+	_fjernSattForEksisterendeIdentAttr = AttributtListe => {
 		let finalAttributtListe = []
 		let tempElement = null
-		AttributtListe.map ( element => {
+		AttributtListe.map(element => {
 			tempElement = Object.assign({}, element)
-			tempElement.items.map ((subElement, jdx) => {
-				subElement.items.map ((attr, idx) => {
-					attr.sattForEksisterendeIdent && tempElement.items[jdx].items.splice(idx, 1) 
+			tempElement.items.map((subElement, jdx) => {
+				subElement.items.map((attr, idx) => {
+					attr.sattForEksisterendeIdent && tempElement.items[jdx].items.splice(idx, 1)
 				})
 			})
 			finalAttributtListe.push(tempElement)
@@ -120,7 +122,7 @@ export default class RedigerTestbruker extends Component {
 		const { addedAttributes } = this.state
 
 		if (!tpsf) return null
-		
+
 		const dataSources = this._checkDataSources()
 		const attributtListe = this.AttributtManager.listEditable(
 			testbruker,
@@ -143,10 +145,13 @@ export default class RedigerTestbruker extends Component {
 			match.params.ident,
 			dataSources
 		)
-		
 
-		const attributtListeToEdit = this._getAttributtListeToEdit(attributtListe, addedAttributes, bestillinger)
-		
+		const attributtListeToEdit = this._getAttributtListeToEdit(
+			attributtListe,
+			addedAttributes,
+			bestillinger
+		)
+
 		return (
 			<Formik
 				onSubmit={values => this.submit(values, attributtListeToEdit)}

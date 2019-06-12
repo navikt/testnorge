@@ -37,7 +37,7 @@ export default class SendOpenAm extends Component {
 			await sendToOpenAm(bestillingId)
 			this._isMounted && this.setState({ requestSent: true })
 		} catch (err) {
-			console.log(err)
+			console.error(err)
 		}
 	}
 

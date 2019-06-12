@@ -15,7 +15,19 @@ export default class Toolbar extends PureComponent {
 		toggleValues: [{ value: 'mine', label: 'Mine' }, { value: 'alle', label: 'Alle' }]
 	}
 
-	renderToggle = () => {
+	render() {
+		const { title, toggleOnChange, children, searchField } = this.props
+		return (
+			<div className="toolbar">
+				{title && <h2>{title}</h2>}
+				{toggleOnChange && this._renderToggle()}
+				{searchField}
+				<div className="toolbar--actions">{children}</div>
+			</div>
+		)
+	}
+
+	_renderToggle = () => {
 		const { toggleValues, toggleOnChange, toggleCurrent } = this.props
 
 		return (
@@ -26,18 +38,6 @@ export default class Toolbar extends PureComponent {
 					</ToggleKnapp>
 				))}
 			</ToggleGruppe>
-		)
-	}
-
-	render() {
-		const { title, toggleOnChange, children, searchField } = this.props
-		return (
-			<div className="toolbar">
-				{title && <h2>{title}</h2>}
-				{toggleOnChange && this.renderToggle()}
-				{searchField}
-				<div className="toolbar--actions">{children}</div>
-			</div>
 		)
 	}
 }

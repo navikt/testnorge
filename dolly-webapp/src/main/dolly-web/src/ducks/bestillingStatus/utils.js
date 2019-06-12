@@ -96,6 +96,10 @@ const avvikStatus = item => {
 			})
 		})
 
+	item.arenaforvalterStatus &&
+		item.arenaforvalterStatus.map(status => {
+			status.status !== 'OK' && (avvik = true)
+		})
 	item.feil && (avvik = true)
 	return avvik
 }

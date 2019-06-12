@@ -20,29 +20,6 @@ export default class Pagination extends Component {
 		if (prevProps.search !== this.props.search) return this.setState({ currentPage: 0 })
 	}
 
-	_pageChangeHandler = e => {
-		this.setState({
-			currentPage: e.selected
-		})
-	}
-
-	_itemCountHandler = e => {
-		this.setState({ currentPage: 0, itemCount: e.value })
-	}
-
-	_calculatePageCount = () => {
-		return Math.ceil(this.props.items.length / this.state.itemCount)
-	}
-
-	_calculateItemsToRender = () => {
-		const startIndex = this._calculateStartIndex()
-		return this.props.items.slice(startIndex, startIndex + this.state.itemCount)
-	}
-
-	_calculateStartIndex = () => {
-		return this.state.currentPage * this.state.itemCount
-	}
-
 	render() {
 		const pageCount = this._calculatePageCount()
 		const itemsToRender = this._calculateItemsToRender()
@@ -86,5 +63,28 @@ export default class Pagination extends Component {
 				{renderBottomPagination && paginationComponent}
 			</Fragment>
 		)
+	}
+
+	_pageChangeHandler = e => {
+		this.setState({
+			currentPage: e.selected
+		})
+	}
+
+	_itemCountHandler = e => {
+		this.setState({ currentPage: 0, itemCount: e.value })
+	}
+
+	_calculatePageCount = () => {
+		return Math.ceil(this.props.items.length / this.state.itemCount)
+	}
+
+	_calculateItemsToRender = () => {
+		const startIndex = this._calculateStartIndex()
+		return this.props.items.slice(startIndex, startIndex + this.state.itemCount)
+	}
+
+	_calculateStartIndex = () => {
+		return this.state.currentPage * this.state.itemCount
 	}
 }

@@ -7,7 +7,8 @@ describe('testBrukerReducer', () => {
 			tpsf: null,
 			sigrunstub: null,
 			krrstub: null,
-			aareg: null
+			aareg: null,
+			arenaforvalteren: null
 		}
 	}
 	it('should return initial state', () => {
@@ -48,7 +49,13 @@ describe('testBrukerReducer', () => {
 		}
 
 		const res = {
-			items: { tpsf: null, sigrunstub: { [testident]: testdata }, krrstub: null, aareg: null }
+			items: {
+				tpsf: null,
+				sigrunstub: { [testident]: testdata },
+				krrstub: null,
+				aareg: null,
+				arenaforvalteren: null
+			}
 		}
 
 		expect(testBruker(initialState, action)).toEqual(res)
@@ -71,19 +78,40 @@ describe('testBrukerReducer', () => {
 				krrstub: {
 					[testident]: testident
 				},
-				aareg: null
+				aareg: null,
+				arenaforvalteren: null
 			}
 		}
 
 		expect(testBruker(initialState, action)).toEqual(res)
 	})
 
-	it('should update testbruker', () => {
+	it('should add arena items on success', () => {
+		const testident = 'a'
+		const testdata = [testident]
+
 		const action = {
-			type: 'UPDATE_TESTBRUKER_SUCCESS'
+			type: 'GET_ARENA_TESTBRUKER_SUCCESS',
+			payload: { data: testdata },
+			meta: { ident: testident }
 		}
-		console.log('update testbruker not correctly implemented')
-		expect(testBruker({}, {})).toEqual({})
+
+		const res = {
+			items: {
+				tpsf: null,
+				sigrunstub: null,
+				krrstub: null,
+				aareg: null,
+				arenaforvalteren: {
+					[testident]: testident,
+					[testident]: {
+						data: [testident]
+					}
+				}
+			}
+		}
+
+		expect(testBruker(initialState, action)).toEqual(res)
 	})
 })
 

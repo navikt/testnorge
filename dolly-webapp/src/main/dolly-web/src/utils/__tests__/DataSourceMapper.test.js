@@ -4,6 +4,7 @@ describe('DataSourceMapper.js', () => {
 	describe('format registers source', () => {
 		const sigrun = 'SIGRUN'
 		const krr = 'KRR'
+		const arena = 'ARENA'
 
 		it('should return sigrun-stub', () => {
 			const res = 'sigrunstub'
@@ -13,6 +14,11 @@ describe('DataSourceMapper.js', () => {
 		it('should return krr-stub', () => {
 			const res = 'krrstub'
 			expect(DataSourceMapper(krr)).toBe(res)
+		})
+
+		it('should return arena', () => {
+			const res = 'arenaforvalter'
+			expect(DataSourceMapper(arena)).toBe(res)
 		})
 
 		it('should return tpsf on default', () => {

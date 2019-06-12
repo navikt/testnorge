@@ -63,11 +63,11 @@ public class PdlDoedsboMappingStrategyTest {
                         .adresselinje2(ADRESSELINJE_2)
                         .build()).build(), Pdldata.class);
 
-        assertThat(result.getKontaktinformasjonForDoedsbo().getOrganisasjonSomAdressat().getOrganisasjonsnavn(), is(ORGANISAJON_NAVN));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getOrganisasjonSomAdressat().getOrganisasjonsnummer(), is(ORGANISAJON_NUMMER));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getOrganisasjonSomAdressat().getKontaktperson().getFornavn(), is(FORNAVN));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getOrganisasjonSomAdressat().getKontaktperson().getMellomnavn(), is(MELLOMNAVN));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getOrganisasjonSomAdressat().getKontaktperson().getEtternavn(), is(ETTERNAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getOrganisasjonSomAdressat().getOrganisasjonsnavn(), is(ORGANISAJON_NAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getOrganisasjonSomAdressat().getOrganisasjonsnummer(), is(ORGANISAJON_NUMMER));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getOrganisasjonSomAdressat().getKontaktperson().getFornavn(), is(FORNAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getOrganisasjonSomAdressat().getKontaktperson().getMellomnavn(), is(MELLOMNAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getOrganisasjonSomAdressat().getKontaktperson().getEtternavn(), is(ETTERNAVN));
     }
 
     @Test
@@ -84,11 +84,11 @@ public class PdlDoedsboMappingStrategyTest {
                                 .organisasjonsnummer(ORGANISAJON_NUMMER).build())
                         .build()).build(), Pdldata.class);
 
-        assertThat(result.getKontaktinformasjonForDoedsbo().getAdvokatSomAdressat().getOrganisasjonsnavn(), is(ORGANISAJON_NAVN));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getAdvokatSomAdressat().getOrganisasjonsnummer(), is(ORGANISAJON_NUMMER));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getAdvokatSomAdressat().getKontaktperson().getFornavn(), is(FORNAVN));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getAdvokatSomAdressat().getKontaktperson().getMellomnavn(), is(MELLOMNAVN));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getAdvokatSomAdressat().getKontaktperson().getEtternavn(), is(ETTERNAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getAdvokatSomAdressat().getOrganisasjonsnavn(), is(ORGANISAJON_NAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getAdvokatSomAdressat().getOrganisasjonsnummer(), is(ORGANISAJON_NUMMER));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getAdvokatSomAdressat().getKontaktperson().getFornavn(), is(FORNAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getAdvokatSomAdressat().getKontaktperson().getMellomnavn(), is(MELLOMNAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getAdvokatSomAdressat().getKontaktperson().getEtternavn(), is(ETTERNAVN));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class PdlDoedsboMappingStrategyTest {
                                 .idnummer(IDENT).build())
                         .build()).build(), Pdldata.class);
 
-        assertThat(result.getKontaktinformasjonForDoedsbo().getKontaktpersonMedIdNummerSomAdressat().getIdnummer(), is(IDENT));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdnummer(), is(IDENT));
     }
 
     @Test
@@ -116,10 +116,10 @@ public class PdlDoedsboMappingStrategyTest {
                                 .foedselsdato(FODSELSDATO.atStartOfDay()).build())
                         .build()).build(), Pdldata.class);
 
-        assertThat(result.getKontaktinformasjonForDoedsbo().getKontaktpersonUtenIdNummerSomAdressat().getFoedselsdato(), is(FODSELSDATO));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getKontaktpersonUtenIdNummerSomAdressat().getNavn().getFornavn(), is(FORNAVN));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getKontaktpersonUtenIdNummerSomAdressat().getNavn().getMellomnavn(), is(MELLOMNAVN));
-        assertThat(result.getKontaktinformasjonForDoedsbo().getKontaktpersonUtenIdNummerSomAdressat().getNavn().getEtternavn(), is(ETTERNAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getFoedselsdato(), is(FODSELSDATO));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getNavn().getFornavn(), is(FORNAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getNavn().getMellomnavn(), is(MELLOMNAVN));
+        assertThat(result.getKontaktinformasjonForDoedsbo().getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getNavn().getEtternavn(), is(ETTERNAVN));
     }
 
     @Test

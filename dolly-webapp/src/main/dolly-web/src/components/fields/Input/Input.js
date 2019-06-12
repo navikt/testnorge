@@ -28,7 +28,7 @@ export const FormikInput = props => {
 	// prevent undefined value, dette for å unngå at komponenten blir "controlled"
 	const initialValue = field.value || ''
 
-	const onChangeHandler = e => {
+	const _onChangeHandler = e => {
 		const value = e.target.value
 		if (type === 'number') {
 			e.target.value = value ? value : 0
@@ -42,8 +42,7 @@ export const FormikInput = props => {
 			name={field.name}
 			value={initialValue}
 			onChange={field.onChange}
-			onChange={onChangeHandler}
-			//onBlur={field.onBlur}
+			onChange={_onChangeHandler}
 			onBlur={() => form.setFieldTouched(field.name, true)}
 			feil={
 				_get(form.touched, field.name) && _get(form.errors, field.name)

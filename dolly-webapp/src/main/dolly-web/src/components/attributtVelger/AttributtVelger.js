@@ -21,19 +21,39 @@ export default class AttributtVelger extends Component {
 		search: ''
 	}
 
-	searchOnChange = e => this.setState({ search: e.target.value })
+	render() {
+		const { selectedIds, uncheckAllAttributes } = this.props
 
-	renderPanels = () => {
+		return (
+			<div className="attributt-velger">
+				<Input
+					label="Søk attributter"
+					labelOffscreen
+					placeholder="Søk etter egenskaper"
+					className="attributt-velger_search"
+					onChange={this._searchOnChange}
+				/>
+				<div className="flexbox">
+					<div className="attributt-velger_panels">{this._renderPanels()}</div>
+					<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />
+				</div>
+			</div>
+		)
+	}
+
+	_searchOnChange = e => this.setState({ search: e.target.value })
+
+	_renderPanels = () => {
 		const { currentBestilling } = this.props
 		const list = this.AttributtManager.listSelectableAttributes(
 			this.state.search,
 			currentBestilling.identOpprettesFra
 		)
-		if (list.length === 0) return this.renderEmptyResult()
-		return list.map(hovedKategori => this.renderHovedKategori(hovedKategori))
+		if (list.length === 0) return this._renderEmptyResult()
+		return list.map(hovedKategori => this._renderHovedKategori(hovedKategori))
 	}
 
-	renderHovedKategori = ({ hovedKategori, items }) => {
+	_renderHovedKategori = ({ hovedKategori, items }) => {
 		const { uncheckAttributeArray, checkAttributeArray } = this.props
 		const name = hovedKategori.navn
 		const hovedKategoriItems = this.AttributtManager.getParentAttributtListByHovedkategori(
@@ -50,29 +70,29 @@ export default class AttributtVelger extends Component {
 			>
 				<fieldset name={name}>
 					<div className="attributt-velger_panelcontent">
-						{items.map((subKategori, idx) => this.renderSubKategori(subKategori, idx))}
+						{items.map((subKategori, idx) => this._renderSubKategori(subKategori, idx))}
 					</div>
 				</fieldset>
 			</Panel>
 		)
 	}
 
-	renderSubKategori = ({ subKategori, items }, idx) => {
+	_renderSubKategori = ({ subKategori, items }, idx) => {
 		return (
 			<Fragment key={idx}>
 				{subKategori && subKategori.navn != '' && <h3>{subKategori.navn}</h3>}
 				<fieldset name={subKategori.navn}>
 					<div className="attributt-velger_panelsubcontent">
-						{items.map(item => this.renderItem(item))}
+						{items.map(item => this._renderItem(item))}
 					</div>
 				</fieldset>
 			</Fragment>
 		)
 	}
 
-	renderItem = item => {
+	_renderItem = item => {
 		const { attributeIds } = this.props.currentBestilling
-		// Dependency system, finner ut om attributtene kan toggles
+		// *Dependency system, finner ut om attributtene kan toggles
 		const disabled = item.dependentOn
 			? !attributeIds.includes(item.dependentOn)
 				? true
@@ -110,25 +130,5 @@ export default class AttributtVelger extends Component {
 		isChecked && this.props.onToggle(dependentBy)
 	}
 
-	renderEmptyResult = () => <p>Søket ga ingen treff</p>
-
-	render() {
-		const { selectedIds, uncheckAllAttributes } = this.props
-
-		return (
-			<div className="attributt-velger">
-				<Input
-					label="Søk attributter"
-					labelOffscreen
-					placeholder="Søk etter egenskaper"
-					className="attributt-velger_search"
-					onChange={this.searchOnChange}
-				/>
-				<div className="flexbox">
-					<div className="attributt-velger_panels">{this.renderPanels()}</div>
-					<Utvalg selectedIds={selectedIds} uncheckAllAttributes={uncheckAllAttributes} />
-				</div>
-			</div>
-		)
-	}
+	_renderEmptyResult = () => <p>Søket ga ingen treff</p>
 }
