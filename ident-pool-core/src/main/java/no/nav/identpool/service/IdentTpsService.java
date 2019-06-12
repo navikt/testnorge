@@ -73,6 +73,9 @@ public class IdentTpsService {
                     TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
                     if (data.getTpsSvar().getIngenReturData() == null) {
                         statusSet = updateIdents(data);
+                        log.info("data.getTpsSvar().getIngenReturData() == null");
+                    } else {
+                        log.info("data.getTpsSvar().getIngenReturData() != null");
                     }
                 } catch (DataBindingException ex) {
                     log.info(response);
