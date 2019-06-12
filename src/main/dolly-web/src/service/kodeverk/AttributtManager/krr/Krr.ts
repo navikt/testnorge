@@ -32,6 +32,7 @@ const AttributtListe: Attributt[] = [
 				label: 'E-postadresse',
 				dataSource: DataSource.KRR,
 				inputType: InputType.Text,
+				validation: yup.string(),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -41,6 +42,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.KRR,
 				label: 'Reservert mot digitalkommunikasjon',
 				inputType: InputType.Select,
+				validation: yup.string().required('Vennligst velg'),
 				options: SelectOptionsManager('boolean'),
 				attributtType: AttributtType.SelectAndEdit
 			},

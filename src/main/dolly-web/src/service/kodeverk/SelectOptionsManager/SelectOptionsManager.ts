@@ -20,6 +20,19 @@ const selectOptions = {
 	aktoertype: [
 		{ value: 'ORG', label: 'Organisasjon' },
 		{ value: 'PERS', label: 'Enkeltmannsforetak' }
+	],
+
+	// Arena
+	arenaBrukertype: [
+		{ value: 'UTEN_SERVICEBEHOV', label: 'Uten servicebehov' },
+		{ value: 'MED_SERVICEBEHOV', label: 'Med servicebehov' }
+	],
+
+	kvalifiseringsgruppe: [
+		{ value: 'IKVAL', label: 'IKVAL - Standardinnsats' },
+		{ value: 'BFORM', label: 'BFORM - Situasjonsbestemt innsats' },
+		{ value: 'BATT', label: 'BATT - Spesielt tilpasset innsats' },
+		{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
 	]
 }
 
