@@ -113,12 +113,16 @@ public class AjourholdService {
         newIdentCount += ledig.size();
         List<Ident> savedLedige = saveIdents(ledig, Rekvireringsstatus.LEDIG, null);
 
-        for (Ident identRekvirert : savedRekvirerte) {
-            for (Ident identLedig : savedLedige) {
-                if (identRekvirert.getPersonidentifikator().equals(identLedig.getPersonidentifikator())) {
-                    log.error("{} fantes i rekvirert og ledig", identRekvirert.getPersonidentifikator());
+        if(savedRekvirerte != null && savedLedige != null) {
+            for (Ident identRekvirert : savedRekvirerte) {
+                for (Ident identLedig : savedLedige) {
+                    if (identRekvirert.getPersonidentifikator().equals(identLedig.getPersonidentifikator())) {
+                        log.error("{} fantes i rekvirert og ledig", identRekvirert.getPersonidentifikator());
+                    }
                 }
             }
+        } else {
+            log.warn("savedRekvirerte/savedLedige var null");
         }
     }
 
