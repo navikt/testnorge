@@ -189,6 +189,8 @@ const _mapRegistreValue = (key, value) => {
 			return mappedValue
 		case 'krrStub':
 			return [value]
+		case 'arenaforvalter':
+			return [value]
 		default:
 			return value
 	}

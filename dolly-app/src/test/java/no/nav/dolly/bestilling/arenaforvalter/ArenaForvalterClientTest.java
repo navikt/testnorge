@@ -80,7 +80,7 @@ public class ArenaForvalterClientTest {
                 .environments(singletonList(ENV))
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$Status: OK")));
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$OK")));
         verify(arenaForvalterConsumer).getEnvironments();
         verify(arenaForvalterConsumer).getIdent(IDENT);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
@@ -100,7 +100,7 @@ public class ArenaForvalterClientTest {
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo(
-                "q2$Status: FEIL: 400 Bad request (An error has occured)")));
+                "q2$Feil: 400 Bad request (An error has occured)")));
         verify(arenaForvalterConsumer).getIdent(IDENT);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
     }
@@ -114,7 +114,7 @@ public class ArenaForvalterClientTest {
                         .environments(singletonList("t3")).build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("t3$Status: Feil: Miljø ikke støttet")));
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("t3$Feil: Miljø ikke støttet")));
     }
 
     @Test

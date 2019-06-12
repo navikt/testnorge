@@ -2,7 +2,7 @@ import { createHeader as c, mapBestillingId } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
 
-import { mapKrrData, mapSigrunData, mapAaregData } from './mapRegistreDataToIdent'
+import { mapKrrData, mapSigrunData, mapAaregData, mapArenaData } from './mapRegistreDataToIdent'
 // * Mapper testperson-data for å vise under testpersonliste
 const DataMapper = {
 	getHeaders() {
@@ -41,7 +41,7 @@ const DataMapper = {
 
 	// Viser under expand
 	getDetailedData(state, ownProps) {
-		const { gruppe, testbruker } = state
+		const { gruppe, testbruker, bestillingStatuser } = state
 
 		const { personId } = ownProps
 		if (!testbruker.items || !testbruker.items.tpsf) return null
@@ -55,6 +55,8 @@ const DataMapper = {
 		const sigrunData = testbruker.items.sigrunstub && testbruker.items.sigrunstub[personId]
 		const krrData = testbruker.items.krrstub && testbruker.items.krrstub[personId]
 		const aaregData = testbruker.items.aareg && testbruker.items.aareg[personId]
+		const arenaData =
+			testbruker.items.arenaforvalteren && testbruker.items.arenaforvalteren[personId]
 		var bestillingId = _findBestillingId(gruppe, personId)
 
 		if (aaregData) {
@@ -66,7 +68,15 @@ const DataMapper = {
 		if (krrData) {
 			data.push(mapKrrData(krrData))
 		}
-
+		if (arenaData) {
+			// Workaround for å hente servicebehov-type og inaktiveringsdato fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
+			const bestKriterier = JSON.parse(
+				bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).bestKriterier
+			)
+			var kvalifiseringsgruppe = bestKriterier.arenaforvalter.kvalifiseringsgruppe
+			var inaktiveringDato = bestKriterier.arenaforvalter.inaktiveringDato
+			data.push(mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato))
+		}
 		if (bestillingId.length > 1) {
 			data.push(mapBestillingId(testIdent))
 		}

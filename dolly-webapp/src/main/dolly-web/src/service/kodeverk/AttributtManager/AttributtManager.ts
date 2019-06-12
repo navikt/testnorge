@@ -36,7 +36,8 @@ export default class AttributtManager {
 					if (
 						attr.dataSource === 'SIGRUN' ||
 						attr.dataSource === 'AAREG' ||
-						attr.dataSource === 'KRR'
+						attr.dataSource === 'KRR' ||
+						attr.dataSource === 'ARENA'
 					) {
 						return attr
 					} else {

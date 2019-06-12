@@ -78,8 +78,8 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
         verify(pdlForvalterRestConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelseId: \"444\""
-                + "$KontaktinformasjonForDoedsbo&status: OK, hendelseId: \"222\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&OK, hendelseId: \"444\""
+                + "$KontaktinformasjonForDoedsbo&OK, hendelseId: \"222\"")));
     }
 
     @Test
@@ -102,8 +102,8 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
         verify(pdlForvalterRestConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelseId: \"444\""
-                + "$KontaktinformasjonForDoedsbo&status: Feil (500 En feil har oppstått)")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&OK, hendelseId: \"444\""
+                + "$KontaktinformasjonForDoedsbo&Feil (500 En feil har oppstått)")));
     }
 
     @Test
@@ -126,8 +126,8 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
         verify(pdlForvalterRestConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelseId: \"444\""
-                + "$UtenlandskIdentifikasjonsnummer&status: OK, hendelseId: \"333\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&OK, hendelseId: \"444\""
+                + "$UtenlandskIdentifikasjonsnummer&OK, hendelseId: \"333\"")));
     }
 
     @Test
@@ -150,8 +150,8 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterRestConsumer).deleteIdent(IDENT);
         verify(pdlForvalterRestConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&status: OK, hendelseId: \"444\""
-                + "$UtenlandskIdentifikasjonsnummer&status: Feil (208 Opplysning er allerede innmeldt)")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("DeleteIdent&OK, hendelseId: \"444\""
+                + "$UtenlandskIdentifikasjonsnummer&Feil (208 Opplysning er allerede innmeldt)")));
     }
 
     @Test
@@ -167,6 +167,6 @@ public class PdlForvalterClientTest {
         verifyZeroInteractions(pdlForvalterRestConsumer);
 
         assertThat(progress.getPdlforvalterStatus(),
-                is(equalTo("PdlForvalter&status: Feil: Bestilling ble ikke sendt til ArenaForvalter da miljø 'q2' ikke er valgt")));
+                is(equalTo("PdlForvalter&Feil: Bestilling ble ikke sendt til PdlForvalter da miljø 'q2' ikke er valgt")));
     }
 }

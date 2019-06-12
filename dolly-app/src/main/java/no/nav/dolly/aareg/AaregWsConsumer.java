@@ -46,7 +46,7 @@ public class AaregWsConsumer {
         arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
 
-        Map<String, String> status = new HashMap(request.getEnvironments().size());
+        Map<String, String> status = new HashMap<>(request.getEnvironments().size());
         request.getEnvironments().forEach(env -> {
             try {
                 behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env).opprettArbeidsforhold(arbeidsforholdRequest);
@@ -72,7 +72,7 @@ public class AaregWsConsumer {
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
         arbeidsforholdRequest.setRapporteringsperiode(mapperFacade.map(request.getRapporteringsperiode(), XMLGregorianCalendar.class));
 
-        Map<String, String> status = new HashMap(request.getEnvironments().size());
+        Map<String, String> status = new HashMap<>(request.getEnvironments().size());
         request.getEnvironments().forEach(env -> {
             try {
                 behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env).oppdaterArbeidsforhold(arbeidsforholdRequest);

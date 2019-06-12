@@ -29,6 +29,7 @@ export default class PersonDetaljer extends PureComponent {
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunTestbruker()
 		this.props.testIdent.sigrunstubStatus === 'OK' && this.props.getSigrunSekvensnr()
 		this.props.testIdent.krrstubStatus === 'OK' && this.props.getKrrTestbruker()
+		this.props.testIdent.arenaforvalterStatus && this.props.getArenaTestbruker()
 		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
 	}
@@ -36,11 +37,11 @@ export default class PersonDetaljer extends PureComponent {
 	render() {
 		const { personData, editAction, frigjoerTestbruker, bestilling } = this.props
 		const { modalOpen } = this.state
-
 		if (!personData) return null
 		return (
 			<div className="person-details">
 				{personData.map((i, idx) => {
+					if (i === null) return null
 					if (i.data.length < 0) return null
 					if (i.data.length > 0) {
 						if (i.data[0].id == 'bestillingID') {
@@ -101,7 +102,7 @@ export default class PersonDetaljer extends PureComponent {
 
 	// render loading for krr og sigrun
 	_renderPersonInfoBlockHandler = i => {
-		const { isFetchingKrr, isFetchingSigrun, isFetchingAareg } = this.props
+		const { isFetchingKrr, isFetchingSigrun, isFetchingAareg, isFetchingArena } = this.props
 		if (i.header === 'Inntekter') {
 			return isFetchingSigrun ? (
 				<Loading label="Henter data fra Sigrun-stub" panel />
@@ -117,6 +118,12 @@ export default class PersonDetaljer extends PureComponent {
 		} else if (i.header === 'Arbeidsforhold') {
 			return isFetchingAareg ? (
 				<Loading label="Henter data fra Aareg" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else if (i.header === 'Arena') {
+			return isFetchingArena ? (
+				<Loading label="Henter data fra Arena" panel />
 			) : (
 				this._renderPersonInfoBlock(i)
 			)

@@ -6,6 +6,8 @@ const DataSourceMapper = data => {
 			return 'krrstub'
 		case 'AAREG':
 			return 'aareg'
+		case 'ARENA':
+			return 'arenaforvalter'
 		default:
 			return 'tpsf'
 	}

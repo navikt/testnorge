@@ -24,9 +24,10 @@ import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonF
 @Service
 public class PdlForvalterClient implements ClientRegister {
 
+    public static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
+    public static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
+    public static final String PDL_FORVALTER = "PdlForvalter";
     private static final String DELETE_IDENT = "DeleteIdent";
-    private static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
-    private static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
     private static final String KILDE = "Dolly";
     private static final String SYNTH_ENV = "q2";
     private static final String HENDELSE_ID = "hendelseId";
@@ -39,24 +40,29 @@ public class PdlForvalterClient implements ClientRegister {
 
     @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
-        StringBuilder status = new StringBuilder();
+        if (nonNull(bestilling.getPdlforvalter())) {
 
-        if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
+            StringBuilder status = new StringBuilder();
 
-            Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
+            if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
 
-            sendDeleteIdent(norskIdent, status);
-            sendUtenlandsid(pdldata, norskIdent, status);
-            sendDoedsbo(pdldata, norskIdent, status);
+                Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
 
-        } else if (nonNull(bestilling.getPdlforvalter())) {
+                sendDeleteIdent(norskIdent, status);
+                sendUtenlandsid(pdldata, norskIdent, status);
+                sendDoedsbo(pdldata, norskIdent, status);
 
-            status.append("$PdlForvalter&status: Feil: Bestilling ble ikke sendt til ArenaForvalter da miljø '")
-                    .append(SYNTH_ENV)
-                    .append("' ikke er valgt");
+            } else {
+
+                status.append('$')
+                        .append(PDL_FORVALTER)
+                        .append("&Feil: Bestilling ble ikke sendt til PdlForvalter da miljø '")
+                        .append(SYNTH_ENV)
+                        .append("' ikke er valgt");
+            }
+
+            progress.setPdlforvalterStatus(status.substring(1));
         }
-
-        progress.setPdlforvalterStatus(status.length() > 0 ? status.substring(1) : null);
     }
 
     private void sendUtenlandsid(Pdldata pdldata, NorskIdent norskIdent, StringBuilder status) {
@@ -123,7 +129,7 @@ public class PdlForvalterClient implements ClientRegister {
     }
 
     private static void appendOkStatus(JsonNode jsonNode, StringBuilder builder) {
-        builder.append("&status: OK");
+        builder.append("&OK");
         if (nonNull(jsonNode) && nonNull(jsonNode.get(HENDELSE_ID))) {
             builder.append(", ")
                     .append(HENDELSE_ID)
@@ -134,7 +140,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private static void appendErrorStatus(Exception exception, StringBuilder builder) {
 
-        builder.append("&status: Feil (")
+        builder.append("&Feil (")
                 .append(exception.getMessage());
 
         if (exception instanceof HttpClientErrorException) {

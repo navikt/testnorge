@@ -1,45 +1,41 @@
 package no.nav.dolly.mapper;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.util.Lists.emptyList;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
+import no.nav.dolly.domain.resultset.RsPdlForvalterStatus;
 import org.junit.Test;
-
-import java.util.List;
 
 public class BestillingPdlForvalterStatusMapperTest {
 
     private static final String IDENT_1 = "111";
     private static final String IDENT_2 = "222";
 
-    private static final String PDL_STATUS_OK = "FolkeregisterIdent&status: OK, "
-            + "hendelsesId:a1bb529a-e29a-47ca-8dec-a0b6e89a2262$UtenlandskIdentifikasjonsnummer&status: OK, "
+    private static final String PDL_STATUS_OK = "$UtenlandskIdentifikasjonsnummer&OK, "
             + "hendelsesId:712d7e36-f83b-4415-a1c3-bf74b45c45a5";
-    private static final String PDL_STATUS_NOK = "FolkeregisterIdent&status: Feil (404 Not Found - message: "
-            + "Feil ved henting)"
-            + "$UtenlandskIdentifikasjonsnummer&status: Feil (404 Not Found - message: "
+    private static final String PDL_STATUS_NOK = "$UtenlandskIdentifikasjonsnummer&Feil (404 Not Found - message: "
             + "Feil ved henting)";
 
     @Test
     public void buildPdldataStatusMap_emptyList() {
 
-        List<RsMeldingStatusIdent> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(singletonList(BestillingProgress.builder().build()));
+        RsPdlForvalterStatus resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(newArrayList(BestillingProgress.builder().build()));
 
-        assertThat(resultat, is(emptyList()));
+        assertThat(resultat, is(nullValue()));
     }
 
     @Test
     public void buildPdldataStatusMap_SingleStatus() {
 
-        List<RsMeldingStatusIdent> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(
+        RsPdlForvalterStatus resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(
                 asList(BestillingProgress.builder()
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_1)
@@ -50,17 +46,16 @@ public class BestillingPdlForvalterStatusMapperTest {
                                 .build()
                 ));
 
-        assertThat(resultat, hasSize(2));
-        assertThat(resultat.get(0).getMelding(), is(equalTo("FolkeregisterIdent")));
-        assertThat(resultat.get(0).getStatusIdent().get("status: OK"), contains(IDENT_1, IDENT_2));
-        assertThat(resultat.get(1).getMelding(), is(equalTo("UtenlandskIdentifikasjonsnummer")));
-        assertThat(resultat.get(1).getStatusIdent().get("status: OK"), contains(IDENT_1, IDENT_2));
+        assertThat(resultat.getKontaktinfoDoedsbo(), is(emptyList()));
+        assertThat(resultat.getUtenlandsid(), hasSize(1));
+        assertThat(resultat.getUtenlandsid().get(0).getStatusMelding(), is(equalTo("OK")));
+        assertThat(resultat.getUtenlandsid().get(0).getIdenter(), contains(IDENT_1, IDENT_2));
     }
 
     @Test
     public void buildPdldataStatusMap_MultipleStatus() {
 
-        List<RsMeldingStatusIdent> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(
+        RsPdlForvalterStatus resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(
                 asList(BestillingProgress.builder()
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_1)
@@ -71,14 +66,11 @@ public class BestillingPdlForvalterStatusMapperTest {
                                 .build()
                 ));
 
-        assertThat(resultat, hasSize(2));
-        assertThat(resultat.get(0).getMelding(), is(equalTo("FolkeregisterIdent")));
-        assertThat(resultat.get(0).getStatusIdent().get("status: OK"), contains(IDENT_1));
-        assertThat(resultat.get(0).getMelding(), is(equalTo("FolkeregisterIdent")));
-        assertThat(resultat.get(0).getStatusIdent().get("status: Feil (404 Not Found - message: Feil ved henting)"), contains(IDENT_2));
-        assertThat(resultat.get(1).getMelding(), is(equalTo("UtenlandskIdentifikasjonsnummer")));
-        assertThat(resultat.get(1).getStatusIdent().get("status: OK"), contains(IDENT_1));
-        assertThat(resultat.get(1).getMelding(), is(equalTo("UtenlandskIdentifikasjonsnummer")));
-        assertThat(resultat.get(1).getStatusIdent().get("status: Feil (404 Not Found - message: Feil ved henting)"), contains(IDENT_2));
+        assertThat(resultat.getKontaktinfoDoedsbo(), hasSize(0));
+        assertThat(resultat.getUtenlandsid(), hasSize(2));
+        assertThat(resultat.getUtenlandsid().get(1).getStatusMelding(), is(equalTo("OK")));
+        assertThat(resultat.getUtenlandsid().get(1).getIdenter(), contains(IDENT_1));
+        assertThat(resultat.getUtenlandsid().get(0).getStatusMelding(), is(equalTo("Feil (404 Not Found - message: Feil ved henting)")));
+        assertThat(resultat.getUtenlandsid().get(0).getIdenter(), contains(IDENT_2));
     }
 }

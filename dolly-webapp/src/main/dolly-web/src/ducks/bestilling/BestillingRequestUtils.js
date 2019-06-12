@@ -9,6 +9,7 @@ export const getValues = (attributeList, values) => {
 	return attributeList.reduce((accumulator, attribute) => {
 		let value = _transformAttributt(attribute, attributeList, values[attribute.id])
 		const pathPrefix = DataSourceMapper(attribute.dataSource)
+
 		if (pathPrefix == DataSourceMapper('SIGRUN')) {
 			const groupByTjeneste = _groupBy(value, 'tjeneste')
 			let tjenester = Object.keys(groupByTjeneste)
@@ -82,6 +83,10 @@ export const getValues = (attributeList, values) => {
 		}
 
 		if (pathPrefix === DataSourceMapper('KRR')) {
+			return _set(accumulator, pathPrefix, value[0])
+		}
+
+		if (pathPrefix === DataSourceMapper('ARENA')) {
 			return _set(accumulator, pathPrefix, value[0])
 		}
 
