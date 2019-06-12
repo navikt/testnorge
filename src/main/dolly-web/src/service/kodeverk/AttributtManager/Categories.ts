@@ -43,6 +43,11 @@ export const Kategorier: KategoriTypes = {
 		informasjonstekst:
 			'Kontaktinformasjon for dødsbo. Blir kun distribuert til Q2, og dette miljøet må derfor velges.',
 		order: 50
+	},
+	Arena: {
+		id: 'arena',
+		navn: 'Arena',
+		order: 60
 	}
 }
 
@@ -122,6 +127,13 @@ export const SubKategorier: KategoriTypes = {
 		navn: '',
 		order: 10,
 		showInSummary: true
+	},
+
+	Arena: {
+		id: 'arena',
+		navn: '',
+		order: 10,
+		showInSummary: true
 	}
 }
 
@@ -140,16 +152,5 @@ export const SubSubKategorier: KategoriTypes = {
 		id: 'adressat',
 		navn: 'Adressat',
 		order: 10
-	}
-}
-
-// Sub-items?
-// TODO: Alex - trenger vi den?
-export const SubItem: KategoriTypes = {
-	Permisjon: {
-		id: 'permisjon',
-		navn: 'Permisjon',
-		order: 10,
-		showInSummary: true
 	}
 }

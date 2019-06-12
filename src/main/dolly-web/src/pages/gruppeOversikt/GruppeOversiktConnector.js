@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import _orderBy from 'lodash/orderBy'
 import GruppeOversikt from './GruppeOversikt'
 import { setSort } from '~/ducks/sort'
-import { addFavorite } from '~/ducks/bruker'
 import {
 	listGrupper,
 	settVisning,

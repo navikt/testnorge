@@ -22,6 +22,11 @@ const avvikStatus = item => {
 				status.statusMelding !== 'OK' && (avvik = true)
 			})
 		})
+	item.arenaforvalterStatus &&
+		item.arenaforvalterStatus.map(status => {
+			status.status !== 'OK' && (avvik = true)
+		})
+
 	item.feil && (avvik = true)
 	return avvik
 }
@@ -49,7 +54,7 @@ const miljoeStatusSelector = bestilling => {
 	const finnesFeilmelding = avvikStatus(bestilling)
 	const antallIdenterOpprettet = antallIdenterOpprettetFunk(bestilling)
 
-	// TODO: Kan disse 2 loops forenklet?
+	// TODO: Refactor, forenkler disse kodene
 	bestilling.tpsfStatus &&
 		bestilling.tpsfStatus.map(status => {
 			status.statusMelding !== 'OK' &&
@@ -94,6 +99,13 @@ const miljoeStatusSelector = bestilling => {
 					  successEnvs.push('Pdl-forvalter')
 					: !failedEnvs.includes('Pdl-forvalter') && failedEnvs.push('Pdl-forvalter')
 			})
+	bestilling.arenaforvalterStatus &&
+		bestilling.arenaforvalterStatus.map(status => {
+			if (status.status == 'OK') {
+				!successEnvs.includes('Arena') && successEnvs.push('Arena')
+			} else {
+				!failedEnvs.includes('Arena') && failedEnvs.push('Arena')
+			}
 		})
 
 	let aaregHasOneSuccessEnv = false

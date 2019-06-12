@@ -10,6 +10,10 @@ export const getAttributesFromMal = mal => {
 		}
 	})
 
+	if (tpsfKriterier.boadresse) {
+		tpsfKriterier.boadresse.flyttedato && attrArray.push('boadresse_flyttedato')
+	}
+
 	if (tpsfKriterier.relasjoner) {
 		tpsfKriterier.relasjoner.barn && attrArray.push('barn')
 		tpsfKriterier.relasjoner.partner && attrArray.push('partner')
@@ -43,6 +47,7 @@ export const getValuesFromMal = mal => {
 			_mapArrayValuesToObject(reduxStateValue, valueArray, navn)
 		}
 	})
+
 	return reduxStateValue
 }
 
@@ -61,8 +66,7 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 			value = _formatValueForObject(key, value)
 
 			if (key === 'boadresse') {
-				//TODO: boAdresse fungerer ikke ennaa
-				// _mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
+				_mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
 			} else if (key === 'postadresse') {
 				_mapValuesToObject(objectToAssign, Object.entries(value[0]))
 			} else {
@@ -111,7 +115,8 @@ const _formatValueForObject = (key, value) => {
 		'gyldigFom',
 		'gyldigTom',
 		'utstedtDato',
-		'foedselsdato'
+		'foedselsdato',
+		'flyttedato'
 	]
 
 	if (dateAttributes.includes(key)) {
@@ -140,11 +145,51 @@ const _mapRegistreKey = key => {
 }
 
 const _mapRegistreValue = (key, value) => {
+	let mappedValue = []
 	switch (key) {
 		case 'aareg':
-			return value
+			value.forEach(arb => {
+				let arbObj = {
+					yrke: arb.arbeidsavtale.yrke,
+					fom: Formatters.formatDate(arb.ansettelsesPeriode.fom),
+					tom: Formatters.formatDate(arb.ansettelsesPeriode.tom),
+					stillingsprosent: arb.arbeidsavtale.stillingsprosent,
+					aktoertype: arb.arbeidsgiver.aktoertype,
+					permisjon:
+						arb.permisjon &&
+						arb.permisjon.map(per => {
+							if (per.permisjonsId !== null) {
+								return {
+									permisjonOgPermittering: per.permisjonOgPermittering,
+									fom: Formatters.formatDate(per.permisjonsPeriode.fom),
+									tom: Formatters.formatDate(per.permisjonsPeriode.tom),
+									permisjonsprosent: per.permisjonsprosent
+								}
+							}
+						}),
+					utenlandsopphold:
+						arb.utenlandsopphold &&
+						arb.utenlandsopphold.map(utl => {
+							if (utl.land) {
+								return {
+									land: utl.land,
+									fom: Formatters.formatDate(utl.periode.fom),
+									tom: Formatters.formatDate(utl.periode.tom)
+								}
+							}
+						})
+				}
+
+				if (arb.arbeidsgiver.aktoertype === 'ORG') {
+					arbObj = { ...arbObj, orgnummer: arb.arbeidsgiver.orgnummer }
+				} else if (arb.arbeidsgiver.aktoertype === 'PERS')
+					arbObj = { ...arbObj, ident: arb.arbeidsgiver.ident }
+
+				mappedValue.push(arbObj)
+			})
+
+			return mappedValue
 		case 'sigrunStub':
-			let mappedValue = []
 			value.forEach(inntekt => {
 				inntekt.grunnlag.forEach(g => {
 					mappedValue.push({
@@ -180,6 +225,8 @@ const _mapRegistreValue = (key, value) => {
 					: (mapObj[attr[0]] = attr[1])
 			})
 			return [mapObj]
+		case 'arenaforvalter':
+			return [value]
 		default:
 			return value
 	}

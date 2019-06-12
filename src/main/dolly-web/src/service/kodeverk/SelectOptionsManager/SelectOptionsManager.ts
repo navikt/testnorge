@@ -22,7 +22,7 @@ const selectOptions = {
 		{ value: 'PERS', label: 'Enkeltmannsforetak' }
 	],
 
-	//PDLF
+	//PDLF - kontaktinformasjon dødsbo
 	adressattype: [
 		{ value: 'ADVOKAT', label: 'Advokat' },
 		{ value: 'ORGANISASJON', label: 'Organisasjon' },
@@ -30,7 +30,20 @@ const selectOptions = {
 		{ value: 'PERSON_UTENID', label: 'Kontaktperson uten id' }
 	],
 
-	skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }]
+	skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
+
+	// Arena
+	arenaBrukertype: [
+		{ value: 'UTEN_SERVICEBEHOV', label: 'Uten servicebehov' },
+		{ value: 'MED_SERVICEBEHOV', label: 'Med servicebehov' }
+	],
+
+	kvalifiseringsgruppe: [
+		{ value: 'IKVAL', label: 'IKVAL - Standardinnsats' },
+		{ value: 'BFORM', label: 'BFORM - Situasjonsbestemt innsats' },
+		{ value: 'BATT', label: 'BATT - Spesielt tilpasset innsats' },
+		{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
+	]
 }
 
 const SelectOptionsManager = attributeId => {

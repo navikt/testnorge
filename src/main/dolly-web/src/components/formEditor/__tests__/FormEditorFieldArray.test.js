@@ -9,6 +9,10 @@ const AttributtListe = AttributtManagerInstance.listSelectedAttributesForValueSe
 	selectedAttributes
 )
 
+const AttributtListeArbeidsforhold = AttributtManagerInstance.listSelectedAttributesForValueSelection(
+	['arbeidsforhold']
+)
+
 const formikProps = {
 	errors: {},
 	values: {
@@ -61,5 +65,23 @@ describe('FieldArrayComponent', () => {
 	it('should render add and remove buttons', () => {
 		expect(wrapper.find('.field-group-remove').exists()).toBeTruthy()
 		expect(wrapper.find('.field-group-add').exists()).toBeTruthy()
+	})
+})
+
+describe('FormEditorFieldArray subitems', () => {
+	const arbObj = AttributtListeArbeidsforhold[0].items[0].items[0]
+	const renderFieldComponent = jest.fn()
+	const formikPropsArb = {
+		errors: {},
+		values: {
+			arbeidsforhld: [{ test: 'yolo', permisjon: [{ test1: 'subitem' }] }]
+		},
+		touched: {}
+	}
+	const wrapper = shallow(FormEditorFieldArray(arbObj, formikPropsArb, renderFieldComponent, false))
+
+	//Hvordan best teste dette?
+	it('should render a fieldArray', () => {
+		expect(wrapper.find('.subkategori').exists()).toBeTruthy()
 	})
 })

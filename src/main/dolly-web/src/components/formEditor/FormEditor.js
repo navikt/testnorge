@@ -19,8 +19,7 @@ import Postadresse from '../postadresse/Postadresse'
 export default class FormEditor extends PureComponent {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
-
-		// TODO: editMode burde være en props for hele klassen.
+		// TODO: Vurder å lage en egen component for redigering
 		// editMode? renderEdit....: renderNormal
 		return AttributtListe.map(hovedKategori => {
 			// Ikke vis kategori som har default ikke-valgt radio button
@@ -104,7 +103,6 @@ export default class FormEditor extends PureComponent {
 
 	//Ny knapp ligger også på adressekategorien. Hvordan sortere hvilke attributt som skal være med?
 	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
-		// TODO: Finn en bedre identifier på å skjule header hvis man er ett fieldArray
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		// const isFieldarray = Boolean(items[0].items)
 		const isMultiple = items[0].isMultiple
@@ -157,6 +155,15 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 
+		if ('arenaforvalter' in formikProps.values) {
+			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'UTEN_SERVICEBEHOV') {
+				formikProps.values['arenaforvalter'][0]['kvalifiseringsgruppe'] = ''
+			}
+			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'MED_SERVICEBEHOV') {
+				formikProps.values['arenaforvalter'][0]['inaktiveringDato'] = ''
+			}
+		}
+
 		return (
 			<div className="subkategori" key={uniqueId}>
 				<h4>{subKategori.navn}</h4>
@@ -183,8 +190,7 @@ export default class FormEditor extends PureComponent {
 	}
 
 	// Avhengigheter mellom valgte verdi og field
-	// TODO: Vurder om denne løsningen er optimalt når AttributtSystem blir formatert
-	// Denne funksjonaliteten burde kanskje være i AttributtManager
+	// ? Denne funksjonaliteten burde kanskje være i AttributtManager
 	// Denne metode er bygd med fokus for AAREG-felter.
 
 	_shouldRenderFieldComponent = (items, item, formikProps, parentObject) => {
@@ -290,6 +296,7 @@ export default class FormEditor extends PureComponent {
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
+		let disabled = false
 
 		if (this.props.editMode && AttributtType.SelectAndRead === item.attributtType) {
 			let valgtVerdi = valgteVerdier[item.id]
@@ -321,6 +328,20 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 
+		if (
+			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&
+			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'MED_SERVICEBEHOV'
+		) {
+			disabled = true
+		}
+
+		if (
+			item.id === 'arenaforvalter[0]inaktiveringDato' &&
+			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'UTEN_SERVICEBEHOV'
+		) {
+			disabled = true
+		}
+
 		if (item.id === 'ufb_kommunenr' || item.id.includes('utenFastBopel')) {
 			return
 		}
@@ -332,6 +353,7 @@ export default class FormEditor extends PureComponent {
 				label={item.label}
 				component={InputComponent}
 				size={item.size}
+				disabled={disabled}
 				{...componentProps}
 				{...item.inputTypeAttributes}
 			/>
@@ -405,20 +427,6 @@ export default class FormEditor extends PureComponent {
 		return error
 	}
 
-	validSwitch = item => {
-		let error
-		switch (item) {
-			case 'permisjonOgPermittering': {
-				if (value === '') {
-					error = 'Fyll inn permisjonstype'
-				}
-			}
-			default:
-				error = 'Fyll inn'
-		}
-		return error
-	}
-
 	extraComponentProps = (item, valgteVerdier, parentObject) => {
 		switch (item.inputType) {
 			case 'select': {
@@ -433,7 +441,7 @@ export default class FormEditor extends PureComponent {
 						// Override for force rerender av react select
 						item.key = valgtVerdi
 					} else {
-						// TODO: Implement når vi trenger avhengighet mellom flat attributter
+						// ? Implement når vi trenger avhengighet mellom flat attributter
 					}
 				}
 				if (item.apiKodeverkId) {

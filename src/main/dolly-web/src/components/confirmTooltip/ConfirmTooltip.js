@@ -21,26 +21,13 @@ export default class ConfirmTooltip extends Component {
 		visible: false
 	}
 
-	onVisibleChangeHandler = visible => {
-		this.setState({ visible })
-	}
-
-	closeHandler = () => {
-		this.setState({ visible: false })
-	}
-
-	confirmHandler = () => {
-		this.closeHandler()
-		this.props.onClick()
-	}
-
 	render() {
 		const { message, children, label, className } = this.props
 		const content = (
 			<div className="tooltip-content" onClick={this.stopPropagation}>
 				<div>{message}</div>
-				<Button onClick={this.confirmHandler}>JA</Button>
-				<Button onClick={this.closeHandler}>NEI</Button>
+				<Button onClick={this._confirmHandler}>JA</Button>
+				<Button onClick={this._closeHandler}>NEI</Button>
 			</div>
 		)
 		const arrow = <div className="rc-tooltip-arrow-inner" />
@@ -52,7 +39,7 @@ export default class ConfirmTooltip extends Component {
 				overlay={content}
 				arrowContent={arrow}
 				trigger={['click']}
-				onVisibleChange={this.onVisibleChangeHandler}
+				onVisibleChange={this._onVisibleChangeHandler}
 			>
 				{children ? (
 					children
@@ -63,5 +50,18 @@ export default class ConfirmTooltip extends Component {
 				)}
 			</Tooltip>
 		)
+	}
+
+	_onVisibleChangeHandler = visible => {
+		this.setState({ visible })
+	}
+
+	_closeHandler = () => {
+		this.setState({ visible: false })
+	}
+
+	_confirmHandler = () => {
+		this.closeHandler()
+		this.props.onClick()
 	}
 }
