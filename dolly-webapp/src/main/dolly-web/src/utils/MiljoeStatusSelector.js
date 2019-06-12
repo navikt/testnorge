@@ -84,14 +84,6 @@ const miljoeStatusSelector = bestilling => {
 				!failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
 			}
 		})
-	bestilling.arenaforvalterStatus &&
-		bestilling.arenaforvalterStatus.map(status => {
-			if (status.status == 'OK') {
-				!successEnvs.includes('Arena') && successEnvs.push('Arena')
-			} else {
-				!failedEnvs.includes('Arena') && failedEnvs.push('Arena')
-			}
-		})
 
 	let aaregHasOneSuccessEnv = false
 	let aaregFailed = false
@@ -111,6 +103,26 @@ const miljoeStatusSelector = bestilling => {
 				? avvikEnvs.push('AAREG')
 				: failedEnvs.push('AAREG')
 			: successEnvs.push('AAREG')
+	}
+
+	let arenaHasOneSuccessEnv = false
+	let arenaFailed = false
+	bestilling.arenaforvalterStatus &&
+		bestilling.arenaforvalterStatus.length > 0 &&
+		bestilling.arenaforvalterStatus.map(status => {
+			if (status.status == 'OK') {
+				arenaHasOneSuccessEnv = true
+			} else {
+				arenaFailed = true
+			}
+		})
+
+	if (bestilling.arenaforvalterStatus && bestilling.arenaforvalterStatus.length > 0) {
+		arenaFailed
+			? arenaHasOneSuccessEnv
+				? avvikEnvs.push('Arena')
+				: failedEnvs.push('Arena')
+			: successEnvs.push('Arena')
 	}
 
 	return {
