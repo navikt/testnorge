@@ -176,7 +176,6 @@ export function mapBestillingData(bestillingData) {
 
 	if (bestillingData.bestKriterier) {
 		const registreKriterier = JSON.parse(bestillingData.bestKriterier)
-
 		const aaregKriterier = registreKriterier.aareg && registreKriterier.aareg
 		if (aaregKriterier) {
 			const aareg = {
@@ -309,6 +308,88 @@ export function mapBestillingData(bestillingData) {
 			}
 
 			data.push(krrStub)
+		}
+
+		const pdlforvalterKriterier = registreKriterier.pdlforvalter && registreKriterier.pdlforvalter
+
+		if (pdlforvalterKriterier) {
+			const doedsboKriterier =
+				pdlforvalterKriterier.kontaktinformasjonForDoedsbo &&
+				pdlforvalterKriterier.kontaktinformasjonForDoedsbo
+			if (doedsboKriterier) {
+				const navnType = doedsboKriterier.adressat.navn
+					? 'navn'
+					: doedsboKriterier.adressat.kontaktperson
+						? 'kontaktperson'
+						: null
+				const doedsbo = {
+					header: 'Kontaktinformasjon for dødsbo',
+					items: [
+						{
+							label: 'Fornavn',
+							value: navnType && doedsboKriterier.adressat[navnType].fornavn
+						},
+						{
+							label: 'Mellomnavn',
+							value: navnType && doedsboKriterier.adressat[navnType].mellomnavn
+						},
+						{
+							label: 'Etternavn',
+							value: navnType && doedsboKriterier.adressat[navnType].etternavn
+						},
+						{
+							label: 'Fnr/dnr',
+							value: doedsboKriterier.adressat.idnummer
+						},
+						{
+							label: 'Fødselsdato',
+							value: Formatters.formatDate(doedsboKriterier.adressat.foedselsdato)
+						},
+						{
+							label: 'Organisasjonsnavn',
+							value: doedsboKriterier.adressat.organisasjonsnavn
+						},
+						{
+							label: 'Organisasjonsnummer',
+							value: doedsboKriterier.adressat.organisasjonsnummer
+						},
+						{
+							label: 'Adresselinje 1',
+							value: doedsboKriterier.adresselinje1
+						},
+						{
+							label: 'Adresselinje 2',
+							value: doedsboKriterier.adresselinje2
+						},
+						{
+							label: 'Postnummer og -sted',
+							value: doedsboKriterier.postnummer + ' ' + doedsboKriterier.poststedsnavn
+						},
+						{
+							label: 'Land',
+							value: doedsboKriterier.landkode,
+							apiKodeverkId: 'Landkoder'
+						},
+						{
+							label: 'Skifteform',
+							value: doedsboKriterier.skifteform
+						},
+						{
+							label: 'Dato utstedt',
+							value: Formatters.formatDate(doedsboKriterier.utstedtDato)
+						},
+						{
+							label: 'Gyldig fra',
+							value: Formatters.formatDate(doedsboKriterier.gyldigFom)
+						},
+						{
+							label: 'Gyldig til',
+							value: Formatters.formatDate(doedsboKriterier.gyldigTom)
+						}
+					]
+				}
+				data.push(doedsbo)
+			}
 		}
 	}
 

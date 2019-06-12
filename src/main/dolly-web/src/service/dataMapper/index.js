@@ -1,7 +1,7 @@
 import { createHeader as c, mapBestillingId } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
-import { mapPdlfData } from './mapPdlDataToIdent'
+import { mapPdlData } from './mapPdlDataToIdent'
 import { mapKrrData, mapSigrunData, mapAaregData } from './mapRegistreDataToIdent'
 
 // * Mapper testperson-data for å vise under testpersonliste
@@ -69,7 +69,7 @@ const DataMapper = {
 			data.push(mapKrrData(krrData))
 		}
 		if (pdlfData) {
-			data.push(mapPdlfData(pdlfData))
+			data.push(mapPdlData(pdlfData))
 		}
 
 		if (bestillingId.length > 1) {

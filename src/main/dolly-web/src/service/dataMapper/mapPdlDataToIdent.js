@@ -1,9 +1,8 @@
 import Formatters from '~/utils/DataFormatter'
 
-export function mapPdlfData(pdlfData) {
-	if (!pdlfData || pdlfData.length === 0) return null
+export function mapPdlData(pdlfData) {
+	if (!pdlfData || pdlfData.length < 1) return null
 
-	// Når utenlandsid skal inn må returverdi endres
 	if (pdlfData.kontaktinformasjonForDoedsbo) {
 		const adressatType = Object.keys(pdlfData.kontaktinformasjonForDoedsbo[0].adressat)[0]
 		const navnType = pdlfData.kontaktinformasjonForDoedsbo[0].adressat[adressatType].navn
