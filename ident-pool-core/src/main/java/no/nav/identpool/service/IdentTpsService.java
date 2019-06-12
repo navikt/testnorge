@@ -43,11 +43,11 @@ public class IdentTpsService {
         Set<TpsStatus> identSet = populateDefaultValues(idents);
 
         for (String env : environments) {
-            List<String> nonExisting = identSet.stream().filter(t -> !t.isInUse()).map(
+            List<String> notFoundInEnv = identSet.stream().filter(t -> !t.isInUse()).map(
                     TpsStatus::getIdent
             ).collect(Collectors.toList());
 
-            Set<String> usedIdents = checkInEnvironment(env, nonExisting);
+            Set<String> usedIdents = checkInEnvironment(env, notFoundInEnv);
 
             identSet = identSet.stream().peek(status -> {
                 if (usedIdents.contains(status.getIdent())) {
@@ -108,6 +108,13 @@ public class IdentTpsService {
                         usedIdents.add(personData.getFnr());
                     } else if (TPS_ENDRET_I_BRUK.equals(svarStatus.getReturStatus())) {
                         usedIdents.add(personData.getForespurtFnr());
+                        log.info("La til forespurt ident {}", personData.getForespurtFnr());
+                        if (personData.getFnr() != null) {
+                            usedIdents.add(personData.getFnr());
+                            log.info("La til ident {}", personData.getFnr());
+                        } else {
+                            log.info("Ident var null for status 04");
+                        }
                     }
                 });
         return usedIdents;

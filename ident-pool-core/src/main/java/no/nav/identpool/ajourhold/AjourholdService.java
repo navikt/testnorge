@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
@@ -87,24 +88,38 @@ public class AjourholdService {
     }
 
     private void filterIdents(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
-        List<String> filtered = filterAgainstDatabase(antallPerDag, pinMap);
-        Set<TpsStatus> identsInUse = identTpsService.checkIdentsInTps(filtered);
+        List<String> identsNotInDatabase = filterAgainstDatabase(antallPerDag, pinMap);
+        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase);
 
-        List<String> rekvirert = identsInUse.stream()
+        log.info("Size of tpsStatuses: {}", tpsStatuses.size());
+
+        List<String> rekvirert = tpsStatuses.stream()
                 .filter(TpsStatus::isInUse)
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
 
-        newIdentCount += rekvirert.size();
-        saveIdents(rekvirert, Rekvireringsstatus.I_BRUK, "TPS");
+        log.info("Size of rekvirert: {}", rekvirert.size());
 
-        List<String> ledig = identsInUse.stream()
+        newIdentCount += rekvirert.size();
+        List<Ident> savedRekvirerte = saveIdents(rekvirert, Rekvireringsstatus.I_BRUK, "TPS");
+
+        List<String> ledig = tpsStatuses.stream()
                 .filter(i -> !i.isInUse())
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
 
+        log.info("Size of ledig: {}", ledig.size());
+
         newIdentCount += ledig.size();
-        saveIdents(ledig, Rekvireringsstatus.LEDIG, null);
+        List<Ident> savedLedige = saveIdents(ledig, Rekvireringsstatus.LEDIG, null);
+
+        for (Ident identRekvirert : savedRekvirerte) {
+            for (Ident identLedig : savedLedige) {
+                if (identRekvirert.getPersonidentifikator().equals(identLedig.getPersonidentifikator())) {
+                    log.error("{} fantes i rekvirert og ledig", identRekvirert.getPersonidentifikator());
+                }
+            }
+        }
     }
 
     private List<String> filterAgainstDatabase(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
@@ -119,8 +134,8 @@ public class AjourholdService {
         return arrayList;
     }
 
-    private void saveIdents(List<String> pins, Rekvireringsstatus status, String rekvirertAv) {
-        identRepository.saveAll(pins.stream()
+    private List<Ident> saveIdents(List<String> idents, Rekvireringsstatus status, String rekvirertAv) {
+        return identRepository.saveAll(idents.stream()
                 .map(fnr -> IdentGeneratorUtil.createIdent(fnr, status, rekvirertAv))
                 .collect(Collectors.toList()));
     }
