@@ -40,8 +40,8 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.PDLF,
 				validation: yup
 					.string()
-					.matches(/^[0-9]*$/, 'Id-nummer må være et tall med 11 sifre')
-					.test('len', 'Id-nummer må være et tall med 11 sifre', val => val && val.length === 11),
+					.required()
+					.matches(/^[0-9]{11}$/, 'Id-nummer må være et tall med 11 sifre'),
 				inputType: InputType.Text,
 				onlyShowAfterSelectedValue: { attributtId: 'adressatType', valueIndex: [2] },
 				attributtType: AttributtType.SelectAndEdit
@@ -133,10 +133,10 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Text,
 				onlyShowAfterSelectedValue: { attributtId: 'adressatType', valueIndex: [1] },
 				// Egen validation pga yup tror stor streng ikke er integer
-				validation: yup
-					.string()
-					.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
-					.test('len', 'Orgnummer må være et tall med 9 sifre', val => val && val.length === 9),
+				validation: yup.string().matches(/^[0-9]{9}$/, {
+					message: 'Orgnummer må være et tall med 9 sifre',
+					excludeEmptyString: true
+				}),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -150,10 +150,10 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Text,
 				onlyShowAfterSelectedValue: { attributtId: 'adressatType', valueIndex: [0] },
 				// Egen validation pga yup tror stor streng ikke er integer
-				validation: yup
-					.string()
-					.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
-					.test('len', 'Orgnummer må være et tall med 9 sifre', val => val && val.length === 9),
+				validation: yup.string().matches(/^[0-9]{9}$/, {
+					message: 'Orgnummer må være et tall med 9 sifre',
+					excludeEmptyString: true
+				}),
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
@@ -247,7 +247,7 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Diverse,
 				id: 'skifteform',
 				label: 'Skifteform',
-				subGruppe: 'Annet',
+				subGruppe: 'Diverse',
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Select,
 				validation: yup.string().required('Vennligst velg'),
@@ -259,7 +259,7 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Diverse,
 				id: 'utstedtDato',
 				label: 'Skifteform utstedt',
-				subGruppe: 'Annet',
+				subGruppe: 'Diverse',
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Date,
 				validation: DateValidation(),
@@ -271,7 +271,7 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Diverse,
 				id: 'gyldigFom',
 				label: 'Gyldig fra',
-				subGruppe: 'Annet',
+				subGruppe: 'Diverse',
 				dataSource: DataSource.PDLF,
 				validation: DateValidation(),
 				inputType: InputType.Date,
@@ -283,7 +283,7 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Diverse,
 				id: 'gyldigTom',
 				label: 'Gyldig til',
-				subGruppe: 'Annet',
+				subGruppe: 'Diverse',
 				dataSource: DataSource.PDLF,
 				validation: DateValidation(false),
 				inputType: InputType.Date,

@@ -93,8 +93,6 @@ export const FieldArrayComponent = ({
 	let subLabelArray = []
 	return (
 		<Fragment>
-			{/* <h4>{subKategori.navn}</h4> */}
-			{/* Fjernet underoverskriften. Kan være feil */}
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
 					return (

@@ -18,7 +18,7 @@ export default class Feilmelding extends Component {
 			(bestilling.tpsfStatus && this._finnTpsfFeilStatus(bestilling.tpsfStatus).length > 0) ||
 			stubStatus.length > 0 ||
 			(bestilling.aaregStatus && this._finnTpsfFeilStatus(bestilling.aaregStatus).length > 0) ||
-			pdlforvalterStatus.length > 0
+			(pdlforvalterStatus && pdlforvalterStatus.length > 0)
 		return (
 			<div className="feil-melding">
 				{/*Generelle feilmeldinger */}

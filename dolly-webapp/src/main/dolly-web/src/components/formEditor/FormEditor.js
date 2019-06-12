@@ -196,7 +196,6 @@ export default class FormEditor extends PureComponent {
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
 			const dependantAttributt = items.find(attributt => attributt.id === attributtId)
-
 			let foundIndex = false
 			item.onlyShowAfterSelectedValue.valueIndex.map(index => {
 				valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
@@ -206,6 +205,10 @@ export default class FormEditor extends PureComponent {
 			if (!foundIndex) {
 				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
 				shouldRender = false
+			} else {
+				if (!([item.id] in formikProps.values[parentId][idx])) {
+					this._setFieldValue(formikProps, parentId, idx, item.id)
+				}
 			}
 		}
 
@@ -226,7 +229,7 @@ export default class FormEditor extends PureComponent {
 			if (deleteValidation) {
 				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
 				shouldRender = false
-			} else if (!Object.keys(formikProps.values[parentId][idx]).includes(item.id)) {
+			} else if (!([item.id] in formikProps.values[parentId][idx])) {
 				this._setFieldValue(formikProps, parentId, idx, item.id)
 			}
 		}
@@ -237,6 +240,7 @@ export default class FormEditor extends PureComponent {
 		const path = parentId + '[' + idx + '].' + itemId
 		formikProps.setFieldValue(path, '', true)
 	}
+
 	_deleteValidation = (item, valgteVerdier, errors, parentId, idx) => {
 		delete valgteVerdier[parentId][idx][item.id]
 
@@ -261,28 +265,6 @@ export default class FormEditor extends PureComponent {
 		const subitemId = item.id
 		const subKatId = item.subKategori.id
 		return Boolean(formikProps.values[subKatId][idx][subitemId][0])
-	}
-
-	_renderSubGruppe = (item, formikProps) => {
-		// For gruppering av felter i f.eks dødsbo (adressat, adresse, annet)
-		const subGruppeArray = this._structureSubGruppe(item)
-		return (
-			<div className="subGruppe">
-				<h4>{item.subKategori.navn}</h4>
-				{subGruppeArray.map((subGruppe, idx) => {
-					return (
-						<div key={idx} className="subGruppe">
-							<h4>{subGruppe.navn}</h4>
-							<div className="items">
-								{subGruppe.items.map(subitem => {
-									return this.renderFieldComponent(subitem, formikProps.value)
-								})}
-							</div>
-						</div>
-					)
-				})}
-			</div>
-		)
 	}
 
 	_structureSubGruppe = item => {
@@ -355,13 +337,6 @@ export default class FormEditor extends PureComponent {
 			/>
 		)
 	}
-
-	// manuellValidering = formikProps => {
-	//Når flere felter blir lagt til på grunn av valg av andre felter må de legges til formik manuelt for å få validering
-	// 	if (formikProps.errors.kontaktinformasjonForDoedsbo[0][item]) {
-
-	//}
-	// }
 
 	renderFieldSubItem = (formikProps, item, subRad, parentId, idx, jdx) => {
 		return (
