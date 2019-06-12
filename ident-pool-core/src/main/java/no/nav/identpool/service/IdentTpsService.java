@@ -108,12 +108,8 @@ public class IdentTpsService {
                         usedIdents.add(personData.getFnr());
                     } else if (TPS_ENDRET_I_BRUK.equals(svarStatus.getReturStatus())) {
                         usedIdents.add(personData.getForespurtFnr());
-                        log.info("La til forespurt ident {}", personData.getForespurtFnr());
                         if (personData.getFnr() != null) {
                             usedIdents.add(personData.getFnr());
-                            log.info("La til ident {}", personData.getFnr());
-                        } else {
-                            log.info("Ident var null for status 04");
                         }
                     }
                 });
