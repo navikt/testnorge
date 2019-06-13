@@ -41,7 +41,7 @@ export const Kategorier: KategoriTypes = {
 		id: 'kontaktinfoDoedsbo',
 		navn: 'Kontaktinformasjon for dødsbo',
 		informasjonstekst:
-			'Kontaktinformasjon for dødsbo. Blir kun distribuert til Q2, og dette miljøet må derfor velges.',
+			'Kontaktinformasjon for dødsbo blir kun distribuert til Q2, og dette miljøet må derfor velges i siste steg.',
 		order: 50
 	},
 	Arena: {
