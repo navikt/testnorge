@@ -217,7 +217,6 @@ public class SyntetiseringServiceTest {
      * TPSF for de allerede lagrede skdmeldingene loggføres og feilmeldingen kastes videre. Idene i loggingen skal skrives med range
      * for å spare plass
      */
-    @Ignore
     @Test
     public void generellFeilhaandteringBurdeLoggfoereLagredeSkdmeldingenesIdMedRange() {
         ListAppender<ILoggingEvent> listAppender = testLoggingInClass(SyntetiseringService.class);

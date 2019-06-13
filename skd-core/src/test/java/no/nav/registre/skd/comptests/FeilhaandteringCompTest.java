@@ -84,7 +84,6 @@ public class FeilhaandteringCompTest {
      * Her vil første bolk med innvandringsmelding suksessfult lagres. Deretter vil det kastes feilmelding når eksisterende identer
      * hentes fra TPS via TPSF for å behandle NAVNEENDRING_FOERSTE -meldingene.
      */
-    @Ignore
     @Test
     public void generellFeilhaandtering() {
         when(randMock.nextInt(anyInt())).thenReturn(0);
