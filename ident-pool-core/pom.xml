@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.ident-pool</groupId>
         <artifactId>ident-pool</artifactId>
-        <version>1.4.0-SNAPSHOT</version>
+        <version>1.3.8</version>
     </parent>
 
     <artifactId>ident-pool-core</artifactId>
