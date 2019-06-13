@@ -4,6 +4,7 @@ import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
 
 import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
@@ -22,6 +24,7 @@ import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.service.IdentTpsService;
 import no.nav.identpool.util.IdentGeneratorUtil;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AjourholdService {
@@ -85,10 +88,10 @@ public class AjourholdService {
     }
 
     private void filterIdents(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
-        List<String> filtered = filterAgainstDatabase(antallPerDag, pinMap);
-        Set<TpsStatus> identsInUse = identTpsService.checkIdentsInTps(filtered);
+        List<String> identsNotInDatabase = filterAgainstDatabase(antallPerDag, pinMap);
+        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase);
 
-        List<String> rekvirert = identsInUse.stream()
+        List<String> rekvirert = tpsStatuses.stream()
                 .filter(TpsStatus::isInUse)
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
@@ -96,7 +99,7 @@ public class AjourholdService {
         newIdentCount += rekvirert.size();
         saveIdents(rekvirert, Rekvireringsstatus.I_BRUK, "TPS");
 
-        List<String> ledig = identsInUse.stream()
+        List<String> ledig = tpsStatuses.stream()
                 .filter(i -> !i.isInUse())
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
@@ -117,8 +120,8 @@ public class AjourholdService {
         return arrayList;
     }
 
-    private void saveIdents(List<String> pins, Rekvireringsstatus status, String rekvirertAv) {
-        identRepository.saveAll(pins.stream()
+    private List<Ident> saveIdents(List<String> idents, Rekvireringsstatus status, String rekvirertAv) {
+        return identRepository.saveAll(idents.stream()
                 .map(fnr -> IdentGeneratorUtil.createIdent(fnr, status, rekvirertAv))
                 .collect(Collectors.toList()));
     }

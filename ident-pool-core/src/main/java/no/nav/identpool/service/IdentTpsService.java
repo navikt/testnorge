@@ -43,14 +43,17 @@ public class IdentTpsService {
         Set<TpsStatus> identSet = populateDefaultValues(idents);
 
         for (String env : environments) {
-            List<String> nonExisting = identSet.stream()
-                    .filter(i -> !i.isInUse())
-                    .map(TpsStatus::getIdent)
-                    .collect(Collectors.toList());
-            if (nonExisting.isEmpty()) {
-                break;
-            }
-            identSet.addAll(checkInEnvironment(env, nonExisting));
+            List<String> notFoundInEnv = identSet.stream().filter(t -> !t.isInUse()).map(
+                    TpsStatus::getIdent
+            ).collect(Collectors.toList());
+
+            Set<String> usedIdents = checkInEnvironment(env, notFoundInEnv);
+
+            identSet = identSet.stream().peek(status -> {
+                if (usedIdents.contains(status.getIdent())) {
+                    status.setInUse(true);
+                }
+            }).collect(Collectors.toSet());
         }
 
         return identSet;
@@ -63,8 +66,8 @@ public class IdentTpsService {
     }
 
     @Timed(value = "ident_pool.resource.latency", extraTags = { "operation", "TPS" })
-    private Set<TpsStatus> checkInEnvironment(String env, List<String> nonExisting) {
-        Set<TpsStatus> statusSet = new HashSet<>();
+    private Set<String> checkInEnvironment(String env, List<String> nonExisting) {
+        Set<String> usedIdents = new HashSet<>();
         try {
             initMq(env);
             for (List<String> list : Lists.partition(nonExisting, MAX_SIZE_TPS_QUEUE)) {
@@ -72,7 +75,7 @@ public class IdentTpsService {
                 try {
                     TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
                     if (data.getTpsSvar().getIngenReturData() == null) {
-                        statusSet = updateIdents(data);
+                        usedIdents.addAll(findUsedIdents(data));
                     }
                 } catch (DataBindingException ex) {
                     log.info(response);
@@ -83,7 +86,7 @@ public class IdentTpsService {
             throw new RuntimeException(e);
         }
 
-        return statusSet;
+        return usedIdents;
     }
 
     private void initMq(String environment) throws JMSException {
@@ -96,18 +99,17 @@ public class IdentTpsService {
         }
     }
 
-    private Set<TpsStatus> updateIdents(TpsPersonData data) {
-        Set<TpsStatus> statusSet = new HashSet<>();
+    private Set<String> findUsedIdents(TpsPersonData data) {
+        Set<String> usedIdents = new HashSet<>();
         data.getTpsSvar().getPersonDataM201().getAFnr().getEFnr()
                 .forEach(personData -> {
                     StatusFraTPSType svarStatus = personData.getSvarStatus();
                     if (svarStatus == null || TPS_I_BRUK.equals(svarStatus.getReturStatus())) {
-                        statusSet.add(new TpsStatus(personData.getFnr(), Boolean.TRUE));
+                        usedIdents.add(personData.getFnr());
                     } else if (TPS_ENDRET_I_BRUK.equals(svarStatus.getReturStatus())) {
-                        statusSet.add(new TpsStatus(personData.getForespurtFnr(), Boolean.TRUE));
+                        usedIdents.add(personData.getForespurtFnr());
                     }
                 });
-        return statusSet;
+        return usedIdents;
     }
-
 }
