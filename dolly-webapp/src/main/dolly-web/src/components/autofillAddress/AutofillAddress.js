@@ -111,14 +111,14 @@ export default class AutofillAddress extends Component {
 			adr.forEach(adresse => {
 				options.push({
 					label: adresse.adrnavn + ', ' + adresse.pnr + ' ' + adresse.psted,
-					value: adresse.adrnavn,
+					value: adresse.adrnavn + '.' + adresse.pnr + '.' + adresse.psted,
 					adrObject: adresse
 				})
 			})
 		} else {
 			options.push({
 				label: adr.adrnavn + ', ' + adr.pnr + ' ' + adr.psted,
-				value: adr.adrnavn,
+				value: adr.adrnavn + '.' + adr.pnr + '.' + adr.psted,
 				adrObject: adr
 			})
 		}
@@ -214,6 +214,7 @@ export default class AutofillAddress extends Component {
 					: (generateAddressResponse = await TpsfApi.generateRandomAddress())
 
 				const addressData = generateAddressResponse.data.response.data1.adrData
+				console.log('addressData :', addressData)
 				this.setState({ gyldigeAdresser: addressData })
 
 				let status = generateAddressResponse.data.response.status.utfyllendeMelding
@@ -282,6 +283,7 @@ export default class AutofillAddress extends Component {
 
 	_renderAdresseSelect = () => {
 		const gyldigeAdresser = this._fetchAdresser()
+		console.log('gyldigeAdresser :', gyldigeAdresser)
 		const husNummer = this._fetchHusnr()
 		return (
 			<div>
