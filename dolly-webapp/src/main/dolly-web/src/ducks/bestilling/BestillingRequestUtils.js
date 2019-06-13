@@ -133,6 +133,7 @@ export const getValues = (attributeList, values) => {
 			//fiks adresse
 			return _set(accumulator, pathPrefix, { kontaktinformasjonForDoedsbo: doedsboObj })
 		}
+
 		if (pathPrefix === DataSourceMapper('ARENA')) {
 			return _set(accumulator, pathPrefix, value[0])
 		}
@@ -211,7 +212,7 @@ const _transformAttributt = (attribute, attributes, value) => {
 				)
 			)
 		} else {
-			return value.map(val => {
+			return value.map(val =>
 				Object.assign(
 					{},
 					...Object.entries(val).map(([key, value]) => {
@@ -220,7 +221,7 @@ const _transformAttributt = (attribute, attributes, value) => {
 						}
 					})
 				)
-			})
+			)
 		}
 	} else if (attribute.transform) {
 		// Only affects attributes that has property "transform: (value: any, attributter: Attributt[]) => any"
@@ -229,7 +230,6 @@ const _transformAttributt = (attribute, attributes, value) => {
 	if (attribute.inputType === 'date') {
 		value = DataFormatter.parseDate(value)
 	}
-
 	return value
 }
 

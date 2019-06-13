@@ -99,6 +99,8 @@ const miljoeStatusSelector = bestilling => {
 					  successEnvs.push('Pdl-forvalter')
 					: !failedEnvs.includes('Pdl-forvalter') && failedEnvs.push('Pdl-forvalter')
 			})
+		})
+
 	bestilling.arenaforvalterStatus &&
 		bestilling.arenaforvalterStatus.map(status => {
 			if (status.status == 'OK') {

@@ -390,6 +390,7 @@ export function mapBestillingData(bestillingData) {
 				}
 				data.push(doedsbo)
 			}
+		}
 		const arenaKriterier = registreKriterier.arenaforvalter && registreKriterier.arenaforvalter
 
 		if (arenaKriterier) {
