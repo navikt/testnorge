@@ -270,7 +270,8 @@ export default class FormEditor extends PureComponent {
 	_shouldRenderSubItem = (item, formikProps, idx) => {
 		const subitemId = item.id
 		const subKatId = item.subKategori.id
-		return Boolean(formikProps.values[subKatId][idx][subitemId][0])
+		const path = formikProps.values[subKatId][idx][subitemId]
+		return Boolean(path && path[0])
 	}
 
 	_structureSubGruppe = item => {
