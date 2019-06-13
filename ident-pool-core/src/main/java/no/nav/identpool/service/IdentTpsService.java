@@ -108,9 +108,9 @@ public class IdentTpsService {
                         usedIdents.add(personData.getFnr());
                     } else if (TPS_ENDRET_I_BRUK.equals(svarStatus.getReturStatus())) {
                         usedIdents.add(personData.getForespurtFnr());
-                        if (personData.getFnr() != null) {
-                            usedIdents.add(personData.getFnr());
-                        }
+//                        if (personData.getFnr() != null) {
+//                            usedIdents.add(personData.getFnr());
+//                        }
                     }
                 });
         return usedIdents;
