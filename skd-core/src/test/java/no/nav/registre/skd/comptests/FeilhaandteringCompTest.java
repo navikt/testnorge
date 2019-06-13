@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,7 @@ public class FeilhaandteringCompTest {
      * Her vil første bolk med innvandringsmelding suksessfult lagres. Deretter vil det kastes feilmelding når eksisterende identer
      * hentes fra TPS via TPSF for å behandle NAVNEENDRING_FOERSTE -meldingene.
      */
+    @Ignore
     @Test
     public void generellFeilhaandtering() {
         when(randMock.nextInt(anyInt())).thenReturn(0);
