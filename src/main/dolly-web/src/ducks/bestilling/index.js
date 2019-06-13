@@ -218,7 +218,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 
 	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
 	let final_values = []
-
 	identOpprettesFra === BestillingMapper()
 		? (final_values = {
 				antall: antall,
