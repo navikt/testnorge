@@ -222,10 +222,7 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.PDLF, //endres
 				inputType: InputType.Text,
 				onlyShowDependentOnOtherValue: { attributtId: 'landkode', exceptValue: ['NOR', ''] },
-				validation: yup
-					.string()
-					.required('Vennligst fyll inn postnummer')
-					.matches(/^[0-9]*$/, 'Fyll inn postnummer'),
+				validation: yup.string().required('Vennligst fyll inn postnummer'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
