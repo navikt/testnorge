@@ -87,7 +87,7 @@ public class SyntetiseringService {
         List<Long> idsLagretITpsfMenIkkeTps = new ArrayList<>();
         feiledeEndringskoder = new ArrayList<>();
 
-        List<String> nyeIdenterDenneEndringskoden;
+        List<String> nyeIdenterDenneEndringskoden = new ArrayList<>();
 
         for (Endringskoder endringskode : sorterteEndringskoder) {
             List<Long> ids = new ArrayList<>();
@@ -159,6 +159,8 @@ public class SyntetiseringService {
                         endringskode.getEndringskode());
             }
         }
+
+        log.info("Identer opprettet: {}", nyeIdenterDenneEndringskoden.toString());
 
         if (!feiledeEndringskoder.isEmpty()) {
             log.warn("Endringskoder som feilet i denne kjøringen: {}", feiledeEndringskoder);
