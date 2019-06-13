@@ -71,7 +71,7 @@ public class IdentpoolController {
     }
 
     @PostMapping("/frigjoer")
-    @ApiOperation(value = "Frigjør rekvirerte, men ubrukte identer i en gitt list")
+    @ApiOperation(value = "Frigjør rekvirerte, men ubrukte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
     public List<String> frigjoerLedigeIdenter(@RequestBody List<String> identer) {
         return identpoolService.frigjoerLedigeIdenter(identer);
     }

@@ -148,13 +148,11 @@ public class IdentpoolService {
                 } else {
                     List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(id)));
                     if (!tpsStatuses.get(0).isInUse()) {
+                        ident.setRekvireringsstatus(LEDIG);
+                        ident.setRekvirertAv(null);
+                        identRepository.save(ident);
                         ledigeIdenter.add(id);
                     }
-                }
-            } else {
-                List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(id)));
-                if (!tpsStatuses.get(0).isInUse()) {
-                    ledigeIdenter.add(id);
                 }
             }
         }
