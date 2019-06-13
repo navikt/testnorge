@@ -91,39 +91,21 @@ public class AjourholdService {
         List<String> identsNotInDatabase = filterAgainstDatabase(antallPerDag, pinMap);
         Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase);
 
-        log.info("Size of tpsStatuses: {}", tpsStatuses.size());
-
         List<String> rekvirert = tpsStatuses.stream()
                 .filter(TpsStatus::isInUse)
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
 
-        log.info("Size of rekvirert: {}", rekvirert.size());
-
         newIdentCount += rekvirert.size();
-        List<Ident> savedRekvirerte = saveIdents(rekvirert, Rekvireringsstatus.I_BRUK, "TPS");
+        saveIdents(rekvirert, Rekvireringsstatus.I_BRUK, "TPS");
 
         List<String> ledig = tpsStatuses.stream()
                 .filter(i -> !i.isInUse())
                 .map(TpsStatus::getIdent)
                 .collect(Collectors.toList());
 
-        log.info("Size of ledig: {}", ledig.size());
-
         newIdentCount += ledig.size();
-        List<Ident> savedLedige = saveIdents(ledig, Rekvireringsstatus.LEDIG, null);
-
-        if(savedRekvirerte != null && savedLedige != null) {
-            for (Ident identRekvirert : savedRekvirerte) {
-                for (Ident identLedig : savedLedige) {
-                    if (identRekvirert.getPersonidentifikator().equals(identLedig.getPersonidentifikator())) {
-                        log.error("{} fantes i rekvirert og ledig", identRekvirert.getPersonidentifikator());
-                    }
-                }
-            }
-        } else {
-            log.warn("savedRekvirerte/savedLedige var null");
-        }
+        saveIdents(ledig, Rekvireringsstatus.LEDIG, null);
     }
 
     private List<String> filterAgainstDatabase(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
