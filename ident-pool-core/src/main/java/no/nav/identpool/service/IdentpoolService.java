@@ -90,18 +90,23 @@ public class IdentpoolService {
         if (ident != null) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;
         } else {
-            boolean exists = identTpsService.checkIdentsInTps(Collections.singletonList(personidentifikator)).isEmpty();
-            Rekvireringsstatus status = exists ? I_BRUK : LEDIG;
+            List<TpsStatus> tpsStatus = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(personidentifikator)));
+            if (tpsStatus.size() != 1) {
+                throw new RuntimeException("Fikk ikke riktig antall statuser tilbake på metodekall til checkIdentsInTps");
+            }
+            TpsStatus identStatus = tpsStatus.get(0);
+
+            Rekvireringsstatus rekvireringsstatus = identStatus.isInUse() ? I_BRUK : LEDIG;
             Ident newIdent = Ident.builder()
                     .identtype(getIdentType(personidentifikator))
                     .personidentifikator(personidentifikator)
-                    .rekvireringsstatus(status)
+                    .rekvireringsstatus(rekvireringsstatus)
                     .kjoenn(PersonidentUtil.getKjonn(personidentifikator))
                     .finnesHosSkatt(false)
                     .foedselsdato(PersonidentUtil.toBirthdate(personidentifikator))
                     .build();
             identRepository.save(newIdent);
-            return !exists;
+            return !identStatus.isInUse();
         }
     }
 
@@ -131,6 +136,27 @@ public class IdentpoolService {
             throw new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som i bruk.");
         }
         throw new IllegalStateException("Den etterspurte identen er ugyldig siden den hverken markert som i bruk eller ledig.");
+    }
+
+    public List<String> frigjoerLedigeIdenter(List<String> identer) {
+        List<String> ledigeIdenter = new ArrayList<>(identer.size());
+        for (String id : identer) {
+            Ident ident = identRepository.findTopByPersonidentifikator(id);
+            if (ident != null) {
+                if (LEDIG.equals(ident.getRekvireringsstatus())) {
+                    ledigeIdenter.add(id);
+                } else if (!ident.finnesHosSkatt()) {
+                    List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(id)));
+                    if (!tpsStatuses.get(0).isInUse()) {
+                        ident.setRekvireringsstatus(LEDIG);
+                        ident.setRekvirertAv(null);
+                        identRepository.save(ident);
+                        ledigeIdenter.add(id);
+                    }
+                }
+            }
+        }
+        return ledigeIdenter;
     }
 
     public Ident lesInnhold(String personidentifikator) {

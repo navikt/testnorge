@@ -2,32 +2,69 @@ package no.nav.identpool.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.test.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class) class IdentpoolServiceTest {
 
     @Mock
-    IdentRepository repository;
+    private IdentRepository repository;
+
+    @Mock
+    private IdentTpsService identTpsService;
 
     @InjectMocks
-    IdentpoolService identpoolService;
+    private IdentpoolService identpoolService;
+
+    @Test
+    void frigjoerRekvirertMenLedigIdent() {
+        String fnr1 = "01010101010";
+        List<String> identer = new ArrayList<>(Collections.singletonList(fnr1));
+        Ident ident = Ident.builder()
+                .personidentifikator(fnr1)
+                .finnesHosSkatt(false)
+                .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
+                .build();
+
+        TpsStatus tpsStatus = new TpsStatus();
+        tpsStatus.setIdent(fnr1);
+        tpsStatus.setInUse(false);
+
+        Set<TpsStatus> statusSet = new HashSet<>();
+        statusSet.add(tpsStatus);
+
+        when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident);
+        when(identTpsService.checkIdentsInTps(anyList())).thenReturn(statusSet);
+
+        List<String> frigjorteIdenter = identpoolService.frigjoerLedigeIdenter(identer);
+
+        verify(repository).findTopByPersonidentifikator(fnr1);
+        verify(identTpsService).checkIdentsInTps(anyList());
+        verify(repository).save(ident);
+
+        assertEquals(fnr1, frigjorteIdenter.get(0));
+    }
 
     @Test
     void hentLedigeFNRFoedtMellom() {

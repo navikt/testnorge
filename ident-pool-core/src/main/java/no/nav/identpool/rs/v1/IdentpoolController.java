@@ -70,6 +70,12 @@ public class IdentpoolController {
         return identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(fromYear, 1, 1), LocalDate.of(toYear, 1, 1));
     }
 
+    @PostMapping("/frigjoer")
+    @ApiOperation(value = "Frigjør rekvirerte, men ubrukte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
+    public List<String> frigjoerLedigeIdenter(@RequestBody List<String> identer) {
+        return identpoolService.frigjoerLedigeIdenter(identer);
+    }
+
     @GetMapping("/whitelist")
     @ApiOperation(value = "returnerer en list over whitelisted identer")
     public List<String> hentWhitelist() {
