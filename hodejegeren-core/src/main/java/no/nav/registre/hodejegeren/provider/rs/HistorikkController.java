@@ -1,5 +1,6 @@
 package no.nav.registre.hodejegeren.provider.rs;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,30 +32,35 @@ public class HistorikkController {
     private HistorikkService historikkService;
 
     @LogExceptions
+    @ApiOperation(value = "Hent all historikk fra databasen.")
     @GetMapping(value = "")
     public List<SyntHistorikk> hentAllHistorikk() {
         return historikkService.hentAllHistorikk();
     }
 
     @LogExceptions
+    @ApiOperation(value = "Hent all historikk med en gitt kilde fra databasen.")
     @GetMapping(value = "medKilde")
     public List<SyntHistorikk> hentHistorikkMedKilde(@RequestParam List<String> kilder) {
         return historikkService.hentHistorikkMedKilder(kilder);
     }
 
     @LogExceptions
+    @ApiOperation(value = "Hent alle id-ene som er registrert med en gitt kilde fra databasen.")
     @GetMapping(value = "idsMedKilde")
     public Set<String> hentIdsMedKilde(@RequestParam List<String> kilder) {
         return historikkService.hentIdsMedKilder(kilder);
     }
 
     @LogExceptions
+    @ApiOperation(value = "Hent all historikk på en gitt id fra databasen.")
     @GetMapping(value = "{id}")
     public SyntHistorikk hentHistorikkMedId(@PathVariable String id) {
         return historikkService.hentHistorikkMedId(id);
     }
 
     @LogExceptions
+    @ApiOperation(value = "Legg til ny historikk i databasen")
     @PostMapping(value = "")
     public List<String> leggTilHistorikk(@RequestBody HistorikkRequest historikkRequest) {
         if ("skd".equals(historikkRequest.getKilde())) {
@@ -66,18 +72,21 @@ public class HistorikkController {
     }
 
     @LogExceptions
+    @ApiOperation(value = "Oppdater persondokument i databasen.")
     @PostMapping(value = "skd/oppdaterDokument/{ident}")
     public List<String> oppdaterTpsPersonDokument(@PathVariable String ident, @RequestBody TpsPersonDokumentType tpsPersonDokument) {
         return historikkService.oppdaterTpsPersonDokument(ident, tpsPersonDokument);
     }
 
     @LogExceptions
+    @ApiOperation(value = "Slett historikk med en gitt id fra databasen.")
     @DeleteMapping(value = "{id}")
     public ResponseEntity slettHistorikk(@PathVariable String id) {
         return historikkService.slettHistorikk(id);
     }
 
     @LogExceptions
+    @ApiOperation(value = "Slett historikk på en gitt kilde på en gitt id fra databasen.")
     @DeleteMapping(value = "kilde/{id}")
     public ResponseEntity slettKilde(@PathVariable String id, @RequestParam String navnPaaKilde) {
         return historikkService.slettKilde(id, navnPaaKilde);
