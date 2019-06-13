@@ -8,7 +8,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -104,13 +103,7 @@ public class HodejegerenConsumer {
     public Map<String, String> getStatusQuoFraEndringskode(Endringskoder endringskode, String miljoe, String fnr) {
         RequestEntity getRequest = RequestEntity.get(statusQuoUrl.expand(endringskode.toString(), miljoe, fnr)).build();
         Map<String, String> statusQuo = new HashMap<>();
-        ResponseEntity<Map<String, String>> response;
-        try {
-            response = restTemplate.exchange(getRequest, RESPONSE_TYPE_MAP);
-        } catch (HttpStatusCodeException e) {
-            log.info("Kunne ikke hente status quo på ident {}", fnr, e);
-            return new HashMap<>();
-        }
+        ResponseEntity<Map<String, String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE_MAP);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             log.warn("Fikk statuskode {} fra testnorge-hodejegeren", response.getStatusCode());

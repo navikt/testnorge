@@ -99,9 +99,9 @@ public class SyntetiseringService {
                 nyeIdenterDenneEndringskoden = new ArrayList<>();
 
                 if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON).contains(endringskode)) {
-                    nyeIdenterDenneEndringskoden.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(miljoe, FNR, syntetiserteSkdmeldinger));
+                    nyeIdenterDenneEndringskoden.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(FNR, syntetiserteSkdmeldinger));
                 } else if (TILDELING_DNUMMER.equals(endringskode)) {
-                    nyeIdenterDenneEndringskoden.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(miljoe, DNR, syntetiserteSkdmeldinger));
+                    nyeIdenterDenneEndringskoden.addAll(nyeIdenterService.settInnNyeIdenterITrans1Meldinger(DNR, syntetiserteSkdmeldinger));
                 } else if (FOEDSELSMELDING.equals(endringskode)) {
                     nyeIdenterDenneEndringskoden.addAll(foedselService.behandleFoedselsmeldinger(FNR, syntetiserteSkdmeldinger, listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE)));
                 } else {
