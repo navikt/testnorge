@@ -145,7 +145,7 @@ public class IdentpoolService {
             if (ident != null) {
                 if (LEDIG.equals(ident.getRekvireringsstatus())) {
                     ledigeIdenter.add(id);
-                } else {
+                } else if (!ident.finnesHosSkatt()) {
                     List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(id)));
                     if (!tpsStatuses.get(0).isInUse()) {
                         ident.setRekvireringsstatus(LEDIG);
