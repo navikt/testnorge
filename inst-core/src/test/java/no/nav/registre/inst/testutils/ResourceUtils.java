@@ -1,4 +1,4 @@
-package no.nav.registre.inst.consumer.rs.testutils;
+package no.nav.registre.inst.testutils;
 
 import wiremock.com.google.common.io.Resources;
 

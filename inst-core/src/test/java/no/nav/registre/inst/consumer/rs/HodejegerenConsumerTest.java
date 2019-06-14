@@ -1,4 +1,4 @@
-package no.nav.registre.inst.consumer.rs.consumer.rs;
+package no.nav.registre.inst.consumer.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;

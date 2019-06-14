@@ -1,4 +1,4 @@
-package no.nav.registre.inst.consumer.rs.service;
+package no.nav.registre.inst.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
