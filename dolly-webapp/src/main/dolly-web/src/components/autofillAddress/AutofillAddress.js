@@ -214,7 +214,6 @@ export default class AutofillAddress extends Component {
 					: (generateAddressResponse = await TpsfApi.generateRandomAddress())
 
 				const addressData = generateAddressResponse.data.response.data1.adrData
-				console.log('addressData :', addressData)
 				this.setState({ gyldigeAdresser: addressData })
 
 				let status = generateAddressResponse.data.response.status.utfyllendeMelding
@@ -250,7 +249,8 @@ export default class AutofillAddress extends Component {
 
 		this.setState({ harSjekketValues: true })
 
-		values.boadresse_gateadresse &&
+		values.boadresse_value &&
+			values.boadresse_gateadresse &&
 			values.boadresse_husnummer &&
 			values.boadresse_kommunenr &&
 			values.boadresse_postnr &&
@@ -264,6 +264,7 @@ export default class AutofillAddress extends Component {
 		formikProps.setValues({
 			...formikProps.values,
 			boadresse_gatekode: values.boadresse_gatekode,
+			boadresse_value: values.boadresse_value,
 			adr: adr,
 			nr: nr
 		})
@@ -283,7 +284,6 @@ export default class AutofillAddress extends Component {
 
 	_renderAdresseSelect = () => {
 		const gyldigeAdresser = this._fetchAdresser()
-		console.log('gyldigeAdresser :', gyldigeAdresser)
 		const husNummer = this._fetchHusnr()
 		return (
 			<div>
@@ -291,7 +291,7 @@ export default class AutofillAddress extends Component {
 					<div className="address-container">
 						<Field
 							className="gyldigadresse-select"
-							name="boadresse_gateadresse"
+							name="boadresse_value"
 							placeholder="Velg gyldig adresse..."
 							label="Gyldig adresse"
 							component={FormikDollySelect}
