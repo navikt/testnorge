@@ -1,4 +1,4 @@
-package no.nav.registre.inst.consumer.rs.provider.rs;
+package no.nav.registre.inst.provider.rs;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;

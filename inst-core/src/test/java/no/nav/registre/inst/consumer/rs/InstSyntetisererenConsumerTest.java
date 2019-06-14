@@ -1,10 +1,10 @@
-package no.nav.registre.inst.consumer.rs.consumer.rs;
+package no.nav.registre.inst.consumer.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static no.nav.registre.inst.consumer.rs.testutils.ResourceUtils.getResourceFileContent;
+import static no.nav.registre.inst.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -25,7 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 import no.nav.registre.inst.Institusjonsforholdsmelding;
-import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
