@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
 
 @NoArgsConstructor
@@ -30,7 +31,7 @@ public class EregDataRequest {
     private String epost;
     private String internetAdresse;
 
-    private Maalform maalform;
+    List<String> frivilligRegistreringerMVA;
     private Boolean harAnsatte;
     private String sektorKode;
 
@@ -43,8 +44,8 @@ public class EregDataRequest {
     private String nedleggelsesDato;
     private String eierskapskifteDato;
     private String oppstartsDato;
-
-    private Boolean kjoensfordeling;
+    @JsonProperty("målform")
+    private Maalform maalform;
     private Boolean utelukkendeVirksomhetINorge;
     private Boolean heleidINorge;
     private Boolean fravalgAvRevisjonen;
@@ -52,5 +53,12 @@ public class EregDataRequest {
     private UtenlandsRegister utenlandsRegister;
 
     private Map<String, String> statuser;
-
+    @JsonProperty("kjønsfordeling")
+    private Boolean kjoensfordeling;
+    private UnderlagtHjemland underlagtHjemland;
+    private Kapital kapital;
+    @JsonProperty("næringskode")
+    private Naeringskode naeringskode;
+    @JsonProperty("formål")
+    private String formaal;
 }
