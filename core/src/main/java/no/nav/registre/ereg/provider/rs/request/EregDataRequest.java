@@ -24,6 +24,10 @@ public class EregDataRequest {
     private String navn;
     @NonNull
     private String type;
+
+    @NonNull
+    private String endringsType;
+
     @JsonProperty("adresse")
     private Adresse adresse;
     @JsonProperty("forretningsAdresse")

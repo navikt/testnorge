@@ -15,6 +15,6 @@ public class Naeringskode {
 
     private String kode;
     private String gyldighetsdato;
-    private String hjelpeEnhet;
+    private Boolean hjelpeEnhet;
 
 }
