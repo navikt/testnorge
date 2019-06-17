@@ -31,7 +31,6 @@ export default class App extends Component {
 				<main>
 					<Switch>
 						{routes.map((route, idx) => {
-							console.log('route :', route)
 							return route.component ? (
 								<Route
 									key={idx}
