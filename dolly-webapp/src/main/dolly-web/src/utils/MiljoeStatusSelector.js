@@ -130,6 +130,26 @@ const miljoeStatusSelector = bestilling => {
 			: successEnvs.push('AAREG')
 	}
 
+	let arenaHasOneSuccessEnv = false
+	let arenaFailed = false
+	bestilling.arenaforvalterStatus &&
+		bestilling.arenaforvalterStatus.length > 0 &&
+		bestilling.arenaforvalterStatus.map(status => {
+			if (status.status == 'OK') {
+				arenaHasOneSuccessEnv = true
+			} else {
+				arenaFailed = true
+			}
+		})
+
+	if (bestilling.arenaforvalterStatus && bestilling.arenaforvalterStatus.length > 0) {
+		arenaFailed
+			? arenaHasOneSuccessEnv
+				? avvikEnvs.push('Arena')
+				: failedEnvs.push('Arena')
+			: successEnvs.push('Arena')
+	}
+
 	return {
 		bestillingId,
 		successEnvs,

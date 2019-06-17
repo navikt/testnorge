@@ -207,13 +207,12 @@ export default class FormEditor extends PureComponent {
 				valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
 					(foundIndex = true)
 			})
-
 			if (!foundIndex) {
 				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
 				shouldRender = false
 			} else {
 				if (!([item.id] in formikProps.values[parentId][idx])) {
-					this._setFieldValue(formikProps, parentId, idx, item.id)
+					valgteVerdier[parentId][idx][item.id] = ''
 				}
 			}
 		}
@@ -236,15 +235,10 @@ export default class FormEditor extends PureComponent {
 				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
 				shouldRender = false
 			} else if (!([item.id] in formikProps.values[parentId][idx])) {
-				this._setFieldValue(formikProps, parentId, idx, item.id)
+				valgteVerdier[parentId][idx][item.id] = ''
 			}
 		}
 		return shouldRender
-	}
-
-	_setFieldValue = (formikProps, parentId, idx, itemId) => {
-		const path = parentId + '[' + idx + '].' + itemId
-		formikProps.setFieldValue(path, '', true)
 	}
 
 	_deleteValidation = (item, valgteVerdier, errors, parentId, idx) => {

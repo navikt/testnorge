@@ -24,7 +24,6 @@ export default class App extends Component {
 
 		if (!configReady) return null
 		if (!brukerData) return <Loading label="laster dolly applikasjon" fullpage />
-
 		return (
 			<React.Fragment>
 				<Header brukerData={brukerData} />
@@ -32,6 +31,7 @@ export default class App extends Component {
 				<main>
 					<Switch>
 						{routes.map((route, idx) => {
+							console.log('route :', route)
 							return route.component ? (
 								<Route
 									key={idx}

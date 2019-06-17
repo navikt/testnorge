@@ -3,6 +3,7 @@ import DataSourceMapper from '~/utils/DataSourceMapper'
 import _groupBy from 'lodash/groupBy'
 import _set from 'lodash/set'
 import _isEmpty from 'lodash/isEmpty'
+import { AttributtManager } from '~/service/Kodeverk'
 
 // TODO: Kan getValues og transformAttributt merges?
 export const getValues = (attributeList, values) => {
@@ -260,6 +261,7 @@ export const _filterAttributes = (values, filter, attribute, dependencies) => {
 export const _filterArrayAttributes = (values, selectedIds, filter, index) => {
 	let copy = JSON.parse(JSON.stringify(values))
 	let attributeIds = selectedIds.slice()
+	const AttributtManagerInstance = new AttributtManager()
 	let deletedIds = []
 	attributeIds.filter(key => filter.includes(key)).forEach(key => {
 		copy[key].splice(index, 1)
