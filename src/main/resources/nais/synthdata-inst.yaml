@@ -23,7 +23,8 @@ spec:
   replicas:
     min: 2
     max: 4
-  secrets: true
+  vault:
+    enabled: true
   resources:
     requests:
       cpu: 200m
