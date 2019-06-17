@@ -204,7 +204,6 @@ export default class Step3 extends PureComponent {
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
 		}
-		console.log('items :', items)
 		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
@@ -218,7 +217,6 @@ export default class Step3 extends PureComponent {
 						removableText={'FJERN RAD'}
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
-						{console.log('header :', header)}
 						<h4>{typeof header === 'number' ? `# ${header}` : header}</h4>
 						<div className="oppsummering-blokk">
 							{items.map(item => this.renderItem(item, values))}
@@ -252,10 +250,9 @@ export default class Step3 extends PureComponent {
 			const numberOfValues = valueArray.length
 			return valueArray.map((values, idx) => {
 				Object.keys(values).map(attr => !values[attr] && delete values[attr])
-				return this.renderSubKategoriBlokk(idx + 1, item.items, values)
-				// valueArray.length > 1
-				// 	?
-				// : this.renderSubKategoriBlokk(null, item.items, values)
+				return valueArray.length > 1
+					? this.renderSubKategoriBlokk(idx + 1, item.items, values)
+					: this.renderSubKategoriBlokk(null, item.items, values)
 			})
 		}
 
@@ -300,7 +297,6 @@ export default class Step3 extends PureComponent {
 
 	_onRemoveHovedKategori(items) {
 		const _findIds = item => (item.items ? [].concat(...item.items.map(i => _findIds(i))) : item.id)
-		console.log('_findIds :', _findIds)
 		this.props.deleteValues({ values: _findIds(items) })
 	}
 
