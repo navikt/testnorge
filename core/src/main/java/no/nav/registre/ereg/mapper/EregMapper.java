@@ -49,7 +49,7 @@ public class EregMapper {
     private RecordsAndCount createUnit(EregDataRequest data) {
         int numRecords = 2;
         String endringsType = data.getEndringsType();
-        StringBuilder file = new StringBuilder(createENH(data.getOrgId(), data.getType()) + createNavn(data.getNavn(), endringsType));
+        StringBuilder file = new StringBuilder(createENH(data.getOrgId(), data.getType(), endringsType) + createNavn(data.getNavn(), endringsType));
 
         Adresse adresse = data.getAdresse();
         if (adresse != null) {
@@ -241,7 +241,7 @@ public class EregMapper {
         return "HEADER " + getDateNowFormatted() + "0000" + "AA A\n";
     }
 
-    private String createENH(String orgId, String unitType) {
+    private String createENH(String orgId, String unitType, String endringsType) {
         StringBuilder stringBuilder = createStringBuilderWithReplacement(49, ' ');
 
         String dateNowFormatted = getDateNowFormatted();
@@ -249,7 +249,8 @@ public class EregMapper {
         stringBuilder.replace(0, "ENH".length(), "ENH")
                 .replace(4, 4 + orgId.length(), orgId)
                 .replace(13, 13 + unitType.length(), unitType)
-                .replace(17, 17 + "NNY".length(), "NNY")
+                .replace(16, 17, endringsType)
+                .replace(17, 17 + "NY".length(), "NY")
                 .replace(22, 22 + (dateNowFormatted + dateNowFormatted).length(), dateNowFormatted + dateNowFormatted + "J")
                 .append("\n");
         return stringBuilder.toString();
