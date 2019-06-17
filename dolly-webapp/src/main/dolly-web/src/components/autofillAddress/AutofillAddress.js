@@ -111,14 +111,14 @@ export default class AutofillAddress extends Component {
 			adr.forEach(adresse => {
 				options.push({
 					label: adresse.adrnavn + ', ' + adresse.pnr + ' ' + adresse.psted,
-					value: adresse.adrnavn,
+					value: adresse.adrnavn + '.' + adresse.pnr + '.' + adresse.psted,
 					adrObject: adresse
 				})
 			})
 		} else {
 			options.push({
 				label: adr.adrnavn + ', ' + adr.pnr + ' ' + adr.psted,
-				value: adr.adrnavn,
+				value: adr.adrnavn + '.' + adr.pnr + '.' + adr.psted,
 				adrObject: adr
 			})
 		}
@@ -249,7 +249,8 @@ export default class AutofillAddress extends Component {
 
 		this.setState({ harSjekketValues: true })
 
-		values.boadresse_gateadresse &&
+		values.boadresse_value &&
+			values.boadresse_gateadresse &&
 			values.boadresse_husnummer &&
 			values.boadresse_kommunenr &&
 			values.boadresse_postnr &&
@@ -263,6 +264,7 @@ export default class AutofillAddress extends Component {
 		formikProps.setValues({
 			...formikProps.values,
 			boadresse_gatekode: values.boadresse_gatekode,
+			boadresse_value: values.boadresse_value,
 			adr: adr,
 			nr: nr
 		})
@@ -289,7 +291,7 @@ export default class AutofillAddress extends Component {
 					<div className="address-container">
 						<Field
 							className="gyldigadresse-select"
-							name="boadresse_gateadresse"
+							name="boadresse_value"
 							placeholder="Velg gyldig adresse..."
 							label="Gyldig adresse"
 							component={FormikDollySelect}
