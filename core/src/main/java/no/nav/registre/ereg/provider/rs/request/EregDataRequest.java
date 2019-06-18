@@ -21,7 +21,7 @@ public class EregDataRequest {
     @NonNull
     private String orgId;
     @NonNull
-    private String navn;
+    private Navn navn;
     @NonNull
     private String type;
 
