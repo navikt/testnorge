@@ -44,9 +44,7 @@ public class SyntetiseringService {
             log.warn("Fant ikke nok ledige identer. Oppretter brukere for {} antall identer.", utvalgteIdenter.size());
         }
         if (utvalgteIdenter.isEmpty()) {
-            List<ResponseEntity> tomRespons = new ArrayList<>();
-            tomRespons.add(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fant ingen ledige identer i avspillergruppe" + syntetiserArenaForvalterRequest.getAvspillergruppeId()));
-            return tomRespons;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fant ingen ledige identer i avspillergruppe" + syntetiserArenaForvalterRequest.getAvspillergruppeId());
         }
 
         for (String ident : utvalgteIdenter) {
