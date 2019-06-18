@@ -1,0 +1,25 @@
+application.version: @application.version@
+
+management.endpoints.web.base-path: /internal
+management.endpoints.web.exposure.include: prometheus
+
+--- 
+spring:
+  profiles: test, integration-test
+  
+BISYS_TESTSYNT_SAKSBEHANDLER_UID: z991656
+BISYS_TESTSYNT_SAKSBEHANDLER_PWD: Nuverang9
+BISYS_URL_U4: https://e34wasl00386.devillo.no:9443/rtv-bidrag/Oppgaveliste.do
+BISYS_URL: https://wasapp-q2.adeo.no/rtv-bidrag/Oppgaveliste.do
+SAKSBEHANDLER_ROLLE: TK_Behandler
+ENHET: 4806
+
+syntrest.rest.api.url: http://localhost:${wiremock.server.port}/synthdata-bisys/api
+testnorge-hodejegeren.rest-api.url: http://localhost:${wiremock.server.port}/hodejegeren/api
+
+---
+spring:
+  profiles: local
+  
+testnorge-hodejegeren.rest-api.url: https://testnorge-hodejegeren.nais.preprod.local/api
+syntrest.rest.api.url: https://syntrest.nais.preprod.local/api
