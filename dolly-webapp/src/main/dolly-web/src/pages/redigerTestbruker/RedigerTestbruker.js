@@ -31,7 +31,6 @@ export default class RedigerTestbruker extends Component {
 
 	submit = (values, attributtListe) => {
 		const { updateTestbruker, goBack } = this.props
-
 		updateTestbruker(values, attributtListe)
 		goBack()
 	}
@@ -151,6 +150,7 @@ export default class RedigerTestbruker extends Component {
 			addedAttributes,
 			bestillinger
 		)
+
 		return (
 			<Formik
 				onSubmit={values => this.submit(values, attributtListeToEdit)}
