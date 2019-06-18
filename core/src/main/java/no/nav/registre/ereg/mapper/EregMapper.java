@@ -214,8 +214,12 @@ public class EregMapper {
         if (formaal != null) {
             final int RECORD_SIZE = 70;
             int size = formaal.length();
-            for (int i = 0; i < Math.ceil(size / RECORD_SIZE); i++) {
-                file.append(createSingleFieldWithBase(78, "FORM", endringsType, formaal.substring(i * RECORD_SIZE, (i + 1) * RECORD_SIZE)));
+            for (int i = 0; i < Math.ceil((double) size / (double) RECORD_SIZE); i++) {
+                int readStopIndex = (i + 1) * RECORD_SIZE;
+                if (size < readStopIndex) {
+                    readStopIndex = size;
+                }
+                file.append(createSingleFieldWithBase(78, "FORM", endringsType, formaal.substring(i * RECORD_SIZE, readStopIndex)));
                 numRecords++;
             }
         }
@@ -330,7 +334,7 @@ public class EregMapper {
                 .replace(29 - kapital.length(), 29, kapital)
                 .replace(29, 47, createStringBuilderWithReplacement(47 - 29, '0').toString())
                 .replace(47 - kapitalInnbetalt.length(), 47, kapitalInnbetalt)
-                .replace(48, 48 + kapitalBundet.length(), kapitalBundet)
+                .replace(47, 47 + kapitalBundet.length(), kapitalBundet)
                 .replace(117, 117 + fritekst.length(), fritekst)
                 .append("\n");
 
