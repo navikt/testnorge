@@ -1,4 +1,4 @@
-package no.nav.registre.ereg.provider.rs;
+package no.nav.registre.ereg.mapper.provider.rs;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

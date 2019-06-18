@@ -21,8 +21,8 @@ public class OrkestreringController {
 
     private final FlatfileService flatfileService;
 
-    @PostMapping("/")
-    public ResponseEntity<String> uploadSimple(@RequestBody List<EregDataRequest> data) {
+    @PostMapping("/opprett")
+    public ResponseEntity<String> opprettEnheter(@RequestBody List<EregDataRequest> data) {
         return ResponseEntity.ok(flatfileService.mapEreg(data));
     }
 }
