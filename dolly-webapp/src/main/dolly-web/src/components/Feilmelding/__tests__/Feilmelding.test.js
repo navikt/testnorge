@@ -37,7 +37,15 @@ describe('Feilmelding.js', () => {
 				statusMelding: 'Feilmelding1',
 				identer: ['12345678921']
 			}
-		]
+		],
+		pdlforvalterStatus: {
+			kontaktinformasjonForDoedsbo: [
+				{
+					statusMelding: 'Dødsbofeilmeldingen',
+					identer: ['12345678912']
+				}
+			]
+		}
 	}
 
 	const renderIngenFeilmelding = shallow(<Feilmelding bestilling={ingenFeilmeldingBestilling} />)
@@ -55,6 +63,7 @@ describe('Feilmelding.js', () => {
 	it('should render border line', () => {
 		expect(renderTpsfFeilmeldinger.find('.feil-container_border').exists()).toBe(true)
 	})
+
 	// it('should render border line', () => {
 	//     expect(renderTpsfFeilmeldinger.find('#stubNavn')).to.have.lengthOf(11)
 	// })

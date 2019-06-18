@@ -16,6 +16,12 @@ const avvikStatus = item => {
 		item.sigrunStubStatus.map(status => {
 			status.statusMelding !== 'OK' && (avvik = true)
 		})
+	item.pdlforvalterStatus &&
+		Object.keys(item.pdlforvalterStatus).map(pdlAttr => {
+			item.pdlforvalterStatus[pdlAttr].map(status => {
+				status.statusMelding !== 'OK' && (avvik = true)
+			})
+		})
 	item.arenaforvalterStatus &&
 		item.arenaforvalterStatus.map(status => {
 			status.status !== 'OK' && (avvik = true)
@@ -82,6 +88,25 @@ const miljoeStatusSelector = bestilling => {
 				!successEnvs.includes('Sigrun-stub') && successEnvs.push('Sigrun-stub')
 			} else {
 				!failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
+			}
+		})
+	bestilling.pdlforvalterStatus &&
+		Object.keys(bestilling.pdlforvalterStatus).map(pdlAttr => {
+			bestilling.pdlforvalterStatus[pdlAttr].map(status => {
+				status.statusMelding === 'OK'
+					? !successEnvs.includes('Pdl-forvalter') &&
+					  !failedEnvs.includes('Pdl-forvalter') &&
+					  successEnvs.push('Pdl-forvalter')
+					: !failedEnvs.includes('Pdl-forvalter') && failedEnvs.push('Pdl-forvalter')
+			})
+		})
+
+	bestilling.arenaforvalterStatus &&
+		bestilling.arenaforvalterStatus.map(status => {
+			if (status.status == 'OK') {
+				!successEnvs.includes('Arena') && successEnvs.push('Arena')
+			} else {
+				!failedEnvs.includes('Arena') && failedEnvs.push('Arena')
 			}
 		})
 

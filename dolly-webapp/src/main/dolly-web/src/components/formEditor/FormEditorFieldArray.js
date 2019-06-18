@@ -4,6 +4,7 @@ import { DollyApi } from '~/service/Api'
 import Button from '~/components/button/Button'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
+import cn from 'classnames'
 
 const Attributt = new AttributtManager()
 
@@ -89,9 +90,9 @@ export const FieldArrayComponent = ({
 		arrayHelpers.replace(itemIndex, { ...valueCopy, [subItem]: subItemArr })
 	}
 	const formikValues = formikProps.values[parentId]
+	let subLabelArray = []
 	return (
 		<Fragment>
-			<h4>{subKategori.navn}</h4>
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
 					return (
@@ -100,10 +101,18 @@ export const FieldArrayComponent = ({
 								{idx !== 0 && <div className="field-array-line" />}
 								<div className="subkategori-field-group multi">
 									{items.map((item, kdx) => {
+										if (
+											item.subKategori.id !== subKategori.navn &&
+											!subLabelArray.includes(item.subKategori.id)
+										) {
+											subLabelArray.push(item.subKategori.id)
+											var visUnderoverskrift = true
+										}
 										if (item.subItems && shouldRenderSubItem(item, formikProps, idx))
 											// Render array i array. F.eks. permisjon under arbeidsforhold
 											return (
 												<div key={kdx}>
+													{visUnderoverskrift && <h4>{item.subKategori.navn}</h4>}
 													{faKey[item.id] &&
 														faKey[item.id].map((subRad, jdx) => {
 															return renderHeaderSubFieldButton(
@@ -132,11 +141,16 @@ export const FieldArrayComponent = ({
 												id: `${parentId}[${idx}]${item.id}`
 											}
 											return (
-												<div key={kdx}>
-													{renderFieldComponent(fakeItem, formikProps.values, {
-														parentId,
-														idx
-													})}
+												<div key={kdx} className="flexbox">
+													{renderFieldComponent(
+														fakeItem,
+														formikProps.values,
+														{
+															parentId,
+															idx
+														},
+														formikProps
+													)}
 												</div>
 											)
 										}
