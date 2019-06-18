@@ -1,4 +1,7 @@
 version: 2
+defaults:
+  docker:
+    - image: circleci/openjdk:8-jdk
 jobs:
   build:
     docker:
@@ -24,11 +27,11 @@ jobs:
       - run:
           name: Copy cloud jar to workspace
           command: |
-            cp testnorge-ereg-mapper/target/*.jar /tmp/workspace
+            cp ereg-mapper-cloud/target/*.jar /tmp/workspace
       - run:
           name: Copy core jar to workspace
           command: |
-            cp testnorge-ereg-mapper/target/*.jar /tmp/workspace
+            cp ereg-mapper-core/target/*.jar /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths: '*.jar'
