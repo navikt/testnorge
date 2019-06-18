@@ -70,7 +70,7 @@ public class TpsfConsumer {
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
     public ResponseEntity slettMeldingerFraTpsf(List<Long> meldingIder) {
-        RequestEntity postRequest = RequestEntity.post(urlSlettMeldinger.expand()).body(meldingIder);
+        RequestEntity postRequest = RequestEntity.post(urlSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
         return restTemplate.exchange(postRequest, ResponseEntity.class);
     }
 }
