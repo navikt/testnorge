@@ -156,6 +156,10 @@ export default class DollyService {
 		return Request.get(Endpoints.enhetByTknr(tknr))
 	}
 
+	static getPersonFraPersonoppslag(ident) {
+		return Request.get(Endpoints.personoppslag(ident))
+	}
+
 	//AAREG
 	static getArbeidsforhold(ident, env) {
 		return Request.get(Endpoints.arbeidsforholdByIdent(ident, env))

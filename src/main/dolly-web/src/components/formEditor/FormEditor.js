@@ -1,6 +1,7 @@
 import React, { PureComponent, Fragment } from 'react'
 import { Field } from 'formik'
 import _intersection from 'lodash/intersection'
+import _set from 'lodash/set'
 import { DollyApi } from '~/service/Api'
 import { AttributtType } from '~/service/kodeverk/AttributtManager/Types'
 import Panel from '~/components/panel/Panel'
@@ -103,12 +104,13 @@ export default class FormEditor extends PureComponent {
 	//Ny knapp ligger også på adressekategorien. Hvordan sortere hvilke attributt som skal være med?
 	renderFieldContainer = ({ subKategori, items }, uniqueId, formikProps) => {
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
-		const isFieldarray = Boolean(items[0].items)
+		// const isFieldarray = Boolean(items[0].items)
+		const isMultiple = items[0].isMultiple
 
 		if (isAdresse) {
 			return (
 				<div className="subkategori" key={uniqueId}>
-					{!isFieldarray && <h4>{subKategori.navn}</h4>}
+					<h4>{subKategori.navn}</h4>
 					<div className="subkategori-field-group">
 						<AutofillAddressConnector items={items} formikProps={formikProps} />
 					</div>
@@ -119,10 +121,36 @@ export default class FormEditor extends PureComponent {
 		if (subKategori.id === 'postadresse') {
 			return (
 				<div className="subkategori" key={uniqueId}>
-					{!isFieldarray && <h4>{subKategori.navn}</h4>}
+					<h4>{subKategori.navn}</h4>
 					<div className="subkategori-field-group">
 						<Postadresse items={items} formikProps={formikProps} />
 					</div>
+				</div>
+			)
+		}
+		if (subKategori.id === 'doedsbo') {
+			//Kan også gjøre sjekk items[0].subGruppe = true
+			const subGrupper = this._structureSubGruppe(items[0])
+			return (
+				<div className="subkategori" key={uniqueId}>
+					<h4>{subKategori.navn}</h4>
+					{subGrupper.map((subGruppe, idx) => {
+						const subGruppeObj = Object.assign({}, { ...items[0], items: subGruppe.items })
+						return (
+							<div key={idx}>
+								<h4 className="subgruppe">{subGruppe.navn}</h4>
+								{FormEditorFieldArray(
+									subGruppeObj,
+									formikProps,
+									this.renderFieldComponent,
+									this.renderFieldSubItem,
+									this._shouldRenderFieldComponent,
+									this.props.editMode,
+									this._shouldRenderSubItem
+								)}
+							</div>
+						)
+					})}
 				</div>
 			)
 		}
@@ -138,24 +166,24 @@ export default class FormEditor extends PureComponent {
 
 		return (
 			<div className="subkategori" key={uniqueId}>
-				{!isFieldarray && <h4>{subKategori.navn}</h4>}
+				<h4>{subKategori.navn}</h4>
 				<div className="subkategori-field-group">
-					{items.map(
-						item =>
-							this._shouldRenderFieldComponent(items, item, formikProps)
-								? isFieldarray
-									? FormEditorFieldArray(
-											item,
-											formikProps,
-											this.renderFieldComponent,
-											this.renderFieldSubItem,
-											this._shouldRenderFieldComponent,
-											this.props.editMode,
-											this._shouldRenderSubItem
-									  )
-									: this.renderFieldComponent(item, formikProps.values)
-								: null
-					)}
+					{items.map(item => {
+						const isFieldarray = Boolean(item.items)
+						return this._shouldRenderFieldComponent(items, item, formikProps)
+							? isFieldarray
+								? FormEditorFieldArray(
+										item,
+										formikProps,
+										this.renderFieldComponent,
+										this.renderFieldSubItem,
+										this._shouldRenderFieldComponent,
+										this.props.editMode,
+										this._shouldRenderSubItem
+								  )
+								: this.renderFieldComponent(item, formikProps.values)
+							: null
+					})}
 				</div>
 			</div>
 		)
@@ -168,48 +196,98 @@ export default class FormEditor extends PureComponent {
 	_shouldRenderFieldComponent = (items, item, formikProps, parentObject) => {
 		const valgteVerdier = formikProps.values
 		const errors = formikProps.errors
+		let shouldRender = true
 
 		if (item.onlyShowAfterSelectedValue) {
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
 			const dependantAttributt = items.find(attributt => attributt.id === attributtId)
-
-			const valueIndex = item.onlyShowAfterSelectedValue.valueIndex
-
-			if (
-				valgteVerdier[parentId][idx][attributtId] !== dependantAttributt.options[valueIndex].value
-			) {
-				delete valgteVerdier[parentId][idx][item.id]
-
-				if (errors[parentId] && errors[parentId][idx] && errors[parentId][idx][item.id]) {
-					delete errors[parentId][idx][item.id]
-
-					if (Object.keys(errors[parentId][idx]).length === 0) {
-						delete errors[parentId][idx]
-					}
-					let toDelete = true
-
-					errors[parentId].forEach(element => {
-						if (element) {
-							toDelete = false
-						}
-					})
-					toDelete && delete errors[parentId]
+			let foundIndex = false
+			item.onlyShowAfterSelectedValue.valueIndex.map(index => {
+				valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
+					(foundIndex = true)
+			})
+			if (!foundIndex) {
+				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
+				shouldRender = false
+			} else {
+				if (!([item.id] in formikProps.values[parentId][idx])) {
+					valgteVerdier[parentId][idx][item.id] = ''
 				}
-				return false
 			}
 		}
 
-		return true
+		if (item.onlyShowDependentOnOtherValue) {
+			const { parentId, idx } = parentObject
+			let deleteValidation = true
+			const attributtId = item.onlyShowDependentOnOtherValue.attributtId
+			const valgtVerdi = formikProps.values[parentId][idx][attributtId]
+			const dependentValue = item.onlyShowDependentOnOtherValue.value
+			const exceptValue = item.onlyShowDependentOnOtherValue.exceptValue
+			dependentValue &&
+				dependentValue.map(value => value === valgtVerdi && (deleteValidation = false))
+
+			let exception = false
+			exceptValue && exceptValue.map(value => value === valgtVerdi && (exception = true))
+
+			if (exceptValue) deleteValidation = exception
+			if (deleteValidation) {
+				this._deleteValidation(item, valgteVerdier, errors, parentId, idx)
+				shouldRender = false
+			} else if (!([item.id] in formikProps.values[parentId][idx])) {
+				valgteVerdier[parentId][idx][item.id] = ''
+			}
+		}
+		return shouldRender
+	}
+
+	_deleteValidation = (item, valgteVerdier, errors, parentId, idx) => {
+		delete valgteVerdier[parentId][idx][item.id]
+
+		if (errors[parentId] && errors[parentId][idx] && errors[parentId][idx][item.id]) {
+			delete errors[parentId][idx][item.id]
+
+			if (Object.keys(errors[parentId][idx]).length === 0) {
+				delete errors[parentId][idx]
+			}
+			let toDelete = true
+
+			errors[parentId].forEach(element => {
+				if (element) {
+					toDelete = false
+				}
+			})
+			toDelete && delete errors[parentId]
+		}
 	}
 
 	_shouldRenderSubItem = (item, formikProps, idx) => {
 		const subitemId = item.id
 		const subKatId = item.subKategori.id
-		return Boolean(formikProps.values[subKatId][idx][subitemId][0])
+		const path = formikProps.values[subKatId][idx][subitemId]
+		return Boolean(path && path[0])
 	}
 
-	renderFieldComponent = (item, valgteVerdier, parentObject) => {
+	_structureSubGruppe = item => {
+		let subGruppeArray = []
+		item.items.map(subitem => {
+			if (subGruppeArray.length < 1) {
+				subGruppeArray.push({ navn: subitem.subGruppe, items: [subitem] })
+			} else {
+				let nyGruppe = true
+				subGruppeArray.map(subGrupper => {
+					if (subitem.subGruppe === subGrupper.navn) {
+						subGrupper.items.push(subitem)
+						nyGruppe = false
+					}
+				})
+				nyGruppe && subGruppeArray.push({ navn: subitem.subGruppe, items: [subitem] })
+			}
+		})
+		return subGruppeArray
+	}
+
+	renderFieldComponent = (item, valgteVerdier, parentObject, formikProps) => {
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)
