@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: Verify that the application builds
-          command: mvn clean build
+          command: mvn clean test
   build:
     docker:
       - image: circleci/openjdk:8
