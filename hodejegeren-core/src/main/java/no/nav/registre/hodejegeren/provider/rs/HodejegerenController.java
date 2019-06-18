@@ -150,7 +150,7 @@ public class HodejegerenController {
 
     @LogExceptions
     @ApiOperation(value = "Her kan man slette alle skd-meldinger tilhørende identer fra en gitt avspillergruppe. Returnerer en liste av melding-idene som er sendt til sletting.")
-    @DeleteMapping("api/v1/slett-identer/{avspillerguppeId}")
+    @DeleteMapping("api/v1/slett-identer/{avspillergruppeId}")
     public List<Long> slettIdenterFraAvspillergruppe(@PathVariable Long avspillergruppeId, @RequestBody List<String> identer) {
         return eksisterendeIdenterService.slettIdenterFraAvspillergruppe(avspillergruppeId, identer);
     }
