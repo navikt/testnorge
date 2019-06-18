@@ -32,10 +32,12 @@ import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
-import no.nav.registre.inst.service.SyntetiseringService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {
+
+    @Mock
+    private IdentService identService;
 
     @Mock
     private InstSyntetisererenConsumer instSyntetisererenConsumer;
@@ -84,7 +86,7 @@ public class SyntetiseringServiceTest {
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
         verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
         verify(inst2Consumer).hentTokenTilInst2();
-        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), anyString());
+        verify(identService).hentInstitusjonsoppholdFraInst2(anyMap(), anyString());
         verify(hodejegerenConsumer).saveHistory(any());
     }
 
@@ -97,7 +99,7 @@ public class SyntetiseringServiceTest {
 
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
-        when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), anyString())).thenReturn(meldinger);
+        when(identService.hentInstitusjonsoppholdFraInst2(anyMap(), anyString())).thenReturn(meldinger);
         when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString())).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest);
@@ -105,7 +107,7 @@ public class SyntetiseringServiceTest {
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
         verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
         verify(inst2Consumer).hentTokenTilInst2();
-        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), anyString());
+        verify(identService).hentInstitusjonsoppholdFraInst2(anyMap(), anyString());
 
         assertThat(listAppender.list.get(0).toString(), containsString("Ident " + fnr1 + " har allerede fått opprettet institusjonsforhold."));
     }
