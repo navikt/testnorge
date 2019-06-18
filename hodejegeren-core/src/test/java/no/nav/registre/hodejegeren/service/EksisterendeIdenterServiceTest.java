@@ -25,12 +25,14 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.net.URL;
@@ -310,5 +312,22 @@ public class EksisterendeIdenterServiceTest {
         assertThat(response.getRelasjoner().size(), is(2));
         assertThat(response.getRelasjoner().get(0).getFnrRelasjon(), equalTo("12021790069"));
         assertThat(response.getRelasjoner().get(1).getFnrRelasjon(), equalTo("17120080318"));
+    }
+
+    @Test
+    public void shouldDeleteIdents() {
+        Long avspilergruppeId = 123L;
+        List<String> identer = new ArrayList<>(Collections.singletonList("01010101010"));
+        List<Long> meldingIder = new ArrayList<>(Collections.singletonList(1L));
+
+        when(tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspilergruppeId, identer)).thenReturn(meldingIder);
+        when(tpsfConsumer.slettMeldingerFraTpsf(meldingIder)).thenReturn(ResponseEntity.ok().build());
+
+        List<Long> response = eksisterendeIdenterService.slettIdenterFraAvspillergruppe(avspilergruppeId, identer);
+
+        verify(tpsfConsumer).getMeldingIderTilhoerendeIdenter(avspilergruppeId, identer);
+        verify(tpsfConsumer).slettMeldingerFraTpsf(meldingIder);
+
+        assertThat(response, IsIterableContainingInOrder.contains(meldingIder.toArray()));
     }
 }

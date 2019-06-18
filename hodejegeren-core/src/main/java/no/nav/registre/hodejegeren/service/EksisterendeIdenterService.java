@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -38,9 +39,9 @@ import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsRespo
 @Slf4j
 public class EksisterendeIdenterService {
 
-    public static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
-    public static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
-    public static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
+    private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
+    private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
+    private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
     public static final String TRANSAKSJONSTYPE = "1";
 
     @Autowired
@@ -96,7 +97,7 @@ public class EksisterendeIdenterService {
             Map<String, String> feltMedStatusQuo;
 
             try {
-                feltMedStatusQuo = tpsStatusQuoService.hentStatusQuo(ROUTINE_KERNINFO, Arrays.asList(NAV_ENHET), miljoe, ident);
+                feltMedStatusQuo = tpsStatusQuoService.hentStatusQuo(ROUTINE_KERNINFO, Collections.singletonList(NAV_ENHET), miljoe, ident);
                 String statusQuo = feltMedStatusQuo.get(NAV_ENHET);
                 if (!statusQuo.isEmpty()) {
                     fnrMedNavKontor.put(ident, statusQuo);
@@ -212,7 +213,7 @@ public class EksisterendeIdenterService {
 
     public List<String> finnFoedteIdenter(Long gruppeId) {
         return new ArrayList<>(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
-                gruppeId, Arrays.asList(FOEDSELSMELDING.getAarsakskode()),
+                gruppeId, Collections.singletonList(FOEDSELSMELDING.getAarsakskode()),
                 TRANSAKSJONSTYPE
         ));
     }
@@ -242,6 +243,16 @@ public class EksisterendeIdenterService {
             log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
         }
         return relasjonsResponse;
+    }
+
+    public List<Long> slettIdenterFraAvspillergruppe(Long avspillergruppeId, List<String> identer) {
+        List<Long> meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer);
+        ResponseEntity tpsfResponse = tpsfConsumer.slettMeldingerFraTpsf(meldingIderTilhoerendeIdenter);
+        if (tpsfResponse.getStatusCode().is2xxSuccessful()) {
+            return meldingIderTilhoerendeIdenter;
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     private Relasjon parseRelasjonNode(JsonNode relasjonNode) {
