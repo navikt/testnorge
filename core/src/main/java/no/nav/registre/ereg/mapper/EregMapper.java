@@ -196,9 +196,13 @@ public class EregMapper {
             if (size > RECORD_SIZE * 4) {
                 throw new IllegalArgumentException("For mange tegn i kapital fritekst. Kan max være 4 records med RECORD_SIZE tegn. Den har størrelse på " + size);
             }
-            for (int i = 0; i < Math.ceil(size / RECORD_SIZE); i++) {
+            for (int i = 0; i < Math.ceil((double) size / (double) RECORD_SIZE); i++) {
+                int readStopIndex = (i + 1) * RECORD_SIZE;
+                if (size < readStopIndex) {
+                    readStopIndex = size;
+                }
                 file.append(createKapitalRecord(kapital.getValuttakode(), kapital.getKapital(), kapital.getKapitalInnbetalt(),
-                        kapital.getKapitalBundet(), kapital.getFritekst().substring(i * RECORD_SIZE, (i + 1) * RECORD_SIZE), endringsType));
+                        kapital.getKapitalBundet(), kapital.getFritekst().substring(i * RECORD_SIZE, readStopIndex), endringsType));
                 numRecords++;
             }
         }
