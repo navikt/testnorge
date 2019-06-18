@@ -11,26 +11,37 @@ class Breadcrumb extends PureComponent {
 
 	render() {
 		const { breadcrumbs } = this.props
+
+		if (
+			breadcrumbs[0].key === '/' &&
+			breadcrumbs.length > 1 &&
+			(breadcrumbs[1].key === '/team' || breadcrumbs[1].key === '/tpsendring')
+		) {
+			breadcrumbs[0] = null
+		}
+
 		return (
 			<nav aria-label="breadcrumb" className="breadcrumb">
 				<ol>
 					{breadcrumbs.map((breadcrumb, index) => {
-						const active = this.isActive(breadcrumb)
-						const classes = cn('breadcrumb-item', {
-							active
-						})
+						if (breadcrumb) {
+							const active = this.isActive(breadcrumb)
+							const classes = cn('breadcrumb-item', {
+								active
+							})
 
-						const crumb = active ? (
-							breadcrumb
-						) : (
-							<NavLink to={breadcrumb.props.match.url}>{breadcrumb}</NavLink>
-						)
+							const crumb = active ? (
+								breadcrumb
+							) : (
+								<NavLink to={breadcrumb.props.match.url}>{breadcrumb}</NavLink>
+							)
 
-						return (
-							<li className={classes} key={breadcrumb.key}>
-								{crumb}
-							</li>
-						)
+							return (
+								<li className={classes} key={breadcrumb.key}>
+									{crumb}
+								</li>
+							)
+						}
 					})}
 				</ol>
 				<Version />
