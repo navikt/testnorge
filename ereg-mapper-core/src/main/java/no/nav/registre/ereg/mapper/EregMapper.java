@@ -47,6 +47,11 @@ public class EregMapper {
         return eregFile.toString();
     }
 
+    public static String getDateNowFormatted() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        return format.format(new Date());
+    }
+
     private RecordsAndCount createUnit(EregDataRequest data) {
         int numRecords = 2;
         String endringsType = data.getEndringsType();
@@ -126,17 +131,17 @@ public class EregMapper {
 
         String nedleggelse = data.getNedleggelsesDato();
         if (nedleggelse != null) {
-            file.append(createDatoRecord("NDATN", nedleggelse, endringsType));
+            file.append(createDatoRecord("NDAT", nedleggelse, endringsType));
             numRecords++;
         }
         String oppstart = data.getOppstartsDato();
         if (oppstart != null) {
-            file.append(createDatoRecord("BDATN", oppstart, endringsType));
+            file.append(createDatoRecord("BDAT", oppstart, endringsType));
             numRecords++;
         }
         String eierskapskifte = data.getEierskapskifteDato();
         if (eierskapskifte != null) {
-            file.append(createDatoRecord("EDATN", eierskapskifte, endringsType));
+            file.append(createDatoRecord("EDAT", eierskapskifte, endringsType));
             numRecords++;
         }
 
@@ -172,12 +177,10 @@ public class EregMapper {
 
         Map<String, String> statuser = data.getStatuser();
         if (statuser != null) {
-            StringBuilder stringbuilder = new StringBuilder(8 * statuser.size());
             for (Map.Entry<String, String> entry : statuser.entrySet()) {
-                stringbuilder.append(createStatus(entry.getKey(), entry.getValue()));
+                file.append(createStatus(entry.getKey(), entry.getValue()));
                 numRecords++;
             }
-            file.append(stringbuilder.toString());
         }
 
         UnderlagtHjemland underlagtHjemland = data.getUnderlagtHjemland();
@@ -244,10 +247,6 @@ public class EregMapper {
         return new RecordsAndCount(file.toString(), numRecords);
     }
 
-    private String makeHeader() {
-        return "HEADER " + getDateNowFormatted() + "0000" + "AA A\n";
-    }
-
     private String createENH(String orgId, String unitType, String endringsType) {
         StringBuilder stringBuilder = createStringBuilderWithReplacement(49, ' ');
 
@@ -270,19 +269,8 @@ public class EregMapper {
         return stringBuilder.toString();
     }
 
-    private String createAdresse(String type, String endringsType, List<String> addresses, String postNr, String landCode, String kommuneNr, String postSted) {
-        StringBuilder stringBuilder = createBaseStringbuilder(185, type, endringsType);
-        stringBuilder.replace(8, 8 + postNr.length(), postNr)
-                .replace(17, 17 + landCode.length(), landCode)
-                .replace(20, 20 + kommuneNr.length(), kommuneNr)
-                .replace(30, 30 + postSted.length(), postSted);
-        if (addresses.size() > 3) {
-            log.warn("Antall addresser er for mange, bruker de 3 første");
-        }
-
-        concatListToString(stringBuilder, addresses, 64);
-
-        return stringBuilder.toString();
+    private String makeHeader() {
+        return "HEADER " + getDateNowFormatted() + "00000" + "AA A\n";
     }
 
     private String createFrivilligKategori(String kode, String rangering, String endringsType) {
@@ -302,20 +290,18 @@ public class EregMapper {
         return stringBuilder.toString();
     }
 
-    private String createHjemlandsRegister(List<String> navn, String registerNr, Adresse adresse, String endringsType) {
+    private String createAdresse(String type, String endringsType, List<String> addresses, String postNr, String landCode, String kommuneNr, String postSted) {
+        StringBuilder stringBuilder = createBaseStringbuilder(185, type, endringsType);
+        stringBuilder.replace(8, 8 + postNr.length(), postNr)
+                .replace(17, 17 + landCode.length(), landCode)
+                .replace(20, 20 + kommuneNr.length(), kommuneNr)
+                .replace(30, 30 + postSted.length(), postSted);
+        if (addresses.size() > 3) {
+            log.warn("Antall addresser er for mange, bruker de 3 første");
+        }
 
-        StringBuilder stringBuilder = createBaseStringbuilder(291, "UREG", endringsType);
-        stringBuilder.replace(8, 8 + registerNr.length(), registerNr);
-
-        concatListToString(stringBuilder, navn, 43);
-
-        stringBuilder.replace(148, 148 + adresse.getLandKode().length(), adresse.getLandKode())
-                .replace(152, 152 + adresse.getPostSted().length(), adresse.getPostSted());
-
-        List<String> addresses = adresse.getAdresser();
-
-        concatListToString(stringBuilder, addresses, 186);
-
+        concatListToString(stringBuilder, addresses, 64);
+        stringBuilder.append("\n");
         return stringBuilder.toString();
     }
 
@@ -380,8 +366,6 @@ public class EregMapper {
             stringBuilder.replace(start, start + addresses.get(i).length(), addresses.get(i));
             start = start + 35 * (i + 1);
         }
-
-        stringBuilder.append("\n");
     }
 
     private String createStatus(String statusType, String endringsType) {
@@ -411,9 +395,21 @@ public class EregMapper {
         return stringBuilder;
     }
 
-    private String getDateNowFormatted() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        return format.format(new Date());
+    private String createHjemlandsRegister(List<String> navn, String registerNr, Adresse adresse, String endringsType) {
+
+        StringBuilder stringBuilder = createBaseStringbuilder(291, "UREG", endringsType);
+        stringBuilder.replace(8, 8 + registerNr.length(), registerNr);
+
+        concatListToString(stringBuilder, navn, 43);
+
+        stringBuilder.replace(148, 148 + adresse.getLandKode().length(), adresse.getLandKode())
+                .replace(152, 152 + adresse.getPostSted().length(), adresse.getPostSted());
+
+        List<String> addresses = adresse.getAdresser();
+
+        concatListToString(stringBuilder, addresses, 186);
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
     }
 
     @AllArgsConstructor

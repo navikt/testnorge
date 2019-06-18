@@ -9,40 +9,33 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core</artifactId>
-    <version>${project.version</version>
+    <artifactId>ereg-mapper-cloud</artifactId>
 
 
     <dependencies>
-        <!--Utility-->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <!--SPRING-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
-        <!--LOGGING-->
+        <!--Metrics-->
         <dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.freg</groupId>
-            <artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>testnorge-statisk-data-forvalter</finalName>
+        <finalName>testnorge-ereg-mapper</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -9,16 +9,25 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>local</artifactId>
-    <version>${project.version}</version>
+    <artifactId>ereg-mapper-local</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>no.nav.registre</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version</version>
+            <artifactId>ereg-mapper-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
+
+    <build>
+        <finalName>testnorge-ereg-mapper</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

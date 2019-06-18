@@ -9,29 +9,30 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>cloud</artifactId>
-    <version>${project.version</version>
+    <artifactId>ereg-mapper-core</artifactId>
 
 
     <dependencies>
+        <!--Utility-->
         <dependency>
-            <groupId>no.nav.registre</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
-
-        <!--Metrics-->
+        <!--SPRING-->
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--LOGGING-->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
         </dependency>
     </dependencies>
 
