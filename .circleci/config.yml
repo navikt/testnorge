@@ -1,0 +1,14 @@
+version: 2.1
+orbs:
+  nais: 'navikt/nais-deployment@1.1.0'
+workflow:
+  deploy-docker-and-nais:
+    jobs:
+      - nais/deploy:
+          context: NAIS deployment
+          repo: navikt/testnorge-ereg-mapper
+          image: navikt/testnorge-ereg-mapper
+          github-app-id: 1337
+          nais-template: nais.yaml
+          environment: dev-fss
+          team: Synt
