@@ -24,7 +24,7 @@ export default class RedigerTestbruker extends Component {
 		this.props.getGruppe()
 		const urlArray = this.props.match.params.datasources.split('&')
 
-		urlArray.includes('tpsf') && (await this.props.getTestbruker())
+		await this.props.getTestbruker()
 		urlArray.includes('sigr') && (await this.props.getSigrunTestbruker())
 		urlArray.includes('krr') && (await this.props.getKrrTestbruker())
 	}
@@ -151,12 +151,12 @@ export default class RedigerTestbruker extends Component {
 			addedAttributes,
 			bestillinger
 		)
-
 		return (
 			<Formik
 				onSubmit={values => this.submit(values, attributtListeToEdit)}
 				initialValues={initialValues}
 				validationSchema={validations}
+				enableReinitialize
 				render={formikProps => (
 					<div>
 						<h2>Rediger {`${tpsf[0].fornavn} ${tpsf[0].etternavn}`}</h2>
