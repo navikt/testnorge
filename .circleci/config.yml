@@ -1,4 +1,4 @@
-version: 2.1
+version: 2
 jobs:
   test:
     docker:
@@ -32,7 +32,7 @@ jobs:
 
       - store_artifacts:
           path: ereg-mapper-cloud/target/*.jar
-          destination: testnorge-erege-mapper.jar
+          destination: testnorge-ereg-mapper.jar
   build:
     docker:
       - image: circleci/openjdk:8-jdk
