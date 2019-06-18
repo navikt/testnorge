@@ -24,8 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)

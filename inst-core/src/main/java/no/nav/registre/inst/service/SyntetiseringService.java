@@ -29,6 +29,9 @@ public class SyntetiseringService {
     private static final String INST_NAME = "inst";
 
     @Autowired
+    private IdentService identService;
+
+    @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
 
     @Autowired
@@ -51,7 +54,7 @@ public class SyntetiseringService {
             return tomRespons;
         }
 
-        Map<String, Object> tokenObject = hentTokenTilInst2();
+        Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
         List<Institusjonsforholdsmelding> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, utvalgteIdenter.size());
         return leggTilSyntetisertInstitusjonsoppholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger);
     }
@@ -88,7 +91,7 @@ public class SyntetiseringService {
                 break;
             }
             String ident = utvalgteIdenter.remove(0);
-            List<Institusjonsforholdsmelding> eksisterendeInstitusjonsforhold = hentInstitusjonsoppholdFraInst2(tokenObject, ident);
+            List<Institusjonsforholdsmelding> eksisterendeInstitusjonsforhold = identService.hentInstitusjonsoppholdFraInst2(tokenObject, ident);
             if (!eksisterendeInstitusjonsforhold.isEmpty()) {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", ident);
             } else {
@@ -124,22 +127,6 @@ public class SyntetiseringService {
         }
 
         return responseEntities;
-    }
-
-    private List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident) {
-        List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(tokenObject, ident);
-        if (institusjonsforholdsmeldinger != null) {
-            for (Institusjonsforholdsmelding melding : institusjonsforholdsmeldinger) {
-                melding.setPersonident(ident);
-            }
-            return new ArrayList<>(institusjonsforholdsmeldinger);
-        } else {
-            return new ArrayList<>();
-        }
-    }
-
-    private Map<String, Object> hentTokenTilInst2() {
-        return inst2Consumer.hentTokenTilInst2();
     }
 
     private List<Institusjonsforholdsmelding> validerOgFjernUgyldigeMeldinger(Map<String, Object> tokenObject, List<Institusjonsforholdsmelding> syntetiserteMeldinger) {

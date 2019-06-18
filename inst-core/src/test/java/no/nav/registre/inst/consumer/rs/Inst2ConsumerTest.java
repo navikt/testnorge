@@ -1,6 +1,7 @@
 package no.nav.registre.inst.consumer.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -86,6 +87,17 @@ public class Inst2ConsumerTest {
     }
 
     @Test
+    public void shouldDeleteOpphold() {
+        String oppholdId = "123";
+
+        stubDeleteOpphold(oppholdId);
+
+        ResponseEntity result = inst2Consumer.slettInstitusjonsoppholdFraInst2(token, oppholdId);
+
+        assertThat(result.getStatusCode(), is(HttpStatus.NO_CONTENT));
+    }
+
+    @Test
     public void shouldCheckWhetherInstitusjonIsValidOnDate() {
         stubFindInstitusjon();
 
@@ -125,6 +137,16 @@ public class Inst2ConsumerTest {
                 .withRequestBody(equalToJson(new ObjectMapper().writeValueAsString(institusjonsforholdsmelding)))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.CREATED.value())));
+    }
+
+    private void stubDeleteOpphold(String oppholdId) {
+        stubFor(delete(urlEqualTo("/inst2/web/api/person/institusjonsopphold/" + oppholdId))
+                .withHeader("accept", equalTo("*/*"))
+                .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
+                .withHeader("Nav-Call-Id", equalTo(id))
+                .withHeader("Nav-Consumer-Id", equalTo(id))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.NO_CONTENT.value())));
     }
 
     private void stubFindInstitusjon() {

@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.inst.provider.rs.SyntetiseringController;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.inst.service.SyntetiseringService;
 
