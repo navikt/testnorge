@@ -1,7 +1,7 @@
 package no.nav.registre.arena.core.provider.rs.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import no.nav.registre.arena.domain.NyBruker;
 

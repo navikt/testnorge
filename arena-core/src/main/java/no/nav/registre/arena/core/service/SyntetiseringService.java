@@ -1,17 +1,18 @@
 package no.nav.registre.arena.core.service;
 
+
 import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
-import no.nav.registre.arena.core.provider.rs.requests.NyBruker;
+import no.nav.registre.arena.core.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.arena.core.provider.rs.requests.NyeBrukereRequest;
+import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaForvalterRequest;
+
+import no.nav.registre.arena.domain.NyBruker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import no.nav.registre.arena.core.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaForvalterRequest;
-import no.nav.registre.arena.domain.NyBruker;
 
 import java.util.ArrayList;
 import java.util.List;

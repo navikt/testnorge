@@ -11,6 +11,17 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
+//import io.micrometer.core.annotation.Timed;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.core.ParameterizedTypeReference;
+//import org.springframework.http.RequestEntity;
+//import org.springframework.web.client.RestTemplate;
+//import org.springframework.web.util.UriTemplate;
+//
+//import java.util.List;
+//
 public class HodejegerenConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {

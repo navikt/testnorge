@@ -1,6 +1,7 @@
 package no.nav.registre.arena.core.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.arena.core.provider.rs.requests.NyeBrukereRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
