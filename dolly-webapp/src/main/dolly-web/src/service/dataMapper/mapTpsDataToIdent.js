@@ -1,7 +1,7 @@
 import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
-export function mapTpsfData(tpsfData, testIdent) {
+export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 	if (!tpsfData) return null
 	let data
 	data = [
@@ -97,6 +97,30 @@ export function mapTpsfData(tpsfData, testIdent) {
 					id: 'sprakKode',
 					label: 'Språk',
 					value: tpsfData.sprakKode
+				}
+			]
+		})
+	}
+
+	if (pdlfData && pdlfData.utenlandskeIdentifikasjonsnummere) {
+		data.push({
+			header: 'Utenlands-ID',
+			data: [
+				{
+					id: 'idNummer',
+					label: 'Identifikasjonsnummer',
+					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].idNummer
+				},
+				{
+					id: 'opphoert',
+					label: 'Opphørt',
+					value: 'fix'
+				},
+				{
+					id: 'utstederland',
+					label: 'Utstederland',
+					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].utstederland,
+					apiKodeverkId: 'StatsborgerskapFreg'
 				}
 			]
 		})

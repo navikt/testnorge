@@ -3,10 +3,11 @@ import { Attributt, KategoriTypes, InputType, DataSource } from './Types'
 import TpsfPersoninformasjon from './tpsf/Personinformasjon'
 import TpsfAdresse from './tpsf/Adresse'
 import TpsfRelasjon from './tpsf/Relasjon'
-import PdlUtenlandsId from './pdlf/UtenlandsId'
 import Krr from './krr/Krr'
 import Arbeidsforhold from './aareg/Arbeidsforhold'
 import SigrunInntekt from './sigrun/Inntekt'
+import Doedsbo from './pdlf/Doedsbo'
+import UtenlandsId from './pdlf/UtenlandsId'
 import Arena from './arena/Arena'
 
 const AttributtListe: Attributt[] = [
@@ -16,7 +17,8 @@ const AttributtListe: Attributt[] = [
 	...Arbeidsforhold,
 	...SigrunInntekt,
 	...Krr,
-	...PdlUtenlandsId,
+	...Doedsbo,
+	...UtenlandsId,
 	...Arena
 ]
 

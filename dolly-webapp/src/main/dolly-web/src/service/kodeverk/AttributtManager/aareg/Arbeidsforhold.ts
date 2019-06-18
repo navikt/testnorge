@@ -92,7 +92,7 @@ const AttributtListe: Attributt[] = [
 				path: 'arbeidsgiver',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Text,
-				onlyShowAfterSelectedValue: { attributtId: 'aktoertype', valueIndex: 0 },
+				onlyShowAfterSelectedValue: { attributtId: 'aktoertype', valueIndex: [0] },
 				// Egen validation pga yup tror stor streng ikke er integer
 
 				validation: yup
@@ -109,7 +109,7 @@ const AttributtListe: Attributt[] = [
 				path: 'arbeidsgiver',
 				dataSource: DataSource.AAREG,
 				inputType: InputType.Text,
-				onlyShowAfterSelectedValue: { attributtId: 'aktoertype', valueIndex: 1 },
+				onlyShowAfterSelectedValue: { attributtId: 'aktoertype', valueIndex: [1] },
 				// Egen validation pga yup tror stor streng ikke er integer
 				validation: yup
 					.string()
@@ -124,6 +124,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Permisjon',
 				path: 'permisjon',
 				dataSource: DataSource.AAREG,
+				isMultiple: true,
 				attributtType: AttributtType.SelectAndRead,
 				informasjonstekst: 'Start- og sluttdato må være innenfor perioden til arbeidsforholdet',
 				subItems: [

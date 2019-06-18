@@ -61,7 +61,7 @@ export default class ConfirmTooltip extends Component {
 	}
 
 	_confirmHandler = () => {
-		this.closeHandler()
+		this._closeHandler()
 		this.props.onClick()
 	}
 }
