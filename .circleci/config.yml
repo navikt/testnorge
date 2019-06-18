@@ -15,7 +15,10 @@ jobs:
           paths:
             - ~/.m2
           key: ereg-{{ checksum "pom.xml" }}
-      - run: mvn package
+      - run:
+        name: Run test
+        command: |
+          mvn package
       - store_test_results:
           path: target/surefire-reports
       - run:
