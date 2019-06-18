@@ -326,10 +326,10 @@ public class EregMapper {
 
         StringBuilder stringBuilder = createBaseStringbuilder(187, "KAPI", endringsType);
         stringBuilder.replace(8, 8 + valuttakode.length(), valuttakode)
-                .replace(11, 29, generateZeros(29 - 11))
-                .replace(11, 11 + kapital.length(), kapital)
-                .replace(29, 47, generateZeros(47 - 29))
-                .replace(29, 29 + kapitalInnbetalt.length(), kapitalInnbetalt)
+                .replace(11, 29, createStringBuilderWithReplacement(29 - 11, '0').toString())
+                .replace(29 - kapital.length(), 29, kapital)
+                .replace(29, 47, createStringBuilderWithReplacement(47 - 29, '0').toString())
+                .replace(47 - kapitalInnbetalt.length(), 47, kapitalInnbetalt)
                 .replace(48, 48 + kapitalBundet.length(), kapitalBundet)
                 .replace(117, 117 + fritekst.length(), fritekst)
                 .append("\n");
@@ -345,15 +345,6 @@ public class EregMapper {
                 .replace(22, 22 + verdi.length(), verdi)
                 .append("\n");
         return stringBuilder.toString();
-    }
-
-    private String generateZeros(int size) {
-        StringBuilder z = new StringBuilder(size);
-
-        for (int i = 0; i < size; i++) {
-            z.insert(i, "0");
-        }
-        return z.toString();
     }
 
     private StringBuilder createBaseStringbuilder(int size, String type, String endringsType) {
