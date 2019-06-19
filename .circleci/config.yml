@@ -10,8 +10,7 @@ jobs:
       - checkout
       - run:
           name: Create workspace
-          command: |
-            mkdir -p /tmp/workspace
+          command: mkdir -p /tmp/workspace
       - restore_cache:
           key: testnorge-ereg-mapper-{{ checksum "pom.xml" }}
       - save_cache:
@@ -20,18 +19,15 @@ jobs:
           key: testnorge-ereg-mapper-{{ checksum "pom.xml" }}
       - run:
           name: Run test and create jar
-          command: |
-            mvn package
+          command: mvn package
       - store_test_results:
           path: target/surefire-reports
       - run:
           name: Copy cloud jar to workspace
-          command: |
-            cp ereg-mapper-cloud/target/*.jar /tmp/workspace
+          command: cp ereg-mapper-cloud/target/*.jar /tmp/workspace
       - run:
           name: Copy core jar to workspace
-          command: |
-            cp ereg-mapper-core/target/*.jar /tmp/workspace
+          command: cp ereg-mapper-core/target/*.jar /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths: '*.jar'
@@ -39,7 +35,7 @@ jobs:
       - store_artifacts:
           path: ereg-mapper-cloud/target/*.jar
           destination: testnorge-ereg-mapper.jar
-  push_to_docker:
+  release:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
@@ -105,7 +101,7 @@ workflows:
           filters:
             branches:
               ignore: master
-      - push_to_docker:
+      - release:
           filters:
             branches:
               only: master

@@ -36,4 +36,8 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <finalName>testnorge-ereg-mapper-core</finalName>
+    </build>
+
 </project>
