@@ -71,7 +71,7 @@ jobs:
           root: /tmp/workspace
           paths:
             - properties.env
-  deploy:
+  deploy_preprod:
     docker:
       - image: navikt/deployment-cli:v0.1.6
     steps:
@@ -80,7 +80,9 @@ jobs:
       - checkout
       - run:
           name: Print env variables persisted
-          command: cat /tmp/workspace/properties.env
+          command: |
+            ls -lah
+            cat /tmp/workspace/properties.env
       - run:
           name: Set up environment variables
           command: cat /tmp/workspace/properties.env >> $BASH_ENV
@@ -94,12 +96,15 @@ workflows:
     jobs:
       - build
       - release:
+          requires:
+            - build
           filters:
             branches:
               only: master
-      - deploy:
+      - deploy_preprod:
           requires:
             - build
+            - release
           filters:
             branches:
               only: master
