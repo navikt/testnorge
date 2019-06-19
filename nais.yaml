@@ -6,7 +6,7 @@ metadata:
   labels:
     team: orkestrator
 spec:
-  image: "docker.pkg.github.com/registre/testnorge-ereg-mapper"
+  image: "docker.pkg.github.com/registre/testnorge-ereg-mapper:latest"
   port: 8080
   liveness:
     path: /internal/isAlive
