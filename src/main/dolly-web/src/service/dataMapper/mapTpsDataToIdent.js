@@ -112,6 +112,7 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].idNummer
 				},
 				{
+					// ! Maa fikses
 					id: 'opphoert',
 					label: 'Opphørt',
 					value: 'fix'

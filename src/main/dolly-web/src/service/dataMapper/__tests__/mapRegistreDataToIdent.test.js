@@ -148,7 +148,7 @@ describe('mapDetailedData.js', () => {
 					{
 						id: 'servicebehov',
 						label: 'Servicebehov',
-						value: 'BFORM'
+						value: 'BFORM - Situasjonsbestemt innsats'
 					},
 					null
 				]
@@ -178,217 +178,218 @@ describe('mapDetailedData.js', () => {
 			}
 			expect(mapArenaData(testArenaData2, testKvalifiseringsgruppe2, testDato2)).toEqual(testRes2)
 		})
-	describe('mapAaregData', () => {
-		it('should return null without data', () => {
-			expect(mapAaregData()).toBeNull()
-		})
-
-		const testAaregData = [
-			{
-				arbeidsforholdId: '010101987654',
-				arbeidsavtaler: [
-					{
-						yrke: 'Bonde',
-						stillingsprosent: '100'
-					}
-				],
-				ansettelsesperiode: {
-					periode: {
-						fom: '2019-02-10',
-						tom: '2019-12-10'
-					}
-				},
-				arbeidsgiver: {
-					type: 'ORG',
-					organisasjonsnummer: '991606416',
-					offentligIdent: ''
-				}
-			}
-		]
-
-		it('should return null without subdata', () => {
-			expect(mapSubItemAaregData(testAaregData[0])).toEqual([])
-		})
-
-		const aaregRes = {
-			header: 'Arbeidsforhold',
-			multiple: true,
-			data: testAaregData.map((data, i) => {
-				return {
-					parent: 'arbeidsforhold',
-					id: data.arbeidsforholdId,
-					label: 'Arbeidsforhold',
-					value: [
-						{
-							id: 'id',
-							label: '',
-							value: `#${i + 1}`,
-							width: 'x-small'
-						},
-						{
-							id: 'yrke',
-							label: 'Yrke',
-							value: 'Bonde',
-							apiKodeverkId: 'Yrker'
-						},
-						{
-							id: 'startdato',
-							label: 'Startdato',
-							value: '2019-02-10'
-						},
-						{
-							id: 'sluttdato',
-							label: 'Sluttdato',
-							value: '2019-12-10'
-						},
-						{
-							id: 'stillingprosent',
-							label: 'Stillingprosent',
-							value: '100'
-						},
-						{
-							id: 'typearbeidsgiver',
-							label: 'Type av arbeidsgiver',
-							value: 'ORG'
-						},
-
-						{
-							id: 'orgnr',
-							label: 'Orgnummer',
-							value: '991606416'
-						},
-						{
-							id: 'orgnr',
-							label: 'Arbeidsgiver Ident',
-							value: ''
-						}
-					]
-				}
+		describe('mapAaregData', () => {
+			it('should return null without data', () => {
+				expect(mapAaregData()).toBeNull()
 			})
-		}
 
-		expect(mapAaregData(testAaregData)).toEqual(aaregRes)
-
-		const testAaregDataMedSubItem = [
-			{
-				arbeidsforholdId: '010101987654',
-				arbeidsavtaler: [
-					{
-						yrke: 'Bonde',
-						stillingsprosent: '90'
-					}
-				],
-				ansettelsesperiode: {
-					periode: {
-						fom: '2019-02-10',
-						tom: '2019-12-10'
-					}
-				},
-				arbeidsgiver: {
-					type: 'ORG',
-					organisasjonsnummer: '991606416',
-					offentligIdent: ''
-				},
-				permisjonPermitteringer: [
-					{
-						type: 'Foreldrepenger',
+			const testAaregData = [
+				{
+					arbeidsforholdId: '010101987654',
+					arbeidsavtaler: [
+						{
+							yrke: 'Bonde',
+							stillingsprosent: '100'
+						}
+					],
+					ansettelsesperiode: {
 						periode: {
-							fom: '2019-03-10',
-							tom: '2019-04-30'
+							fom: '2019-02-10',
+							tom: '2019-12-10'
 						}
+					},
+					arbeidsgiver: {
+						type: 'ORG',
+						organisasjonsnummer: '991606416',
+						offentligIdent: ''
 					}
-				]
+				}
+			]
+
+			it('should return null without subdata', () => {
+				expect(mapSubItemAaregData(testAaregData[0])).toEqual([])
+			})
+
+			const aaregRes = {
+				header: 'Arbeidsforhold',
+				multiple: true,
+				data: testAaregData.map((data, i) => {
+					return {
+						parent: 'arbeidsforhold',
+						id: data.arbeidsforholdId,
+						label: 'Arbeidsforhold',
+						value: [
+							{
+								id: 'id',
+								label: '',
+								value: `#${i + 1}`,
+								width: 'x-small'
+							},
+							{
+								id: 'yrke',
+								label: 'Yrke',
+								value: 'Bonde',
+								apiKodeverkId: 'Yrker'
+							},
+							{
+								id: 'startdato',
+								label: 'Startdato',
+								value: '2019-02-10'
+							},
+							{
+								id: 'sluttdato',
+								label: 'Sluttdato',
+								value: '2019-12-10'
+							},
+							{
+								id: 'stillingprosent',
+								label: 'Stillingprosent',
+								value: '100'
+							},
+							{
+								id: 'typearbeidsgiver',
+								label: 'Type av arbeidsgiver',
+								value: 'ORG'
+							},
+
+							{
+								id: 'orgnr',
+								label: 'Orgnummer',
+								value: '991606416'
+							},
+							{
+								id: 'orgnr',
+								label: 'Arbeidsgiver Ident',
+								value: ''
+							}
+						]
+					}
+				})
 			}
-		]
 
-		const aaregResSubItem = {
-			header: 'Arbeidsforhold',
-			multiple: true,
-			data: testAaregData.map((data, i) => {
-				return {
-					parent: 'arbeidsforhold',
-					label: 'Arbeidsforhold',
-					id: data.arbeidsforholdId,
-					value: [
-						{
-							id: 'id',
-							label: '',
-							value: `#${i + 1}`,
-							width: 'x-small'
-						},
-						{
-							id: 'yrke',
-							label: 'Yrke',
-							value: 'Bonde',
-							apiKodeverkId: 'Yrker'
-						},
-						{
-							id: 'startdato',
-							label: 'Startdato',
-							value: '2019-02-10'
-						},
-						{
-							id: 'sluttdato',
-							label: 'Sluttdato',
-							value: '2019-12-10'
-						},
-						{
-							id: 'stillingprosent',
-							label: 'Stillingprosent',
-							value: '90'
-						},
-						{
-							id: 'typearbeidsgiver',
-							label: 'Type av arbeidsgiver',
-							value: 'ORG'
-						},
+			expect(mapAaregData(testAaregData)).toEqual(aaregRes)
 
+			const testAaregDataMedSubItem = [
+				{
+					arbeidsforholdId: '010101987654',
+					arbeidsavtaler: [
 						{
-							id: 'orgnr',
-							label: 'Orgnummer',
-							value: '991606416'
-						},
+							yrke: 'Bonde',
+							stillingsprosent: '90'
+						}
+					],
+					ansettelsesperiode: {
+						periode: {
+							fom: '2019-02-10',
+							tom: '2019-12-10'
+						}
+					},
+					arbeidsgiver: {
+						type: 'ORG',
+						organisasjonsnummer: '991606416',
+						offentligIdent: ''
+					},
+					permisjonPermitteringer: [
 						{
-							id: 'orgnr',
-							label: 'Arbeidsgiver Ident',
-							value: ''
-						},
-						{
-							id: 'permisjon',
-							label: 'Permisjon',
-							subItem: true,
-							value: [
-								[
-									{
-										id: 'id',
-										label: '',
-										value: `#1`,
-										width: 'x-small'
-									},
-									{
-										id: 'permisjonOgPermittering',
-										label: 'Permisjonstype',
-										value: 'Foreldrepenger',
-										width: 'medium'
-									},
-									{
-										id: 'fom',
-										label: 'Startdato',
-										value: '2019-03-10'
-									},
-									{
-										id: 'tom',
-										label: 'Sluttdato',
-										value: '2019-04-30'
-									}
-								]
-							]
+							type: 'Foreldrepenger',
+							periode: {
+								fom: '2019-03-10',
+								tom: '2019-04-30'
+							}
 						}
 					]
 				}
-			})
-		}
+			]
 
-		expect(mapAaregData(testAaregDataMedSubItem)).toEqual(aaregResSubItem)
+			const aaregResSubItem = {
+				header: 'Arbeidsforhold',
+				multiple: true,
+				data: testAaregData.map((data, i) => {
+					return {
+						parent: 'arbeidsforhold',
+						label: 'Arbeidsforhold',
+						id: data.arbeidsforholdId,
+						value: [
+							{
+								id: 'id',
+								label: '',
+								value: `#${i + 1}`,
+								width: 'x-small'
+							},
+							{
+								id: 'yrke',
+								label: 'Yrke',
+								value: 'Bonde',
+								apiKodeverkId: 'Yrker'
+							},
+							{
+								id: 'startdato',
+								label: 'Startdato',
+								value: '2019-02-10'
+							},
+							{
+								id: 'sluttdato',
+								label: 'Sluttdato',
+								value: '2019-12-10'
+							},
+							{
+								id: 'stillingprosent',
+								label: 'Stillingprosent',
+								value: '90'
+							},
+							{
+								id: 'typearbeidsgiver',
+								label: 'Type av arbeidsgiver',
+								value: 'ORG'
+							},
+
+							{
+								id: 'orgnr',
+								label: 'Orgnummer',
+								value: '991606416'
+							},
+							{
+								id: 'orgnr',
+								label: 'Arbeidsgiver Ident',
+								value: ''
+							},
+							{
+								id: 'permisjon',
+								label: 'Permisjon',
+								subItem: true,
+								value: [
+									[
+										{
+											id: 'id',
+											label: '',
+											value: `#1`,
+											width: 'x-small'
+										},
+										{
+											id: 'permisjonOgPermittering',
+											label: 'Permisjonstype',
+											value: 'Foreldrepenger',
+											width: 'medium'
+										},
+										{
+											id: 'fom',
+											label: 'Startdato',
+											value: '2019-03-10'
+										},
+										{
+											id: 'tom',
+											label: 'Sluttdato',
+											value: '2019-04-30'
+										}
+									]
+								]
+							}
+						]
+					}
+				})
+			}
+
+			expect(mapAaregData(testAaregDataMedSubItem)).toEqual(aaregResSubItem)
+		})
 	})
 })

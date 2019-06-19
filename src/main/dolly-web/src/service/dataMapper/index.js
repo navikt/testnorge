@@ -77,7 +77,7 @@ const DataMapper = {
 		if (pdlfData) {
 			data.push(mapPdlData(pdlfData))
 		}
-		console.log('pdlfData :', pdlfData)
+		// console.log('pdlfData :', pdlfData)
 
 		if (arenaData) {
 			// Workaround for å hente servicebehov-type og inaktiveringsdato fra bestilling så lenge vi ikke kan få den fra arenaforvalteren

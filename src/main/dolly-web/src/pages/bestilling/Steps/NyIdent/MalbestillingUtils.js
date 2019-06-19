@@ -139,6 +139,8 @@ const _mapRegistreKey = key => {
 			return 'krr'
 		case 'kontaktinformasjonForDoedsbo':
 			return 'kontaktinformasjonForDoedsbo'
+		case 'utenlandskIdentifikasjonsnummer':
+			return 'utenlandskIdentifikasjonsnummer'
 		default:
 			return key
 	}
@@ -225,6 +227,8 @@ const _mapRegistreValue = (key, value) => {
 					: (mapObj[attr[0]] = attr[1])
 			})
 			return [mapObj]
+		case 'utenlandskIdentifikasjonsnummer':
+			return [value]
 		case 'arenaforvalter':
 			return [value]
 		default:
