@@ -15,7 +15,10 @@
 *.iws
 *.iml
 *.ipr
-arena-core/target/*
+arena-core/target/
+arena-domain/target/
+arena-local/target/
+arena-cloud/target/
 
 ### NetBeans ###
 /nbproject/private/
