@@ -38,6 +38,17 @@
 
     <build>
         <finalName>testnorge-ereg-mapper-core</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>false</skipTests>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <forkMode>once</forkMode>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
