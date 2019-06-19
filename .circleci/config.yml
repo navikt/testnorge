@@ -88,7 +88,7 @@ jobs:
           command: cat /tmp/workspace/properties.env >> $BASH_ENV
       - run:
           name: Create github deployment for dev-fss
-          command: source $BASH_ENV; deployment-cli deploy payload --cluster=dev-fss
+          command: source $BASH_ENV; deployment-cli deploy create -u $DOCKER_USERNAME -p $DOCKER_PASSWORD --cluster=dev-fss
             --team=Synt -r=nais.yaml --version=${DOCKER_TAG}
 workflows:
   version: 2
