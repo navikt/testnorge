@@ -81,6 +81,7 @@ jobs:
       - run:
           name: Print env variables persisted
           command: |
+            export RUST_BACKTRACE=1
             cat /tmp/workspace/properties.env
       - run:
           name: Set up environment variables
