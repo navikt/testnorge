@@ -45,10 +45,6 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-        name: Copy jar to expected path
-        command: |
-          cp /tmp/workspace/*.jar .
-      - run:
           name: Generate version number and docker image tags
           command: |
             mkdir /tmp/workspace
