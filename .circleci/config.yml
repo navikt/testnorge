@@ -46,10 +46,10 @@ jobs:
           name: Generate version number and docker image tags
           command: |
             mkdir /tmp/workspace
-            export MAJOR_VERSION="$(head -1 major_version)"
+            export MAJOR_VERSION="$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)"
             export RELEASE_VERSION=$MAJOR_VERSION.$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
             echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
-            echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:latest\"" >> /tmp/workspace/properties.env
+            echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:MAJOR_VERSION\"" >> /tmp/workspace/properties.env
             cat /tmp/workspace/properties.env >> $BASH_ENV
       - run:
           name: Set artifact version
