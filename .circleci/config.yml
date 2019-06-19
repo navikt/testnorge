@@ -27,7 +27,7 @@ jobs:
           command: cp ereg-mapper-cloud/target/*.jar /tmp/workspace
       - run:
           name: Copy core jar to workspace
-          command: cp udi-core/target/*.jar /tmp/workspace
+          command: cp erege-mapper-core/target/*.jar /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths: '*.jar'
