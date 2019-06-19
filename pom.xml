@@ -16,9 +16,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>cloud</module>
-        <module>core</module>
-        <module>local</module>
+        <module>ereg-mapper-cloud</module>
+        <module>ereg-mapper-core</module>
+        <module>ereg-mapper-local</module>
     </modules>
 
     <properties>
@@ -34,11 +34,6 @@
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash.logback.encoder.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.freg</groupId>
-                <artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
-                <version>2.0.0</version>
             </dependency>
 
             <!--DOCUMENTATION-->
