@@ -13,28 +13,29 @@ jobs:
           command: mkdir -p /tmp/workspace
       - restore_cache:
           key: testnorge-ereg-mapper-{{ checksum "pom.xml" }}
+      #      - run:
+      #          mvn dependency:go-offline
       - save_cache:
           paths:
             - ~/.m2
           key: testnorge-ereg-mapper-{{ checksum "pom.xml" }}
-      - run:
-          name: Run test and create jar
-          command: mvn package
+      - run: mvn package
       - store_test_results:
           path: target/surefire-reports
       - run:
           name: Copy cloud jar to workspace
-          command: cp ereg-mapper-cloud/target/*.jar /tmp/workspace
+          command: cp udi-cloud/target/*.jar /tmp/workspace
       - run:
           name: Copy core jar to workspace
-          command: cp ereg-mapper-core/target/*.jar /tmp/workspace
+          command: cp udi-core/target/*.jar /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths: '*.jar'
 
       - store_artifacts:
-          path: ereg-mapper-cloud/target/*.jar
+          path: udi-cloud/target/*.jar
           destination: testnorge-ereg-mapper.jar
+
   release:
     docker:
       - image: circleci/openjdk:8-jdk

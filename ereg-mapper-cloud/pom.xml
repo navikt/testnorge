@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>no.nav.registre</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>ereg-mapper-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
