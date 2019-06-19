@@ -92,10 +92,7 @@ workflows:
   version: 2
   build_and_release:
     jobs:
-      - build:
-          filters:
-            branches:
-              ignore: master
+      - build
       - release:
           filters:
             branches:
