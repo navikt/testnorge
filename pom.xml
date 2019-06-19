@@ -173,5 +173,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-	</build>
+		<finalName>testnorge-bisys-app</finalName>
+	</build>	
 </project>
