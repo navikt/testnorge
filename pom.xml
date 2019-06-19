@@ -11,7 +11,7 @@
 
 	<groupId>no.nav.dolly</groupId>
 	<artifactId>dolly</artifactId>
-	<version>test-997</version>
+	<version>test-999</version>
 	<packaging>pom</packaging>
 
 	<name>dolly</name>
