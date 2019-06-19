@@ -19,10 +19,10 @@
     <description>Adapter for Arena</description>
 
     <modules>
-        <module>arena-domain</module>
         <module>arena-core</module>
         <module>arena-local</module>
         <module>arena-cloud</module>
+        <module>arena-domain</module>
     </modules>
 
     <properties>

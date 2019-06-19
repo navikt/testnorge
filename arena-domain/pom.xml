@@ -12,10 +12,7 @@
 
     <artifactId>arena-domain</artifactId>
 
-
-
     <dependencies>
-
         <!-- UTILITY -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -29,13 +26,4 @@
         </dependency>
     </dependencies>
 
-<!--    <build>-->
-<!--        <finalName>testnorge-arena</finalName>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
 </project>
