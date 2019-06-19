@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
+import no.nav.registre.inst.provider.rs.responses.SletteOppholdResponse;
 import no.nav.registre.inst.service.IdentService;
 
 @RestController
@@ -20,7 +21,7 @@ public class IdentController {
 
     @LogExceptions
     @DeleteMapping()
-    public List<String> slettIdenterFraInst2(@RequestBody List<String> identer) {
+    public SletteOppholdResponse slettIdenterFraInst2(@RequestBody List<String> identer) {
         return identService.slettInstitusjonsforholdTilIdenter(identer);
     }
 }

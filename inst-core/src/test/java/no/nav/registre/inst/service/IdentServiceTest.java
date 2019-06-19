@@ -22,6 +22,7 @@ import java.util.List;
 
 import no.nav.registre.inst.Institusjonsforholdsmelding;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
+import no.nav.registre.inst.provider.rs.responses.SletteOppholdResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentServiceTest {
@@ -64,7 +65,7 @@ public class IdentServiceTest {
         when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(oppholdId1))).thenReturn(ResponseEntity.noContent().build());
         when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(oppholdId2))).thenReturn(ResponseEntity.noContent().build());
 
-        List<String> slettedeOppholdIder = identService.slettInstitusjonsforholdTilIdenter(identer);
+        SletteOppholdResponse response = identService.slettInstitusjonsforholdTilIdenter(identer);
 
         verify(inst2Consumer).hentTokenTilInst2();
         verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(fnr1));
@@ -72,6 +73,7 @@ public class IdentServiceTest {
         verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(oppholdId1));
         verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(oppholdId2));
 
-        assertThat(slettedeOppholdIder, IsIterableContainingInOrder.contains(oppholdId1, oppholdId2));
+        assertThat(response.getIdenterMedOppholdIdSomBleSlettet().get(fnr1), IsIterableContainingInOrder.contains(oppholdId1));
+        assertThat(response.getIdenterMedOppholdIdSomBleSlettet().get(fnr2), IsIterableContainingInOrder.contains(oppholdId2));
     }
 }
