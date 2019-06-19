@@ -1,14 +1,114 @@
-version: 2.1
-orbs:
-  nais: 'navikt/nais-deployment@1.1.0'
-workflow:
-  deploy-docker-and-nais:
+version: 2
+defaults:
+  docker:
+    - image: circleci/openjdk:8-jdk
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - run:
+          name: Create workspace
+          command: mkdir -p /tmp/workspace
+      - restore_cache:
+          key: testnorge-ereg-mapper-{{ checksum "pom.xml" }}
+      #      - run:
+      #          mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: testnorge-ereg-mapper-{{ checksum "pom.xml" }}
+      - run: mvn package
+      - store_test_results:
+          path: target/surefire-reports
+      - run:
+          name: Copy cloud jar to workspace
+          command: cp ereg-mapper-cloud/target/*.jar /tmp/workspace
+      - run:
+          name: Copy core jar to workspace
+          command: cp ereg-mapper-core/target/*.jar /tmp/workspace
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths: '*.jar'
+
+      - store_artifacts:
+          path: ereg-mapper-cloud/target/*.jar
+          destination: testnorge-ereg-mapper.jar
+
+  release:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+        name: Copy jar to expected path
+        command: |
+          cp /tmp/workspace/*.jar .
+      - run:
+          name: Generate version number and docker image tags
+          command: |
+            mkdir /tmp/workspace
+            export MAJOR_VERSION="$(head -1 major_version)"
+            export RELEASE_VERSION=$MAJOR_VERSION.$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
+            echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
+            echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
+            cat /tmp/workspace/properties.env >> $BASH_ENV
+      - run:
+          name: Set artifact version
+          command: mvn versions:set -B -DnewVersion=$RELEASE_VERSION
+      - run:
+          name: Build and run tests
+          command: mvn clean package
+      - run:
+          name: Build docker image
+          command: docker build --build-arg version=$RELEASE_VERSION --build-arg app_name=$CIRCLE_PROJECT_REPONAME
+            -t docker.pkg.github.com/$DOCKER_TAG .
+      - run:
+          name: Docker push
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin docker.pkg.github.com
+            echo "Pushing with tag $DOCKER_TAG"
+            docker push docker.pkg.github.com/$DOCKER_TAG
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - properties.env
+  deploy:
+    docker:
+      - image: navikt/deployment-cli:v0.1.6
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Print env variables persisted
+          command: cat /tmp/workspace/properties.env
+      - run:
+          name: Set up environment variables
+          command: cat /tmp/workspace/properties.env >> $BASH_ENV
+      - run:
+          name: Create github deployment for dev-fss
+          command: source $BASH_ENV; deployment-cli deploy payload --cluster=dev-fss
+            --team=Synt -r=nais.yaml --version=${DOCKER_TAG}
+workflows:
+  version: 2
+  build_and_release:
     jobs:
-      - nais/deploy:
-          context: NAIS deployment
-          repo: navikt/testnorge-ereg-mapper
-          image: navikt/testnorge-ereg-mapper
-          github-app-id: 1337
-          nais-template: nais.yaml
-          environment: dev-fss
-          team: Synt
+      - build:
+          filters:
+            branches:
+              ignore: master
+      - release:
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
