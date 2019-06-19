@@ -68,7 +68,7 @@ public class BisysUiConsumer {
 
     SynthesizedBidragRequest request = testnorgeToBisysMapper.testnorgeToBisys(bidragsmelding);
 
-    bisys = bisysLogon();
+    bisysLogon();
 
     // TODO: Introdusere mapping mellom saksbehandlers NAV-kontor og synt.brukers tilknyttede enhet
     // Velg pålogget enhet
@@ -78,15 +78,16 @@ public class BisysUiConsumer {
 
     Optional<String> existingSaksnr = findExistingSakInBrukeroversikt(request);
 
-    if (existingSaksnr.isPresent()) getSakAndGoToSoknad(existingSaksnr.get(), request);
-    else {
+    if (existingSaksnr.isPresent()) {
+      getSakAndGoToSoknad(existingSaksnr.get());
+    } else {
       bisys.sak().nySak().click();
       createRollerAndGoToSoknad(bisys.roller(), request, false);
     }
     bisys.soknad().fillInAndSaveSoknad(request);
   }
 
-  private void getSakAndGoToSoknad(String saksnr, SynthesizedBidragRequest request) {
+  private void getSakAndGoToSoknad(String saksnr) {
 
     // Fill in saksnr
     bisys.sak().sokSaksnr().setValue(saksnr);
@@ -98,12 +99,11 @@ public class BisysUiConsumer {
     bisys.sak().nySoknad().click();
   }
 
-  private BisysApplication bisysLogon() {
-    BisysApplication bisys = openBrowser(bisysUrl);
+  private void bisysLogon() {
+    bisys = openBrowser(bisysUrl);
     log.debug(HtmlApplicationUtils.getHtml(bisys.openamLoginPage()));
     bisys.openamLoginPage().signIn(saksbehandlerUid, saksbehandlerPwd);
     log.debug(HtmlApplicationUtils.getHtml(bisys.openamLoginPage()));
-    return bisys;
   }
 
   private Optional<String> findExistingSakInBrukeroversikt(SynthesizedBidragRequest request) {
@@ -125,14 +125,12 @@ public class BisysUiConsumer {
       try {
         status = ytelse.status().getText();
       } catch (ElementNotFoundException | NoSuchElementException ee) {
-        System.out.println("Ingen ytelser funnet på barn " + request.getFnrBa());
+        log.info("Ingen ytelser funnet på barn {}", request.getFnrBa());
 
         redirectToSak(bisys.brukeroversikt());
         return Optional.empty();
       }
-      if (sakActive(status)
-          && existingSakContainsSameBpBMAsRequest(
-              ytelse.saksnr().getText(), ytelse.linkToSak(), request)) {
+      if (sakActive(status) && existingSakContainsSameBpBMAsRequest(ytelse.linkToSak(), request)) {
 
         redirectToSak(bisys.brukeroversikt());
         return Optional.of(ytelse.saksnr().getText());
@@ -157,7 +155,7 @@ public class BisysUiConsumer {
   }
 
   private boolean existingSakContainsSameBpBMAsRequest(
-      String saksnr, Button linkToSak, SynthesizedBidragRequest request) {
+      Button linkToSak, SynthesizedBidragRequest request) {
 
     linkToSak.click();
 
@@ -178,7 +176,9 @@ public class BisysUiConsumer {
 
     for (Label fnrBarn : fnrBarnListe) {
       String fnr = fnrBarn.getText();
-      if (fnr.equals(request.getFnrBa().replaceAll("\\s", ""))) return true;
+      if (fnr.equals(request.getFnrBa().replaceAll("\\s", ""))) {
+        return true;
+      }
     }
     return false;
   }
@@ -215,7 +215,7 @@ public class BisysUiConsumer {
       rollerPage.executeLagreOgNySoknad().click();
       debug(rollerPage);
     } catch (ElementNotFoundException | NoSuchElementException ee) {
-      ee.printStackTrace();
+      log.info("IgnorerRelasjonBarnOgBmBp-element not found.");
     }
 
     // Sak with same parties already exists
@@ -227,7 +227,7 @@ public class BisysUiConsumer {
       debug(rollerPage);
 
     } catch (ElementNotFoundException | NoSuchElementException ee) {
-      ee.printStackTrace();
+      log.info("Sak with same parties does not already exist.");
     }
   }
 
@@ -255,7 +255,7 @@ public class BisysUiConsumer {
           redirectToSak(rollerPage);
 
           if (isBarnPresentInSak(saksnr, request)) {
-            getSakAndGoToSoknad(saksnr, request);
+            getSakAndGoToSoknad(saksnr);
           } else {
             bisys.sak().nySak().click();
             createRollerAndGoToSoknad(rollerPage, request, true);
@@ -273,12 +273,8 @@ public class BisysUiConsumer {
   }
 
   private static boolean sakActive(String status) {
-    if ((status.equals(Brukeroversikt.KODE_BIDR_STATUS_INAKTIV_DEKODE)
-        || status.equals(Brukeroversikt.KODE_BIDR_STATUS_SANERT_DEKODE))) {
-      return false;
-    } else {
-      return true;
-    }
+    return Brukeroversikt.KODE_BIDR_STATUS_INAKTIV_DEKODE.equals(status)
+        || Brukeroversikt.KODE_BIDR_STATUS_SANERT_DEKODE.equals(status);
   }
 
   private static class BisysBrowserConfigurer implements BrowserConfigurer {
