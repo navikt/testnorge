@@ -39,7 +39,6 @@ export default class PersonDetaljer extends PureComponent {
 
 	render() {
 		const { personData, editAction, frigjoerTestbruker, bestilling } = this.props
-		console.log('personData :', personData)
 		const { modalOpen } = this.state
 		if (!personData) return null
 		return (

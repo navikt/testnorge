@@ -44,6 +44,12 @@ describe('Feilmelding.js', () => {
 					statusMelding: 'Dødsbofeilmeldingen',
 					identer: ['12345678912']
 				}
+			],
+			utenlandskIdentifikasjonsnummer: [
+				{
+					statusMelding: 'Utenlands-ID-feilmeldingen',
+					identer: ['12345678912']
+				}
 			]
 		}
 	}
