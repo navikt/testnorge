@@ -5,11 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.inst.Institusjonsforholdsmelding;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
+import no.nav.registre.inst.provider.rs.responses.SletteOppholdResponse;
 
 @Service
 public class IdentService {
@@ -17,21 +20,27 @@ public class IdentService {
     @Autowired
     private Inst2Consumer inst2Consumer;
 
-    public List<String> slettInstitusjonsforholdTilIdenter(List<String> identer) {
+    public SletteOppholdResponse slettInstitusjonsforholdTilIdenter(List<String> identer) {
         Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
-        List<String> slettedeOppholdIder = new ArrayList<>();
+
+        SletteOppholdResponse sletteOppholdResponse = SletteOppholdResponse.builder()
+                .identerMedOppholdIdSomIkkeKunneSlettes(new HashMap<>())
+                .identerMedOppholdIdSomBleSlettet(new HashMap<>())
+                .build();
 
         for (String ident : identer) {
             List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger = hentInstitusjonsoppholdFraInst2(tokenObject, ident);
             for (Institusjonsforholdsmelding melding : institusjonsforholdsmeldinger) {
                 ResponseEntity response = inst2Consumer.slettInstitusjonsoppholdFraInst2(tokenObject, melding.getOppholdId());
                 if (response.getStatusCode().is2xxSuccessful()) {
-                    slettedeOppholdIder.add(melding.getOppholdId());
+                    leggTilIdentMedOppholdIResponse(sletteOppholdResponse.getIdenterMedOppholdIdSomBleSlettet(), ident, melding.getOppholdId());
+                } else {
+                    leggTilIdentMedOppholdIResponse(sletteOppholdResponse.getIdenterMedOppholdIdSomIkkeKunneSlettes(), ident, melding.getOppholdId());
                 }
             }
         }
 
-        return slettedeOppholdIder;
+        return sletteOppholdResponse;
     }
 
     public List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident) {
@@ -43,6 +52,14 @@ public class IdentService {
             return new ArrayList<>(institusjonsforholdsmeldinger);
         } else {
             return new ArrayList<>();
+        }
+    }
+
+    private void leggTilIdentMedOppholdIResponse(Map<String, List<String>> identMedOpphold, String ident, String oppholdId) {
+        if (identMedOpphold.containsKey(ident)) {
+            identMedOpphold.get(ident).add(oppholdId);
+        } else {
+            identMedOpphold.put(ident, new ArrayList<>(Collections.singletonList(oppholdId)));
         }
     }
 }
