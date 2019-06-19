@@ -1,5 +1,4 @@
-version: 2.1
-
+version: 2
 defaults:
   docker:
     - image: circleci/openjdk:8-jdk
@@ -25,16 +24,16 @@ jobs:
           path: target/surefire-reports
       - run:
           name: Copy cloud jar to workspace
-          command: cp udi-cloud/target/*.jar /tmp/workspace
+          command: cp udi-stub-cloud/target/*.jar /tmp/workspace
       - run:
           name: Copy core jar to workspace
-          command: cp udi-core/target/*.jar /tmp/workspace
+          command: cp udi-stub-core/target/*.jar /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths: '*.jar'
 
       - store_artifacts:
-          path: udi-cloud/target/*.jar
+          path: udi-stub-cloud/target/*.jar
           destination: udi-stub.jar
 
   release:
@@ -42,66 +41,58 @@ jobs:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - attach_workspace:
-          at: /tmp/workspace
+      - setup_remote_docker
       - run:
-          name: Copy jar to expected path
+          name: Generate version number and docker image tags
           command: |
-            cp /tmp/workspace/*.jar .
+            mkdir /tmp/workspace
+            export MAJOR_VERSION="$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)"
+            export RELEASE_VERSION=$MAJOR_VERSION.$CIRCLE_BUILD_NUM-$CIRCLE_SHA1
+            echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
+            echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$MAJOR_VERSION\"" >> /tmp/workspace/properties.env
+            cat /tmp/workspace/properties.env >> $BASH_ENV
       - run:
-          name: List jar files
-          command: |
-            ls -lah
+          name: Set artifact version
+          command: mvn versions:set -B -DnewVersion=$RELEASE_VERSION
       - run:
-          name: Build and push to docker hub
+          name: Build and run tests
+          command: mvn clean package
+      - run:
+          name: Build docker image
+          command: docker build --build-arg version=$RELEASE_VERSION --build-arg app_name=$CIRCLE_PROJECT_REPONAME
+            -t docker.pkg.github.com/$DOCKER_TAG .
+      - run:
+          name: Docker push
           command: |
-            VERSION="$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)"
-            GIT_HASH="$(git rev-parse HEAD)"
-            echo "Extracted version = \"$VERSION\""
-            echo "Extracted git hash = \"$GIT_HASH\""
-            docker build -t hub.docker.com/navikt/udi-stub/app:latest -f Dockerhub.dockerfile .
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            docker push hub.docker.com/navikt/udi-stub/app:latest
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin docker.pkg.github.com
+            echo "Pushing with tag $DOCKER_TAG"
+            docker push docker.pkg.github.com/$DOCKER_TAG
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - properties.env
   deploy_preprod:
     docker:
-      - image: circleci/openjdk:8-jdk
-    environment:
-      - DOCKER_IMG_NAME: navikt/udi-stub
+      - image: navikt/deployment-cli:v0.1.6
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - checkout
-      - setup_remote_docker
-      - add_ssh_keys:
-          fingerprints:
-            - "4e:8f:f6:8d:bb:77:2a:54:f6:a7:17:45:59:62:af:2c"
       - run:
-          name: Create deployment request for development
+          name: Print env variables persisted
           command: |
-            NAIS="$(cat nais.yaml)"
-            curl \
-                -X POST \
-                -d '{
-                        "ref": "master",
-                        "description": "Automated deployment request from our pretty pipeline",
-                        "environment": "dev-fss",
-                        "payload": {
-                            "version": [1, 0, 0],
-                            "team": "Synt",
-                            "kubernetes": {
-                                "resources": [
-                                    \"$NAIS\"
-                                ],
-                            }
-                        }
-                    }' \
-                -H "Accept: application/vnd.github.ant-man-preview+json" \
-                -u $GITHUB_USERNAME:GITHUB_DEPLOY_TOKEN \
-                https://api.github.com/repos/navikt/udi-stub/deployments
-
+            export RUST_BACKTRACE=1
+            cat /tmp/workspace/properties.env
+      - run:
+          name: Set up environment variables
+          command: cat /tmp/workspace/properties.env >> $BASH_ENV
+      - run:
+          name: Create github deployment for dev-fss
+          command: source $BASH_ENV; deployment-cli deploy create -u $DOCKER_USERNAME -p $DOCKER_PASSWORD --cluster=dev-fss
+            --team=Synt -r=nais.yaml --version=${DOCKER_TAG} --repository=udi-stub
 workflows:
   version: 2
-  build_and_deploy:
+  build_and_release:
     jobs:
       - build
       - release:
@@ -112,6 +103,7 @@ workflows:
               only: master
       - deploy_preprod:
           requires:
+            - build
             - release
           filters:
             branches:
