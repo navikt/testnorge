@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.mapstruct.factory.Mappers;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import lombok.extern.slf4j.Slf4j;
 import net.morher.ui.connect.api.ApplicationDefinition;
 import net.morher.ui.connect.api.element.Button;
 import net.morher.ui.connect.api.element.Label;
@@ -29,6 +30,7 @@ import no.nav.bidrag.ui.bisys.rolle.Roller;
 import no.nav.bidrag.ui.bisys.rolle.Samhandler;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 
+@Slf4j
 public class BisysUiConsumer {
 
   String saksbehandlerUid;
@@ -58,7 +60,7 @@ public class BisysUiConsumer {
   }
 
   private static void debug(BisysPage page) {
-    System.out.println(HtmlApplicationUtils.getHtml(page));
+    log.debug(HtmlApplicationUtils.getHtml(page));
   }
 
   public void runCreateSoknad(SyntetisertBidragsmelding bidragsmelding)
@@ -81,7 +83,6 @@ public class BisysUiConsumer {
       bisys.sak().nySak().click();
       createRollerAndGoToSoknad(bisys.roller(), request, false);
     }
-    debug(bisys.soknad());
     bisys.soknad().fillInAndSaveSoknad(request);
   }
 
@@ -99,9 +100,9 @@ public class BisysUiConsumer {
 
   private BisysApplication bisysLogon() {
     BisysApplication bisys = openBrowser(bisysUrl);
-    System.out.println(HtmlApplicationUtils.getHtml(bisys.openamLoginPage()));
+    log.debug(HtmlApplicationUtils.getHtml(bisys.openamLoginPage()));
     bisys.openamLoginPage().signIn(saksbehandlerUid, saksbehandlerPwd);
-    System.out.println(HtmlApplicationUtils.getHtml(bisys.openamLoginPage()));
+    log.debug(HtmlApplicationUtils.getHtml(bisys.openamLoginPage()));
     return bisys;
   }
 
