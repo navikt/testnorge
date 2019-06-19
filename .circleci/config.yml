@@ -42,8 +42,6 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - attach_workspace:
-          at: /tmp/workspace
       - run:
           name: Generate version number and docker image tags
           command: |
