@@ -2,8 +2,10 @@ package no.nav.registre.sigrun.service;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,12 +25,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.sigrun.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
+import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
+import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SigrunServiceTest {
@@ -87,5 +92,30 @@ public class SigrunServiceTest {
         List<String> resultat = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest);
 
         assertThat(resultat.size(), is(5));
+    }
+
+    @Test
+    public void shouldDeleteIdentsFromSigrun() {
+        String fnr1 = "01010101010";
+        String fnr2 = "02020202020";
+        List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+
+        when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe)).thenReturn(identer);
+        when(sigrunStubConsumer.hentEksisterendeSkattegrunnlag(fnr1, miljoe)).thenReturn(Collections.singletonList(SigrunSkattegrunnlagResponse.builder()
+                .personidentifikator(fnr1)
+                .testdataEier(testdataEier)
+                .build()));
+        when(sigrunStubConsumer.hentEksisterendeSkattegrunnlag(fnr2, miljoe)).thenReturn(Collections.singletonList(SigrunSkattegrunnlagResponse.builder()
+                .personidentifikator(fnr2)
+                .testdataEier("annenEier")
+                .build()));
+        when(sigrunStubConsumer.slettEksisterendeSkattegrunnlag(any(), anyString())).thenReturn(ResponseEntity.ok().build());
+
+        SletteGrunnlagResponse response = sigrunService.slettSkattegrunnlagTilIdenter(identer, testdataEier, miljoe);
+
+        assertThat(response.getGrunnlagSomBleSlettet(), hasSize(1));
+        assertThat(response.getGrunnlagSomBleSlettet().get(0).getPersonidentifikator(), equalTo(fnr1));
+        assertThat(response.getIdenterMedGrunnlagFraAnnenTestdataEier(), hasSize(1));
+        assertThat(response.getIdenterMedGrunnlagFraAnnenTestdataEier().get(0), equalTo(fnr2));
     }
 }

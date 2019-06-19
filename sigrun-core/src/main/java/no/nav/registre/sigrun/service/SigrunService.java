@@ -15,7 +15,9 @@ import no.nav.registre.sigrun.SigrunSaveInHodejegerenRequest;
 import no.nav.registre.sigrun.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
+import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
+import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
 
 @Service
 @Slf4j
@@ -77,6 +79,39 @@ public class SigrunService {
             }
         }
         return response;
+    }
+
+    public SletteGrunnlagResponse slettSkattegrunnlagTilIdenter(List<String> identer, String testdataEier, String miljoe) {
+        List<String> eksisterendeIdenter = finnEksisterendeIdenter(miljoe);
+        eksisterendeIdenter.retainAll(identer);
+
+        SletteGrunnlagResponse sletteGrunnlagResponse = SletteGrunnlagResponse.builder()
+                .grunnlagSomIkkeKunneSlettes(new ArrayList<>())
+                .grunnlagSomBleSlettet(new ArrayList<>())
+                .identerMedGrunnlagFraAnnenTestdataEier(new ArrayList<>())
+                .build();
+
+        for (String ident : eksisterendeIdenter) {
+            List<SigrunSkattegrunnlagResponse> skattegrunnlagTilIdent = sigrunStubConsumer.hentEksisterendeSkattegrunnlag(ident, miljoe);
+
+            for (SigrunSkattegrunnlagResponse skattegrunnlag : skattegrunnlagTilIdent) {
+                if (testdataEier.equals(skattegrunnlag.getTestdataEier())) {
+                    ResponseEntity response = sigrunStubConsumer.slettEksisterendeSkattegrunnlag(skattegrunnlag, miljoe);
+                    if (response.getStatusCode().is2xxSuccessful()) {
+                        sletteGrunnlagResponse.getGrunnlagSomBleSlettet().add(skattegrunnlag);
+                    } else {
+                        sletteGrunnlagResponse.getGrunnlagSomIkkeKunneSlettes().add(skattegrunnlag);
+                        log.error("Kunne ikke slette skattegrunnlag {} til ident {}", skattegrunnlag.getGrunnlag(), ident);
+                    }
+                } else {
+                    if (!sletteGrunnlagResponse.getIdenterMedGrunnlagFraAnnenTestdataEier().contains(ident)) {
+                        sletteGrunnlagResponse.getIdenterMedGrunnlagFraAnnenTestdataEier().add(ident);
+                    }
+                }
+            }
+        }
+
+        return sletteGrunnlagResponse;
     }
 
     private List<Map<String, Object>> finnSyntetiserteMeldinger(List<String> fnrs) {
