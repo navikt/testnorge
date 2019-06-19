@@ -1,15 +1,15 @@
 package no.nav.registre.arena.local;
 
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import no.nav.registre.arena.core.config.AppConfig;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
-@SpringBootApplication
+
 public class LocalApplicationStarter {
     public static void main(String[] args) {
 
         new SpringApplicationBuilder()
-                .sources(LocalApplicationStarter.class)
+                .sources(AppConfig.class)
                 .profiles("local")
                 .run(args);
 
