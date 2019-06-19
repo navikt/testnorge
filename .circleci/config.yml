@@ -89,7 +89,7 @@ jobs:
       - run:
           name: Create github deployment for dev-fss
           command: source $BASH_ENV; deployment-cli deploy create -u $DOCKER_USERNAME -p $DOCKER_PASSWORD --cluster=dev-fss
-            --team=Synt -r=nais.yaml --version=${DOCKER_TAG}
+            --team=Synt -r=nais.yaml --version=${DOCKER_TAG} --repository=$CIRCLE_PROJECT_REPONAME
 workflows:
   version: 2
   build_and_release:
