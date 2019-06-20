@@ -151,7 +151,7 @@ export default class BestillingDetaljer extends PureComponent {
 										name="environments"
 										render={arrayHelpers => (
 											<MiljoVelgerConnector
-												heading={'Velg miljø å gjenopprett'}
+												heading={'Velg miljø å gjenopprette i'}
 												arrayHelpers={arrayHelpers}
 												arrayValues={formikProps.values.environments}
 											/>
