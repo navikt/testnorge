@@ -11,7 +11,7 @@
 
     <groupId>no.nav.registre</groupId>
     <artifactId>orkestratoren</artifactId>
-    <version>1.10.4</version>
+    <version>1.11.0</version>
     <packaging>pom</packaging>
 
     <name>orkestratoren</name>
@@ -28,7 +28,7 @@
         <java.version>1.8</java.version>
         <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
-        <springfox.version>2.4.0</springfox.version>
+        <swagger.version>2.9.0</swagger.version>
         <person-tps-avstemming-v1.version>1.0.1</person-tps-avstemming-v1.version>
     </properties>
 
@@ -39,16 +39,6 @@
                 <artifactId>spring-cloud-contract-wiremock</artifactId>
                 <version>2.0.2.RELEASE</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.ibm.mq</groupId>

@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import springfox.documentation.annotations.ApiIgnore;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -45,15 +46,16 @@ public class SwaggerConfig implements WebMvcConfigurer {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Orkestratoren",
-                "Testnorges Orkestrator bestiller generering av syntetiske meldinger i de fellesregistrenes mange synt-pakker, "
-                        + "slik at de blir tilgjengelige i registrene (eller deres stub-versjon) i det miljøet som denne orkestratoren er konfigurert for.",
-                "" + appVersion,
-                "https://nav.no",
-                new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/orkestratoren/browse", null),
-                "Super Strict Licence",
-                "https://opensource.org/licenses/super-strict-license");
+        return new ApiInfoBuilder()
+                .title("Orkestratoren")
+                .description("Testnorges Orkestrator bestiller generering av syntetiske meldinger i de fellesregistrenes mange synt-pakker, \"\n"
+                        + "slik at de blir tilgjengelige i registrene (eller deres stub-versjon) i det miljøet som denne orkestratoren er konfigurert for.")
+                .version(appVersion)
+                .termsOfServiceUrl("https://nav.no")
+                .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-hodejegeren/browse", null))
+                .license("Super Strict Licence")
+                .licenseUrl("https://opensource.org/licenses/super-strict-license")
+                .build();
     }
 
     @Override
