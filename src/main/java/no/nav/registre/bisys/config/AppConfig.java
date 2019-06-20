@@ -14,10 +14,10 @@ public class AppConfig {
   @Value("${syntrest.rest.api.url}")
   String syntrestServerUrl;
 
-  @Value("${BISYS_TESTSYNT_SAKSBEHANDLER_UID}")
+  @Value("${SYNTBISYS_USERNAME}")
   String saksbehandlerUid;
 
-  @Value("${BISYS_TESTSYNT_SAKSBEHANDLER_PWD}")
+  @Value("${SYNTBISYS_PASSWORD}")
   String saksbehandlerPwd;
 
   @Value("${BISYS_URL}")

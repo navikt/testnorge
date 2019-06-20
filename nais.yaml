@@ -33,6 +33,11 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorge-properties"
       resourceType: applicationProperties
+    - alias: syntbisys 
+      resourceType: credential
+      propertyMap: 
+        username: SYNTBISYS_USERNAME
+        password: SYNTBISYS_PASSWORD
   exposed:
    - alias: testnorge-bisys.rest-api
      description: På denne base-url finner du swagger-dokumentasjon av REST-tjenesten.
