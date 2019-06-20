@@ -37,6 +37,13 @@ export const Kategorier: KategoriTypes = {
 			'Dataene her blir lagt i Krr-stub og blir kun distribuert til Q2. Dersom du har behov for dataen i andre miljøer må du opprette en manuell testdatabestilling i REG-spacet i Jira.',
 		order: 50
 	},
+	KontaktInfoDoedsbo: {
+		id: 'kontaktinfoDoedsbo',
+		navn: 'Kontaktinformasjon for dødsbo',
+		informasjonstekst:
+			'Kontaktinformasjon for dødsbo blir kun distribuert til Q2, og dette miljøet må derfor velges i siste steg.',
+		order: 50
+	},
 	Arena: {
 		id: 'arena',
 		navn: 'Arena',
@@ -54,6 +61,24 @@ export const SubKategorier: KategoriTypes = {
 		id: 'nasjonalitet',
 		navn: 'Nasjonalitet',
 		order: 20
+	},
+	Doedsbo: {
+		id: 'doedsbo',
+		navn: '',
+		order: 20,
+		showInSummary: true
+	},
+	Adressat: {
+		id: 'adressat',
+		navn: 'Adressat',
+		order: 10,
+		showInSummary: true
+	},
+	DoedsboAdresse: {
+		id: 'doedsboAdresse',
+		navn: 'Adresse',
+		order: 10,
+		showInSummary: true
 	},
 	Diverse: {
 		id: 'diverse',
@@ -121,6 +146,11 @@ export const SubSubKategorier: KategoriTypes = {
 	Utenlandsopphold: {
 		id: 'utenlandsopphold',
 		navn: 'Utenlandsopphold',
+		order: 10
+	},
+	Adressat: {
+		id: 'adressat',
+		navn: 'Adressat',
 		order: 10
 	}
 }

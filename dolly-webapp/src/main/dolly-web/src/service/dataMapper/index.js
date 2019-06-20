@@ -1,8 +1,9 @@
 import { createHeader as c, mapBestillingId } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
-
+import { mapPdlData } from './mapPdlDataToIdent'
 import { mapKrrData, mapSigrunData, mapAaregData, mapArenaData } from './mapRegistreDataToIdent'
+
 // * Mapper testperson-data for å vise under testpersonliste
 const DataMapper = {
 	getHeaders() {
@@ -55,6 +56,7 @@ const DataMapper = {
 		const sigrunData = testbruker.items.sigrunstub && testbruker.items.sigrunstub[personId]
 		const krrData = testbruker.items.krrstub && testbruker.items.krrstub[personId]
 		const aaregData = testbruker.items.aareg && testbruker.items.aareg[personId]
+		const pdlfData = testbruker.items.pdlforvalter && testbruker.items.pdlforvalter[personId]
 		const arenaData =
 			testbruker.items.arenaforvalteren && testbruker.items.arenaforvalteren[personId]
 		var bestillingId = _findBestillingId(gruppe, personId)
@@ -68,6 +70,10 @@ const DataMapper = {
 		if (krrData) {
 			data.push(mapKrrData(krrData))
 		}
+		if (pdlfData) {
+			data.push(mapPdlData(pdlfData))
+		}
+
 		if (arenaData) {
 			// Workaround for å hente servicebehov-type og inaktiveringsdato fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
 			const bestKriterier = JSON.parse(
@@ -80,7 +86,6 @@ const DataMapper = {
 		if (bestillingId.length > 1) {
 			data.push(mapBestillingId(testIdent))
 		}
-
 		return data
 	}
 }
@@ -88,7 +93,7 @@ const DataMapper = {
 const _findBestillingId = (gruppe, personId) => {
 	const identArray = gruppe.data[0].testidenter
 	const personObj = identArray.find(item => item.ident === personId)
-	return personObj.bestillingId || ''
+	return personObj ? personObj.bestillingId : ''
 }
 
 export default DataMapper
