@@ -79,7 +79,8 @@ export default class NyIdent extends Component {
 					<Field
 						name="mal"
 						label="MALER"
-						className="input-field"
+						className="input-field-mal-select"
+						size="small"
 						component={FormikDollySelect}
 						placeholder={maler.length > 0 ? 'Mal ikke valgt' : 'Ingen maler'}
 						options={this._formatMalerOptions(maler)}

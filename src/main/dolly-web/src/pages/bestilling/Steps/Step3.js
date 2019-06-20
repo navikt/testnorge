@@ -141,8 +141,8 @@ export default class Step3 extends PureComponent {
 					{values.nyMal && (
 						<Field
 							name="malNavn"
-							label="Mal navn"
-							className="input-field"
+							label="Malnavn"
+							className="input-field-mal-input"
 							type="string"
 							component={FormikInput}
 						/>
