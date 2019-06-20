@@ -1,13 +1,15 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import no.nav.registre.orkestratoren.consumer.rs.response.SletteSkattegrunnlagResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 
 @RunWith(SpringRunner.class)
@@ -37,15 +40,14 @@ public class PoppSyntConsumerTest {
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "t1";
-    private List<String> fnrs;
+    private List<String> identer;
     private SyntetiserPoppRequest syntetiserPoppRequest;
+    private String testdataEier = "test";
 
     @Before
     public void setUp() {
-        String fnr1 = "01010101010";
-        String fnr2 = "02020202020";
-        fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
-        syntetiserPoppRequest = new SyntetiserPoppRequest(AVSPILLERGRUPPE_ID, MILJOE, fnrs.size());
+        identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
+        syntetiserPoppRequest = new SyntetiserPoppRequest(AVSPILLERGRUPPE_ID, MILJOE, identer.size());
     }
 
     /**
@@ -54,22 +56,58 @@ public class PoppSyntConsumerTest {
      */
     @Test
     public void shouldStartSyntetisering() {
-        stubPoppConsumer();
+        stubPoppConsumerStartSyntetisering();
 
         ResponseEntity response = poppSyntConsumer.startSyntetisering(syntetiserPoppRequest, "test");
 
         assertThat(response.getBody().toString(), containsString(HttpStatus.OK.toString()));
     }
 
-    private void stubPoppConsumer() {
+    @Test
+    public void shouldDeleteIdenterFromSigrun() {
+        stubPoppConsumerSlettIdenter();
+
+        SletteSkattegrunnlagResponse response = poppSyntConsumer.slettIdenterFraSigrun(testdataEier, MILJOE, identer);
+
+        assertThat(response.getGrunnlagSomIkkeKunneSlettes().get(0).getPersonidentifikator(), equalTo(identer.get(0)));
+        assertThat(response.getGrunnlagSomBleSlettet().get(0).getPersonidentifikator(), equalTo(identer.get(1)));
+    }
+
+    private void stubPoppConsumerStartSyntetisering() {
         stubFor(post(urlPathEqualTo("/sigrun/api/v1/syntetisering/generer"))
-                .withHeader("testdataEier", equalTo("test"))
+                .withHeader("testdataEier", matching("test"))
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
                                 + ",\"miljoe\":\"" + MILJOE + "\""
-                                + ",\"antallNyeIdenter\":" + fnrs.size() + "}"))
+                                + ",\"antallNyeIdenter\":" + identer.size() + "}"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[\"" + HttpStatus.OK + "\", \"" + HttpStatus.INTERNAL_SERVER_ERROR + "\"]")));
+    }
+
+    private void stubPoppConsumerSlettIdenter() {
+        stubFor(delete(urlPathEqualTo("/sigrun/api/v1/ident"))
+                .withHeader("testdataEier", matching(testdataEier))
+                .withRequestBody(equalToJson(
+                        "[\"" + identer.get(0) + "\", \"" + identer.get(1) + "\"]"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{"
+                                + "  \"grunnlagSomIkkeKunneSlettes\": "
+                                + "    [{\"personidentifikator\": \"" + identer.get(0) + "\","
+                                + "    \"inntektsaar\": \"1968\","
+                                + "    \"tjeneste\": \"Beregnet skatt\","
+                                + "    \"grunnlag\": \"personinntektFiskeFangstFamiliebarnehage\","
+                                + "    \"verdi\": \"874\","
+                                + "    \"testdataEier\": \"test\"}],"
+                                + "  \"grunnlagSomBleSlettet\": "
+                                + "    [{\"personidentifikator\": \"" + identer.get(1) + "\","
+                                + "    \"inntektsaar\": \"1969\","
+                                + "    \"tjeneste\": \"Beregnet skatt\","
+                                + "    \"grunnlag\": \"personinntektFiskeFangstFamiliebarnehage\","
+                                + "    \"verdi\": \"823\","
+                                + "    \"testdataEier\": \"test\"}],"
+                                + "  \"identerMedGrunnlagFraAnnenTestdataEier\": []"
+                                + "}")));
     }
 }
