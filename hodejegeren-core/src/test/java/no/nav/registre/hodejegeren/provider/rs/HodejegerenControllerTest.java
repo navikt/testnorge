@@ -166,11 +166,4 @@ public class HodejegerenControllerTest {
         hodejegerenController.hentRelasjonerTilIdent(ident, miljoe);
         verify(eksisterendeIdenterService).hentRelasjoner(ident, miljoe);
     }
-
-    @Test
-    public void shouldSletteIdenterFraAvspillergruppe() {
-        List<String> identer = new ArrayList<>(Collections.singletonList("01010101010"));
-        hodejegerenController.slettIdenterFraAvspillergruppe(avspillergruppeId, identer);
-        verify(eksisterendeIdenterService).slettIdenterFraAvspillergruppe(avspillergruppeId, identer);
-    }
 }

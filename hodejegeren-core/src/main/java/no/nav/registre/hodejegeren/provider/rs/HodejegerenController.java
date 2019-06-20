@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -146,12 +145,5 @@ public class HodejegerenController {
     @GetMapping("api/v1/relasjoner-til-ident")
     public RelasjonsResponse hentRelasjonerTilIdent(@RequestParam String ident, @RequestParam String miljoe) {
         return eksisterendeIdenterService.hentRelasjoner(ident, miljoe);
-    }
-
-    @LogExceptions
-    @ApiOperation(value = "Her kan man slette alle skd-meldinger tilhørende identer fra en gitt avspillergruppe. Returnerer en liste av melding-idene som er sendt til sletting.")
-    @DeleteMapping("api/v1/slett-identer/{avspillergruppeId}")
-    public List<Long> slettIdenterFraAvspillergruppe(@PathVariable Long avspillergruppeId, @RequestBody List<String> identer) {
-        return eksisterendeIdenterService.slettIdenterFraAvspillergruppe(avspillergruppeId, identer);
     }
 }

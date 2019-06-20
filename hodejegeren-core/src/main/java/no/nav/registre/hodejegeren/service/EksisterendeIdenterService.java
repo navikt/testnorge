@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -243,16 +242,6 @@ public class EksisterendeIdenterService {
             log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
         }
         return relasjonsResponse;
-    }
-
-    public List<Long> slettIdenterFraAvspillergruppe(Long avspillergruppeId, List<String> identer) {
-        List<Long> meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer);
-        ResponseEntity tpsfResponse = tpsfConsumer.slettMeldingerFraTpsf(meldingIderTilhoerendeIdenter);
-        if (tpsfResponse.getStatusCode().is2xxSuccessful()) {
-            return meldingIderTilhoerendeIdenter;
-        } else {
-            return new ArrayList<>();
-        }
     }
 
     private Relasjon parseRelasjonNode(JsonNode relasjonNode) {
