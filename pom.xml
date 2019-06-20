@@ -12,7 +12,7 @@
 
 	<groupId>no.nav.registre</groupId>
 	<artifactId>testnorge-bisys</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 
 	<name>testnorge-bisys</name>
 
@@ -21,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<bisys-ui-connect.version>0.2</bisys-ui-connect.version>
+		<bisys-ui-connect.version>0.3</bisys-ui-connect.version>
 		<ui-connect.version>0.6</ui-connect.version>
 		<spring-boot-admin.version>2.0.2</spring-boot-admin.version>
 		<springfox.version>2.4.0</springfox.version>

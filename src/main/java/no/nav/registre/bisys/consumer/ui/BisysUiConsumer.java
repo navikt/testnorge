@@ -84,6 +84,7 @@ public class BisysUiConsumer {
       bisys.sak().nySak().click();
       createRollerAndGoToSoknad(bisys.roller(), request, false);
     }
+
     bisys.soknad().fillInAndSaveSoknad(request);
   }
 
@@ -273,8 +274,8 @@ public class BisysUiConsumer {
   }
 
   private static boolean sakActive(String status) {
-    return Brukeroversikt.KODE_BIDR_STATUS_INAKTIV_DEKODE.equals(status)
-        || Brukeroversikt.KODE_BIDR_STATUS_SANERT_DEKODE.equals(status);
+    return !(Brukeroversikt.KODE_BIDR_STATUS_INAKTIV_DEKODE.equals(status)
+        || Brukeroversikt.KODE_BIDR_STATUS_SANERT_DEKODE.equals(status));
   }
 
   private static class BisysBrowserConfigurer implements BrowserConfigurer {
