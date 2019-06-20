@@ -272,7 +272,7 @@ export const updateTestbruker = (values, attributtListe, ident) => async (dispat
 		const promiseList = [tpsfRequest()]
 
 		//KRR-STUB
-		const krrstubPreviousValues = testbruker.items.krrstub[ident]
+		const krrstubPreviousValues = testbruker.items.krrstub && testbruker.items.krrstub[ident]
 		if (krrstubPreviousValues) {
 			const krrstubBody = mapValuesFromDataSource(values, attributtListe, DataSource.KRR)
 			const krrStubRequest = KrrApi.updateTestbruker(
