@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,7 +23,14 @@ public class OrkestreringController {
     private final FlatfileService flatfileService;
 
     @PostMapping("/opprett")
-    public ResponseEntity<String> opprettEnheter(@RequestBody List<EregDataRequest> data) {
-        return ResponseEntity.ok(flatfileService.mapEreg(data));
+    public ResponseEntity<String> opprettEnheterIEreg(@RequestBody List<EregDataRequest> data, @RequestParam boolean opplast) {
+        String eregData = flatfileService.mapEreg(data, opplast);
+
+        if ("".equals(eregData)) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(eregData);
     }
+
 }

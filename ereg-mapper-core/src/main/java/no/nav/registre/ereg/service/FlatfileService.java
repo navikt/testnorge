@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import no.nav.registre.ereg.consumer.rs.JenkinsConsumer;
 import no.nav.registre.ereg.mapper.EregMapper;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 
@@ -15,10 +16,19 @@ import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 public class FlatfileService {
 
     private final EregMapper mapper;
+    private final JenkinsConsumer jenkinsConsumer;
 
-    public String mapEreg(List<EregDataRequest> data) {
+    public String mapEreg(List<EregDataRequest> data, boolean sendToEreg) {
+        String eregData = mapper.mapEregFromRequests(data);
 
-        return mapper.mapEregFromRequests(data);
+        if (sendToEreg) {
+            boolean didSend = jenkinsConsumer.send(eregData);
+            if (!didSend) {
+                return "";
+            }
+        }
+
+        return eregData;
     }
 
 }
