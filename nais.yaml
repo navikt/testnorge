@@ -6,8 +6,7 @@ metadata:
   labels:
     team: orkestrator
 spec:
-  image: "docker.pkg.github.com/navikt/testnorge-ereg-mapper/testnorge-ereg-mapper"
-  port: 8080
+  image: "repo.adeo.no:5443/testnorge-ereg-mapper:1.0.0"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -19,7 +18,7 @@ spec:
     min: 1
     max: 1
   vault:
-    enabled: true
+    enabled: false
   resources:
     requests:
       cpu: 200m
