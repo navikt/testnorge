@@ -45,8 +45,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "Testnorge-statisk-data-forvalter",
-                "Testnorge-statisk-data-forvalter forvalter den faste testdataen. Dataene i databasen blir lagt til i miljøer.",
+                "Testnorge-inst",
+                "Applikasjon som håndterer integrasjon mellom inst2 og resten av synt-stacken",
                 "" + appVersion,
                 "https://nav.no",
                 new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-statisk-data-forvalter", null),
