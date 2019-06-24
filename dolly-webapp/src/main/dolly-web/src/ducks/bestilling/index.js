@@ -255,14 +255,36 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 			}
 		]
 	}
+
 	if (_get(final_values, 'arenaforvalter')) {
+		console.log('final_values.arenaforvalter :', final_values.arenaforvalter)
 		if (_get(final_values, 'arenaforvalter.arenaBrukertype') !== 'MED_SERVICEBEHOV') {
 			final_values.arenaforvalter = {
 				inaktiveringDato: final_values.arenaforvalter.inaktiveringDato,
 				arenaBrukertype: 'UTEN_SERVICEBEHOV'
 			}
 		}
+		if (_get(final_values, 'arenaforvalter.aap115') === true) {
+			final_values.arenaforvalter.aap115 = [
+				{
+					fraDato: final_values.arenaforvalter.aap115_fraDato
+				}
+			]
+		} else delete final_values.arenaforvalter.aap115
+
+		if (_get(final_values, 'arenaforvalter.aap') === true) {
+			final_values.arenaforvalter.aap = [
+				{
+					fraDato: final_values.arenaforvalter.aap_fraDato,
+					tilDato: final_values.arenaforvalter.aap_tilDato
+				}
+			]
+		} else delete final_values.arenaforvalter.aap
+		delete final_values.arenaforvalter.aap115_fraDato
+		delete final_values.arenaforvalter.aap_fraDato
+		delete final_values.arenaforvalter.aap_tilDato
 	}
+
 	if (malBestillingNavn !== '') {
 		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
 	}

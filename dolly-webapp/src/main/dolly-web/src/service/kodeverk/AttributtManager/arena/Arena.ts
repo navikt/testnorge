@@ -11,6 +11,7 @@ const AttributtListe: Attributt[] = [
 		subKategori: SubKategorier.Arena,
 		id: 'arenaforvalter',
 		label: 'Aktiver/inaktiver bruker',
+		// subGruppe: 'true',
 		dataSource: DataSource.ARENA,
 		validation: yup.object(),
 		attributtType: AttributtType.SelectAndEdit,
@@ -53,6 +54,67 @@ const AttributtListe: Attributt[] = [
 				// 	then: DateValidation()
 				// }),
 
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Arena,
+				subKategori: SubKategorier.Arena,
+				id: 'aap115',
+				label: 'Har 11-5 vedtak',
+				// subGruppe: 'xxx',
+				dataSource: DataSource.ARENA,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('boolean'),
+				// validation: yup.string().required('Velg en brukertype'),
+				onlyShowAfterSelectedValue: { attributtId: 'arenaBrukertype', valueIndex: [1] },
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Arena,
+				subKategori: SubKategorier.Arena,
+				id: 'aap115_fraDato',
+				label: 'Fra dato',
+				dataSource: DataSource.ARENA,
+				inputType: InputType.Date,
+				// options: SelectOptionsManager('boolean'),
+				// validation: yup.string().required('Velg en brukertype'),
+				onlyShowAfterSelectedValue: { attributtId: 'arenaBrukertype', valueIndex: [1] },
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Arena,
+				subKategori: SubKategorier.Arena,
+				id: 'aap',
+				label: 'Har AAP vedtak UA - positivt utfall',
+				dataSource: DataSource.ARENA,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('boolean'),
+				// validation: yup.string().required('Velg en brukertype'),
+				onlyShowAfterSelectedValue: { attributtId: 'arenaBrukertype', valueIndex: [1] },
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Arena,
+				subKategori: SubKategorier.Arena,
+				id: 'aap_fraDato',
+				label: 'Fra dato',
+				dataSource: DataSource.ARENA,
+				inputType: InputType.Date,
+				// options: SelectOptionsManager('boolean'),
+				// validation: yup.string().required('Velg en brukertype'),
+				onlyShowAfterSelectedValue: { attributtId: 'arenaBrukertype', valueIndex: [1] },
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Arena,
+				subKategori: SubKategorier.Arena,
+				id: 'aap_tilDato',
+				label: 'Til dato',
+				dataSource: DataSource.ARENA,
+				inputType: InputType.Date,
+				// options: SelectOptionsManager('boolean'),
+				// validation: yup.string().required('Velg en brukertype'),
+				onlyShowAfterSelectedValue: { attributtId: 'arenaBrukertype', valueIndex: [1] },
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]
