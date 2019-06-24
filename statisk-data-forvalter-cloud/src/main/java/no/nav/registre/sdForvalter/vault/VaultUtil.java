@@ -1,4 +1,4 @@
-package no.nav.registre.sdForvalter.util.vault;
+package no.nav.registre.sdForvalter.vault;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -13,7 +13,7 @@ public final class VaultUtil {
 
     private static final String VAULT_TOKEN_PROPERTY = "VAULT_TOKEN";
 
-    static String getVaultToken() {
+    private static String getVaultToken() {
 
         AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext();

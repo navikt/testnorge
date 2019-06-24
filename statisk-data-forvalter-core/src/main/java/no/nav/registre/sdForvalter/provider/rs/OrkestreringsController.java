@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import java.util.Set;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.sdForvalter.service.EnvironmentInitializationService;
 
 @Slf4j
@@ -23,7 +22,7 @@ public class OrkestreringsController {
 
     private final EnvironmentInitializationService environmentInitializationService;
 
-    @LogExceptions
+
     @ApiOperation(
             value = "Initialiserer alle dataene som er tilgjengelig i forvalteren sin database i et gitt miljø. Endepunktet spiller også av SKD-mantall gruppen og eventuelt legger til nye identer",
             consumes = "TPSF, Testnorge-SKD, Testnorge-aaregstub, Krr-stub, Testnorge-tp, Testnorge-SAM"
