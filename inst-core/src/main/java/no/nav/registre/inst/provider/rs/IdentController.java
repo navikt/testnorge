@@ -32,7 +32,7 @@ public class IdentController {
         return identService.slettInstitusjonsforholdTilIdenter(identer);
     }
 
-    @PostMapping()
+    @PostMapping("/")
     public List<ResponseEntity> opprettPersoner(@RequestBody List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger) {
         return syntetiseringService.opprettInstitusjonsforholdIIInst2(institusjonsforholdsmeldinger);
     }
