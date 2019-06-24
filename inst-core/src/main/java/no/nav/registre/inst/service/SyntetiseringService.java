@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import no.nav.registre.inst.IdentMedData;
 import no.nav.registre.inst.InstSaveInHodejegerenRequest;
@@ -57,6 +58,15 @@ public class SyntetiseringService {
         Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
         List<Institusjonsforholdsmelding> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, utvalgteIdenter.size());
         return leggTilSyntetisertInstitusjonsoppholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger);
+    }
+
+    public List<ResponseEntity> opprettInstitusjonsoppholdIInst2(List<Institusjonsforholdsmelding> meldinger) {
+        Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
+        return leggTilSyntetisertInstitusjonsoppholdIInst2(tokenObject,
+                meldinger.parallelStream()
+                        .map(Institusjonsforholdsmelding::getPersonident)
+                        .collect(Collectors.toList()),
+                meldinger);
     }
 
     private List<Institusjonsforholdsmelding> hentSyntetiserteInstitusjonsforholdsmeldinger(Map<String, Object> tokenObject, int antallMeldinger) {
