@@ -129,6 +129,7 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 		if (subKategori.id === 'doedsbo') {
+			// if (subKategori.id === 'doedsbo' || subKategori.id === 'arena')
 			//Kan også gjøre sjekk items[0].subGruppe = true
 			const subGrupper = this._structureSubGruppe(items[0])
 			return (
@@ -322,6 +323,7 @@ export default class FormEditor extends PureComponent {
 				/>
 			)
 		}
+		// // console.log('item.id :', item.id)
 
 		if (
 			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&

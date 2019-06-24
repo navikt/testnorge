@@ -408,6 +408,26 @@ export function mapBestillingData(bestillingData) {
 					{
 						label: 'Inaktiv fra dato',
 						value: Formatters.formatDate(arenaKriterier.inaktiveringDato)
+					},
+					{
+						label: 'Har 11-5 vedtak',
+						value: Formatters.oversettBoolean(arenaKriterier.aap115 && true)
+					},
+					{
+						label: 'Fra dato',
+						value: arenaKriterier.aap115 && Formatters.formatDate(arenaKriterier.aap115[0].fraDato)
+					},
+					{
+						label: 'Har AAP vedtak UA - positivt utfall',
+						value: Formatters.oversettBoolean(arenaKriterier.aap && true)
+					},
+					{
+						label: 'Fra dato',
+						value: arenaKriterier.aap && Formatters.formatDate(arenaKriterier.aap[0].fraDato)
+					},
+					{
+						label: 'Til dato',
+						value: arenaKriterier.aap && Formatters.formatDate(arenaKriterier.aap[0].tilDato)
 					}
 				]
 			}

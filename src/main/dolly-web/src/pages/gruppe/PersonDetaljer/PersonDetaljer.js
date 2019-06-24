@@ -44,6 +44,7 @@ export default class PersonDetaljer extends PureComponent {
 		return (
 			<div className="person-details">
 				{personData.map((i, idx) => {
+					console.log('i :', i)
 					if (i === null) return null
 					if (i.data.length < 0) return null
 					if (i.data.length > 0) {
