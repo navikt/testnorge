@@ -34,6 +34,6 @@ public class IdentController {
 
     @PostMapping()
     public List<ResponseEntity> opprettPersoner(@RequestBody List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger) {
-        return syntetiseringService.opprettInstitusjonsoppholdIInst2(institusjonsforholdsmeldinger);
+        return syntetiseringService.opprettInstitusjonsforholdIIInst2(institusjonsforholdsmeldinger);
     }
 }

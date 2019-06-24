@@ -57,12 +57,11 @@ public class SyntetiseringService {
 
         Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
         List<Institusjonsforholdsmelding> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, utvalgteIdenter.size());
-        return leggTilSyntetisertInstitusjonsoppholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger);
+        return leggTilInstitusjonsforholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger);
     }
 
-    public List<ResponseEntity> opprettInstitusjonsoppholdIInst2(List<Institusjonsforholdsmelding> meldinger) {
-        Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
-        return leggTilSyntetisertInstitusjonsoppholdIInst2(tokenObject,
+    public List<ResponseEntity> opprettInstitusjonsforholdIIInst2(List<Institusjonsforholdsmelding> meldinger) {
+        return leggTilInstitusjonsforholdIInst2(inst2Consumer.hentTokenTilInst2(),
                 meldinger.parallelStream()
                         .map(Institusjonsforholdsmelding::getPersonident)
                         .collect(Collectors.toList()),
@@ -90,7 +89,7 @@ public class SyntetiseringService {
         return utvalgteIdenter;
     }
 
-    private List<ResponseEntity> leggTilSyntetisertInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, List<String> identer, List<Institusjonsforholdsmelding> syntetiserteMeldinger) {
+    private List<ResponseEntity> leggTilInstitusjonsforholdIInst2(Map<String, Object> tokenObject, List<String> identer, List<Institusjonsforholdsmelding> syntetiserteMeldinger) {
         List<ResponseEntity> responseEntities = new ArrayList<>();
         List<String> utvalgteIdenter = new ArrayList<>(identer);
         List<Institusjonsforholdsmelding> historikkSomSkalLagres = new ArrayList<>();
