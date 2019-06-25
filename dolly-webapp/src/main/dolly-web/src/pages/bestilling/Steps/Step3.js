@@ -172,13 +172,10 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderValues = () => {
-		// console.log('this.SelectedAttributes :', this.SelectedAttributes)
 		return this.SelectedAttributes.map(hovedKategori => this.renderHovedKategori(hovedKategori))
 	}
 
 	renderHovedKategori = ({ hovedKategori, items }) => {
-		// console.log('hovedKategori :', hovedKategori);
-		// console.log('items :', items);
 		let removable = items.every(
 			nested =>
 				!nested.subKategori.showInSummary &&
@@ -237,8 +234,6 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderSubKategori = ({ subKategori, items }) => {
-		// console.log('subKategori :', subKategori)
-		// console.log('items :', items)
 		const { values } = this.props
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
@@ -250,8 +245,6 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderItem = (item, stateValues) => {
-		// console.log('item :', item)
-		// console.log('stateValues :', stateValues)
 		if (item.items) {
 			const valueArray = _get(this.props.values, item.id)
 			const numberOfValues = valueArray.length

@@ -257,7 +257,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 	}
 
 	if (_get(final_values, 'arenaforvalter')) {
-		console.log('final_values.arenaforvalter :', final_values.arenaforvalter)
 		if (_get(final_values, 'arenaforvalter.arenaBrukertype') !== 'MED_SERVICEBEHOV') {
 			final_values.arenaforvalter = {
 				inaktiveringDato: final_values.arenaforvalter.inaktiveringDato,
