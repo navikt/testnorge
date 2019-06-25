@@ -75,14 +75,17 @@ const DataMapper = {
 		}
 
 		if (arenaData) {
-			// Workaround for å hente servicebehov-type og inaktiveringsdato fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
+			// Workaround for å hente servicebehov-type, inaktiveringsdato, AAP og AAP115 fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
 			const bestKriterier = JSON.parse(
 				bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).bestKriterier
 			)
 			var kvalifiseringsgruppe = bestKriterier.arenaforvalter.kvalifiseringsgruppe
 			var inaktiveringDato = bestKriterier.arenaforvalter.inaktiveringDato
-			data.push(mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato))
+			var aap115 = bestKriterier.arenaforvalter.aap115
+			var aap = bestKriterier.arenaforvalter.aap
+			data.push(mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato, aap115, aap))
 		}
+
 		if (bestillingId.length > 1) {
 			data.push(mapBestillingId(testIdent))
 		}
