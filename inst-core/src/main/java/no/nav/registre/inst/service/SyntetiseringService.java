@@ -100,7 +100,8 @@ public class SyntetiseringService {
                 break;
             }
             String ident = utvalgteIdenter.remove(0);
-            List<Institusjonsforholdsmelding> eksisterendeInstitusjonsforhold = identService.hentInstitusjonsoppholdFraInst2(tokenObject, ident);
+            List<Institusjonsforholdsmelding> eksisterendeInstitusjonsforhold =
+                    identService.hentInstitusjonsoppholdFraInst2(tokenObject, ident);
             if (!eksisterendeInstitusjonsforhold.isEmpty()) {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", ident);
             } else {

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import no.nav.registre.inst.Institusjonsforholdsmelding;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
@@ -41,6 +42,12 @@ public class IdentService {
         }
 
         return sletteOppholdResponse;
+    }
+
+    public Map<String, List<Institusjonsforholdsmelding>> hentForhold(List<String> identer) {
+        Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
+       return identer.parallelStream()
+                .collect(Collectors.toMap(fnr -> fnr, fnr -> hentInstitusjonsoppholdFraInst2(tokenObject, fnr)));
     }
 
     public List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident) {
