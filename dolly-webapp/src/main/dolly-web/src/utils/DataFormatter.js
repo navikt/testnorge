@@ -25,7 +25,7 @@ Formatters.formatAlder = (alder, dodsdato) => {
 // Date ---> String
 Formatters.formatDate = date => {
 	if (!date) return date
-	if (date.length == 10) return date
+	if (date.includes('.')) return date
 	return dateFnsFormat(date, defaultDateFormat, new Date())
 }
 
