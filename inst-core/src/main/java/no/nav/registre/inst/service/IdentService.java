@@ -30,7 +30,7 @@ public class IdentService {
                 .build();
 
         for (String ident : identer) {
-            List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger = hentForhold(tokenObject, ident);
+            List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger = hentInstitusjonsoppholdFraInst2(tokenObject, ident);
             for (Institusjonsforholdsmelding melding : institusjonsforholdsmeldinger) {
                 ResponseEntity response = inst2Consumer.slettInstitusjonsoppholdFraInst2(tokenObject, melding.getOppholdId());
                 if (response.getStatusCode().is2xxSuccessful()) {
