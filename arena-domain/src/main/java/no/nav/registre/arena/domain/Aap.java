@@ -5,15 +5,14 @@ import lombok.*;
 
 import java.util.Date;
 
-
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Aap {
     @JsonProperty("fraDato")
-    private Date fraDato;
+    Date fraDato;
     @JsonProperty("tilDato")
-    private Date tilDato;
+    Date tilDato;
 }

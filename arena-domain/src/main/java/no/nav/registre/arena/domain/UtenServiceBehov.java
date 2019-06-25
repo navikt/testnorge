@@ -5,12 +5,13 @@ import lombok.*;
 
 import java.util.Date;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class UtenServiceBehov {
+
     @JsonProperty("stansDato")
-    private Date stansDato;
+    Date stansDato;
 }

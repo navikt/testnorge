@@ -3,15 +3,14 @@ package no.nav.registre.arena.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-
 import java.util.Date;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Aap115 {
     @JsonProperty("fraDato")
-    private Date fraDato;
+    Date fraDato;
 }

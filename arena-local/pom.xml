@@ -2,26 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>testnorge-arena</artifactId>
+        <groupId>no.nav.registre.arena</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>no.nav.registre</groupId>
-        <artifactId>testnorge-arena</artifactId>
-        <version>0.1-SNAPSHOT</version>
-    </parent>
-
     <artifactId>arena-local</artifactId>
+
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>no.nav.registre</groupId>
-            <artifactId>arena-core</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional> <!-- means lombok is only neccecary at compilation time -->
         </dependency>
     </dependencies>
 
@@ -33,6 +33,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

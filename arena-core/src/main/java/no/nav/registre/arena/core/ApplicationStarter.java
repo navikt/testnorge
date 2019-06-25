@@ -1,12 +1,11 @@
-package no.nav.registre.arena.local;
-
+package no.nav.registre.arena.core;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LocalApplicationStarter {
+public class ApplicationStarter {
     public static void main(String[] args) {
-        SpringApplication.run(LocalApplicationStarter.class, args);
+        SpringApplication.run(ApplicationStarter.class, args);
     }
 }

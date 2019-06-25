@@ -1,15 +1,16 @@
 package no.nav.registre.arena.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class NyBruker {
 
     @JsonProperty("personident")
@@ -19,13 +20,13 @@ public class NyBruker {
     private String miljoe;
 
     @JsonProperty("kvalifiseringsgruppe")
-    private String kvalifiseringsgruppe;
+    private String kvalifiseringsgruppe = "IKVAL";
 
     @JsonProperty("utenServicebehov")
     private UtenServiceBehov utenServiceBehov;
 
     @JsonProperty("automatiskInnsendingAvMeldekort")
-    private boolean automatiskInnsendingAvMeldekort;
+    private boolean automatiskInnsendingAvMeldekort = true;
 
     @JsonProperty("aap115")
     private List<Aap115> aap115;
