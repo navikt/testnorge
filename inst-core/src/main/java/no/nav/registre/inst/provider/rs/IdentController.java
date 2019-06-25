@@ -40,7 +40,7 @@ public class IdentController {
         return syntetiseringService.opprettInstitusjonsforholdIIInst2(institusjonsforholdsmeldinger);
     }
 
-    @GetMapping()
+    @GetMapping("/")
     public Map<String, List<Institusjonsforholdsmelding>> hentInstitusjonsforholdmeldinger(@RequestParam List<String> fnrs) {
         return identService.hentForhold(fnrs);
     }
