@@ -44,13 +44,13 @@ public class IdentService {
         return sletteOppholdResponse;
     }
 
-    public Map<String, List<Institusjonsforholdsmelding>> hentInstitusjonsoppholdFraInst2(List<String> identer) {
+    public Map<String, List<Institusjonsforholdsmelding>> hentForhold(List<String> identer) {
         Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
        return identer.parallelStream()
-                .collect(Collectors.toMap(fnr -> fnr, fnr -> hentForhold(tokenObject, fnr)));
+                .collect(Collectors.toMap(fnr -> fnr, fnr -> hentInstitusjonsoppholdFraInst2(tokenObject, fnr)));
     }
 
-    private List<Institusjonsforholdsmelding> hentForhold(Map<String, Object> tokenObject, String ident) {
+    public List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident) {
         List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(tokenObject, ident);
         if (institusjonsforholdsmeldinger != null) {
             for (Institusjonsforholdsmelding melding : institusjonsforholdsmeldinger) {

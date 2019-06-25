@@ -42,6 +42,6 @@ public class IdentController {
 
     @GetMapping()
     public Map<String, List<Institusjonsforholdsmelding>> hentInstitusjonsforholdmeldinger(@RequestParam List<String> fnrs) {
-        return identService.hentInstitusjonsoppholdFraInst2(fnrs);
+        return identService.hentForhold(fnrs);
     }
 }
