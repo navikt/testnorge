@@ -26,7 +26,7 @@ describe('mapTpsDataToIdent.js', () => {
 			utenlandskeIdentifikasjonsnummere: {
 				0: {
 					idNummer: '1234567890',
-					opphoert: 'fix',
+					registrertOpphoertINAV: '2019-06-25',
 					utstederland: 'JAPAN'
 				}
 			}
@@ -118,10 +118,9 @@ describe('mapTpsDataToIdent.js', () => {
 						value: '1234567890'
 					},
 					{
-						// ! Maa fikses
 						id: 'opphoert',
 						label: 'Opphørt',
-						value: 'fix'
+						value: 'Ja'
 					},
 					{
 						id: 'utstederland',
