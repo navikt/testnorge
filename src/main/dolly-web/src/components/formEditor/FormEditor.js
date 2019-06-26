@@ -159,15 +159,6 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 
-		if ('arenaforvalter' in formikProps.values) {
-			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'UTEN_SERVICEBEHOV') {
-				formikProps.values['arenaforvalter'][0]['kvalifiseringsgruppe'] = ''
-			}
-			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'MED_SERVICEBEHOV') {
-				formikProps.values['arenaforvalter'][0]['inaktiveringDato'] = ''
-			}
-		}
-
 		return (
 			<div className="subkategori" key={uniqueId}>
 				<h4>{subKategori.navn}</h4>
@@ -337,6 +328,7 @@ export default class FormEditor extends PureComponent {
 			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'MED_SERVICEBEHOV'
 		) {
 			disabled = true
+			valgteVerdier.arenaforvalter[0].kvalifiseringsgruppe = ''
 		}
 
 		if (
@@ -344,6 +336,7 @@ export default class FormEditor extends PureComponent {
 			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'UTEN_SERVICEBEHOV'
 		) {
 			disabled = true
+			valgteVerdier.arenaforvalter[0].inaktiveringDato = ''
 		}
 
 		if (
