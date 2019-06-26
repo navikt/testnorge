@@ -1,5 +1,7 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,4 +19,6 @@ public class ArenaNyBruker {
     private String miljoe;
     private ArenaKvalifiseringsgruppe kvalifiseringsgruppe;
     private ArenaBrukerUtenServicebehov utenServicebehov;
+    private List<ArenaAap115> aap115;
+    private List<ArenaAap> aap;
 }

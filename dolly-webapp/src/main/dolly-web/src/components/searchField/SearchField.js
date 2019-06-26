@@ -11,7 +11,7 @@ export default class SearchField extends PureComponent {
 		placeholder: 'Hva leter du etter?'
 	}
 
-	onChangeHandler = e => this.props.setSearchText(e.target.value)
+	onChangeHandler = e => this.props.setSearchText(e.target.value.trim())
 
 	render() {
 		return (
