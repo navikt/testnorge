@@ -25,13 +25,13 @@ public class AaregRestConsumer {
     @Autowired
     private StsOidcService stsOidcService;
 
-    public ResponseEntity readArbeidsforhold(String ident, String envionment) {
+    public ResponseEntity readArbeidsforhold(String ident, String environment) {
 
         return restTemplate.exchange(RequestEntity
-                        .get(URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(envionment)))
+                        .get(URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(environment)))
                         .header(ACCEPT, APPLICATION_JSON_VALUE)
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(envionment))
-                        .header("Nav-Consumer-Token", stsOidcService.getIdToken(envionment))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(environment))
+                        .header("Nav-Consumer-Token", stsOidcService.getIdToken(environment))
                         .header("Nav-Personident", ident)
                         .build(),
                 Object[].class);

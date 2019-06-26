@@ -5,37 +5,19 @@ server.compression.mime-types: application/json,text/html,text/xml,text/plain,ap
 APP_NAME: dolly
 APP_VERSION: ${application.version}
 
-### SPRING ###
-spring:
-  datasource:
-    driverClassName: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=d26dbfl023.test.local)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=DOLLYU)(INSTANCE_NAME=ccuf03)(UR=A)(SERVER=DEDICATED)))
-    username: DOLLY_U
-    ? password
-
-      #### APP DB ####
+#### APP DB ####
 ? app.datasource.onsHosts
 
-  #### NEW FREG-SECURITY #####
-freg.security.oidc:
-  idp:
-    openAm:
-      ? clientId
-      ? clientSecret
-      ? hostUrl
-      ? issuerUrl
-      ? jwksUrl
-      loginUrl: ${freg.security.oidc.idp.openAm.hostUrl}/oauth2/authorize
-      authorizationUrl: ${freg.security.oidc.idp.openAm.hostUrl}/oauth2/access_token
-  auth:
-    codeFlow:
-      enabled: true
-    idToken:
-      refresh-on-seconds-left: 300
-      cookie-enabled: true
-      header-enabled: true
-      validation:
-        type: refreshing
+#### NEW FREG-SECURITY #####
+freg.security.oidc.auth:
+  securedPath: /**
+  ignoredPaths: /internal/**,/api,/sysdoc/**,/swagger-ui.html,/swagger-resources/**,/swagger/**,/webjars/**
+
+springfox:
+  documentation:
+    swagger:
+      v2:
+        path: /internal/swagger-spec
 
 providers:
   tpsf:
@@ -46,3 +28,12 @@ providers:
 
 ### CORS ###
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000
+
+dolly:
+  api:
+    v1:
+      name: API versjon 1
+      description: Dolly er en kloningsklient for NAVs personopplysning. Bruk den til å opprette fiktive testpersoner med fiktive inntekter og arbeidsforhold.
+      header:
+        nav-consumer-id: En ID for systemet som gjør kallet, som regel servicebrukeren til applikasjonen.
+        nav-call-id: En ID som identifiserer kallkjeden som dette kallet er en del av.

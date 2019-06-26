@@ -1,4 +1,4 @@
-package no.nav.dolly.api;
+package no.nav.dolly.provider.api;
 
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.verify;
