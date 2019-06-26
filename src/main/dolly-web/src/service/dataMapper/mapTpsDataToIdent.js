@@ -103,6 +103,10 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 	}
 
 	if (pdlfData && pdlfData.utenlandskeIdentifikasjonsnummere) {
+		var opphoert = false
+		if (pdlfData.utenlandskeIdentifikasjonsnummere[0].registrertOpphoertINAV) {
+			opphoert = true
+		}
 		data.push({
 			header: 'Utenlands-ID',
 			data: [
@@ -112,10 +116,9 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].idNummer
 				},
 				{
-					// ! Maa fikses
 					id: 'opphoert',
 					label: 'Opphørt',
-					value: 'fix'
+					value: Formatters.oversettBoolean(opphoert)
 				},
 				{
 					id: 'utstederland',
