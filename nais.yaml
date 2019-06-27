@@ -6,7 +6,7 @@ metadata:
   labels:
     team: orkestrator
 spec:
-  image: "navikt/udi-stub:1.0-SNAPSHOT"
+  image: "repo.adeo.no:5443/registre/udi-stub:1.0.0-1"
   port: 8080
   liveness:
     path: /internal/isAlive
