@@ -11,6 +11,7 @@ const AttributtListe: Attributt[] = [
 		subKategori: SubKategorier.Arena,
 		id: 'arenaforvalter',
 		label: 'Aktiver/inaktiver bruker',
+		subGruppe: 'true',
 		dataSource: DataSource.ARENA,
 		validation: yup.object(),
 		attributtType: AttributtType.SelectAndEdit,
@@ -48,11 +49,63 @@ const AttributtListe: Attributt[] = [
 				label: 'Inaktiv fra dato',
 				dataSource: DataSource.ARENA,
 				inputType: InputType.Date,
-				// validation: yup.string().when('arenaBrukertype', {
-				// 	is: 'UTEN_SERVICEBEHOV',
-				// 	then: DateValidation()
-				// }),
-
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Arena,
+				subKategori: SubKategorier.Arena,
+				id: 'aap115',
+				label: 'Har 11-5 vedtak',
+				subGruppe: '11-5 vedtak',
+				dataSource: DataSource.ARENA,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('boolean'),
+				onlyShowAfterSelectedValue: { attributtId: 'arenaBrukertype', valueIndex: [1] },
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Arena,
+				subKategori: SubKategorier.Arena,
+				id: 'aap115_fraDato',
+				label: 'Fra dato',
+				subGruppe: '11-5 vedtak',
+				dataSource: DataSource.ARENA,
+				inputType: InputType.Date,
+				onlyShowAfterSelectedValue: { attributtId: 'arenaBrukertype', valueIndex: [1] },
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Arena,
+				subKategori: SubKategorier.Arena,
+				id: 'aap',
+				label: 'Har AAP vedtak UA - positivt utfall',
+				subGruppe: 'AAP vedtak UA - positivt utfall',
+				dataSource: DataSource.ARENA,
+				inputType: InputType.Select,
+				options: SelectOptionsManager('boolean'),
+				onlyShowAfterSelectedValue: { attributtId: 'arenaBrukertype', valueIndex: [1] },
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Arena,
+				subKategori: SubKategorier.Arena,
+				id: 'aap_fraDato',
+				label: 'Fra dato',
+				subGruppe: 'AAP vedtak UA - positivt utfall',
+				dataSource: DataSource.ARENA,
+				inputType: InputType.Date,
+				onlyShowAfterSelectedValue: { attributtId: 'arenaBrukertype', valueIndex: [1] },
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Arena,
+				subKategori: SubKategorier.Arena,
+				id: 'aap_tilDato',
+				label: 'Til dato',
+				subGruppe: 'AAP vedtak UA - positivt utfall',
+				dataSource: DataSource.ARENA,
+				inputType: InputType.Date,
+				onlyShowAfterSelectedValue: { attributtId: 'arenaBrukertype', valueIndex: [1] },
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]

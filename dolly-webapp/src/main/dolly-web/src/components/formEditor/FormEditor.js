@@ -128,7 +128,7 @@ export default class FormEditor extends PureComponent {
 				</div>
 			)
 		}
-		if (subKategori.id === 'doedsbo') {
+		if (subKategori.id === 'doedsbo' || subKategori.id === 'arena') {
 			//Kan også gjøre sjekk items[0].subGruppe = true
 			const subGrupper = this._structureSubGruppe(items[0])
 			return (
@@ -138,7 +138,11 @@ export default class FormEditor extends PureComponent {
 						const subGruppeObj = Object.assign({}, { ...items[0], items: subGruppe.items })
 						return (
 							<div key={idx}>
-								<h4 className="subgruppe">{subGruppe.navn}</h4>
+								{subKategori.id === 'doedsbo' && <h4 className="subgruppe">{subGruppe.navn}</h4>}
+								{subKategori.id === 'arena' &&
+									formikProps.values.arenaforvalter[0].arenaBrukertype === 'MED_SERVICEBEHOV' && (
+										<h4 className="subgruppe">{subGruppe.navn}</h4>
+									)}
 								{FormEditorFieldArray(
 									subGruppeObj,
 									formikProps,
@@ -153,15 +157,6 @@ export default class FormEditor extends PureComponent {
 					})}
 				</div>
 			)
-		}
-
-		if ('arenaforvalter' in formikProps.values) {
-			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'UTEN_SERVICEBEHOV') {
-				formikProps.values['arenaforvalter'][0]['kvalifiseringsgruppe'] = ''
-			}
-			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'MED_SERVICEBEHOV') {
-				formikProps.values['arenaforvalter'][0]['inaktiveringDato'] = ''
-			}
 		}
 
 		return (
@@ -201,7 +196,12 @@ export default class FormEditor extends PureComponent {
 		if (item.onlyShowAfterSelectedValue) {
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
-			const dependantAttributt = items.find(attributt => attributt.id === attributtId)
+			let dependantAttributt = items.find(attributt => attributt.id === attributtId)
+			// Spesialtilfelle fordi dependant attributt ligger i en annen subkategori
+			if (item.hovedKategori.id === 'arena' && attributtId) {
+				const arenaItem = this.props.AttributtListe.find(item => item.hovedKategori.id === 'arena')
+				dependantAttributt = arenaItem.items[0].items[0].items[0]
+			}
 			let foundIndex = false
 			item.onlyShowAfterSelectedValue.valueIndex.map(index => {
 				valgteVerdier[parentId][idx][attributtId] === dependantAttributt.options[index].value &&
@@ -328,6 +328,7 @@ export default class FormEditor extends PureComponent {
 			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'MED_SERVICEBEHOV'
 		) {
 			disabled = true
+			valgteVerdier.arenaforvalter[0].kvalifiseringsgruppe = ''
 		}
 
 		if (
@@ -335,6 +336,24 @@ export default class FormEditor extends PureComponent {
 			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'UTEN_SERVICEBEHOV'
 		) {
 			disabled = true
+			valgteVerdier.arenaforvalter[0].inaktiveringDato = ''
+		}
+
+		if (
+			item.id === 'arenaforvalter[0]aap115_fraDato' &&
+			valgteVerdier.arenaforvalter[0].aap115 !== true
+		) {
+			disabled = true
+			valgteVerdier.arenaforvalter[0].aap115_fraDato = ''
+		}
+
+		if (
+			(item.id === 'arenaforvalter[0]aap_fraDato' || item.id === 'arenaforvalter[0]aap_tilDato') &&
+			valgteVerdier.arenaforvalter[0].aap !== true
+		) {
+			disabled = true
+			valgteVerdier.arenaforvalter[0].aap_fraDato = ''
+			valgteVerdier.arenaforvalter[0].aap_tilDato = ''
 		}
 
 		if (item.id === 'ufb_kommunenr' || item.id.includes('utenFastBopel')) {
