@@ -70,8 +70,7 @@ public class PdlForvalterClient implements ClientRegister {
         if (nonNull(pdldata) && nonNull(pdldata.getUtenlandskIdentifikasjonsnummer())) {
             try {
                 appendName(UTENLANDS_IDENTIFIKASJONSNUMMER, status);
-
-                pdldata.getUtenlandskIdentifikasjonsnummer().setKilde(KILDE);
+                
                 ResponseEntity<JsonNode> response =
                         pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(pdldata.getUtenlandskIdentifikasjonsnummer(), norskIdent.getIdent());
 
