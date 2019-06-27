@@ -97,8 +97,8 @@ export const FieldArrayComponent = ({
 				formikValues.map((faKey, idx) => {
 					return (
 						<Fragment key={idx}>
+							{idx !== 0 && <div className="field-array-line" />}
 							<div className="flexbox">
-								{idx !== 0 && <div className="field-array-line" />}
 								<div className="subkategori-field-group multi">
 									{items.map((item, kdx) => {
 										if (

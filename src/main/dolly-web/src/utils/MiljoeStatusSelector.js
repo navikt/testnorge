@@ -101,15 +101,6 @@ const miljoeStatusSelector = bestilling => {
 			})
 		})
 
-	bestilling.arenaforvalterStatus &&
-		bestilling.arenaforvalterStatus.map(status => {
-			if (status.status == 'OK') {
-				!successEnvs.includes('Arena') && successEnvs.push('Arena')
-			} else {
-				!failedEnvs.includes('Arena') && failedEnvs.push('Arena')
-			}
-		})
-
 	let aaregHasOneSuccessEnv = false
 	let aaregFailed = false
 	bestilling.aaregStatus &&

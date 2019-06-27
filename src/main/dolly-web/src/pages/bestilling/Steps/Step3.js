@@ -141,8 +141,8 @@ export default class Step3 extends PureComponent {
 					{values.nyMal && (
 						<Field
 							name="malNavn"
-							label="Mal navn"
-							className="input-field"
+							label="Malnavn"
+							className="input-field-mal-input"
 							type="string"
 							component={FormikInput}
 						/>
@@ -268,7 +268,7 @@ export default class Step3 extends PureComponent {
 				? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
 						_get(stateValues['arenaforvalter'][0], item.id)
 				  ))
-				: (itemValue = _get(stateValues['arenaforvalter'][0], item.id))
+				: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
 		}
 
 		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {

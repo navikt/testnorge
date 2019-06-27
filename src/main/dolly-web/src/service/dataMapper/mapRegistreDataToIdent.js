@@ -70,7 +70,7 @@ export function mapKrrData(krrData) {
 	}
 }
 
-export function mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato) {
+export function mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato, aap115, aap) {
 	if (!arenaData) return null
 	if (arenaData['data']['arbeidsokerList'].length === 0) return null
 	const brukertype = arenaData['data']['arbeidsokerList'][0].servicebehov
@@ -82,15 +82,41 @@ export function mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato) 
 				label: 'Brukertype',
 				value: Formatters.booleanToServicebehov(brukertype)
 			},
-			kvalifiseringsgruppe && {
+			{
 				id: 'servicebehov',
 				label: 'Servicebehov',
-				value: Formatters.servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)
+				value:
+					kvalifiseringsgruppe && Formatters.servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)
 			},
-			inaktiveringDato && {
+			{
 				id: 'inaktiveringDato',
 				label: 'Inaktiv fra dato',
-				value: Formatters.formatDate(inaktiveringDato)
+				value: inaktiveringDato && Formatters.formatDate(inaktiveringDato)
+			},
+			{
+				id: 'aap115',
+				label: 'Har 11-5 vedtak',
+				value: aap115 && Formatters.oversettBoolean(true)
+			},
+			{
+				id: 'aap115_fraDato',
+				label: 'Fra dato',
+				value: aap115 && aap115[0].fraDato && Formatters.formatDate(aap115[0].fraDato)
+			},
+			{
+				id: 'aap',
+				label: 'Har AAP vedtak UA - positivt utfall',
+				value: aap && Formatters.oversettBoolean(true)
+			},
+			{
+				id: 'aap_fraDato',
+				label: 'Fra dato',
+				value: aap && aap[0].fraDato && Formatters.formatDate(aap[0].fraDato)
+			},
+			{
+				id: 'aap_tilDato',
+				label: 'Til dato',
+				value: aap && aap[0].tilDato && Formatters.formatDate(aap[0].tilDato)
 			}
 		]
 	}

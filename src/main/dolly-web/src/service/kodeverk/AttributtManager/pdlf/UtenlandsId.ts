@@ -9,7 +9,7 @@ const AttributtListe: Attributt[] = [
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.UtenlandsId,
 		id: 'utenlandskIdentifikasjonsnummer',
-		label: 'Har utenlandsk ID',
+		label: 'Har utenlands-ID',
 		dataSource: DataSource.PDLF,
 		attributtType: AttributtType.SelectAndEdit,
 		validation: yup.object(),

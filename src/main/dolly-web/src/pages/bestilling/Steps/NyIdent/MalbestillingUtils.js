@@ -69,6 +69,12 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 				_mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
 			} else if (key === 'postadresse') {
 				_mapValuesToObject(objectToAssign, Object.entries(value[0]))
+			} else if (key === 'aap' && value !== true) {
+				_mapValuesToObject(objectToAssign, [['aap', true]])
+				_mapValuesToObject(objectToAssign, Object.entries(value[0]), 'aap_')
+			} else if (key === 'aap115' && value !== true) {
+				_mapValuesToObject(objectToAssign, [['aap115', true]])
+				_mapValuesToObject(objectToAssign, Object.entries(value[0]), 'aap115_')
 			} else {
 				// Formater values før vi lager objekt
 				if (key === 'relasjoner') {
@@ -91,7 +97,9 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = '') => {
 	//Må se på hvordan det skal gjøres når utenlandsID kommer inn
 	const mappedKey =
-		key === 'pdlforvalter' ? _mapRegistreKey(Object.keys(valueArray[0])[0]) : _mapRegistreKey(key)
+		key === 'pdlforvalter' || key === 'arenaforvalter'
+			? _mapRegistreKey(Object.keys(valueArray[0])[0])
+			: _mapRegistreKey(key)
 	let valueArrayObj = []
 
 	valueArray.forEach(v => {
@@ -116,7 +124,9 @@ const _formatValueForObject = (key, value) => {
 		'gyldigTom',
 		'utstedtDato',
 		'foedselsdato',
-		'flyttedato'
+		'flyttedato',
+		'fraDato',
+		'tilDato'
 	]
 
 	if (dateAttributes.includes(key)) {
@@ -141,6 +151,8 @@ const _mapRegistreKey = key => {
 			return 'kontaktinformasjonForDoedsbo'
 		case 'utenlandskIdentifikasjonsnummer':
 			return 'utenlandskIdentifikasjonsnummer'
+		case 'arenaBrukertype':
+			return 'arenaforvalter'
 		default:
 			return key
 	}

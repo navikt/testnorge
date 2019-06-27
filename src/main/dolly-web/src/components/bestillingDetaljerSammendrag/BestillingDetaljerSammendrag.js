@@ -16,7 +16,6 @@ export default class BestillingDetaljerSammendrag extends PureComponent {
 		const bestillingDetaljer = miljoeStatusSelector(bestilling)
 		const data = mapBestillingData(bestilling)
 		const modal = type === 'modal'
-
 		return (
 			<div className="bestilling-detaljer">
 				<div
