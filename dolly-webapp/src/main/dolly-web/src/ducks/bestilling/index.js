@@ -279,8 +279,8 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 				))
 		})
 
-	// * Denne kan beholdes for enklere debug på u2/prod
-	console.info('POSTING BESTILLING', final_values)
+	// * Vurdere behovet for denne i U2/prod. Uglify?
+	//console.info('POSTING BESTILLING', final_values)
 
 	return final_values
 }

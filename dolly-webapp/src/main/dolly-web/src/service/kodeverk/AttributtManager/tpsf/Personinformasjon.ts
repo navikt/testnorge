@@ -99,7 +99,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),
-		attributtType: AttributtType.SelectAndRead
+		attributtType: AttributtType.SelectOnly
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
