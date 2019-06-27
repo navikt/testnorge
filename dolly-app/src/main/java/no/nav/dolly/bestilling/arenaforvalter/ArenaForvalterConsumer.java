@@ -39,8 +39,8 @@ public class ArenaForvalterConsumer {
                 .build(), ArenaArbeidssokerBruker.class);
     }
 
-    public ResponseEntity deleteIdent(String ident, String environment) {
-        return restTemplate.exchange(RequestEntity.delete(
+    public void deleteIdent(String ident, String environment) {
+        restTemplate.exchange(RequestEntity.delete(
                 URI.create(format("%s%s?miljoe=%s&personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, environment, ident)))
                 .header(NAV_CALL_ID, getCallId())
                 .header(NAV_CONSUMER_ID, KILDE)
@@ -55,12 +55,12 @@ public class ArenaForvalterConsumer {
                 .body(arenaNyeBrukere), ArenaArbeidssokerBruker.class);
     }
 
-    public ResponseEntity<List> getEnvironments() {
+    public List getEnvironments() {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_ENVIRONMENTS))
                 .header(NAV_CALL_ID, getCallId())
                 .header(NAV_CONSUMER_ID, KILDE)
-                .build(), List.class);
+                .build(), List.class).getBody();
     }
 
     private static String getCallId() {
