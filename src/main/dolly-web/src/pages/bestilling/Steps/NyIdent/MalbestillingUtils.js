@@ -58,7 +58,7 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 		if (key === 'regdato') return
 
 		let value = v[1]
-		if (value) {
+		if (value || value === false) {
 			let customKeyPrefix = keyPrefix
 			if (keyPrefix === 'barn_' && key === 'identtype') {
 				customKeyPrefix = ''
