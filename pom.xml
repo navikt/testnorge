@@ -55,6 +55,13 @@
                 <version>2.0.2.RELEASE</version>
                 <scope>test</scope>
             </dependency>
+
+            <!--NETWORK-->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

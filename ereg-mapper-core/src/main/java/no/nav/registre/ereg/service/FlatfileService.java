@@ -18,17 +18,21 @@ public class FlatfileService {
     private final EregMapper mapper;
     private final JenkinsConsumer jenkinsConsumer;
 
-    public String mapEreg(List<EregDataRequest> data, boolean sendToEreg) {
+    public String mapEreg(List<EregDataRequest> data, boolean sendToEreg, String env) {
         String eregData = mapper.mapEregFromRequests(data);
 
         if (sendToEreg) {
-            boolean didSend = jenkinsConsumer.send(eregData);
+            boolean didSend = jenkinsConsumer.send(eregData, env);
             if (!didSend) {
                 return "";
             }
         }
 
         return eregData;
+    }
+
+    public boolean sendToJenkins(String flatFil, String env) {
+        return jenkinsConsumer.send(flatFil, env);
     }
 
 }

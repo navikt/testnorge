@@ -23,14 +23,19 @@ public class OrkestreringController {
     private final FlatfileService flatfileService;
 
     @PostMapping("/opprett")
-    public ResponseEntity<String> opprettEnheterIEreg(@RequestBody List<EregDataRequest> data, @RequestParam boolean opplast) {
-        String eregData = flatfileService.mapEreg(data, opplast);
+    public ResponseEntity<String> opprettEnheterIEreg(@RequestBody List<EregDataRequest> data, @RequestParam boolean lastOpp, @RequestParam String miljoe) {
+        String eregData = flatfileService.mapEreg(data, lastOpp, miljoe);
 
         if ("".equals(eregData)) {
             return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(eregData);
+    }
+
+    @PostMapping("/flatfil/jenkins")
+    public ResponseEntity<Boolean> sendFlatfil(@RequestBody String flatFil, @RequestParam String miljoe) {
+        return ResponseEntity.ok(flatfileService.sendToJenkins(flatFil, miljoe));
     }
 
 }
