@@ -44,11 +44,12 @@ const traverseDependencies = (attributter: Attributt[]): { [key: string]: Attrib
 }
 
 export const isAttributtEditable = (attr: Attributt): boolean => {
-	return (
-		attr.attributtType === AttributtType.SelectAndEdit ||
-		attr.attributtType === AttributtType.SelectAndRead ||
-		attr.attributtType === AttributtType.EditOnly
-	)
+	//Lag mer generisk løsning for ufb_kommunenr om det kommer flere tilfeller. F.eks. editOnly i opprett.
+	return attr.id === 'ufb_kommunenr'
+		? false
+		: attr.attributtType === AttributtType.SelectAndEdit ||
+				attr.attributtType === AttributtType.SelectAndRead ||
+				attr.attributtType === AttributtType.EditOnly
 }
 
 export const DependencyTree = traverseDependencies(_attributesFlatMap(AttributtListe))

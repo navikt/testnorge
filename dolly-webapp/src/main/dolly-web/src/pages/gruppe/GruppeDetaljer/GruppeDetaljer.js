@@ -32,7 +32,7 @@ export default class GruppeDetaljer extends PureComponent {
 					{this.state.expanded && (
 						<Fragment>
 							<StaticValue header="HENSIKT" value={gruppe.hensikt} />
-							<StaticValue header="SENDT TIL OPENAM" value={gruppe.openAmSent ? 'JA' : 'NEI'} />
+							{/* <StaticValue header="SENDT TIL OPENAM" value={gruppe.openAmSent ? 'JA' : 'NEI'} /> */}
 						</Fragment>
 					)}
 				</div>
