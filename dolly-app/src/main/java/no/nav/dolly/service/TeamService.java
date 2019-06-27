@@ -64,18 +64,8 @@ public class TeamService {
         return mapperFacade.map(team, RsTeamUtvidet.class);
     }
 
-    public Team fetchTeamById(Long id) {
-        Optional<Team> team = teamRepository.findById(id);
-        if (!team.isPresent()) {
-            throw new NotFoundException("Team ikke funnet for denne IDen: " + id);
-        }
-
-        team.get().getMedlemmer().sort((Bruker br1, Bruker br2) -> br1.getNavIdent().compareToIgnoreCase(br2.getNavIdent()));
-        return team.get();
-    }
-
-    private Team fetchTeamByNavn(String navn) {
-        return teamRepository.findByNavn(navn).orElseThrow(() -> new NotFoundException("Team ikke funnet for dette navnet: " + navn));
+    public RsTeamUtvidet getTeamById(Long id) {
+        return mapperFacade.map(fetchTeamById(id), RsTeamUtvidet.class);
     }
 
     public Team fetchTeamOrOpprettBrukerteam(Long teamId) {
@@ -169,11 +159,29 @@ public class TeamService {
         return mapperFacade.map(endretTeam, RsTeamUtvidet.class);
     }
 
+    public List<RsTeam> fetchTeamsByMedlemskapInTeamsMapped(String navIdent) {
+        return mapperFacade.mapAsList(fetchTeamsByMedlemskapInTeams(navIdent), RsTeam.class);
+    }
+
     public List<Team> fetchTeamsByMedlemskapInTeams(String navIdent) {
         return teamRepository.findByMedlemmerNavIdentOrderByNavn(navIdent);
     }
 
-    public Team saveTeamToDB(Team team) {
+    public List<RsTeam> findAllOrderByNavn() {
+        return mapperFacade.mapAsList(teamRepository.findAllByOrderByNavn(), RsTeam.class);
+    }
+
+    public Team fetchTeamById(Long id) {
+        Optional<Team> team = teamRepository.findById(id);
+        if (!team.isPresent()) {
+            throw new NotFoundException("Team ikke funnet for denne IDen: " + id);
+        }
+
+        team.get().getMedlemmer().sort((Bruker br1, Bruker br2) -> br1.getNavIdent().compareToIgnoreCase(br2.getNavIdent()));
+        return team.get();
+    }
+
+    private Team saveTeamToDB(Team team) {
         try {
             return teamRepository.save(team);
         } catch (DataIntegrityViolationException e) {
@@ -181,5 +189,9 @@ public class TeamService {
         } catch (NonTransientDataAccessException e) {
             throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
         }
+    }
+
+    private Team fetchTeamByNavn(String navn) {
+        return teamRepository.findByNavn(navn).orElseThrow(() -> new NotFoundException("Team ikke funnet for dette navnet: " + navn));
     }
 }

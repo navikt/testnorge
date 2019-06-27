@@ -2,13 +2,14 @@ package no.nav.dolly.regression.scenarios.rest;
 
 import static java.util.Collections.singletonList;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.regression.InMemoryDbTestSetup;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import com.fasterxml.jackson.databind.JavaType;
 
-import no.nav.dolly.config.DollyObjectMapper;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.regression.InMemoryDbTestSetup;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class RestTestBase extends InMemoryDbTestSetup {
 
@@ -43,7 +43,7 @@ public abstract class RestTestBase extends InMemoryDbTestSetup {
 
     protected static final String STANDARD_PRINCIPAL = STANDARD_NAV_IDENT;
 
-    private static final DollyObjectMapper MAPPER = new DollyObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     protected MockMvc mvcMock;
     protected Testgruppe standardTestgruppe;
@@ -66,7 +66,7 @@ public abstract class RestTestBase extends InMemoryDbTestSetup {
         bestillingRepository.deleteAll();
     }
 
-    private void removeManyToManyRelationships(){
+    private void removeManyToManyRelationships() {
         List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
         brukere.forEach(b -> {
             b.setFavoritter(new HashSet<>());
@@ -115,8 +115,8 @@ public abstract class RestTestBase extends InMemoryDbTestSetup {
         SecurityContextHolder.getContext().setAuthentication(createTestOidcToken());
     }
 
-    private OidcTokenAuthentication createTestOidcToken(){
-        return new OidcTokenAuthentication(STANDARD_PRINCIPAL,null, null, null);
+    private OidcTokenAuthentication createTestOidcToken() {
+        return new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, null, null);
     }
 
     protected static String convertObjectToJson(Object object) throws IOException {

@@ -3,8 +3,11 @@ package no.nav.dolly.provider.api;
 import static java.lang.String.format;
 import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 
-import java.util.List;
-import java.util.Optional;
+import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.RsTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,13 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.resultset.RsOpprettTeam;
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.TeamRepository;
-import no.nav.dolly.service.TeamService;
+import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @RestController
@@ -37,18 +35,12 @@ public class TeamController {
     @Autowired
     private TeamService teamService;
 
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private MapperFacade mapperFacade;
-
     @Cacheable(CACHE_TEAM)
     @GetMapping
-    public List<RsTeam> getTeams(@RequestParam("navIdent") Optional<String> navIdent) {
-        return navIdent
-                .map(navId -> mapperFacade.mapAsList(teamService.fetchTeamsByMedlemskapInTeams(navId), RsTeam.class))
-                .orElse(mapperFacade.mapAsList(teamRepository.findAllByOrderByNavn(), RsTeam.class));
+    public List<RsTeam> getTeams(@RequestParam(value = "navIdent", required = false) String navIdent) {
+        return Optional.ofNullable(navIdent)
+                .map(navId -> teamService.fetchTeamsByMedlemskapInTeamsMapped(navId))
+                .orElse(teamService.findAllOrderByNavn());
     }
 
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
@@ -69,7 +61,7 @@ public class TeamController {
     @Cacheable(CACHE_TEAM)
     @GetMapping("/{teamId}")
     public RsTeamUtvidet fetchTeamById(@PathVariable("teamId") Long teamid) {
-        return mapperFacade.map(teamService.fetchTeamById(teamid), RsTeamUtvidet.class);
+        return teamService.getTeamById(teamid);
     }
 
     @CacheEvict(value = CACHE_TEAM, allEntries = true)

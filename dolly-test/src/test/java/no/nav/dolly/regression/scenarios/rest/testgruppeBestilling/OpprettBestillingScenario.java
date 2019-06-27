@@ -6,8 +6,9 @@ import org.junit.Test;
 
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 
-public class OpprettBestillingScenarios extends TestgruppeBestillingTestCaseBase {
+public class OpprettBestillingScenario extends TestgruppeBestillingTestCaseBase {
 
+    //TODO Fix eller fjern
     @Test
     public void happyPath() {
         Long gruppeId = gruppeRepository.findByNavn(STANDARD_GRUPPE_NAVN).getId();

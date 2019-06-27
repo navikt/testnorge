@@ -44,6 +44,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
         assertThat(gruppe.getOpprettetAv().getNavIdent(), is(STANDARD_NAV_IDENT));
     }
 
+    //TODO Fix eller fjern
     @Test
     @Ignore
     public void opprettTestgruppeUtenAaSpesifisereTeamOgFaaSpesifisertTeamMedNavidentNavn() throws Exception {
@@ -74,6 +75,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
         assertThat(brukerG1.getTeams(), hasItem(hasProperty("navn", equalTo(STANDARD_NAV_IDENT))));
     }
 
+    //TODO Fix eller fjern
     @Test
     @Ignore
     public void opprettTestgruppeUtenAaSpesifisereTeamOgTeamMedNavidentnavnAlleredeEksisterer() throws Exception {

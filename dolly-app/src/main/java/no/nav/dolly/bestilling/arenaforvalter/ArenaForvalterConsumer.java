@@ -31,7 +31,7 @@ public class ArenaForvalterConsumer {
     @Autowired
     private ProvidersProps providersProps;
 
-    public ResponseEntity getIdent(String ident) {
+    public ResponseEntity<ArenaArbeidssokerBruker> getIdent(String ident) {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(format("%s%s?filter-personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, ident)))
                 .header(NAV_CALL_ID, getCallId())
@@ -47,7 +47,7 @@ public class ArenaForvalterConsumer {
                 .build(), JsonNode.class);
     }
 
-    public ResponseEntity postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
+    public ResponseEntity<ArenaArbeidssokerBruker> postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_BRUKER))
                 .header(NAV_CALL_ID, getCallId())
@@ -55,12 +55,12 @@ public class ArenaForvalterConsumer {
                 .body(arenaNyeBrukere), ArenaArbeidssokerBruker.class);
     }
 
-    public List getEnvironments() {
+    public ResponseEntity<List> getEnvironments() {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_ENVIRONMENTS))
                 .header(NAV_CALL_ID, getCallId())
                 .header(NAV_CONSUMER_ID, KILDE)
-                .build(), List.class).getBody();
+                .build(), List.class);
     }
 
     private static String getCallId() {

@@ -1,42 +1,107 @@
 package no.nav.dolly.provider.api;
 
+import static java.util.Collections.singletonList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-import no.nav.dolly.domain.resultset.RsTeam;
-import no.nav.dolly.provider.RestTestBase;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import no.nav.dolly.domain.resultset.RsOpprettTeam;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.service.TeamService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 
-class TeamControllerEndToEndTest extends RestTestBase {
+@RunWith(MockitoJUnitRunner.class)
+public class TeamControllerTest {
 
-    private static final String ENDPOINT_BASE_URI = "/api/v1/team";
-    private static final ParameterizedTypeReference<List<RsTeam>> expectedResponseType = new ParameterizedTypeReference<List<RsTeam>>() {
-    };
+    private static final Long TEAM_ID = 11L;
+    private static final String NAV_IDENT = "Z999999";
+
+    @Mock
+    private TeamService teamService;
+
+    @InjectMocks
+    private TeamController controller;
 
     @Test
-    @DisplayName("Skal få 403 når AUTHORIZATION ikke sendes med")
-    void shouldFailMissingHeader() {
-        sendRequest()
-                .withoutHeader(HttpHeaders.AUTHORIZATION)
-                .to(HttpMethod.GET, ENDPOINT_BASE_URI)
-                .andExpect(HttpStatus.FORBIDDEN, String.class);
+    public void getTeams_hvisIdentTilstedetSaaHentesBasertPaaIdent() {
+        String navident = "nav";
+        controller.getTeams(navident);
+        verify(teamService).fetchTeamsByMedlemskapInTeamsMapped(navident);
     }
 
     @Test
-    @DisplayName("Skal få tom liste uten navIdent")
-    void shouldGetEmptyListWithoutNavIdent() {
-        List<RsTeam> rsTeams = sendRequest()
-                .to(HttpMethod.GET, ENDPOINT_BASE_URI)
-                .andExpectList(HttpStatus.OK, expectedResponseType);
+    public void getTeams_hvisIdentErFravaerendeSaaHentAlleTeams() {
+        controller.getTeams(null);
+        verify(teamService).findAllOrderByNavn();
+    }
 
-        assertThat(rsTeams.size(), is(0));
+    @Test
+    public void opprettTeam() {
+        RsOpprettTeam res = new RsOpprettTeam();
+        controller.opprettTeam(res);
+        verify(teamService).opprettTeam(res);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void deleteTeamNotFound() {
+        controller.deleteTeam(TEAM_ID);
+        verify(teamService).deleteTeam(TEAM_ID);
+    }
+
+    @Test
+    public void deleteTeam() {
+        when(teamService.deleteTeam(TEAM_ID)).thenReturn(1);
+        controller.deleteTeam(TEAM_ID);
+        verify(teamService).deleteTeam(TEAM_ID);
+    }
+
+    @Test
+    public void fetchTeamById() {
+
+        controller.fetchTeamById(TEAM_ID);
+        verify(teamService).getTeamById(TEAM_ID);
+    }
+
+    @Test
+    public void addBrukereSomTeamMedlemmerByNavidenter() {
+        List<String> navidenter = singletonList("test");
+
+        controller.addBrukereSomTeamMedlemmerByNavidenter(TEAM_ID, navidenter);
+        verify(teamService).addMedlemmerByNavidenter(TEAM_ID, navidenter);
+    }
+
+    @Test
+    public void fjernBrukerefraTeam() {
+        List<String> navidenter = singletonList("test");
+
+        controller.fjernBrukerefraTeam(TEAM_ID, navidenter);
+        verify(teamService).fjernMedlemmer(TEAM_ID, navidenter);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void slettMedlemFraTeamNotFound() {
+        when(teamService.slettMedlem(TEAM_ID, NAV_IDENT)).thenThrow(NotFoundException.class);
+        controller.deleteMedlemfraTeam(TEAM_ID, NAV_IDENT);
+    }
+
+    @Test
+    public void slettMedlemFraTeamOK() {
+        when(teamService.slettMedlem(TEAM_ID, NAV_IDENT)).thenReturn(new RsTeamUtvidet());
+        controller.deleteMedlemfraTeam(TEAM_ID, NAV_IDENT);
+        verify(teamService).slettMedlem(TEAM_ID, NAV_IDENT);
+    }
+
+    @Test
+    public void endreTeaminfo() {
+        RsTeamUtvidet team = new RsTeamUtvidet();
+
+        controller.endreTeaminfo(TEAM_ID, team);
+        verify(teamService).updateTeamInfo(TEAM_ID, team);
     }
 }

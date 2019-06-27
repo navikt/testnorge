@@ -5,9 +5,6 @@ import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -40,10 +37,8 @@ public class ArenaForvalterClient implements ClientRegister {
 
             StringBuilder status = new StringBuilder();
 
-            List<String> environments = new ArrayList<>();
-            for (Object object : arenaForvalterConsumer.getEnvironments()) {
-                environments.add(Objects.toString(object, null));
-            }
+            ResponseEntity<List> envResponse = arenaForvalterConsumer.getEnvironments();
+            List<String> environments = envResponse.hasBody() ? envResponse.getBody() : emptyList();
 
             List<String> availEnvironments = new ArrayList<>(environments);
 
