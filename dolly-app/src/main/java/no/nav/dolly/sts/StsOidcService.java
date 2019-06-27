@@ -88,7 +88,7 @@ public class StsOidcService {
                                         credentialsProps.getPassword(env)).getBytes(UTF_8)))
                 .build(), JsonNode.class);
 
-        if (isNull(responseEntity) || isNull(responseEntity.getBody())) {
+        if (isNull(responseEntity.getBody())) {
             return;
         }
         expiry.put(env, LocalDateTime.now().plusSeconds(((JsonNode) responseEntity.getBody()).get("expires_in").asLong()));

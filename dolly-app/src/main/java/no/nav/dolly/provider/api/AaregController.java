@@ -1,10 +1,15 @@
 package no.nav.dolly.provider.api;
 
+import io.swagger.annotations.ApiOperation;
+import no.nav.dolly.aareg.AaregRestConsumer;
+import no.nav.dolly.aareg.AaregWsConsumer;
+import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
+import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
+import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,13 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.annotations.ApiOperation;
-import no.nav.dolly.aareg.AaregRestConsumer;
-import no.nav.dolly.aareg.AaregWsConsumer;
-import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
-import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
-import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
 
 @RestController
 @RequestMapping(value = "/api/v1/aareg", produces = MediaType.APPLICATION_JSON_VALUE)

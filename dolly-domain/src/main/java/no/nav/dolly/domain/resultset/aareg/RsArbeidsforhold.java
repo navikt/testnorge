@@ -33,21 +33,21 @@ public class RsArbeidsforhold {
 
     public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {
         if (isNull(antallTimerForTimeloennet)) {
-            antallTimerForTimeloennet = new ArrayList();
+            antallTimerForTimeloennet = new ArrayList<>();
         }
         return antallTimerForTimeloennet;
     }
 
     public List<RsUtenlandsopphold> getUtenlandsopphold() {
         if (isNull(utenlandsopphold)) {
-            utenlandsopphold = new ArrayList();
+            utenlandsopphold = new ArrayList<>();
         }
         return utenlandsopphold;
     }
 
     public List<RsPermisjon> getPermisjon() {
         if (isNull(permisjon)) {
-            permisjon = new ArrayList();
+            permisjon = new ArrayList<>();
         }
         return permisjon;
     }

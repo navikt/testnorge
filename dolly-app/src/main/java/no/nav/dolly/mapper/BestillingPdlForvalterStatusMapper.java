@@ -7,17 +7,13 @@ import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.PDL_FORVAL
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.UTENLANDS_IDENTIFIKASJONSNUMMER;
 import static no.nav.dolly.mapper.BestillingMeldingStatusIdentMapper.resolveStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsPdlForvalterStatus;
 import no.nav.dolly.domain.resultset.RsStatusIdent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -25,7 +25,7 @@ public class AaregRestConsumer {
     @Autowired
     private StsOidcService stsOidcService;
 
-    public ResponseEntity readArbeidsforhold(String ident, String environment) {
+    public ResponseEntity<Object[]> readArbeidsforhold(String ident, String environment) {
 
         return restTemplate.exchange(RequestEntity
                         .get(URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(environment)))

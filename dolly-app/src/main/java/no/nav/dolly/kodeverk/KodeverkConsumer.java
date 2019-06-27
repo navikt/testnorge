@@ -39,7 +39,7 @@ public class KodeverkConsumer {
             ResponseEntity<GetKodeverkKoderBetydningerResponse> response = restTemplate.exchange(url, HttpMethod.GET, entity, GetKodeverkKoderBetydningerResponse.class);
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            throw new KodeverkException(e.getStatusCode(), e.getResponseBodyAsString(), e);
+            throw new KodeverkException(e.getStatusCode(), e.getResponseBodyAsString());
         }
     }
 

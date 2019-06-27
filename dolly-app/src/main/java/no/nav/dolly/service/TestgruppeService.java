@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import no.nav.dolly.domain.jpa.Testident;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
@@ -136,7 +138,7 @@ public class TestgruppeService {
         return fetchTestgruppeById(gruppeId)
                 .getTestidenter()
                 .stream()
-                .map(ident -> ident.getIdent())
+                .map(Testident::getIdent)
                 .collect(Collectors.toList());
     }
 }

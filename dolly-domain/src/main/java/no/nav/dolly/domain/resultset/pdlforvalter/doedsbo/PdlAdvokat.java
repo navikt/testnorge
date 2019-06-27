@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlAdvokat extends PdlSomAdressat {
+public class PdlAdvokat implements PdlSomAdressat {
 
     private PdlPersonnavn kontaktperson;
     private String organisasjonsnavn;

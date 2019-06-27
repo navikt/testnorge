@@ -5,7 +5,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 public class KodeverkException extends HttpClientErrorException {
 
-    public KodeverkException(HttpStatus status, String message, Throwable throwable) {
+    public KodeverkException(HttpStatus status, String message) {
         super(status, message);
     }
 }

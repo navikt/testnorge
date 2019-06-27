@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsAktoerPerson extends RsAktoer {
+public class RsAktoerPerson implements RsAktoer {
 
     private String ident;
     private String identtype;

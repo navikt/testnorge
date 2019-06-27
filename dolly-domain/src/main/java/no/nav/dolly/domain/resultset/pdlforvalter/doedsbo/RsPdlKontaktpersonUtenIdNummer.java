@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsPdlKontaktpersonUtenIdNummer extends PdlSomAdressat{
+public class RsPdlKontaktpersonUtenIdNummer implements PdlSomAdressat{
 
     private LocalDateTime foedselsdato;
     private PdlPersonnavn navn;

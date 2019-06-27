@@ -29,7 +29,7 @@ public class FasitApiConsumer {
             ResponseEntity<FasitResourceWithUnmappedProperties[]> properties = restTemplate.getForEntity(url, FasitResourceWithUnmappedProperties[].class);
             return properties.getBody();
         } catch (HttpClientErrorException e) {
-            throw new FasitException(e.getStatusCode(), e.getResponseBodyAsString(), e);
+            throw new FasitException(e.getStatusCode(), e.getResponseBodyAsString());
         }
     }
 }

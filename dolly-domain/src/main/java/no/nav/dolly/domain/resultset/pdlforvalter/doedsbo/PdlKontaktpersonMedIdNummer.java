@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlKontaktpersonMedIdNummer extends PdlSomAdressat {
+public class PdlKontaktpersonMedIdNummer implements PdlSomAdressat {
 
     private String idnummer;
 }

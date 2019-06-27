@@ -11,4 +11,7 @@ public final class ListUtil {
         Collections.addAll(list, t);
         return list;
     }
+
+    private ListUtil() {
+    }
 }
