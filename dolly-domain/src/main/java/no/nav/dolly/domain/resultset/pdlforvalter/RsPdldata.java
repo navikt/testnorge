@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktinformasjonForDoedsbo;
-import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.RsPdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 
 @Getter
 @Setter
@@ -19,5 +19,5 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.RsPdlUtenlandskIde
 public class RsPdldata {
 
     private RsPdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo;
-    private RsPdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer;
+    private PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer;
 }
