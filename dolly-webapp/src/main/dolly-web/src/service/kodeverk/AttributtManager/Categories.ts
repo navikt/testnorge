@@ -33,7 +33,7 @@ export const Kategorier: KategoriTypes = {
 		id: 'kontaktInfo',
 		navn: 'Kontakt- og reservasjonsregisteret',
 		informasjonstekst:
-			'KRR - benyttes for offentlige virksomheter for å avklare om den enkelte bruker har reservert seg mot digital kommunikasjon eller ikke. I tillegg skal varslene som sendes til bruker benytte den kontaktinformasjonen som ligger i registeret. Dette kan enten være mobiltelefonnummer for utsendelse av sms, eller epostadresse for utsendelse av epost. \n',
+			'KRR - benyttes for offentlige virksomheter for å avklare om den enkelte bruker har reservert seg mot digital kommunikasjon eller ikke. I tillegg skal varslene som sendes til bruker benytte den kontaktinformasjonen som ligger i registeret. Dette kan enten være mobiltelefonnummer for utsendelse av sms, eller epostadresse for utsendelse av epost.',
 		order: 50
 	},
 	KontaktInfoDoedsbo: {
@@ -63,6 +63,12 @@ export const SubKategorier: KategoriTypes = {
 		navn: 'Nasjonalitet',
 		order: 20
 	},
+	UtenlandsId: {
+		id: 'utenlandskIdentifikasjonsnummer',
+		navn: 'Utenlands-ID',
+		order: 30,
+		showInSummary: true
+	},
 	Doedsbo: {
 		id: 'doedsbo',
 		navn: '',
@@ -84,7 +90,7 @@ export const SubKategorier: KategoriTypes = {
 	Diverse: {
 		id: 'diverse',
 		navn: 'Diverse',
-		order: 30
+		order: 40
 	},
 	Boadresse: {
 		id: 'boadresse',

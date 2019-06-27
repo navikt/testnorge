@@ -58,7 +58,7 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 		if (key === 'regdato') return
 
 		let value = v[1]
-		if (value) {
+		if (value || value === false) {
 			let customKeyPrefix = keyPrefix
 			if (keyPrefix === 'barn_' && key === 'identtype') {
 				customKeyPrefix = ''
@@ -149,6 +149,8 @@ const _mapRegistreKey = key => {
 			return 'krr'
 		case 'kontaktinformasjonForDoedsbo':
 			return 'kontaktinformasjonForDoedsbo'
+		case 'utenlandskIdentifikasjonsnummer':
+			return 'utenlandskIdentifikasjonsnummer'
 		case 'arenaBrukertype':
 			return 'arenaforvalter'
 		default:
@@ -237,6 +239,8 @@ const _mapRegistreValue = (key, value) => {
 					: (mapObj[attr[0]] = attr[1])
 			})
 			return [mapObj]
+		case 'utenlandskIdentifikasjonsnummer':
+			return [value]
 		case 'arenaforvalter':
 			return [value]
 		default:
