@@ -1,4 +1,4 @@
-package no.nav.registre.ereg.mapper;
+package no.nav.registre.ereg;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;

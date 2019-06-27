@@ -20,11 +20,11 @@ public class EregDataRequest {
 
     @NonNull
     private String orgId;
-    @NonNull
+
     private Navn navn;
+
     @NonNull
     private String type;
-
     @NonNull
     private String endringsType;
 
@@ -61,6 +61,7 @@ public class EregDataRequest {
     private Boolean kjoensfordeling;
     private UnderlagtHjemland underlagtHjemland;
     private Kapital kapital;
+    @NonNull
     @JsonProperty("næringskode")
     private Naeringskode naeringskode;
     @JsonProperty("formål")

@@ -2,11 +2,13 @@ package no.nav.registre.ereg.mapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,19 +23,49 @@ import no.nav.registre.ereg.provider.rs.request.Navn;
 import no.nav.registre.ereg.provider.rs.request.Telefon;
 import no.nav.registre.ereg.provider.rs.request.UnderlagtHjemland;
 import no.nav.registre.ereg.provider.rs.request.UtenlandsRegister;
+import no.nav.registre.ereg.service.NameService;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 @Setter
 @Component
 public class EregMapper {
+
+    private final NameService nameService;
+
+    static String getDateNowFormatted() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        return format.format(new Date());
+    }
 
     public String mapEregFromRequests(List<EregDataRequest> data) {
 
         StringBuilder eregFile = new StringBuilder(makeHeader());
         int units = 0;
         int totalRecords = 0;
+
+        data.stream()
+                .filter(d -> d.getNavn() == null)
+                .collect(Collectors.groupingBy(EregDataRequest::getType))
+                .forEach(
+                        (type, requests) -> {
+                            List<String> naeringskoder = requests.stream()
+                                    .map(EregDataRequest::getNaeringskode)
+                                    .map(Naeringskode::getKode)
+                                    .collect(Collectors.toList());
+                            List<String> fullNames = nameService.getFullNames(naeringskoder, type);
+                            for (int i = 0; i < requests.size(); i++) {
+                                requests.get(i).setNavn(
+                                        Navn.builder()
+                                                .navneListe(Collections.singletonList(fullNames.get(i)))
+                                                .build()
+                                );
+                            }
+                        }
+                );
+
+
         for (EregDataRequest eregDataRequest : data) {
 
             RecordsAndCount unit = createUnit(eregDataRequest);
@@ -45,11 +77,6 @@ public class EregMapper {
         eregFile.append(createTrailer(units, totalRecords));
 
         return eregFile.toString();
-    }
-
-    public static String getDateNowFormatted() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        return format.format(new Date());
     }
 
     private RecordsAndCount createUnit(EregDataRequest data) {

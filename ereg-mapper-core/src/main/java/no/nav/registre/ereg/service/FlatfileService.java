@@ -2,7 +2,9 @@ package no.nav.registre.ereg.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -22,8 +24,12 @@ public class FlatfileService {
         String eregData = mapper.mapEregFromRequests(data);
 
         if (sendToEreg) {
-            boolean didSend = jenkinsConsumer.send(eregData, env);
-            if (!didSend) {
+
+            if ("".equals(env)) {
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Manglende miljoe variabel");
+            }
+
+            if (sendToJenkins(eregData, env)) {
                 return "";
             }
         }

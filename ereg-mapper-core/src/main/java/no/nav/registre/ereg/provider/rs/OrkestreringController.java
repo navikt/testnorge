@@ -22,6 +22,11 @@ public class OrkestreringController {
 
     private final FlatfileService flatfileService;
 
+    @PostMapping("/generer")
+    public ResponseEntity<String> generer(@RequestBody List<EregDataRequest> data) {
+        return ResponseEntity.ok(flatfileService.mapEreg(data, false, ""));
+    }
+
     @PostMapping("/opprett")
     public ResponseEntity<String> opprettEnheterIEreg(@RequestBody List<EregDataRequest> data, @RequestParam boolean lastOpp, @RequestParam String miljoe) {
         String eregData = flatfileService.mapEreg(data, lastOpp, miljoe);
