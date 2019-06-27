@@ -265,7 +265,7 @@ export default class Step3 extends PureComponent {
 				? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
 						_get(stateValues['arenaforvalter'][0], item.id)
 				  ))
-				: (itemValue = _get(stateValues['arenaforvalter'][0], item.id))
+				: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
 		}
 
 		const staticValueProps = {

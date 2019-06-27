@@ -46,6 +46,8 @@ export const Kategorier: KategoriTypes = {
 	Arena: {
 		id: 'arena',
 		navn: 'Arena',
+		informasjonstekst:
+			'Arena-data blir kun distribuert til Q2, og dette miljøet må derfor velges i siste steg.',
 		order: 60
 	}
 }
