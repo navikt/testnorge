@@ -106,7 +106,6 @@ export default class FormEditor extends PureComponent {
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		// const isFieldarray = Boolean(items[0].items)
 		const isMultiple = items[0].isMultiple
-
 		if (isAdresse) {
 			return (
 				<div className="subkategori" key={uniqueId}>
@@ -166,6 +165,7 @@ export default class FormEditor extends PureComponent {
 
 		return (
 			<div className="subkategori" key={uniqueId}>
+				{console.log('items :', items)}
 				<h4>{subKategori.navn}</h4>
 				<div className="subkategori-field-group">
 					{items.map(item => {

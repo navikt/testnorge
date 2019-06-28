@@ -51,6 +51,7 @@ export default class Step2 extends PureComponent {
 			identOpprettesFra,
 			eksisterendeIdentListe
 		} = this.props
+		console.log('this.props :', this.props)
 
 		return (
 			<div className="bestilling-step2">
@@ -73,6 +74,7 @@ export default class Step2 extends PureComponent {
 					validationSchema={this.ValidationListe}
 					render={formikProps => (
 						<Fragment>
+							{console.log('formikProps :', formikProps)}
 							{selectedAttributeIds.length === 0 ? (
 								<ContentContainer className="">
 									<Icon kind="report-problem-circle" />Du har valgt ingen attributter. Dolly vil
@@ -94,7 +96,7 @@ export default class Step2 extends PureComponent {
 								FormikProps={formikProps}
 							/>
 							{/* // Uncomment for debug formik */}
-							{/* <DisplayFormikState {...formikProps} /> */}
+							<DisplayFormikState {...formikProps} />
 						</Fragment>
 					)}
 				/>
