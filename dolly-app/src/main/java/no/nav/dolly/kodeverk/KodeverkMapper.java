@@ -31,7 +31,7 @@ public class KodeverkMapper {
             kodeverkAdjusted.getKoder().addAll(extractKoderFromBetydninger(betydningerSortedByKoder));
         }
 
-        Collections.sort(kodeverkAdjusted.getKoder(), (kode1, kode2) -> kode1.getLabel().compareToIgnoreCase(kode2.getLabel()));
+        kodeverkAdjusted.getKoder().sort((kode1, kode2) -> kode1.getLabel().compareToIgnoreCase(kode2.getLabel()));
         return kodeverkAdjusted;
     }
 

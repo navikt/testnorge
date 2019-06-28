@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.jpa.BestKriterier;
+import no.nav.dolly.domain.jpa.BestilteKriterier;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -108,7 +108,7 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .tpsfKriterier(toJson(tpsf))
-                        .bestKriterier(toJson(BestKriterier.builder()
+                        .bestKriterier(toJson(BestilteKriterier.builder()
                                 .aareg(request.getAareg())
                                 .krrStub(request.getKrrstub())
                                 .sigrunStub(request.getSigrunstub())

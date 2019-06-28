@@ -6,6 +6,7 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
@@ -32,22 +33,14 @@ import java.util.Optional;
 //TODO Burde gjore at alle returnerer team istedenfor "json/POJO" representasjonen av de.
 
 @Service
+@RequiredArgsConstructor
 public class TeamService {
 
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private BrukerRepository brukerRepository;
-
-    @Autowired
-    private BrukerService brukerService;
-
-    @Autowired
-    private TestgruppeService testgruppeService;
-
-    @Autowired
-    private MapperFacade mapperFacade;
+    private final TeamRepository teamRepository;
+    private final BrukerRepository brukerRepository;
+    private final BrukerService brukerService;
+    private final TestgruppeService testgruppeService;
+    private final MapperFacade mapperFacade;
 
     public RsTeamUtvidet opprettTeam(RsOpprettTeam opprettTeam) {
         Bruker currentBruker = brukerService.fetchBruker(getLoggedInNavIdent());

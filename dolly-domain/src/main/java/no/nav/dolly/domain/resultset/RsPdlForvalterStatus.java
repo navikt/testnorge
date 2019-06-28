@@ -26,21 +26,21 @@ public class RsPdlForvalterStatus {
 
     public List<RsStatusIdent> getKontaktinfoDoedsbo() {
         if (isNull(kontaktinfoDoedsbo)) {
-            kontaktinfoDoedsbo = new ArrayList();
+            kontaktinfoDoedsbo = new ArrayList<>();
         }
         return kontaktinfoDoedsbo;
     }
 
     public List<RsStatusIdent> getUtenlandsid() {
         if (isNull(utenlandsid)) {
-            utenlandsid = new ArrayList();
+            utenlandsid = new ArrayList<>();
         }
         return utenlandsid;
     }
 
     public List<RsStatusIdent> getPdlForvalter() {
         if (isNull(pdlForvalter)) {
-            pdlForvalter = new ArrayList();
+            pdlForvalter = new ArrayList<>();
         }
         return pdlForvalter;
     }

@@ -24,7 +24,7 @@ import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(value = Include.NON_EMPTY)
-public class BestKriterier {
+public class BestilteKriterier {
 
     private List<RsArbeidsforhold> aareg;
     private RsDigitalKontaktdata krrStub;
@@ -34,14 +34,14 @@ public class BestKriterier {
 
     public List<RsArbeidsforhold> getAareg() {
         if(isNull(aareg)) {
-            aareg = new ArrayList();
+            aareg = new ArrayList<>();
         }
         return aareg;
     }
 
     public List<RsOpprettSkattegrunnlag> getSigrunStub() {
         if (isNull(sigrunStub)) {
-            sigrunStub = new ArrayList();
+            sigrunStub = new ArrayList<>();
         }
         return sigrunStub;
     }

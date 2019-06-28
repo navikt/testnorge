@@ -24,7 +24,7 @@ public class Person {
 
     public List<Relasjon> getRelasjoner() {
         if (isNull(relasjoner)) {
-            relasjoner = new ArrayList();
+            relasjoner = new ArrayList<>();
         }
         return relasjoner;
     }

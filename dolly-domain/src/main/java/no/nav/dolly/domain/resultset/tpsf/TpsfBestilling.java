@@ -78,7 +78,7 @@ public class TpsfBestilling {
 
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {
-            opprettFraIdenter = new ArrayList();
+            opprettFraIdenter = new ArrayList<>();
         }
         return opprettFraIdenter;
     }

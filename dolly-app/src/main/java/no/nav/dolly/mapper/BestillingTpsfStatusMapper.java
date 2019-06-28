@@ -1,7 +1,5 @@
 package no.nav.dolly.mapper;
 
-//TODO Replace google
-import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 
@@ -11,7 +9,9 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusMiljoeIdent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,11 +55,11 @@ public final class BestillingTpsfStatusMapper {
             if (errorEnvIdents.get(status).containsKey(environ)) {
                 errorEnvIdents.get(status).get(environ).add(ident);
             } else {
-                errorEnvIdents.get(status).put(environ, newHashSet(ident));
+                errorEnvIdents.get(status).put(environ, new HashSet<>(Collections.singleton(ident)));
             }
         } else {
             Map<String, Set<String>> entry = new HashMap<>();
-            entry.put(environ, newHashSet(ident));
+            entry.put(environ, new HashSet<>(Collections.singleton(ident)));
             errorEnvIdents.put(status, entry);
         }
     }

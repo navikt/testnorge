@@ -24,7 +24,7 @@ public class ArenaArbeidssokerBruker {
     public List<Arbeidssoker> getArbeidsokerList() {
 
         if (isNull(arbeidsokerList)) {
-            arbeidsokerList = new ArrayList();
+            arbeidsokerList = new ArrayList<>();
         }
         return arbeidsokerList;
     }

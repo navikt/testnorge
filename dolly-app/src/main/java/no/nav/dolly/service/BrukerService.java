@@ -1,13 +1,6 @@
 package no.nav.dolly.service;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
-
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -19,6 +12,14 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class BrukerService {
@@ -39,7 +40,7 @@ public class BrukerService {
         saveBrukerTilDB(mapperFacade.map(bruker, Bruker.class));
     }
 
-    public Bruker saveBrukerTilDB(Bruker b){
+    public Bruker saveBrukerTilDB(Bruker b) {
         try {
             return brukerRepository.save(b);
         } catch (DataIntegrityViolationException e) {
@@ -58,9 +59,9 @@ public class BrukerService {
     }
 
     public Bruker fetchOrCreateBruker(String navIdent) {
-        try{
+        try {
             return fetchBruker(navIdent);
-        } catch (NotFoundException e){
+        } catch (NotFoundException e) {
             return brukerRepository.save(new Bruker(navIdent.toUpperCase()));
         }
     }
@@ -75,15 +76,15 @@ public class BrukerService {
                 .build();
     }
 
-    public Bruker leggTilFavoritt(Long gruppeId){
+    public Bruker leggTilFavoritt(Long gruppeId) {
         Testgruppe grupper = gruppeService.fetchTestgruppeById(gruppeId);
 
         Bruker bruker = fetchBruker(getLoggedInNavIdent());
-        bruker.getFavoritter().addAll(newHashSet(grupper));
+        bruker.getFavoritter().addAll(new HashSet<>(Collections.singleton(grupper)));
         return brukerRepository.save(bruker);
     }
 
-    public Bruker fjernFavoritt(Long gruppeIDer){
+    public Bruker fjernFavoritt(Long gruppeIDer) {
         Testgruppe testgruppe = gruppeService.fetchTestgruppeById(gruppeIDer);
 
         Bruker bruker = fetchBruker(getLoggedInNavIdent());
@@ -94,7 +95,7 @@ public class BrukerService {
         return brukerRepository.save(bruker);
     }
 
-    public Bruker leggTilTeam(Bruker bruker, Team team){
+    public Bruker leggTilTeam(Bruker bruker, Team team) {
         team.getMedlemmer().add(bruker);
         bruker.getTeams().add(team);
         return saveBrukerTilDB(bruker);

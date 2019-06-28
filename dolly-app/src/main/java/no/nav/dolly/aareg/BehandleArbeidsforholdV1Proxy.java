@@ -31,7 +31,7 @@ public class BehandleArbeidsforholdV1Proxy {
     @Autowired
     private AaregBehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
 
-    private Map<String, BehandleArbeidsforholdPortType> wsServiceByEnvironment = new HashMap();
+    private Map<String, BehandleArbeidsforholdPortType> wsServiceByEnvironment = new HashMap<>();
     private LocalDateTime expiry;
 
     public BehandleArbeidsforholdPortType getServiceByEnvironment(String environment) {

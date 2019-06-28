@@ -1,7 +1,7 @@
 package no.nav.dolly.service;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jira.AllowedValue;

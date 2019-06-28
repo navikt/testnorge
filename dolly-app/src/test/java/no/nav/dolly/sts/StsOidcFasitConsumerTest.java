@@ -53,7 +53,7 @@ public class StsOidcFasitConsumerTest {
     public void getStsOidcService_ok() {
 
         String serviceUrl = "sts oidc service url";
-        Map properties = new HashMap();
+        Map<String, String> properties = new HashMap<>();
         properties.put("url", serviceUrl);
 
         when(fasitApiConsumer.fetchResources(anyString(), anyString())).thenReturn(

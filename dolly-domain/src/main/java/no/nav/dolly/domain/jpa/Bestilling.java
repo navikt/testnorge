@@ -89,7 +89,7 @@ public class Bestilling {
 
     public List<BestillingProgress> getProgresser() {
         if (isNull(progresser)) {
-            progresser = new ArrayList();
+            progresser = new ArrayList<>();
         }
         return progresser;
     }

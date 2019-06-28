@@ -50,7 +50,7 @@ public final class BestillingPdlForvalterStatusMapper {
     }
 
     private static List<RsStatusIdent> buildMessageStatus(Map<String, List<String>> statusIdent) {
-        List<RsStatusIdent> result = new ArrayList();
+        List<RsStatusIdent> result = new ArrayList<>();
         if (nonNull(statusIdent)) {
             statusIdent.entrySet().forEach(entry ->
                     result.add(RsStatusIdent.builder()

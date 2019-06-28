@@ -20,7 +20,7 @@ public class CheckStatusResponse {
 
     public List<IdentStatus> getStatuser() {
         if (isNull(statuser)) {
-            statuser = new ArrayList();
+            statuser = new ArrayList<>();
         }
         return statuser;
     }

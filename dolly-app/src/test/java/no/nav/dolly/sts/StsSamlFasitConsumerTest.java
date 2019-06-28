@@ -53,7 +53,7 @@ public class StsSamlFasitConsumerTest {
     public void getStsSamlService_ok() {
 
         String stsService = "sts saml service";
-        Map properties = new HashMap();
+        Map<String, String> properties = new HashMap<>();
         properties.put("url", stsService);
 
         when(fasitApiConsumer.fetchResources(anyString(), anyString())).thenReturn(

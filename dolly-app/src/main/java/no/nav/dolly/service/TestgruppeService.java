@@ -74,7 +74,7 @@ public class TestgruppeService {
         bruker.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
 
         List<Testgruppe> unikeTestgrupper = new ArrayList(testgrupper);
-        Collections.sort(unikeTestgrupper,(Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));
+        unikeTestgrupper.sort((Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));
 
         return unikeTestgrupper;
     }

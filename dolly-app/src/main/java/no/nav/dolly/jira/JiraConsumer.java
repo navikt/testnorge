@@ -1,7 +1,9 @@
 package no.nav.dolly.jira;
 
 import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
+import no.nav.dolly.properties.JiraProps;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -11,10 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import com.google.common.base.Charsets;
-
-import no.nav.dolly.properties.JiraProps;
 
 @Service
 public class JiraConsumer {
@@ -35,9 +33,9 @@ public class JiraConsumer {
 
     public HttpHeaders createHttpHeaders(MediaType mediaType, HttpHeaders httpHeaders) {
         String plainCreds = format("%s:%s", jiraProps.getUsername(), jiraProps.getPassword());
-        byte[] plainCredsBytes = plainCreds.getBytes(Charsets.UTF_8);
+        byte[] plainCredsBytes = plainCreds.getBytes(UTF_8);
         byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
-        String base64Creds = new String(base64CredsBytes, Charsets.UTF_8);
+        String base64Creds = new String(base64CredsBytes, UTF_8);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic " + base64Creds);
