@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.consumer.rs.requests;
+package no.nav.registre.arena.core.provider.rs.requests;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

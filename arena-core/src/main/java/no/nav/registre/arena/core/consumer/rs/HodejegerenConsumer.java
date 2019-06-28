@@ -28,7 +28,8 @@ public class HodejegerenConsumer {
     private UriTemplate hentLevendeIdenterOverAlderUrl;
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
-        this.hentLevendeIdenterOverAlderUrl = new UriTemplate(hodejegerenServerUrl + "/v1/levende-identer-over-alder/{avspillergruppeId}?minimumAlder=" + MINIMUM_ALDER);
+        this.hentLevendeIdenterOverAlderUrl = new UriTemplate(hodejegerenServerUrl +
+                "/v1/levende-identer-over-alder/{avspillergruppeId}?minimumAlder=" + MINIMUM_ALDER);
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "hodejegeren"})
