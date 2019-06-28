@@ -78,7 +78,7 @@ public class IdentTpsService {
                         usedIdents.addAll(findUsedIdents(data));
                     }
                 } catch (DataBindingException ex) {
-                    log.info(response);
+                    log.info("Fikk response: {} fra TPS i miljø {}", response, env);
                     throw new RuntimeException(ex);
                 }
             }
