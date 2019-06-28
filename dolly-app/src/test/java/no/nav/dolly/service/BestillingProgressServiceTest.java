@@ -5,9 +5,9 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BestillingProgressRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,9 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingProgressRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingProgressServiceTest {

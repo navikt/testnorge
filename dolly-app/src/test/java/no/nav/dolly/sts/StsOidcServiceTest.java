@@ -7,6 +7,9 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.properties.CredentialsProps;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -17,31 +20,21 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.properties.CredentialsProps;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StsOidcServiceTest {
 
     private static final String ENV = "u1";
-
-    @Mock
-    private RestTemplate restTemplate;
-
-    @Mock
-    private StsOidcFasitConsumer stsOidcFasitConsumer;
-
-    @Mock
-    private CredentialsProps credentialsProps;
-
-    @InjectMocks
-    private StsOidcService stsOidcService;
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
+    @Mock
+    private RestTemplate restTemplate;
+    @Mock
+    private StsOidcFasitConsumer stsOidcFasitConsumer;
+    @Mock
+    private CredentialsProps credentialsProps;
+    @InjectMocks
+    private StsOidcService stsOidcService;
     @Mock
     private JsonNode jsonNode;
 

@@ -2,9 +2,6 @@ package no.nav.dolly.mapper.strategy;
 
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 
-import java.util.List;
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -13,6 +10,9 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsTeamMedIdOgNavn;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class TestgruppeMappingStrategy implements MappingStrategy {

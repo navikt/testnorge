@@ -3,18 +3,18 @@ package no.nav.dolly.personoppslag;
 import static no.nav.dolly.domain.resultset.pdlforvalter.TemaGrunnlag.GEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import java.net.URI;
-import java.util.UUID;
+import com.fasterxml.jackson.databind.JsonNode;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.dolly.sts.StsOidcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
 
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.sts.StsOidcService;
+import java.net.URI;
+import java.util.UUID;
 
 @Service
 public class PersonoppslagConsumer {
@@ -54,6 +54,6 @@ public class PersonoppslagConsumer {
 
     private String resolveToken() {
 
-        return PREPROD_ENV.equals(environment) ?  StsOidcService.getUserIdToken() : stsOidcService.getIdToken(PREPROD_ENV);
+        return PREPROD_ENV.equals(environment) ? StsOidcService.getUserIdToken() : stsOidcService.getIdToken(PREPROD_ENV);
     }
 }

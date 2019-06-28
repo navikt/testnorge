@@ -1,15 +1,14 @@
 package no.nav.dolly.regression.scenarios.rest.bruker;
 
 
-import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
-
-import org.junit.Test;
-import org.springframework.test.web.servlet.MvcResult;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
+import org.junit.Test;
+import org.springframework.test.web.servlet.MvcResult;
 
 public class GetBrukerByNavnIdentScenarios extends BrukerTestCaseBase {
 

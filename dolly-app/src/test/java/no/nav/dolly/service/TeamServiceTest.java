@@ -19,8 +19,6 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
@@ -34,7 +32,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,34 +47,21 @@ public class TeamServiceTest {
     private static final Long TEAM_ID = 11L;
     private static final List<String> navidenter = asList(CURRENT_BRUKER_IDENT, NAVIDENT_2);
     private static final Optional<Team> tomOptional = empty();
-
+    private static Authentication authentication;
     @Mock
     private TeamRepository teamRepository;
-
     @Mock
     private BrukerRepository brukerRepository;
-
     @Mock
     private BrukerService brukerService;
-
     @Mock
     private MapperFacade mapperFacade;
-
     @Mock
     private NonTransientDataAccessException nonTransientDataAccessException;
-
     @Mock
     private TestgruppeService testgruppeService;
-
     @InjectMocks
     private TeamService teamService;
-
-    private static Authentication authentication;
-
-    @Before
-    public void setupMocks() {
-        when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
-    }
 
     @BeforeClass
     public static void beforeClass() {
@@ -89,6 +73,11 @@ public class TeamServiceTest {
     @AfterClass
     public static void afterClass() {
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    @Before
+    public void setupMocks() {
+        when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
     }
 
     @Test(expected = NotFoundException.class)

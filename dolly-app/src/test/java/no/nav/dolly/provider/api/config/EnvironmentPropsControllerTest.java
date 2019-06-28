@@ -4,15 +4,14 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.domain.resultset.tpsf.RsDollyProps;
+import no.nav.dolly.properties.ProvidersProps;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import no.nav.dolly.domain.resultset.tpsf.RsDollyProps;
-import no.nav.dolly.properties.ProvidersProps;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnvironmentPropsControllerTest {

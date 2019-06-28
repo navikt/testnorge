@@ -3,12 +3,6 @@ package no.nav.dolly.mapper.strategy;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.time.LocalDate;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
@@ -20,6 +14,12 @@ import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlSkifteform;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktpersonUtenIdNummer;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.time.LocalDate;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PdlDoedsboMappingStrategyTest {

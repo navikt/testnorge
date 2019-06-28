@@ -1,10 +1,10 @@
 package no.nav.dolly.regression.scenarios.rest.testgruppeBestilling;
 
-import java.time.LocalDate;
-import java.util.concurrent.CompletableFuture;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import org.junit.Test;
 
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+import java.time.LocalDate;
+import java.util.concurrent.CompletableFuture;
 
 public class OpprettBestillingScenario extends TestgruppeBestillingTestCaseBase {
 

@@ -9,6 +9,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.NorskIdent;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
+import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,13 +22,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
-
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
-import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KrrStubClientTest {

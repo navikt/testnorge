@@ -3,10 +3,7 @@ package no.nav.dolly.domain.jpa;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 import static java.util.Objects.isNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +14,9 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,7 +33,7 @@ public class BestilteKriterier {
     private RsPdldata pdlforvalter;
 
     public List<RsArbeidsforhold> getAareg() {
-        if(isNull(aareg)) {
+        if (isNull(aareg)) {
             aareg = new ArrayList<>();
         }
         return aareg;

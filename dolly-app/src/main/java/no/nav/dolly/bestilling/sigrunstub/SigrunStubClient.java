@@ -1,13 +1,12 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SigrunStubClient implements ClientRegister {
@@ -18,7 +17,8 @@ public class SigrunStubClient implements ClientRegister {
     @Autowired
     private SigrunStubResponseHandler sigrunStubResponseHandler;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    @Override
+    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {

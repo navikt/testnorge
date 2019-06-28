@@ -1,7 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -13,9 +11,10 @@ import no.nav.dolly.domain.resultset.RsTeamMedMedlemmerUtenGrupper;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
 
 @Component
-public class TeamMappingStrategy implements MappingStrategy{
+public class TeamMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {

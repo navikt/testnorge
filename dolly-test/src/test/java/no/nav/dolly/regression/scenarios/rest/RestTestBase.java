@@ -29,29 +29,60 @@ import java.util.Set;
 
 public abstract class RestTestBase extends InMemoryDbTestSetup {
 
-    @Autowired(required = false)
-    private WebApplicationContext webApplicationContext;
-
     protected static final String TEAM_PROP_NAVN = "navn";
     protected static final String TEAM_PROP_EIER_IDENT = "eierNavIdent";
-
     protected static final String STANDARD_TEAM_NAVN = "team";
     protected static final String STANDARD_TEAM_BESK = "beskrivelse";
     protected static final String STANDARD_GRUPPE_NAVN = "testgruppe";
     protected static final String STANDARD_NAV_IDENT = "IDENT";
     protected static final String STANDARD_GRUPPE_HENSIKT = "hensikt";
-
     protected static final String STANDARD_PRINCIPAL = STANDARD_NAV_IDENT;
-
     private static final ObjectMapper MAPPER = new ObjectMapper();
-
     protected MockMvc mvcMock;
     protected Testgruppe standardTestgruppe;
     protected Bruker standardBruker;
     protected Team standardTeam;
     protected RsDollyBestillingRequest standardBestilling_u6 = new RsDollyBestillingRequest();
     protected List<String> standardEnvironments = singletonList("u6");
+    @Autowired(required = false)
+    private WebApplicationContext webApplicationContext;
 
+    protected static String convertObjectToJson(Object object) throws IOException {
+        return MAPPER.writeValueAsString(object);
+    }
+
+    protected static <T> T convertMvcResultToObject(MvcResult mvcResult, Class<T> resultClass) throws IOException {
+        return MAPPER.readValue(mvcResult.getResponse().getContentAsString(), resultClass);
+    }
+
+    protected static <T> List<T> convertMvcResultToList(MvcResult mvcResult, Class<T> resultClass) throws IOException {
+        JavaType type = MAPPER.getTypeFactory().constructCollectionType(List.class, resultClass);
+        return MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
+    }
+
+    protected static <T> Set<T> convertMvcResultToSet(MvcResult mvcResult, Class<T> resultClass) throws IOException {
+        JavaType type = MAPPER.getTypeFactory().constructCollectionType(Set.class, resultClass);
+        return MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
+    }
+
+    protected static <T> Collection<T> convertMvcResultToCollection(MvcResult mvcResult, Class<T> resultClass) throws IOException {
+        JavaType type = MAPPER.getTypeFactory().constructCollectionType(Collection.class, resultClass);
+        return MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
+    }
+
+    protected static String getErrorMessage(MvcResult mvcResult) throws IOException {
+        JavaType type = MAPPER.getTypeFactory().constructMapType(Map.class, String.class, String.class);
+        Map<String, String> json = MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
+        return json.get("message");
+    }
+
+    protected static Map<String, String> getErrorMessageAtIndex(MvcResult mvcResult, int index) throws IOException {
+        JavaType mapType = MAPPER.getTypeFactory().constructMapType(Map.class, String.class, String.class);
+        JavaType listOfMapType = MAPPER.getTypeFactory().constructCollectionLikeType(List.class, mapType);
+
+        List<Map<String, String>> listOfMap = MAPPER.readValue(mvcResult.getResponse().getContentAsString(), listOfMapType);
+        return listOfMap.get(index);
+    }
 
     @After
     public void after() {
@@ -117,42 +148,5 @@ public abstract class RestTestBase extends InMemoryDbTestSetup {
 
     private OidcTokenAuthentication createTestOidcToken() {
         return new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, null, null);
-    }
-
-    protected static String convertObjectToJson(Object object) throws IOException {
-        return MAPPER.writeValueAsString(object);
-    }
-
-    protected static <T> T convertMvcResultToObject(MvcResult mvcResult, Class<T> resultClass) throws IOException {
-        return MAPPER.readValue(mvcResult.getResponse().getContentAsString(), resultClass);
-    }
-
-    protected static <T> List<T> convertMvcResultToList(MvcResult mvcResult, Class<T> resultClass) throws IOException {
-        JavaType type = MAPPER.getTypeFactory().constructCollectionType(List.class, resultClass);
-        return MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
-    }
-
-    protected static <T> Set<T> convertMvcResultToSet(MvcResult mvcResult, Class<T> resultClass) throws IOException {
-        JavaType type = MAPPER.getTypeFactory().constructCollectionType(Set.class, resultClass);
-        return MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
-    }
-
-    protected static <T> Collection<T> convertMvcResultToCollection(MvcResult mvcResult, Class<T> resultClass) throws IOException {
-        JavaType type = MAPPER.getTypeFactory().constructCollectionType(Collection.class, resultClass);
-        return MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
-    }
-
-    protected static String getErrorMessage(MvcResult mvcResult) throws IOException {
-        JavaType type = MAPPER.getTypeFactory().constructMapType(Map.class, String.class, String.class);
-        Map<String, String> json = MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
-        return json.get("message");
-    }
-
-    protected static Map<String, String> getErrorMessageAtIndex(MvcResult mvcResult, int index) throws IOException {
-        JavaType mapType = MAPPER.getTypeFactory().constructMapType(Map.class, String.class, String.class);
-        JavaType listOfMapType = MAPPER.getTypeFactory().constructCollectionLikeType(List.class, mapType);
-
-        List<Map<String, String>> listOfMap = MAPPER.readValue(mvcResult.getResponse().getContentAsString(), listOfMapType);
-        return listOfMap.get(index);
     }
 }

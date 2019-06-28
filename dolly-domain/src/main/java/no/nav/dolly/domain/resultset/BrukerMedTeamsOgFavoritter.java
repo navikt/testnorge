@@ -1,12 +1,12 @@
 package no.nav.dolly.domain.resultset;
 
-import java.util.List;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
+
+import java.util.List;
 
 @Getter
 @Setter

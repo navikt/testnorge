@@ -5,8 +5,9 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.sts.StsSamlTokenService;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -15,24 +16,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.sts.StsSamlTokenService;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BehandleArbeidsforholdV1ProxyTest {
 
-    @Mock
-    private AaregBehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
-
-    @Mock
-    private StsSamlTokenService stsSamlTokenService;
-
-    @InjectMocks
-    private BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+    @Mock
+    private AaregBehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
+    @Mock
+    private StsSamlTokenService stsSamlTokenService;
+    @InjectMocks
+    private BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
 
     @Test
     public void getServiceByEnvironment_OK() {

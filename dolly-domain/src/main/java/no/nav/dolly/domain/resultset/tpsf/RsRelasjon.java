@@ -1,12 +1,12 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.RsAdresse;
 import no.nav.dolly.domain.resultset.RsPostadresse;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter

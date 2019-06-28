@@ -17,19 +17,6 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingKrrStubStatusMapperTest {
 
-    @Test
-    public void krrStubStatusMap() {
-
-        List<RsStatusIdent> identStatuses = BestillingKrrStubStatusMapper.buildKrrStubStatusMap(RUN_STATUS);
-
-        assertThat(identStatuses.get(0).getStatusMelding(), is(equalTo("FEIL")));
-        assertThat(identStatuses.get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));
-
-        assertThat(identStatuses.get(1).getStatusMelding(), is(equalTo("OK")));
-        assertThat(identStatuses.get(1).getIdenter(), containsInAnyOrder("IDENT_1", "IDENT_3", "IDENT_5"));
-    }
-
-
     private static final List<BestillingProgress> RUN_STATUS = asList(
             BestillingProgress.builder().ident("IDENT_1")
                     .krrstubStatus("OK")
@@ -47,4 +34,16 @@ public class BestillingKrrStubStatusMapperTest {
                     .krrstubStatus("OK")
                     .build()
     );
+
+    @Test
+    public void krrStubStatusMap() {
+
+        List<RsStatusIdent> identStatuses = BestillingKrrStubStatusMapper.buildKrrStubStatusMap(RUN_STATUS);
+
+        assertThat(identStatuses.get(0).getStatusMelding(), is(equalTo("FEIL")));
+        assertThat(identStatuses.get(0).getIdenter(), containsInAnyOrder("IDENT_2", "IDENT_4"));
+
+        assertThat(identStatuses.get(1).getStatusMelding(), is(equalTo("OK")));
+        assertThat(identStatuses.get(1).getIdenter(), containsInAnyOrder("IDENT_1", "IDENT_3", "IDENT_5"));
+    }
 }

@@ -3,13 +3,6 @@ package no.nav.dolly.bestilling.arenaforvalter;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -19,6 +12,13 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -138,7 +138,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
         if (e instanceof HttpClientErrorException) {
             status.append(" (")
-                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',','='))
+                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
                     .append(')');
         }
     }

@@ -1,8 +1,7 @@
 package no.nav.dolly.util;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public final class CurrentNavIdentFetcher {
 

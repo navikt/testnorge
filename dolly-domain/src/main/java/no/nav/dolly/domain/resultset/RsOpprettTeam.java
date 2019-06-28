@@ -12,6 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class RsOpprettTeam {
-	private String navn;
-	private String beskrivelse;
+    private String navn;
+    private String beskrivelse;
 }

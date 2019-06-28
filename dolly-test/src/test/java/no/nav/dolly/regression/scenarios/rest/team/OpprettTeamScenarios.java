@@ -7,17 +7,17 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MvcResult;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MvcResult;
 
-public class OpprettTeamScenarios extends TeamTestCaseBase{
+import java.util.List;
+
+public class OpprettTeamScenarios extends TeamTestCaseBase {
 
     @Autowired
     MapperFacade mapperFacade;
@@ -29,7 +29,7 @@ public class OpprettTeamScenarios extends TeamTestCaseBase{
                 .navn("opprettetTeam")
                 .build();
 
-        String url = endpointUrl ;
+        String url = endpointUrl;
 
         MvcResult mvcResult = mvcMock.perform(post(url)
                 .contentType(APPLICATION_JSON_UTF8)

@@ -6,16 +6,16 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.properties.Environment.PREPROD;
 import static no.nav.dolly.properties.Environment.TEST;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.fasit.FasitApiConsumer;
 import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
 import no.nav.dolly.properties.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class StsSamlFasitConsumer {

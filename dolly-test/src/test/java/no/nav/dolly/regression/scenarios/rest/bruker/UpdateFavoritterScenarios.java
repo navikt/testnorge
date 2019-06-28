@@ -8,12 +8,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Test;
-import org.springframework.test.web.servlet.MvcResult;
-
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsBrukerUpdateFavoritterReq;
+import org.junit.Test;
+import org.springframework.test.web.servlet.MvcResult;
 
 public class UpdateFavoritterScenarios extends BrukerTestCaseBase {
 

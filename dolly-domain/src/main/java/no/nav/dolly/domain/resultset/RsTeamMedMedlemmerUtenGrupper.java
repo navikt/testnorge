@@ -12,14 +12,14 @@ import java.util.Set;
 @Setter
 @Getter
 public class RsTeamMedMedlemmerUtenGrupper {
-	private Long id;
-	private String navn;
-	private String beskrivelse;
+    private Long id;
+    private String navn;
+    private String beskrivelse;
 
-	@JsonDeserialize(using = LocalDateDeserializer.class)
-	private LocalDate datoOpprettet;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate datoOpprettet;
 
-	private String eierNavIdent;
-	private Set<RsBruker> medlemmer = new HashSet<>();
+    private String eierNavIdent;
+    private Set<RsBruker> medlemmer = new HashSet<>();
 
 }

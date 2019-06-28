@@ -11,22 +11,22 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDate;
-import java.util.List;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.resultset.RsTeamUtvidet;
+import java.time.LocalDate;
+import java.util.List;
 
 public class GetTeamsScenarios extends TeamTestCaseBase {
 
     private Bruker bruker2;
 
     @Before
-    public void setupData(){
+    public void setupData() {
         bruker2 = brukerRepository.save(Bruker.builder().navIdent("navident2").build());
 
         Team team2 = teamRepository.save(Team.builder()

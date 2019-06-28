@@ -3,13 +3,12 @@ package no.nav.dolly.appservices.tpsf.service;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
-
-import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SigrunStubResponseHandlerTest {

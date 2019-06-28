@@ -5,17 +5,17 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.HashMap;
-import java.util.Map;
+import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.exceptions.TpsfException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
-import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
-import no.nav.dolly.exceptions.TpsfException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TpsfResponseHandlerTest {
 
@@ -31,7 +31,7 @@ public class TpsfResponseHandlerTest {
     private TpsfResponseHandler tpsfResponseHandler = new TpsfResponseHandler();
 
     @Before
-    public void setup(){
+    public void setup() {
         status_SuccU1T2_FailQ3.put("u1", SUCCESS_CODE_TPS);
         status_SuccU1T2_FailQ3.put("t2", SUCCESS_CODE_TPS);
         status_SuccU1T2_FailQ3.put("q3", FAIL_CODE_TPS);
@@ -46,8 +46,8 @@ public class TpsfResponseHandlerTest {
 
         String feedback = tpsfResponseHandler.extractTPSFeedback(singletonList(standarSendSkdResponse));
 
-        assertThat(feedback.contains("personId: "+standardIdent), is(true));
-        assertThat(feedback.contains("meldingstype: "+INNVANDRING_CREATE_NAVN), is(true));
+        assertThat(feedback.contains("personId: " + standardIdent), is(true));
+        assertThat(feedback.contains("meldingstype: " + INNVANDRING_CREATE_NAVN), is(true));
         assertThat(feedback.contains("<u1=00>"), is(true));
         assertThat(feedback.contains("<t2=00>"), is(true));
         assertThat(feedback.contains("<q3=08>"), is(true));
@@ -57,7 +57,7 @@ public class TpsfResponseHandlerTest {
     public void handleError_setterFeilPaaBestillingsProgress() {
         HttpClientErrorException e = new HttpClientErrorException(HttpStatus.NOT_FOUND, "statusText");
 
-        tpsfResponseHandler.setErrorMessageToBestillingsProgress(e ,standardProgress);
+        tpsfResponseHandler.setErrorMessageToBestillingsProgress(e, standardProgress);
 
         assertThat(standardProgress.getFeil(), is(notNullValue()));
     }
@@ -66,7 +66,7 @@ public class TpsfResponseHandlerTest {
     public void handleError_feilmeldingFraExceptionSettesPaaProgress() {
         TpsfException e = new TpsfException("test-msg");
 
-        tpsfResponseHandler.setErrorMessageToBestillingsProgress(e ,standardProgress);
+        tpsfResponseHandler.setErrorMessageToBestillingsProgress(e, standardProgress);
 
         assertThat(standardProgress.getFeil().contains("test-msg"), is(true));
     }

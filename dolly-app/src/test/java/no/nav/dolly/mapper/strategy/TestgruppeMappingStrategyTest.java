@@ -5,12 +5,6 @@ import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
@@ -20,6 +14,12 @@ import no.nav.dolly.domain.resultset.RsTestgruppe;
 import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 public class TestgruppeMappingStrategyTest {
 
@@ -31,7 +31,7 @@ public class TestgruppeMappingStrategyTest {
     }
 
     @Test
-    public void mappingFromTesgruppeToRsTestgruppe(){
+    public void mappingFromTesgruppeToRsTestgruppe() {
         Bruker bruker = Bruker.builder().navIdent("ident").build();
         Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
         Set<Testident> identer = newHashSet(singletonList(testident));

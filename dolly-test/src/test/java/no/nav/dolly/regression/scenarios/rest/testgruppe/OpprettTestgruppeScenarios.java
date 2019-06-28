@@ -10,13 +10,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsOpprettEndreTestgruppe;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
 

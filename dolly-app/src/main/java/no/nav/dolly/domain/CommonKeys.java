@@ -9,5 +9,6 @@ public final class CommonKeys {
     public static final String HEADER_CALL_ID_KEY = "Nav-Call-Id";
     public static final String HEADER_PERSONIDENTER_KEY = "Nav-Personidenter";
 
-    private CommonKeys() {}
+    private CommonKeys() {
+    }
 }

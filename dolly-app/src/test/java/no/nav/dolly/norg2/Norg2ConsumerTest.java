@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.properties.ProvidersProps;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,29 +21,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.properties.ProvidersProps;
-
 @RunWith(MockitoJUnitRunner.class)
 public class Norg2ConsumerTest {
 
     private static final String ENHET_NR = "1";
     private static final String BASE_URL = "baseUrl";
-
-    @Mock
-    private RestTemplate restTemplate;
-
-    @Mock
-    ProvidersProps providersProps;
-
-    @InjectMocks
-    private Norg2Consumer norg2Consumer;
-
-    @Mock
-    private ResponseEntity responseEntity;
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+    @Mock
+    ProvidersProps providersProps;
+    @Mock
+    private RestTemplate restTemplate;
+    @InjectMocks
+    private Norg2Consumer norg2Consumer;
+    @Mock
+    private ResponseEntity responseEntity;
 
     @Test
     public void fetchEnhetByEnhetNr_OK() {

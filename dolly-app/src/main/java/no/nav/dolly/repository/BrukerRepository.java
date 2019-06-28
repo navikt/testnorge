@@ -1,12 +1,12 @@
 package no.nav.dolly.repository;
 
-import java.util.List;
+import no.nav.dolly.domain.jpa.Bruker;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import no.nav.dolly.domain.jpa.Bruker;
+import java.util.List;
 
 public interface BrukerRepository extends CrudRepository<Bruker, Long> {
 

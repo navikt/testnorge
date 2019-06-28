@@ -10,7 +10,7 @@ public class TestidentBuilder {
     private String ident;
     private Testgruppe testgruppe;
 
-    public Testident convertToRealTestident(){
+    public Testident convertToRealTestident() {
         Testident testident = new Testident();
         testident.setIdent(this.ident);
         testident.setTestgruppe(this.testgruppe);

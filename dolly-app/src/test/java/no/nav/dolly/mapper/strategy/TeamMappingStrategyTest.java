@@ -6,16 +6,6 @@ import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
@@ -26,14 +16,22 @@ import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 public class TeamMappingStrategyTest {
 
     private static final String CURRENT_BRUKER_IDENT = "NAV1";
-
-    private MapperFacade mapper;
-
     private static Authentication authentication;
+    private MapperFacade mapper;
 
     @BeforeClass
     public static void beforeClass() {
@@ -53,7 +51,7 @@ public class TeamMappingStrategyTest {
     }
 
     @Test
-    public void mappingFromTeamToRsTeam(){
+    public void mappingFromTeamToRsTeam() {
         Bruker bruker = Bruker.builder().navIdent("ident").build();
         Bruker brukerEier = Bruker.builder().navIdent("eier").build();
         Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
@@ -80,7 +78,7 @@ public class TeamMappingStrategyTest {
 
         Team team2 = Team.builder()
                 .navn("team2")
-                .datoOpprettet(LocalDate.of(2010, 1 , 1))
+                .datoOpprettet(LocalDate.of(2010, 1, 1))
                 .eier(bruker)
                 .id(2L)
                 .medlemmer(asList(brukerEier, bruker))

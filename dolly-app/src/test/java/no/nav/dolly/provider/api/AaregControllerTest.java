@@ -8,8 +8,11 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
+import no.nav.dolly.aareg.AaregRestConsumer;
+import no.nav.dolly.aareg.AaregWsConsumer;
+import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
+import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
+import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,11 +21,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import no.nav.dolly.aareg.AaregRestConsumer;
-import no.nav.dolly.aareg.AaregWsConsumer;
-import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
-import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
-import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregControllerTest {

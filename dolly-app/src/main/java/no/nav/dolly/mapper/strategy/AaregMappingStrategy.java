@@ -1,7 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -28,14 +26,22 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Person;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Personidenter;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Utenlandsopphold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Yrker;
+import org.springframework.stereotype.Component;
 
 @Component
 public class AaregMappingStrategy implements MappingStrategy {
 
-    @Override public void register(MapperFactory factory) {
+    private static <T extends Kodeverdi> T mapKodeverdi(T clazz, String value) {
+        clazz.setKodeRef(value);
+        return clazz;
+    }
+
+    @Override
+    public void register(MapperFactory factory) {
         factory.classMap(RsArbeidsforhold.class, Arbeidsforhold.class)
                 .customize(new CustomMapper<RsArbeidsforhold, Arbeidsforhold>() {
-                    @Override public void mapAtoB(RsArbeidsforhold rsArbeidsforhold, Arbeidsforhold arbeidsforhold, MappingContext context) {
+                    @Override
+                    public void mapAtoB(RsArbeidsforhold rsArbeidsforhold, Arbeidsforhold arbeidsforhold, MappingContext context) {
 
                         arbeidsforhold.setArbeidsforholdstype(mapKodeverdi(new Arbeidsforholdstyper(), rsArbeidsforhold.getArbeidsforholdstype()));
                         arbeidsforhold.setArbeidstaker(mapPerson(rsArbeidsforhold.getArbeidstaker()));
@@ -51,7 +57,8 @@ public class AaregMappingStrategy implements MappingStrategy {
 
         factory.classMap(RsArbeidsavtale.class, Arbeidsavtale.class)
                 .customize(new CustomMapper<RsArbeidsavtale, Arbeidsavtale>() {
-                    @Override public void mapAtoB(RsArbeidsavtale rsArbeidsavtale, Arbeidsavtale arbeidsavtale, MappingContext context) {
+                    @Override
+                    public void mapAtoB(RsArbeidsavtale rsArbeidsavtale, Arbeidsavtale arbeidsavtale, MappingContext context) {
 
                         arbeidsavtale.setArbeidstidsordning(mapKodeverdi(new Arbeidstidsordninger(), rsArbeidsavtale.getArbeidstidsordning()));
                         arbeidsavtale.setAvloenningstype(mapKodeverdi(new Avloenningstyper(), rsArbeidsavtale.getAvloenningstype()));
@@ -63,7 +70,8 @@ public class AaregMappingStrategy implements MappingStrategy {
 
         factory.classMap(RsPermisjon.class, Permisjon.class)
                 .customize(new CustomMapper<RsPermisjon, Permisjon>() {
-                    @Override public void mapAtoB(RsPermisjon rsPermisjon, Permisjon permisjon, MappingContext context) {
+                    @Override
+                    public void mapAtoB(RsPermisjon rsPermisjon, Permisjon permisjon, MappingContext context) {
 
                         permisjon.setPermisjonOgPermittering(mapKodeverdi(new PermisjonsOgPermitteringsBeskrivelse(), rsPermisjon.getPermisjonOgPermittering()));
                     }
@@ -73,7 +81,8 @@ public class AaregMappingStrategy implements MappingStrategy {
 
         factory.classMap(RsUtenlandsopphold.class, Utenlandsopphold.class)
                 .customize(new CustomMapper<RsUtenlandsopphold, Utenlandsopphold>() {
-                    @Override public void mapAtoB(RsUtenlandsopphold rsUtenlandsopphold, Utenlandsopphold utenlandsopphold, MappingContext context) {
+                    @Override
+                    public void mapAtoB(RsUtenlandsopphold rsUtenlandsopphold, Utenlandsopphold utenlandsopphold, MappingContext context) {
 
                         utenlandsopphold.setLand(mapKodeverdi(new Landkoder(), rsUtenlandsopphold.getLand()));
                     }
@@ -83,7 +92,8 @@ public class AaregMappingStrategy implements MappingStrategy {
 
         factory.classMap(RsOrganisasjon.class, Organisasjon.class)
                 .customize(new CustomMapper<RsOrganisasjon, Organisasjon>() {
-                    @Override public void mapAtoB(RsOrganisasjon rsOrganisasjon, Organisasjon organisasjon, MappingContext context) {
+                    @Override
+                    public void mapAtoB(RsOrganisasjon rsOrganisasjon, Organisasjon organisasjon, MappingContext context) {
 
                         organisasjon.setOrgnummer(rsOrganisasjon.getOrgnummer());
                     }
@@ -92,7 +102,8 @@ public class AaregMappingStrategy implements MappingStrategy {
 
         factory.classMap(RsAktoerPerson.class, Person.class)
                 .customize(new CustomMapper<RsAktoerPerson, Person>() {
-                    @Override public void mapAtoB(RsAktoerPerson rsAktoerPerson, Person person, MappingContext context) {
+                    @Override
+                    public void mapAtoB(RsAktoerPerson rsAktoerPerson, Person person, MappingContext context) {
 
                         NorskIdent norskIdent = new NorskIdent();
                         norskIdent.setIdent(rsAktoerPerson.getIdent());
@@ -116,10 +127,5 @@ public class AaregMappingStrategy implements MappingStrategy {
         person.setIdent(norskIdent);
 
         return person;
-    }
-
-    private static <T extends Kodeverdi> T mapKodeverdi(T clazz, String value) {
-        clazz.setKodeRef(value);
-        return clazz;
     }
 }

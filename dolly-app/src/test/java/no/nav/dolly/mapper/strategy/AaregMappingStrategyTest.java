@@ -7,10 +7,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-import org.junit.Before;
-import org.junit.Test;
-
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.aareg.RsAntallTimerIPerioden;
@@ -29,15 +25,70 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforho
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Organisasjon;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Permisjon;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Utenlandsopphold;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 public class AaregMappingStrategyTest {
 
+    private static RsArbeidsforhold rsArbeidsforhold = buildRsArbeidforhold();
     private CustomConverter calendarConverter = new XmlGregorianCalendarCustomMapping();
     private MappingStrategy aaregMappingStrategy = new AaregMappingStrategy();
-
     private MapperFacade mapper;
 
-    private static RsArbeidsforhold rsArbeidsforhold = buildRsArbeidforhold();
+    private static RsArbeidsforhold buildRsArbeidforhold() {
+
+        return RsArbeidsforhold.builder()
+                .ansettelsesPeriode(RsPeriode.builder()
+                        .fom(of(2010, 11, 4, 0, 0))
+                        .tom(of(2018, 1, 5, 0, 0))
+                        .build())
+                .arbeidsforholdID("Ansatt")
+                .arbeidsforholdIDnav(101L)
+                .arbeidstaker(RsPerson.builder()
+                        .ident("5345345345")
+                        .identtype("FNR")
+                        .build())
+                .arbeidsgiver(RsOrganisasjon.builder()
+                        .orgnummer("354534534544")
+                        .build())
+                .arbeidsforholdstype("ansatt")
+                .arbeidsavtale(RsArbeidsavtale.builder()
+                        .yrke("bussjåfør")
+                        .avloenningstype("Per time")
+                        .arbeidstidsordning("Regulær")
+                        .stillingsprosent(valueOf(20))
+                        .antallKonverterteTimer(valueOf(50))
+                        .avtaltArbeidstimerPerUke(valueOf(17))
+                        .endringsdatoStillingsprosent(of(2014, 1, 8, 0, 0))
+                        .sisteLoennsendringsdato(of(2019, 1, 3, 0, 0))
+                        .build())
+                .antallTimerForTimeloennet(singletonList(RsAntallTimerIPerioden.builder()
+                        .antallTimer(valueOf(345))
+                        .periode(RsPeriode.builder()
+                                .fom(of(2013, 10, 8, 0, 0))
+                                .tom(of(2015, 2, 7, 0, 0))
+                                .build())
+                        .build()))
+                .permisjon(singletonList(RsPermisjon.builder()
+                        .permisjonsId("123456")
+                        .permisjonsPeriode(RsPeriode.builder()
+                                .fom(of(2012, 12, 9, 0, 0))
+                                .tom(of(2016, 5, 3, 0, 0))
+                                .build())
+                        .permisjonsprosent(valueOf(20))
+                        .permisjonOgPermittering("velferdspermisjon")
+                        .build()))
+                .utenlandsopphold(singletonList(RsUtenlandsopphold.builder()
+                        .land("Flesland")
+                        .periode(RsPeriode.builder()
+                                .fom(of(2011, 4, 2, 0, 0))
+                                .tom(of(2017, 7, 1, 0, 0))
+                                .build())
+                        .build()))
+                .build();
+    }
 
     @Before
     public void setup() {
@@ -113,58 +164,5 @@ public class AaregMappingStrategyTest {
                 is(equalTo(mapper.map(rsArbeidsforhold.getUtenlandsopphold().get(0).getPeriode().getFom(), XMLGregorianCalendar.class))));
         assertThat(utenlandsopphold.getPeriode().getTom(),
                 is(equalTo(mapper.map(rsArbeidsforhold.getUtenlandsopphold().get(0).getPeriode().getTom(), XMLGregorianCalendar.class))));
-    }
-
-    private static RsArbeidsforhold buildRsArbeidforhold() {
-
-        return RsArbeidsforhold.builder()
-                .ansettelsesPeriode(RsPeriode.builder()
-                        .fom(of(2010, 11, 4, 0 , 0))
-                        .tom(of(2018, 1, 5, 0 , 0))
-                        .build())
-                .arbeidsforholdID("Ansatt")
-                .arbeidsforholdIDnav(101L)
-                .arbeidstaker(RsPerson.builder()
-                        .ident("5345345345")
-                        .identtype("FNR")
-                        .build())
-                .arbeidsgiver(RsOrganisasjon.builder()
-                        .orgnummer("354534534544")
-                        .build())
-                .arbeidsforholdstype("ansatt")
-                .arbeidsavtale(RsArbeidsavtale.builder()
-                        .yrke("bussjåfør")
-                        .avloenningstype("Per time")
-                        .arbeidstidsordning("Regulær")
-                        .stillingsprosent(valueOf(20))
-                        .antallKonverterteTimer(valueOf(50))
-                        .avtaltArbeidstimerPerUke(valueOf(17))
-                        .endringsdatoStillingsprosent(of(2014, 1, 8, 0 , 0))
-                        .sisteLoennsendringsdato(of(2019, 1, 3, 0 , 0))
-                        .build())
-                .antallTimerForTimeloennet(singletonList(RsAntallTimerIPerioden.builder()
-                        .antallTimer(valueOf(345))
-                        .periode(RsPeriode.builder()
-                                .fom(of(2013, 10, 8, 0 , 0))
-                                .tom(of(2015, 2, 7, 0 , 0))
-                                .build())
-                        .build()))
-                .permisjon(singletonList(RsPermisjon.builder()
-                        .permisjonsId("123456")
-                        .permisjonsPeriode(RsPeriode.builder()
-                                .fom(of(2012, 12, 9, 0 , 0))
-                                .tom(of(2016, 5, 3, 0 , 0))
-                                .build())
-                        .permisjonsprosent(valueOf(20))
-                        .permisjonOgPermittering("velferdspermisjon")
-                        .build()))
-                .utenlandsopphold(singletonList(RsUtenlandsopphold.builder()
-                        .land("Flesland")
-                        .periode(RsPeriode.builder()
-                                .fom(of(2011, 4, 2, 0 , 0))
-                                .tom(of(2017, 7, 1, 0 , 0))
-                                .build())
-                        .build()))
-                .build();
     }
 }

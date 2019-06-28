@@ -1,12 +1,12 @@
 package no.nav.dolly.repository;
 
-import java.util.List;
-import java.util.Optional;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.Testgruppe;
+import java.util.List;
+import java.util.Optional;
 
 public interface BestillingRepository extends JpaRepository<Bestilling, Long> {
 

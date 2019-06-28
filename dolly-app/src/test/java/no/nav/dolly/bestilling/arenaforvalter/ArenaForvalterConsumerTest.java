@@ -6,7 +6,11 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.properties.ProvidersProps;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,12 +19,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
 
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
-import no.nav.dolly.properties.ProvidersProps;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaForvalterConsumerTest {

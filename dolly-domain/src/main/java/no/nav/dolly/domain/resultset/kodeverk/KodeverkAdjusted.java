@@ -2,14 +2,14 @@ package no.nav.dolly.domain.resultset.kodeverk;
 
 import static java.util.Objects.isNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter

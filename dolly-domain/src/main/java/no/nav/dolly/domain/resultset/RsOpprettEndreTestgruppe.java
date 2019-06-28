@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RsOpprettEndreTestgruppe {
-	private Long teamId;
-	private String navn;
-	private String hensikt;
+    private Long teamId;
+    private String navn;
+    private String hensikt;
 }

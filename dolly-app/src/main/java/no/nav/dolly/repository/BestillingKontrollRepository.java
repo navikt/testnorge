@@ -1,9 +1,9 @@
 package no.nav.dolly.repository;
 
-import java.util.Optional;
+import no.nav.dolly.domain.jpa.BestillingKontroll;
 import org.springframework.data.repository.CrudRepository;
 
-import no.nav.dolly.domain.jpa.BestillingKontroll;
+import java.util.Optional;
 
 public interface BestillingKontrollRepository extends CrudRepository<BestillingKontroll, Long> {
 

@@ -12,6 +12,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.NorskIdent;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,15 +32,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.NorskIdent;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
-import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
-
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaForvalterClientTest {
 
@@ -40,16 +39,12 @@ public class ArenaForvalterClientTest {
     private static final String ENV = "q2";
     private static final String ERROR_CAUSE = "Bad request";
     private static final String ERROR_MSG = "An error has occured";
-
-    @Mock
-    private ArenaForvalterConsumer arenaForvalterConsumer;
-
-    @InjectMocks
-    private ArenaForvalterClient arenaForvalterClient;
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
+    @Mock
+    private ArenaForvalterConsumer arenaForvalterConsumer;
+    @InjectMocks
+    private ArenaForvalterClient arenaForvalterClient;
     @Mock
     private HttpClientErrorException httpClientErrorException;
 

@@ -2,19 +2,19 @@ package no.nav.dolly.bestilling.arenaforvalter;
 
 import static java.lang.String.format;
 
-import java.net.URI;
-import java.util.List;
-import java.util.UUID;
+import com.fasterxml.jackson.databind.JsonNode;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
 
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
-import no.nav.dolly.properties.ProvidersProps;
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ArenaForvalterConsumer {
@@ -30,6 +30,10 @@ public class ArenaForvalterConsumer {
 
     @Autowired
     private ProvidersProps providersProps;
+
+    private static String getCallId() {
+        return "Dolly: " + UUID.randomUUID().toString();
+    }
 
     public ResponseEntity<ArenaArbeidssokerBruker> getIdent(String ident) {
         return restTemplate.exchange(RequestEntity.get(
@@ -61,9 +65,5 @@ public class ArenaForvalterConsumer {
                 .header(NAV_CALL_ID, getCallId())
                 .header(NAV_CONSUMER_ID, KILDE)
                 .build(), List.class);
-    }
-
-    private static String getCallId() {
-        return "Dolly: " + UUID.randomUUID().toString();
     }
 }

@@ -3,13 +3,13 @@ package no.nav.dolly.aareg;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
+import lombok.extern.slf4j.Slf4j;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.feil.ForretningsmessigUnntak;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import lombok.extern.slf4j.Slf4j;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.feil.ForretningsmessigUnntak;
 
 @Slf4j
 public final class AaregResponseHandler {

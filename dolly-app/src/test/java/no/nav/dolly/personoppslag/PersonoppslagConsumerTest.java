@@ -7,6 +7,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.dolly.sts.StsOidcService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,10 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.sts.StsOidcService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersonoppslagConsumerTest {

@@ -3,15 +3,15 @@ package no.nav.dolly.aareg;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.fasit.FasitApiConsumer;
 import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AaregArbeidsforholdFasitConsumer {

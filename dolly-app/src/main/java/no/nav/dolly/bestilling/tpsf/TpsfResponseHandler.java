@@ -3,13 +3,13 @@ package no.nav.dolly.bestilling.tpsf;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
-import java.util.List;
-import java.util.Map;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class TpsfResponseHandler {

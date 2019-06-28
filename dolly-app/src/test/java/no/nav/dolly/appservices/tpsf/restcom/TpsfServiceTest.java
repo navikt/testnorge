@@ -11,9 +11,14 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
+import no.nav.dolly.bestilling.tpsf.TpsfService;
+import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.properties.ProvidersProps;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,15 +32,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
-import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
-import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
-import no.nav.dolly.exceptions.TpsfException;
-import no.nav.dolly.properties.ProvidersProps;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TpsfServiceTest {
@@ -59,14 +59,14 @@ public class TpsfServiceTest {
     private TpsfService service;
 
     @Before
-    public void setup(){
+    public void setup() {
         ProvidersProps.Tpsf tpsf = new ProvidersProps.Tpsf();
         tpsf.setUrl("https://localhost:8080");
         when(providersProps.getTpsf()).thenReturn(tpsf);
     }
 
     @Test
-    public void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter(){
+    public void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter() {
         standardTpsfBestilling.setIdenttype(FNR);
 
         Object s = "body";
@@ -91,7 +91,7 @@ public class TpsfServiceTest {
     }
 
     @Test(expected = TpsfException.class)
-    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException(){
+    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() {
         Object s = "error=Feil";
         ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
         RestTemplateFailure resExp = new RestTemplateFailure();
@@ -105,7 +105,7 @@ public class TpsfServiceTest {
     }
 
     @Test(expected = TpsfException.class)
-    public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException(){
+    public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException() {
         Object s = "error=Feil";
         ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
         RestTemplateFailure resExp = new RestTemplateFailure();
@@ -119,13 +119,13 @@ public class TpsfServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void sendIdenterTilTpsFraTPSF_hvisIngenMiljoerErSpesifisertSaaKastesIllegalArgumentException(){
+    public void sendIdenterTilTpsFraTPSF_hvisIngenMiljoerErSpesifisertSaaKastesIllegalArgumentException() {
         List<String> tomListe = new ArrayList<>();
         service.sendIdenterTilTpsFraTPSF(standardIdenter, tomListe);
     }
 
     @Test
-    public void sendTilTpsFraTPSF_happyPath(){
+    public void sendTilTpsFraTPSF_happyPath() {
         ArgumentCaptor<String> endpointCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<HttpMethod> httpMethodCaptor = ArgumentCaptor.forClass(HttpMethod.class);
         ArgumentCaptor<HttpEntity> httpEntityCaptor = ArgumentCaptor.forClass(HttpEntity.class);

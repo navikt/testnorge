@@ -6,15 +6,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import org.junit.Test;
-import org.springframework.test.web.servlet.MvcResult;
-
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
+import org.junit.Test;
+import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public class GetIdenterByGroupIdScenarios extends TestgruppeTestCaseBase {
 

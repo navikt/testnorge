@@ -10,6 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class KrrStubResponseHandler {
 
+    private static boolean isOkStatus(ResponseEntity<Object> response) {
+        return HttpStatus.OK == response.getStatusCode() ||
+                HttpStatus.CREATED == response.getStatusCode() ||
+                HttpStatus.ACCEPTED == response.getStatusCode();
+    }
+
     public String extractResponse(ResponseEntity<Object> response) {
         return nonNull(response) && isOkStatus(response) ? "OK" : unWrapError(response);
     }
@@ -18,11 +24,5 @@ public class KrrStubResponseHandler {
 
         return format("FEIL%s", nonNull(response) && nonNull(response.getBody()) ?
                 format(": %s (%s -- %s)", response.getBody(), response.getStatusCodeValue(), response.getStatusCode().getReasonPhrase()) : "");
-    }
-
-    private static boolean isOkStatus(ResponseEntity<Object> response) {
-        return HttpStatus.OK == response.getStatusCode() ||
-                HttpStatus.CREATED == response.getStatusCode() ||
-                HttpStatus.ACCEPTED == response.getStatusCode();
     }
 }

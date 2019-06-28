@@ -2,19 +2,19 @@ package no.nav.dolly.aareg;
 
 import static java.util.Objects.isNull;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import javax.xml.namespace.QName;
+import no.nav.dolly.cxf.TimeoutFeature;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.sts.StsSamlTokenService;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import no.nav.dolly.cxf.TimeoutFeature;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.sts.StsSamlTokenService;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
+import javax.xml.namespace.QName;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class BehandleArbeidsforholdV1Proxy {

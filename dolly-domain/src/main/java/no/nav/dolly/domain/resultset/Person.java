@@ -2,12 +2,12 @@ package no.nav.dolly.domain.resultset;
 
 import static java.util.Objects.isNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Setter

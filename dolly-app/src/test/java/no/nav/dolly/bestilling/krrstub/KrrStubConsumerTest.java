@@ -5,6 +5,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -20,10 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
-
 @RunWith(MockitoJUnitRunner.class)
 public class KrrStubConsumerTest {
 
@@ -33,20 +32,15 @@ public class KrrStubConsumerTest {
     private static final String MOBIL = "11111111";
     private static final boolean RESVERT = true;
     private static final String BASE_URL = "baseUrl";
-
-    @Mock
-    private RestTemplate restTemplate;
-
-    @Mock
-    private ProvidersProps providersProps;
-
-    @InjectMocks
-    private KrrStubConsumer krrStubConsumer;
-
+    private static Authentication authentication;
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
-    private static Authentication authentication;
+    @Mock
+    private RestTemplate restTemplate;
+    @Mock
+    private ProvidersProps providersProps;
+    @InjectMocks
+    private KrrStubConsumer krrStubConsumer;
 
     @BeforeClass
     public static void beforeClass() {

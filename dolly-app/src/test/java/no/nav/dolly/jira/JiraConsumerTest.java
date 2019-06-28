@@ -9,6 +9,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.domain.jira.Project;
+import no.nav.dolly.properties.JiraProps;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +22,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
-
-import no.nav.dolly.domain.jira.Project;
-import no.nav.dolly.properties.JiraProps;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JiraConsumerTest {

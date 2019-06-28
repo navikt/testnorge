@@ -1,12 +1,12 @@
 package no.nav.dolly.domain.resultset.krrstub;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,8 +15,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsDigitalKontaktdata {
 
-        private LocalDateTime gyldigFra;
-        private boolean reservert;
-        private String mobil;
-        private String epost;
+    private LocalDateTime gyldigFra;
+    private boolean reservert;
+    private String mobil;
+    private String epost;
 }

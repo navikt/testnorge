@@ -5,9 +5,12 @@ import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import no.nav.dolly.LocalAppStarter;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Team;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.testdata.builder.TestidentBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +20,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import no.nav.dolly.LocalAppStarter;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Team;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.testdata.builder.TestidentBuilder;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = LocalAppStarter.class)
@@ -44,7 +44,7 @@ public class BrukerRepositoryTest {
 
     @Test
     @Rollback
-    public void oppretteBrukerUtenTIlknytningTilTeamEllerGruppe(){
+    public void oppretteBrukerUtenTIlknytningTilTeamEllerGruppe() {
         brukerRepository.save(Bruker.builder().navIdent("nav").build());
 
         Bruker foundBruker = brukerRepository.findBrukerByNavIdent("nav");
@@ -53,7 +53,7 @@ public class BrukerRepositoryTest {
     }
 
     @Test
-    public void oppretteBrukerMedTilknytningTilTeamUtenFavoritter(){
+    public void oppretteBrukerMedTilknytningTilTeamUtenFavoritter() {
         brukerRepository.save(Bruker.builder().navIdent("nav").build());
 
         Bruker foundBruker = brukerRepository.findBrukerByNavIdent("nav");
@@ -79,7 +79,7 @@ public class BrukerRepositoryTest {
     }
 
     @Test
-    public void opprettBrukerOgSetTilTeamOgSetFavoritter() throws Exception{
+    public void opprettBrukerOgSetTilTeamOgSetFavoritter() throws Exception {
         Bruker savedBruker = brukerRepository.save(Bruker.builder().navIdent("nav").build());
 
         Team team = Team.builder()

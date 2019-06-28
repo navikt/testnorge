@@ -46,22 +46,16 @@ public class OpenAmControllerTest {
     private static final long GRUPPEID = 1L;
     private static final Boolean STATUS = true;
     private static final Long BESTILLING_ID = 1L;
-
-    @Mock
-    private OpenAmService openAmService;
-
-    @Mock
-    private GruppeRepository gruppeRepository;
-
-    @Mock
-    private BestillingRepository bestillingRepository;
-
-    @InjectMocks
-    private OpenAmController openAmController;
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
+    @Mock
+    private OpenAmService openAmService;
+    @Mock
+    private GruppeRepository gruppeRepository;
+    @Mock
+    private BestillingRepository bestillingRepository;
+    @InjectMocks
+    private OpenAmController openAmController;
     @Mock
     private Testgruppe testgruppe;
 

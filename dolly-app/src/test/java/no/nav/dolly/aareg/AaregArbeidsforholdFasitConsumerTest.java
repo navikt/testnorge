@@ -6,8 +6,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
+import no.nav.dolly.fasit.FasitApiConsumer;
+import no.nav.dolly.fasit.FasitResourceScope;
+import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.dolly.fasit.FasitApiConsumer;
-import no.nav.dolly.fasit.FasitResourceScope;
-import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregArbeidsforholdFasitConsumerTest {
@@ -34,7 +34,7 @@ public class AaregArbeidsforholdFasitConsumerTest {
         map.put("url", "BaseUrl");
 
         when(fasitApiConsumer.fetchResources(anyString(), anyString()))
-                .thenReturn(new FasitResourceWithUnmappedProperties[] {
+                .thenReturn(new FasitResourceWithUnmappedProperties[]{
                         FasitResourceWithUnmappedProperties.builder()
                                 .scope(FasitResourceScope.builder()
                                         .environment("t0")

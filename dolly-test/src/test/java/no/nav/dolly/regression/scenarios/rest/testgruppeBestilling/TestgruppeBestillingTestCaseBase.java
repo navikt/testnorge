@@ -1,10 +1,7 @@
 package no.nav.dolly.regression.scenarios.rest.testgruppeBestilling;
 
 import no.nav.dolly.regression.scenarios.rest.RestTestBase;
-
-import org.junit.Before;
 import org.mockito.Mock;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 public abstract class TestgruppeBestillingTestCaseBase extends RestTestBase {
@@ -15,7 +12,7 @@ public abstract class TestgruppeBestillingTestCaseBase extends RestTestBase {
     @Mock
     protected RestTemplate tpsRestTemplate;
 
-    protected String getEndpointUrl(Long gruppeId){
+    protected String getEndpointUrl(Long gruppeId) {
         return "/api/v1/gruppe/" + gruppeId + "/bestilling";
     }
 }

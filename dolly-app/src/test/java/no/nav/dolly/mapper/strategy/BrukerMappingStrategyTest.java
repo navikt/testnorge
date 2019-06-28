@@ -9,13 +9,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
@@ -24,14 +17,18 @@ import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.dolly.testdata.builder.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class BrukerMappingStrategyTest {
 
     private static final String CURRENT_BRUKER_IDENT = "NAV1";
-
-    private MapperFacade mapper;
-
     private static Authentication authentication;
+    private MapperFacade mapper;
 
     @BeforeClass
     public static void beforeClass() {
@@ -51,7 +48,7 @@ public class BrukerMappingStrategyTest {
     }
 
     @Test
-    public void mapBruker(){
+    public void mapBruker() {
 
         Bruker bruker1 = Bruker.builder().navIdent("ident").build();
         Bruker bruker2 = Bruker.builder().navIdent("ident")

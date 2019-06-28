@@ -6,13 +6,13 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
+import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
-import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
+import java.util.List;
 
-public class HentAlleBrukereHenterBrukereInklGruppeOgTeamId extends BrukerTestCaseBase{
+public class HentAlleBrukereHenterBrukereInklGruppeOgTeamId extends BrukerTestCaseBase {
 
     @Test
     public void getBruker() throws Exception {

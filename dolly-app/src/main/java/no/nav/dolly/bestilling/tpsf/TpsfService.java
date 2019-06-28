@@ -38,15 +38,22 @@ public class TpsfService {
     private static final String TPSF_SEND_TPS_FLERE_URL = "/tilTpsFlere";
     private static final String TPSF_HENT_PERSONER_URL = "/hentpersoner";
     private static final String TPSF_CHECK_IDENT_STATUS = "/checkpersoner";
-
+    @Autowired
+    ObjectMapper objectMapper;
+    @Autowired
+    ProvidersProps providersProps;
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    ObjectMapper objectMapper;
+    private static boolean isBodyNotNull(ResponseEntity<Object> response) {
+        return nonNull(response) && nonNull(response.getBody()) && isNotBlank(response.getBody().toString());
+    }
 
-    @Autowired
-    ProvidersProps providersProps;
+    private static void validateEnvironments(List<String> environments) {
+        if (nonNull(environments) && environments.isEmpty()) {
+            throw new IllegalArgumentException("Ingen TPS miljoer er spesifisert for sending av testdata");
+        }
+    }
 
     public CheckStatusResponse checkEksisterendeIdenter(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_CHECK_IDENT_STATUS, new HttpEntity<>(identer));
@@ -99,16 +106,6 @@ public class TpsfService {
                 log.error(e1.getMessage(), e1);
             }
             throw new TpsfException("Formattering av TPS-melding feilet.", e);
-        }
-    }
-
-    private static boolean isBodyNotNull(ResponseEntity<Object> response) {
-        return nonNull(response) && nonNull(response.getBody()) && isNotBlank(response.getBody().toString());
-    }
-
-    private static void validateEnvironments(List<String> environments) {
-        if (nonNull(environments) && environments.isEmpty()) {
-            throw new IllegalArgumentException("Ingen TPS miljoer er spesifisert for sending av testdata");
         }
     }
 }

@@ -5,7 +5,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public final class NullcheckUtil {
 
-    private NullcheckUtil() {}
+    private NullcheckUtil() {
+    }
 
     public static <T> T nullcheckSetDefaultValue(T value, T defaultValue) {
         return nonNull(value) ? value : defaultValue;

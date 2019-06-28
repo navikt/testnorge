@@ -3,14 +3,6 @@ package no.nav.dolly.aareg;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.aareg.AaregResponseHandler.extractError;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.ws.soap.SOAPFaultException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
@@ -24,6 +16,14 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdUgy
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OppdaterArbeidsforholdRequest;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeidsforholdRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.soap.SOAPFaultException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -39,6 +39,11 @@ public class AaregWsConsumer {
 
     @Autowired
     private MapperFacade mapperFacade;
+
+    private static String getUuid(String referanse) {
+
+        return nonNull(referanse) ? referanse : "Dolly: " + UUID.randomUUID().toString();
+    }
 
     public Map<String, String> opprettArbeidsforhold(RsAaregOpprettRequest request) {
 
@@ -89,10 +94,5 @@ public class AaregWsConsumer {
         });
 
         return status;
-    }
-
-    private static String getUuid(String referanse) {
-
-        return nonNull(referanse) ? referanse : "Dolly: " + UUID.randomUUID().toString();
     }
 }

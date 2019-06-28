@@ -9,6 +9,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.exceptions.KodeverkException;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +26,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.dolly.exceptions.KodeverkException;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
-
 @RunWith(MockitoJUnitRunner.class)
 public class KodeverkConsumerTest {
 
@@ -35,18 +34,14 @@ public class KodeverkConsumerTest {
     private static final String KODEVERK_QUERY_PARAM = "?ekskluderUgyldige=true&spraak=nb";
     private static final String HEADER_NAME_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String HEADER_NAME_CALL_ID = "Nav-Call-id";
-
-    private GetKodeverkKoderBetydningerResponse standardKodeverkResponse = new GetKodeverkKoderBetydningerResponse();
-    private ResponseEntity standardReponseEntity = new ResponseEntity(standardKodeverkResponse, HttpStatus.OK);
-
     @Mock
     ProvidersProps providersProps;
-
     @Mock
     RestTemplate restTemplate;
-
     @InjectMocks
     KodeverkConsumer kodeverkConsumer;
+    private GetKodeverkKoderBetydningerResponse standardKodeverkResponse = new GetKodeverkKoderBetydningerResponse();
+    private ResponseEntity standardReponseEntity = new ResponseEntity(standardKodeverkResponse, HttpStatus.OK);
 
     @Before
     public void setup() {

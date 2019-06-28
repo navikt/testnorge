@@ -2,11 +2,7 @@ package no.nav.dolly.domain.resultset.tpsf;
 
 import static java.util.Objects.isNull;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +12,10 @@ import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsAdresse;
 import no.nav.dolly.domain.resultset.RsPostadresse;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -24,10 +24,8 @@ import no.nav.dolly.domain.resultset.RsPostadresse;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class TpsfBestilling {
 
-    private List<String> environments;
-
     List<String> opprettFraIdenter;
-
+    private List<String> environments;
     private int antall;
 
     private RsSimpleRelasjoner relasjoner;

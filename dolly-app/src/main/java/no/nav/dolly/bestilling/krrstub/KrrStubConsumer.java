@@ -3,7 +3,9 @@ package no.nav.dolly.bestilling.krrstub;
 import static java.lang.String.format;
 import static no.nav.dolly.sts.StsOidcService.getUserIdToken;
 
-import java.net.URI;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
+import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -11,9 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
-import no.nav.dolly.properties.ProvidersProps;
+import java.net.URI;
 
 @Slf4j
 @Service

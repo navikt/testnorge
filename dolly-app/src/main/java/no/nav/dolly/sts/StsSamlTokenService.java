@@ -2,8 +2,8 @@ package no.nav.dolly.sts;
 
 import static no.nav.dolly.properties.Environment.convertEnv;
 
-import java.util.HashMap;
-import java.util.Map;
+import no.nav.dolly.properties.CredentialsProps;
+import no.nav.dolly.properties.Environment;
 import org.apache.cxf.binding.soap.Soap12;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.endpoint.Client;
@@ -21,8 +21,8 @@ import org.apache.neethi.Policy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import no.nav.dolly.properties.CredentialsProps;
-import no.nav.dolly.properties.Environment;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class StsSamlTokenService {
@@ -35,6 +35,22 @@ public class StsSamlTokenService {
 
     @Autowired
     private CredentialsProps credentialsProps;
+
+    private static Policy resolvePolicyReference(Client client) {
+        PolicyBuilder policyBuilder = client.getBus().getExtension(PolicyBuilder.class);
+        ReferenceResolver resolver = new RemoteReferenceResolver("", policyBuilder);
+        return resolver.resolveReference(StsSamlTokenService.STS_REQUEST_SAML_POLICY);
+    }
+
+    private static void setClientEndpointPolicy(Client client, Policy policy) {
+        Endpoint endpoint = client.getEndpoint();
+        EndpointInfo endpointInfo = endpoint.getEndpointInfo();
+
+        PolicyEngine policyEngine = client.getBus().getExtension(PolicyEngine.class);
+        SoapMessage message = new SoapMessage(Soap12.getInstance());
+        EndpointPolicy endpointPolicy = policyEngine.getClientEndpointPolicy(endpointInfo, null, message);
+        policyEngine.setClientEndpointPolicy(endpointInfo, endpointPolicy.updatePolicy(policy, message));
+    }
 
     public void configureStsRequestSamlToken(Object port, String env) {
 
@@ -63,21 +79,5 @@ public class StsSamlTokenService {
 
         //used for the STS client to authenticate itself to the STS provider.
         stsClient.setPolicy(STS_CLIENT_AUTHENTICATION_POLICY);
-    }
-
-    private static Policy resolvePolicyReference(Client client) {
-        PolicyBuilder policyBuilder = client.getBus().getExtension(PolicyBuilder.class);
-        ReferenceResolver resolver = new RemoteReferenceResolver("", policyBuilder);
-        return resolver.resolveReference(StsSamlTokenService.STS_REQUEST_SAML_POLICY);
-    }
-
-    private static void setClientEndpointPolicy(Client client, Policy policy) {
-        Endpoint endpoint = client.getEndpoint();
-        EndpointInfo endpointInfo = endpoint.getEndpointInfo();
-
-        PolicyEngine policyEngine = client.getBus().getExtension(PolicyEngine.class);
-        SoapMessage message = new SoapMessage(Soap12.getInstance());
-        EndpointPolicy endpointPolicy = policyEngine.getClientEndpointPolicy(endpointInfo, null, message);
-        policyEngine.setClientEndpointPolicy(endpointInfo, endpointPolicy.updatePolicy(policy, message));
     }
 }

@@ -4,14 +4,14 @@ import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import java.net.URI;
+import no.nav.dolly.sts.StsOidcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.dolly.sts.StsOidcService;
+import java.net.URI;
 
 @Service
 public class AaregRestConsumer {

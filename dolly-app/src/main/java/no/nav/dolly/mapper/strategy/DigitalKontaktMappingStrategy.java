@@ -2,24 +2,26 @@ package no.nav.dolly.mapper.strategy;
 
 import static java.util.Objects.nonNull;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Component
 public class DigitalKontaktMappingStrategy implements MappingStrategy {
 
-    @Override public void register(MapperFactory factory) {
+    @Override
+    public void register(MapperFactory factory) {
         factory.classMap(RsDigitalKontaktdata.class, DigitalKontaktdataRequest.class)
                 .customize(new CustomMapper<RsDigitalKontaktdata, DigitalKontaktdataRequest>() {
-                    @Override public void mapAtoB(RsDigitalKontaktdata digitalKontaktdata, DigitalKontaktdataRequest kontaktdataRequest, MappingContext context) {
+                    @Override
+                    public void mapAtoB(RsDigitalKontaktdata digitalKontaktdata, DigitalKontaktdataRequest kontaktdataRequest, MappingContext context) {
 
                         kontaktdataRequest.setGyldigFra(getDato(digitalKontaktdata));
 

@@ -3,19 +3,19 @@ package no.nav.dolly.bestilling.pdlforvalter;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-import java.net.URI;
+import com.fasterxml.jackson.databind.JsonNode;
+import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
+import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.dolly.sts.StsOidcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
 
-import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
-import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.sts.StsOidcService;
+import java.net.URI;
 
 @Service
 public class PdlForvalterRestConsumer {
@@ -70,6 +70,6 @@ public class PdlForvalterRestConsumer {
 
     private String resolveToken() {
 
-        return environment.toLowerCase().contains(PREPROD_ENV) ?  StsOidcService.getUserIdToken() : stsOidcService.getIdToken(PREPROD_ENV);
+        return environment.toLowerCase().contains(PREPROD_ENV) ? StsOidcService.getUserIdToken() : stsOidcService.getIdToken(PREPROD_ENV);
     }
 }

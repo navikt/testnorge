@@ -6,13 +6,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsBruker;
@@ -20,6 +13,12 @@ import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
 import no.nav.dolly.domain.resultset.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.service.BrukerService;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrukerControllerTest {
@@ -44,13 +43,13 @@ public class BrukerControllerTest {
 
         RsBrukerTeamAndGruppeIDs res = controller.getBrukerByNavIdent("navident");
 
-        assertThat(res.getNavIdent() , is("navident"));
+        assertThat(res.getNavIdent(), is("navident"));
     }
 
     @Test
     public void getCurrentBruker() {
         String standardPrincipal = "test";
-        OidcTokenAuthentication token = new OidcTokenAuthentication(standardPrincipal,null, null, null);
+        OidcTokenAuthentication token = new OidcTokenAuthentication(standardPrincipal, null, null, null);
         SecurityContextHolder.getContext().setAuthentication(token);
 
         Bruker b = new Bruker();

@@ -5,8 +5,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.fasit.FasitApiConsumer;
+import no.nav.dolly.fasit.FasitResourceScope;
+import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
+import no.nav.dolly.properties.Environment;
 import org.hamcrest.MatcherAssert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -16,32 +19,26 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.fasit.FasitApiConsumer;
-import no.nav.dolly.fasit.FasitResourceScope;
-import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
-import no.nav.dolly.properties.Environment;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StsOidcFasitConsumerTest {
 
     private static final Environment ENV = Environment.TEST;
     private static final String OIDC_ALIAS = "security-token-service-token";
-
-    @Mock
-    private FasitApiConsumer fasitApiConsumer;
-
-    @InjectMocks
-    private StsOidcFasitConsumer stsOidcFasitConsumer;
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+    @Mock
+    private FasitApiConsumer fasitApiConsumer;
+    @InjectMocks
+    private StsOidcFasitConsumer stsOidcFasitConsumer;
 
     @Test
     public void getStsOidcService_notFound() {
 
         when(fasitApiConsumer.fetchResources(anyString(), anyString()))
-                .thenReturn(new FasitResourceWithUnmappedProperties[] {});
+                .thenReturn(new FasitResourceWithUnmappedProperties[]{});
 
         expectedException.expect(DollyFunctionalException.class);
         expectedException.expectMessage("Ugyldig sts-miljø/sts-miljø ikke funnet.");
@@ -57,7 +54,7 @@ public class StsOidcFasitConsumerTest {
         properties.put("url", serviceUrl);
 
         when(fasitApiConsumer.fetchResources(anyString(), anyString())).thenReturn(
-                new FasitResourceWithUnmappedProperties[] {
+                new FasitResourceWithUnmappedProperties[]{
                         FasitResourceWithUnmappedProperties.builder()
                                 .alias(OIDC_ALIAS)
                                 .scope(FasitResourceScope.builder()

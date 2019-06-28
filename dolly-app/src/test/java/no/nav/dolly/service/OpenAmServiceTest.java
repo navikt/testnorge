@@ -12,6 +12,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.domain.jira.AllowedValue;
+import no.nav.dolly.domain.jira.Field;
+import no.nav.dolly.domain.jira.Fields;
+import no.nav.dolly.domain.jira.Issuetypes;
+import no.nav.dolly.domain.jira.JiraResponse;
+import no.nav.dolly.domain.jira.Project;
+import no.nav.dolly.domain.resultset.RsOpenAmResponse;
+import no.nav.dolly.jira.JiraConsumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,15 +31,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpServerErrorException;
-
-import no.nav.dolly.domain.resultset.RsOpenAmResponse;
-import no.nav.dolly.jira.JiraConsumer;
-import no.nav.dolly.domain.jira.AllowedValue;
-import no.nav.dolly.domain.jira.Field;
-import no.nav.dolly.domain.jira.Fields;
-import no.nav.dolly.domain.jira.Issuetypes;
-import no.nav.dolly.domain.jira.JiraResponse;
-import no.nav.dolly.domain.jira.Project;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OpenAmServiceTest {
