@@ -141,7 +141,7 @@ jobs:
           command: |
             # echo "$DEPLOYMENT_PASSWORD" | docker login -u "$DEPLOYMENT_USERNAME" --password-stdin docker.pkg.github.com
             # docker push docker.pkg.github.com/$DOCKER_TAG
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
             docker push $DOCKER_TAG
       - persist_to_workspace:
           root: /tmp/workspace
