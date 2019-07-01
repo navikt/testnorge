@@ -9,25 +9,36 @@ jobs:
           name: Run tests
           command: |
             mvn test
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - run: mkdir -p /tmp/workspace
+      - run:
+          name: Build jar
+          command: |
+            mvn clean install -DskipTests
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
   release:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
       - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
       - run:
           name: Generate version number and docker image tags
           command: |
-            mkdir /tmp/workspace
             export RELEASE_VERSION=$CIRCLE_SHA1-$CIRCLE_BUILD_NUM
             echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
             echo "export DOCKER_TAG=\"docker.pkg.github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
             # echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
             cat /tmp/workspace/properties.env >> $BASH_ENV
-      - run:
-          name: Install required dependencies
-          command: |
-            mvn package
       - run:
           name: Build docker image
           command: docker build -t $DOCKER_TAG .
@@ -64,10 +75,11 @@ workflows:
   build_deploy_release:
     jobs:
       - test
+      - build
       - hold:
           type: approval
           requires:
-            - test
+            - build
       - release:
           filters:
             branches:
