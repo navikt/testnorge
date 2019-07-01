@@ -19,10 +19,11 @@ jobs:
           name: Build jar
           command: |
             mvn clean install -DskipTests
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
+      - run: ls -lah
+  #      - persist_to_workspace:
+  #          root: /tmp/workspace
+  #          paths:
+  #            - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
   release:
     docker:
       - image: circleci/openjdk:8-jdk
