@@ -64,16 +64,19 @@ workflows:
   build_deploy_release:
     jobs:
       - build
+      - hold:
+          type: approval
+          requires:
+            - build
       - release:
           filters:
             branches:
               only: master
           requires:
-            - build
+            - hold
       - deploy:
           filters:
             branches:
               only: master
           requires:
             - release
-            - hold
