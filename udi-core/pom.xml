@@ -33,6 +33,11 @@
             <artifactId>spring-boot-starter-web-services</artifactId>
         </dependency>
 
+        <!--DATABASE-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
 
         <!--DOCUMENTATION-->
         <dependency>
@@ -43,7 +48,6 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
-
 
         <!--SOAP-->
         <dependency>
