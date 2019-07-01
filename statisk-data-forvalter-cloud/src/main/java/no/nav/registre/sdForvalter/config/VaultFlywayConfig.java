@@ -24,6 +24,7 @@ public class VaultFlywayConfig {
             val secretPath = format("%s/%s", flywayProperties.getBackend(), flywayProperties.getRole());
 
             val vaultResponse = vaultOperations.read(secretPath);
+            assert vaultResponse != null;
             val username = vaultResponse.getData().get("username").toString();
             val password = vaultResponse.getData().get("password").toString();
 

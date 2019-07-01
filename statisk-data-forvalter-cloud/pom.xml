@@ -2,22 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>testnorge-statisk-data-forvalter</artifactId>
         <groupId>no.nav.registre</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>statisk-data-forvalter-local</artifactId>
+    <artifactId>statisk-data-forvalter-cloud</artifactId>
+
 
     <dependencies>
-
-        <dependency>
-            <groupId>no.nav.registre</groupId>
-            <artifactId>statisk-data-forvalter-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <!--Utility-->
         <dependency>
@@ -26,28 +22,41 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>statisk-data-forvalter-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <!--SPRING-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>org.springframework.vault</groupId>
+            <artifactId>spring-vault-core</artifactId>
         </dependency>
 
+        <!--DATABASE-->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-vault-config-databases</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
+
+
     <build>
+        <finalName>testnorge-statisk-data-forvalter</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -55,5 +64,7 @@
             </plugin>
         </plugins>
     </build>
+
+
 
 </project>

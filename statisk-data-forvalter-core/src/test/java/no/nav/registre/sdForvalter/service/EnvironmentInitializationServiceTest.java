@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -20,6 +21,7 @@ import no.nav.registre.sdForvalter.database.repository.AaregRepository;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
+@ContextConfiguration(classes = EnvironmentInitializationService.class)
 public class EnvironmentInitializationServiceTest {
 
     private static final String ENV = "t1";

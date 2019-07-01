@@ -1,0 +1,82 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          command: |
+            mvn test
+  release:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Generate version number and docker image tags
+          command: |
+            mkdir /tmp/workspace
+            export RELEASE_VERSION=$CIRCLE_SHA1-$CIRCLE_BUILD_NUM
+            echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
+            echo "export DOCKER_TAG=\"docker.pkg.github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
+            # echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
+            cat /tmp/workspace/properties.env >> $BASH_ENV
+      - run:
+          name: Install required dependencies
+          command: |
+            mvn package
+      - run:
+          name: Build docker image
+          command: docker build -t $DOCKER_TAG .
+      - run:
+          name: Docker push
+          command: |
+            echo "$GITHUB_PASSWORD" | docker login -u "$GITHUB_USERNAME" --password-stdin docker.pkg.github.com
+            echo $DOCKER_TAG
+            docker push $DOCKER_TAG
+            # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - properties.env
+  deploy:
+    docker:
+      - image: navikt/deployment-cli:44bb04ecc11c0e57ac539744411c70794dd31899
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Set up environment variables
+          command: cat /tmp/workspace/properties.env >> $BASH_ENV
+      - run:
+          name: Create github deployment for dev-fss
+          command: source $BASH_ENV; deployment-cli deploy create --cluster=dev-fss
+            --team=orkestrator -r=nais.yaml --version=${DOCKER_TAG}
+            --username $GITHUB_USERNAME
+            --password $GITHUB_PASSWORD
+            --repository=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+workflows:
+  version: 2
+  build_deploy_release:
+    jobs:
+      - test
+      - hold:
+          type: approval
+          requires:
+            - test
+      - release:
+          filters:
+            branches:
+              only: master
+          requires:
+            - hold
+      - deploy:
+          filters:
+            branches:
+              only: master
+          requires:
+            - release
