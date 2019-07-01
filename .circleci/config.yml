@@ -159,14 +159,14 @@ jobs:
           command: cat /tmp/workspace/properties.env >> $BASH_ENV
       - run:
           name: Create github deployment for dev-fss
-          command: source $BASH_ENV; deployment-cli deploy create --cluster=prod-fss
-            --team=orkestratoren -r=service_account.yaml -r=job.yaml --version=${DOCKER_TAG}
+          command: source $BASH_ENV; deployment-cli deploy create --cluster=dev-fss
+            --team=orkestratoren -r=nais.yaml --version=${DOCKER_TAG}
             --repository=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 workflows:
   version: 2
   build_and_release:
     jobs:
-      - linux_build:
+      - build:
           filters:
             tags:
               only: master
@@ -175,4 +175,4 @@ workflows:
             branches:
               only: master
           requires:
-            - linux_build
+            - build
