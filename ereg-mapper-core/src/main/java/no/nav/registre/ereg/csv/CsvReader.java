@@ -30,16 +30,25 @@ public class CsvReader {
             String[] line;
             while ((line = reader.readNext()) != null) {
                 line[0] = removeUTF8BOM(line[0]);
-                naeringskodeRecords.add(NaeringskodeRecord.builder()
+
+                NaeringskodeRecord.NaeringskodeRecordBuilder builder = NaeringskodeRecord.builder()
                         .code(line[0])
                         .parentCode(line[1])
                         .level(line[2])
                         .name(line[3])
                         .shortName(line[4])
-                        .notes(line[5])
-                        .validFrom(line[6])
-                        .validTo(line[7])
-                        .build());
+                        .notes(line[5]);
+
+                if (line.length >= 7) {
+                    builder.validFrom(line[6]);
+                }
+                if (line.length == 8) {
+                    builder.validTo(line[7]);
+                }
+
+
+                naeringskodeRecords.add(builder.build());
+
             }
         } catch (IOException e) {
             e.printStackTrace();
