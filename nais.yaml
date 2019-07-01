@@ -6,7 +6,7 @@ metadata:
   labels:
     team: orkestrator
 spec:
-  image: "repo.adeo.no:5443/registre/testnorge-ereg-mapper:1.0.0-1"
+  image: "repo.adeo.no:5443/registre/testnorge-ereg-mapper:1.0.0-3"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

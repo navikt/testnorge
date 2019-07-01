@@ -1,6 +1,5 @@
 package no.nav.registre.ereg.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,13 +17,21 @@ import no.nav.registre.ereg.csv.NaeringskodeRecord;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class NameService {
 
     private final IdentPoolConsumer identPoolConsumer;
-    @Value("${naeringskoder.path}")
     private final String filePath;
+
     private Map<String, NaeringskodeRecord> naeringskodeRecords;
+
+    public NameService(
+            @Value("${naeringskoder.path}")
+                    String filePath,
+            IdentPoolConsumer identPoolConsumer
+    ) {
+        this.filePath = filePath;
+        this.identPoolConsumer = identPoolConsumer;
+    }
 
     @PostConstruct
     public void init() {
