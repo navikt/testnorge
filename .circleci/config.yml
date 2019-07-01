@@ -3,12 +3,12 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk
-      steps:
-        - checkout
-        - run:
-            name: Run tests
-            command: |
-              mvn test
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          command: |
+            mvn test
   release:
     docker:
       - image: circleci/openjdk:8-jdk
