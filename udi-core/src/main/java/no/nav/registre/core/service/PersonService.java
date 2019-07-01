@@ -59,12 +59,11 @@ public class PersonService {
     }
 
     public Arbeidsadgang opprettArbeidsAdgang(String fnr, Arbeidsadgang arbeidsadgang) {
-        Optional<Person> person = personRepository.findById(fnr);
-        if (person.isPresent()) {
-            arbeidsadgang.setPerson(person.get());
+        return personRepository.findById(fnr).map(person -> {
+            arbeidsadgang.setPerson(person);
             return arbeidsAdgangRepository.save(arbeidsadgang);
-        }
-        return null;
+        }).orElse(null);
+
     }
 
     public Alias opprettAlias(String fnr, PersonNavn navn) {
