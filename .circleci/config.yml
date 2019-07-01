@@ -27,16 +27,15 @@ jobs:
       - restore_cache:
           keys:
             - m2-{{ .Branch }}-{{ checksum "pom.xml" }}
-      - run: mvn dependency:go-offline
+      - run:
+          name: Install required dependencies
+          command: |
+            mvn package
       - save_cache:
           paths:
             - ~/.m2
           key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
 
-      - run:
-          name: Install required dependencies
-          command: |
-            mvn package
       - run:
           name: Build docker image
           command: docker build -t $DOCKER_TAG .
