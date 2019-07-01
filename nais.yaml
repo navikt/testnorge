@@ -6,7 +6,7 @@ metadata:
   labels:
     team: orkestrator
 spec:
-  image: "repo.adeo.no:5443/registre/testnorge-statisk-data-forvalter:1.2.0-3"
+  image: {{version}}
   port: 8080
   liveness:
     path: /internal/isAlive
