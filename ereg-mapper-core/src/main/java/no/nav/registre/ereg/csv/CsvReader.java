@@ -46,9 +46,7 @@ public class CsvReader {
                     builder.validTo(line[7]);
                 }
 
-
                 naeringskodeRecords.add(builder.build());
-
             }
         } catch (IOException e) {
             e.printStackTrace();
