@@ -1,4 +1,4 @@
-package no.nav.registre.cloud.config;
+package no.nav.registre.core.provider;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.annotations.ApiIgnore;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -14,8 +15,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Configure automated swagger API documentation
@@ -30,7 +32,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     @Bean
     public Docket api() {
-        HashSet contentTypeJson = new HashSet(Arrays.asList("application/json"));
+        Set<String> contentTypeJson = new HashSet<>(Collections.singletonList("application/json"));
         return new Docket(DocumentationType.SWAGGER_2)
                 .ignoredParameterTypes(ApiIgnore.class)
                 .select()
@@ -44,14 +46,15 @@ public class SwaggerConfig implements WebMvcConfigurer {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Udi-stub",
-                "Stub av persontjenesten til UDI",
-                "" + appVersion,
-                "https://nav.no",
-                new Contact("Navikt", "https://github.com/navikt/UDI-stub", null),
-                "Super Strict Licence",
-                "https://opensource.org/licenses/super-strict-license");
+        return new ApiInfoBuilder()
+                .title("Udi-stub")
+                .description("Stub av persontjenesten til UDI")
+                .version("" + appVersion)
+                .termsOfServiceUrl("https://nav.no")
+                .contact(new Contact("Navikt", "https://github.com/navikt/UDI-stub", null))
+                .license("Super Strict Licence")
+                .licenseUrl("https://opensource.org/licenses/super-strict-license")
+                .build();
     }
 
     @Override

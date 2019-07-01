@@ -12,8 +12,8 @@ jobs:
             mkdir /tmp/workspace
             export RELEASE_VERSION=$CIRCLE_SHA1-$CIRCLE_BUILD_NUM
             echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
-            echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
-            # echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
+            echo "export DOCKER_TAG=\"docker.pkg.github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
+            # echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
             cat /tmp/workspace/properties.env >> $BASH_ENV
       - run:
           name: Install required dependencies
@@ -27,11 +27,10 @@ jobs:
       - run:
           name: Docker push
           command: |
-            # echo "$DEPLOYMENT_PASSWORD" | docker login -u "$DEPLOYMENT_USERNAME" --password-stdin docker.pkg.github.com
-            # docker push docker.pkg.github.com/$DOCKER_TAG
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
+            echo "$GITHUB_PASSWORD" | docker login -u "$GITHUB_USERNAME" --password-stdin docker.pkg.github.com
             echo $DOCKER_TAG
             docker push $DOCKER_TAG
+            # echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
       - persist_to_workspace:
           root: /tmp/workspace
           paths:

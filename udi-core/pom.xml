@@ -51,7 +51,6 @@
             <artifactId>wsdl4j</artifactId>
         </dependency>
 
-
     </dependencies>
 
     <build>
@@ -72,7 +71,7 @@
                      <sources>
                          <source>${project.basedir}/src/main/resources/informasjon</source>
                      </sources>
-                     <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                     <outputDirectory>${project.basedir}/target/generated-sources/</outputDirectory>
                      <clearOutputDir>false</clearOutputDir>
                      <generateEpisode>false</generateEpisode>
                      <addGeneratedAnnotation>true</addGeneratedAnnotation>
