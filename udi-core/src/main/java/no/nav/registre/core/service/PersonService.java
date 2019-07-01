@@ -33,8 +33,7 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     public Person finnPerson(String fnr) {
-        Optional<Person> person = personRepository.findById(fnr);
-        return person.orElse(null);
+        return personRepository.findById(fnr).orElse(null);
     }
 
     public List<Person> opprettPersoner(List<Person> personer) {
@@ -59,60 +58,48 @@ public class PersonService {
     }
 
     public Arbeidsadgang opprettArbeidsAdgang(String fnr, Arbeidsadgang arbeidsadgang) {
-        Optional<Person> person = personRepository.findById(fnr);
-        if (person.isPresent()) {
-            arbeidsadgang.setPerson(person.get());
+        return personRepository.findById(fnr).map(person -> {
+            arbeidsadgang.setPerson(person);
             return arbeidsAdgangRepository.save(arbeidsadgang);
-        }
-        return null;
+        }).orElse(null);
     }
 
-    public Alias opprettAlias(String fnr, PersonNavn navn) {
-        Optional<Person> person = personRepository.findById(fnr);
-        if (person.isPresent()) {
-            Alias alias = Alias.builder()
-                    .fnr(fnr)
-                    .navn(navn)
-                    .person(person.get())
-                    .build();
-            return aliasRepository.save(alias);
-        }
-        return null;
+    private Alias opprettAlias(String fnr, PersonNavn navn) {
+        return personRepository.findById(fnr).map(person ->
+                Alias.builder()
+                        .fnr(fnr)
+                        .navn(navn)
+                        .person(person)
+                        .build()
+        ).orElse(null);
     }
 
-    public Avgjoerelse opprettAvgjoerelse(String fnr, Avgjoerelse avgjoerelse) {
-        Optional<Person> person = personRepository.findById(fnr);
-        if (person.isPresent()) {
-            avgjoerelse.setPerson(person.get());
+    private Avgjoerelse opprettAvgjoerelse(String fnr, Avgjoerelse avgjoerelse) {
+        return personRepository.findById(fnr).map(person -> {
+            avgjoerelse.setPerson(person);
             Avgjoerelse lagretAvgjoerelse = avgjoerelseRepository.save(avgjoerelse);
             lagretAvgjoerelse.setOmgjortAvgjoerelsesId(lagretAvgjoerelse.getId().toString());
             return avgjoerelseRepository.save(lagretAvgjoerelse);
-        }
-        return null;
+        }).orElse(null);
     }
 
     public OppholdsStatus opprettOppholdsStatus(String fnr, OppholdsStatus oppholdsStatus) {
-        Optional<Person> person = personRepository.findById(fnr);
-        if (person.isPresent()) {
-            oppholdsStatus.setPerson(person.get());
+        return personRepository.findById(fnr).map(person -> {
+            oppholdsStatus.setPerson(person);
             return oppholdStatusRepository.save(oppholdsStatus);
-        }
-        return null;
+        }).orElse(null);
     }
 
     public List<Avgjoerelse> findAvgjoerelserByFnr(String fnr) {
-        Optional<Person> optionalPerson = personRepository.findById(fnr);
-        return optionalPerson.map(Person::getAvgjoerelser).orElse(null);
+        return personRepository.findById(fnr).map(Person::getAvgjoerelser).orElse(null);
     }
 
     public List<Alias> findAliasByFnr(String fnr) {
-        Optional<Person> optionalPerson = personRepository.findById(fnr);
-        return optionalPerson.map(Person::getAliaser).orElse(null);
+        return personRepository.findById(fnr).map(Person::getAliaser).orElse(null);
     }
 
     public Arbeidsadgang findArbeidsAdgangByFnr(String fnr) {
-        Optional<Person> optionalPerson = personRepository.findById(fnr);
-        return optionalPerson.map(Person::getArbeidsadgang).orElse(null);
+        return personRepository.findById(fnr).map(Person::getArbeidsadgang).orElse(null);
     }
 
     private JaNeiUavklart convertFraBool(Boolean avklart) {

@@ -33,6 +33,11 @@
             <artifactId>spring-boot-starter-web-services</artifactId>
         </dependency>
 
+        <!--DATABASE-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
 
         <!--DOCUMENTATION-->
         <dependency>
@@ -44,13 +49,11 @@
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
 
-
         <!--SOAP-->
         <dependency>
             <groupId>wsdl4j</groupId>
             <artifactId>wsdl4j</artifactId>
         </dependency>
-
 
     </dependencies>
 
@@ -72,7 +75,7 @@
                      <sources>
                          <source>${project.basedir}/src/main/resources/informasjon</source>
                      </sources>
-                     <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                     <outputDirectory>${project.basedir}/target/generated-sources/</outputDirectory>
                      <clearOutputDir>false</clearOutputDir>
                      <generateEpisode>false</generateEpisode>
                      <addGeneratedAnnotation>true</addGeneratedAnnotation>
