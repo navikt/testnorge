@@ -20,7 +20,7 @@ jobs:
           command: |
             mvn clean install -DskipTests
       - persist_to_workspace:
-          root: workspace
+          root: /tmp/workspace
           paths:
             - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
   release:
@@ -75,7 +75,9 @@ workflows:
   build_deploy_release:
     jobs:
       - test
-      - build
+      - build:
+          requires:
+            - test
       - hold:
           type: approval
           requires:
