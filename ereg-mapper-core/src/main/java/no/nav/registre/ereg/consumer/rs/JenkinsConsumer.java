@@ -67,7 +67,7 @@ public class JenkinsConsumer {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.add("Jenkins-Crumb", getCrumb());
 
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
