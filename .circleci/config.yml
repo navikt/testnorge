@@ -47,6 +47,9 @@ jobs:
           name: Set up environment variables
           command: cat /tmp/workspace/properties.env >> $BASH_ENV
       - run:
+          name: export
+          command: export RUST_BACKTRACE=1
+      - run:
           name: Create github deployment for dev-fss
           command: source $BASH_ENV; deployment-cli deploy create --cluster=dev-fss
             --team=orkestrator -r=nais.yaml --version=${DOCKER_TAG}
