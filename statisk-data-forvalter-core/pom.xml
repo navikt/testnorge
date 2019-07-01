@@ -76,6 +76,16 @@
             <artifactId>spring-cloud-vault-config-databases</artifactId>
         </dependency>
 
+        <!--DOCUMENTATION-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+
         <!--TEST-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
