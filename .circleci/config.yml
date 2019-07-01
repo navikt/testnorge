@@ -19,8 +19,6 @@ jobs:
           name: Install required dependencies
           command: |
             mvn package
-      - store_artifacts:
-          path: target/udi-stub
       - run:
           name: Build docker image
           command: docker build -t $DOCKER_TAG .
