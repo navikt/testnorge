@@ -15,15 +15,21 @@ jobs:
     steps:
       - checkout
       - run: mkdir -p /tmp/workspace
+      - restore_cache:
+          keys:
+            - m2-{{ .Branch }}-{{ checksum "pom.xml" }}
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
       - run:
           name: Build jar
           command: |
             mvn clean install -DskipTests
       - run: ls -lah
-  #      - persist_to_workspace:
-  #          root: /tmp/workspace
-  #          paths:
-  #            - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
+      - persist_to_workspace:
+          paths:
+            - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
   release:
     docker:
       - image: circleci/openjdk:8-jdk
