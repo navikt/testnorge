@@ -15,7 +15,5 @@ import javax.persistence.Embeddable;
 @Setter
 @Getter
 public class OppholdSammeVilkaar {
-
-    private String oppholdPaaSammeVilkaar = null;
-
+    private String oppholdPaaSammeVilkaar;
 }
