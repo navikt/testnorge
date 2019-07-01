@@ -61,7 +61,7 @@ jobs:
             --repository=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 workflows:
   version: 2
-  build_and_release:
+  build_deploy_release:
     jobs:
       - build
       - release:
@@ -75,3 +75,4 @@ workflows:
               only: master
           requires:
             - release
+            - hold
