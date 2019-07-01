@@ -50,6 +50,8 @@ jobs:
           name: Create github deployment for dev-fss
           command: source $BASH_ENV; deployment-cli deploy create --cluster=dev-fss
             --team=orkestrator -r=nais.yaml --version=${DOCKER_TAG}
+            --username $GITHUB_USERNAME
+            --password $GITHUB_PASSWORD
             --repository=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 workflows:
   version: 2
