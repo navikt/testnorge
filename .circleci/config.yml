@@ -3,6 +3,15 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk
+      steps:
+        - checkout
+        - run:
+            name: Run tests
+            command: |
+              mvn test
+  release:
+    docker:
+      - image: circleci/openjdk:8-jdk
     steps:
       - checkout
       - setup_remote_docker
@@ -44,9 +53,6 @@ jobs:
           name: Set up environment variables
           command: cat /tmp/workspace/properties.env >> $BASH_ENV
       - run:
-          name: export
-          command: export RUST_BACKTRACE=1
-      - run:
           name: Create github deployment for dev-fss
           command: source $BASH_ENV; deployment-cli deploy create --cluster=dev-fss
             --team=orkestrator -r=nais.yaml --version=${DOCKER_TAG}
@@ -57,10 +63,12 @@ workflows:
   version: 2
   build_and_release:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: master
+      - build
+      - release:
+          branches:
+            only: master
+          requires:
+            - build
       - deploy:
           filters:
             branches:
