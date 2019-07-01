@@ -160,7 +160,7 @@ jobs:
       - run:
           name: Create github deployment for dev-fss
           command: source $BASH_ENV; deployment-cli deploy create --cluster=dev-fss
-            --team=orkestratoren -r=nais.yaml --version=${DOCKER_TAG}
+            --team=orkestrator -r=nais.yaml --version=${DOCKER_TAG}
             --repository=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
 workflows:
   version: 2
@@ -171,6 +171,7 @@ workflows:
             tags:
               only: master
       - deploy:
+          context: NAIS deployment
           filters:
             branches:
               only: master
