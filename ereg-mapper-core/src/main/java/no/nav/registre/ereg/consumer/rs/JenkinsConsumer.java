@@ -41,7 +41,7 @@ public class JenkinsConsumer {
             @Value("${jenkins.username}") String jenkinsUsername) {
         this.restTemplate = restTemplate;
         environment = env;
-        jenkinsJobTemplate = new UriTemplate(jenkinsUri + "/job/Start_BEREG007/");
+        jenkinsJobTemplate = new UriTemplate(jenkinsUri + "/view/Registre/job/Start_BEREG007/");
         jenkinsCrumbTemplate = new UriTemplate(jenkinsUri + "/crumbIssuer/api/json");
 
         serverConfigString = "jenkins.server.%s";
