@@ -1,11 +1,9 @@
 package no.nav.registre.ereg.consumer.rs.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@Getter
+@NoArgsConstructor
 public class NameResponse {
 
     @JsonProperty("fornavn")

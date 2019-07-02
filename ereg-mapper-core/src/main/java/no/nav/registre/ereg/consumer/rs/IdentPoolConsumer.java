@@ -27,11 +27,11 @@ public class IdentPoolConsumer {
     private final RestTemplate restTemplate;
 
     public IdentPoolConsumer(@Value("${ident.pool.url}") String identPoolUrl, RestTemplate restTemplate) {
-        nameServiceTemplate = new UriTemplate(identPoolUrl + "/v1/fiktive-navn/tilfeldig?antall={}");
+        nameServiceTemplate = new UriTemplate(identPoolUrl + "/v1/fiktive-navn/tilfeldig?antall={antall}");
         this.restTemplate = restTemplate;
     }
 
-    public List<String> getFakeNames(int count) {
+    public List<String> getFakeNames(Integer count) {
         try {
             ResponseEntity<List<NameResponse>> response = restTemplate.exchange(nameServiceTemplate.expand(count), HttpMethod.GET, null, RESPONSE_TYPE);
             if (!response.getStatusCode().is2xxSuccessful()) {
