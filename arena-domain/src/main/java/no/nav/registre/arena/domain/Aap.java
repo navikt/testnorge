@@ -1,6 +1,5 @@
 package no.nav.registre.arena.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
@@ -15,11 +14,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class Aap {
     @JsonProperty
-    /*@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")*/
     @JsonDeserialize(using = CustomDateDeserializer.class, as = Date.class)
     private Date fraDato;
     @JsonProperty
-    /*@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")*/
     @JsonDeserialize(using = CustomDateDeserializer.class, as = Date.class)
     private Date tilDato;
 }

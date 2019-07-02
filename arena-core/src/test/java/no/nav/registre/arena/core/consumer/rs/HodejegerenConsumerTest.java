@@ -60,9 +60,10 @@ public class HodejegerenConsumerTest {
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(gruppeId);
 
         assertThat(listAppender.list.size(), is(Matchers.equalTo(1)));
-        assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Hodejegeren: NullPointerException"));
+        assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Hodejegeren."));
     }
 
+    // TODO: test for 4xx/3xx/5xx status fra response.
 
 
     private void stubHodejegerenConsumer() {

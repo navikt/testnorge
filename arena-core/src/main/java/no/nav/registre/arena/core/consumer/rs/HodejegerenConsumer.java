@@ -37,14 +37,17 @@ public class HodejegerenConsumer {
 
         RequestEntity getRequest = RequestEntity.get(hentLevendeIdenterOverAlderUrl.expand(avspillergruppeId.toString())).build();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
-        List<String> levendeIdenter = new ArrayList<>();
 
-        if (response.getBody() == null) {
-            log.error("HodejegerenConsumer.finnLevendeIdenterOverAlder: Kunne ikke hente response body fra Hodejegeren: NullPointerException");
-        } else {
-            levendeIdenter.addAll(response.getBody());
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            log.error("Status: {}", response.getStatusCode());
+            return null;
         }
 
-        return levendeIdenter;
+        if (response.getBody() == null) {
+            log.error("Kunne ikke hente response body fra Hodejegeren.");
+            return null;
+        }
+
+        return new ArrayList<>(response.getBody());
     }
 }

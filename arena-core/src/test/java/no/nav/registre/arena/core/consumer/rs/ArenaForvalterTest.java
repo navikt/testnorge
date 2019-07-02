@@ -79,6 +79,11 @@ public class ArenaForvalterTest {
 
     }
 
+    @Test
+    public void shouldLogOnBadRequest() {
+
+    }
+
 
     private void stubArenaForvalterConsumer() {
 
@@ -87,6 +92,15 @@ public class ArenaForvalterTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("arenaForvalterenNyeBrukereResponse.json"))));
+    }
+
+    private void stubArenaForvalterBadRequest() {
+
+        stubFor(post(urlEqualTo("/arena-forvalteren/api/v1/bruker?eier=" + EIER))
+                .withRequestBody(equalToJson("{}"))
+        .willReturn(aResponse()
+                .withStatus(500)
+                .withBody()))
     }
 
 }

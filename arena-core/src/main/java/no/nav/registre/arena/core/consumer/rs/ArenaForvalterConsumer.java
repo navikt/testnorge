@@ -46,13 +46,12 @@ public class ArenaForvalterConsumer {
                 StatusFraArenaForvalterResponse.class);
 
 
-        if (response.getBody() == null) {
-            log.error("ArenaForvalterConsumer.sendTilArenaForvalter: Kunne ikke hente response body fra Arena Forvalteren: NullPointerException");
-        } else {
-            return response.getBody();
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            log.error("Ugyldig brukeroppsett. Kunne ikke opprette nye brukere. Status: {}", response.getStatusCode());
+            return null;
         }
 
-        return StatusFraArenaForvalterResponse.builder().build();
+        return response.getBody();
     }
 
 
