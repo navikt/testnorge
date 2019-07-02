@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collections;
 
@@ -15,7 +15,7 @@ import no.nav.registre.ereg.TestUtil;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 
 @Slf4j
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = EregMapper.class)
 public class EregMapperTest {
 
