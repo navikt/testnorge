@@ -38,6 +38,7 @@ jobs:
           root: .
           paths:
             - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
+            - Dockerfile
   release:
     docker:
       - image: circleci/openjdk:8-jdk
