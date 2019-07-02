@@ -4,9 +4,10 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
+      - checkout
       - run:
           name: Install Dependencies
-          command: mvn dependency:go-offline
+          command: mvn dependency:resolve-plugins dependency:go-offline
       - save_cache:
           paths:
             - ~/.m2
