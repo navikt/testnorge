@@ -39,6 +39,7 @@ jobs:
           paths:
             - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
             - Dockerfile
+            - nais.yaml
   release:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -46,8 +47,6 @@ jobs:
       - setup_remote_docker
       - attach_workspace:
           at: /tmp/workspace
-      - run: ls -lah
-      - run: ls -lah /tmp/workspace
       - run:
           name: Generate version number and docker image tags
           command: |
@@ -83,7 +82,7 @@ jobs:
       - run:
           name: Create github deployment for dev-fss
           command: source $BASH_ENV; deployment-cli deploy create --cluster=dev-fss
-            --team=orkestrator -r=nais.yaml --version=${DOCKER_TAG}
+            --team=orkestrator -r=/tmp/workspace/nais.yaml --version=${DOCKER_TAG}
             --username $GITHUB_USERNAME
             --password $GITHUB_PASSWORD
             --repository=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
