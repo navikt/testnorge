@@ -17,28 +17,6 @@ jobs:
           paths:
             - ~/.m2
           key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
-            - Dockerfile
-            - nais.yaml
-  test:
-    docker:
-      - image: circleci/openjdk:8-jdk
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - m2-{{ .Branch }}-{{ checksum "pom.xml" }}
-      - run:
-          name: Run tests
-          command: |
-            mvn test
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
       - run:
           name: Save test results
           command: |
@@ -47,6 +25,12 @@ jobs:
           when: always
       - store_test_results:
           path: ~/test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
+            - Dockerfile
+            - nais.yaml
   release:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -98,13 +82,10 @@ workflows:
   build_deploy_release:
     jobs:
       - build
-      - test:
-          requires:
-            - build
       - hold:
           type: approval
           requires:
-            - test
+            - build
       - release:
           filters:
             branches:
