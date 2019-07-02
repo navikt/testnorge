@@ -32,9 +32,9 @@ jobs:
           command: |
             mkdir -p ~/coverage
             find . -type d -regex ".*/target/coverage" -exec cp -a {} ~/ \;
+          when: always
       - store_artifacts:
           path: ~/coverage/
-          destination: ~/coverage/
       - run:
           name: Find and copy main jar
           command: |
