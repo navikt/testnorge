@@ -11,12 +11,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import no.nav.registre.ereg.consumer.rs.response.NameResponse;
 
 @Slf4j
 @Component
 public class IdentPoolConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
+    private static final ParameterizedTypeReference<List<NameResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<NameResponse>>() {
     };
     private final UriTemplate nameServiceTemplate;
     private final RestTemplate restTemplate;
@@ -27,14 +30,14 @@ public class IdentPoolConsumer {
     }
 
     public List<String> getFakeNames(int count) {
-        ResponseEntity<List<String>> response = restTemplate.exchange(nameServiceTemplate.expand(count), HttpMethod.GET, new HttpEntity<>(), RESPONSE_TYPE);
+        ResponseEntity<List<NameResponse>> response = restTemplate.exchange(nameServiceTemplate.expand(count), HttpMethod.GET, new HttpEntity<>(), RESPONSE_TYPE);
         if (!response.getStatusCode().is2xxSuccessful()) {
             return null;
         }
-        if (response.getBody() != null) {
-            return response.getBody();
+        if (response.getBody() == null) {
+            return null;
         }
-        return null;
+        return response.getBody().stream().map(NameResponse::toString).collect(Collectors.toList());
     }
 
 }
