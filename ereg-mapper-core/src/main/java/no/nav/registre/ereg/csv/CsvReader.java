@@ -1,6 +1,5 @@
 package no.nav.registre.ereg.csv;
 
-import com.opencsv.CSVReader;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -26,24 +26,31 @@ public class CsvReader {
         ArrayList<NaeringskodeRecord> naeringskodeRecords = new ArrayList<>();
 
         try {
-            CSVReader reader = new CSVReader(br, ';');
-            String[] line;
-            while ((line = reader.readNext()) != null) {
-                line[0] = removeUTF8BOM(line[0]);
+//            CSVReader reader = new CSVReader(br, ';');
+            String line;
+//            reader.readNext();
+            br.readLine();
+            while ((line = br.readLine()) != null) {
+//                line[0] = removeUTF8BOM(line[0]);
+
+                String[] splitArray = line.split(";");
+
+                String[] split = Arrays.stream(splitArray)
+                        .map(s -> s.substring(s.indexOf("\"") + 1, s.lastIndexOf("\""))).toArray(String[]::new);
 
                 NaeringskodeRecord.NaeringskodeRecordBuilder builder = NaeringskodeRecord.builder()
-                        .code(line[0])
-                        .parentCode(line[1])
-                        .level(line[2])
-                        .name(line[3])
-                        .shortName(line[4])
-                        .notes(line[5]);
+                        .code(split[0])
+                        .parentCode(split[1])
+                        .level(split[2])
+                        .name(split[3])
+                        .shortName(split[4])
+                        .notes(split[5]);
 
-                if (line.length >= 7) {
-                    builder.validFrom(line[6]);
+                if (split.length >= 7) {
+                    builder.validFrom(split[6]);
                 }
-                if (line.length == 8) {
-                    builder.validTo(line[7]);
+                if (split.length == 8) {
+                    builder.validTo(split[7]);
                 }
 
                 naeringskodeRecords.add(builder.build());
