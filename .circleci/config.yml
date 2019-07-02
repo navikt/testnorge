@@ -28,6 +28,7 @@ jobs:
             mvn clean install -DskipTests
       - run: ls -lah
       - persist_to_workspace:
+          root: .
           paths:
             - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
   release:
