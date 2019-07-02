@@ -39,10 +39,14 @@ jobs:
           paths:
             - ~/.m2
           key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
       - store_test_results:
-          paths:
-            - ereg-mapper-cloud/target/surefire-reports/*.xml
-            - ereg-mapper-core/target/surefire-reports/*.xml
+          path: ~/test-results
   release:
     docker:
       - image: circleci/openjdk:8-jdk
