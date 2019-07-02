@@ -43,7 +43,7 @@ jobs:
             find . -type f -name "$CIRCLE_PROJECT_REPONAME".jar -exec cp {} . \;
             ls -lah
             ls -lah /tmp/workspace
-            export JAR_FILE = "$CIRCLE_PROJECT_REPONAME".jar
+            export JAR_FILE="$CIRCLE_PROJECT_REPONAME".jar
       - persist_to_workspace:
           root: .
           paths:
