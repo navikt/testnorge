@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 
@@ -18,7 +19,7 @@ import no.nav.registre.ereg.service.NameService;
 
 @Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {EregMapper.class, NameService.class, IdentPoolConsumer.class})
+@ContextConfiguration(classes = {EregMapper.class, NameService.class, IdentPoolConsumer.class, RestTemplate.class})
 public class EregMapperTest {
 
     private EregDataRequest data;
