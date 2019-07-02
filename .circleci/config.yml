@@ -12,6 +12,7 @@ jobs:
       - run:
           name: Build jar
           command: |
+            set -e
             mvn package
       - save_cache:
           paths:

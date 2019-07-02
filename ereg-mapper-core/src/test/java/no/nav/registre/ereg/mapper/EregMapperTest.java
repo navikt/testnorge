@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import no.nav.registre.ereg.TestUtil;
 import no.nav.registre.ereg.consumer.rs.IdentPoolConsumer;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
@@ -31,6 +32,11 @@ public class EregMapperTest {
     public void setUp() {
 
         data = TestUtil.createDefaultEregData();
+    }
+
+    @Test
+    public void testShouldFail() {
+        fail();
     }
 
     @Test
