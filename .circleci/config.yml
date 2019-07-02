@@ -5,6 +5,8 @@ jobs:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
+      - restore_cache:
+          key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
       - run:
           name: Install Dependencies
           command: mvn dependency:resolve-plugins dependency:go-offline
