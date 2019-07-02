@@ -93,7 +93,7 @@ workflows:
       - build
       - test:
           requires:
-            - test
+            - build
       - hold:
           type: approval
           requires:
