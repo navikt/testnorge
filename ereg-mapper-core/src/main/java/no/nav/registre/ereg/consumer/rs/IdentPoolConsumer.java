@@ -3,7 +3,6 @@ package no.nav.registre.ereg.consumer.rs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -30,7 +29,7 @@ public class IdentPoolConsumer {
     }
 
     public List<String> getFakeNames(int count) {
-        ResponseEntity<List<NameResponse>> response = restTemplate.exchange(nameServiceTemplate.expand(count), HttpMethod.GET, new HttpEntity<>(), RESPONSE_TYPE);
+        ResponseEntity<List<NameResponse>> response = restTemplate.exchange(nameServiceTemplate.expand(count), HttpMethod.GET, null, RESPONSE_TYPE);
         if (!response.getStatusCode().is2xxSuccessful()) {
             return null;
         }
