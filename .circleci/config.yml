@@ -5,10 +5,17 @@ jobs:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - m2-{{ .Branch }}-{{ checksum "pom.xml" }}
       - run:
           name: Run tests
           command: |
             mvn test
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
   build:
     docker:
       - image: circleci/openjdk:8-jdk
@@ -18,15 +25,15 @@ jobs:
       - restore_cache:
           keys:
             - m2-{{ .Branch }}-{{ checksum "pom.xml" }}
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
       - run:
           name: Build jar
           command: |
             mvn clean install -DskipTests
       - run: ls -lah
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
       - persist_to_workspace:
           root: .
           paths:
@@ -35,7 +42,6 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
-      - checkout
       - setup_remote_docker
       - attach_workspace:
           at: /tmp/workspace
