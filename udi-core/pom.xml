@@ -11,7 +11,6 @@
 
     <artifactId>udi-core</artifactId>
 
-
     <dependencies>
         <!--Utility-->
         <dependency>
@@ -31,12 +30,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web-services</artifactId>
-        </dependency>
-
-        <!--DATABASE-->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
         </dependency>
 
         <!--DOCUMENTATION-->
