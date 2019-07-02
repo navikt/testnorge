@@ -46,6 +46,8 @@ jobs:
       - setup_remote_docker
       - attach_workspace:
           at: /tmp/workspace
+      - run: ls -lah
+      - run: ls -lah /tmp/workspace
       - run:
           name: Generate version number and docker image tags
           command: |
@@ -56,7 +58,7 @@ jobs:
             cat /tmp/workspace/properties.env >> $BASH_ENV
       - run:
           name: Build docker image
-          command: docker build -t $DOCKER_TAG .
+          command: docker build -t $DOCKER_TAG ./tmp/workspace
       - run:
           name: Docker push
           command: |
