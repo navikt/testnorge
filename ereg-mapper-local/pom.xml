@@ -21,7 +21,7 @@
 
 
     <build>
-        <finalName>testnorge-ereg-mapper</finalName>
+        <finalName>testnorge-ereg-mapper-local</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

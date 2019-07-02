@@ -28,13 +28,23 @@ jobs:
             - ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+
+      - run:
+          name: Save coverage
+          command: |
+            mkdir -p ~/coverage
+            find . -type d -name "coverage" -exec cp {} ~/coverage/
       - store_artifacts:
-          path: ereg-mapper-core/target/coverage
-          destination: coverage/core
+          path: coverage/
+          destination: coverage/
+      - run:
+          name: Find and copy main jar
+          command: |
+            find . -type f -name "$CIRCLE_PROJECT_REPONAME".jar -exec cp {} . \;
       - persist_to_workspace:
           root: .
           paths:
-            - $JAR_PATH
+            - $CIRCLE_PROJECT_REPONAME.jar
             - Dockerfile
             - nais.yaml
   release:
