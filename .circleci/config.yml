@@ -33,6 +33,7 @@ jobs:
           command: |
             mkdir -p ~/coverage
             find . -type d -regex ".*/target/coverage/" -exec cp -a {} ~/ \;
+            ls -l
       - store_artifacts:
           path: coverage/
           destination: ~/coverage/
