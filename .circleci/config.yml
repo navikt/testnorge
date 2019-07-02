@@ -31,8 +31,8 @@ jobs:
       - run:
           name: Save coverage
           command: |
-            mkdir -p ~/coverage
-            find . -type d -regex ".*/target/coverage" -exec cp -a {} ~/ \;
+            mkdir -p ~/coverage/
+            find . -type d -regex ".*/target/coverage/" -exec cp -a {} ~/ \;
       - store_artifacts:
           path: ~/coverage/
           destination: ~/coverage/
