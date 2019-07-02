@@ -55,7 +55,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skipTests>false</skipTests>
-                    <testFailureIgnore>true</testFailureIgnore>
                     <forkMode>once</forkMode>
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
