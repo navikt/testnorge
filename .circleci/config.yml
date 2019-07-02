@@ -27,15 +27,13 @@ jobs:
             - ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
-
       - run:
           name: Save coverage
           command: |
             mkdir -p ~/coverage
-            find . -type d -regex ".*/target/coverage/" -exec cp -a {} ~/ \;
-            ls -l
+            find . -type d -regex ".*/target/coverage" -exec cp -a {} ~/ \;
       - store_artifacts:
-          path: coverage/
+          path: ~/coverage/
           destination: ~/coverage/
       - run:
           name: Find and copy main jar
