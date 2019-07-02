@@ -20,7 +20,7 @@ public class NyBruker {
     @JsonProperty
     private UtenServicebehov utenServicebehov;
     @JsonProperty
-    private boolean automatiskInnsendingAvMeldekort; // true
+    private Boolean automatiskInnsendingAvMeldekort; // true
     @JsonProperty
     private List<Aap115> aap115;
     @JsonProperty

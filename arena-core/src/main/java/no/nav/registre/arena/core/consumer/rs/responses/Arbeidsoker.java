@@ -18,7 +18,7 @@ public class Arbeidsoker {
     @JsonProperty
     private String eier;
     @JsonProperty
-    private boolean servicebehov; // true
+    private Boolean servicebehov; // true
     @JsonProperty
-    private boolean automatiskInnsendingAvMeldekort; // true
+    private Boolean automatiskInnsendingAvMeldekort; // true
 }
