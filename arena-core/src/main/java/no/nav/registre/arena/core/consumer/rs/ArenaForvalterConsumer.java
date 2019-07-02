@@ -5,12 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
 import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.domain.NyeBrukereList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -18,8 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Component

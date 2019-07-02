@@ -8,8 +8,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
+//@AllArgsConstructor
+//@Builder
 public class StatusFraArenaForvalterResponse {
     @JsonProperty
     private List<Arbeidsoker> arbeidsokerList;
