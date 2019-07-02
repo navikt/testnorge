@@ -41,7 +41,6 @@ jobs:
           command: |
             find . -type f -name "$CIRCLE_PROJECT_REPONAME".jar -exec cp {} app.jar \;
             ls ereg-mapper-core/target
-            ls /tmp/workspace
       - persist_to_workspace:
           root: .
           paths:
