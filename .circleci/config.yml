@@ -39,6 +39,8 @@ jobs:
           paths:
             - ~/.m2
           key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
+      - store_test_results:
+          path: target/surefire-reports
   release:
     docker:
       - image: circleci/openjdk:8-jdk
