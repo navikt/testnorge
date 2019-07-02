@@ -40,7 +40,9 @@ jobs:
             - ~/.m2
           key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
       - store_test_results:
-          path: target/surefire-reports
+          paths:
+            - ereg-mapper-cloud/target/surefire-reports
+            - ereg-mapper-core/target/surefire-reports
   release:
     docker:
       - image: circleci/openjdk:8-jdk
