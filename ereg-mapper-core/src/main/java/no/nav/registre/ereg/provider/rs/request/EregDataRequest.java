@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
@@ -18,14 +18,14 @@ import java.util.Map;
 @Setter
 public class EregDataRequest {
 
-    @NonNull
+    @NotNull
     private String orgId;
 
     private Navn navn;
 
-    @NonNull
+    @NotNull
     private String type;
-    @NonNull
+    @NotNull
     private String endringsType;
 
     @JsonProperty("adresse")
@@ -61,7 +61,7 @@ public class EregDataRequest {
     private Boolean kjoensfordeling;
     private UnderlagtHjemland underlagtHjemland;
     private Kapital kapital;
-    @NonNull
+    @NotNull
     @JsonProperty("næringskode")
     private Naeringskode naeringskode;
     @JsonProperty("formål")

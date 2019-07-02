@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
@@ -23,12 +24,12 @@ public class OrkestreringController {
     private final FlatfileService flatfileService;
 
     @PostMapping("/generer")
-    public ResponseEntity<String> generer(@RequestBody List<EregDataRequest> data) {
+    public ResponseEntity<String> generer(@Valid @RequestBody List<EregDataRequest> data) {
         return ResponseEntity.ok(flatfileService.mapEreg(data, false, ""));
     }
 
     @PostMapping("/opprett")
-    public ResponseEntity<String> opprettEnheterIEreg(@RequestBody List<EregDataRequest> data, @RequestParam boolean lastOpp, @RequestParam String miljoe) {
+    public ResponseEntity<String> opprettEnheterIEreg(@Valid @RequestBody List<EregDataRequest> data, @RequestParam boolean lastOpp, @RequestParam String miljoe) {
         String eregData = flatfileService.mapEreg(data, lastOpp, miljoe);
 
         if ("".equals(eregData)) {
