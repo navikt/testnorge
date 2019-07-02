@@ -22,6 +22,10 @@ jobs:
           paths:
             - ereg-mapper-cloud/target/surefire-reports/
             - ereg-mapper-core/target/surefire-reports/
+      - store_artifacts:
+          paths:
+            - ereg-mapper-cloud/target/surefire-reports/
+            - ereg-mapper-core/target/surefire-reports/
       - persist_to_workspace:
           root: .
           paths:
