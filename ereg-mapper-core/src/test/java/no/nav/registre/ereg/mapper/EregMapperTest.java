@@ -1,42 +1,62 @@
 package no.nav.registre.ereg.mapper;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import no.nav.registre.ereg.TestUtil;
-import no.nav.registre.ereg.consumer.rs.IdentPoolConsumer;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
+import no.nav.registre.ereg.provider.rs.request.Naeringskode;
 import no.nav.registre.ereg.service.NameService;
 
 @Slf4j
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {EregMapper.class, NameService.class, IdentPoolConsumer.class, RestTemplate.class})
+@RunWith(MockitoJUnitRunner.class)
+@ContextConfiguration(classes = {EregMapper.class})
 public class EregMapperTest {
 
-    private EregDataRequest data;
+    @Mock
+    private NameService nameService;
 
-    @Autowired
+    @InjectMocks
     private EregMapper eregMapper;
 
-    @Before
-    public void setUp() {
+    @Test
+    public void mapEregRequests_PartialSuccess() {
 
-        data = TestUtil.createDefaultEregData();
+        when(nameService.getFullNames(anyList(), anyString())).thenReturn(Collections.singletonList("Gul Bolle"));
+
+        EregDataRequest request = EregDataRequest.builder()
+                .orgId("123")
+                .type("BEDR")
+                .endringsType("N")
+                .naeringskode(Naeringskode.builder()
+                        .gyldighetsdato("18062019")
+                        .hjelpeEnhet(false)
+                        .kode("0?")
+                        .build())
+                .formaal("Jobb")
+                .build();
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
+        assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A", s.substring(0, 24));
+        assertEquals("ENH 123      BEDNNY   " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           ", s.substring(25, 75));
+        assertEquals("NAVNN   Gul Bolle                                                                                                                                                                                                          ",
+                s.substring(76, 295));
     }
 
     @Test
-    public void mapEregFromRequests() {
+    public void mapEregFromRequests_AllFieldsSuccess() {
 
-        String s = eregMapper.mapEregFromRequests(Collections.singletonList(data));
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(TestUtil.createDefaultEregData()));
         log.info(s);
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A", s.substring(0, 24));
         assertEquals("ENH 123      BEDNNY   " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           ", s.substring(25, 75));
@@ -78,12 +98,5 @@ public class EregMapperTest {
         assertEquals("FORMN   Jobb                                                                  ",
                 s.substring(2058, 2136));
         assertEquals("FMVAN   NOE!  ", s.substring(2137, 2151));
-
-
-
-
-
-
-
     }
 }

@@ -1,9 +1,7 @@
 package no.nav.registre.ereg.mapper;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +25,6 @@ import no.nav.registre.ereg.service.NameService;
 
 @Slf4j
 @RequiredArgsConstructor
-@Getter
-@Setter
 @Component
 public class EregMapper {
 
@@ -84,7 +80,8 @@ public class EregMapper {
         String endringsType = data.getEndringsType();
 
         Navn navn = data.getNavn();
-        StringBuilder file = new StringBuilder(createENH(data.getOrgId(), data.getType(), endringsType) + createNavn(navn.getNavneListe(), navn.getRedNavn(), endringsType));
+        assert (navn != null);
+        StringBuilder file = new StringBuilder(createENH(data.getOrgId(), data.getType(), endringsType) + createNavn(navn.getNavneListe(), navn.getRedNavn() == null ? "" : navn.getRedNavn(), endringsType));
 
         Adresse adresse = data.getAdresse();
         if (adresse != null) {
