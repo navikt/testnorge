@@ -12,12 +12,11 @@ jobs:
       - run:
           name: Build jar
           command: |
-            mvn package
+            mvn package -e -X
       - save_cache:
           paths:
             - ~/.m2
           key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
-          when: always
       - store_test_results:
           paths:
             - ereg-mapper-cloud/target/surefire-reports/
