@@ -34,7 +34,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - ereg-mapper-cloud/target/testnorge-ereg-mapper.jar
+            - $JAR_PATH
             - Dockerfile
             - nais.yaml
   release:
