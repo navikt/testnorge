@@ -58,7 +58,7 @@ jobs:
             cat /tmp/workspace/properties.env >> $BASH_ENV
       - run:
           name: Build docker image
-          command: docker build -t $DOCKER_TAG ./tmp/workspace
+          command: docker build -t $DOCKER_TAG /tmp/workspace
       - run:
           name: Docker push
           command: |
