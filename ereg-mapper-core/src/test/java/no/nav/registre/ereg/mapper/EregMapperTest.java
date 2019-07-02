@@ -44,9 +44,9 @@ public class EregMapperTest {
                         .hjelpeEnhet(false)
                         .kode("0?")
                         .build())
-                .formaal("Jobb")
                 .build();
         String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
+        log.info(s);
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A", s.substring(0, 24));
         assertEquals("ENH 123      BEDNNY   " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           ", s.substring(25, 75));
         assertEquals("NAVNN   Gul Bolle                                                                                                                                                                                                          ",
