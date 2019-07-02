@@ -54,6 +54,29 @@ public class EregMapperTest {
     }
 
     @Test
+    public void mapEregRequests_PartialSuccess_AS() {
+
+        when(nameService.getFullNames(anyList(), anyString())).thenReturn(Collections.singletonList("Gul Bolle Dyrking av sukkerrør AS"));
+
+        EregDataRequest request = EregDataRequest.builder()
+                .orgId("123")
+                .type("AS")
+                .endringsType("N")
+                .naeringskode(Naeringskode.builder()
+                        .gyldighetsdato("18062019")
+                        .hjelpeEnhet(false)
+                        .kode("0?")
+                        .build())
+                .build();
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
+        log.info(s);
+        assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A", s.substring(0, 24));
+        assertEquals("ENH 123      AS NNY   " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           ", s.substring(25, 75));
+        assertEquals("NAVNN   Gul Bolle Dyrking av sukkerrør AS                                                                                                                                                                                  ",
+                s.substring(76, 295));
+    }
+
+    @Test
     public void mapEregFromRequests_AllFieldsSuccess() {
 
         String s = eregMapper.mapEregFromRequests(Collections.singletonList(TestUtil.createDefaultEregData()));
