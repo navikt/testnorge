@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Build jar
           command: |
-            mvn clean install -DskipTests
+            mvn package -DskipTests
       - run: ls -lah
       - save_cache:
           paths:
@@ -97,7 +97,7 @@ workflows:
       - hold:
           type: approval
           requires:
-            - build
+            - test
       - release:
           filters:
             branches:
