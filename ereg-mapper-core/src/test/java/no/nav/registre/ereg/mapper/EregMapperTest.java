@@ -12,12 +12,13 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import no.nav.registre.ereg.TestUtil;
+import no.nav.registre.ereg.consumer.rs.IdentPoolConsumer;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 import no.nav.registre.ereg.service.NameService;
 
 @Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {EregMapper.class, NameService.class})
+@ContextConfiguration(classes = {EregMapper.class, NameService.class, IdentPoolConsumer.class})
 public class EregMapperTest {
 
     private EregDataRequest data;
