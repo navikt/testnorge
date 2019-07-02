@@ -28,6 +28,10 @@ jobs:
             - ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+      - store_artifacts:
+          path: ereg-mapper-cloud/target/coverage
+      - store_artifacts:
+          path: ereg-mapper-core/target/coverage
       - persist_to_workspace:
           root: .
           paths:
