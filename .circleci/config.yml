@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            mvn test
+            mvn test -nsu
       - save_cache:
           paths:
             - ~/.m2
