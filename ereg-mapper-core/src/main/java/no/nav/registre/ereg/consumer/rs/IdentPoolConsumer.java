@@ -4,8 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -29,14 +32,20 @@ public class IdentPoolConsumer {
     }
 
     public List<String> getFakeNames(int count) {
-        ResponseEntity<List<NameResponse>> response = restTemplate.exchange(nameServiceTemplate.expand(count), HttpMethod.GET, null, RESPONSE_TYPE);
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            return null;
+        try {
+            ResponseEntity<List<NameResponse>> response = restTemplate.exchange(nameServiceTemplate.expand(count), HttpMethod.GET, null, RESPONSE_TYPE);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                return null;
+            }
+            if (response.getBody() == null) {
+                return null;
+            }
+            return response.getBody().stream().map(NameResponse::toString).collect(Collectors.toList());
+        } catch (HttpClientErrorException e) {
+            log.warn("Request feiler med url: {}", nameServiceTemplate.expand(count));
+            log.error(e.getLocalizedMessage(), e);
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatusText());
         }
-        if (response.getBody() == null) {
-            return null;
-        }
-        return response.getBody().stream().map(NameResponse::toString).collect(Collectors.toList());
     }
 
 }
