@@ -90,8 +90,8 @@ workflows:
   version: 2
   build_deploy_release:
     jobs:
-      - test
-      - build:
+      - build
+      - test:
           requires:
             - test
       - hold:
