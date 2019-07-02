@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Build jar
           command: |
-            mvn package -DskipTests
+            mvn package
       - save_cache:
           paths:
             - ~/.m2
