@@ -12,15 +12,11 @@ jobs:
       - run:
           name: Build jar
           command: |
-            mvn dependency:go-offline
+            mvn package -DskipTests
       - save_cache:
           paths:
             - ~/.m2
           key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
-      - run:
-          name: Build jar
-          command: |
-            mvn package -DskipTests
       - persist_to_workspace:
           root: .
           paths:
@@ -38,7 +34,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            mvn test -nsu
+            mvn test
       - save_cache:
           paths:
             - ~/.m2
