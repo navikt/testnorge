@@ -11,9 +11,7 @@ jobs:
             - m2-{{ .Branch }}-{{ checksum "pom.xml" }}
       - run:
           name: Build jar
-          command: |
-            set -e
-            mvn package
+          command: mvn package
       - save_cache:
           paths:
             - ~/.m2
