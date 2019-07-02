@@ -33,7 +33,7 @@ jobs:
           name: Save coverage
           command: |
             mkdir -p ~/coverage
-            find . -type d -regex ".*/coverage" -exec cp -a {} ~/coverage/ \;
+            find . -type d -regex ".*/coverage" -exec cp -a {} ~/ \;
       - store_artifacts:
           path: coverage/
           destination: coverage/
