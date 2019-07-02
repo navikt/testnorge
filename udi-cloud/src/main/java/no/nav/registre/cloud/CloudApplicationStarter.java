@@ -12,5 +12,4 @@ public class CloudApplicationStarter {
         VaultUtil.initCloudVaultToken();
         SpringApplication.run(CloudApplicationStarter.class, args);
     }
-
 }
