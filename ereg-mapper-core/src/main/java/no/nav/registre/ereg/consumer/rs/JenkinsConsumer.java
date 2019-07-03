@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
@@ -84,7 +85,7 @@ public class JenkinsConsumer {
         map.add("server", environment.getProperty(String.format(serverConfigString, env)));
         map.add("batchName", "BEREG007");
         map.add("workUnit", "100");
-        map.add("input_file", flatFile.getBytes());
+        map.add("input_file", new ByteArrayResource(flatFile.getBytes()));
         map.add("FileName", "ereg_mapper.txt");
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
