@@ -29,7 +29,7 @@ public class FlatfileService {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Manglende miljoe variabel");
             }
 
-            if (sendToJenkins(eregData, env)) {
+            if (!sendToJenkins(eregData, env)) {
                 return "";
             }
         }

@@ -79,6 +79,8 @@ public class JenkinsConsumer {
 
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
 
+        log.info("Sending request to server: {} with input_file: {}", map.get("server"), file);
+
         ResponseEntity<String> response = restTemplate.postForEntity(jenkinsJobTemplate.expand(), request, String.class);
 
         if (!response.getStatusCode().is2xxSuccessful()) {

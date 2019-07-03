@@ -40,8 +40,12 @@ public class OrkestreringController {
     }
 
     @PostMapping("/flatfil/jenkins")
-    public ResponseEntity<Boolean> sendFlatfil(@RequestBody String flatFil, @RequestParam String miljoe) {
-        return ResponseEntity.ok(flatfileService.sendToJenkins(flatFil, miljoe));
+    public ResponseEntity sendFlatfil(@RequestBody String flatFil, @RequestParam String miljoe) {
+        boolean send = flatfileService.sendToJenkins(flatFil, miljoe);
+        if (!send) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
     }
 
 }
