@@ -11,8 +11,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpServerErrorException;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.created;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.permanentRedirect;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -74,7 +74,7 @@ public class JenkinsConsumerTest {
     }
 
     private void stubForJenkinsJob_OK() {
-        stubFor(post(urlEqualTo("/view/Registre/job/Start_BEREG007/buildWithParameters")).willReturn(ok()
+        stubFor(post(urlEqualTo("/view/Registre/job/Start_BEREG007/buildWithParameters")).willReturn(created()
         ));
     }
 
