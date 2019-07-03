@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.arena.domain.NyeBrukereList;
+import no.nav.registre.arena.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,9 @@ import java.util.Random;
 @Service
 @Slf4j
 public class SyntetiseringService {
+
+    private static final double PROSENTANDEL_MED_MELDEKORT = 0.2;
+
     @Autowired
     HodejegerenConsumer hodejegerenConsumer;
     @Autowired
@@ -47,8 +50,23 @@ public class SyntetiseringService {
         return null;
     }
 
-    private NyeBrukereList genererNyeBrukere(List<String> identer) {
+    private NyeBrukereList opprettNyeBrukere(List<String> identerFraHodejegeren, SyntetiserArenaRequest arenaRequest) {
 
+        List<NyBruker> nyeBrukere = new ArrayList<>(identerFraHodejegeren.size());
+
+        for (String ident : identerFraHodejegeren) {
+            nyeBrukere.add(new NyBruker(
+                    ident,
+                    arenaRequest.getMiljoe(),
+                    "IKVAL",
+                    new UtenServicebehov(),
+                    false,
+                    new List<Aap115>(),
+                    new List<Aap>()
+            ));
+        }
+
+        return new NyeBrukereList(nyeBrukere);
     }
 
 
