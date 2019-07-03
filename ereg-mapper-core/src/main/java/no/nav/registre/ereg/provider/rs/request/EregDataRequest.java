@@ -66,4 +66,6 @@ public class EregDataRequest {
     private Naeringskode naeringskode;
     @JsonProperty("formål")
     private String formaal;
+
+    private List<Knytning> knytninger;
 }

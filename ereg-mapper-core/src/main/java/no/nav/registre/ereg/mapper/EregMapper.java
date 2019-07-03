@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.ereg.provider.rs.request.Adresse;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 import no.nav.registre.ereg.provider.rs.request.Kapital;
+import no.nav.registre.ereg.provider.rs.request.Knytning;
 import no.nav.registre.ereg.provider.rs.request.Maalform;
 import no.nav.registre.ereg.provider.rs.request.Naeringskode;
 import no.nav.registre.ereg.provider.rs.request.Navn;
@@ -79,9 +80,11 @@ public class EregMapper {
         int numRecords = 2;
         String endringsType = data.getEndringsType();
 
+        StringBuilder file = new StringBuilder(createENH(data.getOrgId(), data.getType(), endringsType));
+
         Navn navn = data.getNavn();
         assert (navn != null);
-        StringBuilder file = new StringBuilder(createENH(data.getOrgId(), data.getType(), endringsType) + createNavn(navn.getNavneListe(), navn.getRedNavn() == null ? "" : navn.getRedNavn(), endringsType));
+        file.append(createNavn(navn.getNavneListe(), navn.getRedNavn() == null ? "" : navn.getRedNavn(), endringsType));
 
         Adresse adresse = data.getAdresse();
         if (adresse != null) {
@@ -267,6 +270,21 @@ public class EregMapper {
             }
         }
 
+        List<Knytning> knytninger = data.getKnytninger();
+        if (knytninger != null) {
+            List<String> collect = knytninger.stream().map(k -> createKnyntningRecord(k.getType(),
+                    k.getEndringsType(),
+                    k.getAnsvarsandel(),
+                    k.getFratreden(),
+                    k.getOrgNr(),
+                    k.getValgtAv(),
+                    k.getKorrektOrgNr()))
+                    .collect(Collectors.toList());
+            for (String s : collect) {
+                file.append(s);
+                numRecords++;
+            }
+        }
 
         return new RecordsAndCount(file.toString(), numRecords);
     }
@@ -433,6 +451,20 @@ public class EregMapper {
 
         concatListToString(stringBuilder, addresses, 186);
         stringBuilder.append("\n");
+        return stringBuilder.toString();
+    }
+
+    private String createKnyntningRecord(String type, String endringsType, String ansvarsandel, String fratreden, String orgNr, String valgtAv, String korrektOrgNr) {
+        StringBuilder stringBuilder = createBaseStringbuilder(66, type, endringsType);
+        stringBuilder
+                .replace(8, 9, "K")
+                .replace(9, 10, "D")
+                .replace(10, 10 + ansvarsandel.length(), ansvarsandel)
+                .replace(40, 41, fratreden)
+                .replace(43, 43 + orgNr.length(), orgNr)
+                .replace(50, 50 + valgtAv.length(), valgtAv)
+                .replace(57, 57 + korrektOrgNr.length(), korrektOrgNr)
+                .append("\n");
         return stringBuilder.toString();
     }
 
