@@ -24,44 +24,38 @@ public class CsvReader {
 
     public static List<NaeringskodeRecord> read(String staticFilePath) throws IOException {
         InputStream inputFS = new ClassPathResource(staticFilePath).getInputStream();
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputFS, StandardCharsets.UTF_16));
-
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputFS, StandardCharsets.UTF_8));
         ArrayList<NaeringskodeRecord> naeringskodeRecords = new ArrayList<>();
+        CSVParser parser = new CSVParserBuilder()
+                .withSeparator(';')
+                .withIgnoreQuotations(false)
+                .withStrictQuotes(true)
+                .build();
 
-        try {
-            CSVParser parser = new CSVParserBuilder()
-                    .withSeparator(';')
-                    .withIgnoreQuotations(false)
-                    .withStrictQuotes(true)
-                    .build();
+        CSVReader csvReader = new CSVReaderBuilder(br)
+                .withSkipLines(0)
+                .withCSVParser(parser)
+                .build();
+        String[] line;
+        br.readLine();
+        while ((line = csvReader.readNext()) != null) {
 
-            CSVReader csvReader = new CSVReaderBuilder(br)
-                    .withSkipLines(0)
-                    .withCSVParser(parser)
-                    .build();
-            String[] line;
-            br.readLine();
-            while ((line = csvReader.readNext()) != null) {
+            NaeringskodeRecord.NaeringskodeRecordBuilder builder = NaeringskodeRecord.builder()
+                    .code(line[0])
+                    .parentCode(line[1])
+                    .level(line[2])
+                    .name(line[3])
+                    .shortName(line[4])
+                    .notes(line[5]);
 
-                NaeringskodeRecord.NaeringskodeRecordBuilder builder = NaeringskodeRecord.builder()
-                        .code(line[0])
-                        .parentCode(line[1])
-                        .level(line[2])
-                        .name(line[3])
-                        .shortName(line[4])
-                        .notes(line[5]);
-
-                if (line.length >= 7) {
-                    builder.validFrom(line[6]);
-                }
-                if (line.length == 8) {
-                    builder.validTo(line[7]);
-                }
-
-                naeringskodeRecords.add(builder.build());
+            if (line.length >= 7) {
+                builder.validFrom(line[6]);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (line.length == 8) {
+                builder.validTo(line[7]);
+            }
+
+            naeringskodeRecords.add(builder.build());
         }
         return naeringskodeRecords;
     }
