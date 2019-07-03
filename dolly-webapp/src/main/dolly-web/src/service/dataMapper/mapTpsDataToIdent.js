@@ -116,6 +116,11 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].idNummer
 				},
 				{
+					id: 'kilde',
+					label: 'Kilde',
+					value: pdlfData.utenlandskeIdentifikasjonsnummere[0].kilde
+				},
+				{
 					id: 'opphoert',
 					label: 'Opphørt',
 					value: Formatters.oversettBoolean(opphoert)

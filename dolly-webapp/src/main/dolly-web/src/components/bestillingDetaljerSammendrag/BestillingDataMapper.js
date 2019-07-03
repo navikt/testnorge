@@ -95,6 +95,10 @@ export function mapBestillingData(bestillingData) {
 							value: pdlforvalter.utenlandskIdentifikasjonsnummer.identifikasjonsnummer
 						},
 						{
+							label: 'Utenlands-ID kilde',
+							value: pdlforvalter.utenlandskIdentifikasjonsnummer.kilde
+						},
+						{
 							label: 'Utenlands-ID opphørt',
 							value: Formatters.oversettBoolean(
 								pdlforvalter.utenlandskIdentifikasjonsnummer.opphoert
