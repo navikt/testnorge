@@ -40,7 +40,6 @@ public class NameService {
             if (naeringskodeRecords.isEmpty()) {
                 throw new IllegalStateException("Næringskoder kan ikke være tom. Det har skjed noe feil med innlesingen");
             }
-            log.debug("Næringskoder: {}", naeringskodeRecords);
         } catch (IOException e) {
             log.error(e.getLocalizedMessage(), e);
         }
