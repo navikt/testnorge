@@ -5,9 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Component;
@@ -77,11 +78,13 @@ public class JenkinsConsumer {
         map.add("input_file", file);
         map.add("FileName", "ereg_mapper.txt");
 
-        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+        RequestEntity requestEntity = new RequestEntity<>(map, headers, HttpMethod.POST, jenkinsJobTemplate.expand());
 
-        log.info("Sending request to server: {} with input_file: {}", map.get("server"), file);
+        log.info("Request for jenkins jobb: {}", requestEntity);
 
-        ResponseEntity<String> response = restTemplate.postForEntity(jenkinsJobTemplate.expand(), request, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
+
+        log.info("Response: {}", response);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             log.warn("Kunne ikke starte / interagere med jenkins jobben for å lese inn EREG flatfil, kode: {}", response.getStatusCode());
