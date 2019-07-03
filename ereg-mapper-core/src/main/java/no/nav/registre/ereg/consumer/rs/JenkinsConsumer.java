@@ -8,6 +8,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +76,7 @@ public class JenkinsConsumer {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.set("Jenkins-Crumb", getCrumb());
 //        headers.addAll(createHeaders(jenkinsUsername, jenkinsPassword));
 
@@ -83,8 +84,9 @@ public class JenkinsConsumer {
         map.add("server", environment.getProperty(String.format(serverConfigString, env)));
         map.add("batchName", "BEREG007");
         map.add("workUnit", "100");
-        map.add("input_file", file);
+        map.add("input_file", flatFile.getBytes());
         map.add("FileName", "ereg_mapper.txt");
+
 
         RequestEntity requestEntity = new RequestEntity<>(map, headers, HttpMethod.POST, jenkinsJobTemplate.expand());
 
@@ -97,8 +99,7 @@ public class JenkinsConsumer {
         if (!response.getStatusCode().is2xxSuccessful()) {
             log.warn("Kunne ikke starte / interagere med jenkins jobben for å lese inn EREG flatfil, kode: {}", response.getStatusCode());
             return false;
-        }
-        return true;
+        } else return response.getStatusCode() == HttpStatus.CREATED;
     }
 
     private String getCrumb() {
