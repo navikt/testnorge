@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Component;
@@ -87,12 +87,13 @@ public class JenkinsConsumer {
         map.add("input_file", flatFile.getBytes());
         map.add("FileName", "ereg_mapper.txt");
 
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
 
-        RequestEntity requestEntity = new RequestEntity<>(map, headers, HttpMethod.POST, jenkinsJobTemplate.expand());
+//        RequestEntity requestEntity = new RequestEntity<>(map, headers, HttpMethod.POST, jenkinsJobTemplate.expand());
 
-        log.info("Request for jenkins jobb: {}", requestEntity);
+        log.info("Request for jenkins jobb: {}", requestEntity.toString());
 
-        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(jenkinsJobTemplate.expand(), HttpMethod.POST, requestEntity, String.class);
 
         log.info("Response: {}", response);
 
