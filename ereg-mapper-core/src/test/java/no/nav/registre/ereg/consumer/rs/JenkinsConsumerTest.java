@@ -74,17 +74,17 @@ public class JenkinsConsumerTest {
     }
 
     private void stubForJenkinsJob_OK() {
-        stubFor(post(urlEqualTo("/view/Registre/job/Start_BEREG007/")).willReturn(ok()
+        stubFor(post(urlEqualTo("/view/Registre/job/Start_BEREG007/buildWithParameters")).willReturn(ok()
         ));
     }
 
     private void stubForJenkinsJob_internalServerError() {
-        stubFor(post(urlEqualTo("/view/Registre/job/Start_BEREG007/")).willReturn(serverError()
+        stubFor(post(urlEqualTo("/view/Registre/job/Start_BEREG007/buildWithParameters")).willReturn(serverError()
         ));
     }
 
     private void stubForJenkinsJob_300_code() {
-        stubFor(post(urlEqualTo("/view/Registre/job/Start_BEREG007/")).willReturn(permanentRedirect("")
+        stubFor(post(urlEqualTo("/view/Registre/job/Start_BEREG007/buildWithParameters")).willReturn(permanentRedirect("")
         ));
     }
 
