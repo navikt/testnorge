@@ -12,6 +12,12 @@ export const getAttributesFromMal = mal => {
 
 	if (tpsfKriterier.boadresse) {
 		tpsfKriterier.boadresse.flyttedato && attrArray.push('boadresse_flyttedato')
+		if (tpsfKriterier.boadresse.adressetype === 'MATR') {
+			var index = attrArray.indexOf('boadresse')
+			if (index !== -1) {
+				attrArray[index] = 'matrikkeladresse'
+			}
+		}
 	}
 
 	if (tpsfKriterier.relasjoner) {
@@ -47,7 +53,10 @@ export const getValuesFromMal = mal => {
 			_mapArrayValuesToObject(reduxStateValue, valueArray, navn)
 		}
 	})
-
+	if (reduxStateValue.adressetype && reduxStateValue.adressetype === 'MATR') {
+		const matrikkeladresseValues = _mapAdresseValues(reduxStateValue)
+		reduxStateValue = matrikkeladresseValues
+	}
 	return reduxStateValue
 }
 
@@ -65,8 +74,10 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 			}
 			value = _formatValueForObject(key, value)
 
-			if (key === 'boadresse') {
+			if (key === 'boadresse' && value.adressetype !== 'MATR') {
 				_mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
+			} else if (key === 'boadresse' && value.adressetype === 'MATR') {
+				_mapValuesToObject(objectToAssign, Object.entries(value))
 			} else if (key === 'postadresse') {
 				_mapValuesToObject(objectToAssign, Object.entries(value[0]))
 			} else {
@@ -142,6 +153,22 @@ const _mapRegistreKey = key => {
 		default:
 			return key
 	}
+}
+
+const _mapAdresseValues = values => {
+	let matrikkeladresseValues = { matrikkeladresse: [] }
+	if (values.flyttedato) {
+		matrikkeladresseValues.boadresse_flyttedato = values.flyttedato
+		delete values.flyttedato
+	}
+	if (values.adressetype) {
+		delete values.adressetype
+	}
+	if (values.identtype) {
+		delete values.identtype
+	}
+	matrikkeladresseValues.matrikkeladresse.push(values)
+	return matrikkeladresseValues
 }
 
 const _mapRegistreValue = (key, value) => {

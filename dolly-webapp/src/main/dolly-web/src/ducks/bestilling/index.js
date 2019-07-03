@@ -10,6 +10,7 @@ import { handleActions, createActions, createAction, combineActions } from 'redu
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
 import { getValues, _filterAttributes, _filterArrayAttributes } from './BestillingRequestUtils'
+import Formatters from '~/utils/DataFormatter'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -234,11 +235,21 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
 
+	console.log('final_values :', final_values)
+	console.log('bestillingState :', bestillingState)
+
 	// ? Vi trenger ikke nødvendigvis generisk løsning når det er så veldig mange spesiall tilfeller
 	// ? Forslag: lage en hjelpeklasse
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 		final_values.tpsf.boadresse.gatekode = values.boadresse_gatekode
+	}
+	if (_get(final_values, 'tpsf.matrikkeladresse')) {
+		final_values = _set(final_values, 'tpsf.boadresse', final_values.tpsf.matrikkeladresse[0])
+		final_values.tpsf.boadresse.adressetype = 'MATR'
+		values.boadresse_flyttedato &&
+			(final_values.tpsf.boadresse.flyttedato = Formatters.parseDate(values.boadresse_flyttedato))
+		delete final_values.tpsf.matrikkeladresse
 	}
 	if (_get(final_values, 'tpsf.ufb_kommunenr')) {
 		final_values = _set(final_values, 'tpsf.boadresse.adressetype', 'GATE')
