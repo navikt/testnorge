@@ -38,7 +38,8 @@ export default class AttributtManager {
 						attr.dataSource === 'AAREG' ||
 						attr.dataSource === 'KRR' ||
 						attr.dataSource === 'PDLF' ||
-						attr.dataSource === 'ARENA'
+						attr.dataSource === 'ARENA' ||
+						(attr.dataSource === 'TPSF' && attr.id === 'matrikkeladresse')
 					) {
 						return attr
 					} else {
@@ -186,8 +187,6 @@ export default class AttributtManager {
 	}
 
 	getAttributtListByHovedkategori(hovedkategori: Kategori): string[] {
-		console.log('hovedkategori :', hovedkategori)
-		console.log('AttributtListe :', AttributtListe)
 		return AttributtListe.filter(attr => attr.hovedKategori.id === hovedkategori.id).map(
 			attr => attr.id
 		)

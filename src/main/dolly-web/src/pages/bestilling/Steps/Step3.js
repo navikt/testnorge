@@ -208,6 +208,9 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderSubKategoriBlokk = (header, items, values) => {
+		// console.log('header :', header)
+		// console.log('items :', items)
+		// console.log('values :', values)
 		if (!items.every(nested => nested.items)) {
 			let removable = !items.every(item => this.props.selectedAttributeIds.includes(item.id))
 			return (
@@ -231,20 +234,37 @@ export default class Step3 extends PureComponent {
 				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
 			</div>
 		)
+		// return items[0].subKategori.id === 'boadresse' ? (
+		// 	<div className="oppsummering-multifield-utenBorder" key={header}>
+		// 		<h4>{header}</h4>
+		// 		<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
+		// 	</div>
+		// ) : (
+		// 	<div className="oppsummering-multifield" key={header}>
+		// 		<h4>{header}</h4>
+		// 		<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
+		// 	</div>
+		// )
 	}
 
 	renderSubKategori = ({ subKategori, items }) => {
 		const { values } = this.props
+		// console.log('subKategori :', subKategori)
+		// console.log('values :', values)
+		// console.log('items :', items)
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
 		}
-		if (subKategori.id === 'arena') {
+		if (subKategori.id === 'arena' || (subKategori.id === 'boadresse' && items[0].items)) {
 			return items[0].items.map(item => this.renderItem(item, values))
 		}
 		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
 	renderItem = (item, stateValues) => {
+		console.log('item :', item)
+		// console.log('this.props :', this.props)
+		console.log('stateValues :', stateValues)
 		if (item.items) {
 			const valueArray = _get(this.props.values, item.id)
 			const numberOfValues = valueArray.length
@@ -268,6 +288,10 @@ export default class Step3 extends PureComponent {
 				: (itemValue = _get(stateValues['arenaforvalter'][0], item.id))
 		}
 
+		// if (item.dataSource === 'TPSF' && 'matrikkeladresse' in stateValues) {
+		// 	itemValue = _get(stateValues['matrikkeladresse'][0], item.id)
+		// }
+
 		const staticValueProps = {
 			key: item.id,
 			header: item.label,
@@ -284,7 +308,11 @@ export default class Step3 extends PureComponent {
 				key={item.id}
 			>
 				{item.apiKodeverkId ? (
-					<KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
+					<KodeverkValueConnector
+						apiKodeverkId={item.apiKodeverkId}
+						showValue={item.id === 'kommunenr' || item.id === 'postnr' ? true : false}
+						{...staticValueProps}
+					/>
 				) : // * Trenger stoette for apiKodeverkId som er avhengig av andre attributt. Decamelize for bedre ux imidlertig
 				item.id === 'typeinntekt' ? (
 					<StaticValue {...staticValueProps} value={Formatters.decamelize(itemValue, ' ')} />

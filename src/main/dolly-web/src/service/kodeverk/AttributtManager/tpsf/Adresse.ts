@@ -5,6 +5,7 @@ import DateValidation from '~/components/fields/Datepicker/DateValidation'
 import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
+	// Gateadresse
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Boadresse,
@@ -48,7 +49,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Postnummer',
-		// validation: yup.string().required('Vennligst fyll ut.'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -62,12 +62,12 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		attributtType: AttributtType.SelectAndEdit
 	},
-	// --------------------------------------------
+	// Matrikkeladresse
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Boadresse,
 		id: 'matrikkeladresse',
-		path: 'boadresse',
+		// path: 'boadresse',
 		label: 'Har matrikkeladresse',
 		dataSource: DataSource.TPSF,
 		validation: yup.object(),
@@ -77,19 +77,93 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.Adresser,
 				subKategori: SubKategorier.Boadresse,
-				id: 'boadresse_matrikkeladresse',
-				path: 'boadresse.matrikkeladresse',
-				parent: 'boadresse',
+				id: 'mellomnavn',
+				// path: 'boadresse.mellomnavn',
+				// parent: 'boadresse',
 				label: 'Stedsnavn',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Text,
 				// validation: ??
 				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'gardsnr',
+				// path: 'boadresse.gardsnr',
+				// parent: 'boadresse',
+				label: 'Gårdsnummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup.string().max(4, 'For mange tegn'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'bruksnr',
+				// path: 'boadresse.bruksnr',
+				// parent: 'boadresse',
+				label: 'Bruksnummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup.string().max(4, 'For mange tegn'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'festenr',
+				// path: 'boadresse.festenr',
+				// parent: 'boadresse',
+				label: 'Festenummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup.string().max(4, 'For mange tegn'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'undernr',
+				// path: 'boadresse.undernr',
+				// parent: 'boadresse',
+				label: 'Undernummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup.string().max(3, 'For mange tegn'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'postnr',
+				// path: 'boadresse.postnr',
+				// parent: 'boadresse',
+				label: 'Postnummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				apiKodeverkId: 'Postnummer',
+				apiKodeverkShowValueInLabel: true,
+				// validation: yup.string().required('Vennligst fyll ut.'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'kommunenr',
+				// path: 'boadresse.kommunenr',
+				// parent: 'boadresse',
+				label: 'Kommunenummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				apiKodeverkId: 'Kommuner',
+				apiKodeverkShowValueInLabel: true,
+				attributtType: AttributtType.SelectAndEdit
 			}
 		]
 	},
-
-	// --------------------------------------------
+	// Flyttedato
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Boadresse,
@@ -100,9 +174,10 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Date,
 		validation: DateValidation(),
 		attributtType: AttributtType.SelectAndEdit,
-		dependentOn: 'boadresse' || 'matrikkeladresse', // Funker ikke, finn på noe annet
+		dependentOn: 'boadresse',
 		defaultValue: new Date()
 	},
+	// Postadresse
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Postadresse,

@@ -61,6 +61,10 @@ Formatters.kjonnToStringBarn = (kjonn = '') => {
 	return _kjonn === 'm' ? 'GUTT' : 'JENTE'
 }
 
+Formatters.adressetypeToString = adressetype => {
+	return adressetype === 'MATR' ? 'Matrikkeladresse' : adressetype === 'GATE' ? 'Gateadresse' : null
+}
+
 Formatters.arrayToString = (array, separator = ',') => {
 	if (!array) return null
 

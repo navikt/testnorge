@@ -165,7 +165,6 @@ export default class FormEditor extends PureComponent {
 
 		return (
 			<div className="subkategori" key={uniqueId}>
-				{console.log('items :', items)}
 				<h4>{subKategori.navn}</h4>
 				<div className="subkategori-field-group">
 					{items.map(item => {
