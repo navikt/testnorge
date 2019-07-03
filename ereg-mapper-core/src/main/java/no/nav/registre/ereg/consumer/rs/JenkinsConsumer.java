@@ -1,6 +1,7 @@
 package no.nav.registre.ereg.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -33,6 +35,8 @@ public class JenkinsConsumer {
     private final UriTemplate jenkinsCrumbTemplate;
     private final Environment environment;
     private final String serverConfigString;
+    private final String jenkinsUsername;
+    private final String jenkinsPassword;
 
     public JenkinsConsumer(
             RestTemplate restTemplate,
@@ -42,10 +46,13 @@ public class JenkinsConsumer {
             @Value("${jenkins.username}") String jenkinsUsername) {
         this.restTemplate = restTemplate;
         environment = env;
-        jenkinsJobTemplate = new UriTemplate(jenkinsUri + "/view/Registre/job/Start_BEREG007/");
+        jenkinsJobTemplate = new UriTemplate(jenkinsUri + "/view/Registre/job/Start_BEREG007/buildWithParameters");
         jenkinsCrumbTemplate = new UriTemplate(jenkinsUri + "/crumbIssuer/api/json");
 
         serverConfigString = "jenkins.server.%s";
+
+        this.jenkinsUsername = jenkinsUsername;
+        this.jenkinsPassword = jenkinsPassword;
 
         restTemplate.setInterceptors(Collections.singletonList(new BasicAuthenticationInterceptor(jenkinsUsername,
                 jenkinsPassword)));
@@ -69,7 +76,8 @@ public class JenkinsConsumer {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.add("Jenkins-Crumb", getCrumb());
+        headers.set("Jenkins-Crumb", getCrumb());
+//        headers.addAll(createHeaders(jenkinsUsername, jenkinsPassword));
 
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
         map.add("server", environment.getProperty(String.format(serverConfigString, env)));
@@ -99,5 +107,15 @@ public class JenkinsConsumer {
             return crumbRequest.getCrumb();
         }
         throw new RuntimeException("Kunne ikke generere en crumb i Jenkins");
+    }
+
+    private HttpHeaders createHeaders(String username, String password) {
+        return new HttpHeaders() {{
+            String auth = username + ":" + password;
+            byte[] encodedAuth = Base64.encodeBase64(
+                    auth.getBytes(Charset.forName("US-ASCII")));
+            String authHeader = "Basic " + new String(encodedAuth);
+            set("Authorization", authHeader);
+        }};
     }
 }
