@@ -13,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -25,8 +26,10 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
+import no.nav.registre.ereg.consumer.rs.interceptor.LoggingRequestInterceptor;
 import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
 
 @Slf4j
@@ -57,8 +60,10 @@ public class JenkinsConsumer {
         this.jenkinsUsername = jenkinsUsername;
         this.jenkinsPassword = jenkinsPassword;
 
-        restTemplate.setInterceptors(Collections.singletonList(new BasicAuthenticationInterceptor(jenkinsUsername,
-                jenkinsPassword)));
+        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
+        interceptors.add(new BasicAuthenticationInterceptor(jenkinsUsername, jenkinsPassword));
+        interceptors.add(new LoggingRequestInterceptor());
+        restTemplate.setInterceptors(interceptors);
     }
 
     private static Resource createTempFlatFile(String flatFile) throws IOException {
