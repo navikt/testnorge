@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -66,6 +67,21 @@ public class JenkinsConsumer {
         return new FileSystemResource(testFile.toFile());
     }
 
+    public static Resource getFileResource(String content) throws IOException {
+        Path tempFile = Files.createTempFile("ereg", ".txt");
+        Files.write(tempFile, content.getBytes());
+        File file = tempFile.toFile();
+        return new FileSystemResource(file);
+    }
+
+    private String getCrumb() {
+        JenkinsCrumbRequest crumbRequest = restTemplate.getForObject(jenkinsCrumbTemplate.expand(), JenkinsCrumbRequest.class);
+        if (crumbRequest != null) {
+            return crumbRequest.getCrumb();
+        }
+        throw new RuntimeException("Kunne ikke generere en crumb i Jenkins");
+    }
+
     public boolean send(String flatFile, String env) {
 
         Resource file;
@@ -79,14 +95,31 @@ public class JenkinsConsumer {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.set("Jenkins-Crumb", getCrumb());
-//        headers.addAll(createHeaders(jenkinsUsername, jenkinsPassword));
 
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
         map.add("server", environment.getProperty(String.format(serverConfigString, env)));
         map.add("batchName", "BEREG007");
         map.add("workUnit", "100");
-        map.add("input_file", new ByteArrayResource(flatFile.getBytes()));
         map.add("FileName", "ereg_mapper.txt");
+
+
+        try {
+            MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
+            Resource fileResource = getFileResource(flatFile);
+            String filename = fileResource.getFilename();
+            ContentDisposition contentDisposition = ContentDisposition
+                    .builder("form-data")
+                    .name("file")
+                    .filename(filename)
+                    .build();
+            fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+            HttpEntity<String> fileEntity = new HttpEntity<>(filename, fileMap);
+            map.add("input_file", fileEntity);
+//            map.add("input_file", getFileResource(flatFile).getFilename());
+        } catch (IOException e) {
+            log.error(e.getLocalizedMessage(), e);
+            return false;
+        }
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
 
@@ -102,14 +135,6 @@ public class JenkinsConsumer {
             log.warn("Kunne ikke starte / interagere med jenkins jobben for å lese inn EREG flatfil, kode: {}", response.getStatusCode());
             return false;
         } else return response.getStatusCode() == HttpStatus.CREATED;
-    }
-
-    private String getCrumb() {
-        JenkinsCrumbRequest crumbRequest = restTemplate.getForObject(jenkinsCrumbTemplate.expand(), JenkinsCrumbRequest.class);
-        if (crumbRequest != null) {
-            return crumbRequest.getCrumb();
-        }
-        throw new RuntimeException("Kunne ikke generere en crumb i Jenkins");
     }
 
     private HttpHeaders createHeaders(String username, String password) {
