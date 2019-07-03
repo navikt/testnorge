@@ -43,7 +43,7 @@ import static org.hamcrest.Matchers.*;
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ContextConfiguration(classes = {ArenaForvalterConsumer.class, AppConfig.class})
 @EnableAutoConfiguration
-public class ArenaForvalterTest {
+public class ArenaForvalterConsumerTest {
 
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
@@ -56,7 +56,7 @@ public class ArenaForvalterTest {
     private Date testDate;
 
 
-    public ArenaForvalterTest() throws JsonParseException, JsonMappingException, IOException, ParseException {
+    public ArenaForvalterConsumerTest() throws JsonParseException, JsonMappingException, IOException, ParseException {
         String brukere = getResourceFileContent("arenaForvalterenNyeBrukere.json");
         this.nyeBrukere = objectMapper.readValue(brukere, NyeBrukereList.class);
         this.testDate = sdf.parse("2009-05-01");
@@ -92,7 +92,7 @@ public class ArenaForvalterTest {
     public void shouldLogOnBadRequest() throws JsonProcessingException {
         ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
         listAppender.start();
-        Logger logger = (Logger) LoggerFactory.getLogger(HodejegerenConsumer.class);
+        Logger logger = (Logger) LoggerFactory.getLogger(ArenaForvalterConsumer.class);
         logger.addAppender(listAppender);
 
         stubArenaForvalterBadRequest();
@@ -105,6 +105,21 @@ public class ArenaForvalterTest {
     }
 
     @Test
+    public void logOnEmptyHentBrukere() {
+        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+        listAppender.start();
+        Logger logger = (Logger) LoggerFactory.getLogger(ArenaForvalterConsumer.class);
+        logger.addAppender(listAppender);
+
+        stubArenaForvlaterEmptyHentBrukere();
+
+        StatusFraArenaForvalterResponse response = arenaForvalterConsumer.hentBrukere();
+
+        assertThat(listAppender.list.size(), is(Matchers.equalTo(1)));
+        assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Arena Forvalteren."));
+    }
+
+    @Test
     public void hentBrukereTest() {
         stubArenaForvalterHentBrukere();
 
@@ -112,16 +127,32 @@ public class ArenaForvalterTest {
 
         assertThat(response.getAntallSider(), is(1));
         assertThat(response.getArbeidsokerList().get(2).getPersonident(), is("08125949828"));
+        assertThat(response.getArbeidsokerList().size(), is(156));
     }
 
     // TODO: sjekke logging på empty response
     // TODO: sjekke logging på 3xx/4xx/5xx error codes
+
+
+    @Test
+    public void hentEksisterendeIdenterTest() {
+        stubArenaForvalterHentBrukere();
+        List<String> eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter();
+
+        assertThat(eksisterendeIdenter.get(2), is("08125949828"));
+        assertThat(eksisterendeIdenter.size(), is(156));
+    }
 
     private void stubArenaForvalterHentBrukere() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("arenaForvalterenGetRequestResponseBody.json"))));
+    }
+
+    private void stubArenaForvlaterEmptyHentBrukere() {
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker"))
+                .willReturn(ok().withHeader("Content-Type", "application/json")));
     }
 
     private void stubArenaForvalterConsumer() {

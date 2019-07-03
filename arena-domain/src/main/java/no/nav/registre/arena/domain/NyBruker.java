@@ -25,5 +25,4 @@ public class NyBruker {
     private List<Aap115> aap115;
     @JsonProperty
     private List<Aap> aap;
-
 }

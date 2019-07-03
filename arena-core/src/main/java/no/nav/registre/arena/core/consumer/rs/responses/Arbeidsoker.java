@@ -6,8 +6,6 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
-//@Builder
 public class Arbeidsoker {
     @JsonProperty
     private String personident;
