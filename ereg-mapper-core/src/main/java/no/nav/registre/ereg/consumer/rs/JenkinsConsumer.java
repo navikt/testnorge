@@ -83,15 +83,6 @@ public class JenkinsConsumer {
     }
 
     public boolean send(String flatFile, String env) {
-
-        Resource file;
-        try {
-            file = createTempFlatFile(flatFile);
-        } catch (IOException e) {
-            log.error(e.getLocalizedMessage(), e);
-            return false;
-        }
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.set("Jenkins-Crumb", getCrumb());
@@ -108,7 +99,7 @@ public class JenkinsConsumer {
             String filename = fileResource.getFilename();
             ContentDisposition contentDisposition = ContentDisposition
                     .builder("form-data")
-                    .name("file")
+                    .name("input_file")
                     .filename(filename)
                     .build();
             fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
