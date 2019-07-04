@@ -371,7 +371,6 @@ public class EregMapper {
     }
 
     private String createKapitalRecord(String valuttakode, String kapital, String kapitalInnbetalt, String kapitalBundet, String fritekst, String endringsType) {
-        //TODO: Fix, truncates length to less than expected value
         StringBuilder stringBuilder = createBaseStringbuilder(187, "KAPI", endringsType);
         stringBuilder.replace(8, 8 + valuttakode.length(), valuttakode)
                 .replace(11, 29, createStringBuilderWithReplacement(18, '0').toString())
