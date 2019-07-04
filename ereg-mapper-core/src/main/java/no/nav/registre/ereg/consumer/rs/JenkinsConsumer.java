@@ -1,7 +1,6 @@
 package no.nav.registre.ereg.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -24,7 +23,6 @@ import org.springframework.web.util.UriTemplate;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -57,14 +55,7 @@ public class JenkinsConsumer {
 
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
         interceptors.add(new BasicAuthenticationInterceptor(jenkinsUsername, jenkinsPassword));
-//        interceptors.add(new LoggingRequestInterceptor());
         restTemplate.setInterceptors(interceptors);
-    }
-
-    private static Resource createTempFlatFile(String flatFile) throws IOException {
-        Path testFile = Files.createTempFile("ereg_mapper", ".txt");
-        Files.write(testFile, flatFile.getBytes());
-        return new FileSystemResource(testFile.toFile());
     }
 
     private static Resource getFileResource(String content) throws IOException {
@@ -106,19 +97,12 @@ public class JenkinsConsumer {
             fileMap.set("Content-Type", ContentType.TEXT_PLAIN.toString());
             HttpEntity<byte[]> fileEntity = new HttpEntity<>(flatFile.getBytes(), fileMap);
             map.add("input_file", fileEntity);
-//            map.add("input_file", getFileResource(flatFile).getFilename());
         } catch (IOException e) {
             log.error(e.getLocalizedMessage(), e);
             return false;
         }
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
-
-//        RequestEntity requestEntity = new RequestEntity<>(map, headers, HttpMethod.POST, jenkinsJobTemplate.expand());
-
-        log.info("Request for jenkins jobb headers: {}", requestEntity.getHeaders());
-        log.info("Request for jenkins jobb body: {}", requestEntity.getBody());
-
         ResponseEntity<String> response = restTemplate.exchange(jenkinsJobTemplate.expand(), HttpMethod.POST, requestEntity, String.class);
 
         log.info("Response: {}", response);
@@ -127,15 +111,5 @@ public class JenkinsConsumer {
             log.warn("Kunne ikke starte / interagere med jenkins jobben for å lese inn EREG flatfil, kode: {}", response.getStatusCode());
             return false;
         } else return response.getStatusCode() == HttpStatus.CREATED;
-    }
-
-    private HttpHeaders createHeaders(String username, String password) {
-        return new HttpHeaders() {{
-            String auth = username + ":" + password;
-            byte[] encodedAuth = Base64.encodeBase64(
-                    auth.getBytes(Charset.forName("US-ASCII")));
-            String authHeader = "Basic " + new String(encodedAuth);
-            set("Authorization", authHeader);
-        }};
     }
 }
