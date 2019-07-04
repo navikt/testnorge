@@ -44,7 +44,7 @@ public class EregMapperTest {
         assertEquals("HEADER 2019070400000AA A\n" +
                 "ENH 123      AS NNY   2019070420190704J           \n" +
                 "NAVNN   Gul Bolle AS                                                                                                                                                                                                       \n" +
-                "NACEN   01.12004072019N\n" +
+                "NACEN   01.12020190704N\n" +
                 "TRAIER 0000001000000005\n", s);
     }
 
