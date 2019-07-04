@@ -13,6 +13,4 @@ public class SyntetiserArenaRequest {
     private Long avspillergruppeId;
     @JsonProperty("miljoe")
     private String miljoe;
-    @JsonProperty("antallNyeIdenter")
-    private int antallNyeIdenter;
 }

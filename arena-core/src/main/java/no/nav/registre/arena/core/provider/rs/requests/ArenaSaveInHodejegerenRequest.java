@@ -1,7 +1,6 @@
 package no.nav.registre.arena.core.provider.rs.requests;
 
 import lombok.*;
-import no.nav.registre.arena.domain.NyBruker;
 
 import java.util.List;
 
@@ -12,5 +11,5 @@ import java.util.List;
 @Builder
 public class ArenaSaveInHodejegerenRequest {
     private String kilde;
-    private List<NyBruker> identerMedData;
+    private List<IdentMedData> identerMedData;
 }
