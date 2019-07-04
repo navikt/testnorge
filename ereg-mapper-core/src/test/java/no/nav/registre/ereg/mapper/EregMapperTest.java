@@ -81,7 +81,7 @@ public class EregMapperTest {
                 .type("AS")
                 .endringsType("N")
                 .naeringskode(Naeringskode.builder()
-                        .gyldighetsdato("18062019")
+                        .gyldighetsdato("20191806")
                         .hjelpeEnhet(false)
                         .kode("0?")
                         .build())
