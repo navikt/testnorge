@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import no.nav.registre.ereg.consumer.rs.IdentPoolConsumer;
@@ -21,6 +22,7 @@ public class NameService {
 
     private final IdentPoolConsumer identPoolConsumer;
     private final String filePath;
+    private final Random generator;
 
     private Map<String, NaeringskodeRecord> naeringskodeRecords;
 
@@ -31,6 +33,7 @@ public class NameService {
     ) {
         this.filePath = filePath;
         this.identPoolConsumer = identPoolConsumer;
+        this.generator = new Random();
     }
 
     @PostConstruct
@@ -43,6 +46,12 @@ public class NameService {
         } catch (IOException e) {
             log.error(e.getLocalizedMessage(), e);
         }
+    }
+
+
+    public String getRandomNaeringskode() {
+        Object[] values = naeringskodeRecords.values().toArray();
+        return (String) values[generator.nextInt(values.length)];
     }
 
     private String getFullName(String naeringskode, String type) {

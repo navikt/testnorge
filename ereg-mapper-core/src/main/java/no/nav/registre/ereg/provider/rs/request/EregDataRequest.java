@@ -61,7 +61,6 @@ public class EregDataRequest {
     private Boolean kjoensfordeling;
     private UnderlagtHjemland underlagtHjemland;
     private Kapital kapital;
-    @NotNull
     @JsonProperty("næringskode")
     private Naeringskode naeringskode;
     @JsonProperty("formål")

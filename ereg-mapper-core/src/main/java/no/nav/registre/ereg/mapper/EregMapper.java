@@ -48,7 +48,18 @@ public class EregMapper {
                 .forEach(
                         (type, requests) -> {
                             List<String> naeringskoder = requests.stream()
-                                    .map(EregDataRequest::getNaeringskode)
+                                    .map(d -> {
+                                        if (d.getNaeringskode() == null) {
+
+                                            SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
+                                            d.setNaeringskode(Naeringskode.builder()
+                                                    .kode(nameService.getRandomNaeringskode())
+                                                    .hjelpeEnhet(false)
+                                                    .gyldighetsdato(format.format(new Date()))
+                                                    .build());
+                                        }
+                                        return d.getNaeringskode();
+                                    })
                                     .map(Naeringskode::getKode)
                                     .collect(Collectors.toList());
                             List<String> fullNames = nameService.getFullNames(naeringskoder, type);
