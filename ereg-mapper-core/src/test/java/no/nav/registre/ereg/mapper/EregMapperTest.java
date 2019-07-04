@@ -45,7 +45,7 @@ public class EregMapperTest {
                 "ENH 123      AS NNY   2019070420190704J           \n" +
                 "NAVNN   Gul Bolle AS                                                                                                                                                                                                       \n" +
                 "NACEN   01.12004072019N\n" +
-                "TRAIER 00000001000000005\n", s);
+                "TRAIER 0000001000000005\n", s);
     }
 
     @Test

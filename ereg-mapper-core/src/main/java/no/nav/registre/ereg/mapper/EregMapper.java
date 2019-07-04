@@ -432,8 +432,8 @@ public class EregMapper {
         records = records + 2;
         StringBuilder stringBuilder = createStringBuilderWithReplacement(23, '0');
         stringBuilder.replace(0, 6, "TRAIER ")
-                .replace(15 - String.valueOf(units).length(), 15, String.valueOf(units))
-                .replace(24 - String.valueOf(records).length(), 24, String.valueOf(records))
+                .replace(14 - String.valueOf(units).length(), 15, String.valueOf(units))
+                .replace(23 - String.valueOf(records).length(), 24, String.valueOf(records))
                 .append("\n");
         return stringBuilder.toString();
     }
