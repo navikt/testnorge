@@ -113,7 +113,7 @@ public class JenkinsConsumer {
                     .build();
             fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
             fileMap.set("Content-Type", ContentType.TEXT_PLAIN.toString());
-            HttpEntity<String> fileEntity = new HttpEntity<>("", fileMap);
+            HttpEntity<byte[]> fileEntity = new HttpEntity<>(flatFile.getBytes(), fileMap);
             map.add("input_file", fileEntity);
 //            map.add("input_file", getFileResource(flatFile).getFilename());
         } catch (IOException e) {
