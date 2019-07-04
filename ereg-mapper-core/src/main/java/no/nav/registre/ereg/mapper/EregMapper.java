@@ -87,14 +87,16 @@ public class EregMapper {
     }
 
     private RecordsAndCount createUnit(EregDataRequest data) {
-        int numRecords = 2;
+        int numRecords = 0;
         String endringsType = data.getEndringsType();
 
         StringBuilder file = new StringBuilder(createENH(data.getOrgId(), data.getType(), endringsType));
+        numRecords++;
 
         Navn navn = data.getNavn();
         assert (navn != null);
         file.append(createNavn(navn.getNavneListe(), navn.getRedNavn() == null ? "" : navn.getRedNavn(), endringsType));
+        numRecords++;
 
         Adresse adresse = data.getAdresse();
         if (adresse != null) {
@@ -369,17 +371,16 @@ public class EregMapper {
     }
 
     private String createKapitalRecord(String valuttakode, String kapital, String kapitalInnbetalt, String kapitalBundet, String fritekst, String endringsType) {
-
+        //TODO: Fix, truncates length to less than expected value
         StringBuilder stringBuilder = createBaseStringbuilder(187, "KAPI", endringsType);
         stringBuilder.replace(8, 8 + valuttakode.length(), valuttakode)
-                .replace(11, 29, createStringBuilderWithReplacement(29 - 11, '0').toString())
-                .replace(28 - kapital.length(), 29, kapital)
-                .replace(29, 47, createStringBuilderWithReplacement(47 - 29, '0').toString())
-                .replace(46 - kapitalInnbetalt.length(), 47, kapitalInnbetalt)
+                .replace(11, 29, createStringBuilderWithReplacement(18, '0').toString())
+                .replace(29 - kapital.length(), 29, kapital)
+                .replace(29, 47, createStringBuilderWithReplacement(18, '0').toString())
+                .replace(47 - kapitalInnbetalt.length(), 47, kapitalInnbetalt)
                 .replace(47, 47 + kapitalBundet.length(), kapitalBundet)
                 .replace(117, 117 + fritekst.length(), fritekst)
                 .append("\n");
-
         return stringBuilder.toString();
     }
 
@@ -432,7 +433,7 @@ public class EregMapper {
         records = records + 2;
         StringBuilder stringBuilder = createStringBuilderWithReplacement(23, '0');
         stringBuilder.replace(0, 6, "TRAIER ")
-                .replace(14 - String.valueOf(units).length(), 15, String.valueOf(units))
+                .replace(14 - String.valueOf(units).length(), 14, String.valueOf(units))
                 .replace(23 - String.valueOf(records).length(), 24, String.valueOf(records))
                 .append("\n");
         return stringBuilder.toString();

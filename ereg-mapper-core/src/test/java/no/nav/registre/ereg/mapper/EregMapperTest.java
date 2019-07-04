@@ -131,9 +131,9 @@ public class EregMapperTest {
         assertEquals("IPF N   ", s.substring(1489, 1497));
         assertEquals("ULOVN   J  AS      Noe som ikke er mer enn 70 tegn                                       Enda mer under 70                                                     ",
                 s.substring(1498, 1657));
-        assertEquals("KAPIN   2? 000000000000000101000000000000002222503                                                                   Noe som kan gå over flere records........................... Minst 70 ",
+        assertEquals("KAPIN   2? 000000000000000111000000000000000222333                                                                   Noe som kan gå over flere records........................... Minst 70 ",
                 s.substring(1658, 1845));
-        assertEquals("KAPIN   2? 000000000000000101000000000000002222503                                                                   tegn for å få delt opp records i flere                                ",
+        assertEquals("KAPIN   2? 000000000000000111000000000000000222333                                                                   tegn for å få delt opp records i flere                                ",
                 s.substring(1846, 2033));
         assertEquals("NACEN   0?    18062019N", s.substring(2034, 2057));
         assertEquals("FORMN   Jobb                                                                  ",
