@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import no.nav.registre.ereg.consumer.rs.IdentPoolConsumer;
 
@@ -30,12 +32,19 @@ public class NameServiceTest {
     @Before
     public void setUp() {
         nameService = new NameService("koder.csv", identPoolConsumer);
+        nameService.init();
+    }
+
+    @Test
+    public void getRandomKode() {
+        String randomNaeringskode = nameService.getRandomNaeringskode();
+        assertNotNull(randomNaeringskode);
+        assertTrue(randomNaeringskode.length() > 0);
     }
 
     @Test
     public void getFullNames_AS() {
         when(identPoolConsumer.getFakeNames(1)).thenReturn(Collections.singletonList("GUL BOLLE"));
-        nameService.init();
         List<String> fullNames = nameService.getFullNames(Collections.singletonList("01"), "AS");
         assertEquals(1, fullNames.size());
         assertEquals("GUL BOLLE Jordbruk, tilhør. tjenester, jakt AS", fullNames.get(0));

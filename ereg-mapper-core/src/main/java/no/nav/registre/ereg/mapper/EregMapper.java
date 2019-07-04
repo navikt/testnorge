@@ -50,7 +50,6 @@ public class EregMapper {
                             List<String> naeringskoder = requests.stream()
                                     .map(d -> {
                                         if (d.getNaeringskode() == null) {
-
                                             SimpleDateFormat format = new SimpleDateFormat("ddMMyyyy");
                                             d.setNaeringskode(Naeringskode.builder()
                                                     .kode(nameService.getRandomNaeringskode())

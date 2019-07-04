@@ -31,6 +31,24 @@ public class EregMapperTest {
     private EregMapper eregMapper;
 
     @Test
+    public void mapEregRequests_RandomNaeringskode_Name() {
+        when(nameService.getRandomNaeringskode()).thenReturn("01.120");
+        when(nameService.getFullNames(anyList(), anyString())).thenReturn(Collections.singletonList("Gul Bolle AS"));
+
+        EregDataRequest request = EregDataRequest.builder()
+                .orgId("123")
+                .type("AS")
+                .endringsType("N")
+                .build();
+        String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
+        assertEquals("HEADER 2019070400000AA A\n" +
+                "ENH 123      AS NNY   2019070420190704J           \n" +
+                "NAVNN   Gul Bolle AS                                                                                                                                                                                                       \n" +
+                "NACEN   01.12004072019N\n" +
+                "TRAIER 00000001000000005\n", s);
+    }
+
+    @Test
     public void mapEregRequests_PartialSuccess() {
 
         when(nameService.getFullNames(anyList(), anyString())).thenReturn(Collections.singletonList("Gul Bolle"));

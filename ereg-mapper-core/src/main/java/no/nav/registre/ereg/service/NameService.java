@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -50,8 +51,9 @@ public class NameService {
 
 
     public String getRandomNaeringskode() {
-        Object[] values = naeringskodeRecords.values().toArray();
-        return (String) values[generator.nextInt(values.length)];
+        Collection<NaeringskodeRecord> tmp = naeringskodeRecords.values();
+        List<NaeringskodeRecord> values = new ArrayList<>(tmp);
+        return values.get(generator.nextInt(values.size())).getCode();
     }
 
     private String getFullName(String naeringskode, String type) {
