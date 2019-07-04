@@ -407,15 +407,15 @@ public class EregMapper {
         return stringBuilder.toString();
     }
 
-    private void concatListToString(StringBuilder stringBuilder, List<String> addresses, int indexStart) {
+    private void concatListToString(StringBuilder stringBuilder, List<String> list, int indexStart) {
         int iterSize = 3;
-        if (addresses.size() < iterSize) {
-            iterSize = addresses.size();
+        if (list.size() < iterSize) {
+            iterSize = list.size();
         }
 
         int start = indexStart;
         for (int i = 0; i < iterSize; i++) {
-            stringBuilder.replace(start, start + addresses.get(i).length(), addresses.get(i));
+            stringBuilder.replace(start, start + list.get(i).length(), list.get(i));
             start = start + 35 * (i + 1);
         }
     }
