@@ -2,6 +2,7 @@ package no.nav.registre.ereg.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
@@ -29,7 +30,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.ereg.consumer.rs.interceptor.LoggingRequestInterceptor;
 import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
 
 @Slf4j
@@ -41,8 +41,6 @@ public class JenkinsConsumer {
     private final UriTemplate jenkinsCrumbTemplate;
     private final Environment environment;
     private final String serverConfigString;
-    private final String jenkinsUsername;
-    private final String jenkinsPassword;
 
     public JenkinsConsumer(
             RestTemplate restTemplate,
@@ -57,12 +55,9 @@ public class JenkinsConsumer {
 
         serverConfigString = "jenkins.server.%s";
 
-        this.jenkinsUsername = jenkinsUsername;
-        this.jenkinsPassword = jenkinsPassword;
-
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
         interceptors.add(new BasicAuthenticationInterceptor(jenkinsUsername, jenkinsPassword));
-        interceptors.add(new LoggingRequestInterceptor());
+//        interceptors.add(new LoggingRequestInterceptor());
         restTemplate.setInterceptors(interceptors);
     }
 
@@ -72,7 +67,7 @@ public class JenkinsConsumer {
         return new FileSystemResource(testFile.toFile());
     }
 
-    public static Resource getFileResource(String content) throws IOException {
+    private static Resource getFileResource(String content) throws IOException {
         Path tempFile = Files.createTempFile("ereg", ".txt");
         Files.write(tempFile, content.getBytes());
         File file = tempFile.toFile();
@@ -107,7 +102,6 @@ public class JenkinsConsumer {
         map.add("workUnit", "100");
         map.add("FileName", "ereg_mapper.txt");
 
-
         try {
             MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
             Resource fileResource = getFileResource(flatFile);
@@ -118,7 +112,8 @@ public class JenkinsConsumer {
                     .filename(filename)
                     .build();
             fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
-            HttpEntity<String> fileEntity = new HttpEntity<>(filename, fileMap);
+            fileMap.set("Content-Type", ContentType.TEXT_PLAIN.toString());
+            HttpEntity<String> fileEntity = new HttpEntity<>("", fileMap);
             map.add("input_file", fileEntity);
 //            map.add("input_file", getFileResource(flatFile).getFilename());
         } catch (IOException e) {
