@@ -125,7 +125,8 @@ public class JenkinsConsumer {
 
 //        RequestEntity requestEntity = new RequestEntity<>(map, headers, HttpMethod.POST, jenkinsJobTemplate.expand());
 
-        log.info("Request for jenkins jobb: {}", requestEntity.toString());
+        log.info("Request for jenkins jobb headers: {}", requestEntity.getHeaders());
+        log.info("Request for jenkins jobb body: {}", requestEntity.getBody());
 
         ResponseEntity<String> response = restTemplate.exchange(jenkinsJobTemplate.expand(), HttpMethod.POST, requestEntity, String.class);
 
