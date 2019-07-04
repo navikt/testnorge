@@ -4,11 +4,13 @@ package no.nav.registre.arena.core.service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,27 @@ public class SyntetiseringService {
 
     public ResponseEntity registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
 
+        List<String> nyeIdenter = hentGyldigeIdenter(arenaRequest);
+        NyeBrukereList nyeBrukere = opprettNyeBrukere(nyeIdenter, arenaRequest.getMiljoe());
+
+        StatusFraArenaForvalterResponse response = arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
+        return byggResponse(response);
+    }
+
+    private ResponseEntity byggResponse(StatusFraArenaForvalterResponse response) {
+        StringBuilder status = new StringBuilder();
+
+        if (!CollectionUtils.isEmpty(response.getArbeidsokerList())) {
+            status.append("Nye identer opprettet med meldekort: \n")
+                    .append(response.getArbeidsokerList().stream().map(arbeidsoker -> arbeidsoker.getPersonident()))
+                    .append(". ");
+        }
+
+        return ResponseEntity.ok().body(status.toString());
+    }
+
+    private List<String> hentGyldigeIdenter(SyntetiserArenaRequest arenaRequest) {
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(arenaRequest.getAvspillergruppeId());
-        List<String> nyeIdenter = new ArrayList<>(arenaRequest.getAntallNyeIdenter());
         List<String> eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter();
 
         levendeIdenter.removeAll(eksisterendeIdenter);
@@ -41,28 +62,28 @@ public class SyntetiseringService {
             log.info("Fant ikke nok ledige identer i avspillergruppe. Lager meldekort på {} nye identer.", antallNyeIdenter);
         }
 
+        List<String> nyeIdenter = new ArrayList<>(antallNyeIdenter);
+
         for (int i = 0; i < antallNyeIdenter; i++) { // TODO: sjekke om dette går hvis antallNyeIdenter == levendeIdenter.size()
             nyeIdenter.add(levendeIdenter.remove(random.nextInt(levendeIdenter.size())));
         }
 
-
-
-        return null;
+        return nyeIdenter;
     }
 
-    private NyeBrukereList opprettNyeBrukere(List<String> identerFraHodejegeren, SyntetiserArenaRequest arenaRequest) {
+    private NyeBrukereList opprettNyeBrukere(List<String> identerFraHodejegeren, String miljoe) {
 
         List<NyBruker> nyeBrukere = new ArrayList<>(identerFraHodejegeren.size());
 
         for (String ident : identerFraHodejegeren) {
             nyeBrukere.add(new NyBruker(
                     ident,
-                    arenaRequest.getMiljoe(),
+                    miljoe,
                     "IKVAL",
-                    new UtenServicebehov(),
-                    false,
-                    new List<Aap115>(),
-                    new List<Aap>()
+                    null,
+                    true,
+                    null,
+                    null
             ));
         }
 

@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,22 +51,29 @@ public class ArenaForvalterConsumer {
 
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public StatusFraArenaForvalterResponse sendTilArenaForvalter(NyeBrukereList nyeBrukere)
-            throws JsonProcessingException {
-        RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
-                .body(createJsonRequestBody(nyeBrukere));
-        ResponseEntity<StatusFraArenaForvalterResponse> response =
-                restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
+    public StatusFraArenaForvalterResponse sendTilArenaForvalter(NyeBrukereList nyeBrukere) {
 
+        try {
+            RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
+                    .header("Nav-Call-Id", NAV_CALL_ID)
+                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                    .body(createJsonRequestBody(nyeBrukere));
 
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            log.error("Ugyldig brukeroppsett. Kunne ikke opprette nye brukere. Status: {}", response.getStatusCode());
-            return null;
+            ResponseEntity<StatusFraArenaForvalterResponse> response =
+                    restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
+
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                log.error("Ugyldig brukeroppsett. Kunne ikke opprette nye brukere. Status: {}", response.getStatusCode());
+                return null;
+            }
+
+            return response.getBody();
+
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage(), e);
         }
 
-        return response.getBody();
+        return null;
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})

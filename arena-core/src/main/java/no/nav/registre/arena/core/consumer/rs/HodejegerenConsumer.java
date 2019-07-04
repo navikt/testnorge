@@ -2,6 +2,7 @@ package no.nav.registre.arena.core.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.provider.rs.requests.ArenaSaveInHodejegerenRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -26,10 +27,12 @@ public class HodejegerenConsumer {
     private RestTemplate restTemplate;
 
     private UriTemplate hentLevendeIdenterOverAlderUrl;
+    private UriTemplate saveHodejegerenHistorikk;
 
     public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
         this.hentLevendeIdenterOverAlderUrl = new UriTemplate(hodejegerenServerUrl +
                 "/v1/levende-identer-over-alder/{avspillergruppeId}?minimumAlder=" + MINIMUM_ALDER);
+        this.saveHodejegerenHistorikk = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/");
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "hodejegeren"})
@@ -49,5 +52,13 @@ public class HodejegerenConsumer {
         }
 
         return new ArrayList<>(response.getBody());
+    }
+
+    @Timed(value = "arena.resource.latency", extraTags = {"operation", "hodejegeren"})
+    public List<String> saveHistory(ArenaSaveInHodejegerenRequest request) {
+        RequestEntity<ArenaSaveInHodejegerenRequest> postRequest =
+                RequestEntity.post(saveHodejegerenHistorikk.expand()).body(request);
+
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }
