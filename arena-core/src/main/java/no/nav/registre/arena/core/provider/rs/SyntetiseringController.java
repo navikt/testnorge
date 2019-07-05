@@ -22,7 +22,8 @@ public class SyntetiseringController {
     }
 
     @PostMapping(value = "/slett")
-    public ResponseEntity slettBrukereIArenaForvalter(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
-        return syntetiseringService.slettBrukereIArenaForvalter(syntetiserArenaRequest);
+    public ResponseEntity slettBrukereIArenaForvalter(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest,
+                                                      @RequestParam String personident) {
+        return syntetiseringService.slettBrukereIArenaForvalter(syntetiserArenaRequest, personident);
     }
 }
