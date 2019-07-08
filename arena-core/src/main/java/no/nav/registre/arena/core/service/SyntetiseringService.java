@@ -4,7 +4,6 @@ package no.nav.registre.arena.core.service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
 import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.core.provider.rs.requests.ArenaSaveInHodejegerenRequest;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
@@ -12,9 +11,7 @@ import no.nav.registre.arena.core.provider.rs.requests.SlettArenaRequest;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -24,8 +21,9 @@ import static java.lang.Math.floor;
 @Slf4j
 public class SyntetiseringService {
 
-    private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
     private static final String ARENA_FORVALTER_NAME = "arena-forvalter";
+    private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
+
 
     @Autowired
     HodejegerenConsumer hodejegerenConsumer;
@@ -34,66 +32,37 @@ public class SyntetiseringService {
     @Autowired
     Random random;
 
-    // TODO: flytt til SyntetiseringController
-    public ResponseEntity registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest, Integer antallNyeIdenter) {
 
-        List<String> nyeIdenter = hentGyldigeIdenter(arenaRequest, antallNyeIdenter);
+    public StatusFraArenaForvalterResponse sendBrukereTilArenaForvalterConsumer(SyntetiserArenaRequest arenaRequest, int antallNyeBrukere) {
+        List<String> nyeIdenter = hentGyldigeIdenter(arenaRequest, antallNyeBrukere);
         NyeBrukereList nyeBrukere = opprettNyeBrukere(nyeIdenter, arenaRequest.getMiljoe());
-
-        StatusFraArenaForvalterResponse response = arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
         lagreArenaBrukereIHodejegeren(nyeBrukere);
-        return byggOpprettedeBrukereResponse(response);
+
+        return arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
     }
 
-    // TODO: flytt til SyntetiseringController
-    public ResponseEntity fyllOppBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
-        double levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(arenaRequest.getAvspillergruppeId()).size();
-        double eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter().size();
+    public List<String> slettBrukereIArenaForvalter(SlettArenaRequest arenaRequest) {
 
-        int antallNyeIdenterSomSkalHaMeldekort = (int) (floor(levendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - eksisterendeIdenter);
-
-        if (antallNyeIdenterSomSkalHaMeldekort > 0) {
-            return registrerBrukereIArenaForvalter(arenaRequest, antallNyeIdenterSomSkalHaMeldekort);
-        }
-        return ResponseEntity.ok().body("Minst 20% identer hadde allerede meldekort. Ingen ble lagt til i ArenaForvalter.");
-    }
-
-    // TODO: flytt til SyntetiseringController
-    public ResponseEntity slettBrukereIArenaForvalter(SlettArenaRequest arenaRequest) {
-
-        StringBuilder slettedeIdenter = new StringBuilder();
-        StringBuilder identerSomIkkeKunneSlettes = new StringBuilder();
+        List<String> slettedeIdenter = new ArrayList<>();
 
         for (String personident : arenaRequest.getIdenter()) {
             if (arenaForvalterConsumer.slettBrukerSuccessful(arenaRequest.getMiljoe(), personident)) {
-                slettedeIdenter.append(personident + "\n");
-            } else {
-                identerSomIkkeKunneSlettes.append(personident + "\n");
+                slettedeIdenter.add(personident);
             }
         }
 
-        StringBuilder responseBody = new StringBuilder();
-        responseBody.append("Identer " + slettedeIdenter.toString() + "ble slettet fra Arena Forvalter i miljø " + arenaRequest.getMiljoe() + "\n");
-        if (!identerSomIkkeKunneSlettes.equals("")) {
-            responseBody.append("Identer " + identerSomIkkeKunneSlettes.toString() + " kunne ikke slettes fra Arena Forvalter i miljø " + arenaRequest.getMiljoe() + "\n");
-        }
-
-        return ResponseEntity.ok().body(responseBody.toString());
+        return slettedeIdenter;
     }
 
-    // TODO: flytt til SyntetiseringController
-    private ResponseEntity byggOpprettedeBrukereResponse(StatusFraArenaForvalterResponse response) {
-        StringBuilder status = new StringBuilder();
+    public int getAntallBrukereForAaFylleArenaForvalteren(SyntetiserArenaRequest arenaRequest) {
+        double levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(arenaRequest.getAvspillergruppeId()).size();
+        double eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter().size();
 
-        if (!CollectionUtils.isEmpty(response.getArbeidsokerList())) {
-            status.append("Nye identer opprettet med meldekort: \n")
-                    .append(response.getArbeidsokerList().stream().map(Arbeidsoker::getPersonident))
-                    .append(". ");
-        } else {
-            status.append("Fant ingen identer som kunne opprettes i Arena Forvalteren.");
-        }
+        return (int) (floor(levendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - eksisterendeIdenter);
+    }
 
-        return ResponseEntity.ok().body(status.toString());
+    public double getProsentandelSomSkalHaMeldekort() {
+        return PROSENTANDEL_SOM_SKAL_HA_MELDEKORT;
     }
 
     private void lagreArenaBrukereIHodejegeren(NyeBrukereList nyeBrukere) {
