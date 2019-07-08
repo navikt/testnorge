@@ -3,7 +3,12 @@ package no.nav.registre.arena.core.consumer.rs;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import com.github.tomakehurst.wiremock.http.Fault;
 import no.nav.registre.arena.core.config.AppConfig;
+import no.nav.registre.arena.core.provider.rs.requests.ArenaSaveInHodejegerenRequest;
+import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
+import no.nav.registre.arena.domain.NyBruker;
+import static no.nav.registre.arena.core.testutils.ResourceUtils.getResourceFileContent;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +20,10 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpStatusCodeException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -49,22 +57,60 @@ public class HodejegerenConsumerTest {
     }
 
     @Test
-    public void shouldLogOnEmptyResponse() {
-        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-        listAppender.start();
-        Logger logger = (Logger) LoggerFactory.getLogger(HodejegerenConsumer.class);
-        logger.addAppender(listAppender);
-
+    public void shouldReturnNullOnEmptyResponse() {
         stubHodejegerenConsumerWithEmptyBody();
 
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(gruppeId);
 
-        assertThat(listAppender.list.size(), is(Matchers.equalTo(1)));
-        assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Hodejegeren."));
+        assertThat(levendeIdenter, is(nullValue()));
     }
 
-    // TODO: test for 4xx/3xx/5xx status fra response.
+    @Test
+    public void saveHistoryTest() {
+        stubHodejegerenConsumerHistorikk();
 
+        NyBruker bruker1 = new NyBruker(
+                fnr1,"q2","IKVAL",null,
+                true,null,null);
+        NyBruker bruker2 = new NyBruker(
+                fnr2,"q2","IKVAL",null,
+                true,null,null);
+
+        List<IdentMedData> identerMedData = new ArrayList<>();
+        identerMedData.add(new IdentMedData(bruker1.getPersonident(), Collections.singletonList(bruker1)));
+        identerMedData.add(new IdentMedData(bruker2.getPersonident(), Collections.singletonList(bruker2)));
+
+        ArenaSaveInHodejegerenRequest request = new ArenaSaveInHodejegerenRequest("arena-forvalteren", identerMedData);
+        List<String> lagredeIdenter = hodejegerenConsumer.saveHistory(request);
+
+        assertThat(lagredeIdenter.contains(fnr1), is(true));
+        assertThat(lagredeIdenter.contains(fnr2), is(true));
+        assertThat(lagredeIdenter.size(), is(2));
+        assertThat(lagredeIdenter.contains("30303030303"), is(false));
+    }
+
+    @Test(expected = HttpStatusCodeException.class)
+    public void notSuccessfulResponseLevendeIdenterOverAlderTest() {
+        stubNotSuccessfulResponse();
+
+        assertThat(hodejegerenConsumer.finnLevendeIdenterOverAlder(gruppeId), is(nullValue()));
+    }
+
+
+    private void stubNotSuccessfulResponse() {
+        stubFor(get(urlEqualTo("/hodejegeren/api/v1/levende-identer-over-alder/" + gruppeId + "?minimumAlder=" + MINIMUM_ALDER))
+                .willReturn(aResponse()
+                        .withStatus(400)
+                        .withBody("Internal Server Error.")));
+    }
+
+    private void stubHodejegerenConsumerHistorikk() {
+        stubFor(post(urlEqualTo("/hodejegeren/api/v1/historikk/"))
+                .withRequestBody(equalToJson(getResourceFileContent("historikkRequest.json")))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
+    }
 
     private void stubHodejegerenConsumer() {
         stubFor(get(urlEqualTo("/hodejegeren/api/v1/levende-identer-over-alder/" + gruppeId + "?minimumAlder=" + MINIMUM_ALDER))

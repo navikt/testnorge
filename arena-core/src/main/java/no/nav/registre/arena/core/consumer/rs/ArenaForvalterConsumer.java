@@ -13,13 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,11 +26,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ArenaForvalterConsumer {
 
-    private String EIER = "Dolly";
+    private static final String EIER = "Dolly";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String NAV_CALL_ID = "ORKESTRATOREN";
+    private static final String NAV_CONSUMER_ID = "ORKESTRATOREN";
     private int PAGE = 0;
-    private String DATE_FORMAT = "yyyy-MM-dd";
-    String NAV_CALL_ID = "ORKESTRATOREN";
-    String NAV_CONSUMER_ID = "ORKESTRATOREN";
 
 
     @Autowired

@@ -31,7 +31,7 @@ public class SyntetiseringController {
     }
 
     @PostMapping(value = "/slett")
-    public ResponseEntity slettBrukereIArenaForvalter(@RequestBody SlettArenaRequest slettArenaRequest) {
+    public ResponseEntity<String> slettBrukereIArenaForvalter(@RequestBody SlettArenaRequest slettArenaRequest) {
         return slettBrukere(slettArenaRequest);
     }
 
@@ -57,20 +57,6 @@ public class SyntetiseringController {
         return byggOpprettedeBrukereResponse(response);
     }
 
-    private ResponseEntity<String> byggOpprettedeBrukereResponse(StatusFraArenaForvalterResponse response) {
-        StringBuilder status = new StringBuilder();
-
-        if (!CollectionUtils.isEmpty(response.getArbeidsokerList())) {
-            status.append("Nye identer opprettet med meldekort: \n")
-                    .append(response.getArbeidsokerList().stream().map(Arbeidsoker::getPersonident))
-                    .append(". ");
-        } else {
-            status.append("Fant ingen identer som kunne opprettes i Arena Forvalteren.");
-        }
-
-        return ResponseEntity.ok().body(status.toString());
-    }
-
     // TODO: kanskje returnere et map med både slettede og ikke slettede identer?
     private ResponseEntity<String> slettBrukere(SlettArenaRequest slettArenaRequest) {
 
@@ -83,6 +69,20 @@ public class SyntetiseringController {
         responseBody.append(MessageFormat.format("Slettede identer: \n{}\nKunne ikke slette følgende identer: \n{}\n",
                 slettedeIdenter.toString(), alleIdenter.toString()));
         return ResponseEntity.ok(responseBody.toString());
+    }
+
+    private ResponseEntity<String> byggOpprettedeBrukereResponse(StatusFraArenaForvalterResponse response) {
+        StringBuilder status = new StringBuilder();
+
+        if (!CollectionUtils.isEmpty(response.getArbeidsokerList())) {
+            status.append("Nye identer opprettet med meldekort: \n")
+                    .append(response.getArbeidsokerList().stream().map(Arbeidsoker::getPersonident))
+                    .append(". ");
+        } else {
+            status.append("Fant ingen identer som kunne opprettes i Arena Forvalteren.");
+        }
+
+        return ResponseEntity.ok().body(status.toString());
     }
 
 }

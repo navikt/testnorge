@@ -74,7 +74,7 @@ public class ArenaForvalterConsumerTest {
     }
 
     @Test
-    public void statusEtterOpprettedeBrukereIArenaForvalter() throws JsonProcessingException {
+    public void statusEtterOpprettedeBrukereIArenaForvalter() {
 
         stubArenaForvalterConsumer();
 
@@ -87,7 +87,7 @@ public class ArenaForvalterConsumerTest {
     }
 
     @Test(expected = HttpClientErrorException.class)
-    public void shouldLogOnBadRequest() throws JsonProcessingException {
+    public void shouldLogOnBadRequest() {
         ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
         listAppender.start();
         Logger logger = (Logger) LoggerFactory.getLogger(ArenaForvalterConsumer.class);

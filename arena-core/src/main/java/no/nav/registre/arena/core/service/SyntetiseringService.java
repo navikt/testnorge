@@ -21,7 +21,7 @@ import static java.lang.Math.floor;
 @Slf4j
 public class SyntetiseringService {
 
-    private static final String ARENA_FORVALTER_NAME = "arena-forvalter";
+    private static final String ARENA_FORVALTER_NAME = "arena-forvalteren";
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
 
 
