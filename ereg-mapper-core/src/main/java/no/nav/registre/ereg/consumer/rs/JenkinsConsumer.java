@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
 
@@ -82,7 +83,7 @@ public class JenkinsConsumer {
         map.add("server", environment.getProperty(String.format(serverConfigString, env)));
         map.add("batchName", "BEREG007");
         map.add("workUnit", "100");
-        map.add("FileName", "ereg_mapper.txt");
+        map.add("FileName", UUID.randomUUID() + "ereg_mapper.txt");
         map.add("overrideSequenceControl", "true");
 
         try {
