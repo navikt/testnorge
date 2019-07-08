@@ -57,10 +57,16 @@ public class NameService {
     }
 
     private String getFullName(String naeringskode, String type) {
+        String s;
         if (type.equals("AS")) {
-            return (naeringskodeRecords.get(naeringskode).getShortName() + " " + type).substring(0, 36);
+            s = naeringskodeRecords.get(naeringskode).getShortName() + " " + type;
+        } else {
+            s = naeringskodeRecords.get(naeringskode).getShortName();
         }
-        return naeringskodeRecords.get(naeringskode).getShortName().substring(0, 36);
+        if (s.length() > 36) {
+            s = s.substring(0, 36);
+        }
+        return s;
     }
 
     public List<String> getFullNames(List<String> naeringsKoder, String type) {
