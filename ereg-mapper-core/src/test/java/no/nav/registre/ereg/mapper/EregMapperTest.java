@@ -41,10 +41,10 @@ public class EregMapperTest {
                 .endringsType("N")
                 .build();
         String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
-        assertEquals("HEADER 2019070400000AA A\n" +
-                "ENH 123      AS NNY   2019070420190704J           \n" +
+        assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A\n" +
+                "ENH 123      AS NNY   " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           \n" +
                 "NAVNN   Gul Bolle AS                                                                                                                                                                                                       \n" +
-                "NACEN   01.12020190704N\n" +
+                "NACEN   01.120" + EregMapper.getDateNowFormatted() + "N\n" +
                 "TRAIER 0000001000000005\n", s);
     }
 
