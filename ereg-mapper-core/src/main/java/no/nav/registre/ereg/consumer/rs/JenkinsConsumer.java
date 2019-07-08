@@ -83,7 +83,7 @@ public class JenkinsConsumer {
         map.add("server", environment.getProperty(String.format(serverConfigString, env)));
         map.add("batchName", "BEREG007");
         map.add("workUnit", "100");
-        map.add("FileName", UUID.randomUUID() + "ereg_mapper.txt");
+        map.add("FileName", "orkestratoren" + UUID.randomUUID() + ".txt");
         map.add("overrideSequenceControl", "true");
 
         try {
