@@ -83,6 +83,7 @@ public class JenkinsConsumer {
         map.add("batchName", "BEREG007");
         map.add("workUnit", "100");
         map.add("FileName", "ereg_mapper.txt");
+        map.add("overrideSequenceControl", "true");
 
         try {
             MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
