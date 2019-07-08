@@ -308,8 +308,8 @@ public class EregMapper {
         stringBuilder.replace(0, "ENH".length(), "ENH")
                 .replace(4, 4 + orgId.length(), orgId)
                 .replace(13, 13 + unitType.length(), unitType)
-                .replace(16, 17, endringsType)
-                .replace(17, 17 + "NY".length(), "NY")
+                .replace(17, 18, endringsType)
+                .replace(18, 18 + "NY".length(), "NY")
                 .replace(22, 22 + (dateNowFormatted + dateNowFormatted).length(), dateNowFormatted + dateNowFormatted + "J")
                 .append("\n");
         return stringBuilder.toString();
