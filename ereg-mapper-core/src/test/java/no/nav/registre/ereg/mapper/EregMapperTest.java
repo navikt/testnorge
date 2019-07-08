@@ -15,6 +15,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import no.nav.registre.ereg.TestUtil;
+import no.nav.registre.ereg.csv.NaeringskodeRecord;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 import no.nav.registre.ereg.provider.rs.request.Naeringskode;
 import no.nav.registre.ereg.service.NameService;
@@ -32,7 +33,7 @@ public class EregMapperTest {
 
     @Test
     public void mapEregRequests_RandomNaeringskode_Name() {
-        when(nameService.getRandomNaeringskode()).thenReturn("01.120");
+        when(nameService.getRandomNaeringskode()).thenReturn(NaeringskodeRecord.builder().code("01.120").validFrom("1900-01-01").build());
         when(nameService.getFullNames(anyList(), anyString())).thenReturn(Collections.singletonList("Gul Bolle AS"));
 
         EregDataRequest request = EregDataRequest.builder()
@@ -44,7 +45,7 @@ public class EregMapperTest {
         assertEquals("HEADER " + EregMapper.getDateNowFormatted() + "00000AA A\n" +
                 "ENH 123      AS  NNY  " + EregMapper.getDateNowFormatted() + EregMapper.getDateNowFormatted() + "J           \n" +
                 "NAVNN   Gul Bolle AS                                                                                                                                                                                                       \n" +
-                "NACEN   01.120" + EregMapper.getDateNowFormatted() + "N\n" +
+                "NACEN   01.120" + "19000101" + "N\n" +
                 "TRAIER 0000001000000005\n", s);
     }
 

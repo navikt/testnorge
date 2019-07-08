@@ -50,17 +50,17 @@ public class NameService {
     }
 
 
-    public String getRandomNaeringskode() {
+    public NaeringskodeRecord getRandomNaeringskode() {
         Collection<NaeringskodeRecord> tmp = naeringskodeRecords.values();
         List<NaeringskodeRecord> values = new ArrayList<>(tmp);
-        return values.get(generator.nextInt(values.size())).getCode();
+        return values.get(generator.nextInt(values.size()));
     }
 
     private String getFullName(String naeringskode, String type) {
         if (type.equals("AS")) {
-            return naeringskodeRecords.get(naeringskode).getShortName() + " " + type;
+            return (naeringskodeRecords.get(naeringskode).getShortName() + " " + type).substring(0, 36);
         }
-        return naeringskodeRecords.get(naeringskode).getShortName();
+        return naeringskodeRecords.get(naeringskode).getShortName().substring(0, 36);
     }
 
     public List<String> getFullNames(List<String> naeringsKoder, String type) {

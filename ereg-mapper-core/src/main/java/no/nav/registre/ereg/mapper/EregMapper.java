@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import no.nav.registre.ereg.csv.NaeringskodeRecord;
 import no.nav.registre.ereg.provider.rs.request.Adresse;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 import no.nav.registre.ereg.provider.rs.request.Kapital;
@@ -50,10 +51,11 @@ public class EregMapper {
                             List<String> naeringskoder = requests.stream()
                                     .map(d -> {
                                         if (d.getNaeringskode() == null) {
+                                            NaeringskodeRecord randomNaeringskode = nameService.getRandomNaeringskode();
                                             d.setNaeringskode(Naeringskode.builder()
-                                                    .kode(nameService.getRandomNaeringskode())
+                                                    .kode(randomNaeringskode.getCode())
                                                     .hjelpeEnhet(false)
-                                                    .gyldighetsdato(getDateNowFormatted())
+                                                    .gyldighetsdato(randomNaeringskode.getValidFrom().replace("-", ""))
                                                     .build());
                                         }
                                         return d.getNaeringskode();

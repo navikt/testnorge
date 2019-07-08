@@ -14,9 +14,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import no.nav.registre.ereg.consumer.rs.IdentPoolConsumer;
+import no.nav.registre.ereg.csv.NaeringskodeRecord;
 
 @Slf4j
 @RunWith(MockitoJUnitRunner.class)
@@ -37,9 +37,8 @@ public class NameServiceTest {
 
     @Test
     public void getRandomKode() {
-        String randomNaeringskode = nameService.getRandomNaeringskode();
-        assertNotNull(randomNaeringskode);
-        assertTrue(randomNaeringskode.length() > 0);
+        NaeringskodeRecord randomNaeringskode = nameService.getRandomNaeringskode();
+        assertNotNull(randomNaeringskode.getCode());
     }
 
     @Test
