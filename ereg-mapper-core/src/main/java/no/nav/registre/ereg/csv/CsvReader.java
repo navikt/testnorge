@@ -29,7 +29,6 @@ public class CsvReader {
         CSVParser parser = new CSVParserBuilder()
                 .withSeparator(';')
                 .withIgnoreQuotations(false)
-                .withStrictQuotes(true)
                 .build();
 
         CSVReader csvReader = new CSVReaderBuilder(br)
@@ -39,6 +38,9 @@ public class CsvReader {
         String[] line;
         br.readLine();
         while ((line = csvReader.readNext()) != null) {
+
+            for (int i = 0; i < line.length; i++)
+                line[i] = line[i].trim();
 
             NaeringskodeRecord.NaeringskodeRecordBuilder builder = NaeringskodeRecord.builder()
                     .code(line[0])

@@ -38,7 +38,7 @@ public class EregMapperTest {
 
         EregDataRequest request = EregDataRequest.builder()
                 .orgId("123")
-                .type("AS")
+                .enhetstype("AS")
                 .endringsType("N")
                 .build();
         String s = eregMapper.mapEregFromRequests(Collections.singletonList(request));
@@ -56,7 +56,7 @@ public class EregMapperTest {
 
         EregDataRequest request = EregDataRequest.builder()
                 .orgId("123")
-                .type("BEDR")
+                .enhetstype("BEDR")
                 .endringsType("N")
                 .naeringskode(Naeringskode.builder()
                         .gyldighetsdato("18062019")
@@ -79,7 +79,7 @@ public class EregMapperTest {
 
         EregDataRequest request = EregDataRequest.builder()
                 .orgId("123")
-                .type("AS")
+                .enhetstype("AS")
                 .endringsType("N")
                 .naeringskode(Naeringskode.builder()
                         .gyldighetsdato("20191806")

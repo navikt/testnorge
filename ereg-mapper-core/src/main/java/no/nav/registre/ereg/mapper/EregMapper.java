@@ -45,17 +45,21 @@ public class EregMapper {
 
         data.stream()
                 .filter(d -> d.getNavn() == null)
-                .collect(Collectors.groupingBy(EregDataRequest::getType))
+                .collect(Collectors.groupingBy(EregDataRequest::getEnhetstype))
                 .forEach(
                         (type, requests) -> {
                             List<String> naeringskoder = requests.stream()
                                     .map(d -> {
                                         if (d.getNaeringskode() == null) {
                                             NaeringskodeRecord randomNaeringskode = nameService.getRandomNaeringskode();
+                                            String dato = getDateNowFormatted();
+                                            if (!"".equals(randomNaeringskode.getValidFrom())) {
+                                                dato = randomNaeringskode.getValidFrom().replace("-", "");
+                                            }
                                             d.setNaeringskode(Naeringskode.builder()
                                                     .kode(randomNaeringskode.getCode())
                                                     .hjelpeEnhet(false)
-                                                    .gyldighetsdato(randomNaeringskode.getValidFrom().replace("-", ""))
+                                                    .gyldighetsdato(dato)
                                                     .build());
                                         }
                                         return d.getNaeringskode();
@@ -91,7 +95,7 @@ public class EregMapper {
         int numRecords = 0;
         String endringsType = data.getEndringsType();
 
-        StringBuilder file = new StringBuilder(createENH(data.getOrgId(), data.getType(), endringsType));
+        StringBuilder file = new StringBuilder(createENH(data.getOrgId(), data.getEnhetstype(), endringsType));
         numRecords++;
 
         Navn navn = data.getNavn();

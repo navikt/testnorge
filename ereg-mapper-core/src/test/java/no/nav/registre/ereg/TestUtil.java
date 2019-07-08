@@ -34,7 +34,7 @@ public class TestUtil {
                         .navneListe(navneListe)
                         .redNavn("Tull")
                         .build())
-                .type("BEDR")
+                .enhetstype("BEDR")
                 .endringsType("N")
                 .adresse(Adresse.builder()
                         .adresser(adresser)
