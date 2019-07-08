@@ -8,6 +8,7 @@ import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
 import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.core.provider.rs.requests.ArenaSaveInHodejegerenRequest;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
+import no.nav.registre.arena.core.provider.rs.requests.SlettArenaRequest;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class SyntetiseringService {
     @Autowired
     Random random;
 
+    // TODO: flytt til SyntetiseringController
     public ResponseEntity registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest, Integer antallNyeIdenter) {
 
         List<String> nyeIdenter = hentGyldigeIdenter(arenaRequest, antallNyeIdenter);
@@ -43,6 +45,7 @@ public class SyntetiseringService {
         return byggOpprettedeBrukereResponse(response);
     }
 
+    // TODO: flytt til SyntetiseringController
     public ResponseEntity fyllOppBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
         double levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(arenaRequest.getAvspillergruppeId()).size();
         double eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter().size();
@@ -55,28 +58,30 @@ public class SyntetiseringService {
         return ResponseEntity.ok().body("Minst 20% identer hadde allerede meldekort. Ingen ble lagt til i ArenaForvalter.");
     }
 
-    public ResponseEntity slettBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest, String personident) {
+    // TODO: flytt til SyntetiseringController
+    public ResponseEntity slettBrukereIArenaForvalter(SlettArenaRequest arenaRequest) {
+
+        StringBuilder slettedeIdenter = new StringBuilder();
+        StringBuilder identerSomIkkeKunneSlettes = new StringBuilder();
+
+        for (String personident : arenaRequest.getIdenter()) {
+            if (arenaForvalterConsumer.slettBrukerSuccessful(arenaRequest.getMiljoe(), personident)) {
+                slettedeIdenter.append(personident + "\n");
+            } else {
+                identerSomIkkeKunneSlettes.append(personident + "\n");
+            }
+        }
 
         StringBuilder responseBody = new StringBuilder();
-        if (arenaForvalterConsumer.slettBrukerSuccessful(arenaRequest.getMiljoe(), personident)) {
-            responseBody.append("Personident" + personident + " ble slettet fra Arena Forvalter i miljø " + arenaRequest.getMiljoe() + ".");
-        } else {
-            responseBody.append("Kunne ikke slette " + personident + " fra Arena Forvalter, miljø " + arenaRequest.getMiljoe() + ".");
+        responseBody.append("Identer " + slettedeIdenter.toString() + "ble slettet fra Arena Forvalter i miljø " + arenaRequest.getMiljoe() + "\n");
+        if (!identerSomIkkeKunneSlettes.equals("")) {
+            responseBody.append("Identer " + identerSomIkkeKunneSlettes.toString() + " kunne ikke slettes fra Arena Forvalter i miljø " + arenaRequest.getMiljoe() + "\n");
         }
 
         return ResponseEntity.ok().body(responseBody.toString());
     }
 
-    private void lagreArenaBrukereIHodejegeren(NyeBrukereList nyeBrukere) {
-        List<IdentMedData> brukereSomSkalLagres = new ArrayList<>();
-        for (NyBruker bruker : nyeBrukere.getNyeBrukere()) {
-            List<NyBruker> data = new ArrayList<>(Collections.singletonList(bruker));
-            brukereSomSkalLagres.add(new IdentMedData(bruker.getPersonident(), data));
-        }
-        hodejegerenConsumer.saveHistory(new ArenaSaveInHodejegerenRequest(ARENA_FORVALTER_NAME, brukereSomSkalLagres));
-    }
-
-
+    // TODO: flytt til SyntetiseringController
     private ResponseEntity byggOpprettedeBrukereResponse(StatusFraArenaForvalterResponse response) {
         StringBuilder status = new StringBuilder();
 
@@ -89,6 +94,19 @@ public class SyntetiseringService {
         }
 
         return ResponseEntity.ok().body(status.toString());
+    }
+
+    private void lagreArenaBrukereIHodejegeren(NyeBrukereList nyeBrukere) {
+
+        List<IdentMedData> brukereSomSkalLagres = new ArrayList<>();
+
+        for (NyBruker bruker : nyeBrukere.getNyeBrukere()) {
+
+            List<NyBruker> data = Collections.singletonList(bruker);
+            brukereSomSkalLagres.add(new IdentMedData(bruker.getPersonident(), data));
+
+        }
+        hodejegerenConsumer.saveHistory(new ArenaSaveInHodejegerenRequest(ARENA_FORVALTER_NAME, brukereSomSkalLagres));
     }
 
     private List<String> hentGyldigeIdenter(SyntetiserArenaRequest arenaRequest, int antallNyeIdenter) {
@@ -104,7 +122,7 @@ public class SyntetiseringService {
 
         List<String> nyeIdenter = new ArrayList<>(antallNyeIdenter);
 
-        for (int i = 0; i < antallNyeIdenter; i++) { // TODO: sjekke om dette går hvis antallNyeIdenter == levendeIdenter.size()
+        for (int i = 0; i < antallNyeIdenter; i++) {
             nyeIdenter.add(levendeIdenter.remove(random.nextInt(levendeIdenter.size())));
         }
 

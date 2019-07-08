@@ -103,7 +103,7 @@ public class ArenaForvalterConsumer {
         StatusFraArenaForvalterResponse response = hentBrukere();
 
         if (response == null) {
-            log.error("Kunne ikke hente eksisterende identer.");
+            log.error("Fant ingen eksisterende identer.");
             return new ArrayList<>();
         }
 
