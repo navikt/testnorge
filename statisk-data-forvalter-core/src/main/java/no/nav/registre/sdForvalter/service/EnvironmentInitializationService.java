@@ -119,6 +119,12 @@ public class EnvironmentInitializationService {
         return aaregConsumer.send(models, environment);
     }
 
+    public String initializeEreg(String environment) {
+        List<EregModel> data = new ArrayList<>();
+        eregRepository.findAll().forEach(data::add);
+        return eregMapperConsumer.uploadToEreg(data, environment);
+    }
+
     /**
      * Metoden legger til dataen i databasen i krr hvis ikke de finnes fra før av
      */
@@ -142,12 +148,6 @@ public class EnvironmentInitializationService {
 
     private void initializeSam(String environment, Set<String> fnrs) {
         samConsumer.send(fnrs, environment);
-    }
-
-    private String initializeEreg(String environment) {
-        List<EregModel> data = new ArrayList<>();
-        eregRepository.findAll().forEach(data::add);
-        return eregMapperConsumer.uploadToEreg(data, environment);
     }
 
 }

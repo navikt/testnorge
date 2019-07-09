@@ -51,4 +51,9 @@ public class OrkestreringsController {
         environmentInitializationService.initializeKrr();
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping(value = "/ereg/{miljoe}")
+    public ResponseEntity<String> initializeEreg(@PathVariable String miljoe) {
+        return ResponseEntity.ok(environmentInitializationService.initializeEreg(miljoe));
+    }
 }
