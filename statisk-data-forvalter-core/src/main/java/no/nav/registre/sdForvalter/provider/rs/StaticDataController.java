@@ -3,6 +3,7 @@ package no.nav.registre.sdForvalter.provider.rs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,6 +72,11 @@ public class StaticDataController {
     @PostMapping(value = "/ereg")
     public ResponseEntity<List<EregModel>> storeStaticData(@Valid @RequestBody List<EregModel> data) {
         return ResponseEntity.ok(staticDataService.saveInEreg(data));
+    }
+
+    @DeleteMapping(value = "/ereg")
+    public ResponseEntity<List<String>> deleteData(@RequestBody List<String> data) {
+        return ResponseEntity.ok(staticDataService.deleteEreg(data));
     }
 
 }

@@ -106,4 +106,8 @@ public class StaticDataService {
         eregRepository.findAll().forEach(data::add);
         return data;
     }
+
+    public List<String> deleteEreg(List<String> data) {
+        return data.stream().map(eregRepository::deleteByOrgnr).map(EregModel::getOrgnr).collect(Collectors.toList());
+    }
 }
