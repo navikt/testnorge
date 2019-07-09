@@ -19,6 +19,7 @@ import org.springframework.web.util.UriTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,11 +28,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ArenaForvalterConsumer {
 
-    private static final String EIER = "Dolly";
+    private static final String EIER = "ORKESTRATOREN";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String NAV_CALL_ID = "ORKESTRATOREN";
     private static final String NAV_CONSUMER_ID = "ORKESTRATOREN";
-    private int PAGE = 0;
 
 
     @Autowired
@@ -40,17 +40,19 @@ public class ArenaForvalterConsumer {
     private UriTemplate postBrukere;
     private UriTemplate hentBrukere;
     private UriTemplate slettBrukere;
+    private UriTemplate hentBrukerePage;
 
     // TODO: er det nødvendig å ha eier med på post-requesten? Bør den også være med på hentBrukere?
     public ArenaForvalterConsumer(@Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl) {
         this.postBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?eier=" + EIER);
         this.hentBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker");
+        this.hentBrukerePage = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?page={page}");
         this.slettBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?miljoe={miljoe}&personident={personident}");
     }
 
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public StatusFraArenaForvalterResponse sendTilArenaForvalter(NyeBrukereList nyeBrukere) {
+    public List<Arbeidsoker> sendTilArenaForvalter(NyeBrukereList nyeBrukere) {
 
         RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
@@ -60,16 +62,16 @@ public class ArenaForvalterConsumer {
         ResponseEntity<StatusFraArenaForvalterResponse> response =
                 restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
 
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            log.error("Ugyldig brukeroppsett. Kunne ikke opprette nye brukere. Status: {}", response.getStatusCode());
-            return null;
+        if (response.getBody() == null) {
+            log.error("Ugyldig brukeroppsett. Kunne ikke opprette nye brukere.");
+            return new ArrayList<>();
         }
 
-        return response.getBody();
+        return response.getBody().getArbeidsokerList();
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public StatusFraArenaForvalterResponse hentBrukere() {
+    public List<Arbeidsoker> hentBrukere() {
         RequestEntity getRequest = RequestEntity.get(hentBrukere.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
@@ -77,31 +79,41 @@ public class ArenaForvalterConsumer {
         ResponseEntity<StatusFraArenaForvalterResponse> response =
                 restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
 
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            log.error("Status {}", response.getStatusCode());
-            return null;
-        }
-
         if (response.getBody() == null) {
             log.error("Kunne ikke hente response body fra Arena Forvalteren.");
-            return null;
+            return new ArrayList<>();
         }
 
-        return response.getBody();
+
+        List<Arbeidsoker> responseList =
+                new ArrayList<>(response.getBody().getAntallSider() * response.getBody().getArbeidsokerList().size());
+
+        for (int page = 1; page <= response.getBody().getAntallSider(); page++) {
+            getRequest = RequestEntity.get(hentBrukerePage.expand(page))
+                    .header("Nav-Call-Id", NAV_CALL_ID)
+                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                    .build();
+            response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+
+            if (response.getBody() == null)
+                break;
+            else
+                responseList.addAll(response.getBody().getArbeidsokerList());
+        }
+
+        return responseList;
     }
 
     public List<String> hentEksisterendeIdenter() {
 
-        StatusFraArenaForvalterResponse response = hentBrukere();
+        List<Arbeidsoker> arbeisokere = hentBrukere();
 
-        if (response == null) {
+        if (arbeisokere.isEmpty()) {
             log.error("Fant ingen eksisterende identer.");
             return new ArrayList<>();
         }
 
-        return response.getArbeidsokerList().stream()
-                .map(Arbeidsoker::getPersonident)
-                .collect(Collectors.toList());
+        return arbeisokere.stream().map(Arbeidsoker::getPersonident).collect(Collectors.toList());
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})

@@ -4,7 +4,7 @@ package no.nav.registre.arena.core.service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
+import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
 import no.nav.registre.arena.core.provider.rs.requests.ArenaSaveInHodejegerenRequest;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
 import no.nav.registre.arena.core.provider.rs.requests.SlettArenaRequest;
@@ -33,7 +33,7 @@ public class SyntetiseringService {
     Random random;
 
 
-    public StatusFraArenaForvalterResponse sendBrukereTilArenaForvalterConsumer(SyntetiserArenaRequest arenaRequest) {
+    public List<Arbeidsoker> sendBrukereTilArenaForvalterConsumer(SyntetiserArenaRequest arenaRequest) {
         List<String> nyeIdenter = hentGyldigeIdenter(arenaRequest);
         NyeBrukereList nyeBrukere = opprettNyeBrukere(nyeIdenter, arenaRequest.getMiljoe());
         lagreArenaBrukereIHodejegeren(nyeBrukere);
@@ -59,10 +59,6 @@ public class SyntetiseringService {
         double eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter().size();
 
         return (int) (floor(levendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - eksisterendeIdenter);
-    }
-
-    public double getProsentandelSomSkalHaMeldekort() {
-        return PROSENTANDEL_SOM_SKAL_HA_MELDEKORT;
     }
 
     private void lagreArenaBrukereIHodejegeren(NyeBrukereList nyeBrukere) {

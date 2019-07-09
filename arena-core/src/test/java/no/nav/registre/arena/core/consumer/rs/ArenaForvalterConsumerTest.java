@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.arena.core.config.AppConfig;
+import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
 import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.domain.*;
 import org.hamcrest.Matchers;
@@ -46,7 +47,7 @@ public class ArenaForvalterConsumerTest {
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
 
-    private String miljoe = "q2", EIER = "Dolly";
+    private String miljoe = "q2", EIER = "ORKESTRATOREN";
 
     private NyeBrukereList nyeBrukere;
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -78,11 +79,11 @@ public class ArenaForvalterConsumerTest {
 
         stubArenaForvalterConsumer();
 
-        StatusFraArenaForvalterResponse arbeidsokerList = arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
+        List<Arbeidsoker> arbeidsokerList = arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
 
-        assertThat(arbeidsokerList.getArbeidsokerList().size(), is(equalTo(2)));
-        assertThat(arbeidsokerList.getArbeidsokerList().get(1).getPersonident(), is("20202020202"));
-        assertThat(arbeidsokerList.getArbeidsokerList().get(0).getServicebehov(), is(false));
+        assertThat(arbeidsokerList.size(), is(equalTo(2)));
+        assertThat(arbeidsokerList.get(1).getPersonident(), is("20202020202"));
+        assertThat(arbeidsokerList.get(0).getServicebehov(), is(false));
 
     }
 
@@ -95,7 +96,7 @@ public class ArenaForvalterConsumerTest {
 
         stubArenaForvalterBadRequest();
 
-        StatusFraArenaForvalterResponse response = arenaForvalterConsumer.sendTilArenaForvalter(null);
+        List<Arbeidsoker> response = arenaForvalterConsumer.sendTilArenaForvalter(null);
 
         assertThat(listAppender.list.size(), is(Matchers.equalTo(1)));
         assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke opprette nye brukere. Status: "));
@@ -111,7 +112,7 @@ public class ArenaForvalterConsumerTest {
 
         stubArenaForvlaterEmptyHentBrukere();
 
-        StatusFraArenaForvalterResponse response = arenaForvalterConsumer.hentBrukere();
+        List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
 
         assertThat(listAppender.list.size(), is(Matchers.equalTo(1)));
         assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Arena Forvalteren."));
@@ -121,11 +122,10 @@ public class ArenaForvalterConsumerTest {
     public void hentBrukereTest() {
         stubArenaForvalterHentBrukere();
 
-        StatusFraArenaForvalterResponse response = arenaForvalterConsumer.hentBrukere();
+        List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
 
-        assertThat(response.getAntallSider(), is(1));
-        assertThat(response.getArbeidsokerList().get(2).getPersonident(), is("08125949828"));
-        assertThat(response.getArbeidsokerList().size(), is(156));
+        assertThat(response.get(2).getPersonident(), is("08125949828"));
+        assertThat(response.size(), is(156));
     }
 
     @Test
@@ -156,7 +156,7 @@ public class ArenaForvalterConsumerTest {
     @Test(expected = HttpClientErrorException.class)
     public void badCreateJson() {
         // String test = arenaForvalterConsumer.createJsonRequestBody(null);
-        StatusFraArenaForvalterResponse sfafr = arenaForvalterConsumer.sendTilArenaForvalter(null);
+        List<Arbeidsoker> sfafr = arenaForvalterConsumer.sendTilArenaForvalter(null);
 
         assertThat(sfafr, is(nullValue()));
     }
@@ -183,7 +183,7 @@ public class ArenaForvalterConsumerTest {
     }
 
     private void stubArenaForvalterHentBrukere() {
-        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker"))
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=1"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("arenaForvalterenGetRequestResponseBody.json"))));

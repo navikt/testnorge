@@ -1,18 +1,15 @@
 package no.nav.registre.arena.core.provider.rs;
 
-
-import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
-import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.core.provider.rs.requests.SlettArenaRequest;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.SyntetiseringService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -23,62 +20,44 @@ public class SyntetiseringController {
     SyntetiseringService syntetiseringService;
 
     @PostMapping(value = "/generer")
-    public ResponseEntity<String> registerBrukereIArenaForvalter(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
+    public ResponseEntity<Integer> registerBrukereIArenaForvalter(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
         return registrerBrukereIArenaForvalter(syntetiserArenaRequest);
     }
 
     @PostMapping(value = "/slett")
-    public ResponseEntity<String> slettBrukereIArenaForvalter(@RequestBody SlettArenaRequest slettArenaRequest) {
+    public ResponseEntity<Map<String, Integer>> slettBrukereIArenaForvalter(@RequestBody SlettArenaRequest slettArenaRequest) {
         return slettBrukere(slettArenaRequest);
     }
 
 
-    private ResponseEntity<String> registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
+    private ResponseEntity<Integer> registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
 
         if (arenaRequest.getAntallNyeIdenter() != null)
-            return byggOpprettedeBrukereResponse(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequest));
+            return ResponseEntity.ok(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequest).size());
 
 
         int antallBrukereAaOpprette = syntetiseringService.getAntallBrukereForAaFylleArenaForvalteren(arenaRequest);
 
         if (antallBrukereAaOpprette > 0) {
             arenaRequest.setAntallNyeIdenter(antallBrukereAaOpprette);
-            return byggOpprettedeBrukereResponse(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequest));
+            return ResponseEntity.ok(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequest).size());
         }
 
-        return ResponseEntity.ok(MessageFormat.format(
-                "Minst {0}% identer hadde allerede meldekort. Ingen nye identer ble lagt til i Arena Forvalteren",
-                (syntetiseringService.getProsentandelSomSkalHaMeldekort() * 100)));
+        return ResponseEntity.ok(0);
     }
 
-    // TODO: kanskje returnere et map med både slettede og ikke slettede identer?
-    private ResponseEntity<String> slettBrukere(SlettArenaRequest slettArenaRequest) {
+    private ResponseEntity<Map<String, Integer>> slettBrukere(SlettArenaRequest slettArenaRequest) {
+
+        Map<String, Integer> responseBody = new HashMap<>();
 
         List<String> slettedeIdenter = syntetiseringService.slettBrukereIArenaForvalter(slettArenaRequest);
+        responseBody.put("Antall slettede identer", slettedeIdenter.size());
+
         List<String> alleIdenter = slettArenaRequest.getIdenter();
         alleIdenter.removeAll(slettedeIdenter);
+        responseBody.put("Identer som ikke kunne slettes", alleIdenter.size());
 
-        StringBuilder responseBody = new StringBuilder();
-
-        responseBody.append(MessageFormat.format("Slettede identer: \n{}\nKunne ikke slette følgende identer: \n{}\n",
-                slettedeIdenter.toString(), alleIdenter.toString()));
-        return ResponseEntity.ok(responseBody.toString());
-    }
-
-
-    // TODO: logg identer som ikke ble opprettet. returner antall som ble opprettet vs antall ønsket opprettet
-    private ResponseEntity<String> byggOpprettedeBrukereResponse(StatusFraArenaForvalterResponse response) {
-        StringBuilder status = new StringBuilder();
-
-        if (!CollectionUtils.isEmpty(response.getArbeidsokerList())) {
-            status.append("Nye identer opprettet med meldekort: \n")
-                    .append(response.getArbeidsokerList().stream().map(Arbeidsoker::getPersonident))
-                    .append(". ");
-        } else {
-            status.append("Fant ingen identer som kunne opprettes i Arena Forvalteren.");
-        }
-
-        return ResponseEntity.ok().body(status.toString());
+        return ResponseEntity.ok(responseBody);
     }
 
 }
