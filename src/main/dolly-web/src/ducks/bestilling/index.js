@@ -235,9 +235,6 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 	final_values = _set(final_values, 'tpsf.regdato', new Date())
 	identOpprettesFra === BestillingMapper() && (final_values.tpsf.identtype = identtype)
 
-	console.log('final_values :', final_values)
-	console.log('bestillingState :', bestillingState)
-
 	// ? Vi trenger ikke nødvendigvis generisk løsning når det er så veldig mange spesiall tilfeller
 	// ? Forslag: lage en hjelpeklasse
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {

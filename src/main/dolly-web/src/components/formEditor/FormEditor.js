@@ -106,6 +106,7 @@ export default class FormEditor extends PureComponent {
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		// const isFieldarray = Boolean(items[0].items)
 		const isMultiple = items[0].isMultiple
+
 		if (isAdresse) {
 			return (
 				<div className="subkategori" key={uniqueId}>
