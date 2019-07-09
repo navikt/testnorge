@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -33,6 +34,7 @@ public class EregModel extends AuditModel implements CreatableFromString {
     Long id;
 
     @NotNull
+    @Column(unique = true)
     private String orgnr;
 
     @NotNull
