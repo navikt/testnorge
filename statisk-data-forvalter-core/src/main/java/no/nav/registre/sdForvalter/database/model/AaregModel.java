@@ -33,18 +33,6 @@ public class AaregModel extends AuditModel implements CreatableFromString {
     @JsonProperty("orgId")
     private long orgId;
 
-//    @JsonProperty("enhetstype")
-//    private String type;
-//
-//    @JsonProperty("orgnavn")
-//    private String name;
-//
-//    @JsonProperty("knytning")
-//    private String connection;
-//
-//    @JsonProperty("beskrivelse")
-//    private String description;
-
     @Override
     public void updateFromString(List<String> input, List<String> headers) {
 

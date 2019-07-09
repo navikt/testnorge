@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Slf4j
 @SpringBootApplication(scanBasePackages = "no.nav.registre")
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages = "no.nav.registre")
 @PropertySource("classpath:application-local.properties")
 //@Profile("local")
 public class LocalApplicationStarter {
