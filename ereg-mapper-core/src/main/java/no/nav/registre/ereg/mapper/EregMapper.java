@@ -3,7 +3,9 @@ package no.nav.registre.ereg.mapper;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -61,6 +63,17 @@ public class EregMapper {
                                                     .hjelpeEnhet(false)
                                                     .gyldighetsdato(dato)
                                                     .build());
+                                        } else {
+                                            if ("".equals(d.getNaeringskode().getKode())) {
+                                                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+                                                        "Unable to resolve næringskode when the entry was supplied");
+                                            }
+
+                                            if ("".equals(d.getNaeringskode().getGyldighetsdato())) {
+                                                d.getNaeringskode().setKode(nameService.getNaeringskodeRecord(
+                                                        d.getNaeringskode().getKode())
+                                                        .getValidFrom().replace("-", ""));
+                                            }
                                         }
                                         return d.getNaeringskode();
                                     })
@@ -95,7 +108,7 @@ public class EregMapper {
         int numRecords = 0;
         String endringsType = data.getEndringsType();
 
-        StringBuilder file = new StringBuilder(createENH(data.getOrgId(), data.getEnhetstype(), endringsType));
+        StringBuilder file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), endringsType));
         numRecords++;
 
         Navn navn = data.getNavn();

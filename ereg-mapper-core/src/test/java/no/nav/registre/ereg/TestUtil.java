@@ -29,7 +29,7 @@ public class TestUtil {
         statuser.put("IPF", "N");
 
         return EregDataRequest.builder()
-                .orgId("123")
+                .orgnr("123")
                 .navn(Navn.builder()
                         .navneListe(navneListe)
                         .redNavn("Tull")

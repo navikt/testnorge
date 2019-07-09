@@ -37,7 +37,7 @@ public class EregMapperTest {
         when(nameService.getFullNames(anyList(), anyString())).thenReturn(Collections.singletonList("Gul Bolle AS"));
 
         EregDataRequest request = EregDataRequest.builder()
-                .orgId("123")
+                .orgnr("123")
                 .enhetstype("AS")
                 .endringsType("N")
                 .build();
@@ -55,7 +55,7 @@ public class EregMapperTest {
         when(nameService.getFullNames(anyList(), anyString())).thenReturn(Collections.singletonList("Gul Bolle"));
 
         EregDataRequest request = EregDataRequest.builder()
-                .orgId("123")
+                .orgnr("123")
                 .enhetstype("BEDR")
                 .endringsType("N")
                 .naeringskode(Naeringskode.builder()
@@ -78,7 +78,7 @@ public class EregMapperTest {
         when(nameService.getFullNames(anyList(), anyString())).thenReturn(Collections.singletonList("Gul Bolle Dyrking av sukkerrør AS"));
 
         EregDataRequest request = EregDataRequest.builder()
-                .orgId("123")
+                .orgnr("123")
                 .enhetstype("AS")
                 .endringsType("N")
                 .naeringskode(Naeringskode.builder()

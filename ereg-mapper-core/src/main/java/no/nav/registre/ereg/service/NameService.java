@@ -56,6 +56,10 @@ public class NameService {
         return values.get(generator.nextInt(values.size()));
     }
 
+    public NaeringskodeRecord getNaeringskodeRecord(String code) {
+        return naeringskodeRecords.getOrDefault(code, null);
+    }
+
     private String getFullName(String naeringskode, String type) {
         String s;
         if (type.equals("AS")) {

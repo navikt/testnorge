@@ -20,7 +20,7 @@ import java.util.Map;
 public class EregDataRequest {
 
     @NotNull
-    private String orgId;
+    private String orgnr;
 
     private Navn navn;
 
