@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Knytning {
 
-    private String type;
-    private String endringsType;
+    private String type = "BEDRNSSY";
     private String ansvarsandel = "";
     private String fratreden = "";
     private String orgNr;

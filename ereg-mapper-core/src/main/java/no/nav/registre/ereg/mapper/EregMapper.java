@@ -303,7 +303,6 @@ public class EregMapper {
         List<Knytning> knytninger = data.getKnytninger();
         if (knytninger != null) {
             List<String> collect = knytninger.stream().map(k -> createKnyntningRecord(k.getType(),
-                    k.getEndringsType(),
                     k.getAnsvarsandel(),
                     k.getFratreden(),
                     k.getOrgNr(),
@@ -482,9 +481,10 @@ public class EregMapper {
         return stringBuilder.toString();
     }
 
-    private String createKnyntningRecord(String type, String endringsType, String ansvarsandel, String fratreden, String orgNr, String valgtAv, String korrektOrgNr) {
-        StringBuilder stringBuilder = createBaseStringbuilder(66, type, endringsType);
+    private String createKnyntningRecord(String type, String ansvarsandel, String fratreden, String orgNr, String valgtAv, String korrektOrgNr) {
+        StringBuilder stringBuilder = createStringBuilderWithReplacement(66, ' ');
         stringBuilder
+                .replace(0, 8, type)
                 .replace(8, 9, "K")
                 .replace(9, 10, "D")
                 .replace(10, 10 + ansvarsandel.length(), ansvarsandel)
