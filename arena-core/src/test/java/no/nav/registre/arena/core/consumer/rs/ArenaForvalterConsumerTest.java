@@ -128,10 +128,6 @@ public class ArenaForvalterConsumerTest {
         assertThat(response.getArbeidsokerList().size(), is(156));
     }
 
-    // TODO: sjekke logging på empty response
-    // TODO: sjekke logging på 3xx/4xx/5xx error codes
-
-
     @Test
     public void hentEksisterendeIdenterTest() {
         stubArenaForvalterHentBrukere();
@@ -139,6 +135,51 @@ public class ArenaForvalterConsumerTest {
 
         assertThat(eksisterendeIdenter.get(2), is("08125949828"));
         assertThat(eksisterendeIdenter.size(), is(156));
+    }
+
+    @Test
+    public void slettBrukereTest() {
+        stubArenaForvalterSlettBrukere();
+
+        Boolean test = arenaForvalterConsumer.slettBrukerSuccessful("10101010101", "q2");
+        assertThat(test, is(true));
+    }
+
+    @Test(expected = HttpClientErrorException.class)
+    public void slettBrukereBadReq() {
+        stubArenaForvalterSlettBrukereBadReq();
+
+        Boolean test = arenaForvalterConsumer.slettBrukerSuccessful("10101010101", "q2");
+        assertThat(test, is(false));
+    }
+
+    @Test(expected = HttpClientErrorException.class)
+    public void badCreateJson() {
+        // String test = arenaForvalterConsumer.createJsonRequestBody(null);
+        StatusFraArenaForvalterResponse sfafr = arenaForvalterConsumer.sendTilArenaForvalter(null);
+
+        assertThat(sfafr, is(nullValue()));
+    }
+
+
+    private void stubArenaForvalterSlettBrukereBadReq() {
+        stubFor(delete(urlEqualTo("/arena-forvalteren/api/v1/bruker?miljoe=q2&personident=10101010101"))
+                .willReturn(aResponse()
+                .withStatus(400)
+                .withBody(
+                        "{" +
+                                "\"timestamp\": \"2019-07-03T07:45:19.109+0000\"," +
+                                "\"status\": 400," +
+                                "\"error\": \"Bad Request\"," +
+                                "\"message\": \"Identen er ikke registrert i arena-forvalteren\"," +
+                                "\"path\": \"/api/v1/bruker\"" +
+                        "}"
+                )));
+    }
+
+    private void stubArenaForvalterSlettBrukere() {
+        stubFor(delete(urlEqualTo("/arena-forvalteren/api/v1/bruker?miljoe=q2&personident=10101010101"))
+                .willReturn(ok()));
     }
 
     private void stubArenaForvalterHentBrukere() {

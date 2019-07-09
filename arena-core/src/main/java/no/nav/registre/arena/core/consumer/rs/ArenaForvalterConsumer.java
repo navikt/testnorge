@@ -10,6 +10,7 @@ import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterR
 import no.nav.registre.arena.domain.NyeBrukereList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -51,27 +52,20 @@ public class ArenaForvalterConsumer {
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
     public StatusFraArenaForvalterResponse sendTilArenaForvalter(NyeBrukereList nyeBrukere) {
 
-        try {
-            RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
-                    .header("Nav-Call-Id", NAV_CALL_ID)
-                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
-                    .body(createJsonRequestBody(nyeBrukere));
+        RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
+                .header("Nav-Call-Id", NAV_CALL_ID)
+                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .body(createJsonRequestBody(nyeBrukere));
 
-            ResponseEntity<StatusFraArenaForvalterResponse> response =
-                    restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
+        ResponseEntity<StatusFraArenaForvalterResponse> response =
+                restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
 
-            if (!response.getStatusCode().is2xxSuccessful()) {
-                log.error("Ugyldig brukeroppsett. Kunne ikke opprette nye brukere. Status: {}", response.getStatusCode());
-                return null;
-            }
-
-            return response.getBody();
-
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage(), e);
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            log.error("Ugyldig brukeroppsett. Kunne ikke opprette nye brukere. Status: {}", response.getStatusCode());
+            return null;
         }
 
-        return null;
+        return response.getBody();
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
@@ -118,7 +112,7 @@ public class ArenaForvalterConsumer {
 
         ResponseEntity response = restTemplate.exchange(deleteRequest, String.class);
 
-        if (!response.getStatusCode().is2xxSuccessful()) {
+        if (response.getStatusCode() != HttpStatus.OK) {
             log.error("Kunne ikke slette bruker. Status: {}", response.getStatusCode());
             return false;
         }
@@ -127,11 +121,17 @@ public class ArenaForvalterConsumer {
     }
 
 
-    private String createJsonRequestBody(NyeBrukereList nyeBrukere) throws JsonProcessingException {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(sdf);
+    private String createJsonRequestBody(NyeBrukereList nyeBrukere) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setDateFormat(sdf);
 
-        return objectMapper.writeValueAsString(nyeBrukere);
+            return objectMapper.writeValueAsString(nyeBrukere);
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return "";
     }
 }

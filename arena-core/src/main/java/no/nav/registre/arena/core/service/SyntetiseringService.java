@@ -33,8 +33,8 @@ public class SyntetiseringService {
     Random random;
 
 
-    public StatusFraArenaForvalterResponse sendBrukereTilArenaForvalterConsumer(SyntetiserArenaRequest arenaRequest, int antallNyeBrukere) {
-        List<String> nyeIdenter = hentGyldigeIdenter(arenaRequest, antallNyeBrukere);
+    public StatusFraArenaForvalterResponse sendBrukereTilArenaForvalterConsumer(SyntetiserArenaRequest arenaRequest) {
+        List<String> nyeIdenter = hentGyldigeIdenter(arenaRequest);
         NyeBrukereList nyeBrukere = opprettNyeBrukere(nyeIdenter, arenaRequest.getMiljoe());
         lagreArenaBrukereIHodejegeren(nyeBrukere);
 
@@ -78,9 +78,10 @@ public class SyntetiseringService {
         hodejegerenConsumer.saveHistory(new ArenaSaveInHodejegerenRequest(ARENA_FORVALTER_NAME, brukereSomSkalLagres));
     }
 
-    private List<String> hentGyldigeIdenter(SyntetiserArenaRequest arenaRequest, int antallNyeIdenter) {
+    private List<String> hentGyldigeIdenter(SyntetiserArenaRequest arenaRequest) {
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(arenaRequest.getAvspillergruppeId());
         List<String> eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter();
+        int antallNyeIdenter = arenaRequest.getAntallNyeIdenter();
 
         levendeIdenter.removeAll(eksisterendeIdenter);
 

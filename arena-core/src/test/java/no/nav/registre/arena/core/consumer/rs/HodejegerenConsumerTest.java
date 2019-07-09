@@ -70,11 +70,11 @@ public class HodejegerenConsumerTest {
         stubHodejegerenConsumerHistorikk();
 
         NyBruker bruker1 = new NyBruker(
-                fnr1,"q2","IKVAL",null,
-                true,null,null);
+                fnr1, "q2", "IKVAL", null,
+                true, null, null);
         NyBruker bruker2 = new NyBruker(
-                fnr2,"q2","IKVAL",null,
-                true,null,null);
+                fnr2, "q2", "IKVAL", null,
+                true, null, null);
 
         List<IdentMedData> identerMedData = new ArrayList<>();
         identerMedData.add(new IdentMedData(bruker1.getPersonident(), Collections.singletonList(bruker1)));
@@ -101,7 +101,7 @@ public class HodejegerenConsumerTest {
         stubFor(get(urlEqualTo("/hodejegeren/api/v1/levende-identer-over-alder/" + gruppeId + "?minimumAlder=" + MINIMUM_ALDER))
                 .willReturn(aResponse()
                         .withStatus(400)
-                        .withBody("Internal Server Error.")));
+                        .withBody("Bad Request.")));
     }
 
     private void stubHodejegerenConsumerHistorikk() {
@@ -125,3 +125,4 @@ public class HodejegerenConsumerTest {
                         .withHeader("Content-Type", "application/json")));
     }
 }
+

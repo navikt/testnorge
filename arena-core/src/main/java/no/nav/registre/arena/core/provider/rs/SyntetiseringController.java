@@ -23,11 +23,8 @@ public class SyntetiseringController {
     SyntetiseringService syntetiseringService;
 
     @PostMapping(value = "/generer")
-    public ResponseEntity<String> registerBrukereIArenaForvalter(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest,
-                                                                 @RequestParam Integer antallNyeIdenter) {
-        if (antallNyeIdenter != null)
-            return registrerBrukereIArenaForvalter(syntetiserArenaRequest, antallNyeIdenter);
-        return fyllOppBrukereIArenaForvalter(syntetiserArenaRequest);
+    public ResponseEntity<String> registerBrukereIArenaForvalter(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
+        return registrerBrukereIArenaForvalter(syntetiserArenaRequest);
     }
 
     @PostMapping(value = "/slett")
@@ -36,25 +33,22 @@ public class SyntetiseringController {
     }
 
 
-    private ResponseEntity<String> fyllOppBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
+    private ResponseEntity<String> registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
+
+        if (arenaRequest.getAntallNyeIdenter() != null)
+            return byggOpprettedeBrukereResponse(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequest));
+
 
         int antallBrukereAaOpprette = syntetiseringService.getAntallBrukereForAaFylleArenaForvalteren(arenaRequest);
 
         if (antallBrukereAaOpprette > 0) {
-            return registerBrukereIArenaForvalter(arenaRequest, antallBrukereAaOpprette);
+            arenaRequest.setAntallNyeIdenter(antallBrukereAaOpprette);
+            return byggOpprettedeBrukereResponse(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequest));
         }
 
         return ResponseEntity.ok(MessageFormat.format(
-                "Minst {}%% identer hadde allerede meldekort. Ingen nye identer ble lagt til i Arena Forvalteren",
+                "Minst {0}% identer hadde allerede meldekort. Ingen nye identer ble lagt til i Arena Forvalteren",
                 (syntetiseringService.getProsentandelSomSkalHaMeldekort() * 100)));
-    }
-
-    private ResponseEntity<String> registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest,
-                                                                   Integer antallNyeIdenter) {
-        StatusFraArenaForvalterResponse response =
-                syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequest, antallNyeIdenter);
-
-        return byggOpprettedeBrukereResponse(response);
     }
 
     // TODO: kanskje returnere et map med både slettede og ikke slettede identer?
@@ -71,6 +65,8 @@ public class SyntetiseringController {
         return ResponseEntity.ok(responseBody.toString());
     }
 
+
+    // TODO: logg identer som ikke ble opprettet. returner antall som ble opprettet vs antall ønsket opprettet
     private ResponseEntity<String> byggOpprettedeBrukereResponse(StatusFraArenaForvalterResponse response) {
         StringBuilder status = new StringBuilder();
 

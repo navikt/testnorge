@@ -6,6 +6,7 @@ import no.nav.registre.arena.core.provider.rs.requests.ArenaSaveInHodejegerenReq
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -41,7 +42,7 @@ public class HodejegerenConsumer {
         RequestEntity getRequest = RequestEntity.get(hentLevendeIdenterOverAlderUrl.expand(avspillergruppeId.toString())).build();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
-        if (!response.getStatusCode().is2xxSuccessful()) {
+        if (response.getStatusCode() != HttpStatus.OK) {
             log.error("Status: {}", response.getStatusCode());
             return null;
         }
