@@ -1,36 +1,77 @@
 package no.nav.registre.sdForvalter.service;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import no.nav.registre.sdForvalter.consumer.rs.AaregConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.EregMapperConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.KrrConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.SamConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.SkdConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.TpConsumer;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
+import no.nav.registre.sdForvalter.database.repository.EregRepository;
+import no.nav.registre.sdForvalter.database.repository.KrrRepository;
+import no.nav.registre.sdForvalter.database.repository.TpsRepository;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ContextConfiguration(classes = EnvironmentInitializationService.class)
+@ContextConfiguration(classes = {
+        EnvironmentInitializationService.class,
+        AaregConsumer.class,
+        SkdConsumer.class,
+        KrrConsumer.class,
+        HodejegerenConsumer.class,
+        TpConsumer.class,
+        SamConsumer.class,
+        EregMapperConsumer.class,
+        AaregRepository.class,
+        TpsRepository.class,
+        KrrRepository.class,
+        EregRepository.class
+
+})
 public class EnvironmentInitializationServiceTest {
 
     private static final String ENV = "t1";
 
     @Mock
     AaregRepository aaregRepository;
+    @Mock
+    TpsRepository tpsRepository;
+    @Mock
+    KrrRepository krrRepository;
+    @Mock
+    EregRepository eregRepository;
 
     @Mock
     private AaregConsumer aaregConsumer;
+
+    @Mock
+    SkdConsumer skdConsumer;
+    @Mock
+    KrrConsumer krrConsumer;
+    @Mock
+    HodejegerenConsumer hodejegerenConsumer;
+    @Mock
+    TpConsumer tpConsumer;
+    @Mock
+    SamConsumer samConsumer;
+    @Mock
+    EregMapperConsumer eregMapperConsumer;
 
     @InjectMocks
     private EnvironmentInitializationService environmentInitializationService;
