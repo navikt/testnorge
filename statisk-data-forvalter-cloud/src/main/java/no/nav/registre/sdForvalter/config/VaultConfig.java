@@ -36,6 +36,8 @@ public class VaultConfig implements InitializingBean {
 
                 hikariDataSource.setUsername(username);
                 hikariDataSource.setPassword(password);
+                hikariDataSource.setMaximumPoolSize(2);
+                hikariDataSource.setMinimumIdle(0);
                 hikariDataSource.getHikariConfigMXBean().setUsername(username);
                 hikariDataSource.getHikariConfigMXBean().setPassword(password);
             }
