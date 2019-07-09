@@ -22,6 +22,16 @@ describe('mapTpsDataToIdent.js', () => {
 			sprakKode: 'English'
 		}
 
+		const testPdlfData = {
+			utenlandskeIdentifikasjonsnummere: {
+				0: {
+					idNummer: '1234567890',
+					registrertOpphoertINAV: '2019-06-25',
+					utstederland: 'JAPAN'
+				}
+			}
+		}
+
 		const testTpsfRes = [
 			{
 				header: 'Personlig informasjon',
@@ -92,6 +102,31 @@ describe('mapTpsDataToIdent.js', () => {
 						id: 'egenAnsattDatoFom',
 						label: 'Egenansatt',
 						value: 'JA'
+					}
+				]
+			}
+		]
+
+		const testPdlfRes = [
+			...testTpsfRes,
+			{
+				header: 'Utenlands-ID',
+				data: [
+					{
+						id: 'idNummer',
+						label: 'Identifikasjonsnummer',
+						value: '1234567890'
+					},
+					{
+						id: 'opphoert',
+						label: 'Opphørt',
+						value: 'Ja'
+					},
+					{
+						id: 'utstederland',
+						label: 'Utstederland',
+						value: 'JAPAN',
+						apiKodeverkId: 'StatsborgerskapFreg'
 					}
 				]
 			}
@@ -197,6 +232,10 @@ describe('mapTpsDataToIdent.js', () => {
 				}
 			]
 			expect(mapTpsfData(testTpsfDataAdresseValues, testIdent)).toEqual(res)
+		})
+
+		it('should return tpsf-data and pdlf-data', () => {
+			expect(mapTpsfData(testTpsfData, testIdent, testPdlfData)).toEqual(testPdlfRes)
 		})
 
 		// it('should return tpsf-data with alle values', () => {

@@ -87,7 +87,17 @@ export const getValues = (attributeList, values) => {
 			return _set(accumulator, pathPrefix, value[0])
 		}
 
-		if (pathPrefix === DataSourceMapper('PDLF')) {
+		if (
+			pathPrefix === DataSourceMapper('PDLF') &&
+			attribute.id === 'utenlandskIdentifikasjonsnummer'
+		) {
+			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value[0])
+		}
+
+		if (
+			pathPrefix === DataSourceMapper('PDLF') &&
+			attribute.id === 'kontaktinformasjonForDoedsbo'
+		) {
 			const doedsboValues = values.kontaktinformasjonForDoedsbo[0]
 			const navnObj = deletePropertiesWithoutValues({
 				fornavn: doedsboValues.fornavn,
@@ -146,7 +156,6 @@ export const getValues = (attributeList, values) => {
 // Transform attributes before order is sent
 // Date, boolean...
 const _transformAttributt = (attribute, attributes, value) => {
-	// console.log('attribute, attributes, value :', attribute, attributes, value)
 	if (!attribute) return null
 	if (attribute.dataSource === 'SIGRUN') {
 		return value

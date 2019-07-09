@@ -132,11 +132,9 @@ describe('mapDetailedData.js', () => {
 			expect(mapArenaData()).toBeNull()
 		})
 
-		const testArenaData1 = { data: { arbeidsokerList: { 0: { servicebehov: true } } } }
-		const testKvalifiseringsgruppe1 = 'BFORM'
-		const testDato1 = null
-
 		it('should return arena-data with servicebehov', () => {
+			const testArenaData1 = { data: { arbeidsokerList: { 0: { servicebehov: true } } } }
+			const testKvalifiseringsgruppe1 = 'BFORM'
 			const testRes1 = {
 				header: 'Arena',
 				data: [
@@ -150,15 +148,43 @@ describe('mapDetailedData.js', () => {
 						label: 'Servicebehov',
 						value: 'BFORM - Situasjonsbestemt innsats'
 					},
-					null
+					{
+						id: 'inaktiveringDato',
+						label: 'Inaktiv fra dato',
+						value: undefined
+					},
+					{
+						id: 'aap115',
+						label: 'Har 11-5 vedtak',
+						value: undefined
+					},
+					{
+						id: 'aap115_fraDato',
+						label: 'Fra dato',
+						value: undefined
+					},
+					{
+						id: 'aap',
+						label: 'Har AAP vedtak UA - positivt utfall',
+						value: undefined
+					},
+					{
+						id: 'aap_fraDato',
+						label: 'Fra dato',
+						value: undefined
+					},
+					{
+						id: 'aap_tilDato',
+						label: 'Til dato',
+						value: undefined
+					}
 				]
 			}
-			expect(mapArenaData(testArenaData1, testKvalifiseringsgruppe1, testDato1)).toEqual(testRes1)
+			expect(mapArenaData(testArenaData1, testKvalifiseringsgruppe1)).toEqual(testRes1)
 		})
 
 		it('should return arena-data without servicebehov', () => {
 			const testArenaData2 = { data: { arbeidsokerList: { 0: { servicebehov: false } } } }
-			const testKvalifiseringsgruppe2 = null
 			const testDato2 = '2019-06-04T00:00:00'
 			const testRes2 = {
 				header: 'Arena',
@@ -168,16 +194,101 @@ describe('mapDetailedData.js', () => {
 						label: 'Brukertype',
 						value: 'Uten servicebehov'
 					},
-					null,
+					{
+						id: 'servicebehov',
+						label: 'Servicebehov',
+						value: undefined
+					},
 					{
 						id: 'inaktiveringDato',
 						label: 'Inaktiv fra dato',
 						value: '04.06.2019'
+					},
+					{
+						id: 'aap115',
+						label: 'Har 11-5 vedtak',
+						value: undefined
+					},
+					{
+						id: 'aap115_fraDato',
+						label: 'Fra dato',
+						value: undefined
+					},
+					{
+						id: 'aap',
+						label: 'Har AAP vedtak UA - positivt utfall',
+						value: undefined
+					},
+					{
+						id: 'aap_fraDato',
+						label: 'Fra dato',
+						value: undefined
+					},
+					{
+						id: 'aap_tilDato',
+						label: 'Til dato',
+						value: undefined
 					}
 				]
 			}
-			expect(mapArenaData(testArenaData2, testKvalifiseringsgruppe2, testDato2)).toEqual(testRes2)
+			expect(mapArenaData(testArenaData2, undefined, testDato2)).toEqual(testRes2)
 		})
+
+		it('should return arena-data with 11-5 vedtak and AAP vedtak', () => {
+			const testArenaData3 = { data: { arbeidsokerList: { 0: { servicebehov: true } } } }
+			const testKvalifiseringsgruppe3 = 'BFORM'
+			const testAap115 = [{ fraDato: '2019-01-01T00:00:00' }]
+			const testAap = [{ fraDato: '2019-01-01T00:00:00', tilDato: '2019-07-10T00:00:00' }]
+			const testRes3 = {
+				header: 'Arena',
+				data: [
+					{
+						id: 'brukertype',
+						label: 'Brukertype',
+						value: 'Med servicebehov'
+					},
+					{
+						id: 'servicebehov',
+						label: 'Servicebehov',
+						value: 'BFORM - Situasjonsbestemt innsats'
+					},
+					{
+						id: 'inaktiveringDato',
+						label: 'Inaktiv fra dato',
+						value: undefined
+					},
+					{
+						id: 'aap115',
+						label: 'Har 11-5 vedtak',
+						value: 'Ja'
+					},
+					{
+						id: 'aap115_fraDato',
+						label: 'Fra dato',
+						value: '01.01.2019'
+					},
+					{
+						id: 'aap',
+						label: 'Har AAP vedtak UA - positivt utfall',
+						value: 'Ja'
+					},
+					{
+						id: 'aap_fraDato',
+						label: 'Fra dato',
+						value: '01.01.2019'
+					},
+					{
+						id: 'aap_tilDato',
+						label: 'Til dato',
+						value: '10.07.2019'
+					}
+				]
+			}
+			expect(
+				mapArenaData(testArenaData3, testKvalifiseringsgruppe3, undefined, testAap115, testAap)
+			).toEqual(testRes3)
+		})
+
 		describe('mapAaregData', () => {
 			it('should return null without data', () => {
 				expect(mapAaregData()).toBeNull()

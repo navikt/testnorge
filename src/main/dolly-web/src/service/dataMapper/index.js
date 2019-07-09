@@ -51,8 +51,6 @@ const DataMapper = {
 		const tpsfData = testbruker.items.tpsf.find(item => item.ident === personId)
 		if (!tpsfData) return null
 
-		let data = mapTpsfData(tpsfData, testIdent)
-
 		const sigrunData = testbruker.items.sigrunstub && testbruker.items.sigrunstub[personId]
 		const krrData = testbruker.items.krrstub && testbruker.items.krrstub[personId]
 		const aaregData = testbruker.items.aareg && testbruker.items.aareg[personId]
@@ -60,6 +58,12 @@ const DataMapper = {
 		const arenaData =
 			testbruker.items.arenaforvalteren && testbruker.items.arenaforvalteren[personId]
 		var bestillingId = _findBestillingId(gruppe, personId)
+
+		let data = mapTpsfData(
+			tpsfData,
+			testIdent,
+			pdlfData && pdlfData.personidenter && pdlfData.personidenter
+		)
 
 		if (aaregData) {
 			data.push(mapAaregData(aaregData))
@@ -73,16 +77,18 @@ const DataMapper = {
 		if (pdlfData) {
 			data.push(mapPdlData(pdlfData))
 		}
-
 		if (arenaData) {
-			// Workaround for å hente servicebehov-type og inaktiveringsdato fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
+			// Workaround for å hente servicebehov-type, inaktiveringsdato, AAP og AAP115 fra bestilling så lenge vi ikke kan få den fra arenaforvalteren
 			const bestKriterier = JSON.parse(
 				bestillingStatuser.data.find(bestilling => bestilling.id === bestillingId[0]).bestKriterier
 			)
 			var kvalifiseringsgruppe = bestKriterier.arenaforvalter.kvalifiseringsgruppe
 			var inaktiveringDato = bestKriterier.arenaforvalter.inaktiveringDato
-			data.push(mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato))
+			var aap115 = bestKriterier.arenaforvalter.aap115
+			var aap = bestKriterier.arenaforvalter.aap
+			data.push(mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato, aap115, aap))
 		}
+
 		if (bestillingId.length > 1) {
 			data.push(mapBestillingId(testIdent))
 		}

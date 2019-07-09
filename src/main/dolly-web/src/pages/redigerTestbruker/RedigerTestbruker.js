@@ -20,7 +20,7 @@ export default class RedigerTestbruker extends Component {
 		}
 	}
 
-	componentWillMount = async () => {
+	componentDidMount = async () => {
 		this.props.getGruppe()
 		const urlArray = this.props.match.params.datasources.split('&')
 
