@@ -14,7 +14,7 @@ public class Knytning {
     private String type = "BEDRNSSY";
     private String ansvarsandel = "";
     private String fratreden = "";
-    private String orgNr;
+    private String orgnr;
     private String valgtAv = "";
     private String korrektOrgNr = "";
 }
