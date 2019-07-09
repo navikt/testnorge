@@ -5,14 +5,7 @@ spring.cloud.vault:
   read-timeout: 30000
   application-name: preprod/fss/testnorge-statisk-data-forvalter
 
-  config:
-    order: -10
-
-  authentication: KUBERNETES
-  kubernetes:
-    role: testnorge-statisk-data-forvalter #Should match application_name in terraform nais module
-    kubernetes-path: kubernetes/preprod/fss #This path is cluster specific.
-    service-account-token-file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  authentication: TOKEN
 
   generic:
     enabled: true
