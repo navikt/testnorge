@@ -17,10 +17,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.sdForvalter.consumer.rs.request.AaregRequest.AaregRequest;
-import no.nav.registre.sdForvalter.consumer.rs.request.AaregRequest.Arbeidsforhold;
-import no.nav.registre.sdForvalter.consumer.rs.request.AaregRequest.Arbeidsgiver;
-import no.nav.registre.sdForvalter.consumer.rs.request.AaregRequest.Arbeidstaker;
+import no.nav.registre.sdForvalter.consumer.rs.request.aareg.AaregRequest;
+import no.nav.registre.sdForvalter.consumer.rs.request.aareg.Arbeidsforhold;
+import no.nav.registre.sdForvalter.consumer.rs.request.aareg.Arbeidsgiver;
+import no.nav.registre.sdForvalter.consumer.rs.request.aareg.Arbeidstaker;
 import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 

@@ -9,8 +9,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregRequest;
+import no.nav.registre.sdForvalter.consumer.rs.request.ereg.Navn;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 
 @Component
@@ -27,7 +31,18 @@ public class EregMapperConsumer {
 
     public String uploadToEreg(List<EregModel> data, String env) {
         UriTemplate uriTemplate = new UriTemplate(eregUrl + "/orkestrering/opprett?lastOpp=true&miljoe={miljoe}");
-        RequestEntity<List<EregModel>> requestEntity = new RequestEntity<>(data, HttpMethod.POST, uriTemplate.expand(env));
+        RequestEntity<List<EregRequest>> requestEntity = new RequestEntity<>(
+                data.parallelStream().map(d -> EregRequest.builder()
+                        .enhetstype(d.getEnhetstype())
+                        .epost(d.getEpost())
+                        .internetAdresse(d.getInternetAdresse())
+                        .navn(
+                                Navn.builder().navneListe(Collections.singletonList(d.getNavn())).build()
+                        )
+                        .orgnr(d.getOrgnr())
+                        .build())
+                        .collect(Collectors.toList()),
+                HttpMethod.POST, uriTemplate.expand(env));
         ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
         if (response.getBody() != null) {
             if (response.getStatusCode() == HttpStatus.OK) {

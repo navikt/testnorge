@@ -1,4 +1,4 @@
-package no.nav.registre.sdForvalter.consumer.rs.request.AaregRequest;
+package no.nav.registre.sdForvalter.consumer.rs.request.aareg;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

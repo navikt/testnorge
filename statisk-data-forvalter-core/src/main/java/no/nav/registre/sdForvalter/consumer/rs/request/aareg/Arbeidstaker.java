@@ -1,11 +1,11 @@
-package no.nav.registre.sdForvalter.consumer.rs.request.AaregRequest;
-
-import static no.nav.registre.sdForvalter.consumer.rs.request.AaregRequest.AktoerType.PERS;
+package no.nav.registre.sdForvalter.consumer.rs.request.aareg;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
+import static no.nav.registre.sdForvalter.consumer.rs.request.aareg.AktoerType.PERS;
 
 @Getter
 @Setter
