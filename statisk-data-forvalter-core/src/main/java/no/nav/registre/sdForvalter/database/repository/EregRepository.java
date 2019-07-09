@@ -10,4 +10,6 @@ public interface EregRepository extends CrudRepository<EregModel, Long> {
 
     EregModel deleteByOrgnr(String orgnr);
 
+    EregModel findByOrgnr(String orgnr);
+
 }

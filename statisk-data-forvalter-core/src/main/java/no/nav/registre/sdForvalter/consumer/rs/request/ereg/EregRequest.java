@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -25,5 +27,7 @@ public class EregRequest {
 
     private String epost;
     private String internetAdresse;
+
+    private List<Map<String, String>> knytninger;
 
 }

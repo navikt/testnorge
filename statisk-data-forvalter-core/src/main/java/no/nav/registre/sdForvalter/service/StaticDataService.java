@@ -81,11 +81,13 @@ public class StaticDataService {
     }
 
     public List<EregModel> saveInEreg(List<EregModel> data) {
-        List<EregModel> saved = new ArrayList<>(data.size());
+        ArrayList<EregModel> returnValue = new ArrayList<>();
+
         eregRepository.saveAll(data).forEach(
-                saved::add
+                returnValue::add
         );
-        return saved;
+
+        return returnValue;
     }
 
     public Set<KrrModel> saveInKrr(Set<KrrModel> data) {

@@ -20,6 +20,7 @@ import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.service.StaticDataService;
 
+//TODO: Fix database update and create complex heriarcy
 @Slf4j
 @RestController
 @RequiredArgsConstructor

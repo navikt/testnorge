@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.database.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public class EregModel extends AuditModel implements CreatableFromString {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     Long id;
 
     @NotNull
@@ -45,6 +47,8 @@ public class EregModel extends AuditModel implements CreatableFromString {
     private String internetAdresse;
 
     private String naeringskode;
+
+    private String parent;
 
     @Override
     public void updateFromString(List<String> input, List<String> headers) {
