@@ -141,8 +141,8 @@ export default class Step3 extends PureComponent {
 					{values.nyMal && (
 						<Field
 							name="malNavn"
-							label="Mal navn"
-							className="input-field"
+							label="Malnavn"
+							className="input-field-mal-input"
 							type="string"
 							component={FormikInput}
 						/>
@@ -245,6 +245,9 @@ export default class Step3 extends PureComponent {
 		if (subKategori.id === 'arena') {
 			return items[0].items.map(item => this.renderItem(item, values))
 		}
+		if (subKategori.id === 'utenlandskIdentifikasjonsnummer') {
+			return items[0].items.map(item => this.renderItem(item, values))
+		}
 		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
@@ -269,7 +272,13 @@ export default class Step3 extends PureComponent {
 				? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
 						_get(stateValues['arenaforvalter'][0], item.id)
 				  ))
-				: (itemValue = _get(stateValues['arenaforvalter'][0], item.id))
+				: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
+		}
+
+		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
+			itemValue = Formatters.oversettBoolean(
+				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
+			)
 		}
 
 		const staticValueProps = {

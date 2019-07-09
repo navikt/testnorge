@@ -83,6 +83,35 @@ export function mapBestillingData(bestillingData) {
 			header: 'Personlig informasjon',
 			items: _getTpsfBestillingData(tpsfKriterier)
 		}
+		// For å mappe utenlands-ID under personlig informasjon
+		if (bestillingData.bestKriterier) {
+			const registreKriterier = JSON.parse(bestillingData.bestKriterier)
+			const pdlforvalter = registreKriterier.pdlforvalter && registreKriterier.pdlforvalter
+			if (pdlforvalter) {
+				const pdlf = {
+					items: [
+						{
+							label: 'Utenlands-ID',
+							value: pdlforvalter.utenlandskIdentifikasjonsnummer.identifikasjonsnummer
+						},
+						{
+							label: 'Utenlands-ID opphørt',
+							value: Formatters.oversettBoolean(
+								pdlforvalter.utenlandskIdentifikasjonsnummer.opphoert
+							)
+						},
+						{
+							label: 'Utstederland (ID)',
+							value: pdlforvalter.utenlandskIdentifikasjonsnummer.utstederland,
+							apiKodeverkId: 'StatsborgerskapFreg'
+						}
+					]
+				}
+				pdlf.items.forEach(item => {
+					personinfo.items.push(item)
+				})
+			}
+		}
 		data.push(personinfo)
 		if (tpsfKriterier.boadresse) {
 			const adresse = {
@@ -431,6 +460,26 @@ export function mapBestillingData(bestillingData) {
 					{
 						label: 'Inaktiv fra dato',
 						value: Formatters.formatDate(arenaKriterier.inaktiveringDato)
+					},
+					{
+						label: 'Har 11-5 vedtak',
+						value: Formatters.oversettBoolean(arenaKriterier.aap115 && true)
+					},
+					{
+						label: 'Fra dato',
+						value: arenaKriterier.aap115 && Formatters.formatDate(arenaKriterier.aap115[0].fraDato)
+					},
+					{
+						label: 'Har AAP vedtak UA - positivt utfall',
+						value: Formatters.oversettBoolean(arenaKriterier.aap && true)
+					},
+					{
+						label: 'Fra dato',
+						value: arenaKriterier.aap && Formatters.formatDate(arenaKriterier.aap[0].fraDato)
+					},
+					{
+						label: 'Til dato',
+						value: arenaKriterier.aap && Formatters.formatDate(arenaKriterier.aap[0].tilDato)
 					}
 				]
 			}
