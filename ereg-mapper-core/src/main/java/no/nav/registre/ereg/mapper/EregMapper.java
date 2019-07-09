@@ -305,7 +305,7 @@ public class EregMapper {
             List<String> collect = knytninger.stream().map(k -> createKnyntningRecord(k.getType(),
                     k.getAnsvarsandel(),
                     k.getFratreden(),
-                    k.getOrgNr(),
+                    k.getOrgnr(),
                     k.getValgtAv(),
                     k.getKorrektOrgNr()))
                     .collect(Collectors.toList());
