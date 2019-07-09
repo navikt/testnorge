@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 
 import no.nav.registre.sdForvalter.database.model.AaregModel;
+import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.service.StaticDataService;
@@ -43,6 +45,11 @@ public class StaticDataController {
         return ResponseEntity.ok(staticDataService.getDkifData());
     }
 
+    @GetMapping(value = "/ereg")
+    public ResponseEntity<List<EregModel>> getEregStaticData() {
+        return ResponseEntity.ok(staticDataService.getEregData());
+    }
+
 
     @PostMapping(value = "/tps")
     public ResponseEntity storeStaticDataInTps(@Valid @RequestBody Set<TpsModel> data) {
@@ -59,6 +66,11 @@ public class StaticDataController {
     @PostMapping(value = "/krr")
     public ResponseEntity storeStaticData(@Valid @RequestBody Set<KrrModel> data) {
         return ResponseEntity.ok(staticDataService.saveInKrr(data));
+    }
+
+    @PostMapping(value = "/ereg")
+    public ResponseEntity<List<EregModel>> storeStaticData(@Valid @RequestBody List<EregModel> data) {
+        return ResponseEntity.ok(staticDataService.saveInEreg(data));
     }
 
 }

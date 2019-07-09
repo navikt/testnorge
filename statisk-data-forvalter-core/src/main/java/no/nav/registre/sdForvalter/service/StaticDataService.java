@@ -5,14 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.database.model.AaregModel;
+import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
+import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.KrrRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsRepository;
 
@@ -24,6 +28,7 @@ public class StaticDataService {
     private final AaregRepository aaregRepository;
     private final TpsRepository tpsRepository;
     private final KrrRepository krrRepository;
+    private final EregRepository eregRepository;
 
     @Value("${tps.statisk.avspillergruppeId}")
     private Long playgroupStaticData;
@@ -46,6 +51,7 @@ public class StaticDataService {
         return krrModels;
     }
 
+    //TODO: Return saved values insted of overlapping
     public Set<TpsModel> saveInTps(Set<TpsModel> data) {
         Set<TpsModel> overlap = new HashSet<>();
         Set<TpsModel> reduced = data.stream().filter(
@@ -74,6 +80,14 @@ public class StaticDataService {
         return overlap;
     }
 
+    public List<EregModel> saveInEreg(List<EregModel> data) {
+        List<EregModel> saved = new ArrayList<>(data.size());
+        eregRepository.saveAll(data).forEach(
+                saved::add
+        );
+        return saved;
+    }
+
     public Set<KrrModel> saveInKrr(Set<KrrModel> data) {
         Set<KrrModel> overlap = new HashSet<>();
         Set<KrrModel> reduced = data.stream().filter(t -> {
@@ -85,5 +99,11 @@ public class StaticDataService {
         }).collect(Collectors.toSet());
         krrRepository.saveAll(reduced);
         return overlap;
+    }
+
+    public List<EregModel> getEregData() {
+        List<EregModel> data = new ArrayList<>();
+        eregRepository.findAll().forEach(data::add);
+        return data;
     }
 }

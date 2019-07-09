@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import no.nav.registre.sdForvalter.vault.VaultUtil;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "no.nav.registre")
 @EnableJpaRepositories
 public class ApplicationStarter {
 

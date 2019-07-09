@@ -62,5 +62,4 @@ public class StaticFileService {
             log.warn("Unable to read local file, expected this to be present when initializing.\nDatabase might not have been initialized with the correct values");
         }
     }
-
 }

@@ -5,21 +5,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.AaregConsumer;
+import no.nav.registre.sdForvalter.consumer.rs.EregMapperConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.KrrConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.SamConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.SkdConsumer;
 import no.nav.registre.sdForvalter.consumer.rs.TpConsumer;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
+import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.model.TpsModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
+import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.KrrRepository;
 import no.nav.registre.sdForvalter.database.repository.TpsRepository;
 
@@ -31,6 +36,7 @@ public class EnvironmentInitializationService {
     private final AaregRepository aaregRepository;
     private final TpsRepository tpsRepository;
     private final KrrRepository krrRepository;
+    private final EregRepository eregRepository;
 
     private final AaregConsumer aaregConsumer;
     private final SkdConsumer skdConsumer;
@@ -38,6 +44,7 @@ public class EnvironmentInitializationService {
     private final HodejegerenConsumer hodejegerenConsumer;
     private final TpConsumer tpConsumer;
     private final SamConsumer samConsumer;
+    private final EregMapperConsumer eregMapperConsumer;
 
     @Value("${tps.statisk.avspillergruppeId}")
     private Long staticDataPlaygroup;
@@ -65,6 +72,10 @@ public class EnvironmentInitializationService {
         Map<String, String> aaregStatusMap = initializeAareg(environment);
         if (!aaregStatusMap.isEmpty()) {
             log.warn("Fullførte ikke initialiseringen av miljøet: {} i Aareg, feilet på identer {}", environment, aaregStatusMap);
+        }
+        String flatfileFromEregMapper = initializeEreg(environment);
+        if (!"".equals(flatfileFromEregMapper) && flatfileFromEregMapper != null) {
+            log.info(flatfileFromEregMapper);
         }
     }
 
@@ -131,6 +142,12 @@ public class EnvironmentInitializationService {
 
     private void initializeSam(String environment, Set<String> fnrs) {
         samConsumer.send(fnrs, environment);
+    }
+
+    private String initializeEreg(String environment) {
+        List<EregModel> data = new ArrayList<>();
+        eregRepository.findAll().forEach(data::add);
+        return eregMapperConsumer.uploadToEreg(data, environment);
     }
 
 }

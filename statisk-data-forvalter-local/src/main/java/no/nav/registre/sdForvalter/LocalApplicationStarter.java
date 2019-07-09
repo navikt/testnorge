@@ -3,11 +3,14 @@ package no.nav.registre.sdForvalter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Slf4j
-@SpringBootApplication
-@Profile("local")
+@SpringBootApplication(scanBasePackages = "no.nav.registre")
+@EnableJpaRepositories
+@PropertySource("classpath:application-local.properties")
+//@Profile("local")
 public class LocalApplicationStarter {
 
     public static void main(String[] args) {
