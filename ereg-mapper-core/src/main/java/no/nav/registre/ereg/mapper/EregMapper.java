@@ -489,7 +489,7 @@ public class EregMapper {
                 .replace(9, 10, "D")
                 .replace(10, 10 + ansvarsandel.length(), ansvarsandel)
                 .replace(40, 41, fratreden)
-                .replace(43, 43 + orgNr.length(), orgNr)
+                .replace(41, 41 + orgNr.length(), orgNr)
                 .replace(50, 50 + valgtAv.length(), valgtAv)
                 .replace(57, 57 + korrektOrgNr.length(), korrektOrgNr)
                 .append("\n");
