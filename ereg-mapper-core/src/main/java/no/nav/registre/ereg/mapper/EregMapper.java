@@ -49,7 +49,7 @@ public class EregMapper {
                 .filter(d -> d.getNavn() == null)
                 .collect(Collectors.groupingBy(EregDataRequest::getEnhetstype))
                 .forEach(
-                        (type, requests) -> {
+                        (enhetstype, requests) -> {
                             List<String> naeringskoder = requests.stream()
                                     .map(d -> {
                                         if (d.getNaeringskode() == null) {
@@ -79,7 +79,7 @@ public class EregMapper {
                                     })
                                     .map(Naeringskode::getKode)
                                     .collect(Collectors.toList());
-                            List<String> fullNames = nameService.getFullNames(naeringskoder, type);
+                            List<String> fullNames = nameService.getFullNames(naeringskoder, enhetstype);
                             for (int i = 0; i < requests.size(); i++) {
                                 requests.get(i).setNavn(
                                         Navn.builder()
