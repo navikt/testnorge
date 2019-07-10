@@ -37,11 +37,13 @@ public class EregMapperConsumer {
                     EregRequest.EregRequestBuilder builder = EregRequest.builder()
                             .enhetstype(d.getEnhetstype())
                             .epost(d.getEpost())
-                            .internetAdresse(d.getInternetAdresse())
-                            .navn(
-                                    Navn.builder().navneListe(Collections.singletonList(d.getNavn())).build()
-                            )
-                            .orgnr(d.getOrgnr());
+                            .internetAdresse(d.getInternetAdresse());
+                    if (!"".equals(d.getNavn()) && d.getNavn() != null) {
+                        builder.navn(
+                                Navn.builder().navneListe(Collections.singletonList(d.getNavn())).build()
+                        );
+                    }
+                    builder.orgnr(d.getOrgnr());
 
                     if (!"".equals(d.getParent()) && d.getParent() != null) {
                         HashMap<String, String> knytninger = new HashMap<>();
