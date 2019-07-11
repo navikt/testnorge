@@ -1,6 +1,5 @@
 package no.nav.registre.sdForvalter.database.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,16 +8,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.Embeddable;
 
-@Entity
+//@Entity
 @ToString
 @Getter
 @Setter
@@ -26,13 +18,14 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-@Table(name = "Adresse")
+//@Table(name = "Adresse")
+@Embeddable
 public class AdresseModel {
 
-    @Id
-    @GeneratedValue
-    @JsonIgnore
-    private Long id;
+//    @Id
+//    @GeneratedValue
+//    @JsonIgnore
+//    private Long id;
 
     private String adresse;
     private String postnr;
@@ -40,11 +33,8 @@ public class AdresseModel {
     private String landkode;
     private String poststed;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinTable(name = "ereg_adresse",
-            joinColumns = {@JoinColumn(name = "ereg_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "adreses_id", referencedColumnName = "id")})
-    @JsonIgnore
-    private EregModel eregModel;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    private EregModel eregModel;
 
 }

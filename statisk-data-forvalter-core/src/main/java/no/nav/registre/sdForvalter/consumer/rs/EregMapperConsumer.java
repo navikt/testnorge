@@ -64,7 +64,7 @@ public class EregMapperConsumer {
                     }
 
                     AdresseModel postadresse = d.getPostadresse();
-                    if (forretningsAdresse != null) {
+                    if (postadresse != null) {
                         builder.adresse(Adresse.builder()
                                 .adresser(Collections.singletonList(postadresse.getAdresse()))
                                 .kommunenr(postadresse.getKommunenr())
@@ -73,7 +73,6 @@ public class EregMapperConsumer {
                                 .poststed(postadresse.getPoststed())
                                 .build());
                     }
-
                     return builder.build();
                 })
                         .collect(Collectors.toList()),

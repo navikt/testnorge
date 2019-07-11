@@ -9,13 +9,13 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.CascadeType;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -50,13 +50,16 @@ public class EregModel extends AuditModel {
 
     private String parent;
 
-    @OneToOne(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "eregModel")
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "adresse", column = @Column(name = "forretnings_adresse")),
+            @AttributeOverride(name = "postnr", column = @Column(name = "forretnings_postnr")),
+            @AttributeOverride(name = "kommunenr", column = @Column(name = "forretnings_kommunenr")),
+            @AttributeOverride(name = "landkode", column = @Column(name = "forretnings_landkode")),
+            @AttributeOverride(name = "poststed", column = @Column(name = "forretnings_poststed")),
+    })
     private AdresseModel forretningsAdresse;
 
-    @OneToOne(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "eregModel")
+    @Embedded
     private AdresseModel postadresse;
 }
