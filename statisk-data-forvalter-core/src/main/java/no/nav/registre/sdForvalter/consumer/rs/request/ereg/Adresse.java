@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.consumer.rs.request.ereg;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class Adresse {

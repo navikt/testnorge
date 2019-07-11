@@ -6,9 +6,19 @@ create table adresse
     landkode  varchar(255),
     postnr    varchar(255),
     poststed  varchar(255),
-    ereg_id   bigint not null,
     primary key (id)
 );
 
-alter table adresse
-    add constraint FKs89vmb9w0g55bvgq5m8vw2leo foreign key (ereg_id) references ereg
+create table ereg_adresse
+(
+    adreses_id bigint not null,
+    ereg_id    bigint not null,
+    primary key (ereg_id)
+);
+
+alter table ereg_adresse
+    add constraint UK_mwy9fnkebxg8f85ak183y14gu unique (adreses_id);
+alter table ereg_adresse
+    add constraint FKsc5tbhryssbqy7xeuik532naj foreign key (adreses_id) references ereg;
+alter table ereg_adresse
+    add constraint FKfm1k7o3ad0mk31vl67786ta2o foreign key (ereg_id) references adresse;
