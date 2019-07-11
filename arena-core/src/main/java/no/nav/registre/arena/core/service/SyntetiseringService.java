@@ -9,11 +9,14 @@ import no.nav.registre.arena.core.provider.rs.requests.ArenaSaveInHodejegerenReq
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
 import no.nav.registre.arena.core.provider.rs.requests.SlettArenaRequest;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.arena.domain.*;
+import no.nav.registre.arena.domain.NyBruker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 import static java.lang.Math.floor;
 
@@ -35,7 +38,7 @@ public class SyntetiseringService {
 
     public List<Arbeidsoker> sendBrukereTilArenaForvalterConsumer(SyntetiserArenaRequest arenaRequest) {
         List<String> nyeIdenter = hentGyldigeIdenter(arenaRequest);
-        NyeBrukereList nyeBrukere = opprettNyeBrukere(nyeIdenter, arenaRequest.getMiljoe());
+        List<NyBruker> nyeBrukere = opprettNyeBrukere(nyeIdenter, arenaRequest.getMiljoe());
         lagreArenaBrukereIHodejegeren(nyeBrukere);
 
         return arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
@@ -61,11 +64,11 @@ public class SyntetiseringService {
         return (int) (floor(levendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - eksisterendeIdenter);
     }
 
-    private void lagreArenaBrukereIHodejegeren(NyeBrukereList nyeBrukere) {
+    private void lagreArenaBrukereIHodejegeren(List<NyBruker> nyeBrukere) {
 
         List<IdentMedData> brukereSomSkalLagres = new ArrayList<>();
 
-        for (NyBruker bruker : nyeBrukere.getNyeBrukere()) {
+        for (NyBruker bruker : nyeBrukere) {
 
             List<NyBruker> data = Collections.singletonList(bruker);
             brukereSomSkalLagres.add(new IdentMedData(bruker.getPersonident(), data));
@@ -95,7 +98,7 @@ public class SyntetiseringService {
         return nyeIdenter;
     }
 
-    private NyeBrukereList opprettNyeBrukere(List<String> identerFraHodejegeren, String miljoe) {
+    private List<NyBruker> opprettNyeBrukere(List<String> identerFraHodejegeren, String miljoe) {
 
         List<NyBruker> nyeBrukere = new ArrayList<>(identerFraHodejegeren.size());
 
@@ -111,7 +114,7 @@ public class SyntetiseringService {
             ));
         }
 
-        return new NyeBrukereList(nyeBrukere);
+        return nyeBrukere;
     }
 
 

@@ -1,600 +1,8 @@
 {
   "arbeidsokerList": [
     {
-      "personident": "07098524627",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "07098524627",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "08125949828",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "19117802682",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "26128228283",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "17056818189",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "27117610948",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "29127620111",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "28098421035",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "25068416224",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "27087520043",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "26076949912",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "15127321601",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "04017719365",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "14087314597",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "test",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "05097019489",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "65078243117",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "26107516092",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "41036346270",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "50087248442",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "19067521873",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "25076416187",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "27046625124",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "66056442015",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "60037435476",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "55028348850",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "65088043175",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "test",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "06098519511",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "18066021811",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "10077049997",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "03116624663",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "28076323846",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "14086949378",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "27076949951",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "12047416661",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "15038817474",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "65046647429",
-      "miljoe": "q2",
-      "status": "ERROR",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "27016126468",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "26046517031",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "21088249876",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "08117923240",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "22088049601",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "05046726857",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "12078449614",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "16057628018",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "17108224916",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "17096516851",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "05096322064",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "06086708327",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "06117209405",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "26126617282",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "10126120368",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "04056018900",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "26117617563",
-      "miljoe": "q2",
-      "status": "ERROR",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "47058347287",
-      "miljoe": "q2",
-      "status": "ERROR",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "54107944098",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "53117616866",
-      "miljoe": "q2",
-      "status": "ERROR",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "62017122563",
-      "miljoe": "q2",
-      "status": "ERROR",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "16047623212",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "11117149430",
+      "personident": "09038817873",
       "miljoe": "q1",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "11117149430",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "06115915698",
-      "miljoe": "q1",
-      "status": "OK",
-      "eier": "test",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "06115915698",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "test",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "41077146227",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "41077146227",
-      "miljoe": "q1",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "41077146227",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "15078020986",
-      "miljoe": "q1",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "22047209270",
-      "miljoe": "q1",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "17027149588",
-      "miljoe": "q1",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "29056222071",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "18067749835",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "09048317526",
-      "miljoe": "q2",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": false,
-      "automatiskInnsendingAvMeldekort": false
-    },
-    {
-      "personident": "07107525410",
-      "miljoe": "t4",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "07107525410",
-      "miljoe": "q1",
-      "status": "OK",
-      "eier": "Dolly",
-      "servicebehov": true,
-      "automatiskInnsendingAvMeldekort": true
-    },
-    {
-      "personident": "07107525410",
-      "miljoe": "q2",
       "status": "OK",
       "eier": "Dolly",
       "servicebehov": true,
@@ -602,7 +10,631 @@
     },
     {
       "personident": "09038817873",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "26086721073",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "13119316876",
       "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "07028318523",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": false,
+      "automatiskInnsendingAvMeldekort": false
+    },
+    {
+      "personident": "06017320414",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": false,
+      "automatiskInnsendingAvMeldekort": false
+    },
+    {
+      "personident": "19037824812",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "14105916494",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "04017518610",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "24066818809",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "10076849825",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": false,
+      "automatiskInnsendingAvMeldekort": false
+    },
+    {
+      "personident": "23046740661",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "16016949810",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "15106309369",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "18016717343",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "02068421503",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "07076913565",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "13037149793",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "13037149793",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "06037635578",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "test",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "07078514250",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": false,
+      "automatiskInnsendingAvMeldekort": false
+    },
+    {
+      "personident": "07078514250",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": false,
+      "automatiskInnsendingAvMeldekort": false
+    },
+    {
+      "personident": "15106721839",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": false,
+      "automatiskInnsendingAvMeldekort": false
+    },
+    {
+      "personident": "15106721839",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": false,
+      "automatiskInnsendingAvMeldekort": false
+    },
+    {
+      "personident": "10058717458",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "10058717458",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "02076521800",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "29057415892",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "29057415892",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "15117024463",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "15117024463",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "29036509692",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "29036509692",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "04026629026",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "06115915698",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "test",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": false
+    },
+    {
+      "personident": "14087314597",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "test",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "04056449170",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "04056449170",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "04056449170",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "03127149770",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "03127149770",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "03127149770",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "60097943381",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "60017639369",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "22107049782",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "18096216676",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "22067449839",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "25127515169",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "18127122470",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "12037649900",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "18077014167",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "21077715247",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "26126823850",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "20076916196",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "09066511054",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "16097713654",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "26116732261",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "11106722252",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "25107024606",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "16128823593",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "10128721547",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "19086149810",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "28118720131",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "19048811135",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "19048811135",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "24128022089",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "04027416093",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "11028815184",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "12117721920",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "09118026710",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "27117426497",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": false,
+      "automatiskInnsendingAvMeldekort": false
+    },
+    {
+      "personident": "10086949836",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "25066312669",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "25098325452",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "22016815490",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "22016815490",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "08076711713",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "18037815280",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "31107411332",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true
+    },
+    {
+      "personident": "30056730652",
+      "miljoe": "q2",
       "status": "OK",
       "eier": "Dolly",
       "servicebehov": true,

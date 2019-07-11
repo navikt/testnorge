@@ -57,12 +57,12 @@ public class HodejegerenConsumerTest {
     }
 
     @Test
-    public void shouldReturnNullOnEmptyResponse() {
+    public void shouldReturnEmptyOnEmptyResponse() {
         stubHodejegerenConsumerWithEmptyBody();
 
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(gruppeId);
 
-        assertThat(levendeIdenter, is(nullValue()));
+        assertThat(levendeIdenter, is(Collections.EMPTY_LIST));
     }
 
     @Test

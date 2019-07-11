@@ -1,11 +1,10 @@
 package no.nav.registre.arena.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.*;
-import no.nav.registre.arena.domain.utils.CustomDateDeserializer;
-
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -13,10 +12,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Aap {
-    @JsonProperty
-    @JsonDeserialize(using = CustomDateDeserializer.class, as = Date.class)
-    private Date fraDato;
-    @JsonProperty
-    @JsonDeserialize(using = CustomDateDeserializer.class, as = Date.class)
-    private Date tilDato;
+    private String fraDato;
+    private String tilDato;
 }

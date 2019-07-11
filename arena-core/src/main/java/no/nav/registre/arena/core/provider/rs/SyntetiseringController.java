@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +51,10 @@ public class SyntetiseringController {
 
         Map<String, Integer> responseBody = new HashMap<>();
 
-        List<String> slettedeIdenter = syntetiseringService.slettBrukereIArenaForvalter(slettArenaRequest);
+        List<String> slettedeIdenter = new ArrayList<>(syntetiseringService.slettBrukereIArenaForvalter(slettArenaRequest));
         responseBody.put("Antall slettede identer", slettedeIdenter.size());
 
-        List<String> alleIdenter = slettArenaRequest.getIdenter();
+        List<String> alleIdenter = new ArrayList<>(slettArenaRequest.getIdenter());
         alleIdenter.removeAll(slettedeIdenter);
         responseBody.put("Identer som ikke kunne slettes", alleIdenter.size());
 

@@ -1,9 +1,11 @@
 package no.nav.registre.arena.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Date;
 
 @Getter
 @Setter
@@ -11,6 +13,5 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UtenServicebehov {
-    @JsonProperty
-    private Date stansDato;
+    private String stansDato;
 }

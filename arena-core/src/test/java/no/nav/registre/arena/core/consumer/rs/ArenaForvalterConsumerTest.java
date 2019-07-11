@@ -3,13 +3,8 @@ package no.nav.registre.arena.core.consumer.rs;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.arena.core.config.AppConfig;
 import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
-import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.domain.*;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -25,10 +20,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -49,28 +42,29 @@ public class ArenaForvalterConsumerTest {
 
     private String miljoe = "q2", EIER = "ORKESTRATOREN";
 
-    private NyeBrukereList nyeBrukere;
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    private Date testDate;
+    private List<NyBruker> nyeBrukere;
+    private NyBruker bruker1, bruker2;
 
 
-    public ArenaForvalterConsumerTest() throws JsonParseException, JsonMappingException, IOException, ParseException {
-        String brukere = getResourceFileContent("arenaForvalterenNyeBrukere.json");
-        this.nyeBrukere = objectMapper.readValue(brukere, NyeBrukereList.class);
-        this.testDate = sdf.parse("2009-05-01");
-        this.objectMapper.setDateFormat(sdf);
-    }
+    public ArenaForvalterConsumerTest() {
+        bruker1 = new NyBruker(
+                "10101010101",
+                miljoe,
+                "IKVAL",
+                new UtenServicebehov("2001-03-18"),
+                true,
+                Collections.singletonList(new Aap115("1998-07-02")),
+                Collections.singletonList(new Aap("1996-11-13", "2002-05-24")));
+        bruker2 = new NyBruker(
+                "20202020202",
+                miljoe,
+                "IKVAL",
+                new UtenServicebehov("2015-08-20"),
+                true,
+                Collections.singletonList(new Aap115("2004-09-27")),
+                Collections.singletonList(new Aap("2008-02-28", "2009-05-01")));
 
-
-    @Test
-    public void sjekkObjectMapping() {
-
-        assertThat(nyeBrukere.getNyeBrukere().size(), is(equalTo(2)));
-        List<NyBruker> brukere = nyeBrukere.getNyeBrukere();
-        assertThat(brukere.get(0).getPersonident(), is("10101010101"));
-        assertThat(brukere.get(1).getAap().get(0).getTilDato(), is(testDate));
-        assertThat(brukere.get(1).getAutomatiskInnsendingAvMeldekort(), is(true));
+        nyeBrukere = Arrays.asList(bruker1, bruker2);
 
     }
 
@@ -120,7 +114,9 @@ public class ArenaForvalterConsumerTest {
 
     @Test
     public void hentBrukereTest() {
-        stubArenaForvalterHentBrukere();
+        stubArenaForvalterHentBrukereNoPage();
+        stubArenaForvalterHentBrukereFirstPage();
+        stubArenaForvalterHentBrukereSecondPage();
 
         List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
 
@@ -130,11 +126,31 @@ public class ArenaForvalterConsumerTest {
 
     @Test
     public void hentEksisterendeIdenterTest() {
-        stubArenaForvalterHentBrukere();
+        stubArenaForvalterHentBrukereNoPage();
+        stubArenaForvalterHentBrukereFirstPage();
+        stubArenaForvalterHentBrukereSecondPage();
         List<String> eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter();
 
         assertThat(eksisterendeIdenter.get(2), is("08125949828"));
         assertThat(eksisterendeIdenter.size(), is(156));
+    }
+
+    @Test
+    public void breakOnNullBodyAfterFirstPage() {
+        stubArenaForvalterHentBrukereNoPage();
+        stubArenaForvalterHentBrukereNoBody();
+
+        List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
+        assertThat(response, is(Collections.EMPTY_LIST));
+    }
+
+    @Test
+    public void hentIdenterEmpty() {
+        stubArenaForvalterHentBrukereNoPage();
+        stubArenaForvalterHentBrukereNoBody();
+
+        List<String> identer = arenaForvalterConsumer.hentEksisterendeIdenter();
+        assertThat(identer, is(Collections.EMPTY_LIST));
     }
 
     @Test
@@ -155,10 +171,9 @@ public class ArenaForvalterConsumerTest {
 
     @Test(expected = HttpClientErrorException.class)
     public void badCreateJson() {
-        // String test = arenaForvalterConsumer.createJsonRequestBody(null);
-        List<Arbeidsoker> sfafr = arenaForvalterConsumer.sendTilArenaForvalter(null);
+        List<Arbeidsoker> sfafr = arenaForvalterConsumer.sendTilArenaForvalter(Collections.EMPTY_LIST);
 
-        assertThat(sfafr, is(nullValue()));
+        assertThat(sfafr, is(Collections.EMPTY_LIST));
     }
 
 
@@ -182,12 +197,32 @@ public class ArenaForvalterConsumerTest {
                 .willReturn(ok()));
     }
 
-    private void stubArenaForvalterHentBrukere() {
+
+    private void stubArenaForvalterHentBrukereNoPage() {
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResourceFileContent("arenaForvalterenGetRequestResponseBody.json"))));
+    }
+    private void stubArenaForvalterHentBrukereFirstPage() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=1"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("arenaForvalterenGetRequestResponseBody.json"))));
     }
+    private void stubArenaForvalterHentBrukereSecondPage() {
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=2"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResourceFileContent("arenaForvalterenGetRequestResponseBodyPage2.json"))));
+    }
+    private void stubArenaForvalterHentBrukereNoBody() {
+        stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=1"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("")));
+    }
+
 
     private void stubArenaForvlaterEmptyHentBrukere() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker"))

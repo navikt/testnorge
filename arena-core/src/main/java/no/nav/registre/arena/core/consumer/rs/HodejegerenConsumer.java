@@ -3,10 +3,10 @@ package no.nav.registre.arena.core.consumer.rs;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.provider.rs.requests.ArenaSaveInHodejegerenRequest;
+import no.nav.registre.arena.core.utility.NetworkUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -42,15 +42,8 @@ public class HodejegerenConsumer {
         RequestEntity getRequest = RequestEntity.get(hentLevendeIdenterOverAlderUrl.expand(avspillergruppeId.toString())).build();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
-        if (response.getStatusCode() != HttpStatus.OK) {
-            log.error("Status: {}", response.getStatusCode());
-            return null;
-        }
-
-        if (response.getBody() == null) {
-            log.error("Kunne ikke hente response body fra Hodejegeren.");
-            return null;
-        }
+        if(!NetworkUtil.validRespons(response))
+            return new ArrayList<>();
 
         return new ArrayList<>(response.getBody());
     }

@@ -1,12 +1,11 @@
 package no.nav.registre.arena.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.*;
-import no.nav.registre.arena.domain.utils.CustomDateDeserializer;
 
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -14,8 +13,5 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Aap115 {
-    @JsonProperty
-    /*@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")*/
-    @JsonDeserialize(using = CustomDateDeserializer.class, as = Date.class)
-    private Date fraDato;
+    private String fraDato;
 }

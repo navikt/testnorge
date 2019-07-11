@@ -1,13 +1,11 @@
 package no.nav.registre.arena.core.consumer.rs;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
 import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
-import no.nav.registre.arena.domain.NyeBrukereList;
+import no.nav.registre.arena.core.utility.NetworkUtil;
+import no.nav.registre.arena.domain.NyBruker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +26,6 @@ import java.util.stream.Collectors;
 public class ArenaForvalterConsumer {
 
     private static final String EIER = "ORKESTRATOREN";
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String NAV_CALL_ID = "ORKESTRATOREN";
     private static final String NAV_CONSUMER_ID = "ORKESTRATOREN";
 
@@ -52,20 +48,18 @@ public class ArenaForvalterConsumer {
 
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public List<Arbeidsoker> sendTilArenaForvalter(NyeBrukereList nyeBrukere) {
+    public List<Arbeidsoker> sendTilArenaForvalter(List<NyBruker> nyeBrukere) {
 
         RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
-                .body(createJsonRequestBody(nyeBrukere));
+                .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
 
         ResponseEntity<StatusFraArenaForvalterResponse> response =
                 restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
 
-        if (response.getBody() == null) {
-            log.error("Ugyldig brukeroppsett. Kunne ikke opprette nye brukere.");
+        if(!NetworkUtil.validRespons(response))
             return new ArrayList<>();
-        }
 
         return response.getBody().getArbeidsokerList();
     }
@@ -95,9 +89,10 @@ public class ArenaForvalterConsumer {
                     .build();
             response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
 
-            if (response.getBody() == null)
+            if (response.getBody() == null) {
+                log.warn("Kunne ikke hente response body fra Arena Frovalteren på side {}. Returnerer response fra foregående sider.", page);
                 break;
-            else
+            } else
                 responseList.addAll(response.getBody().getArbeidsokerList());
         }
 
@@ -130,20 +125,5 @@ public class ArenaForvalterConsumer {
         }
 
         return true;
-    }
-
-
-    private String createJsonRequestBody(NyeBrukereList nyeBrukere) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.setDateFormat(sdf);
-
-            return objectMapper.writeValueAsString(nyeBrukere);
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage(), e);
-        }
-
-        return "";
     }
 }
