@@ -15,12 +15,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-
-import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 
 @Entity
 @ToString
@@ -31,7 +28,7 @@ import no.nav.registre.sdForvalter.util.database.CreatableFromString;
 @AllArgsConstructor
 @Slf4j
 @Table(name = "EREG")
-public class EregModel extends AuditModel implements CreatableFromString {
+public class EregModel extends AuditModel {
 
     @Id
     @GeneratedValue
@@ -53,13 +50,13 @@ public class EregModel extends AuditModel implements CreatableFromString {
 
     private String parent;
 
-    @OneToMany(cascade = CascadeType.ALL,
+    @OneToOne(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "eregModel")
-    private List<AdresseModel> adresser;
+    private AdresseModel forretningsAdresse;
 
-    @Override
-    public void updateFromString(List<String> input, List<String> headers) {
-
-    }
+    @OneToOne(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "eregModel")
+    private AdresseModel postadresse;
 }

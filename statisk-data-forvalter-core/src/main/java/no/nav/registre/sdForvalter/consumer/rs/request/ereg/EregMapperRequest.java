@@ -15,7 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EregRequest {
+public class EregMapperRequest {
 
     @NotNull
     private String orgnr;
@@ -27,6 +27,9 @@ public class EregRequest {
 
     private String epost;
     private String internetAdresse;
+
+    private Adresse forretningsAdresse;
+    private Adresse adresse;
 
     private List<Map<String, String>> knytninger;
 

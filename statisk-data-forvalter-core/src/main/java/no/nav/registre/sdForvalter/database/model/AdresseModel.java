@@ -8,15 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -32,6 +31,7 @@ public class AdresseModel {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private Long id;
 
     private String adresse;
@@ -40,9 +40,10 @@ public class AdresseModel {
     private String landkode;
     private String poststed;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ereg_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinTable(name = "ereg_adresse",
+            joinColumns = {@JoinColumn(name = "ereg_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "adreses_id", referencedColumnName = "id")})
     @JsonIgnore
     private EregModel eregModel;
 

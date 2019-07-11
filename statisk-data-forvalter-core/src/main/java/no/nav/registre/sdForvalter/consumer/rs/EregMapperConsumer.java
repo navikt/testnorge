@@ -14,8 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregRequest;
+import no.nav.registre.sdForvalter.consumer.rs.request.ereg.Adresse;
+import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdForvalter.consumer.rs.request.ereg.Navn;
+import no.nav.registre.sdForvalter.database.model.AdresseModel;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 
 @Component
@@ -32,9 +34,9 @@ public class EregMapperConsumer {
 
     public String uploadToEreg(List<EregModel> data, String env) {
         UriTemplate uriTemplate = new UriTemplate(eregUrl + "/orkestrering/opprett?lastOpp=true&miljoe={miljoe}");
-        RequestEntity<List<EregRequest>> requestEntity = new RequestEntity<>(
+        RequestEntity<List<EregMapperRequest>> requestEntity = new RequestEntity<>(
                 data.parallelStream().map(d -> {
-                    EregRequest.EregRequestBuilder builder = EregRequest.builder()
+                    EregMapperRequest.EregMapperRequestBuilder builder = EregMapperRequest.builder()
                             .enhetstype(d.getEnhetstype())
                             .epost(d.getEpost())
                             .internetAdresse(d.getInternetAdresse());
@@ -49,6 +51,27 @@ public class EregMapperConsumer {
                         HashMap<String, String> knytninger = new HashMap<>();
                         knytninger.put("orgnr", d.getParent());
                         builder.knytninger(Collections.singletonList(knytninger));
+                    }
+                    AdresseModel forretningsAdresse = d.getForretningsAdresse();
+                    if (forretningsAdresse != null) {
+                        builder.adresse(Adresse.builder()
+                                .adresser(Collections.singletonList(forretningsAdresse.getAdresse()))
+                                .kommunenr(forretningsAdresse.getKommunenr())
+                                .landkode(forretningsAdresse.getLandkode())
+                                .postnr(forretningsAdresse.getPostnr())
+                                .poststed(forretningsAdresse.getPoststed())
+                                .build());
+                    }
+
+                    AdresseModel postadresse = d.getPostadresse();
+                    if (forretningsAdresse != null) {
+                        builder.adresse(Adresse.builder()
+                                .adresser(Collections.singletonList(postadresse.getAdresse()))
+                                .kommunenr(postadresse.getKommunenr())
+                                .landkode(postadresse.getLandkode())
+                                .postnr(postadresse.getPostnr())
+                                .poststed(postadresse.getPoststed())
+                                .build());
                     }
 
                     return builder.build();
