@@ -9,10 +9,13 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -49,6 +52,11 @@ public class EregModel extends AuditModel implements CreatableFromString {
     private String naeringskode;
 
     private String parent;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "eregModel")
+    private List<AdresseModel> adresser;
 
     @Override
     public void updateFromString(List<String> input, List<String> headers) {
