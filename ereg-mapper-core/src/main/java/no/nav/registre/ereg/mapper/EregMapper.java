@@ -118,13 +118,13 @@ public class EregMapper {
 
         Adresse adresse = data.getAdresse();
         if (adresse != null) {
-            file.append(createAdresse("PADR", endringsType, adresse.getAdresser(), adresse.getPostNr(), adresse.getLandKode(), adresse.getKommuneNr(), adresse.getPostSted()));
+            file.append(createAdresse("PADR", endringsType, adresse.getAdresser(), adresse.getPostnr(), adresse.getLandkode(), adresse.getKommunenr(), adresse.getPoststed()));
             numRecords++;
         }
 
         Adresse forretningsAdresse = data.getForretningsAdresse();
         if (forretningsAdresse != null) {
-            file.append(createAdresse("FADR", endringsType, forretningsAdresse.getAdresser(), forretningsAdresse.getPostNr(), forretningsAdresse.getLandKode(), forretningsAdresse.getKommuneNr(), forretningsAdresse.getPostSted()));
+            file.append(createAdresse("FADR", endringsType, forretningsAdresse.getAdresser(), forretningsAdresse.getPostnr(), forretningsAdresse.getLandkode(), forretningsAdresse.getKommunenr(), forretningsAdresse.getPoststed()));
             numRecords++;
         }
 
@@ -471,8 +471,8 @@ public class EregMapper {
 
         concatListToString(stringBuilder, navn, 43);
 
-        stringBuilder.replace(148, 148 + adresse.getLandKode().length(), adresse.getLandKode())
-                .replace(152, 152 + adresse.getPostSted().length(), adresse.getPostSted());
+        stringBuilder.replace(148, 148 + adresse.getLandkode().length(), adresse.getLandkode())
+                .replace(152, 152 + adresse.getPoststed().length(), adresse.getPoststed());
 
         List<String> addresses = adresse.getAdresser();
 

@@ -16,9 +16,9 @@ import java.util.List;
 public class Adresse {
 
     private List<String> adresser;
-    private String postNr;
-    private String kommuneNr;
-    private String landKode;
-    private String postSted;
+    private String postnr;
+    private String kommunenr;
+    private String landkode;
+    private String poststed;
 
 }
