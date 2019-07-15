@@ -1,5 +1,5 @@
 applicationPipeline {
-    applicationName = "testnorge-aareg"
+    applicationName = "testnorge-arena"
     javaVersion = "1.8"
     environment = "q2"
     namespace="default"
