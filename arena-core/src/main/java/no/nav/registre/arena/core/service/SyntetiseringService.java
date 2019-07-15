@@ -49,7 +49,7 @@ public class SyntetiseringService {
         List<String> slettedeIdenter = new ArrayList<>();
 
         for (String personident : arenaRequest.getIdenter()) {
-            if (arenaForvalterConsumer.slettBrukerSuccessful(arenaRequest.getMiljoe(), personident)) {
+            if (arenaForvalterConsumer.slettBrukerSuccessful(personident, arenaRequest.getMiljoe())) {
                 slettedeIdenter.add(personident);
             }
         }
