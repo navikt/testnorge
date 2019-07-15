@@ -62,4 +62,7 @@ public class EregModel extends AuditModel {
 
     @Embedded
     private AdresseModel postadresse;
+
+    @Column(name = "eksludert")
+    private boolean excluded = false;
 }

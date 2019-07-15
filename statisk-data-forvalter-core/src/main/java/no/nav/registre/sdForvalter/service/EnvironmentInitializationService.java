@@ -121,7 +121,14 @@ public class EnvironmentInitializationService {
 
     public String initializeEreg(String environment) {
         List<EregModel> data = new ArrayList<>();
-        eregRepository.findAll().forEach(data::add);
+        eregRepository.findAll().forEach(
+                e -> {
+                    if (e.isExcluded()) {
+                        return;
+                    }
+                    data.add(e);
+                }
+        );
         return eregMapperConsumer.uploadToEreg(data, environment);
     }
 
