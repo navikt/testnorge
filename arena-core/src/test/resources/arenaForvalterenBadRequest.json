@@ -1,0 +1,7 @@
+{
+  "timestamp": "2019-07-02T12:17:27.989+0000",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Required request body is missing: public no.nav.arena.forvalteren.provider.rs.api.v1.domain.Brukere no.nav.arena.forvalteren.provider.rs.api.v1.BrukerController.post(java.lang.String,no.nav.arena.forvalteren.provider.rs.api.v1.domain.NyeBrukere)",
+  "path": "/api/v1/bruker"
+}

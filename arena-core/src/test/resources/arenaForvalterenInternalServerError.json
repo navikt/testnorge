@@ -1,0 +1,7 @@
+{
+  "timestamp": "2019-07-02T11:50:20.112+0000",
+  "status": 500,
+  "error": "Internal Server Error",
+  "message": "No message available",
+  "path": "/api/v1/bruker"
+}
