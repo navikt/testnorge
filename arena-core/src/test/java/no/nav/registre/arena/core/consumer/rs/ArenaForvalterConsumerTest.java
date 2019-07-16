@@ -140,7 +140,7 @@ public class ArenaForvalterConsumerTest {
     }
 
     @Test
-    public void breakOnNullBodyAfterFirstPage() {
+    public void hentBrukere_breakOnNullBodyAfterFirstPage() {
         stubArenaForvalterHentBrukereNoPage();
         stubArenaForvalterHentBrukereNoBody();
 
