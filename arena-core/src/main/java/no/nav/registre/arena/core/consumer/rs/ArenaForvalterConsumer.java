@@ -58,8 +58,11 @@ public class ArenaForvalterConsumer {
         ResponseEntity<StatusFraArenaForvalterResponse> response =
                 restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
 
-        if(!NetworkUtil.validRespons(response))
+        if(!NetworkUtil.validResponse(response)) {
+            log.error("Status: {}", response.getStatusCode());
+            log.error("Body: {}", response.getBody());
             return new ArrayList<>();
+        }
 
         return response.getBody().getArbeidsokerList();
     }

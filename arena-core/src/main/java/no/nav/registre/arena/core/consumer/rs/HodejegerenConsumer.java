@@ -42,8 +42,11 @@ public class HodejegerenConsumer {
         RequestEntity getRequest = RequestEntity.get(hentLevendeIdenterOverAlderUrl.expand(avspillergruppeId.toString())).build();
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
-        if(!NetworkUtil.validRespons(response))
+        if(!NetworkUtil.validResponse(response)) {
+            log.error("Status: {}", response.getStatusCode());
+            log.error("Body: {}", response.getBody());
             return new ArrayList<>();
+        }
 
         return new ArrayList<>(response.getBody());
     }
