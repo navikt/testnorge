@@ -53,7 +53,7 @@ public class ArenaForvalterConsumer {
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
-        ResponseEntity<StatusFraArenaForvalterResponse> response = createValidResponseEntity(postRequest);
+        ResponseEntity<StatusFraArenaForvalterResponse> response = createValidStatusFraArenaForvalterResponse(postRequest);
         if (response == null)
             return new ArrayList<>();
 
@@ -66,7 +66,7 @@ public class ArenaForvalterConsumer {
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .build();
-        ResponseEntity<StatusFraArenaForvalterResponse> response = createValidResponseEntity(getRequest);
+        ResponseEntity<StatusFraArenaForvalterResponse> response = createValidStatusFraArenaForvalterResponse(getRequest);
         if (response == null)
             return new ArrayList<>();
 
@@ -98,7 +98,7 @@ public class ArenaForvalterConsumer {
 
         ResponseEntity response = restTemplate.exchange(deleteRequest, String.class);
 
-        if (response.getStatusCode() != HttpStatus.OK) {
+        if (!NetworkUtil.validResponse(response)) {
             log.error("Kunne ikke slette bruker. Status: {}", response.getStatusCode());
             return false;
         }
@@ -106,9 +106,9 @@ public class ArenaForvalterConsumer {
         return true;
     }
 
-    private ResponseEntity<StatusFraArenaForvalterResponse> createValidResponseEntity(RequestEntity getRequest) {
+    private ResponseEntity<StatusFraArenaForvalterResponse> createValidStatusFraArenaForvalterResponse(RequestEntity request) {
         ResponseEntity<StatusFraArenaForvalterResponse> response =
-                restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+                restTemplate.exchange(request, StatusFraArenaForvalterResponse.class);
 
         if(!NetworkUtil.validResponse(response)) {
             log.error("Status: {}", response.getStatusCode());
