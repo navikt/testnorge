@@ -41,11 +41,11 @@ public class SyntetiseringController {
         Map<String, Integer> responseBody = new HashMap<>();
 
         List<String> slettedeIdenter = new ArrayList<>(syntetiseringService.slettBrukereIArenaForvalter(slettArenaRequest));
-        responseBody.put("Antall slettede identer", slettedeIdenter.size());
+        responseBody.put("slettet", slettedeIdenter.size());
 
         List<String> alleIdenter = new ArrayList<>(slettArenaRequest.getIdenter());
         alleIdenter.removeAll(slettedeIdenter);
-        responseBody.put("Identer som ikke kunne slettes", alleIdenter.size());
+        responseBody.put("ikkeSlettet", alleIdenter.size());
 
         return ResponseEntity.ok(responseBody);
     }
