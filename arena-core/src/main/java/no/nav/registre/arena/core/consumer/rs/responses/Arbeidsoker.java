@@ -12,8 +12,8 @@ import lombok.Setter;
 public class Arbeidsoker {
     private String personident;
     private String miljoe;
-    private String status; // OK
+    private String status;
     private String eier;
-    private Boolean servicebehov; // true
-    private Boolean automatiskInnsendingAvMeldekort; // true
+    private Boolean servicebehov;
+    private Boolean automatiskInnsendingAvMeldekort;
 }

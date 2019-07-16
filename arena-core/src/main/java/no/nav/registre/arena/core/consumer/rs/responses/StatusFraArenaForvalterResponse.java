@@ -11,5 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 public class StatusFraArenaForvalterResponse {
     private List<Arbeidsoker> arbeidsokerList;
-    private int antallSider; // 0
+    private int antallSider;
 }
