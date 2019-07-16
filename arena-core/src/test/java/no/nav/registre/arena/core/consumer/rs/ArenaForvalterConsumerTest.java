@@ -66,6 +66,7 @@ public class ArenaForvalterConsumerTest {
                         UtenServicebehov.builder()
                                 .stansDato("2001-03-18").build())
                 .automatiskInnsendingAvMeldekort(true)
+                .kvalifiseringsgruppe("IKVAL")
                 .aap115(Collections.singletonList(
                          Aap115.builder()
                                 .fraDato("1998-07-02").build()
@@ -82,6 +83,7 @@ public class ArenaForvalterConsumerTest {
                         UtenServicebehov.builder()
                                 .stansDato("2015-08-20").build())
                 .automatiskInnsendingAvMeldekort(true)
+                .kvalifiseringsgruppe("IKVAL")
                 .aap115(Collections.singletonList(
                          Aap115.builder()
                                 .fraDato("2004-09-27").build()
@@ -163,14 +165,6 @@ public class ArenaForvalterConsumerTest {
         Boolean test = arenaForvalterConsumer.slettBrukerSuccessful("10101010101", "q2");
         assertThat(test, is(false));
     }
-
-    @Test(expected = HttpClientErrorException.class)
-    public void badCreateJson() {
-        List<Arbeidsoker> sfafr = arenaForvalterConsumer.sendTilArenaForvalter(Collections.EMPTY_LIST);
-
-        assertThat(sfafr, is(Collections.EMPTY_LIST));
-    }
-
 
     private void stubArenaForvalterSlettBrukereBadReq() {
         stubFor(delete(urlEqualTo("/arena-forvalteren/api/v1/bruker?miljoe=q2&personident=10101010101"))
