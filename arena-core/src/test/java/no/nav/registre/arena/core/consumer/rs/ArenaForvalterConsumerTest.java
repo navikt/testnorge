@@ -5,8 +5,10 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import no.nav.registre.arena.core.config.AppConfig;
 import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
-import no.nav.registre.arena.domain.*;
-import org.hamcrest.Matchers;
+import no.nav.registre.arena.domain.Aap;
+import no.nav.registre.arena.domain.Aap115;
+import no.nav.registre.arena.domain.NyBruker;
+import no.nav.registre.arena.domain.UtenServicebehov;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,13 +26,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static no.nav.registre.arena.core.testutils.ResourceUtils.getResourceFileContent;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.Is.is;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-// @AutoConfigureWireMock(port = 8082)
+@AutoConfigureWireMock(port = 8082)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ContextConfiguration(classes = {ArenaForvalterConsumer.class, AppConfig.class})
 @EnableAutoConfiguration
@@ -90,7 +104,7 @@ public class ArenaForvalterConsumerTest {
 
         List<Arbeidsoker> response = arenaForvalterConsumer.sendTilArenaForvalter(null);
 
-        assertThat(listAppender.list.size(), is(Matchers.equalTo(1)));
+        assertThat(listAppender.list.size(), is(equalTo(1)));
         assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke opprette nye brukere. Status: "));
 
     }
@@ -106,7 +120,7 @@ public class ArenaForvalterConsumerTest {
 
         List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
 
-        assertThat(listAppender.list.size(), is(Matchers.equalTo(1)));
+        assertThat(listAppender.list.size(), is(equalTo(1)));
         assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Arena Forvalteren."));
     }
 

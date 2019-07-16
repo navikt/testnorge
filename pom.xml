@@ -24,4 +24,14 @@
 		<module>arena-cloud</module>
 	</modules>
 
+	<dependencyManagement>
+		<dependencies>
+			<!-- TEST -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-contract-wiremock</artifactId>
+				<version>2.1.2.RELEASE</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
