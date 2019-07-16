@@ -59,22 +59,38 @@ public class ArenaForvalterConsumerTest {
 
 
     public ArenaForvalterConsumerTest() {
-        bruker1 = new NyBruker(
-                "10101010101",
-                miljoe,
-                "IKVAL",
-                new UtenServicebehov("2001-03-18"),
-                true,
-                Collections.singletonList(new Aap115("1998-07-02")),
-                Collections.singletonList(new Aap("1996-11-13", "2002-05-24")));
-        bruker2 = new NyBruker(
-                "20202020202",
-                miljoe,
-                "IKVAL",
-                new UtenServicebehov("2015-08-20"),
-                true,
-                Collections.singletonList(new Aap115("2004-09-27")),
-                Collections.singletonList(new Aap("2008-02-28", "2009-05-01")));
+        bruker1 = NyBruker.builder()
+                .personident("10101010101")
+                .miljoe(miljoe)
+                .utenServicebehov(
+                        UtenServicebehov.builder()
+                                .stansDato("2001-03-18").build())
+                .automatiskInnsendingAvMeldekort(true)
+                .aap115(Collections.singletonList(
+                         Aap115.builder()
+                                .fraDato("1998-07-02").build()
+                ))
+                .aap(Collections.singletonList(
+                        Aap.builder()
+                                .fraDato("1996-11-13")
+                                .tilDato("2002-05-24").build()))
+                .build();
+        bruker2 = NyBruker.builder()
+                .personident("20202020202")
+                .miljoe(miljoe)
+                .utenServicebehov(
+                        UtenServicebehov.builder()
+                                .stansDato("2015-08-20").build())
+                .automatiskInnsendingAvMeldekort(true)
+                .aap115(Collections.singletonList(
+                         Aap115.builder()
+                                .fraDato("2004-09-27").build()
+                ))
+                .aap(Collections.singletonList(
+                        Aap.builder()
+                                .fraDato("2008-02-28")
+                                .tilDato("2009-05-01").build()))
+                .build();
 
         nyeBrukere = Arrays.asList(bruker1, bruker2);
 
@@ -94,19 +110,12 @@ public class ArenaForvalterConsumerTest {
     }
 
     @Test(expected = HttpClientErrorException.class)
-    public void shouldLogOnBadRequest() {
-        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-        listAppender.start();
-        Logger logger = (Logger) LoggerFactory.getLogger(ArenaForvalterConsumer.class);
-        logger.addAppender(listAppender);
-
+    public void checkEmptyListOnBadSentTilArenaForvalterRequest() {
         stubArenaForvalterBadRequest();
 
         List<Arbeidsoker> response = arenaForvalterConsumer.sendTilArenaForvalter(null);
 
-        assertThat(listAppender.list.size(), is(equalTo(1)));
-        assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke opprette nye brukere. Status: "));
-
+       assertThat(response, is(Collections.EMPTY_LIST));
     }
 
     @Test
