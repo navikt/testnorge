@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,15 +55,9 @@ public class ArenaForvalterConsumer {
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
-
-        ResponseEntity<StatusFraArenaForvalterResponse> response =
-                restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
-
-        if(!NetworkUtil.validResponse(response)) {
-            log.error("Status: {}", response.getStatusCode());
-            log.error("Body: {}", response.getBody());
+        ResponseEntity<StatusFraArenaForvalterResponse> response = createValidResponseEntity(postRequest);
+        if (response == null)
             return new ArrayList<>();
-        }
 
         return response.getBody().getArbeidsokerList();
     }
@@ -73,14 +68,9 @@ public class ArenaForvalterConsumer {
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .build();
-        ResponseEntity<StatusFraArenaForvalterResponse> response =
-                restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
-
-        if (response.getBody() == null) {
-            log.error("Kunne ikke hente response body fra Arena Forvalteren.");
+        ResponseEntity<StatusFraArenaForvalterResponse> response = createValidResponseEntity(getRequest);
+        if (response == null)
             return new ArrayList<>();
-        }
-
 
         List<Arbeidsoker> responseList =
                 new ArrayList<>(response.getBody().getAntallSider() * response.getBody().getArbeidsokerList().size());
@@ -92,7 +82,7 @@ public class ArenaForvalterConsumer {
                     .build();
             response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
 
-            if (response.getBody() == null) {
+            if (!NetworkUtil.validResponse(response)) {
                 log.warn("Kunne ikke hente response body fra Arena Frovalteren på side {}. Returnerer response fra foregående sider.", page);
                 break;
             } else
@@ -128,5 +118,18 @@ public class ArenaForvalterConsumer {
         }
 
         return true;
+    }
+
+    private ResponseEntity<StatusFraArenaForvalterResponse> createValidResponseEntity(RequestEntity getRequest) {
+        ResponseEntity<StatusFraArenaForvalterResponse> response =
+                restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+
+        if(!NetworkUtil.validResponse(response)) {
+            log.error("Status: {}", response.getStatusCode());
+            log.error("Body: {}", response.getBody());
+            return null;
+        }
+
+        return response;
     }
 }
