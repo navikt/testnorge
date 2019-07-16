@@ -175,7 +175,6 @@ public class SyntetisertingServiceTest {
 
     @Test
     public void slettBrukereTest() {
-        // doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(anyString(), anyString());
         doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr2), eq(miljoe));
         doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr3), eq(miljoe));
 
