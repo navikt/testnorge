@@ -76,55 +76,60 @@ public class SyntetisertingServiceTest {
 
         slettRequest = new SlettArenaRequest("q2", Arrays.asList(fnr1, fnr2, fnr3));
 
-        nyeArbeisokere = Collections.singletonList(new Arbeidsoker(
-            fnr2,
-            miljoe,
-            "OK",
-            "ORKESTRATOREN",
-            true,
-                true
-        ));
+        nyeArbeisokere = Collections.singletonList(
+                Arbeidsoker.builder()
+                        .personident(fnr2)
+                        .miljoe(miljoe)
+                        .status("OK")
+                        .eier("ORKESTRATOREN")
+                        .servicebehov(true)
+                        .automatiskInnsendingAvMeldekort(true)
+                        .build());
 
         eksisterendeArbeidsokere = Arrays.asList(
-                new Arbeidsoker (
-                        fnr1,
-                        miljoe,
-                        "OK",
-                        "ORKESTRATOREN",
-                        true,
-                        true
-                ), new Arbeidsoker (
-                        fnr3,
-                        miljoe,
-                        "OK",
-                        "ORKESTRATOREN",
-                        true,
-                        true
-                ));
+                Arbeidsoker.builder()
+                        .personident(fnr1)
+                        .miljoe(miljoe)
+                        .status("OK")
+                        .eier("ORKESTRATOREN")
+                        .servicebehov(true)
+                        .automatiskInnsendingAvMeldekort(true)
+                        .build(),
+                Arbeidsoker.builder()
+                        .personident(fnr3)
+                        .miljoe(miljoe)
+                        .status("OK")
+                        .eier("ORKESTRATOREN")
+                        .servicebehov(true)
+                        .automatiskInnsendingAvMeldekort(true)
+                        .build()
+                );
 
         eksisterendeArbeidsokere2 = new ArrayList<>();
         for (int i = 1; i < ANTALL_EKSISTERENDE_ARBEIDSSOKERE +1; i++) {
             String fnr = buildFnr(i);
-            eksisterendeArbeidsokere2.add(new Arbeidsoker(
-                    fnr,
-                    miljoe,
-                    "OK",
-                    "ORKESTRATOREN",
-                    true,
-                    true
-            ));
+            eksisterendeArbeidsokere2.add(
+                    Arbeidsoker.builder()
+                        .personident(fnr)
+                        .miljoe(miljoe)
+                        .status("OK")
+                        .eier("ORKESTRATOREN")
+                        .servicebehov(true)
+                        .automatiskInnsendingAvMeldekort(true)
+                        .build());
         }
         opprettedeArbeidsokere = new ArrayList<>();
         for (int i = 1; i < ANTALL_OPPRETTEDE_ARBEIDSSOKERE +1; i++) {
             String fnr = buildFnr(i);
-            opprettedeArbeidsokere.add(new Arbeidsoker(
-                    fnr,
-                    miljoe,
-                    "OK",
-                    "ORKESTRATOREN",
-                    true,
-                    true
-            ));
+            opprettedeArbeidsokere.add(
+                    Arbeidsoker.builder()
+                        .personident(fnr)
+                        .miljoe(miljoe)
+                        .status("OK")
+                        .eier("ORKESTRATOREN")
+                        .servicebehov(true)
+                        .automatiskInnsendingAvMeldekort(true)
+                        .build());
         }
         for (int i = 1; i < ANTALL_LEVENDE_IDENTER +1; i++) {
             String fnr = buildFnr(i);
