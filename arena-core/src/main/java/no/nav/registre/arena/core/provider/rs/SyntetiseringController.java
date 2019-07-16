@@ -33,18 +33,7 @@ public class SyntetiseringController {
 
     private ResponseEntity<Integer> registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
 
-        if (arenaRequest.getAntallNyeIdenter() != null)
             return ResponseEntity.ok(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequest).size());
-
-
-        int antallBrukereAaOpprette = syntetiseringService.getAntallBrukereForAaFylleArenaForvalteren(arenaRequest);
-
-        if (antallBrukereAaOpprette > 0) {
-            arenaRequest.setAntallNyeIdenter(antallBrukereAaOpprette);
-            return ResponseEntity.ok(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequest).size());
-        }
-
-        return ResponseEntity.ok(0);
     }
 
     private ResponseEntity<Map<String, Integer>> slettBrukere(SlettArenaRequest slettArenaRequest) {

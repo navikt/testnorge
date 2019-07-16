@@ -80,7 +80,7 @@ public class ArenaForvalterConsumer {
                     .build();
             response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
 
-            if (!NetworkUtil.validResponse(response)) {
+            if (!NetworkUtil.validResponseNonNullBody(response)) {
                 log.warn("Kunne ikke hente response body fra Arena Frovalteren på side {}. Returnerer response fra foregående sider.", page);
                 break;
             } else
@@ -98,7 +98,7 @@ public class ArenaForvalterConsumer {
 
         ResponseEntity response = restTemplate.exchange(deleteRequest, String.class);
 
-        if (!NetworkUtil.validResponse(response)) {
+        if (response.getStatusCode() != HttpStatus.OK) {
             log.error("Kunne ikke slette bruker. Status: {}", response.getStatusCode());
             return false;
         }
@@ -110,7 +110,7 @@ public class ArenaForvalterConsumer {
         ResponseEntity<StatusFraArenaForvalterResponse> response =
                 restTemplate.exchange(request, StatusFraArenaForvalterResponse.class);
 
-        if(!NetworkUtil.validResponse(response)) {
+        if(!NetworkUtil.validResponseNonNullBody(response)) {
             log.error("Status: {}", response.getStatusCode());
             log.error("Body: {}", response.getBody());
             return null;

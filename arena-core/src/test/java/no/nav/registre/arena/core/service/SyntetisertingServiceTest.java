@@ -6,11 +6,13 @@ import no.nav.registre.arena.core.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
 import no.nav.registre.arena.core.provider.rs.requests.SlettArenaRequest;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
+import no.nav.registre.arena.domain.NyBruker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -27,6 +29,11 @@ import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetisertingServiceTest {
+
+    private static final int ANTALL_EKSISTERENDE_ARBEIDSSOKERE = 15;
+    private static final int ANTALL_OPPRETTEDE_ARBEIDSSOKERE = 5;
+    private static final int ANTALL_LEVENDE_IDENTER = 100;
+
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
     @Mock
@@ -34,32 +41,38 @@ public class SyntetisertingServiceTest {
     @Mock
     private Random random;
 
-    @Mock
-    List<String> eksisterendeArbeidsokereMock;
-    @Mock
-    List<String> identerOverAlderMock;
-
     @InjectMocks
     private SyntetiseringService syntetiseringService;
 
     private SyntetiserArenaRequest arenaRequest;
     private SyntetiserArenaRequest arenaRequestTooMany;
+    private SyntetiserArenaRequest arenaRequestFyllOpp;
     private SlettArenaRequest slettRequest;
+
     private Long avspillergruppeId = 10L;
     private String miljoe = "q2";
     private String fnr1 = "10101010101";
     private String fnr2 = "20202020202";
     private String fnr3 = "30303030303";
 
-    private List<String> identerOverAlder = new ArrayList<>(Arrays.asList(fnr1, fnr2));
-    private List<String> eksisterendeIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr3));
+    private List<String> identerOverAlder;
+    private List<String> eksisterendeIdenter;
+    private List<String> identerOverAlder2;
+
     private List<Arbeidsoker> nyeArbeisokere;
     private List<Arbeidsoker> eksisterendeArbeidsokere;
+    private List<Arbeidsoker> eksisterendeArbeidsokere2;
+    private List<Arbeidsoker> opprettedeArbeidsokere;
 
     @Before
     public void setUp() {
+        identerOverAlder = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        eksisterendeIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr3));
+        identerOverAlder2 = new ArrayList<>(ANTALL_LEVENDE_IDENTER);
+
         arenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 1);
         arenaRequestTooMany = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
+        arenaRequestFyllOpp = new SyntetiserArenaRequest(avspillergruppeId, miljoe, null);
 
         slettRequest = new SlettArenaRequest("q2", Arrays.asList(fnr1, fnr2, fnr3));
 
@@ -88,6 +101,48 @@ public class SyntetisertingServiceTest {
                         true,
                         true
                 ));
+
+        eksisterendeArbeidsokere2 = new ArrayList<>();
+        for (int i = 1; i < ANTALL_EKSISTERENDE_ARBEIDSSOKERE +1; i++) {
+            String fnr = buildFnr(i);
+            eksisterendeArbeidsokere2.add(new Arbeidsoker(
+                    fnr,
+                    miljoe,
+                    "OK",
+                    "ORKESTRATOREN",
+                    true,
+                    true
+            ));
+        }
+        opprettedeArbeidsokere = new ArrayList<>();
+        for (int i = 1; i < ANTALL_OPPRETTEDE_ARBEIDSSOKERE +1; i++) {
+            String fnr = buildFnr(i);
+            opprettedeArbeidsokere.add(new Arbeidsoker(
+                    fnr,
+                    miljoe,
+                    "OK",
+                    "ORKESTRATOREN",
+                    true,
+                    true
+            ));
+        }
+        for (int i = 1; i < ANTALL_LEVENDE_IDENTER +1; i++) {
+            String fnr = buildFnr(i);
+            identerOverAlder2.add(fnr);
+        }
+
+    }
+
+    private String buildFnr(int id) {
+        StringBuilder fnr = new StringBuilder();
+
+        for (int j = 0; j < 5; j++) {
+            fnr.append(id);
+            fnr.append("0");
+        }
+        fnr.append(id);
+
+        return fnr.toString();
     }
 
     @Test
@@ -112,13 +167,10 @@ public class SyntetisertingServiceTest {
 
     @Test
     public void fyllOppForvalterenTest() {
-        doReturn(100).when(identerOverAlderMock).size();
-        doReturn(15).when(eksisterendeArbeidsokereMock).size();
-
-        doReturn(identerOverAlderMock).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
-        doReturn(eksisterendeArbeidsokereMock).when(arenaForvalterConsumer).hentBrukere();
-
-        assertThat(syntetiseringService.getAntallBrukereForAaFylleArenaForvalteren(arenaRequest), is(5));
+        doReturn(identerOverAlder2).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
+        doReturn(eksisterendeArbeidsokere2).when(arenaForvalterConsumer).hentBrukere();
+        doReturn(opprettedeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+        assertThat(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequestFyllOpp).size(), is(5));
     }
 
     @Test

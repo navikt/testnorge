@@ -38,6 +38,15 @@ public class SyntetiseringService {
 
 
     public List<Arbeidsoker> sendBrukereTilArenaForvalterConsumer(SyntetiserArenaRequest arenaRequest) {
+        if (arenaRequest.getAntallNyeIdenter() == null) {
+            int antallBrukereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(arenaRequest);
+
+            if (antallBrukereAaOpprette > 0)
+                arenaRequest.setAntallNyeIdenter(antallBrukereAaOpprette);
+            else
+                return new ArrayList<>();
+        }
+
         List<String> nyeIdenter = hentGyldigeIdenter(arenaRequest);
         List<NyBruker> nyeBrukere = opprettNyeBrukere(nyeIdenter, arenaRequest.getMiljoe());
         lagreArenaBrukereIHodejegeren(nyeBrukere);
@@ -58,7 +67,7 @@ public class SyntetiseringService {
         return slettedeIdenter;
     }
 
-    public int getAntallBrukereForAaFylleArenaForvalteren(SyntetiserArenaRequest arenaRequest) {
+    private int getAntallBrukereForAaFylleArenaForvalteren(SyntetiserArenaRequest arenaRequest) {
         double levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(arenaRequest.getAvspillergruppeId()).size();
         double eksisterendeIdenter = hentEksisterendeIdenter().size();
 

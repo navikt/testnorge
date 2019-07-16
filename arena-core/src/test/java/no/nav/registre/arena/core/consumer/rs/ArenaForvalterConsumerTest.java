@@ -110,18 +110,12 @@ public class ArenaForvalterConsumerTest {
     }
 
     @Test
-    public void logOnEmptyHentBrukere() {
-        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-        listAppender.start();
-        Logger logger = (Logger) LoggerFactory.getLogger(ArenaForvalterConsumer.class);
-        logger.addAppender(listAppender);
-
+    public void emptyHentBrukereReturnsEmptyList() {
         stubArenaForvlaterEmptyHentBrukere();
 
         List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
 
-        assertThat(listAppender.list.size(), is(equalTo(1)));
-        assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Arena Forvalteren."));
+        assertThat(response, is(Collections.EMPTY_LIST));
     }
 
     @Test

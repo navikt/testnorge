@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class NetworkUtil {
-    public static Boolean validResponse(ResponseEntity response) {
+    public static Boolean validResponseNonNullBody(ResponseEntity response) {
 
         if (response.getStatusCode() != HttpStatus.OK) {
             return false;

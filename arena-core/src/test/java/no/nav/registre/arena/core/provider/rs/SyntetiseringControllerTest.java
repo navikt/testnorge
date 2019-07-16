@@ -65,24 +65,24 @@ public class SyntetiseringControllerTest {
         assertThat(result.getBody(), is(3));
     }
 
-    @Test
-    public void fyllOppIdenterIArenaForvalter() {
-        when(syntetiseringService.getAntallBrukereForAaFylleArenaForvalteren(syntetiserArenaRequestFyllOpp)).thenReturn(4);
-        when(syntetiseringService
-                .sendBrukereTilArenaForvalterConsumer(syntetiserArenaRequestFyllOpp))
-                .thenReturn(Arrays.asList(arb1,arb2,arb3,arb4));
-
-        ResponseEntity<Integer> result = syntetiseringController.registerBrukereIArenaForvalter(syntetiserArenaRequestFyllOpp);
-        assertThat(result.getBody(), is(4));
-    }
-
-    @Test
-    public void forMangeIdenterIArenaForvalter() {
-        when(syntetiseringService.getAntallBrukereForAaFylleArenaForvalteren(syntetiserArenaRequestFyllOpp)).thenReturn(-1);
-
-        ResponseEntity<Integer> result = syntetiseringController.registerBrukereIArenaForvalter(syntetiserArenaRequestFyllOpp);
-        assertThat(result.getBody(), is(0));
-    }
+//    @Test
+//    public void fyllOppIdenterIArenaForvalter() {
+//        when(syntetiseringService.getAntallBrukereForAaFylleArenaForvalteren(syntetiserArenaRequestFyllOpp)).thenReturn(4);
+//        when(syntetiseringService
+//                .sendBrukereTilArenaForvalterConsumer(syntetiserArenaRequestFyllOpp))
+//                .thenReturn(Arrays.asList(arb1,arb2,arb3,arb4));
+//
+//        ResponseEntity<Integer> result = syntetiseringController.registerBrukereIArenaForvalter(syntetiserArenaRequestFyllOpp);
+//        assertThat(result.getBody(), is(4));
+//    }
+//
+//    @Test
+//    public void forMangeIdenterIArenaForvalter() {
+//        when(syntetiseringService.getAntallBrukereForAaFylleArenaForvalteren(syntetiserArenaRequestFyllOpp)).thenReturn(-1);
+//
+//        ResponseEntity<Integer> result = syntetiseringController.registerBrukereIArenaForvalter(syntetiserArenaRequestFyllOpp);
+//        assertThat(result.getBody(), is(0));
+//    }
 
     @Test
     public void slettIdenterIArenaForvalter() {
