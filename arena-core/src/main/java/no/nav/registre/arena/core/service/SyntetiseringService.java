@@ -125,15 +125,12 @@ public class SyntetiseringService {
         List<NyBruker> nyeBrukere = new ArrayList<>(identerFraHodejegeren.size());
 
         for (String ident : identerFraHodejegeren) {
-            nyeBrukere.add(new NyBruker(
-                    ident,
-                    miljoe,
-                    "IKVAL",
-                    null,
-                    true,
-                    null,
-                    null
-            ));
+            nyeBrukere.add(NyBruker.builder()
+                    .personident(ident)
+                    .miljoe(miljoe)
+                    .kvalifiseringsgruppe("IKVAL")
+                    .automatiskInnsendingAvMeldekort(true)
+                    .build());
         }
 
         return nyeBrukere;
