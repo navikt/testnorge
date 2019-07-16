@@ -35,7 +35,7 @@ public class SyntetisertingServiceTest {
     private Random random;
 
     @Mock
-    List<String> eksisterendeIdenterMock;
+    List<String> eksisterendeArbeidsokereMock;
     @Mock
     List<String> identerOverAlderMock;
 
@@ -54,6 +54,7 @@ public class SyntetisertingServiceTest {
     private List<String> identerOverAlder = new ArrayList<>(Arrays.asList(fnr1, fnr2));
     private List<String> eksisterendeIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr3));
     private List<Arbeidsoker> nyeArbeisokere;
+    private List<Arbeidsoker> eksisterendeArbeidsokere;
 
     @Before
     public void setUp() {
@@ -68,7 +69,25 @@ public class SyntetisertingServiceTest {
             "OK",
             "ORKESTRATOREN",
             true,
-                true));
+                true
+        ));
+
+        eksisterendeArbeidsokere = Arrays.asList(
+                new Arbeidsoker (
+                        fnr1,
+                        miljoe,
+                        "OK",
+                        "ORKESTRATOREN",
+                        true,
+                        true
+                ), new Arbeidsoker (
+                        fnr3,
+                        miljoe,
+                        "OK",
+                        "ORKESTRATOREN",
+                        true,
+                        true
+                ));
     }
 
     @Test
@@ -85,7 +104,7 @@ public class SyntetisertingServiceTest {
 
     private List<Arbeidsoker> opprettIdenter(SyntetiserArenaRequest request) {
         doReturn(identerOverAlder).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
-        doReturn(eksisterendeIdenter).when(arenaForvalterConsumer).hentEksisterendeIdenter();
+        doReturn(eksisterendeArbeidsokere).when(arenaForvalterConsumer).hentBrukere();
         doReturn(nyeArbeisokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         return syntetiseringService.sendBrukereTilArenaForvalterConsumer(request);
@@ -94,10 +113,10 @@ public class SyntetisertingServiceTest {
     @Test
     public void fyllOppForvalterenTest() {
         doReturn(100).when(identerOverAlderMock).size();
-        doReturn(15).when(eksisterendeIdenterMock).size();
+        doReturn(15).when(eksisterendeArbeidsokereMock).size();
 
         doReturn(identerOverAlderMock).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
-        doReturn(eksisterendeIdenterMock).when(arenaForvalterConsumer).hentEksisterendeIdenter();
+        doReturn(eksisterendeArbeidsokereMock).when(arenaForvalterConsumer).hentBrukere();
 
         assertThat(syntetiseringService.getAntallBrukereForAaFylleArenaForvalteren(arenaRequest), is(5));
     }

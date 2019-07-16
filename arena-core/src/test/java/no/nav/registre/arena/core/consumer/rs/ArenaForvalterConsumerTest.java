@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -24,14 +23,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.registre.arena.core.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 8082)
+// @AutoConfigureWireMock(port = 8082)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ContextConfiguration(classes = {ArenaForvalterConsumer.class, AppConfig.class})
 @EnableAutoConfiguration
@@ -125,32 +123,12 @@ public class ArenaForvalterConsumerTest {
     }
 
     @Test
-    public void hentEksisterendeIdenterTest() {
-        stubArenaForvalterHentBrukereNoPage();
-        stubArenaForvalterHentBrukereFirstPage();
-        stubArenaForvalterHentBrukereSecondPage();
-        List<String> eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter();
-
-        assertThat(eksisterendeIdenter.get(2), is("08125949828"));
-        assertThat(eksisterendeIdenter.size(), is(156));
-    }
-
-    @Test
     public void breakOnNullBodyAfterFirstPage() {
         stubArenaForvalterHentBrukereNoPage();
         stubArenaForvalterHentBrukereNoBody();
 
         List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
         assertThat(response, is(Collections.EMPTY_LIST));
-    }
-
-    @Test
-    public void hentIdenterEmpty() {
-        stubArenaForvalterHentBrukereNoPage();
-        stubArenaForvalterHentBrukereNoBody();
-
-        List<String> identer = arenaForvalterConsumer.hentEksisterendeIdenter();
-        assertThat(identer, is(Collections.EMPTY_LIST));
     }
 
     @Test

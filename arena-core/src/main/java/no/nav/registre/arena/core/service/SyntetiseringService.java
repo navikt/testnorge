@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.floor;
 
@@ -59,7 +60,7 @@ public class SyntetiseringService {
 
     public int getAntallBrukereForAaFylleArenaForvalteren(SyntetiserArenaRequest arenaRequest) {
         double levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(arenaRequest.getAvspillergruppeId()).size();
-        double eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter().size();
+        double eksisterendeIdenter = hentEksisterendeIdenter().size();
 
         return (int) (floor(levendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - eksisterendeIdenter);
     }
@@ -79,7 +80,7 @@ public class SyntetiseringService {
 
     private List<String> hentGyldigeIdenter(SyntetiserArenaRequest arenaRequest) {
         List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(arenaRequest.getAvspillergruppeId());
-        List<String> eksisterendeIdenter = arenaForvalterConsumer.hentEksisterendeIdenter();
+        List<String> eksisterendeIdenter = hentEksisterendeIdenter();
         int antallNyeIdenter = arenaRequest.getAntallNyeIdenter();
 
         levendeIdenter.removeAll(eksisterendeIdenter);
@@ -96,6 +97,18 @@ public class SyntetiseringService {
         }
 
         return nyeIdenter;
+    }
+
+    private List<String> hentEksisterendeIdenter() {
+
+        List<Arbeidsoker> arbeisokere = arenaForvalterConsumer.hentBrukere();
+
+        if (arbeisokere.isEmpty()) {
+            log.error("Fant ingen eksisterende identer.");
+            return new ArrayList<>();
+        }
+
+        return arbeisokere.stream().map(Arbeidsoker::getPersonident).collect(Collectors.toList());
     }
 
     private List<NyBruker> opprettNyeBrukere(List<String> identerFraHodejegeren, String miljoe) {

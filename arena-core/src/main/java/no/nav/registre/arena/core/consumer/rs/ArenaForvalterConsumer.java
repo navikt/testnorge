@@ -15,11 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -90,18 +88,6 @@ public class ArenaForvalterConsumer {
         }
 
         return responseList;
-    }
-
-    public List<String> hentEksisterendeIdenter() {
-
-        List<Arbeidsoker> arbeisokere = hentBrukere();
-
-        if (arbeisokere.isEmpty()) {
-            log.error("Fant ingen eksisterende identer.");
-            return new ArrayList<>();
-        }
-
-        return arbeisokere.stream().map(Arbeidsoker::getPersonident).collect(Collectors.toList());
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
