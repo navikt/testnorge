@@ -38,17 +38,17 @@ public class HodejegerenConsumer {
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "hodejegeren"})
     public List<String> finnLevendeIdenterOverAlder(Long avspillergruppeId) {
-
         RequestEntity getRequest = RequestEntity.get(hentLevendeIdenterOverAlderUrl.expand(avspillergruppeId.toString())).build();
+
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
-        if(!NetworkUtil.validResponseNonNullBody(response)) {
+        if (!NetworkUtil.validResponseNonNullBody(response)) {
             log.error("Status: {}", response.getStatusCode());
             log.error("Body: {}", response.getBody());
             return new ArrayList<>();
         }
 
-        return new ArrayList<>(response.getBody());
+        return response.getBody();
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "hodejegeren"})
@@ -56,6 +56,14 @@ public class HodejegerenConsumer {
         RequestEntity<ArenaSaveInHodejegerenRequest> postRequest =
                 RequestEntity.post(saveHodejegerenHistorikk.expand()).body(request);
 
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
+        ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
+
+        if (!NetworkUtil.validResponseNonNullBody(response)) {
+            log.error("Status: {}", response.getStatusCode());
+            log.error("Body: {}", response.getBody());
+            return new ArrayList<>();
+        }
+
+        return response.getBody();
     }
 }
