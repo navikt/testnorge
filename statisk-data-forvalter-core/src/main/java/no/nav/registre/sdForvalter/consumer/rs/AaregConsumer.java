@@ -42,6 +42,7 @@ public class AaregConsumer {
 
     public Set<String> finnPersonerUtenArbeidsforhold(Set<String> fnrs, String environment) {
         UriTemplate uriTemplate = new UriTemplate(aaregStubUrl + "/hentArbeidsforholdFraAareg?ident={fnr}&miljoe={environment}");
+        log.info(fnrs.toString());
         return fnrs.stream().map(f -> {
             RequestEntity request = new RequestEntity<>(HttpMethod.GET, uriTemplate.expand(f, environment));
             ResponseEntity<List<Object>> response = restTemplate.exchange(request, RESPONSE_TYPE_LIST);
