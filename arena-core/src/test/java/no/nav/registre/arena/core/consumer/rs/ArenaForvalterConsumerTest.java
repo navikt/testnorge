@@ -36,6 +36,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static no.nav.registre.arena.core.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 
@@ -275,10 +276,76 @@ public class ArenaForvalterConsumerTest {
 
     private void stubArenaForvalterConsumer() {
         stubFor(post(urlEqualTo("/arena-forvalteren/api/v1/bruker?eier=" + EIER))
-                .withRequestBody(equalToJson(getResourceFileContent("arenaForvalterenNyeBrukere.json")))
+                .withRequestBody(equalToJson(
+                        "{" +
+                                "  \"nyeBrukere\": [" +
+                                "    {" +
+                                "      \"personident\": \"10101010101\"," +
+                                "      \"miljoe\": \"q2\"," +
+                                "      \"kvalifiseringsgruppe\": \"IKVAL\"," +                              
+                                "      \"utenServicebehov\": {" +
+                                "        \"stansDato\": \"2001-03-18\"" +
+                                "      }," +
+                                "      \"automatiskInnsendingAvMeldekort\": true," +
+                                "      \"aap115\": [" +
+                                "        {" +
+                                "          \"fraDato\": \"1998-07-02\"" +
+                                "        }" +
+                                "      ]," +
+                                "      \"aap\": [" +
+                                "        {" +
+                                "          \"fraDato\": \"1996-11-13\"," +
+                                "          \"tilDato\": \"2002-05-24\"" +
+                                "        }" +
+                                "      ]" +
+                                "    }," +
+                                "    {" +
+                                "      \"personident\": \"20202020202\"," +
+                                "      \"miljoe\": \"q2\"," +
+                                "      \"kvalifiseringsgruppe\": \"IKVAL\"," +
+                                "      \"utenServicebehov\": {" +
+                                "        \"stansDato\": \"2015-08-20\"" +
+                                "      }," +
+                                "      \"automatiskInnsendingAvMeldekort\": true," +
+                                "      \"aap115\": [" +
+                                "        {" +
+                                "          \"fraDato\": \"2004-09-27\"" +
+                                "        }" +
+                                "      ]," +
+                                "      \"aap\": [" +
+                                "        {" +
+                                "          \"fraDato\": \"2008-02-28\"," +
+                                "          \"tilDato\": \"2009-05-01\"" +
+                                "        }" +
+                                "      ]" +
+                                "    }" +
+                                "  ]" +
+                                "}"
+                ))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("arenaForvalterenNyeBrukereResponse.json"))));
+                        .withBody(
+                                "{" +
+                                "  \"arbeidsokerList\": [" +
+                                "    {" +
+                                "      \"personident\": \"10101010101\"," +
+                                "      \"miljoe\": \"q2\"," +
+                                "      \"status\": \"ERROR\"," +
+                                "      \"eier\": \"Dolly\"," +
+                                "      \"servicebehov\": false," +
+                                "      \"automatiskInnsendingAvMeldekort\": false" +
+                                "    }," +
+                                "    {" +
+                                "      \"personident\": \"20202020202\"," +
+                                "      \"miljoe\": \"q2\"," +
+                                "      \"status\": \"ERROR\"," +
+                                "      \"eier\": \"Dolly\"," +
+                                "      \"servicebehov\": false," +
+                                "      \"automatiskInnsendingAvMeldekort\": false" +
+                                "    }" +
+                                "  ]" +
+                                "}"
+                        )));
     }
 
     private void stubArenaForvalterBadRequest() {
