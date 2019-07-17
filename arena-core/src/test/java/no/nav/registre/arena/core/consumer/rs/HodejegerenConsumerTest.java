@@ -89,21 +89,6 @@ public class HodejegerenConsumerTest {
         assertThat(lagredeIdenter.contains("30303030303"), is(false));
     }
 
-    @Test(expected = HttpStatusCodeException.class)
-    public void notSuccessfulResponseLevendeIdenterOverAlderTest() {
-        stubNotSuccessfulResponse();
-
-        assertThat(hodejegerenConsumer.finnLevendeIdenterOverAlder(gruppeId), is(nullValue()));
-    }
-
-
-    private void stubNotSuccessfulResponse() {
-        stubFor(get(urlEqualTo("/hodejegeren/api/v1/levende-identer-over-alder/" + gruppeId + "?minimumAlder=" + MINIMUM_ALDER))
-                .willReturn(aResponse()
-                        .withStatus(400)
-                        .withBody("Bad Request.")));
-    }
-
     private void stubHodejegerenConsumerHistorikk() {
         stubFor(post(urlEqualTo("/hodejegeren/api/v1/historikk/"))
                 .withRequestBody(equalToJson(getResourceFileContent("historikkRequest.json")))
