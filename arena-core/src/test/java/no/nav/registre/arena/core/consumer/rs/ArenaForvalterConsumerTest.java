@@ -35,7 +35,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static no.nav.registre.arena.core.testutils.ResourceUtils.getResourceFileContent;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
@@ -69,8 +68,7 @@ public class ArenaForvalterConsumerTest {
                 .kvalifiseringsgruppe("IKVAL")
                 .aap115(Collections.singletonList(
                          Aap115.builder()
-                                .fraDato("1998-07-02").build()
-                ))
+                                .fraDato("1998-07-02").build()))
                 .aap(Collections.singletonList(
                         Aap.builder()
                                 .fraDato("1996-11-13")
@@ -86,8 +84,7 @@ public class ArenaForvalterConsumerTest {
                 .kvalifiseringsgruppe("IKVAL")
                 .aap115(Collections.singletonList(
                          Aap115.builder()
-                                .fraDato("2004-09-27").build()
-                ))
+                                .fraDato("2004-09-27").build()))
                 .aap(Collections.singletonList(
                         Aap.builder()
                                 .fraDato("2008-02-28")
@@ -137,8 +134,8 @@ public class ArenaForvalterConsumerTest {
 
         List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
 
-        assertThat(response.get(2).getPersonident(), is("08125949828"));
-        assertThat(response.size(), is(156));
+        assertThat(response.get(2).getPersonident(), is("09038817873"));
+        assertThat(response.size(), is(3));
     }
 
     @Test
@@ -172,11 +169,11 @@ public class ArenaForvalterConsumerTest {
                 .withStatus(400)
                 .withBody(
                         "{" +
-                                "\"timestamp\": \"2019-07-03T07:45:19.109+0000\"," +
-                                "\"status\": 400," +
-                                "\"error\": \"Bad Request\"," +
-                                "\"message\": \"Identen er ikke registrert i arena-forvalteren\"," +
-                                "\"path\": \"/api/v1/bruker\"" +
+                        "\"timestamp\": \"2019-07-03T07:45:19.109+0000\"," +
+                        "\"status\": 400," +
+                        "\"error\": \"Bad Request\"," +
+                        "\"message\": \"Identen er ikke registrert i arena-forvalteren\"," +
+                        "\"path\": \"/api/v1/bruker\"" +
                         "}"
                 )));
     }
@@ -191,19 +188,77 @@ public class ArenaForvalterConsumerTest {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("arenaForvalterenGetRequestResponseBody.json"))));
+                        .withBody(
+                                "{" +
+                                "  \"arbeidsokerList\": [" +
+                                "    {" +
+                                "      \"personident\": \"07098524627\"," +
+                                "      \"miljoe\": \"q2\"," +
+                                "      \"status\": \"OK\"," +
+                                "      \"eier\": \"Dolly\"," +
+                                "      \"servicebehov\": false," +
+                                "      \"automatiskInnsendingAvMeldekort\": false" +
+                                "    }," +
+                                "    {" +
+                                "      \"personident\": \"13119316876\"," +
+                                "      \"miljoe\": \"t4\"," +
+                                "      \"status\": \"OK\"," +
+                                "      \"eier\": \"Dolly\"," +
+                                "      \"servicebehov\": true," +
+                                "      \"automatiskInnsendingAvMeldekort\": true" +
+                                "    }" +
+                                "  ]," +
+                                "  \"antallSider\": 2" +
+                                "}"
+                        )));
     }
     private void stubArenaForvalterHentBrukereFirstPage() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=1"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("arenaForvalterenGetRequestResponseBody.json"))));
+                        .withBody(
+                                "{" +
+                                "  \"arbeidsokerList\": [" +
+                                "    {" +
+                                "      \"personident\": \"07098524627\"," +
+                                "      \"miljoe\": \"q2\"," +
+                                "      \"status\": \"OK\"," +
+                                "      \"eier\": \"Dolly\"," +
+                                "      \"servicebehov\": false," +
+                                "      \"automatiskInnsendingAvMeldekort\": false" +
+                                "    }," +
+                                "    {" +
+                                "      \"personident\": \"13119316876\"," +
+                                "      \"miljoe\": \"t4\"," +
+                                "      \"status\": \"OK\"," +
+                                "      \"eier\": \"Dolly\"," +
+                                "      \"servicebehov\": true," +
+                                "      \"automatiskInnsendingAvMeldekort\": true" +
+                                "    }" +
+                                "  ]," +
+                                "  \"antallSider\": 2" +
+                                "}"
+                        )));
     }
     private void stubArenaForvalterHentBrukereSecondPage() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=2"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("arenaForvalterenGetRequestResponseBodyPage2.json"))));
+                        .withBody(
+                                "{" +
+                                 "  \"arbeidsokerList\": [" +
+                                 "    {" +
+                                 "      \"personident\": \"09038817873\"," +
+                                 "      \"miljoe\": \"q1\"," +
+                                 "      \"status\": \"OK\"," +
+                                 "      \"eier\": \"Dolly\"," +
+                                 "      \"servicebehov\": true," +
+                                 "      \"automatiskInnsendingAvMeldekort\": true" +
+                                 "    }" +
+                                 "  ]," +
+                                 "  \"antallSider\": 2" +
+                                 "}"
+                        )));
     }
     private void stubArenaForvalterHentBrukereNoBody() {
         stubFor(get(urlEqualTo("/arena-forvalteren/api/v1/bruker?page=1"))
