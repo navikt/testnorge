@@ -17,9 +17,9 @@ import java.util.List;
 public class NyBruker {
     private String personident;
     private String miljoe;
-    private String kvalifiseringsgruppe; // "IKVAL"
+    private String kvalifiseringsgruppe;
     private UtenServicebehov utenServicebehov;
-    private Boolean automatiskInnsendingAvMeldekort; // true
+    private Boolean automatiskInnsendingAvMeldekort;
     private List<Aap115> aap115;
     private List<Aap> aap;
 }
