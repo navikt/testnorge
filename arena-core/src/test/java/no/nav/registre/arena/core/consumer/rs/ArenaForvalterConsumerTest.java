@@ -352,8 +352,7 @@ public class ArenaForvalterConsumerTest {
 
         stubFor(post(urlEqualTo("/arena-forvalteren/api/v1/bruker?eier=" + EIER))
                 .willReturn(aResponse()
-                        .withStatus(400)
-                        .withBody(getResourceFileContent("arenaForvalterenBadRequest.json"))));
+                        .withStatus(400)));
     }
 
 }
