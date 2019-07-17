@@ -91,7 +91,41 @@ public class HodejegerenConsumerTest {
 
     private void stubHodejegerenConsumerHistorikk() {
         stubFor(post(urlEqualTo("/hodejegeren/api/v1/historikk/"))
-                .withRequestBody(equalToJson(getResourceFileContent("historikkRequest.json")))
+                .withRequestBody(equalToJson(
+                        "{" +
+                                "  \"kilde\": \"arena-forvalteren\"," +
+                                "  \"identMedData\": [" +
+                                "    {" +
+                                "      \"id\": \"10101010101\"," +
+                                "      \"data\": [" +
+                                "        {" +
+                                "          \"personident\": \"10101010101\"," +
+                                "          \"miljoe\": \"q2\"," +
+                                "          \"kvalifiseringsgruppe\": \"IKVAL\"," +
+                                "          \"utenServicebehov\": null," +
+                                "          \"automatiskInnsendingAvMeldekort\": true," +
+                                "          \"aap115\": null," +
+                                "          \"aap\": null" +
+                                "        }" +
+                                "      ]" +
+                                "    }," +
+                                "    {" +
+                                "      \"id\": \"20202020202\"," +
+                                "      \"data\": [" +
+                                "        {" +
+                                "          \"personident\": \"20202020202\"," +
+                                "          \"miljoe\": \"q2\"," +
+                                "          \"kvalifiseringsgruppe\": \"IKVAL\"," +
+                                "          \"utenServicebehov\": null," +
+                                "          \"automatiskInnsendingAvMeldekort\": true," +
+                                "          \"aap115\": null," +
+                                "          \"aap\": null" +
+                                "        }" +
+                                "      ]" +
+                                "    }" +
+                                "  ]" +
+                                "}"
+                ))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[\"" + fnr1 + "\", \"" + fnr2 + "\"]")));
