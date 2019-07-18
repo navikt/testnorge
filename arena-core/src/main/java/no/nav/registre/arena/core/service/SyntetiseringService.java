@@ -1,16 +1,14 @@
 package no.nav.registre.arena.core.service;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
 import no.nav.registre.arena.core.provider.rs.requests.ArenaSaveInHodejegerenRequest;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
-import no.nav.registre.arena.core.provider.rs.requests.SlettArenaRequest;
-import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.domain.NyBruker;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,43 +21,44 @@ import static java.lang.Math.floor;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SyntetiseringService {
 
     private static final String ARENA_FORVALTER_NAME = "arena-forvalteren";
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
 
 
-    @Autowired
-    HodejegerenConsumer hodejegerenConsumer;
-    @Autowired
-    ArenaForvalterConsumer arenaForvalterConsumer;
-    @Autowired
-    Random random;
+    private final HodejegerenConsumer hodejegerenConsumer;
+    private final ArenaForvalterConsumer arenaForvalterConsumer;
+    private final Random random;
 
 
-    public List<Arbeidsoker> sendBrukereTilArenaForvalterConsumer(SyntetiserArenaRequest arenaRequest) {
-        if (arenaRequest.getAntallNyeIdenter() == null) {
-            int antallBrukereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(arenaRequest);
+    public List<Arbeidsoker> sendBrukereTilArenaForvalterConsumer(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
+        if (antallNyeIdenter == null) {
+            int antallBrukereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(avspillergruppeId);
 
             if (antallBrukereAaOpprette > 0)
-                arenaRequest.setAntallNyeIdenter(antallBrukereAaOpprette);
-            else
+                antallNyeIdenter = antallBrukereAaOpprette;
+            else {
+                log.info("{}% av gyldige brukere funnet av hodejegeren er allerede registrert i Arena Forvalteren.",
+                        (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100));
                 return new ArrayList<>();
+            }
         }
 
-        List<String> nyeIdenter = hentGyldigeIdenter(arenaRequest);
-        List<NyBruker> nyeBrukere = opprettNyeBrukere(nyeIdenter, arenaRequest.getMiljoe());
+        List<String> nyeIdenter = hentGyldigeIdenter(antallNyeIdenter, avspillergruppeId);
+        List<NyBruker> nyeBrukere = opprettNyeBrukere(nyeIdenter, miljoe);
         lagreArenaBrukereIHodejegeren(nyeBrukere);
 
         return arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
     }
 
-    public List<String> slettBrukereIArenaForvalter(SlettArenaRequest arenaRequest) {
+    public List<String> slettBrukereIArenaForvalter(List<String> identerToDelete, String miljoe) {
 
         List<String> slettedeIdenter = new ArrayList<>();
 
-        for (String personident : arenaRequest.getIdenter()) {
-            if (arenaForvalterConsumer.slettBrukerSuccessful(personident, arenaRequest.getMiljoe())) {
+        for (String personident : identerToDelete) {
+            if (arenaForvalterConsumer.slettBrukerSuccessful(personident, miljoe)) {
                 slettedeIdenter.add(personident);
             }
         }
@@ -67,8 +66,8 @@ public class SyntetiseringService {
         return slettedeIdenter;
     }
 
-    private int getAntallBrukereForAaFylleArenaForvalteren(SyntetiserArenaRequest arenaRequest) {
-        double levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(arenaRequest.getAvspillergruppeId()).size();
+    private int getAntallBrukereForAaFylleArenaForvalteren(Long avspillergruppeId) {
+        double levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(avspillergruppeId).size();
         double eksisterendeIdenter = hentEksisterendeIdenter().size();
 
         return (int) (floor(levendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - eksisterendeIdenter);
@@ -87,10 +86,9 @@ public class SyntetiseringService {
         hodejegerenConsumer.saveHistory(new ArenaSaveInHodejegerenRequest(ARENA_FORVALTER_NAME, brukereSomSkalLagres));
     }
 
-    private List<String> hentGyldigeIdenter(SyntetiserArenaRequest arenaRequest) {
-        List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(arenaRequest.getAvspillergruppeId());
+    private List<String> hentGyldigeIdenter(int antallNyeIdenter, Long avspillergruppeId) {
+        List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenterOverAlder(avspillergruppeId);
         List<String> eksisterendeIdenter = hentEksisterendeIdenter();
-        int antallNyeIdenter = arenaRequest.getAntallNyeIdenter();
 
         levendeIdenter.removeAll(eksisterendeIdenter);
 

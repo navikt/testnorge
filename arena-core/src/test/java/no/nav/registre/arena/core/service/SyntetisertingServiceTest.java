@@ -4,15 +4,11 @@ package no.nav.registre.arena.core.service;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
-import no.nav.registre.arena.core.provider.rs.requests.SlettArenaRequest;
-import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.arena.domain.NyBruker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -44,98 +40,58 @@ public class SyntetisertingServiceTest {
     @InjectMocks
     private SyntetiseringService syntetiseringService;
 
-    private SyntetiserArenaRequest arenaRequest;
-    private SyntetiserArenaRequest arenaRequestTooMany;
-    private SyntetiserArenaRequest arenaRequestFyllOpp;
-    private SlettArenaRequest slettRequest;
-
     private Long avspillergruppeId = 10L;
     private String miljoe = "q2";
     private String fnr1 = "10101010101";
     private String fnr2 = "20202020202";
     private String fnr3 = "30303030303";
 
-    private List<String> identerOverAlder;
-    private List<String> eksisterendeIdenter;
-    private List<String> identerOverAlder2;
+    private List<String> toIdenterOverAlder;
+    private List<String> hundreIdenterOverAlder;
 
-    private List<Arbeidsoker> nyeArbeisokere;
-    private List<Arbeidsoker> eksisterendeArbeidsokere;
-    private List<Arbeidsoker> eksisterendeArbeidsokere2;
     private List<Arbeidsoker> opprettedeArbeidsokere;
+    private List<Arbeidsoker> enNyArbeisoker;
+    private List<Arbeidsoker> tyveNyeArbeidsokere;
+    private List<Arbeidsoker> toEksisterendeArbeidsokere;
+    private List<Arbeidsoker> femtenEksisterendeArbeidsokere;
 
     @Before
     public void setUp() {
-        identerOverAlder = new ArrayList<>(Arrays.asList(fnr1, fnr2));
-        eksisterendeIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr3));
-        identerOverAlder2 = new ArrayList<>(ANTALL_LEVENDE_IDENTER);
+        toIdenterOverAlder = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+        hundreIdenterOverAlder = new ArrayList<>(ANTALL_LEVENDE_IDENTER);
 
-        arenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 1);
-        arenaRequestTooMany = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
-        arenaRequestFyllOpp = new SyntetiserArenaRequest(avspillergruppeId, miljoe, null);
+        enNyArbeisoker = Collections.singletonList(
+                buildArbeidsoker(fnr2));
 
-        slettRequest = new SlettArenaRequest("q2", Arrays.asList(fnr1, fnr2, fnr3));
+        toEksisterendeArbeidsokere = Arrays.asList(
+                buildArbeidsoker(fnr1),
+                buildArbeidsoker(fnr3));
 
-        nyeArbeisokere = Collections.singletonList(
-                Arbeidsoker.builder()
-                        .personident(fnr2)
-                        .miljoe(miljoe)
-                        .status("OK")
-                        .eier("ORKESTRATOREN")
-                        .servicebehov(true)
-                        .automatiskInnsendingAvMeldekort(true)
-                        .build());
+        femtenEksisterendeArbeidsokere = new ArrayList<>();
+        for (int i = 1; i < ANTALL_EKSISTERENDE_ARBEIDSSOKERE +1; i++)
+            femtenEksisterendeArbeidsokere.add(buildArbeidsoker(buildFnr(i)));
 
-        eksisterendeArbeidsokere = Arrays.asList(
-                Arbeidsoker.builder()
-                        .personident(fnr1)
-                        .miljoe(miljoe)
-                        .status("OK")
-                        .eier("ORKESTRATOREN")
-                        .servicebehov(true)
-                        .automatiskInnsendingAvMeldekort(true)
-                        .build(),
-                Arbeidsoker.builder()
-                        .personident(fnr3)
-                        .miljoe(miljoe)
-                        .status("OK")
-                        .eier("ORKESTRATOREN")
-                        .servicebehov(true)
-                        .automatiskInnsendingAvMeldekort(true)
-                        .build()
-                );
-
-        eksisterendeArbeidsokere2 = new ArrayList<>();
-        for (int i = 1; i < ANTALL_EKSISTERENDE_ARBEIDSSOKERE +1; i++) {
-            String fnr = buildFnr(i);
-            eksisterendeArbeidsokere2.add(
-                    Arbeidsoker.builder()
-                        .personident(fnr)
-                        .miljoe(miljoe)
-                        .status("OK")
-                        .eier("ORKESTRATOREN")
-                        .servicebehov(true)
-                        .automatiskInnsendingAvMeldekort(true)
-                        .build());
-        }
         opprettedeArbeidsokere = new ArrayList<>();
-        for (int i = 1; i < ANTALL_OPPRETTEDE_ARBEIDSSOKERE +1; i++) {
-            String fnr = buildFnr(i);
-            opprettedeArbeidsokere.add(
-                    Arbeidsoker.builder()
-                        .personident(fnr)
-                        .miljoe(miljoe)
-                        .status("OK")
-                        .eier("ORKESTRATOREN")
-                        .servicebehov(true)
-                        .automatiskInnsendingAvMeldekort(true)
-                        .build());
-        }
-        for (int i = 1; i < ANTALL_LEVENDE_IDENTER +1; i++) {
-            String fnr = buildFnr(i);
-            identerOverAlder2.add(fnr);
-        }
+        for (int i = 1; i < ANTALL_OPPRETTEDE_ARBEIDSSOKERE +1; i++)
+            opprettedeArbeidsokere.add(buildArbeidsoker(buildFnr(i)));
 
+        tyveNyeArbeidsokere = new ArrayList<>();
+        for (int i = 1; i < 21; i++)
+            tyveNyeArbeidsokere.add(buildArbeidsoker(buildFnr(i)));
+
+        for (int i = 1; i < ANTALL_LEVENDE_IDENTER +1; i++)
+            hundreIdenterOverAlder.add(buildFnr(i));
+
+    }
+
+    private Arbeidsoker buildArbeidsoker(String fnr) {
+        return Arbeidsoker.builder()
+                .personident(fnr)
+                .miljoe(miljoe)
+                .status("OK")
+                .eier("ORKESTRATOREN")
+                .servicebehov(true)
+                .automatiskInnsendingAvMeldekort(true).build();
     }
 
     private String buildFnr(int id) {
@@ -150,32 +106,63 @@ public class SyntetisertingServiceTest {
         return fnr.toString();
     }
 
+    private List<Arbeidsoker> opprettIdenter(Integer antallNyeIdenter, String miljoe) {
+        doReturn(toIdenterOverAlder).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
+        doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentBrukere();
+        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+
+        return syntetiseringService.sendBrukereTilArenaForvalterConsumer(antallNyeIdenter, avspillergruppeId, miljoe);
+    }
+
+    @Test
+    public void fyllOverfullArenaForvalter() {
+        List<Arbeidsoker> nyeIdenter = opprettIdenter(null, miljoe);
+
+        assertThat(nyeIdenter, is(Collections.EMPTY_LIST));
+    }
+
+    @Test
+    public void fyllFraTomArenaForvalter() {
+        doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
+        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentBrukere();
+        doReturn(tyveNyeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+
+        List<Arbeidsoker> arbeidsokere =
+                syntetiseringService.sendBrukereTilArenaForvalterConsumer(null, avspillergruppeId, miljoe);
+        assertThat(arbeidsokere.size(), is(20));
+        assertThat(arbeidsokere.get(0).getPersonident(), is("10101010101"));
+        assertThat(arbeidsokere.get(4).getPersonident(), is("50505050505"));
+
+    }
+
     @Test
     public void hentGyldigeIdenterTest() {
-        List<Arbeidsoker> nyeIdenter = opprettIdenter(arenaRequest);
+        List<Arbeidsoker> nyeIdenter = opprettIdenter(1, miljoe);
+
         assertThat(nyeIdenter.size(), is(1));
+        assertThat(nyeIdenter.get(0).getPersonident(), is(fnr2));
     }
 
     @Test
     public void opprettForMangeNyeIdenter() {
-        List<Arbeidsoker> nyeIdenter = opprettIdenter(arenaRequestTooMany);
+        List<Arbeidsoker> nyeIdenter = opprettIdenter(2, miljoe);
+
         assertThat(nyeIdenter.size(), is(1));
-    }
-
-    private List<Arbeidsoker> opprettIdenter(SyntetiserArenaRequest request) {
-        doReturn(identerOverAlder).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
-        doReturn(eksisterendeArbeidsokere).when(arenaForvalterConsumer).hentBrukere();
-        doReturn(nyeArbeisokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
-
-        return syntetiseringService.sendBrukereTilArenaForvalterConsumer(request);
+        assertThat(nyeIdenter.get(0).getPersonident(), is(fnr2));
     }
 
     @Test
     public void fyllOppForvalterenTest() {
-        doReturn(identerOverAlder2).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
-        doReturn(eksisterendeArbeidsokere2).when(arenaForvalterConsumer).hentBrukere();
+        doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
+        doReturn(femtenEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentBrukere();
         doReturn(opprettedeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
-        assertThat(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequestFyllOpp).size(), is(5));
+
+        List<Arbeidsoker> arbeidsokere =
+                syntetiseringService.sendBrukereTilArenaForvalterConsumer(null, avspillergruppeId, miljoe);
+
+        assertThat(arbeidsokere.size(), is(5));
+        assertThat(arbeidsokere.get(2).getPersonident(), is("30303030303"));
+        assertThat(arbeidsokere.get(3).getPersonident(), is("40404040404"));
     }
 
     @Test
@@ -183,7 +170,8 @@ public class SyntetisertingServiceTest {
         doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr2), eq(miljoe));
         doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr3), eq(miljoe));
 
-        List<String> slettedeIdenter = syntetiseringService.slettBrukereIArenaForvalter(slettRequest);
+        List<String> slettedeIdenter = syntetiseringService.slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3), miljoe);
+
         assertThat(slettedeIdenter.contains(fnr2), is(true));
         assertThat(slettedeIdenter.contains(fnr1), is(false));
         assertThat(slettedeIdenter.size(), is(2));

@@ -33,18 +33,25 @@ public class SyntetiseringController {
 
     private ResponseEntity<Integer> registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
 
-            return ResponseEntity.ok(syntetiseringService.sendBrukereTilArenaForvalterConsumer(arenaRequest).size());
+            return ResponseEntity.ok(syntetiseringService.sendBrukereTilArenaForvalterConsumer(
+                    arenaRequest.getAntallNyeIdenter(),
+                    arenaRequest.getAvspillergruppeId(),
+                    arenaRequest.getMiljoe()
+            ).size());
     }
 
     private ResponseEntity<Map<String, Integer>> slettBrukere(SlettArenaRequest slettArenaRequest) {
 
         Map<String, Integer> responseBody = new HashMap<>();
 
-        List<String> slettedeIdenter = new ArrayList<>(syntetiseringService.slettBrukereIArenaForvalter(slettArenaRequest));
+        List<String> slettedeIdenter = new ArrayList<>(
+                syntetiseringService.slettBrukereIArenaForvalter(slettArenaRequest.getIdenter(), slettArenaRequest.getMiljoe()));
+
         responseBody.put("slettet", slettedeIdenter.size());
 
         List<String> alleIdenter = new ArrayList<>(slettArenaRequest.getIdenter());
         alleIdenter.removeAll(slettedeIdenter);
+
         responseBody.put("ikkeSlettet", alleIdenter.size());
 
         return ResponseEntity.ok(responseBody);

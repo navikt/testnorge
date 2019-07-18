@@ -45,7 +45,6 @@ public class SyntetiseringControllerTest {
     private Arbeidsoker arb1 = new Arbeidsoker();
     private Arbeidsoker arb2 = new Arbeidsoker();
     private Arbeidsoker arb3 = new Arbeidsoker();
-    private Arbeidsoker arb4 = new Arbeidsoker();
 
     @Before
     public void setUp() {
@@ -58,7 +57,7 @@ public class SyntetiseringControllerTest {
     @Test
     public void registrerAntallIdenterIArenaForvalter() {
         when(syntetiseringService
-                .sendBrukereTilArenaForvalterConsumer(syntetiserArenaRequest))
+                .sendBrukereTilArenaForvalterConsumer(antallNyeIdenter, avspillegruppeId, miljoe))
                 .thenReturn(Arrays.asList(arb1,arb2,arb3));
 
         ResponseEntity<Integer> result = syntetiseringController.registerBrukereIArenaForvalter(syntetiserArenaRequest);
@@ -67,7 +66,9 @@ public class SyntetiseringControllerTest {
 
     @Test
     public void slettIdenterIArenaForvalter() {
-        when(syntetiseringService.slettBrukereIArenaForvalter(slettArenaRequest)).thenReturn(Arrays.asList(fnr1, fnr3, fnr4));
+        when(syntetiseringService
+                .slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3, fnr4), miljoe))
+                .thenReturn(Arrays.asList(fnr1, fnr3, fnr4));
 
         ResponseEntity<Map<String, Integer>> response = syntetiseringController.slettBrukereIArenaForvalter(slettArenaRequest);
         assertThat(response.getBody().get("slettet"), is(3));
