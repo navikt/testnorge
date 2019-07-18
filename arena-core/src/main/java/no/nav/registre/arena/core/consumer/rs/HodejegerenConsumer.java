@@ -40,7 +40,20 @@ public class HodejegerenConsumer {
     public List<String> finnLevendeIdenterOverAlder(Long avspillergruppeId) {
         RequestEntity getRequest = RequestEntity.get(hentLevendeIdenterOverAlderUrl.expand(avspillergruppeId.toString())).build();
 
-        return createValidResponse(getRequest);
+        ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
+
+        if (response.getBody() == null) {
+            log.error("Respons body null. Status: {}", response.getStatusCode());
+            return new ArrayList<>();
+        }
+
+        if (response.getStatusCode() != HttpStatus.OK) {
+            log.error("Feil statuskode fra hodejegeren. Returnerer ingen levende identer.\nStatus: {}\nBody: {}",
+                    response.getStatusCode(), response.getBody());
+            return new ArrayList<>();
+        }
+
+        return response.getBody();
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "hodejegeren"})
@@ -48,11 +61,18 @@ public class HodejegerenConsumer {
         RequestEntity<ArenaSaveInHodejegerenRequest> postRequest =
                 RequestEntity.post(saveHodejegerenHistorikk.expand()).body(request);
 
-        return createValidResponse(postRequest);
-    }
+        ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
 
-    private List<String> createValidResponse(RequestEntity request) {
-        ResponseEntity<List<String>> response = restTemplate.exchange(request, RESPONSE_TYPE);
+        if (response.getBody() == null) {
+            log.error("Respons body null. Status: {}", response.getStatusCode());
+            return new ArrayList<>();
+        }
+
+        if (response.getStatusCode() != HttpStatus.OK) {
+            log.error("Feil under lagring i Hodejegeren, \nStatus: {}\nBody: {}",
+                    response.getStatusCode(), response.getBody());
+            return new ArrayList<>();
+        }
 
         if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
             log.error("Status: {}", response.getStatusCode());
