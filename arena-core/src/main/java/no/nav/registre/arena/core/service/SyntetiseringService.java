@@ -47,7 +47,13 @@ public class SyntetiseringService {
         }
 
         List<String> nyeIdenter = hentGyldigeIdenter(antallNyeIdenter, avspillergruppeId);
-        List<NyBruker> nyeBrukere = opprettNyeBrukere(nyeIdenter, miljoe);
+        List<NyBruker> nyeBrukere = nyeIdenter.stream().map(ident -> NyBruker.builder()
+                .personident(ident)
+                .miljoe(miljoe)
+                .kvalifiseringsgruppe("IKVAL")
+                .automatiskInnsendingAvMeldekort(true)
+                .build()).collect(Collectors.toList());
+
         lagreArenaBrukereIHodejegeren(nyeBrukere);
 
         return arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
@@ -117,22 +123,4 @@ public class SyntetiseringService {
 
         return arbeisokere.stream().map(Arbeidsoker::getPersonident).collect(Collectors.toList());
     }
-
-    private List<NyBruker> opprettNyeBrukere(List<String> identerFraHodejegeren, String miljoe) {
-
-        List<NyBruker> nyeBrukere = new ArrayList<>(identerFraHodejegeren.size());
-
-        for (String ident : identerFraHodejegeren) {
-            nyeBrukere.add(NyBruker.builder()
-                    .personident(ident)
-                    .miljoe(miljoe)
-                    .kvalifiseringsgruppe("IKVAL")
-                    .automatiskInnsendingAvMeldekort(true)
-                    .build());
-        }
-
-        return nyeBrukere;
-    }
-
-
 }
