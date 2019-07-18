@@ -3,7 +3,6 @@ package no.nav.registre.arena.core.consumer.rs;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.provider.rs.requests.ArenaSaveInHodejegerenRequest;
-import no.nav.registre.arena.core.utility.NetworkUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
