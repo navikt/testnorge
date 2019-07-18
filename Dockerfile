@@ -1,6 +1,8 @@
 FROM navikt/java:8
 LABEL maintainer="Team Registre"
 
-ADD "aaregstub-core/target/testnorge-aaregstub.jar" /app/app.jar
+ADD "app.jar" app.jar
+
+ENV spring_profiles_active=prod
 
 EXPOSE 8080
