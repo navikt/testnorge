@@ -80,11 +80,17 @@ public class ArenaForvalterConsumer {
                     .build();
             response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
 
-            if (!NetworkUtil.validResponseNonNullBody(response)) {
+
+            if (response.getStatusCode() != HttpStatus.OK) {
+                log.error("Status: {}", response.getStatusCode());
+                break;
+            }
+            if (response.getBody() == null) {
                 log.warn("Kunne ikke hente response body fra Arena Frovalteren på side {}. Returnerer response fra foregående sider.", page);
                 break;
-            } else
-                responseList.addAll(response.getBody().getArbeidsokerList());
+            }
+
+            responseList.addAll(response.getBody().getArbeidsokerList());
         }
 
         return responseList;
@@ -110,7 +116,7 @@ public class ArenaForvalterConsumer {
         ResponseEntity<StatusFraArenaForvalterResponse> response =
                 restTemplate.exchange(request, StatusFraArenaForvalterResponse.class);
 
-        if(!NetworkUtil.validResponseNonNullBody(response)) {
+        if(response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
             log.error("Status: {}", response.getStatusCode());
             log.error("Body: {}", response.getBody());
             return null;

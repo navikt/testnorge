@@ -7,6 +7,7 @@ import no.nav.registre.arena.core.utility.NetworkUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -54,7 +55,7 @@ public class HodejegerenConsumer {
     private List<String> createValidResponse(RequestEntity request) {
         ResponseEntity<List<String>> response = restTemplate.exchange(request, RESPONSE_TYPE);
 
-        if (!NetworkUtil.validResponseNonNullBody(response)) {
+        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
             log.error("Status: {}", response.getStatusCode());
             log.error("Body: {}", response.getBody());
             return new ArrayList<>();
