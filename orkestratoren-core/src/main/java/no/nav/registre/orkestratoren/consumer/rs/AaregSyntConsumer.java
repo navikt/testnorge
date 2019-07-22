@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,9 @@ public class AaregSyntConsumer {
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "aareg" })
     public SletteArbeidsforholdResponse slettIdenterFraAaregstub(List<String> identer) {
-        RequestEntity deleteRequest = RequestEntity.delete(slettIdenterUrl.expand()).build();
+        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, slettIdenterUrl.expand())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(identer);
         return restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
     }
 }
