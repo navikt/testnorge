@@ -21,7 +21,7 @@ public class IdentController {
     private IdentService identService;
 
     @LogExceptions
-    @DeleteMapping()
+    @DeleteMapping
     public SlettedeIdenterResponse slettIdenterFraAdaptere(
             @RequestParam Long avspillergruppeId,
             @RequestParam String miljoe,

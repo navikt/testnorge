@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import no.nav.registre.orkestratoren.consumer.rs.AaregSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.InstSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.PoppSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
@@ -23,6 +24,9 @@ public class IdentService {
     @Autowired
     private PoppSyntConsumer poppSyntConsumer;
 
+    @Autowired
+    private AaregSyntConsumer aaregSyntConsumer;
+
     public SlettedeIdenterResponse slettIdenterFraAdaptere(Long avspillergruppeId, String miljoe, String testdataEier, List<String> identer) {
         SlettedeIdenterResponse slettedeIdenterResponse = SlettedeIdenterResponse.builder()
                 .tpsfStatus(SletteFraAvspillerguppeResponse.builder()
@@ -32,6 +36,7 @@ public class IdentService {
         slettedeIdenterResponse.getTpsfStatus().setSlettedeMeldingIderFraTpsf(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer));
         slettedeIdenterResponse.setInstStatus(instSyntConsumer.slettIdenterFraInst(identer));
         slettedeIdenterResponse.setSigrunStatus(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer));
+        slettedeIdenterResponse.setAaregStatus(aaregSyntConsumer.slettIdenterFraAaregstub(identer));
 
         return slettedeIdenterResponse;
     }

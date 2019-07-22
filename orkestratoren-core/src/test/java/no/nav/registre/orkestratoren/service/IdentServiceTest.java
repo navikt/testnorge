@@ -21,10 +21,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import no.nav.registre.orkestratoren.consumer.rs.AaregSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.InstSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.PoppSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.response.SigrunSkattegrunnlagResponse;
+import no.nav.registre.orkestratoren.consumer.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteSkattegrunnlagResponse;
 import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterResponse;
@@ -41,6 +43,9 @@ public class IdentServiceTest {
     @Mock
     private PoppSyntConsumer poppSyntConsumer;
 
+    @Mock
+    private AaregSyntConsumer aaregSyntConsumer;
+
     @InjectMocks
     private IdentService identService;
 
@@ -53,6 +58,7 @@ public class IdentServiceTest {
     private List<Long> expectedMeldingIder;
     private SletteInstitusjonsoppholdResponse sletteInstitusjonsoppholdResponse;
     private SletteSkattegrunnlagResponse sletteSkattegrunnlagResponse;
+    private SletteArbeidsforholdResponse sletteArbeidsforholdResponse;
     private List<String> oppholdIdSomBleSlettet;
 
     @Before
@@ -69,6 +75,10 @@ public class IdentServiceTest {
         SigrunSkattegrunnlagResponse skattegrunnlagFnr1 = SigrunSkattegrunnlagResponse.builder().personidentifikator(fnr1).build();
         SigrunSkattegrunnlagResponse skattegrunnlagFnr2 = SigrunSkattegrunnlagResponse.builder().personidentifikator(fnr2).build();
         sletteSkattegrunnlagResponse = SletteSkattegrunnlagResponse.builder().grunnlagSomBleSlettet(Arrays.asList(skattegrunnlagFnr1, skattegrunnlagFnr2)).build();
+
+        Map<String, List<Long>> identerMedArbeidsforholdSomBleSlettet = new HashMap<>();
+        identerMedArbeidsforholdSomBleSlettet.put(fnr1, Arrays.asList(1L, 2L));
+        sletteArbeidsforholdResponse = SletteArbeidsforholdResponse.builder().identermedArbeidsforholdIdSomBleSlettet(identerMedArbeidsforholdSomBleSlettet).build();
     }
 
     @Test
@@ -76,12 +86,15 @@ public class IdentServiceTest {
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer)).thenReturn(expectedMeldingIder);
         when(instSyntConsumer.slettIdenterFraInst(identer)).thenReturn(sletteInstitusjonsoppholdResponse);
         when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
+        when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
+        when(aaregSyntConsumer.slettIdenterFraAaregstub(identer)).thenReturn(sletteArbeidsforholdResponse);
 
         SlettedeIdenterResponse response = identService.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
 
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(avspillergruppeId, identer);
         verify(instSyntConsumer).slettIdenterFraInst(identer);
         verify(poppSyntConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
+        verify(aaregSyntConsumer).slettIdenterFraAaregstub(identer);
 
         assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
 
@@ -91,5 +104,8 @@ public class IdentServiceTest {
 
         assertThat(response.getSigrunStatus().getGrunnlagSomBleSlettet().get(0).getPersonidentifikator(), equalTo(fnr1));
         assertThat(response.getSigrunStatus().getGrunnlagSomBleSlettet().get(1).getPersonidentifikator(), equalTo(fnr2));
+
+        assertThat(response.getAaregStatus().getIdentermedArbeidsforholdIdSomBleSlettet().get(fnr1).get(0), equalTo(1L));
+        assertThat(response.getAaregStatus().getIdentermedArbeidsforholdIdSomBleSlettet().get(fnr1).get(1), equalTo(2L));
     }
 }
