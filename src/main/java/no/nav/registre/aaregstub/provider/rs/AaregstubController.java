@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import no.nav.registre.aaregstub.arbeidsforhold.ArbeidsforholdsResponse;
 import no.nav.registre.aaregstub.arbeidsforhold.Ident;
@@ -73,8 +77,37 @@ public class AaregstubController {
     @ApiOperation(value = "Her kan man hente ut alle arbeidsforholdene som er opprettet i stubben på en gitt ident.")
     @GetMapping(value = "/hentIdentMedArbeidsforhold/{ident}")
     public Ident hentIdentMedArbeidsforhold(@PathVariable String ident) {
-        Optional<Ident> identMedArbeidsforhold = arbeidsforholdService.hentIdentMedArbeidsforhold(ident);
-        return identMedArbeidsforhold.orElse(null);
+        return arbeidsforholdService.hentIdentMedArbeidsforhold(ident);
+    }
+
+    @ApiOperation(value = "Her kan man hente ut id-ene til alle arbeidsforholdene til en liste med identer.")
+    @GetMapping(value = "/hentIdenterMedIder")
+    public Map<String, List<Long>> hentIdenterMedIder(@RequestParam List<String> identer) {
+        Map<String, List<Long>> identerMedArbeidsforholdIder = new HashMap<>();
+        for (String fnr : identer) {
+            Ident ident = arbeidsforholdService.hentIdentMedArbeidsforhold(fnr);
+            if (ident != null) {
+                identerMedArbeidsforholdIder.put(ident.getFnr(), ident.getArbeidsforhold().stream().map(Arbeidsforhold::getId).collect(Collectors.toList()));
+            }
+        }
+        return identerMedArbeidsforholdIder;
+    }
+
+    @ApiOperation(value = "Her kan man slette en ident og alle tilhørende arbeidsforhold fra stubben.")
+    @Transactional
+    @DeleteMapping(value = "/slettIdent/{ident}")
+    public List<Long> slettIdent(@PathVariable String ident) {
+        List<Long> forholdSomSkalSlettes = new ArrayList<>();
+        Ident identen = arbeidsforholdService.hentIdentMedArbeidsforhold(ident);
+        if (identen != null) {
+            forholdSomSkalSlettes.addAll(identen.getArbeidsforhold().stream().map(Arbeidsforhold::getId).collect(Collectors.toList()));
+        }
+
+        for (Long id : forholdSomSkalSlettes) {
+            arbeidsforholdService.slettArbeidsforhold(id);
+        }
+
+        return forholdSomSkalSlettes;
     }
 
     //    @LogExceptions

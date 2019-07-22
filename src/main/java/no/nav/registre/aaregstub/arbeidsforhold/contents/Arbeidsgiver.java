@@ -21,6 +21,6 @@ public class Arbeidsgiver {
     private String aktoertype;
 
     @JsonProperty("orgnummer")
-    @Column(name = "ARBEIDSGIVER_ORGNUMMEr")
+    @Column(name = "ARBEIDSGIVER_ORGNUMMER")
     private String orgnummer;
 }

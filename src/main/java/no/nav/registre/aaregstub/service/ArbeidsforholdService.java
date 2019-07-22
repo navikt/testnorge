@@ -91,8 +91,8 @@ public class ArbeidsforholdService {
                 .build();
     }
 
-    public Optional<Ident> hentIdentMedArbeidsforhold(String ident) {
-        return identRepository.findByFnr(ident);
+    public Ident hentIdentMedArbeidsforhold(String ident) {
+        return identRepository.findByFnr(ident).orElse(null);
     }
 
     public List<BigInteger> hentAlleArbeidsforholdIder() {
@@ -193,7 +193,7 @@ public class ArbeidsforholdService {
         List<Long> arbeidsforholdSomSkalFjernes = new ArrayList<>();
 
         for (String ident : identerIStub) {
-            Ident identMedArbeidsforhold = hentIdentMedArbeidsforhold(ident).orElse(null);
+            Ident identMedArbeidsforhold = hentIdentMedArbeidsforhold(ident);
             if (identMedArbeidsforhold != null) {
                 List<Arbeidsforhold> arbeidsforholdeneTilIdent = identMedArbeidsforhold.getArbeidsforhold();
                 for (Arbeidsforhold arbeidsforhold : arbeidsforholdeneTilIdent) {
@@ -202,7 +202,7 @@ public class ArbeidsforholdService {
             }
         }
 
-        for(Long id : arbeidsforholdSomSkalFjernes) {
+        for (Long id : arbeidsforholdSomSkalFjernes) {
             slettArbeidsforhold(id);
         }
 
