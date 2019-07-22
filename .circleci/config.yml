@@ -1,0 +1,115 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - m2-{{ .Branch }}-{{ checksum "pom.xml" }}
+      - run:
+          name: Build jar
+          command: mvn clean install
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: m2-{{ .Branch }}-{{ checksum "pom.xml" }}
+
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/target/surefire-reports/*.xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+          paths:
+            - ~/test-results
+      - store_artifacts:
+          path: ~/test-results/junit
+      - run:
+          name: Save coverage
+          command: |
+            mkdir -p ~/coverage
+            find . -type d -regex ".*/target/coverage" -exec cp -a {} ~/ \;
+          when: always
+      - store_artifacts:
+          path: ~/coverage/
+      - run:
+          name: Find and copy main jar
+          command: |
+            find . -type f -name "$CIRCLE_PROJECT_REPO_NAME".jar -exec cp {} app.jar \;
+      - persist_to_workspace:
+          root: .
+          paths:
+            - app.jar
+            - Dockerfile
+            - nais.yaml
+  release:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Generate version number and docker image tags
+          command: |
+            export RELEASE_VERSION=$CIRCLE_SHA1-$CIRCLE_BUILD_NUM
+            echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
+            echo "export DOCKER_TAG=\"docker.pkg.github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> tmp/workspace/properties.env
+            cat /tmp/workspace/properties.env >> $BASH_ENV
+      - run:
+          name: Build docker image
+          command: docker build -t $DOCKER_TAG /tmp/workspace
+      - run:
+          name: Docker push
+          command: |
+            echo "$GITHUB_PASSWORD" | docker login -u "$GITHUB_USERNAME" --password-stdin docker.pkg.github.com
+            echo $DOCKER_TAG
+            docker push $DOCKER_TAG
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - properties.env
+  deploy:
+    docker:
+      - image: navikt/deployment-cli:44bb04ecc11c0e57ac539744411c70794dd31899
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - run:
+          name: Set up environment variables
+          command: cat /tmp/workspace/properties.env >> $BASH_ENV
+      - run:
+          name: Create github deployment for dev-fss
+          command: source $BASH_ENV; deployment-cli deploy create --cluster=dev-fss
+          --team=orkestrator -r=/tmp/workspace/nais.yaml --version=${DOCKER_TAG}
+          --username $GITHUB_USERNAME
+          --password $GITHUB_PASSWORD
+          --repository=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+workflows:
+  version: 2
+  build_release_deploy:
+    jobs:
+      - build
+      - hold:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - release:
+          filters:
+            branches:
+              only: master
+            requires:
+              - hold
+      - deploy:
+          filters:
+            branches:
+              only: master
+          requires:
+            - release
