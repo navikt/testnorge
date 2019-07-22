@@ -31,7 +31,7 @@ public class AaregSyntConsumer {
     private UriTemplate startSyntetiseringUrl;
     private UriTemplate slettIdenterUrl;
 
-    public AaregSyntConsumer(@Value("${testnorge-aareg.rest-api.startSyntetiseringUrl}") String aaregServerUrl) {
+    public AaregSyntConsumer(@Value("${testnorge-aareg.rest-api.url}") String aaregServerUrl) {
         this.startSyntetiseringUrl = new UriTemplate(aaregServerUrl + "/v1/syntetisering/generer?lagreIAareg={lagreIAareg}");
         this.slettIdenterUrl = new UriTemplate(aaregServerUrl + "/v1/ident");
     }
