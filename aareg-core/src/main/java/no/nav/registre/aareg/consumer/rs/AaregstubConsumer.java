@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
@@ -76,7 +77,10 @@ public class AaregstubConsumer {
 
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aaregstub" })
     public SletteArbeidsforholdResponse slettIdenterFraAaregstub(List<String> identer) {
-        SletteArbeidsforholdResponse sletteArbeidsforholdResponse = SletteArbeidsforholdResponse.builder().build();
+        SletteArbeidsforholdResponse sletteArbeidsforholdResponse = SletteArbeidsforholdResponse.builder()
+                .identermedArbeidsforholdIdSomBleSlettet(new HashMap<>())
+                .identerSomIkkeKunneSlettes(new ArrayList<>())
+                .build();
         for (String ident : identer) {
             RequestEntity deleteRequest = RequestEntity.delete(slettIdentUrl.expand(ident)).build();
             try {
