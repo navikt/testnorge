@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.registre.arena</groupId>
         <artifactId>testnorge-arena</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>arena-core</artifactId>
@@ -30,6 +30,11 @@
             <groupId>no.nav.registre.arena</groupId>
             <artifactId>arena-domain</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>testnorge-consumers</artifactId>
         </dependency>
 
         <!-- TEST -->
