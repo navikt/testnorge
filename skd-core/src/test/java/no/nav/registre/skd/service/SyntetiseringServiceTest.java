@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -39,12 +38,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import no.nav.registre.skd.consumer.HodejegerenConsumer;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {

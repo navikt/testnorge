@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.skd.consumer.requests.HentIdenterRequest;
@@ -31,7 +31,7 @@ public class IdentPoolConsumer {
         ObjectMapper objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        this.restTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter(objectMapper)));
+        this.restTemplate.setMessageConverters(Collections.singletonList(new MappingJackson2HttpMessageConverter(objectMapper)));
 
         this.url = new URI(serverUrl + "/v1/identifikator");
     }

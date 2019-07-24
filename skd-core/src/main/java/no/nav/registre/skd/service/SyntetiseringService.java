@@ -8,7 +8,7 @@ import static no.nav.registre.skd.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.skd.service.Endringskoder.TILDELING_DNUMMER;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.skd.consumer.HodejegerenConsumer;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
@@ -36,15 +35,16 @@ import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @Service
 @Slf4j
 public class SyntetiseringService {
 
-    public static final String LEVENDE_IDENTER_I_NORGE = "levendeIdenterINorge";
-    public static final String GIFTE_IDENTER_I_NORGE = "gifteIdenterINorge";
-    public static final String SINGLE_IDENTER_I_NORGE = "singleIdenterINorge";
-    public static final String BRUKTE_IDENTER_I_DENNE_BOLKEN = "brukteIdenterIDenneBolken";
+    static final String LEVENDE_IDENTER_I_NORGE = "levendeIdenterINorge";
+    static final String GIFTE_IDENTER_I_NORGE = "gifteIdenterINorge";
+    static final String SINGLE_IDENTER_I_NORGE = "singleIdenterINorge";
+    static final String BRUKTE_IDENTER_I_DENNE_BOLKEN = "brukteIdenterIDenneBolken";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -232,16 +232,16 @@ public class SyntetiseringService {
     private Map<String, List<String>> opprettListerMedIdenter(GenereringsOrdreRequest genereringsOrdreRequest) {
         Map<String, List<String>> listerMedIdenter = new HashMap<>();
 
-        List<String> levendeIdenterINorge = hodejegerenConsumer.finnLevendeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
+        List<String> levendeIdenterINorge = finnLevendeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
         listerMedIdenter.put(LEVENDE_IDENTER_I_NORGE, levendeIdenterINorge);
         StringBuilder message = new StringBuilder("Antall identer i lister fra TPSF: - ")
                 .append(LEVENDE_IDENTER_I_NORGE)
                 .append(": ")
                 .append(levendeIdenterINorge.size());
 
-        List<String> doedeIdenterINorge = hodejegerenConsumer.finnDoedeOgUtvandredeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
+        List<String> doedeIdenterINorge = finnDoedeOgUtvandredeIdenter(genereringsOrdreRequest.getAvspillergruppeId());
 
-        List<String> gifteIdenterINorge = hodejegerenConsumer.finnGifteIdenter(genereringsOrdreRequest.getAvspillergruppeId());
+        List<String> gifteIdenterINorge = finnGifteIdenter(genereringsOrdreRequest.getAvspillergruppeId());
         gifteIdenterINorge.removeAll(doedeIdenterINorge);
         listerMedIdenter.put(GIFTE_IDENTER_I_NORGE, gifteIdenterINorge);
         message.append(" - ")
@@ -298,5 +298,20 @@ public class SyntetiseringService {
             }
         }
         return idsWithRange;
+    }
+
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
+    private List<String> finnLevendeIdenter(Long avspillergruppeId) {
+        return hodejegerenConsumer.getLevende(avspillergruppeId);
+    }
+
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
+    private List<String> finnDoedeOgUtvandredeIdenter(Long avspillergruppeId) {
+        return hodejegerenConsumer.getDoedeOgUtvandrede(avspillergruppeId);
+    }
+
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
+    private List<String> finnGifteIdenter(Long avspillergruppeId) {
+        return hodejegerenConsumer.getGifte(avspillergruppeId);
     }
 }

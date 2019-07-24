@@ -66,6 +66,11 @@
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.logback.encoder.version}</version>
         </dependency>
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>testnorge-consumers</artifactId>
+            <version>1.1.0-RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>

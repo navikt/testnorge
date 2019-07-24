@@ -9,6 +9,7 @@ import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putEktefellePartnerFnrInnIMelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +27,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
 
-import no.nav.registre.skd.consumer.HodejegerenConsumer;
 import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @Service
 @AllArgsConstructor
@@ -305,8 +306,9 @@ public class EksisterendeIdenterService {
         return statusQuoIdent;
     }
 
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
     private Map<String, String> getStatusQuoPaaIdent(Endringskoder endringskode, String environment, String fnr) {
-        return new HashMap<>(hodejegerenConsumer.getStatusQuoFraEndringskode(endringskode, environment, fnr));
+        return new HashMap<>(hodejegerenConsumer.getStatusQuo(endringskode.getEndringskode(), environment, fnr));
     }
 
     private RsMeldingstype1Felter opprettSivilstandsendringsmelding(RsMeldingstype identMelding, String identPartner) {
