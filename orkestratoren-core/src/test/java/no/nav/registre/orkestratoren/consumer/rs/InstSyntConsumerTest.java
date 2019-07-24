@@ -55,7 +55,7 @@ public class InstSyntConsumerTest {
     public void shouldStartSyntetisering() {
         stubInstConsumerStartSyntetisering();
 
-        ResponseEntity response = instSyntConsumer.startSyntetisering(syntetiserInstRequest);
+        ResponseEntity response = (ResponseEntity) instSyntConsumer.startSyntetisering(syntetiserInstRequest);
 
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
     }

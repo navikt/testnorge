@@ -55,7 +55,7 @@ public class StartSyntetiseringInstCompTest {
         stubTestnorgeInst();
 
         SyntetiserInstRequest ordreRequest = new SyntetiserInstRequest(gruppeId, miljoe1, antallNyeIdenter);
-        ResponseEntity response = syntetiseringsController.opprettInstitutjonsforholdIInst(ordreRequest);
+        ResponseEntity response = (ResponseEntity) syntetiseringsController.opprettInstitutjonsforholdIInst(ordreRequest);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

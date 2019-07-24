@@ -8,7 +8,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -21,7 +20,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 @Component
 public class InstSyntConsumer {
 
-    private static final ParameterizedTypeReference<List<ResponseEntity>> RESPONSE_TYPE_START_SYNT = new ParameterizedTypeReference<List<ResponseEntity>>() {
+    private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_START_SYNT = new ParameterizedTypeReference<Object>() {
     };
     private static final ParameterizedTypeReference<SletteInstitusjonsoppholdResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<SletteInstitusjonsoppholdResponse>() {
     };
@@ -38,7 +37,7 @@ public class InstSyntConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inst" })
-    public ResponseEntity startSyntetisering(SyntetiserInstRequest syntetiserInstRequest) {
+    public Object startSyntetisering(SyntetiserInstRequest syntetiserInstRequest) {
         RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserInstRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE_START_SYNT);
     }

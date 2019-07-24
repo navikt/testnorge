@@ -114,7 +114,7 @@ public class SyntetiseringsController {
 
     @LogExceptions
     @PostMapping(value = "/inst/institusjonsforhold/generer")
-    public ResponseEntity opprettInstitutjonsforholdIInst(@RequestBody SyntetiserInstRequest syntetiserInstRequest) {
+    public Object opprettInstitutjonsforholdIInst(@RequestBody SyntetiserInstRequest syntetiserInstRequest) {
         return instSyntPakkenService.genererInstitusjonsforhold(syntetiserInstRequest);
     }
 
