@@ -1,3 +1,4 @@
+
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
@@ -7,14 +8,11 @@ metadata:
     team: orkestrator
 spec:
   image: {{version}}
-  port: 8080
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
-    initialDelay: 30
   readiness:
     path: /internal/isReady
-    initialDelay: 30
   prometheus:
     path: /internal/prometheus
   replicas:
@@ -23,11 +21,11 @@ spec:
   vault:
     enabled: true
   resources:
-    limits:
-      cpu: 500m
-      memory: 2048Mi
     requests:
       cpu: 200m
       memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
   ingresses:
     - "https://testnorge-arena.nais.preprod.local"
