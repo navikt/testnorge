@@ -2,8 +2,8 @@ package no.nav.registre.arena.core.service;
 
 
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +29,7 @@ public class SyntetisertingServiceTest {
     private static final int ANTALL_EKSISTERENDE_ARBEIDSSOKERE = 15;
     private static final int ANTALL_OPPRETTEDE_ARBEIDSSOKERE = 5;
     private static final int ANTALL_LEVENDE_IDENTER = 100;
+    private static final int MINIMUM_ALDER = 16;
 
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
@@ -107,7 +108,7 @@ public class SyntetisertingServiceTest {
     }
 
     private List<Arbeidsoker> opprettIdenter(Integer antallNyeIdenter, String miljoe) {
-        doReturn(toIdenterOverAlder).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
+        doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
         doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentBrukere();
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
@@ -123,7 +124,7 @@ public class SyntetisertingServiceTest {
 
     @Test
     public void fyllFraTomArenaForvalter() {
-        doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
+        doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
         doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentBrukere();
         doReturn(tyveNyeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
@@ -153,7 +154,7 @@ public class SyntetisertingServiceTest {
 
     @Test
     public void fyllOppForvalterenTest() {
-        doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).finnLevendeIdenterOverAlder(avspillergruppeId);
+        doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
         doReturn(femtenEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentBrukere();
         doReturn(opprettedeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 

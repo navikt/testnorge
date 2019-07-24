@@ -15,7 +15,7 @@
 
     <groupId>no.nav.registre.arena</groupId>
     <artifactId>testnorge-arena</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <modules>
         <module>arena-core</module>
@@ -26,6 +26,12 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>no.nav.registre</groupId>
+                <artifactId>testnorge-consumers</artifactId>
+                <version>1.1.0-RELEASE</version>
+            </dependency>
 
             <!-- UTILITY -->
             <dependency>
