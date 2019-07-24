@@ -19,11 +19,6 @@
 
         <dependency>
             <groupId>no.nav.registre.arena</groupId>
-            <artifactId>arena-domain</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.registre.arena</groupId>
             <artifactId>arena-core</artifactId>
             <version>${project.version}</version>
         </dependency>
