@@ -7,8 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import no.nav.registre.aaregstub.vault.VaultUtil;
 
 @Slf4j
-@SpringBootApplication(exclude = {
-})
+@SpringBootApplication
 public class ApplicationStarter {
 
     public static void main(String[] args) {

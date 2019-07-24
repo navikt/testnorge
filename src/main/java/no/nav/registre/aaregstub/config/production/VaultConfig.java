@@ -27,7 +27,6 @@ public class VaultConfig implements InitializingBean {
 
     @Autowired
     public VaultConfig(SecretLeaseContainer container, HikariDataSource hikariDataSource, VaultDatabaseProperties properties) {
-        log.info("VAULTING IT");
         this.container = container;
         this.hikariDataSource = hikariDataSource;
         this.properties = properties;
