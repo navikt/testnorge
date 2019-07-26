@@ -1,6 +1,5 @@
 package no.nav.registre.arena.core.provider.rs;
 
-import no.nav.registre.arena.core.provider.rs.requests.SlettArenaRequest;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.SyntetiseringService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,8 @@ public class SyntetiseringController {
     }
 
     @PostMapping(value = "/slett")
-    public ResponseEntity<Map<String, List<String>>> slettBrukereIArenaForvalter(@RequestBody SlettArenaRequest slettArenaRequest) {
-        return slettBrukere(slettArenaRequest);
+    public ResponseEntity<Map<String, List<String>>> slettBrukereIArenaForvalter(@RequestParam String miljoe, @RequestBody List<String> identer) {
+        return slettBrukere(miljoe, identer);
     }
 
 
@@ -40,18 +39,17 @@ public class SyntetiseringController {
             ).size());
     }
 
-    private ResponseEntity<Map<String, List<String>>> slettBrukere(SlettArenaRequest slettArenaRequest) {
+    private ResponseEntity<Map<String, List<String>>> slettBrukere(String miljoe, List<String> identer) {
 
         Map<String, List<String>> responseBody = new HashMap<>();
+        List<String> alleIdenter = new ArrayList<>(identer);
 
         List<String> slettedeIdenter = new ArrayList<>(
-                syntetiseringService.slettBrukereIArenaForvalter(slettArenaRequest.getIdenter(), slettArenaRequest.getMiljoe()));
+                syntetiseringService.slettBrukereIArenaForvalter(identer, miljoe));
 
         responseBody.put("slettet", slettedeIdenter);
 
-        List<String> alleIdenter = new ArrayList<>(slettArenaRequest.getIdenter());
         alleIdenter.removeAll(slettedeIdenter);
-
         responseBody.put("ikkeSlettet", alleIdenter);
 
         return ResponseEntity.ok(responseBody);

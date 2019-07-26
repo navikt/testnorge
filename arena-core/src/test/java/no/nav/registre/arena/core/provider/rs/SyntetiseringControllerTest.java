@@ -1,7 +1,6 @@
 package no.nav.registre.arena.core.provider.rs;
 
 import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
-import no.nav.registre.arena.core.provider.rs.requests.SlettArenaRequest;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.SyntetiseringService;
 import org.junit.Before;
@@ -32,8 +31,6 @@ public class SyntetiseringControllerTest {
     private SyntetiseringController syntetiseringController;
 
     private SyntetiserArenaRequest syntetiserArenaRequest;
-    private SyntetiserArenaRequest syntetiserArenaRequestFyllOpp;
-    private SlettArenaRequest slettArenaRequest;
 
     private String miljoe = "q2";
     private Long avspillegruppeId = 10L;
@@ -51,8 +48,6 @@ public class SyntetiseringControllerTest {
     @Before
     public void setUp() {
         syntetiserArenaRequest = new SyntetiserArenaRequest(avspillegruppeId, miljoe, antallNyeIdenter);
-        syntetiserArenaRequestFyllOpp = new SyntetiserArenaRequest(avspillegruppeId, miljoe, null);
-        slettArenaRequest = new SlettArenaRequest(miljoe, Arrays.asList(fnr1, fnr2, fnr3, fnr4));
     }
 
 
@@ -72,7 +67,7 @@ public class SyntetiseringControllerTest {
                 .slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3, fnr4), miljoe))
                 .thenReturn(Arrays.asList(fnr1, fnr3, fnr4));
 
-        ResponseEntity<Map<String, List<String>>> response = syntetiseringController.slettBrukereIArenaForvalter(slettArenaRequest);
+        ResponseEntity<Map<String, List<String>>> response = syntetiseringController.slettBrukereIArenaForvalter(miljoe, Arrays.asList(fnr1, fnr2, fnr3, fnr4));
         assertThat(response.getBody().get("slettet"), is(Arrays.asList(fnr1, fnr3, fnr4)));
         assertThat(response.getBody().get("ikkeSlettet"), is(Collections.singletonList(fnr2)));
     }
