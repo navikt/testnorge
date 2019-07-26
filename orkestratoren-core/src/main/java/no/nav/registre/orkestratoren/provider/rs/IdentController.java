@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterResponse;
 import no.nav.registre.orkestratoren.service.IdentService;
 
@@ -20,7 +19,6 @@ public class IdentController {
     @Autowired
     private IdentService identService;
 
-    @LogExceptions
     @DeleteMapping()
     public SlettedeIdenterResponse slettIdenterFraAdaptere(
             @RequestParam Long avspillergruppeId,
