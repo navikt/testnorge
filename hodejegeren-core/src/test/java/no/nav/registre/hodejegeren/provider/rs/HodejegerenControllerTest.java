@@ -35,7 +35,7 @@ public class HodejegerenControllerTest {
     private String fnr;
     private Long avspillergruppeId;
     private String miljoe;
-    private Endringskoder endringskode;
+    private String endringskode;
     private int antallIdenter;
     private int minimumAlder;
     private int maksimumAlder;
@@ -46,7 +46,7 @@ public class HodejegerenControllerTest {
         fnr = "01010101010";
         avspillergruppeId = 100000445L;
         miljoe = "t9";
-        endringskode = Endringskoder.FOEDSELSMELDING;
+        endringskode = Endringskoder.FOEDSELSMELDING.getEndringskode();
         antallIdenter = 10;
         minimumAlder = 18;
         maksimumAlder = 67;

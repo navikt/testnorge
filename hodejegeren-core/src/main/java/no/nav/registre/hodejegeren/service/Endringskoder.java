@@ -53,4 +53,13 @@ public enum Endringskoder {
     public String getTranskode() {
         return endringskode.substring(2, 3);
     }
+
+    public static Endringskoder getEndringskodeFraVerdi(String endringskodeVerdi) {
+        for (Endringskoder endringskode : values()) {
+            if (endringskode.endringskode.equals(endringskodeVerdi)) {
+                return endringskode;
+            }
+        }
+        throw new IllegalArgumentException(endringskodeVerdi);
+    }
 }

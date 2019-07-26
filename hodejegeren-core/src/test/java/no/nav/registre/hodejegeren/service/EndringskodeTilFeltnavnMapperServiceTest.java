@@ -36,9 +36,9 @@ public class EndringskodeTilFeltnavnMapperServiceTest {
      */
     @Test
     public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
-        Endringskoder endringskoder = Endringskoder.NAVNEENDRING_FOERSTE;
+        String endringskode = Endringskoder.NAVNEENDRING_FOERSTE.getEndringskode();
 
-        endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskoder, environment, fnr);
+        endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, environment, fnr);
 
         ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
         Mockito.verify(tpsStatusQuoService).hentStatusQuo(eq(routineName), captor.capture(), eq(environment), eq(fnr));

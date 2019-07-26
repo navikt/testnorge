@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,21 +17,20 @@ public class EndringskodeTilFeltnavnMapperService {
     public static final String STATSBORGER = "statsborger"; // lagret i persdata
     public static final String STATSBORGERSKAP = "statsborgerskap"; // lagret i kerninfo
     public static final String NAV_ENHET = "NAVenhet"; // lagret i kerninfo
-    public static final String SIVILSTAND = "sivilstand";
-    public static final String DATO_SIVILSTAND = "datoSivilstand";
     public static final String FNR_RELASJON = "$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon";
-    public static final String KOMMUNENR = "kommunenr";
-    public static final String DATO_FLYTTET = "datoFlyttet";
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
-    @Autowired
-    TpsStatusQuoService tpsStatusQuoService;
 
-    public Map<String, String> getStatusQuoFraAarsakskode(Endringskoder endringskode, String environment, String fnr) throws IOException {
+    @Autowired
+    private TpsStatusQuoService tpsStatusQuoService;
+
+    public Map<String, String> getStatusQuoFraAarsakskode(String endringskode, String environment, String fnr) throws IOException {
         Map<String, String> personStatusQuo = new HashMap<>();
         List<String> feltnavn;
 
-        switch (endringskode) {
+        Endringskoder endringskoden = Endringskoder.getEndringskodeFraVerdi(endringskode);
+
+        switch (endringskoden) {
         case NAVNEENDRING_FOERSTE:
         case NAVNEENDRING_MELDING:
         case NAVNEENDRING_KORREKSJON:
@@ -62,7 +62,7 @@ public class EndringskodeTilFeltnavnMapperService {
         case DOEDSMELDING:
             feltnavn = Arrays.asList("datoDo", "statsborger", "sivilstand", "datoSivilstand");
             personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
-            feltnavn = Arrays.asList("$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon");
+            feltnavn = Collections.singletonList("$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon");
             personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSRELA, feltnavn, environment, fnr));
             break;
         case ANNULERING_FLYTTING_ADRESSEENDRING:

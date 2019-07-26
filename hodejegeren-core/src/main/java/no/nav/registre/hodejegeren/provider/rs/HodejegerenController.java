@@ -113,7 +113,7 @@ public class HodejegerenController {
     @LogExceptions
     @ApiOperation(value = "Her kan man sjekke status quo på en ident i TPS.")
     @GetMapping("api/v1/status-quo")
-    public Map<String, String> hentStatusQuoFraEndringskode(@RequestParam("endringskode") Endringskoder endringskode, @RequestParam("miljoe") String miljoe, @RequestParam("fnr") String fnr) throws IOException {
+    public Map<String, String> hentStatusQuoFraEndringskode(@RequestParam("endringskode") String endringskode, @RequestParam("miljoe") String miljoe, @RequestParam("fnr") String fnr) throws IOException {
         return new HashMap<>(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, miljoe, fnr));
     }
 
