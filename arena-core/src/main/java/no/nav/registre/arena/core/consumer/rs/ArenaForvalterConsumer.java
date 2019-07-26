@@ -52,9 +52,14 @@ public class ArenaForvalterConsumer {
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
-        ResponseEntity<StatusFraArenaForvalterResponse> response = createValidStatusFraArenaForvalterResponse(postRequest);
-        if (response == null)
+
+        ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
+
+        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
+            log.error("Kunne ikke sende brukere til Arena Forvalteren. Ingen respons.\nStatus: {}\nBody: {}",
+                    response.getStatusCode(), response.getBody());
             return new ArrayList<>();
+        }
 
         return response.getBody().getArbeidsokerList();
     }
@@ -65,9 +70,14 @@ public class ArenaForvalterConsumer {
                 .header("Nav-Call-Id", NAV_CALL_ID)
                 .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
                 .build();
-        ResponseEntity<StatusFraArenaForvalterResponse> response = createValidStatusFraArenaForvalterResponse(getRequest);
-        if (response == null)
+
+        ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+
+        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
+            log.error("Kunne ikke hente brukere fra Arena Forvalteren.\nStatus: {}\nBody: {}",
+                    response.getStatusCode(), response.getBody());
             return new ArrayList<>();
+        }
 
         List<Arbeidsoker> responseList =
                 new ArrayList<>(response.getBody().getAntallSider() * response.getBody().getArbeidsokerList().size());
@@ -109,18 +119,5 @@ public class ArenaForvalterConsumer {
         }
 
         return true;
-    }
-
-    private ResponseEntity<StatusFraArenaForvalterResponse> createValidStatusFraArenaForvalterResponse(RequestEntity request) {
-        ResponseEntity<StatusFraArenaForvalterResponse> response =
-                restTemplate.exchange(request, StatusFraArenaForvalterResponse.class);
-
-        if(response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-            log.error("Status: {}", response.getStatusCode());
-            log.error("Body: {}", response.getBody());
-            return null;
-        }
-
-        return response;
     }
 }
