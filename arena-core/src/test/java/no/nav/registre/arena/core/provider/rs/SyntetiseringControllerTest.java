@@ -13,6 +13,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -70,9 +72,9 @@ public class SyntetiseringControllerTest {
                 .slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3, fnr4), miljoe))
                 .thenReturn(Arrays.asList(fnr1, fnr3, fnr4));
 
-        ResponseEntity<Map<String, Integer>> response = syntetiseringController.slettBrukereIArenaForvalter(slettArenaRequest);
-        assertThat(response.getBody().get("slettet"), is(3));
-        assertThat(response.getBody().get("ikkeSlettet"), is(1));
+        ResponseEntity<Map<String, List<String>>> response = syntetiseringController.slettBrukereIArenaForvalter(slettArenaRequest);
+        assertThat(response.getBody().get("slettet"), is(Arrays.asList(fnr1, fnr3, fnr4)));
+        assertThat(response.getBody().get("ikkeSlettet"), is(Collections.singletonList(fnr2)));
     }
 
 

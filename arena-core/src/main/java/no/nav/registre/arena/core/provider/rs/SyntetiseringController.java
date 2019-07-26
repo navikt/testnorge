@@ -26,7 +26,7 @@ public class SyntetiseringController {
     }
 
     @PostMapping(value = "/slett")
-    public ResponseEntity<Map<String, Integer>> slettBrukereIArenaForvalter(@RequestBody SlettArenaRequest slettArenaRequest) {
+    public ResponseEntity<Map<String, List<String>>> slettBrukereIArenaForvalter(@RequestBody SlettArenaRequest slettArenaRequest) {
         return slettBrukere(slettArenaRequest);
     }
 
@@ -40,19 +40,19 @@ public class SyntetiseringController {
             ).size());
     }
 
-    private ResponseEntity<Map<String, Integer>> slettBrukere(SlettArenaRequest slettArenaRequest) {
+    private ResponseEntity<Map<String, List<String>>> slettBrukere(SlettArenaRequest slettArenaRequest) {
 
-        Map<String, Integer> responseBody = new HashMap<>();
+        Map<String, List<String>> responseBody = new HashMap<>();
 
         List<String> slettedeIdenter = new ArrayList<>(
                 syntetiseringService.slettBrukereIArenaForvalter(slettArenaRequest.getIdenter(), slettArenaRequest.getMiljoe()));
 
-        responseBody.put("slettet", slettedeIdenter.size());
+        responseBody.put("slettet", slettedeIdenter);
 
         List<String> alleIdenter = new ArrayList<>(slettArenaRequest.getIdenter());
         alleIdenter.removeAll(slettedeIdenter);
 
-        responseBody.put("ikkeSlettet", alleIdenter.size());
+        responseBody.put("ikkeSlettet", alleIdenter);
 
         return ResponseEntity.ok(responseBody);
     }
