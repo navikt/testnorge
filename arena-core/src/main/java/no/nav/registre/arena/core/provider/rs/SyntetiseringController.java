@@ -1,6 +1,5 @@
 package no.nav.registre.arena.core.provider.rs;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.SyntetiseringService;
