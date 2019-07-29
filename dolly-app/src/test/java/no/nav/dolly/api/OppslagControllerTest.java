@@ -23,6 +23,7 @@ import no.nav.dolly.kodeverk.KodeverkMapper;
 import no.nav.dolly.norg2.Norg2Consumer;
 import no.nav.dolly.norg2.Norg2EnhetResponse;
 import no.nav.dolly.personoppslag.PersonoppslagConsumer;
+import no.nav.dolly.syntdata.SyntdataConsumer;
 import no.nav.tjenester.kodeverk.api.v1.Betydning;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
@@ -34,6 +35,8 @@ public class OppslagControllerTest {
     private static final String ENHET_NAVN = "Nav Sagene";
     private static final String IDENT = "12345678901";
     private static final String OPPLYSNINGER = "Personopplysninger";
+    private static final String PATH = "/test";
+    private static final Integer AMOUNT = 1;
 
     @Mock
     private KodeverkConsumer kodeverkConsumer;
@@ -58,6 +61,9 @@ public class OppslagControllerTest {
 
     @Mock
     private PersonoppslagConsumer personoppslagConsumer;
+
+    @Mock
+    private SyntdataConsumer syntdataConsumer;
 
     @Test
     public void fetchKodeverkByName_happyPath() {
@@ -98,6 +104,17 @@ public class OppslagControllerTest {
         ResponseEntity response = oppslagController.personoppslag(IDENT);
 
         verify(personoppslagConsumer).fetchPerson(IDENT);
+        assertThat(response.getBody(), is(equalTo(OPPLYSNINGER)));
+    }
+
+    @Test
+    public void syntdata_happyPath() {
+
+        when(syntdataConsumer.generate(PATH, AMOUNT)).thenReturn(ResponseEntity.ok(OPPLYSNINGER));
+
+        ResponseEntity response = oppslagController.syntdataGenerate(PATH, AMOUNT);
+
+        verify(syntdataConsumer).generate(PATH, AMOUNT);
         assertThat(response.getBody(), is(equalTo(OPPLYSNINGER)));
     }
 }

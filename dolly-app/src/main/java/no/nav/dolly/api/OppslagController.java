@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
@@ -17,6 +18,7 @@ import no.nav.dolly.kodeverk.KodeverkMapper;
 import no.nav.dolly.norg2.Norg2Consumer;
 import no.nav.dolly.norg2.Norg2EnhetResponse;
 import no.nav.dolly.personoppslag.PersonoppslagConsumer;
+import no.nav.dolly.syntdata.SyntdataConsumer;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
 @RestController
@@ -35,6 +37,9 @@ public class OppslagController {
     @Autowired
     private PersonoppslagConsumer personoppslagConsumer;
 
+    @Autowired
+    private SyntdataConsumer syntdataConsumer;
+
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
     public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
@@ -51,5 +56,10 @@ public class OppslagController {
     @GetMapping("/personoppslag/ident/{ident}")
     public ResponseEntity personoppslag(@PathVariable("ident") String ident) {
         return personoppslagConsumer.fetchPerson(ident);
+    }
+
+    @GetMapping("/syntdata")
+    public ResponseEntity syntdataGenerate(@RequestParam("path") String path, @RequestParam("numToGenerate") Integer numToGenerate) {
+        return syntdataConsumer.generate(path, numToGenerate);
     }
 }
