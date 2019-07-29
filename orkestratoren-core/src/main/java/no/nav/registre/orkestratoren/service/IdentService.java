@@ -1,11 +1,11 @@
 package no.nav.registre.orkestratoren.service;
 
-import java.util.List;
-
-import no.nav.registre.orkestratoren.consumer.rs.ArenaConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+import no.nav.registre.orkestratoren.consumer.rs.ArenaConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.InstSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.PoppSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;

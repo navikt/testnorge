@@ -1,9 +1,7 @@
 package no.nav.registre.orkestratoren.batch;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +10,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;

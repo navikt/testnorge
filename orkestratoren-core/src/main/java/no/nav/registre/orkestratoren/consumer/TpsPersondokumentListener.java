@@ -2,27 +2,24 @@ package no.nav.registre.orkestratoren.consumer;
 
 import static java.lang.String.format;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.TextMessage;
-
+import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
+import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.TextMessage;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import no.nav.registre.orkestratoren.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.orkestratoren.consumer.utils.PersondokumentConverter;
-
-import no.rtv.namespacetps.TpsPersonDokumentType;
 
 @Slf4j
 @Component

@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class SletteArenaResponse {
+
     @JsonProperty("slettet")
     private List<String> slettet;
     @JsonProperty("ikkeSlettet")
