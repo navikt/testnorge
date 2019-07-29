@@ -3,6 +3,8 @@ package no.nav.registre.orkestratoren.provider.rs;
 import java.util.Arrays;
 import java.util.List;
 
+import no.nav.registre.orkestratoren.provider.rs.requests.*;
+import no.nav.registre.orkestratoren.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,25 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
-import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
-import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
-import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
-import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
-import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
-import no.nav.registre.orkestratoren.service.SamSyntPakkenService;
-import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
-import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
@@ -69,6 +52,9 @@ public class SyntetiseringsController {
 
     @Autowired
     private SamSyntPakkenService samSyntPakkenService;
+
+    @Autowired
+    private ArenaSyntPakkenService arenaSyntPakkenService;
 
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
@@ -134,5 +120,11 @@ public class SyntetiseringsController {
     @PostMapping(value = "/sam/samordningsmeldinger/generer")
     public ResponseEntity opprettSamordningsmeldingerISam(@RequestBody SyntetiserSamRequest syntetiserSamRequest) {
         return samSyntPakkenService.genererSamordningsmeldinger(syntetiserSamRequest);
+    }
+
+    @LogExceptions
+    @PostMapping(value = "/arena/arbeidsoker/generer")
+    public List<String> opprettArbeidssokereIArena(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
+        return arenaSyntPakkenService.opprettArbeidssokereIArena(syntetiserArenaRequest);
     }
 }

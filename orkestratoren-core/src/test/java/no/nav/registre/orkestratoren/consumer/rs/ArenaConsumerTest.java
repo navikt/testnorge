@@ -1,5 +1,6 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
+import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,12 +15,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -52,8 +56,20 @@ public class ArenaConsumerTest {
     public void shouldSendTilArenaForvalteren() {
         stubArenaConsumerLeggTilIdenter();
 
-        int antallOpprettede = arenaConsumer.opprettArbeidsokere(syntetiserArenaRequest);
-        assertThat(antallOpprettede, is(2));
+        List<String> opprettedeIdenter = arenaConsumer.opprettArbeidsokere(syntetiserArenaRequest);
+        assertThat(opprettedeIdenter.size(), is(2));
+        assertThat(opprettedeIdenter.get(1), containsString(fnr3));
+    }
+
+    @Test
+    public void shouldDeleteIdenter() {
+        stubArenaConsumerSlettIdenter();
+
+        List<String> identerToBeSlettet = Arrays.asList(fnr2, fnr3);
+        SletteArenaResponse response = arenaConsumer.slettIdenter(MILJOE, identerToBeSlettet);
+        assertThat(response.getSlettet().size(), is(2));
+        assertThat(response.getIkkeSlettet().size(), is(0));
+        assertThat(response.getSlettet().get(0), containsString(fnr2));
     }
 
 
@@ -63,21 +79,22 @@ public class ArenaConsumerTest {
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\": " + AVSPILLERGRUPPE_ID +
                                 ", \"miljoe\": \"" + MILJOE + "\"" +
-                                ", \"antallNyeIdenter\": " + identer.size() + "}"
+                                ", \"antallNyeIdenter\": 2}"
                 ))
-                .willReturn(ok()
+                .willReturn(aResponse()
+                        .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody("" + identer.size())));
+                        .withBody("{\"registrerteIdenter\": [\"" + fnr2 + "\",\"" + fnr3 + "\"]}")));
     }
 
     private void stubArenaConsumerSlettIdenter() {
-        stubFor(delete(urlPathEqualTo("/arena/api/v1/slett?miljoe=" + MILJOE))
-        .withRequestBody(equalToJson("[\"" + identer.get(1) + "\",\"" + identer.get(2) + "\"]"))
+        stubFor(delete(urlEqualTo("/arena/api/v1/slett?miljoe=" + MILJOE))
+                .withRequestBody(equalToJson("[\"" + identer.get(1) + "\",\"" + identer.get(2) + "\"]"))
                 .willReturn(ok()
-                .withHeader("Content-Type", "application/json")
-                .withBody(
-                        "{ \"slettet\": [\"" + identer.get(1) + "\",\"" + identer.get(2) + "\"],\"ikkeSlettet\": [] }"
-                )));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                "{ \"slettet\": [\"" + identer.get(1) + "\",\"" + identer.get(2) + "\"],\"ikkeSlettet\": [] }"
+                        )));
     }
 
 }

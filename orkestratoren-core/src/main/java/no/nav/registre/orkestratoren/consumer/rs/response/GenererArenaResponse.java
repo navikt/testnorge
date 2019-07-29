@@ -12,9 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SletteArenaResponse {
-    @JsonProperty("slettet")
-    private List<String> slettet;
-    @JsonProperty("ikkeSlettet")
-    private List<String> ikkeSlettet;
+public class GenererArenaResponse {
+    @JsonProperty("registrerteIdenter")
+    private List<String> registrerteIdenter;
 }

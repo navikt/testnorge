@@ -2,6 +2,7 @@ package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.orkestratoren.consumer.rs.response.GenererArenaResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +13,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Component
 public class ArenaConsumer {
-    private static final ParameterizedTypeReference<Integer> RESPONSE_TYPE = new ParameterizedTypeReference<Integer>() {
+    private static final ParameterizedTypeReference<GenererArenaResponse> RESPONSE_TYPE = new ParameterizedTypeReference<GenererArenaResponse>() {
     };
     private static final ParameterizedTypeReference<SletteArenaResponse> RESPONSE_TYPE_DELETE =
             new ParameterizedTypeReference<SletteArenaResponse>() {
@@ -39,21 +42,22 @@ public class ArenaConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = {"operation", "arena"})
-    public int opprettArbeidsokere(SyntetiserArenaRequest syntetiserArenaRequest) {
+    public List<String> opprettArbeidsokere(SyntetiserArenaRequest syntetiserArenaRequest) {
         RequestEntity postRequest = RequestEntity.post(arenaOpprettArbeidsokereUrl.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(syntetiserArenaRequest);
 
-        int antallOpprettedeArbeidsokere = 0;
-        ResponseEntity<Integer> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
+        List<String> opprettedeIdenter;
+        ResponseEntity<GenererArenaResponse> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
 
         if (response != null && response.getBody() != null)
-            antallOpprettedeArbeidsokere = response.getBody();
-        else
+            opprettedeIdenter = response.getBody().getRegistrerteIdenter();
+        else {
             log.error("Kunne ikke hente response body fra testnorge-arena/generer: NullpointerException");
+            opprettedeIdenter = new ArrayList<>();
+        }
 
-
-        return antallOpprettedeArbeidsokere;
+        return opprettedeIdenter;
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = {"operation", "arena"})
