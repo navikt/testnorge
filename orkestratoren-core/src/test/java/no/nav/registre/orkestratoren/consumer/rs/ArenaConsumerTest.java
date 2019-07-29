@@ -56,7 +56,7 @@ public class ArenaConsumerTest {
     public void shouldSendTilArenaForvalteren() {
         stubArenaConsumerLeggTilIdenter();
 
-        List<String> opprettedeIdenter = arenaConsumer.opprettArbeidsokere(syntetiserArenaRequest);
+        List<String> opprettedeIdenter = arenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest);
         assertThat(opprettedeIdenter.size(), is(2));
         assertThat(opprettedeIdenter.get(1), containsString(fnr3));
     }

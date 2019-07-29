@@ -15,6 +15,6 @@ public class ArenaSyntPakkenService {
     ArenaConsumer arenaConsumer;
 
     public List<String> opprettArbeidssokereIArena(SyntetiserArenaRequest arenaRequest) {
-        return arenaConsumer.opprettArbeidsokere(arenaRequest);
+        return arenaConsumer.opprettArbeidsoekere(arenaRequest);
     }
 }

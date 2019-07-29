@@ -33,17 +33,17 @@ public class ArenaConsumer {
     @Autowired
     private RestTemplate restTemplate;
 
-    private UriTemplate arenaOpprettArbeidsokereUrl;
-    private UriTemplate arenaSlettArbeidsokereUrl;
+    private UriTemplate arenaOpprettArbeidsoekereUrl;
+    private UriTemplate arenaSlettArbeidsoekereUrl;
 
     public ArenaConsumer(@Value("${testnorge-arena.rest-api.url}") String arenaServerUrl) {
-        this.arenaOpprettArbeidsokereUrl = new UriTemplate(arenaServerUrl + "/v1/generer");
-        this.arenaSlettArbeidsokereUrl = new UriTemplate(arenaServerUrl + "/v1/slett?miljoe={miljoe}");
+        this.arenaOpprettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/generer");
+        this.arenaSlettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/slett?miljoe={miljoe}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public List<String> opprettArbeidsokere(SyntetiserArenaRequest syntetiserArenaRequest) {
-        RequestEntity postRequest = RequestEntity.post(arenaOpprettArbeidsokereUrl.expand())
+    public List<String> opprettArbeidsoekere(SyntetiserArenaRequest syntetiserArenaRequest) {
+        RequestEntity postRequest = RequestEntity.post(arenaOpprettArbeidsoekereUrl.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(syntetiserArenaRequest);
 
@@ -54,7 +54,7 @@ public class ArenaConsumer {
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
     public SletteArenaResponse slettIdenter(String miljoe, List<String> identer) {
-        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, arenaSlettArbeidsokereUrl.expand(miljoe))
+        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, arenaSlettArbeidsoekereUrl.expand(miljoe))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(identer);
 

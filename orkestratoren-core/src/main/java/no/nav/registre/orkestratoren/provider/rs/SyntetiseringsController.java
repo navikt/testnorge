@@ -141,8 +141,8 @@ public class SyntetiseringsController {
     }
 
     @LogExceptions
-    @PostMapping(value = "/arena/arbeidsoker/generer")
-    public List<String> opprettArbeidssokereIArena(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
+    @PostMapping(value = "/arena/arbeidsoeker/generer")
+    public List<String> opprettArbeidssoekereIArena(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
         return arenaSyntPakkenService.opprettArbeidssokereIArena(syntetiserArenaRequest);
     }
 }
