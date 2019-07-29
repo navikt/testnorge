@@ -16,6 +16,16 @@ export const getAaregSuccessEnv = aaregStatusArray => {
 	return envs
 }
 
+export const getPdlforvalterStatusOK = pdlforvalterStatus => {
+	return Object.keys(pdlforvalterStatus).map(pdlAttr => {
+		return pdlforvalterStatus[pdlAttr].map(status => {
+			if (status.statusMelding === 'OK') {
+				return true
+			}
+		})
+	})
+}
+
 export const sokSelector = (items, searchStr) => {
 	if (!items) return null
 	const mappedItems = mapItems(items)
@@ -78,6 +88,14 @@ const avvikStatus = item => {
 		item.sigrunStubStatus.map(status => {
 			status.statusMelding !== 'OK' && (avvik = true)
 		})
+	item.pdlforvalterStatus &&
+		Object.keys(item.pdlforvalterStatus).map(pdlAttr => {
+			// Looper gjennom pdl-attributter. F.eks. generell pdl, dødsbo, utenlandsid
+			item.pdlforvalterStatus[pdlAttr].map(status => {
+				status.statusMelding !== 'OK' && (avvik = true)
+			})
+		})
+
 	item.arenaforvalterStatus &&
 		item.arenaforvalterStatus.map(status => {
 			status.status !== 'OK' && (avvik = true)

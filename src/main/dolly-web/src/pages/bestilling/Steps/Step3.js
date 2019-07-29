@@ -141,8 +141,8 @@ export default class Step3 extends PureComponent {
 					{values.nyMal && (
 						<Field
 							name="malNavn"
-							label="Mal navn"
-							className="input-field"
+							label="Malnavn"
+							className="input-field-mal-input"
 							type="string"
 							component={FormikInput}
 						/>
@@ -198,6 +198,15 @@ export default class Step3 extends PureComponent {
 		)
 	}
 
+	renderSubKategori = ({ subKategori, items }) => {
+		const { values } = this.props
+
+		if (!subKategori.showInSummary) {
+			return items.map(item => this.renderItem(item, values))
+		}
+		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
+	}
+
 	renderSubKategoriBlokk = (header, items, values) => {
 		if (!items.every(nested => nested.items)) {
 			let removable = !items.every(item => this.props.selectedAttributeIds.includes(item.id))
@@ -232,14 +241,21 @@ export default class Step3 extends PureComponent {
 		if (subKategori.id === 'arena') {
 			return items[0].items.map(item => this.renderItem(item, values))
 		}
+		if (subKategori.id === 'utenlandskIdentifikasjonsnummer') {
+			return items[0].items.map(item => this.renderItem(item, values))
+		}
 		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
 	renderItem = (item, stateValues) => {
 		if (item.items) {
 			const valueArray = _get(this.props.values, item.id)
+			const numberOfValues = valueArray.length
 			return valueArray.map((values, idx) => {
-				return this.renderSubKategoriBlokk(idx + 1, item.items, values)
+				Object.keys(values).map(attr => !values[attr] && delete values[attr])
+				return valueArray.length > 1
+					? this.renderSubKategoriBlokk(idx + 1, item.items, values)
+					: this.renderSubKategoriBlokk(null, item.items, values)
 			})
 		}
 
@@ -252,7 +268,13 @@ export default class Step3 extends PureComponent {
 				? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
 						_get(stateValues['arenaforvalter'][0], item.id)
 				  ))
-				: (itemValue = _get(stateValues['arenaforvalter'][0], item.id))
+				: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
+		}
+
+		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
+			itemValue = Formatters.oversettBoolean(
+				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
+			)
 		}
 
 		const staticValueProps = {
@@ -264,7 +286,6 @@ export default class Step3 extends PureComponent {
 
 		if (item.onlyShowAfterSelectedValue && !itemValue) return null
 		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
-
 		return (
 			<RemoveableField
 				removable={this.state.edit && this.props.selectedAttributeIds.indexOf(item.id) >= 0}
@@ -290,6 +311,7 @@ export default class Step3 extends PureComponent {
 
 	_onRemoveSubKategori(items, header) {
 		if (typeof header === 'number') {
+			//|| header === null
 			this.props.deleteValuesArray({
 				values: [...new Set(items.map(item => item.subKategori.id))],
 				index: header - 1

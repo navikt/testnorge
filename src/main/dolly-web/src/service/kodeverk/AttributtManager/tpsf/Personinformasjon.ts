@@ -57,14 +57,14 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Kjønnstyper',
-		attributtType: AttributtType.SelectAndEdit,
+		attributtType: AttributtType.SelectOnly,
 		sattForEksisterendeIdent: true
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Diverse,
 		id: 'sivilstand',
-		label: 'Sivilstander',
+		label: 'Sivilstand',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Sivilstander',
@@ -99,7 +99,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		options: SelectOptionsManager('boolean'),
-		attributtType: AttributtType.SelectAndRead
+		attributtType: AttributtType.SelectOnly
 	},
 	{
 		hovedKategori: Kategorier.PersInfo,
@@ -114,7 +114,7 @@ const AttributtListe: Attributt[] = [
 		hovedKategori: Kategorier.PersInfo,
 		subKategori: SubKategorier.Diverse,
 		id: 'spesreg',
-		label: 'Diskresjonskoder',
+		label: 'Diskresjonskode',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Diskresjonskoder',
