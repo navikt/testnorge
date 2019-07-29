@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import no.nav.registre.hodejegeren.provider.rs.requests.SlettIdenterRequest;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 import no.nav.registre.hodejegeren.service.Endringskoder;
@@ -125,6 +126,13 @@ public class HodejegerenControllerTest {
     public void shouldHenteStatusQuoFraEndringskode() throws IOException {
         hodejegerenController.hentStatusQuoFraEndringskode(endringskode, miljoe, fnr);
         verify(endringskodeTilFeltnavnMapperService).getStatusQuoFraAarsakskode(endringskode, miljoe, fnr);
+    }
+
+    @Test
+    public void shouldSletteIdenterUtenStatusQuo() throws IOException {
+        SlettIdenterRequest slettIdenterRequest = new SlettIdenterRequest(myndigeIdenter);
+        hodejegerenController.slettIdenterUtenStatusQuo(avspillergruppeId, miljoe, slettIdenterRequest);
+        verify(eksisterendeIdenterService).slettIdenterUtenStatusQuo(avspillergruppeId, miljoe, myndigeIdenter);
     }
 
     @Test

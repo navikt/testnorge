@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,10 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
+import no.nav.registre.hodejegeren.provider.rs.requests.SlettIdenterRequest;
+import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
-import no.nav.registre.hodejegeren.service.Endringskoder;
 
 @RestController
 public class HodejegerenController {
@@ -115,6 +117,14 @@ public class HodejegerenController {
     @GetMapping("api/v1/status-quo")
     public Map<String, String> hentStatusQuoFraEndringskode(@RequestParam("endringskode") String endringskode, @RequestParam("miljoe") String miljoe, @RequestParam("fnr") String fnr) throws IOException {
         return new HashMap<>(endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, miljoe, fnr));
+    }
+
+    @LogExceptions
+    @ApiOperation(value = "Her kan man sende inn en liste med identer og hodejegeren vil slette alle som ikke ligger i TPS (de som mangler status-quo-informasjon).")
+    @DeleteMapping("api/v1/status-quo-slett")
+    public SlettIdenterResponse slettIdenterUtenStatusQuo(@RequestParam("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe, @RequestBody SlettIdenterRequest slettIdenterRequest)
+            throws IOException {
+        return eksisterendeIdenterService.slettIdenterUtenStatusQuo(avspillergruppeId, miljoe, slettIdenterRequest.getIdenterSomSkalSlettes());
     }
 
     @LogExceptions

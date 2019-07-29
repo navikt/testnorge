@@ -1,7 +1,9 @@
 package no.nav.registre.hodejegeren.consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
@@ -20,7 +22,9 @@ import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RunWith(SpringRunner.class)
@@ -78,5 +82,41 @@ public class TpsfConsumerTest {
                 .andRespond(request -> new MockClientHttpResponse("[]".getBytes(), HttpStatus.OK));
 
         tpsfConsumer.getTpsServiceRoutine(rutinenavn, aksjonskode, environment, fnr);
+    }
+
+    /**
+     * Tester om konsumenten bygger korrekt URI og path-variabel.
+     * Og mottar en liste med Long, med de rette elementene i.
+     */
+    @Test
+    public void shouldWriteProperRequestAndGetMeldingIds() {
+        Long avspillergruppeId = 123L;
+        String fnr = "01010101010";
+        List<String> fnrs = Collections.singletonList(fnr);
+        String expectedUri = serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}";
+        Long expectedMeldingId = 234L;
+
+        this.server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
+                .andRespond(withSuccess("[" + expectedMeldingId + "]", MediaType.APPLICATION_JSON));
+
+        List<Long> meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(this.avspillergruppeId, fnrs);
+
+        assertThat(meldingIderTilhoerendeIdenter, containsInAnyOrder(expectedMeldingId));
+    }
+
+    /**
+     * Tester om konsumenten bygger korrekt URI og request-body.
+     */
+    @Test
+    public void shouldWriteProperRequestAndDeleteMeldinger() {
+        String expectedUri = serverUrl + "/v1/endringsmelding/skd/deletemeldinger";
+        Long expectedMeldingId = 234L;
+        List<Long> expectedMeldingIds = Collections.singletonList(expectedMeldingId);
+
+        this.server.expect(requestToUriTemplate(expectedUri))
+                .andExpect(content().json("{\"ids\":[" + expectedMeldingIds.get(0) + "]}"))
+                .andRespond(withSuccess());
+
+        tpsfConsumer.slettMeldingerFraTpsf(expectedMeldingIds);
     }
 }

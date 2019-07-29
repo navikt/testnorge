@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +46,8 @@ import java.util.Random;
 import java.util.Set;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
+import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -312,5 +313,28 @@ public class EksisterendeIdenterServiceTest {
         assertThat(response.getRelasjoner().size(), is(2));
         assertThat(response.getRelasjoner().get(0).getFnrRelasjon(), equalTo("12021790069"));
         assertThat(response.getRelasjoner().get(1).getFnrRelasjon(), equalTo("17120080318"));
+    }
+
+    @Test
+    public void shouldSletteIdenterUtenStatusQuo() throws IOException {
+        Long avspillergruppeId = 123L;
+        String fnr = "01010101010";
+        List<String> identer = Collections.singletonList(fnr);
+        Long meldingId = 123L;
+        List<Long> meldingIds = Collections.singletonList(meldingId);
+
+        ManglendeInfoITpsException manglendeInfoITpsException = new ManglendeInfoITpsException(
+                "Kunne ikke finne status quo på person med fnr " + fnr + " for felt 'datoDo'. Utfyllende melding fra TPS: PERSON IKKE FUNNET");
+
+        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, fnr)).thenThrow(manglendeInfoITpsException);
+        when(tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer)).thenReturn(meldingIds);
+        when(tpsfConsumer.slettMeldingerFraTpsf(meldingIds)).thenReturn(ResponseEntity.ok().build());
+
+        SlettIdenterResponse slettIdenterResponse = eksisterendeIdenterService.slettIdenterUtenStatusQuo(avspillergruppeId, miljoe, identer);
+
+        assertThat(slettIdenterResponse.getIdenterSomBleSlettetFraAvspillergruppe(), containsInAnyOrder(fnr));
+        verify(tpsStatusQuoService).hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, fnr);
+        verify(tpsfConsumer).getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer);
+        verify(tpsfConsumer).slettMeldingerFraTpsf(meldingIds);
     }
 }
