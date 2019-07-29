@@ -204,7 +204,7 @@ export default handleActions(
 // - kanskje flyttes ut til egen fil (er jo bare en formatter og ikke thunk)
 // - kan dette være mer generisk? bruke datasource nodene i AttributtManager?
 // - CNN: LAGT TIL TPSF HARDKODET FOR NÅ FOR TESTING. FINN GENERISK LØSNING
-const bestillingFormatter = bestillingState => {
+const bestillingFormatter = (bestillingState, oppslag) => {
 	const {
 		attributeIds,
 		antall,
@@ -215,9 +215,9 @@ const bestillingFormatter = bestillingState => {
 		eksisterendeIdentListe,
 		malBestillingNavn
 	} = bestillingState
+
 	const AttributtListe = AttributtManagerInstance.listAllSelected(attributeIds)
 	let final_values = []
-
 	identOpprettesFra === BestillingMapper()
 		? (final_values = {
 				antall: antall,
@@ -255,6 +255,7 @@ const bestillingFormatter = bestillingState => {
 			}
 		]
 	}
+
 	if (_get(final_values, 'arenaforvalter')) {
 		if (_get(final_values, 'arenaforvalter.arenaBrukertype') !== 'MED_SERVICEBEHOV') {
 			final_values.arenaforvalter = {
@@ -262,20 +263,52 @@ const bestillingFormatter = bestillingState => {
 				arenaBrukertype: 'UTEN_SERVICEBEHOV'
 			}
 		}
+		if (_get(final_values, 'arenaforvalter.aap115') === true) {
+			final_values.arenaforvalter.aap115 = [
+				{
+					fraDato: final_values.arenaforvalter.aap115_fraDato
+				}
+			]
+		} else delete final_values.arenaforvalter.aap115
+
+		if (_get(final_values, 'arenaforvalter.aap') === true) {
+			final_values.arenaforvalter.aap = [
+				{
+					fraDato: final_values.arenaforvalter.aap_fraDato,
+					tilDato: final_values.arenaforvalter.aap_tilDato
+				}
+			]
+		} else delete final_values.arenaforvalter.aap
+		delete final_values.arenaforvalter.aap115_fraDato
+		delete final_values.arenaforvalter.aap_fraDato
+		delete final_values.arenaforvalter.aap_tilDato
 	}
+
 	if (malBestillingNavn !== '') {
 		final_values = _set(final_values, 'malBestillingNavn', malBestillingNavn)
 	}
 
-	// * Denne kan beholdes for enklere debug på u2/prod
-	console.info('POSTING BESTILLING', final_values)
+	final_values.pdlforvalter &&
+		final_values.pdlforvalter.kontaktinformasjonForDoedsbo &&
+		final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
+		oppslag.Postnummer.koder.map(postnummer => {
+			postnummer.value === final_values.pdlforvalter.kontaktinformasjonForDoedsbo.postnummer &&
+				(final_values = _set(
+					final_values,
+					'pdlforvalter.kontaktinformasjonForDoedsbo.poststedsnavn',
+					postnummer.label
+				))
+		})
+
+	// * Vurdere behovet for denne i U2/prod. Uglify?
+	//console.info('POSTING BESTILLING', final_values)
 
 	return final_values
 }
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
-	const { currentBestilling } = getState()
-	const values = bestillingFormatter(currentBestilling)
+	const { currentBestilling, oppslag } = getState()
+	const values = bestillingFormatter(currentBestilling, oppslag)
 	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {

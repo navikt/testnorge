@@ -16,6 +16,12 @@ const avvikStatus = item => {
 		item.sigrunStubStatus.map(status => {
 			status.statusMelding !== 'OK' && (avvik = true)
 		})
+	item.pdlforvalterStatus &&
+		Object.keys(item.pdlforvalterStatus).map(pdlAttr => {
+			item.pdlforvalterStatus[pdlAttr].map(status => {
+				status.statusMelding !== 'OK' && (avvik = true)
+			})
+		})
 	item.arenaforvalterStatus &&
 		item.arenaforvalterStatus.map(status => {
 			status.status !== 'OK' && (avvik = true)
@@ -84,13 +90,15 @@ const miljoeStatusSelector = bestilling => {
 				!failedEnvs.includes('Sigrun-stub') && failedEnvs.push('Sigrun-stub')
 			}
 		})
-	bestilling.arenaforvalterStatus &&
-		bestilling.arenaforvalterStatus.map(status => {
-			if (status.status == 'OK') {
-				!successEnvs.includes('Arena') && successEnvs.push('Arena')
-			} else {
-				!failedEnvs.includes('Arena') && failedEnvs.push('Arena')
-			}
+	bestilling.pdlforvalterStatus &&
+		Object.keys(bestilling.pdlforvalterStatus).map(pdlAttr => {
+			bestilling.pdlforvalterStatus[pdlAttr].map(status => {
+				status.statusMelding === 'OK'
+					? !successEnvs.includes('Pdl-forvalter') &&
+					  !failedEnvs.includes('Pdl-forvalter') &&
+					  successEnvs.push('Pdl-forvalter')
+					: !failedEnvs.includes('Pdl-forvalter') && failedEnvs.push('Pdl-forvalter')
+			})
 		})
 
 	let aaregHasOneSuccessEnv = false
@@ -111,6 +119,26 @@ const miljoeStatusSelector = bestilling => {
 				? avvikEnvs.push('AAREG')
 				: failedEnvs.push('AAREG')
 			: successEnvs.push('AAREG')
+	}
+
+	let arenaHasOneSuccessEnv = false
+	let arenaFailed = false
+	bestilling.arenaforvalterStatus &&
+		bestilling.arenaforvalterStatus.length > 0 &&
+		bestilling.arenaforvalterStatus.map(status => {
+			if (status.status == 'OK') {
+				arenaHasOneSuccessEnv = true
+			} else {
+				arenaFailed = true
+			}
+		})
+
+	if (bestilling.arenaforvalterStatus && bestilling.arenaforvalterStatus.length > 0) {
+		arenaFailed
+			? arenaHasOneSuccessEnv
+				? avvikEnvs.push('Arena')
+				: failedEnvs.push('Arena')
+			: successEnvs.push('Arena')
 	}
 
 	return {

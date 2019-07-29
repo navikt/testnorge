@@ -26,6 +26,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     public static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
     public static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
+    public static final String PDL_FORVALTER = "PdlForvalter";
     private static final String DELETE_IDENT = "DeleteIdent";
     private static final String KILDE = "Dolly";
     private static final String SYNTH_ENV = "q2";
@@ -53,7 +54,9 @@ public class PdlForvalterClient implements ClientRegister {
 
             } else {
 
-                status.append("$PdlForvalter&Feil: Bestilling ble ikke sendt til ArenaForvalter da miljø '")
+                status.append('$')
+                        .append(PDL_FORVALTER)
+                        .append("&Feil: Bestilling ble ikke sendt til PdlForvalter da miljø '")
                         .append(SYNTH_ENV)
                         .append("' ikke er valgt");
             }
@@ -67,8 +70,7 @@ public class PdlForvalterClient implements ClientRegister {
         if (nonNull(pdldata) && nonNull(pdldata.getUtenlandskIdentifikasjonsnummer())) {
             try {
                 appendName(UTENLANDS_IDENTIFIKASJONSNUMMER, status);
-
-                pdldata.getUtenlandskIdentifikasjonsnummer().setKilde(KILDE);
+                
                 ResponseEntity<JsonNode> response =
                         pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(pdldata.getUtenlandskIdentifikasjonsnummer(), norskIdent.getIdent());
 
