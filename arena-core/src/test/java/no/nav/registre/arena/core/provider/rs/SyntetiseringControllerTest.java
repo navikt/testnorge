@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
@@ -41,9 +42,9 @@ public class SyntetiseringControllerTest {
     private String fnr3 = "30303030303";
     private String fnr4 = "40404040404";
 
-    private Arbeidsoker arb1 = new Arbeidsoker();
-    private Arbeidsoker arb2 = new Arbeidsoker();
-    private Arbeidsoker arb3 = new Arbeidsoker();
+    private Arbeidsoker arb1 = Arbeidsoker.builder().personident(fnr1).build();
+    private Arbeidsoker arb2 = Arbeidsoker.builder().personident(fnr2).build();
+    private Arbeidsoker arb3 = Arbeidsoker.builder().personident(fnr3).build();
 
     @Before
     public void setUp() {
@@ -57,8 +58,9 @@ public class SyntetiseringControllerTest {
                 .sendBrukereTilArenaForvalterConsumer(antallNyeIdenter, avspillegruppeId, miljoe))
                 .thenReturn(Arrays.asList(arb1,arb2,arb3));
 
-        ResponseEntity<Integer> result = syntetiseringController.registerBrukereIArenaForvalter(syntetiserArenaRequest);
-        assertThat(result.getBody(), is(3));
+        ResponseEntity<Map<String, List<String>>> result = syntetiseringController.registerBrukereIArenaForvalter(syntetiserArenaRequest);
+        assertThat(result.getBody().get("registrerteIdenter").get(1), containsString(fnr2));
+        assertThat(result.getBody().get("registrerteIdenter").size(), is(3));
     }
 
     @Test
