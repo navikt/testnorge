@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.GenererArenaResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
@@ -47,20 +47,9 @@ public class ArenaConsumer {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(syntetiserArenaRequest);
 
-        List<String> opprettedeIdenter;
         ResponseEntity<GenererArenaResponse> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
 
-        if (response != null && response.getBody() != null) {
-            if (response.getBody().getRegistrerteIdenter() == null) {
-                return new ArrayList<>();
-            }
-            opprettedeIdenter = response.getBody().getRegistrerteIdenter();
-        } else {
-            log.error("Kunne ikke hente response body fra testnorge-arena/generer: NullpointerException");
-            opprettedeIdenter = new ArrayList<>();
-        }
-
-        return opprettedeIdenter;
+        return Objects.requireNonNull(response.getBody()).getRegistrerteIdenter();
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
