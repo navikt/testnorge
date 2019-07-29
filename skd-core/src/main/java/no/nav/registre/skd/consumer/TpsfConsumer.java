@@ -71,13 +71,13 @@ public class TpsfConsumer {
         return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
 
-    @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public List<Long> getMeldingIderTilhoerendeIdenter(Long avspillergruppeId, List<String> identer) {
         RequestEntity postRequest = RequestEntity.post(urlGetMeldingIder.expand(avspillergruppeId)).body(identer);
         return new ArrayList<>(Objects.requireNonNull(restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody()));
     }
 
-    @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public ResponseEntity slettMeldingerFraTpsf(List<Long> meldingIder) {
         RequestEntity postRequest = RequestEntity.post(urlSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
         return restTemplate.exchange(postRequest, ResponseEntity.class);
