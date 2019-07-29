@@ -27,6 +27,16 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.PersInfo,
 				subKategori: SubKategorier.UtenlandsId,
+				id: 'kilde',
+				label: 'Kilde',
+				dataSource: DataSource.PDLF,
+				inputType: InputType.Text,
+				validation: yup.string().required('Skriv en kilde'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.PersInfo,
+				subKategori: SubKategorier.UtenlandsId,
 				id: 'opphoert',
 				label: 'Opphørt',
 				dataSource: DataSource.PDLF,
