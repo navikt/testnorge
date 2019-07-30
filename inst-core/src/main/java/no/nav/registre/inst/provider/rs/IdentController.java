@@ -3,7 +3,9 @@ package no.nav.registre.inst.provider.rs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,5 +46,10 @@ public class IdentController {
     @GetMapping()
     public Map<String, List<Institusjonsforholdsmelding>> hentInstitusjonsforholdmeldinger(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam List<String> fnrs) {
         return identService.hentForhold(fnrs, navCallId, navConsumerId);
+    }
+
+    @PutMapping
+    public void oppdaterInstitusjonsforhold(@PathVariable Long oppholdId, @RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestBody Institusjonsforholdsmelding institusjonsforholdsmelding) {
+
     }
 }
