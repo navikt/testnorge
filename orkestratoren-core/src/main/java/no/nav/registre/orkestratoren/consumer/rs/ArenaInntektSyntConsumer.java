@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
@@ -33,13 +32,6 @@ public class ArenaInntektSyntConsumer {
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena-inntekt" })
     public String startSyntetisering(SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserInntektsmeldingRequest);
-        String id = "";
-        ResponseEntity<String> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
-        if (response != null && response.getBody() != null) {
-            id = response.getBody();
-        } else {
-            log.error("Kunne ikke hente response body fra testnorge-arena-inntekt: NullPointerException");
-        }
-        return id;
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }

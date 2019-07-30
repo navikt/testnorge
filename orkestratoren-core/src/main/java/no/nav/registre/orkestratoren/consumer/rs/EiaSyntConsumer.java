@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
@@ -36,13 +34,6 @@ public class EiaSyntConsumer {
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "eia" })
     public List<String> startSyntetisering(SyntetiserEiaRequest syntetiserEiaRequest) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserEiaRequest);
-        ArrayList<String> identer = new ArrayList<>();
-        ResponseEntity<List<String>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
-        if (response != null && response.getBody() != null) {
-            identer.addAll(response.getBody());
-        } else {
-            log.error("Kunne ikke hente response body fra eias-emottakstub: NullPointerException");
-        }
-        return identer;
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }
