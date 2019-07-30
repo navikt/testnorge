@@ -24,6 +24,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
@@ -61,6 +62,9 @@ public class JobControllerTest {
 
     @Mock
     private SamSyntPakkenService samSyntPakkenService;
+
+    @Mock
+    private ArenaSyntPakkenService arenaSyntPakkenService;
 
     @InjectMocks
     private JobController jobController;
@@ -145,5 +149,11 @@ public class JobControllerTest {
     public void shouldStartSamBatch() {
         jobController.samSyntBatch();
         verify(samSyntPakkenService).genererSamordningsmeldinger(any());
+    }
+
+    @Test
+    public void shouldStartArenaBatch() {
+        jobController.arenaSyntBatch();
+        verify(arenaSyntPakkenService).opprettArbeidssokereIArena(any());
     }
 }

@@ -27,6 +27,9 @@ public class IdentService {
     @Autowired
     private AaregSyntConsumer aaregSyntConsumer;
 
+    @Autowired
+    private ArenaConsumer arenaConsumer;
+
     public SlettedeIdenterResponse slettIdenterFraAdaptere(Long avspillergruppeId, String miljoe, String testdataEier, List<String> identer) {
         SlettedeIdenterResponse slettedeIdenterResponse = SlettedeIdenterResponse.builder()
                 .tpsfStatus(SletteFraAvspillerguppeResponse.builder()
@@ -37,6 +40,7 @@ public class IdentService {
         slettedeIdenterResponse.setInstStatus(instSyntConsumer.slettIdenterFraInst(identer));
         slettedeIdenterResponse.setSigrunStatus(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer));
         slettedeIdenterResponse.setAaregStatus(aaregSyntConsumer.slettIdenterFraAaregstub(identer));
+        slettedeIdenterResponse.setArenaForvalterStatus(arenaConsumer.slettIdenter(miljoe, identer));
 
         return slettedeIdenterResponse;
     }

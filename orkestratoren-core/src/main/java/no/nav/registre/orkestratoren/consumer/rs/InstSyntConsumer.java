@@ -1,7 +1,6 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import java.util.List;
-
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import io.micrometer.core.annotation.Timed;
+import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;

@@ -1,9 +1,7 @@
 package no.nav.registre.orkestratoren.batch;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +10,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
@@ -26,6 +26,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
@@ -79,6 +80,9 @@ public class JobController {
     @Value("${sambatch.antallMeldinger}")
     private int samAntallMeldinger;
 
+    @Value("${arenabatch.antallNyeIdenter}")
+    private int arenaAnallNyeIdenter;
+
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
 
@@ -105,6 +109,9 @@ public class JobController {
 
     @Autowired
     private SamSyntPakkenService samSyntPakkenService;
+
+    @Autowired
+    private ArenaSyntPakkenService arenaSyntPakkenService;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
@@ -175,6 +182,13 @@ public class JobController {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserBisysRequest syntetiserBisysRequest = new SyntetiserBisysRequest(entry.getKey(), entry.getValue(), bisysbatchAntallNyeIdenter);
             bisysSyntPakkenService.genererBistandsmeldinger(syntetiserBisysRequest);
+        }
+    }
+
+    public void arenaSyntBatch() {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            SyntetiserArenaRequest syntetiserArenaRequest = new SyntetiserArenaRequest(entry.getKey(), entry.getValue(), arenaAnallNyeIdenter);
+            arenaSyntPakkenService.opprettArbeidssokereIArena(syntetiserArenaRequest);
         }
     }
 

@@ -1,9 +1,8 @@
 package no.nav.registre.orkestratoren.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.orkestratoren.consumer.rs.ArenaInntektSyntConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;

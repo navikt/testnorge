@@ -1,5 +1,6 @@
 package no.nav.registre.orkestratoren.consumer.rs.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,15 +8,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class SletteInstitusjonsoppholdResponse {
+public class SletteArenaResponse {
 
-    private Map<String, List<String>> identerMedOppholdIdSomIkkeKunneSlettes;
-    private Map<String, List<String>> identerMedOppholdIdSomBleSlettet;
+    @JsonProperty("slettet")
+    private List<String> slettet;
+    @JsonProperty("ikkeSlettet")
+    private List<String> ikkeSlettet;
 }
