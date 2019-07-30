@@ -199,17 +199,17 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderSubKategoriBlokk = (header, items, values) => {
-		let fieldType = 'oppsummering-multifield'
-		// Denne boer gjoeres mer generell:
+		let fieldType = 'oppsummering-multifield-uten-border'
+
+		// Legger til border hvis det finnes flere f.eks. inntekter,
+		// eller hvis f.eks. både inntekter og arbeidsforhold ligger under samme hovedkategori
+		// Gjøres mer generell?
 		if (
-			!header ||
-			(typeof header !== 'number' && (header === 'Barn' || header === 'Inntekt')) ||
-			(typeof header !== 'number' &&
-				(header === 'Partner' && !this.props.selectedAttributeIds.includes('barn'))) ||
-			(typeof header !== 'number' &&
-				(header === 'Arbeidsforhold' && !this.props.selectedAttributeIds.includes('inntekt')))
+			typeof header === 'number' ||
+			(header === 'Partner' && this.props.selectedAttributeIds.includes('barn')) ||
+			(header === 'Arbeidsforhold' && this.props.selectedAttributeIds.includes('inntekt'))
 		) {
-			fieldType = 'oppsummering-multifield-uten-border'
+			fieldType = 'oppsummering-multifield'
 		}
 
 		if (!items.every(nested => nested.items)) {
@@ -221,7 +221,7 @@ export default class Step3 extends PureComponent {
 						removableText={'FJERN RAD'}
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
-						<h4>{typeof header === 'number' ? `# ${header}` : header}</h4>
+						{header && <h4>{typeof header === 'number' ? `# ${header}` : header}</h4>}
 						<div className="oppsummering-blokk">
 							{items.map(item => this.renderItem(item, values))}
 						</div>
@@ -231,7 +231,7 @@ export default class Step3 extends PureComponent {
 		}
 		return (
 			<div className={fieldType} key={header}>
-				<h4>{header}</h4>
+				{header && <h4>{header}</h4>}
 				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
 			</div>
 		)
@@ -254,7 +254,6 @@ export default class Step3 extends PureComponent {
 	renderItem = (item, stateValues) => {
 		if (item.items) {
 			const valueArray = _get(this.props.values, item.id)
-			const numberOfValues = valueArray.length
 			return valueArray.map((values, idx) => {
 				Object.keys(values).map(attr => !values[attr] && delete values[attr])
 				return valueArray.length > 1
