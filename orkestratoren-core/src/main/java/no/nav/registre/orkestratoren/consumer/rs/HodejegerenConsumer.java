@@ -1,7 +1,8 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import java.util.List;
-
+import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
+import no.rtv.namespacetps.TpsPersonDokumentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -11,9 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
-import no.rtv.namespacetps.TpsPersonDokumentType;
+import java.util.List;
 
 @Component
 @Slf4j

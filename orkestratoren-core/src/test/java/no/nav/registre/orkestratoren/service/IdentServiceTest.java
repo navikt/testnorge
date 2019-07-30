@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.orkestratoren.consumer.rs.ArenaConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Before;
@@ -41,6 +43,9 @@ public class IdentServiceTest {
     @Mock
     private PoppSyntConsumer poppSyntConsumer;
 
+    @Mock
+    private ArenaConsumer arenaConsumer;
+
     @InjectMocks
     private IdentService identService;
 
@@ -54,6 +59,7 @@ public class IdentServiceTest {
     private SletteInstitusjonsoppholdResponse sletteInstitusjonsoppholdResponse;
     private SletteSkattegrunnlagResponse sletteSkattegrunnlagResponse;
     private List<String> oppholdIdSomBleSlettet;
+    private SletteArenaResponse sletteArenaResponse;
 
     @Before
     public void setUp() {
@@ -65,6 +71,7 @@ public class IdentServiceTest {
         identerMedOppholdIdSomBleSlettet.put(fnr1, Collections.singletonList(oppholdIdSomBleSlettet.get(0)));
         identerMedOppholdIdSomBleSlettet.put(fnr2, Collections.singletonList(oppholdIdSomBleSlettet.get(1)));
         sletteInstitusjonsoppholdResponse = SletteInstitusjonsoppholdResponse.builder().identerMedOppholdIdSomBleSlettet(identerMedOppholdIdSomBleSlettet).build();
+        sletteArenaResponse = SletteArenaResponse.builder().slettet(identer).ikkeSlettet(new ArrayList<>()).build();
 
         SigrunSkattegrunnlagResponse skattegrunnlagFnr1 = SigrunSkattegrunnlagResponse.builder().personidentifikator(fnr1).build();
         SigrunSkattegrunnlagResponse skattegrunnlagFnr2 = SigrunSkattegrunnlagResponse.builder().personidentifikator(fnr2).build();
@@ -76,12 +83,14 @@ public class IdentServiceTest {
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, identer)).thenReturn(expectedMeldingIder);
         when(instSyntConsumer.slettIdenterFraInst(identer)).thenReturn(sletteInstitusjonsoppholdResponse);
         when(poppSyntConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
+        when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(sletteArenaResponse);
 
         SlettedeIdenterResponse response = identService.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
 
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(avspillergruppeId, identer);
         verify(instSyntConsumer).slettIdenterFraInst(identer);
         verify(poppSyntConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
+        verify(arenaConsumer).slettIdenter(miljoe, identer);
 
         assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
 
@@ -91,5 +100,9 @@ public class IdentServiceTest {
 
         assertThat(response.getSigrunStatus().getGrunnlagSomBleSlettet().get(0).getPersonidentifikator(), equalTo(fnr1));
         assertThat(response.getSigrunStatus().getGrunnlagSomBleSlettet().get(1).getPersonidentifikator(), equalTo(fnr2));
+
+        assertThat(response.getArenaForvalterStatus().getSlettet().get(0), equalTo(fnr1));
+        assertThat(response.getArenaForvalterStatus().getSlettet().get(1), equalTo(fnr2));
+        assertThat(response.getArenaForvalterStatus().getIkkeSlettet().size(), equalTo(0));
     }
 }

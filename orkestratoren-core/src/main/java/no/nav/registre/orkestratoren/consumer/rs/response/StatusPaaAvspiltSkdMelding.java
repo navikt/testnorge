@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StatusPaaAvspiltSkdMelding {
+
     private String foedselsnummer;
     private Long sekvensnummer;
     private String status;

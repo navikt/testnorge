@@ -10,6 +10,7 @@ import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptionsPointcutAdvi
 
 @Configuration
 public class LogExceptionsConfig {
+
     @Bean
     public LogExceptionsPointcutAdvisor logExceptionsPointcutAdvisor() {
         return new LogExceptionsPointcutAdvisor();
