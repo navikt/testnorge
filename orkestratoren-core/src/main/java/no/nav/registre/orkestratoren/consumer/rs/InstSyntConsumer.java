@@ -23,6 +23,8 @@ public class InstSyntConsumer {
     };
     private static final ParameterizedTypeReference<SletteInstitusjonsoppholdResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<SletteInstitusjonsoppholdResponse>() {
     };
+    private static final String NAV_CALL_ID = "orkestratoren";
+    private static final String NAV_CONSUMER_ID = "orkestratoren";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -37,13 +39,21 @@ public class InstSyntConsumer {
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inst" })
     public Object startSyntetisering(SyntetiserInstRequest syntetiserInstRequest) {
-        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserInstRequest);
+        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("navCallId", NAV_CALL_ID)
+                .header("navConsumerId", NAV_CONSUMER_ID)
+                .body(syntetiserInstRequest);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE_START_SYNT);
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inst" })
     public SletteInstitusjonsoppholdResponse slettIdenterFraInst(List<String> identer) {
-        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, sletteIdenterUrl.expand()).contentType(MediaType.APPLICATION_JSON).body(identer);
+        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, sletteIdenterUrl.expand())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("navCallId", NAV_CALL_ID)
+                .header("navConsumerId", NAV_CONSUMER_ID)
+                .body(identer);
         return restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
     }
 }
