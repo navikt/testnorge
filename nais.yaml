@@ -53,6 +53,8 @@ fasitResources:
       resourceType: restservice
     - alias: "orkestratorensProperties"
       resourceType: applicationProperties
+    - alias: "testnorge-properties"
+      resourceType: applicationProperties
     - alias: "mqGateway02"
       resourceType: QueueManager
       propertyMap:

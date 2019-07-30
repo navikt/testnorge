@@ -36,7 +36,7 @@ public class ArenaConsumer {
     private UriTemplate arenaOpprettArbeidsoekereUrl;
     private UriTemplate arenaSlettArbeidsoekereUrl;
 
-    public ArenaConsumer(@Value("${testnorge-arena.rest-api.url}") String arenaServerUrl) {
+    public ArenaConsumer(@Value("${testnorge.arena.rest.api.url}") String arenaServerUrl) {
         this.arenaOpprettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/generer");
         this.arenaSlettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/slett?miljoe={miljoe}");
     }
