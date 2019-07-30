@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,17 +32,17 @@ public class IdentController {
 
     @LogExceptions
     @DeleteMapping()
-    public SletteOppholdResponse slettIdenterFraInst2(@RequestParam String navCallId, @RequestParam String navConsumerId, @RequestBody List<String> identer) {
+    public SletteOppholdResponse slettIdenterFraInst2(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestBody List<String> identer) {
         return identService.slettInstitusjonsforholdTilIdenter(identer, navCallId, navConsumerId);
     }
 
     @PostMapping()
-    public Map<String, List<OppholdResponse>> opprettPersoner(@RequestParam String navCallId, @RequestParam String navConsumerId, @RequestBody List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger) {
+    public Map<String, List<OppholdResponse>> opprettPersoner(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestBody List<Institusjonsforholdsmelding> institusjonsforholdsmeldinger) {
         return syntetiseringService.opprettInstitusjonsforholdIIInst2(institusjonsforholdsmeldinger, navCallId, navConsumerId);
     }
 
     @GetMapping()
-    public Map<String, List<Institusjonsforholdsmelding>> hentInstitusjonsforholdmeldinger(@RequestParam String navCallId, @RequestParam String navConsumerId, @RequestParam List<String> fnrs) {
+    public Map<String, List<Institusjonsforholdsmelding>> hentInstitusjonsforholdmeldinger(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam List<String> fnrs) {
         return identService.hentForhold(fnrs, navCallId, navConsumerId);
     }
 }
