@@ -2,16 +2,14 @@ package no.nav.registre.inst.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import no.nav.registre.inst.IdentMedData;
 import no.nav.registre.inst.InstSaveInHodejegerenRequest;
@@ -20,13 +18,13 @@ import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 
 @Service
 @Slf4j
 public class SyntetiseringService {
 
     private static final int ANTALL_FORSOEK = 3;
-
     private static final String INST_NAME = "inst";
 
     @Autowired
@@ -44,34 +42,44 @@ public class SyntetiseringService {
     @Autowired
     private Random rand;
 
-    public List<ResponseEntity> finnSyntetiserteMeldinger(SyntetiserInstRequest syntetiserInstRequest) {
+    public Map<String, List<OppholdResponse>> finnSyntetiserteMeldinger(SyntetiserInstRequest syntetiserInstRequest, String callId, String consumerId) {
         List<String> utvalgteIdenter = finnLevendeIdenter(syntetiserInstRequest);
         if (utvalgteIdenter.size() < syntetiserInstRequest.getAntallNyeIdenter()) {
             log.warn("Fant ikke nok ledige identer. Lager institusjonsforhold på {} identer.", utvalgteIdenter.size());
         }
         if (utvalgteIdenter.isEmpty()) {
-            List<ResponseEntity> tomRespons = new ArrayList<>();
-            tomRespons.add(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fant ingen ledige identer i avspillergruppe " + syntetiserInstRequest.getAvspillergruppeId()));
-            return tomRespons;
+            return new HashMap<>();
         }
 
         Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
-        List<Institusjonsforholdsmelding> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, utvalgteIdenter.size());
-        return leggTilInstitusjonsforholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger);
+        List<Institusjonsforholdsmelding> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, utvalgteIdenter.size(), callId, consumerId);
+        return leggTilInstitusjonsforholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger, callId, consumerId);
     }
 
-    public List<ResponseEntity> opprettInstitusjonsforholdIIInst2(List<Institusjonsforholdsmelding> meldinger) {
-        return leggTilInstitusjonsforholdIInst2(inst2Consumer.hentTokenTilInst2(),
-                meldinger.parallelStream()
-                        .map(Institusjonsforholdsmelding::getPersonident)
-                        .collect(Collectors.toList()),
-                meldinger);
+    public Map<String, List<OppholdResponse>> opprettInstitusjonsforholdIIInst2(List<Institusjonsforholdsmelding> meldinger, String callId, String consumerId) {
+        Map<String, List<OppholdResponse>> statusFraInst2 = new HashMap<>();
+        for (Institusjonsforholdsmelding melding : meldinger) {
+            OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(inst2Consumer.hentTokenTilInst2(), melding, callId, consumerId);
+            String personident = melding.getPersonident();
+            if (statusFraInst2.containsKey(personident)) {
+                statusFraInst2.get(personident).add(oppholdResponse);
+            } else {
+                List<OppholdResponse> oppholdResponses = new ArrayList<>();
+                oppholdResponses.add(oppholdResponse);
+                statusFraInst2.put(personident, oppholdResponses);
+            }
+        }
+        return statusFraInst2;
     }
 
-    private List<Institusjonsforholdsmelding> hentSyntetiserteInstitusjonsforholdsmeldinger(Map<String, Object> tokenObject, int antallMeldinger) {
+    private List<Institusjonsforholdsmelding> hentSyntetiserteInstitusjonsforholdsmeldinger(Map<String, Object> tokenObject, int antallMeldinger,
+            String callId, String consumerId) {
         List<Institusjonsforholdsmelding> syntetiserteMeldinger = new ArrayList<>(antallMeldinger);
         for (int i = 0; i < ANTALL_FORSOEK && syntetiserteMeldinger.size() < antallMeldinger; i++) {
-            syntetiserteMeldinger.addAll(validerOgFjernUgyldigeMeldinger(tokenObject, instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger - syntetiserteMeldinger.size())));
+            syntetiserteMeldinger.addAll(validerOgFjernUgyldigeMeldinger(tokenObject,
+                    instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger - syntetiserteMeldinger.size()),
+                    callId,
+                    consumerId));
         }
         return syntetiserteMeldinger;
     }
@@ -89,26 +97,34 @@ public class SyntetiseringService {
         return utvalgteIdenter;
     }
 
-    private List<ResponseEntity> leggTilInstitusjonsforholdIInst2(Map<String, Object> tokenObject, List<String> identer, List<Institusjonsforholdsmelding> syntetiserteMeldinger) {
-        List<ResponseEntity> responseEntities = new ArrayList<>();
+    private Map<String, List<OppholdResponse>> leggTilInstitusjonsforholdIInst2(Map<String, Object> tokenObject, List<String> identer,
+            List<Institusjonsforholdsmelding> syntetiserteMeldinger, String callId, String consumerId) {
         List<String> utvalgteIdenter = new ArrayList<>(identer);
         List<Institusjonsforholdsmelding> historikkSomSkalLagres = new ArrayList<>();
+        Map<String, List<OppholdResponse>> statusFraInst2 = new HashMap<>();
         int antallOppholdOpprettet = 0;
 
         for (Institusjonsforholdsmelding institusjonsforholdsmelding : syntetiserteMeldinger) {
             if (utvalgteIdenter.isEmpty()) {
                 break;
             }
-            String ident = utvalgteIdenter.remove(0);
+            String personident = utvalgteIdenter.remove(0);
             List<Institusjonsforholdsmelding> eksisterendeInstitusjonsforhold =
-                    identService.hentInstitusjonsoppholdFraInst2(tokenObject, ident);
+                    identService.hentInstitusjonsoppholdFraInst2(tokenObject, personident, callId, consumerId);
             if (!eksisterendeInstitusjonsforhold.isEmpty()) {
-                log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", ident);
+                log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", personident);
             } else {
-                institusjonsforholdsmelding.setPersonident(ident);
-                ResponseEntity response = inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, institusjonsforholdsmelding);
-                responseEntities.add(ResponseEntity.status(response.getStatusCode()).body(response.getBody()));
-                if (response.getStatusCode().is2xxSuccessful()) {
+                institusjonsforholdsmelding.setPersonident(personident);
+                OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, institusjonsforholdsmelding, callId, consumerId);
+                if (statusFraInst2.containsKey(personident)) {
+                    statusFraInst2.get(personident).add(oppholdResponse);
+                } else {
+                    List<OppholdResponse> oppholdResponses = new ArrayList<>();
+                    oppholdResponses.add(oppholdResponse);
+                    statusFraInst2.put(personident, oppholdResponses);
+                }
+
+                if (oppholdResponse.getStatus().is2xxSuccessful()) {
                     antallOppholdOpprettet++;
                     historikkSomSkalLagres.add(institusjonsforholdsmelding);
                 }
@@ -136,18 +152,19 @@ public class SyntetiseringService {
             log.warn("Kunne ikke lagre historikk på alle identer. Identer som ikke ble lagret: {}", identerSomIkkeBleLagret);
         }
 
-        return responseEntities;
+        return statusFraInst2;
     }
 
-    private List<Institusjonsforholdsmelding> validerOgFjernUgyldigeMeldinger(Map<String, Object> tokenObject, List<Institusjonsforholdsmelding> syntetiserteMeldinger) {
+    private List<Institusjonsforholdsmelding> validerOgFjernUgyldigeMeldinger(Map<String, Object> tokenObject, List<Institusjonsforholdsmelding> syntetiserteMeldinger,
+            String callid, String consumerId) {
         List<Institusjonsforholdsmelding> gyldigeSyntetiserteMeldinger = new ArrayList<>(syntetiserteMeldinger.size());
 
         for (Institusjonsforholdsmelding melding : syntetiserteMeldinger) {
             String tssEksternId = melding.getTssEksternId();
             String startdato = melding.getStartdato();
             String faktiskSluttdato = melding.getFaktiskSluttdato();
-            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, startdato).is2xxSuccessful()
-                    && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, faktiskSluttdato).is2xxSuccessful()) {
+            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, startdato, callid, consumerId).is2xxSuccessful()
+                    && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, faktiskSluttdato, callid, consumerId).is2xxSuccessful()) {
                 gyldigeSyntetiserteMeldinger.add(melding);
             }
         }

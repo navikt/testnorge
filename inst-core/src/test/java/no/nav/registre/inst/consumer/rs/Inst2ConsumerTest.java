@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.inst.Institusjonsforholdsmelding;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -69,7 +70,7 @@ public class Inst2ConsumerTest {
     public void shouldGetInstitusjonsmeldingerFromInst2() {
         stubGetInstitusjonsopphold();
 
-        List<Institusjonsforholdsmelding> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, fnr1);
+        List<Institusjonsforholdsmelding> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, fnr1, id, id);
 
         assertThat(result.get(0).getTssEksternId(), is("440"));
         assertThat(result.get(1).getTssEksternId(), is("441"));
@@ -81,9 +82,9 @@ public class Inst2ConsumerTest {
 
         stubAddInstitusjonsopphold(institusjonsforholdsmelding);
 
-        ResponseEntity result = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, institusjonsforholdsmelding);
+        OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, institusjonsforholdsmelding, id, id);
 
-        assertThat(result.getStatusCode(), is(HttpStatus.CREATED));
+        assertThat(oppholdResponse.getStatus(), is(HttpStatus.CREATED));
     }
 
     @Test
@@ -92,7 +93,7 @@ public class Inst2ConsumerTest {
 
         stubDeleteOpphold(oppholdId);
 
-        ResponseEntity result = inst2Consumer.slettInstitusjonsoppholdFraInst2(token, oppholdId);
+        ResponseEntity result = inst2Consumer.slettInstitusjonsoppholdFraInst2(token, oppholdId, id, id);
 
         assertThat(result.getStatusCode(), is(HttpStatus.NO_CONTENT));
     }
@@ -101,7 +102,7 @@ public class Inst2ConsumerTest {
     public void shouldCheckWhetherInstitusjonIsValidOnDate() {
         stubFindInstitusjon();
 
-        HttpStatus responseStatus = inst2Consumer.finnesInstitusjonPaaDato(token, tssEksternId, date);
+        HttpStatus responseStatus = inst2Consumer.finnesInstitusjonPaaDato(token, tssEksternId, date, id, id);
 
         assertThat(responseStatus, is(HttpStatus.OK));
     }

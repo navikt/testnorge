@@ -1,5 +1,6 @@
 package no.nav.registre.inst.consumer.rs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.inst.Institusjonsforholdsmelding;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 
 @Component
 @Slf4j
@@ -28,8 +30,6 @@ public class Inst2Consumer {
     };
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<Object>() {
     };
-    private static final String NAV_CALL_ID = "orkestratoren";
-    private static final String NAV_CONSUMER_ID = "orkestratoren";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -67,12 +67,12 @@ public class Inst2Consumer {
         return response.getBody();
     }
 
-    public List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident) {
+    public List<Institusjonsforholdsmelding> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident, String callId, String consumerId) {
         RequestEntity getRequest = RequestEntity.get(hentInstitusjonsoppholdUrl.expand())
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
                 .header("Nav-Personident", ident)
                 .build();
         List<Institusjonsforholdsmelding> response = null;
@@ -89,28 +89,31 @@ public class Inst2Consumer {
         return response;
     }
 
-    public ResponseEntity leggTilInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, Institusjonsforholdsmelding institusjonsforholdsmelding) {
+    public OppholdResponse leggTilInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, Institusjonsforholdsmelding institusjonsforholdsmelding, String callId, String consumerId) {
         RequestEntity postRequest = RequestEntity.post(leggTilInstitusjonsforholdUrl.expand())
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
                 .body(institusjonsforholdsmelding);
         try {
-            return restTemplate.exchange(postRequest, RESPONSE_TYPE_OBJECT);
+            ResponseEntity<Object> exchange = restTemplate.exchange(postRequest, RESPONSE_TYPE_OBJECT);
+            Institusjonsforholdsmelding institusjonsforholdsmelding1 = new ObjectMapper().convertValue(exchange.getBody(), Institusjonsforholdsmelding.class);
+            return OppholdResponse.builder().status(exchange.getStatusCode()).institusjonsforholdsmelding(institusjonsforholdsmelding1).build();
         } catch (HttpStatusCodeException e) {
             log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident {} med tssEksternId {} - {}",
                     institusjonsforholdsmelding.getPersonident(), institusjonsforholdsmelding.getTssEksternId(), e.getResponseBodyAsString(), e);
-            return ResponseEntity.status(e.getStatusCode()).headers(e.getResponseHeaders()).body(e.getResponseBodyAsString());
+            ResponseEntity.status(e.getStatusCode()).headers(e.getResponseHeaders()).body(e.getResponseBodyAsString());
+            return OppholdResponse.builder().status(e.getStatusCode()).feilmelding(e.getResponseBodyAsString()).build();
         }
     }
 
-    public ResponseEntity slettInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String oppholdId) {
+    public ResponseEntity slettInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String oppholdId, String callId, String consumerId) {
         RequestEntity deleteRequest = RequestEntity.delete(slettInstitusjonsforholdUrl.expand(oppholdId))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
                 .build();
         try {
             return restTemplate.exchange(deleteRequest, RESPONSE_TYPE_OBJECT);
@@ -120,12 +123,12 @@ public class Inst2Consumer {
         }
     }
 
-    public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String tssEksternId, String date) {
+    public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String tssEksternId, String date, String callId, String consumerId) {
         RequestEntity getRequest = RequestEntity.get(sjekkInstitusjonUrl.expand(tssEksternId, date))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
                 .build();
 
         try {

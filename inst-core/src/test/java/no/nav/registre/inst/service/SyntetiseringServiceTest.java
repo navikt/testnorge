@@ -20,10 +20,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -32,6 +31,7 @@ import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {
@@ -61,11 +61,12 @@ public class SyntetiseringServiceTest {
     private SyntetiserInstRequest syntetiserInstRequest;
     private List<String> utvalgteIdenter;
     private List<Institusjonsforholdsmelding> meldinger;
+    private String id = "test";
 
     @Before
     public void setUp() {
         syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallMeldinger);
-        utvalgteIdenter = new ArrayList<>(Arrays.asList(fnr1));
+        utvalgteIdenter = new ArrayList<>(Collections.singletonList(fnr1));
         meldinger = new ArrayList<>();
         meldinger.add(Institusjonsforholdsmelding.builder()
                 .tssEksternId("123")
@@ -78,15 +79,15 @@ public class SyntetiseringServiceTest {
     public void shouldOppretteInstitusjonsmeldinger() {
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
-        when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyMap(), eq(meldinger.get(0)))).thenReturn(ResponseEntity.ok().body(meldinger.get(0)));
-        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString())).thenReturn(HttpStatus.OK);
+        when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyMap(), eq(meldinger.get(0)), eq(id), eq(id))).thenReturn(OppholdResponse.builder().status(HttpStatus.OK).build());
+        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString(), eq(id), eq(id))).thenReturn(HttpStatus.OK);
 
-        syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest);
+        syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest, id, id);
 
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
         verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
         verify(inst2Consumer).hentTokenTilInst2();
-        verify(identService).hentInstitusjonsoppholdFraInst2(anyMap(), anyString());
+        verify(identService).hentInstitusjonsoppholdFraInst2(anyMap(), anyString(), eq(id), eq(id));
         verify(hodejegerenConsumer).saveHistory(any());
     }
 
@@ -99,15 +100,15 @@ public class SyntetiseringServiceTest {
 
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
-        when(identService.hentInstitusjonsoppholdFraInst2(anyMap(), anyString())).thenReturn(meldinger);
-        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString())).thenReturn(HttpStatus.OK);
+        when(identService.hentInstitusjonsoppholdFraInst2(anyMap(), anyString(), eq(id), eq(id))).thenReturn(meldinger);
+        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString(), eq(id), eq(id))).thenReturn(HttpStatus.OK);
 
-        syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest);
+        syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest, id, id);
 
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
         verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
         verify(inst2Consumer).hentTokenTilInst2();
-        verify(identService).hentInstitusjonsoppholdFraInst2(anyMap(), anyString());
+        verify(identService).hentInstitusjonsoppholdFraInst2(anyMap(), anyString(), eq(id), eq(id));
 
         assertThat(listAppender.list.get(0).toString(), containsString("Ident " + fnr1 + " har allerede fått opprettet institusjonsforhold."));
     }
