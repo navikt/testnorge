@@ -31,6 +31,7 @@ public class IdentService {
     @Autowired
     private ArenaConsumer arenaConsumer;
 
+
     public SlettedeIdenterResponse slettIdenterFraAdaptere(Long avspillergruppeId, String miljoe, String testdataEier, List<String> identer) {
         SlettedeIdenterResponse slettedeIdenterResponse = SlettedeIdenterResponse.builder()
                 .tpsfStatus(SletteFraAvspillerguppeResponse.builder()
