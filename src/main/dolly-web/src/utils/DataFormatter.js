@@ -4,6 +4,7 @@ import _startCase from 'lodash/startCase'
 import _capitalize from 'lodash/capitalize'
 
 import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
+import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 
 const Formatters = {}
 
@@ -195,6 +196,11 @@ Formatters.idUtenEllipse = id => {
 Formatters.commaToSpace = streng => {
 	if (!streng) return null
 	return streng.split(',').join(', ')
+}
+
+Formatters.showLabel = (optionsGruppe, value) => {
+	const obj = SelectOptionsManager(optionsGruppe).filter(options => options.value === value)
+	return obj.label || obj[0].label
 }
 
 export default Formatters

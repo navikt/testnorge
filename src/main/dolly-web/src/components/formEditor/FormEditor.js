@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent, Component, Fragment } from 'react'
 import { Field } from 'formik'
 import _intersection from 'lodash/intersection'
 import _set from 'lodash/set'
@@ -16,7 +16,7 @@ import './FormEditor.less'
 import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
 import Postadresse from '../postadresse/Postadresse'
 
-export default class FormEditor extends PureComponent {
+export default class FormEditor extends Component {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
 		// TODO: Vurder å lage en egen component for redigering
@@ -159,6 +159,14 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 
+		if ('arenaforvalter' in formikProps.values) {
+			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'UTEN_SERVICEBEHOV') {
+				formikProps.values['arenaforvalter'][0]['kvalifiseringsgruppe'] = ''
+			}
+			if (formikProps.values['arenaforvalter'][0]['arenaBrukertype'] === 'MED_SERVICEBEHOV') {
+				formikProps.values['arenaforvalter'][0]['inaktiveringDato'] = ''
+			}
+		}
 		return (
 			<div className="subkategori" key={uniqueId}>
 				<h4>{subKategori.navn}</h4>

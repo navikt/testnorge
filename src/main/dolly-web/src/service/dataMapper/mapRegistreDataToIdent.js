@@ -251,3 +251,39 @@ export function mapAaregData(aaregData) {
 		})
 	}
 }
+
+export function mapInst2Data(inst2Data) {
+	if (!inst2Data || inst2Data.length === 0) return null
+	return {
+		header: 'Institusjonsopphold',
+		multiple: true,
+		data: inst2Data.map((data, i) => {
+			return {
+				parent: 'institusjonsopphold',
+				id: data.personidentifikator,
+				value: [
+					{
+						id: 'institusjonstype',
+						label: 'Institusjonstype',
+						value: Formatters.showLabel('institusjonstype', data.institusjonstype)
+					},
+					{
+						id: 'varighet',
+						label: 'Varighet',
+						value: Formatters.showLabel('varighet', data.varighet)
+					},
+					{
+						id: 'startdato',
+						label: 'Startdato',
+						value: Formatters.formatDate(data.startdato)
+					},
+					{
+						id: 'faktiskSluttdato',
+						label: 'Sluttdato',
+						value: Formatters.formatDate(data.faktiskSluttdato)
+					}
+				]
+			}
+		})
+	}
+}

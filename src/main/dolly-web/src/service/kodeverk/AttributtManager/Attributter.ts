@@ -9,6 +9,7 @@ import SigrunInntekt from './sigrun/Inntekt'
 import Doedsbo from './pdlf/Doedsbo'
 import UtenlandsId from './pdlf/UtenlandsId'
 import Arena from './arena/Arena'
+import Inst2 from './inst2/Inst2'
 
 const AttributtListe: Attributt[] = [
 	...TpsfPersoninformasjon,
@@ -19,7 +20,8 @@ const AttributtListe: Attributt[] = [
 	...Krr,
 	...Doedsbo,
 	...UtenlandsId,
-	...Arena
+	...Arena,
+	...Inst2
 ]
 
 export default AttributtListe

@@ -181,7 +181,6 @@ export default class Step3 extends PureComponent {
 				!nested.subKategori.showInSummary &&
 				!nested.items.every(item => this.props.selectedAttributeIds.includes(item.id))
 		)
-
 		return (
 			<Fragment key={hovedKategori.navn}>
 				<h4>{hovedKategori.navn}</h4>
@@ -197,8 +196,8 @@ export default class Step3 extends PureComponent {
 			</Fragment>
 		)
 	}
-
-	renderSubKategori = ({ subKategori, items }) => {
+	// INGVILD: HVA SKJER HER?
+	renderSubKategori2 = ({ subKategori, items }) => {
 		const { values } = this.props
 
 		if (!subKategori.showInSummary) {
@@ -235,6 +234,7 @@ export default class Step3 extends PureComponent {
 
 	renderSubKategori = ({ subKategori, items }) => {
 		const { values } = this.props
+
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
 		}
@@ -275,6 +275,10 @@ export default class Step3 extends PureComponent {
 			itemValue = Formatters.oversettBoolean(
 				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
 			)
+		}
+
+		if (item.dataSource === 'INST2' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
+			itemValue = Formatters.showLabel(item.id, itemValue)
 		}
 
 		const staticValueProps = {
