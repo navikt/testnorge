@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
+package no.nav.dolly.domain.resultset.pdlforvalter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
