@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import no.nav.registre.inst.Institusjonsforholdsmelding;
+import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
@@ -60,7 +60,7 @@ public class SyntetiseringServiceTest {
     private String fnr1 = "01010101010";
     private SyntetiserInstRequest syntetiserInstRequest;
     private List<String> utvalgteIdenter;
-    private List<Institusjonsforholdsmelding> meldinger;
+    private List<Institusjonsopphold> meldinger;
     private String id = "test";
 
     @Before
@@ -68,7 +68,7 @@ public class SyntetiseringServiceTest {
         syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallMeldinger);
         utvalgteIdenter = new ArrayList<>(Collections.singletonList(fnr1));
         meldinger = new ArrayList<>();
-        meldinger.add(Institusjonsforholdsmelding.builder()
+        meldinger.add(Institusjonsopphold.builder()
                 .tssEksternId("123")
                 .startdato("2019-01-01")
                 .faktiskSluttdato("2019-02-01")
@@ -80,7 +80,7 @@ public class SyntetiseringServiceTest {
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyMap(), eq(meldinger.get(0)), eq(id), eq(id))).thenReturn(OppholdResponse.builder().status(HttpStatus.OK).build());
-        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString(), eq(id), eq(id))).thenReturn(HttpStatus.OK);
+        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), any(), eq(id), eq(id))).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest, id, id);
 
@@ -101,7 +101,7 @@ public class SyntetiseringServiceTest {
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(identService.hentInstitusjonsoppholdFraInst2(anyMap(), anyString(), eq(id), eq(id))).thenReturn(meldinger);
-        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), anyString(), eq(id), eq(id))).thenReturn(HttpStatus.OK);
+        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), anyString(), any(), eq(id), eq(id))).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest, id, id);
 

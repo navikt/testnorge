@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import no.nav.registre.inst.Institusjonsforholdsmelding;
+import no.nav.registre.inst.Institusjonsopphold;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -40,7 +40,7 @@ public class InstSyntetisererenConsumerTest {
     @Test
     public void shouldGetMeldinger() {
         stubInstSyntetisererenConsumer();
-        List<Institusjonsforholdsmelding> result = instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(numToGenerate);
+        List<Institusjonsopphold> result = instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(numToGenerate);
 
         assertThat(result.size(), is(numToGenerate));
         assertThat(result.get(0).getTssEksternId(), equalTo("440"));

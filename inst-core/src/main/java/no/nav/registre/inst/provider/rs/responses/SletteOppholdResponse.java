@@ -16,6 +16,6 @@ import java.util.Map;
 @Builder
 public class SletteOppholdResponse {
 
-    private Map<String, List<String>> identerMedOppholdIdSomIkkeKunneSlettes;
-    private Map<String, List<String>> identerMedOppholdIdSomBleSlettet;
+    private Map<String, List<Long>> identerMedOppholdIdSomIkkeKunneSlettes;
+    private Map<String, List<Long>> identerMedOppholdIdSomBleSlettet;
 }

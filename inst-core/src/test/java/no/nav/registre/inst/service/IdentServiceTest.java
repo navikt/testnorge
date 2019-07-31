@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.inst.Institusjonsforholdsmelding;
+import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.provider.rs.responses.SletteOppholdResponse;
 
@@ -34,20 +34,20 @@ public class IdentServiceTest {
     private IdentService identService;
 
     private String id = "test";
-    private String oppholdId1 = "1";
-    private String oppholdId2 = "2";
-    private List<Institusjonsforholdsmelding> meldinger;
+    private Long oppholdId1 = 1L;
+    private Long oppholdId2 = 2L;
+    private List<Institusjonsopphold> meldinger;
 
     @Before
     public void setUp() {
         meldinger = new ArrayList<>();
-        meldinger.add(Institusjonsforholdsmelding.builder()
+        meldinger.add(Institusjonsopphold.builder()
                 .oppholdId(oppholdId1)
                 .tssEksternId("123")
                 .startdato("2019-01-01")
                 .faktiskSluttdato("2019-02-01")
                 .build());
-        meldinger.add(Institusjonsforholdsmelding.builder()
+        meldinger.add(Institusjonsopphold.builder()
                 .oppholdId(oppholdId2)
                 .tssEksternId("456")
                 .startdato("2019-01-01")

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-import no.nav.registre.inst.Institusjonsforholdsmelding;
+import no.nav.registre.inst.Institusjonsopphold;
 
 @Getter
 @Setter
@@ -17,6 +17,6 @@ import no.nav.registre.inst.Institusjonsforholdsmelding;
 public class OppholdResponse {
 
     private HttpStatus status;
-    private Institusjonsforholdsmelding institusjonsforholdsmelding;
+    private Institusjonsopphold institusjonsopphold;
     private String feilmelding;
 }

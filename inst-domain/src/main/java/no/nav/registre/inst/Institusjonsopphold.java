@@ -13,13 +13,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Institusjonsforholdsmelding {
+public class Institusjonsopphold {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String personident;
 
     @JsonAlias({ "oppholdId", "funk_periode_id" })
-    private String oppholdId;
+    private Long oppholdId;
 
     @JsonAlias({ "tssEksternId", "tss_ekstern_id_fk" })
     private String tssEksternId;

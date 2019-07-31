@@ -13,7 +13,7 @@ import java.util.Random;
 
 import no.nav.registre.inst.IdentMedData;
 import no.nav.registre.inst.InstSaveInHodejegerenRequest;
-import no.nav.registre.inst.Institusjonsforholdsmelding;
+import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
@@ -52,13 +52,13 @@ public class SyntetiseringService {
         }
 
         Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
-        List<Institusjonsforholdsmelding> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, utvalgteIdenter.size(), callId, consumerId);
+        List<Institusjonsopphold> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, utvalgteIdenter.size(), callId, consumerId);
         return leggTilInstitusjonsforholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger, callId, consumerId);
     }
 
-    public Map<String, List<OppholdResponse>> opprettInstitusjonsforholdIIInst2(List<Institusjonsforholdsmelding> meldinger, String callId, String consumerId) {
+    public Map<String, List<OppholdResponse>> opprettInstitusjonsforholdIIInst2(List<Institusjonsopphold> meldinger, String callId, String consumerId) {
         Map<String, List<OppholdResponse>> statusFraInst2 = new HashMap<>();
-        for (Institusjonsforholdsmelding melding : meldinger) {
+        for (Institusjonsopphold melding : meldinger) {
             OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(inst2Consumer.hentTokenTilInst2(), melding, callId, consumerId);
             String personident = melding.getPersonident();
             if (statusFraInst2.containsKey(personident)) {
@@ -72,9 +72,9 @@ public class SyntetiseringService {
         return statusFraInst2;
     }
 
-    private List<Institusjonsforholdsmelding> hentSyntetiserteInstitusjonsforholdsmeldinger(Map<String, Object> tokenObject, int antallMeldinger,
+    private List<Institusjonsopphold> hentSyntetiserteInstitusjonsforholdsmeldinger(Map<String, Object> tokenObject, int antallMeldinger,
             String callId, String consumerId) {
-        List<Institusjonsforholdsmelding> syntetiserteMeldinger = new ArrayList<>(antallMeldinger);
+        List<Institusjonsopphold> syntetiserteMeldinger = new ArrayList<>(antallMeldinger);
         for (int i = 0; i < ANTALL_FORSOEK && syntetiserteMeldinger.size() < antallMeldinger; i++) {
             syntetiserteMeldinger.addAll(validerOgFjernUgyldigeMeldinger(tokenObject,
                     instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger - syntetiserteMeldinger.size()),
@@ -98,24 +98,24 @@ public class SyntetiseringService {
     }
 
     private Map<String, List<OppholdResponse>> leggTilInstitusjonsforholdIInst2(Map<String, Object> tokenObject, List<String> identer,
-            List<Institusjonsforholdsmelding> syntetiserteMeldinger, String callId, String consumerId) {
+            List<Institusjonsopphold> syntetiserteMeldinger, String callId, String consumerId) {
         List<String> utvalgteIdenter = new ArrayList<>(identer);
-        List<Institusjonsforholdsmelding> historikkSomSkalLagres = new ArrayList<>();
+        List<Institusjonsopphold> historikkSomSkalLagres = new ArrayList<>();
         Map<String, List<OppholdResponse>> statusFraInst2 = new HashMap<>();
         int antallOppholdOpprettet = 0;
 
-        for (Institusjonsforholdsmelding institusjonsforholdsmelding : syntetiserteMeldinger) {
+        for (Institusjonsopphold institusjonsopphold : syntetiserteMeldinger) {
             if (utvalgteIdenter.isEmpty()) {
                 break;
             }
             String personident = utvalgteIdenter.remove(0);
-            List<Institusjonsforholdsmelding> eksisterendeInstitusjonsforhold =
+            List<Institusjonsopphold> eksisterendeInstitusjonsforhold =
                     identService.hentInstitusjonsoppholdFraInst2(tokenObject, personident, callId, consumerId);
             if (!eksisterendeInstitusjonsforhold.isEmpty()) {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", personident);
             } else {
-                institusjonsforholdsmelding.setPersonident(personident);
-                OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, institusjonsforholdsmelding, callId, consumerId);
+                institusjonsopphold.setPersonident(personident);
+                OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, institusjonsopphold, callId, consumerId);
                 if (statusFraInst2.containsKey(personident)) {
                     statusFraInst2.get(personident).add(oppholdResponse);
                 } else {
@@ -126,14 +126,14 @@ public class SyntetiseringService {
 
                 if (oppholdResponse.getStatus().is2xxSuccessful()) {
                     antallOppholdOpprettet++;
-                    historikkSomSkalLagres.add(institusjonsforholdsmelding);
+                    historikkSomSkalLagres.add(institusjonsopphold);
                 }
             }
         }
 
         List<IdentMedData> identerMedData = new ArrayList<>(historikkSomSkalLagres.size());
-        for (Institusjonsforholdsmelding institusjonsforholdsmelding : historikkSomSkalLagres) {
-            identerMedData.add(new IdentMedData(institusjonsforholdsmelding.getPersonident(), Collections.singletonList(institusjonsforholdsmelding)));
+        for (Institusjonsopphold institusjonsopphold : historikkSomSkalLagres) {
+            identerMedData.add(new IdentMedData(institusjonsopphold.getPersonident(), Collections.singletonList(institusjonsopphold)));
         }
         InstSaveInHodejegerenRequest hodejegerenRequest = new InstSaveInHodejegerenRequest(INST_NAME, identerMedData);
 
@@ -155,11 +155,11 @@ public class SyntetiseringService {
         return statusFraInst2;
     }
 
-    private List<Institusjonsforholdsmelding> validerOgFjernUgyldigeMeldinger(Map<String, Object> tokenObject, List<Institusjonsforholdsmelding> syntetiserteMeldinger,
+    private List<Institusjonsopphold> validerOgFjernUgyldigeMeldinger(Map<String, Object> tokenObject, List<Institusjonsopphold> syntetiserteMeldinger,
             String callid, String consumerId) {
-        List<Institusjonsforholdsmelding> gyldigeSyntetiserteMeldinger = new ArrayList<>(syntetiserteMeldinger.size());
+        List<Institusjonsopphold> gyldigeSyntetiserteMeldinger = new ArrayList<>(syntetiserteMeldinger.size());
 
-        for (Institusjonsforholdsmelding melding : syntetiserteMeldinger) {
+        for (Institusjonsopphold melding : syntetiserteMeldinger) {
             String tssEksternId = melding.getTssEksternId();
             String startdato = melding.getStartdato();
             String faktiskSluttdato = melding.getFaktiskSluttdato();

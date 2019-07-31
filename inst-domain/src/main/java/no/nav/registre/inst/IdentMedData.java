@@ -16,5 +16,5 @@ import java.util.List;
 public class IdentMedData {
 
     private String id;
-    private List<Institusjonsforholdsmelding> data;
+    private List<Institusjonsopphold> data;
 }

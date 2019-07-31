@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.inst.Institusjonsforholdsmelding;
+import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 
 @RunWith(SpringRunner.class)
@@ -70,7 +70,7 @@ public class Inst2ConsumerTest {
     public void shouldGetInstitusjonsmeldingerFromInst2() {
         stubGetInstitusjonsopphold();
 
-        List<Institusjonsforholdsmelding> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, fnr1, id, id);
+        List<Institusjonsopphold> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, fnr1, id, id);
 
         assertThat(result.get(0).getTssEksternId(), is("440"));
         assertThat(result.get(1).getTssEksternId(), is("441"));
@@ -78,18 +78,18 @@ public class Inst2ConsumerTest {
 
     @Test
     public void shouldAddInstitusjonsoppholdTilInst2() throws JsonProcessingException {
-        Institusjonsforholdsmelding institusjonsforholdsmelding = Institusjonsforholdsmelding.builder().build();
+        Institusjonsopphold institusjonsopphold = Institusjonsopphold.builder().build();
 
-        stubAddInstitusjonsopphold(institusjonsforholdsmelding);
+        stubAddInstitusjonsopphold(institusjonsopphold);
 
-        OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, institusjonsforholdsmelding, id, id);
+        OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, institusjonsopphold, id, id);
 
         assertThat(oppholdResponse.getStatus(), is(HttpStatus.CREATED));
     }
 
     @Test
     public void shouldDeleteOpphold() {
-        String oppholdId = "123";
+        Long oppholdId = 123L;
 
         stubDeleteOpphold(oppholdId);
 
@@ -129,18 +129,18 @@ public class Inst2ConsumerTest {
                         .withBody(getResourceFileContent("institusjonsmelding.json"))));
     }
 
-    private void stubAddInstitusjonsopphold(Institusjonsforholdsmelding institusjonsforholdsmelding) throws JsonProcessingException {
+    private void stubAddInstitusjonsopphold(Institusjonsopphold institusjonsopphold) throws JsonProcessingException {
         stubFor(post(urlEqualTo("/inst2/web/api/person/institusjonsopphold?validatePeriod=true"))
                 .withHeader("accept", equalTo("*/*"))
                 .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
                 .withHeader("Nav-Call-Id", equalTo(id))
                 .withHeader("Nav-Consumer-Id", equalTo(id))
-                .withRequestBody(equalToJson(new ObjectMapper().writeValueAsString(institusjonsforholdsmelding)))
+                .withRequestBody(equalToJson(new ObjectMapper().writeValueAsString(institusjonsopphold)))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.CREATED.value())));
     }
 
-    private void stubDeleteOpphold(String oppholdId) {
+    private void stubDeleteOpphold(Long oppholdId) {
         stubFor(delete(urlEqualTo("/inst2/web/api/person/institusjonsopphold/" + oppholdId))
                 .withHeader("accept", equalTo("*/*"))
                 .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
