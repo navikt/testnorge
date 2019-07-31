@@ -18,5 +18,5 @@ public class PdlFalskIdentitet {
 
     private Boolean erFalsk;
     private String kilde;
-    private PdlRettIdentitet rettIdenitet;
+    private PdlRettIdentitet rettIdentitet;
 }

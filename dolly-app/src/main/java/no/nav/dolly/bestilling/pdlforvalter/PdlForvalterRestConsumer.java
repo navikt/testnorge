@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
+import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.sts.StsOidcService;
@@ -66,6 +67,16 @@ public class PdlForvalterRestConsumer {
                 .header(NAV_CONSUMER_TOKEN, resolveToken())
                 .header(NAV_PERSONIDENT, ident)
                 .body(utenlandskIdentifikasjonsnummer), JsonNode.class);
+    }
+
+    public ResponseEntity falskidentitet(PdlFalskIdentitet falskIdentitet, String ident) {
+        return restTemplate.exchange(RequestEntity.post(
+                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL))
+                .contentType(APPLICATION_JSON)
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                .header(NAV_CONSUMER_TOKEN, resolveToken())
+                .header(NAV_PERSONIDENT, ident)
+                .body(falskIdentitet), JsonNode.class);
     }
 
     private String resolveToken() {
