@@ -1,17 +1,14 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RsPdlRettIdentitet {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "rettIdentitetType")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = PdlIdentitetErUkjent.class, name = "ER_UKJENT"),
+        @JsonSubTypes.Type(value = PdlIdentitetVedIdentifikasjonsnummer.class, name = "VED_IDENTIFIKASJONSNUMMER"),
+        @JsonSubTypes.Type(value = RsPdlRettIdentitetVedOpplysninger.class, name = "VED_OPPLYSNINGER")
+})
+public abstract class RsPdlRettIdentitet {
 
-      private Boolean rettIdentitetErUkjent;
-      private String rettIdentitetVedIdentifikasjonsnummer;
-      private RsPdlRettIdentitetVedOpplysninger rettIdentitetVedOpplysninger;
 }

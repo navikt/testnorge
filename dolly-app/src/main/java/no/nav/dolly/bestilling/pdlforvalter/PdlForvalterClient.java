@@ -108,6 +108,30 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
+    private void sendFalskIdentitet(Pdldata pdldata, NorskIdent norskIdent, StringBuilder status) {
+
+        if (nonNull(pdldata) && nonNull(pdldata.getFalskIdentitet())) {
+            try {
+                appendName(KONTAKTINFORMASJON_DOEDSBO, status);
+
+                PdlKontaktinformasjonForDoedsbo kontaktinformasjon = pdldata.getKontaktinformasjonForDoedsbo();
+                kontaktinformasjon.setKilde(KILDE);
+                kontaktinformasjon.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjon.getUtstedtDato(), now()));
+                kontaktinformasjon.setLandkode(blankcheckSetDefaultValue(kontaktinformasjon.getLandkode(), "NOR"));
+
+                ResponseEntity<JsonNode> response =
+                        pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjon, norskIdent.getIdent());
+
+                appendOkStatus(response.getBody(), status);
+
+            } catch (RuntimeException exception) {
+
+                appendErrorStatus(exception, status);
+                log.error(exception.getMessage(), exception);
+            }
+        }
+    }
+
     private void sendDeleteIdent(NorskIdent norskIdent, StringBuilder status) {
 
         try {
