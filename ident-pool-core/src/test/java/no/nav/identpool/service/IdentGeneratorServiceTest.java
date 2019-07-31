@@ -94,6 +94,18 @@ class IdentGeneratorServiceTest {
         kvinner.forEach(dnr -> assertDnrValues(dnr, Kjoenn.KVINNE, LOCAL_DATE));
     }
 
+    @Test
+    @DisplayName("Skal generere angitt antall identer med BOST")
+    void bostGenererKjonnKriterier() {
+        List<String> menn = generateIdents(Identtype.BOST, Kjoenn.MANN);
+        List<String> kvinner = generateIdents(Identtype.BOST, Kjoenn.KVINNE);
+
+        assertEquals(menn.size(), GENERATE_SIZE);
+        menn.forEach(bnr -> assertBnrValues(bnr, Kjoenn.MANN, LOCAL_DATE));
+        assertEquals(kvinner.size(), GENERATE_SIZE);
+        kvinner.forEach(bnr -> assertBnrValues(bnr, Kjoenn.KVINNE, LOCAL_DATE));
+    }
+
     private List<String> generateIdents(Identtype identtype, Kjoenn kjoenn) {
         return identGeneratorService.genererIdenter(
                 createRequest(identtype, kjoenn).build());
@@ -110,22 +122,29 @@ class IdentGeneratorServiceTest {
     private void assertFnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
         assertTrue(fnr.matches("\\d{11}"));
         assertEquals(getKjoenn(fnr), expectedKjoenn);
-        assertEquals(getBirthdate(fnr, false), expectedDate);
+        assertEquals(getBirthdate(fnr, false, false), expectedDate);
         assertTrue(getNumericValue(fnr.charAt(0)) < 4);
     }
 
     private void assertDnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
         assertTrue(fnr.matches("\\d{11}"));
         assertEquals(getKjoenn(fnr), expectedKjoenn);
-        assertEquals(getBirthdate(fnr, true), expectedDate);
+        assertEquals(getBirthdate(fnr, true, false), expectedDate);
         assertTrue(getNumericValue(fnr.charAt(0)) > 3);
+    }
+
+    private void assertBnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
+        assertTrue(fnr.matches("\\d{11}"));
+        assertEquals(getKjoenn(fnr), expectedKjoenn);
+        assertEquals(getBirthdate(fnr, false, true), expectedDate);
+        assertTrue(getNumericValue(fnr.charAt(2)) > 1);
     }
 
     private Kjoenn getKjoenn(String fnr) {
         return getNumericValue(fnr.charAt(8)) % 2 == 0 ? Kjoenn.KVINNE : Kjoenn.MANN;
     }
 
-    private LocalDate getBirthdate(String fnr, boolean dnr) {
+    private LocalDate getBirthdate(String fnr, boolean dnr, boolean bnr) {
         int day = parseInt(fnr.substring(0,2));
         int month = parseInt(fnr.substring(2,4));
         String year = fnr.substring(4,6);
@@ -133,6 +152,9 @@ class IdentGeneratorServiceTest {
         String century = (periode >= START_1900 && periode <= END_1900) ? "19" : "20";
         if (dnr) {
             day = day - 40;
+        }
+        if (bnr) {
+            month = month - 20;
         }
 
         return LocalDate.of(parseInt(century + year), month, day);
