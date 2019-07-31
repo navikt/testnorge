@@ -7,6 +7,8 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
 import no.nav.registre.bisys.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
+import no.nav.registre.bisys.consumer.ui.modules.BisysUiRollerConsumer;
+import no.nav.registre.bisys.consumer.ui.modules.BisysUiSakConsumer;
 
 @Configuration
 public class AppConfig {
@@ -46,6 +48,16 @@ public class AppConfig {
   public BisysUiConsumer bisysUiConsumer() {
     return new BisysUiConsumer(
         saksbehandlerUid, saksbehandlerPwd, bisysUrl, rolleSaksbehandler, enhet);
+  }
+
+  @Bean
+  public BisysUiSakConsumer bisysUiSakConsumer() {
+    return new BisysUiSakConsumer();
+  }
+
+  @Bean
+  public BisysUiRollerConsumer bisysUiRollerConsumer() {
+    return new BisysUiRollerConsumer();
   }
 
   @Bean
