@@ -74,7 +74,7 @@ public class IdentService {
         return inst2Consumer.slettInstitusjonsoppholdFraInst2(tokenObject, oppholdId, callId, consumerId);
     }
 
-    public Map<String, List<Institusjonsopphold>> hentForhold(List<String> identer, String callId, String consumerId) {
+    public Map<String, List<Institusjonsopphold>> hentOppholdTilIdenter(List<String> identer, String callId, String consumerId) {
         Map<String, Object> tokenObject = hentTokenTilInst2();
         return identer.parallelStream()
                 .collect(Collectors.toMap(fnr -> fnr, fnr -> hentInstitusjonsoppholdFraInst2(tokenObject, fnr, callId, consumerId)));
