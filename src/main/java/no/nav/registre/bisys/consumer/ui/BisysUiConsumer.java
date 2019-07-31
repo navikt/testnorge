@@ -1,16 +1,10 @@
 package no.nav.registre.bisys.consumer.ui;
 
+import static no.nav.registre.bisys.consumer.ui.BisysUiNavigationSupport.bisysLogon;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.gargoylesoftware.htmlunit.WebClient;
 import lombok.extern.slf4j.Slf4j;
-import net.morher.ui.connect.api.ApplicationDefinition;
-import net.morher.ui.connect.api.listener.ActionLogger;
 import net.morher.ui.connect.html.HtmlApplicationUtils;
-import net.morher.ui.connect.html.HtmlMapper;
-import net.morher.ui.connect.html.listener.WaitForJavaScriptListener;
-import net.morher.ui.connect.http.Browser;
-import net.morher.ui.connect.http.BrowserConfigurer;
 import no.nav.bidrag.dto.SynthesizedBidragRequest;
 import no.nav.bidrag.exception.BidragRequestProcessingException;
 import no.nav.bidrag.ui.bisys.BisysApplication;
@@ -63,12 +57,7 @@ public class BisysUiConsumer {
         request.getMottattDato(),
         request.getSoktFra());
 
-    bisysLogon();
-
-    // TODO: Introdusere mapping mellom saksbehandlers NAV-kontor og synt.brukers tilknyttede enhet
-    // Velg pålogget enhet
-    bisys.velgGruppe().velgGruppe(rolleSaksbehandler);
-    bisys.velgEnhet().velgEnhet(enhet);
+    bisysLogon(bisysUrl, saksbehandlerUid, saksbehandlerPwd, rolleSaksbehandler, enhet);
 
     Sak sak = bisysUiSakConsumer.openOrCreateSak(bisys, request);
 
@@ -80,32 +69,5 @@ public class BisysUiConsumer {
     log.info(
         "### Soknad creation completed successfully ### soknad for child {} was created.",
         request.getFnrBa());
-  }
-
-  private void bisysLogon() {
-    bisys = openBrowser(bisysUrl);
-    log.info("html dump: {}", HtmlApplicationUtils.getHtml(bisys.openamLoginPage()));
-    bisys.openamLoginPage().signIn(saksbehandlerUid, saksbehandlerPwd);
-  }
-
-  private BisysApplication openBrowser(String url) {
-    return ApplicationDefinition.of(BisysApplication.class)
-        .mapWith(new HtmlMapper())
-        .addListener(new WaitForJavaScriptListener())
-        .addListener(new ActionLogger())
-        .connect(
-            new Browser()
-                .asChrome()
-                .useInsecureSSL()
-                .addConfigurer(new BisysBrowserConfigurer())
-                .openUrl(url));
-  }
-
-  private static class BisysBrowserConfigurer implements BrowserConfigurer {
-
-    @Override
-    public void configure(WebClient client) {
-      client.getOptions().setThrowExceptionOnScriptError(false);
-    }
   }
 }
