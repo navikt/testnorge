@@ -11,6 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ public class BisysSyntetisererenConsumerTest {
 
   private int antallMeldinger = 2;
 
+  @Ignore
   @Test
   public void shouldGetSyntetiserteMeldinger() {
     stubBisysSyntetisererenConsumer();
@@ -57,6 +59,7 @@ public class BisysSyntetisererenConsumerTest {
     assertThat(syntetiserteBidragsmeldinger.get(1).getBidragspliktig(), equalTo("06060606060"));
   }
 
+  @Ignore
   @Test
   public void shouldLogOnEmptyResponse() {
     Logger logger = (Logger) LoggerFactory.getLogger(BisysSyntetisererenConsumer.class);
