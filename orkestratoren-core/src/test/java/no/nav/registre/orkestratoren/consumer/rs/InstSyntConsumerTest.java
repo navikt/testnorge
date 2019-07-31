@@ -5,13 +5,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.hamcrest.collection.IsIterableContainingInOrder;
@@ -25,6 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
@@ -82,9 +83,7 @@ public class InstSyntConsumerTest {
     }
 
     private void stubInstConsumerSlettIdenter() {
-        stubFor(delete(urlPathEqualTo("/inst/api/v1/ident"))
-                .withRequestBody(equalToJson(
-                        "[\"" + identer.get(0) + "\", \"" + identer.get(1) + "\"]"))
+        stubFor(delete(urlEqualTo("/inst/api/v1/ident/identer?identer=" + identer.get(0) + "," + identer.get(1)))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\n"

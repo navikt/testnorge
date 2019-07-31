@@ -4,7 +4,6 @@ import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,7 @@ public class InstSyntConsumer {
 
     public InstSyntConsumer(@Value("${testnorge-inst.rest-api.url}") String instServerUrl) {
         this.startSyntetiseringUrl = new UriTemplate(instServerUrl + "/v1/syntetisering/generer");
-        this.sletteIdenterUrl = new UriTemplate(instServerUrl + "/v1/ident");
+        this.sletteIdenterUrl = new UriTemplate(instServerUrl + "/v1/ident/identer?identer={identer}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inst" })
@@ -49,11 +48,14 @@ public class InstSyntConsumer {
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inst" })
     public SletteInstitusjonsoppholdResponse slettIdenterFraInst(List<String> identer) {
-        RequestEntity deleteRequest = RequestEntity.method(HttpMethod.DELETE, sletteIdenterUrl.expand())
-                .contentType(MediaType.APPLICATION_JSON)
+        RequestEntity deleteRequest = RequestEntity.delete(sletteIdenterUrl.expand(convertListToString(identer)))
                 .header("navCallId", NAV_CALL_ID)
                 .header("navConsumerId", NAV_CONSUMER_ID)
-                .body(identer);
+                .build();
         return restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
+    }
+
+    private String convertListToString(List<String> list) {
+        return String.join(",", list);
     }
 }
