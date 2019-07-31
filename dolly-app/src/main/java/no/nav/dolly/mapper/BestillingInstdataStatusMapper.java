@@ -13,16 +13,16 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsMeldingStatusIdent;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BestillingArenaforvalterStatusMapper {
+public final class BestillingInstdataStatusMapper {
 
-    public static List<RsMeldingStatusIdent> buildArenaStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsMeldingStatusIdent> buildInstdataStatusMap(List<BestillingProgress> progressList) {
 
         // status    environment    ident
         Map<String, Map<String, List<String>>> statusEnvIdents = new HashMap();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getArenaforvalterStatus())) {
-                newArrayList(progress.getArenaforvalterStatus().split(",")).forEach(
+            if (nonNull(progress.getInstdataStatus())) {
+                newArrayList(progress.getInstdataStatus().split(",")).forEach(
                         entry -> {
                             String[] envStatus = entry.split("\\$");
                             String environment = envStatus[0];

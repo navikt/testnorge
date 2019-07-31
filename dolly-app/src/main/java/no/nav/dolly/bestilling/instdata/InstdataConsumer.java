@@ -22,6 +22,7 @@ public class InstdataConsumer {
     private static final String NAV_CALL_ID = "navCallId";
     private static final String NAV_CONSUMER_ID = "navConsumerId";
     private static final String CONSUMER = "Dolly";
+    private static final String QUERY_FORMAT = "%s%s?fnrs=";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -29,20 +30,20 @@ public class InstdataConsumer {
     @Autowired
     private ProvidersProps providersProps;
 
-    public ResponseEntity getInstdata(List<String> identer) {
+    public ResponseEntity getInstdata(String ident) {
         return restTemplate.exchange(
-                RequestEntity.post(URI.create(providersProps.getInstdata().getUrl() + INSTDATA_URL))
+                RequestEntity.get(URI.create(format(QUERY_FORMAT, providersProps.getInstdata().getUrl(), INSTDATA_URL, ident)))
                         .header(NAV_CALL_ID, getNavCallId())
                         .header(NAV_CONSUMER_ID, CONSUMER)
-                        .body(identer), JsonNode.class);
+                        .build(), InstdataResponse.class);
     }
 
-    public ResponseEntity deleteInstdata(List<String> identer) {
+    public ResponseEntity deleteInstdata(String ident) {
         return restTemplate.exchange(
-                RequestEntity.post(URI.create(providersProps.getInstdata().getUrl() + INSTDATA_URL))
+                RequestEntity.delete(URI.create(format(QUERY_FORMAT, providersProps.getInstdata().getUrl(), INSTDATA_URL, ident)))
                         .header(NAV_CALL_ID, getNavCallId())
                         .header(NAV_CONSUMER_ID, CONSUMER)
-                        .body(identer), JsonNode.class);
+                        .build(), JsonNode.class);
     }
 
     public ResponseEntity postInstdata(List<Instdata> instdata) {

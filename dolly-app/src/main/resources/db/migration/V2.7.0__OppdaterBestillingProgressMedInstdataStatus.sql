@@ -3,5 +3,5 @@
 -----------------------------
 ALTER TABLE T_BESTILLING_PROGRESS
     ADD (
-        INSTDATA_STATUS VARCHAR2(1000)
+        INSTDATA_STATUS VARCHAR2(4000)
         );

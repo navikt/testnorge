@@ -5,6 +5,7 @@ import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import ma.glasnost.orika.MapperFacade;
@@ -26,7 +27,8 @@ public class InstdataClient implements ClientRegister {
     @Autowired
     private InstdataConsumer instdataConsumer;
 
-    @Override public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
+    @Override
+    public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
         if (nonNull(bestilling.getInstdata())) {
 
@@ -39,6 +41,11 @@ public class InstdataClient implements ClientRegister {
                 instdata.setOverfoert(nullcheckSetDefaultValue(instdata.getOverfoert(), false));
                 instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(), getTssEksternId(instdata.getInstitusjonstype())));
             });
+
+            ResponseEntity<InstdataResponse> instdataResponse = instdataConsumer.getInstdata(norskIdent.getIdent());
+            if (instdataResponse.hasBody() && !instdataResponse.getBody().getIdentliste().isEmpty()) {
+                //TODO
+            }
         }
     }
 
