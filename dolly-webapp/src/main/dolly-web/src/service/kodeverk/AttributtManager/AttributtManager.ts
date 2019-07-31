@@ -38,7 +38,8 @@ export default class AttributtManager {
 						attr.dataSource === 'AAREG' ||
 						attr.dataSource === 'KRR' ||
 						attr.dataSource === 'PDLF' ||
-						attr.dataSource === 'ARENA'
+						attr.dataSource === 'ARENA' ||
+						attr.dataSource === 'INST2'
 					) {
 						return attr
 					} else {
@@ -192,9 +193,9 @@ export default class AttributtManager {
 	}
 
 	getParentAttributtListByHovedkategori(hovedkategori: Kategori): string[] {
-		return AttributtListe.filter(
-			attr => attr.hovedKategori.id === hovedkategori.id && !attr.parent
-		).map(attr => attr.id)
+		return AttributtListe.filter(attr => {
+			return attr.hovedKategori.id === hovedkategori.id && !attr.parent
+		}).map(attr => attr.id)
 	}
 
 	getAttributtById(attributtId: string): Attributt {

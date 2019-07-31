@@ -5,6 +5,7 @@ describe('DataSourceMapper.js', () => {
 		const sigrun = 'SIGRUN'
 		const krr = 'KRR'
 		const arena = 'ARENA'
+		const inst = 'INST2'
 
 		it('should return sigrun-stub', () => {
 			const res = 'sigrunstub'
@@ -19,6 +20,11 @@ describe('DataSourceMapper.js', () => {
 		it('should return arena', () => {
 			const res = 'arenaforvalter'
 			expect(DataSourceMapper(arena)).toBe(res)
+		})
+
+		it('should return institusjonsopphold', () => {
+			const res = 'institusjonsopphold'
+			expect(DataSourceMapper(inst)).toBe(res)
 		})
 
 		it('should return tpsf on default', () => {

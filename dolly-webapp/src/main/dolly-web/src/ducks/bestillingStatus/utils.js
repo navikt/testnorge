@@ -17,13 +17,15 @@ export const getAaregSuccessEnv = aaregStatusArray => {
 }
 
 export const getPdlforvalterStatusOK = pdlforvalterStatus => {
-	return Object.keys(pdlforvalterStatus).map(pdlAttr => {
-		return pdlforvalterStatus[pdlAttr].map(status => {
+	let status =  false
+	 Object.keys(pdlforvalterStatus).map(pdlAttr => {
+		 pdlforvalterStatus[pdlAttr].map(status => {
 			if (status.statusMelding === 'OK') {
-				return true
+				status = true
 			}
 		})
 	})
+	return status
 }
 
 export const sokSelector = (items, searchStr) => {

@@ -3,8 +3,10 @@ import {
 	mapKrrData,
 	mapArenaData,
 	mapAaregData,
-	mapSubItemAaregData
+	mapSubItemAaregData,
+	mapInst2Data
 } from '../mapRegistreDataToIdent'
+import Formatters from '~/utils/DataFormatter'
 
 describe('mapDetailedData.js', () => {
 	describe('mapSigrunData', () => {
@@ -231,7 +233,12 @@ describe('mapDetailedData.js', () => {
 					}
 				]
 			}
-			expect(mapArenaData(testArenaData2, undefined, testDato2)).toEqual(testRes2)
+			expect(mapArenaData(testArenaData2, testKvalifiseringsgruppe2, testDato2)).toEqual(testRes2)
+		})
+	})
+	describe('mapAaregData', () => {
+		it('should return null without data', () => {
+			expect(mapAaregData()).toBeNull()
 		})
 
 		it('should return arena-data with 11-5 vedtak and AAP vedtak', () => {
@@ -501,6 +508,57 @@ describe('mapDetailedData.js', () => {
 			}
 
 			expect(mapAaregData(testAaregDataMedSubItem)).toEqual(aaregResSubItem)
+		})
+	})
+
+	describe('mapInst2Data', () => {
+		it('should return null without data', () => {
+			expect(mapInst2Data()).toBeNull()
+		})
+
+		it('should return inst2-data ', () => {
+			const testInst2Data = [
+				{
+					faktiskSluttdato: '2018-01-01T00:00:00',
+					startdato: '2017-02-01T00:00:00',
+					institusjonstype: 'AS',
+					varighet: 'K'
+				}
+			]
+
+			const res = {
+				header: 'Institusjonsopphold',
+				multiple: true,
+				data: testInst2Data.map((data, i) => {
+					return {
+						parent: 'institusjonsopphold',
+						id: data.personidentifikator,
+						value: [
+							{
+								id: 'institusjonstype',
+								label: 'Institusjonstype',
+								value: 'AS'
+							},
+							{
+								id: 'varighet',
+								label: 'Varighet',
+								value: 'Kortvarig'
+							},
+							{
+								id: 'startdato',
+								label: 'Startdato',
+								value: '01.02.2017'
+							},
+							{
+								id: 'faktiskSluttdato',
+								label: 'Sluttdato',
+								value: '01.01.2018'
+							}
+						]
+					}
+				})
+			}
+			expect(mapInst2Data(testInst2Data)).toEqual(res)
 		})
 	})
 })

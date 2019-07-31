@@ -129,6 +129,13 @@ export const SubKategorier: KategoriTypes = {
 		showInSummary: true
 	},
 
+	Institusjonsopphold: {
+		id: 'institusjonsopphold',
+		navn: 'Institusjonsopphold',
+		order: 20,
+		showInSummary: true
+	},
+
 	Krr: {
 		id: 'krr',
 		navn: '',
