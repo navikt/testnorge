@@ -38,8 +38,8 @@ public class Inst2Consumer {
     private String username;
     private String password;
     private UriTemplate hentInstitusjonsoppholdUrl;
-    private UriTemplate leggTilInstitusjonsforholdUrl;
-    private UriTemplate slettInstitusjonsforholdUrl;
+    private UriTemplate leggTilInstitusjonsoppholdUrl;
+    private UriTemplate oppdaterSlettInstitusjonsoppholdUrl;
     private UriTemplate sjekkInstitusjonUrl;
 
     public Inst2Consumer(
@@ -51,8 +51,8 @@ public class Inst2Consumer {
         this.username = username;
         this.password = password;
         this.hentInstitusjonsoppholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold");
-        this.leggTilInstitusjonsforholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold?validatePeriod=true");
-        this.slettInstitusjonsforholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold/{oppholdId}");
+        this.leggTilInstitusjonsoppholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold?validatePeriod=true");
+        this.oppdaterSlettInstitusjonsoppholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold/{oppholdId}");
         this.sjekkInstitusjonUrl = new UriTemplate(inst2ServerUrl + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}");
     }
 
@@ -90,7 +90,7 @@ public class Inst2Consumer {
     }
 
     public OppholdResponse leggTilInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, Institusjonsopphold institusjonsopphold, String callId, String consumerId) {
-        RequestEntity postRequest = RequestEntity.post(leggTilInstitusjonsforholdUrl.expand())
+        RequestEntity postRequest = RequestEntity.post(leggTilInstitusjonsoppholdUrl.expand())
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)
@@ -108,8 +108,24 @@ public class Inst2Consumer {
         }
     }
 
+    public ResponseEntity oppdaterInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, Long oppholdId, Institusjonsopphold institusjonsopphold, String callId, String consumerId) {
+        RequestEntity putRequest = RequestEntity.put(oppdaterSlettInstitusjonsoppholdUrl.expand(oppholdId))
+                .header("accept", "*/*")
+                .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
+                .header("Nav-Call-Id", callId)
+                .header("Nav-Consumer-Id", consumerId)
+                .body(institusjonsopphold);
+        try {
+            ResponseEntity<Object> response = restTemplate.exchange(putRequest, RESPONSE_TYPE_OBJECT);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (HttpStatusCodeException e) {
+            log.error("Kunne ikke oppdatere institusjonsopphold med oppholdId {} - {}", oppholdId, e.getResponseBodyAsString(), e);
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+        }
+    }
+
     public ResponseEntity slettInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, Long oppholdId, String callId, String consumerId) {
-        RequestEntity deleteRequest = RequestEntity.delete(slettInstitusjonsforholdUrl.expand(oppholdId))
+        RequestEntity deleteRequest = RequestEntity.delete(oppdaterSlettInstitusjonsoppholdUrl.expand(oppholdId))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)

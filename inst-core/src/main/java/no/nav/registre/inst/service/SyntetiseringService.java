@@ -56,22 +56,6 @@ public class SyntetiseringService {
         return leggTilInstitusjonsforholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger, callId, consumerId);
     }
 
-    public Map<String, List<OppholdResponse>> opprettInstitusjonsforholdIIInst2(List<Institusjonsopphold> meldinger, String callId, String consumerId) {
-        Map<String, List<OppholdResponse>> statusFraInst2 = new HashMap<>();
-        for (Institusjonsopphold melding : meldinger) {
-            OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(inst2Consumer.hentTokenTilInst2(), melding, callId, consumerId);
-            String personident = melding.getPersonident();
-            if (statusFraInst2.containsKey(personident)) {
-                statusFraInst2.get(personident).add(oppholdResponse);
-            } else {
-                List<OppholdResponse> oppholdResponses = new ArrayList<>();
-                oppholdResponses.add(oppholdResponse);
-                statusFraInst2.put(personident, oppholdResponses);
-            }
-        }
-        return statusFraInst2;
-    }
-
     private List<Institusjonsopphold> hentSyntetiserteInstitusjonsforholdsmeldinger(Map<String, Object> tokenObject, int antallMeldinger,
             String callId, String consumerId) {
         List<Institusjonsopphold> syntetiserteMeldinger = new ArrayList<>(antallMeldinger);
@@ -156,15 +140,15 @@ public class SyntetiseringService {
     }
 
     private List<Institusjonsopphold> validerOgFjernUgyldigeMeldinger(Map<String, Object> tokenObject, List<Institusjonsopphold> syntetiserteMeldinger,
-            String callid, String consumerId) {
+            String callId, String consumerId) {
         List<Institusjonsopphold> gyldigeSyntetiserteMeldinger = new ArrayList<>(syntetiserteMeldinger.size());
 
         for (Institusjonsopphold melding : syntetiserteMeldinger) {
             String tssEksternId = melding.getTssEksternId();
             String startdato = melding.getStartdato();
             String faktiskSluttdato = melding.getFaktiskSluttdato();
-            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, startdato, callid, consumerId).is2xxSuccessful()
-                    && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, faktiskSluttdato, callid, consumerId).is2xxSuccessful()) {
+            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, startdato, callId, consumerId).is2xxSuccessful()
+                    && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, faktiskSluttdato, callId, consumerId).is2xxSuccessful()) {
                 gyldigeSyntetiserteMeldinger.add(melding);
             }
         }

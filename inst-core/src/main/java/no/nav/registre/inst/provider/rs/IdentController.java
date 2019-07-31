@@ -21,7 +21,6 @@ import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.provider.rs.responses.SletteOppholdResponse;
 import no.nav.registre.inst.service.IdentService;
-import no.nav.registre.inst.service.SyntetiseringService;
 
 @RestController
 @RequestMapping("api/v1/ident")
@@ -30,12 +29,20 @@ public class IdentController {
     @Autowired
     private IdentService identService;
 
-    @Autowired
-    private SyntetiseringService syntetiseringService;
+    @PostMapping
+    public OppholdResponse opprettInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId,
+            @RequestBody Institusjonsopphold institusjonsopphold) {
+        return identService.sendTilInst2(institusjonsopphold, navCallId, navConsumerId);
+    }
 
-    @DeleteMapping("/identer")
-    public SletteOppholdResponse slettIdenterFraInst2(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam List<String> identer) {
-        return identService.slettInstitusjonsforholdTilIdenter(identer, navCallId, navConsumerId);
+    @GetMapping
+    public Map<String, List<Institusjonsopphold>> hentInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam List<String> fnrs) {
+        return identService.hentForhold(fnrs, navCallId, navConsumerId);
+    }
+
+    @PutMapping("/{oppholdId}")
+    public ResponseEntity oppdaterInstitusjonsopphold(@PathVariable Long oppholdId, @RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestBody Institusjonsopphold institusjonsopphold) {
+        return identService.oppdaterInstitusjonsopphold(navCallId, navConsumerId, oppholdId, institusjonsopphold);
     }
 
     @DeleteMapping
@@ -48,19 +55,14 @@ public class IdentController {
         return status;
     }
 
-    @PostMapping
-    public Map<String, List<OppholdResponse>> opprettInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId,
-            @RequestBody List<Institusjonsopphold> institusjonsforholdsmeldinger) {
-        return syntetiseringService.opprettInstitusjonsforholdIIInst2(institusjonsforholdsmeldinger, navCallId, navConsumerId);
+    @PostMapping("/batch")
+    public Map<String, List<OppholdResponse>> opprettFlereInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId,
+            @RequestBody List<Institusjonsopphold> institusjonsopphold) {
+        return identService.opprettInstitusjonsopphold(institusjonsopphold, navCallId, navConsumerId);
     }
 
-    @GetMapping
-    public Map<String, List<Institusjonsopphold>> hentInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam List<String> fnrs) {
-        return identService.hentForhold(fnrs, navCallId, navConsumerId);
-    }
-
-    @PutMapping
-    public void oppdaterInstitusjonsopphold(@PathVariable Long oppholdId, @RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestBody Institusjonsopphold institusjonsopphold) {
-
+    @DeleteMapping("/batch")
+    public SletteOppholdResponse slettIdenter(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam List<String> identer) {
+        return identService.slettInstitusjonsforholdTilIdenter(identer, navCallId, navConsumerId);
     }
 }

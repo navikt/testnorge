@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.provider.rs.responses.SletteOppholdResponse;
 
 @Service
@@ -20,6 +21,26 @@ public class IdentService {
 
     @Autowired
     private Inst2Consumer inst2Consumer;
+
+    public Map<String, List<OppholdResponse>> opprettInstitusjonsopphold(List<Institusjonsopphold> oppholdene, String callId, String consumerId) {
+        Map<String, List<OppholdResponse>> statusFraInst2 = new HashMap<>();
+        for (Institusjonsopphold opphold : oppholdene) {
+            OppholdResponse oppholdResponse = sendTilInst2(opphold, callId, consumerId);
+            String personident = opphold.getPersonident();
+            if (statusFraInst2.containsKey(personident)) {
+                statusFraInst2.get(personident).add(oppholdResponse);
+            } else {
+                List<OppholdResponse> oppholdResponses = new ArrayList<>();
+                oppholdResponses.add(oppholdResponse);
+                statusFraInst2.put(personident, oppholdResponses);
+            }
+        }
+        return statusFraInst2;
+    }
+
+    public OppholdResponse sendTilInst2(Institusjonsopphold opphold, String callId, String consumerId) {
+        return inst2Consumer.leggTilInstitusjonsoppholdIInst2(inst2Consumer.hentTokenTilInst2(), opphold, callId, consumerId);
+    }
 
     public SletteOppholdResponse slettInstitusjonsforholdTilIdenter(List<String> identer, String callId, String consumerId) {
         Map<String, Object> tokenObject = hentTokenTilInst2();
@@ -42,6 +63,11 @@ public class IdentService {
         }
 
         return sletteOppholdResponse;
+    }
+
+    public ResponseEntity oppdaterInstitusjonsopphold(String callId, String consumerId, Long oppholdId, Institusjonsopphold institusjonsopphold) {
+        Map<String, Object> tokenObject = hentTokenTilInst2();
+        return inst2Consumer.oppdaterInstitusjonsoppholdIInst2(tokenObject, oppholdId, institusjonsopphold, callId, consumerId);
     }
 
     public ResponseEntity slettOppholdMedId(Map<String, Object> tokenObject, String callId, String consumerId, Long oppholdId) {

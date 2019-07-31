@@ -27,7 +27,7 @@ public class IdentControllerTest {
     public void shouldDeleteIdents() {
         String id = "test";
         List<String> identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
-        identController.slettIdenterFraInst2(id, id, identer);
+        identController.slettIdenter(id, id, identer);
 
         verify(identService).slettInstitusjonsforholdTilIdenter(identer, id, id);
     }
