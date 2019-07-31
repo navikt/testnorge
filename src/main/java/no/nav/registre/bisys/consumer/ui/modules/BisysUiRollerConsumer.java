@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import net.morher.ui.connect.api.element.Label;
+import net.morher.ui.connect.html.HtmlApplicationUtils;
 import no.nav.bidrag.dto.SynthesizedBidragRequest;
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.rolle.Person;
@@ -19,12 +20,8 @@ import no.nav.bidrag.ui.bisys.rolle.Samhandler;
 @Slf4j
 public class BisysUiRollerConsumer {
 
-  private BisysApplication bisys;
-
   public Roller createRoller(
       BisysApplication bisys, SynthesizedBidragRequest request, boolean ignoreExisingSakError) {
-
-    this.bisys = bisys;
 
     Roller rollerPage = bisys.roller();
 
@@ -58,7 +55,7 @@ public class BisysUiRollerConsumer {
     // Sak with same parties already exists
     try {
       if (!ignoreExisingSakError) {
-        handleExistingSakError(rollerPage, request);
+        handleExistingSakError(bisys, rollerPage, request);
       }
       rollerPage.executeLagre().click();
 
@@ -68,8 +65,19 @@ public class BisysUiRollerConsumer {
 
     return rollerPage;
   }
+  /**
+   * Add child to existing sak
+   *
+   * @param bisys BisysApplication instance navigated to Roller page
+   */
+  public void addBarn(BisysApplication bisys) {
+    Roller rollerPage = bisys.roller();
+    rollerPage.leggeTilLinje().click();
+    log.info(HtmlApplicationUtils.getHtml(bisys.openamLoginPage()));
+  }
 
-  private void handleExistingSakError(Roller rollerPage, SynthesizedBidragRequest request) {
+  private void handleExistingSakError(
+      BisysApplication bisys, Roller rollerPage, SynthesizedBidragRequest request) {
     List<Label> errors = rollerPage.errors();
 
     for (Label error : errors) {
@@ -92,7 +100,7 @@ public class BisysUiRollerConsumer {
           saksnr = saksnr.substring(saksnrDigitsOnlyMatch.start());
           redirectToSak(bisys, rollerPage);
 
-          if (isBarnPresentInSak(saksnr, request)) {
+          if (isBarnPresentInSak(bisys, saksnr, request)) {
             getSak(bisys, saksnr);
           } else {
             bisys.sak().nySak().click();
@@ -104,7 +112,8 @@ public class BisysUiRollerConsumer {
     }
   }
 
-  private boolean isBarnPresentInSak(String saksnr, SynthesizedBidragRequest request) {
+  private boolean isBarnPresentInSak(
+      BisysApplication bisys, String saksnr, SynthesizedBidragRequest request) {
     // Fill in saksnr
     bisys.sak().sokSaksnr().setValue(saksnr);
 
