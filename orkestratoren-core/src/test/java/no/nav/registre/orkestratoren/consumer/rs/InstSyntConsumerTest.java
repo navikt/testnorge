@@ -83,7 +83,7 @@ public class InstSyntConsumerTest {
     }
 
     private void stubInstConsumerSlettIdenter() {
-        stubFor(delete(urlEqualTo("/inst/api/v1/ident/identer?identer=" + identer.get(0) + "," + identer.get(1)))
+        stubFor(delete(urlEqualTo("/inst/api/v1/ident/batch?identer=" + identer.get(0) + "," + identer.get(1)))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\n"

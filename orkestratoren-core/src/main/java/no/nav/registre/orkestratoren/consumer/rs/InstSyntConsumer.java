@@ -33,7 +33,7 @@ public class InstSyntConsumer {
 
     public InstSyntConsumer(@Value("${testnorge-inst.rest-api.url}") String instServerUrl) {
         this.startSyntetiseringUrl = new UriTemplate(instServerUrl + "/v1/syntetisering/generer");
-        this.sletteIdenterUrl = new UriTemplate(instServerUrl + "/v1/ident/identer?identer={identer}");
+        this.sletteIdenterUrl = new UriTemplate(instServerUrl + "/v1/ident/batch?identer={identer}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inst" })
