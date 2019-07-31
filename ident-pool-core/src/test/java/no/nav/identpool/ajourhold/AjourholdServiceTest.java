@@ -69,6 +69,7 @@ class AjourholdServiceTest {
     void identerBlirGenerertForHvertAar() {
         doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.FNR));
         doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.DNR));
+        doNothing().when(ajourholdService).generateForYear(anyInt(), eq(Identtype.BOST));
         ajourholdService.checkCriticalAndGenerate();
         int number = 111;
         if (LocalDate.now().getDayOfYear() == 1) {
@@ -76,6 +77,7 @@ class AjourholdServiceTest {
         }
         verify(ajourholdService, times(number)).checkAndGenerateForDate(any(), eq(Identtype.FNR));
         verify(ajourholdService, times(number)).checkAndGenerateForDate(any(), eq(Identtype.DNR));
+        verify(ajourholdService, times(number)).checkAndGenerateForDate(any(), eq(Identtype.BOST));
     }
 
     @Test
@@ -104,7 +106,20 @@ class AjourholdServiceTest {
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
         entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.DNR)));
         entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)));
+    }
 
+    @Test
+    void genererIdenterForAarHvorAlleErLedigeBOST() {
+        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+            List<String> pins = invocationOnMock.getArgument(0);
+            return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
+        });
+        ajourholdService.generateForYear(1941, Identtype.BOST);
+        verify(identRepository, times(2)).saveAll(anyIterable());
+        assertThat(entities.size(), is(365 * 2));
+        entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.BOST)));
+        entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.BOST)));
+        entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)));
     }
 
     @Test
@@ -120,6 +135,22 @@ class AjourholdServiceTest {
         assertThat(entities.size(), is(dayOfYear.minusDays(1).getDayOfYear() * 2));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
         entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.DNR)));
+        entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)));
+    }
+
+    @Test
+    void generererIdenterFraAarTilDatoMidtISammeAarBOST() {
+        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+            List<String> pins = invocationOnMock.getArgument(0);
+            return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
+        });
+        LocalDate dayOfYear = LocalDate.of(1941, 4, 10);
+        ajourholdService.current = dayOfYear;
+        ajourholdService.generateForYear(1941, Identtype.BOST);
+        verify(identRepository, times(2)).saveAll(anyIterable());
+        assertThat(entities.size(), is(dayOfYear.minusDays(1).getDayOfYear() * 2));
+        entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.BOST)));
+        entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.BOST)));
         entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK)));
     }
 }

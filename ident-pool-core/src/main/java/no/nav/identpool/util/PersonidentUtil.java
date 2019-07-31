@@ -2,6 +2,7 @@ package no.nav.identpool.util;
 
 import static java.lang.Character.getNumericValue;
 import static java.lang.Integer.parseInt;
+import static no.nav.identpool.domain.Identtype.BOST;
 import static no.nav.identpool.domain.Identtype.DNR;
 import static org.springframework.util.Assert.notNull;
 
@@ -36,7 +37,12 @@ public final class PersonidentUtil {
     }
 
     public static Identtype getIdentType(String ident) {
-        return parseInt(ident.substring(0, 1)) > 3 ? DNR : Identtype.FNR;
+        if (parseInt(ident.substring(0, 1)) > 3) {
+            return DNR;
+        } else if (parseInt(ident.substring(2, 3)) > 1) {
+            return BOST;
+        }
+        return Identtype.FNR;
     }
 
     public static LocalDate toBirthdate(String ident) {
@@ -46,6 +52,9 @@ public final class PersonidentUtil {
 
         if (DNR.equals(getIdentType(ident))) {
             day = day - 40;
+        }
+        if (BOST.equals(getIdentType(ident))) {
+            month = month - 20;
         }
 
         return LocalDate.of(year, month, day);
