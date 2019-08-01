@@ -14,6 +14,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.registre.inst.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 
@@ -86,7 +87,18 @@ public class Inst2ConsumerTest {
         List<Institusjonsopphold> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
 
         assertThat(result.get(0).getTssEksternId(), is("440"));
+        assertThat(result.get(0).getStartdato(), is("2013-07-03"));
         assertThat(result.get(1).getTssEksternId(), is("441"));
+        assertThat(result.get(1).getStartdato(), is("2012-04-04"));
+    }
+
+    @Test
+    public void shouldGetEmptyListOnBadRequest() {
+        stubGetInstitusjonsoppholdWithBadRequest();
+
+        List<Institusjonsopphold> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
+
+        assertThat(result, is(empty()));
     }
 
     @Test
@@ -152,6 +164,16 @@ public class Inst2ConsumerTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("institusjonsmelding.json"))));
+    }
+
+    private void stubGetInstitusjonsoppholdWithBadRequest() {
+        stubFor(get(urlPathEqualTo("/inst2/web/api/person/institusjonsopphold"))
+                .withHeader("accept", equalTo("*/*"))
+                .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
+                .withHeader("Nav-Call-Id", equalTo(id))
+                .withHeader("Nav-Consumer-Id", equalTo(id))
+                .withHeader("Nav-Personident", equalTo(fnr1))
+                .willReturn(aResponse().withStatus(HttpStatus.BAD_REQUEST.value())));
     }
 
     private void stubAddInstitusjonsopphold(Institusjonsopphold institusjonsopphold) throws JsonProcessingException {

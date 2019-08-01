@@ -72,7 +72,7 @@ public class Inst2Consumer {
                 .header("Nav-Consumer-Id", consumerId)
                 .header("Nav-Personident", ident)
                 .build();
-        List<Institusjonsopphold> response = null;
+        List<Institusjonsopphold> response;
         try {
             response = restTemplate.exchange(getRequest, RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD).getBody();
         } catch (HttpStatusCodeException e) {
@@ -81,6 +81,7 @@ public class Inst2Consumer {
                 return new ArrayList<>();
             } else {
                 log.error("Kunne ikke hente ident fra inst2", e);
+                throw new RuntimeException("Kunne ikke hente ident fra inst2", e);
             }
         }
         return response;
