@@ -19,6 +19,8 @@ import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
+import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
+import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 
 @Slf4j
 @Service
@@ -26,6 +28,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     public static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
     public static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
+    public static final String FALSK_IDENTITET = "FalskIdentitet";
     public static final String PDL_FORVALTER = "PdlForvalter";
     private static final String DELETE_IDENT = "DeleteIdent";
     private static final String KILDE = "Dolly";
@@ -51,6 +54,7 @@ public class PdlForvalterClient implements ClientRegister {
                 sendDeleteIdent(norskIdent, status);
                 sendUtenlandsid(pdldata, norskIdent, status);
                 sendDoedsbo(pdldata, norskIdent, status);
+                sendFalskIdentitet(pdldata, norskIdent, status);
 
             } else {
 
@@ -70,9 +74,12 @@ public class PdlForvalterClient implements ClientRegister {
         if (nonNull(pdldata) && nonNull(pdldata.getUtenlandskIdentifikasjonsnummer())) {
             try {
                 appendName(UTENLANDS_IDENTIFIKASJONSNUMMER, status);
-                
+
+                PdlUtenlandskIdentifikasjonsnummer utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
+                utenlandskId.setKilde(nullcheckSetDefaultValue(utenlandskId.getKilde(), KILDE));
+
                 ResponseEntity<JsonNode> response =
-                        pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(pdldata.getUtenlandskIdentifikasjonsnummer(), norskIdent.getIdent());
+                        pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(utenlandskId, norskIdent.getIdent());
 
                 appendOkStatus(response.getBody(), status);
 
@@ -112,15 +119,14 @@ public class PdlForvalterClient implements ClientRegister {
 
         if (nonNull(pdldata) && nonNull(pdldata.getFalskIdentitet())) {
             try {
-                appendName(KONTAKTINFORMASJON_DOEDSBO, status);
+                appendName(FALSK_IDENTITET, status);
 
-                PdlKontaktinformasjonForDoedsbo kontaktinformasjon = pdldata.getKontaktinformasjonForDoedsbo();
-                kontaktinformasjon.setKilde(KILDE);
-                kontaktinformasjon.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjon.getUtstedtDato(), now()));
-                kontaktinformasjon.setLandkode(blankcheckSetDefaultValue(kontaktinformasjon.getLandkode(), "NOR"));
+                PdlFalskIdentitet falskIdentitet = pdldata.getFalskIdentitet();
+                falskIdentitet.setErFalsk(nullcheckSetDefaultValue(falskIdentitet.getErFalsk(), true));
+                falskIdentitet.setKilde(nullcheckSetDefaultValue(falskIdentitet.getKilde(), KILDE));
 
                 ResponseEntity<JsonNode> response =
-                        pdlForvalterRestConsumer.postKontaktinformasjonForDoedsbo(kontaktinformasjon, norskIdent.getIdent());
+                        pdlForvalterRestConsumer.postFalskIdentitet(falskIdentitet, norskIdent.getIdent());
 
                 appendOkStatus(response.getBody(), status);
 

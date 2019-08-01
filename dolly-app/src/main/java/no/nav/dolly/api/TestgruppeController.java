@@ -103,20 +103,20 @@ public class TestgruppeController {
             + "     &nbsp; &nbsp; \"foedselsdato\": \"string\" <br />"
             + EPILOG;
 
-    private static final String FALSK_IDENTITET = "Falsk identitet inneholder abstrakt feltet <b>rettIdentitet</b> som har en av tre objekttyper: <br />"
+    private static final String FALSK_IDENTITET = "Falsk identitet inneholder et abstrakt felt, <b>rettIdentitet</b>, som har en av tre objekttyper: <br />"
             + "For identitet ukjent:<br />"
             + FALSK_IDENTITET_TYPE
-            + "     &nbsp; &nbsp; \"identitetType\" = \"UKJENT\", <br />"
+            + "     &nbsp; &nbsp; \"identitetType\": \"UKJENT\", <br />"
             + "     &nbsp; &nbsp; \"rettIdentitetErUkjent\": true <br />"
             + EPILOG
-            + "For identitet (norsk) med personnummer:<br />"
+            + "For identitet med personnummer:<br />"
             + FALSK_IDENTITET_TYPE
-            + "     &nbsp; &nbsp; \"identitetType\" = \"NORSK\", <br />"
+            + "     &nbsp; &nbsp; \"identitetType\": \"ENTYDIG\", <br />"
             + "     &nbsp; &nbsp; \"rettIdentitetVedIdentifikasjonsnummer\": \"&lt;fnr/dnr&gt;\" <br />"
             + EPILOG
-            + "For identitet (utenlandsk) med opplysninger:<br />"
+            + "For identitet med opplysninger:<br />"
             + FALSK_IDENTITET_TYPE
-            + "     &nbsp; &nbsp; \"identitetType\" = \"UTENLANDSK\", <br />"
+            + "     &nbsp; &nbsp; \"identitetType\": \"OMTRENTLIG\", <br />"
             + "     &nbsp; &nbsp; \"foedselsdato\": \"&lt;dato&gt;\" <br />"
             + "     &nbsp; &nbsp; \"kjoenn\": \"MANN/KVINNE/UBESTEMT\" <br />"
             + "     &nbsp; &nbsp; \"personnavn\":{<br />"

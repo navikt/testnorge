@@ -3,7 +3,7 @@ package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "adressatType")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "adressatType")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = PdlAdvokat.class, name = "ADVOKAT"),
         @JsonSubTypes.Type(value = PdlKontaktpersonMedIdNummer.class, name = "PERSON_MEDID"),

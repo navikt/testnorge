@@ -23,8 +23,10 @@ public class PdlForvalterRestConsumer {
 
     private static final String NAV_PERSONIDENT = "Nav-Personident";
     private static final String NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
-    private static final String PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL = "/api/v1/bestilling/kontaktinformasjonfordoedsbo";
-    private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL = "/api/v1/bestilling/utenlandsidentifikasjonsnummer";
+    private static final String PDL_BESTILLING_URL = "/api/v1/bestilling";
+    private static final String PDL_BESTILL_KONTAKTINFORMASJON_FOR_DODESDBO_URL = PDL_BESTILLING_URL + "/kontaktinformasjonfordoedsbo";
+    private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL = PDL_BESTILLING_URL + "/utenlandsidentifikasjonsnummer";
+    private static final String PDL_BESTILLING_FALSK_IDENTITET_URL = PDL_BESTILLING_URL + "/falskidentitet";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
     private static final String PREPROD_ENV = "q";
 
@@ -51,7 +53,7 @@ public class PdlForvalterRestConsumer {
 
     public ResponseEntity postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, String ident) {
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL))
+                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILL_KONTAKTINFORMASJON_FOR_DODESDBO_URL))
                 .contentType(APPLICATION_JSON)
                 .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                 .header(NAV_CONSUMER_TOKEN, resolveToken())
@@ -69,9 +71,9 @@ public class PdlForvalterRestConsumer {
                 .body(utenlandskIdentifikasjonsnummer), JsonNode.class);
     }
 
-    public ResponseEntity falskidentitet(PdlFalskIdentitet falskIdentitet, String ident) {
+    public ResponseEntity postFalskIdentitet(PdlFalskIdentitet falskIdentitet, String ident) {
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL))
+                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FALSK_IDENTITET_URL))
                 .contentType(APPLICATION_JSON)
                 .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                 .header(NAV_CONSUMER_TOKEN, resolveToken())
