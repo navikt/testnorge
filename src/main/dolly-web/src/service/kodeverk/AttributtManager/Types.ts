@@ -28,6 +28,7 @@ export interface Kategori {
 	order: number
 	informasjonstekst?: string
 	showInSummary?: boolean
+	tilgjengeligeMiljoeEndepunkt?: Function
 }
 
 export interface KategoriTypes {
@@ -67,7 +68,7 @@ export interface Attributt {
 	dependentOn?: string // Er avhengig av en annen attributt for å kunne settes verdi på
 	dependentBy?: string // Er ikke avhengig, er attributten som ble settet av dependentOn
 	includeIf?: Attributt[]
-	sattForEksisterendeIdent?: boolean
+	sattForEksisterendeIdent?: boolean //Hvis du oppretter ident fra eksisterende fnr kan du f.eks. ikke velge kjønn
 	onlyShowAfterSelectedValue?: Object // AAREG: Orgnummer/ident er avhengig av valgt verdi av "Type av arbeidsgiver". String = id, number = indexOf valgt verdi
 	onlyShowDependentOnOtherValue?: Object //Dødsbo: Vise postnummer kodeverk hvis land=NOR. {attributtId: , dependentValue: [], except: []}
 	transform?: (value: any, attributter: Attributt[]) => any
