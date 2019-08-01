@@ -47,11 +47,11 @@ public class SyntetiseringControllerTest {
         String fnr = "01010101010";
         Map<String, List<OppholdResponse>> expectedResponse = new HashMap<>();
         expectedResponse.put(fnr, Collections.singletonList(OppholdResponse.builder().status(HttpStatus.OK).build()));
-        when(syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest, id, id)).thenReturn(expectedResponse);
+        when(syntetiseringService.finnSyntetiserteMeldinger(id, id, miljoe, syntetiserInstRequest)).thenReturn(expectedResponse);
 
-        Map<String, List<OppholdResponse>> result = syntetiseringController.genererInstitusjonsmeldinger(id, id, syntetiserInstRequest);
+        Map<String, List<OppholdResponse>> result = syntetiseringController.genererInstitusjonsmeldinger(id, id, miljoe, syntetiserInstRequest);
 
-        verify(syntetiseringService).finnSyntetiserteMeldinger(syntetiserInstRequest, id, id);
+        verify(syntetiseringService).finnSyntetiserteMeldinger(id, id, miljoe, syntetiserInstRequest);
 
         assertThat(result.get(fnr).get(0).getStatus(), is(HttpStatus.OK));
     }

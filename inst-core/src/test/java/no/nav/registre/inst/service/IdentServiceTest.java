@@ -37,6 +37,7 @@ public class IdentServiceTest {
     private Long oppholdId1 = 1L;
     private Long oppholdId2 = 2L;
     private List<Institusjonsopphold> meldinger;
+    private String miljoe = "t1";
 
     @Before
     public void setUp() {
@@ -61,18 +62,18 @@ public class IdentServiceTest {
         String fnr2 = "02020202020";
         List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), eq(fnr1), eq(id), eq(id))).thenReturn(Collections.singletonList(meldinger.get(0)));
-        when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), eq(fnr2), eq(id), eq(id))).thenReturn(Collections.singletonList(meldinger.get(1)));
-        when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(oppholdId1), eq(id), eq(id))).thenReturn(ResponseEntity.noContent().build());
-        when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(oppholdId2), eq(id), eq(id))).thenReturn(ResponseEntity.noContent().build());
+        when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr1))).thenReturn(Collections.singletonList(meldinger.get(0)));
+        when(inst2Consumer.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr2))).thenReturn(Collections.singletonList(meldinger.get(1)));
+        when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId1))).thenReturn(ResponseEntity.noContent().build());
+        when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId2))).thenReturn(ResponseEntity.noContent().build());
 
-        SletteOppholdResponse response = identService.slettInstitusjonsforholdTilIdenter(identer, id, id);
+        SletteOppholdResponse response = identService.slettInstitusjonsforholdTilIdenter(id, id, miljoe, identer);
 
         verify(inst2Consumer).hentTokenTilInst2();
-        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(fnr1), eq(id), eq(id));
-        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(fnr2), eq(id), eq(id));
-        verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(oppholdId1), eq(id), eq(id));
-        verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(oppholdId2), eq(id), eq(id));
+        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr1));
+        verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr2));
+        verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId1));
+        verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId2));
 
         assertThat(response.getIdenterMedOppholdIdSomBleSlettet().get(fnr1), IsIterableContainingInOrder.contains(oppholdId1));
         assertThat(response.getIdenterMedOppholdIdSomBleSlettet().get(fnr2), IsIterableContainingInOrder.contains(oppholdId2));

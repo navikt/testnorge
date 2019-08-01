@@ -22,10 +22,10 @@ public class IdentService {
     @Autowired
     private Inst2Consumer inst2Consumer;
 
-    public Map<String, List<OppholdResponse>> opprettInstitusjonsopphold(List<Institusjonsopphold> oppholdene, String callId, String consumerId) {
+    public Map<String, List<OppholdResponse>> opprettInstitusjonsopphold(String callId, String consumerId, String miljoe, List<Institusjonsopphold> oppholdene) {
         Map<String, List<OppholdResponse>> statusFraInst2 = new HashMap<>();
         for (Institusjonsopphold opphold : oppholdene) {
-            OppholdResponse oppholdResponse = sendTilInst2(opphold, callId, consumerId);
+            OppholdResponse oppholdResponse = sendTilInst2(callId, consumerId, miljoe, opphold);
             String personident = opphold.getPersonident();
             if (statusFraInst2.containsKey(personident)) {
                 statusFraInst2.get(personident).add(oppholdResponse);
@@ -38,11 +38,11 @@ public class IdentService {
         return statusFraInst2;
     }
 
-    public OppholdResponse sendTilInst2(Institusjonsopphold opphold, String callId, String consumerId) {
-        return inst2Consumer.leggTilInstitusjonsoppholdIInst2(inst2Consumer.hentTokenTilInst2(), opphold, callId, consumerId);
+    public OppholdResponse sendTilInst2(String callId, String consumerId, String miljoe, Institusjonsopphold opphold) {
+        return inst2Consumer.leggTilInstitusjonsoppholdIInst2(inst2Consumer.hentTokenTilInst2(), callId, consumerId, miljoe, opphold);
     }
 
-    public SletteOppholdResponse slettInstitusjonsforholdTilIdenter(List<String> identer, String callId, String consumerId) {
+    public SletteOppholdResponse slettInstitusjonsforholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
         Map<String, Object> tokenObject = hentTokenTilInst2();
 
         SletteOppholdResponse sletteOppholdResponse = SletteOppholdResponse.builder()
@@ -51,9 +51,9 @@ public class IdentService {
                 .build();
 
         for (String ident : identer) {
-            List<Institusjonsopphold> institusjonsforholdsmeldinger = hentInstitusjonsoppholdFraInst2(tokenObject, ident, callId, consumerId);
+            List<Institusjonsopphold> institusjonsforholdsmeldinger = hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, ident);
             for (Institusjonsopphold melding : institusjonsforholdsmeldinger) {
-                ResponseEntity response = slettOppholdMedId(tokenObject, callId, consumerId, melding.getOppholdId());
+                ResponseEntity response = slettOppholdMedId(tokenObject, callId, consumerId, miljoe, melding.getOppholdId());
                 if (response.getStatusCode().is2xxSuccessful()) {
                     leggTilIdentMedOppholdIResponse(sletteOppholdResponse.getIdenterMedOppholdIdSomBleSlettet(), ident, melding.getOppholdId());
                 } else {
@@ -65,23 +65,23 @@ public class IdentService {
         return sletteOppholdResponse;
     }
 
-    public ResponseEntity oppdaterInstitusjonsopphold(String callId, String consumerId, Long oppholdId, Institusjonsopphold institusjonsopphold) {
+    public ResponseEntity oppdaterInstitusjonsopphold(String callId, String consumerId, String miljoe, Long oppholdId, Institusjonsopphold institusjonsopphold) {
         Map<String, Object> tokenObject = hentTokenTilInst2();
-        return inst2Consumer.oppdaterInstitusjonsoppholdIInst2(tokenObject, oppholdId, institusjonsopphold, callId, consumerId);
+        return inst2Consumer.oppdaterInstitusjonsoppholdIInst2(tokenObject, callId, consumerId, miljoe, oppholdId, institusjonsopphold);
     }
 
-    public ResponseEntity slettOppholdMedId(Map<String, Object> tokenObject, String callId, String consumerId, Long oppholdId) {
-        return inst2Consumer.slettInstitusjonsoppholdFraInst2(tokenObject, oppholdId, callId, consumerId);
+    public ResponseEntity slettOppholdMedId(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Long oppholdId) {
+        return inst2Consumer.slettInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, oppholdId);
     }
 
-    public Map<String, List<Institusjonsopphold>> hentOppholdTilIdenter(List<String> identer, String callId, String consumerId) {
+    public Map<String, List<Institusjonsopphold>> hentOppholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
         Map<String, Object> tokenObject = hentTokenTilInst2();
         return identer.parallelStream()
-                .collect(Collectors.toMap(fnr -> fnr, fnr -> hentInstitusjonsoppholdFraInst2(tokenObject, fnr, callId, consumerId)));
+                .collect(Collectors.toMap(fnr -> fnr, fnr -> hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, fnr)));
     }
 
-    public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident, String callId, String consumerId) {
-        List<Institusjonsopphold> institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(tokenObject, ident, callId, consumerId);
+    public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String ident) {
+        List<Institusjonsopphold> institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, ident);
         if (institusjonsforholdsmeldinger != null) {
             for (Institusjonsopphold melding : institusjonsforholdsmeldinger) {
                 melding.setPersonident(ident);

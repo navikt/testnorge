@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,7 +28,8 @@ public class SyntetiseringController {
     public Map<String, List<OppholdResponse>> genererInstitusjonsmeldinger(
             @RequestHeader String navCallId,
             @RequestHeader String navConsumerId,
+            @RequestParam String miljoe,
             @RequestBody SyntetiserInstRequest syntetiserInstRequest) {
-        return syntetiseringService.finnSyntetiserteMeldinger(syntetiserInstRequest, navCallId, navConsumerId);
+        return syntetiseringService.finnSyntetiserteMeldinger(navCallId, navConsumerId, miljoe, syntetiserInstRequest);
     }
 }

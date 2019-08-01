@@ -19,6 +19,7 @@ import java.util.Map;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.inst.service.Inst2FasitService;
 
 @Component
 @Slf4j
@@ -34,26 +35,20 @@ public class Inst2Consumer {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private Inst2FasitService inst2FasitService;
+
     private UriTemplate tokenProviderUrl;
     private String username;
     private String password;
-    private UriTemplate hentInstitusjonsoppholdUrl;
-    private UriTemplate leggTilInstitusjonsoppholdUrl;
-    private UriTemplate oppdaterSlettInstitusjonsoppholdUrl;
-    private UriTemplate sjekkInstitusjonUrl;
 
     public Inst2Consumer(
             @Value("${freg-token-provider-v1.url}") String tokenProviderServerUrl,
             @Value("${testnorges.ida.credential.inst.username}") String username,
-            @Value("${testnorges.ida.credential.inst.password}") String password,
-            @Value("${inst2.web.api.url}") String inst2ServerUrl) {
+            @Value("${testnorges.ida.credential.inst.password}") String password) {
         this.tokenProviderUrl = new UriTemplate(tokenProviderServerUrl);
         this.username = username;
         this.password = password;
-        this.hentInstitusjonsoppholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold");
-        this.leggTilInstitusjonsoppholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold?validatePeriod=true");
-        this.oppdaterSlettInstitusjonsoppholdUrl = new UriTemplate(inst2ServerUrl + "/person/institusjonsopphold/{oppholdId}");
-        this.sjekkInstitusjonUrl = new UriTemplate(inst2ServerUrl + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}");
     }
 
     public Map<String, Object> hentTokenTilInst2() {
@@ -67,8 +62,10 @@ public class Inst2Consumer {
         return response.getBody();
     }
 
-    public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String ident, String callId, String consumerId) {
-        RequestEntity getRequest = RequestEntity.get(hentInstitusjonsoppholdUrl.expand())
+    public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String ident) {
+        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold");
+
+        RequestEntity getRequest = RequestEntity.get(url.expand())
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)
@@ -89,8 +86,9 @@ public class Inst2Consumer {
         return response;
     }
 
-    public OppholdResponse leggTilInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, Institusjonsopphold institusjonsopphold, String callId, String consumerId) {
-        RequestEntity postRequest = RequestEntity.post(leggTilInstitusjonsoppholdUrl.expand())
+    public OppholdResponse leggTilInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Institusjonsopphold institusjonsopphold) {
+        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold?validatePeriod=true");
+        RequestEntity postRequest = RequestEntity.post(url.expand())
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)
@@ -108,8 +106,9 @@ public class Inst2Consumer {
         }
     }
 
-    public ResponseEntity oppdaterInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, Long oppholdId, Institusjonsopphold institusjonsopphold, String callId, String consumerId) {
-        RequestEntity putRequest = RequestEntity.put(oppdaterSlettInstitusjonsoppholdUrl.expand(oppholdId))
+    public ResponseEntity oppdaterInstitusjonsoppholdIInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Long oppholdId, Institusjonsopphold institusjonsopphold) {
+        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold/{oppholdId}");
+        RequestEntity putRequest = RequestEntity.put(url.expand(oppholdId))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)
@@ -124,8 +123,9 @@ public class Inst2Consumer {
         }
     }
 
-    public ResponseEntity slettInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, Long oppholdId, String callId, String consumerId) {
-        RequestEntity deleteRequest = RequestEntity.delete(oppdaterSlettInstitusjonsoppholdUrl.expand(oppholdId))
+    public ResponseEntity slettInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, Long oppholdId) {
+        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/person/institusjonsopphold/{oppholdId}");
+        RequestEntity deleteRequest = RequestEntity.delete(url.expand(oppholdId))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)
@@ -140,8 +140,9 @@ public class Inst2Consumer {
         }
     }
 
-    public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String tssEksternId, String date, String callId, String consumerId) {
-        RequestEntity getRequest = RequestEntity.get(sjekkInstitusjonUrl.expand(tssEksternId, date))
+    public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String tssEksternId, String date) {
+        UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}");
+        RequestEntity getRequest = RequestEntity.get(url.expand(tssEksternId, date))
                 .header("accept", "*/*")
                 .header("Authorization", tokenObject.get("tokenType") + " " + tokenObject.get("idToken"))
                 .header("Nav-Call-Id", callId)

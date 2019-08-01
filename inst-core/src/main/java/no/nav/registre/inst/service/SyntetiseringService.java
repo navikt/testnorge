@@ -42,7 +42,7 @@ public class SyntetiseringService {
     @Autowired
     private Random rand;
 
-    public Map<String, List<OppholdResponse>> finnSyntetiserteMeldinger(SyntetiserInstRequest syntetiserInstRequest, String callId, String consumerId) {
+    public Map<String, List<OppholdResponse>> finnSyntetiserteMeldinger(String callId, String consumerId, String miljoe, SyntetiserInstRequest syntetiserInstRequest) {
         List<String> utvalgteIdenter = finnLevendeIdenter(syntetiserInstRequest);
         if (utvalgteIdenter.size() < syntetiserInstRequest.getAntallNyeIdenter()) {
             log.warn("Fant ikke nok ledige identer. Lager institusjonsforhold på {} identer.", utvalgteIdenter.size());
@@ -52,18 +52,16 @@ public class SyntetiseringService {
         }
 
         Map<String, Object> tokenObject = inst2Consumer.hentTokenTilInst2();
-        List<Institusjonsopphold> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, utvalgteIdenter.size(), callId, consumerId);
-        return leggTilInstitusjonsforholdIInst2(tokenObject, utvalgteIdenter, syntetiserteMeldinger, callId, consumerId);
+        List<Institusjonsopphold> syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(tokenObject, callId, consumerId, miljoe, utvalgteIdenter.size());
+        return leggTilInstitusjonsforholdIInst2(tokenObject, callId, consumerId, miljoe, utvalgteIdenter, syntetiserteMeldinger);
     }
 
-    private List<Institusjonsopphold> hentSyntetiserteInstitusjonsforholdsmeldinger(Map<String, Object> tokenObject, int antallMeldinger,
-            String callId, String consumerId) {
+    private List<Institusjonsopphold> hentSyntetiserteInstitusjonsforholdsmeldinger(Map<String, Object> tokenObject, String callId, String consumerId,
+            String miljoe, int antallMeldinger) {
         List<Institusjonsopphold> syntetiserteMeldinger = new ArrayList<>(antallMeldinger);
         for (int i = 0; i < ANTALL_FORSOEK && syntetiserteMeldinger.size() < antallMeldinger; i++) {
-            syntetiserteMeldinger.addAll(validerOgFjernUgyldigeMeldinger(tokenObject,
-                    instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger - syntetiserteMeldinger.size()),
-                    callId,
-                    consumerId));
+            syntetiserteMeldinger.addAll(validerOgFjernUgyldigeMeldinger(tokenObject, callId, consumerId, miljoe,
+                    instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger - syntetiserteMeldinger.size())));
         }
         return syntetiserteMeldinger;
     }
@@ -81,8 +79,8 @@ public class SyntetiseringService {
         return utvalgteIdenter;
     }
 
-    private Map<String, List<OppholdResponse>> leggTilInstitusjonsforholdIInst2(Map<String, Object> tokenObject, List<String> identer,
-            List<Institusjonsopphold> syntetiserteMeldinger, String callId, String consumerId) {
+    private Map<String, List<OppholdResponse>> leggTilInstitusjonsforholdIInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, List<String> identer,
+            List<Institusjonsopphold> syntetiserteMeldinger) {
         List<String> utvalgteIdenter = new ArrayList<>(identer);
         List<Institusjonsopphold> historikkSomSkalLagres = new ArrayList<>();
         Map<String, List<OppholdResponse>> statusFraInst2 = new HashMap<>();
@@ -94,12 +92,12 @@ public class SyntetiseringService {
             }
             String personident = utvalgteIdenter.remove(0);
             List<Institusjonsopphold> eksisterendeInstitusjonsforhold =
-                    identService.hentInstitusjonsoppholdFraInst2(tokenObject, personident, callId, consumerId);
+                    identService.hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, personident);
             if (!eksisterendeInstitusjonsforhold.isEmpty()) {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", personident);
             } else {
                 institusjonsopphold.setPersonident(personident);
-                OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, institusjonsopphold, callId, consumerId);
+                OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(tokenObject, callId, consumerId, miljoe, institusjonsopphold);
                 if (statusFraInst2.containsKey(personident)) {
                     statusFraInst2.get(personident).add(oppholdResponse);
                 } else {
@@ -139,16 +137,15 @@ public class SyntetiseringService {
         return statusFraInst2;
     }
 
-    private List<Institusjonsopphold> validerOgFjernUgyldigeMeldinger(Map<String, Object> tokenObject, List<Institusjonsopphold> syntetiserteMeldinger,
-            String callId, String consumerId) {
+    private List<Institusjonsopphold> validerOgFjernUgyldigeMeldinger(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, List<Institusjonsopphold> syntetiserteMeldinger) {
         List<Institusjonsopphold> gyldigeSyntetiserteMeldinger = new ArrayList<>(syntetiserteMeldinger.size());
 
         for (Institusjonsopphold melding : syntetiserteMeldinger) {
             String tssEksternId = melding.getTssEksternId();
             String startdato = melding.getStartdato();
             String faktiskSluttdato = melding.getFaktiskSluttdato();
-            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, startdato, callId, consumerId).is2xxSuccessful()
-                    && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, tssEksternId, faktiskSluttdato, callId, consumerId).is2xxSuccessful()) {
+            if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, callId, consumerId, miljoe, tssEksternId, startdato).is2xxSuccessful()
+                    && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, callId, consumerId, miljoe, tssEksternId, faktiskSluttdato).is2xxSuccessful()) {
                 gyldigeSyntetiserteMeldinger.add(melding);
             }
         }

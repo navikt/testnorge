@@ -29,6 +29,7 @@ public class IdentControllerTest {
     private IdentController identController;
 
     private String id = "test";
+    private String miljoe = "t1";
     private Long oppholdId = 123L;
     private String fnr1 = "01010101010";
     private String fnr2 = "02020202020";
@@ -42,44 +43,44 @@ public class IdentControllerTest {
 
     @Test
     public void shouldOppretteInstitusjonsopphold() {
-        identController.opprettInstitusjonsopphold(id, id, institusjonsopphold);
+        identController.opprettInstitusjonsopphold(id, id, miljoe, institusjonsopphold);
 
-        verify(identService).sendTilInst2(institusjonsopphold, id, id);
+        verify(identService).sendTilInst2(id, id, miljoe, institusjonsopphold);
     }
 
     @Test
     public void shouldHenteInstitusjonsopphold() {
-        identController.hentInstitusjonsopphold(id, id, identer);
+        identController.hentInstitusjonsopphold(id, id, miljoe, identer);
 
-        verify(identService).hentOppholdTilIdenter(identer, id, id);
+        verify(identService).hentOppholdTilIdenter(id, id, miljoe, identer);
     }
 
     @Test
     public void shouldOppdatereInstitusjonsopphold() {
-        identController.oppdaterInstitusjonsopphold(oppholdId, id, id, institusjonsopphold);
+        identController.oppdaterInstitusjonsopphold(oppholdId, id, id, miljoe, institusjonsopphold);
 
-        verify(identService).oppdaterInstitusjonsopphold(id, id, oppholdId, institusjonsopphold);
+        verify(identService).oppdaterInstitusjonsopphold(id, id, miljoe, oppholdId, institusjonsopphold);
     }
 
     @Test
     public void shouldSletteInstitusjonsopphold() {
-        identController.slettInstitusjonsopphold(id, id, Collections.singletonList(oppholdId));
+        identController.slettInstitusjonsopphold(id, id, miljoe, Collections.singletonList(oppholdId));
 
-        verify(identService).slettOppholdMedId(anyMap(), eq(id), eq(id), eq(oppholdId));
+        verify(identService).slettOppholdMedId(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId));
     }
 
     @Test
     public void shouldOppretteFlereInstitusjonsopphold() {
         List<Institusjonsopphold> institusjonsoppholdene = new ArrayList<>(Collections.singletonList(institusjonsopphold));
-        identController.opprettFlereInstitusjonsopphold(id, id, institusjonsoppholdene);
+        identController.opprettFlereInstitusjonsopphold(id, id, miljoe, institusjonsoppholdene);
 
-        verify(identService).opprettInstitusjonsopphold(institusjonsoppholdene, id, id);
+        verify(identService).opprettInstitusjonsopphold(id, id, miljoe, institusjonsoppholdene);
     }
 
     @Test
     public void shouldSletteIdenter() {
-        identController.slettIdenter(id, id, identer);
+        identController.slettIdenter(id, id, miljoe, identer);
 
-        verify(identService).slettInstitusjonsforholdTilIdenter(identer, id, id);
+        verify(identService).slettInstitusjonsforholdTilIdenter(id, id, miljoe, identer);
     }
 }

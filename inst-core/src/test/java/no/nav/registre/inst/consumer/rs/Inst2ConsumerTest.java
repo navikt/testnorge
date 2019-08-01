@@ -14,6 +14,7 @@ import static no.nav.registre.inst.testutils.ResourceUtils.getResourceFileConten
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.BDDMockito.given;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,7 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,7 @@ import java.util.Map;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.inst.service.Inst2FasitService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -45,16 +49,24 @@ public class Inst2ConsumerTest {
     @Autowired
     private Inst2Consumer inst2Consumer;
 
+    @MockBean
+    private Inst2FasitService inst2FasitService;
+
     private String id = "orkestratoren";
     private String fnr1 = "01010101010";
     private Map<String, Object> token;
     private String tssEksternId = "123";
     private String date = "2019-01-01";
+    private String miljoe = "t1";
+
+    @Value("${inst2.web.api.url}")
+    private String baseUrl;
 
     @Before
     public void setUp() throws IOException {
         token = new ObjectMapper().readValue(getResourceFileContent("token.json"), new TypeReference<Map<String, Object>>() {
         });
+        given(this.inst2FasitService.getUrlForEnv(miljoe)).willReturn(baseUrl);
     }
 
     @Test
@@ -70,7 +82,7 @@ public class Inst2ConsumerTest {
     public void shouldGetInstitusjonsmeldingerFromInst2() {
         stubGetInstitusjonsopphold();
 
-        List<Institusjonsopphold> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, fnr1, id, id);
+        List<Institusjonsopphold> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
 
         assertThat(result.get(0).getTssEksternId(), is("440"));
         assertThat(result.get(1).getTssEksternId(), is("441"));
@@ -82,7 +94,7 @@ public class Inst2ConsumerTest {
 
         stubAddInstitusjonsopphold(institusjonsopphold);
 
-        OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, institusjonsopphold, id, id);
+        OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, id, id, miljoe, institusjonsopphold);
 
         assertThat(oppholdResponse.getStatus(), is(HttpStatus.CREATED));
     }
@@ -93,7 +105,7 @@ public class Inst2ConsumerTest {
 
         stubDeleteOpphold(oppholdId);
 
-        ResponseEntity result = inst2Consumer.slettInstitusjonsoppholdFraInst2(token, oppholdId, id, id);
+        ResponseEntity result = inst2Consumer.slettInstitusjonsoppholdFraInst2(token, id, id, miljoe, oppholdId);
 
         assertThat(result.getStatusCode(), is(HttpStatus.NO_CONTENT));
     }
@@ -102,7 +114,7 @@ public class Inst2ConsumerTest {
     public void shouldCheckWhetherInstitusjonIsValidOnDate() {
         stubFindInstitusjon();
 
-        HttpStatus responseStatus = inst2Consumer.finnesInstitusjonPaaDato(token, tssEksternId, date, id, id);
+        HttpStatus responseStatus = inst2Consumer.finnesInstitusjonPaaDato(token, id, id, miljoe, tssEksternId, date);
 
         assertThat(responseStatus, is(HttpStatus.OK));
     }
