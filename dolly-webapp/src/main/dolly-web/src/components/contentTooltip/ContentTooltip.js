@@ -4,6 +4,7 @@ import Tooltip from 'rc-tooltip'
 import HjelpeTekst from 'nav-frontend-hjelpetekst'
 import Icon from '~/components/icon/Icon'
 import Button from '~/components/button/Button'
+import Formatters from '~/utils/DataFormatter'
 
 import './ContentTooltip.less'
 
@@ -13,7 +14,8 @@ export default class ContentTooltip extends PureComponent {
 	}
 
 	state = {
-		isOpen: false
+		isOpen: false,
+		tilgjengeligeMiljoe: ''
 	}
 
 	render() {
@@ -30,8 +32,11 @@ export default class ContentTooltip extends PureComponent {
 		)
 	}
 
-	_handleOnClick = () => {
+	_handleOnClick = async () => {
 		this.setState({ isOpen: !this.state.isOpen })
+		let res
+		this.props.tilgjengeligeMiljoeEndepunkt && (res = await this.props.tilgjengeligeMiljoeEndepunkt)
+		return this.setState({ tilgjengeligeMiljoe: res })
 	}
 
 	_renderHjelpeIkon = () => (
@@ -89,6 +94,11 @@ export default class ContentTooltip extends PureComponent {
 		>
 			<div className="hjelpetekst__tekst">
 				<p className="typo-normal">{children}</p>
+				{this.state.tilgjengeligeMiljoe && (
+					<p className="typo-normal">
+						Tilgjengelige miljø: {Formatters.arrayToString(this.state.tilgjengeligeMiljoe.data)}
+					</p>
+				)}
 			</div>
 			<button
 				className="lukknapp lukknapp--hvit"
