@@ -271,7 +271,11 @@ export default class Step3 extends PureComponent {
 				: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
 		}
 
-		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
+		if (
+			item.dataSource === 'PDLF' &&
+			item.path &&
+			item.path.includes('utenlandskIdentifikasjonsnr')
+		) {
 			itemValue = Formatters.oversettBoolean(
 				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
 			)

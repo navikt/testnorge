@@ -32,6 +32,19 @@ const selectOptions = {
 
 	skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
 
+	// PDLF - falsk identitet
+	rettIdentitet: [
+		{ value: 'UKJENT', label: 'Ukjent' },
+		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
+		{ value: 'OMTRENTLIG', label: 'Ved andre opplysninger' }
+	],
+
+	kjonnFalskIdentitet: [
+		{ value: 'KVINNE', label: 'Kvinne' },
+		{ value: 'MANN', label: 'Mann' },
+		{ value: 'UBESTEMT', label: 'Ubestemt' }
+	],
+
 	// Arena
 	arenaBrukertype: [
 		{ value: 'UTEN_SERVICEBEHOV', label: 'Uten servicebehov' },
