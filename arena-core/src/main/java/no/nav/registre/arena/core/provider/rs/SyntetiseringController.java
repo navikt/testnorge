@@ -16,49 +16,38 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
+
 public class SyntetiseringController {
 
     @Autowired
     SyntetiseringService syntetiseringService;
 
     @PostMapping(value = "/generer")
-    public ResponseEntity<Map<String, List<String>>> registerBrukereIArenaForvalter(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
+    public ResponseEntity<List<String>> registerBrukereIArenaForvalter(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
         return registrerBrukereIArenaForvalter(syntetiserArenaRequest);
     }
 
     @PostMapping(value = "/slett")
-    public ResponseEntity<Map<String, List<String>>> slettBrukereIArenaForvalter(@RequestParam String miljoe, @RequestBody List<String> identer) {
+    public ResponseEntity<List<String>> slettBrukereIArenaForvalter(@RequestParam String miljoe, @RequestBody List<String> identer) {
         return slettBrukere(miljoe, identer);
     }
 
 
-    private ResponseEntity<Map<String, List<String>>> registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
+    private ResponseEntity<List<String>> registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
         List<String> registrerteIdenter = syntetiseringService.sendBrukereTilArenaForvalterConsumer(
                 arenaRequest.getAntallNyeIdenter(),
                 arenaRequest.getAvspillergruppeId(),
                 arenaRequest.getMiljoe()
         ).stream().map(Arbeidsoker::getPersonident).collect(Collectors.toList());
 
-        Map<String, List<String>> responseBody = new HashMap<>();
-        responseBody.put("registrerteIdenter", registrerteIdenter);
-
-        return ResponseEntity.ok().body(responseBody);
+        return ResponseEntity.ok().body(registrerteIdenter);
     }
 
-    private ResponseEntity<Map<String, List<String>>> slettBrukere(String miljoe, List<String> identer) {
+    private ResponseEntity<List<String>> slettBrukere(String miljoe, List<String> identer) {
 
-        Map<String, List<String>> responseBody = new HashMap<>();
-        List<String> alleIdenter = new ArrayList<>(identer);
+        List<String> slettedeIdenter = new ArrayList<>(syntetiseringService.slettBrukereIArenaForvalter(identer, miljoe));
 
-        List<String> slettedeIdenter = new ArrayList<>(
-                syntetiseringService.slettBrukereIArenaForvalter(identer, miljoe));
-
-        responseBody.put("slettet", slettedeIdenter);
-
-        alleIdenter.removeAll(slettedeIdenter);
-        responseBody.put("ikkeSlettet", alleIdenter);
-
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok(slettedeIdenter);
     }
 
 }
