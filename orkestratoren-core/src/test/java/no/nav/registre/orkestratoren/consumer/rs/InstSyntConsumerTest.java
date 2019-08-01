@@ -6,7 +6,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -73,7 +72,7 @@ public class InstSyntConsumerTest {
     }
 
     private void stubInstConsumerStartSyntetisering() {
-        stubFor(post(urlPathEqualTo("/inst/api/v1/syntetisering/generer"))
+        stubFor(post(urlEqualTo("/inst/api/v1/syntetisering/generer?miljoe=q2"))
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\":" + AVSPILLERGRUPPE_ID
                                 + ",\"miljoe\":\"" + MILJOE + "\""
@@ -83,7 +82,7 @@ public class InstSyntConsumerTest {
     }
 
     private void stubInstConsumerSlettIdenter() {
-        stubFor(delete(urlEqualTo("/inst/api/v1/ident/batch?identer=" + identer.get(0) + "," + identer.get(1)))
+        stubFor(delete(urlEqualTo("/inst/api/v1/ident/batch?miljoe=q2&identer=" + identer.get(0) + "," + identer.get(1)))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\n"

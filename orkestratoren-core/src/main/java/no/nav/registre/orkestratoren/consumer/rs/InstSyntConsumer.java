@@ -24,6 +24,7 @@ public class InstSyntConsumer {
     };
     private static final String NAV_CALL_ID = "orkestratoren";
     private static final String NAV_CONSUMER_ID = "orkestratoren";
+    private static final String MILJOE = "q2";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -32,13 +33,13 @@ public class InstSyntConsumer {
     private UriTemplate sletteIdenterUrl;
 
     public InstSyntConsumer(@Value("${testnorge-inst.rest-api.url}") String instServerUrl) {
-        this.startSyntetiseringUrl = new UriTemplate(instServerUrl + "/v1/syntetisering/generer");
-        this.sletteIdenterUrl = new UriTemplate(instServerUrl + "/v1/ident/batch?identer={identer}");
+        this.startSyntetiseringUrl = new UriTemplate(instServerUrl + "/v1/syntetisering/generer?miljoe={miljoe}");
+        this.sletteIdenterUrl = new UriTemplate(instServerUrl + "/v1/ident/batch?miljoe={miljoe}&identer={identer}");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inst" })
     public Object startSyntetisering(SyntetiserInstRequest syntetiserInstRequest) {
-        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand())
+        RequestEntity postRequest = RequestEntity.post(startSyntetiseringUrl.expand(MILJOE))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("navCallId", NAV_CALL_ID)
                 .header("navConsumerId", NAV_CONSUMER_ID)
@@ -48,7 +49,7 @@ public class InstSyntConsumer {
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "inst" })
     public SletteInstitusjonsoppholdResponse slettIdenterFraInst(List<String> identer) {
-        RequestEntity deleteRequest = RequestEntity.delete(sletteIdenterUrl.expand(convertListToString(identer)))
+        RequestEntity deleteRequest = RequestEntity.delete(sletteIdenterUrl.expand(MILJOE, convertListToString(identer)))
                 .header("navCallId", NAV_CALL_ID)
                 .header("navConsumerId", NAV_CONSUMER_ID)
                 .build();
