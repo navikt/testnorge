@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlIdentitetErUkjent {
+public class PdlRettIdentitetVedIdentifikasjonsnummer extends RsPdlRettIdentitet {
 
-    private Boolean rettIdentitetErUkjent;
+    private String rettIdentitetVedIdentifikasjonsnummer;
 }
