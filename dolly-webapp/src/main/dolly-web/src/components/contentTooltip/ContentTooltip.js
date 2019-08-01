@@ -35,7 +35,14 @@ export default class ContentTooltip extends PureComponent {
 	_handleOnClick = async () => {
 		this.setState({ isOpen: !this.state.isOpen })
 		let res
-		this.props.tilgjengeligeMiljoeEndepunkt && (res = await this.props.tilgjengeligeMiljoeEndepunkt)
+		if (this.props.tilgjengeligeMiljoeEndepunkt) {
+			try {
+				res = await this.props.tilgjengeligeMiljoeEndepunkt
+			} catch (err) {
+				res = 'Fant ingen miljø'
+				console.error(err)
+			}
+		}
 		return this.setState({ tilgjengeligeMiljoe: res })
 	}
 
