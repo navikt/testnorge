@@ -31,7 +31,7 @@ public class AaregController {
             + "&nbsp;&nbsp;&nbsp; identtype: (Personidenter) <br />"
             + "&nbsp;&nbsp;&nbsp; land: (LandkoderISO2) <br />"
             + "&nbsp;&nbsp;&nbsp; permisjonOgPermittering: (PermisjonsOgPermitteringsBeskrivelse) <br />"
-            + "&nbsp;&nbsp;&nbsp; yrke; (Yrker) <br /><br />"
+            + "&nbsp;&nbsp;&nbsp; yrke: (Yrker) <br /><br />"
             + "Alle datofelter har forventet innhold \"yyyy-MM-ddT00:00:00\". <br /> <br />"
             + "Attributt aktoer er abstrakt og kan ha et av følgende objekttyper: <br />"
             + "For organisajon: <br />"

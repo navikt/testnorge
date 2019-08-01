@@ -67,6 +67,7 @@ export default class AttributtVelger extends Component {
 				checkAttributeArray={() => checkAttributeArray(hovedKategoriItems)}
 				uncheckAttributeArray={() => uncheckAttributeArray(hovedKategoriItems)}
 				informasjonstekst={hovedKategori.informasjonstekst}
+				tilgjengeligeMiljoeEndepunkt={hovedKategori.tilgjengeligeMiljoeEndepunkt}
 			>
 				<fieldset name={name}>
 					<div className="attributt-velger_panelcontent">

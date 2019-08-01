@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -23,7 +22,7 @@
 		<module>dolly-webapp</module>
 		<module>dolly-test</module>
 		<module>dolly-test-common</module>
-    </modules>
+	</modules>
 
 	<properties>
 		<application.name>dolly</application.name>
@@ -37,7 +36,7 @@
 		<springfox-swagger-ui.version>2.4.0</springfox-swagger-ui.version>
 		<kodeverk.version>1.2</kodeverk.version>
 		<logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
-        <ojdbc.version>12.2.0.1</ojdbc.version>
+		<ojdbc.version>12.2.0.1</ojdbc.version>
 		<android.json.version>0.0.20131108.vaadin1</android.json.version>
 		<orika.version>1.5.2</orika.version>
 		<cxf.version>3.2.4</cxf.version>
@@ -87,7 +86,7 @@
 	</dependencies>
 
 	<dependencyManagement>
-        <dependencies>
+		<dependencies>
 			<dependency>
 				<groupId>no.nav.freg</groupId>
 				<artifactId>freg-security-oidc</artifactId>

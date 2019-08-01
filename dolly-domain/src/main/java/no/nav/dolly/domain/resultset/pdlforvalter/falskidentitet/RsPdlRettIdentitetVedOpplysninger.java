@@ -1,6 +1,7 @@
-package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
+package no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +15,10 @@ import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsPdlKontaktpersonUtenIdNummer extends PdlSomAdressat{
+public class RsPdlRettIdentitetVedOpplysninger extends RsPdlRettIdentitet {
 
     private LocalDateTime foedselsdato;
-    private PdlPersonnavn navn;
+    private PdlKjoenn kjoenn;
+    private PdlPersonnavn personnavn;
+    private List<String> statsborgerskap;
 }
