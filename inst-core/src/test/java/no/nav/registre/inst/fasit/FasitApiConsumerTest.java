@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -53,11 +52,9 @@ public class FasitApiConsumerTest {
 
     @Test(expected = FasitException.class)
     public void fetchResources_FailToReadFromFasit() {
-
         when(providersProps.getFasit()).thenReturn(ProvidersProps.Fasit.builder().url(BASE_URL).build());
         when(restTemplate.getForEntity(anyString(),
                 eq(FasitResourceWithUnmappedProperties[].class))).thenThrow(httpClientErrorException);
-        when(httpClientErrorException.getStatusCode()).thenReturn(HttpStatus.BAD_REQUEST);
         when(httpClientErrorException.getResponseBodyAsString()).thenReturn("Error message");
 
         fasitApiConsumer.fetchResources(ALIAS, TYPE);
