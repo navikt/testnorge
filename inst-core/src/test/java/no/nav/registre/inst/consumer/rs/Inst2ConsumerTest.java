@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -52,7 +53,7 @@ public class Inst2ConsumerTest {
     @MockBean
     private Inst2FasitService inst2FasitService;
 
-    private String id = "orkestratoren";
+    private String id = "test";
     private String fnr1 = "01010101010";
     private Map<String, Object> token;
     private String tssEksternId = "123";
@@ -97,6 +98,18 @@ public class Inst2ConsumerTest {
         OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, id, id, miljoe, institusjonsopphold);
 
         assertThat(oppholdResponse.getStatus(), is(HttpStatus.CREATED));
+    }
+
+    @Test
+    public void shouldUpdateInstitusjonsoppholdIInst2() throws JsonProcessingException {
+        Institusjonsopphold institusjonsopphold = Institusjonsopphold.builder().build();
+        Long oppholdId = 123L;
+
+        stubUpdateInstitusjonsopphold(oppholdId, institusjonsopphold);
+
+        ResponseEntity response = inst2Consumer.oppdaterInstitusjonsoppholdIInst2(token, id, id, miljoe, oppholdId, institusjonsopphold);
+
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
@@ -150,6 +163,17 @@ public class Inst2ConsumerTest {
                 .withRequestBody(equalToJson(new ObjectMapper().writeValueAsString(institusjonsopphold)))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.CREATED.value())));
+    }
+
+    private void stubUpdateInstitusjonsopphold(Long oppholdId, Institusjonsopphold institusjonsopphold) throws JsonProcessingException {
+        stubFor(put(urlEqualTo("/inst2/web/api/person/institusjonsopphold/" + oppholdId))
+                .withHeader("accept", equalTo("*/*"))
+                .withHeader("Authorization", equalTo(token.get("tokenType") + " " + token.get("idToken")))
+                .withHeader("Nav-Call-Id", equalTo(id))
+                .withHeader("Nav-Consumer-Id", equalTo(id))
+                .withRequestBody(equalToJson(new ObjectMapper().writeValueAsString(institusjonsopphold)))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())));
     }
 
     private void stubDeleteOpphold(Long oppholdId) {

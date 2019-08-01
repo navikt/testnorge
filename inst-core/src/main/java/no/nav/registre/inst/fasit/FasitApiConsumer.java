@@ -2,6 +2,7 @@ package no.nav.registre.inst.fasit;
 
 import static java.lang.String.format;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.registre.inst.properties.ProvidersProps;
 
+@Slf4j
 @Service
 public class FasitApiConsumer {
 
@@ -28,7 +30,7 @@ public class FasitApiConsumer {
             ResponseEntity<FasitResourceWithUnmappedProperties[]> properties = restTemplate.getForEntity(url, FasitResourceWithUnmappedProperties[].class);
             return properties.getBody();
         } catch (HttpClientErrorException e) {
-            throw new FasitException(e.getStatusCode(), e.getResponseBodyAsString(), e);
+            throw new FasitException(e.getResponseBodyAsString(), e);
         }
     }
 }

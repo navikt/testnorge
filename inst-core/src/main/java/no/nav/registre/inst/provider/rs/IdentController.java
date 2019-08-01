@@ -1,5 +1,6 @@
 package no.nav.registre.inst.provider.rs;
 
+import com.google.common.collect.Maps;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,7 @@ public class IdentController {
     public Map<Long, ResponseEntity> slettInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId,
             @RequestParam String miljoe, @RequestParam List<Long> oppholdIder) {
         Map<String, Object> tokenObject = identService.hentTokenTilInst2();
-        Map<Long, ResponseEntity> status = new HashMap<>();
+        Map<Long, ResponseEntity> status = Maps.newHashMapWithExpectedSize(oppholdIder.size());
         for (Long oppholdId : oppholdIder) {
             status.put(oppholdId, identService.slettOppholdMedId(tokenObject, navCallId, navConsumerId, miljoe, oppholdId));
         }

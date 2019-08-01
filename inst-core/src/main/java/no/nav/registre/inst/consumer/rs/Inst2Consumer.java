@@ -100,9 +100,8 @@ public class Inst2Consumer {
             return OppholdResponse.builder().status(exchange.getStatusCode()).institusjonsopphold(institusjonsopphold1).build();
         } catch (HttpStatusCodeException e) {
             log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident {} med tssEksternId {} - {}",
-                    institusjonsopphold.getPersonident(), institusjonsopphold.getTssEksternId(), e.getResponseBodyAsString(), e);
-            ResponseEntity.status(e.getStatusCode()).headers(e.getResponseHeaders()).body(e.getResponseBodyAsString());
-            return OppholdResponse.builder().status(e.getStatusCode()).feilmelding(e.getResponseBodyAsString()).build();
+                    institusjonsopphold.getPersonident(), institusjonsopphold.getTssEksternId(), e.getResponseBodyAsString().replaceAll("[\r\n]",""), e);
+            return OppholdResponse.builder().status(e.getStatusCode()).feilmelding(e.getResponseBodyAsString().replaceAll("[\r\n]","")).build();
         }
     }
 
@@ -118,8 +117,8 @@ public class Inst2Consumer {
             ResponseEntity<Object> response = restTemplate.exchange(putRequest, RESPONSE_TYPE_OBJECT);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke oppdatere institusjonsopphold med oppholdId {} - {}", oppholdId, e.getResponseBodyAsString(), e);
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+            log.error("Kunne ikke oppdatere institusjonsopphold med oppholdId {} - {}", oppholdId, e.getResponseBodyAsString().replaceAll("[\r\n]",""), e);
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString().replaceAll("[\r\n]",""));
         }
     }
 
@@ -135,8 +134,8 @@ public class Inst2Consumer {
             ResponseEntity<Object> response = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_OBJECT);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke slette institusjonsopphold med oppholdId {} - {}", oppholdId, e.getResponseBodyAsString(), e);
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+            log.error("Kunne ikke slette institusjonsopphold med oppholdId {} - {}", oppholdId, e.getResponseBodyAsString().replaceAll("[\r\n]",""), e);
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString().replaceAll("[\r\n]",""));
         }
     }
 
