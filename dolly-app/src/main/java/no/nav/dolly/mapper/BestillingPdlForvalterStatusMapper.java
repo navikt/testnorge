@@ -40,8 +40,7 @@ public final class BestillingPdlForvalterStatusMapper {
 
     private static RsPdlForvalterStatus prepareResult(Map<String, Map<String, List<String>>> msgStatusIdents) {
 
-        return msgStatusIdents.containsKey(KONTAKTINFORMASJON_DOEDSBO) || msgStatusIdents.containsKey(UTENLANDS_IDENTIFIKASJONSNUMMER)
-                || msgStatusIdents.containsKey(FALSK_IDENTITET) || msgStatusIdents.containsKey(PDL_FORVALTER) ?
+        return msgStatusIdents.containsKey(KONTAKTINFORMASJON_DOEDSBO) || isIdentitet(msgStatusIdents) || msgStatusIdents.containsKey(PDL_FORVALTER) ?
                 RsPdlForvalterStatus.builder()
                         .kontaktinfoDoedsbo(buildMessageStatus(msgStatusIdents.get(KONTAKTINFORMASJON_DOEDSBO)))
                         .utenlandsid(buildMessageStatus(msgStatusIdents.get(UTENLANDS_IDENTIFIKASJONSNUMMER)))
@@ -61,5 +60,9 @@ public final class BestillingPdlForvalterStatusMapper {
                             .build()));
         }
         return result;
+    }
+
+    private static boolean isIdentitet(Map msgStatusIdents) {
+        return msgStatusIdents.containsKey(UTENLANDS_IDENTIFIKASJONSNUMMER) || msgStatusIdents.containsKey(FALSK_IDENTITET);
     }
 }
