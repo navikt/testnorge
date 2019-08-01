@@ -128,21 +128,27 @@ export default class FormEditor extends PureComponent {
 				</div>
 			)
 		}
-		if (subKategori.id === 'doedsbo' || subKategori.id === 'arena') {
-			//Kan også gjøre sjekk items[0].subGruppe = true
-			const subGrupper = this._structureSubGruppe(items[0])
+
+		if (items[0].subGruppe === 'true') {
+			//Hvis subKategorien skal ha flere underoverskrifter/undergrupperinger
+			const subGrupper = this._structureSubGruppe(items)
 			return (
 				<div className="subkategori" key={uniqueId}>
 					<h4>{subKategori.navn}</h4>
 					{subGrupper.map((subGruppe, idx) => {
-						const subGruppeObj = Object.assign({}, { ...items[0], items: subGruppe.items })
+						const subGruppeObj = Object.assign(
+							{},
+							{ ...items[subGruppe.itemNr], items: subGruppe.items }
+						)
 						return (
 							<div key={idx}>
-								{subKategori.id === 'doedsbo' && <h4 className="subgruppe">{subGruppe.navn}</h4>}
-								{subKategori.id === 'arena' &&
+								{subKategori.id === 'arena' ? (
 									formikProps.values.arenaforvalter[0].arenaBrukertype === 'MED_SERVICEBEHOV' && (
 										<h4 className="subgruppe">{subGruppe.navn}</h4>
-									)}
+									)
+								) : (
+									<h4 className="subgruppe">{subGruppe.navn}</h4>
+								)}
 								{FormEditorFieldArray(
 									subGruppeObj,
 									formikProps,
@@ -268,21 +274,24 @@ export default class FormEditor extends PureComponent {
 		return Boolean(path && path[0])
 	}
 
-	_structureSubGruppe = item => {
+	_structureSubGruppe = items => {
 		let subGruppeArray = []
-		item.items.map(subitem => {
-			if (subGruppeArray.length < 1) {
-				subGruppeArray.push({ navn: subitem.subGruppe, items: [subitem] })
-			} else {
-				let nyGruppe = true
-				subGruppeArray.map(subGrupper => {
-					if (subitem.subGruppe === subGrupper.navn) {
-						subGrupper.items.push(subitem)
-						nyGruppe = false
-					}
-				})
-				nyGruppe && subGruppeArray.push({ navn: subitem.subGruppe, items: [subitem] })
-			}
+		items.map((item, idx) => {
+			item.items.map(subitem => {
+				if (subGruppeArray.length < 1) {
+					subGruppeArray.push({ navn: subitem.subGruppe, itemNr: idx, items: [subitem] })
+				} else {
+					let nyGruppe = true
+					subGruppeArray.map(subGrupper => {
+						if (subitem.subGruppe === subGrupper.navn) {
+							subGrupper.items.push(subitem)
+							nyGruppe = false
+						}
+					})
+					nyGruppe &&
+						subGruppeArray.push({ navn: subitem.subGruppe, itemNr: idx, items: [subitem] })
+				}
+			})
 		})
 		return subGruppeArray
 	}

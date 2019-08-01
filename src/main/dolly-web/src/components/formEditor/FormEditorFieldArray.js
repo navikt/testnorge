@@ -62,6 +62,7 @@ export const FieldArrayComponent = ({
 		}
 	}, {})
 	const createDefaultObject = () => arrayHelpers.push({ ...parentAttributes })
+	const createSingleItemArray = fakeItem => {}
 
 	const createSubItem = (subitem, itemIndex) => {
 		let subItemArray = subitem.subItems
@@ -138,8 +139,11 @@ export const FieldArrayComponent = ({
 											// Add subKategori to ID
 											const fakeItem = {
 												...item,
-												id: `${parentId}[${idx}]${item.id}`
+												id: item.isMultiple
+													? `${parentId}[${idx}]${item.id}[0]`
+													: `${parentId}[${idx}]${item.id}`
 											}
+											console.log('fakeItem :', fakeItem)
 											return (
 												<div key={kdx} className="flexbox">
 													{renderFieldComponent(
@@ -151,6 +155,12 @@ export const FieldArrayComponent = ({
 														},
 														formikProps
 													)}
+													{fakeItem.isMultiple &&
+														addButton(
+															() => createSingleItemArray(item, idx),
+															'FLERE ' + item.label.toUpperCase(),
+															kdx
+														)}
 												</div>
 											)
 										}
