@@ -99,7 +99,7 @@ public class Inst2Consumer {
             Institusjonsopphold institusjonsopphold1 = new ObjectMapper().convertValue(exchange.getBody(), Institusjonsopphold.class);
             return OppholdResponse.builder().status(exchange.getStatusCode()).institusjonsopphold(institusjonsopphold1).build();
         } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident {} med tssEksternId {}.", institusjonsopphold.getPersonident(), institusjonsopphold.getTssEksternId());
+            log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident - {}", e.getResponseBodyAsString(), e);
             return OppholdResponse.builder().status(e.getStatusCode()).feilmelding(e.getResponseBodyAsString()).build();
         }
     }
@@ -116,7 +116,7 @@ public class Inst2Consumer {
             ResponseEntity<Object> response = restTemplate.exchange(putRequest, RESPONSE_TYPE_OBJECT);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke oppdatere institusjonsopphold med oppholdId {}.", oppholdId);
+            log.error("Kunne ikke oppdatere institusjonsopphold - {}", e.getResponseBodyAsString(), e);
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
     }
@@ -133,7 +133,7 @@ public class Inst2Consumer {
             ResponseEntity<Object> response = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_OBJECT);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke slette institusjonsopphold med oppholdId {}.", oppholdId);
+            log.error("Kunne ikke slette institusjonsopphold - {}", e.getResponseBodyAsString(), e);
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
     }
