@@ -38,7 +38,8 @@ export default class Panel extends Component {
 			errors,
 			checkAttributeArray,
 			uncheckAttributeArray,
-			informasjonstekst
+			informasjonstekst,
+			tilgjengeligeMiljoeEndepunkt
 		} = this.props
 
 		const panelIsOpen = forceOpen || this.state.open
@@ -54,7 +55,7 @@ export default class Panel extends Component {
 				<div className="panel-heading">
 					{heading}
 					{informasjonstekst && (
-						<ContentTooltip>
+						<ContentTooltip tilgjengeligeMiljoeEndepunkt={tilgjengeligeMiljoeEndepunkt}>
 							<span>{informasjonstekst}</span>
 						</ContentTooltip>
 					)}
