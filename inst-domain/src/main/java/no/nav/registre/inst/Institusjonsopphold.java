@@ -77,46 +77,46 @@ public class Institusjonsopphold {
     //        }
     //    }
 
-    public void setStartdato(String startdato) {
-        this.startdato = parseStringDateToLocalDate(startdato);
-    }
+    //    public void setStartdato(String startdato) {
+    //        this.startdato = parseStringDateToLocalDate(startdato);
+    //    }
 
-    public void setStartdato(LocalDate startdato) {
-        this.startdato = startdato;
-    }
+    //    public void setStartdato(LocalDate startdato) {
+    //        this.startdato = startdato;
+    //    }
 
-    public void setFaktiskSluttdato(String faktiskSluttdato) {
-        this.faktiskSluttdato = parseStringDateToLocalDate(faktiskSluttdato);
-    }
+    //    public void setFaktiskSluttdato(String faktiskSluttdato) {
+    //        this.faktiskSluttdato = parseStringDateToLocalDate(faktiskSluttdato);
+    //    }
 
-    public void setFaktiskSluttdato(LocalDate faktiskSluttdato) {
-        this.faktiskSluttdato = faktiskSluttdato;
-    }
+    //    public void setFaktiskSluttdato(LocalDate faktiskSluttdato) {
+    //        this.faktiskSluttdato = faktiskSluttdato;
+    //    }
 
-    public void setForventetSluttdato(String forventetSluttdato) {
-        this.forventetSluttdato = parseStringDateToLocalDate(forventetSluttdato);
-    }
+    //    public void setForventetSluttdato(String forventetSluttdato) {
+    //        this.forventetSluttdato = parseStringDateToLocalDate(forventetSluttdato);
+    //    }
 
-    public void setForventetSluttdato(LocalDate forventetSluttdato) {
-        this.forventetSluttdato = forventetSluttdato;
-    }
+    //    public void setForventetSluttdato(LocalDate forventetSluttdato) {
+    //        this.forventetSluttdato = forventetSluttdato;
+    //    }
 
-    private LocalDate parseStringDateToLocalDate(String date) {
-        if (date == null || date.isEmpty()) {
-            return null;
-        }
-        if (date.length() == 10 && date.charAt(2) == '.' && date.charAt(5) == '.') {
-            int day = Integer.parseInt(date.substring(0, 2));
-            int month = Integer.parseInt(date.substring(3, 5));
-            int year = Integer.parseInt(date.substring(6));
-            return LocalDate.of(year, month, day);
-        } else if (date.length() == 10 && date.charAt(4) == '-' && date.charAt(7) == '-') {
-            int year = Integer.parseInt(date.substring(0, 4));
-            int month = Integer.parseInt(date.substring(5, 7));
-            int day = Integer.parseInt(date.substring(8));
-            return LocalDate.of(year, month, day);
-        } else {
-            return null;
-        }
-    }
+    //    private LocalDate parseStringDateToLocalDate(String date) {
+    //        if (date == null || date.isEmpty()) {
+    //            return null;
+    //        }
+    //        if (date.length() == 10 && date.charAt(2) == '.' && date.charAt(5) == '.') {
+    //            int day = Integer.parseInt(date.substring(0, 2));
+    //            int month = Integer.parseInt(date.substring(3, 5));
+    //            int year = Integer.parseInt(date.substring(6));
+    //            return LocalDate.of(year, month, day);
+    //        } else if (date.length() == 10 && date.charAt(4) == '-' && date.charAt(7) == '-') {
+    //            int year = Integer.parseInt(date.substring(0, 4));
+    //            int month = Integer.parseInt(date.substring(5, 7));
+    //            int day = Integer.parseInt(date.substring(8));
+    //            return LocalDate.of(year, month, day);
+    //        } else {
+    //            return null;
+    //        }
+    //    }
 }
