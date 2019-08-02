@@ -33,7 +33,6 @@ public class InstSyntetisererenConsumerTest {
 
     private int numToGenerate = 2;
 
-    @Ignore
     @Test
     public void shouldGetMeldinger() {
         stubInstSyntetisererenConsumer();

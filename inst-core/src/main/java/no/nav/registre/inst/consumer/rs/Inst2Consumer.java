@@ -98,11 +98,17 @@ public class Inst2Consumer {
                 .body(institusjonsopphold);
         try {
             ResponseEntity<Object> exchange = restTemplate.exchange(postRequest, RESPONSE_TYPE_OBJECT);
-            Institusjonsopphold institusjonsopphold1 = new ObjectMapper().convertValue(exchange.getBody(), Institusjonsopphold.class);
-            return OppholdResponse.builder().status(exchange.getStatusCode()).institusjonsopphold(institusjonsopphold1).build();
+            Institusjonsopphold institusjonsoppholdResponse = new ObjectMapper().convertValue(exchange.getBody(), Institusjonsopphold.class);
+            return OppholdResponse.builder()
+                    .status(exchange.getStatusCode())
+                    .institusjonsopphold(institusjonsoppholdResponse)
+                    .build();
         } catch (HttpStatusCodeException e) {
             log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident - {}", e.getResponseBodyAsString(), e);
-            return OppholdResponse.builder().status(e.getStatusCode()).feilmelding(e.getResponseBodyAsString()).build();
+            return OppholdResponse.builder()
+                    .status(e.getStatusCode())
+                    .feilmelding("personident " + institusjonsopphold.getPersonident() + " - " + e.getResponseBodyAsString())
+                    .build();
         }
     }
 

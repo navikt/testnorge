@@ -46,7 +46,9 @@ public class SyntetiseringControllerTest {
     public void shouldStartSyntetisering() {
         String fnr = "01010101010";
         Map<String, List<OppholdResponse>> expectedResponse = new HashMap<>();
-        expectedResponse.put(fnr, Collections.singletonList(OppholdResponse.builder().status(HttpStatus.OK).build()));
+        expectedResponse.put(fnr, Collections.singletonList(OppholdResponse.builder()
+                .status(HttpStatus.OK)
+                .build()));
         when(syntetiseringService.finnSyntetiserteMeldinger(id, id, miljoe, syntetiserInstRequest)).thenReturn(expectedResponse);
 
         Map<String, List<OppholdResponse>> result = syntetiseringController.genererInstitusjonsmeldinger(id, id, miljoe, syntetiserInstRequest);

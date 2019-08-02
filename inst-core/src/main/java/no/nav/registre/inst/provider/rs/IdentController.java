@@ -65,7 +65,7 @@ public class IdentController {
 
     @PostMapping("/batch")
     @ApiOperation(value = "Her kan man opprette flere institusjonsopphold i inst2.")
-    public Map<String, List<OppholdResponse>> opprettFlereInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
+    public List<OppholdResponse> opprettFlereInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
             @RequestBody List<Institusjonsopphold> institusjonsopphold) {
         return identService.opprettInstitusjonsopphold(navCallId, navConsumerId, miljoe, institusjonsopphold);
     }

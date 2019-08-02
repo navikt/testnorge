@@ -21,8 +21,8 @@ import static org.mockito.BDDMockito.given;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +82,6 @@ public class Inst2ConsumerTest {
         assertThat(actualToken.get("idToken").toString(), containsString(token.get("idToken").toString()));
     }
 
-    @Ignore
     @Test
     public void shouldGetInstitusjonsmeldingerFromInst2() {
         stubGetInstitusjonsopphold();
@@ -90,9 +89,9 @@ public class Inst2ConsumerTest {
         List<Institusjonsopphold> result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
 
         assertThat(result.get(0).getTssEksternId(), is("440"));
-        assertThat(result.get(0).getStartdato(), is("2013-07-03"));
+        assertThat(result.get(0).getStartdato(), Matchers.equalTo(LocalDate.of(2013, 7, 3)));
         assertThat(result.get(1).getTssEksternId(), is("441"));
-        assertThat(result.get(1).getStartdato(), is("2012-04-04"));
+        assertThat(result.get(1).getStartdato(), Matchers.equalTo(LocalDate.of(2012, 4, 4)));
     }
 
     @Test

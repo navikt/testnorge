@@ -80,7 +80,9 @@ public class SyntetiseringServiceTest {
     public void shouldOppretteInstitusjonsmeldinger() {
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
-        when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(meldinger.get(0)))).thenReturn(OppholdResponse.builder().status(HttpStatus.OK).build());
+        when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(meldinger.get(0)))).thenReturn(OppholdResponse.builder()
+                .status(HttpStatus.OK)
+                .build());
         when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldinger(id, id, miljoe, syntetiserInstRequest);

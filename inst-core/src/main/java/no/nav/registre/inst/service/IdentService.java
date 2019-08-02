@@ -22,18 +22,15 @@ public class IdentService {
     @Autowired
     private Inst2Consumer inst2Consumer;
 
-    public Map<String, List<OppholdResponse>> opprettInstitusjonsopphold(String callId, String consumerId, String miljoe, List<Institusjonsopphold> oppholdene) {
-        Map<String, List<OppholdResponse>> statusFraInst2 = new HashMap<>();
+    public List<OppholdResponse> opprettInstitusjonsopphold(String callId, String consumerId, String miljoe, List<Institusjonsopphold> oppholdene) {
+        List<OppholdResponse> statusFraInst2 = new ArrayList<>();
         for (Institusjonsopphold opphold : oppholdene) {
             OppholdResponse oppholdResponse = sendTilInst2(callId, consumerId, miljoe, opphold);
-            String personident = opphold.getPersonident();
-            if (statusFraInst2.containsKey(personident)) {
-                statusFraInst2.get(personident).add(oppholdResponse);
-            } else {
-                List<OppholdResponse> oppholdResponses = new ArrayList<>();
-                oppholdResponses.add(oppholdResponse);
-                statusFraInst2.put(personident, oppholdResponses);
+            Institusjonsopphold institusjonsopphold = oppholdResponse.getInstitusjonsopphold();
+            if (institusjonsopphold != null) {
+                oppholdResponse.getInstitusjonsopphold().setPersonident(opphold.getPersonident());
             }
+            statusFraInst2.add(oppholdResponse);
         }
         return statusFraInst2;
     }
