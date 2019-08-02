@@ -21,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,8 +71,8 @@ public class SyntetiseringServiceTest {
         meldinger = new ArrayList<>();
         meldinger.add(Institusjonsopphold.builder()
                 .tssEksternId("123")
-                .startdato("2019-01-01")
-                .faktiskSluttdato("2019-02-01")
+                .startdato(LocalDate.of(2019, 1, 1))
+                .faktiskSluttdato(LocalDate.of(2019, 2, 1))
                 .build());
     }
 
@@ -80,7 +81,7 @@ public class SyntetiseringServiceTest {
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(meldinger.get(0)))).thenReturn(OppholdResponse.builder().status(HttpStatus.OK).build());
-        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), eq(id), eq(id), eq(miljoe), anyString(), anyString())).thenReturn(HttpStatus.OK);
+        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldinger(id, id, miljoe, syntetiserInstRequest);
 
@@ -101,7 +102,7 @@ public class SyntetiseringServiceTest {
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
         when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(identService.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), anyString())).thenReturn(meldinger);
-        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), eq(id), eq(id), eq(miljoe), anyString(), anyString())).thenReturn(HttpStatus.OK);
+        when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldinger(id, id, miljoe, syntetiserInstRequest);
 

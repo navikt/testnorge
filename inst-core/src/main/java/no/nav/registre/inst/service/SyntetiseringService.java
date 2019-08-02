@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -142,8 +143,10 @@ public class SyntetiseringService {
 
         for (Institusjonsopphold melding : syntetiserteMeldinger) {
             String tssEksternId = melding.getTssEksternId();
-            String startdato = melding.getStartdato();
-            String faktiskSluttdato = melding.getFaktiskSluttdato();
+            //            String startdato = melding.getStartdato();
+            //            String faktiskSluttdato = melding.getFaktiskSluttdato();
+            LocalDate startdato = melding.getStartdato();
+            LocalDate faktiskSluttdato = melding.getFaktiskSluttdato();
             if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, callId, consumerId, miljoe, tssEksternId, startdato).is2xxSuccessful()
                     && inst2Consumer.finnesInstitusjonPaaDato(tokenObject, callId, consumerId, miljoe, tssEksternId, faktiskSluttdato).is2xxSuccessful()) {
                 gyldigeSyntetiserteMeldinger.add(melding);

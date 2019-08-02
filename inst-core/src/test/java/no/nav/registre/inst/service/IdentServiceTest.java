@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,14 +46,14 @@ public class IdentServiceTest {
         meldinger.add(Institusjonsopphold.builder()
                 .oppholdId(oppholdId1)
                 .tssEksternId("123")
-                .startdato("2019-01-01")
-                .faktiskSluttdato("2019-02-01")
+                .startdato(LocalDate.of(2019, 1, 1))
+                .faktiskSluttdato(LocalDate.of(2019, 2, 1))
                 .build());
         meldinger.add(Institusjonsopphold.builder()
                 .oppholdId(oppholdId2)
                 .tssEksternId("456")
-                .startdato("2019-01-01")
-                .faktiskSluttdato("2019-02-01")
+                .startdato(LocalDate.of(2019, 1, 1))
+                .faktiskSluttdato(LocalDate.of(2019, 2, 1))
                 .build());
     }
 

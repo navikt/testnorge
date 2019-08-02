@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -139,7 +140,7 @@ public class Inst2Consumer {
         }
     }
 
-    public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String tssEksternId, String date) {
+    public HttpStatus finnesInstitusjonPaaDato(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String tssEksternId, LocalDate date) {
         UriTemplate url = new UriTemplate(inst2FasitService.getUrlForEnv(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}");
         RequestEntity getRequest = RequestEntity.get(url.expand(tssEksternId, date))
                 .header("accept", "*/*")
