@@ -26,10 +26,7 @@ public class IdentService {
         List<OppholdResponse> statusFraInst2 = new ArrayList<>();
         for (Institusjonsopphold opphold : oppholdene) {
             OppholdResponse oppholdResponse = sendTilInst2(callId, consumerId, miljoe, opphold);
-            Institusjonsopphold institusjonsopphold = oppholdResponse.getInstitusjonsopphold();
-            if (institusjonsopphold != null) {
-                oppholdResponse.getInstitusjonsopphold().setPersonident(opphold.getPersonident());
-            }
+            oppholdResponse.setPersonident(opphold.getPersonident());
             statusFraInst2.add(oppholdResponse);
         }
         return statusFraInst2;

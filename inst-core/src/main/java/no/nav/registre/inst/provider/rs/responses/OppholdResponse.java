@@ -16,6 +16,7 @@ import no.nav.registre.inst.Institusjonsopphold;
 @Builder
 public class OppholdResponse {
 
+    private String personident;
     private HttpStatus status;
     private Institusjonsopphold institusjonsopphold;
     private String feilmelding;

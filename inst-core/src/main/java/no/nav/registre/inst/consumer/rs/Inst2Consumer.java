@@ -107,7 +107,7 @@ public class Inst2Consumer {
             log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident - {}", e.getResponseBodyAsString(), e);
             return OppholdResponse.builder()
                     .status(e.getStatusCode())
-                    .feilmelding("personident " + institusjonsopphold.getPersonident() + " - " + e.getResponseBodyAsString())
+                    .feilmelding(e.getResponseBodyAsString())
                     .build();
         }
     }
