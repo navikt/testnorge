@@ -58,9 +58,9 @@ public class SyntetiseringControllerTest {
                 .sendBrukereTilArenaForvalterConsumer(antallNyeIdenter, avspillegruppeId, miljoe))
                 .thenReturn(Arrays.asList(arb1,arb2,arb3));
 
-        ResponseEntity<Map<String, List<String>>> result = syntetiseringController.registerBrukereIArenaForvalter(syntetiserArenaRequest);
-        assertThat(result.getBody().get("registrerteIdenter").get(1), containsString(fnr2));
-        assertThat(result.getBody().get("registrerteIdenter").size(), is(3));
+        ResponseEntity<List<String>> result = syntetiseringController.registerBrukereIArenaForvalter(syntetiserArenaRequest);
+        assertThat(result.getBody().get(1), containsString(fnr2));
+        assertThat(result.getBody().size(), is(3));
     }
 
     @Test
@@ -69,9 +69,8 @@ public class SyntetiseringControllerTest {
                 .slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3, fnr4), miljoe))
                 .thenReturn(Arrays.asList(fnr1, fnr3, fnr4));
 
-        ResponseEntity<Map<String, List<String>>> response = syntetiseringController.slettBrukereIArenaForvalter(miljoe, Arrays.asList(fnr1, fnr2, fnr3, fnr4));
-        assertThat(response.getBody().get("slettet"), is(Arrays.asList(fnr1, fnr3, fnr4)));
-        assertThat(response.getBody().get("ikkeSlettet"), is(Collections.singletonList(fnr2)));
+        ResponseEntity<List<String>> response = syntetiseringController.slettBrukereIArenaForvalter(miljoe, Arrays.asList(fnr1, fnr2, fnr3, fnr4));
+        assertThat(response.getBody(), is(Arrays.asList(fnr1, fnr3, fnr4)));
     }
 
 
