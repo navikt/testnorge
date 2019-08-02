@@ -2,6 +2,10 @@ package no.nav.registre.inst;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,12 +40,18 @@ public class Institusjonsopphold {
     private String kategori;
 
     @JsonAlias({ "startdato", "dato_fom" })
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate startdato;
 
     @JsonAlias({ "faktiskSluttdato", "dato_tom" })
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate faktiskSluttdato;
 
     @JsonAlias({ "forventetSluttdato", "dato_tom_forventet" })
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate forventetSluttdato;
 
     @JsonAlias({ "kilde", "k_kilde_inst_t" })
