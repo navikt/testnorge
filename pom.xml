@@ -25,7 +25,8 @@
     </modules>
 
     <properties>
-        <springfox.version>2.4.0</springfox.version>
+        <springfox.version>2.9.2</springfox.version>
+        <application.version>${project.version}</application.version>
     </properties>
 
 
