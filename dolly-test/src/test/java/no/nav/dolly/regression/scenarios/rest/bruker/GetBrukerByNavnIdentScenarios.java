@@ -27,7 +27,7 @@ public class GetBrukerByNavnIdentScenarios extends BrukerTestCaseBase {
 
     @Test
     public void whenNoBrukerExistsExceptionNotFoundThrownAndStatusCode404() throws Exception {
-        MvcResult mvcResult = mvcMock.perform(get(endpointUrl + "/" + "finnesIkke"))
+        mvcMock.perform(get(endpointUrl + "/" + "finnesIkke"))
                 .andExpect(status().isNotFound())
                 .andReturn();
     }

@@ -47,51 +47,37 @@ public class RsBestilling {
 
     private String malBestillingNavn;
 
-    public List<String> getEnvironments() {
-        if (isNull(environments)) {
-            environments = new ArrayList<>();
-        }
-        return environments;
-    }
-
-    public List<RsBestillingProgress> getBestillingProgress() {
-        if (isNull(bestillingProgress)) {
-            bestillingProgress = new ArrayList<>();
-        }
-        return bestillingProgress;
-    }
-
     public Set<RsStatusMiljoeIdent> getTpsfStatus() {
         if (isNull(tpsfStatus)) {
-            tpsfStatus = new HashSet();
+            tpsfStatus = new HashSet<>();
         }
         return tpsfStatus;
     }
 
     public Set<RsStatusIdent> getKrrStubStatus() {
         if (isNull(krrStubStatus)) {
-            krrStubStatus = new HashSet();
+            krrStubStatus = new HashSet<>();
         }
         return krrStubStatus;
     }
 
     public Set<RsStatusIdent> getSigrunStubStatus() {
         if (isNull(sigrunStubStatus)) {
-            sigrunStubStatus = new HashSet();
+            sigrunStubStatus = new HashSet<>();
         }
         return sigrunStubStatus;
     }
 
     public Set<RsStatusMiljoeIdentForhold> getAaregStatus() {
         if (isNull(aaregStatus)) {
-            aaregStatus = new HashSet();
+            aaregStatus = new HashSet<>();
         }
         return aaregStatus;
     }
 
     public Set<RsMeldingStatusIdent> getArenaforvalterStatus() {
         if (isNull(arenaforvalterStatus)) {
-            arenaforvalterStatus = new HashSet();
+            arenaforvalterStatus = new HashSet<>();
         }
         return arenaforvalterStatus;
     }

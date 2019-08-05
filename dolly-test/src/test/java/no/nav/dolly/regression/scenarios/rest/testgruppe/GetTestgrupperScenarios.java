@@ -32,9 +32,9 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
 
     @Test
     public void hentAlleTestgrupperTilknyttetBrukerIgjennomFavoritterOgTeammedlemskap() throws Exception {
-        Bruker bruker2 = brukerRepository.save(Bruker.builder().navIdent(STANDARD_NAV_IDENT).build());
+        Bruker bruker2 = brukerTestRepository.save(Bruker.builder().navIdent(STANDARD_NAV_IDENT).build());
 
-        Team team2 = teamRepository.save(Team.builder()
+        Team team2 = teamTestRepository.save(Team.builder()
                 .navn("team2")
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk2")
@@ -43,7 +43,7 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .build()
         );
 
-        Team team3 = teamRepository.save(Team.builder()
+        Team team3 = teamTestRepository.save(Team.builder()
                 .navn("team3")
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk3")
@@ -52,7 +52,7 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .build()
         );
 
-        Testgruppe testgruppe2 = gruppeRepository.save(Testgruppe.builder()
+        Testgruppe testgruppe2 = gruppeTestRepository.save(Testgruppe.builder()
                 .navn("gruppe2")
                 .hensikt("hensikt2")
                 .opprettetAv(standardBruker)
@@ -62,7 +62,7 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .build()
         );
 
-        Testgruppe testgruppe3 = gruppeRepository.save(Testgruppe.builder()
+        Testgruppe testgruppe3 = gruppeTestRepository.save(Testgruppe.builder()
                 .navn("gruppe3")
                 .hensikt("hensikt3")
                 .opprettetAv(bruker2)
@@ -72,7 +72,7 @@ public class GetTestgrupperScenarios extends TestgruppeTestCaseBase {
                 .build()
         );
 
-        Testgruppe testgruppe4 = gruppeRepository.save(Testgruppe.builder()
+        Testgruppe testgruppe4 = gruppeTestRepository.save(Testgruppe.builder()
                 .navn("gruppe4")
                 .hensikt("hensikt4")
                 .opprettetAv(bruker2)

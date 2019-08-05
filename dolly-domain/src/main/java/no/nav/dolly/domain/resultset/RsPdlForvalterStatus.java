@@ -38,11 +38,4 @@ public class RsPdlForvalterStatus {
         }
         return utenlandsid;
     }
-
-    public List<RsStatusIdent> getPdlForvalter() {
-        if (isNull(pdlForvalter)) {
-            pdlForvalter = new ArrayList<>();
-        }
-        return pdlForvalter;
-    }
 }

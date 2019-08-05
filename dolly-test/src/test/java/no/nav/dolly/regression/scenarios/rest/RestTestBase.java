@@ -65,62 +65,43 @@ public abstract class RestTestBase extends InMemoryDbTestSetup {
         return MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
     }
 
-    protected static <T> Collection<T> convertMvcResultToCollection(MvcResult mvcResult, Class<T> resultClass) throws IOException {
-        JavaType type = MAPPER.getTypeFactory().constructCollectionType(Collection.class, resultClass);
-        return MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
-    }
-
-    protected static String getErrorMessage(MvcResult mvcResult) throws IOException {
-        JavaType type = MAPPER.getTypeFactory().constructMapType(Map.class, String.class, String.class);
-        Map<String, String> json = MAPPER.readValue(mvcResult.getResponse().getContentAsString(), type);
-        return json.get("message");
-    }
-
-    protected static Map<String, String> getErrorMessageAtIndex(MvcResult mvcResult, int index) throws IOException {
-        JavaType mapType = MAPPER.getTypeFactory().constructMapType(Map.class, String.class, String.class);
-        JavaType listOfMapType = MAPPER.getTypeFactory().constructCollectionLikeType(List.class, mapType);
-
-        List<Map<String, String>> listOfMap = MAPPER.readValue(mvcResult.getResponse().getContentAsString(), listOfMapType);
-        return listOfMap.get(index);
-    }
-
     @After
     public void after() {
         removeManyToManyRelationships();
 
-        identRepository.deleteAll();
-        gruppeRepository.deleteAll();
-        teamRepository.deleteAll();
-        brukerRepository.deleteAll();
+        identTestRepository.deleteAll();
+        gruppeTestRepository.deleteAll();
+        teamTestRepository.deleteAll();
+        brukerTestRepository.deleteAll();
 
-        bestillingProgressRepository.deleteAll();
-        bestillingRepository.deleteAll();
+        bestillingProgressTestRepository.deleteAll();
+        bestillingTestRepository.deleteAll();
     }
 
     private void removeManyToManyRelationships() {
-        List<Bruker> brukere = brukerRepository.findAllByOrderByNavIdent();
+        List<Bruker> brukere = brukerTestRepository.findAllByOrderByNavIdent();
         brukere.forEach(b -> {
             b.setFavoritter(new HashSet<>());
             b.setTeams(new HashSet<>());
         });
-        brukerRepository.saveAll(brukere);
+        brukerTestRepository.saveAll(brukere);
 
-        List<Testgruppe> grupper = gruppeRepository.findAllByOrderByNavn();
+        List<Testgruppe> grupper = gruppeTestRepository.findAllByOrderByNavn();
         grupper.forEach(g -> g.setFavorisertAv(new HashSet<>()));
         grupper.forEach(g -> g.setTestidenter(new HashSet<>()));
-        gruppeRepository.saveAll(grupper);
+        gruppeTestRepository.saveAll(grupper);
     }
 
     @Before
     public void setupBruker() {
         mvcMock = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
-        standardBruker = brukerRepository.save(Bruker.builder()
+        standardBruker = brukerTestRepository.save(Bruker.builder()
                 .navIdent(STANDARD_NAV_IDENT)
                 .build()
         );
 
-        standardTeam = teamRepository.save(Team.builder()
+        standardTeam = teamTestRepository.save(Team.builder()
                 .eier(standardBruker)
                 .navn(STANDARD_TEAM_NAVN)
                 .beskrivelse(STANDARD_TEAM_BESK)
@@ -129,7 +110,7 @@ public abstract class RestTestBase extends InMemoryDbTestSetup {
                 .build()
         );
 
-        standardTestgruppe = gruppeRepository.save(Testgruppe.builder()
+        standardTestgruppe = gruppeTestRepository.save(Testgruppe.builder()
                 .navn(STANDARD_GRUPPE_NAVN)
                 .hensikt(STANDARD_GRUPPE_HENSIKT)
                 .opprettetAv(standardBruker)

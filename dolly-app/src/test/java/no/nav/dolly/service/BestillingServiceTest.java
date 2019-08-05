@@ -10,7 +10,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -55,14 +54,11 @@ public class BestillingServiceTest {
     @Mock
     private BestillingProgressRepository bestillingProgressRepository;
 
-    @Mock
-    private ObjectMapper objectMapper;
-
     @InjectMocks
     private BestillingService bestillingService;
 
     @Test(expected = NotFoundException.class)
-    public void fetchBestillingByIdKasterExceptionHvisBestillingIkkeFunnet() throws Exception {
+    public void fetchBestillingByIdKasterExceptionHvisBestillingIkkeFunnet() {
         Optional<Bestilling> bes = Optional.empty();
 
         when(bestillingRepository.findById(any())).thenReturn(bes);
@@ -71,7 +67,7 @@ public class BestillingServiceTest {
     }
 
     @Test
-    public void fetchBestillingByIdKasterReturnererBestillingHvisBestillingErFunnet() throws Exception {
+    public void fetchBestillingByIdKasterReturnererBestillingHvisBestillingErFunnet() {
         Bestilling mock = mock(Bestilling.class);
         Optional<Bestilling> bes = Optional.of(mock);
 
@@ -83,7 +79,7 @@ public class BestillingServiceTest {
     }
 
     @Test(expected = ConstraintViolationException.class)
-    public void saveBestillingToDBKasterExceptionHvisDBConstraintBlirBrutt() throws Exception {
+    public void saveBestillingToDBKasterExceptionHvisDBConstraintBlirBrutt() {
         when(bestillingRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
         bestillingService.saveBestillingToDB(new Bestilling());
     }

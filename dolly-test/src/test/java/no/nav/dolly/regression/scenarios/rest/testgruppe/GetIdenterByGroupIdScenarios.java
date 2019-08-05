@@ -20,19 +20,19 @@ public class GetIdenterByGroupIdScenarios extends TestgruppeTestCaseBase {
 
     @Test
     public void getIdenterByGroupId_returnererAlleTestidenterIStringformat() throws Exception {
-        Testgruppe testgruppe = gruppeRepository.findAllByOrderByNavn().get(0);
+        Testgruppe testgruppe = gruppeTestRepository.findAllByOrderByNavn().get(0);
         Long gruppeId = testgruppe.getId();
         String ident1 = "10";
         String ident2 = "20";
 
         Testident t1 = TestidentBuilder.builder().ident(ident1).testgruppe(testgruppe).build().convertToRealTestident();
         Testident t2 = TestidentBuilder.builder().ident(ident2).testgruppe(testgruppe).build().convertToRealTestident();
-        Testident testident1 = identRepository.save(t1);
-        Testident testident2 = identRepository.save(t2);
+        Testident testident1 = identTestRepository.save(t1);
+        Testident testident2 = identTestRepository.save(t2);
 
         Set gruppe = newHashSet(Arrays.asList(testident1, testident2));
         testgruppe.setTestidenter(gruppe);
-        gruppeRepository.save(testgruppe);
+        gruppeTestRepository.save(testgruppe);
 
         String url = endpointUrl + "/" + gruppeId + "/identer";
         MvcResult mvcResult = mvcMock.perform(get(url))
@@ -48,7 +48,7 @@ public class GetIdenterByGroupIdScenarios extends TestgruppeTestCaseBase {
 
     @Test
     public void getIdenterByGroupId_handtererTommeGrupper() throws Exception {
-        Testgruppe g1 = gruppeRepository.findAllByOrderByNavn().get(0);
+        Testgruppe g1 = gruppeTestRepository.findAllByOrderByNavn().get(0);
         Long gruppeId = g1.getId();
 
         String url = endpointUrl + "/" + gruppeId + "/identer";

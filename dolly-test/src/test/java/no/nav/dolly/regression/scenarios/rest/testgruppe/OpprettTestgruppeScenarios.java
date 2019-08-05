@@ -21,7 +21,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
 
     @Test
     public void opprettTestgruppeBasertPaaCurrentBruker() throws Exception {
-        Team team = teamRepository.findAllByOrderByNavn().get(0);
+        Team team = teamTestRepository.findAllByOrderByNavn().get(0);
 
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
                 .navn("mingruppe")
@@ -35,7 +35,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        Testgruppe gruppe = gruppeRepository.findByNavn("mingruppe");
+        Testgruppe gruppe = gruppeTestRepository.findByNavn("mingruppe");
 
         assertThat(gruppe.getId(), is(notNullValue()));
         assertThat(gruppe.getNavn(), is("mingruppe"));
@@ -58,7 +58,7 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        Testgruppe gruppe = gruppeRepository.findByNavn("mingruppe");
+        Testgruppe gruppe = gruppeTestRepository.findByNavn("mingruppe");
         Team teamG1 = teamTestRepository.findByIdFetchMedlemmerEagerly(gruppe.getTeamtilhoerighet().getId());
         Bruker brukerG1 = brukerTestRepository.findByNavIdentTeamsEagerly(STANDARD_NAV_IDENT);
 
@@ -102,8 +102,8 @@ public class OpprettTestgruppeScenarios extends TestgruppeTestCaseBase {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        Testgruppe gruppe = gruppeRepository.findByNavn("mingruppe");
-        Testgruppe gruppe2 = gruppeRepository.findByNavn("mingruppe2");
+        Testgruppe gruppe = gruppeTestRepository.findByNavn("mingruppe");
+        Testgruppe gruppe2 = gruppeTestRepository.findByNavn("mingruppe2");
         Team teamG1 = teamTestRepository.findByIdFetchMedlemmerEagerly(gruppe.getTeamtilhoerighet().getId());
 
         assertThat(gruppe.getId(), is(notNullValue()));

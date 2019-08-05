@@ -40,10 +40,6 @@ public abstract class RestTestBase {
     @Autowired
     protected TestRestTemplate restTestTemplate;
 
-//    protected String getErrMsg(LinkedHashMap resp) {
-//        return (String) resp.get(ERR_MSG_KEY);
-//    }
-
     protected EndpointRequestBuilder sendRequest() {
         return send(null);
     }
@@ -116,12 +112,6 @@ public abstract class RestTestBase {
 
         public <T> List<T> andExpectList(HttpStatus expectedHttpStatus, ParameterizedTypeReference<List<T>> expectedResponseType) {
             ResponseEntity<List<T>> responseEntity = andExpectResponseEntityWithListFor(expectedResponseType);
-            assertThat(responseEntity.getStatusCode(), is(expectedHttpStatus));
-            return responseEntity.getBody();
-        }
-
-        public <T> Map<T, T> andExpectMap(HttpStatus expectedHttpStatus, ParameterizedTypeReference<Map<T, T>> expectedResponseType) {
-            ResponseEntity<Map<T, T>> responseEntity = andExpectResponseEntityWithMapFor(expectedResponseType);
             assertThat(responseEntity.getStatusCode(), is(expectedHttpStatus));
             return responseEntity.getBody();
         }

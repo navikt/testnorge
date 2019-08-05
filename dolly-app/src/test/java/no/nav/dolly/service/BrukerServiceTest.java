@@ -66,7 +66,6 @@ public class BrukerServiceTest {
 
     @Test
     public void opprettBruker_kallerRepositorySave() {
-        RsBruker b = new RsBruker();
         brukerService.opprettBruker(new RsBruker());
         verify(brukerRepository).save(any());
     }
@@ -108,11 +107,8 @@ public class BrukerServiceTest {
         String navident = "NAVIDENT";
 
         Bruker bruker = Bruker.builder().navIdent(navident).build();
-        Bruker rsBruker = Bruker.builder().navIdent(navident).build();
 
         Team team = Team.builder().navn("navteam").eier(bruker).build();
-        RsTeam rsTeam = RsTeamUtvidetBuilder.builder().navn("navteam").eierNavIdent(navident).build().convertToRealRsTeam();
-        Set teamSet = newHashSet(singletonList(rsTeam));
         List<Team> teamList = singletonList(team);
 
         when(brukerRepository.findBrukerByNavIdent(navident)).thenReturn(bruker);

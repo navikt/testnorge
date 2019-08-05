@@ -36,9 +36,9 @@ public class UpdateFavoritterScenarios extends BrukerTestCaseBase {
 
     @Test
     public void fjernEnFavorittFraBruker() throws Exception {
-        Bruker foerAddBruker = brukerRepository.findBrukerByNavIdent(STANDARD_NAV_IDENT);
+        Bruker foerAddBruker = brukerTestRepository.findBrukerByNavIdent(STANDARD_NAV_IDENT);
         foerAddBruker.setFavoritter(newHashSet(singletonList(standardTestgruppe)));
-        Bruker foerFjernBruker = brukerRepository.save(foerAddBruker);
+        Bruker foerFjernBruker = brukerTestRepository.save(foerAddBruker);
         assertThat(foerFjernBruker.getFavoritter().size(), is(1));
 
         RsBrukerUpdateFavoritterReq request = new RsBrukerUpdateFavoritterReq();

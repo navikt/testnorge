@@ -74,10 +74,4 @@ public class TpsfBestilling {
 
     private Boolean utenFastBopel;
 
-    public List<String> getOpprettFraIdenter() {
-        if (isNull(opprettFraIdenter)) {
-            opprettFraIdenter = new ArrayList<>();
-        }
-        return opprettFraIdenter;
-    }
 }

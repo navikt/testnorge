@@ -11,7 +11,7 @@ public class OpprettBestillingScenario extends TestgruppeBestillingTestCaseBase 
     //TODO Fix eller fjern
     @Test
     public void happyPath() {
-        Long gruppeId = gruppeRepository.findByNavn(STANDARD_GRUPPE_NAVN).getId();
+        Long gruppeId = gruppeTestRepository.findByNavn(STANDARD_GRUPPE_NAVN).getId();
         String url = getEndpointUrl(gruppeId);
         CompletableFuture<String> future = new CompletableFuture<>();
 

@@ -14,8 +14,10 @@ import org.springframework.web.client.RestTemplate;
 public class FasitApiConsumer {
 
     private static final String FASIT_RESOURCE = "/api/v2/resources?alias=%s&type=%s&usage=false&page=0&pr_page=100";
+
     @Autowired
     private ProvidersProps providersProps;
+
     @Autowired
     private RestTemplate restTemplate;
 

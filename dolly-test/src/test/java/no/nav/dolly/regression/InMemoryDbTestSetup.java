@@ -1,14 +1,11 @@
 package no.nav.dolly.regression;
 
+import no.nav.dolly.regression.scenarios.testrepositories.BestillingProgressTestRepository;
+import no.nav.dolly.regression.scenarios.testrepositories.BestillingTestRepository;
 import no.nav.dolly.regression.scenarios.testrepositories.BrukerTestRepository;
 import no.nav.dolly.regression.scenarios.testrepositories.GruppeTestRepository;
+import no.nav.dolly.regression.scenarios.testrepositories.IdentTestRepository;
 import no.nav.dolly.regression.scenarios.testrepositories.TeamTestRepository;
-import no.nav.dolly.repository.BestillingProgressRepository;
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.GruppeRepository;
-import no.nav.dolly.repository.IdentRepository;
-import no.nav.dolly.repository.TeamRepository;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,24 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 public abstract class InMemoryDbTestSetup {
 
     @Autowired
-    public BrukerRepository brukerRepository;
-
-    @Autowired
-    public GruppeRepository gruppeRepository;
-
-    @Autowired
-    public TeamRepository teamRepository;
-
-    @Autowired
-    public IdentRepository identRepository;
-
-    @Autowired
-    public BestillingRepository bestillingRepository;
-
-    @Autowired
-    public BestillingProgressRepository bestillingProgressRepository;
-
-    @Autowired
     public TeamTestRepository teamTestRepository;
 
     @Autowired
@@ -46,4 +25,13 @@ public abstract class InMemoryDbTestSetup {
 
     @Autowired
     public GruppeTestRepository gruppeTestRepository;
+
+    @Autowired
+    public IdentTestRepository identTestRepository;
+
+    @Autowired
+    public BestillingTestRepository bestillingTestRepository;
+
+    @Autowired
+    public BestillingProgressTestRepository bestillingProgressTestRepository;
 }

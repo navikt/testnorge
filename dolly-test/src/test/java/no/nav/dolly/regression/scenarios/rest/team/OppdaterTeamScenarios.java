@@ -25,9 +25,9 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase {
 
     @Test
     public void oppdaterBrukerMedAlleInputs() throws Exception {
-        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
+        Bruker nyEier = brukerTestRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
 
-        Team teamSomSkalEndres = teamRepository.findAllByOrderByNavn().get(0);
+        Team teamSomSkalEndres = teamTestRepository.findAllByOrderByNavn().get(0);
 
         RsTeamUtvidet request = RsTeamUtvidetBuilder.builder()
                 .id(teamSomSkalEndres.getId())
@@ -51,16 +51,16 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase {
 
         assertThat(resultat.getEierNavIdent(), is(NAV_IDENT));
 
-        teamSomSkalEndres = teamRepository.findById(teamSomSkalEndres.getId()).get();
+        teamSomSkalEndres = teamTestRepository.findById(teamSomSkalEndres.getId()).get();
 
         assertThat(teamSomSkalEndres.getEier().getNavIdent(), is(NAV_IDENT));
     }
 
     @Test
     public void oppdaterTeamKunNavnOgBeskrivelseIBody() throws Exception {
-        Bruker nyEier = brukerRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
+        brukerTestRepository.save(Bruker.builder().navIdent(NAV_IDENT).build());
 
-        Team teamSomSkalErEndret = teamRepository.findAllByOrderByNavn().get(0);
+        Team teamSomSkalErEndret = teamTestRepository.findAllByOrderByNavn().get(0);
 
         RsTeamUtvidet request = RsTeamUtvidetBuilder.builder()
                 .beskrivelse("endretTeam")
@@ -77,7 +77,7 @@ public class OppdaterTeamScenarios extends TeamTestCaseBase {
                 .andReturn();
 
         RsTeamUtvidet response = convertMvcResultToObject(mvcResult, RsTeamUtvidet.class);
-        teamSomSkalErEndret = teamRepository.findById(teamSomSkalErEndret.getId()).get();
+        teamSomSkalErEndret = teamTestRepository.findById(teamSomSkalErEndret.getId()).get();
 
         assertThat(response.getEierNavIdent(), is(STANDARD_NAV_IDENT));
         assertThat(response.getNavn(), is("endretTeamNavn"));

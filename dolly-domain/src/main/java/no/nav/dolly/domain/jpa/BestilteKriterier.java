@@ -1,7 +1,6 @@
 package no.nav.dolly.domain.jpa;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-import static java.util.Objects.isNull;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,6 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -32,17 +30,4 @@ public class BestilteKriterier {
     private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;
 
-    public List<RsArbeidsforhold> getAareg() {
-        if (isNull(aareg)) {
-            aareg = new ArrayList<>();
-        }
-        return aareg;
-    }
-
-    public List<RsOpprettSkattegrunnlag> getSigrunStub() {
-        if (isNull(sigrunStub)) {
-            sigrunStub = new ArrayList<>();
-        }
-        return sigrunStub;
-    }
 }

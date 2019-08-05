@@ -23,27 +23,27 @@ import java.util.List;
 
 public class GetTeamsScenarios extends TeamTestCaseBase {
 
-    private Bruker bruker2;
+    private final String NAVIDENT = "navident2";
 
     @Before
     public void setupData() {
-        bruker2 = brukerRepository.save(Bruker.builder().navIdent("navident2").build());
+        Bruker bruker = brukerTestRepository.save(Bruker.builder().navIdent(NAVIDENT).build());
 
-        Team team2 = teamRepository.save(Team.builder()
+        teamTestRepository.save(Team.builder()
                 .navn("team2")
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk2")
-                .eier(bruker2)
-                .medlemmer(asList(bruker2, standardBruker))
+                .eier(bruker)
+                .medlemmer(asList(bruker, standardBruker))
                 .build()
         );
 
-        Team team3 = teamRepository.save(Team.builder()
+        teamTestRepository.save(Team.builder()
                 .navn("team3")
                 .datoOpprettet(LocalDate.now())
                 .beskrivelse("besk3")
-                .eier(bruker2)
-                .medlemmer(singletonList(bruker2))
+                .eier(bruker)
+                .medlemmer(singletonList(bruker))
                 .build()
         );
     }
@@ -67,7 +67,7 @@ public class GetTeamsScenarios extends TeamTestCaseBase {
 
         assertThat(resultat, hasItem(both(
                 hasProperty(TEAM_PROP_NAVN, equalTo("team2"))).and(
-                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(bruker2.getNavIdent())))
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(NAVIDENT)))
         ));
     }
 
@@ -89,12 +89,12 @@ public class GetTeamsScenarios extends TeamTestCaseBase {
 
         assertThat(resultat, hasItem(both(
                 hasProperty(TEAM_PROP_NAVN, equalTo("team2"))).and(
-                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(bruker2.getNavIdent())))
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(NAVIDENT)))
         ));
 
         assertThat(resultat, hasItem(both(
                 hasProperty(TEAM_PROP_NAVN, equalTo("team3"))).and(
-                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(bruker2.getNavIdent())))
+                hasProperty(TEAM_PROP_EIER_IDENT, equalTo(NAVIDENT)))
         ));
     }
 }

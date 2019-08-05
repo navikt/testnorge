@@ -89,12 +89,5 @@ public class Testgruppe {
         }
         return favorisertAv;
     }
-
-    public Set<Bestilling> getBestillinger() {
-        if (bestillinger == null) {
-            bestillinger = new HashSet<>();
-        }
-        return bestillinger;
-    }
 }
 
