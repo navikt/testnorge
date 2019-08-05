@@ -39,7 +39,7 @@ public class IdentController {
 
     @GetMapping
     @ApiOperation(value = "Her kan man hente alle institusjonsoppholdene tilhørende angitte identer.")
-    public Map<String, List<Institusjonsopphold>> hentInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
+    public List<Institusjonsopphold> hentInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
             @RequestParam List<String> fnrs) {
         return identService.hentOppholdTilIdenter(navCallId, navConsumerId, miljoe, fnrs);
     }

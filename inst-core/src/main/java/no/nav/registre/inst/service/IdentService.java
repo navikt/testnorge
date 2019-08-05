@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
@@ -26,14 +25,15 @@ public class IdentService {
         List<OppholdResponse> statusFraInst2 = new ArrayList<>();
         for (Institusjonsopphold opphold : oppholdene) {
             OppholdResponse oppholdResponse = sendTilInst2(callId, consumerId, miljoe, opphold);
-            oppholdResponse.setPersonident(opphold.getPersonident());
             statusFraInst2.add(oppholdResponse);
         }
         return statusFraInst2;
     }
 
     public OppholdResponse sendTilInst2(String callId, String consumerId, String miljoe, Institusjonsopphold opphold) {
-        return inst2Consumer.leggTilInstitusjonsoppholdIInst2(inst2Consumer.hentTokenTilInst2(), callId, consumerId, miljoe, opphold);
+        OppholdResponse oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(inst2Consumer.hentTokenTilInst2(), callId, consumerId, miljoe, opphold);
+        oppholdResponse.setPersonident(opphold.getPersonident());
+        return oppholdResponse;
     }
 
     public SletteOppholdResponse slettInstitusjonsforholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
@@ -68,10 +68,14 @@ public class IdentService {
         return inst2Consumer.slettInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, oppholdId);
     }
 
-    public Map<String, List<Institusjonsopphold>> hentOppholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
+    public List<Institusjonsopphold> hentOppholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
         Map<String, Object> tokenObject = hentTokenTilInst2();
-        return identer.parallelStream()
-                .collect(Collectors.toMap(fnr -> fnr, fnr -> hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, fnr)));
+        List<Institusjonsopphold> alleInstitusjonsopphold = new ArrayList<>();
+        for (String ident : identer) {
+            List<Institusjonsopphold> institusjonsoppholdTilIdent = hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, ident);
+            alleInstitusjonsopphold.addAll(institusjonsoppholdTilIdent);
+        }
+        return alleInstitusjonsopphold;
     }
 
     public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(Map<String, Object> tokenObject, String callId, String consumerId, String miljoe, String ident) {
