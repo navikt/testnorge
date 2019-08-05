@@ -38,21 +38,21 @@ public class IdentController {
     }
 
     @GetMapping
-    @ApiOperation(value = "Her kan man hente alle institusjonsoppholdene tilhørende angitte identer.")
+    @ApiOperation(value = "Her kan man hente alle institusjonsoppholdene tilhørende angitte identer fra inst2.")
     public List<Institusjonsopphold> hentInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
             @RequestParam List<String> fnrs) {
         return identService.hentOppholdTilIdenter(navCallId, navConsumerId, miljoe, fnrs);
     }
 
     @PutMapping("/{oppholdId}")
-    @ApiOperation(value = "Her kan man oppdatere et institusjonsopphold med angitt oppholdId.")
+    @ApiOperation(value = "Her kan man oppdatere et institusjonsopphold med angitt oppholdId i inst2.")
     public ResponseEntity oppdaterInstitusjonsopphold(@PathVariable Long oppholdId, @RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
             @RequestBody Institusjonsopphold institusjonsopphold) {
         return identService.oppdaterInstitusjonsopphold(navCallId, navConsumerId, miljoe, oppholdId, institusjonsopphold);
     }
 
     @DeleteMapping
-    @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene med de angitte oppholdId-ene.")
+    @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene med de angitte oppholdId-ene fra inst2.")
     public Map<Long, ResponseEntity> slettInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId,
             @RequestParam String miljoe, @RequestParam List<Long> oppholdIder) {
         Map<String, Object> tokenObject = identService.hentTokenTilInst2();
@@ -71,8 +71,8 @@ public class IdentController {
     }
 
     @DeleteMapping("/batch")
-    @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene til de angitte identene.")
+    @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene til de angitte identene fra inst2.")
     public SletteOppholdResponse slettIdenter(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe, @RequestParam List<String> identer) {
-        return identService.slettInstitusjonsforholdTilIdenter(navCallId, navConsumerId, miljoe, identer);
+        return identService.slettInstitusjonsoppholdTilIdenter(navCallId, navConsumerId, miljoe, identer);
     }
 }

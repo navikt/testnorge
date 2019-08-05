@@ -68,7 +68,7 @@ public class IdentServiceTest {
         when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId1))).thenReturn(ResponseEntity.noContent().build());
         when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId2))).thenReturn(ResponseEntity.noContent().build());
 
-        SletteOppholdResponse response = identService.slettInstitusjonsforholdTilIdenter(id, id, miljoe, identer);
+        SletteOppholdResponse response = identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
 
         verify(inst2Consumer).hentTokenTilInst2();
         verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr1));

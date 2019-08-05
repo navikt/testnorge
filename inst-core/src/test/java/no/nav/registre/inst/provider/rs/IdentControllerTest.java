@@ -81,6 +81,6 @@ public class IdentControllerTest {
     public void shouldSletteIdenter() {
         identController.slettIdenter(id, id, miljoe, identer);
 
-        verify(identService).slettInstitusjonsforholdTilIdenter(id, id, miljoe, identer);
+        verify(identService).slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
     }
 }

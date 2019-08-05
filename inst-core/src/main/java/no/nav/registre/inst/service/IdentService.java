@@ -36,7 +36,7 @@ public class IdentService {
         return oppholdResponse;
     }
 
-    public SletteOppholdResponse slettInstitusjonsforholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
+    public SletteOppholdResponse slettInstitusjonsoppholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
         Map<String, Object> tokenObject = hentTokenTilInst2();
 
         SletteOppholdResponse sletteOppholdResponse = SletteOppholdResponse.builder()
