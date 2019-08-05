@@ -2,6 +2,7 @@ package no.nav.registre.hodejegeren.service;
 
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
+import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
@@ -89,19 +91,23 @@ public class EksisterendeIdenterService {
         return hentedeIdenter;
     }
 
-    public Map<String, String> hentFnrMedNavKontor(String miljoe, List<String> identer) {
-        Map<String, String> fnrMedNavKontor = new HashMap<>();
+    public List<NavEnhetResponse> hentFnrMedNavKontor(String miljoe, List<String> identer) {
+        List<NavEnhetResponse> navEnhetResponseListe = new ArrayList<>(identer.size());
 
         int antallFeilet = 0;
 
         for (String ident : identer) {
-            Map<String, String> feltMedStatusQuo;
-
             try {
-                feltMedStatusQuo = tpsStatusQuoService.hentStatusQuo(ROUTINE_KERNINFO, Collections.singletonList(NAV_ENHET), miljoe, ident);
-                String statusQuo = feltMedStatusQuo.get(NAV_ENHET);
-                if (!statusQuo.isEmpty()) {
-                    fnrMedNavKontor.put(ident, statusQuo);
+                Map<String, String> feltMedStatusQuo = tpsStatusQuoService.hentStatusQuo(ROUTINE_KERNINFO, Arrays.asList(NAV_ENHET, NAV_ENHET_BESKRIVELSE), miljoe, ident);
+                String navEnhet = feltMedStatusQuo.get(NAV_ENHET);
+                String navEnhetBeskrivelse = feltMedStatusQuo.get(NAV_ENHET_BESKRIVELSE);
+                if (!navEnhet.isEmpty() && !navEnhetBeskrivelse.isEmpty()) {
+                    navEnhetResponseListe.add(
+                            NavEnhetResponse.builder()
+                                    .ident(ident)
+                                    .navEnhet(navEnhet)
+                                    .navEnhetBeskrivelse(navEnhetBeskrivelse)
+                                    .build());
                 } else {
                     antallFeilet++;
                     log.warn("Person med fnr {} hadde ingen tilknytning til NAV-enhet.", ident);
@@ -119,7 +125,7 @@ public class EksisterendeIdenterService {
             log.warn("Kunne ikke finne NAV-enhet for {} av identene.", antallFeilet);
         }
 
-        return fnrMedNavKontor;
+        return navEnhetResponseListe;
     }
 
     public Map<String, JsonNode> hentGittAntallIdenterMedStatusQuo(Long avspillergruppeId, String miljoe, int antallIdenter) {

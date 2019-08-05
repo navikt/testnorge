@@ -16,7 +16,8 @@ public class EndringskodeTilFeltnavnMapperService {
     public static final String DATO_DO = "datoDo";
     public static final String STATSBORGER = "statsborger"; // lagret i persdata
     public static final String STATSBORGERSKAP = "statsborgerskap"; // lagret i kerninfo
-    public static final String NAV_ENHET = "NAVenhet"; // lagret i kerninfo
+    public static final String NAV_ENHET = "kodeNAVenhet"; // lagret i kerninfo
+    public static final String NAV_ENHET_BESKRIVELSE = "kodeNAVenhetBeskr"; // lagret i kerninfo
     public static final String FNR_RELASJON = "$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon";
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";

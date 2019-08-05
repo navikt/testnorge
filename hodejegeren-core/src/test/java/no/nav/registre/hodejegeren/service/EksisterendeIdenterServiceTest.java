@@ -3,6 +3,7 @@ package no.nav.registre.hodejegeren.service;
 import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.TRANSAKSJONSTYPE;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
@@ -24,7 +25,6 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Resources;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +32,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
+import wiremock.com.google.common.io.Resources;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,6 +48,7 @@ import java.util.Set;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
+import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 
@@ -222,20 +224,26 @@ public class EksisterendeIdenterServiceTest {
     public void hentFnrMedNavKontor() throws IOException {
         Map<String, String> status = new HashMap<>();
         status.put(NAV_ENHET, "123");
-        when(tpsStatusQuoService.hentStatusQuo(eq("FS03-FDNUMMER-KERNINFO-O"), eq(Arrays.asList(NAV_ENHET)), eq(miljoe), any())).thenReturn(status);
+        status.put(NAV_ENHET_BESKRIVELSE, "test");
+        when(tpsStatusQuoService.hentStatusQuo(eq("FS03-FDNUMMER-KERNINFO-O"), eq(Arrays.asList(NAV_ENHET, NAV_ENHET_BESKRIVELSE)), eq(miljoe), any())).thenReturn(status);
 
         List<String> levendeIdenter = new ArrayList<>();
         levendeIdenter.add("20044249945");
         levendeIdenter.add("20044249946");
 
-        Map<String, String> fnrMedNavKontor = eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, levendeIdenter);
+        List<NavEnhetResponse> navEnhetResponse = eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, levendeIdenter);
 
-        assertThat(fnrMedNavKontor.get(levendeIdenter.get(0)), equalTo("123"));
-        assertThat(fnrMedNavKontor.get(levendeIdenter.get(1)), equalTo("123"));
+        assertThat(navEnhetResponse.get(0).getIdent(), equalTo(levendeIdenter.get(0)));
+        assertThat(navEnhetResponse.get(0).getNavEnhet(), equalTo("123"));
+        assertThat(navEnhetResponse.get(0).getNavEnhetBeskrivelse(), equalTo("test"));
+
+        assertThat(navEnhetResponse.get(1).getIdent(), equalTo(levendeIdenter.get(1)));
+        assertThat(navEnhetResponse.get(1).getNavEnhet(), equalTo("123"));
+        assertThat(navEnhetResponse.get(1).getNavEnhetBeskrivelse(), equalTo("test"));
     }
 
     /**
-     * Gitt et antall identer med tilhørende miljø i TPS, returner et map med ident->status-quo-kobling
+     * Gitt et antall identer med tilhørende miljø i TPS, returner en liste med objekter med fnr og tilhørende nav-enhet
      */
     @Test
     public void hentGittAntallIdenterMedStatusQuoTest() throws IOException {

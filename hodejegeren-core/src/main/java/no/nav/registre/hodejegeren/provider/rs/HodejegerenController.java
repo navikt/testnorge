@@ -21,6 +21,7 @@ import java.util.Map;
 
 import no.nav.freg.spring.boot.starters.log.exceptions.LogExceptions;
 import no.nav.registre.hodejegeren.provider.rs.requests.SlettIdenterRequest;
+import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.SlettIdenterResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
@@ -106,7 +107,7 @@ public class HodejegerenController {
             + "Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeidsforhold for å få en sykemelding.\n"
             + "De er garantert til å være myndige.")
     @GetMapping("api/v1/fnr-med-navkontor/{avspillergruppeId}")
-    public Map<String, String> hentEksisterendeMyndigeIdenterMedNavKontor(@PathVariable("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe,
+    public List<NavEnhetResponse> hentEksisterendeMyndigeIdenterMedNavKontor(@PathVariable("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe,
             @RequestParam("antallPersoner") int antallPersoner) {
         List<String> myndigeIdenter = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallPersoner, 18);
         return eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, myndigeIdenter);
