@@ -20,7 +20,6 @@ import java.util.Map;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.inst.provider.rs.responses.SletteOppholdResponse;
 import no.nav.registre.inst.service.IdentService;
 
 @RestController
@@ -40,8 +39,8 @@ public class IdentController {
     @GetMapping
     @ApiOperation(value = "Her kan man hente alle institusjonsoppholdene tilhørende angitte identer fra inst2.")
     public List<Institusjonsopphold> hentInstitusjonsopphold(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe,
-            @RequestParam List<String> fnrs) {
-        return identService.hentOppholdTilIdenter(navCallId, navConsumerId, miljoe, fnrs);
+            @RequestParam List<String> identer) {
+        return identService.hentOppholdTilIdenter(navCallId, navConsumerId, miljoe, identer);
     }
 
     @PutMapping("/{oppholdId}")
@@ -72,7 +71,7 @@ public class IdentController {
 
     @DeleteMapping("/batch")
     @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene til de angitte identene fra inst2.")
-    public SletteOppholdResponse slettIdenter(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe, @RequestParam List<String> identer) {
+    public List<OppholdResponse> slettIdenter(@RequestHeader String navCallId, @RequestHeader String navConsumerId, @RequestParam String miljoe, @RequestParam List<String> identer) {
         return identService.slettInstitusjonsoppholdTilIdenter(navCallId, navConsumerId, miljoe, identer);
     }
 }

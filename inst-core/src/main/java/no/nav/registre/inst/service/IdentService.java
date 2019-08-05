@@ -1,19 +1,18 @@
 package no.nav.registre.inst.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.inst.provider.rs.responses.SletteOppholdResponse;
 
 @Service
 public class IdentService {
@@ -36,27 +35,36 @@ public class IdentService {
         return oppholdResponse;
     }
 
-    public SletteOppholdResponse slettInstitusjonsoppholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
+    public List<OppholdResponse> slettInstitusjonsoppholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
         Map<String, Object> tokenObject = hentTokenTilInst2();
 
-        SletteOppholdResponse sletteOppholdResponse = SletteOppholdResponse.builder()
-                .identerMedOppholdIdSomIkkeKunneSlettes(new HashMap<>())
-                .identerMedOppholdIdSomBleSlettet(new HashMap<>())
-                .build();
+        List<OppholdResponse> sletteOppholdResponses = new ArrayList<>();
 
         for (String ident : identer) {
-            List<Institusjonsopphold> institusjonsforholdsmeldinger = hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, ident);
-            for (Institusjonsopphold melding : institusjonsforholdsmeldinger) {
-                ResponseEntity response = slettOppholdMedId(tokenObject, callId, consumerId, miljoe, melding.getOppholdId());
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    leggTilIdentMedOppholdIResponse(sletteOppholdResponse.getIdenterMedOppholdIdSomBleSlettet(), ident, melding.getOppholdId());
-                } else {
-                    leggTilIdentMedOppholdIResponse(sletteOppholdResponse.getIdenterMedOppholdIdSomIkkeKunneSlettes(), ident, melding.getOppholdId());
+            List<Institusjonsopphold> institusjonsopphold = hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, ident);
+            OppholdResponse oppholdResponse = OppholdResponse.builder()
+                    .personident(ident)
+                    .build();
+            if (institusjonsopphold.isEmpty()) {
+                oppholdResponse.setStatus(HttpStatus.NOT_FOUND);
+                oppholdResponse.setFeilmelding("Fant ingen institusjonsopphold på ident.");
+            } else {
+                for (Institusjonsopphold opphold : institusjonsopphold) {
+                    ResponseEntity response = slettOppholdMedId(tokenObject, callId, consumerId, miljoe, opphold.getOppholdId());
+                    if (response.getStatusCode().is2xxSuccessful()) {
+                        oppholdResponse.setStatus(HttpStatus.OK);
+                        oppholdResponse.setInstitusjonsopphold(opphold);
+                        oppholdResponse.getInstitusjonsopphold().setPersonident(null); // finnes allerede i respons - unngå dobbel personident
+                    } else {
+                        oppholdResponse.setStatus(response.getStatusCode());
+                        oppholdResponse.setFeilmelding(Objects.requireNonNull(response.getBody()).toString());
+                    }
                 }
             }
+            sletteOppholdResponses.add(oppholdResponse);
         }
 
-        return sletteOppholdResponse;
+        return sletteOppholdResponses;
     }
 
     public ResponseEntity oppdaterInstitusjonsopphold(String callId, String consumerId, String miljoe, Long oppholdId, Institusjonsopphold institusjonsopphold) {
@@ -92,13 +100,5 @@ public class IdentService {
 
     public Map<String, Object> hentTokenTilInst2() {
         return inst2Consumer.hentTokenTilInst2();
-    }
-
-    private void leggTilIdentMedOppholdIResponse(Map<String, List<Long>> identMedOpphold, String ident, Long oppholdId) {
-        if (identMedOpphold.containsKey(ident)) {
-            identMedOpphold.get(ident).add(oppholdId);
-        } else {
-            identMedOpphold.put(ident, new ArrayList<>(Collections.singletonList(oppholdId)));
-        }
     }
 }

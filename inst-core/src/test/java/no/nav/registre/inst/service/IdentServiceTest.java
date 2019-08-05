@@ -1,12 +1,12 @@
 package no.nav.registre.inst.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +23,7 @@ import java.util.List;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
-import no.nav.registre.inst.provider.rs.responses.SletteOppholdResponse;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentServiceTest {
@@ -68,7 +68,7 @@ public class IdentServiceTest {
         when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId1))).thenReturn(ResponseEntity.noContent().build());
         when(inst2Consumer.slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId2))).thenReturn(ResponseEntity.noContent().build());
 
-        SletteOppholdResponse response = identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
+        List<OppholdResponse> response = identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
 
         verify(inst2Consumer).hentTokenTilInst2();
         verify(inst2Consumer).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(fnr1));
@@ -76,7 +76,7 @@ public class IdentServiceTest {
         verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId1));
         verify(inst2Consumer).slettInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(oppholdId2));
 
-        assertThat(response.getIdenterMedOppholdIdSomBleSlettet().get(fnr1), IsIterableContainingInOrder.contains(oppholdId1));
-        assertThat(response.getIdenterMedOppholdIdSomBleSlettet().get(fnr2), IsIterableContainingInOrder.contains(oppholdId2));
+        assertThat(response.get(0).getInstitusjonsopphold().getOppholdId(), equalTo(oppholdId1));
+        assertThat(response.get(1).getInstitusjonsopphold().getOppholdId(), equalTo(oppholdId2));
     }
 }
