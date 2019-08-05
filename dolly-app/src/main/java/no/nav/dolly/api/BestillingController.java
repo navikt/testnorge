@@ -39,7 +39,7 @@ public class BestillingController {
     @Autowired
     private DollyBestillingService dollyBestillingService;
 
-    @Cacheable(value = CACHE_BESTILLING)
+ //   @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
     public RsBestilling checkBestillingsstatus(@PathVariable("bestillingId") Long bestillingId) {
         return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestilling.class);

@@ -10,7 +10,6 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.properties.ProvidersProps;
@@ -22,7 +21,8 @@ public class InstdataConsumer {
     private static final String NAV_CALL_ID = "navCallId";
     private static final String NAV_CONSUMER_ID = "navConsumerId";
     private static final String CONSUMER = "Dolly";
-    private static final String QUERY_FORMAT = "%s%s?fnrs=";
+    private static final String DELETE_FMT_BLD = "%s" + INSTDATA_URL + "/batch?identer=%s&miljoe=%s";
+    private static final String POST_FMT_BLD = "%s" + INSTDATA_URL + "/batch?miljoe=%s";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -30,28 +30,20 @@ public class InstdataConsumer {
     @Autowired
     private ProvidersProps providersProps;
 
-    public ResponseEntity getInstdata(String ident) {
+    public ResponseEntity deleteInstdata(String ident, String environment) {
         return restTemplate.exchange(
-                RequestEntity.get(URI.create(format(QUERY_FORMAT, providersProps.getInstdata().getUrl(), INSTDATA_URL, ident)))
+                RequestEntity.delete(URI.create(format(DELETE_FMT_BLD, providersProps.getInstdata().getUrl(), ident, environment)))
                         .header(NAV_CALL_ID, getNavCallId())
                         .header(NAV_CONSUMER_ID, CONSUMER)
-                        .build(), InstdataResponse.class);
+                        .build(), InstdataResponse[].class);
     }
 
-    public ResponseEntity deleteInstdata(String ident) {
+    public ResponseEntity postInstdata(List<Instdata> instdata, String environment) {
         return restTemplate.exchange(
-                RequestEntity.delete(URI.create(format(QUERY_FORMAT, providersProps.getInstdata().getUrl(), INSTDATA_URL, ident)))
+                RequestEntity.post(URI.create(format(POST_FMT_BLD, providersProps.getInstdata().getUrl(), environment)))
                         .header(NAV_CALL_ID, getNavCallId())
                         .header(NAV_CONSUMER_ID, CONSUMER)
-                        .build(), JsonNode.class);
-    }
-
-    public ResponseEntity postInstdata(List<Instdata> instdata) {
-        return restTemplate.exchange(
-                RequestEntity.post(URI.create(providersProps.getInstdata().getUrl() + INSTDATA_URL))
-                        .header(NAV_CALL_ID, getNavCallId())
-                        .header(NAV_CONSUMER_ID, CONSUMER)
-                        .body(instdata), JsonNode.class);
+                        .body(instdata), InstdataResponse[].class);
     }
 
     private static String getNavCallId() {
