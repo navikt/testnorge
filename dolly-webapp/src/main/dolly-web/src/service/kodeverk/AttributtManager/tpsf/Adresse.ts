@@ -89,7 +89,10 @@ const AttributtListe: Attributt[] = [
 				label: 'Gårdsnummer',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Text,
-				validation: yup.string().max(4, 'For mange tegn'),
+				validation: yup
+					.string()
+					.max(4, 'For mange tegn')
+					.required('Vennligst fyll ut'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -99,7 +102,10 @@ const AttributtListe: Attributt[] = [
 				label: 'Bruksnummer',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Text,
-				validation: yup.string().max(4, 'For mange tegn'),
+				validation: yup
+					.string()
+					.max(4, 'For mange tegn')
+					.required('Vennligst fyll ut'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -109,7 +115,10 @@ const AttributtListe: Attributt[] = [
 				label: 'Festenummer',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Text,
-				validation: yup.string().max(4, 'For mange tegn'),
+				validation: yup
+					.string()
+					.max(4, 'For mange tegn')
+					.required('Vennligst fyll ut'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -119,7 +128,10 @@ const AttributtListe: Attributt[] = [
 				label: 'Undernummer',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Text,
-				validation: yup.string().max(3, 'For mange tegn'),
+				validation: yup
+					.string()
+					.max(3, 'For mange tegn')
+					.required('Vennligst fyll ut'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
