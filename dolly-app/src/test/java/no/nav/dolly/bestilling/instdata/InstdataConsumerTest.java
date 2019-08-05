@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.properties.ProvidersProps;
@@ -47,7 +46,7 @@ public class InstdataConsumerTest {
         instdataConsumer.deleteInstdata(IDENT, ENVIRONMENT);
 
         verify(providersProps).getInstdata();
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(InstdataResponse[].class));
     }
 
     @Test
@@ -56,6 +55,6 @@ public class InstdataConsumerTest {
         instdataConsumer.postInstdata(newArrayList(Instdata.builder().build()), ENVIRONMENT);
 
         verify(providersProps).getInstdata();
-        verify(restTemplate).exchange(any(RequestEntity.class), eq(InstdataResponse.class));
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(InstdataResponse[].class));
     }
 }
