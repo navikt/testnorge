@@ -57,24 +57,24 @@ public class TpsfService {
 
     public CheckStatusResponse checkEksisterendeIdenter(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_CHECK_IDENT_STATUS, new HttpEntity<>(identer));
-        return nonNull(response) ? objectMapper.convertValue(response.getBody(), CheckStatusResponse.class) : null;
+        return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), CheckStatusResponse.class) : null;
     }
 
     public List<String> opprettIdenterTpsf(TpsfBestilling request) {
         ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, new HttpEntity<>(request));
-        return nonNull(response) ? objectMapper.convertValue(response.getBody(), List.class) : null;
+        return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), List.class) : null;
     }
 
     public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
         validateEnvironments(environments);
         ResponseEntity<Object> response = postToTpsf(TPSF_SEND_TPS_FLERE_URL, new HttpEntity<>(new TpsfIdenterMiljoer(identer, environments)));
-        return nonNull(response) ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
+        return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
     }
 
     public List<String> hentTilhoerendeIdenter(List<String> identer) {
         List<String> identerMedFamilie = new ArrayList<>();
         ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, new HttpEntity(identer));
-        if (nonNull(response)) {
+        if (isBodyNotNull(response)) {
             Person[] personer = objectMapper.convertValue(response.getBody(), Person[].class);
 
             asList(personer).forEach(person -> {

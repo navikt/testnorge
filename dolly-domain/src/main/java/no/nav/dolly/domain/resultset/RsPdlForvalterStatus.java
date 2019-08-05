@@ -22,6 +22,7 @@ public class RsPdlForvalterStatus {
 
     private List<RsStatusIdent> kontaktinfoDoedsbo;
     private List<RsStatusIdent> utenlandsid;
+    private List<RsStatusIdent> falskIdentitet;
     private List<RsStatusIdent> pdlForvalter;
 
     public List<RsStatusIdent> getKontaktinfoDoedsbo() {

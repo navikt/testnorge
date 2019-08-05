@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
+import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.sts.StsOidcService;
@@ -61,6 +62,16 @@ public class PdlForvalterRestConsumerTest {
     public void postUtenlandskIdentifikasjonsnummer_OK() {
 
         pdlForvalterRestConsumer.postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer.builder().build(), IDENT);
+
+        verify(providersProps).getPdlForvalter();
+        verify(stsOidcService, times(2)).getIdToken(anyString());
+        verify(restTemplate).exchange(any(RequestEntity.class), eq(JsonNode.class));
+    }
+
+    @Test
+    public void postFalskIdenitet_OK() {
+
+        pdlForvalterRestConsumer.postFalskIdentitet(PdlFalskIdentitet.builder().build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService, times(2)).getIdToken(anyString());

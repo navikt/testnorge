@@ -76,14 +76,16 @@ public class TestgruppeController {
     private static final String ADRESSAT = "&nbsp;   \"adressat\": {<br />";
 
     private static final String EPILOG = "     &nbsp; } </br /></br />";
+    private static final String EPILOG_2 = "     &nbsp; &nbsp; }, </br />";
+    private static final String FALSK_IDENTITET_TYPE = "     &nbsp; \"falskIdentitet\": {<br />";
 
-    private static final String KONTAKTINFORMASJON_DOEDSBO = "For kontakinformasjon for dødsbo kan feltet <b>adressat</b> ha en av fire objektyper: <br />"
+    private static final String KONTAKTINFORMASJON_DOEDSBO = "For kontakinformasjon for dødsbo kan feltet <b>adressat</b> ha en av fire objekttyper: <br />"
             + "For organisasjon eller advokat:<br />"
             + ADRESSAT
             + "     &nbsp; &nbsp; \"adressatType\": \"ORGANISASJON/ADVOKAT\", <br />"
             + "     &nbsp; &nbsp; \"kontaktperson\": { <br />"
             + FULLT_NAVN
-            + "     &nbsp; &nbsp; }, </br />"
+            + EPILOG_2
             + "     &nbsp; &nbsp; \"organisajonsnavn\": \"string\", <br />"
             + "     &nbsp; &nbsp; \"organisajonsnummer\": \"string\" <br />"
             + EPILOG
@@ -97,10 +99,33 @@ public class TestgruppeController {
             + "     &nbsp; &nbsp; \"adressatType\": \"PERSON_UTENID\", <br />"
             + "     &nbsp; &nbsp; \"navn\": { <br />"
             + FULLT_NAVN
-            + "     &nbsp; &nbsp; }, </br />"
+            + EPILOG_2
             + "     &nbsp; &nbsp; \"foedselsdato\": \"string\" <br />"
             + EPILOG;
-    private static final String BESTILLING_BESKRIVELSE = BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO;
+
+    private static final String FALSK_IDENTITET = "Falsk identitet inneholder et abstrakt felt, <b>rettIdentitet</b>, som har en av tre objekttyper: <br />"
+            + "For identitet ukjent:<br />"
+            + FALSK_IDENTITET_TYPE
+            + "     &nbsp; &nbsp; \"identitetType\": \"UKJENT\", <br />"
+            + "     &nbsp; &nbsp; \"rettIdentitetErUkjent\": true <br />"
+            + EPILOG
+            + "For identitet med personnummer:<br />"
+            + FALSK_IDENTITET_TYPE
+            + "     &nbsp; &nbsp; \"identitetType\": \"ENTYDIG\", <br />"
+            + "     &nbsp; &nbsp; \"rettIdentitetVedIdentifikasjonsnummer\": \"&lt;fnr/dnr&gt;\" <br />"
+            + EPILOG
+            + "For identitet med opplysninger:<br />"
+            + FALSK_IDENTITET_TYPE
+            + "     &nbsp; &nbsp; \"identitetType\": \"OMTRENTLIG\", <br />"
+            + "     &nbsp; &nbsp; \"foedselsdato\": \"&lt;dato&gt;\" <br />"
+            + "     &nbsp; &nbsp; \"kjoenn\": \"MANN/KVINNE/UBESTEMT\" <br />"
+            + "     &nbsp; &nbsp; \"personnavn\":{<br />"
+            + FULLT_NAVN
+            + EPILOG_2
+            + "     &nbsp; &nbsp; \"statsborgerskap\": \"[AUS,GER,FRA,etc]\" <br />"
+            + EPILOG;
+
+    private static final String BESTILLING_BESKRIVELSE = BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
 
     @Autowired
     private TestgruppeService testgruppeService;

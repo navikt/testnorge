@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktinformasjonForDoedsbo;
+import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 
 @Getter
@@ -19,4 +20,5 @@ public class RsPdldata {
 
     private RsPdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo;
     private PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer;
+    private RsPdlFalskIdentitet falskIdentitet;
 }

@@ -26,92 +26,97 @@ resources:
     memory: 2054Mi
 fasitResources:
   used:
-  - alias: dolly-oidc
-    resourceType: OpenIdConnect
-    propertyMap:
-      agentName: freg.security.oidc.idp.openam.clientId
-      password: freg.security.oidc.idp.openam.clientSecret
-      hostUrl: freg.security.oidc.idp.openam.hostUrl
-      issuerUrl: freg.security.oidc.idp.openam.issuerUrl
-      jwksUrl: freg.security.oidc.idp.openam.jwksUrl
+    - alias: dolly-oidc
+      resourceType: OpenIdConnect
+      propertyMap:
+        agentName: freg.security.oidc.idp.openam.clientId
+        password: freg.security.oidc.idp.openam.clientSecret
+        hostUrl: freg.security.oidc.idp.openam.hostUrl
+        issuerUrl: freg.security.oidc.idp.openam.issuerUrl
+        jwksUrl: freg.security.oidc.idp.openam.jwksUrl
 
-  - alias: tpsf-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.tpsf.url
+    - alias: tpsf-host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.tpsf.url
 
-  - alias: kodeverk-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.kodeverk.url
+    - alias: kodeverk-host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.kodeverk.url
 
-  - alias: norg2-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.norg2.url
+    - alias: norg2-host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.norg2.url
 
-  - alias: sigrunStub-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.sigrunStub.url
+    - alias: sigrunStub-host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.sigrunStub.url
 
-  - alias: krrStub-host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.krrStub.url
+    - alias: krrStub-host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.krrStub.url
 
-  - alias: jira.host
-    resourceType: baseurl
-    propertyMap:
-      url: jira.host
+    - alias: jira.host
+      resourceType: baseurl
+      propertyMap:
+        url: jira.host
 
-  - alias: fasit.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.fasit.url
+    - alias: fasit.host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.fasit.url
 
-  - alias: arenaForvalter.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.arenaForvalter.url
+    - alias: arenaForvalter.host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.arenaForvalter.url
 
-  - alias: pdlForvalter.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.pdlForvalter.url
+    - alias: pdlForvalter.host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.pdlForvalter.url
 
-  - alias: personOppslag.host
-    resourceType: baseurl
-    propertyMap:
-      url: providers.personOppslag.url
+    - alias: personOppslag.host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.personOppslag.url
 
-  - alias: srvdolly-test-env
-    resourceType: credential
-    propertyMap:
-      username: credentials.testEnv.username
-      password: credentials.testEnv.password
+    - alias: syntdata.host
+      resourceType: baseurl
+      propertyMap:
+        url: providers.syntdata.url
 
-  - alias: srvdolly-preprod-env
-    resourceType: credential
-    propertyMap:
-      username: credentials.preprodEnv.username
-      password: credentials.preprodEnv.password
+    - alias: srvdolly-test-env
+      resourceType: credential
+      propertyMap:
+        username: credentials.testEnv.username
+        password: credentials.testEnv.password
 
-  - alias: srvJiraDolly
-    resourceType: credential
-    propertyMap:
-      username: jira.username
-      password: jira.password
+    - alias: srvdolly-preprod-env
+      resourceType: credential
+      propertyMap:
+        username: credentials.preprodEnv.username
+        password: credentials.preprodEnv.password
 
-  - alias: dollyDB
-    resourceType: DataSource
-    propertyMap:
-      url: spring.datasource.url
-      username: spring.datasource.username
-      password: spring.datasource.password
-      onsHosts: app.datasource.onsHosts
+    - alias: srvJiraDolly
+      resourceType: credential
+      propertyMap:
+        username: jira.username
+        password: jira.password
+
+    - alias: dollyDB
+      resourceType: DataSource
+      propertyMap:
+        url: spring.datasource.url
+        username: spring.datasource.username
+        password: spring.datasource.password
+        onsHosts: app.datasource.onsHosts
 
   exposed:
-  - alias: dolly.api.v1
-    resourceType: restservice
-    path: /swagger-ui.html
+    - alias: dolly.api.v1
+      resourceType: restservice
+      path: /swagger-ui.html
