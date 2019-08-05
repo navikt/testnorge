@@ -74,10 +74,10 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 			}
 			value = _formatValueForObject(key, value)
 
-			if (key === 'boadresse' && value.adressetype !== 'MATR') {
-				_mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
-			} else if (key === 'boadresse' && value.adressetype === 'MATR') {
+			if (key === 'boadresse' && value.adressetype === 'MATR') {
 				_mapValuesToObject(objectToAssign, Object.entries(value))
+			} else if (key === 'boadresse') {
+				_mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
 			} else if (key === 'postadresse') {
 				_mapValuesToObject(objectToAssign, Object.entries(value[0]))
 			} else if (key === 'aap' && value !== true) {
