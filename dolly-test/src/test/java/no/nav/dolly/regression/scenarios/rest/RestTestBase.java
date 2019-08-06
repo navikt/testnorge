@@ -21,10 +21,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public abstract class RestTestBase extends InMemoryDbTestSetup {

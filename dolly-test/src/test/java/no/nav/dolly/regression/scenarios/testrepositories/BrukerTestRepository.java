@@ -1,11 +1,13 @@
 package no.nav.dolly.regression.scenarios.testrepositories;
 
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.repository.BrukerRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface BrukerTestRepository extends BrukerRepository {
+import java.util.List;
+
+public interface BrukerTestRepository extends CrudRepository<Bruker, Long> {
 
     @Query("FROM Bruker b"
             + " LEFT JOIN FETCH b.teams"
@@ -14,4 +16,8 @@ public interface BrukerTestRepository extends BrukerRepository {
     Bruker findByNavIdentTeamsEagerly(@Param("navIdent") String navIdent);
 
     void deleteAll();
+
+    List<Bruker> findAllByOrderByNavIdent();
+
+    Bruker findBrukerByNavIdent(String standardNavIdent);
 }

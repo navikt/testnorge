@@ -1,9 +1,15 @@
 package no.nav.dolly.regression.scenarios.testrepositories;
 
-import no.nav.dolly.repository.GruppeRepository;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import org.springframework.data.repository.CrudRepository;
 
-public interface GruppeTestRepository extends GruppeRepository {
+import java.util.List;
+
+public interface GruppeTestRepository extends CrudRepository<Testgruppe, Long> {
 
     void deleteAll();
 
+    List<Testgruppe> findAllByOrderByNavn();
+
+    Testgruppe findByNavn(String mingruppe);
 }
