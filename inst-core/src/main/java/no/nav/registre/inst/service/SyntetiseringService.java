@@ -43,7 +43,7 @@ public class SyntetiseringService {
     @Autowired
     private Random rand;
 
-    public Map<String, List<OppholdResponse>> finnSyntetiserteMeldinger(String callId, String consumerId, String miljoe, SyntetiserInstRequest syntetiserInstRequest) {
+    public Map<String, List<OppholdResponse>> finnSyntetiserteMeldingerOgLagreIInst2(String callId, String consumerId, String miljoe, SyntetiserInstRequest syntetiserInstRequest) {
         List<String> utvalgteIdenter = finnLevendeIdenter(syntetiserInstRequest);
         if (utvalgteIdenter.size() < syntetiserInstRequest.getAntallNyeIdenter()) {
             log.warn("Fant ikke nok ledige identer. Lager institusjonsforhold på {} identer.", utvalgteIdenter.size());
@@ -143,8 +143,6 @@ public class SyntetiseringService {
 
         for (Institusjonsopphold melding : syntetiserteMeldinger) {
             String tssEksternId = melding.getTssEksternId();
-            //            String startdato = melding.getStartdato();
-            //            String faktiskSluttdato = melding.getFaktiskSluttdato();
             LocalDate startdato = melding.getStartdato();
             LocalDate faktiskSluttdato = melding.getFaktiskSluttdato();
             if (inst2Consumer.finnesInstitusjonPaaDato(tokenObject, callId, consumerId, miljoe, tssEksternId, startdato).is2xxSuccessful()

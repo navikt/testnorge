@@ -32,11 +32,11 @@ public class FasitApiConsumerTest {
     @Mock
     private ResponseEntity responseEntity;
 
-    @InjectMocks
-    private FasitApiConsumer fasitApiConsumer;
-
     @Mock
     private HttpClientErrorException httpClientErrorException;
+
+    @InjectMocks
+    private FasitApiConsumer fasitApiConsumer;
 
     @Test
     public void fetchResources_OK() {

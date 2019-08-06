@@ -30,6 +30,6 @@ public class SyntetiseringController {
             @RequestHeader String navConsumerId,
             @RequestParam String miljoe,
             @RequestBody SyntetiserInstRequest syntetiserInstRequest) {
-        return syntetiseringService.finnSyntetiserteMeldinger(navCallId, navConsumerId, miljoe, syntetiserInstRequest);
+        return syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(navCallId, navConsumerId, miljoe, syntetiserInstRequest);
     }
 }

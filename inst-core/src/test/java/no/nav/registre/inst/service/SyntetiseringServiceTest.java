@@ -85,7 +85,7 @@ public class SyntetiseringServiceTest {
                 .build());
         when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
 
-        syntetiseringService.finnSyntetiserteMeldinger(id, id, miljoe, syntetiserInstRequest);
+        syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest);
 
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
         verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
@@ -106,7 +106,7 @@ public class SyntetiseringServiceTest {
         when(identService.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), anyString())).thenReturn(meldinger);
         when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
 
-        syntetiseringService.finnSyntetiserteMeldinger(id, id, miljoe, syntetiserInstRequest);
+        syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest);
 
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
         verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);

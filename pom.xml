@@ -45,6 +45,7 @@
         <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
         <swagger.version>2.9.0</swagger.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
+        <fasit-util.version>3.1.2</fasit-util.version>
     </properties>
 
     <dependencyManagement>

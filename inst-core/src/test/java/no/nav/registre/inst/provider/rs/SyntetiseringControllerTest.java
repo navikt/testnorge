@@ -49,11 +49,11 @@ public class SyntetiseringControllerTest {
         expectedResponse.put(fnr, Collections.singletonList(OppholdResponse.builder()
                 .status(HttpStatus.OK)
                 .build()));
-        when(syntetiseringService.finnSyntetiserteMeldinger(id, id, miljoe, syntetiserInstRequest)).thenReturn(expectedResponse);
+        when(syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest)).thenReturn(expectedResponse);
 
         Map<String, List<OppholdResponse>> result = syntetiseringController.genererInstitusjonsmeldinger(id, id, miljoe, syntetiserInstRequest);
 
-        verify(syntetiseringService).finnSyntetiserteMeldinger(id, id, miljoe, syntetiserInstRequest);
+        verify(syntetiseringService).finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest);
 
         assertThat(result.get(fnr).get(0).getStatus(), is(HttpStatus.OK));
     }
