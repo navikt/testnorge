@@ -3,15 +3,17 @@ package no.nav.dolly.repository;
 import no.nav.dolly.domain.jpa.Bruker;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface BrukerRepository extends CrudRepository<Bruker, Long> {
+public interface BrukerRepository extends Repository<Bruker, Long> {
 
-    @Modifying
     Bruker save(Bruker bruker);
+
+    //TODO Brukes bare i test
+    List<Bruker> saveAll(Iterable<Bruker> brukere);
 
     Bruker findBrukerByNavIdent(String navIdent);
 

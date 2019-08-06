@@ -12,4 +12,6 @@ public interface BrukerTestRepository extends BrukerRepository {
             + " WHERE b.navIdent=:navIdent"
     )
     Bruker findByNavIdentTeamsEagerly(@Param("navIdent") String navIdent);
+
+    void deleteAll();
 }

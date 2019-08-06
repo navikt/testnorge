@@ -2,13 +2,17 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BestillingRepository extends JpaRepository<Bestilling, Long> {
+public interface BestillingRepository extends Repository<Bestilling, Long> {
+
+    Optional<Bestilling> findById(Long id);
+
+    Bestilling save(Bestilling bestilling);
 
     List<Bestilling> findBestillingByGruppeOrderById(Testgruppe gruppe);
 
