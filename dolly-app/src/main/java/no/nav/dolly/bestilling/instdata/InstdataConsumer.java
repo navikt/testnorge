@@ -23,12 +23,21 @@ public class InstdataConsumer {
     private static final String CONSUMER = "Dolly";
     private static final String DELETE_FMT_BLD = "%s" + INSTDATA_URL + "/batch?identer=%s&miljoe=%s";
     private static final String POST_FMT_BLD = "%s" + INSTDATA_URL + "/batch?miljoe=%s";
+    private static final String QUERY_FORMAT = "%s" + INSTDATA_URL + "/miljoer";
 
     @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
     private ProvidersProps providersProps;
+
+    public ResponseEntity getMiljoer() {
+        return restTemplate.exchange(
+                RequestEntity.get(URI.create(format(QUERY_FORMAT, providersProps.getInstdata().getUrl())))
+                        .header(NAV_CALL_ID, getNavCallId())
+                        .header(NAV_CONSUMER_ID, CONSUMER)
+                        .build(), String[].class);
+    }
 
     public ResponseEntity deleteInstdata(String ident, String environment) {
         return restTemplate.exchange(
