@@ -3,6 +3,7 @@ package no.nav.dolly.provider.api;
 import static java.lang.String.format;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsOpenAmRequest;
@@ -11,7 +12,6 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.GruppeRepository;
 import no.nav.dolly.service.OpenAmService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,17 +29,13 @@ import java.util.Optional;
 
 @Transactional
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/openam", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OpenAmController {
 
-    @Autowired
-    private OpenAmService openAmService;
-
-    @Autowired
-    private GruppeRepository gruppeRepository;
-
-    @Autowired
-    private BestillingRepository bestillingRepository;
+    private final OpenAmService openAmService;
+    private final GruppeRepository gruppeRepository;
+    private final BestillingRepository bestillingRepository;
 
     @PostMapping
     public List<RsOpenAmResponse> sendIdenterTilOpenAm(@RequestBody RsOpenAmRequest request) {

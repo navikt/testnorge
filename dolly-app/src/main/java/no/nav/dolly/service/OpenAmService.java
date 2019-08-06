@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jira.AllowedValue;
 import no.nav.dolly.domain.jira.Field;
@@ -14,7 +15,6 @@ import no.nav.dolly.exceptions.JiraException;
 import no.nav.dolly.jira.JiraConsumer;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -34,18 +34,17 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OpenAmService {
 
     private static final String ISSUE_CREATE = "/rest/api/2/issue";
     private static final String METADATA = "/createmeta?projectKeys=DEPLOY&issuetypeIds=16001&expand=projects.issuetypes.fields";
     private static final String ATTACHMENTS = "/attachments";
     private static final String BROWSE = "/browse";
-
     private static final String FEILMELDING = "En feil oppsto. Bestilling kan ikke utføres.";
     private static final String FEILMELDING_UKJENT_MILJOE = "Angitt miljø eksisterer ikke.";
 
-    @Autowired
-    private JiraConsumer jiraConsumer;
+    private final JiraConsumer jiraConsumer;
 
     public RsOpenAmResponse opprettIdenter(List<String> identliste, String miljoe) {
 

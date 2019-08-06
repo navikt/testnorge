@@ -8,6 +8,7 @@ import static java.util.Objects.nonNull;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
@@ -30,28 +31,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BestillingService {
 
-    @Autowired
-    private BestillingRepository bestillingRepository;
-
-    @Autowired
-    private TestgruppeService testgruppeService;
-
-    @Autowired
-    private BestillingKontrollRepository bestillingKontrollRepository;
-
-    @Autowired
-    private IdentRepository identRepository;
-
-    @Autowired
-    private BestillingProgressRepository bestillingProgressRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final BestillingRepository bestillingRepository;
+    private final TestgruppeService testgruppeService;
+    private final BestillingKontrollRepository bestillingKontrollRepository;
+    private final IdentRepository identRepository;
+    private final BestillingProgressRepository bestillingProgressRepository;
+    private final ObjectMapper objectMapper;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId).orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));

@@ -2,6 +2,7 @@ package no.nav.dolly.sts;
 
 import static no.nav.dolly.properties.Environment.convertEnv;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.properties.CredentialsProps;
 import no.nav.dolly.properties.Environment;
 import org.apache.cxf.binding.soap.Soap12;
@@ -18,23 +19,20 @@ import org.apache.cxf.ws.policy.attachment.reference.RemoteReferenceResolver;
 import org.apache.cxf.ws.security.SecurityConstants;
 import org.apache.cxf.ws.security.trust.STSClient;
 import org.apache.neethi.Policy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class StsSamlTokenService {
 
     private static final String STS_REQUEST_SAML_POLICY = "classpath:policy/requestSamlPolicy.xml";
     private static final String STS_CLIENT_AUTHENTICATION_POLICY = "classpath:policy/untPolicy.xml";
 
-    @Autowired
-    private StsSamlFasitConsumer stsSamlFasitConsumer;
-
-    @Autowired
-    private CredentialsProps credentialsProps;
+    private final StsSamlFasitConsumer stsSamlFasitConsumer;
+    private final CredentialsProps credentialsProps;
 
     private static Policy resolvePolicyReference(Client client) {
         PolicyBuilder policyBuilder = client.getBus().getExtension(PolicyBuilder.class);

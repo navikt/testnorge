@@ -1,12 +1,12 @@
 package no.nav.dolly.service;
 
+import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.repository.IdentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class IdentService {
 
-    @Autowired
-    private IdentRepository identRepository;
-
-    @Autowired
-    private MapperFacade mapperFacade;
+    private final IdentRepository identRepository;
+    private final MapperFacade mapperFacade;
 
     @Transactional
     public void persisterTestidenter(List<RsTestident> personIdentListe) {

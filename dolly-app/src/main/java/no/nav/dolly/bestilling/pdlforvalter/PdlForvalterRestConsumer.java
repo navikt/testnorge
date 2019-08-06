@@ -4,12 +4,12 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.sts.StsOidcService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 
 @Service
+@RequiredArgsConstructor
 public class PdlForvalterRestConsumer {
 
     private static final String NAV_PERSONIDENT = "Nav-Personident";
@@ -33,14 +34,9 @@ public class PdlForvalterRestConsumer {
     @Value("${fasit.environment.name}")
     private String environment;
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private ProvidersProps providersProps;
-
-    @Autowired
-    private StsOidcService stsOidcService;
+    private final RestTemplate restTemplate;
+    private final ProvidersProps providersProps;
+    private final StsOidcService stsOidcService;
 
     public ResponseEntity deleteIdent(String ident) {
         return restTemplate.exchange(RequestEntity.delete(

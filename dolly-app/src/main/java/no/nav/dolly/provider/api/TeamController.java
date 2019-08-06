@@ -3,12 +3,13 @@ package no.nav.dolly.provider.api;
 import static java.lang.String.format;
 import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.TeamService;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.nav.dolly.service.TestgruppeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -29,17 +30,18 @@ import java.util.Optional;
 
 @Transactional
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "api/v1/team")
 public class TeamController {
 
-    @Autowired
-    private TeamService teamService;
+    private final TeamService teamService;
+    private final TestgruppeService testgruppeService;
 
     @Cacheable(CACHE_TEAM)
     @GetMapping
     public List<RsTeam> getTeams(@RequestParam(value = "navIdent", required = false) String navIdent) {
         return Optional.ofNullable(navIdent)
-                .map(navId -> teamService.fetchTeamsByMedlemskapInTeamsMapped(navId))
+                .map(teamService::fetchTeamsByMedlemskapInTeamsMapped)
                 .orElse(teamService.findAllOrderByNavn());
     }
 
@@ -56,6 +58,8 @@ public class TeamController {
         if (teamService.deleteTeam(teamId) == 0) {
             throw new NotFoundException(format("Team med id %d ble ikke funnet.", teamId));
         }
+        //TODO Verifiser i ende-til-ende test
+        testgruppeService.slettGruppeByTeamId(teamId);
     }
 
     @Cacheable(CACHE_TEAM)

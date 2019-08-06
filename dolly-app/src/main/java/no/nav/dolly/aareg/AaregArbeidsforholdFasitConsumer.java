@@ -3,10 +3,10 @@ package no.nav.dolly.aareg;
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.fasit.FasitApiConsumer;
 import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AaregArbeidsforholdFasitConsumer {
 
     private static final String REST_SERVICE = "RestService";
@@ -22,11 +23,10 @@ public class AaregArbeidsforholdFasitConsumer {
 
     private static final String FAGSYSTEM = "fss";
 
+    private final FasitApiConsumer fasitApiConsumer;
+
     private Map<String, String> urlPerEnv;
     private LocalDateTime expiry;
-
-    @Autowired
-    private FasitApiConsumer fasitApiConsumer;
 
     public String getUrlForEnv(String environment) {
 

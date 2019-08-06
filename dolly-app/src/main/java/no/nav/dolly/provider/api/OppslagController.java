@@ -2,6 +2,7 @@ package no.nav.dolly.provider.api;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.kodeverk.KodeverkConsumer;
 import no.nav.dolly.kodeverk.KodeverkMapper;
@@ -10,7 +11,6 @@ import no.nav.dolly.norg2.Norg2EnhetResponse;
 import no.nav.dolly.personoppslag.PersonoppslagConsumer;
 import no.nav.dolly.syntdata.SyntdataConsumer;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,23 +21,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OppslagController {
 
-    @Autowired
-    private KodeverkMapper kodeverkMapper;
-
-    @Autowired
-    private KodeverkConsumer kodeverkConsumer;
-
-    @Autowired
-    private Norg2Consumer norg2Consumer;
-
-    @Autowired
-    private PersonoppslagConsumer personoppslagConsumer;
-
-    @Autowired
-    private SyntdataConsumer syntdataConsumer;
+    private final KodeverkMapper kodeverkMapper;
+    private final KodeverkConsumer kodeverkConsumer;
+    private final Norg2Consumer norg2Consumer;
+    private final PersonoppslagConsumer personoppslagConsumer;
+    private final SyntdataConsumer syntdataConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")

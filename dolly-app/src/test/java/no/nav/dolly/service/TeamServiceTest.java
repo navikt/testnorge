@@ -58,8 +58,6 @@ public class TeamServiceTest {
     private MapperFacade mapperFacade;
     @Mock
     private NonTransientDataAccessException nonTransientDataAccessException;
-    @Mock
-    private TestgruppeService testgruppeService;
     @InjectMocks
     private TeamService teamService;
 
@@ -224,7 +222,6 @@ public class TeamServiceTest {
     @Test
     public void deleteTeam_KallerRepositoryDeleteTeam() {
         teamService.deleteTeam(TEAM_ID);
-        verify(testgruppeService).slettGruppeByTeamId(TEAM_ID);
         verify(teamRepository).deleteTeamById(TEAM_ID);
     }
 

@@ -9,11 +9,11 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.properties.CredentialsProps;
 import no.nav.dolly.properties.Environment;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,19 +27,15 @@ import java.util.EnumMap;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class StsOidcService {
 
-    private Map<Environment, String> idToken = new EnumMap(Environment.class);
-    private Map<Environment, LocalDateTime> expiry = new EnumMap(Environment.class);
+    private final RestTemplate restTemplate;
+    private final StsOidcFasitConsumer stsOidcFasitConsumer;
+    private final CredentialsProps credentialsProps;
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private StsOidcFasitConsumer stsOidcFasitConsumer;
-
-    @Autowired
-    private CredentialsProps credentialsProps;
+    private Map<Environment, String> idToken = new EnumMap<>(Environment.class);
+    private Map<Environment, LocalDateTime> expiry = new EnumMap<>(Environment.class);
 
     public static String getUserIdToken() {
         return "Bearer " + ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getIdToken();

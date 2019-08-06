@@ -6,12 +6,12 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
+import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsBestilling;
 import no.nav.dolly.service.BestillingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -28,17 +28,13 @@ import java.util.List;
 
 @Transactional
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/bestilling", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BestillingController {
 
-    @Autowired
-    private MapperFacade mapperFacade;
-
-    @Autowired
-    private BestillingService bestillingService;
-
-    @Autowired
-    private DollyBestillingService dollyBestillingService;
+    private final MapperFacade mapperFacade;
+    private final BestillingService bestillingService;
+    private final DollyBestillingService dollyBestillingService;
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")

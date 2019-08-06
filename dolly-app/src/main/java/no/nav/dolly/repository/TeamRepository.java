@@ -2,16 +2,18 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface TeamRepository extends JpaRepository<Team, Long> {
+public interface TeamRepository extends Repository<Team, Long> {
 
-    @Modifying
     Team save(Team team);
+
+    void saveAll(Iterable<Team> teams);
+
+    Optional<Team> findById(Long id);
 
     Optional<Team> findByNavn(String navn);
 
@@ -21,6 +23,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     List<Team> findByMedlemmerNavIdentOrderByNavn(String navIdent);
 
-    @Modifying
     int deleteTeamById(Long id);
 }

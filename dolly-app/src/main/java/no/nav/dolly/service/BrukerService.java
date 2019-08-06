@@ -2,17 +2,15 @@ package no.nav.dolly.service;
 
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 
-import ma.glasnost.orika.MapperFacade;
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
-import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.nav.dolly.repository.GruppeRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
@@ -22,33 +20,11 @@ import java.util.HashSet;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BrukerService {
 
-    @Autowired
-    private BrukerRepository brukerRepository;
-
-    @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private TestgruppeService gruppeService;
-
-    @Autowired
-    private MapperFacade mapperFacade;
-
-    public void opprettBruker(RsBruker bruker) {
-        saveBrukerTilDB(mapperFacade.map(bruker, Bruker.class));
-    }
-
-    public Bruker saveBrukerTilDB(Bruker b) {
-        try {
-            return brukerRepository.save(b);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Bruker DB constraint er brutt! Kan ikke lagre bruker. Error: " + e.getMessage(), e);
-        } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
-        }
-    }
+    private final BrukerRepository brukerRepository;
+    private final GruppeRepository gruppeRepository;
 
     public Bruker fetchBruker(String navIdent) {
         Bruker bruker = brukerRepository.findBrukerByNavIdent(navIdent.toUpperCase());
@@ -66,18 +42,8 @@ public class BrukerService {
         }
     }
 
-    public BrukerMedTeamsOgFavoritter getBrukerMedTeamsOgFavoritter(String navIdent) {
-        Bruker bruker = fetchBruker(navIdent);
-        List<Team> teams = teamService.fetchTeamsByMedlemskapInTeams(navIdent);
-
-        return BrukerMedTeamsOgFavoritter.builder()
-                .bruker(bruker)
-                .teams(teams)
-                .build();
-    }
-
     public Bruker leggTilFavoritt(Long gruppeId) {
-        Testgruppe grupper = gruppeService.fetchTestgruppeById(gruppeId);
+        Testgruppe grupper = fetchTestgruppe(gruppeId);
 
         Bruker bruker = fetchBruker(getLoggedInNavIdent());
         bruker.getFavoritter().addAll(new HashSet<>(Collections.singleton(grupper)));
@@ -85,13 +51,13 @@ public class BrukerService {
     }
 
     public Bruker fjernFavoritt(Long gruppeIDer) {
-        Testgruppe testgruppe = gruppeService.fetchTestgruppeById(gruppeIDer);
+        Testgruppe testgruppe = fetchTestgruppe(gruppeIDer);
 
         Bruker bruker = fetchBruker(getLoggedInNavIdent());
         bruker.getFavoritter().remove(testgruppe);
         testgruppe.getFavorisertAv().remove(bruker);
 
-        gruppeService.saveGruppeTilDB(testgruppe);
+        saveGruppe(testgruppe);
         return brukerRepository.save(bruker);
     }
 
@@ -111,5 +77,29 @@ public class BrukerService {
 
     public int sletteBrukerFavoritterByGroupId(Long groupId) {
         return brukerRepository.deleteBrukerFavoritterByGroupId(groupId);
+    }
+
+    public Bruker saveBrukerTilDB(Bruker b) {
+        try {
+            return brukerRepository.save(b);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConstraintViolationException("En Bruker DB constraint er brutt! Kan ikke lagre bruker. Error: " + e.getMessage(), e);
+        } catch (NonTransientDataAccessException e) {
+            throw new DollyFunctionalException(e.getMessage(), e);
+        }
+    }
+
+    private Testgruppe fetchTestgruppe(Long gruppeId) {
+        return gruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+    }
+
+    private Testgruppe saveGruppe(Testgruppe testgruppe) {
+        try {
+            return gruppeRepository.save(testgruppe);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
+        } catch (NonTransientDataAccessException e) {
+            throw new DollyFunctionalException(e.getMessage(), e);
+        }
     }
 }

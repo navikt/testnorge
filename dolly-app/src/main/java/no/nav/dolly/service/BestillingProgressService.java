@@ -2,19 +2,19 @@ package no.nav.dolly.service;
 
 import static java.util.Objects.isNull;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BestillingProgressService {
 
-    @Autowired
-    private BestillingProgressRepository bestillingProgressRepository;
+    private final BestillingProgressRepository bestillingProgressRepository;
 
 
     public List<BestillingProgress> fetchBestillingProgressByBestillingsIdFromDB(Long bestillingsId) {

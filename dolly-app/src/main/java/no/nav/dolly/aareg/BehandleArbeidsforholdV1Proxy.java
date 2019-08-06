@@ -2,13 +2,13 @@ package no.nav.dolly.aareg;
 
 import static java.util.Objects.isNull;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.cxf.TimeoutFeature;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.sts.StsSamlTokenService;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.namespace.QName;
@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class BehandleArbeidsforholdV1Proxy {
 
     private static final int DEFAULT_TIMEOUT = 5_000;
@@ -25,11 +26,8 @@ public class BehandleArbeidsforholdV1Proxy {
     private static final String NAMESPACE = "http://nav.no/tjeneste/domene/behandleArbeidsforhold/v1/";
     private static final QName BEHANDLE_ARBEIDSFORHOLD_V1 = new QName(NAMESPACE, "BehandleArbeidsforhold_v1");
 
-    @Autowired
-    private StsSamlTokenService stsSamlTokenService;
-
-    @Autowired
-    private AaregBehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
+    private final StsSamlTokenService stsSamlTokenService;
+    private final AaregBehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
 
     private Map<String, BehandleArbeidsforholdPortType> wsServiceByEnvironment = new HashMap<>();
     private LocalDateTime expiry;

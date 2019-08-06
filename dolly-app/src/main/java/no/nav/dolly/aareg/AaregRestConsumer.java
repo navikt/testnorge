@@ -4,8 +4,8 @@ import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.sts.StsOidcService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,16 +14,12 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 
 @Service
+@RequiredArgsConstructor
 public class AaregRestConsumer {
 
-    @Autowired
-    private AaregArbeidsforholdFasitConsumer aaregArbeidsforholdFasitConsumer;
-
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private StsOidcService stsOidcService;
+    private final AaregArbeidsforholdFasitConsumer aaregArbeidsforholdFasitConsumer;
+    private final RestTemplate restTemplate;
+    private final StsOidcService stsOidcService;
 
     public ResponseEntity<Object[]> readArbeidsforhold(String ident, String environment) {
 

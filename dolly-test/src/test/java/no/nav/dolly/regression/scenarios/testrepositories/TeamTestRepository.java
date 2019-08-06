@@ -12,4 +12,6 @@ public interface TeamTestRepository extends TeamRepository {
             + " WHERE t.id=:id"
     )
     Team findByIdFetchMedlemmerEagerly(@Param("id") Long id);
+
+    void deleteAll();
 }

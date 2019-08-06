@@ -1,12 +1,12 @@
 package no.nav.dolly.provider.api;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.aareg.AaregRestConsumer;
 import no.nav.dolly.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/aareg", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AaregController {
 
@@ -44,11 +45,9 @@ public class AaregController {
             + "&nbsp;&nbsp;&nbsp; \"ident\": \"<ident>\" <br />"
             + "&nbsp; } <br /><br />";
 
-    @Autowired
-    private AaregWsConsumer aaregWsConsumer;
 
-    @Autowired
-    private AaregRestConsumer aaregRestConsumer;
+    private final AaregWsConsumer aaregWsConsumer;
+    private final AaregRestConsumer aaregRestConsumer;
 
     @ApiOperation(value = "Opprett arbeidsforhold mot Aareg", notes = AAREG_JSON_COMMENT)
     @PostMapping("/arbeidsforhold")

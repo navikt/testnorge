@@ -3,9 +3,9 @@ package no.nav.dolly.jira;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.properties.JiraProps;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,13 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@RequiredArgsConstructor
 public class JiraConsumer {
 
-    @Autowired
-    private JiraProps jiraProps;
-
-    @Autowired
-    private RestTemplate restTemplate;
+    private final JiraProps jiraProps;
+    private final RestTemplate restTemplate;
 
     public <T> ResponseEntity<T> excuteRequest(String url, HttpMethod httpMethod, HttpEntity httpEntity, Class<T> responseClass) {
         return restTemplate.exchange(format("%s%s", getBaseUrl(), url), httpMethod, httpEntity, responseClass);

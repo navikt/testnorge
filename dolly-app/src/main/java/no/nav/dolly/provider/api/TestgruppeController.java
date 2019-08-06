@@ -7,6 +7,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 import static no.nav.dolly.provider.api.AaregController.AAREG_JSON_COMMENT;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -22,7 +23,6 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -41,9 +41,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "api/v1/gruppe")
 public class TestgruppeController {
 
+    //TODO Flytt static under til egen fil, blir mye rot her
     private static final String ADRESSE_COMMON =
             "       &nbsp; &nbsp; \"postnr\": \"string\", <br />"
                     + "     &nbsp; &nbsp; \"kommunenr\": \"string\", <br />"
@@ -127,20 +129,11 @@ public class TestgruppeController {
 
     private static final String BESTILLING_BESKRIVELSE = BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
 
-    @Autowired
-    private TestgruppeService testgruppeService;
-
-    @Autowired
-    private IdentService identService;
-
-    @Autowired
-    private MapperFacade mapperFacade;
-
-    @Autowired
-    private DollyBestillingService dollyBestillingService;
-
-    @Autowired
-    private BestillingService bestillingService;
+    private final TestgruppeService testgruppeService;
+    private final IdentService identService;
+    private final MapperFacade mapperFacade;
+    private final DollyBestillingService dollyBestillingService;
+    private final BestillingService bestillingService;
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional

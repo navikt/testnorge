@@ -2,10 +2,10 @@ package no.nav.dolly.kodeverk;
 
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.exceptions.KodeverkException;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@RequiredArgsConstructor
 public class KodeverkConsumer {
 
     private static final String APP_BRUKERNAVN = "srvdolly";
@@ -24,11 +25,8 @@ public class KodeverkConsumer {
     private static final String KODEVERK_URL_QUERY_PARAMS_EKSKLUDER_UGYLDIGE_SPRAAK_NB = "?ekskluderUgyldige=true&spraak=nb";
     private static final String KODEVERK_URL_BASE = "/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger";
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private ProvidersProps providersProps;
+    private final RestTemplate restTemplate;
+    private final ProvidersProps providersProps;
 
     public GetKodeverkKoderBetydningerResponse fetchKodeverkByName(String navn) {
         String url = providersProps.getKodeverk().getUrl() + getKodeverksnavnUrl(navn) + KODEVERK_URL_QUERY_PARAMS_EKSKLUDER_UGYLDIGE_SPRAAK_NB;

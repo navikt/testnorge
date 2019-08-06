@@ -4,10 +4,10 @@ import static no.nav.freg.fasit.utils.domain.ResourceType.CREDENTIAL;
 import static no.nav.freg.fasit.utils.domain.ResourceType.DATASOURCE;
 import static no.nav.freg.fasit.utils.domain.Zone.FSS;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.freg.fasit.utils.FasitService;
 import no.nav.freg.fasit.utils.domain.Credentials;
 import no.nav.freg.fasit.utils.domain.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -16,11 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 @Profile("fasit")
 public class FasitClient {
 
-    @Autowired
-    private FasitService fasitService;
+    private final FasitService fasitService;
 
     @Value("${application.name}")
     private String applicationName;

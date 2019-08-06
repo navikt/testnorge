@@ -3,10 +3,10 @@ package no.nav.dolly.bestilling.krrstub;
 import static java.lang.String.format;
 import static no.nav.dolly.sts.StsOidcService.getUserIdToken;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
 import no.nav.dolly.properties.ProvidersProps;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +17,13 @@ import java.net.URI;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class KrrStubConsumer {
 
     private static final String KRR_STUB_DIGITAL_KONTAKT = "/api/v1/kontaktinformasjon";
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private ProvidersProps providersProps;
+    private final RestTemplate restTemplate;
+    private final ProvidersProps providersProps;
 
     public ResponseEntity<Object> createDigitalKontaktdata(Long bestillingsid, DigitalKontaktdataRequest digitalKontaktdata) {
 

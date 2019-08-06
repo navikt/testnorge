@@ -38,7 +38,6 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final BrukerRepository brukerRepository;
     private final BrukerService brukerService;
-    private final TestgruppeService testgruppeService;
     private final MapperFacade mapperFacade;
 
     public RsTeamUtvidet opprettTeam(RsOpprettTeam opprettTeam) {
@@ -76,7 +75,6 @@ public class TeamService {
     }
 
     public int deleteTeam(Long teamId) {
-        testgruppeService.slettGruppeByTeamId(teamId);
         return teamRepository.deleteTeamById(teamId);
     }
 
@@ -179,7 +177,7 @@ public class TeamService {
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Team DB constraint er brutt! Kan ikke lagre Team. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
+            throw new DollyFunctionalException(e.getMessage(), e);
         }
     }
 

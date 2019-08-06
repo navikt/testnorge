@@ -2,7 +2,9 @@ package no.nav.dolly.bestilling.arenaforvalter;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -12,7 +14,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -22,13 +23,11 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ArenaForvalterClient implements ClientRegister {
 
-    @Autowired
-    private ArenaForvalterConsumer arenaForvalterConsumer;
-
-    @Autowired
-    private MapperFacade mapperFacade;
+    private final ArenaForvalterConsumer arenaForvalterConsumer;
+    private final MapperFacade mapperFacade;
 
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
@@ -40,7 +39,7 @@ public class ArenaForvalterClient implements ClientRegister {
             ResponseEntity<List> envResponse = arenaForvalterConsumer.getEnvironments();
             List<String> environments = envResponse.hasBody() ? envResponse.getBody() : emptyList();
 
-            List<String> availEnvironments = new ArrayList<>(environments);
+            List<String> availEnvironments = new ArrayList<>(requireNonNull(environments));
 
             availEnvironments.retainAll(bestilling.getEnvironments());
 
@@ -73,7 +72,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
     private void deleteServicebruker(String ident, List<String> availEnvironments, StringBuilder status, ResponseEntity<ArenaArbeidssokerBruker> response) {
 
-        if (response.hasBody() && !response.getBody().getArbeidsokerList().isEmpty()) {
+        if (response.hasBody() && !requireNonNull(response.getBody()).getArbeidsokerList().isEmpty()) {
             response.getBody().getArbeidsokerList().forEach(arbeidssoker -> {
                 if (availEnvironments.contains(arbeidssoker.getMiljoe())) {
                     try {
@@ -113,7 +112,7 @@ public class ArenaForvalterClient implements ClientRegister {
         try {
             ResponseEntity<ArenaArbeidssokerBruker> response = arenaForvalterConsumer.postArenadata(arenaNyeBrukere);
             if (response.hasBody()) {
-                response.getBody().getArbeidsokerList().forEach(arbeidsoker ->
+                requireNonNull(response.getBody()).getArbeidsokerList().forEach(arbeidsoker ->
                         status.append(',')
                                 .append(arbeidsoker.getMiljoe())
                                 .append('$')

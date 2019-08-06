@@ -2,6 +2,7 @@ package no.nav.dolly.service;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.ofNullable;
 import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -14,17 +15,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.BrukerMedTeamsOgFavoritter;
-import no.nav.dolly.domain.resultset.RsBruker;
-import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.testdata.builder.RsTeamUtvidetBuilder;
+import no.nav.dolly.repository.GruppeRepository;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,13 +45,7 @@ public class BrukerServiceTest {
     private BrukerRepository brukerRepository;
 
     @Mock
-    private TeamService teamService;
-
-    @Mock
-    private MapperFacade mapperFacade;
-
-    @Mock
-    private TestgruppeService gruppeService;
+    private GruppeRepository gruppeRepository;
 
     @InjectMocks
     private BrukerService brukerService;
@@ -62,12 +53,6 @@ public class BrukerServiceTest {
     @Before
     public void setup() {
         SecurityContextHolder.getContext().setAuthentication(new OidcTokenAuthentication(navIdent, null, null, null));
-    }
-
-    @Test
-    public void opprettBruker_kallerRepositorySave() {
-        brukerService.opprettBruker(new RsBruker());
-        verify(brukerRepository).save(any());
     }
 
     @Test
@@ -111,12 +96,13 @@ public class BrukerServiceTest {
         Team team = Team.builder().navn("navteam").eier(bruker).build();
         List<Team> teamList = singletonList(team);
 
+        bruker.setTeams(new HashSet<>(teamList));
+
         when(brukerRepository.findBrukerByNavIdent(navident)).thenReturn(bruker);
-        when(teamService.fetchTeamsByMedlemskapInTeams(navident)).thenReturn(teamList);
 
-        BrukerMedTeamsOgFavoritter res = brukerService.getBrukerMedTeamsOgFavoritter(navident);
+        Bruker res = brukerService.fetchBruker(navident);
 
-        assertThat(res.getBruker(), is(bruker));
+        assertThat(res, is(bruker));
         assertThat(res.getTeams().size(), is(1));
     }
 
@@ -126,7 +112,7 @@ public class BrukerServiceTest {
         Testgruppe testgruppe = Testgruppe.builder().navn("gruppe").hensikt("hen").build();
         Bruker bruker = Bruker.builder().navIdent(navIdent).favoritter(new HashSet<>()).teams(new HashSet<>()).build();
 
-        when(gruppeService.fetchTestgruppeById(ID)).thenReturn(testgruppe);
+        when(gruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
         when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(bruker);
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
@@ -154,7 +140,7 @@ public class BrukerServiceTest {
         testgruppe.setFavorisertAv(newHashSet(singletonList(bruker)));
         testgruppe2.setFavorisertAv(newHashSet(singletonList(bruker)));
 
-        when(gruppeService.fetchTestgruppeById(ID)).thenReturn(testgruppe);
+        when(gruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
         when(brukerRepository.findBrukerByNavIdent(navIdent)).thenReturn(bruker);
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 

@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -13,7 +14,6 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
@@ -26,19 +26,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TestgruppeService {
 
-    @Autowired
-    private GruppeRepository gruppeRepository;
-
-    @Autowired
-    private BrukerService brukerService;
-
-    @Autowired
-    private TeamService teamService;
-
-    @Autowired
-    private IdentService identService;
+    private final GruppeRepository gruppeRepository;
+    private final BrukerService brukerService;
+    private final TeamService teamService;
+    private final IdentService identService;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
@@ -71,7 +65,7 @@ public class TestgruppeService {
         Set<Testgruppe> testgrupper = bruker.getFavoritter();
         bruker.getTeams().forEach(team -> testgrupper.addAll(team.getGrupper()));
 
-        List<Testgruppe> unikeTestgrupper = new ArrayList(testgrupper);
+        List<Testgruppe> unikeTestgrupper = new ArrayList<>(testgrupper);
         unikeTestgrupper.sort((Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));
 
         return unikeTestgrupper;
@@ -83,7 +77,7 @@ public class TestgruppeService {
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(e.getRootCause().getMessage(), e);
+            throw new DollyFunctionalException(e.getMessage(), e);
         }
     }
 
@@ -93,7 +87,7 @@ public class TestgruppeService {
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
-            throw new DollyFunctionalException(e.getRootCause() != null ? e.getRootCause().getMessage() : e.getMessage(), e);
+            throw new DollyFunctionalException(e.getMessage(), e);
         }
     }
 

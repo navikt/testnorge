@@ -4,9 +4,11 @@ import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
 import no.nav.dolly.domain.resultset.Person;
@@ -16,7 +18,6 @@ import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TpsfService {
 
     private static final String TPSF_BASE_URL = "/api/v1/dolly/testdata";
@@ -38,22 +40,10 @@ public class TpsfService {
     private static final String TPSF_SEND_TPS_FLERE_URL = "/tilTpsFlere";
     private static final String TPSF_HENT_PERSONER_URL = "/hentpersoner";
     private static final String TPSF_CHECK_IDENT_STATUS = "/checkpersoner";
-    @Autowired
-    ObjectMapper objectMapper;
-    @Autowired
-    ProvidersProps providersProps;
-    @Autowired
-    private RestTemplate restTemplate;
 
-    private static boolean isBodyNotNull(ResponseEntity<Object> response) {
-        return nonNull(response) && nonNull(response.getBody()) && isNotBlank(response.getBody().toString());
-    }
-
-    private static void validateEnvironments(List<String> environments) {
-        if (nonNull(environments) && environments.isEmpty()) {
-            throw new IllegalArgumentException("Ingen TPS miljoer er spesifisert for sending av testdata");
-        }
-    }
+    private final ObjectMapper objectMapper;
+    private final ProvidersProps providersProps;
+    private final RestTemplate restTemplate;
 
     public CheckStatusResponse checkEksisterendeIdenter(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_CHECK_IDENT_STATUS, new HttpEntity<>(identer));
@@ -73,7 +63,7 @@ public class TpsfService {
 
     public List<String> hentTilhoerendeIdenter(List<String> identer) {
         List<String> identerMedFamilie = new ArrayList<>();
-        ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, new HttpEntity(identer));
+        ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, new HttpEntity<List>(identer));
         if (isBodyNotNull(response)) {
             Person[] personer = objectMapper.convertValue(response.getBody(), Person[].class);
 
@@ -90,7 +80,7 @@ public class TpsfService {
 
         try {
             ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, request, Object.class);
-            if (isBodyNotNull(response) && (response.getBody().toString().contains("error="))) {
+            if (isBodyNotNull(response) && (requireNonNull(response.getBody()).toString().contains("error="))) {
                 RestTemplateFailure rs = objectMapper.convertValue(response.getBody(), RestTemplateFailure.class);
                 log.error("Tps-forvalteren kall feilet mot url <{}> grunnet {}", url, rs.getMessage());
                 throw new TpsfException(format("%s -- (%s %s)", rs.getMessage(), rs.getStatus(), rs.getError()));
@@ -106,6 +96,16 @@ public class TpsfService {
                 log.error(e1.getMessage(), e1);
             }
             throw new TpsfException("Formattering av TPS-melding feilet.", e);
+        }
+    }
+
+    private boolean isBodyNotNull(ResponseEntity<Object> response) {
+        return nonNull(response) && nonNull(response.getBody()) && isNotBlank(response.getBody().toString());
+    }
+
+    private void validateEnvironments(List<String> environments) {
+        if (nonNull(environments) && environments.isEmpty()) {
+            throw new IllegalArgumentException("Ingen TPS miljoer er spesifisert for sending av testdata");
         }
     }
 }

@@ -8,6 +8,7 @@ import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.TeamService;
+import no.nav.dolly.service.TestgruppeService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,9 @@ public class TeamControllerTest {
 
     @Mock
     private TeamService teamService;
+
+    @Mock
+    private TestgruppeService testgruppeService;
 
     @InjectMocks
     private TeamController controller;

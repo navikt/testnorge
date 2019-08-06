@@ -2,15 +2,16 @@ package no.nav.dolly.aareg;
 
 import static java.util.Arrays.asList;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.fasit.FasitApiConsumer;
 import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AaregBehandleArbeidsforholdFasitConsumer {
 
     private static final String BASE_URL = "BaseUrl";
@@ -19,8 +20,7 @@ public class AaregBehandleArbeidsforholdFasitConsumer {
     private static final String BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL = "/aareg-core/BehandleArbeidsforholdService/v1";
     private static final String FAGSYSTEM = "fss";
 
-    @Autowired
-    private FasitApiConsumer fasitApiConsumer;
+    private final FasitApiConsumer fasitApiConsumer;
 
     public Map<String, String> fetchWsUrlsAllEnvironments() {
 

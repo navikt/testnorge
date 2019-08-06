@@ -6,6 +6,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -13,6 +14,7 @@ import static no.nav.dolly.domain.resultset.IdentType.DNR;
 import static no.nav.dolly.domain.resultset.IdentType.FNR;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -36,7 +38,6 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TestgruppeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -52,40 +53,23 @@ import java.util.TreeSet;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DollyBestillingService {
 
     private static final String SUCCESS = "OK";
     private static final String OUT_FMT = "%s: %s";
 
-    @Autowired
-    private TpsfResponseHandler tpsfResponseHandler;
-
-    @Autowired
-    private TpsfService tpsfService;
-
-    @Autowired
-    private TestgruppeService testgruppeService;
-
-    @Autowired
-    private IdentService identService;
-
-    @Autowired
-    private BestillingProgressRepository bestillingProgressRepository;
-
-    @Autowired
-    private BestillingService bestillingService;
-
-    @Autowired
-    private MapperFacade mapperFacade;
-
-    @Autowired
-    private CacheManager cacheManager;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private List<ClientRegister> clientRegisters;
+    //TODO Rydde opp i avhengigheter
+    private final TpsfResponseHandler tpsfResponseHandler;
+    private final TpsfService tpsfService;
+    private final TestgruppeService testgruppeService;
+    private final IdentService identService;
+    private final BestillingProgressRepository bestillingProgressRepository;
+    private final BestillingService bestillingService;
+    private final MapperFacade mapperFacade;
+    private final CacheManager cacheManager;
+    private final ObjectMapper objectMapper;
+    private final List<ClientRegister> clientRegisters;
 
     @Async
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingRequest request, Bestilling bestilling) {
@@ -238,10 +222,10 @@ public class DollyBestillingService {
 
     private void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
-            cacheManager.getCache(CACHE_BESTILLING).clear();
+            requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
         }
         if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
-            cacheManager.getCache(CACHE_GRUPPE).clear();
+            requireNonNull(cacheManager.getCache(CACHE_GRUPPE)).clear();
         }
     }
 

@@ -2,6 +2,7 @@ package no.nav.dolly.aareg;
 
 import static java.util.Collections.singletonList;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -14,7 +15,6 @@ import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPerson;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,15 +23,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AaregClient implements ClientRegister {
 
     private static final String ARBEIDSGIVER = "arbeidsgiver";
 
-    @Autowired
-    private AaregRestConsumer aaregRestConsumer;
-
-    @Autowired
-    private AaregWsConsumer aaregWsConsumer;
+    private final AaregRestConsumer aaregRestConsumer;
+    private final AaregWsConsumer aaregWsConsumer;
 
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {

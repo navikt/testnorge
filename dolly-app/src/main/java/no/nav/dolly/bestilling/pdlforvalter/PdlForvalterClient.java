@@ -6,6 +6,7 @@ import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -16,13 +17,13 @@ import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PdlForvalterClient implements ClientRegister {
 
     public static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
@@ -34,11 +35,8 @@ public class PdlForvalterClient implements ClientRegister {
     private static final String SYNTH_ENV = "q2";
     private static final String HENDELSE_ID = "hendelseId";
 
-    @Autowired
-    private PdlForvalterRestConsumer pdlForvalterRestConsumer;
-
-    @Autowired
-    private MapperFacade mapperFacade;
+    private final PdlForvalterRestConsumer pdlForvalterRestConsumer;
+    private final MapperFacade mapperFacade;
 
     private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
         builder.append('$')

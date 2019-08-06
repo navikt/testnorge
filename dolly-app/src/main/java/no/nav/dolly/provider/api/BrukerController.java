@@ -3,6 +3,7 @@ package no.nav.dolly.provider.api;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
+import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsBruker;
@@ -27,14 +28,12 @@ import java.util.List;
 
 @Transactional
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/bruker", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BrukerController {
 
-    @Autowired
-    private BrukerService brukerService;
-
-    @Autowired
-    private MapperFacade mapperFacade;
+    private final BrukerService brukerService;
+    private final MapperFacade mapperFacade;
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{navIdent}")
