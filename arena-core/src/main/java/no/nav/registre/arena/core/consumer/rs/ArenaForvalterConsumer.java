@@ -27,7 +27,6 @@ public class ArenaForvalterConsumer {
     private static final String NAV_CALL_ID = "ORKESTRATOREN";
     private static final String NAV_CONSUMER_ID = "ORKESTRATOREN";
 
-
     @Autowired
     private RestTemplate restTemplate;
 

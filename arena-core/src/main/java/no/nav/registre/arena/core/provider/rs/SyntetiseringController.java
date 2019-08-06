@@ -27,7 +27,7 @@ public class SyntetiseringController {
         return registrerBrukereIArenaForvalter(syntetiserArenaRequest);
     }
 
-    @PostMapping(value = "/slett")
+    @DeleteMapping(value = "/slett")
     @ApiOperation(value = "Slett identer fra Arena", notes = "Sletter oppgitte identer fra Arena. \nResponse: liste over alle innsendte identer som ble slettet.")
     public ResponseEntity<List<String>> slettBrukereIArenaForvalter(@RequestParam String miljoe, @RequestBody List<String> identer) {
         return slettBrukere(miljoe, identer);
