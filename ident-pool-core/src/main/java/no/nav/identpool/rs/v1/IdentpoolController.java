@@ -16,11 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.identpool.domain.Ident;
+import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
+import no.nav.identpool.rs.v1.support.MarkerBruktBatchRequest;
+import no.nav.identpool.rs.v1.support.MarkerBruktBatchResponse;
 import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import no.nav.identpool.service.IdentpoolService;
 
@@ -53,6 +57,30 @@ public class IdentpoolController {
     public void markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) throws Exception {
         validate(markerBruktRequest.getPersonidentifikator());
         identpoolService.markerBrukt(markerBruktRequest);
+    }
+
+    @PostMapping("/bruk/batch")
+    @ApiOperation(value = "marker eksisterende og ledige identer som i bruk")
+    public MarkerBruktBatchResponse markerBruktBatch(@RequestBody MarkerBruktBatchRequest markerBruktBatchRequest) {
+        MarkerBruktBatchResponse markerBruktBatchResponse = MarkerBruktBatchResponse.builder()
+                .personidentifikatorerMarkertSomBrukt(new ArrayList<>())
+                .personidentifikatorerSomIkkeKunneMarkeresSomBrukt(new ArrayList<>())
+                .build();
+        for (String personidentifikator : markerBruktBatchRequest.getPersonidentifikatorer()) {
+            try {
+                validate(personidentifikator);
+                MarkerBruktRequest markerBruktRequest = MarkerBruktRequest.builder()
+                        .personidentifikator(personidentifikator)
+                        .bruker(markerBruktBatchRequest.getBruker())
+                        .build();
+                identpoolService.markerBrukt(markerBruktRequest);
+                markerBruktBatchResponse.getPersonidentifikatorerMarkertSomBrukt().add(personidentifikator);
+            } catch (UgyldigPersonidentifikatorException | IdentAlleredeIBrukException e) {
+                markerBruktBatchResponse.getPersonidentifikatorerSomIkkeKunneMarkeresSomBrukt().add(personidentifikator);
+                log.warn("Kunne ikke markere ident som brukt - {}", e.getLocalizedMessage(), e);
+            }
+        }
+        return markerBruktBatchResponse;
     }
 
     @GetMapping("/ledig")
