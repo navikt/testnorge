@@ -128,8 +128,8 @@ public class EksisterendeIdenterService {
         return navEnhetResponseListe;
     }
 
-    public Map<String, JsonNode> hentGittAntallIdenterMedStatusQuo(Long avspillergruppeId, String miljoe, int antallIdenter) {
-        List<String> alleIdenter = finnAlleIdenter(avspillergruppeId);
+    public Map<String, JsonNode> hentGittAntallIdenterMedStatusQuo(Long avspillergruppeId, String miljoe, int antallIdenter, int minimumAlder, int maksimumAlder) {
+        List<String> alleIdenter = finnLevendeIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
         if (alleIdenter.size() < antallIdenter) {
             log.info("Antall ønskede identer å hente er større enn tilgjengelige identer i avspillergruppe. - HenteAntall:{} TilgjengeligeIdenter:{}", antallIdenter, alleIdenter.size());
             antallIdenter = alleIdenter.size();
@@ -176,7 +176,7 @@ public class EksisterendeIdenterService {
         return identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
     }
 
-    public List<String> finnAlleIdenterIAldersgruppe(Long avspillergruppeId, int minimumAlder, int maksimumAlder) {
+    public List<String> finnLevendeIdenterIAldersgruppe(Long avspillergruppeId, int minimumAlder, int maksimumAlder) {
         List<String> identer = finnLevendeIdenter(avspillergruppeId);
         List<String> identerOverAlder = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
         return identerOverAlder.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isAfter(LocalDate.now().minusYears(maksimumAlder))).collect(Collectors.toList());

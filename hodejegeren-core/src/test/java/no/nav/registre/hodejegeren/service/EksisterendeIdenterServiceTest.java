@@ -1,5 +1,7 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MAX_ALDER;
+import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MIN_ALDER;
 import static no.nav.registre.hodejegeren.service.EksisterendeIdenterService.TRANSAKSJONSTYPE;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
@@ -20,6 +22,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -254,11 +257,18 @@ public class EksisterendeIdenterServiceTest {
         identSet.add(fnr1);
 
         when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(anyLong(), anyList(), anyString())).thenReturn(identSet);
+        when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(
+                anyLong(),
+                eq(Arrays.asList(
+                        Endringskoder.DOEDSMELDING.getAarsakskode(),
+                        Endringskoder.UTVANDRING.getAarsakskode())),
+                anyString()))
+                .thenReturn(Collections.emptySet());
         when(tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1)).thenReturn(jsonNode);
 
-        Map<String, JsonNode> fnrMedStatusQuo = eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(1L, miljoe, identSet.size());
+        Map<String, JsonNode> fnrMedStatusQuo = eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(1L, miljoe, identSet.size(), MIN_ALDER, MAX_ALDER);
 
-        verify(tpsfConsumer).getIdenterFiltrertPaaAarsakskode(anyLong(), anyList(), anyString());
+        verify(tpsfConsumer, times(2)).getIdenterFiltrertPaaAarsakskode(anyLong(), anyList(), anyString());
         verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
 
         assertThat(fnrMedStatusQuo.get(fnr1), equalTo(jsonNode));

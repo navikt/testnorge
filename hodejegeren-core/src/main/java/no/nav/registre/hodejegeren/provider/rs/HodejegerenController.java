@@ -30,6 +30,9 @@ import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 @RestController
 public class HodejegerenController {
 
+    public static final int MIN_ALDER = 0;
+    public static final int MAX_ALDER = 200;
+
     @Autowired
     private EksisterendeIdenterService eksisterendeIdenterService;
 
@@ -70,8 +73,8 @@ public class HodejegerenController {
     @GetMapping("api/v1/levende-identer/{avspillergruppeId}")
     public List<String> hentLevendeIdenter(@PathVariable("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe,
             @RequestParam(value = "antallPersoner", required = false) Integer antallPersoner, @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder) {
-        if (minimumAlder == null || minimumAlder < 0) {
-            minimumAlder = 0;
+        if (minimumAlder == null || minimumAlder < MIN_ALDER) {
+            minimumAlder = MIN_ALDER;
         }
         if (antallPersoner == null || antallPersoner < 0) {
             antallPersoner = Integer.MAX_VALUE;
@@ -84,7 +87,7 @@ public class HodejegerenController {
     @ApiOperation(value = "Her kan man hente ut alle levende identer over en viss alder.")
     @GetMapping("api/v1/levende-identer-over-alder/{avspillergruppeId}")
     public List<String> hentAlleLevendeIdenterOverAlder(@PathVariable Long avspillergruppeId, @RequestParam int minimumAlder, HttpServletResponse response) {
-        if (minimumAlder < 0) {
+        if (minimumAlder < MIN_ALDER) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return new ArrayList<>();
         }
@@ -95,11 +98,11 @@ public class HodejegerenController {
     @ApiOperation(value = "Her kan man hente ut alle levende identer i en viss aldersgruppe.")
     @GetMapping("api/v1/levende-identer-i-aldersgruppe/{avspillergruppeId}")
     public List<String> hentAlleIdenterIAldersgruppe(@PathVariable Long avspillergruppeId, @RequestParam int minimumAlder, @RequestParam int maksimumAlder, HttpServletResponse response) {
-        if (minimumAlder < 0 || maksimumAlder < 0) {
+        if (minimumAlder < MIN_ALDER || maksimumAlder < minimumAlder) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return new ArrayList<>();
         }
-        return eksisterendeIdenterService.finnAlleIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
+        return eksisterendeIdenterService.finnLevendeIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
     }
 
     @LogExceptions
@@ -129,12 +132,26 @@ public class HodejegerenController {
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her kan man hente listen over identer i en gitt avspillergruppe med tilhørende status-quo "
+    @ApiOperation(value = "Her kan man hente en liste over identer i en gitt avspillergruppe med tilhørende status-quo "
             + "i et gitt miljø.")
     @GetMapping("api/v1/status-quo-identer/{avspillergruppeId}")
     public Map<String, JsonNode> hentEksisterendeIdenterMedStatusQuo(@PathVariable("avspillergruppeId") Long avspillergruppeId,
-            @RequestParam("miljoe") String miljoe, @RequestParam("antallPersoner") int antallPersoner) {
-        return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallPersoner);
+            @RequestParam("miljoe") String miljoe,
+            @RequestParam("antallPersoner") int antallPersoner,
+            @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder,
+            @RequestParam(value = "maksimumAlder", required = false) Integer maksimumAlder,
+            HttpServletResponse response) {
+        if (minimumAlder == null) {
+            minimumAlder = MIN_ALDER;
+        }
+        if (maksimumAlder == null) {
+            maksimumAlder = MAX_ALDER;
+        }
+        if (minimumAlder < MIN_ALDER || maksimumAlder < minimumAlder) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new HashMap<>();
+        }
+        return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallPersoner, minimumAlder, maksimumAlder);
     }
 
     @LogExceptions

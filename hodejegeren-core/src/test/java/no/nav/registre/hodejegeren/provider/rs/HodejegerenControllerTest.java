@@ -1,5 +1,7 @@
 package no.nav.registre.hodejegeren.provider.rs;
 
+import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MAX_ALDER;
+import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MIN_ALDER;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -146,13 +148,14 @@ public class HodejegerenControllerTest {
     public void shouldHenteAlleIdenterIAldersgruppe() {
         MockHttpServletResponse resp = new MockHttpServletResponse();
         hodejegerenController.hentAlleIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder, resp);
-        verify(eksisterendeIdenterService).finnAlleIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
+        verify(eksisterendeIdenterService).finnLevendeIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
     }
 
     @Test
     public void shouldHenteIdenterMedStatusQuo() {
-        hodejegerenController.hentEksisterendeIdenterMedStatusQuo(avspillergruppeId, miljoe, 1);
-        verify(eksisterendeIdenterService).hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, 1);
+        MockHttpServletResponse resp = new MockHttpServletResponse();
+        hodejegerenController.hentEksisterendeIdenterMedStatusQuo(avspillergruppeId, miljoe, 1, null, null, resp);
+        verify(eksisterendeIdenterService).hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, 1, MIN_ALDER, MAX_ALDER);
     }
 
     @Test
