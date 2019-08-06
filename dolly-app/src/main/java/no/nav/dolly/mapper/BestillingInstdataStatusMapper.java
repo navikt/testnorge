@@ -15,15 +15,15 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusMiljoeIdentForhold;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BestillingAaregStatusMapper {
+public final class BestillingInstdataStatusMapper {
 
-    public static List<RsStatusMiljoeIdentForhold> buildAaregStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusMiljoeIdentForhold> buildInstdataStatusMap(List<BestillingProgress> progressList) {
         //  status     miljø       ident       forhold
         Map<String, Map<String, Map<String, List<String>>>> errorEnvIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getAaregStatus())) {
-                newArrayList(progress.getAaregStatus().split(",")).forEach(status -> {
+            if (nonNull(progress.getInstdataStatus())) {
+                newArrayList(progress.getInstdataStatus().split(",")).forEach(status -> {
                     String environ = status.split(":", 2)[0];
                     String errMsg = status.split(":", 2)[1].trim();
                     checkAndUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsg);
@@ -31,13 +31,13 @@ public final class BestillingAaregStatusMapper {
             }
         });
 
-        List<RsStatusMiljoeIdentForhold> identAaregStatuses = new ArrayList<>();
+        List<RsStatusMiljoeIdentForhold> identInstdataStatuses = new ArrayList<>();
         errorEnvIdents.keySet().forEach(status ->
-                identAaregStatuses.add(RsStatusMiljoeIdentForhold.builder()
+                identInstdataStatuses.add(RsStatusMiljoeIdentForhold.builder()
                         .statusMelding(status)
                         .environmentIdentsForhold(errorEnvIdents.get(status))
                         .build())
         );
-        return identAaregStatuses;
+        return identInstdataStatuses;
     }
 }
