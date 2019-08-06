@@ -49,7 +49,7 @@ public class InstdataClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
 
             ResponseEntity<List> envResponse = ResponseEntity.created(URI.create("")).body(newArrayList("q0", "q2")); //TODO replace by call to endpoint when avail
-            List<String> environments = envResponse.hasBody() ? envResponse.getBody() : emptyList();
+            List<String> environments = nonNull(envResponse) && envResponse.hasBody() ? envResponse.getBody() : emptyList();
 
             List<String> availEnvironments = new ArrayList(environments);
 
@@ -92,7 +92,7 @@ public class InstdataClient implements ClientRegister {
         try {
             ResponseEntity<InstdataResponse[]> response = instdataConsumer.deleteInstdata(ident, environment);
 
-            if (response.hasBody() && response.getBody().length > 0) {
+            if (nonNull(response) && response.hasBody() && response.getBody().length > 0) {
                 if (HttpStatus.NOT_FOUND.equals(response.getBody()[0].getStatus())
                         || HttpStatus.OK.equals(response.getBody()[0].getStatus())) {
 
@@ -119,7 +119,7 @@ public class InstdataClient implements ClientRegister {
         try {
             ResponseEntity<InstdataResponse[]> response = instdataConsumer.postInstdata(instdata, environment);
 
-            if (response.hasBody()) {
+            if (nonNull(response) && response.hasBody()) {
 
                 for (int i = 0; i < response.getBody().length; i++) {
                     status.append(',')
