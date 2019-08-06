@@ -12,6 +12,7 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
+import no.nav.registre.orkestratoren.consumer.rs.response.InstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 
@@ -20,7 +21,7 @@ public class InstSyntConsumer {
 
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_START_SYNT = new ParameterizedTypeReference<Object>() {
     };
-    private static final ParameterizedTypeReference<SletteInstitusjonsoppholdResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<SletteInstitusjonsoppholdResponse>() {
+    private static final ParameterizedTypeReference<List<InstitusjonsoppholdResponse>> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<List<InstitusjonsoppholdResponse>>() {
     };
     private static final String NAV_CALL_ID = "orkestratoren";
     private static final String NAV_CONSUMER_ID = "orkestratoren";
@@ -53,7 +54,12 @@ public class InstSyntConsumer {
                 .header("navCallId", NAV_CALL_ID)
                 .header("navConsumerId", NAV_CONSUMER_ID)
                 .build();
-        return restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
+        List<InstitusjonsoppholdResponse> responseBody = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_DELETE).getBody();
+        assert responseBody != null;
+        for (InstitusjonsoppholdResponse oppholdResponse : responseBody) {
+            oppholdResponse.setInstitusjonsopphold(null);
+        }
+        return new SletteInstitusjonsoppholdResponse(responseBody);
     }
 
     private String convertListToString(List<String> list) {

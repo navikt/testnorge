@@ -9,8 +9,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
-import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,9 +64,10 @@ public class InstSyntConsumerTest {
 
         SletteInstitusjonsoppholdResponse response = instSyntConsumer.slettIdenterFraInst(identer);
 
-        assertThat(response.getIdenterMedOppholdIdSomBleSlettet().keySet(), IsIterableContainingInAnyOrder.containsInAnyOrder(identer.get(0), identer.get(1)));
-        assertThat(response.getIdenterMedOppholdIdSomBleSlettet().get(identer.get(0)), IsIterableContainingInOrder.contains(oppholdIder.get(0)));
-        assertThat(response.getIdenterMedOppholdIdSomBleSlettet().get(identer.get(1)), IsIterableContainingInOrder.contains(oppholdIder.get(1)));
+        assertThat(response.getInstStatus().get(0).getPersonident(), equalTo(identer.get(0)));
+        assertThat(response.getInstStatus().get(0).getStatus(), equalTo(HttpStatus.OK));
+        assertThat(response.getInstStatus().get(1).getPersonident(), equalTo(identer.get(1)));
+        assertThat(response.getInstStatus().get(1).getStatus(), equalTo(HttpStatus.NOT_FOUND));
     }
 
     private void stubInstConsumerStartSyntetisering() {
@@ -85,16 +84,30 @@ public class InstSyntConsumerTest {
         stubFor(delete(urlEqualTo("/inst/api/v1/ident/batch?miljoe=q2&identer=" + identer.get(0) + "," + identer.get(1)))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody("{\n"
-                                + "    \"identerMedOppholdIdSomIkkeKunneSlettes\": {},\n"
-                                + "    \"identerMedOppholdIdSomBleSlettet\": {\n"
-                                + "        \"" + identer.get(0) + "\": [\n"
-                                + "            \"" + oppholdIder.get(0) + "\"\n"
-                                + "        ],\n"
-                                + "        \"" + identer.get(1) + "\": [\n"
-                                + "            \"" + oppholdIder.get(1) + "\"\n"
-                                + "        ]\n"
-                                + "    }\n"
-                                + "}")));
+                        .withBody("[\n"
+                                + "  {\n"
+                                + "    \"personident\": \"" + identer.get(0) + "\",\n"
+                                + "    \"status\": \"OK\",\n"
+                                + "    \"institusjonsopphold\": {\n"
+                                + "      \"oppholdId\": 200485356,\n"
+                                + "      \"tssEksternId\": \"80000465396\",\n"
+                                + "      \"institusjonstype\": \"AS\",\n"
+                                + "      \"varighet\": \"L\",\n"
+                                + "      \"kategori\": \"A\",\n"
+                                + "      \"startdato\": \"2018-08-12\",\n"
+                                + "      \"faktiskSluttdato\": \"2019-04-13\",\n"
+                                + "      \"forventetSluttdato\": \"2019-04-13\",\n"
+                                + "      \"kilde\": \"PP01\",\n"
+                                + "      \"overfoert\": false\n"
+                                + "    },\n"
+                                + "    \"feilmelding\": null\n"
+                                + "  },\n"
+                                + "  {\n"
+                                + "    \"personident\": \"" + identer.get(1) + "\",\n"
+                                + "    \"status\": \"NOT_FOUND\",\n"
+                                + "    \"institusjonsopphold\": null,\n"
+                                + "    \"feilmelding\": \"Fant ingen institusjonsopphold på ident.\"\n"
+                                + "  }\n"
+                                + "]")));
     }
 }

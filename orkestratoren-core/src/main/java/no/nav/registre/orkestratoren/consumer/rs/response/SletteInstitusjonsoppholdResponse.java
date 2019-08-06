@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -16,6 +15,5 @@ import java.util.Map;
 @Builder
 public class SletteInstitusjonsoppholdResponse {
 
-    private Map<String, List<String>> identerMedOppholdIdSomIkkeKunneSlettes;
-    private Map<String, List<String>> identerMedOppholdIdSomBleSlettet;
+    private List<InstitusjonsoppholdResponse> instStatus;
 }

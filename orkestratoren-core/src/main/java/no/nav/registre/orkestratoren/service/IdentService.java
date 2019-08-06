@@ -1,9 +1,9 @@
 package no.nav.registre.orkestratoren.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.AaregSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.ArenaConsumer;
@@ -30,7 +30,6 @@ public class IdentService {
 
     @Autowired
     private ArenaConsumer arenaConsumer;
-
 
     public SlettedeIdenterResponse slettIdenterFraAdaptere(Long avspillergruppeId, String miljoe, String testdataEier, List<String> identer) {
         SlettedeIdenterResponse slettedeIdenterResponse = SlettedeIdenterResponse.builder()

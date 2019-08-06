@@ -5,16 +5,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import no.nav.registre.orkestratoren.consumer.rs.ArenaConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,13 +12,23 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.orkestratoren.consumer.rs.AaregSyntConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.ArenaConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.InstSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.PoppSyntConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
+import no.nav.registre.orkestratoren.consumer.rs.response.InstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SigrunSkattegrunnlagResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArbeidsforholdResponse;
+import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteSkattegrunnlagResponse;
 import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterResponse;
@@ -64,7 +64,6 @@ public class IdentServiceTest {
     private SletteInstitusjonsoppholdResponse sletteInstitusjonsoppholdResponse;
     private SletteSkattegrunnlagResponse sletteSkattegrunnlagResponse;
     private SletteArbeidsforholdResponse sletteArbeidsforholdResponse;
-    private List<String> oppholdIdSomBleSlettet;
     private SletteArenaResponse sletteArenaResponse;
 
     @Before
@@ -72,11 +71,17 @@ public class IdentServiceTest {
         identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
         expectedMeldingIder = new ArrayList<>(Arrays.asList(123L, 456L));
 
-        oppholdIdSomBleSlettet = new ArrayList<>(Arrays.asList("1", "2"));
-        Map<String, List<String>> identerMedOppholdIdSomBleSlettet = new HashMap<>();
-        identerMedOppholdIdSomBleSlettet.put(fnr1, Collections.singletonList(oppholdIdSomBleSlettet.get(0)));
-        identerMedOppholdIdSomBleSlettet.put(fnr2, Collections.singletonList(oppholdIdSomBleSlettet.get(1)));
-        sletteInstitusjonsoppholdResponse = SletteInstitusjonsoppholdResponse.builder().identerMedOppholdIdSomBleSlettet(identerMedOppholdIdSomBleSlettet).build();
+        List<InstitusjonsoppholdResponse> responses = new ArrayList<>(Arrays.asList(
+                InstitusjonsoppholdResponse.builder()
+                        .personident(fnr1)
+                        .status(HttpStatus.OK)
+                        .build(),
+                InstitusjonsoppholdResponse.builder()
+                        .personident(fnr2)
+                        .status(HttpStatus.OK)
+                        .build()));
+        sletteInstitusjonsoppholdResponse = SletteInstitusjonsoppholdResponse.builder().instStatus(responses).build();
+
         sletteArenaResponse = SletteArenaResponse.builder().slettet(identer).ikkeSlettet(new ArrayList<>()).build();
 
         SigrunSkattegrunnlagResponse skattegrunnlagFnr1 = SigrunSkattegrunnlagResponse.builder().personidentifikator(fnr1).build();
@@ -107,9 +112,10 @@ public class IdentServiceTest {
 
         assertThat(response.getTpsfStatus().getSlettedeMeldingIderFraTpsf(), IsIterableContainingInOrder.contains(expectedMeldingIder.get(0), expectedMeldingIder.get(1)));
 
-        assertThat(response.getInstStatus().getIdenterMedOppholdIdSomBleSlettet().keySet(), IsIterableContainingInAnyOrder.containsInAnyOrder(identer.get(0), identer.get(1)));
-        assertThat(response.getInstStatus().getIdenterMedOppholdIdSomBleSlettet().get(identer.get(0)), IsIterableContainingInOrder.contains(oppholdIdSomBleSlettet.get(0)));
-        assertThat(response.getInstStatus().getIdenterMedOppholdIdSomBleSlettet().get(identer.get(1)), IsIterableContainingInOrder.contains(oppholdIdSomBleSlettet.get(1)));
+        assertThat(response.getInstStatus().getInstStatus().get(0).getPersonident(), equalTo(identer.get(0)));
+        assertThat(response.getInstStatus().getInstStatus().get(0).getStatus(), equalTo(HttpStatus.OK));
+        assertThat(response.getInstStatus().getInstStatus().get(1).getPersonident(), equalTo(identer.get(1)));
+        assertThat(response.getInstStatus().getInstStatus().get(1).getStatus(), equalTo(HttpStatus.OK));
 
         assertThat(response.getSigrunStatus().getGrunnlagSomBleSlettet().get(0).getPersonidentifikator(), equalTo(fnr1));
         assertThat(response.getSigrunStatus().getGrunnlagSomBleSlettet().get(1).getPersonidentifikator(), equalTo(fnr2));
