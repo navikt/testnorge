@@ -40,7 +40,6 @@ public class ArenaConsumerTest {
     private static final String MILJOE = "t1";
     private SyntetiserArenaRequest syntetiserArenaRequest;
     private List<String> identer;
-    private List<String> arbeidsokere;
 
     private String fnr1 = "10101010101";
     private String fnr2 = "20202020202";
@@ -75,7 +74,7 @@ public class ArenaConsumerTest {
 
 
     private void stubArenaConsumerLeggTilIdenter() {
-        stubFor(post(urlPathEqualTo("/arena/api/v1/generer"))
+        stubFor(post(urlPathEqualTo("/arena/api/v1/syntetisering/generer"))
                 .withRequestBody(equalToJson(
                         "{\"avspillergruppeId\": " + AVSPILLERGRUPPE_ID +
                                 ", \"miljoe\": \"" + MILJOE + "\"" +
@@ -88,7 +87,7 @@ public class ArenaConsumerTest {
     }
 
     private void stubArenaConsumerSlettIdenter() {
-        stubFor(delete(urlEqualTo("/arena/api/v1/slett?miljoe=" + MILJOE))
+        stubFor(delete(urlEqualTo("/arena/api/v1/syntetisering/slett?miljoe=" + MILJOE))
                 .withRequestBody(equalToJson("[\"" + identer.get(1) + "\",\"" + identer.get(2) + "\"]"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
