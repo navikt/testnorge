@@ -5,13 +5,13 @@ import static java.util.Objects.nonNull;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Component
 public class TpsfResponseHandler {
 
     private static final int MAX_LENGTH_VARCHAR2 = 4000;

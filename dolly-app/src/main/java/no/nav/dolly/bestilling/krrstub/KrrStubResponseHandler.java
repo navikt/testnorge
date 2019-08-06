@@ -5,9 +5,9 @@ import static java.util.Objects.nonNull;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class KrrStubResponseHandler {
 
     private static boolean isOkStatus(ResponseEntity<Object> response) {

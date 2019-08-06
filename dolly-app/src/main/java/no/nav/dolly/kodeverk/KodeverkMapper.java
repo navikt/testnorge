@@ -5,7 +5,7 @@ import static java.util.Objects.nonNull;
 import no.nav.dolly.domain.resultset.kodeverk.KodeAdjusted;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.tjenester.kodeverk.api.v1.Betydning;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * Tar nå kun første Betydningen den finner for en kode(value) siden man henter gyldig så vil det i fleste tilfeller gi 1 beskrivelse (?)
  * Vurder om man skal ta en hensyn til flere Betydninger per kode etter hvert.
  */
-@Service
+@Component
 public class KodeverkMapper {
 
     private static final String KODE_BOKMAAL = "nb";

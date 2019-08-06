@@ -5,12 +5,12 @@ import static java.util.Arrays.asList;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.fasit.FasitApiConsumer;
 import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class AaregBehandleArbeidsforholdFasitConsumer {
 

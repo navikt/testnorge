@@ -10,13 +10,13 @@ import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class KrrStubConsumer {
 

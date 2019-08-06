@@ -18,11 +18,11 @@ import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonF
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
-@Service
+@Component
 @RequiredArgsConstructor
 public class PdlForvalterClient implements ClientRegister {
 

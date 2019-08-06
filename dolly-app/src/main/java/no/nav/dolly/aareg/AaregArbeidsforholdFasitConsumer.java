@@ -7,13 +7,13 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.fasit.FasitApiConsumer;
 import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class AaregArbeidsforholdFasitConsumer {
 

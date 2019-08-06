@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.exceptions.FasitException;
 import no.nav.dolly.properties.ProvidersProps;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class FasitApiConsumer {
 
