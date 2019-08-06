@@ -1,12 +1,10 @@
 package no.nav.dolly.bestilling.instdata;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +30,8 @@ import no.nav.dolly.domain.resultset.inst.InstdataKilde;
 @Service
 public class InstdataClient implements ClientRegister {
 
+    private static final String[] DEFAULT_ENV = { "q2" };
+
     @Autowired
     private MapperFacade mapperFacade;
 
@@ -47,17 +47,14 @@ public class InstdataClient implements ClientRegister {
         if (nonNull(bestilling.getInstdata())) {
 
             StringBuilder status = new StringBuilder();
+            List<String> availEnvironments = getMiljoer();
 
-            ResponseEntity<List> envResponse = ResponseEntity.created(URI.create("")).body(newArrayList("q0", "q2")); //TODO replace by call to endpoint when avail
-            List<String> environments = envResponse.hasBody() ? envResponse.getBody() : emptyList();
+            List<String> environments = newArrayList(availEnvironments);
+            environments.retainAll(bestilling.getEnvironments());
 
-            List<String> availEnvironments = new ArrayList(environments);
+            if (!environments.isEmpty()) {
 
-            availEnvironments.retainAll(bestilling.getEnvironments());
-
-            if (!availEnvironments.isEmpty()) {
-
-                availEnvironments.forEach(environment -> {
+                environments.forEach(environment -> {
 
                     if (deleteInstdata(norskIdent.getIdent(), environment, status)) {
 
@@ -77,13 +74,25 @@ public class InstdataClient implements ClientRegister {
             }
 
             List<String> notSupportedEnvironments = new ArrayList(bestilling.getEnvironments());
-            notSupportedEnvironments.removeAll(environments);
+            notSupportedEnvironments.removeAll(availEnvironments);
             notSupportedEnvironments.forEach(environment ->
                     status.append(',')
                             .append(environment)
                             .append(":Feil: Miljø ikke støttet"));
 
             progress.setInstdataStatus(status.substring(1));
+        }
+    }
+
+    private List<String> getMiljoer() {
+
+        try {
+            ResponseEntity<String[]> envResponse = instdataConsumer.getMiljoer();
+            return newArrayList(envResponse.hasBody() ? envResponse.getBody() : DEFAULT_ENV);
+
+        } catch (RuntimeException e) {
+            log.error("Kunne ikke lese fra endepunkt for å hente miljøer: {} ", e.getMessage(), e);
+            return newArrayList(DEFAULT_ENV);
         }
     }
 

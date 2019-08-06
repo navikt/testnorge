@@ -54,6 +54,8 @@ public class InstdataClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
+        when(instdataConsumer.getMiljoer()).thenReturn(ResponseEntity.ok(new String[]{"u5"}));
+
         instdataClient.gjenopprett(RsDollyBestilling.builder()
                 .instdata(newArrayList(RsInstdata.builder().build()))
                 .environments(newArrayList("t2"))
@@ -67,6 +69,7 @@ public class InstdataClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
+        when(instdataConsumer.getMiljoer()).thenReturn(ResponseEntity.ok(new String[]{"q2"}));
         when(instdataConsumer.deleteInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(
                 new InstdataResponse[] { InstdataResponse.builder()
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -86,6 +89,7 @@ public class InstdataClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
+        when(instdataConsumer.getMiljoer()).thenReturn(ResponseEntity.ok(new String[]{"q2"}));
         when(instdataConsumer.deleteInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(
                 new InstdataResponse[] { InstdataResponse.builder()
                         .status(HttpStatus.NOT_FOUND)
