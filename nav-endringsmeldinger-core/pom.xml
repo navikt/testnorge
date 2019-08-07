@@ -58,6 +58,7 @@
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.logback.encoder.version}</version>
         </dependency>
+        <!--DOCUMENTATION-->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -73,6 +74,12 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
+        </dependency>
+        <!--HODEJEGEREN-->
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>testnorge-consumers</artifactId>
+            <version>1.4.0-RELEASE</version>
         </dependency>
     </dependencies>
 

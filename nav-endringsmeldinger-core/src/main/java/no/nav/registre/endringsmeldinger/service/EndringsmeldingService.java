@@ -2,6 +2,7 @@ package no.nav.registre.endringsmeldinger.service;
 
 import static no.nav.registre.endringsmeldinger.service.utils.StatusFraTpsUtil.trekkUtStatusFraTps;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,13 +26,13 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.endringsmeldinger.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.NavEndringsmeldingerSyntetisererenConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.TpsfConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.exceptions.SyntetiseringsException;
 import no.nav.registre.endringsmeldinger.consumer.rs.requests.SendTilTpsRequest;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
 import no.nav.registre.endringsmeldinger.provider.rs.requests.SyntetiserNavEndringsmeldingerRequest;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @Service
 @Slf4j
@@ -116,7 +117,7 @@ public class EndringsmeldingService {
             antallMeldingerTotalt += antallMeldinger;
         }
 
-        List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenter(syntetiserNavEndringsmeldingerRequest.getAvspillergruppeId());
+        List<String> levendeIdenter = getLevendeIdenter(syntetiserNavEndringsmeldingerRequest.getAvspillergruppeId());
         List<String> utvalgteIdenter = new ArrayList<>(antallMeldingerTotalt);
 
         for (int i = 0; i < antallMeldingerTotalt; i++) {
@@ -129,5 +130,10 @@ public class EndringsmeldingService {
     private List<Endringskoder> filtrerEndringskoder(Set<String> endringskoder) {
         List<Endringskoder> filtrerteEndringskoder = Arrays.asList(Endringskoder.values());
         return filtrerteEndringskoder.stream().filter(kode -> endringskoder.contains(kode.getEndringskode())).collect(Collectors.toList());
+    }
+
+    @Timed(value = "nav-endringsmeldinger.resource.latency", extraTags = { "operation", "hodejegeren" })
+    private List<String> getLevendeIdenter(Long avspillergruppeId) {
+        return hodejegerenConsumer.getLevende(avspillergruppeId);
     }
 }

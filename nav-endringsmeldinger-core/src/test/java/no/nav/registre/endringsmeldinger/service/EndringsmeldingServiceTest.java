@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import no.nav.registre.endringsmeldinger.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.NavEndringsmeldingerSyntetisererenConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.TpsfConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
 import no.nav.registre.endringsmeldinger.provider.rs.requests.SyntetiserNavEndringsmeldingerRequest;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EndringsmeldingServiceTest {
@@ -129,7 +129,7 @@ public class EndringsmeldingServiceTest {
         when(syntConsumer.getSyntetiserteNavEndringsmeldinger(endringskode.getEndringskode(), antallMeldinger))
                 .thenReturn(ResponseEntity.ok(Collections.singletonList(document)));
 
-        when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(levendeIdenter);
+        when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(levendeIdenter);
 
         when(tpsfConsumer.sendEndringsmeldingTilTps(any())).thenReturn(rsPureXmlMessageResponse);
     }
@@ -139,7 +139,7 @@ public class EndringsmeldingServiceTest {
         List<RsPureXmlMessageResponse> responses = endringsmeldingService.opprettSyntetiskeNavEndringsmeldinger(syntetiserNavEndringsmeldingerRequest);
 
         verify(syntConsumer).getSyntetiserteNavEndringsmeldinger(endringskode.getEndringskode(), antallMeldinger);
-        verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
+        verify(hodejegerenConsumer).getLevende(avspillergruppeId);
         verify(tpsfConsumer).sendEndringsmeldingTilTps(any());
 
         assertThat(responses.get(0).getXml(), containsString(fnr1));
