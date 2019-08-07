@@ -21,7 +21,7 @@ public class IdentService {
     private Inst2Consumer inst2Consumer;
 
     public List<OppholdResponse> opprettInstitusjonsopphold(String callId, String consumerId, String miljoe, List<Institusjonsopphold> oppholdene) {
-        List<OppholdResponse> statusFraInst2 = new ArrayList<>();
+        List<OppholdResponse> statusFraInst2 = new ArrayList<>(oppholdene.size());
         for (Institusjonsopphold opphold : oppholdene) {
             OppholdResponse oppholdResponse = sendTilInst2(callId, consumerId, miljoe, opphold);
             statusFraInst2.add(oppholdResponse);
@@ -38,7 +38,7 @@ public class IdentService {
     public List<OppholdResponse> slettInstitusjonsoppholdTilIdenter(String callId, String consumerId, String miljoe, List<String> identer) {
         Map<String, Object> tokenObject = hentTokenTilInst2();
 
-        List<OppholdResponse> sletteOppholdResponses = new ArrayList<>();
+        List<OppholdResponse> sletteOppholdResponses = new ArrayList<>(identer.size());
 
         for (String ident : identer) {
             List<Institusjonsopphold> institusjonsopphold = hentInstitusjonsoppholdFraInst2(tokenObject, callId, consumerId, miljoe, ident);
@@ -57,7 +57,7 @@ public class IdentService {
                         oppholdResponse.getInstitusjonsopphold().setPersonident(null); // finnes allerede i respons - unngå dobbel personident
                     } else {
                         oppholdResponse.setStatus(response.getStatusCode());
-                        oppholdResponse.setFeilmelding(Objects.requireNonNull(response.getBody()).toString());
+                        oppholdResponse.setFeilmelding(String.valueOf(response.getBody()));
                     }
                 }
             }
