@@ -6,7 +6,7 @@
     <parent>
         <artifactId>testnorge-sigrun</artifactId>
         <groupId>no.nav.registre</groupId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.0</version>
     </parent>
 
     <artifactId>sigrun-domain</artifactId>
