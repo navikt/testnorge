@@ -1,5 +1,6 @@
 package no.nav.registre.sam.service;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import java.util.Map;
 import no.nav.registre.sam.IdentMedData;
 import no.nav.registre.sam.SamSaveInHodejegerenRequest;
 import no.nav.registre.sam.SyntetisertSamordningsmelding;
-import no.nav.registre.sam.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.sam.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.sam.consumer.rs.SamSyntetisererenConsumer;
 import no.nav.registre.sam.database.TPersonRepository;
 import no.nav.registre.sam.database.TSamHendelseRepository;
@@ -27,6 +28,7 @@ import no.nav.registre.sam.domain.database.TSamHendelse;
 import no.nav.registre.sam.domain.database.TSamMelding;
 import no.nav.registre.sam.domain.database.TSamVedtak;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @Service
 @Slf4j
@@ -38,6 +40,9 @@ public class SyntetiseringService {
 
     @Autowired
     private SamSyntetisererenConsumer samSyntetisererenConsumer;
+
+    @Autowired
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -60,8 +65,9 @@ public class SyntetiseringService {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Timed(value = "sam.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> finnLevendeIdenter(SyntetiserSamRequest request) {
-        return hodejegerenConsumer.finnLevendeIdenter(request);
+        return hodejegerenConsumer.getLevende(request.getAvspillergruppeId(), request.getMiljoe(), request.getAntallMeldinger(), null);
     }
 
     public void lagreSyntetiserteMeldinger(List<SyntetisertSamordningsmelding> syntetiserteMeldinger, List<String> identer) {
@@ -91,7 +97,7 @@ public class SyntetiseringService {
         }
         SamSaveInHodejegerenRequest hodejegerenRequests = new SamSaveInHodejegerenRequest(SAM_NAME, identerMedData);
 
-        List<String> lagredeIdenter = hodejegerenConsumer.saveHistory(hodejegerenRequests);
+        List<String> lagredeIdenter = hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequests);
 
         if (lagredeIdenter.size() < identerMedData.size()) {
             List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
