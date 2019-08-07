@@ -41,4 +41,8 @@ public class RsRelasjon {
     private RsAdresse boadresse;
 
     private List<RsPostadresse> postadresse;
+
+    private String utvandretTilLand;
+
+    private LocalDateTime utvandretTilLandFlyttedato;
 }

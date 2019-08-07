@@ -55,4 +55,8 @@ public class RsTpsfBasisBestilling {
     private LocalDateTime datoSprak;
 
     private Boolean utenFastBopel;
+
+    private String utvandretTilLand;
+
+    private LocalDateTime utvandretTilLandFlyttedato;
 }
