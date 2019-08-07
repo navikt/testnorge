@@ -1,10 +1,7 @@
 package no.nav.registre.arena.core.consumer.rs;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
 import no.nav.registre.arena.core.config.AppConfig;
-import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
+import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.domain.Aap;
 import no.nav.registre.arena.domain.Aap115;
 import no.nav.registre.arena.domain.NyBruker;
@@ -12,7 +9,6 @@ import no.nav.registre.arena.domain.UtenServicebehov;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,9 +30,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static no.nav.registre.arena.core.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 
@@ -101,11 +95,11 @@ public class ArenaForvalterConsumerTest {
 
         stubArenaForvalterConsumer();
 
-        List<Arbeidsoker> arbeidsokerList = arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
+        List<Arbeidsoeker> arbeidsoekerList = arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
 
-        assertThat(arbeidsokerList.size(), is(equalTo(2)));
-        assertThat(arbeidsokerList.get(1).getPersonident(), is("20202020202"));
-        assertThat(arbeidsokerList.get(0).getServicebehov(), is(false));
+        assertThat(arbeidsoekerList.size(), is(equalTo(2)));
+        assertThat(arbeidsoekerList.get(1).getPersonident(), is("20202020202"));
+        assertThat(arbeidsoekerList.get(0).getServicebehov(), is(false));
 
     }
 
@@ -113,7 +107,7 @@ public class ArenaForvalterConsumerTest {
     public void checkEmptyListOnBadSentTilArenaForvalterRequest() {
         stubArenaForvalterBadRequest();
 
-        List<Arbeidsoker> response = arenaForvalterConsumer.sendTilArenaForvalter(null);
+        List<Arbeidsoeker> response = arenaForvalterConsumer.sendTilArenaForvalter(null);
 
        assertThat(response, is(Collections.EMPTY_LIST));
     }
@@ -122,7 +116,7 @@ public class ArenaForvalterConsumerTest {
     public void emptyHentBrukereReturnsEmptyList() {
         stubArenaForvlaterEmptyHentBrukere();
 
-        List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere();
 
         assertThat(response, is(Collections.EMPTY_LIST));
     }
@@ -133,7 +127,7 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterHentBrukereFirstPage();
         stubArenaForvalterHentBrukereSecondPage();
 
-        List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere();
 
         assertThat(response.get(2).getPersonident(), is("09038817873"));
         assertThat(response.size(), is(3));
@@ -144,7 +138,7 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterHentBrukereNoPage();
         stubArenaForvalterHentBrukereNoBody();
 
-        List<Arbeidsoker> response = arenaForvalterConsumer.hentBrukere();
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere();
         assertThat(response, is(Collections.EMPTY_LIST));
     }
 
