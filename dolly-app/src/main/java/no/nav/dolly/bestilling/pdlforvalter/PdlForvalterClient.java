@@ -38,36 +38,6 @@ public class PdlForvalterClient implements ClientRegister {
     private final PdlForvalterRestConsumer pdlForvalterRestConsumer;
     private final MapperFacade mapperFacade;
 
-    private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
-        builder.append('$')
-                .append(utenlandsIdentifikasjonsnummer);
-    }
-
-    private static void appendOkStatus(JsonNode jsonNode, StringBuilder builder) {
-        builder.append("&OK");
-        if (nonNull(jsonNode) && nonNull(jsonNode.get(HENDELSE_ID))) {
-            builder.append(", ")
-                    .append(HENDELSE_ID)
-                    .append(": ")
-                    .append(jsonNode.get(HENDELSE_ID));
-        }
-    }
-
-    private static void appendErrorStatus(Exception exception, StringBuilder builder) {
-
-        builder.append("&Feil (")
-                .append(exception.getMessage());
-
-        if (exception instanceof HttpClientErrorException) {
-            String responseBody = ((HttpClientErrorException) exception).getResponseBodyAsString();
-            if (responseBody.contains("message")) {
-                builder.append(" - message: ")
-                        .append(responseBody.substring(responseBody.indexOf("message") + 9, responseBody.indexOf("path") - 2));
-            }
-        }
-        builder.append(')');
-    }
-
     @Override
     public void gjenopprett(RsDollyBestilling bestilling, NorskIdent norskIdent, BestillingProgress progress) {
 
@@ -179,5 +149,34 @@ public class PdlForvalterClient implements ClientRegister {
             appendErrorStatus(e, status);
             log.error(e.getMessage(), e);
         }
+    }
+
+    private void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
+        builder.append('$')
+                .append(utenlandsIdentifikasjonsnummer);
+    }
+
+    private void appendOkStatus(JsonNode jsonNode, StringBuilder builder) {
+        builder.append("&OK");
+        if (nonNull(jsonNode) && nonNull(jsonNode.get(HENDELSE_ID))) {
+            builder.append(", ")
+                    .append(HENDELSE_ID)
+                    .append(": ")
+                    .append(jsonNode.get(HENDELSE_ID));
+        }
+    }
+
+    private void appendErrorStatus(Exception exception, StringBuilder builder) {
+        builder.append("&Feil (")
+                .append(exception.getMessage());
+
+        if (exception instanceof HttpClientErrorException) {
+            String responseBody = ((HttpClientErrorException) exception).getResponseBodyAsString();
+            if (responseBody.contains("message")) {
+                builder.append(" - message: ")
+                        .append(responseBody.substring(responseBody.indexOf("message") + 9, responseBody.indexOf("path") - 2));
+            }
+        }
+        builder.append(')');
     }
 }

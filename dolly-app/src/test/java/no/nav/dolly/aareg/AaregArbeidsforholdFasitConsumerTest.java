@@ -6,9 +6,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.fasit.FasitApiConsumer;
-import no.nav.dolly.fasit.FasitResourceScope;
-import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
+import no.nav.dolly.consumer.aareg.AaregArbeidsforholdFasitConsumer;
+import no.nav.dolly.consumer.fasit.FasitApiConsumer;
+import no.nav.dolly.consumer.fasit.FasitResourceScope;
+import no.nav.dolly.consumer.fasit.FasitResourceWithUnmappedProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

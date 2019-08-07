@@ -1,7 +1,7 @@
 package no.nav.dolly.provider;
 
-import static no.nav.dolly.domain.CommonKeys.HEADER_CALL_ID_KEY;
-import static no.nav.dolly.domain.CommonKeys.HEADER_CONSUMER_ID_KEY;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.domain.CommonKeys.MDC_CALL_ID_KEY;
 import static no.nav.dolly.domain.CommonKeys.MDC_CONSUMER_ID_KEY;
 
@@ -19,8 +19,8 @@ public class RestMdcInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String callId = extractAndValidateHeaderValue(request, HEADER_CALL_ID_KEY);
-        String consumerId = extractAndValidateHeaderValue(request, HEADER_CONSUMER_ID_KEY);
+        String callId = extractAndValidateHeaderValue(request, HEADER_NAV_CALL_ID);
+        String consumerId = extractAndValidateHeaderValue(request, HEADER_NAV_CONSUMER_ID);
 
         MDC.put(MDC_CALL_ID_KEY, callId);
         MDC.put(MDC_CONSUMER_ID_KEY, consumerId);

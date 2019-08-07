@@ -8,8 +8,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import no.nav.dolly.consumer.personoppslag.PersonoppslagConsumer;
 import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.sts.StsOidcService;
+import no.nav.dolly.security.sts.StsOidcService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

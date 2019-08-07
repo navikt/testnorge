@@ -2,8 +2,8 @@ package no.nav.dolly.provider.api;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.aareg.AaregRestConsumer;
-import no.nav.dolly.aareg.AaregWsConsumer;
+import no.nav.dolly.consumer.aareg.AaregRestConsumer;
+import no.nav.dolly.consumer.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;

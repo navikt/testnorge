@@ -10,6 +10,8 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.properties.CredentialsProps;
+import no.nav.dolly.security.sts.StsOidcFasitConsumer;
+import no.nav.dolly.security.sts.StsOidcService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

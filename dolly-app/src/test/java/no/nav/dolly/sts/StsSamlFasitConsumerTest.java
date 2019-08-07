@@ -7,10 +7,11 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
 import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.fasit.FasitApiConsumer;
-import no.nav.dolly.fasit.FasitResourceScope;
-import no.nav.dolly.fasit.FasitResourceWithUnmappedProperties;
+import no.nav.dolly.consumer.fasit.FasitApiConsumer;
+import no.nav.dolly.consumer.fasit.FasitResourceScope;
+import no.nav.dolly.consumer.fasit.FasitResourceWithUnmappedProperties;
 import no.nav.dolly.properties.Environment;
+import no.nav.dolly.security.sts.StsSamlFasitConsumer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

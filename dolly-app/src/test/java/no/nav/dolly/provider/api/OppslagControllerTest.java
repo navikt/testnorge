@@ -8,12 +8,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
-import no.nav.dolly.kodeverk.KodeverkConsumer;
-import no.nav.dolly.kodeverk.KodeverkMapper;
-import no.nav.dolly.norg2.Norg2Consumer;
-import no.nav.dolly.norg2.Norg2EnhetResponse;
-import no.nav.dolly.personoppslag.PersonoppslagConsumer;
-import no.nav.dolly.syntdata.SyntdataConsumer;
+import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
+import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
+import no.nav.dolly.consumer.norg2.Norg2Consumer;
+import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
+import no.nav.dolly.consumer.personoppslag.PersonoppslagConsumer;
+import no.nav.dolly.consumer.syntdata.SyntdataConsumer;
 import no.nav.tjenester.kodeverk.api.v1.Betydning;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 import org.junit.Test;

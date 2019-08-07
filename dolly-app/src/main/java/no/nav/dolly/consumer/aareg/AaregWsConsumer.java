@@ -1,0 +1,95 @@
+package no.nav.dolly.consumer.aareg;
+
+import static java.util.Objects.nonNull;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
+import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdArbeidsforholdIkkeFunnet;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdSikkerhetsbegrensning;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdUgyldigInput;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdSikkerhetsbegrensning;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdUgyldigInput;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OppdaterArbeidsforholdRequest;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeidsforholdRequest;
+import org.springframework.stereotype.Component;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.soap.SOAPFaultException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class AaregWsConsumer {
+
+    private static final String STATUS_OK = "OK";
+    private static final String TEKNISK_FEIL_OPPRETTING = "Feil: Teknisk feil ved oppretting mot AAREG";
+    private static final String TEKNISK_FEIL_OPPDATERING = "Feil: Teknisk feil ved oppdatering mot AAREG";
+    private static final String SOAP_FAULT_EXCEPTION = "Feil: AAREG teknisk feil/unntak: ";
+
+    private final BehandleArbeidsforholdV1Proxy behandleArbeidsforholdV1Proxy;
+    private final MapperFacade mapperFacade;
+
+    private static String getUuid(String referanse) {
+
+        return nonNull(referanse) ? referanse : "Dolly: " + UUID.randomUUID().toString();
+    }
+
+    public Map<String, String> opprettArbeidsforhold(RsAaregOpprettRequest request) {
+
+        OpprettArbeidsforholdRequest arbeidsforholdRequest = new OpprettArbeidsforholdRequest();
+        arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
+        arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
+
+        Map<String, String> status = new HashMap<>(request.getEnvironments().size());
+        request.getEnvironments().forEach(env -> {
+            try {
+                behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env).opprettArbeidsforhold(arbeidsforholdRequest);
+                status.put(env, STATUS_OK);
+            } catch (OpprettArbeidsforholdSikkerhetsbegrensning | OpprettArbeidsforholdUgyldigInput | DollyFunctionalException error) {
+                status.put(env, AaregResponseHandler.extractError(error));
+            } catch (SOAPFaultException sfe) {
+                status.put(env, SOAP_FAULT_EXCEPTION + sfe.getMessage());
+                log.error(TEKNISK_FEIL_OPPRETTING, sfe);
+            } catch (RuntimeException re) {
+                status.put(env, TEKNISK_FEIL_OPPRETTING + ", se logg!");
+                log.error(TEKNISK_FEIL_OPPRETTING, re);
+            }
+        });
+
+        return status;
+    }
+
+    public Map<String, String> oppdaterArbeidsforhold(RsAaregOppdaterRequest request) {
+
+        OppdaterArbeidsforholdRequest arbeidsforholdRequest = new OppdaterArbeidsforholdRequest();
+        arbeidsforholdRequest.setArbeidsforhold(mapperFacade.map(request.getArbeidsforhold(), Arbeidsforhold.class));
+        arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
+        arbeidsforholdRequest.setRapporteringsperiode(mapperFacade.map(request.getRapporteringsperiode(), XMLGregorianCalendar.class));
+
+        Map<String, String> status = new HashMap<>(request.getEnvironments().size());
+        request.getEnvironments().forEach(env -> {
+            try {
+                behandleArbeidsforholdV1Proxy.getServiceByEnvironment(env).oppdaterArbeidsforhold(arbeidsforholdRequest);
+                status.put(env, STATUS_OK);
+            } catch (OppdaterArbeidsforholdArbeidsforholdIkkeFunnet | OppdaterArbeidsforholdSikkerhetsbegrensning | OppdaterArbeidsforholdUgyldigInput | DollyFunctionalException error) {
+                status.put(env, AaregResponseHandler.extractError(error));
+            } catch (SOAPFaultException sfe) {
+                status.put(env, SOAP_FAULT_EXCEPTION + sfe.getMessage());
+                log.error(TEKNISK_FEIL_OPPDATERING, sfe);
+            } catch (RuntimeException re) {
+                status.put(env, TEKNISK_FEIL_OPPDATERING + ", se logg!");
+                log.error(TEKNISK_FEIL_OPPDATERING, re);
+            }
+        });
+
+        return status;
+    }
+}

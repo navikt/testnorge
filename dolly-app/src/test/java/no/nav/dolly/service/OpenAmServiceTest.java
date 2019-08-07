@@ -19,7 +19,7 @@ import no.nav.dolly.domain.jira.Issuetypes;
 import no.nav.dolly.domain.jira.JiraResponse;
 import no.nav.dolly.domain.jira.Project;
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
-import no.nav.dolly.jira.JiraConsumer;
+import no.nav.dolly.consumer.jira.JiraConsumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

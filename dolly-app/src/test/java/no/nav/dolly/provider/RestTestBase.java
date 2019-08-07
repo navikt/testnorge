@@ -1,8 +1,8 @@
 package no.nav.dolly.provider;
 
 import static no.nav.dolly.config.SecurityTestConfig.OPEN_AM_ISSUER_URL;
-import static no.nav.dolly.provider.HttpRequestConstants.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.provider.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 

@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.consumer.norg2.Norg2Consumer;
+import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.properties.ProvidersProps;
 import org.junit.Rule;

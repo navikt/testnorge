@@ -8,8 +8,8 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.aareg.AaregRestConsumer;
-import no.nav.dolly.aareg.AaregWsConsumer;
+import no.nav.dolly.consumer.aareg.AaregRestConsumer;
+import no.nav.dolly.consumer.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregResponse;

@@ -1,7 +1,9 @@
 package no.nav.dolly.bestilling.krrstub;
 
 import static java.lang.String.format;
-import static no.nav.dolly.sts.StsOidcService.getUserIdToken;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +31,8 @@ public class KrrStubConsumer {
 
         return restTemplate.exchange(RequestEntity.post(URI.create(format("%s%s", providersProps.getKrrStub().getUrl(), KRR_STUB_DIGITAL_KONTAKT)))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Nav-Call-Id", Long.toString(bestillingsid))
-                .header("Nav-Consumer-Id", getUserIdToken())
+                .header(HEADER_NAV_CALL_ID, Long.toString(bestillingsid))
+                .header(HEADER_NAV_CONSUMER_ID, getUserIdToken())
                 .body(digitalKontaktdata), Object.class);
     }
 }

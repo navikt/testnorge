@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
-import static no.nav.dolly.sts.StsOidcService.getUserIdToken;
-import static no.nav.dolly.sts.StsOidcService.getUserPrinciple;
+import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
+import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;

@@ -23,6 +23,7 @@
         <module>dolly-test</module>
         <module>dolly-test-common</module>
         <module>dolly-app-local</module>
+        <module>dolly-app-nais</module>
     </modules>
 
     <properties>

@@ -1,5 +1,7 @@
 package no.nav.dolly.kodeverk;
 
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -9,6 +11,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.exceptions.KodeverkException;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
@@ -32,8 +35,6 @@ public class KodeverkConsumerTest {
     private static final String KODEVERK_URL = "url";
     private static final String KODEVERK_NAVN = "name";
     private static final String KODEVERK_QUERY_PARAM = "?ekskluderUgyldige=true&spraak=nb";
-    private static final String HEADER_NAME_CONSUMER_ID = "Nav-Consumer-Id";
-    private static final String HEADER_NAME_CALL_ID = "Nav-Call-id";
     @Mock
     ProvidersProps providersProps;
     @Mock
@@ -62,8 +63,8 @@ public class KodeverkConsumerTest {
         verify(restTemplate).exchange(capUrl.capture(), any(HttpMethod.class), capEntity.capture(), eq(GetKodeverkKoderBetydningerResponse.class));
 
         assertThat(capUrl.getValue(), is(KODEVERK_URL + "/api/v1/kodeverk/name/koder/betydninger" + KODEVERK_QUERY_PARAM));
-        assertThat(capEntity.getValue().getHeaders().getFirst(HEADER_NAME_CONSUMER_ID), is("srvdolly"));
-        assertThat(capEntity.getValue().getHeaders().getFirst(HEADER_NAME_CALL_ID), is(notNullValue()));
+        assertThat(capEntity.getValue().getHeaders().getFirst(HEADER_NAV_CONSUMER_ID), is("srvdolly"));
+        assertThat(capEntity.getValue().getHeaders().getFirst(HEADER_NAV_CALL_ID), is(notNullValue()));
     }
 
     @Test(expected = KodeverkException.class)

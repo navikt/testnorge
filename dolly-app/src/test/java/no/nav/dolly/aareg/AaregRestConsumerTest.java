@@ -6,7 +6,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.sts.StsOidcService;
+import no.nav.dolly.consumer.aareg.AaregArbeidsforholdFasitConsumer;
+import no.nav.dolly.consumer.aareg.AaregRestConsumer;
+import no.nav.dolly.security.sts.StsOidcService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

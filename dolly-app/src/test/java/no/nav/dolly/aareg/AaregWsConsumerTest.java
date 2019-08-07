@@ -13,6 +13,8 @@ import static org.mockito.Mockito.when;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.consumer.aareg.AaregWsConsumer;
+import no.nav.dolly.consumer.aareg.BehandleArbeidsforholdV1Proxy;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOppdaterRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;

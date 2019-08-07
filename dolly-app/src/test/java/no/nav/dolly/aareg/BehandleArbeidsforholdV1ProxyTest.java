@@ -5,8 +5,10 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.consumer.aareg.AaregBehandleArbeidsforholdFasitConsumer;
+import no.nav.dolly.consumer.aareg.BehandleArbeidsforholdV1Proxy;
 import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.sts.StsSamlTokenService;
+import no.nav.dolly.security.sts.StsSamlTokenService;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 import org.junit.Rule;
 import org.junit.Test;

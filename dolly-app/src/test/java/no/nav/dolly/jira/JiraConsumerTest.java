@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.consumer.jira.JiraConsumer;
 import no.nav.dolly.domain.jira.Project;
 import no.nav.dolly.properties.JiraProps;
 import org.junit.Before;

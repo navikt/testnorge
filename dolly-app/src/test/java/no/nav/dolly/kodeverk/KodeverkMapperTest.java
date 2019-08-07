@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
 
+import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.tjenester.kodeverk.api.v1.Beskrivelse;
 import no.nav.tjenester.kodeverk.api.v1.Betydning;

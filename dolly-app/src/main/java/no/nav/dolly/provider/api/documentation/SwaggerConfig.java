@@ -2,8 +2,8 @@ package no.nav.dolly.provider.api.documentation;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static no.nav.dolly.provider.HttpRequestConstants.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.provider.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static springfox.documentation.builders.PathSelectors.ant;
 import static springfox.documentation.builders.RequestHandlerSelectors.any;

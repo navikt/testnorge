@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.consumer.fasit.FasitApiConsumer;
+import no.nav.dolly.consumer.fasit.FasitResourceWithUnmappedProperties;
 import no.nav.dolly.exceptions.FasitException;
 import no.nav.dolly.properties.ProvidersProps;
 import org.junit.Test;

@@ -9,6 +9,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.consumer.aareg.AaregClient;
+import no.nav.dolly.consumer.aareg.AaregRestConsumer;
+import no.nav.dolly.consumer.aareg.AaregWsConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
