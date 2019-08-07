@@ -5,12 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,16 +31,6 @@ public class PoppSyntetisererenConsumer {
     public List<Map<String, Object>> hentPoppMeldingerFromSyntRest(List<String> fnrs) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(fnrs);
 
-        List<Map<String, Object>> syntetiserteMeldinger = new ArrayList<>();
-
-        ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
-
-        if (response != null && response.getBody() != null) {
-            syntetiserteMeldinger.addAll(response.getBody());
-        } else {
-            log.error("Kunne ikke hente response body fra synthdata-popp: NullPointerException");
-        }
-
-        return syntetiserteMeldinger;
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }
