@@ -28,12 +28,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.sigrun.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.sigrun.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
 import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SigrunServiceTest {
@@ -46,6 +47,9 @@ public class SigrunServiceTest {
 
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
+
+    @Mock
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @InjectMocks
     private SigrunService sigrunService;
@@ -75,7 +79,7 @@ public class SigrunServiceTest {
 
         verify(poppSyntetisererenConsumer).hentPoppMeldingerFromSyntRest(fnrs);
         verify(sigrunStubConsumer).sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier, miljoe);
-        verify(hodejegerenConsumer).saveHistory(any());
+        verify(hodejegerenHistorikkConsumer).saveHistory(any());
         assertThat(actualResponse.getBody(), equalTo(HttpStatus.OK));
     }
 
@@ -83,11 +87,14 @@ public class SigrunServiceTest {
     public void shouldNotAddIdenticalId() {
         List<String> eksisterendeIdenter = new ArrayList<>(Arrays.asList("01010101010", "02020202020", "03030303030", "04040404040"));
         List<String> nyeIdenter = new ArrayList<>(Arrays.asList("02020202020", "05050505050"));
+        Long avspillergruppeId = 123L;
+        String miljoe = "t1";
+        int antallNyeIdenter = 2;
 
-        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(123L, "t1", 2);
+        SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe)).thenReturn(eksisterendeIdenter);
-        when(hodejegerenConsumer.finnLevendeIdenter(syntetiserPoppRequest)).thenReturn(nyeIdenter);
+        when(hodejegerenConsumer.getLevende(avspillergruppeId, miljoe, antallNyeIdenter, null)).thenReturn(nyeIdenter);
 
         List<String> resultat = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest);
 
