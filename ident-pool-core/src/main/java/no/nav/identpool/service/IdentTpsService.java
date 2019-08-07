@@ -73,12 +73,16 @@ public class IdentTpsService {
             for (List<String> list : Lists.partition(nonExisting, MAX_SIZE_TPS_QUEUE)) {
                 String response = messageQueue.sendMessage(new NavnOpplysning(list).toXml());
                 try {
+                    if (response == null || "".equals(response)) {
+                        log.warn("Fikk tom response fra TPS i miljø {}", env);
+                        return usedIdents;
+                    }
                     TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
                     if (data.getTpsSvar().getIngenReturData() == null) {
                         usedIdents.addAll(findUsedIdents(data));
                     }
                 } catch (DataBindingException ex) {
-                    log.info(response);
+                    log.info("Fikk response: {} fra TPS i miljø {}", response, env);
                     throw new RuntimeException(ex);
                 }
             }

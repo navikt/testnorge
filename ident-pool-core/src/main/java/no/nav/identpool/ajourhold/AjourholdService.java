@@ -47,6 +47,7 @@ public class AjourholdService {
         while (minDate.isBefore(current)) {
             checkAndGenerateForDate(minDate, Identtype.FNR);
             checkAndGenerateForDate(minDate, Identtype.DNR);
+            checkAndGenerateForDate(minDate, Identtype.BOST);
             minDate = minDate.plusYears(1);
         }
         counter.increment(newIdentCount);

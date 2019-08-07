@@ -36,12 +36,14 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     private URI ROOT_URI;
     private URI BRUK_URI;
+    private URI BRUK_BATCH_URI;
     private URI LEDIG_URI;
 
     @BeforeEach
     void populerDatabaseMedTestidenter() throws URISyntaxException {
         ROOT_URI = new URIBuilder(IDENT_V1_BASEURL).build();
         BRUK_URI = new URIBuilder(IDENT_V1_BASEURL + "/bruk").build();
+        BRUK_BATCH_URI = new URIBuilder(IDENT_V1_BASEURL + "/bruk/batch").build();
         LEDIG_URI = new URIBuilder(IDENT_V1_BASEURL + "/ledig").build();
 
         identRepository.deleteAll();
@@ -117,8 +119,8 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    void markerIBrukPaaIdentAlleredeIbruk() {
-        String body = "{\"personidentifikator\":\"" + FNR_IBRUK + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
+    void markerIBrukPaaIdentAlleredeIBruk() {
+        String body = "{\"personidentifikator\":\"" + FNR_IBRUK + "\", \"bruker\":\"TesterMcTestFace\" }";
 
         ResponseEntity<ApiError> apiErrorResponseEntity = doPostRequest(BRUK_URI, createBodyEntity(body), ApiError.class);
 
@@ -130,7 +132,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     void markerEksisterendeLedigIdentIBruk() {
         assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
 
-        String body = "{\"personidentifikator\":\"" + FNR_LEDIG + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
+        String body = "{\"personidentifikator\":\"" + FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
 
         ResponseEntity<ApiResponse> apiResponseEntity = doPostRequest(BRUK_URI, createBodyEntity(body), ApiResponse.class);
 
@@ -143,7 +145,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     void markerNyLedigIdentIBruk() {
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
 
-        String body = "{\"personidentifikator\":\"" + NYTT_FNR_LEDIG + "\", \"rekvirertAv\":\"TesterMcTestFace\" }";
+        String body = "{\"personidentifikator\":\"" + NYTT_FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
 
         ResponseEntity<ApiResponse> apiResponseEntity = doPostRequest(BRUK_URI, createBodyEntity(body), ApiResponse.class);
 
@@ -151,6 +153,19 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getIdenttype(), is(Identtype.FNR));
 
+    }
+
+    @Test
+    void markerNyLedigIdentIBrukBatch() {
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
+
+        String body = "{\"personidentifikatorer\":[\"" + NYTT_FNR_LEDIG + "\"], \"bruker\":\"TesterMcTestFace\" }";
+
+        ResponseEntity<ApiResponse> apiResponseEntity = doPostRequest(BRUK_BATCH_URI, createBodyEntity(body), ApiResponse.class);
+
+        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getIdenttype(), is(Identtype.FNR));
     }
 
     @Test
