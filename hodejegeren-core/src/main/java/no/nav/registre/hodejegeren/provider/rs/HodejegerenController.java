@@ -40,47 +40,47 @@ public class HodejegerenController {
     private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
 
     @LogExceptions
-    @ApiOperation(value = "Her kan man hente alle personer i en gitt avspillergruppe i TPSF.")
+    @ApiOperation(value = "Her kan man hente alle identer i en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/alle-identer/{avspillergruppeId}")
     public List<String> hentAlleIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
         return eksisterendeIdenterService.finnAlleIdenter(avspillergruppeId);
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her kan man hente alle levende personer i en gitt avspillergruppe i TPSF.")
+    @ApiOperation(value = "Her kan man hente alle levende identer i en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/alle-levende-identer/{avspillergruppeId}")
     public List<String> hentLevendeIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
         return eksisterendeIdenterService.finnLevendeIdenter(avspillergruppeId);
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her kan man hente alle døde og utvandrede personer fra en gitt avspillergruppe i TPSF.")
+    @ApiOperation(value = "Her kan man hente alle døde og utvandrede identer fra en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/doede-identer/{avspillergruppeId}")
     public List<String> hentDoedeOgUtvandredeIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
         return eksisterendeIdenterService.finnDoedeOgUtvandredeIdenter(avspillergruppeId);
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her kan man hente et gitt antall gifte personer fra en gitt avspillergruppe i TPSF.")
+    @ApiOperation(value = "Her kan man hente et gitt antall gifte identer fra en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/gifte-identer/{avspillergruppeId}")
     public List<String> hentGifteIdenterIGruppe(@PathVariable("avspillergruppeId") Long avspillergruppeId) {
         return eksisterendeIdenterService.finnGifteIdenter(avspillergruppeId);
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her kan et gitt antall levende personer hentes fra en gitt avspillergruppe i TPSF. "
+    @ApiOperation(value = "Her kan et gitt antall levende identer hentes fra en gitt avspillergruppe i TPSF. "
             + "Systemet sjekker status-quo på personen i det angitte miljø. En minimum alder på personene kan oppgis.")
     @GetMapping("api/v1/levende-identer/{avspillergruppeId}")
     public List<String> hentLevendeIdenter(@PathVariable("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe,
-            @RequestParam(value = "antallPersoner", required = false) Integer antallPersoner, @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder) {
+            @RequestParam(value = "antallIdenter", required = false) Integer antallIdenter, @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder) {
         if (minimumAlder == null || minimumAlder < MIN_ALDER) {
             minimumAlder = MIN_ALDER;
         }
-        if (antallPersoner == null || antallPersoner < 0) {
-            antallPersoner = Integer.MAX_VALUE;
+        if (antallIdenter == null || antallIdenter < 0) {
+            antallIdenter = Integer.MAX_VALUE;
         }
 
-        return eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallPersoner, minimumAlder);
+        return eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder);
     }
 
     @LogExceptions
@@ -111,8 +111,8 @@ public class HodejegerenController {
             + "De er garantert til å være myndige.")
     @GetMapping("api/v1/fnr-med-navkontor/{avspillergruppeId}")
     public List<NavEnhetResponse> hentEksisterendeMyndigeIdenterMedNavKontor(@PathVariable("avspillergruppeId") Long avspillergruppeId, @RequestParam("miljoe") String miljoe,
-            @RequestParam("antallPersoner") int antallPersoner) {
-        List<String> myndigeIdenter = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallPersoner, 18);
+            @RequestParam("antallIdenter") int antallIdenter) {
+        List<String> myndigeIdenter = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, 18);
         return eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, myndigeIdenter);
     }
 
@@ -137,7 +137,7 @@ public class HodejegerenController {
     @GetMapping("api/v1/status-quo-identer/{avspillergruppeId}")
     public Map<String, JsonNode> hentEksisterendeIdenterMedStatusQuo(@PathVariable("avspillergruppeId") Long avspillergruppeId,
             @RequestParam("miljoe") String miljoe,
-            @RequestParam("antallPersoner") int antallPersoner,
+            @RequestParam("antallIdenter") int antallIdenter,
             @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder,
             @RequestParam(value = "maksimumAlder", required = false) Integer maksimumAlder,
             HttpServletResponse response) {
@@ -151,7 +151,7 @@ public class HodejegerenController {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return new HashMap<>();
         }
-        return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallPersoner, minimumAlder, maksimumAlder);
+        return eksisterendeIdenterService.hentGittAntallIdenterMedStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder, maksimumAlder);
     }
 
     @LogExceptions
@@ -162,7 +162,7 @@ public class HodejegerenController {
     }
 
     @LogExceptions
-    @ApiOperation(value = "Her kan man hente alle fødte personer fra en gitt avspillergruppe i TPSF.")
+    @ApiOperation(value = "Her kan man hente alle fødte identer fra en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/foedte-identer/{avspillergruppeId}")
     public List<String> hentFoedteIdenter(@PathVariable Long avspillergruppeId) {
         return eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId);
