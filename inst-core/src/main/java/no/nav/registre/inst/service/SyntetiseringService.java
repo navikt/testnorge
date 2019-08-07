@@ -1,5 +1,6 @@
 package no.nav.registre.inst.service;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,12 @@ import java.util.Random;
 import no.nav.registre.inst.IdentMedData;
 import no.nav.registre.inst.InstSaveInHodejegerenRequest;
 import no.nav.registre.inst.Institusjonsopphold;
-import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.inst.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @Service
 @Slf4j
@@ -30,6 +32,9 @@ public class SyntetiseringService {
 
     @Autowired
     private IdentService identService;
+
+    @Autowired
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -68,7 +73,7 @@ public class SyntetiseringService {
     }
 
     private List<String> finnLevendeIdenter(SyntetiserInstRequest syntetiserInstRequest) {
-        List<String> alleLevendeIdenter = hodejegerenConsumer.finnLevendeIdenter(syntetiserInstRequest.getAvspillergruppeId());
+        List<String> alleLevendeIdenter = getLevendeIdenter(syntetiserInstRequest.getAvspillergruppeId());
         List<String> utvalgteIdenter = new ArrayList<>(syntetiserInstRequest.getAntallNyeIdenter());
 
         for (int i = 0; i < syntetiserInstRequest.getAntallNyeIdenter(); i++) {
@@ -124,7 +129,7 @@ public class SyntetiseringService {
             log.warn("Kunne ikke opprette institusjonsopphold på alle identer. Antall opphold opprettet: {}", antallOppholdOpprettet);
         }
 
-        List<String> lagredeIdenter = hodejegerenConsumer.saveHistory(hodejegerenRequest);
+        List<String> lagredeIdenter = hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequest);
 
         if (lagredeIdenter.size() < identerMedData.size()) {
             List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
@@ -152,5 +157,10 @@ public class SyntetiseringService {
         }
 
         return gyldigeSyntetiserteMeldinger;
+    }
+
+    @Timed(value = "inst.resource.latency", extraTags = { "operation", "hodejegeren" })
+    private List<String> getLevendeIdenter(Long avspillergruppeId) {
+        return hodejegerenConsumer.getLevende(avspillergruppeId);
     }
 }

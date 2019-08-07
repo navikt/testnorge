@@ -28,11 +28,12 @@ import java.util.List;
 import java.util.Random;
 
 import no.nav.registre.inst.Institusjonsopphold;
-import no.nav.registre.inst.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.inst.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {
@@ -48,6 +49,9 @@ public class SyntetiseringServiceTest {
 
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
+
+    @Mock
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @Mock
     private Random rand;
@@ -79,7 +83,7 @@ public class SyntetiseringServiceTest {
     @Test
     public void shouldOppretteInstitusjonsmeldinger() {
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
-        when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
+        when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyMap(), eq(id), eq(id), eq(miljoe), eq(meldinger.get(0)))).thenReturn(OppholdResponse.builder()
                 .status(HttpStatus.OK)
                 .build());
@@ -88,10 +92,10 @@ public class SyntetiseringServiceTest {
         syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest);
 
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
-        verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
+        verify(hodejegerenConsumer).getLevende(avspillergruppeId);
         verify(inst2Consumer).hentTokenTilInst2();
         verify(identService).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), anyString());
-        verify(hodejegerenConsumer).saveHistory(any());
+        verify(hodejegerenHistorikkConsumer).saveHistory(any());
     }
 
     @Test
@@ -102,14 +106,14 @@ public class SyntetiseringServiceTest {
         logger.addAppender(listAppender);
 
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
-        when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(utvalgteIdenter);
+        when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(identService.hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), anyString())).thenReturn(meldinger);
         when(inst2Consumer.finnesInstitusjonPaaDato(anyMap(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest);
 
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
-        verify(hodejegerenConsumer).finnLevendeIdenter(avspillergruppeId);
+        verify(hodejegerenConsumer).getLevende(avspillergruppeId);
         verify(inst2Consumer).hentTokenTilInst2();
         verify(identService).hentInstitusjonsoppholdFraInst2(anyMap(), eq(id), eq(id), eq(miljoe), anyString());
 

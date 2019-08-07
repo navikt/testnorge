@@ -103,10 +103,17 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
         </dependency>
+        <!--FASIT-->
         <dependency>
             <groupId>no.nav.freg</groupId>
             <artifactId>fasit-util</artifactId>
             <version>${fasit-util.version}</version>
+        </dependency>
+        <!--HODEJEGEREN-->
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>testnorge-consumers</artifactId>
+            <version>1.4.0-RELEASE</version>
         </dependency>
     </dependencies>
 
