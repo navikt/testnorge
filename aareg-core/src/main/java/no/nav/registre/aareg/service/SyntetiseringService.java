@@ -35,7 +35,7 @@ import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 public class SyntetiseringService {
 
     private static final String AAREG_NAME = "aareg";
-    private static int MINIMUM_ALDER = 13;
+    private static final int MINIMUM_ALDER = 13;
 
     @Autowired
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
