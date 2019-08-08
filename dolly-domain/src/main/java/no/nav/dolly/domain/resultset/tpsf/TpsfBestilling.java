@@ -22,7 +22,9 @@ import java.util.List;
 public class TpsfBestilling {
 
     private List<String> opprettFraIdenter;
+
     private List<String> environments;
+
     private int antall;
 
     private RsSimpleRelasjoner relasjoner;
@@ -71,4 +73,9 @@ public class TpsfBestilling {
 
     private Boolean utenFastBopel;
 
+    private String utvandretTilLand;
+
+    private LocalDateTime utvandretTilLandFlyttedato;
+
+    private Boolean harMellomnavn;
 }
