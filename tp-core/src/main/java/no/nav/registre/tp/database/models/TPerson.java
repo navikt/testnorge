@@ -31,4 +31,18 @@ public class TPerson {
     private String endretAv;
     private String versjon;
 
+    public Timestamp getDatoOpprettet() {
+        if (datoOpprettet != null) {
+            return new Timestamp(datoOpprettet.getTime());
+        }
+        return null;
+    }
+
+    public Timestamp getDatoEndret() {
+        if (datoEndret != null) {
+            return new Timestamp(datoEndret.getTime());
+        }
+        return null;
+
+    }
 }

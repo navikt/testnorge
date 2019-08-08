@@ -3,6 +3,10 @@ package no.nav.registre.tp.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.tp.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.tp.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.tp.consumer.rs.TpSyntConsumer;
 import no.nav.registre.tp.database.models.HistorikkComposityKey;
 import no.nav.registre.tp.database.models.TForhold;
@@ -35,19 +40,28 @@ import no.nav.registre.tp.provider.rs.request.SyntetiseringsRequest;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TpServiceTest {
 
+    private static final Integer MIN_AGE = 13;
+
     @Mock
     private TForholdYtelseHistorikkRepository tForholdYtelseHistorikkRepository;
+
     @Mock
     private TForholdRepository tForholdRepository;
+
     @Mock
     private TPersonRepository tPersonRepository;
+
     @Mock
     private TYtelseRepository tYtelseRepository;
 
     @Mock
     private TpSyntConsumer tpSyntConsumer;
+
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
+
+    @Mock
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @InjectMocks
     private TpService tpService;
@@ -71,7 +85,8 @@ public class TpServiceTest {
                 .build());
         ytelser.add(TYtelse.builder().build());
         ytelser.add(TYtelse.builder().build());
-        when(hodejegerenConsumer.getLivingIdentities(any())).thenReturn(fnrs);
+        when(hodejegerenConsumer.getLevende(anyLong())).thenReturn(fnrs);
+        when(hodejegerenConsumer.getLevende(anyLong(), anyString(), anyInt(), anyInt())).thenReturn(fnrs);
         when(tPersonRepository.save(any())).thenReturn(TPerson.builder().personId(1).fnrFk("123").build());
         when(tForholdRepository.save(any())).thenReturn(TForhold.builder().personId(1).forholdId(2).endretAv("").build());
         when(tpSyntConsumer.getSyntYtelser(3)).thenReturn(ytelser);
@@ -88,6 +103,8 @@ public class TpServiceTest {
         ArrayList<TForhold> forhold = new ArrayList<>();
         forhold.add(TForhold.builder().personId(1).forholdId(2).endretAv("").build());
         when(tForholdRepository.findAll()).thenReturn(forhold);
+
+        when(hodejegerenHistorikkConsumer.saveHistory(any())).thenReturn(fnrs);
     }
 
     /**
@@ -139,7 +156,7 @@ public class TpServiceTest {
         fnrs.add("312");
         fnrs.add("213");
         fnrs.add("231");
-        when(hodejegerenConsumer.getLivingIdentities(any())).thenReturn(fnrs);
+        when(hodejegerenConsumer.getLevende(anyLong(), anyString(), anyInt(), eq(MIN_AGE))).thenReturn(fnrs);
 
         tpService.syntetiser(request);
         verify(tForholdRepository, times(0)).save(any());
@@ -155,7 +172,7 @@ public class TpServiceTest {
 
     @Test
     public void initializeTpDbForEnvironemnt() {
-        tpService.initializeTpDbForEnvironment(1L, "q2");
+        tpService.initializeTpDbForEnvironment(1L);
         verify(tPersonRepository).saveAll(any());
     }
 

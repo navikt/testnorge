@@ -101,6 +101,13 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
+
+        <!--HODEJEGEREN-->
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>testnorge-consumers</artifactId>
+            <version>1.7.0-RELEASE</version>
+        </dependency>
     </dependencies>
 
 

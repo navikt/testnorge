@@ -3,7 +3,6 @@ package no.nav.registre.tp.provider.rs;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
@@ -32,7 +31,7 @@ public class OrkestreringControllerTest {
     @Test
     public void initializeDatabase() {
 
-        when(tpService.initializeTpDbForEnvironment(anyLong(), anyString())).thenReturn(1);
+        when(tpService.initializeTpDbForEnvironment(anyLong())).thenReturn(1);
         ResponseEntity entity = orkestreringController.initializeDatabase(new OrkestreringRequest(1L, "q2"));
         assertEquals(1, entity.getBody());
     }

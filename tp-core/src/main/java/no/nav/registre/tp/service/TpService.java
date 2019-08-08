@@ -1,7 +1,8 @@
 package no.nav.registre.tp.service;
 
-import lombok.RequiredArgsConstructor;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
@@ -16,13 +17,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 import no.nav.registre.tp.Forhold;
 import no.nav.registre.tp.FulltForhold;
 import no.nav.registre.tp.IdentMedData;
 import no.nav.registre.tp.Person;
 import no.nav.registre.tp.TpSaveInHodejegerenRequest;
 import no.nav.registre.tp.Ytelse;
-import no.nav.registre.tp.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.tp.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.tp.consumer.rs.TpSyntConsumer;
 import no.nav.registre.tp.database.models.HistorikkComposityKey;
 import no.nav.registre.tp.database.models.TForhold;
@@ -37,21 +39,35 @@ import no.nav.registre.tp.provider.rs.request.SyntetiseringsRequest;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class TpService {
 
-    private final TForholdYtelseHistorikkRepository tForholdYtelseHistorikkRepository;
-    private final TForholdRepository tForholdRepository;
-    private final TPersonRepository tPersonRepository;
-    private final TYtelseRepository tYtelseRepository;
+    private static final Integer MIN_AGE = 13;
 
-    private final TpSyntConsumer tpSyntConsumer;
-    private final HodejegerenConsumer hodejegerenConsumer;
+    @Autowired
+    private HodejegerenConsumer hodejegerenConsumer;
+
+    @Autowired
+    private TForholdYtelseHistorikkRepository tForholdYtelseHistorikkRepository;
+
+    @Autowired
+    private TForholdRepository tForholdRepository;
+
+    @Autowired
+    private TPersonRepository tPersonRepository;
+
+    @Autowired
+    private TYtelseRepository tYtelseRepository;
+
+    @Autowired
+    private TpSyntConsumer tpSyntConsumer;
+
+    @Autowired
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     private static final String TP_NAME = "tp";
 
-    public int initializeTpDbForEnvironment(Long id, String env) {
-        Set<String> allIdentities = hodejegerenConsumer.getAllIdentities(new SyntetiseringsRequest(id, env, 0));
+    public int initializeTpDbForEnvironment(Long id) {
+        List<String> allIdentities = getLivingIdentities(id);
 
         List<TPerson> allInDb = (List<TPerson>) tPersonRepository.findAll();
 
@@ -67,7 +83,7 @@ public class TpService {
 
     public void syntetiser(@Valid SyntetiseringsRequest request) {
 
-        List<String> ids = hodejegerenConsumer.getLivingIdentities(request);
+        List<String> ids = getLivingIdentities(request.getAvspillergruppeId(), request.getMiljoe(), request.getAntallPersoner(), MIN_AGE);
 
         List<TYtelse> ytelser = tpSyntConsumer.getSyntYtelser(ids.size());
         if (ytelser.size() != ids.size()) {
@@ -92,45 +108,45 @@ public class TpService {
                         Collections.singletonList(
                                 FulltForhold.builder()
                                         .forhold(
-                                                Forhold.builder()
-                                                        .datoBrukFom(f.tForhold.getDatoBrukFom())
-                                                        .datoBrukTom(f.tForhold.getDatoBrukTom())
-                                                        .datoEndret(f.tForhold.getDatoEndret())
-                                                        .datoOpprettet(f.tForhold.getDatoOpprettet())
-                                                        .datoSamtykkeGitt(f.tForhold.getDatoSamtykkeGitt())
-                                                        .endretAv(f.tForhold.getEndretAv())
-                                                        .erGyldig(f.tForhold.getErGyldig())
-                                                        .harUtlandPensj(f.tForhold.getHarUtlandPensj())
-                                                        .kilde(f.tForhold.getKKildeTpT())
-                                                        .tssEksternIdFk(f.tForhold.getTssEksternIdFk())
-                                                        .opprettetAv(f.tForhold.getOpprettetAv())
-                                                        .versjon(f.tForhold.getVersjon())
+                                                new Forhold.Builder()
+                                                        .setDatoBrukFom(f.tForhold.getDatoBrukFom())
+                                                        .setDatoBrukTom(f.tForhold.getDatoBrukTom())
+                                                        .setDatoEndret(f.tForhold.getDatoEndret())
+                                                        .setDatoOpprettet(f.tForhold.getDatoOpprettet())
+                                                        .setDatoSamtykkeGitt(f.tForhold.getDatoSamtykkeGitt())
+                                                        .setEndretAv(f.tForhold.getEndretAv())
+                                                        .setErGyldig(f.tForhold.getErGyldig())
+                                                        .setHarUtlandPensj(f.tForhold.getHarUtlandPensj())
+                                                        .setKilde(f.tForhold.getKKildeTpT())
+                                                        .setTssEksternIdFk(f.tForhold.getTssEksternIdFk())
+                                                        .setOpprettetAv(f.tForhold.getOpprettetAv())
+                                                        .setVersjon(f.tForhold.getVersjon())
                                                         .build()
                                         )
                                         .person(
-                                                Person.builder()
-                                                        .datoEndret(f.tPerson.getDatoEndret())
-                                                        .datoOpprettet(f.tPerson.getDatoOpprettet())
-                                                        .endretAv(f.tPerson.getEndretAv())
-                                                        .fnrFk(f.tPerson.getFnrFk())
-                                                        .versjon(f.tPerson.getVersjon())
+                                                new Person.Builder()
+                                                        .setDatoEndret(f.tPerson.getDatoEndret())
+                                                        .setDatoOpprettet(f.tPerson.getDatoOpprettet())
+                                                        .setEndretAv(f.tPerson.getEndretAv())
+                                                        .setFnrFk(f.tPerson.getFnrFk())
+                                                        .setVersjon(f.tPerson.getVersjon())
                                                         .build()
                                         )
                                         .ytelse(
-                                                Ytelse.builder()
-                                                        .datoBrukFom(f.tYtelse.getDatoBrukFom())
-                                                        .datoBrukTom(f.tYtelse.getDatoBrukTom())
-                                                        .datoEndret(f.tYtelse.getDatoEndret())
-                                                        .datoInnmYtelFom(f.tYtelse.getDatoInnmYtelFom())
-                                                        .datoYtelIverFom(f.tYtelse.getDatoYtelIverFom())
-                                                        .datoYtelIverTom(f.tYtelse.getDatoYtelIverTom())
-                                                        .datoOpprettet(f.tYtelse.getDatoOpprettet())
-                                                        .endretAv(f.tYtelse.getEndretAv())
-                                                        .erGyldig(f.tYtelse.getErGyldig())
-                                                        .kYtelseT(f.tYtelse.getKYtelseT())
-                                                        .meldingsType(f.tYtelse.getKMeldingT())
-                                                        .opprettetAv(f.tYtelse.getOpprettetAv())
-                                                        .versjon(f.tYtelse.getVersjon())
+                                                new Ytelse.Builder()
+                                                        .setDatoBrukFom(f.tYtelse.getDatoBrukFom())
+                                                        .setDatoBrukTom(f.tYtelse.getDatoBrukTom())
+                                                        .setDatoEndret(f.tYtelse.getDatoEndret())
+                                                        .setDatoInnmYtelFom(f.tYtelse.getDatoInnmYtelFom())
+                                                        .setDatoYtelIverFom(f.tYtelse.getDatoYtelIverFom())
+                                                        .setDatoYtelIverTom(f.tYtelse.getDatoYtelIverTom())
+                                                        .setDatoOpprettet(f.tYtelse.getDatoOpprettet())
+                                                        .setEndretAv(f.tYtelse.getEndretAv())
+                                                        .setErGyldig(f.tYtelse.getErGyldig())
+                                                        .setKYtelseT(f.tYtelse.getKYtelseT())
+                                                        .setMeldingsType(f.tYtelse.getKMeldingT())
+                                                        .setOpprettetAv(f.tYtelse.getOpprettetAv())
+                                                        .setVersjon(f.tYtelse.getVersjon())
                                                         .build()
                                         )
                                         .build()
@@ -143,7 +159,7 @@ public class TpService {
                 .identMedData(identerMedData)
                 .build();
 
-        List<String> savedIds = hodejegerenConsumer.saveHistory(tpSaveInHodejegerenRequest);
+        List<String> savedIds = hodejegerenHistorikkConsumer.saveHistory(tpSaveInHodejegerenRequest);
 
         if (savedIds.size() < identerMedData.size()) {
             List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());
@@ -251,7 +267,17 @@ public class TpService {
         return fullSavedForhold;
     }
 
-    private class FullSavedForhold {
+    @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
+    private List<String> getLivingIdentities(Long id, String env, int numberOfIdents, int minAge) {
+        return hodejegerenConsumer.getLevende(id, env, numberOfIdents, minAge);
+    }
+
+    @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
+    private List<String> getLivingIdentities(Long id) {
+        return hodejegerenConsumer.getLevende(id);
+    }
+
+    private static class FullSavedForhold {
 
         TForhold tForhold;
         TPerson tPerson;

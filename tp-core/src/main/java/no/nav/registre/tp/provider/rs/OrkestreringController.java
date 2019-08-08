@@ -33,7 +33,7 @@ public class OrkestreringController {
     public ResponseEntity<Integer> initializeDatabase(@RequestBody OrkestreringRequest request) {
         TenantContext.setTenant(request.getMiljoe());
 
-        int count = tpService.initializeTpDbForEnvironment(request.getAvspillergruppeId(), request.getMiljoe());
+        int count = tpService.initializeTpDbForEnvironment(request.getAvspillergruppeId());
 
         return ResponseEntity.ok(count);
     }
