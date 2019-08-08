@@ -56,6 +56,9 @@ public class BestillingProgress {
     @Column(name = "PDLFORVALTER_STATUS")
     private String pdlforvalterStatus;
 
+    @Column(name = "INSTDATA_STATUS")
+    private String instdataStatus;
+
     private String feil;
 
     public BestillingProgress(Long bestillingId, String ident) {

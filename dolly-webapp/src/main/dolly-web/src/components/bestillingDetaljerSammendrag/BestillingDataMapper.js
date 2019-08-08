@@ -87,7 +87,7 @@ export function mapBestillingData(bestillingData) {
 		if (bestillingData.bestKriterier) {
 			const registreKriterier = JSON.parse(bestillingData.bestKriterier)
 			const pdlforvalter = registreKriterier.pdlforvalter && registreKriterier.pdlforvalter
-			if (pdlforvalter) {
+			if (pdlforvalter && pdlforvalter.utenlandskIdentifikasjonsnummer) {
 				const pdlf = {
 					items: [
 						{
