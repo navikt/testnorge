@@ -1,11 +1,10 @@
 package no.nav.identpool.rs.v1;
 
-import static no.nav.identpool.util.PersonidentUtil.validate;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.nav.identpool.util.PersonidentUtil.validate;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
@@ -49,7 +50,11 @@ public class IdentpoolController {
     @PostMapping
     @ApiOperation(value = "rekvirer nye test-identer")
     public List<String> rekvirer(@RequestBody @Valid HentIdenterRequest hentIdenterRequest) throws Exception {
-        return identpoolService.rekvirer(hentIdenterRequest);
+        try {
+            return identpoolService.rekvirer(hentIdenterRequest);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage(), e);
+        }
     }
 
     @PostMapping("/bruk")
