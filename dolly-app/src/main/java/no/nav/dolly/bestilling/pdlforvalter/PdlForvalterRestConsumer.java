@@ -3,6 +3,8 @@ package no.nav.dolly.bestilling.pdlforvalter;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,34 +35,35 @@ public class PdlForvalterRestConsumer {
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/ident";
     private static final String PREPROD_ENV = "q";
 
-    @Value("${fasit.environment.name}")
-    private String environment;
-
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
 
+    @Value("${fasit.environment.name}")
+    private String environment;
+
+
     public ResponseEntity deleteIdent(String ident) {
-        return doRequest(URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_SLETTING_URL),
-                HttpMethod.DELETE, null, ident);
+        return doRequest(DELETE, createFullURI(PDL_BESTILLING_SLETTING_URL), null, ident);
     }
 
-    public ResponseEntity postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, String ident) {
-        return doRequest(URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILL_KONTAKTINFORMASJON_FOR_DODESDBO_URL),
-                HttpMethod.POST, kontaktinformasjonForDoedsbo, ident);
+    public ResponseEntity postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo body, String ident) {
+        return doRequest(POST, createFullURI(PDL_BESTILL_KONTAKTINFORMASJON_FOR_DODESDBO_URL), body, ident);
     }
 
-    public ResponseEntity postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer, String ident) {
-        return doRequest(URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL),
-                HttpMethod.POST, utenlandskIdentifikasjonsnummer, ident);
+    public ResponseEntity postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer body, String ident) {
+        return doRequest(POST, createFullURI(PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL), body, ident);
     }
 
-    public ResponseEntity postFalskIdentitet(PdlFalskIdentitet falskIdentitet, String ident) {
-        return doRequest(URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FALSK_IDENTITET_URL),
-                HttpMethod.POST, falskIdentitet, ident);
+    public ResponseEntity postFalskIdentitet(PdlFalskIdentitet body, String ident) {
+        return doRequest(POST, createFullURI(PDL_BESTILLING_FALSK_IDENTITET_URL), body, ident);
     }
 
-    private ResponseEntity doRequest(URI uri, HttpMethod method, Object body, String ident) {
+    private URI createFullURI(String url) {
+        return URI.create(providersProps.getPdlForvalter().getUrl() + url);
+    }
+
+    private ResponseEntity doRequest(HttpMethod method, URI uri, Object body, String ident) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(APPLICATION_JSON);
         httpHeaders.add(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV));
