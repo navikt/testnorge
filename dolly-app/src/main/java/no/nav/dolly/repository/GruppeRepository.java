@@ -21,8 +21,6 @@ public interface GruppeRepository extends Repository<Testgruppe, Long> {
 
     List<Testgruppe> findAllByTeamtilhoerighetOrderByNavn(Team team);
 
-    Testgruppe findByNavn(String navn);
-
     int deleteTestgruppeById(Long id);
 
     int deleteTestgruppeByTeamtilhoerighetId(Long teamId);

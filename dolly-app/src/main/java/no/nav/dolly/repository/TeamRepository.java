@@ -11,16 +11,11 @@ public interface TeamRepository extends Repository<Team, Long> {
 
     Team save(Team team);
 
-    //TODO Brukes bare i test
-    void saveAll(Iterable<Team> teams);
-
     Optional<Team> findById(Long id);
 
     Optional<Team> findByNavn(String navn);
 
     List<Team> findAllByOrderByNavn();
-
-    List<Team> findTeamsByEierOrderByNavn(Bruker eier);
 
     List<Team> findByMedlemmerNavIdentOrderByNavn(String navIdent);
 

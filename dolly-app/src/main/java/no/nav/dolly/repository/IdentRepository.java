@@ -14,8 +14,6 @@ public interface IdentRepository extends Repository<Testident, String> {
 
     List<Testident> saveAll(Iterable<Testident> testidents);
 
-    Testident findByIdent(String ident);
-
     @Modifying
     @Query(value = "delete from Testident ti "
             + "where ti.ident in "

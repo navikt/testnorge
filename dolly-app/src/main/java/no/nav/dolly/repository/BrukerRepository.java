@@ -12,9 +12,6 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
 
     Bruker save(Bruker bruker);
 
-    //TODO Brukes bare i test
-    List<Bruker> saveAll(Iterable<Bruker> brukere);
-
     Bruker findBrukerByNavIdent(String navIdent);
 
     List<Bruker> findByNavIdentInOrderByNavIdent(List<String> navIdenter);
