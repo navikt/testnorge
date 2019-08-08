@@ -72,6 +72,12 @@
             <version>1.6.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <!--HODEJEGEREN-->
+        <dependency>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>testnorge-consumers</artifactId>
+            <version>1.7.0-RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>

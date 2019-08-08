@@ -32,16 +32,18 @@ import java.util.Random;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
-import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
 import no.nav.registre.aareg.domain.Arbeidsforhold;
 import no.nav.registre.aareg.domain.Arbeidsgiver;
 import no.nav.registre.aareg.domain.Arbeidstaker;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {
+
+    private static int MINIMUM_ALDER = 13;
 
     @Mock
     private Random rand;
@@ -73,7 +75,7 @@ public class SyntetiseringServiceTest {
         syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallMeldinger);
         fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
         syntetiserteMeldinger = new ArrayList<>();
-        when(hodejegerenConsumer.finnLevendeIdenter(avspillergruppeId)).thenReturn(fnrs);
+        when(hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER)).thenReturn(fnrs);
         when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(syntetiserteMeldinger);
         when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(new ArrayList<>());
     }
@@ -81,7 +83,7 @@ public class SyntetiseringServiceTest {
     @Test
     public void shouldOppretteArbeidshistorikk() {
         when(aaregstubConsumer.sendTilAaregstub(anyList(), eq(lagreIAareg))).thenReturn(StatusFraAaregstubResponse.builder()
-                .identerLagretIStub(Arrays.asList(fnr1))
+                .identerLagretIStub(Collections.singletonList(fnr1))
                 .build());
 
         ResponseEntity response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, lagreIAareg);

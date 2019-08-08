@@ -2,6 +2,7 @@ package no.nav.registre.aareg.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -13,7 +14,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -23,17 +23,22 @@ import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
 import no.nav.registre.aareg.IdentMedData;
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
-import no.nav.registre.aareg.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.aareg.consumer.rs.responses.ArbeidsforholdsResponse;
 import no.nav.registre.aareg.consumer.rs.responses.StatusFraAaregstubResponse;
 import no.nav.registre.aareg.domain.Arbeidsforhold;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
 
 @Service
 @Slf4j
 public class SyntetiseringService {
 
     private static final String AAREG_NAME = "aareg";
+    private static int MINIMUM_ALDER = 13;
+
+    @Autowired
+    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -48,7 +53,7 @@ public class SyntetiseringService {
     private Random rand;
 
     public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(SyntetiserAaregRequest syntetiserAaregRequest, Boolean lagreIAareg) {
-        List<String> levendeIdenter = hodejegerenConsumer.finnLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId());
+        List<String> levendeIdenter = hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER);
         List<String> nyeIdenter = new ArrayList<>(syntetiserAaregRequest.getAntallNyeIdenter());
         List<String> utvalgteIdenter = new ArrayList<>(aaregstubConsumer.hentEksisterendeIdenter());
         levendeIdenter.removeAll(utvalgteIdenter);
@@ -66,7 +71,7 @@ public class SyntetiseringService {
         utvalgteIdenter.addAll(nyeIdenter);
         List<ArbeidsforholdsResponse> syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(utvalgteIdenter);
         for (ArbeidsforholdsResponse arbeidsforholdsResponse : syntetiserteArbeidsforhold) {
-            arbeidsforholdsResponse.setEnvironments(Arrays.asList(syntetiserAaregRequest.getMiljoe()));
+            arbeidsforholdsResponse.setEnvironments(Collections.singletonList(syntetiserAaregRequest.getMiljoe()));
         }
 
         StatusFraAaregstubResponse statusFraAaregstubResponse = aaregstubConsumer.sendTilAaregstub(syntetiserteArbeidsforhold, lagreIAareg);
@@ -107,7 +112,7 @@ public class SyntetiseringService {
         if (!arbeidsforholdLagretIAareg.isEmpty()) {
             AaregSaveInHodejegerenRequest hodejegerenRequest = new AaregSaveInHodejegerenRequest(AAREG_NAME, arbeidsforholdLagretIAareg);
 
-            List<String> lagredeIdenter = hodejegerenConsumer.saveHistory(hodejegerenRequest);
+            List<String> lagredeIdenter = hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequest);
 
             List<IdentMedData> identerMedData = hodejegerenRequest.getIdentMedData();
             if (lagredeIdenter.size() < identerMedData.size()) {
@@ -164,8 +169,8 @@ public class SyntetiseringService {
 
             List<ArbeidsforholdsResponse> ugyldigeArbeidsforhold = new ArrayList<>();
 
-            for(ArbeidsforholdsResponse arbeidsforholdsResponse : arbeidsforhold) {
-                if(arbeidsforholdsResponse.getArbeidsforhold().getArbeidsavtale() == null) {
+            for (ArbeidsforholdsResponse arbeidsforholdsResponse : arbeidsforhold) {
+                if (arbeidsforholdsResponse.getArbeidsforhold().getArbeidsavtale() == null) {
                     log.warn("Arbeidsavtale er null for arbeidstaker med id {}. Hopper over opprettelse.", arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent());
                     ugyldigeArbeidsforhold.add(arbeidsforholdsResponse);
                 }
@@ -177,5 +182,10 @@ public class SyntetiseringService {
         } else {
             return aaregstubConsumer.sendTilAaregstub(arbeidsforhold, true);
         }
+    }
+
+    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
+    private List<String> hentLevendeIdenter(Long avspillergruppeId, int minimumAlder) {
+        return hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder);
     }
 }
