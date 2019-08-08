@@ -115,10 +115,8 @@ const AttributtListe: Attributt[] = [
 				label: 'Festenummer',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Text,
-				validation: yup
-					.string()
-					.max(4, 'For mange tegn')
-					.required('Vennligst fyll ut'),
+				validation: yup.string().max(4, 'For mange tegn'),
+				// .required('Vennligst fyll ut'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -128,10 +126,8 @@ const AttributtListe: Attributt[] = [
 				label: 'Undernummer',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Text,
-				validation: yup
-					.string()
-					.max(3, 'For mange tegn')
-					.required('Vennligst fyll ut'),
+				validation: yup.string().max(3, 'For mange tegn'),
+				// .required('Vennligst fyll ut'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -141,6 +137,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Postnummer',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
+				validation: yup.string().required('Vennligst velg'),
 				apiKodeverkId: 'Postnummer',
 				apiKodeverkShowValueInLabel: true,
 				attributtType: AttributtType.SelectAndEdit
@@ -152,6 +149,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Kommunenummer',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
+				validation: yup.string().required('Vennligst velg'),
 				apiKodeverkId: 'Kommuner',
 				apiKodeverkShowValueInLabel: true,
 				attributtType: AttributtType.SelectAndEdit
