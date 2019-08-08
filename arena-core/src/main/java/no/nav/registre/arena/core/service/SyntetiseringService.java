@@ -32,7 +32,6 @@ public class SyntetiseringService {
     private final Random random;
 
 
-
     public List<Arbeidsoeker> opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
         List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId, MINIMUM_ALDER);
         List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
@@ -68,7 +67,7 @@ public class SyntetiseringService {
         return byggArbeidsoekereOgLagreIHodejegeren(Collections.singletonList(ident), miljoe);
     }
 
-    public List<String> hentKvalifiserteIdenter(int antallIdenter, List<String> levendeIdenter, List<String> eksisterendeArbeidsoekere) {
+    private List<String> hentKvalifiserteIdenter(int antallIdenter, List<String> levendeIdenter, List<String> eksisterendeArbeidsoekere) {
         levendeIdenter.removeAll(eksisterendeArbeidsoekere);
 
         if (antallIdenter > levendeIdenter.size()) {
@@ -85,17 +84,8 @@ public class SyntetiseringService {
         return nyeIdenter;
     }
 
-    public List<String> hentLevendeIdenter(Long avspillergruppeId, int minimumAlder) {
+    private List<String> hentLevendeIdenter(Long avspillergruppeId, int minimumAlder) {
         return hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder);
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdenter() {
-        List<Arbeidsoeker> arbeidsoekere = arenaForvalterConsumer.hentArbeidsoekere();
-        return hentIdentListe(arbeidsoekere);
-    }
-
-    public List<Arbeidsoeker> hentArbeidsoekere(String eier, String miljoe, String personident) {
-        return arenaForvalterConsumer.hentArbeidsoekere(eier, miljoe, personident);
     }
 
     public List<Arbeidsoeker> byggArbeidsoekereOgLagreIHodejegeren(List<String> identer, String miljoe) {
@@ -108,24 +98,6 @@ public class SyntetiseringService {
         lagreArenaBrukereIHodejegeren(nyeBrukere);
 
         return arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
-    }
-
-
-    public List<String> slettBrukereIArenaForvalter(List<String> identerToDelete, String miljoe) {
-
-        List<String> slettedeIdenter = new ArrayList<>();
-
-        for (String personident : identerToDelete) {
-            if (arenaForvalterConsumer.slettBrukerSuccessful(personident, miljoe)) {
-                slettedeIdenter.add(personident);
-            }
-        }
-
-        return slettedeIdenter;
-    }
-
-    private int getAntallBrukereForAaFylleArenaForvalteren(int antallLevendeIdenter, int antallEksisterendeIdenter) {
-        return (int) (floor(antallLevendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - antallEksisterendeIdenter);
     }
 
     private void lagreArenaBrukereIHodejegeren(List<NyBruker> nyeBrukere) {
@@ -141,6 +113,11 @@ public class SyntetiseringService {
         hodejegerenConsumer.saveHistory(ARENA_FORVALTER_NAME, brukereSomSkalLagres);
     }
 
+    private List<String> hentEksisterendeArbeidsoekerIdenter() {
+        List<Arbeidsoeker> arbeidsoekere = arenaForvalterConsumer.hentArbeidsoekere();
+        return hentIdentListe(arbeidsoekere);
+    }
+
     private List<String> hentIdentListe(List<Arbeidsoeker> Arbeidsoekere) {
 
         if (Arbeidsoekere.isEmpty()) {
@@ -149,5 +126,9 @@ public class SyntetiseringService {
         }
 
         return Arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
+    }
+
+    private int getAntallBrukereForAaFylleArenaForvalteren(int antallLevendeIdenter, int antallEksisterendeIdenter) {
+        return (int) (floor(antallLevendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - antallEksisterendeIdenter);
     }
 }

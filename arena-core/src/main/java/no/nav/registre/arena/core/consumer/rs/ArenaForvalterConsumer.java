@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import javax.xml.ws.Response;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -76,8 +75,6 @@ public class ArenaForvalterConsumer {
         return hentedeArbeidsoekere;
     }
 
-
-
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
     public List<Arbeidsoeker> hentArbeidsoekere() {
         RequestEntity getRequest = RequestEntity.get(hentBrukere.expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
@@ -85,6 +82,7 @@ public class ArenaForvalterConsumer {
         return gaaGjennomSider(hentBrukere.toString() + "?", response.getBody().getAntallSider(), response.getBody().getArbeidsoekerList().size());
     }
 
+    @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
     public List<Arbeidsoeker> hentArbeidsoekere(String eier, String miljoe, String personident) {
         String url = hentBrukere.toString() + "?";
 
@@ -105,6 +103,7 @@ public class ArenaForvalterConsumer {
                 url += "&";
             }
             url += "eier=" + eier;
+            numArgs++;
         }
         RequestEntity getRequest = RequestEntity.get(new UriTemplate(url).expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
