@@ -11,7 +11,6 @@ import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
 import no.nav.dolly.domain.resultset.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.service.BrukerService;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;

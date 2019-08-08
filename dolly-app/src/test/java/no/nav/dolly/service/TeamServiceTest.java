@@ -20,7 +20,6 @@ import no.nav.dolly.domain.resultset.RsBruker;
 import no.nav.dolly.domain.resultset.RsOpprettTeam;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.AfterClass;
@@ -50,8 +49,6 @@ public class TeamServiceTest {
     private static Authentication authentication;
     @Mock
     private TeamRepository teamRepository;
-    @Mock
-    private BrukerRepository brukerRepository;
     @Mock
     private BrukerService brukerService;
     @Mock
@@ -161,7 +158,7 @@ public class TeamServiceTest {
 
         Optional<Team> opMedTeam = of(t);
         when(teamRepository.findById(any())).thenReturn(opMedTeam);
-        when(brukerRepository.findByNavIdentInOrderByNavIdent(navidenter)).thenReturn(asList(b1, b2));
+        when(brukerService.findByNavIdentInOrderByNavIdent(navidenter)).thenReturn(asList(b1, b2));
 
         teamService.addMedlemmerByNavidenter(1L, navidenter);
 

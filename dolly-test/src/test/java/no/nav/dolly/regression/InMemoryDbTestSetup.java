@@ -1,11 +1,11 @@
 package no.nav.dolly.regression;
 
-import no.nav.dolly.regression.scenarios.testrepositories.BestillingProgressTestRepository;
-import no.nav.dolly.regression.scenarios.testrepositories.BestillingTestRepository;
-import no.nav.dolly.regression.scenarios.testrepositories.BrukerTestRepository;
-import no.nav.dolly.regression.scenarios.testrepositories.GruppeTestRepository;
-import no.nav.dolly.regression.scenarios.testrepositories.IdentTestRepository;
-import no.nav.dolly.regression.scenarios.testrepositories.TeamTestRepository;
+import no.nav.dolly.regression.testrepositories.BestillingProgressTestRepository;
+import no.nav.dolly.regression.testrepositories.BestillingTestRepository;
+import no.nav.dolly.regression.testrepositories.BrukerTestRepository;
+import no.nav.dolly.regression.testrepositories.GruppeTestRepository;
+import no.nav.dolly.regression.testrepositories.IdentTestRepository;
+import no.nav.dolly.regression.testrepositories.TeamTestRepository;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

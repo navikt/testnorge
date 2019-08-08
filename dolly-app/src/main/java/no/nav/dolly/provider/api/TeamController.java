@@ -58,7 +58,10 @@ public class TeamController {
         if (teamService.deleteTeam(teamId) == 0) {
             throw new NotFoundException(format("Team med id %d ble ikke funnet.", teamId));
         }
-        //TODO Verifiser i ende-til-ende test
+        //TODO Hører denne hjemme her? Ser hensikten for forenkling,
+        // men kanskje burde det være opp til frontend å gjøre et kall for å rydde opp selv istedenfor å dra inn en service kun for dette?
+        // Eventuelt legge opp til scheduled task som rydder opp
+        // Både en unødvendig avhengighet i prodkoden og vanskeligere å teste.
         testgruppeService.slettGruppeByTeamId(teamId);
     }
 
@@ -80,6 +83,7 @@ public class TeamController {
         return teamService.fjernMedlemmer(teamId, navIdenter);
     }
 
+    //TODO Er denne nødvendig når fjernBrukerefraTeam gjør samme jobben?
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @DeleteMapping("/{teamId}/deleteMedlem")
     public RsTeamUtvidet deleteMedlemfraTeam(@PathVariable("teamId") Long teamId, @RequestParam String navIdent) {

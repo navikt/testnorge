@@ -18,7 +18,6 @@ import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TeamRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
@@ -36,7 +35,6 @@ import java.util.Optional;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private final BrukerRepository brukerRepository;
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
 
@@ -74,10 +72,6 @@ public class TeamService {
         }
     }
 
-    public int deleteTeam(Long teamId) {
-        return teamRepository.deleteTeamById(teamId);
-    }
-
     public RsTeam addMedlemmer(Long teamId, List<RsBruker> navIdenter) {
         Team team = fetchTeamById(teamId);
         team.getMedlemmer().addAll(mapperFacade.mapAsList(navIdenter, Bruker.class));
@@ -88,7 +82,7 @@ public class TeamService {
 
     public RsTeamUtvidet addMedlemmerByNavidenter(Long teamId, List<String> navIdenter) {
         Team team = fetchTeamById(teamId);
-        List<Bruker> brukere = brukerRepository.findByNavIdentInOrderByNavIdent(navIdenter);
+        List<Bruker> brukere = brukerService.findByNavIdentInOrderByNavIdent(navIdenter);
 
         team.getMedlemmer().addAll(brukere);
 
@@ -106,6 +100,7 @@ public class TeamService {
         return mapperFacade.map(changedTeam, RsTeamUtvidet.class);
     }
 
+    //TODO Er denne nødvendig når fjernMedlemmer gjør samme jobben?
     public RsTeamUtvidet slettMedlem(Long teamId, String navIdent) {
         Team team = fetchTeamById(teamId);
         boolean found = false;
@@ -147,6 +142,10 @@ public class TeamService {
 
         Team endretTeam = saveTeamToDB(team);
         return mapperFacade.map(endretTeam, RsTeamUtvidet.class);
+    }
+
+    public int deleteTeam(Long teamId) {
+        return teamRepository.deleteTeamById(teamId);
     }
 
     public List<RsTeam> fetchTeamsByMedlemskapInTeamsMapped(String navIdent) {

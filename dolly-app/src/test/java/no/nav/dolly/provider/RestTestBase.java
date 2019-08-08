@@ -6,8 +6,10 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import no.nav.dolly.common.TestdataFactory;
 import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
 import no.nav.freg.security.test.oidc.tools.OidcTestService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,14 +34,23 @@ import java.util.Map;
 @ExtendWith(SpringExtension.class)
 public abstract class RestTestBase {
 
+    protected static final String NAV_IDENT = "NAVIDENT";
     private static final String DEFAULT_CALL_ID = "CallId_1337";
     private static final String DEFAULT_CONSUMER_ID = "TestCase";
+    private static final String ERR_MSG_KEY = "message";
+    @Autowired
+    protected TestdataFactory dataFactory;
 
     @Autowired
     protected OidcTestService oidcTestService;
 
     @Autowired
     protected TestRestTemplate restTestTemplate;
+
+    @BeforeEach
+    void init() {
+        dataFactory.clearDatabase();
+    }
 
     protected EndpointRequestBuilder sendRequest() {
         return send(null);
@@ -48,10 +60,14 @@ public abstract class RestTestBase {
         return send(requestBody);
     }
 
+    protected String getErrMsg(LinkedHashMap resp) {
+        return (String) resp.get(ERR_MSG_KEY);
+    }
+
     protected String createOidcToken() {
         return oidcTestService.createOidc(
                 new JwtClaimsBuilder()
-                        .subject("sub")
+                        .subject(NAV_IDENT)
                         .audience("aud")
                         .expiry(LocalDateTime.now().plusMinutes(10))
                         .validFrom(LocalDateTime.now().minusMinutes(5))

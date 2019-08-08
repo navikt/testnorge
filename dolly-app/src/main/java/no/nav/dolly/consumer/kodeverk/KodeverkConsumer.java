@@ -44,7 +44,7 @@ public class KodeverkConsumer {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HEADER_NAV_CONSUMER_ID, APP_BRUKERNAVN);
         headers.set(HEADER_NAV_CALL_ID, generateCallId());
-        return new HttpEntity(EMPTY_BODY, headers);
+        return new HttpEntity<>(EMPTY_BODY, headers);
     }
 
     private String getKodeverksnavnUrl(String kodeverksnavn) {

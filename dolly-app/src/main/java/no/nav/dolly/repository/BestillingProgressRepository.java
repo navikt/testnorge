@@ -1,7 +1,6 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;
