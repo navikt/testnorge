@@ -55,7 +55,7 @@ jobs:
 
   deploy:
     docker:
-      - image: navikt/deployment-cli:0.2.0
+      - image: navikt/deployment-cli:v0.2.0
     steps:
       - attach_workspace:
           at: /tmp/workspace
