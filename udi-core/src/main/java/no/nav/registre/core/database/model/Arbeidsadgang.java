@@ -2,7 +2,6 @@ package no.nav.registre.core.database.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +20,6 @@ import javax.persistence.OneToOne;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Setter
 @Getter
 public class Arbeidsadgang {

@@ -9,7 +9,7 @@ import no.nav.registre.cloud.config.VaultUtil;
 public class CloudApplicationStarter {
 
     public static void main(String[] args) {
-        VaultUtil.initCloudVaultToken();
+        VaultUtil.setCloudVaultToken();
         SpringApplication.run(CloudApplicationStarter.class, args);
     }
 }

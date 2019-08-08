@@ -2,17 +2,17 @@ package no.nav.registre.core.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.core.exception.NotFoundException;
 import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import no.nav.registre.core.database.model.Alias;
 import no.nav.registre.core.database.model.Arbeidsadgang;
 import no.nav.registre.core.database.model.Avgjoerelse;
-import no.nav.registre.core.database.model.OppholdsStatus;
+import no.nav.registre.core.database.model.opphold.OppholdStatus;
 import no.nav.registre.core.database.model.Person;
 import no.nav.registre.core.database.model.PersonNavn;
 import no.nav.registre.core.database.repository.AliasRepository;
@@ -33,7 +33,7 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     public Person finnPerson(String fnr) {
-        return personRepository.findById(fnr).orElse(null);
+        return personRepository.findByFnr(fnr).orElseThrow(() -> new NotFoundException("Could not find " + fnr));
     }
 
     public List<Person> opprettPersoner(List<Person> personer) {
@@ -50,22 +50,22 @@ public class PersonService {
     }
 
     public Person opprettPerson(Person person) {
-        if (person.getOppholdsStatus() != null)
-            person.getOppholdsStatus().setPerson(person);
+        if (person.getOppholdStatus() != null)
+            person.getOppholdStatus().setPerson(person);
         if (person.getArbeidsadgang() != null)
             person.getArbeidsadgang().setPerson(person);
         return personRepository.save(person);
     }
 
     public Arbeidsadgang opprettArbeidsAdgang(String fnr, Arbeidsadgang arbeidsadgang) {
-        return personRepository.findById(fnr).map(person -> {
+        return personRepository.findByFnr(fnr).map(person -> {
             arbeidsadgang.setPerson(person);
             return arbeidsAdgangRepository.save(arbeidsadgang);
         }).orElse(null);
     }
 
     private Alias opprettAlias(String fnr, PersonNavn navn) {
-        return personRepository.findById(fnr).map(person ->
+        return personRepository.findByFnr(fnr).map(person ->
                 Alias.builder()
                         .fnr(fnr)
                         .navn(navn)
@@ -75,7 +75,7 @@ public class PersonService {
     }
 
     private Avgjoerelse opprettAvgjoerelse(String fnr, Avgjoerelse avgjoerelse) {
-        return personRepository.findById(fnr).map(person -> {
+        return personRepository.findByFnr(fnr).map(person -> {
             avgjoerelse.setPerson(person);
             Avgjoerelse lagretAvgjoerelse = avgjoerelseRepository.save(avgjoerelse);
             lagretAvgjoerelse.setOmgjortAvgjoerelsesId(lagretAvgjoerelse.getId().toString());
@@ -83,23 +83,23 @@ public class PersonService {
         }).orElse(null);
     }
 
-    public OppholdsStatus opprettOppholdsStatus(String fnr, OppholdsStatus oppholdsStatus) {
-        return personRepository.findById(fnr).map(person -> {
+    public OppholdStatus opprettOppholdsStatus(String fnr, OppholdStatus oppholdsStatus) {
+        return personRepository.findByFnr(fnr).map(person -> {
             oppholdsStatus.setPerson(person);
             return oppholdStatusRepository.save(oppholdsStatus);
         }).orElse(null);
     }
 
     public List<Avgjoerelse> findAvgjoerelserByFnr(String fnr) {
-        return personRepository.findById(fnr).map(Person::getAvgjoerelser).orElse(null);
+        return personRepository.findByFnr(fnr).map(Person::getAvgjoerelser).orElse(null);
     }
 
     public List<Alias> findAliasByFnr(String fnr) {
-        return personRepository.findById(fnr).map(Person::getAliaser).orElse(null);
+        return personRepository.findByFnr(fnr).map(Person::getAliaser).orElse(null);
     }
 
     public Arbeidsadgang findArbeidsAdgangByFnr(String fnr) {
-        return personRepository.findById(fnr).map(Person::getArbeidsadgang).orElse(null);
+        return personRepository.findByFnr(fnr).map(Person::getArbeidsadgang).orElse(null);
     }
 
     private JaNeiUavklart convertFraBool(Boolean avklart) {

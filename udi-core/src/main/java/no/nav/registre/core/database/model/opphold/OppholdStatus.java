@@ -1,11 +1,12 @@
-package no.nav.registre.core.database.model;
+package no.nav.registre.core.database.model.opphold;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.registre.core.database.model.Periode;
+import no.nav.registre.core.database.model.Person;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdstillatelse;
 
@@ -25,25 +26,16 @@ import java.sql.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Setter
 @Getter
-@Table(name = "oppholds_statuser")
-public class OppholdsStatus {
+@Table(name = "opphold_status")
+public class OppholdStatus {
 
-    @GeneratedValue
     @Id
+    @GeneratedValue
     private Long id;
 
     private Boolean uavklart;
-
-    @Embedded
-    @AttributeOverrides(
-            value = {
-                    @AttributeOverride(name = "value", column = @Column(name = "efta_beslutning_om_oppholdsrett_value"))
-            }
-    )
-    private EOSellerEFTAGrunnlagskategoriOppholdsrett eoSellerEFTABeslutningOmOppholdsrett;
 
     @Embedded
     @AttributeOverrides(
@@ -55,13 +47,9 @@ public class OppholdsStatus {
     private Periode eoSellerEFTABeslutningOmOppholdsrettPeriode;
     private Date eoSellerEFTABeslutningOmOppholdsrettEffektuering;
 
-    @Embedded
-    @AttributeOverrides(
-            value = {
-                    @AttributeOverride(name = "value", column = @Column(name = "efta_vedtak_om_varig_oppholdsrett_value"))
-            }
-    )
-    private EOSellerEFTAGrunnlagskategoriOppholdsrett eoSellerEFTAVedtakOmVarigOppholdsrett;
+    @AttributeOverride(name = "value", column = @Column(name = "efta_beslutning_om_oppholdsrett_value"))
+    private EOSellerEFTAGrunnlagskategoriOppholdsrett eoSellerEFTABeslutningOmOppholdsrett;
+
 
     @Embedded
     @AttributeOverrides(
@@ -73,40 +61,30 @@ public class OppholdsStatus {
     private Periode eoSellerEFTAVedtakOmVarigOppholdsrettPeriode;
     private Date eoSellerEFTAVedtakOmVarigOppholdsrettEffektuering;
 
-    @Embedded
-    @AttributeOverrides(
-            value = {
-                    @AttributeOverride(name = "value", column = @Column(name = "efta_oppholdstillatels_value"))
-            }
-    )
-    private EOSellerEFTAGrunnlagskategoriOppholdstillatelse eoSellerEFTAOppholdstillatelse;
+    @AttributeOverride(name = "value", column = @Column(name = "efta_vedtak_om_varig_oppholdsrett_value"))
+    private EOSellerEFTAGrunnlagskategoriOppholdsrett eoSellerEFTAVedtakOmVarigOppholdsrett;
+
 
     @Embedded
     @AttributeOverrides(
             value = {
-                    @AttributeOverride(name = "fra", column = @Column(name = "efta_oppholdstillatels_fra")),
-                    @AttributeOverride(name = "til", column = @Column(name = "efta_oppholdstillatels_til"))
+                    @AttributeOverride(name = "fra", column = @Column(name = "efta_oppholdstillatelse_fra")),
+                    @AttributeOverride(name = "til", column = @Column(name = "efta_oppholdstillatelse_til"))
             }
     )
     private Periode eoSellerEFTAOppholdstillatelsePeriode;
     private Date eoSellerEFTAOppholdstillatelseEffektuering;
-
-    private String oppholdSammeVilkaar;
+    @AttributeOverride(name = "value", column = @Column(name = "efta_oppholdstillatelse_value"))
+    private EOSellerEFTAGrunnlagskategoriOppholdstillatelse eoSellerEFTAOppholdstillatelse;
 
     @Embedded
-    @AttributeOverrides(
-            value = {
-                    @AttributeOverride(name = "fra", column = @Column(name = "opphold_samme_vilkaar_fra")),
-                    @AttributeOverride(name = "til", column = @Column(name = "opphold_samme_vilkaar_til")),
-            }
-    )
-    private Periode oppholdSammeVilkaarPeriode;
-    private Date oppholdSammeVilkaarEffektuering;
+    private OppholdSammeVilkaar oppholdSammeVilkaar;
+
+    @Embedded
+    private IkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisum;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "person_fnr", nullable = false)
     @JsonBackReference
     private Person person;
-
-
 }

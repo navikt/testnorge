@@ -16,13 +16,12 @@ import org.springframework.xml.xsd.XsdSchema;
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
 
-    @SuppressWarnings("unchecked")
     @Bean
     public ServletRegistrationBean messageDispatcherServlet(ApplicationContext applicationContext) {
         MessageDispatcherServlet servlet = new MessageDispatcherServlet();
         servlet.setApplicationContext(applicationContext);
         servlet.setTransformWsdlLocations(true);
-        return new ServletRegistrationBean(servlet, "/ws/*");
+        return new ServletRegistrationBean<>(servlet, "/ws/*");
     }
 
     @Bean(name = "personStatuses")

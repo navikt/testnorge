@@ -15,7 +15,6 @@ import javax.persistence.Embeddable;
 @Setter
 @Embeddable
 public class PersonNavn {
-
     private String fornavn;
     private String mellomnavn;
     private String etternavn;

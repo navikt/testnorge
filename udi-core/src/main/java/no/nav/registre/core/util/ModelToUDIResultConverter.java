@@ -1,43 +1,11 @@
 package no.nav.registre.core.util;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import no.udi.mt_1067_nav_data.v1.Avgjorelse;
-import no.udi.mt_1067_nav_data.v1.AvgjorelseListe;
-import no.udi.mt_1067_nav_data.v1.Avgjorelser;
-import no.udi.mt_1067_nav_data.v1.Avgjorelsestype;
-import no.udi.mt_1067_nav_data.v1.EOSellerEFTABeslutningOmOppholdsrett;
-import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
-import no.udi.mt_1067_nav_data.v1.EOSellerEFTAOpphold;
-import no.udi.mt_1067_nav_data.v1.EOSellerEFTAOppholdstillatelse;
-import no.udi.mt_1067_nav_data.v1.EOSellerEFTAVedtakOmVarigOppholdsrett;
-import no.udi.mt_1067_nav_data.v1.GjeldendeOppholdsstatus;
-import no.udi.mt_1067_nav_data.v1.GjeldendePerson;
-import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
-import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
-import no.udi.mt_1067_nav_data.v1.SoknadOmBeskyttelseUnderBehandling;
-import no.udi.mt_1067_nav_data.v1.Tillatelse;
-import no.udi.mt_1067_nav_data.v1.Utfall;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.sql.Date;
-import java.time.Instant;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import no.nav.registre.core.database.model.Arbeidsadgang;
-import no.nav.registre.core.database.model.Avgjoerelse;
-import no.nav.registre.core.database.model.OppholdsStatus;
-import no.nav.registre.core.database.model.Periode;
-import no.nav.registre.core.database.model.Person;
-import no.nav.registre.core.database.model.PersonNavn;
 
 @Slf4j
 public final class ModelToUDIResultConverter {
 
-    public static HentPersonstatusResultat resultat(Person person) {
+/*    public static HentPersonstatusResultat resultat(Person person) {
 
         HentPersonstatusResultat hentPersonstatusResultat = new HentPersonstatusResultat();
         hentPersonstatusResultat.setGjeldendePerson(gjeldendePerson(person));
@@ -87,6 +55,9 @@ public final class ModelToUDIResultConverter {
     private static GjeldendeOppholdsstatus gjeldendeOppholdsstatus(OppholdsStatus oppholdsStatus) {
         GjeldendeOppholdsstatus resultatOppholdsstatus = new GjeldendeOppholdsstatus();
 
+        if (oppholdsStatus.getUavklart()) {
+            resultatOppholdsstatus.setUavklart(new Uavklart());
+        }
         EOSellerEFTAOpphold eoSellerEFTAOpphold = new EOSellerEFTAOpphold();
 
         EOSellerEFTAGrunnlagskategoriOppholdsrett omOppholdsrett = oppholdsStatus.getEoSellerEFTABeslutningOmOppholdsrett();
@@ -188,58 +159,55 @@ public final class ModelToUDIResultConverter {
     private static class AvgjorelseListeWrapper extends AvgjorelseListe {
 
         AvgjorelseListeWrapper(List<Avgjoerelse> aList) {
-            this.avgjorelse = aList.parallelStream().map(
-                    a -> {
-                        Avgjorelse av = new Avgjorelse();
-                        try {
-                            av.setAvgjorelseDato(convertToXMLDate(a.getAvgjoerelsesDato()));
-
-                            av.setAvgjorelseId(a.getId().toString());
-
-                            Avgjorelsestype avgjorelsestype = new Avgjorelsestype();
-                            avgjorelsestype.setGrunntypeKode(a.getGrunntypeKode());
-                            avgjorelsestype.setTillatelseKode(a.getTillatelseKode());
-                            avgjorelsestype.setUtfallstypeKode(a.getUtfallstypeKode());
-                            av.setAvgjorelsestype(avgjorelsestype);
-
-                            av.setEffektueringsDato(convertToXMLDate(a.getEffektueringsDato()));
-                            av.setErPositiv(a.isErPositiv());
-                            av.setEtat(a.getEtat());
-                            av.setFlyktingstatus(a.isFlyktningstatus());
-
-                            av.setIverksettelseDato(convertToXMLDate(a.getIverksettelseDato()));
-
-                            av.setOmgjortavAvgjorelseId(a.getOmgjortAvgjoerelsesId());
-                            av.setSaksnummer(a.getSaksnummer().toString());
-
-                            Tillatelse tillatelse = new Tillatelse();
-                            tillatelse.setGyldighetsperiode(periode(a.getTillatelsePeriode()));
-                            tillatelse.setVarighet(a.getTillatelseVarighet());
-                            tillatelse.setVarighetKode(a.getTillatelseVarighetKode());
-                            av.setTillatelse(tillatelse);
-
-                            av.setUavklartFlyktningstatus(a.isFlyktningstatus());
-
-                            Utfall utfall = new Utfall();
-                            utfall.setGjeldendePeriode(periode(a.getTillatelsePeriode()));
-                            utfall.setVarighet(a.getTillatelseVarighet());
-                            utfall.setVarighetKode(a.getTillatelseVarighetKode());
-                            av.setUtfall(utfall);
-
-                            if (a.getUtreisefristDato() != null) {
-                                av.setUtreisefristDato(convertToXMLDate(a.getIverksettelseDato()));
-                            } else {
-                                av.setUtreisefristDato(null);
-                            }
-
-
-                        } catch (DatatypeConfigurationException e) {
-                            log.error(e.getLocalizedMessage(), e);
-                        }
-                        return av;
-                    }
-            ).collect(Collectors.toList());
+            this.avgjorelse = aList.parallelStream().map(this::populatAvgjorelse).collect(Collectors.toList());
         }
-    }
 
+        private Avgjorelse populatAvgjorelse(no.nav.registre.core.database.model.Avgjoerelse avgjorelse) {
+            Avgjorelse av = new Avgjorelse();
+            try {
+                av.setAvgjorelseDato(convertToXMLDate(avgjorelse.getAvgjoerelsesDato()));
+
+                av.setAvgjorelseId(avgjorelse.getId().toString());
+
+                Avgjorelsestype avgjorelsestype = new Avgjorelsestype();
+                avgjorelsestype.setGrunntypeKode(avgjorelse.getGrunntypeKode());
+                avgjorelsestype.setTillatelseKode(avgjorelse.getTillatelseKode());
+                avgjorelsestype.setUtfallstypeKode(avgjorelse.getUtfallstypeKode());
+                av.setAvgjorelsestype(avgjorelsestype);
+
+                av.setEffektueringsDato(convertToXMLDate(avgjorelse.getEffektueringsDato()));
+                av.setErPositiv(avgjorelse.isErPositiv());
+                av.setEtat(avgjorelse.getEtat());
+                av.setFlyktingstatus(avgjorelse.isFlyktningstatus());
+
+                av.setIverksettelseDato(convertToXMLDate(avgjorelse.getIverksettelseDato()));
+
+                av.setOmgjortavAvgjorelseId(avgjorelse.getOmgjortAvgjoerelsesId());
+                av.setSaksnummer(avgjorelse.getSaksnummer().toString());
+
+                Tillatelse tillatelse = new Tillatelse();
+                tillatelse.setGyldighetsperiode(periode(avgjorelse.getTillatelsePeriode()));
+                tillatelse.setVarighet(avgjorelse.getTillatelseVarighet());
+                tillatelse.setVarighetKode(avgjorelse.getTillatelseVarighetKode());
+                av.setTillatelse(tillatelse);
+
+                av.setUavklartFlyktningstatus(avgjorelse.isFlyktningstatus());
+
+                Utfall utfall = new Utfall();
+                utfall.setGjeldendePeriode(periode(avgjorelse.getTillatelsePeriode()));
+                utfall.setVarighet(avgjorelse.getTillatelseVarighet());
+                utfall.setVarighetKode(avgjorelse.getTillatelseVarighetKode());
+                av.setUtfall(utfall);
+
+                if (avgjorelse.getUtreisefristDato() != null) {
+                    av.setUtreisefristDato(convertToXMLDate(avgjorelse.getIverksettelseDato()));
+                } else {
+                    av.setUtreisefristDato(null);
+                }
+            } catch (DatatypeConfigurationException e) {
+                log.error(e.getLocalizedMessage(), e);
+            }
+            return av;
+        }
+    } */
 }

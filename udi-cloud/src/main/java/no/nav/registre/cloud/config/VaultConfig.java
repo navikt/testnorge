@@ -3,7 +3,6 @@ package no.nav.registre.cloud.config;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
@@ -24,15 +23,15 @@ public class VaultConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        val secret = RequestedSecret.rotating(properties.getBackend() + "/creds/" + properties.getRole());
+        var secret = RequestedSecret.rotating(properties.getBackend() + "/creds/" + properties.getRole());
 
         container.addLeaseListener(leaseEvent -> {
             log.info("Vault: Lease Event: {}", leaseEvent);
             if (leaseEvent.getSource() == secret && leaseEvent instanceof SecretLeaseCreatedEvent) {
                 log.info("Vault: Refreshing database credentials. Lease Event: {}", leaseEvent);
-                val slce = (SecretLeaseCreatedEvent) leaseEvent;
-                val username = slce.getSecrets().get("username").toString();
-                val password = slce.getSecrets().get("password").toString();
+                var lease = (SecretLeaseCreatedEvent) leaseEvent;
+                var username = lease.getSecrets().get("username").toString();
+                var password = lease.getSecrets().get("password").toString();
 
                 hikariDataSource.setUsername(username);
                 hikariDataSource.setPassword(password);

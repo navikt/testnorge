@@ -8,7 +8,6 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @ConfigurationProperties("app.db.flyway")
 public class VaultFlywayProperties {
-
     @NotEmpty
     private String role;
     @NotEmpty

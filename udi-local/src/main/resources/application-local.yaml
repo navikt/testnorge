@@ -10,3 +10,7 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+
+application:
+  version: @application.version@

@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:11-jdk
     steps:
       - checkout
       - restore_cache:
@@ -14,7 +14,7 @@ jobs:
             mvn test
   release:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:11-jdk
     steps:
       - checkout
       - setup_remote_docker

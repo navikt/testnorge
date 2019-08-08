@@ -1,7 +1,6 @@
 package no.nav.registre.cloud.config;
 
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
@@ -9,6 +8,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.vault.core.VaultOperations;
+import org.springframework.vault.support.VaultResponse;
+
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -19,19 +21,25 @@ import static java.lang.String.format;
 public class VaultFlywayConfig {
 
     @Bean
-    FlywayConfigurationCustomizer flywayVaultConfiguration(VaultOperations vaultOperations, VaultFlywayProperties flywayProperties, @Value("${spring.datasource.url}") String url) {
+    FlywayConfigurationCustomizer flywayVaultConfiguration(VaultOperations vaultOperations,
+                                                           VaultFlywayProperties flywayProperties,
+                                                           @Value("${spring.datasource.url}") String url) {
         return configuration -> {
-            val secretPath = format("%s/%s", flywayProperties.getBackend(), flywayProperties.getRole());
+            var secretPath = format("%s/%s", flywayProperties.getBackend(), flywayProperties.getRole());
 
-            val vaultResponse = vaultOperations.read(secretPath);
-            val username = vaultResponse.getData().get("username").toString();
-            val password = vaultResponse.getData().get("password").toString();
+            var vaultResponse = Optional.ofNullable(vaultOperations.read(secretPath))
+                    .map(VaultResponse::getData)
+                    .orElseThrow(() -> new IllegalStateException(
+                            format("Could not read credentials from Vault. Credential path: %s", secretPath)));
 
-            log.info("Vault: Flyway configured with credentials from Vault. Credential path: {}", secretPath);
+            var username = vaultResponse.get("username").toString();
+            var password = vaultResponse.get("password").toString();
 
             configuration
                     .dataSource(url, username, password)
                     .initSql(format("SET ROLE \"%s\"", flywayProperties.getRole()));
+
+            log.info("Vault: Flyway configured with credentials from Vault. Credential path: {}", secretPath);
         };
     }
 }

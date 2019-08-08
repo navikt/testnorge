@@ -20,10 +20,10 @@ import javax.persistence.Table;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "aliaser")
 public class Alias {
 
