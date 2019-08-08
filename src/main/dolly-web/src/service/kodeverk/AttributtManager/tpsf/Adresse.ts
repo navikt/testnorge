@@ -116,7 +116,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Text,
 				validation: yup.string().max(4, 'For mange tegn'),
-				// .required('Vennligst fyll ut'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -127,7 +126,6 @@ const AttributtListe: Attributt[] = [
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Text,
 				validation: yup.string().max(3, 'For mange tegn'),
-				// .required('Vennligst fyll ut'),
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
