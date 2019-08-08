@@ -80,6 +80,8 @@ public class TpsfBestilling {
 
     private LocalDateTime utvandretTilLandFlyttedato;
 
+    private Boolean harMellomnavn;
+
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {
             opprettFraIdenter = new ArrayList();

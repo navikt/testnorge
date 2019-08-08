@@ -45,4 +45,6 @@ public class RsRelasjon {
     private String utvandretTilLand;
 
     private LocalDateTime utvandretTilLandFlyttedato;
+
+    private Boolean harMellomnavn;
 }
