@@ -88,7 +88,7 @@ public class SyntetiseringService {
         return hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder);
     }
 
-    public List<Arbeidsoeker> byggArbeidsoekereOgLagreIHodejegeren(List<String> identer, String miljoe) {
+    private List<Arbeidsoeker> byggArbeidsoekereOgLagreIHodejegeren(List<String> identer, String miljoe) {
         List<NyBruker> nyeBrukere = identer.stream().map(ident -> NyBruker.builder()
                 .personident(ident)
                 .miljoe(miljoe)

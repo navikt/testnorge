@@ -112,7 +112,7 @@ public class SyntetisertingServiceTest {
         doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere();
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
-        return syntetiseringService.byggArbeidsoekereOgLagreIHodejegeren(antallNyeIdenter, avspillergruppeId, miljoe);
+        return syntetiseringService.opprettArbeidsoekere(antallNyeIdenter, avspillergruppeId, miljoe);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class SyntetisertingServiceTest {
         doReturn(tyveNyeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         List<Arbeidsoeker> arbeidsokere =
-                syntetiseringService.byggArbeidsoekereOgLagreIHodejegeren(null, avspillergruppeId, miljoe);
+                syntetiseringService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
         assertThat(arbeidsokere.size(), is(20));
         assertThat(arbeidsokere.get(0).getPersonident(), is("10101010101"));
         assertThat(arbeidsokere.get(4).getPersonident(), is("50505050505"));
@@ -159,22 +159,23 @@ public class SyntetisertingServiceTest {
         doReturn(opprettedeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         List<Arbeidsoeker> arbeidsokere =
-                syntetiseringService.byggArbeidsoekereOgLagreIHodejegeren(null, avspillergruppeId, miljoe);
+                syntetiseringService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
 
         assertThat(arbeidsokere.size(), is(5));
         assertThat(arbeidsokere.get(2).getPersonident(), is("30303030303"));
         assertThat(arbeidsokere.get(3).getPersonident(), is("40404040404"));
     }
 
-    @Test
-    public void slettBrukereTest() {
-        doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr2), eq(miljoe));
-        doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr3), eq(miljoe));
-
-        List<String> slettedeIdenter = syntetiseringService.slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3), miljoe);
-
-        assertThat(slettedeIdenter.contains(fnr2), is(true));
-        assertThat(slettedeIdenter.contains(fnr1), is(false));
-        assertThat(slettedeIdenter.size(), is(2));
-    }
+    // TODO: Flytte denne testen til IdentServiceTest
+//    @Test
+//    public void slettBrukereTest() {
+//        doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr2), eq(miljoe));
+//        doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr3), eq(miljoe));
+//
+//        List<String> slettedeIdenter = syntetiseringService.slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3), miljoe);
+//
+//        assertThat(slettedeIdenter.contains(fnr2), is(true));
+//        assertThat(slettedeIdenter.contains(fnr1), is(false));
+//        assertThat(slettedeIdenter.size(), is(2));
+//    }
 }
