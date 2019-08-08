@@ -12,7 +12,7 @@
 
     <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-aareg</artifactId>
-    <version>1.6.0</version>
+    <version>1.7.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>testnorge-aareg</name>
