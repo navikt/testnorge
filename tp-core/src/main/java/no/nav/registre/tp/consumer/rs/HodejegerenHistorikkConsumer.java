@@ -10,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
 
 import no.nav.registre.tp.TpSaveInHodejegerenRequest;
 
@@ -19,8 +18,6 @@ import no.nav.registre.tp.TpSaveInHodejegerenRequest;
 public class HodejegerenHistorikkConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<List<String>>() {
-    };
-    private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
     };
     private final RestTemplate restTemplate;
     private final String hodejegerenSaveHistorikk;

@@ -1,5 +1,6 @@
 package no.nav.registre.tp.config;
 
+import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +34,7 @@ public class MultitenantConfiguration {
      */
     @Bean
     public DataSource dataSource() {
-        Map<Object, Object> resolvedDataSources = new HashMap<>();
+        Map<Object, Object> resolvedDataSources = Maps.newHashMapWithExpectedSize(databaseEnvironments.size());
         for (String env : databaseEnvironments) {
             DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader());
             // Assumption: The tenant database uses the same driver class
