@@ -47,6 +47,15 @@ const _getTpsfBestillingData = data => {
 			apiKodeverkId: 'Språk'
 		},
 		{
+			label: 'Utvandret til land',
+			value: data.utvandretTilLand,
+			apiKodeverkId: 'StatsborgerskapFreg'
+		},
+		{
+			label: 'Utvandret dato',
+			value: Formatters.formatDate(data.utvandretTilLandFlyttedato)
+		},
+		{
 			label: 'Egenansatt',
 			value: Formatters.oversettBoolean(data.egenansattDatoFom)
 		}
