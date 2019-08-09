@@ -9,12 +9,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.repository.IdentRepository;
-import no.nav.dolly.testdata.builder.TestidentBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,13 +32,15 @@ public class IdentServiceTest {
 
     private static final String STANDARD_IDENTER_1 = "en";
     private static final String STANDAR_IDENTER_2 = "to";
+
     @Mock
     IdentRepository identRepository;
     @Mock
     MapperFacade mapperFacade;
     @InjectMocks
     IdentService identService;
-    Testgruppe testgruppe = new Testgruppe();
+
+    private Testgruppe testgruppe = new Testgruppe();
     private Testgruppe standardGruppe = new Testgruppe();
 
     @Before

@@ -14,7 +14,7 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTeam;
 import no.nav.dolly.domain.resultset.RsTeamUtvidet;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.testdata.builder.TestidentBuilder;
+import no.nav.dolly.common.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.AfterClass;
 import org.junit.Before;

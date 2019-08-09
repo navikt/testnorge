@@ -43,6 +43,14 @@ providers:
     url: https://tps-forvalteren-u2.nais.preprod.local
   sigrun:
     url: http://localhost:8040
+  kodeverk:
+    url: http://kodeverkdummy
+  sigrunstub:
+    url: http://sigrunstubdummy
+  krrstub:
+    url: http://krrstubdummy
+  arenaforvalter:
+    url: http://arenaforvalterdummy
 
 ### CORS ###
 dolly.security.cors.origins: http://localhost:3050,http://localhost:3000

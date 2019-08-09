@@ -15,7 +15,7 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsBrukerTeamAndGruppeIDs;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.testdata.builder.TestidentBuilder;
+import no.nav.dolly.common.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.AfterClass;
 import org.junit.Before;

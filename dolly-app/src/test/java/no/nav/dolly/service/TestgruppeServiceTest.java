@@ -25,7 +25,7 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.GruppeRepository;
-import no.nav.dolly.testdata.builder.TestidentBuilder;
+import no.nav.dolly.common.TestidentBuilder;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.Before;
 import org.junit.Test;

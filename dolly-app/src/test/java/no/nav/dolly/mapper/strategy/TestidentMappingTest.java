@@ -9,7 +9,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.testdata.builder.TestidentBuilder;
+import no.nav.dolly.common.TestidentBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
