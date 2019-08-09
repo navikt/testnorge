@@ -28,6 +28,13 @@ const barnAttributes: any = PersoninformasjonListe.default
 		copy.parent = 'barn'
 		copy.path = 'relasjoner.barn.' + attributt.id
 		copy.includeIf = [attributt]
+		// console.log('attributt :', attributt)
+		// if (attributt.id === 'utvandret') {
+		// 	copy.items.forEach(i => {
+		// 		i.id = 'barn_' + i.id
+		// 	})
+		// }
+		// console.log('copy :', copy)
 		return copy
 	})
 

@@ -74,6 +74,17 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					id: 'egenAnsattDatoFom',
 					label: 'Egenansatt',
 					value: tpsfData.egenAnsattDatoFom && 'JA'
+				},
+				{
+					id: 'utvandretTilLand',
+					label: 'Utvandret til land',
+					value: tpsfData.utvandretTilLand,
+					apiKodeverkId: 'StatsborgerskapFreg'
+				},
+				{
+					id: 'utvandretTilLandFlyttedato',
+					label: 'Utvandret dato',
+					value: Formatters.formatDate(tpsfData.utvandretTilLandFlyttedato)
 				}
 			]
 		}

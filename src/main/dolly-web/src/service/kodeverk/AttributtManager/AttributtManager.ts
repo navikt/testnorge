@@ -20,34 +20,62 @@ import { isAttributtEditable, DependencyTree } from './AttributtHelpers'
 export default class AttributtManager {
 	// BASE FUNCTIONS
 	listAllSelected(selectedIds: string[]): Attributt[] {
+		// console.log(
+		// 	'this.listAllSelectFilterItems(selectedIds, AttributtListe) :',
+		// 	this.listAllSelectFilterItems(selectedIds, AttributtListe)
+		// )
 		return this.listAllSelectFilterItems(selectedIds, AttributtListe)
 	}
 
 	listAllSelectFilterItems(selectedIds: string[], attributter: Attributt[]): Attributt[] {
+		// console.log('attributter :', attributter)
+		// console.log('selectedIds :', selectedIds)
+		// attributter.map(attr => {
+		// 	console.log('attr :', attr)
+		// })
+
 		return attributter
 			.filter(
 				attr =>
 					selectedIds.includes(attr.parent || attr.id) &&
 					(!attr.includeIf || attr.includeIf.every(e => selectedIds.includes(e.id)))
+				//  || attr.includeIf[0].id === 'utvandret'
 			)
 			.map(attr => {
 				// TODO: Ikke bærekraftig løsning. Refactor
+
 				if (attr.items) {
 					if (
 						attr.dataSource === 'SIGRUN' ||
 						attr.dataSource === 'AAREG' ||
 						attr.dataSource === 'KRR' ||
 						attr.dataSource === 'PDLF' ||
-						attr.dataSource === 'ARENA'
+						attr.dataSource === 'ARENA' ||
+						(attr.dataSource === 'TPSF' && attr.id === 'utvandret')
+						// || (attr.dataSource === 'TPSF' && attr.id === 'barn_utvandret')
 					) {
+						// console.log('attr items 1:', attr)
 						return attr
-					} else {
+					}
+					// else if (attr.id === 'barn_utvandret' && attr.items[7].items){
+					// 	// console.log('attr :', attr)
+					// 	return Object.assign(Object.assign({}, attr), {
+					// 		items: this.listAllSelectFilterItems(selectedIds, attr.items[7].items)
+					// 	})
+					// }
+					// else if (attr.id === 'barn_utvandret') {
+					// }
+					else {
+						// console.log('attr items 2:', attr)
+						// console.log('Object.assign({}, attr) :', Object.assign({}, attr))
+						// console.log('selectedIds :', selectedIds)
 						// Eks: Barn som attributt må bli behandlet annerledes
 						return Object.assign(Object.assign({}, attr), {
 							items: this.listAllSelectFilterItems(selectedIds, attr.items)
 						})
 					}
 				} else {
+					// console.log('attr siste:', attr)
 					return attr
 				}
 			})

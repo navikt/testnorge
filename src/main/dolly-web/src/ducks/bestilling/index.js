@@ -255,6 +255,12 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 			}
 		]
 	}
+	if (_get(final_values, 'tpsf.utvandret')) {
+		final_values.tpsf.utvandretTilLand = final_values.tpsf.utvandret[0].utvandretTilLand
+		final_values.tpsf.utvandretTilLandFlyttedato =
+			final_values.tpsf.utvandret[0].utvandretTilLandFlyttedato
+		delete final_values.tpsf.utvandret
+	}
 
 	if (_get(final_values, 'arenaforvalter')) {
 		if (_get(final_values, 'arenaforvalter.arenaBrukertype') !== 'MED_SERVICEBEHOV') {
@@ -301,7 +307,7 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 		})
 
 	// * Vurdere behovet for denne i U2/prod. Uglify?
-	//console.info('POSTING BESTILLING', final_values)
+	console.info('POSTING BESTILLING', final_values)
 
 	return final_values
 }
