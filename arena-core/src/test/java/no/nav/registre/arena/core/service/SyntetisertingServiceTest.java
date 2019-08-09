@@ -20,7 +20,6 @@ import java.util.Random;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -166,16 +165,37 @@ public class SyntetisertingServiceTest {
         assertThat(arbeidsokere.get(3).getPersonident(), is("40404040404"));
     }
 
-    // TODO: Flytte denne testen til IdentServiceTest
-//    @Test
-//    public void slettBrukereTest() {
-//        doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr2), eq(miljoe));
-//        doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr3), eq(miljoe));
-//
-//        List<String> slettedeIdenter = syntetiseringService.slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3), miljoe);
-//
-//        assertThat(slettedeIdenter.contains(fnr2), is(true));
-//        assertThat(slettedeIdenter.contains(fnr1), is(false));
-//        assertThat(slettedeIdenter.size(), is(2));
-//    }
+    @Test
+    public void opprettArbeidssoekerTest() {
+        doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
+        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere();
+        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
+
+        List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
+
+        assertThat(arbeidsoeker.size(), is(1));
+        assertThat(arbeidsoeker.get(0).getPersonident(), is(fnr2));
+    }
+
+    @Test
+    public void opprettEksisterendeArbeidssoekerTest() {
+        doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
+        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere();
+        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekereFilter(anyList());
+
+        List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
+
+        assertThat(arbeidsoeker.size(), is(1));
+        assertThat(arbeidsoeker.get(0).getPersonident(), is(fnr2));
+    }
+
+    @Test
+    public void opprettIkkeEksisterendeIdentTest() {
+        doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
+        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere();
+
+        List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr3, avspillergruppeId, miljoe);
+
+        assertThat(arbeidsoeker, is(Collections.EMPTY_LIST));
+    }
 }

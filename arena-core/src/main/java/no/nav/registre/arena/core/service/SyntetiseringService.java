@@ -33,7 +33,7 @@ public class SyntetiseringService {
 
 
     public List<Arbeidsoeker> opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
-        List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId, MINIMUM_ALDER);
+        List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
         List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
 
         if (antallNyeIdenter == null) {
@@ -53,14 +53,14 @@ public class SyntetiseringService {
     }
 
     public List<Arbeidsoeker> opprettArbeidssoeker(String ident, Long avspillergruppeId, String miljoe) {
-        List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId, MINIMUM_ALDER);
+        List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
         List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
 
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident);
             return arenaForvalterConsumer.hentArbeidsoekereFilter(Collections.singletonList(ident));
         } else if (!levendeIdenter.contains(ident)) {
-            log.error("Ident {} kunne ikke bli funnet av Hodejegeren, og kan derfor ikke opprettes i Arena.", ident);
+            log.info("Ident {} kunne ikke bli funnet av Hodejegeren, og kan derfor ikke opprettes i Arena.", ident);
             return new ArrayList<>();
         }
 
@@ -84,8 +84,8 @@ public class SyntetiseringService {
         return nyeIdenter;
     }
 
-    private List<String> hentLevendeIdenter(Long avspillergruppeId, int minimumAlder) {
-        return hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder);
+    private List<String> hentLevendeIdenter(Long avspillergruppeId) {
+        return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER);
     }
 
     private List<Arbeidsoeker> byggArbeidsoekereOgLagreIHodejegeren(List<String> identer, String miljoe) {
@@ -121,7 +121,7 @@ public class SyntetiseringService {
     private List<String> hentIdentListe(List<Arbeidsoeker> Arbeidsoekere) {
 
         if (Arbeidsoekere.isEmpty()) {
-            log.error("Fant ingen eksisterende identer.");
+            log.info("Fant ingen eksisterende identer.");
             return new ArrayList<>();
         }
 

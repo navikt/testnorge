@@ -51,14 +51,7 @@ public class ArenaForvalterConsumer {
                 .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
 
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
-
-        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-            log.error("Kunne ikke sende brukere til Arena Forvalteren. Ingen respons.\nStatus: {}\nBody: {}",
-                    response.getStatusCode(), response.getBody());
-            return new ArrayList<>();
-        }
-
-        return response.getBody().getArbeidsoekerList();
+        return response.getBody().getArbeidsokerList();
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
@@ -69,7 +62,8 @@ public class ArenaForvalterConsumer {
         for (String personident : personidenter) {
             RequestEntity getRequest = RequestEntity.get(url.expand(personident)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
             ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
-            hentedeArbeidsoekere.addAll(gaaGjennomSider(url.toString(), response.getBody().getAntallSider(), response.getBody().getArbeidsoekerList().size()));
+            String expandedUrl = url.expand(personident).toString() + "&";
+            hentedeArbeidsoekere.addAll(gaaGjennomSider(expandedUrl, response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size()));
         }
 
         return hentedeArbeidsoekere;
@@ -79,7 +73,7 @@ public class ArenaForvalterConsumer {
     public List<Arbeidsoeker> hentArbeidsoekere() {
         RequestEntity getRequest = RequestEntity.get(hentBrukere.expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
-        return gaaGjennomSider(hentBrukere.toString() + "?", response.getBody().getAntallSider(), response.getBody().getArbeidsoekerList().size());
+        return gaaGjennomSider(hentBrukere.toString() + "?", response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size());
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
@@ -88,26 +82,26 @@ public class ArenaForvalterConsumer {
 
         int numArgs = 0;
         if (!("".equals(personident) || personident == null)) {
-            url += "personident=" + personident;
+            url += "filter-personident=" + personident;
             numArgs++;
         }
         if (!("".equals(miljoe) || miljoe == null)) {
             if (numArgs > 0) {
                 url += "&";
             }
-            url += "miljoe=" + miljoe;
+            url += "filter-miljoe=" + miljoe;
             numArgs++;
         }
         if (!("".equals(eier) || eier == null)) {
             if (numArgs > 0) {
                 url += "&";
             }
-            url += "eier=" + eier;
+            url += "filter-eier=" + eier;
             numArgs++;
         }
         RequestEntity getRequest = RequestEntity.get(new UriTemplate(url).expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
-        return gaaGjennomSider(url + ((numArgs > 0) ? "&" : ""), response.getBody().getAntallSider(), response.getBody().getArbeidsoekerList().size());
+        return gaaGjennomSider(url + ((numArgs > 0) ? "&" : ""), response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size());
     }
 
     private List<Arbeidsoeker> gaaGjennomSider(String baseUri, int antallSider, int initialLength) {
@@ -118,7 +112,7 @@ public class ArenaForvalterConsumer {
         for (int page = 1; page <= antallSider; page++) {
             RequestEntity getRequest = RequestEntity.get(hentBrukerePage.expand(page)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
             ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
-            responseList.addAll(response.getBody().getArbeidsoekerList());
+            responseList.addAll(response.getBody().getArbeidsokerList());
         }
 
         return responseList;
