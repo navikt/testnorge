@@ -198,26 +198,30 @@ export default class Step3 extends PureComponent {
 		)
 	}
 
-	renderSubKategori = ({ subKategori, items }) => {
-		const { values } = this.props
-
-		if (!subKategori.showInSummary) {
-			return items.map(item => this.renderItem(item, values))
-		}
-		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
-	}
-
 	renderSubKategoriBlokk = (header, items, values) => {
+		let fieldType = 'oppsummering-multifield-uten-border'
+
+		// Legger til border hvis det finnes flere f.eks. inntekter,
+		// eller hvis f.eks. både inntekter og arbeidsforhold ligger under samme hovedkategori
+		// Gjøres mer generell?
+		if (
+			typeof header === 'number' ||
+			(header === 'Partner' && this.props.selectedAttributeIds.includes('barn')) ||
+			(header === 'Arbeidsforhold' && this.props.selectedAttributeIds.includes('inntekt'))
+		) {
+			fieldType = 'oppsummering-multifield'
+		}
+
 		if (!items.every(nested => nested.items)) {
 			let removable = !items.every(item => this.props.selectedAttributeIds.includes(item.id))
 			return (
-				<div className="oppsummering-multifield" key={header}>
+				<div className={fieldType} key={header}>
 					<RemoveableField
 						removable={removable && this.state.edit}
 						removableText={'FJERN RAD'}
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
-						<h4>{typeof header === 'number' ? `# ${header}` : header}</h4>
+						{header && <h4>{typeof header === 'number' ? `# ${header}` : header}</h4>}
 						<div className="oppsummering-blokk">
 							{items.map(item => this.renderItem(item, values))}
 						</div>
@@ -226,8 +230,8 @@ export default class Step3 extends PureComponent {
 			)
 		}
 		return (
-			<div className="oppsummering-multifield" key={header}>
-				<h4>{header}</h4>
+			<div className={fieldType} key={header}>
+				{header && <h4>{header}</h4>}
 				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
 			</div>
 		)
@@ -250,7 +254,6 @@ export default class Step3 extends PureComponent {
 	renderItem = (item, stateValues) => {
 		if (item.items) {
 			const valueArray = _get(this.props.values, item.id)
-			const numberOfValues = valueArray.length
 			return valueArray.map((values, idx) => {
 				Object.keys(values).map(attr => !values[attr] && delete values[attr])
 				return valueArray.length > 1
@@ -293,7 +296,11 @@ export default class Step3 extends PureComponent {
 				key={item.id}
 			>
 				{item.apiKodeverkId ? (
-					<KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
+					<KodeverkValueConnector
+						apiKodeverkId={item.apiKodeverkId}
+						showValue={item.id === 'kommunenr' || item.id === 'postnr' ? true : false}
+						{...staticValueProps}
+					/>
 				) : // * Trenger stoette for apiKodeverkId som er avhengig av andre attributt. Decamelize for bedre ux imidlertig
 				item.id === 'typeinntekt' ? (
 					<StaticValue {...staticValueProps} value={Formatters.decamelize(itemValue, ' ')} />

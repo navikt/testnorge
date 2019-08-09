@@ -78,6 +78,18 @@ describe('DataFormatter.js', () => {
 		})
 	})
 
+	describe('adressetypeToString', () => {
+		it('should return Matrikkeladresse', () => {
+			expect(Formatter.adressetypeToString('MATR')).toBe('Matrikkeladresse')
+		})
+		it('should return Gateadresse', () => {
+			expect(Formatter.adressetypeToString('GATE')).toBe('Gateadresse')
+		})
+		it('should return null because no match', () => {
+			expect(Formatter.adressetypeToString('X')).toBe(null)
+		})
+	})
+
 	describe('arrayToString', () => {
 		const testArr = ['1', 'a', '2', 'b', '3', 'c']
 		const res = '1, A, 2, B, 3, C'
