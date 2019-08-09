@@ -82,6 +82,10 @@ public class TpsfBestilling {
 
     private Boolean harMellomnavn;
 
+    private String innvandretFraLand;
+
+    private LocalDateTime innvandretFraLandFlyttedato;
+
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {
             opprettFraIdenter = new ArrayList();
