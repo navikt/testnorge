@@ -33,7 +33,12 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     public Person finnPerson(String fnr) {
-        return personRepository.findByFnr(fnr).orElseThrow(() -> new NotFoundException("Could not find " + fnr));
+        return personRepository.findByFnr(fnr)
+                .orElseThrow(() -> new NotFoundException("Kunne ikke finne person med fnr " + fnr));
+    }
+
+    public void deletePerson(String fnr) {
+        personRepository.deleteById(finnPerson(fnr).getId());
     }
 
     public List<Person> opprettPersoner(List<Person> personer) {
