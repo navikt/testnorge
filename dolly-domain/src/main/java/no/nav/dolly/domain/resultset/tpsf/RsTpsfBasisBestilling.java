@@ -61,4 +61,6 @@ public class RsTpsfBasisBestilling {
     private LocalDateTime utvandretTilLandFlyttedato;
 
     private Boolean harMellomnavn;
+
+    private AdresseNrInfo adresseNrInfo;
 }

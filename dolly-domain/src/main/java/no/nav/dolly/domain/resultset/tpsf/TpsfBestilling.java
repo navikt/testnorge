@@ -82,6 +82,8 @@ public class TpsfBestilling {
 
     private Boolean harMellomnavn;
 
+    private AdresseNrInfo adresseNrInfo;
+
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {
             opprettFraIdenter = new ArrayList();
