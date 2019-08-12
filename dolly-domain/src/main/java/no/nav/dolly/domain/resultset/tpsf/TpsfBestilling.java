@@ -82,6 +82,10 @@ public class TpsfBestilling {
 
     private Boolean harMellomnavn;
 
+    private String innvandretFraLand;
+
+    private LocalDateTime innvandretFraLandFlyttedato;
+
     private AdresseNrInfo adresseNrInfo;
 
     public List<String> getOpprettFraIdenter() {

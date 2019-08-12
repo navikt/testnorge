@@ -62,5 +62,9 @@ public class RsTpsfBasisBestilling {
 
     private Boolean harMellomnavn;
 
+    private String innvandretFraLand;
+
+    private LocalDateTime innvandretFraLandFlyttedato;
+  
     private AdresseNrInfo adresseNrInfo;
 }
