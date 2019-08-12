@@ -33,7 +33,7 @@ import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {
