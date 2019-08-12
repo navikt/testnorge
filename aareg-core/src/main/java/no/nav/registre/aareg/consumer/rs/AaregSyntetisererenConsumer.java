@@ -39,7 +39,6 @@ public class AaregSyntetisererenConsumer {
     public List<ArbeidsforholdsResponse> getSyntetiserteArbeidsforholdsmeldinger(List<String> identer) {
         List<ArbeidsforholdsResponse> syntetiserteMeldinger = new ArrayList<>();
         RequestEntity postRequest;
-        ResponseEntity<List<ArbeidsforholdsResponse>> response;
 
         if (identer.size() > pageSize) {
             for (int i = 0; i * pageSize < identer.size(); i++) {
@@ -50,24 +49,23 @@ public class AaregSyntetisererenConsumer {
 
                 postRequest = RequestEntity.post(url.expand()).body(identer.subList(i * pageSize, endIndex));
 
-                response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
-                if (response.getBody() != null) {
-                    syntetiserteMeldinger.addAll(response.getBody());
-                } else {
-                    log.error("Kunne ikke hente response body fra synthdata-aareg: NullPointerException");
-                }
+                insertSyntetiskeArbeidsforhold(syntetiserteMeldinger, postRequest);
             }
         } else {
             postRequest = RequestEntity.post(url.expand()).body(identer);
 
-            response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
-            if (response.getBody() != null) {
-                syntetiserteMeldinger.addAll(response.getBody());
-            } else {
-                log.error("Kunne ikke hente response body fra synthdata-aareg: NullPointerException");
-            }
+            insertSyntetiskeArbeidsforhold(syntetiserteMeldinger, postRequest);
         }
 
         return syntetiserteMeldinger;
+    }
+
+    private void insertSyntetiskeArbeidsforhold(List<ArbeidsforholdsResponse> syntetiserteMeldinger, RequestEntity postRequest) {
+        ResponseEntity<List<ArbeidsforholdsResponse>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
+        if (response.getBody() != null) {
+            syntetiserteMeldinger.addAll(response.getBody());
+        } else {
+            log.error("Kunne ikke hente response body fra synthdata-aareg: NullPointerException");
+        }
     }
 }

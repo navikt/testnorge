@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Random;
 
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
 public class AppConfig {

@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
@@ -38,7 +39,7 @@ import no.nav.registre.aareg.domain.Arbeidsforhold;
 import no.nav.registre.aareg.domain.Arbeidsgiver;
 import no.nav.registre.aareg.domain.Arbeidstaker;
 import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {
@@ -104,7 +105,7 @@ public class SyntetiseringServiceTest {
 
         verify(aaregstubConsumer).sendTilAaregstub(syntetiserteMeldinger, lagreIAareg);
         assertThat(response.getStatusCode(), is(HttpStatus.CONFLICT));
-        assertThat(response.getBody().toString(), containsString(fnr2));
+        assertThat(Objects.requireNonNull(response.getBody()).toString(), containsString(fnr2));
     }
 
     @Test
