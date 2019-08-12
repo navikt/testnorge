@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -104,8 +105,10 @@ public class FoedselService {
      * @return Fnr til far til barn. Far er like gammel eller eldre enn mor. Far kan være mann eller kvinne.
      */
     public String findFar(String morsFnr, List<String> levendeIdenterINorge, List<String> moedre) {
-        for (String ident : levendeIdenterINorge) {
-            if (!moedre.contains(ident) && getFoedselsdatoFraFnr(ident).compareTo(getFoedselsdatoFraFnr(morsFnr)) >= 0) { // finn far som er like gammel eller eldre enn mor for enkelhets skyld
+        List<String> potensielleFedre = new ArrayList<>(levendeIdenterINorge);
+        Collections.shuffle(potensielleFedre);
+        for (String ident : potensielleFedre) {
+            if (!moedre.contains(ident) && getFoedselsdatoFraFnr(ident).compareTo(getFoedselsdatoFraFnr(morsFnr)) <= 0) { // finn far som er like gammel eller eldre enn mor for enkelhets skyld
                 return ident;
             }
         }

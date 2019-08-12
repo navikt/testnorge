@@ -41,7 +41,7 @@ import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 @Slf4j
@@ -100,7 +100,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, endringskode, environment);
 
-        verify(hodejegerenConsumer, times(2)).getStatusQuo(anyString(), anyString(), anyString());
+        verify(hodejegerenConsumer, times(2)).getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), anyString());
         assertEquals(1, meldinger.size());
         assertEquals(fnr2, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
 
@@ -122,7 +122,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleGenerellAarsak(meldinger, identer, brukteIdenter, endringskode, environment);
 
-        verify(hodejegerenConsumer, times(3)).getStatusQuo(anyString(), anyString(), anyString());
+        verify(hodejegerenConsumer, times(3)).getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), anyString());
         assertEquals(1, meldinger.size());
         assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
     }
@@ -145,7 +145,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleVigsel(meldinger, identer, brukteIdenter, endringskode, environment);
 
-        verify(hodejegerenConsumer, times(4)).getStatusQuo(anyString(), anyString(), anyString());
+        verify(hodejegerenConsumer, times(4)).getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), anyString());
         assertEquals(2, meldinger.size());
         assertEquals(fnr1, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
         assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(1)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(1)).getPersonnummer());
@@ -180,23 +180,23 @@ public class EksisterendeIdenterServiceTest {
         Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         // fnr2 er feilregistrert i TPS til ugift sivilstand.
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr5);
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         // Et fungerende ektepar
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr3);
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr4))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr4))).thenReturn(statusQuo);
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr4);
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
         return new ArrayList(Arrays.asList(fnr1, fnr2, fnr3, fnr4));
     }
 
@@ -215,7 +215,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, SKILSMISSE, environment);
 
-        verify(hodejegerenConsumer, times(3)).getStatusQuo(anyString(), anyString(), anyString());
+        verify(hodejegerenConsumer, times(3)).getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), anyString());
         assertEquals(2, meldinger.size());
         assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(0).getAarsakskode());
         assertEquals(fnr2, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
@@ -239,7 +239,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleSeperasjonSkilsmisse(meldinger, identer, brukteIdenter, SKILSMISSE, environment);
 
-        verify(hodejegerenConsumer, times(4)).getStatusQuo(anyString(), anyString(), anyString());
+        verify(hodejegerenConsumer, times(4)).getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), anyString());
         assertEquals(2, meldinger.size());
         assertEquals(SKILSMISSE.getAarsakskode(), meldinger.get(0).getAarsakskode());
         assertEquals(fnr3, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
@@ -267,7 +267,7 @@ public class EksisterendeIdenterServiceTest {
 
         eksisterendeIdenterService.behandleDoedsmelding(meldinger, identer, brukteIdenter, endringskode, environment);
 
-        verify(hodejegerenConsumer, times(2)).getStatusQuo(anyString(), anyString(), anyString());
+        verify(hodejegerenConsumer, times(2)).getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), anyString());
         assertEquals(2, meldinger.size());
         assertEquals("8510", meldinger.get(1).getAarsakskode() + ((RsMeldingstype1Felter) meldinger.get(1)).getStatuskode() + ((RsMeldingstype1Felter) meldinger.get(1)).getTildelingskode());
         assertEquals(fnr1, ((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato() + ((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer());
@@ -298,24 +298,24 @@ public class EksisterendeIdenterServiceTest {
         Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(DATO_DO, "010203");
         statusQuo.put(STATSBORGER, "NORGE");
-        when(hodejegerenConsumer.getStatusQuo(anyString(), anyString(), eq(fnr1))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(DATO_DO, "");
         statusQuo.put(STATSBORGER, "NORGE");
-        when(hodejegerenConsumer.getStatusQuo(anyString(), anyString(), eq(fnr2))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), eq(fnr2))).thenReturn(statusQuo);
     }
 
     private void opprettIdenterMedManglendeFeltMock() {
         Map<String, String> statusQuo = new HashMap<>();
-        when(hodejegerenConsumer.getStatusQuo(anyString(), anyString(), eq(fnr1))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo.put(DATO_DO, "010203");
-        when(hodejegerenConsumer.getStatusQuo(anyString(), anyString(), eq(fnr2))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(STATSBORGER, "NORGE");
-        when(hodejegerenConsumer.getStatusQuo(anyString(), anyString(), eq(fnr3))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), anyString(), eq(fnr3))).thenReturn(statusQuo);
     }
 
     private void opprettMultipleUgifteIdenterMock() {
@@ -327,35 +327,35 @@ public class EksisterendeIdenterServiceTest {
 
         Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnrUmyndig))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnrUmyndig))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
     }
 
     private void opprettMultipleGifteIdenterMock() {
         Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr3);
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
     }
 
     private void opprettMultipleGifteIdenterWithStatusQuoErrorMock() {
@@ -363,19 +363,19 @@ public class EksisterendeIdenterServiceTest {
 
         Map<String, String> statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr2))).thenThrow(new ManglendeInfoITpsException());
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr2))).thenThrow(new ManglendeInfoITpsException());
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr4);
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr3);
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr4))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr4))).thenReturn(statusQuo);
     }
 
     private void opprettEkteparMock() {
@@ -384,13 +384,13 @@ public class EksisterendeIdenterServiceTest {
         statusQuo.put(DATO_DO, "");
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr2);
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr1))).thenReturn(statusQuo);
 
         statusQuo = new HashMap<>();
         statusQuo.put(STATSBORGER, "NORGE");
         statusQuo.put(DATO_DO, "");
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr1);
-        when(hodejegerenConsumer.getStatusQuo(anyString(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
+        when(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
     }
 }

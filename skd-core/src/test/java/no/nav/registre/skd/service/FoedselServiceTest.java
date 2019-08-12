@@ -22,6 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -76,7 +77,7 @@ public class FoedselServiceTest {
 
         String barnFnr = "10101054321";
 
-        when(identPoolConsumer.hentNyeIdenter(any())).thenReturn(Arrays.asList(barnFnr));
+        when(identPoolConsumer.hentNyeIdenter(any())).thenReturn(Collections.singletonList(barnFnr));
 
         List<String> opprettedeBarn = foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge);
 
@@ -91,11 +92,11 @@ public class FoedselServiceTest {
     @Test
     public void shouldFindFatherForChild() {
         String morFnr = "22061756889";
-        List<String> levendeIdenterINorge = new ArrayList<>(Arrays.asList("22061756889", "22051767891", "30111657809", "26101767990"));
+        List<String> levendeIdenterINorge = new ArrayList<>(Arrays.asList("22061756889", "22051767891", "30111757809", "26101767990"));
         List<String> moedre = new ArrayList<>(Arrays.asList("22061756889", "30111657809"));
         String farFnr = foedselService.findFar(morFnr, levendeIdenterINorge, moedre);
 
-        assertThat(farFnr, equalTo("26101767990"));
+        assertThat(farFnr, equalTo("22051767891"));
     }
 
     /**

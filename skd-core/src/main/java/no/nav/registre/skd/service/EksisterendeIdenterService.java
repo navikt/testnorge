@@ -31,7 +31,7 @@ import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
 @AllArgsConstructor
@@ -308,7 +308,7 @@ public class EksisterendeIdenterService {
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
     private Map<String, String> getStatusQuoPaaIdent(Endringskoder endringskode, String environment, String fnr) {
-        return new HashMap<>(hodejegerenConsumer.getStatusQuo(endringskode.getEndringskode(), environment, fnr));
+        return new HashMap<>(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(endringskode.getEndringskode(), environment, fnr));
     }
 
     private RsMeldingstype1Felter opprettSivilstandsendringsmelding(RsMeldingstype identMelding, String identPartner) {
