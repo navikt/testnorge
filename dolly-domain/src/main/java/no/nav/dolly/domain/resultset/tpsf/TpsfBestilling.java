@@ -86,6 +86,8 @@ public class TpsfBestilling {
 
     private LocalDateTime innvandretFraLandFlyttedato;
 
+    private AdresseNrInfo adresseNrInfo;
+
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {
             opprettFraIdenter = new ArrayList();

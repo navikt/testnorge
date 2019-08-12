@@ -65,4 +65,6 @@ public class RsTpsfBasisBestilling {
     private String innvandretFraLand;
 
     private LocalDateTime innvandretFraLandFlyttedato;
+  
+    private AdresseNrInfo adresseNrInfo;
 }

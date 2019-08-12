@@ -44,11 +44,16 @@ import no.nav.dolly.service.TestgruppeService;
 @RequestMapping(value = "api/v1/gruppe")
 public class TestgruppeController {
 
+    private static final String RANDOM_ADRESSE = "For å kunne styre gyldig boadresse basert på kommunenr eller postnummer og med adressesøk i backend: <br />"
+            +"\"adresseNrInfo\": { <br />"
+            + " &nbsp; \"nummertype\": \"KOMMUNENR/POSTNR\" <br />"
+            + " &nbsp; \"nummer\": \"string\", <br />"
+            + "} <br /><br />";
     private static final String ADRESSE_COMMON =
             "       &nbsp; &nbsp; \"postnr\": \"string\", <br />"
                     + "     &nbsp; &nbsp; \"kommunenr\": \"string\", <br />"
                     + "     &nbsp; &nbsp; \"flyttedato\": \"string\" <br />";
-    private static final String BOADRESSE_COMMENT = "Json-parametere for boadresse har følgende parametre: <br />"
+    private static final String BOADRESSE_COMMENT = "Alternativt har Json-parametere for boadresse følgende parametre: <br />"
             + " For gateadresse:  <br />"
             + "     &nbsp; \"boadresse\": {<br />"
             + "     &nbsp; &nbsp; \"adressetype\": \"GATE\", <br />"
@@ -125,7 +130,7 @@ public class TestgruppeController {
             + "     &nbsp; &nbsp; \"statsborgerskap\": \"[AUS,GER,FRA,etc]\" <br />"
             + EPILOG;
 
-    private static final String BESTILLING_BESKRIVELSE = BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
+    private static final String BESTILLING_BESKRIVELSE = RANDOM_ADRESSE + BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
 
     @Autowired
     private TestgruppeService testgruppeService;
