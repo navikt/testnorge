@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from 'react'
-import { Field } from 'formik'
+import { Field, FieldArray } from 'formik'
 import _intersection from 'lodash/intersection'
 import _set from 'lodash/set'
 import { DollyApi } from '~/service/Api'
@@ -7,6 +7,7 @@ import { AttributtType } from '~/service/kodeverk/AttributtManager/Types'
 import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
+import { FieldArrayComponent } from './FormEditorFieldArray'
 import AutofillAddressConnector from '~/components/autofillAddress/AutofillAddressConnector'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
@@ -15,6 +16,7 @@ import _xor from 'lodash/fp/xor'
 import './FormEditor.less'
 import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
 import Postadresse from '../postadresse/Postadresse'
+import ArrayFieldConnector from '../arrayField/ArrayFieldConnector'
 
 export default class FormEditor extends PureComponent {
 	render() {
@@ -134,7 +136,6 @@ export default class FormEditor extends PureComponent {
 			const subGrupper = this._structureSubGruppe(items)
 			return (
 				<div className="subkategori" key={uniqueId}>
-					<h4>{subKategori.navn}</h4>
 					{subGrupper.map((subGruppe, idx) => {
 						const subGruppeObj = Object.assign(
 							{},
@@ -202,6 +203,7 @@ export default class FormEditor extends PureComponent {
 		if (item.onlyShowAfterSelectedValue) {
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
+
 			let dependantAttributt = items.find(attributt => attributt.id === attributtId)
 			// Spesialtilfelle fordi dependant attributt ligger i en annen subkategori
 			if (item.hovedKategori.id === 'arena' && attributtId) {
@@ -316,6 +318,7 @@ export default class FormEditor extends PureComponent {
 				headerType: 'label',
 				optionalClassName: 'skjemaelement static'
 			}
+
 			if (item.apiKodeverkId) {
 				return <KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
 			}
@@ -369,6 +372,11 @@ export default class FormEditor extends PureComponent {
 			return
 		}
 
+		if (item.isMultiple) {
+			return (
+				<ArrayFieldConnector item={item} formikProps={formikProps} valgteVerdier={valgteVerdier} />
+			)
+		}
 		return (
 			<Field
 				key={item.key || item.id}
@@ -422,26 +430,6 @@ export default class FormEditor extends PureComponent {
 		)
 	}
 
-	// Ingvild: Forsøker å lage en mer presis validering
-	// validationFunction = (valgtVerdi, inputType) => {
-	// 	let error
-	// 	switch (inputType) {
-	// 		case 'date': {
-	// 			if (valgtVerdi === '') {
-	// 				error = 'Vennligst fyll inn dato'
-	// 				return error
-	// 			}
-	// 			return
-	// 		}
-	// 		case 'select': {
-	// 			if (valgtVerdi === '') {
-	// 				error = 'Vennligst fyll inn'
-	// 				return error
-	// 			}
-	// 			return
-	// 		}
-	// 	}
-	// }
 	validationSub = value => {
 		let error
 		if (value === '') {

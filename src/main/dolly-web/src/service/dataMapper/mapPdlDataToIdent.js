@@ -3,6 +3,8 @@ import Formatters from '~/utils/DataFormatter'
 export function mapPdlData(pdlfData) {
 	if (!pdlfData || pdlfData.length < 1) return null
 
+	const pdlfDataArray = []
+
 	if (pdlfData.kontaktinformasjonForDoedsbo) {
 		const adressatType = Object.keys(pdlfData.kontaktinformasjonForDoedsbo[0].adressat)[0]
 		const navnType = pdlfData.kontaktinformasjonForDoedsbo[0].adressat[adressatType].navn
@@ -105,6 +107,64 @@ export function mapPdlData(pdlfData) {
 				}
 			]
 		}
-		return data
+		pdlfDataArray.push(data)
 	}
+
+	if (pdlfData.falskIdentitet) {
+		const opplysninger = pdlfData.falskIdentitet.rettIdentitetVedOpplysninger
+		const data = {
+			header: 'Falsk identitet',
+			data: [
+				{
+					id: 'rettIdentitet',
+					label: 'Rett identitet',
+					value: pdlfData.falskIdentitet.rettIdentitetErUkjent && 'UKJENT'
+				},
+				{
+					id: 'rettIdentitet',
+					label: 'Rett identitet',
+					value:
+						pdlfData.falskIdentitet.rettIdentitetVedOpplysninger && 'Kjent ved personopplysninger'
+				},
+				{
+					id: 'identitetsnummer',
+					label: 'Rett fnr/dnr',
+					value: pdlfData.falskIdentitet.rettIdentitetVedIdentifikasjonsnummer
+				},
+				{
+					id: 'fornavn',
+					label: 'Fornavn',
+					value: opplysninger && opplysninger.navn && opplysninger.navn.fornavn.toUpperCase()
+				},
+				{
+					id: 'mellomnavn',
+					label: 'Mellomnavn',
+					value:
+						opplysninger &&
+						opplysninger.navn &&
+						opplysninger.navn.mellomnavn &&
+						opplysninger.navn.mellomnavn.toUpperCase()
+				},
+				{
+					id: 'etternavn',
+					label: 'Etternavn',
+					value: opplysninger && opplysninger.navn && opplysninger.navn.etternavn.toUpperCase()
+				},
+				{
+					id: 'foedselsdato',
+					label: 'Fødselsdato',
+					value: opplysninger && Formatters.formatDate(opplysninger.foedselsdato)
+				},
+				{
+					id: 'statsborgerskap',
+					label: 'Statsborgerskap',
+					width: 'medium',
+					apiKodeverkId: 'StatsborgerskapFreg',
+					value: opplysninger && opplysninger.statsborgerskap
+				}
+			]
+		}
+		pdlfDataArray.push(data)
+	}
+	return pdlfDataArray
 }
