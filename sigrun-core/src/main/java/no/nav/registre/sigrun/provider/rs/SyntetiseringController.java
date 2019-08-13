@@ -25,7 +25,7 @@ public class SyntetiseringController {
     @PostMapping(value = "/generer")
     public ResponseEntity generatePopp(@RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
             @RequestBody SyntetiserPoppRequest syntetiserPoppRequest) {
-        List<String> identer = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest);
+        List<String> identer = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier);
         return sigrunService.genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier, syntetiserPoppRequest.getMiljoe());
     }
 }

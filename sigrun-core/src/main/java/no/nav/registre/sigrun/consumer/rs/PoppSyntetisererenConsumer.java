@@ -10,13 +10,14 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
-import java.util.Map;
+
+import no.nav.registre.sigrun.PoppSyntetisererenResponse;
 
 @Component
 @Slf4j
 public class PoppSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<Map<String, Object>>> RESPONSE_TYPE = new ParameterizedTypeReference<List<Map<String, Object>>>() {
+    private static final ParameterizedTypeReference<List<PoppSyntetisererenResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<PoppSyntetisererenResponse>>() {
     };
 
     @Autowired
@@ -28,7 +29,7 @@ public class PoppSyntetisererenConsumer {
         this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/popp");
     }
 
-    public List<Map<String, Object>> hentPoppMeldingerFromSyntRest(List<String> fnrs) {
+    public List<PoppSyntetisererenResponse> hentPoppMeldingerFromSyntRest(List<String> fnrs) {
         RequestEntity postRequest = RequestEntity.post(url.expand()).body(fnrs);
 
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();

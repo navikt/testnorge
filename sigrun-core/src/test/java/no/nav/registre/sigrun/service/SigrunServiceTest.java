@@ -9,7 +9,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,12 +21,12 @@ import org.springframework.http.ResponseEntity;
 import wiremock.com.google.common.io.Resources;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import no.nav.registre.sigrun.PoppSyntetisererenResponse;
 import no.nav.registre.sigrun.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
@@ -54,16 +53,13 @@ public class SigrunServiceTest {
     @InjectMocks
     private SigrunService sigrunService;
 
-    private List poppSyntetisererenResponse;
+    private List<PoppSyntetisererenResponse> poppSyntetisererenResponse;
     private String testdataEier = "test";
     private String miljoe = "t1";
 
     @Before
     public void setUp() throws IOException {
-        URL jsonContent = Resources.getResource("inntektsmeldinger_test.json");
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(jsonContent);
-        poppSyntetisererenResponse = objectMapper.treeToValue(jsonNode, List.class);
+        poppSyntetisererenResponse = Arrays.asList(new ObjectMapper().readValue(Resources.getResource("inntektsmeldinger_test.json"), PoppSyntetisererenResponse[].class));
     }
 
     @Test
@@ -93,10 +89,10 @@ public class SigrunServiceTest {
 
         SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe)).thenReturn(eksisterendeIdenter);
+        when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier)).thenReturn(eksisterendeIdenter);
         when(hodejegerenConsumer.getLevende(avspillergruppeId, miljoe, antallNyeIdenter, null)).thenReturn(nyeIdenter);
 
-        List<String> resultat = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest);
+        List<String> resultat = sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier);
 
         assertThat(resultat.size(), is(5));
     }
@@ -107,7 +103,7 @@ public class SigrunServiceTest {
         String fnr2 = "02020202020";
         List<String> identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe)).thenReturn(identer);
+        when(sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier)).thenReturn(identer);
         when(sigrunStubConsumer.hentEksisterendeSkattegrunnlag(fnr1, miljoe)).thenReturn(Collections.singletonList(SigrunSkattegrunnlagResponse.builder()
                 .personidentifikator(fnr1)
                 .testdataEier(testdataEier)

@@ -7,11 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import no.nav.registre.sigrun.IdentMedData;
+import no.nav.registre.sigrun.PoppSyntetisererenResponse;
 import no.nav.registre.sigrun.SigrunSaveInHodejegerenRequest;
 import no.nav.registre.sigrun.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
@@ -39,8 +39,8 @@ public class SigrunService {
 
     private static final String SIGRUN_NAME = "sigrun";
 
-    public List<String> finnEksisterendeOgNyeIdenter(SyntetiserPoppRequest syntetiserPoppRequest) {
-        List<String> eksisterendeIdenter = finnEksisterendeIdenter(syntetiserPoppRequest.getMiljoe());
+    public List<String> finnEksisterendeOgNyeIdenter(SyntetiserPoppRequest syntetiserPoppRequest, String testdataEier) {
+        List<String> eksisterendeIdenter = finnEksisterendeIdenter(syntetiserPoppRequest.getMiljoe(), testdataEier);
         List<String> nyeIdenter = finnLevendeIdenter(syntetiserPoppRequest);
 
         int antallIdenterAlleredeIStub = 0;
@@ -61,15 +61,32 @@ public class SigrunService {
     }
 
     public ResponseEntity genererPoppmeldingerOgSendTilSigrunStub(List<String> identer, String testdataEier, String miljoe) {
-        List<Map<String, Object>> syntetiserteMeldinger = finnSyntetiserteMeldinger(identer);
+        List<PoppSyntetisererenResponse> syntetiserteMeldinger = finnSyntetiserteMeldinger(identer);
         ResponseEntity response = sigrunStubConsumer.sendDataTilSigrunstub(syntetiserteMeldinger, testdataEier, miljoe);
         if (response.getStatusCode().is2xxSuccessful()) {
             List<IdentMedData> identerMedData = new ArrayList<>(identer.size());
-            if (identer.size() == syntetiserteMeldinger.size()) {
-                for (int i = 0; i < identer.size(); i++) {
-                    identerMedData.add(new IdentMedData(identer.get(i), Collections.singletonList(syntetiserteMeldinger.get(i))));
+
+            for (String ident : identer) {
+                IdentMedData identMedData = IdentMedData.builder()
+                        .id(ident)
+                        .data(new ArrayList<>())
+                        .build();
+                identerMedData.add(identMedData);
+
+                Iterator<PoppSyntetisererenResponse> syntetiserteMeldingerIterator = syntetiserteMeldinger.iterator();
+                while (syntetiserteMeldingerIterator.hasNext()) {
+                    PoppSyntetisererenResponse melding = syntetiserteMeldingerIterator.next();
+
+                    String personidentifikator = melding.getPersonidentifikator();
+                    if (ident.equals(personidentifikator)) {
+                        identMedData.getData().add(melding);
+                        syntetiserteMeldingerIterator.remove();
+                    } else {
+                        break; // vi kan breake her da meldingene ligger sortert etter personidentifikator
+                    }
                 }
             }
+
             SigrunSaveInHodejegerenRequest hodejegerenRequest = new SigrunSaveInHodejegerenRequest(SIGRUN_NAME, identerMedData);
 
             List<String> lagredeIdenter = hodejegerenHistorikkConsumer.saveHistory(hodejegerenRequest);
@@ -87,7 +104,7 @@ public class SigrunService {
     }
 
     public SletteGrunnlagResponse slettSkattegrunnlagTilIdenter(List<String> identer, String testdataEier, String miljoe) {
-        List<String> eksisterendeIdenter = finnEksisterendeIdenter(miljoe);
+        List<String> eksisterendeIdenter = finnEksisterendeIdenter(miljoe, testdataEier);
         eksisterendeIdenter.retainAll(identer);
 
         SletteGrunnlagResponse sletteGrunnlagResponse = SletteGrunnlagResponse.builder()
@@ -119,12 +136,12 @@ public class SigrunService {
         return sletteGrunnlagResponse;
     }
 
-    private List<Map<String, Object>> finnSyntetiserteMeldinger(List<String> fnrs) {
+    private List<PoppSyntetisererenResponse> finnSyntetiserteMeldinger(List<String> fnrs) {
         return poppSyntRestConsumer.hentPoppMeldingerFromSyntRest(fnrs);
     }
 
-    private List<String> finnEksisterendeIdenter(String miljoe) {
-        return sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe);
+    private List<String> finnEksisterendeIdenter(String miljoe, String testdataEier) {
+        return sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier);
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "hodejegeren" })

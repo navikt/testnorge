@@ -6,10 +6,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.registre.sigrun.testutils.ResourceUtils.getResourceFileContent;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,11 +20,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import wiremock.com.google.common.io.Resources;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
+import no.nav.registre.sigrun.PoppSyntetisererenResponse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -43,16 +42,16 @@ public class PoppSyntetisererenConsumerTest {
     public void shouldGetMeldinger() throws IOException {
         List<String> fnrs = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        URL jsonContent = Resources.getResource("inntektsmeldinger_test.json");
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(jsonContent);
-        List list = objectMapper.treeToValue(jsonNode, List.class);
+        List<PoppSyntetisererenResponse> expectedResponse = Arrays.asList(new ObjectMapper().readValue(Resources.getResource("inntektsmeldinger_test.json"), PoppSyntetisererenResponse[].class));
 
         stubPoppSyntetisererenConsumer();
 
-        List<Map<String, Object>> result = poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(fnrs);
+        List<PoppSyntetisererenResponse> result = poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(fnrs);
 
-        assertThat(result, equalTo(list));
+        assertThat(result.get(0).getPersonidentifikator(), equalTo(expectedResponse.get(0).getPersonidentifikator()));
+        assertThat(result.get(0).getInntektsaar(), equalTo(expectedResponse.get(0).getInntektsaar()));
+        assertThat(result.get(0).getTestdataEier(), equalTo(expectedResponse.get(0).getTestdataEier()));
+        assertThat(result.get(0).getTjeneste(), equalTo(expectedResponse.get(0).getTjeneste()));
     }
 
     public void stubPoppSyntetisererenConsumer() {

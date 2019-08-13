@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +14,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class IdentMedData {
+
     private String id;
-    private List<Map<String, Object>> data;
+    private List<PoppSyntetisererenResponse> data;
 }

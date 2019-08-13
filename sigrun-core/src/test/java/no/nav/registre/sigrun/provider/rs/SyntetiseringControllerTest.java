@@ -29,15 +29,15 @@ public class SyntetiseringControllerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        List<String> fnrs = new ArrayList<>();
-        fnrs.addAll(Arrays.asList("01010101010", "02020202020"));
+        List<String> fnrs = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
         SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(123L, "t1", fnrs.size());
 
-        when(sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest)).thenReturn(fnrs);
-        when(sigrunService.genererPoppmeldingerOgSendTilSigrunStub(fnrs, "test", syntetiserPoppRequest.getMiljoe())).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
+        String testdataEier = "test";
+        when(sigrunService.finnEksisterendeOgNyeIdenter(syntetiserPoppRequest, testdataEier)).thenReturn(fnrs);
+        when(sigrunService.genererPoppmeldingerOgSendTilSigrunStub(fnrs, testdataEier, syntetiserPoppRequest.getMiljoe())).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
-        syntetiseringController.generatePopp("test", syntetiserPoppRequest);
+        syntetiseringController.generatePopp(testdataEier, syntetiserPoppRequest);
 
-        verify(sigrunService).genererPoppmeldingerOgSendTilSigrunStub(fnrs, "test", syntetiserPoppRequest.getMiljoe());
+        verify(sigrunService).genererPoppmeldingerOgSendTilSigrunStub(fnrs, testdataEier, syntetiserPoppRequest.getMiljoe());
     }
 }

@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static no.nav.registre.sigrun.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -51,6 +52,7 @@ public class SigrunStubConsumerTest {
     private HttpStatus statusCodeOk = HttpStatus.OK;
     private HttpStatus statusCodeInternalServerError = HttpStatus.INTERNAL_SERVER_ERROR;
     private String miljoe = "t1";
+    private String testdataEier = "test";
 
     @Before
     public void setUp() throws IOException {
@@ -64,7 +66,16 @@ public class SigrunStubConsumerTest {
     public void shouldGetPersonidentifikatorer() {
         stubSigrunStubConsumerHentPersonidentifikatorer();
 
-        List<String> result = sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe);
+        List<String> result = sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, null);
+        assertThat(result.toString(), containsString(fnr1));
+        assertThat(result.toString(), containsString(fnr2));
+    }
+
+    @Test
+    public void shouldGetPersonidentifikatorerMedTestdataEier() {
+        stubSigrunStubConsumerHentPersonidentifikatorerMedTestdataEier();
+
+        List<String> result = sigrunStubConsumer.hentEksisterendePersonidentifikatorer(miljoe, testdataEier);
 
         assertThat(result.toString(), containsString(fnr1));
         assertThat(result.toString(), containsString(fnr2));
@@ -109,6 +120,13 @@ public class SigrunStubConsumerTest {
 
     private void stubSigrunStubConsumerHentPersonidentifikatorer() {
         stubFor(get(urlPathEqualTo("/sigrunstub/testdata/hentPersonidentifikatorer"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(("[\"" + fnr1 + "\", \"" + fnr2 + "\"]"))));
+    }
+
+    private void stubSigrunStubConsumerHentPersonidentifikatorerMedTestdataEier() {
+        stubFor(get(urlEqualTo("/sigrunstub/testdata/hentPersonidentifikatorer?testdataEier=" + testdataEier))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(("[\"" + fnr1 + "\", \"" + fnr2 + "\"]"))));

@@ -8,13 +8,16 @@ import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
-public class SigrunSaveInHodejegerenRequest {
+public class PoppSyntetisererenResponse {
 
-    private String kilde;
-    private List<IdentMedData> identMedData;
+    private List<SyntetiskGrunnlag> grunnlag;
+    private String inntektsaar;
+    private String personidentifikator;
+    private String testdataEier;
+    private String tjeneste;
 }
