@@ -4,13 +4,11 @@ export const getAttributesFromMal = mal => {
 	const tpsfKriterier = JSON.parse(mal.tpsfKriterier)
 	const bestKriterier = JSON.parse(mal.bestKriterier)
 	let attrArray = []
-	console.log('tpsfKriterier :', tpsfKriterier)
 	attrArray = Object.keys(tpsfKriterier).filter(k => {
 		if (k !== 'identtype' && k !== 'relasjoner' && k !== 'regdato') {
 			return k
 		}
 	})
-	console.log('attrArray :', attrArray)
 
 	if (tpsfKriterier.boadresse) {
 		tpsfKriterier.boadresse.flyttedato && attrArray.push('boadresse_flyttedato')
@@ -21,16 +19,12 @@ export const getAttributesFromMal = mal => {
 		tpsfKriterier.relasjoner.partner && attrArray.push('partner')
 	}
 
-	// if (tpsfKriterier.utvandretTilLand) {
-	// 	const utvandret = []
-	// 	attrArray.push(utvandret)
-	// 	console.log('attrArray :', attrArray)
-	// 	attrArray.utvandret.push(tpsfKriterier.utvandretTilLand)
-	// 	tpsfKriterier.utvandretTilLandFlyttedato &&
-	// 		attrArray.utvandret.push(tpsfKriterier.utvandretTilLandFlyttedato)
-	// 	// delete attrArray.
-	// 	// attrArray.utvandret
-	// }
+	if (tpsfKriterier.utvandretTilLand) {
+		attrArray.push('utvandret')
+		delete attrArray[attrArray.indexOf('utvandretTilLand')]
+		tpsfKriterier.utvandretTilLandFlyttedato &&
+			delete attrArray[attrArray.indexOf('utvandretTilLandFlyttedato')]
+	}
 
 	if (bestKriterier.pdlforvalter) {
 		Object.keys(bestKriterier.pdlforvalter).map(pdlattr => {
@@ -41,6 +35,7 @@ export const getAttributesFromMal = mal => {
 	Object.keys(bestKriterier).forEach(reg => {
 		attrArray.push(_mapRegistreKey(reg))
 	})
+
 	return attrArray
 }
 
@@ -61,15 +56,17 @@ export const getValuesFromMal = mal => {
 		}
 	})
 
+	if (reduxStateValue.utvandretTilLand) {
+		const utvandretValues = _mapUtvandretValues(reduxStateValue)
+		reduxStateValue = utvandretValues
+	}
+
 	return reduxStateValue
 }
 
 const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
-	console.log('objectToAssign :', objectToAssign)
-	console.log('valueArray 1 :', valueArray)
 	valueArray.forEach(v => {
 		let key = v[0]
-		console.log('v :', v)
 		if (key === 'regdato') return
 
 		let value = v[1]
@@ -83,8 +80,6 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 			if (key === 'boadresse') {
 				_mapValuesToObject(objectToAssign, Object.entries(value), 'boadresse_')
 			} else if (key === 'postadresse') {
-				_mapValuesToObject(objectToAssign, Object.entries(value[0]))
-			} else if (key === 'utvandretTilLand') {
 				_mapValuesToObject(objectToAssign, Object.entries(value[0]))
 			} else if (key === 'aap' && value !== true) {
 				_mapValuesToObject(objectToAssign, [['aap', true]])
@@ -109,7 +104,6 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 			}
 		}
 	})
-	console.log('valueArray 2 :', valueArray)
 }
 
 const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = '') => {
@@ -144,7 +138,8 @@ const _formatValueForObject = (key, value) => {
 		'foedselsdato',
 		'flyttedato',
 		'fraDato',
-		'tilDato'
+		'tilDato',
+		'utvandretTilLandFlyttedato'
 	]
 
 	if (dateAttributes.includes(key)) {
@@ -158,7 +153,6 @@ const _formatValueForObject = (key, value) => {
 
 const _mapRegistreKey = key => {
 	// TODO: Nå som disse id-ene er brukt flere steder på prosjektet gjennom mappingen, vurder å lage en constant klasse
-	console.log('key :', key)
 	switch (key) {
 		case 'aareg':
 			return 'arbeidsforhold'
@@ -175,6 +169,18 @@ const _mapRegistreKey = key => {
 		default:
 			return key
 	}
+}
+
+const _mapUtvandretValues = values => {
+	let utvandretValues = [
+		{
+			utvandretTilLand: values.utvandretTilLand,
+			utvandretTilLandFlyttedato: values.utvandretTilLandFlyttedato
+		}
+	]
+	let returnValues = values
+	returnValues['utvandret'] = utvandretValues
+	return returnValues
 }
 
 const _mapRegistreValue = (key, value) => {

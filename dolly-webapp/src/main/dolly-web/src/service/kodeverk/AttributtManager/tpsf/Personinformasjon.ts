@@ -90,6 +90,7 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		attributtType: AttributtType.SelectAndEdit,
 		validation: yup.object(),
+		// fields: [
 		items: [
 			{
 				hovedKategori: Kategorier.PersInfo,

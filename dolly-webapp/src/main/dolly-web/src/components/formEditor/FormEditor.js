@@ -19,6 +19,7 @@ import Postadresse from '../postadresse/Postadresse'
 export default class FormEditor extends PureComponent {
 	render() {
 		const { FormikProps, ClosePanels, AttributtListe } = this.props
+		// console.log('this.props :', this.props)
 		// TODO: Vurder å lage en egen component for redigering
 		// editMode? renderEdit....: renderNormal
 		return AttributtListe.map(hovedKategori => {
@@ -50,6 +51,8 @@ export default class FormEditor extends PureComponent {
 			}
 			return false
 		})
+		// console.log('this.props :', this.props)
+		// console.log('items :', items)
 
 		let notYetAddedAttributes = []
 
@@ -106,6 +109,7 @@ export default class FormEditor extends PureComponent {
 		const isAdresse = 'boadresse' === (items[0].parent || items[0].id)
 		// const isFieldarray = Boolean(items[0].items)
 		const isMultiple = items[0].isMultiple
+		// console.log('items :', items)
 
 		if (isAdresse) {
 			return (
@@ -165,6 +169,12 @@ export default class FormEditor extends PureComponent {
 				<div className="subkategori-field-group">
 					{items.map(item => {
 						const isFieldarray = Boolean(item.items)
+						// const hasFields = Boolean(item.fields)
+						// console.log(
+						// 	'this._shouldRenderFieldComponent(items, item, formikProps) :',
+						// 	this._shouldRenderFieldComponent(items, item, formikProps)
+						// )
+						// console.log('item :', item)
 						return this._shouldRenderFieldComponent(items, item, formikProps)
 							? isFieldarray
 								? FormEditorFieldArray(
@@ -177,7 +187,9 @@ export default class FormEditor extends PureComponent {
 										this._shouldRenderSubItem
 								  )
 								: this.renderFieldComponent(item, formikProps.values)
-							: null
+							: // : hasFields
+							  // 	? this.renderFieldComponent(item, formikProps.values)
+							  null
 					})}
 				</div>
 			</div>
@@ -189,6 +201,10 @@ export default class FormEditor extends PureComponent {
 	// Denne metode er bygd med fokus for AAREG-felter.
 
 	_shouldRenderFieldComponent = (items, item, formikProps, parentObject) => {
+		// console.log('srfc items :', items)
+		// console.log('srfc item :', item)
+		// console.log('srfc formikProps :', formikProps)
+
 		const valgteVerdier = formikProps.values
 		const errors = formikProps.errors
 		let shouldRender = true
@@ -269,6 +285,7 @@ export default class FormEditor extends PureComponent {
 	}
 
 	_structureSubGruppe = item => {
+		// console.log('structure subgruppe item :', item)
 		let subGruppeArray = []
 		item.items.map(subitem => {
 			if (subGruppeArray.length < 1) {
@@ -288,6 +305,18 @@ export default class FormEditor extends PureComponent {
 	}
 
 	renderFieldComponent = (item, valgteVerdier, parentObject, formikProps) => {
+		// console.log('rFC - item :', item)
+		// console.log('rFC - valgteVerdier :', valgteVerdier)
+		// console.log('rFC - parentObject :', parentObject)
+		// console.log('this.props :', this.props)
+		// let valgt = valgteVerdier
+		// if (item.fields) {
+		// 	item.fields.map(field => {
+		// 		// valgt = { utvandretTilLand: '' }
+		// 		this.renderFieldComponent(field)
+		// 		// valgt
+		// 	})
+		// }
 		if (!item.inputType) return null
 		const InputComponent = InputSelector(item.inputType)
 		const componentProps = this.extraComponentProps(item, valgteVerdier, parentObject)

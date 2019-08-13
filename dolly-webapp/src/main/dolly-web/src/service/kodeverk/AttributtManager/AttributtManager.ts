@@ -43,7 +43,7 @@ export default class AttributtManager {
 			)
 			.map(attr => {
 				// TODO: Ikke bærekraftig løsning. Refactor
-
+				// console.log('attr :', attr)
 				if (attr.items) {
 					if (
 						attr.dataSource === 'SIGRUN' ||
@@ -208,6 +208,9 @@ export default class AttributtManager {
 			if (item.items) {
 				return this._setInitialArrayValuesFromServer(prev, item, sourceValues)
 			}
+			// if (item.fields) {
+			// 	return this._setInitialArrayValuesFromServer(prev, item, sourceValues)
+			// }
 
 			return this._setInitialValueFromServer(prev, item, sourceValues)
 		}, {})
@@ -251,12 +254,20 @@ export default class AttributtManager {
 	}
 
 	_getListOfInitialValues(list, values) {
+		// console.log('list :', list)
+		// console.log('values :', values)
 		return list.reduce((prev, item) => {
+			// console.log('prev :', prev)
+			// console.log('item :', item)
 			// Array
 			if (item.items) {
 				const mapItemsToObject = this._mapArrayToObjectWithEmptyValues(item.items)
 				return this._setInitialArrayValue(prev, item.id, values, [mapItemsToObject])
 			}
+			// if (item.fields) {
+			// 	const mapItemsToObject = this._mapArrayToObjectWithEmptyValues(item.fields)
+			// 	return this._setInitialArrayValue(prev, item.id, values, [mapItemsToObject])
+			// }
 			// Flattened object -> Ignore parent that has no inputType
 			if (!item.inputType) return prev
 
@@ -290,6 +301,7 @@ export default class AttributtManager {
 	_setInitialArrayValuesFromServer(currentObject, item, serverValues) {
 		// kanskje alle skal kunne redigeres
 		const itemArray = item.items
+		// const itemArray = item.items || item.fields
 		const editableAttributes = itemArray.filter(item => isAttributtEditable(item))
 		const arrayValues = serverValues.map(valueObj => {
 			return editableAttributes.reduce((prev, curr) => {
