@@ -16,7 +16,10 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 @Component
@@ -57,25 +60,50 @@ public class ArenaForvalterConsumer {
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
     public List<Arbeidsoeker> hentArbeidsoekere(List<String> personidenter, String eier, String miljoe) {
 
-        if (personidenter != null && eier != null && miljoe != null &&
-                !"".equals(eier) && !"".equals(miljoe) && personidenter != Collections.EMPTY_LIST) {
-            return hentSpesifikArbeidsoeker(eier, miljoe, personidenter.get(0));
+        Map<String, String> filters = new HashMap<>();
+
+        if (eier != null && !"".equals(eier)) {
+            filters.put("filter-eier", eier);
         }
-        if (personidenter != null && personidenter != Collections.EMPTY_LIST) {
-            return hentFiltrerteArbeidsoekere(personidenter);
+        if (miljoe != null && !"".equals(miljoe)) {
+            filters.put("filter-miljoe", miljoe);
         }
-        return hentAlleArbeidsoekere();
+
+        String baseUrl = hentBrukere.toString();
+        if (!filters.isEmpty() || personidenter != null) {
+            baseUrl += "?";
+        }
+
+        for (Map.Entry<String, String> entry : filters.entrySet()) {
+            baseUrl += entry.getKey() + "=" + entry.getValue() + "&";
+        }
+
+        if (personidenter == null || personidenter.isEmpty()) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() -1);
+        }
+
+
+        return hentFiltrerteArbeidsoekere(personidenter, baseUrl);
     }
 
-    private List<Arbeidsoeker> hentFiltrerteArbeidsoekere(List<String> personidenter) {
-        UriTemplate url = new UriTemplate(hentBrukere.toString() + "?filter-personident={personident}");
+    private List<Arbeidsoeker> hentFiltrerteArbeidsoekere(List<String> personidenter, String refinedUrl) {
+        if (personidenter == null) {
+            return hentAlleArbeidsoekere();
+        }
+
+        if (personidenter != Collections.EMPTY_LIST) {
+            refinedUrl += "filter-personident={personident}";
+        }
+
+        UriTemplate url = new UriTemplate(refinedUrl);
         List<Arbeidsoeker> hentedeArbeidsoekere = new ArrayList<>(personidenter.size());
 
+        RequestEntity getRequest;
+        ResponseEntity<StatusFraArenaForvalterResponse> response;
         for (String personident : personidenter) {
-            RequestEntity getRequest = RequestEntity.get(url.expand(personident)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
-            ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
-            String expandedUrl = url.expand(personident).toString() + "&";
-            hentedeArbeidsoekere.addAll(gaaGjennomSider(expandedUrl, response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size()));
+            getRequest = RequestEntity.get(url.expand(personident)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
+            response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+            hentedeArbeidsoekere.addAll(gaaGjennomSider(url.expand(personident).toString() + "&", response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size()));
         }
 
         return hentedeArbeidsoekere;
@@ -85,33 +113,6 @@ public class ArenaForvalterConsumer {
         RequestEntity getRequest = RequestEntity.get(hentBrukere.expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
         return gaaGjennomSider(hentBrukere.toString() + "?", response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size());
-    }
-
-    private List<Arbeidsoeker> hentSpesifikArbeidsoeker(String eier, String miljoe, String personident) {
-        String url = hentBrukere.toString() + "?";
-
-        int numArgs = 0;
-        if (!("".equals(personident) || personident == null)) {
-            url += "filter-personident=" + personident;
-            numArgs++;
-        }
-        if (!("".equals(miljoe) || miljoe == null)) {
-            if (numArgs > 0) {
-                url += "&";
-            }
-            url += "filter-miljoe=" + miljoe;
-            numArgs++;
-        }
-        if (!("".equals(eier) || eier == null)) {
-            if (numArgs > 0) {
-                url += "&";
-            }
-            url += "filter-eier=" + eier;
-            numArgs++;
-        }
-        RequestEntity getRequest = RequestEntity.get(new UriTemplate(url).expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
-        ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
-        return gaaGjennomSider(url + ((numArgs > 0) ? "&" : ""), response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size());
     }
 
     private List<Arbeidsoeker> gaaGjennomSider(String baseUri, int antallSider, int initialLength) {

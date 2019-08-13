@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -33,8 +34,8 @@ public class IdentController {
     @ApiOperation(value = "Hent brukere", notes = "Henter alle brukere, filtrert på de gitte parameterene, som er registrert i Arena.")
     public ResponseEntity<List<Arbeidsoeker>> hentBrukereFraArenaForvalter(@RequestParam(required = false) String eier,
                                                                            @RequestParam(required = false) String miljoe,
-                                                                           @RequestParam(required = false) String personident) {
-        return ResponseEntity.ok(identService.hentArbeidsoekere(eier, miljoe, personident));
+                                                                           @RequestBody(required = false) List<String> personidenter) {
+        return ResponseEntity.ok(identService.hentArbeidsoekere(eier, miljoe, personidenter));
     }
 
     private ResponseEntity<List<String>> slettBrukere(String miljoe, List<String> identer) {

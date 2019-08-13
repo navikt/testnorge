@@ -2,7 +2,7 @@ package no.nav.registre.arena.core.config;
 
 
 import no.nav.registre.testnorge.consumers.ConsumerFactory;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
