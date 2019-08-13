@@ -116,12 +116,12 @@ export function mapPdlData(pdlfData) {
 			header: 'Falsk identitet',
 			data: [
 				{
-					id: 'rettIdentitet',
+					id: 'rettIdentitetErUkjent',
 					label: 'Rett identitet',
 					value: pdlfData.falskIdentitet.rettIdentitetErUkjent && 'UKJENT'
 				},
 				{
-					id: 'rettIdentitet',
+					id: 'rettIdentitetVedIdentifikasjonsnummer',
 					label: 'Rett identitet',
 					value:
 						pdlfData.falskIdentitet.rettIdentitetVedOpplysninger && 'Kjent ved personopplysninger'
