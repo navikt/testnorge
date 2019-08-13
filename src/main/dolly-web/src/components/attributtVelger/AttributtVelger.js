@@ -67,6 +67,7 @@ export default class AttributtVelger extends Component {
 				checkAttributeArray={() => checkAttributeArray(hovedKategoriItems)}
 				uncheckAttributeArray={() => uncheckAttributeArray(hovedKategoriItems)}
 				informasjonstekst={hovedKategori.informasjonstekst}
+				tilgjengeligeMiljoeEndepunkt={hovedKategori.tilgjengeligeMiljoeEndepunkt}
 			>
 				<fieldset name={name}>
 					<div className="attributt-velger_panelcontent">
@@ -93,11 +94,18 @@ export default class AttributtVelger extends Component {
 	_renderItem = item => {
 		const { attributeIds } = this.props.currentBestilling
 		// *Dependency system, finner ut om attributtene kan toggles
-		const disabled = item.dependentOn
-			? !attributeIds.includes(item.dependentOn)
-				? true
-				: false
-			: false
+		let disabled = item.dependentOn ? !attributeIds.includes(item.dependentOn) : false
+
+		// Boadresse har flere dependencies
+		if (item.id === 'boadresse_flyttedato' && attributeIds.includes('matrikkeladresse')) {
+			disabled = false
+		}
+		if (item.id === 'matrikkeladresse' && attributeIds.includes('boadresse')) {
+			disabled = true
+		}
+		if (item.id === 'boadresse' && attributeIds.includes('matrikkeladresse')) {
+			disabled = true
+		}
 
 		const dependentBy = item.dependentBy ? item.dependentBy : null
 
