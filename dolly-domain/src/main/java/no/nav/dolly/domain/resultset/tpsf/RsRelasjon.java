@@ -51,4 +51,8 @@ public class RsRelasjon {
     private String innvandretFraLand;
 
     private LocalDateTime innvandretFraLandFlyttedato;
+
+    private Boolean erForsvunnet;
+
+    private LocalDateTime forsvunnetDato;
 }
