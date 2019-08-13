@@ -157,7 +157,7 @@ public class JobController {
     public void poppSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserPoppRequest syntetiserPoppRequest = new SyntetiserPoppRequest(entry.getKey(), entry.getValue(), poppbatchAntallNyeIdenter);
-            String testdataEier = "orkestratoren";
+            String testdataEier = "synt_test";
             poppSyntPakkenService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
         }
     }
