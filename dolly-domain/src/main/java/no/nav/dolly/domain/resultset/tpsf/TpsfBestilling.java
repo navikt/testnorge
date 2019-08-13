@@ -88,6 +88,10 @@ public class TpsfBestilling {
 
     private AdresseNrInfo adresseNrInfo;
 
+    private Boolean erForsvunnet;
+
+    private LocalDateTime forsvunnetDato;
+
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {
             opprettFraIdenter = new ArrayList();

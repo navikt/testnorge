@@ -67,4 +67,8 @@ public class RsTpsfBasisBestilling {
     private LocalDateTime innvandretFraLandFlyttedato;
   
     private AdresseNrInfo adresseNrInfo;
+
+    private Boolean erForsvunnet;
+
+    private LocalDateTime forsvunnetDato;
 }
