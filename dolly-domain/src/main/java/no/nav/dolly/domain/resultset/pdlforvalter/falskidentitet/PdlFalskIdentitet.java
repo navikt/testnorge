@@ -18,5 +18,17 @@ public class PdlFalskIdentitet {
 
     private Boolean erFalsk;
     private String kilde;
-    private PdlRettIdentitet rettIdenitet;
+    private PdlRettIdentitet rettIdentitet;
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PdlRettIdentitet {
+
+        private Boolean rettIdentitetErUkjent;
+        private String rettIdentitetVedIdentifikasjonsnummer;
+        private PdlRettIdentitetVedOpplysninger rettIdentitetVedOpplysninger;
+    }
 }

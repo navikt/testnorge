@@ -13,7 +13,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlRettIdentitetVedOpplysninger {
+public class PdlRettIdentitetVedOpplysninger{
 
     private LocalDate foedselsdato;
     private PdlKjoenn kjoenn;

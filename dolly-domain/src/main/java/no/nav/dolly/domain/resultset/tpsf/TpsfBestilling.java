@@ -76,6 +76,22 @@ public class TpsfBestilling {
 
     private Boolean utenFastBopel;
 
+    private String utvandretTilLand;
+
+    private LocalDateTime utvandretTilLandFlyttedato;
+
+    private Boolean harMellomnavn;
+
+    private String innvandretFraLand;
+
+    private LocalDateTime innvandretFraLandFlyttedato;
+
+    private AdresseNrInfo adresseNrInfo;
+
+    private Boolean erForsvunnet;
+
+    private LocalDateTime forsvunnetDato;
+
     public List<String> getOpprettFraIdenter() {
         if (isNull(opprettFraIdenter)) {
             opprettFraIdenter = new ArrayList();

@@ -47,7 +47,7 @@ public class PersonoppslagConsumer {
                 .header(NAV_CALL_ID, "Dolly: " + UUID.randomUUID().toString())
                 .header(NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(PREPROD_ENV))
                 .header(NAV_PERSON_IDENT, ident)
-                .header(OPPLYSNINGSTYPER, "KontaktinformasjonForDoedsbo,UtenlandskIdentifikasjonsnummer")
+                .header(OPPLYSNINGSTYPER, "FalskIdentitet,KontaktinformasjonForDoedsbo,UtenlandskIdentifikasjonsnummer")
                 .header(TEMA, GEN.name())
                 .build(), JsonNode.class);
     }
