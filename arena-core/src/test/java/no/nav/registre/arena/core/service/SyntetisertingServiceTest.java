@@ -20,6 +20,7 @@ import java.util.Random;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -108,7 +109,7 @@ public class SyntetisertingServiceTest {
 
     private List<Arbeidsoeker> opprettIdenter(Integer antallNyeIdenter, String miljoe) {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere();
+        doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         return syntetiseringService.opprettArbeidsoekere(antallNyeIdenter, avspillergruppeId, miljoe);
@@ -124,7 +125,7 @@ public class SyntetisertingServiceTest {
     @Test
     public void fyllFraTomArenaForvalter() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere();
+        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(tyveNyeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         List<Arbeidsoeker> arbeidsokere =
@@ -154,7 +155,7 @@ public class SyntetisertingServiceTest {
     @Test
     public void fyllOppForvalterenTest() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(femtenEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere();
+        doReturn(femtenEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(opprettedeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         List<Arbeidsoeker> arbeidsokere =
@@ -168,7 +169,7 @@ public class SyntetisertingServiceTest {
     @Test
     public void opprettArbeidssoekerTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere();
+        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
@@ -180,8 +181,8 @@ public class SyntetisertingServiceTest {
     @Test
     public void opprettEksisterendeArbeidssoekerTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere();
-        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekereFilter(anyList());
+        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(anyList(), eq(null), eq(null));
 
         List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
 
@@ -192,7 +193,7 @@ public class SyntetisertingServiceTest {
     @Test
     public void opprettIkkeEksisterendeIdentTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere();
+        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
 
         List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr3, avspillergruppeId, miljoe);
 

@@ -55,7 +55,19 @@ public class ArenaForvalterConsumer {
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public List<Arbeidsoeker> hentArbeidsoekereFilter(List<String> personidenter) {
+    public List<Arbeidsoeker> hentArbeidsoekere(List<String> personidenter, String eier, String miljoe) {
+
+        if (personidenter != null && eier != null && miljoe != null &&
+                !"".equals(eier) && !"".equals(miljoe) && personidenter != Collections.EMPTY_LIST) {
+            return hentSpesifikArbeidsoeker(eier, miljoe, personidenter.get(0));
+        }
+        if (personidenter != null && personidenter != Collections.EMPTY_LIST) {
+            return hentFiltrerteArbeidsoekere(personidenter);
+        }
+        return hentAlleArbeidsoekere();
+    }
+
+    private List<Arbeidsoeker> hentFiltrerteArbeidsoekere(List<String> personidenter) {
         UriTemplate url = new UriTemplate(hentBrukere.toString() + "?filter-personident={personident}");
         List<Arbeidsoeker> hentedeArbeidsoekere = new ArrayList<>(personidenter.size());
 
@@ -69,15 +81,13 @@ public class ArenaForvalterConsumer {
         return hentedeArbeidsoekere;
     }
 
-    @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public List<Arbeidsoeker> hentArbeidsoekere() {
+    private List<Arbeidsoeker> hentAlleArbeidsoekere() {
         RequestEntity getRequest = RequestEntity.get(hentBrukere.expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
         return gaaGjennomSider(hentBrukere.toString() + "?", response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size());
     }
 
-    @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public List<Arbeidsoeker> hentArbeidsoekere(String eier, String miljoe, String personident) {
+    private List<Arbeidsoeker> hentSpesifikArbeidsoeker(String eier, String miljoe, String personident) {
         String url = hentBrukere.toString() + "?";
 
         int numArgs = 0;

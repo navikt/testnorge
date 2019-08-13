@@ -21,8 +21,8 @@ public class SyntetiseringController {
 
     @PostMapping("/generer")
     @ApiOperation(value = "Legg til identer i Arena", notes = "Legger til oppgitt antall identer i Arena. Dersom ingen antall identer blir oppgitt fyller den opp slik at 20% tilgjengelige gyldige identer ligger i Arena. \nResponse: liste av opprettede identer.")
-    public ResponseEntity<List<String>> registerBrukereIArenaForvalter(@RequestParam(required = false) String personident,
-                                                                       @RequestBody(required = false) SyntetiserArenaRequest syntetiserArenaRequest) {
+    public ResponseEntity<List<String>> registrerBrukereIArenaForvalter(@RequestParam(required = false) String personident,
+                                                                        @RequestBody(required = false) SyntetiserArenaRequest syntetiserArenaRequest) {
         if ("".equals(personident) || personident == null) {
             return registrerBrukereIArenaForvalter(syntetiserArenaRequest);
         }

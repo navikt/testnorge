@@ -57,7 +57,7 @@ public class SyntetiseringControllerTest {
                 .opprettArbeidsoekere(antallNyeIdenter, avspillegruppeId, miljoe))
                 .thenReturn(Arrays.asList(arb1,arb2,arb3));
 
-        ResponseEntity<List<String>> result = syntetiseringController.registerBrukereIArenaForvalter(null, syntetiserArenaRequest);
+        ResponseEntity<List<String>> result = syntetiseringController.registrerBrukereIArenaForvalter(null, syntetiserArenaRequest);
         assertThat(result.getBody().get(1), containsString(fnr2));
         assertThat(result.getBody().size(), is(3));
     }
@@ -67,7 +67,7 @@ public class SyntetiseringControllerTest {
         doReturn(Collections.singletonList(arb1)).when(syntetiseringService)
                 .opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe);
 
-        ResponseEntity<List<String>> response = syntetiseringController.registerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);
+        ResponseEntity<List<String>> response = syntetiseringController.registrerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);
         assertThat(response.getBody().size(), is(1));
         assertThat(response.getBody().get(0), containsString(fnr1));
     }

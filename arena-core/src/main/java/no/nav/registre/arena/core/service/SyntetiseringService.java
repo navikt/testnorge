@@ -58,7 +58,7 @@ public class SyntetiseringService {
 
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident);
-            return arenaForvalterConsumer.hentArbeidsoekereFilter(Collections.singletonList(ident));
+            return arenaForvalterConsumer.hentArbeidsoekere(Collections.singletonList(ident), null, null);
         } else if (!levendeIdenter.contains(ident)) {
             log.info("Ident {} kunne ikke bli funnet av Hodejegeren, og kan derfor ikke opprettes i Arena.", ident);
             return new ArrayList<>();
@@ -68,7 +68,9 @@ public class SyntetiseringService {
     }
 
     private List<String> hentKvalifiserteIdenter(int antallIdenter, List<String> levendeIdenter, List<String> eksisterendeArbeidsoekere) {
-        levendeIdenter.removeAll(eksisterendeArbeidsoekere);
+        levendeIdenter = levendeIdenter.parallelStream()
+                .filter(eksisterendeArbeidsoekere::contains)
+                .collect(Collectors.toList());
 
         if (antallIdenter > levendeIdenter.size()) {
             antallIdenter = levendeIdenter.size();
@@ -80,6 +82,7 @@ public class SyntetiseringService {
         for (int i = 0; i < antallIdenter; i++) {
             nyeIdenter.add(levendeIdenter.remove(random.nextInt(levendeIdenter.size())));
         }
+
 
         return nyeIdenter;
     }
@@ -114,7 +117,7 @@ public class SyntetiseringService {
     }
 
     private List<String> hentEksisterendeArbeidsoekerIdenter() {
-        List<Arbeidsoeker> arbeidsoekere = arenaForvalterConsumer.hentArbeidsoekere();
+        List<Arbeidsoeker> arbeidsoekere = arenaForvalterConsumer.hentArbeidsoekere(null, null, null);
         return hentIdentListe(arbeidsoekere);
     }
 

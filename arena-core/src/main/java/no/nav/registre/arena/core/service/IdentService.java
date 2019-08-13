@@ -8,6 +8,7 @@ import no.nav.registre.arena.domain.Arbeidsoeker;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -19,7 +20,7 @@ public class IdentService {
 
 
     public List<Arbeidsoeker> hentArbeidsoekere(String eier, String miljoe, String personident) {
-        return arenaForvalterConsumer.hentArbeidsoekere(eier, miljoe, personident);
+        return arenaForvalterConsumer.hentArbeidsoekere(Collections.singletonList(personident), eier, miljoe);
     }
 
     public List<String> slettBrukereIArenaForvalter(List<String> identerToDelete, String miljoe) {
