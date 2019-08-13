@@ -159,13 +159,12 @@ public class EksisterendeIdenterServiceTest {
 
     /**
      * Scenario:
-     * Henter identer, men en ident er ikke synkronisert med tps og har motatt en dødsmelding
+     * Henter identer, men en ident er ikke synkronisert med tps og har mottatt en dødsmelding
      *
      * @throws IOException
      */
     @Test
     public void hentMyndigeIdenterIGruppeEnDoedITPS() throws IOException {
-
         Map<String, String> statusDoed = new HashMap<>();
         statusDoed.put(DATO_DO, "12312");
         when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249948")).thenReturn(statusDoed);

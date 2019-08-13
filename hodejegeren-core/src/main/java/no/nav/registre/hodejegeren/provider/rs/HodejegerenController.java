@@ -76,10 +76,6 @@ public class HodejegerenController {
         if (minimumAlder == null || minimumAlder < MIN_ALDER) {
             minimumAlder = MIN_ALDER;
         }
-        if (antallIdenter == null || antallIdenter < 0) {
-            antallIdenter = Integer.MAX_VALUE;
-        }
-
         return eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder);
     }
 

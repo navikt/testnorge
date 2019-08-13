@@ -56,13 +56,26 @@ public class EksisterendeIdenterService {
     @Autowired
     private Random rand;
 
-    public List<String> hentLevendeIdenterIGruppeOgSjekkStatusQuo(Long gruppeId, String miljoe, int henteAntall, int minimumAlder) {
+    public List<String> hentLevendeIdenterIGruppeOgSjekkStatusQuo(Long gruppeId, String miljoe, Integer henteAntall, Integer minimumAlder) {
         List<String> gyldigeIdenter = finnAlleIdenterOverAlder(gruppeId, minimumAlder);
+        List<String> utvalgteIdenter;
 
-        if (gyldigeIdenter.isEmpty()) {
+        if (henteAntall != null) {
+            Collections.shuffle(gyldigeIdenter);
+            if (gyldigeIdenter.size() < henteAntall) {
+                log.info("Antall ønskede identer å hente er større enn identer over alder i avspillergruppe. - HenteAntall:{} GyldigeIdenter:{}", henteAntall, gyldigeIdenter.size());
+                henteAntall = gyldigeIdenter.size();
+            }
+            utvalgteIdenter = gyldigeIdenter.subList(0, henteAntall);
+        } else {
+            utvalgteIdenter = new ArrayList<>(gyldigeIdenter);
+        }
+
+        if (utvalgteIdenter.isEmpty()) {
             return Collections.emptyList();
         }
-        List<String> collected = gyldigeIdenter.parallelStream().filter(gyldigIdent -> {
+
+        return utvalgteIdenter.parallelStream().filter(gyldigIdent -> {
             Map<String, String> status = null;
             try {
                 status = tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, gyldigIdent);
@@ -74,21 +87,6 @@ public class EksisterendeIdenterService {
 
             return status != null && (status.get(DATO_DO) == null || status.get(DATO_DO).isEmpty());
         }).collect(Collectors.toList());
-
-        if (collected.size() < henteAntall) {
-            log.info("Antall ønskede identer å hente er større enn myndige identer i avspillergruppe. - HenteAntall:{} MyndigeIdenter:{}", henteAntall, collected.size());
-            henteAntall = collected.size();
-        }
-
-        List<String> hentedeIdenter = new ArrayList<>(henteAntall);
-
-        for (int i = 0; i < henteAntall; i++) {
-            int index = rand.nextInt(collected.size());
-            hentedeIdenter.add(collected.get(index));
-            collected.remove(index);
-        }
-
-        return hentedeIdenter;
     }
 
     public List<NavEnhetResponse> hentFnrMedNavKontor(String miljoe, List<String> identer) {
