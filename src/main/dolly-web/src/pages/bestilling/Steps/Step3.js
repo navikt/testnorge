@@ -222,7 +222,13 @@ export default class Step3 extends PureComponent {
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
 						<h4>{typeof header === 'number' ? `# ${header}` : header}</h4>
-						<div className="oppsummering-blokk">
+						<div
+							className={
+								typeof items[0].subGruppe === 'string'
+									? 'oppsummering-blokk margin'
+									: 'oppsummering-blokk'
+							}
+						>
 							{items.map(item => this.renderItem(item, values))}
 						</div>
 					</RemoveableField>
@@ -231,7 +237,7 @@ export default class Step3 extends PureComponent {
 		}
 		return (
 			<div className="oppsummering-multifield" key={header}>
-				<h4>{header}</h4>
+				{header && !items[0].subGruppe && <h4>{header}</h4>}
 				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
 			</div>
 		)
@@ -244,9 +250,11 @@ export default class Step3 extends PureComponent {
 				Object.keys(values).map(attr => {
 					return !values[attr] && delete values[attr]
 				})
-				return valueArray.length > 1
-					? this.renderSubKategoriBlokk(idx + 1, item.items, values)
-					: this.renderSubKategoriBlokk(null, item.items, values)
+
+				const header =
+					valueArray.length > 1 ? idx + 1 : item.subGruppe ? item.items[0].subGruppe : null
+
+				return this.renderSubKategoriBlokk(header, item.items, values)
 			})
 		}
 
@@ -295,7 +303,6 @@ export default class Step3 extends PureComponent {
 
 	_onRemoveSubKategori(items, header) {
 		if (typeof header === 'number' || header === null) {
-			//|| header === null
 			this.props.deleteValuesArray({
 				values: [...new Set(items.map(item => item.subKategori.id))],
 				index: header - 1
