@@ -15,7 +15,7 @@
 
     <groupId>no.nav.registre.arena</groupId>
     <artifactId>testnorge-arena</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.1-SNAPSHOT</version>
 
     <modules>
         <module>arena-core</module>
@@ -28,7 +28,7 @@
         <springfox.version>2.9.2</springfox.version>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
         <fasterxml.jackson.version>2.9.9</fasterxml.jackson.version>
-        <testnorge-consumers.version>1.3.1-RELEASE</testnorge-consumers.version>
+        <testnorge-consumers.version>1.8.0-RELEASE</testnorge-consumers.version>
         <jacoco.version>0.8.3</jacoco.version>
         <application.version>${project.version}</application.version>
     </properties>

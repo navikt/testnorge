@@ -7,7 +7,7 @@ import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
 import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
 import no.nav.registre.arena.domain.NyBruker;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
