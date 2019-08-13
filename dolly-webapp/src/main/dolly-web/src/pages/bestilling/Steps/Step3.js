@@ -55,7 +55,6 @@ export default class Step3 extends PureComponent {
 		this.SelectedAttributes = this.AttributtManager.listSelectedAttributesForValueSelection(
 			selectedAttributeIds
 		)
-
 		return (
 			<div className="bestilling-step3">
 				<div className="content-header">
@@ -191,7 +190,9 @@ export default class Step3 extends PureComponent {
 					removableText={'FJERN RAD'}
 				>
 					<div className="oppsummering-blokk oppsummering-blokk-margin">
-						{items.map(item => this.renderSubKategori(item))}
+						{items.map(item => {
+							return this.renderSubKategori(item)
+						})}
 					</div>
 				</RemoveableField>
 			</Fragment>
@@ -200,10 +201,13 @@ export default class Step3 extends PureComponent {
 
 	renderSubKategori = ({ subKategori, items }) => {
 		const { values } = this.props
-
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
 		}
+		if (subKategori.id === 'arena') {
+			return items[0].items.map(item => this.renderItem(item, values))
+		}
+
 		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
@@ -233,26 +237,13 @@ export default class Step3 extends PureComponent {
 		)
 	}
 
-	renderSubKategori = ({ subKategori, items }) => {
-		const { values } = this.props
-		if (!subKategori.showInSummary) {
-			return items.map(item => this.renderItem(item, values))
-		}
-		if (subKategori.id === 'arena') {
-			return items[0].items.map(item => this.renderItem(item, values))
-		}
-		if (subKategori.id === 'utenlandskIdentifikasjonsnummer') {
-			return items[0].items.map(item => this.renderItem(item, values))
-		}
-		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
-	}
-
 	renderItem = (item, stateValues) => {
 		if (item.items) {
 			const valueArray = _get(this.props.values, item.id)
-			const numberOfValues = valueArray.length
 			return valueArray.map((values, idx) => {
-				Object.keys(values).map(attr => !values[attr] && delete values[attr])
+				Object.keys(values).map(attr => {
+					return !values[attr] && delete values[attr]
+				})
 				return valueArray.length > 1
 					? this.renderSubKategoriBlokk(idx + 1, item.items, values)
 					: this.renderSubKategoriBlokk(null, item.items, values)
@@ -270,21 +261,10 @@ export default class Step3 extends PureComponent {
 				  ))
 				: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
 		}
-
-		if (
-			item.dataSource === 'PDLF' &&
-			item.path &&
-			item.path.includes('utenlandskIdentifikasjonsnr')
-		) {
-			itemValue = Formatters.oversettBoolean(
-				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
-			)
-		}
-
 		const staticValueProps = {
 			key: item.id,
 			header: item.label,
-			value: itemValue !== '' ? itemValue : null,
+			value: itemValue !== '' ? (itemValue === 'false' ? false : itemValue) : null, //Quickfix for selectOptionManager(stringBoolean)
 			format: item.format
 		}
 
@@ -314,7 +294,7 @@ export default class Step3 extends PureComponent {
 	}
 
 	_onRemoveSubKategori(items, header) {
-		if (typeof header === 'number') {
+		if (typeof header === 'number' || header === null) {
 			//|| header === null
 			this.props.deleteValuesArray({
 				values: [...new Set(items.map(item => item.subKategori.id))],

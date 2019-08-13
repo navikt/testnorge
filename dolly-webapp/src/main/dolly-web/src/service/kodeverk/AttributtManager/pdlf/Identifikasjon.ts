@@ -12,7 +12,7 @@ const AttributtListe: Attributt[] = [
 		id: 'utenlandskIdentifikasjonsnummer',
 		label: 'Har utenlands-ID',
 		subGruppe: 'true',
-		path: 'identifikasjon.utenlandskIdentifikasjonsnr',
+		path: 'utenlandskIdentifikasjonsnummer',
 		dataSource: DataSource.PDLF,
 		attributtType: AttributtType.SelectAndEdit,
 		validation: yup.object(),
@@ -24,7 +24,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Identifikasjonsnummer',
 				dataSource: DataSource.PDLF,
 				subGruppe: 'Utenlands-ID',
-				path: 'identifikasjon.utenlandskIdentifikasjonsnr.identifikasjonsnummer',
+				path: 'utenlandskIdentifikasjonsnummer.identifikasjonsnummer',
 				inputType: InputType.Text,
 				validation: yup.string().required('Skriv et identifikasjonsnummer'),
 				attributtType: AttributtType.SelectAndEdit
@@ -36,7 +36,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Kilde',
 				dataSource: DataSource.PDLF,
 				subGruppe: 'Utenlands-ID',
-				path: 'identifikasjon.utenlandskIdentifikasjonsnr.kilde',
+				path: 'utenlandskIdentifikasjonsnummer.kilde',
 				inputType: InputType.Text,
 				validation: yup.string().required('Skriv en kilde'),
 				attributtType: AttributtType.SelectAndEdit
@@ -48,10 +48,10 @@ const AttributtListe: Attributt[] = [
 				label: 'Opphørt',
 				dataSource: DataSource.PDLF,
 				subGruppe: 'Utenlands-ID',
-				path: 'identifikasjon.utenlandskIdentifikasjonsnr.opphoert',
+				path: 'utenlandskIdentifikasjonsnummer.opphoert',
 				inputType: InputType.Select,
 				validation: yup.string().required('Velg en verdi'),
-				options: SelectOptionsManager('boolean'),
+				options: SelectOptionsManager('stringBoolean'), //stringboolean = quickfix. False forsvant mellom step2 og step 3.
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -61,10 +61,10 @@ const AttributtListe: Attributt[] = [
 				label: 'Utstederland',
 				dataSource: DataSource.PDLF,
 				subGruppe: 'Utenlands-ID',
-				path: 'identifikasjon.utenlandskIdentifikasjonsnr.utstederland',
+				path: 'utenlandskIdentifikasjonsnummer.utstederland',
 				inputType: InputType.Select,
 				apiKodeverkId: 'StatsborgerskapFreg',
-				validation: yup.string().required('Velg et land'),
+				// validation: yup.array().required('Velg et land'),
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]
@@ -75,7 +75,7 @@ const AttributtListe: Attributt[] = [
 		id: 'falskIdentitet',
 		label: 'Har falsk identitet',
 		subGruppe: 'true',
-		path: 'identifikasjon.falskid',
+		path: 'falskIdentitet',
 		dataSource: DataSource.PDLF,
 		attributtType: AttributtType.SelectAndEdit,
 		validation: yup.object(),
@@ -83,12 +83,12 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.PersInfo,
 				subKategori: SubKategorier.Identifikasjon,
-				id: 'rettIdentitet',
-				label: 'Rett identitet',
+				id: 'identitetType',
+				label: 'Opplysninger om rett identitet',
 				dataSource: DataSource.PDLF,
-				subGruppe: 'Falsk',
+				subGruppe: 'Falsk identitet',
 				size: 'medium',
-				path: 'identifikasjon.falskid.rettIdentitet',
+				path: 'falskIdentitet.identitetType',
 				inputType: InputType.Select,
 				options: SelectOptionsManager('rettIdentitet'),
 				validation: yup.string().required('Velg rett identitet'),
@@ -97,17 +97,17 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.PersInfo,
 				subKategori: SubKategorier.Identifikasjon,
-				id: 'rettIdentifikasjonsnummer',
+				id: 'rettIdentitetVedIdentifikasjonsnummer',
 				label: 'Identifikasjonsnummer',
 				dataSource: DataSource.PDLF,
-				subGruppe: 'Falsk',
-				path: 'identifikasjon.falskid.rettIdentifikasjonsnummer',
+				subGruppe: 'Falsk identitet',
+				path: 'falskIdentitet.rettIdentitetVedIdentifikasjonsnummer',
 				inputType: InputType.Text,
 				validation: yup
 					.string()
 					.required()
 					.matches(/^[0-9]{11}$/, 'Id-nummer må være et tall med 11 sifre'),
-				onlyShowAfterSelectedValue: { attributtId: 'rettIdentitet', valueIndex: [1] },
+				onlyShowAfterSelectedValue: { attributtId: 'identitetType', valueIndex: [1] },
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -115,12 +115,12 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Identifikasjon,
 				id: 'fornavn',
 				label: 'Fornavn',
-				subGruppe: 'Falsk',
-				path: 'identifikasjon.falskid.fornavn',
+				subGruppe: 'Falsk identitet',
+				path: 'falskIdentitet.fornavn',
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Text,
 				validation: yup.string().required('Vennligst fyll inn navn'),
-				onlyShowAfterSelectedValue: { attributtId: 'rettIdentitet', valueIndex: [2] },
+				onlyShowAfterSelectedValue: { attributtId: 'identitetType', valueIndex: [2] },
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -128,11 +128,11 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Identifikasjon,
 				id: 'mellomnavn',
 				label: 'mellomnavn',
-				subGruppe: 'Falsk',
-				path: 'identifikasjon.falskid.mellomnavn',
+				subGruppe: 'Falsk identitet',
+				path: 'falskIdentitet.mellomnavn',
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Text,
-				onlyShowAfterSelectedValue: { attributtId: 'rettIdentitet', valueIndex: [2] },
+				onlyShowAfterSelectedValue: { attributtId: 'identitetType', valueIndex: [2] },
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -140,11 +140,11 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Identifikasjon,
 				id: 'etternavn',
 				label: 'Etternavn',
-				subGruppe: 'Falsk',
-				path: 'identifikasjon.falskid.etternavn',
+				subGruppe: 'Falsk identitet',
+				path: 'falskIdentitet.etternavn',
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Text,
-				onlyShowAfterSelectedValue: { attributtId: 'rettIdentitet', valueIndex: [2] },
+				onlyShowAfterSelectedValue: { attributtId: 'identitetType', valueIndex: [2] },
 				validation: yup.string().required('Vennligst fyll inn navn'),
 				attributtType: AttributtType.SelectAndEdit
 			},
@@ -154,11 +154,11 @@ const AttributtListe: Attributt[] = [
 				id: 'foedselsdato',
 				label: 'Fødselsdato',
 				dataSource: DataSource.PDLF,
-				subGruppe: 'Falsk',
-				path: 'identifikasjon.falskid.foedselsdato',
+				subGruppe: 'Falsk identitet',
+				path: 'falskIdentitet.foedselsdato',
 				validation: DateValidation(false),
 				inputType: InputType.Date,
-				onlyShowAfterSelectedValue: { attributtId: 'rettIdentitet', valueIndex: [2] },
+				onlyShowAfterSelectedValue: { attributtId: 'identitetType', valueIndex: [2] },
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -167,11 +167,11 @@ const AttributtListe: Attributt[] = [
 				id: 'kjonn',
 				label: 'Kjønn',
 				dataSource: DataSource.PDLF,
-				subGruppe: 'Falsk',
-				path: 'identifikasjon.falskid.kjonn',
+				subGruppe: 'Falsk identitet',
+				path: 'falskIdentitet.kjonn',
 				inputType: InputType.Select,
 				apiKodeverkId: 'Kjønnstyper',
-				onlyShowAfterSelectedValue: { attributtId: 'rettIdentitet', valueIndex: [2] },
+				onlyShowAfterSelectedValue: { attributtId: 'identitetType', valueIndex: [2] },
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
@@ -179,14 +179,14 @@ const AttributtListe: Attributt[] = [
 				subKategori: SubKategorier.Identifikasjon,
 				id: 'statsborgerskap',
 				label: 'Statsborgerskap',
-				subGruppe: 'Falsk',
-				path: 'identifikasjon.falskid.statsborgerskap',
+				subGruppe: 'Falsk identitet',
+				path: 'falskIdentitet.statsborgerskap',
 				isMultiple: true,
 				dataSource: DataSource.PDLF,
 				inputType: InputType.Select,
 				apiKodeverkId: 'StatsborgerskapFreg',
-				onlyShowAfterSelectedValue: { attributtId: 'rettIdentitet', valueIndex: [2] },
-				validation: yup.string().required('Vennligst velg minst ett statsborgerskap'),
+				onlyShowAfterSelectedValue: { attributtId: 'identitetType', valueIndex: [2] },
+				validation: yup.array().required('Vennligst velg minst ett statsborgerskap'),
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]

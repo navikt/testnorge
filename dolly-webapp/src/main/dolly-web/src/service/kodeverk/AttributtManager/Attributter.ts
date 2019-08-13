@@ -7,7 +7,7 @@ import Krr from './krr/Krr'
 import Arbeidsforhold from './aareg/Arbeidsforhold'
 import SigrunInntekt from './sigrun/Inntekt'
 import Doedsbo from './pdlf/Doedsbo'
-import UtenlandsId from './pdlf/UtenlandsId'
+import Identifikasjon from './pdlf/Identifikasjon'
 import Arena from './arena/Arena'
 
 const AttributtListe: Attributt[] = [
@@ -18,7 +18,7 @@ const AttributtListe: Attributt[] = [
 	...SigrunInntekt,
 	...Krr,
 	...Doedsbo,
-	...UtenlandsId,
+	...Identifikasjon,
 	...Arena
 ]
 

@@ -9,6 +9,7 @@ const selectOptions = {
 	],
 
 	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }],
+	stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
 
 	// SIGRUN
 	inntektTjeneste: [
@@ -36,7 +37,7 @@ const selectOptions = {
 	rettIdentitet: [
 		{ value: 'UKJENT', label: 'Ukjent' },
 		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
-		{ value: 'OMTRENTLIG', label: 'Ved andre opplysninger' }
+		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' }
 	],
 
 	kjonnFalskIdentitet: [

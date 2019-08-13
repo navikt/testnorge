@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react'
-import { FieldArray } from 'formik'
+import { Field, FieldArray } from 'formik'
 import { DollyApi } from '~/service/Api'
 import Button from '~/components/button/Button'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 import cn from 'classnames'
+import InputSelector from '~/components/fields/InputSelector'
 
 const Attributt = new AttributtManager()
 
@@ -62,7 +63,6 @@ export const FieldArrayComponent = ({
 		}
 	}, {})
 	const createDefaultObject = () => arrayHelpers.push({ ...parentAttributes })
-	const createSingleItemArray = fakeItem => {}
 
 	const createSubItem = (subitem, itemIndex) => {
 		let subItemArray = subitem.subItems
@@ -139,11 +139,8 @@ export const FieldArrayComponent = ({
 											// Add subKategori to ID
 											const fakeItem = {
 												...item,
-												id: item.isMultiple
-													? `${parentId}[${idx}]${item.id}[0]`
-													: `${parentId}[${idx}]${item.id}`
+												id: `${parentId}[${idx}]${item.id}`
 											}
-											console.log('fakeItem :', fakeItem)
 											return (
 												<div key={kdx} className="flexbox">
 													{renderFieldComponent(
@@ -155,12 +152,6 @@ export const FieldArrayComponent = ({
 														},
 														formikProps
 													)}
-													{fakeItem.isMultiple &&
-														addButton(
-															() => createSingleItemArray(item, idx),
-															'FLERE ' + item.label.toUpperCase(),
-															kdx
-														)}
 												</div>
 											)
 										}
