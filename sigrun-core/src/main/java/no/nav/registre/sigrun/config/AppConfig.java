@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.registre.sigrun.provider.rs.SyntetiseringController;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
 @Import({ SyntetiseringController.class })

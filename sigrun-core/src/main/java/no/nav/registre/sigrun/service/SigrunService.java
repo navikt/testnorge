@@ -19,7 +19,7 @@ import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
 import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
 @Slf4j
