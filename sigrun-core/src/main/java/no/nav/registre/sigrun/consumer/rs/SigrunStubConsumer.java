@@ -13,8 +13,8 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import no.nav.registre.sigrun.PoppSyntetisererenResponse;
 import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
 
 @Component
@@ -38,9 +38,16 @@ public class SigrunStubConsumer {
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
-    public List<String> hentEksisterendePersonidentifikatorer(String miljoe) {
-        UriTemplate hentFnrUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/hentPersonidentifikatorer");
-        RequestEntity getRequest = RequestEntity.get(hentFnrUrl.expand()).build();
+    public List<String> hentEksisterendePersonidentifikatorer(String miljoe, String testdataEier) {
+        UriTemplate hentFnrUrl;
+        RequestEntity getRequest;
+        if (testdataEier != null) {
+            hentFnrUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/hentPersonidentifikatorer?testdataEier={testdataEier}");
+            getRequest = RequestEntity.get(hentFnrUrl.expand(testdataEier)).build();
+        } else {
+            hentFnrUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/hentPersonidentifikatorer");
+            getRequest = RequestEntity.get(hentFnrUrl.expand()).build();
+        }
         ResponseEntity<List<String>> response = restTemplate.exchange(getRequest, RESPONSE_TYPE);
 
         List<String> identer = new ArrayList<>();
@@ -55,7 +62,7 @@ public class SigrunStubConsumer {
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
-    public ResponseEntity sendDataTilSigrunstub(List<Map<String, Object>> meldinger, String testdataEier, String miljoe) {
+    public ResponseEntity sendDataTilSigrunstub(List<PoppSyntetisererenResponse> meldinger, String testdataEier, String miljoe) {
         UriTemplate sendDataUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/opprettBolk");
         RequestEntity postRequest = RequestEntity.post(sendDataUrl.expand()).header("testdataEier", testdataEier).body(meldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);

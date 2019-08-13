@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.registre</groupId>
         <artifactId>testnorge-sigrun</artifactId>
-        <version>1.5.2</version>
+        <version>1.5.3</version>
     </parent>
 
     <artifactId>sigrun-core</artifactId>
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>sigrun-domain</artifactId>
-            <version>1.5.2</version>
+            <version>1.5.3</version>
             <scope>compile</scope>
         </dependency>
         <!--HODEJEGEREN-->

@@ -13,10 +13,10 @@ import lombok.Setter;
 @Builder
 public class SigrunSkattegrunnlagResponse {
 
-    private String personidentifikator;
-    private String inntektsaar;
-    private String tjeneste;
     private String grunnlag;
-    private String verdi;
+    private String inntektsaar;
+    private String personidentifikator;
     private String testdataEier;
+    private String tjeneste;
+    private String verdi;
 }

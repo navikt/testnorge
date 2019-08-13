@@ -6,15 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
-public class SigrunSaveInHodejegerenRequest {
+public class SyntetiskGrunnlag {
 
-    private String kilde;
-    private List<IdentMedData> identMedData;
+    private String tekniskNavn;
+    private String verdi;
 }
