@@ -189,7 +189,7 @@ export const FieldArrayComponent = ({
 							item.isMultiple &&
 							addButton(createDefaultObject, subKategori.navn.toUpperCase())}
 					</div>
-					<div>
+					{/* <div>
 						{item.genererSyntVerdier && (
 							<GenererSyntVerdier
 								type={item.id}
@@ -197,7 +197,7 @@ export const FieldArrayComponent = ({
 								antall={antallInstanser}
 							/>
 						)}
-					</div>
+					</div> */}
 				</div>
 			}
 		</Fragment>

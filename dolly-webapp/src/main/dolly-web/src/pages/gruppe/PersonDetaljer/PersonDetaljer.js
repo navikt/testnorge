@@ -8,7 +8,7 @@ import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
 import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
-import { getAaregSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
+import { getSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 const AttributtManagerInstance = new AttributtManager()
@@ -33,8 +33,12 @@ export default class PersonDetaljer extends PureComponent {
 			getPdlforvalterStatusOK(this.props.testIdent.pdlforvalterStatus) &&
 			this.props.getPdlfTestbruker()
 		this.props.testIdent.arenaforvalterStatus && this.props.getArenaTestbruker()
-		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.testIdent.aaregStatus)
+
+		const aaregSuccessEnvs = getSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
+
+		const instSuccessEnvs = getSuccessEnv(this.props.testIdent.instdataStatus)
+		instSuccessEnvs.length > 0 && this.props.getInstTestbruker(instSuccessEnvs[0])
 	}
 
 	render() {

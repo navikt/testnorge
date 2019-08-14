@@ -252,12 +252,12 @@ export function mapAaregData(aaregData) {
 	}
 }
 
-export function mapInst2Data(inst2Data) {
-	if (!inst2Data || inst2Data.length === 0) return null
+export function mapInstData(instData) {
+	if (!instData || instData.length === 0) return null
 	return {
 		header: 'Institusjonsopphold',
 		multiple: true,
-		data: inst2Data.map((data, i) => {
+		data: instData.map((data, i) => {
 			return {
 				parent: 'institusjonsopphold',
 				id: data.personidentifikator,

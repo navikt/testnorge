@@ -277,7 +277,7 @@ export default class Step3 extends PureComponent {
 			)
 		}
 
-		if (item.dataSource === 'INST2' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
+		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
 			itemValue = Formatters.showLabel(item.id, itemValue)
 		}
 

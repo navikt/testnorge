@@ -6,6 +6,8 @@ import Icon from '~/components/icon/Icon'
 import { DollyApi } from '~/service/Api'
 
 export default class GenererSyntVerdier extends Component {
+	// Ikke i bruk. Mangler å få fields til å rerendere når de har fått nye verdier i formikProps.
+	// Framprovoserer oppdatering for å se at verdier blir lagt inn ved å f.eks. legge til et institusjonsopphold til.
 	constructor(props) {
 		super(props)
 

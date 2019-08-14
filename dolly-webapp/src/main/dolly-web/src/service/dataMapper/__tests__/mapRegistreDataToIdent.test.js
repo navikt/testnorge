@@ -4,7 +4,7 @@ import {
 	mapArenaData,
 	mapAaregData,
 	mapSubItemAaregData,
-	mapInst2Data
+	mapInstData
 } from '../mapRegistreDataToIdent'
 import Formatters from '~/utils/DataFormatter'
 
@@ -511,13 +511,13 @@ describe('mapDetailedData.js', () => {
 		})
 	})
 
-	describe('mapInst2Data', () => {
+	describe('mapInstData', () => {
 		it('should return null without data', () => {
-			expect(mapInst2Data()).toBeNull()
+			expect(mapInstData()).toBeNull()
 		})
 
-		it('should return inst2-data ', () => {
-			const testInst2Data = [
+		it('should return inst-data ', () => {
+			const testInstData = [
 				{
 					faktiskSluttdato: '2018-01-01T00:00:00',
 					startdato: '2017-02-01T00:00:00',
@@ -529,7 +529,7 @@ describe('mapDetailedData.js', () => {
 			const res = {
 				header: 'Institusjonsopphold',
 				multiple: true,
-				data: testInst2Data.map((data, i) => {
+				data: testInstData.map((data, i) => {
 					return {
 						parent: 'institusjonsopphold',
 						id: data.personidentifikator,
@@ -558,7 +558,7 @@ describe('mapDetailedData.js', () => {
 					}
 				})
 			}
-			expect(mapInst2Data(testInst2Data)).toEqual(res)
+			expect(mapInstData(testInstData)).toEqual(res)
 		})
 	})
 })

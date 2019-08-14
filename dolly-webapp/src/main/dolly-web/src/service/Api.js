@@ -6,14 +6,14 @@ import TpsfService from './services/tpsf/TpsfService'
 import SigrunService from './services/sigrun/SigrunService'
 import KrrService from './services/krr/KrrService'
 import ArenaService from './services/arena/ArenaService'
-import Inst2Service from './services/inst2/Inst2Service'
+import InstService from './services/inst/InstService'
 
 export const DollyApi = DollyService
 export const TpsfApi = TpsfService
 export const SigrunApi = SigrunService
 export const KrrApi = KrrService
 export const ArenaApi = ArenaService
-export const Inst2Api = Inst2Service
+export const InstApi = InstService
 
 export default {
 	DollyApi: DollyService,
@@ -21,5 +21,5 @@ export default {
 	SigrunApi: SigrunService,
 	KrrApi: KrrService,
 	ArenaApi: ArenaService,
-	Inst2Api: Inst2Service
+	InstApi: InstService
 }

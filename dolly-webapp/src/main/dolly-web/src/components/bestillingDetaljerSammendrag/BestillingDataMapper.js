@@ -467,15 +467,15 @@ export function mapBestillingData(bestillingData) {
 			data.push(arenaforvalter)
 		}
 
-		const inst2Kriterier = registreKriterier.inst2 && registreKriterier.inst2
+		const instKriterier = registreKriterier.inst && registreKriterier.inst
 
-		if (inst2Kriterier) {
-			// Flater ut inst2Kriterier for å gjøre det lettere å mappe
+		if (instKriterier) {
+			// Flater ut instKriterier for å gjøre det lettere å mappe
 
-			let flatInst2Kriterier = []
-			inst2Kriterier.forEach(instOpphold => {
+			let flatInstKriterier = []
+			instKriterier.forEach(instOpphold => {
 				instOpphold.forEach(i => {
-					flatInst2Kriterier.push({
+					flatInstKriterier.push({
 						institusjonstype: i.institusjonstype,
 						varighet: i.varighet,
 						startdato: i.startdato,
@@ -484,13 +484,13 @@ export function mapBestillingData(bestillingData) {
 				})
 			})
 
-			const inst2 = {
+			const inst = {
 				header: 'Institusjonsopphold',
 				itemRows: []
 			}
 
-			flatInst2Kriterier.forEach((inst, i) => {
-				inst2.itemRows.push([
+			flatInstKriterier.forEach((inst, i) => {
+				inst.itemRows.push([
 					{
 						label: 'Institusjonstype',
 						value: Formatters.showLabel('institusjonstype', inst.institusjonstype)
@@ -509,7 +509,7 @@ export function mapBestillingData(bestillingData) {
 					}
 				])
 			})
-			data.push(inst2)
+			data.push(inst)
 		}
 	}
 

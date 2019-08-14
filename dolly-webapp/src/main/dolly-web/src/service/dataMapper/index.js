@@ -57,6 +57,7 @@ const DataMapper = {
 		const pdlfData = testbruker.items.pdlforvalter && testbruker.items.pdlforvalter[personId]
 		const arenaData =
 			testbruker.items.arenaforvalteren && testbruker.items.arenaforvalteren[personId]
+		const instData = testbruker.items.instdata && testbruker.items.instdata[personId]
 		var bestillingId = _findBestillingId(gruppe, personId)
 
 		let data = mapTpsfData(
@@ -88,6 +89,10 @@ const DataMapper = {
 			var aap = bestKriterier.arenaforvalter.aap
 			data.push(mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato, aap115, aap))
 		}
+
+		// if (instData) {
+		// 	data.push(mapInstData(instData))
+		// }
 
 		if (bestillingId.length > 1) {
 			data.push(mapBestillingId(testIdent))
