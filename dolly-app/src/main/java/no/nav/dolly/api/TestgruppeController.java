@@ -180,7 +180,7 @@ public class TestgruppeController {
         }
     }
 
-  //  @Cacheable(CACHE_GRUPPE)
+    @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}")
     public RsTestgruppeUtvidet getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
