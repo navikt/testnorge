@@ -115,6 +115,11 @@
             <artifactId>testnorge-consumers</artifactId>
             <version>1.8.0-RELEASE</version>
         </dependency>
+        <!--CORS-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
