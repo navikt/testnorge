@@ -4,7 +4,7 @@ import static java.lang.String.format;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
-import static no.nav.dolly.provider.api.AaregController.AAREG_JSON_COMMENT;
+import static no.nav.dolly.provider.api.documentation.DocumentationNotes.BESTILLING_BESKRIVELSE;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -45,156 +45,52 @@ import java.util.List;
 @RequestMapping(value = "api/v1/gruppe")
 public class TestgruppeController {
 
-    //TODO Flytt static under til egen fil, blir mye rot her
-    private static final String ADRESSE_COMMON =
-            "       &nbsp; &nbsp; \"postnr\": \"string\", <br />"
-                    + "     &nbsp; &nbsp; \"kommunenr\": \"string\", <br />"
-                    + "     &nbsp; &nbsp; \"flyttedato\": \"string\" <br />";
-    private static final String BOADRESSE_COMMENT = "Json-parametere for boadresse har følgende parametre: <br />"
-            + " For gateadresse:  <br />"
-            + "     &nbsp; \"boadresse\": {<br />"
-            + "     &nbsp; &nbsp; \"adressetype\": \"GATE\", <br />"
-            + "     &nbsp; &nbsp; \"gateadresse\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"husnummer\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"gatekode\": \"string\",<br />"
-            + ADRESSE_COMMON + "} <br />"
-            + " For matrikkeladresse: <br />"
-            + "     &nbsp;   \"boadresse\": {<br />"
-            + "     &nbsp; &nbsp; \"adressetype\": \"MATR\", <br />"
-            + "     &nbsp; &nbsp; \"mellomnavn\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"gardsnr\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"bruksnr\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"festenr\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"undernr\": \"string\", <br />"
-            + ADRESSE_COMMON + "} <br /> <br />";
-
-    private static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br /><br />";
-
-    private static final String FULLT_NAVN =
-            "     &nbsp; &nbsp; &nbsp; \"etternavn\": \"string\", <br />"
-                    + "     &nbsp; &nbsp; &nbsp; \"fornavn\": \"string\", <br />"
-                    + "     &nbsp; &nbsp; &nbsp; \"mellomnavn\": \"string\" <br />";
-
-    private static final String ADRESSAT = "&nbsp;   \"adressat\": {<br />";
-
-    private static final String EPILOG = "     &nbsp; } </br /></br />";
-    private static final String EPILOG_2 = "     &nbsp; &nbsp; }, </br />";
-    private static final String FALSK_IDENTITET_TYPE = "     &nbsp; \"falskIdentitet\": {<br />";
-
-    private static final String KONTAKTINFORMASJON_DOEDSBO = "For kontakinformasjon for dødsbo kan feltet <b>adressat</b> ha en av fire objekttyper: <br />"
-            + "For organisasjon eller advokat:<br />"
-            + ADRESSAT
-            + "     &nbsp; &nbsp; \"adressatType\": \"ORGANISASJON/ADVOKAT\", <br />"
-            + "     &nbsp; &nbsp; \"kontaktperson\": { <br />"
-            + FULLT_NAVN
-            + EPILOG_2
-            + "     &nbsp; &nbsp; \"organisajonsnavn\": \"string\", <br />"
-            + "     &nbsp; &nbsp; \"organisajonsnummer\": \"string\" <br />"
-            + EPILOG
-            + "For kontaktperson med ID:<br />"
-            + ADRESSAT
-            + "     &nbsp; &nbsp; \"adressatType\": \"PERSON_MEDID\", <br />"
-            + "     &nbsp; &nbsp; \"idnummer\": \"string\"<br />"
-            + EPILOG
-            + "For kontaktperson uten ID:<br />"
-            + ADRESSAT
-            + "     &nbsp; &nbsp; \"adressatType\": \"PERSON_UTENID\", <br />"
-            + "     &nbsp; &nbsp; \"navn\": { <br />"
-            + FULLT_NAVN
-            + EPILOG_2
-            + "     &nbsp; &nbsp; \"foedselsdato\": \"string\" <br />"
-            + EPILOG;
-
-    private static final String FALSK_IDENTITET = "Falsk identitet inneholder et abstrakt felt, <b>rettIdentitet</b>, som har en av tre objekttyper: <br />"
-            + "For identitet ukjent:<br />"
-            + FALSK_IDENTITET_TYPE
-            + "     &nbsp; &nbsp; \"identitetType\": \"UKJENT\", <br />"
-            + "     &nbsp; &nbsp; \"rettIdentitetErUkjent\": true <br />"
-            + EPILOG
-            + "For identitet med personnummer:<br />"
-            + FALSK_IDENTITET_TYPE
-            + "     &nbsp; &nbsp; \"identitetType\": \"ENTYDIG\", <br />"
-            + "     &nbsp; &nbsp; \"rettIdentitetVedIdentifikasjonsnummer\": \"&lt;fnr/dnr&gt;\" <br />"
-            + EPILOG
-            + "For identitet med opplysninger:<br />"
-            + FALSK_IDENTITET_TYPE
-            + "     &nbsp; &nbsp; \"identitetType\": \"OMTRENTLIG\", <br />"
-            + "     &nbsp; &nbsp; \"foedselsdato\": \"&lt;dato&gt;\" <br />"
-            + "     &nbsp; &nbsp; \"kjoenn\": \"MANN/KVINNE/UBESTEMT\" <br />"
-            + "     &nbsp; &nbsp; \"personnavn\":{<br />"
-            + FULLT_NAVN
-            + EPILOG_2
-            + "     &nbsp; &nbsp; \"statsborgerskap\": \"[AUS,GER,FRA,etc]\" <br />"
-            + EPILOG;
-
-    private static final String BESTILLING_BESKRIVELSE = BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
-
     private final TestgruppeService testgruppeService;
     private final IdentService identService;
     private final MapperFacade mapperFacade;
     private final DollyBestillingService dollyBestillingService;
     private final BestillingService bestillingService;
 
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @Transactional
-    @PutMapping(value = "/{gruppeId}")
-    public RsTestgruppeUtvidet oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
-        Testgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
-        return mapperFacade.map(gruppe, RsTestgruppeUtvidet.class);
-    }
-
-    @CacheEvict(value = {CACHE_GRUPPE, CACHE_TEAM}, allEntries = true)
-    @PostMapping
-    @Transactional
-    @ResponseStatus(HttpStatus.CREATED)
-    public RsTestgruppeUtvidet opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
-        Testgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
-        return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
-    }
-
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @Transactional
-    @PutMapping("/{gruppeId}/slettTestidenter")
-    public void deleteTestident(@RequestBody List<RsTestident> testpersonIdentListe) {
-        identService.slettTestidenter(testpersonIdentListe);
-    }
-
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @Transactional
-    @DeleteMapping("/{gruppeId}/slettTestident")
-    public void deleteTestident(@RequestParam String ident) {
-        if (identService.slettTestident(ident) == 0) {
-            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
-        }
-    }
-
-    @Cacheable(CACHE_GRUPPE)
-    @GetMapping("/{gruppeId}")
-    public RsTestgruppeUtvidet getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
-        return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
-    }
-
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
+    @ApiOperation("Hent Testgrupper tilhørende navIdent eller teamId")
     public List<RsTestgruppe> getTestgrupper(
             @RequestParam(name = "navIdent", required = false) String navIdent,
             @RequestParam(name = "teamId", required = false) Long teamId) {
         return mapperFacade.mapAsList(testgruppeService.getTestgruppeByNavidentOgTeamId(navIdent, teamId), RsTestgruppe.class);
     }
 
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @Transactional
-    @DeleteMapping("/{gruppeId}")
-    public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
-        if (testgruppeService.slettGruppeById(gruppeId) == 0) {
-            throw new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId));
-        }
+    @Cacheable(CACHE_GRUPPE)
+    @GetMapping("/{gruppeId}")
+    @ApiOperation("Hent Testgruppe med gruppeId")
+    public RsTestgruppeUtvidet getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
+        return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeUtvidet.class);
     }
 
-    @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype", notes = BESTILLING_BESKRIVELSE)
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @Cacheable(CACHE_GRUPPE)
+    @GetMapping("/{gruppeId}/identer")
+    @ApiOperation("Hent identer tilknyttet en gruppe")
+    public List<String> getIdentsByGroupId(@PathVariable("gruppeId") Long gruppeId) {
+        return testgruppeService.fetchIdenterByGruppeId(gruppeId);
+    }
+
+    /**
+     * POST
+     */
+    @Transactional
+    @CacheEvict(value = {CACHE_GRUPPE, CACHE_TEAM}, allEntries = true)
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Opprett Testgruppe")
+    public RsTestgruppeUtvidet opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
+        Testgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
+        return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeUtvidet.class);
+    }
+
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @PostMapping("/{gruppeId}/bestilling")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Opprett identer i TPS basert på fødselsdato, kjønn og identtype", notes = BESTILLING_BESKRIVELSE)
     public RsBestilling opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(), request.getAntall(), null);
 
@@ -202,10 +98,10 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
-    @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BESTILLING_BESKRIVELSE)
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Opprett identer i TPS fra ekisterende identer", notes = BESTILLING_BESKRIVELSE)
     public RsBestilling opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(),
                 request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter());
@@ -214,9 +110,46 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
-    @Cacheable(CACHE_GRUPPE)
-    @GetMapping("/{gruppeId}/identer")
-    public List<String> getIdentsByGroupId(@PathVariable("gruppeId") Long gruppeId) {
-        return testgruppeService.fetchIdenterByGruppeId(gruppeId);
+    /**
+     * PUT
+     */
+    @Transactional
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @PutMapping(value = "/{gruppeId}")
+    @ApiOperation("Oppdater informasjon om Testgruppe")
+    public RsTestgruppeUtvidet oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
+        Testgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
+        return mapperFacade.map(gruppe, RsTestgruppeUtvidet.class);
+    }
+
+    @Transactional
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @PutMapping("/{gruppeId}/slettTestidenter")
+    @ApiOperation("Fjern en eller flere Testident fra en Testgruppe")
+    public void deleteTestident(@RequestBody List<RsTestident> testpersonIdentListe) {
+        identService.slettTestidenter(testpersonIdentListe);
+    }
+
+    /**
+     * DELETE
+     */
+    @Transactional
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @DeleteMapping("/{gruppeId}")
+    @ApiOperation("Slett Testgruppe")
+    public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
+        if (testgruppeService.slettGruppeById(gruppeId) == 0) {
+            throw new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId));
+        }
+    }
+
+    @Transactional
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @DeleteMapping("/{gruppeId}/slettTestident")
+    @ApiOperation("Slett enkelt Testident fra Testgruppe")
+    public void deleteTestident(@RequestParam String ident) {
+        if (identService.slettTestident(ident) == 0) {
+            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
+        }
     }
 }

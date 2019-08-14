@@ -45,11 +45,35 @@ public class TeamController {
                 .orElse(teamService.findAllOrderByNavn());
     }
 
+    @Cacheable(CACHE_TEAM)
+    @GetMapping("/{teamId}")
+    public RsTeamUtvidet fetchTeamById(@PathVariable("teamId") Long teamid) {
+        return teamService.getTeamById(teamid);
+    }
+
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public RsTeamUtvidet opprettTeam(@RequestBody RsOpprettTeam createTeamRequest) {
         return teamService.opprettTeam(createTeamRequest);
+    }
+
+    @CacheEvict(value = CACHE_TEAM, allEntries = true)
+    @PutMapping("/{teamId}/leggTilMedlemmer")
+    public RsTeamUtvidet addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
+        return teamService.addMedlemmerByNavidenter(teamId, navIdenter);
+    }
+
+    @CacheEvict(value = CACHE_TEAM, allEntries = true)
+    @PutMapping("/{teamId}/fjernMedlemmer")
+    public RsTeamUtvidet fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
+        return teamService.fjernMedlemmer(teamId, navIdenter);
+    }
+
+    @CacheEvict(value = CACHE_TEAM, allEntries = true)
+    @PutMapping("/{teamId}")
+    public RsTeamUtvidet endreTeaminfo(@PathVariable("teamId") Long teamId, @RequestBody RsTeamUtvidet createTeamRequest) {
+        return teamService.updateTeamInfo(teamId, createTeamRequest);
     }
 
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
@@ -65,34 +89,10 @@ public class TeamController {
         testgruppeService.slettGruppeByTeamId(teamId);
     }
 
-    @Cacheable(CACHE_TEAM)
-    @GetMapping("/{teamId}")
-    public RsTeamUtvidet fetchTeamById(@PathVariable("teamId") Long teamid) {
-        return teamService.getTeamById(teamid);
-    }
-
-    @CacheEvict(value = CACHE_TEAM, allEntries = true)
-    @PutMapping("/{teamId}/leggTilMedlemmer")
-    public RsTeamUtvidet addBrukereSomTeamMedlemmerByNavidenter(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
-        return teamService.addMedlemmerByNavidenter(teamId, navIdenter);
-    }
-
-    @CacheEvict(value = CACHE_TEAM, allEntries = true)
-    @PutMapping("/{teamId}/fjernMedlemmer")
-    public RsTeamUtvidet fjernBrukerefraTeam(@PathVariable("teamId") Long teamId, @RequestBody List<String> navIdenter) {
-        return teamService.fjernMedlemmer(teamId, navIdenter);
-    }
-
     //TODO Er denne nødvendig når fjernBrukerefraTeam gjør samme jobben?
     @CacheEvict(value = CACHE_TEAM, allEntries = true)
     @DeleteMapping("/{teamId}/deleteMedlem")
     public RsTeamUtvidet deleteMedlemfraTeam(@PathVariable("teamId") Long teamId, @RequestParam String navIdent) {
         return teamService.slettMedlem(teamId, navIdent);
-    }
-
-    @CacheEvict(value = CACHE_TEAM, allEntries = true)
-    @PutMapping("/{teamId}")
-    public RsTeamUtvidet endreTeaminfo(@PathVariable("teamId") Long teamId, @RequestBody RsTeamUtvidet createTeamRequest) {
-        return teamService.updateTeamInfo(teamId, createTeamRequest);
     }
 }

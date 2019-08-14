@@ -13,6 +13,7 @@ import no.nav.dolly.domain.jpa.Team;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsTestgruppe;
+import no.nav.dolly.domain.resultset.RsTestgruppeUtvidet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,6 +29,95 @@ class TestgruppeControllerGetTest extends TestgruppeTestCaseBase {
     };
     private static final ParameterizedTypeReference<List<RsTestgruppe>> expectedResponseRsTestgruppe = new ParameterizedTypeReference<List<RsTestgruppe>>() {
     };
+
+    @Test
+    @DisplayName("Returnerer Testgrupper tilknyttet til navIdent gjennom favoritter og medlemskap")
+    void shouldGetTestgrupperWithNavIdent() {
+        Bruker bruker = dataFactory.createBruker("NAVIDENT");
+        Bruker annenBruker = dataFactory.createBruker("OTHER");
+
+        Team team = dataFactory.createTeam(annenBruker, "Team", "", annenBruker, bruker);
+        Team team2 = dataFactory.createTeam(annenBruker, "Team2", "", annenBruker);
+
+        Testgruppe testgruppe = dataFactory.createTestgruppe("gruppe", bruker, team);
+        Testgruppe testgruppe2 = dataFactory.createTestgruppe("gruppe2", annenBruker, team2);
+        Testgruppe testgruppe3 = dataFactory.createTestgruppe("gruppe3", annenBruker, team2);
+
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe.getId());
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe2.getId());
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe3.getId());
+
+        String url = ENDPOINT_BASE_URI + "?navIdent=" + bruker.getNavIdent();
+
+        List<RsTestgruppe> resp = sendRequest()
+                .to(HttpMethod.GET, url)
+                .andExpectList(HttpStatus.OK, expectedResponseRsTestgruppe);
+
+        assertThat(resp.size(), is(3));
+
+        assertThat(resp, hasItem(
+                hasProperty("navn", equalTo("gruppe")))
+        );
+
+        assertThat(resp, hasItem(both(
+                hasProperty("navn", equalTo("gruppe3"))).and(
+                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getNavIdent())))
+        ));
+
+        //Cleanup
+        dataFactory.clearFavourites(bruker.getNavIdent());
+    }
+
+    @Test
+    @DisplayName("Returnerer Testgrupper tilknyttet teamId")
+    void shouldGetTestgrupperWithTeamId() {
+        Bruker bruker = dataFactory.createBruker("NAVIDENT");
+        Bruker annenBruker = dataFactory.createBruker("OTHER");
+
+        Team team = dataFactory.createTeam(annenBruker, "Team", "", annenBruker, bruker);
+        Team team2 = dataFactory.createTeam(annenBruker, "Team2", "", annenBruker);
+
+        Testgruppe testgruppe = dataFactory.createTestgruppe("gruppe", bruker, team);
+        Testgruppe testgruppe2 = dataFactory.createTestgruppe("gruppe2", annenBruker, team2);
+        Testgruppe testgruppe3 = dataFactory.createTestgruppe("gruppe3", annenBruker, team2);
+
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe.getId());
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe2.getId());
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe3.getId());
+
+        String url = ENDPOINT_BASE_URI + "?teamId=" + team2.getId();
+
+        List<RsTestgruppe> resp = sendRequest()
+                .to(HttpMethod.GET, url)
+                .andExpectList(HttpStatus.OK, expectedResponseRsTestgruppe);
+
+        assertThat(resp.size(), is(2));
+
+        //Cleanup
+        dataFactory.clearFavourites(bruker.getNavIdent());
+    }
+
+    @Test
+    @DisplayName("Returnerer Testgruppe")
+    void shouldReturnTestgruppe() {
+        String ident1 = "10";
+        String ident2 = "20";
+        Testgruppe testgruppe = dataFactory.createTestgruppe("Test gruppe");
+
+        Testident testident1 = dataFactory.createTestident(ident1, testgruppe);
+        Testident testident2 = dataFactory.createTestident(ident2, testgruppe);
+
+        testgruppe = dataFactory.addTestidenterToTestgruppe(testgruppe, testident1, testident2);
+
+        String url = ENDPOINT_BASE_URI + "/" + testgruppe.getId();
+
+        RsTestgruppeUtvidet resp = sendRequest()
+                .to(HttpMethod.GET, url)
+                .andExpect(HttpStatus.OK, RsTestgruppeUtvidet.class);
+
+        assertThat(resp.getNavn(), is("Test gruppe"));
+        assertThat(resp.getAntallIdenter(), is(2));
+    }
 
     @Test
     @DisplayName("Returnerer alle Testidenter i en Testgruppe")
@@ -64,44 +154,6 @@ class TestgruppeControllerGetTest extends TestgruppeTestCaseBase {
                 .andExpectList(HttpStatus.OK, expectedResponseString);
 
         assertTrue(resp.isEmpty());
-    }
-
-    @Test
-    @DisplayName("Returnerer Testgrupper tilknyttet til bruker gjennom favoritter og medlemskap")
-    void hentAlleTestgrupperTilknyttetBrukerIgjennomFavoritterOgTeammedlemskap() {
-        Bruker bruker = dataFactory.createBruker("NAVIDENT");
-        Bruker annenBruker = dataFactory.createBruker("OTHER");
-
-        Team team = dataFactory.createTeam(annenBruker, "Team", "", annenBruker, bruker);
-        Team team2 = dataFactory.createTeam(annenBruker, "Team2", "", annenBruker);
-
-        Testgruppe testgruppe = dataFactory.createTestgruppe("gruppe", bruker, team);
-        Testgruppe testgruppe2 = dataFactory.createTestgruppe("gruppe2", annenBruker, team2);
-        Testgruppe testgruppe3 = dataFactory.createTestgruppe("gruppe3", annenBruker, team2);
-
-        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe.getId());
-        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe2.getId());
-        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe3.getId());
-
-        String url = ENDPOINT_BASE_URI + "?navIdent=" + bruker.getNavIdent();
-
-        List<RsTestgruppe> resp = sendRequest()
-                .to(HttpMethod.GET, url)
-                .andExpectList(HttpStatus.OK, expectedResponseRsTestgruppe);
-
-        assertThat(resp.size(), is(3));
-
-        assertThat(resp, hasItem(
-                hasProperty("navn", equalTo("gruppe")))
-        );
-
-        assertThat(resp, hasItem(both(
-                hasProperty("navn", equalTo("gruppe3"))).and(
-                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getNavIdent())))
-        ));
-
-        //Cleanup
-        dataFactory.clearFavourites(bruker.getNavIdent());
     }
 }
 

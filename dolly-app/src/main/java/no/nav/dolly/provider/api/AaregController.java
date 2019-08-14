@@ -1,5 +1,7 @@
 package no.nav.dolly.provider.api;
 
+import static no.nav.dolly.provider.api.documentation.DocumentationNotes.AAREG_JSON_COMMENT;
+
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.consumer.aareg.AaregRestConsumer;
@@ -23,28 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/aareg", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AaregController {
-
-    protected static final String AAREG_JSON_COMMENT = "For AAREG-integrasjon er følgende felter kodeverksfelter med kodeverksdomene i parentes: <br />"
-            + "&nbsp;&nbsp;&nbsp; arbeidsforholdstype: (Arbeidsforholdstyper) <br />"
-            + "&nbsp;&nbsp;&nbsp; arbeidstidsordning: (Arbeidstidsordninger) <br />"
-            + "&nbsp;&nbsp;&nbsp; avlønningstype: (Avlønningstyper) <br />"
-            + "&nbsp;&nbsp;&nbsp; identtype: (Personidenter) <br />"
-            + "&nbsp;&nbsp;&nbsp; land: (LandkoderISO2) <br />"
-            + "&nbsp;&nbsp;&nbsp; permisjonOgPermittering: (PermisjonsOgPermitteringsBeskrivelse) <br />"
-            + "&nbsp;&nbsp;&nbsp; yrke: (Yrker) <br /><br />"
-            + "Alle datofelter har forventet innhold \"yyyy-MM-ddT00:00:00\". <br /> <br />"
-            + "Attributt aktoer er abstrakt og kan ha et av følgende objekttyper: <br />"
-            + "For organisajon: <br />"
-            + "&nbsp; \"aktoer\": { <br />"
-            + "&nbsp;&nbsp;&nbsp; \"aktoertype\": \"ORG\", <br />"
-            + "&nbsp;&nbsp;&nbsp; \"orgnummer\": \"<orgnummer>\" <br />"
-            + "&nbsp; } <br />"
-            + "For person: <br />"
-            + "&nbsp; \"aktoer\": { <br />"
-            + "&nbsp;&nbsp;&nbsp; \"aktoertype\": \"PERS\", <br />"
-            + "&nbsp;&nbsp;&nbsp; \"ident\": \"<ident>\" <br />"
-            + "&nbsp; } <br /><br />";
-
 
     private final AaregWsConsumer aaregWsConsumer;
     private final AaregRestConsumer aaregRestConsumer;
