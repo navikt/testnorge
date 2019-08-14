@@ -1,5 +1,7 @@
 package no.nav.dolly.mapper.strategy;
 
+import static java.util.Objects.nonNull;
+
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
@@ -18,8 +20,10 @@ public class InstdataMappingStrategy implements MappingStrategy {
                     @Override public void mapAtoB(RsInstdata rsInstdata,
                             Instdata instdata, MappingContext context) {
 
-                        instdata.setForventetSluttdato(rsInstdata.getSluttdato().toLocalDate());
-                        instdata.setFaktiskSluttdato(rsInstdata.getSluttdato().toLocalDate());
+                        if (nonNull(rsInstdata.getSluttdato())) {
+                            instdata.setForventetSluttdato(rsInstdata.getSluttdato().toLocalDate());
+                            instdata.setFaktiskSluttdato(rsInstdata.getSluttdato().toLocalDate());
+                        }
                     }
                 })
                 .byDefault()
