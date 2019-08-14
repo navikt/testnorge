@@ -1,4 +1,4 @@
-import { TpsfApi, SigrunApi, KrrApi, ArenaApi } from '~/service/Api'
+import { TpsfApi, SigrunApi, KrrApi, ArenaApi, InstApi } from '~/service/Api'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import { createAction } from 'redux-actions'
 import success from '~/utils/SuccessAction'
@@ -113,6 +113,21 @@ export const GET_AAREG_TESTBRUKER = createAction(
 	async (ident, env) => {
 		try {
 			const res = await DollyApi.getArbeidsforhold(ident, env)
+			return res
+		} catch (err) {
+			return err
+		}
+	},
+	ident => ({
+		ident
+	})
+)
+
+export const GET_INST_TESTBRUKER = createAction(
+	'GET_INST_TESTBRUKER',
+	async (ident, env) => {
+		try {
+			const res = await InstApi.getTestbruker(ident, env)
 			return res
 		} catch (err) {
 			return err

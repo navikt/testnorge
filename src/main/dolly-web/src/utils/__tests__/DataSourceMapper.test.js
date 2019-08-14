@@ -5,7 +5,7 @@ describe('DataSourceMapper.js', () => {
 		const sigrun = 'SIGRUN'
 		const krr = 'KRR'
 		const arena = 'ARENA'
-		const inst = 'INST2'
+		const inst = 'INST'
 
 		it('should return sigrun-stub', () => {
 			const res = 'sigrunstub'

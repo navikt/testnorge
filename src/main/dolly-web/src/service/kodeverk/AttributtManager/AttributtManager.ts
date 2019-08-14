@@ -39,7 +39,7 @@ export default class AttributtManager {
 						attr.dataSource === 'KRR' ||
 						attr.dataSource === 'PDLF' ||
 						attr.dataSource === 'ARENA' ||
-						attr.dataSource === 'INST2'
+						attr.dataSource === 'INST'
 					) {
 						return attr
 					} else {

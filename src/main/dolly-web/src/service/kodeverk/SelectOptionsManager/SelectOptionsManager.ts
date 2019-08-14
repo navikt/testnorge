@@ -45,7 +45,7 @@ const selectOptions = {
 		{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
 	],
 
-	// INST2
+	// INST
 	institusjonstype: [
 		{ value: 'AS', label: 'Alders- og sykehjem' },
 		{ value: 'HS', label: 'Helseinstitusjon' },

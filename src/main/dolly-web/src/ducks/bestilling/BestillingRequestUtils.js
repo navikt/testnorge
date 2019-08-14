@@ -149,7 +149,11 @@ export const getValues = (attributeList, values) => {
 			return _set(accumulator, pathPrefix, value[0])
 		}
 
-		if (pathPrefix === DataSourceMapper('INST2')) {
+		console.log('accumulator :', accumulator)
+		console.log('attribute :', attribute)
+		console.log('value :', value)
+		console.log('pathPrefix :', pathPrefix)
+		if (pathPrefix === DataSourceMapper('INST')) {
 			return _set(accumulator, pathPrefix, value)
 		}
 
