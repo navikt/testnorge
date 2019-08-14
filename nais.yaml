@@ -85,6 +85,16 @@ fasitResources:
     propertyMap:
       url: providers.personOppslag.url
 
+  - alias: syntdata.host
+    resourceType: baseurl
+    propertyMap:
+      url: providers.syntdata.url
+
+  - alias: instdata.host
+    resourceType: baseurl
+    propertyMap:
+      url: providers.instdata.url
+
   - alias: srvdolly-test-env
     resourceType: credential
     propertyMap:

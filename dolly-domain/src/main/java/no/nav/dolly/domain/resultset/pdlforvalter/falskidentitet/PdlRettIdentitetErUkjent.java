@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
+package no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlPersonnavn {
+public class PdlRettIdentitetErUkjent extends RsPdlRettIdentitet{
 
-    private String etternavn;
-    private String fornavn;
-    private String mellomnavn;
+    private Boolean rettIdentitetErUkjent;
 }

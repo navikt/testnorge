@@ -58,6 +58,10 @@ providers:
     url: https://person-testdata.nais.preprod.local
   personOppslag:
     url: https://person-oppslag.nais.preprod.local
+  syntdata:
+    url: https://syntrest.nais.preprod.local
+  instdata:
+    url: https://testnorge-inst.nais.preprod.local
 
 credentials:
   preprodEnv:

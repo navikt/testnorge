@@ -20,7 +20,7 @@ public class FasitApiConsumer {
     private RestTemplate restTemplate;
 
     @Autowired
-    ProvidersProps providersProps;
+    private ProvidersProps providersProps;
 
     public FasitResourceWithUnmappedProperties[] fetchResources(String alias, String type) {
         String url = providersProps.getFasit().getUrl() + format(FASIT_RESOURCE, alias, type);

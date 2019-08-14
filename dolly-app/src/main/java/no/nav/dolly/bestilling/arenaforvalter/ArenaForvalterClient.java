@@ -132,7 +132,7 @@ public class ArenaForvalterClient implements ClientRegister {
         }
     }
 
-    private void appendErrorText(StringBuilder status, RuntimeException e) {
+    private static void appendErrorText(StringBuilder status, RuntimeException e) {
         status.append("Feil: ")
                 .append(e.getMessage());
 

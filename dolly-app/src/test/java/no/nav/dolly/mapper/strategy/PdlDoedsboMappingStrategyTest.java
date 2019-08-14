@@ -10,12 +10,12 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlAdvokat;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktpersonMedIdNummer;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlOrganisasjon;
-import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlPersonnavn;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlSkifteform;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktpersonUtenIdNummer;

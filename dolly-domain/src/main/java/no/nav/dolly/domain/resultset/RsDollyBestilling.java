@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
@@ -31,6 +32,7 @@ public class RsDollyBestilling {
     private List<RsArbeidsforhold> aareg;
     private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;
+    private List<RsInstdata> instdata;
 
     public List<RsArbeidsforhold> getAareg() {
         if (isNull(aareg)) {

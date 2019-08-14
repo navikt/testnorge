@@ -1,4 +1,5 @@
 import { KategoriTypes } from './Types'
+import { ArenaApi } from '~/service/Api'
 import { DEFAULT_ECDH_CURVE } from 'tls'
 
 export const Kategorier: KategoriTypes = {
@@ -47,7 +48,8 @@ export const Kategorier: KategoriTypes = {
 		id: 'arena',
 		navn: 'Arena',
 		informasjonstekst:
-			'Arena-data blir kun distribuert til Q2, og dette miljøet må derfor velges i siste steg.',
+			'Arena-data blir ikke distribuert til alle miljøer, og et eller flere av miljøene under må derfor velges i siste steg.',
+		tilgjengeligeMiljoeEndepunkt: ArenaApi.getTilgjengeligeMiljoe(),
 		order: 60
 	}
 }

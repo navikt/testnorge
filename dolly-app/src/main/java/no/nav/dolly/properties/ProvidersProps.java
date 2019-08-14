@@ -24,6 +24,8 @@ public class ProvidersProps {
     private ArenaForvalter arenaForvalter = new ArenaForvalter();
     private PdlForvalter pdlForvalter = new PdlForvalter();
     private PersonOppslag personOppslag = new PersonOppslag();
+    private Syntdata syntdata = new Syntdata();
+    private Instdata instdata = new Instdata();
 
     @Getter
     @Setter
@@ -110,6 +112,26 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PersonOppslag {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Syntdata {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Instdata {
 
         private String url;
     }

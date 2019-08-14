@@ -20,4 +20,13 @@ export default class ArenaService {
 			}
 		)
 	}
+
+	static getTilgjengeligeMiljoe() {
+		return Request.getWithoutCredentials(`${this.getArenaUrl()}/miljoe`, {
+			headers: {
+				'Nav-Call-Id': 'dolly-frontend',
+				'Nav-Consumer-Id': 'dolly'
+			}
+		})
+	}
 }

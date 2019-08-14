@@ -27,26 +27,11 @@ public final class BestillingArenaforvalterStatusMapper {
                             String[] envStatus = entry.split("\\$");
                             String environment = envStatus[0];
                             String status = (envStatus.length > 1 ? envStatus[1] : "").replace('=',',');
-                            buildStatusMap(statusEnvIdents, status, environment, progress.getIdent());
+                            AbstractRsMeldingStatusMapper.buildStatusMap(statusEnvIdents, status, environment, progress.getIdent());
                         });
             }
         });
 
         return BestillingMeldingStatusIdentMapper.prepareResult(statusEnvIdents);
-    }
-
-    private static void buildStatusMap(Map<String, Map<String, List<String>>> statusEnvIdents, String status, String environment, String ident) {
-
-        if (statusEnvIdents.containsKey(status)) {
-            if (statusEnvIdents.get(status).containsKey(environment)) {
-                statusEnvIdents.get(status).get(environment).add(ident);
-            } else {
-                statusEnvIdents.get(status).put(environment, newArrayList(ident));
-            }
-        } else {
-            Map envIdent = new HashMap();
-            envIdent.put(environment, newArrayList(ident));
-            statusEnvIdents.put(status, envIdent);
-        }
     }
 }
