@@ -39,7 +39,8 @@ export default class AttributtManager {
 						attr.dataSource === 'KRR' ||
 						attr.dataSource === 'PDLF' ||
 						attr.dataSource === 'ARENA' ||
-						attr.dataSource === 'INST'
+						attr.dataSource === 'INST' ||
+						(attr.dataSource === 'TPSF' && attr.id === 'matrikkeladresse')
 					) {
 						return attr
 					} else {
