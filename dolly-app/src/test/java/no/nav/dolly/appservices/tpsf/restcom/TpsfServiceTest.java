@@ -59,14 +59,14 @@ public class TpsfServiceTest {
     private TpsfService service;
 
     @Before
-    public void setup(){
+    public void setup() {
         ProvidersProps.Tpsf tpsf = new ProvidersProps.Tpsf();
         tpsf.setUrl("https://localhost:8080");
         when(providersProps.getTpsf()).thenReturn(tpsf);
     }
 
     @Test
-    public void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter(){
+    public void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter() {
         standardTpsfBestilling.setIdenttype(FNR);
 
         Object s = "body";
@@ -91,7 +91,7 @@ public class TpsfServiceTest {
     }
 
     @Test(expected = TpsfException.class)
-    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException(){
+    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() {
         Object s = "error=Feil";
         ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
         RestTemplateFailure resExp = new RestTemplateFailure();
@@ -105,7 +105,7 @@ public class TpsfServiceTest {
     }
 
     @Test(expected = TpsfException.class)
-    public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException(){
+    public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException() {
         Object s = "error=Feil";
         ResponseEntity<Object> ob = new ResponseEntity<>(s, HttpStatus.OK);
         RestTemplateFailure resExp = new RestTemplateFailure();
@@ -119,13 +119,13 @@ public class TpsfServiceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void sendIdenterTilTpsFraTPSF_hvisIngenMiljoerErSpesifisertSaaKastesIllegalArgumentException(){
+    public void sendIdenterTilTpsFraTPSF_hvisIngenMiljoerErSpesifisertSaaKastesIllegalArgumentException() {
         List<String> tomListe = new ArrayList<>();
         service.sendIdenterTilTpsFraTPSF(standardIdenter, tomListe);
     }
 
     @Test
-    public void sendTilTpsFraTPSF_happyPath(){
+    public void sendTilTpsFraTPSF_happyPath() {
         ArgumentCaptor<String> endpointCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<HttpMethod> httpMethodCaptor = ArgumentCaptor.forClass(HttpMethod.class);
         ArgumentCaptor<HttpEntity> httpEntityCaptor = ArgumentCaptor.forClass(HttpEntity.class);

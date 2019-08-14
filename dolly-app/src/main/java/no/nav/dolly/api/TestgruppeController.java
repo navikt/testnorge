@@ -117,7 +117,7 @@ public class TestgruppeController {
             + "For identitet med personnummer:<br />"
             + FALSK_IDENTITET_TYPE
             + "     &nbsp; &nbsp; \"identitetType\": \"ENTYDIG\", <br />"
-            + "     &nbsp; &nbsp; \"rettIdentitetVedIdentifikasjonsnummer\": \"&lt;fnr/dnr&gt;\" <br />"
+            + "     &nbsp; &nbsp; \"rettIdentitetVedIdentifikasjonsnummer\": \"&lt;fnr/dnr/bost&gt;\" <br />"
             + EPILOG
             + "For identitet med opplysninger:<br />"
             + FALSK_IDENTITET_TYPE
