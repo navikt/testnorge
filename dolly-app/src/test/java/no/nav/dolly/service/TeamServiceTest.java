@@ -23,7 +23,6 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TeamRepository;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,11 +67,6 @@ public class TeamServiceTest {
     @AfterClass
     public static void afterClass() {
         SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    @Before
-    public void setupMocks() {
-        when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
     }
 
     @Test(expected = NotFoundException.class)

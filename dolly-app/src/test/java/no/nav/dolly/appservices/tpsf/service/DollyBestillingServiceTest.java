@@ -60,9 +60,9 @@ public class DollyBestillingServiceTest {
     private static final String SUCCESS_CODE_TPS = "OK";
     private static final String FAIL_CODE_TPS = "08";
     private static final String INNVANDRING_CREATE_NAVN = "InnvandringCreate";
-    private static final String IDENT_1 = "10";
-    private static final String IDENT_2 = "34";
-    private static final String IDENT_3 = "56";
+    private static final String IDENT_1 = "10101012345";
+    private static final String IDENT_2 = "24301012345";
+    private static final String IDENT_3 = "56101012345";
     private static final String FEILMELDING = "feil";
     private static final String TPS_FEEDBACK = "feedback";
     private static final List<String> STANDARD_IDENTER = asList(IDENT_1, IDENT_2, IDENT_3);

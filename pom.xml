@@ -169,45 +169,15 @@
                 <version>${modig-security.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>no.nav.tjenester.domene.arbeidsforhold</groupId>
-                <artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
-                <version>${behandle.arbeidsforhold.version}</version>
-                <classifier>jaxws</classifier>
-            </dependency>
-        </dependencies>
+			<dependency>
+				<groupId>no.nav.tjenester.domene.arbeidsforhold</groupId>
+				<artifactId>nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon</artifactId>
+				<version>${behandle.arbeidsforhold.version}</version>
+				<classifier>jaxws</classifier>
+			</dependency>
+		</dependencies>
 
-    </dependencyManagement>
+	</dependencyManagement>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <!-- For now, this monstrosity is required in order to get the surefire plugin to run JUnit Jupiter tests. -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.junit.platform</groupId>
-                            <artifactId>junit-platform-surefire-provider</artifactId>
-                            <version>${junit-platform.version}</version>
-                        </dependency>
-                        <!--JUnit Jupiter Engine to depend on the JUnit4 engine and JUnit 4 API  -->
-                        <dependency>
-                            <groupId>org.junit.vintage</groupId>
-                            <artifactId>junit-vintage-engine</artifactId>
-                            <version>${junit-jupiter.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.junit.jupiter</groupId>
-                            <artifactId>junit-jupiter-engine</artifactId>
-                            <version>${junit-jupiter.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 
 </project>

@@ -5,6 +5,11 @@ public final class DocumentationNotes {
     private DocumentationNotes() {
     }
 
+    private static final String RANDOM_ADRESSE = "For å kunne styre gyldig boadresse basert på kommunenr eller postnummer og med adressesøk i backend: <br />"
+            +"\"adresseNrInfo\": { <br />"
+            + " &nbsp; \"nummertype\": \"KOMMUNENR/POSTNR\" <br />"
+            + " &nbsp; \"nummer\": \"string\", <br />"
+            + "} <br /><br />";
     private static final String ADRESSE_COMMON =
             "       &nbsp; &nbsp; \"postnr\": \"string\", <br />"
                     + "     &nbsp; &nbsp; \"kommunenr\": \"string\", <br />"
@@ -107,6 +112,6 @@ public final class DocumentationNotes {
             + "&nbsp;&nbsp;&nbsp; \"ident\": \"<ident>\" <br />"
             + "&nbsp; } <br /><br />";
 
-    public static final String BESTILLING_BESKRIVELSE = BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
+    public static final String BESTILLING_BESKRIVELSE = RANDOM_ADRESSE + BOADRESSE_COMMENT + AAREG_JSON_COMMENT + UTEN_ARBEIDSTAKER + KONTAKTINFORMASJON_DOEDSBO + FALSK_IDENTITET;
 
 }

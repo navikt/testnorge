@@ -10,8 +10,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static no.nav.dolly.domain.resultset.IdentType.DNR;
-import static no.nav.dolly.domain.resultset.IdentType.FNR;
+import static no.nav.dolly.domain.resultset.IdentTypeUtil.getIdentType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -145,7 +144,7 @@ public class DollyBestillingService {
             sendIdenterTilTPS(asList(bestilling.getMiljoer().split(",")), identer, bestilling.getGruppe(), progress);
 
             gjenopprettNonTpsf(NorskIdent.builder().ident(bestillingProgress.getIdent())
-                    .identType(Character.getType(bestillingProgress.getIdent().charAt(0)) > 3 ? DNR : FNR)
+                    .identType(getIdentType(bestillingProgress.getIdent()))
                     .build(), bestilling, progress);
 
             oppdaterProgress(bestilling, progress);

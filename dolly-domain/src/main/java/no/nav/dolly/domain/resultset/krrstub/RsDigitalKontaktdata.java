@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RsDigitalKontaktdata {
-
     private LocalDateTime gyldigFra;
     private boolean reservert;
     private String mobil;
     private String epost;
+    private boolean registrert;
 }

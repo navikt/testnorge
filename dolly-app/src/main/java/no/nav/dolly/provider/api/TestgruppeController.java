@@ -74,9 +74,6 @@ public class TestgruppeController {
         return testgruppeService.fetchIdenterByGruppeId(gruppeId);
     }
 
-    /**
-     * POST
-     */
     @Transactional
     @CacheEvict(value = {CACHE_GRUPPE, CACHE_TEAM}, allEntries = true)
     @PostMapping
@@ -110,9 +107,6 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestilling.class);
     }
 
-    /**
-     * PUT
-     */
     @Transactional
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @PutMapping(value = "/{gruppeId}")
@@ -130,9 +124,6 @@ public class TestgruppeController {
         identService.slettTestidenter(testpersonIdentListe);
     }
 
-    /**
-     * DELETE
-     */
     @Transactional
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @DeleteMapping("/{gruppeId}")

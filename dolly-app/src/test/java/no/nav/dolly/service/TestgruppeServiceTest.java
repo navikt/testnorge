@@ -77,7 +77,6 @@ public class TestgruppeServiceTest {
         SecurityContextHolder.getContext().setAuthentication(
                 new OidcTokenAuthentication(standardPrincipal, null, null, null)
         );
-        when(nonTransientDataAccessException.getRootCause()).thenReturn(new Throwable());
 
         Set gruppe = newHashSet(
                 asList(
