@@ -2,8 +2,8 @@ package no.nav.registre.arena.core.service;
 
 
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.arena.domain.Arbeidsoeker;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,11 +50,11 @@ public class SyntetisertingServiceTest {
     private List<String> toIdenterOverAlder;
     private List<String> hundreIdenterOverAlder;
 
-    private List<Arbeidsoker> opprettedeArbeidsokere;
-    private List<Arbeidsoker> enNyArbeisoker;
-    private List<Arbeidsoker> tyveNyeArbeidsokere;
-    private List<Arbeidsoker> toEksisterendeArbeidsokere;
-    private List<Arbeidsoker> femtenEksisterendeArbeidsokere;
+    private List<Arbeidsoeker> opprettedeArbeidsokere;
+    private List<Arbeidsoeker> enNyArbeisoker;
+    private List<Arbeidsoeker> tyveNyeArbeidsokere;
+    private List<Arbeidsoeker> toEksisterendeArbeidsokere;
+    private List<Arbeidsoeker> femtenEksisterendeArbeidsokere;
 
     @Before
     public void setUp() {
@@ -85,8 +85,8 @@ public class SyntetisertingServiceTest {
 
     }
 
-    private Arbeidsoker buildArbeidsoker(String fnr) {
-        return Arbeidsoker.builder()
+    private Arbeidsoeker buildArbeidsoker(String fnr) {
+        return Arbeidsoeker.builder()
                 .personident(fnr)
                 .miljoe(miljoe)
                 .status("OK")
@@ -107,17 +107,17 @@ public class SyntetisertingServiceTest {
         return fnr.toString();
     }
 
-    private List<Arbeidsoker> opprettIdenter(Integer antallNyeIdenter, String miljoe) {
+    private List<Arbeidsoeker> opprettIdenter(Integer antallNyeIdenter, String miljoe) {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentBrukere();
+        doReturn(toEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
-        return syntetiseringService.sendBrukereTilArenaForvalterConsumer(antallNyeIdenter, avspillergruppeId, miljoe);
+        return syntetiseringService.opprettArbeidsoekere(antallNyeIdenter, avspillergruppeId, miljoe);
     }
 
     @Test
     public void fyllOverfullArenaForvalter() {
-        List<Arbeidsoker> nyeIdenter = opprettIdenter(null, miljoe);
+        List<Arbeidsoeker> nyeIdenter = opprettIdenter(null, miljoe);
 
         assertThat(nyeIdenter, is(Collections.EMPTY_LIST));
     }
@@ -125,11 +125,11 @@ public class SyntetisertingServiceTest {
     @Test
     public void fyllFraTomArenaForvalter() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentBrukere();
+        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(tyveNyeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
-        List<Arbeidsoker> arbeidsokere =
-                syntetiseringService.sendBrukereTilArenaForvalterConsumer(null, avspillergruppeId, miljoe);
+        List<Arbeidsoeker> arbeidsokere =
+                syntetiseringService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
         assertThat(arbeidsokere.size(), is(20));
         assertThat(arbeidsokere.get(0).getPersonident(), is("10101010101"));
         assertThat(arbeidsokere.get(4).getPersonident(), is("50505050505"));
@@ -138,7 +138,7 @@ public class SyntetisertingServiceTest {
 
     @Test
     public void hentGyldigeIdenterTest() {
-        List<Arbeidsoker> nyeIdenter = opprettIdenter(1, miljoe);
+        List<Arbeidsoeker> nyeIdenter = opprettIdenter(1, miljoe);
 
         assertThat(nyeIdenter.size(), is(1));
         assertThat(nyeIdenter.get(0).getPersonident(), is(fnr2));
@@ -146,7 +146,7 @@ public class SyntetisertingServiceTest {
 
     @Test
     public void opprettForMangeNyeIdenter() {
-        List<Arbeidsoker> nyeIdenter = opprettIdenter(2, miljoe);
+        List<Arbeidsoeker> nyeIdenter = opprettIdenter(2, miljoe);
 
         assertThat(nyeIdenter.size(), is(1));
         assertThat(nyeIdenter.get(0).getPersonident(), is(fnr2));
@@ -155,11 +155,11 @@ public class SyntetisertingServiceTest {
     @Test
     public void fyllOppForvalterenTest() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
-        doReturn(femtenEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentBrukere();
+        doReturn(femtenEksisterendeArbeidsokere).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
         doReturn(opprettedeArbeidsokere).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
-        List<Arbeidsoker> arbeidsokere =
-                syntetiseringService.sendBrukereTilArenaForvalterConsumer(null, avspillergruppeId, miljoe);
+        List<Arbeidsoeker> arbeidsokere =
+                syntetiseringService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
 
         assertThat(arbeidsokere.size(), is(5));
         assertThat(arbeidsokere.get(2).getPersonident(), is("30303030303"));
@@ -167,14 +167,36 @@ public class SyntetisertingServiceTest {
     }
 
     @Test
-    public void slettBrukereTest() {
-        doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr2), eq(miljoe));
-        doReturn(true).when(arenaForvalterConsumer).slettBrukerSuccessful(eq(fnr3), eq(miljoe));
+    public void opprettArbeidssoekerTest() {
+        doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
+        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
-        List<String> slettedeIdenter = syntetiseringService.slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3), miljoe);
+        List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
 
-        assertThat(slettedeIdenter.contains(fnr2), is(true));
-        assertThat(slettedeIdenter.contains(fnr1), is(false));
-        assertThat(slettedeIdenter.size(), is(2));
+        assertThat(arbeidsoeker.size(), is(1));
+        assertThat(arbeidsoeker.get(0).getPersonident(), is(fnr2));
+    }
+
+    @Test
+    public void opprettEksisterendeArbeidssoekerTest() {
+        doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
+        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(anyList(), eq(null), eq(null));
+
+        List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
+
+        assertThat(arbeidsoeker.size(), is(1));
+        assertThat(arbeidsoeker.get(0).getPersonident(), is(fnr2));
+    }
+
+    @Test
+    public void opprettIkkeEksisterendeIdentTest() {
+        doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
+        doReturn(Collections.EMPTY_LIST).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+
+        List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr3, avspillergruppeId, miljoe);
+
+        assertThat(arbeidsoeker, is(Collections.EMPTY_LIST));
     }
 }

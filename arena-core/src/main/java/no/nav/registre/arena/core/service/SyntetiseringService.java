@@ -4,10 +4,10 @@ package no.nav.registre.arena.core.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.ArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
+import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.core.provider.rs.requests.IdentMedData;
 import no.nav.registre.arena.domain.NyBruker;
-import no.nav.registre.testnorge.consumers.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,51 +32,75 @@ public class SyntetiseringService {
     private final Random random;
 
 
-    public List<Arbeidsoker> sendBrukereTilArenaForvalterConsumer(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
-        List<String> levendeIdenter = hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER);
-        List<Arbeidsoker> eksisterendeArbeidsokere = arenaForvalterConsumer.hentBrukere();
+    public List<Arbeidsoeker> opprettArbeidsoekere(Integer antallNyeIdenter, Long avspillergruppeId, String miljoe) {
+        List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
+        List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
 
         if (antallNyeIdenter == null) {
-            int antallBrukereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(),
-                    hentIdentListe(eksisterendeArbeidsokere).size());
+            int antallArbeidsoekereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(), arbeidsoekerIdenter.size());
 
-            if (antallBrukereAaOpprette > 0)
-                antallNyeIdenter = antallBrukereAaOpprette;
-            else {
-                log.info("{}% av gyldige brukere funnet av hodejegeren er allerede registrert i Arena Forvalteren.",
+            if (antallArbeidsoekereAaOpprette > 0) {
+                antallNyeIdenter = antallArbeidsoekereAaOpprette;
+            } else {
+                log.info("{}% av gyldige brukere funnet av hodejegeren er allerede registrert i Arena.",
                         (PROSENTANDEL_SOM_SKAL_HA_MELDEKORT * 100));
                 return new ArrayList<>();
             }
         }
 
-        List<String> nyeIdenter = hentGyldigeIdenter(antallNyeIdenter, levendeIdenter, eksisterendeArbeidsokere);
-        List<NyBruker> nyeBrukere = nyeIdenter.stream().map(ident -> NyBruker.builder()
+        List<String> nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
+        return byggArbeidsoekereOgLagreIHodejegeren(nyeIdenter, miljoe);
+    }
+
+    public List<Arbeidsoeker> opprettArbeidssoeker(String ident, Long avspillergruppeId, String miljoe) {
+        List<String> levendeIdenter = hentLevendeIdenter(avspillergruppeId);
+        List<String> arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
+
+        if (arbeidsoekerIdenter.contains(ident)) {
+            log.info("Ident {} er allerede registrert som arbeidsøker.", ident);
+            return arenaForvalterConsumer.hentArbeidsoekere(Collections.singletonList(ident), null, null);
+        } else if (!levendeIdenter.contains(ident)) {
+            log.info("Ident {} kunne ikke bli funnet av Hodejegeren, og kan derfor ikke opprettes i Arena.", ident);
+            return new ArrayList<>();
+        }
+
+        return byggArbeidsoekereOgLagreIHodejegeren(Collections.singletonList(ident), miljoe);
+    }
+
+    private List<String> hentKvalifiserteIdenter(int antallIdenter, List<String> levendeIdenter, List<String> eksisterendeArbeidsoekere) {
+        levendeIdenter = levendeIdenter.parallelStream()
+                .filter(eksisterendeArbeidsoekere::contains)
+                .collect(Collectors.toList());
+
+        if (antallIdenter > levendeIdenter.size()) {
+            antallIdenter = levendeIdenter.size();
+            log.info("Fant ikke nok ledige identer i avspillergruppe. Lager meldekort på {} nye identer.", antallIdenter);
+        }
+
+        List<String> nyeIdenter = new ArrayList<>(antallIdenter);
+
+        for (int i = 0; i < antallIdenter; i++) {
+            nyeIdenter.add(levendeIdenter.remove(random.nextInt(levendeIdenter.size())));
+        }
+
+
+        return nyeIdenter;
+    }
+
+    private List<String> hentLevendeIdenter(Long avspillergruppeId) {
+        return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER);
+    }
+
+    private List<Arbeidsoeker> byggArbeidsoekereOgLagreIHodejegeren(List<String> identer, String miljoe) {
+        List<NyBruker> nyeBrukere = identer.stream().map(ident -> NyBruker.builder()
                 .personident(ident)
                 .miljoe(miljoe)
                 .kvalifiseringsgruppe("IKVAL")
                 .automatiskInnsendingAvMeldekort(true)
                 .build()).collect(Collectors.toList());
-
         lagreArenaBrukereIHodejegeren(nyeBrukere);
 
         return arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
-    }
-
-    public List<String> slettBrukereIArenaForvalter(List<String> identerToDelete, String miljoe) {
-
-        List<String> slettedeIdenter = new ArrayList<>();
-
-        for (String personident : identerToDelete) {
-            if (arenaForvalterConsumer.slettBrukerSuccessful(personident, miljoe)) {
-                slettedeIdenter.add(personident);
-            }
-        }
-
-        return slettedeIdenter;
-    }
-
-    private int getAntallBrukereForAaFylleArenaForvalteren(int antallLevendeIdenter, int antallEksisterendeIdenter) {
-        return (int) (floor(antallLevendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - antallEksisterendeIdenter);
     }
 
     private void lagreArenaBrukereIHodejegeren(List<NyBruker> nyeBrukere) {
@@ -92,32 +116,22 @@ public class SyntetiseringService {
         hodejegerenConsumer.saveHistory(ARENA_FORVALTER_NAME, brukereSomSkalLagres);
     }
 
-    private List<String> hentGyldigeIdenter(int antallNyeIdenter, List<String> levendeIdenter, List<Arbeidsoker> eksisterendeArbeidsokere) {
-        List<String> eksisterendeIdenter = hentIdentListe(eksisterendeArbeidsokere);
-
-        levendeIdenter.removeAll(eksisterendeIdenter);
-
-        if (antallNyeIdenter > levendeIdenter.size()) {
-            antallNyeIdenter = levendeIdenter.size();
-            log.info("Fant ikke nok ledige identer i avspillergruppe. Lager meldekort på {} nye identer.", antallNyeIdenter);
-        }
-
-        List<String> nyeIdenter = new ArrayList<>(antallNyeIdenter);
-
-        for (int i = 0; i < antallNyeIdenter; i++) {
-            nyeIdenter.add(levendeIdenter.remove(random.nextInt(levendeIdenter.size())));
-        }
-
-        return nyeIdenter;
+    private List<String> hentEksisterendeArbeidsoekerIdenter() {
+        List<Arbeidsoeker> arbeidsoekere = arenaForvalterConsumer.hentArbeidsoekere(null, null, null);
+        return hentIdentListe(arbeidsoekere);
     }
 
-    private List<String> hentIdentListe(List<Arbeidsoker> arbeidsokere) {
+    private List<String> hentIdentListe(List<Arbeidsoeker> Arbeidsoekere) {
 
-        if (arbeidsokere.isEmpty()) {
-            log.error("Fant ingen eksisterende identer.");
+        if (Arbeidsoekere.isEmpty()) {
+            log.info("Fant ingen eksisterende identer.");
             return new ArrayList<>();
         }
 
-        return arbeidsokere.stream().map(Arbeidsoker::getPersonident).collect(Collectors.toList());
+        return Arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
+    }
+
+    private int getAntallBrukereForAaFylleArenaForvalteren(int antallLevendeIdenter, int antallEksisterendeIdenter) {
+        return (int) (floor(antallLevendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - antallEksisterendeIdenter);
     }
 }

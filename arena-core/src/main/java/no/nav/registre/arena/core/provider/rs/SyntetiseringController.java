@@ -1,54 +1,52 @@
 package no.nav.registre.arena.core.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
-import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
+import lombok.RequiredArgsConstructor;
+import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.core.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.SyntetiseringService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
-
+@RequiredArgsConstructor
 public class SyntetiseringController {
 
-    @Autowired
-    SyntetiseringService syntetiseringService;
+    private final SyntetiseringService syntetiseringService;
 
-    @PostMapping(value = "/generer")
+    @PostMapping("/generer")
     @ApiOperation(value = "Legg til identer i Arena", notes = "Legger til oppgitt antall identer i Arena. Dersom ingen antall identer blir oppgitt fyller den opp slik at 20% tilgjengelige gyldige identer ligger i Arena. \nResponse: liste av opprettede identer.")
-    public ResponseEntity<List<String>> registerBrukereIArenaForvalter(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
-        return registrerBrukereIArenaForvalter(syntetiserArenaRequest);
-    }
+    public ResponseEntity<List<String>> registrerBrukereIArenaForvalter(@RequestParam(required = false) String personident,
+                                                                        @RequestBody(required = false) SyntetiserArenaRequest syntetiserArenaRequest) {
+        if ("".equals(personident) || personident == null) {
+            return registrerBrukereIArenaForvalter(syntetiserArenaRequest);
+        }
 
-    @PostMapping(value = "/slett")
-    @ApiOperation(value = "Slett identer fra Arena", notes = "Sletter oppgitte identer fra Arena. \nResponse: liste over alle innsendte identer som ble slettet.")
-    public ResponseEntity<List<String>> slettBrukereIArenaForvalter(@RequestParam String miljoe, @RequestBody List<String> identer) {
-        return slettBrukere(miljoe, identer);
+        return registrerBrukerIArenaForvalter(personident, syntetiserArenaRequest);
     }
-
 
     private ResponseEntity<List<String>> registrerBrukereIArenaForvalter(SyntetiserArenaRequest arenaRequest) {
-        List<String> registrerteIdenter = syntetiseringService.sendBrukereTilArenaForvalterConsumer(
+        List<String> registrerteIdenter = syntetiseringService.opprettArbeidsoekere(
                 arenaRequest.getAntallNyeIdenter(),
                 arenaRequest.getAvspillergruppeId(),
                 arenaRequest.getMiljoe()
-        ).stream().map(Arbeidsoker::getPersonident).collect(Collectors.toList());
+        ).stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(registrerteIdenter);
     }
 
-    private ResponseEntity<List<String>> slettBrukere(String miljoe, List<String> identer) {
+    private ResponseEntity<List<String>> registrerBrukerIArenaForvalter(String personident, SyntetiserArenaRequest arenaRequest) {
+        List<String> registrerteIdenter = syntetiseringService.opprettArbeidssoeker(
+                personident,
+                arenaRequest.getAvspillergruppeId(),
+                arenaRequest.getMiljoe()
+        ).stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
 
-        List<String> slettedeIdenter = new ArrayList<>(syntetiseringService.slettBrukereIArenaForvalter(identer, miljoe));
-
-        return ResponseEntity.ok(slettedeIdenter);
+        return ResponseEntity.ok().body(registrerteIdenter);
     }
-
 }

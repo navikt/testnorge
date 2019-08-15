@@ -2,7 +2,7 @@ package no.nav.registre.arena.core.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.arena.core.consumer.rs.responses.Arbeidsoker;
+import no.nav.registre.arena.domain.Arbeidsoeker;
 import no.nav.registre.arena.core.consumer.rs.responses.StatusFraArenaForvalterResponse;
 import no.nav.registre.arena.domain.NyBruker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,10 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 @Component
@@ -27,26 +30,23 @@ public class ArenaForvalterConsumer {
     private static final String NAV_CALL_ID = "ORKESTRATOREN";
     private static final String NAV_CONSUMER_ID = "ORKESTRATOREN";
 
-
     @Autowired
     private RestTemplate restTemplate;
 
     private UriTemplate postBrukere;
     private UriTemplate hentBrukere;
     private UriTemplate slettBrukere;
-    private UriTemplate hentBrukerePage;
 
-    // TODO: er det nødvendig å ha eier med på post-requesten? Bør den også være med på hentBrukere?
+
     public ArenaForvalterConsumer(@Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl) {
         this.postBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?eier=" + EIER);
         this.hentBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker");
-        this.hentBrukerePage = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?page={page}");
         this.slettBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker?miljoe={miljoe}&personident={personident}");
     }
 
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public List<Arbeidsoker> sendTilArenaForvalter(List<NyBruker> nyeBrukere) {
+    public List<Arbeidsoeker> sendTilArenaForvalter(List<NyBruker> nyeBrukere) {
 
         RequestEntity postRequest = RequestEntity.post(postBrukere.expand())
                 .header("Nav-Call-Id", NAV_CALL_ID)
@@ -54,51 +54,75 @@ public class ArenaForvalterConsumer {
                 .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
 
         ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(postRequest, StatusFraArenaForvalterResponse.class);
-
-        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-            log.error("Kunne ikke sende brukere til Arena Forvalteren. Ingen respons.\nStatus: {}\nBody: {}",
-                    response.getStatusCode(), response.getBody());
-            return new ArrayList<>();
-        }
-
         return response.getBody().getArbeidsokerList();
     }
 
     @Timed(value = "arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public List<Arbeidsoker> hentBrukere() {
-        RequestEntity getRequest = RequestEntity.get(hentBrukere.expand())
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
-                .build();
+    public List<Arbeidsoeker> hentArbeidsoekere(List<String> personidenter, String eier, String miljoe) {
 
-        ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+        Map<String, String> filters = new HashMap<>();
 
-        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-            log.error("Kunne ikke hente brukere fra Arena Forvalteren.\nStatus: {}\nBody: {}",
-                    response.getStatusCode(), response.getBody());
-            return new ArrayList<>();
+        if (eier != null && !"".equals(eier)) {
+            filters.put("filter-eier", eier);
+        }
+        if (miljoe != null && !"".equals(miljoe)) {
+            filters.put("filter-miljoe", miljoe);
         }
 
-        List<Arbeidsoker> responseList =
-                new ArrayList<>(response.getBody().getAntallSider() * response.getBody().getArbeidsokerList().size());
+        String baseUrl = hentBrukere.toString();
+        if (!filters.isEmpty() || personidenter != null) {
+            baseUrl += "?";
+        }
 
-        for (int page = 1; page <= response.getBody().getAntallSider(); page++) {
-            getRequest = RequestEntity.get(hentBrukerePage.expand(page))
-                    .header("Nav-Call-Id", NAV_CALL_ID)
-                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
-                    .build();
+        for (Map.Entry<String, String> entry : filters.entrySet()) {
+            baseUrl += entry.getKey() + "=" + entry.getValue() + "&";
+        }
+
+        if (personidenter == null || personidenter.isEmpty()) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() -1);
+        }
+
+
+        return hentFiltrerteArbeidsoekere(personidenter, baseUrl);
+    }
+
+    private List<Arbeidsoeker> hentFiltrerteArbeidsoekere(List<String> personidenter, String refinedUrl) {
+        if (personidenter == null) {
+            return hentAlleArbeidsoekere();
+        }
+
+        if (personidenter != Collections.EMPTY_LIST) {
+            refinedUrl += "filter-personident={personident}";
+        }
+
+        UriTemplate url = new UriTemplate(refinedUrl);
+        List<Arbeidsoeker> hentedeArbeidsoekere = new ArrayList<>(personidenter.size());
+
+        RequestEntity getRequest;
+        ResponseEntity<StatusFraArenaForvalterResponse> response;
+        for (String personident : personidenter) {
+            getRequest = RequestEntity.get(url.expand(personident)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
             response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+            hentedeArbeidsoekere.addAll(gaaGjennomSider(url.expand(personident).toString() + "&", response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size()));
+        }
 
+        return hentedeArbeidsoekere;
+    }
 
-            if (response.getStatusCode() != HttpStatus.OK) {
-                log.error("Status: {}", response.getStatusCode());
-                break;
-            }
-            if (response.getBody() == null) {
-                log.warn("Kunne ikke hente response body fra Arena Frovalteren på side {}. Returnerer response fra foregående sider.", page);
-                break;
-            }
+    private List<Arbeidsoeker> hentAlleArbeidsoekere() {
+        RequestEntity getRequest = RequestEntity.get(hentBrukere.expand()).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
+        ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+        return gaaGjennomSider(hentBrukere.toString() + "?", response.getBody().getAntallSider(), response.getBody().getArbeidsokerList().size());
+    }
 
+    private List<Arbeidsoeker> gaaGjennomSider(String baseUri, int antallSider, int initialLength) {
+
+        List<Arbeidsoeker> responseList = new ArrayList<>(antallSider * initialLength);
+        UriTemplate hentBrukerePage = new UriTemplate(baseUri + "page={page}");
+
+        for (int page = 1; page <= antallSider; page++) {
+            RequestEntity getRequest = RequestEntity.get(hentBrukerePage.expand(page)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
+            ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
             responseList.addAll(response.getBody().getArbeidsokerList());
         }
 
