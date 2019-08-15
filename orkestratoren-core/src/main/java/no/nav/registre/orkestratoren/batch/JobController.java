@@ -143,7 +143,6 @@ public class JobController {
         log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger og mottat id {}.", arenaInntektId);
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
     public void eiaSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserEiaRequest request = new SyntetiserEiaRequest(entry.getKey(), entry.getValue(), antallSykemeldinger);
