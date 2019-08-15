@@ -20,6 +20,7 @@ import java.util.Random;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
@@ -182,7 +183,7 @@ public class SyntetisertingServiceTest {
     public void opprettEksisterendeArbeidssoekerTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER);
         doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(null, null, null);
-        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(anyList(), eq(null), eq(null));
+        doReturn(enNyArbeisoker).when(arenaForvalterConsumer).hentArbeidsoekere(anyString(), eq(null), eq(null));
 
         List<Arbeidsoeker> arbeidsoeker = syntetiseringService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
 

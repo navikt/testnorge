@@ -58,7 +58,7 @@ public class SyntetiseringService {
 
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident);
-            return arenaForvalterConsumer.hentArbeidsoekere(Collections.singletonList(ident), null, null);
+            return arenaForvalterConsumer.hentArbeidsoekere(ident, null, null);
         } else if (!levendeIdenter.contains(ident)) {
             log.info("Ident {} kunne ikke bli funnet av Hodejegeren, og kan derfor ikke opprettes i Arena.", ident);
             return new ArrayList<>();
