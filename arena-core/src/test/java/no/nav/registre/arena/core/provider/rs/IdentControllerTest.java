@@ -59,10 +59,10 @@ public class IdentControllerTest {
     @Test
     public void hentBrukereFraArenaForvalter() {
         when(identService
-                .hentArbeidsoekere(eier, miljoe, Collections.singletonList(fnr1)))
+                .hentArbeidsoekere(eier, miljoe, fnr1))
                 .thenReturn(Collections.singletonList(arbeidsoeker));
 
-        ResponseEntity<List<Arbeidsoeker>> response = identController.hentBrukereFraArenaForvalter(eier, miljoe, Collections.singletonList(fnr1));
+        ResponseEntity<List<Arbeidsoeker>> response = identController.hentBrukereFraArenaForvalter(eier, miljoe, fnr1);
         assertThat(response.getBody().size(), is(1));
         assertThat(response.getBody().get(0).getPersonident(), is(fnr1));
     }

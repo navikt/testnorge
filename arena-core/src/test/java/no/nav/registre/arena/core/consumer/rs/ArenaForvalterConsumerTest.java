@@ -31,7 +31,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 
 
@@ -90,19 +89,6 @@ public class ArenaForvalterConsumerTest {
 
     }
 
-//    @Test
-//    public void statusEtterOpprettedeBrukereIArenaForvalter() {
-//
-//        stubArenaForvalterConsumer();
-//
-//        List<Arbeidsoeker> arbeidsoekerList = arenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
-//
-//        assertThat(arbeidsoekerList.size(), is(equalTo(2)));
-//        assertThat(arbeidsoekerList.get(1).getPersonident(), is("20202020202"));
-//        assertThat(arbeidsoekerList.get(0).getServicebehov(), is(false));
-//
-//    }
-
     @Test(expected = HttpClientErrorException.class)
     public void checkEmptyListOnBadSentTilArenaForvalterRequest() {
         stubArenaForvalterBadRequest();
@@ -111,15 +97,6 @@ public class ArenaForvalterConsumerTest {
 
        assertThat(response, is(Collections.EMPTY_LIST));
     }
-
-//    @Test
-//    public void emptyHentBrukereReturnsEmptyList() {
-//        stubArenaForvlaterEmptyHentBrukere();
-//
-//        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere();
-//
-//        assertThat(response, is(Collections.EMPTY_LIST));
-//    }
 
     @Test
     public void hentBrukereTest() {
@@ -132,15 +109,6 @@ public class ArenaForvalterConsumerTest {
         assertThat(response.get(2).getPersonident(), is("09038817873"));
         assertThat(response.size(), is(3));
     }
-
-//    @Test
-//    public void hentBrukere_breakOnNullBodyAfterFirstPage() {
-//        stubArenaForvalterHentBrukereNoPage();
-//        stubArenaForvalterHentBrukereNoBody();
-//
-//        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere();
-//        assertThat(response, is(Collections.EMPTY_LIST));
-//    }
 
     @Test
     public void slettBrukereTest() {
@@ -164,7 +132,7 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterHentBrukereFilterPageEn();
         stubArenaForvalterHentBrukereFilterPageTo();
 
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere(Collections.singletonList("10101010101"), "Dolly", "q2");
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "Dolly", "q2");
 
         assertThat(response.get(0).getStatus(), is("OK"));
         assertThat(response.size(), is(2));
@@ -179,7 +147,8 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterFilterPersonidentGuyTo();
         stubArenaForvalterFilterPersonidentGuyToPageEn();
 
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere(Arrays.asList("10101010101", "20202020202"), null, null);
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", null, null);
+        response.addAll(arenaForvalterConsumer.hentArbeidsoekere("20202020202", null, null));
 
         assertThat(response.size(), is(4));
         assertThat(response.get(2).getPersonident(), is("10101010101"));

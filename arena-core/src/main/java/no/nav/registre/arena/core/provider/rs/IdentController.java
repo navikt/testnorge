@@ -34,8 +34,8 @@ public class IdentController {
     @ApiOperation(value = "Hent brukere", notes = "Henter alle brukere, filtrert på de gitte parameterene, som er registrert i Arena.")
     public ResponseEntity<List<Arbeidsoeker>> hentBrukereFraArenaForvalter(@RequestParam(required = false) String eier,
                                                                            @RequestParam(required = false) String miljoe,
-                                                                           @RequestBody(required = false) List<String> personidenter) {
-        return ResponseEntity.ok(identService.hentArbeidsoekere(eier, miljoe, personidenter));
+                                                                           @RequestParam(required = false) String personident) {
+        return ResponseEntity.ok(identService.hentArbeidsoekere(eier, miljoe, personident));
     }
 
     private ResponseEntity<List<String>> slettBrukere(String miljoe, List<String> identer) {

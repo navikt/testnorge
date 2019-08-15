@@ -19,8 +19,8 @@ public class IdentService {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
 
 
-    public List<Arbeidsoeker> hentArbeidsoekere(String eier, String miljoe, List<String> personidenter) {
-        return arenaForvalterConsumer.hentArbeidsoekere(personidenter, eier, miljoe);
+    public List<Arbeidsoeker> hentArbeidsoekere(String eier, String miljoe, String personident) {
+        return arenaForvalterConsumer.hentArbeidsoekere(personident, eier, miljoe);
     }
 
     public List<String> slettBrukereIArenaForvalter(List<String> identerToDelete, String miljoe) {
