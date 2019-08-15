@@ -352,6 +352,15 @@ export default class FormEditor extends PureComponent {
 			)
 		}
 
+		// if (item.id === 'barn_utvandret[0]utvandretTilLand' && valgteVerdier.barn_utvandret) {
+		// 	valgteVerdier.barn[0].barn_utvandret[0].utvandretTilLand =
+		// 		valgteVerdier.barn_utvandret[0].utvandretTilLand
+		// }
+		// if (item.id === 'barn_utvandret[0]utvandretTilLandFlyttedato' && valgteVerdier.barn_utvandret) {
+		// 	valgteVerdier.barn[0].barn_utvandret[0].utvandretTilLandFlyttedato =
+		// 		valgteVerdier.barn_utvandret[0].utvandretTilLandFlyttedato
+		// }
+
 		if (
 			item.id === 'arenaforvalter[0]kvalifiseringsgruppe' &&
 			valgteVerdier.arenaforvalter[0].arenaBrukertype !== 'MED_SERVICEBEHOV'
@@ -404,6 +413,8 @@ export default class FormEditor extends PureComponent {
 	}
 
 	renderFieldSubItem = (formikProps, item, subRad, parentId, idx, jdx) => {
+		console.log('formikProps :', formikProps)
+		console.log('item :', item)
 		return (
 			<Fragment>
 				<div className="subitems-container">

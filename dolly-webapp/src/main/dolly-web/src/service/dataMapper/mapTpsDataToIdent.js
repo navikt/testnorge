@@ -217,6 +217,7 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 			header: 'Familierelasjoner',
 			multiple: true,
 			data: tpsfData.relasjoner.map(relasjon => {
+				console.log('relasjon :', relasjon)
 				return {
 					parent: 'relasjoner',
 					id: relasjon.id,
@@ -264,6 +265,17 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 							id: 'sprakKode',
 							label: 'Språk',
 							value: relasjon.personRelasjonMed.sprakKode
+						},
+						{
+							id: 'utvandretTilLand',
+							label: 'Utvandret til land',
+							value: relasjon.personRelasjonMed.utvandretTilLand,
+							apiKodeverkId: 'StatsborgerskapFreg'
+						},
+						{
+							id: 'utvandretTilLandFlyttedato',
+							label: 'Utvandret dato',
+							value: Formatters.formatDate(relasjon.personRelasjonMed.utvandretTilLandFlyttedato)
 						},
 						{
 							id: 'sivilstand',
