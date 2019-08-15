@@ -20,17 +20,22 @@ export default class ArrayField extends Component {
 		fetchKodeverk()
 	}
 
+	componentDidUpdate(prevProps) {
+		this.state.fieldListe.length < 1 && this._initiering()
+		this.state.options.length < 1 && this._alleOptions(this.props.item)
+		const { endretListe } = this.state
+		endretListe && this._fjerneOptions()
+	}
+
 	render() {
 		const { item } = this.props
-		const { fieldListe, endretListe, options } = this.state
+		const { fieldListe, options } = this.state
 		const inputComponent = InputSelector(item.inputType)
 
 		// Oppdatere fieldListe ved bruk av mal.
 		// this.props.fieldListe har ikke fått innhold ved oppstart av komponent
 		// initiering og fjerneOptions gir feilmelding fordi de oppdaterer state under render. Burde skrives om
-		this._initiering()
 		//Endring av optionsliste
-		endretListe && this._fjerneOptions()
 
 		return (
 			<div className="fieldOgVerdiliste">
@@ -89,12 +94,9 @@ export default class ArrayField extends Component {
 	}
 
 	_initiering = () => {
-		this.state.fieldListe.length < 1 &&
-			!this.state.endretListe &&
+		!this.state.endretListe &&
 			this.props.fieldListe.length > 1 &&
 			this.setState({ fieldListe: this.props.fieldListe })
-
-		this.state.options.length < 1 && this._alleOptions(this.props.item)
 	}
 
 	_alleOptions = async item => {
