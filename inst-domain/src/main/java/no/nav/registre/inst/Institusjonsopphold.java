@@ -40,9 +40,6 @@ public class Institusjonsopphold {
     @JsonAlias({ "institusjonstype", "k_opphold_inst_t" })
     private String institusjonstype;
 
-    @JsonAlias({ "varighet", "k_varig_inst_t" })
-    private String varighet;
-
     @JsonAlias({ "kategori", "k_pas_ka_inst_t" })
     private String kategori;
 
