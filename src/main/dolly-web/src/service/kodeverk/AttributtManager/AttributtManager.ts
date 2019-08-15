@@ -20,10 +20,10 @@ import { isAttributtEditable, DependencyTree } from './AttributtHelpers'
 export default class AttributtManager {
 	// BASE FUNCTIONS
 	listAllSelected(selectedIds: string[]): Attributt[] {
-		// console.log(
-		// 	'this.listAllSelectFilterItems(selectedIds, AttributtListe) :',
-		// 	this.listAllSelectFilterItems(selectedIds, AttributtListe)
-		// )
+		console.log(
+			'this.listAllSelectFilterItems(selectedIds, AttributtListe) :',
+			this.listAllSelectFilterItems(selectedIds, AttributtListe)
+		)
 		return this.listAllSelectFilterItems(selectedIds, AttributtListe)
 	}
 
@@ -51,8 +51,9 @@ export default class AttributtManager {
 						attr.dataSource === 'KRR' ||
 						attr.dataSource === 'PDLF' ||
 						attr.dataSource === 'ARENA' ||
-						(attr.dataSource === 'TPSF' && attr.id === 'utvandret')
-						// || (attr.dataSource === 'TPSF' && attr.id === 'barn_utvandret')
+						(attr.dataSource === 'TPSF' && attr.id === 'utvandret') ||
+						(attr.dataSource === 'TPSF' && attr.id === 'partner_utvandret') ||
+						(attr.dataSource === 'TPSF' && attr.id === 'barn_utvandret')
 					) {
 						// console.log('attr items 1:', attr)
 						return attr
@@ -123,6 +124,8 @@ export default class AttributtManager {
 	}
 
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
+		let listallselected = this.listAllSelected(selectedIds)
+		// console.log('listallselected :', listallselected)
 		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
 	}
 
@@ -258,10 +261,12 @@ export default class AttributtManager {
 		// console.log('values :', values)
 		return list.reduce((prev, item) => {
 			// console.log('prev :', prev)
-			// console.log('item :', item)
+			// console.log('____item :', item)
 			// Array
 			if (item.items) {
 				const mapItemsToObject = this._mapArrayToObjectWithEmptyValues(item.items)
+				// console.log('________mapItemsToObject :', mapItemsToObject)
+				// if (item.id =)
 				return this._setInitialArrayValue(prev, item.id, values, [mapItemsToObject])
 			}
 			// if (item.fields) {
@@ -314,14 +319,28 @@ export default class AttributtManager {
 
 	_setInitialArrayValue(currentObject, itemId, stateValues, array) {
 		let initialValue = array
+		// console.log('initialValue :', initialValue)
+		// console.log('stateValues :', stateValues)
+		// console.log('itemId :', itemId)
 		const fromState = _get(stateValues, itemId)
+		// console.log('fromState :', fromState)
 		if (fromState || fromState === false) initialValue = fromState
 
 		return _set(currentObject, itemId, initialValue)
 	}
 
 	_mapArrayToObjectWithEmptyValues = list => {
+		// console.log('xxx list :', list)
 		return list.reduce((accumulator, item) => {
+			// console.log('xxx accumulator :', accumulator)
+			// console.log('xxx item :', item)
+			if (item.items) {
+				// let test = { barn_utvandret: [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }] }
+				// return test
+				// console.log('item.items item :', item)
+				// return this._mapArrayToObjectWithEmptyValues(item.items)
+				return _set(accumulator, item.id, [this._mapArrayToObjectWithEmptyValues(item.items)])
+			}
 			return _set(accumulator, item.id, this.initValueSelector(item))
 		}, {})
 	}

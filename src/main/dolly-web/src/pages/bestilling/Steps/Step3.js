@@ -248,9 +248,18 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderItem = (item, stateValues) => {
+		console.log('item :', item)
+		console.log('this.props.values :', this.props.values)
+		console.log('stateValues :', stateValues)
 		if (item.items) {
-			const valueArray = _get(this.props.values, item.id)
-			const numberOfValues = valueArray.length
+			let valueArray = _get(this.props.values, item.id)
+			console.log('valueArray 1:', valueArray)
+			if (item.id === 'barn_utvandret') {
+				//! må mappes riktig!
+				valueArray = _get(this.props.values.barn[0], item.id)
+			}
+			console.log('valueArray 2:', valueArray)
+			// const numberOfValues = valueArray.length
 			return valueArray.map((values, idx) => {
 				Object.keys(values).map(attr => !values[attr] && delete values[attr])
 				return valueArray.length > 1
