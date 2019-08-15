@@ -18,7 +18,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
-import java.util.concurrent.CompletableFuture;
 
 @DisplayName("POST /api/v1/gruppe")
 class TestgruppeControllerPostTest extends TestgruppeTestCaseBase {
@@ -72,7 +71,6 @@ class TestgruppeControllerPostTest extends TestgruppeTestCaseBase {
         Long gruppeId = dataFactory.createTestgruppe("Test gruppe").getId();
 
         String url = ENDPOINT_BASE_URI + gruppeId + "/bestilling";
-        CompletableFuture<String> future = new CompletableFuture<>();
 
         RsTpsfUtvidetBestilling tpsfBestilling = RsTpsfUtvidetBestilling.builder()
                 .kjonn("M")

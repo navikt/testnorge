@@ -30,7 +30,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -52,8 +51,6 @@ public class TeamServiceTest {
     private BrukerService brukerService;
     @Mock
     private MapperFacade mapperFacade;
-    @Mock
-    private NonTransientDataAccessException nonTransientDataAccessException;
     @InjectMocks
     private TeamService teamService;
 

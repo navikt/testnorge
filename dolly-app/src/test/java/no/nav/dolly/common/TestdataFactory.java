@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -97,7 +98,17 @@ public class TestdataFactory {
                 .datoEndret(LocalDate.now())
                 .teamtilhoerighet(team)
                 .build();
-        return gruppeTestRepository.save(testgruppe);
+        Testgruppe saved = gruppeTestRepository.save(testgruppe);
+        saved.setTestidenter(buildTestIdenter(saved));
+        return saved;
+    }
+
+    private Set<Testident> buildTestIdenter(Testgruppe testgruppe) {
+        return new HashSet<>(asList(
+                identTestRepository.save(Testident.builder().ident("123").testgruppe(testgruppe).build()),
+                identTestRepository.save(Testident.builder().ident("234").testgruppe(testgruppe).build()),
+                identTestRepository.save(Testident.builder().ident("345").testgruppe(testgruppe).build())
+        ));
     }
 
     public Testgruppe addTestidenterToTestgruppe(Testgruppe testgruppe, Testident... testidenter) {

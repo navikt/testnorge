@@ -20,6 +20,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @DisplayName("GET /api/v1/gruppe")
@@ -95,6 +96,18 @@ class TestgruppeControllerGetTest extends TestgruppeTestCaseBase {
 
         //Cleanup
         dataFactory.clearFavourites(bruker.getNavIdent());
+    }
+
+    @Test
+    @DisplayName("Returnerer HTTP 404 Not Found  Testgruppe")
+    void shouldFail404NotFound() {
+        String url = ENDPOINT_BASE_URI + "/123";
+
+        LinkedHashMap resp = sendRequest()
+                .to(HttpMethod.GET, url)
+                .andExpect(HttpStatus.NOT_FOUND, LinkedHashMap.class);
+
+        assertThat(getErrMsg(resp), is("Finner ikke gruppe basert på gruppeID: 123"));
     }
 
     @Test
