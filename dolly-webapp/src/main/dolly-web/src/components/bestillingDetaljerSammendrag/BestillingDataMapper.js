@@ -490,51 +490,53 @@ export function mapBestillingData(bestillingData) {
 			data.push(arenaforvalter)
 		}
 
-		const instKriterier = registreKriterier.inst && registreKriterier.inst
+		const instKriterier = registreKriterier.instdata && registreKriterier.instdata
 
 		if (instKriterier) {
 			// Flater ut instKriterier for å gjøre det lettere å mappe
 
 			let flatInstKriterier = []
-			instKriterier.forEach(instOpphold => {
-				instOpphold.forEach(i => {
-					flatInstKriterier.push({
-						institusjonstype: i.institusjonstype,
-						varighet: i.varighet,
-						startdato: i.startdato,
-						faktiskSluttdato: i.faktiskSluttdato
-					})
+			instKriterier.forEach(i => {
+				flatInstKriterier.push({
+					institusjonstype: i.institusjonstype,
+					varighet: i.varighet,
+					startdato: i.startdato,
+					faktiskSluttdato: i.faktiskSluttdato
 				})
 			})
 
-			const inst = {
+			const instObj = {
 				header: 'Institusjonsopphold',
 				itemRows: []
 			}
 
 			flatInstKriterier.forEach((inst, i) => {
-				inst.itemRows.push([
+				instObj.itemRows.push([
+					{
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small'
+					},
 					{
 						label: 'Institusjonstype',
 						value: Formatters.showLabel('institusjonstype', inst.institusjonstype)
 					},
 					{
 						label: 'Varighet',
-						value: Formatters.showLabel('varighet', inst.varighet)
+						value: inst.varighet && Formatters.showLabel('varighet', inst.varighet)
 					},
 					{
 						label: 'Startdato',
 						value: Formatters.formatDate(inst.startdato)
 					},
 					{
-						label: 'Sluttdato',
+						label: 'Faktisk sluttdato',
 						value: Formatters.formatDate(inst.faktiskSluttdato)
 					}
 				])
 			})
-			data.push(inst)
+			data.push(instObj)
 		}
 	}
-
 	return data
 }

@@ -1,12 +1,16 @@
 import { KategoriTypes } from './Types'
-import { ArenaApi } from '~/service/Api'
+import { ArenaApi, InstApi } from '~/service/Api'
+
 import { DEFAULT_ECDH_CURVE } from 'tls'
 
 export const Kategorier: KategoriTypes = {
 	PersInfo: {
 		id: 'personinfo',
 		navn: 'Personinformasjon',
-		order: 10
+		order: 10,
+		informasjonstekst:
+			'Data om institusjonsopphold blir ikke distribuert til alle miljøer, og et eller flere av miljøene under må derfor velges i siste steg.',
+		tilgjengeligeMiljoeEndepunkt: InstApi.getTilgjengeligeMiljoer()
 	},
 	Adresser: {
 		id: 'adresser',
@@ -37,8 +41,8 @@ export const Kategorier: KategoriTypes = {
 			'KRR - benyttes for offentlige virksomheter for å avklare om den enkelte bruker har reservert seg mot digital kommunikasjon eller ikke. I tillegg skal varslene som sendes til bruker benytte den kontaktinformasjonen som ligger i registeret. Dette kan enten være mobiltelefonnummer for utsendelse av sms, eller epostadresse for utsendelse av epost.',
 		order: 50
 	},
-	KontaktInfoDoedsbo: {
-		id: 'kontaktinfoDoedsbo',
+	KontaktInformasjonForDoedsbo: {
+		id: 'kontaktInformasjonForDoedsbo',
 		navn: 'Kontaktinformasjon for dødsbo',
 		informasjonstekst:
 			'Kontaktinformasjon for dødsbo blir kun distribuert til Q2, og dette miljøet må derfor velges i siste steg.',

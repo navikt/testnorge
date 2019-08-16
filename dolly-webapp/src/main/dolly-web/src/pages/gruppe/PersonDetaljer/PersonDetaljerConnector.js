@@ -7,7 +7,8 @@ import {
 	GET_SIGRUN_SEKVENSNR,
 	GET_AAREG_TESTBRUKER,
 	GET_TESTBRUKER_PERSONOPPSLAG,
-	GET_ARENA_TESTBRUKER
+	GET_ARENA_TESTBRUKER,
+	GET_INST_TESTBRUKER
 } from '~/ducks/testBruker'
 import { FRIGJOER_TESTBRUKER } from '~/ducks/testBruker'
 import { createLoadingSelector } from '~/ducks/loading'
@@ -18,16 +19,16 @@ const loadingSelectorSigrun = createLoadingSelector(GET_SIGRUN_TESTBRUKER)
 const loadingSelectorAareg = createLoadingSelector(GET_AAREG_TESTBRUKER)
 const loadingSelectorPdlf = createLoadingSelector(GET_TESTBRUKER_PERSONOPPSLAG)
 const loadingSelectorArena = createLoadingSelector(GET_ARENA_TESTBRUKER)
+const loadingSelectorInst = createLoadingSelector(GET_INST_TESTBRUKER)
 
 const mapStateToProps = (state, ownProps) => {
-	console.log('state :', state)
-	console.log('ownProps :', ownProps)
 	return {
 		isFetchingKrr: loadingSelectorKrr(state),
 		isFetchingSigrun: loadingSelectorSigrun(state),
 		isFetchingAareg: loadingSelectorAareg(state),
 		isFetchingPdlf: loadingSelectorPdlf(state),
 		isFetchingArena: loadingSelectorArena(state),
+		isFetchingInst: loadingSelectorInst(state),
 		personData: DataMapper.getDetailedData(state, ownProps),
 		testIdent: state.gruppe.data[0].testidenter.find(
 			testIdent => testIdent.ident === ownProps.personId

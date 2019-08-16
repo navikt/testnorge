@@ -551,7 +551,7 @@ describe('mapDetailedData.js', () => {
 							},
 							{
 								id: 'faktiskSluttdato',
-								label: 'Sluttdato',
+								label: 'Faktisk sluttdato',
 								value: '01.01.2018'
 							}
 						]

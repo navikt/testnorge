@@ -19,7 +19,9 @@ const initialState = {
 		sigrunstub: null,
 		krrstub: null,
 		arenaforvalteren: null,
-		aareg: null
+		aareg: null,
+		pdlforvalter: null,
+		inst: null
 	}
 }
 
@@ -248,7 +250,17 @@ export default function testbrukerReducer(state = initialState, action) {
 					}
 				}
 			}
-
+		case success(GET_INST_TESTBRUKER):
+			return {
+				...state,
+				items: {
+					...state.items,
+					inst: {
+						...state.items.inst,
+						[action.meta.ident]: action.payload && action.payload.data
+					}
+				}
+			}
 		case actionTypes.UPDATE_TESTBRUKER_SUCCESS:
 			return state
 		default:

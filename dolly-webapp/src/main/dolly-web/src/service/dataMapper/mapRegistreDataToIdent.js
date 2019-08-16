@@ -263,6 +263,12 @@ export function mapInstData(instData) {
 				id: data.personidentifikator,
 				value: [
 					{
+						id: 'id',
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small'
+					},
+					{
 						id: 'institusjonstype',
 						label: 'Institusjonstype',
 						value: Formatters.showLabel('institusjonstype', data.institusjonstype)
@@ -270,7 +276,7 @@ export function mapInstData(instData) {
 					{
 						id: 'varighet',
 						label: 'Varighet',
-						value: Formatters.showLabel('varighet', data.varighet)
+						value: data.varighet && Formatters.showLabel('varighet', data.varighet)
 					},
 					{
 						id: 'startdato',
@@ -279,7 +285,7 @@ export function mapInstData(instData) {
 					},
 					{
 						id: 'faktiskSluttdato',
-						label: 'Sluttdato',
+						label: 'Faktisk sluttdato',
 						value: Formatters.formatDate(data.faktiskSluttdato)
 					}
 				]
