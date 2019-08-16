@@ -4,6 +4,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
+import no.nav.dolly.domain.resultset.tpsf.RsDollyProps;
+import no.nav.dolly.properties.ProvidersProps;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,45 +13,46 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.dolly.domain.resultset.tpsf.RsDollyProps;
-import no.nav.dolly.properties.ProvidersProps;
-
 @RunWith(MockitoJUnitRunner.class)
 public class EnvironmentPropsControllerTest {
 
-    private static final String TPSF = "tpsf";
-    private static final String SIGRUNSTUB = "sigrunstub";
-    private static final String KRRSTUB = "krrstub";
-    private static final String KODEVERK = "kodeverk";
-    private static final String ARENAFORVALTER = "arenaforvalter";
+	private static final String TPSF = "tpsf";
+	private static final String SIGRUNSTUB = "sigrunstub";
+	private static final String KRRSTUB = "krrstub";
+	private static final String UDISTUB = "udistub";
+	private static final String KODEVERK = "kodeverk";
+	private static final String ARENAFORVALTER = "arenaforvalter";
 
-    @Mock
-    private ProvidersProps providersProps;
+	@Mock
+	private ProvidersProps providersProps;
 
-    @InjectMocks
-    private EnvironmentPropsController environmentPropsController;
+	@InjectMocks
+	private EnvironmentPropsController environmentPropsController;
 
-    @Before
-    public void setup() {
-        when(providersProps.getTpsf()).thenReturn(ProvidersProps.Tpsf.builder()
-                .url(TPSF).build());
-        when(providersProps.getKodeverk()).thenReturn(ProvidersProps.Kodeverk.builder()
-                .url(KODEVERK).build());
-        when(providersProps.getSigrunStub()).thenReturn(ProvidersProps.SigrunStub.builder()
-                .url(SIGRUNSTUB).build());
-        when(providersProps.getKrrStub()).thenReturn(ProvidersProps.KrrStub.builder()
-                .url(KRRSTUB).build());
-        when(providersProps.getArenaForvalter()).thenReturn(ProvidersProps.ArenaForvalter.builder()
-                .url(ARENAFORVALTER).build());
-    }
+	@Before
+	public void setup() {
+		when(providersProps.getTpsf()).thenReturn(ProvidersProps.Tpsf.builder()
+				.url(TPSF).build());
+		when(providersProps.getKodeverk()).thenReturn(ProvidersProps.Kodeverk.builder()
+				.url(KODEVERK).build());
+		when(providersProps.getSigrunStub()).thenReturn(ProvidersProps.SigrunStub.builder()
+				.url(SIGRUNSTUB).build());
+		when(providersProps.getKrrStub()).thenReturn(ProvidersProps.KrrStub.builder()
+				.url(KRRSTUB).build());
+		when(providersProps.getUdiStub()).thenReturn(ProvidersProps.UdiStub.builder()
+				.url(UDISTUB).build());
+		when(providersProps.getArenaForvalter()).thenReturn(ProvidersProps.ArenaForvalter.builder()
+				.url(ARENAFORVALTER).build());
+	}
 
-    @Test
-    public void getEnvironmentProps() {
-        RsDollyProps props = environmentPropsController.getEnvironmentProps();
-        assertThat(props.getKodeverkUrl(), is(KODEVERK));
-        assertThat(props.getKrrStubUrl(), is(KRRSTUB));
-        assertThat(props.getTpsfUrl(), is(TPSF));
-        assertThat(props.getSigrunStubUrl(), is(SIGRUNSTUB));
-        assertThat(props.getArenaForvalterUrl(), is(ARENAFORVALTER));
-    }
+	@Test
+	public void getEnvironmentProps() {
+		RsDollyProps props = environmentPropsController.getEnvironmentProps();
+		assertThat(props.getKodeverkUrl(), is(KODEVERK));
+		assertThat(props.getKrrStubUrl(), is(KRRSTUB));
+		assertThat(props.getUdiStubUrl(), is(UDISTUB));
+		assertThat(props.getTpsfUrl(), is(TPSF));
+		assertThat(props.getSigrunStubUrl(), is(SIGRUNSTUB));
+		assertThat(props.getArenaForvalterUrl(), is(ARENAFORVALTER));
+	}
 }

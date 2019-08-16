@@ -46,6 +46,8 @@ providers:
     url: https://sigrun-skd-stub.nais.preprod.local
   krrstub:
     url: https://krr-stub.nais.preprod.local
+  udistub:
+    url: https://udi-stub.nais.preprod.local
   kodeverk:
     url: https://kodeverk.nais.preprod.local
   norg2:
