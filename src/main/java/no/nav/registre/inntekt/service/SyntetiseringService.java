@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.inntektstub.domain.rs.RsInntekt;
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubConsumer;
 import no.nav.registre.inntekt.domain.IdentMedData;
 import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
+import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 

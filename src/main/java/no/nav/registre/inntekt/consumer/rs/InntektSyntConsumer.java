@@ -13,7 +13,7 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.inntektstub.domain.rs.RsInntekt;
+import no.nav.registre.inntekt.domain.RsInntekt;
 
 @Slf4j
 @Component

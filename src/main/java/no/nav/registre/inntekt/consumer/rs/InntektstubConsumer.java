@@ -18,8 +18,8 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.inntektstub.domain.rs.RsInntekt;
-import no.nav.inntektstub.domain.rs.RsUser;
+import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.inntekt.domain.RsUser;
 
 @Slf4j
 @Component
