@@ -10,7 +10,7 @@
         <version>2.1.7.RELEASE</version>
     </parent>
 
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
     <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-inntekt</artifactId>
@@ -73,6 +73,10 @@
     <build>
         <finalName>testnorge-inntekt</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
