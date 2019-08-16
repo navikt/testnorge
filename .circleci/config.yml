@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:11-jdk
+      - image: circleci/openjdk:8-jdk
     steps:
       - checkout
       - restore_cache:
@@ -47,7 +47,7 @@ jobs:
             - nais.yaml
   release:
     docker:
-      - image: circleci/openjdk:11-jdk
+      - image: circleci/openjdk:8-jdk
     steps:
       - setup_remote_docker
       - attach_workspace:
