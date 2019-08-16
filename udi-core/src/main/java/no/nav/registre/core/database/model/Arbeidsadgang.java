@@ -38,7 +38,7 @@ public class Arbeidsadgang {
     private Periode periode;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "person_fnr", nullable = false)
+    @JoinColumn(name = "person_id", nullable = false)
     @JsonBackReference
     private Person person;
 

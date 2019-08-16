@@ -30,7 +30,7 @@ import java.sql.Date;
 @Setter
 @Getter
 @Table(name = "avgjoerelse")
-public class Avgjoerelse {
+public class PersonAvgjorelse {
 
     @GeneratedValue
     @Id
@@ -117,8 +117,7 @@ public class Avgjoerelse {
     private Date iverksettelseDato;
     private Date utreisefristDato;
 
-    @GeneratedValue
-    private Long saksnummer;
+	private String saksnummer;
 
     private String etat;
 
@@ -127,7 +126,7 @@ public class Avgjoerelse {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_fnr")
+    @JoinColumn(name = "person_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private Person person;

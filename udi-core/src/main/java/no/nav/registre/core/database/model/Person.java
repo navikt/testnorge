@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import no.nav.registre.core.database.model.opphold.OppholdStatus;
 import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,6 +31,7 @@ import java.util.List;
 @Setter
 @Getter
 @Table(name = "person")
+@ToString
 public class Person {
 
     @Id
@@ -45,16 +49,18 @@ public class Person {
     private MangelfullDato foedselsDato;
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "person")
+    @Fetch(FetchMode.SELECT)
     @JsonManagedReference
-    private List<Alias> aliaser;
+    private List<PersonAvgjorelse> avgjoerelser;
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "person")
+    @Fetch(FetchMode.SELECT)
     @JsonManagedReference
-    private List<Avgjoerelse> avgjoerelser;
+    private List<Alias> aliaser;
 
     @OneToOne(
             fetch = FetchType.LAZY,
@@ -74,7 +80,7 @@ public class Person {
 
     private boolean avgjoerelseUavklart;
 
-    private Boolean oppholdsTilatelse;
+    private Boolean oppholdsTillatelse;
     private Boolean flyktning;
 
     private JaNeiUavklart soeknadOmBeskyttelseUnderBehandling;

@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface PersonRepository extends CrudRepository<Person, Long> {
-    Optional<Person> findByFnr(String fnr);
+
+	Optional<Person> findByFnr(String fnr);
 }

@@ -17,8 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class ControllerAdvice {
 
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
@@ -38,8 +38,8 @@ public class ControllerAdvice {
         var annotation = Optional.ofNullable(AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class));
         var status = annotation.map(ResponseStatus::code).orElse(HttpStatus.INTERNAL_SERVER_ERROR);
         if (annotation.isEmpty()) {
-            log.error("Internal server error", ex);
-            return ResponseEntity.status(status).body(getValues(ex, request, "Internal server error", status));
+            log.error(HttpStatus.INTERNAL_SERVER_ERROR.name(), ex);
+            return ResponseEntity.status(status).body(getValues(ex, request, HttpStatus.INTERNAL_SERVER_ERROR.name(), status));
         } else {
             var message = annotation.map(ResponseStatus::reason).filter(StringUtils::hasText).orElse(ex.getMessage());
             return ResponseEntity.status(status).body(getValues(ex, request, message, status));
@@ -55,7 +55,7 @@ public class ControllerAdvice {
                 "error", exception.getClass().getSimpleName(),
                 "path", request.getRequestURI(),
                 "message", message,
-                "status", status
+                "status", status.value()
         );
     }
 }

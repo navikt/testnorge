@@ -1,6 +1,7 @@
 package no.nav.registre.core.database.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,21 +26,22 @@ import javax.persistence.Table;
 @Entity
 @Builder
 @Table(name = "aliaser")
+@JsonIgnoreProperties(value = {"person"})
 public class Alias {
 
-    @GeneratedValue
-    @Id
-    private Long id;
+	@GeneratedValue
+	@Id
+	private Long id;
 
-    private String fnr;
+	private String fnr;
 
-    @Embedded
-    private PersonNavn navn;
+	@Embedded
+	private PersonNavn navn;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_fnr")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonBackReference
-    private Person person;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "person_id", referencedColumnName = "id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JsonBackReference
+	private Person person;
 
 }

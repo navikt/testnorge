@@ -6,6 +6,8 @@ import no.nav.registre.core.database.model.Person;
 import no.nav.registre.core.service.PersonService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,22 +29,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PersonController {
 
-    private final PersonService personService;
+	private final PersonService personService;
 
-    @PostMapping
-    public ResponseEntity<List<Person>> opprettPerson(@Valid @RequestBody List<Person> person) {
-        var personer = person.stream().map(personService::opprettPerson).collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.CREATED).body(personer);
-    }
+	@PostMapping
+	public ResponseEntity<List<Person>> opprettPerson(@Valid @RequestBody List<Person> person) {
+		var personer = person.stream().map(personService::opprettPerson).collect(Collectors.toList());
+		return ResponseEntity.status(HttpStatus.CREATED).body(personer);
+	}
 
-    @GetMapping
-    public ResponseEntity<Person> finnPerson(@RequestHeader(name = "Nav-Personident") String fnr) {
-        return ResponseEntity.ok(personService.finnPerson(fnr));
-    }
+	@GetMapping
+	public ResponseEntity<Person> finnPerson(@RequestHeader(name = "Nav-Personident") String fnr) {
+		return ResponseEntity.ok(personService.finnPerson(fnr));
+	}
 
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePerson(@RequestHeader(name = "Nav-Personident") String fnr) {
-        personService.deletePerson(fnr);
-    }
+	@DeleteMapping
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deletePerson(@RequestHeader(name = "Nav-Personident") String fnr) {
+		personService.deletePerson(fnr);
+	}
 }
