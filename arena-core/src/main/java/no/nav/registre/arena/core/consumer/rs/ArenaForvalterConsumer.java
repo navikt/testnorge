@@ -60,7 +60,7 @@ public class ArenaForvalterConsumer {
     public List<Arbeidsoeker> hentArbeidsoekere(String personident, String eier, String miljoe) {
 
         Map<String, String> filters = new HashMap<>();
-
+ // TODO: fjerne null check
         if (eier != null && !"".equals(eier)) {
             filters.put("filter-eier", eier);
         }
@@ -72,7 +72,7 @@ public class ArenaForvalterConsumer {
         }
 
         String baseUrl = hentBrukere.toString() + "?";
-
+// TODO: string builder i for løkke
         for (Map.Entry<String, String> entry : filters.entrySet()) {
             baseUrl += entry.getKey() + "=" + entry.getValue() + "&";
         }
@@ -94,9 +94,10 @@ public class ArenaForvalterConsumer {
         List<Arbeidsoeker> responseList = new ArrayList<>(antallSider * initialLength);
         UriTemplate hentBrukerePage = new UriTemplate(baseUri + "page={page}");
 
-        for (int page = 1; page <= antallSider; page++) {
+        for (int page = 0; page < antallSider; page++) {
             RequestEntity getRequest = RequestEntity.get(hentBrukerePage.expand(page)).header("Nav-Call-Id", NAV_CALL_ID).header("Nav-Consumer-Id", NAV_CONSUMER_ID).build();
             ResponseEntity<StatusFraArenaForvalterResponse> response = restTemplate.exchange(getRequest, StatusFraArenaForvalterResponse.class);
+            // TODO: sjekk eller med try/catch  null-body og log dette for alle restTemplates
             responseList.addAll(response.getBody().getArbeidsokerList());
         }
 
