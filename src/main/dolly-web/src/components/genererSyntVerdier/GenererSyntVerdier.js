@@ -58,12 +58,18 @@ export default class GenererSyntVerdier extends Component {
 	_formaterData = (type, res) => {
 		switch (type) {
 			case 'institusjonsopphold':
+				//Fyller ut flere felter enn GUI viser
 				return res.map((values, idx) => {
 					Object.assign(this.props.formikValues[idx], {
 						institusjonstype: values.k_opphold_inst_t,
-						varighet: values.k_varig_inst_t,
+						// varighet: values.k_varig_inst_t,
 						startdato: values.dato_fom,
-						faktiskSluttdato: values.dato_tom
+						faktiskSluttdato: values.dato_tom,
+						forventetSluttdato: values.dato_tom_forventet,
+						tssEksternId: values.tss_ekstern_id_fk,
+						overfoert: values.overfort,
+						kilde: values.k_kilde_inst_t,
+						kategori: values.k_pas_ka_inst_t
 					})
 				})
 		}

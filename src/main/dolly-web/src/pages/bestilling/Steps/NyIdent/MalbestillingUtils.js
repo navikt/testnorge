@@ -137,7 +137,10 @@ const _formatValueForObject = (key, value) => {
 		'foedselsdato',
 		'flyttedato',
 		'fraDato',
-		'tilDato'
+		'tilDato',
+		'startdato',
+		'faktiskSluttdato',
+		'forventetSluttdato'
 	]
 
 	if (dateAttributes.includes(key)) {
@@ -164,6 +167,8 @@ const _mapRegistreKey = key => {
 			return 'utenlandskIdentifikasjonsnummer'
 		case 'arenaBrukertype':
 			return 'arenaforvalter'
+		case 'instdata':
+			return 'institusjonsopphold'
 		default:
 			return key
 	}

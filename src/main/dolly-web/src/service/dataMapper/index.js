@@ -2,7 +2,13 @@ import { createHeader as c, mapBestillingId } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 import { mapTpsfData } from './mapTpsDataToIdent'
 import { mapPdlData } from './mapPdlDataToIdent'
-import { mapKrrData, mapSigrunData, mapAaregData, mapArenaData } from './mapRegistreDataToIdent'
+import {
+	mapKrrData,
+	mapSigrunData,
+	mapAaregData,
+	mapArenaData,
+	mapInstData
+} from './mapRegistreDataToIdent'
 
 // * Mapper testperson-data for å vise under testpersonliste
 const DataMapper = {
@@ -58,6 +64,7 @@ const DataMapper = {
 		const arenaData =
 			testbruker.items.arenaforvalteren && testbruker.items.arenaforvalteren[personId]
 		const instData = testbruker.items.instdata && testbruker.items.instdata[personId]
+
 		var bestillingId = _findBestillingId(gruppe, personId)
 
 		let data = mapTpsfData(
@@ -90,9 +97,9 @@ const DataMapper = {
 			data.push(mapArenaData(arenaData, kvalifiseringsgruppe, inaktiveringDato, aap115, aap))
 		}
 
-		// if (instData) {
-		// 	data.push(mapInstData(instData))
-		// }
+		if (instData) {
+			data.push(mapInstData(instData))
+		}
 
 		if (bestillingId.length > 1) {
 			data.push(mapBestillingId(testIdent))

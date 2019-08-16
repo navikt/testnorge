@@ -33,18 +33,6 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.PersInfo,
 				subKategori: SubKategorier.Institusjonsopphold,
-				id: 'varighet',
-				label: 'Varighet',
-				path: 'varighet',
-				dataSource: DataSource.INST,
-				inputType: InputType.Select,
-				options: SelectOptionsManager('varighet'),
-				validation: yup.string().required('Velg en type varighet.'),
-				attributtType: AttributtType.SelectAndEdit
-			},
-			{
-				hovedKategori: Kategorier.PersInfo,
-				subKategori: SubKategorier.Institusjonsopphold,
 				id: 'startdato',
 				label: 'Startdato',
 				path: 'startdato',
@@ -56,9 +44,9 @@ const AttributtListe: Attributt[] = [
 			{
 				hovedKategori: Kategorier.PersInfo,
 				subKategori: SubKategorier.Institusjonsopphold,
-				id: 'sluttdato',
-				label: 'Sluttdato',
-				path: 'sluttdato',
+				id: 'faktiskSluttdato',
+				label: 'Faktisk sluttdato',
+				path: 'faktiskSluttdato',
 				dataSource: DataSource.INST,
 				inputType: InputType.Date,
 				validation: DateValidation(false),

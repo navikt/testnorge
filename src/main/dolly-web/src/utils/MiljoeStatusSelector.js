@@ -122,9 +122,9 @@ const miljoeStatusSelector = bestilling => {
 	if (bestilling.instdataStatus && bestilling.instdataStatus.length > 0) {
 		instFailed
 			? instHasOneSuccessEnv
-				? avvikEnvs.push('INST')
-				: failedEnvs.push('INST')
-			: successEnvs.push('INST')
+				? avvikEnvs.push('Inst')
+				: failedEnvs.push('Inst')
+			: successEnvs.push('Inst')
 	}
 
 	let aaregHasOneSuccessEnv = false

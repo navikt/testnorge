@@ -110,7 +110,13 @@ export default class PersonDetaljer extends PureComponent {
 
 	// render loading for krr og sigrun
 	_renderPersonInfoBlockHandler = i => {
-		const { isFetchingKrr, isFetchingSigrun, isFetchingAareg, isFetchingArena } = this.props
+		const {
+			isFetchingKrr,
+			isFetchingSigrun,
+			isFetchingAareg,
+			isFetchingArena,
+			isFetchingInst
+		} = this.props
 		if (i.header === 'Inntekter') {
 			return isFetchingSigrun ? (
 				<Loading label="Henter data fra Sigrun-stub" panel />
@@ -132,6 +138,12 @@ export default class PersonDetaljer extends PureComponent {
 		} else if (i.header === 'Arena') {
 			return isFetchingArena ? (
 				<Loading label="Henter data fra Arena" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else if (i.header === 'Institusjonsopphold') {
+			return isFetchingInst ? (
+				<Loading label="Henter data fra Inst" panel />
 			) : (
 				this._renderPersonInfoBlock(i)
 			)
