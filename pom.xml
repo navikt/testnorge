@@ -25,13 +25,13 @@
     </properties>
 
     <dependencies>
-        <!--Utility-->
+        <!-- Utility -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
 
-        <!--SPRING-->
+        <!-- SPRING -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -42,6 +42,13 @@
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
             <version>${testnorge-consumers.version}</version>
+        </dependency>
+
+        <!-- INNTEKTSKOMPONENTEN-->
+        <dependency>
+            <groupId>no.nav.inntektskomponenten</groupId>
+            <artifactId>inntektstub-domain-rs</artifactId>
+            <version>1.15.0-SNAPSHOT</version>
         </dependency>
 
         <!-- TEST -->
@@ -57,7 +64,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!--DOCUMENTATION-->
+        <!-- DOCUMENTATION -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -67,6 +74,10 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
     </dependencies>
 
