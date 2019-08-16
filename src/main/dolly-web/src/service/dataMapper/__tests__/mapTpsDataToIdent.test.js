@@ -151,6 +151,95 @@ describe('mapTpsDataToIdent.js', () => {
 			expect(mapTpsfData(testTpsfData, testIdent)).toEqual(testTpsfRes)
 		})
 
+		it('should return tpsf-data with matrikkeladresse', () => {
+			const testTpsfDataAdresseValues = {
+				...testTpsfData,
+				boadresse: {
+					adressetype: 'MATR',
+					postnr: '2603',
+					kommunenr: '0501',
+					mellomnavn: 'Min gård',
+					gardsnr: '658',
+					bruksnr: '745',
+					festenr: '5684',
+					undernr: '11',
+					flyttedato: '1903-11-03T00:00:00'
+				}
+			}
+
+			const res = [
+				...testTpsfRes,
+				{
+					header: 'Bostedadresse',
+					data: [
+						{
+							parent: 'boadresse',
+							id: 'adressetype',
+							label: 'Adressetype',
+							value: 'Matrikkeladresse'
+						},
+						{
+							parent: 'boadresse',
+							id: 'gateadresse',
+							label: 'Gatenavn',
+							value: undefined
+						},
+						{
+							parent: 'boadresse',
+							id: 'husnummer',
+							label: 'Husnummer',
+							value: undefined
+						},
+						{
+							parent: 'boadresse',
+							id: 'mellomnavn',
+							label: 'Stedsnavn',
+							value: 'Min gård'
+						},
+						{
+							parent: 'boadresse',
+							id: 'gardsnr',
+							label: 'Gårdsnummer',
+							value: '658'
+						},
+						{
+							parent: 'boadresse',
+							id: 'bruksnr',
+							label: 'Bruksnummer',
+							value: '745'
+						},
+						{
+							parent: 'boadresse',
+							id: 'festenr',
+							label: 'Festenummer',
+							value: '5684'
+						},
+						{
+							parent: 'boadresse',
+							id: 'undernr',
+							label: 'Undernummer',
+							value: '11'
+						},
+						{
+							parent: 'boadresse',
+							id: 'postnr',
+							label: 'Postnummer',
+							extraLabel: '2603',
+							apiKodeverkId: 'Postnummer',
+							value: '2603'
+						},
+						{
+							parent: 'boadresse',
+							id: 'flyttedato',
+							label: 'Flyttedato',
+							value: '03.11.1903'
+						}
+					]
+				}
+			]
+			expect(mapTpsfData(testTpsfDataAdresseValues, testIdent)).toEqual(res)
+		})
+
 		it('should return tpsf-data and pdlf-data', () => {
 			expect(mapTpsfData(testTpsfData, testIdent, testPdlfData)).toEqual(testPdlfRes)
 		})
