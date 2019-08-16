@@ -186,7 +186,7 @@ const AttributtListe: Attributt[] = [
 				inputType: InputType.Select,
 				apiKodeverkId: 'StatsborgerskapFreg',
 				onlyShowAfterSelectedValue: { attributtId: 'identitetType', valueIndex: [2] },
-				validation: yup.array().required('Vennligst velg minst ett statsborgerskap'),
+				validation: yup.string().required('Vennligst velg minst ett statsborgerskap'),
 				attributtType: AttributtType.SelectAndEdit
 			}
 		]

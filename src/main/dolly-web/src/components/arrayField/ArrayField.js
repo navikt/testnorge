@@ -32,11 +32,6 @@ export default class ArrayField extends Component {
 		const { fieldListe, options } = this.state
 		const inputComponent = InputSelector(item.inputType)
 
-		// Oppdatere fieldListe ved bruk av mal.
-		// this.props.fieldListe har ikke fått innhold ved oppstart av komponent
-		// initiering og fjerneOptions gir feilmelding fordi de oppdaterer state under render. Burde skrives om
-		//Endring av optionsliste
-
 		return (
 			<div className="fieldOgVerdiliste">
 				{options.length < 1 ? (
@@ -68,7 +63,7 @@ export default class ArrayField extends Component {
 		const newFieldListe = [...this.state.fieldListe, inputValue]
 		this.setState({ fieldListe: newFieldListe, endretListe: true })
 
-		//Legger kun til value i formikprops
+		//Legger kun til value av inputValue i formikprops
 		let valueListe = []
 		newFieldListe.map(field => valueListe.push(field.value))
 
