@@ -25,5 +25,4 @@ public class Instdata {
     private String personident;
     private LocalDate startdato;
     private String tssEksternId;
-    private InstdataVarighet varighet;
 }

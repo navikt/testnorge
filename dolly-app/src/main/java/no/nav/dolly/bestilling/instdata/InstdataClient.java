@@ -61,7 +61,6 @@ public class InstdataClient implements ClientRegister {
                         List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
                         instdataListe.forEach(instdata -> {
                             instdata.setPersonident(norskIdent.getIdent());
-
                             instdata.setKategori(nullcheckSetDefaultValue(instdata.getKategori(), decideKategori(instdata.getInstitusjonstype())));
                             instdata.setKilde(nullcheckSetDefaultValue(instdata.getKilde(), decideKilde(instdata.getInstitusjonstype())));
                             instdata.setOverfoert(nullcheckSetDefaultValue(instdata.getOverfoert(), false));

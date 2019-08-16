@@ -16,9 +16,9 @@ import lombok.Setter;
 public class RsInstdata {
 
     private InstdataInstitusjonstype institusjonstype;
-    private InstdataVarighet varighet;
     private LocalDateTime startdato;
-    private LocalDateTime sluttdato;
+    private LocalDateTime forventetSluttdato;
+    private LocalDateTime faktiskSluttdato;
     private InstdataKategori kategori;
     private InstdataKilde kilde;
     private String tssEksternId;
