@@ -6,6 +6,7 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
+import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class TestIdentMappingStrategy implements MappingStrategy {
                             rsTestIdent.setArenaforvalterStatus(buildArenaStatusMap(bestillinger));
                             rsTestIdent.setAaregStatus(buildAaregStatusMap(bestillinger));
                             rsTestIdent.setPdlforvalterStatus(buildPdldataStatusMap(bestillinger));
+                            rsTestIdent.setInstdata(buildInstdataStatusMap(bestillinger));
                         }
                     }
                 })
