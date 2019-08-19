@@ -58,7 +58,6 @@ jobs:
             export RELEASE_VERSION=$CIRCLE_SHA1-$CIRCLE_BUILD_NUM
             echo "export RELEASE_VERSION=$RELEASE_VERSION" >> /tmp/workspace/properties.env
             echo "export DOCKER_TAG=\"docker.pkg.github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
-            # echo "export DOCKER_TAG=\"$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$RELEASE_VERSION\"" >> /tmp/workspace/properties.env
             cat /tmp/workspace/properties.env >> $BASH_ENV
       - run:
           name: Build docker image

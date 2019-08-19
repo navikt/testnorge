@@ -23,6 +23,7 @@ import org.springframework.web.util.UriTemplate;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class JenkinsConsumer {
 
     private static Resource getFileResource(String content) throws IOException {
         Path tempFile = Files.createTempFile("ereg", ".txt");
-        Files.write(tempFile, content.getBytes());
+        Files.write(tempFile, content.getBytes(StandardCharsets.ISO_8859_1));
         File file = tempFile.toFile();
         return new FileSystemResource(file);
     }
