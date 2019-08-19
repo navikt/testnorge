@@ -268,13 +268,16 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 					final_values.tpsf.relasjoner.partner.utvandret[0].utvandretTilLandFlyttedato
 				delete final_values.tpsf.relasjoner.partner.utvandret
 			}
-			//! barn[0] må mappes istedenfor
-			if (final_values.tpsf.relasjoner.barn && final_values.tpsf.relasjoner.barn[0].utvandret) {
-				final_values.tpsf.relasjoner.barn[0].utvandretTilLand =
-					final_values.tpsf.relasjoner.barn[0].utvandret[0].utvandretTilLand
-				final_values.tpsf.relasjoner.barn[0].utvandretTilLandFlyttedato =
-					final_values.tpsf.relasjoner.barn[0].utvandret[0].utvandretTilLandFlyttedato
-				delete final_values.tpsf.relasjoner.barn[0].utvandret
+			if (final_values.tpsf.relasjoner.barn) {
+				final_values.tpsf.relasjoner.barn.map((barnet, idx) => {
+					if (barnet.utvandret) {
+						final_values.tpsf.relasjoner.barn[idx].utvandretTilLand =
+							barnet.utvandret[0].utvandretTilLand
+						final_values.tpsf.relasjoner.barn[idx].utvandretTilLandFlyttedato =
+							barnet.utvandret[0].utvandretTilLandFlyttedato
+						delete final_values.tpsf.relasjoner.barn[idx].utvandret
+					}
+				})
 			}
 		}
 	}
@@ -331,10 +334,12 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { currentBestilling, oppslag } = getState()
+	console.log('currentBestilling :', currentBestilling)
+	console.log('oppslag :', oppslag)
 	const values = bestillingFormatter(currentBestilling, oppslag)
 	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))
 	} else {
-		// return dispatch(actions.postBestilling(gruppeId, values))
+		return dispatch(actions.postBestilling(gruppeId, values))
 	}
 }

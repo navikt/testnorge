@@ -18,13 +18,14 @@ const FormEditorFieldArray = (
 	shouldRenderSubItem
 ) => {
 	const parentId = subKategori.id
-
+	console.log('parentId :', parentId)
 	return (
 		<div className="subkategori" key={parentId}>
 			<FieldArray
 				name={parentId}
 				render={arrayHelpers => (
 					<FieldArrayComponent
+						// key={parentId}
 						item={subKategori}
 						formikProps={formikProps}
 						renderFieldComponent={renderFieldComponent}
@@ -68,7 +69,7 @@ export const FieldArrayComponent = ({
 		}
 	}, {})
 	const createDefaultObject = () => {
-		console.log('parentAttributes :', parentAttributes)
+		// console.log('parentAttributes :', parentAttributes)
 		//! gjøres i parentAttributes?
 		if ('barn_utvandret' in parentAttributes) {
 			// parentAttributes = {
@@ -78,7 +79,7 @@ export const FieldArrayComponent = ({
 			parentAttributes.barn_utvandret = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
 		}
 		arrayHelpers.push({ ...parentAttributes })
-		console.log('arrayHelpers :', arrayHelpers)
+		// console.log('arrayHelpers :', arrayHelpers)
 	}
 	// console.log('arrayHelpers :', arrayHelpers)
 	// console.log('parentAttributes :', parentAttributes)
@@ -216,8 +217,8 @@ export const FieldArrayComponent = ({
 											if (fakeItem.id === 'barn_utvandret[0]utvandretTilLandFlyttedato') {
 												fakeItem.id = `barn[${itemid}]barn_utvandret[0]utvandretTilLandFlyttedato`
 											}
-											console.log('itemid :', idx)
-											console.log('fakeItem :', fakeItem)
+											// console.log('itemid :', idx)
+											// console.log('fakeItem :', fakeItem)
 											// console.log('formikProps.values :', formikProps.values)
 											return (
 												<div key={kdx} className="flexbox">

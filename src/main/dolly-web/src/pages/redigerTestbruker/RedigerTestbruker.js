@@ -54,6 +54,9 @@ export default class RedigerTestbruker extends Component {
 	}
 
 	_getAttributtListeToEdit = (AttributtListe, AddedAttributes, bestillinger) => {
+		// console.log('AttributtListe :', AttributtListe)
+		// console.log('AddedAttributes :', AddedAttributes)
+		// console.log('bestillinger :', bestillinger)
 		let finalAttributtListe = []
 		let AttributtListeToEdit = []
 		if (bestillinger.data) {
@@ -150,6 +153,10 @@ export default class RedigerTestbruker extends Component {
 			addedAttributes,
 			bestillinger
 		)
+		console.log('attributtListe :', attributtListe)
+		// console.log('initialValues :', initialValues)
+		// console.log('attributtListeToAdd :', attributtListeToAdd)
+		// console.log('attributtListeToEdit :', attributtListeToEdit)
 
 		return (
 			<Formik
