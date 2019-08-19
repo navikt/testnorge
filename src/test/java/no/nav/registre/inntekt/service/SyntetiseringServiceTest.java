@@ -123,5 +123,4 @@ public class SyntetiseringServiceTest {
         Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request);
         assertNotNull(feil);
     }
-
 }

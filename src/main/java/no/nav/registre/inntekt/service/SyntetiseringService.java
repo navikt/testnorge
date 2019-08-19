@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
@@ -14,6 +15,7 @@ import no.nav.registre.inntekt.consumer.rs.InntektstubConsumer;
 import no.nav.registre.inntekt.domain.IdentMedData;
 import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
 import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.inntekt.domain.RsPerson;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
@@ -39,6 +41,7 @@ public class SyntetiseringService {
     public Map<String, List<RsInntekt>> startSyntetisering(SyntetiseringsRequest syntetiseringsRequest) {
 
         List<String> identer = hentLevendeIdenterOverAlder(syntetiseringsRequest.getAvspillergruppeId(), MINIMUM_ALDER);
+        List<String> identerIInntektstub = inntektstubConsumer.hentEksisterendeIdenter().stream().map(RsPerson::getFoedselsnummer).collect(Collectors.toList());
 
         if (!identer.isEmpty()) {
             // >> 1 er samme som å dele på 2 (Java liker ikke float division i int context
