@@ -53,7 +53,7 @@ public class Person {
             mappedBy = "person")
     @Fetch(FetchMode.SELECT)
     @JsonManagedReference
-    private List<PersonAvgjorelse> avgjoerelser;
+    private List<Avgjorelse> avgjoerelser;
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,

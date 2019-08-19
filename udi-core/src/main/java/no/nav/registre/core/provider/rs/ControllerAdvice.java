@@ -38,7 +38,7 @@ public class ControllerAdvice {
         var annotation = Optional.ofNullable(AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class));
         var status = annotation.map(ResponseStatus::code).orElse(HttpStatus.INTERNAL_SERVER_ERROR);
         if (annotation.isEmpty()) {
-            log.error(HttpStatus.INTERNAL_SERVER_ERROR.name(), ex);
+            log.error("Internal Server Error", ex);
             return ResponseEntity.status(status).body(getValues(ex, request, HttpStatus.INTERNAL_SERVER_ERROR.name(), status));
         } else {
             var message = annotation.map(ResponseStatus::reason).filter(StringUtils::hasText).orElse(ex.getMessage());

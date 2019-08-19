@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.core.database.model.Alias;
 import no.nav.registre.core.database.model.Arbeidsadgang;
-import no.nav.registre.core.database.model.PersonAvgjorelse;
+import no.nav.registre.core.database.model.Avgjorelse;
 import no.nav.registre.core.database.model.opphold.OppholdStatus;
 import no.nav.registre.core.database.model.Person;
 import no.nav.registre.core.database.model.PersonNavn;
 import no.nav.registre.core.database.repository.AliasRepository;
 import no.nav.registre.core.database.repository.ArbeidsAdgangRepository;
-import no.nav.registre.core.database.repository.AvgjoerelseRepository;
+import no.nav.registre.core.database.repository.AvgjorelseRepository;
 import no.nav.registre.core.database.repository.OppholdStatusRepository;
 import no.nav.registre.core.database.repository.PersonRepository;
 
@@ -28,7 +28,7 @@ public class PersonService {
 
     private final AliasRepository aliasRepository;
     private final ArbeidsAdgangRepository arbeidsAdgangRepository;
-    private final AvgjoerelseRepository avgjoerelseRepository;
+    private final AvgjorelseRepository avgjorelseRepository;
     private final OppholdStatusRepository oppholdStatusRepository;
     private final PersonRepository personRepository;
 
@@ -49,7 +49,7 @@ public class PersonService {
         return aliaser.parallelStream().map(a -> opprettAlias(fnr, a.getNavn())).collect(Collectors.toList());
     }
 
-    public List<PersonAvgjorelse> opprettAvgjoerelserPaaFnr(String fnr, List<PersonAvgjorelse> avgjoerelser) {
+    public List<Avgjorelse> opprettAvgjoerelserPaaFnr(String fnr, List<Avgjorelse> avgjoerelser) {
         return avgjoerelser.parallelStream().map(a -> opprettAvgjoerelse(fnr, a))
                 .collect(Collectors.toList());
     }
@@ -79,12 +79,12 @@ public class PersonService {
         ).orElse(null);
     }
 
-    private PersonAvgjorelse opprettAvgjoerelse(String fnr, PersonAvgjorelse personAvgjorelse) {
+    private Avgjorelse opprettAvgjoerelse(String fnr, Avgjorelse avgjorelse) {
         return personRepository.findByFnr(fnr).map(person -> {
-            personAvgjorelse.setPerson(person);
-            PersonAvgjorelse lagretPersonAvgjorelse = avgjoerelseRepository.save(personAvgjorelse);
-            lagretPersonAvgjorelse.setOmgjortAvgjoerelsesId(lagretPersonAvgjorelse.getId().toString());
-            return avgjoerelseRepository.save(lagretPersonAvgjorelse);
+            avgjorelse.setPerson(person);
+            Avgjorelse lagretAvgjorelse = avgjorelseRepository.save(avgjorelse);
+            lagretAvgjorelse.setOmgjortAvgjoerelsesId(lagretAvgjorelse.getId().toString());
+            return avgjorelseRepository.save(lagretAvgjorelse);
         }).orElse(null);
     }
 
@@ -95,7 +95,7 @@ public class PersonService {
         }).orElse(null);
     }
 
-    public List<PersonAvgjorelse> findAvgjoerelserByFnr(String fnr) {
+    public List<Avgjorelse> findAvgjoerelserByFnr(String fnr) {
         return personRepository.findByFnr(fnr).map(Person::getAvgjoerelser).orElse(null);
     }
 

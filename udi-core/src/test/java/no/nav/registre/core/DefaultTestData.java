@@ -5,7 +5,7 @@ import no.nav.registre.core.database.model.Arbeidsadgang;
 import no.nav.registre.core.database.model.MangelfullDato;
 import no.nav.registre.core.database.model.Periode;
 import no.nav.registre.core.database.model.Person;
-import no.nav.registre.core.database.model.PersonAvgjorelse;
+import no.nav.registre.core.database.model.Avgjorelse;
 import no.nav.registre.core.database.model.PersonNavn;
 import no.nav.registre.core.database.model.opphold.AvslagEllerBortFall;
 import no.nav.registre.core.database.model.opphold.IkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
@@ -91,8 +91,8 @@ public class DefaultTestData {
 		return person;
 	}
 
-	public static PersonAvgjorelse.PersonAvgjorelseBuilder createPersonAvgjorelseBuilder() {
-		return PersonAvgjorelse.builder()
+	public static Avgjorelse.AvgjorelseBuilder createPersonAvgjorelseBuilder() {
+		return Avgjorelse.builder()
 				.id(TEST_ID)
 				.avgjoerelsesDato(TEST_DATE)
 				.omgjortAvgjoerelsesId(TEST_OMGJORT_AVGJORELSE_ID)

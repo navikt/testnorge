@@ -30,7 +30,7 @@ import java.sql.Date;
 @Setter
 @Getter
 @Table(name = "avgjoerelse")
-public class PersonAvgjorelse {
+public class Avgjorelse {
 
     @GeneratedValue
     @Id

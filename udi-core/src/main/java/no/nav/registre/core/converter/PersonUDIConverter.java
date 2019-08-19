@@ -1,7 +1,7 @@
 package no.nav.registre.core.converter;
 
 import no.nav.registre.core.database.model.Person;
-import no.nav.registre.core.database.model.PersonAvgjorelse;
+import no.nav.registre.core.database.model.Avgjorelse;
 import no.udi.mt_1067_nav_data.v1.Arbeidsadgang;
 import no.udi.mt_1067_nav_data.v1.Avgjorelser;
 import no.udi.mt_1067_nav_data.v1.GjeldendePerson;
@@ -36,7 +36,7 @@ public class PersonUDIConverter implements Converter<Person, HentPersonstatusRes
 
 			hentPersonstatusResultat.setHistorikkHarFlyktningstatus(person.getAvgjoerelser()
 					.stream()
-					.anyMatch(PersonAvgjorelse::isFlyktningstatus));
+					.anyMatch(Avgjorelse::isFlyktningstatus));
 
 			hentPersonstatusResultat.setUavklartFlyktningstatus(person.isAvgjoerelseUavklart());
 			hentPersonstatusResultat.setSoknadOmBeskyttelseUnderBehandling(conversionService.convert(person, SoknadOmBeskyttelseUnderBehandling.class));

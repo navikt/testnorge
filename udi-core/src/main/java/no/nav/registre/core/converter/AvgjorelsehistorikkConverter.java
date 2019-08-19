@@ -1,8 +1,7 @@
 package no.nav.registre.core.converter;
 
 import no.nav.registre.core.database.model.Person;
-import no.nav.registre.core.database.model.PersonAvgjorelse;
-import no.udi.mt_1067_nav_data.v1.Avgjorelse;
+import no.nav.registre.core.database.model.Avgjorelse;
 import no.udi.mt_1067_nav_data.v1.AvgjorelseListe;
 import no.udi.mt_1067_nav_data.v1.Avgjorelser;
 import no.udi.mt_1067_nav_data.v1.Avgjorelsestype;
@@ -38,9 +37,9 @@ public class AvgjorelsehistorikkConverter implements Converter<Person, Avgjorels
 		return null;
 	}
 
-	private Avgjorelse converterPersonAvgjorelse(PersonAvgjorelse avgjorelse) {
+	private no.udi.mt_1067_nav_data.v1.Avgjorelse converterPersonAvgjorelse(Avgjorelse avgjorelse) {
 
-		Avgjorelse udiAvgjorelse = new Avgjorelse();
+		no.udi.mt_1067_nav_data.v1.Avgjorelse udiAvgjorelse = new no.udi.mt_1067_nav_data.v1.Avgjorelse();
 		udiAvgjorelse.setAvgjorelseDato(conversionService.convert(avgjorelse.getAvgjoerelsesDato(), XMLGregorianCalendar.class));
 
 		udiAvgjorelse.setAvgjorelseId(avgjorelse.getId().toString());

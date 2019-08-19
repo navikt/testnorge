@@ -13,7 +13,6 @@ import no.nav.registre.core.DefaultTestData;
 import no.nav.registre.core.config.AppConfig;
 import no.nav.registre.core.database.model.Person;
 import no.nav.registre.core.database.repository.PersonRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -53,11 +52,6 @@ public class UdiStubITest {
 
 	@Inject
 	protected TestRestTemplate restTemplate;
-
-	@BeforeEach
-	public void setupBefore() {
-
-	}
 
 	@Test
 	@Transactional

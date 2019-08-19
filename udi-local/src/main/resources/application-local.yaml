@@ -13,7 +13,7 @@ spring:
 
 
 application:
-  version: local
+  version: @application.version@
 
 spring.flyway.locations: classpath:db/migration/postgresql
 spring.jpa.hibernate.ddl-auto: update
