@@ -48,6 +48,8 @@ public class Person {
     @Embedded
     private MangelfullDato foedselsDato;
 
+    //  FetchType Eager and @Fetch annotation needed to
+    //  prevent hibernate from closing the connection prematurely
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             mappedBy = "person")
@@ -55,6 +57,8 @@ public class Person {
     @JsonManagedReference
     private List<Avgjorelse> avgjoerelser;
 
+    //  FetchType Eager and @Fetch annotation needed to
+    //  prevent hibernate from closing the connection prematurely
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             mappedBy = "person")
