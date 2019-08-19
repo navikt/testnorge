@@ -2,6 +2,9 @@ import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
 export function mapTpsfData(tpsfData, testIdent, pdlfData) {
+	console.log('tpsfData :', tpsfData)
+	console.log('testIdent :', testIdent)
+	console.log('pdlfData :', pdlfData)
 	if (!tpsfData) return null
 	let data
 	data = [
@@ -39,6 +42,11 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					value: Formatters.formatAlder(tpsfData.alder, tpsfData.doedsdato)
 				},
 				{
+					id: 'personStatus',
+					label: 'Personstatus',
+					value: tpsfData.personStatus
+				},
+				{
 					id: 'sivilstand',
 					label: 'Sivilstand',
 					value: tpsfData.sivilstand
@@ -56,7 +64,7 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 				{
 					id: 'utenFastBopel',
 					label: 'Uten fast bopel',
-					value: Formatters.oversettBoolean(tpsfData.utenFastBopel)
+					value: tpsfData.utenFastBopel && Formatters.oversettBoolean(tpsfData.utenFastBopel)
 				},
 				{
 					id: 'gtVerdi',
@@ -79,7 +87,7 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					id: 'utvandretTilLand',
 					label: 'Utvandret til land',
 					value: tpsfData.utvandretTilLand,
-					apiKodeverkId: 'StatsborgerskapFreg'
+					apiKodeverkId: tpsfData.utvandretTilLand && 'StatsborgerskapFreg'
 				},
 				{
 					id: 'utvandretTilLandFlyttedato',
@@ -217,7 +225,6 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 			header: 'Familierelasjoner',
 			multiple: true,
 			data: tpsfData.relasjoner.map(relasjon => {
-				console.log('relasjon :', relasjon)
 				return {
 					parent: 'relasjoner',
 					id: relasjon.id,

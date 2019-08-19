@@ -131,7 +131,30 @@ export default class AttributtManager {
 
 	//Edit attributes
 	listEditableFlat(values: object, ident: string, dataSources: string[]): Attributt[] {
+		// console.log('AttributtListe :', AttributtListe)
+
+		// AttributtListe.map(i => {
+		// 	if (i.id === 'utvandret') {
+		// 		AttributtListe.push(i.items[0])
+		// 		AttributtListe.push(i.items[1])
+		// 	}
+		// })
 		return AttributtListe.filter(attr => {
+			// if (attr.id === 'utvandret') {
+			// 	return attr.items.filter(i => {
+			// 		if (!isAttributtEditable(attr)) return false
+			// 		const { dataSource, path, id, editPath } = i
+			// 		if (!dataSources.includes(dataSource)) return false
+			// 		const dataSourceValues =
+			// 			values[DataSourceMapper(dataSource)][0] || values[DataSourceMapper(dataSource)][ident]
+			// 		if (!dataSourceValues) return false
+			// 		let dataPath = editPath || path || id
+			// 		if (_get(dataSourceValues, dataPath)) {
+			// 			return _get(dataSourceValues, dataPath)
+			// 		}
+			// 	})
+			// }
+			// console.log('attr :', attr)
 			// return early if attribute is not editable
 			if (!isAttributtEditable(attr)) return false
 
@@ -141,10 +164,15 @@ export default class AttributtManager {
 
 			const dataSourceValues =
 				values[DataSourceMapper(dataSource)][0] || values[DataSourceMapper(dataSource)][ident]
+			// console.log('dataSourceValues :', dataSourceValues)
 			// check for values
 			if (!dataSourceValues) return false
 
 			const dataPath = editPath || path || id
+			// if (dataPath === 'utvandret') {
+			// 	dataPath = 'utvandretTilLand'
+			// }
+			// console.log('dataPath :', dataPath)
 			// check if value exists (not NULL)
 			if (_get(dataSourceValues, dataPath)) {
 				return _get(dataSourceValues, dataPath)
@@ -153,6 +181,11 @@ export default class AttributtManager {
 	}
 
 	listEditable(values: object, ident: string, dataSources: string[]): AttributtGruppe[] {
+		// console.log('values :', values)
+		// console.log('ident :', ident)
+		// console.log('dataSources :', dataSources)
+		// const listEdit = this.listEditableFlat(values, ident, dataSources)
+		// console.log('listEdit :', listEdit)
 		return groupList(this.listEditableFlat(values, ident, dataSources))
 	}
 
@@ -208,6 +241,8 @@ export default class AttributtManager {
 					? values[dataSource][0]
 					: values[dataSource] && values[dataSource][ident]
 
+			// console.log('item :', item)
+			// console.log('sourceValues :', sourceValues)
 			if (item.items) {
 				return this._setInitialArrayValuesFromServer(prev, item, sourceValues)
 			}
@@ -307,8 +342,10 @@ export default class AttributtManager {
 		// kanskje alle skal kunne redigeres
 		const itemArray = item.items
 		// const itemArray = item.items || item.fields
+		// console.log('serverValues :', serverValues)
 		const editableAttributes = itemArray.filter(item => isAttributtEditable(item))
-		const arrayValues = serverValues.map(valueObj => {
+		// console.log('editableAttributes :', editableAttributes)
+		const arrayValues = Object.keys(serverValues).map(valueObj => {
 			return editableAttributes.reduce((prev, curr) => {
 				const currentPath = curr.editPath || curr.path
 				return _set(prev, curr.id, valueObj[currentPath])
