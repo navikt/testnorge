@@ -444,7 +444,9 @@ export default class FormEditor extends PureComponent {
 	extraComponentProps = (item, valgteVerdier, parentObject) => {
 		switch (item.inputType) {
 			case 'select': {
-				const placeholder = !item.validation ? 'Ikke spesifisert' : 'Velg..'
+				const props = {
+					placeholder: !item.validation ? 'Ikke spesifisert' : 'Velg..'
+				}
 
 				if (item.dependentOn) {
 					if (parentObject) {
@@ -460,19 +462,16 @@ export default class FormEditor extends PureComponent {
 				}
 				if (item.apiKodeverkId) {
 					const showValueInLabel = item.apiKodeverkShowValueInLabel ? true : false
-					return {
-						placeholder: placeholder,
-						loadOptions: async () => {
-							const res = await DollyApi.getKodeverkByNavn(item.apiKodeverkId)
-							return DollyApi.Utils.NormalizeKodeverkForDropdown(res, showValueInLabel)
-						}
+					props.loadOptions = async () => {
+						const res = await DollyApi.getKodeverkByNavn(item.apiKodeverkId)
+						return DollyApi.Utils.NormalizeKodeverkForDropdown(res, showValueInLabel)
 					}
 				} else {
-					return {
-						placeholder: placeholder,
-						options: item.options
-					}
+					props.options = item.options
 				}
+
+				item.hoydeOptions && (props.hoydeOptions = item.hoydeOptions)
+				return props
 			}
 			case 'number': {
 				return {

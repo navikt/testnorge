@@ -27,7 +27,8 @@ const AttributtListe: Attributt[] = [
 				apiKodeverkId: 'Yrker',
 				apiKodeverkShowValueInLabel: true,
 				validation: yup.string().required('Velg et yrke.'),
-				size: 'large',
+				size: 'xlarge',
+				hoydeOptions: 'medium',
 				attributtType: AttributtType.SelectAndRead
 			},
 			{

@@ -74,6 +74,7 @@ export interface Attributt {
 	transform?: (value: any, attributter: Attributt[]) => any
 	informasjonstekst?: String
 	subGruppe?: String
+	hoydeOptions?: String //Hvor mye plass trenger den lengste option i select. 'small', 'medium' eller 'large'.
 }
 
 // Attributt grupper
