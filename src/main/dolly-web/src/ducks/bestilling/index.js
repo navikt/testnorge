@@ -10,6 +10,7 @@ import { handleActions, createActions, createAction, combineActions } from 'redu
 import success from '~/utils/SuccessAction'
 import { AttributtManager } from '~/service/Kodeverk'
 import { getValues, _filterAttributes, _filterArrayAttributes } from './BestillingRequestUtils'
+import Formatters from '~/utils/DataFormatter'
 
 const AttributtManagerInstance = new AttributtManager()
 
@@ -239,6 +240,13 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 	if (_get(final_values, 'tpsf.boadresse.gateadresse')) {
 		final_values.tpsf.boadresse.adressetype = 'GATE'
 		final_values.tpsf.boadresse.gatekode = values.boadresse_gatekode
+	}
+	if (_get(final_values, 'tpsf.matrikkeladresse')) {
+		final_values = _set(final_values, 'tpsf.boadresse', final_values.tpsf.matrikkeladresse[0])
+		final_values.tpsf.boadresse.adressetype = 'MATR'
+		values.boadresse_flyttedato &&
+			(final_values.tpsf.boadresse.flyttedato = Formatters.parseDate(values.boadresse_flyttedato))
+		delete final_values.tpsf.matrikkeladresse
 	}
 	if (_get(final_values, 'tpsf.ufb_kommunenr')) {
 		final_values = _set(final_values, 'tpsf.boadresse.adressetype', 'GATE')

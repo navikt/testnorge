@@ -5,12 +5,13 @@ import DateValidation from '~/components/fields/Datepicker/DateValidation'
 import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
+	// Gateadresse
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Boadresse,
 		id: 'boadresse',
 		path: 'boadresse',
-		label: 'Har adresse',
+		label: 'Har gateadresse',
 		dataSource: DataSource.TPSF,
 		validation: yup.object(),
 		attributtType: AttributtType.SelectAndEdit,
@@ -48,7 +49,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Select,
 		apiKodeverkId: 'Postnummer',
-		// validation: yup.string().required('Vennligst fyll ut.'),
 		attributtType: AttributtType.SelectAndEdit
 	},
 	{
@@ -62,6 +62,99 @@ const AttributtListe: Attributt[] = [
 		inputType: InputType.Select,
 		attributtType: AttributtType.SelectAndEdit
 	},
+	// Matrikkeladresse
+	{
+		hovedKategori: Kategorier.Adresser,
+		subKategori: SubKategorier.Boadresse,
+		id: 'matrikkeladresse',
+		label: 'Har matrikkeladresse',
+		dataSource: DataSource.TPSF,
+		validation: yup.object(),
+		attributtType: AttributtType.SelectAndEdit,
+		dependentBy: 'boadresse_flyttedato',
+		items: [
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'mellomnavn',
+				label: 'Stedsnavn',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'gardsnr',
+				label: 'Gårdsnummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup
+					.string()
+					.max(4, 'For mange tegn')
+					.required('Vennligst fyll ut'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'bruksnr',
+				label: 'Bruksnummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup
+					.string()
+					.max(4, 'For mange tegn')
+					.required('Vennligst fyll ut'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'festenr',
+				label: 'Festenummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup.string().max(4, 'For mange tegn'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'undernr',
+				label: 'Undernummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Text,
+				validation: yup.string().max(3, 'For mange tegn'),
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'postnr',
+				label: 'Postnummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				validation: yup.string().required('Vennligst velg'),
+				apiKodeverkId: 'Postnummer',
+				apiKodeverkShowValueInLabel: true,
+				attributtType: AttributtType.SelectAndEdit
+			},
+			{
+				hovedKategori: Kategorier.Adresser,
+				subKategori: SubKategorier.Boadresse,
+				id: 'kommunenr',
+				label: 'Kommunenummer',
+				dataSource: DataSource.TPSF,
+				inputType: InputType.Select,
+				validation: yup.string().required('Vennligst velg'),
+				apiKodeverkId: 'Kommuner',
+				apiKodeverkShowValueInLabel: true,
+				attributtType: AttributtType.SelectAndEdit
+			}
+		]
+	},
+	// Flyttedato
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Boadresse,
@@ -75,6 +168,7 @@ const AttributtListe: Attributt[] = [
 		dependentOn: 'boadresse',
 		defaultValue: new Date()
 	},
+	// Postadresse
 	{
 		hovedKategori: Kategorier.Adresser,
 		subKategori: SubKategorier.Postadresse,

@@ -41,7 +41,8 @@ export default class AttributtManager {
 						attr.dataSource === 'ARENA' ||
 						(attr.dataSource === 'TPSF' && attr.id === 'utvandret') ||
 						(attr.dataSource === 'TPSF' && attr.id === 'partner_utvandret') ||
-						(attr.dataSource === 'TPSF' && attr.id === 'barn_utvandret')
+						(attr.dataSource === 'TPSF' && attr.id === 'barn_utvandret') ||
+						(attr.dataSource === 'TPSF' && attr.id === 'matrikkeladresse')
 					) {
 						return attr
 					} else {
@@ -98,7 +99,6 @@ export default class AttributtManager {
 	}
 
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
-		let listallselected = this.listAllSelected(selectedIds)
 		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
 	}
 
