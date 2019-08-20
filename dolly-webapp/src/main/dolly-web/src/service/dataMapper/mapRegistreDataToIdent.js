@@ -285,7 +285,7 @@ export function mapInstData(instData) {
 					},
 					{
 						id: 'faktiskSluttdato',
-						label: 'Faktisk sluttdato',
+						label: 'Sluttdato',
 						value: Formatters.formatDate(data.faktiskSluttdato)
 					}
 				]

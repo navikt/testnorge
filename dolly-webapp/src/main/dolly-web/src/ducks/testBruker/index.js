@@ -21,7 +21,7 @@ const initialState = {
 		arenaforvalteren: null,
 		aareg: null,
 		pdlforvalter: null,
-		inst: null
+		instdata: null
 	}
 }
 
@@ -255,7 +255,7 @@ export default function testbrukerReducer(state = initialState, action) {
 				...state,
 				items: {
 					...state.items,
-					inst: {
+					instdata: {
 						...state.items.inst,
 						[action.meta.ident]: action.payload && action.payload.data
 					}
