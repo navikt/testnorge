@@ -327,15 +327,13 @@ const bestillingFormatter = (bestillingState, oppslag) => {
 		})
 
 	// * Vurdere behovet for denne i U2/prod. Uglify?
-	console.info('POSTING BESTILLING', final_values)
+	// console.info('POSTING BESTILLING', final_values)
 
 	return final_values
 }
 
 export const sendBestilling = gruppeId => async (dispatch, getState) => {
 	const { currentBestilling, oppslag } = getState()
-	console.log('currentBestilling :', currentBestilling)
-	console.log('oppslag :', oppslag)
 	const values = bestillingFormatter(currentBestilling, oppslag)
 	if (currentBestilling.identOpprettesFra === BestillingMapper('EKSIDENT')) {
 		return dispatch(actions.postBestillingFraEksisterendeIdenter(gruppeId, values))

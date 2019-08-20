@@ -63,7 +63,6 @@ export interface Attributt {
 	validation?: yup.MixedSchema
 	parent?: string
 	items?: Attributt[]
-	// fields?: Attributt[]
 	isMultiple?: boolean
 	subItems?: Attributt[]
 	dependentOn?: string // Er avhengig av en annen attributt for å kunne settes verdi på
@@ -81,7 +80,6 @@ export interface Attributt {
 export interface AttributtGruppe {
 	hovedKategori: Kategori
 	items: SubAttributtGruppe[]
-	// fields: Attributt[]
 }
 
 export interface SubAttributtGruppe {

@@ -35,7 +35,6 @@ export const getAttributesFromMal = mal => {
 	Object.keys(bestKriterier).forEach(reg => {
 		attrArray.push(_mapRegistreKey(reg))
 	})
-
 	return attrArray
 }
 
@@ -67,6 +66,7 @@ export const getValuesFromMal = mal => {
 const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 	valueArray.forEach(v => {
 		let key = v[0]
+
 		if (key === 'regdato') return
 
 		let value = v[1]

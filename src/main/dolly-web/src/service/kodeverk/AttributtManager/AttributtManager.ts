@@ -20,30 +20,18 @@ import { isAttributtEditable, DependencyTree } from './AttributtHelpers'
 export default class AttributtManager {
 	// BASE FUNCTIONS
 	listAllSelected(selectedIds: string[]): Attributt[] {
-		console.log(
-			'this.listAllSelectFilterItems(selectedIds, AttributtListe) :',
-			this.listAllSelectFilterItems(selectedIds, AttributtListe)
-		)
 		return this.listAllSelectFilterItems(selectedIds, AttributtListe)
 	}
 
 	listAllSelectFilterItems(selectedIds: string[], attributter: Attributt[]): Attributt[] {
-		// console.log('attributter :', attributter)
-		// console.log('selectedIds :', selectedIds)
-		// attributter.map(attr => {
-		// 	console.log('attr :', attr)
-		// })
-
 		return attributter
 			.filter(
 				attr =>
 					selectedIds.includes(attr.parent || attr.id) &&
 					(!attr.includeIf || attr.includeIf.every(e => selectedIds.includes(e.id)))
-				//  || attr.includeIf[0].id === 'utvandret'
 			)
 			.map(attr => {
 				// TODO: Ikke bærekraftig løsning. Refactor
-				// console.log('attr :', attr)
 				if (attr.items) {
 					if (
 						attr.dataSource === 'SIGRUN' ||
@@ -55,28 +43,14 @@ export default class AttributtManager {
 						(attr.dataSource === 'TPSF' && attr.id === 'partner_utvandret') ||
 						(attr.dataSource === 'TPSF' && attr.id === 'barn_utvandret')
 					) {
-						// console.log('attr items 1:', attr)
 						return attr
-					}
-					// else if (attr.id === 'barn_utvandret' && attr.items[7].items){
-					// 	// console.log('attr :', attr)
-					// 	return Object.assign(Object.assign({}, attr), {
-					// 		items: this.listAllSelectFilterItems(selectedIds, attr.items[7].items)
-					// 	})
-					// }
-					// else if (attr.id === 'barn_utvandret') {
-					// }
-					else {
-						// console.log('attr items 2:', attr)
-						// console.log('Object.assign({}, attr) :', Object.assign({}, attr))
-						// console.log('selectedIds :', selectedIds)
+					} else {
 						// Eks: Barn som attributt må bli behandlet annerledes
 						return Object.assign(Object.assign({}, attr), {
 							items: this.listAllSelectFilterItems(selectedIds, attr.items)
 						})
 					}
 				} else {
-					// console.log('attr siste:', attr)
 					return attr
 				}
 			})
@@ -125,36 +99,12 @@ export default class AttributtManager {
 
 	getInitialValues(selectedIds: string[], values: object): FormikValues {
 		let listallselected = this.listAllSelected(selectedIds)
-		// console.log('listallselected :', listallselected)
 		return this._getListOfInitialValues(this.listAllSelected(selectedIds), values)
 	}
 
 	//Edit attributes
 	listEditableFlat(values: object, ident: string, dataSources: string[]): Attributt[] {
-		// console.log('AttributtListe :', AttributtListe)
-
-		// AttributtListe.map(i => {
-		// 	if (i.id === 'utvandret') {
-		// 		AttributtListe.push(i.items[0])
-		// 		AttributtListe.push(i.items[1])
-		// 	}
-		// })
 		return AttributtListe.filter(attr => {
-			// if (attr.id === 'utvandret') {
-			// 	return attr.items.filter(i => {
-			// 		if (!isAttributtEditable(attr)) return false
-			// 		const { dataSource, path, id, editPath } = i
-			// 		if (!dataSources.includes(dataSource)) return false
-			// 		const dataSourceValues =
-			// 			values[DataSourceMapper(dataSource)][0] || values[DataSourceMapper(dataSource)][ident]
-			// 		if (!dataSourceValues) return false
-			// 		let dataPath = editPath || path || id
-			// 		if (_get(dataSourceValues, dataPath)) {
-			// 			return _get(dataSourceValues, dataPath)
-			// 		}
-			// 	})
-			// }
-			// console.log('attr :', attr)
 			// return early if attribute is not editable
 			if (!isAttributtEditable(attr)) return false
 
@@ -164,15 +114,10 @@ export default class AttributtManager {
 
 			const dataSourceValues =
 				values[DataSourceMapper(dataSource)][0] || values[DataSourceMapper(dataSource)][ident]
-			// console.log('dataSourceValues :', dataSourceValues)
 			// check for values
 			if (!dataSourceValues) return false
 
 			const dataPath = editPath || path || id
-			// if (dataPath === 'utvandret') {
-			// 	dataPath = 'utvandretTilLand'
-			// }
-			// console.log('dataPath :', dataPath)
 			// check if value exists (not NULL)
 			if (_get(dataSourceValues, dataPath)) {
 				return _get(dataSourceValues, dataPath)
@@ -181,11 +126,6 @@ export default class AttributtManager {
 	}
 
 	listEditable(values: object, ident: string, dataSources: string[]): AttributtGruppe[] {
-		// console.log('values :', values)
-		// console.log('ident :', ident)
-		// console.log('dataSources :', dataSources)
-		// const listEdit = this.listEditableFlat(values, ident, dataSources)
-		// console.log('listEdit :', listEdit)
 		return groupList(this.listEditableFlat(values, ident, dataSources))
 	}
 
@@ -211,6 +151,12 @@ export default class AttributtManager {
 			if (!dataSourceValues) return false
 
 			const dataPath = editPath || path || id
+
+			// Quick fix for å ikke vise utvandret som editable, fordi jeg ikke får til å redigere den
+			if (dataPath === 'utvandret') {
+				return false
+			}
+
 			// fjern attributt som allerede har en verdi
 			if (_get(dataSourceValues, dataPath)) {
 				return !_get(dataSourceValues, dataPath)
@@ -241,14 +187,9 @@ export default class AttributtManager {
 					? values[dataSource][0]
 					: values[dataSource] && values[dataSource][ident]
 
-			// console.log('item :', item)
-			// console.log('sourceValues :', sourceValues)
 			if (item.items) {
 				return this._setInitialArrayValuesFromServer(prev, item, sourceValues)
 			}
-			// if (item.fields) {
-			// 	return this._setInitialArrayValuesFromServer(prev, item, sourceValues)
-			// }
 
 			return this._setInitialValueFromServer(prev, item, sourceValues)
 		}, {})
@@ -292,22 +233,12 @@ export default class AttributtManager {
 	}
 
 	_getListOfInitialValues(list, values) {
-		// console.log('list :', list)
-		// console.log('values :', values)
 		return list.reduce((prev, item) => {
-			// console.log('prev :', prev)
-			// console.log('____item :', item)
 			// Array
 			if (item.items) {
 				const mapItemsToObject = this._mapArrayToObjectWithEmptyValues(item.items)
-				// console.log('________mapItemsToObject :', mapItemsToObject)
-				// if (item.id =)
 				return this._setInitialArrayValue(prev, item.id, values, [mapItemsToObject])
 			}
-			// if (item.fields) {
-			// 	const mapItemsToObject = this._mapArrayToObjectWithEmptyValues(item.fields)
-			// 	return this._setInitialArrayValue(prev, item.id, values, [mapItemsToObject])
-			// }
 			// Flattened object -> Ignore parent that has no inputType
 			if (!item.inputType) return prev
 
@@ -341,10 +272,7 @@ export default class AttributtManager {
 	_setInitialArrayValuesFromServer(currentObject, item, serverValues) {
 		// kanskje alle skal kunne redigeres
 		const itemArray = item.items
-		// const itemArray = item.items || item.fields
-		// console.log('serverValues :', serverValues)
 		const editableAttributes = itemArray.filter(item => isAttributtEditable(item))
-		// console.log('editableAttributes :', editableAttributes)
 		const arrayValues = Object.keys(serverValues).map(valueObj => {
 			return editableAttributes.reduce((prev, curr) => {
 				const currentPath = curr.editPath || curr.path
@@ -356,26 +284,15 @@ export default class AttributtManager {
 
 	_setInitialArrayValue(currentObject, itemId, stateValues, array) {
 		let initialValue = array
-		// console.log('initialValue :', initialValue)
-		// console.log('stateValues :', stateValues)
-		// console.log('itemId :', itemId)
 		const fromState = _get(stateValues, itemId)
-		// console.log('fromState :', fromState)
 		if (fromState || fromState === false) initialValue = fromState
 
 		return _set(currentObject, itemId, initialValue)
 	}
 
 	_mapArrayToObjectWithEmptyValues = list => {
-		// console.log('xxx list :', list)
 		return list.reduce((accumulator, item) => {
-			// console.log('xxx accumulator :', accumulator)
-			// console.log('xxx item :', item)
 			if (item.items) {
-				// let test = { barn_utvandret: [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }] }
-				// return test
-				// console.log('item.items item :', item)
-				// return this._mapArrayToObjectWithEmptyValues(item.items)
 				return _set(accumulator, item.id, [this._mapArrayToObjectWithEmptyValues(item.items)])
 			}
 			return _set(accumulator, item.id, this.initValueSelector(item))

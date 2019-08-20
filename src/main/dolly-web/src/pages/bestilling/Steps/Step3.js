@@ -209,9 +209,6 @@ export default class Step3 extends PureComponent {
 
 	renderSubKategoriBlokk = (header, items, values) => {
 		if (!items.every(nested => nested.items)) {
-			// console.log('header :', header)
-			// console.log('items :', items)
-			// console.log('values :', values)
 			let removable = !items.every(item => this.props.selectedAttributeIds.includes(item.id))
 			return (
 				<div className="oppsummering-multifield" key={header}>
@@ -251,20 +248,13 @@ export default class Step3 extends PureComponent {
 	}
 
 	renderItem = (item, stateValues, header) => {
-		// console.log('item :', item)
-		// console.log('this.props.values :', this.props.values)
-		// console.log('stateValues :', stateValues)
 		if (item.items) {
 			let valueArray = _get(this.props.values, item.id)
-			// console.log('valueArray 1:', valueArray)
 			if (item.id === 'barn_utvandret') {
-				//! må mappes riktig!
 				let barnIndex = 0
 				if (header) barnIndex = header - 1
 				valueArray = _get(this.props.values.barn[barnIndex], item.id)
 			}
-			// console.log('valueArray 2:', valueArray)
-			// const numberOfValues = valueArray.length
 			return valueArray.map((values, idx) => {
 				Object.keys(values).map(attr => !values[attr] && delete values[attr])
 				return valueArray.length > 1

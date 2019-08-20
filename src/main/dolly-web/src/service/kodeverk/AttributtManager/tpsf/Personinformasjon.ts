@@ -90,7 +90,6 @@ const AttributtListe: Attributt[] = [
 		dataSource: DataSource.TPSF,
 		attributtType: AttributtType.SelectAndEdit,
 		validation: yup.object(),
-		// fields: [
 		items: [
 			{
 				hovedKategori: Kategorier.PersInfo,
@@ -99,6 +98,7 @@ const AttributtListe: Attributt[] = [
 				label: 'Utvandret til land',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Select,
+				editPath: 'utvandretTilLand',
 				validation: yup.string().required('Vennligst velg'),
 				apiKodeverkId: 'StatsborgerskapFreg',
 				attributtType: AttributtType.SelectAndEdit
@@ -110,8 +110,8 @@ const AttributtListe: Attributt[] = [
 				label: 'Utvandret dato',
 				dataSource: DataSource.TPSF,
 				inputType: InputType.Date,
+				editPath: 'utvandretTilLandFlyttedato',
 				attributtType: AttributtType.SelectAndEdit
-				// defaultValue: new Date()
 			}
 		]
 	},
