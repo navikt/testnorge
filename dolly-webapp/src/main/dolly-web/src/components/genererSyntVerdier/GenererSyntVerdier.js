@@ -4,10 +4,17 @@ import PropTypes from 'prop-types'
 import Loading from '~/components/loading/Loading'
 import Icon from '~/components/icon/Icon'
 import { DollyApi } from '~/service/Api'
+import Formatters from '~/utils/DataFormatter'
 
 export default class GenererSyntVerdier extends Component {
-	// Ikke i bruk. Mangler å få fields til å rerendere når de har fått nye verdier i formikProps.
-	// Framprovoserer oppdatering for å se at verdier blir lagt inn ved å f.eks. legge til et institusjonsopphold til.
+	//FØR DENNE TAS I BRUK:
+
+	// 1. 	Mangler å få fields til å rerendere når de har fått nye verdier i formikProps.
+	// 		Framprovoserer oppdatering for å se at verdier blir lagt inn ved å f.eks. legge til et institusjonsopphold til.
+	// 2. 	De verdiene som ikke finnes i GUI blir ikke med videre i bestillingen. Dette må fikses i BestillingRequestUtils.
+	// 3. 	Burde vise en melding dersom henting av data feilet og ikke bare console.error.
+	// 4. 	Gjøre GenererSyntVerdierConnector generisk
+
 	constructor(props) {
 		super(props)
 
@@ -63,9 +70,9 @@ export default class GenererSyntVerdier extends Component {
 					Object.assign(this.props.formikValues[idx], {
 						institusjonstype: values.k_opphold_inst_t,
 						// varighet: values.k_varig_inst_t,
-						startdato: values.dato_fom,
-						faktiskSluttdato: values.dato_tom,
-						forventetSluttdato: values.dato_tom_forventet,
+						startdato: Formatters.formateStringDates(values.dato_fom),
+						faktiskSluttdato: Formatters.formateStringDates(values.dato_tom),
+						forventetSluttdato: Formatters.formateStringDates(values.dato_tom_forventet),
 						tssEksternId: values.tss_ekstern_id_fk,
 						overfoert: values.overfort,
 						kilde: values.k_kilde_inst_t,
