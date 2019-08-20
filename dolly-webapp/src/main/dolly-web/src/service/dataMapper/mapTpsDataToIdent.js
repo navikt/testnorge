@@ -157,6 +157,12 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 			data: [
 				{
 					parent: 'boadresse',
+					id: 'adressetype',
+					label: 'Adressetype',
+					value: Formatters.adressetypeToString(tpsfData.boadresse.adressetype)
+				},
+				{
+					parent: 'boadresse',
 					id: 'gateadresse',
 					label: 'Gatenavn',
 					value: tpsfData.boadresse.gateadresse
@@ -166,6 +172,36 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 					id: 'husnummer',
 					label: 'Husnummer',
 					value: tpsfData.boadresse.husnummer
+				},
+				{
+					parent: 'boadresse',
+					id: 'mellomnavn',
+					label: 'Stedsnavn',
+					value: tpsfData.boadresse.mellomnavn
+				},
+				{
+					parent: 'boadresse',
+					id: 'gardsnr',
+					label: 'Gårdsnummer',
+					value: tpsfData.boadresse.gardsnr
+				},
+				{
+					parent: 'boadresse',
+					id: 'bruksnr',
+					label: 'Bruksnummer',
+					value: tpsfData.boadresse.bruksnr
+				},
+				{
+					parent: 'boadresse',
+					id: 'festenr',
+					label: 'Festenummer',
+					value: tpsfData.boadresse.festenr
+				},
+				{
+					parent: 'boadresse',
+					id: 'undernr',
+					label: 'Undernummer',
+					value: tpsfData.boadresse.undernr
 				},
 				{
 					parent: 'boadresse',

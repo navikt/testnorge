@@ -96,7 +96,7 @@ export function mapBestillingData(bestillingData) {
 		if (bestillingData.bestKriterier) {
 			const registreKriterier = JSON.parse(bestillingData.bestKriterier)
 			const pdlforvalter = registreKriterier.pdlforvalter && registreKriterier.pdlforvalter
-			if (pdlforvalter) {
+			if (pdlforvalter && pdlforvalter.utenlandskIdentifikasjonsnummer) {
 				const pdlf = {
 					items: [
 						{
@@ -126,7 +126,6 @@ export function mapBestillingData(bestillingData) {
 			}
 		}
 		data.push(personinfo)
-
 		if (tpsfKriterier.boadresse) {
 			const adresse = {
 				header: 'Bostedadresse',
@@ -135,12 +134,36 @@ export function mapBestillingData(bestillingData) {
 						header: 'Bosted'
 					},
 					{
+						label: 'Adressetype',
+						value: Formatters.adressetypeToString(tpsfKriterier.boadresse.adressetype)
+					},
+					{
 						label: 'Gatenavn',
 						value: tpsfKriterier.boadresse.gateadresse
 					},
 					{
 						label: 'Husnummer',
 						value: tpsfKriterier.boadresse.husnummer
+					},
+					{
+						label: 'Stedsnavn',
+						value: tpsfKriterier.boadresse.mellomnavn
+					},
+					{
+						label: 'Gårdsnummer',
+						value: tpsfKriterier.boadresse.gardsnr
+					},
+					{
+						label: 'Bruksnummer',
+						value: tpsfKriterier.boadresse.bruksnr
+					},
+					{
+						label: 'Festenummer',
+						value: tpsfKriterier.boadresse.festenr
+					},
+					{
+						label: 'Undernummer',
+						value: tpsfKriterier.boadresse.undernr
 					},
 					{
 						label: 'Postnummer',
