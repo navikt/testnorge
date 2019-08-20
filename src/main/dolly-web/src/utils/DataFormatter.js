@@ -39,6 +39,13 @@ Formatters.parseDate = date => {
 	return new Date(Date.UTC(parts[2], parts[1] - 1, parts[0]))
 }
 
+// Format date AAAA-MM-DD to DD.MM.AAAA
+Formatters.formateStringDates = date => {
+	if (!date) return date
+	const dateArray = date.split('-')
+	return `${dateArray[2]}.${dateArray[1]}.${dateArray[0]}`
+}
+
 Formatters.decamelize = (str, separator) => {
 	separator = typeof separator === 'undefined' ? '_' : separator
 

@@ -188,6 +188,7 @@ describe('mapDetailedData.js', () => {
 		it('should return arena-data without servicebehov', () => {
 			const testArenaData2 = { data: { arbeidsokerList: { 0: { servicebehov: false } } } }
 			const testDato2 = '2019-06-04T00:00:00'
+			const testKvalifiseringsgruppe2 = undefined
 			const testRes2 = {
 				header: 'Arena',
 				data: [
@@ -535,9 +536,15 @@ describe('mapDetailedData.js', () => {
 						id: data.personidentifikator,
 						value: [
 							{
+								id: 'id',
+								label: '',
+								value: `#1`,
+								width: 'x-small'
+							},
+							{
 								id: 'institusjonstype',
 								label: 'Institusjonstype',
-								value: 'AS'
+								value: 'Alders- og sykehjem'
 							},
 							{
 								id: 'varighet',
