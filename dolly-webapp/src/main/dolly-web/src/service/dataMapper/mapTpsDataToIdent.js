@@ -2,9 +2,6 @@ import { relasjonTranslator } from './Utils'
 import Formatters from '~/utils/DataFormatter'
 
 export function mapTpsfData(tpsfData, testIdent, pdlfData) {
-	console.log('tpsfData :', tpsfData)
-	console.log('testIdent :', testIdent)
-	console.log('pdlfData :', pdlfData)
 	if (!tpsfData) return null
 	let data
 	data = [
@@ -221,6 +218,7 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 	}
 
 	if (tpsfData.relasjoner && tpsfData.relasjoner.length) {
+		console.log('tpsfData.relasjoner :', tpsfData.relasjoner)
 		data.push({
 			header: 'Familierelasjoner',
 			multiple: true,
@@ -262,6 +260,11 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 								relasjon.personRelasjonMed.alder,
 								relasjon.personRelasjonMed.doedsdato
 							)
+						},
+						{
+							id: 'personStatus',
+							label: 'Personstatus',
+							value: relasjon.personRelasjonMed.personStatus
 						},
 						{
 							id: 'statsborgerskap',

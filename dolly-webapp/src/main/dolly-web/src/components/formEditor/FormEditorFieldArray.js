@@ -18,14 +18,12 @@ const FormEditorFieldArray = (
 	shouldRenderSubItem
 ) => {
 	const parentId = subKategori.id
-	console.log('parentId :', parentId)
 	return (
 		<div className="subkategori" key={parentId}>
 			<FieldArray
 				name={parentId}
 				render={arrayHelpers => (
 					<FieldArrayComponent
-						// key={parentId}
 						item={subKategori}
 						formikProps={formikProps}
 						renderFieldComponent={renderFieldComponent}
@@ -52,12 +50,7 @@ export const FieldArrayComponent = ({
 	arrayHelpers,
 	idx
 }) => {
-	// console.log('FieldArrayComponent item :', item)
-	// console.log('formikProps :', formikProps)
 	const { subKategori, items, subItems, id } = item
-	// console.log('subKategori :', subKategori)
-	// console.log('items :', items)
-	// console.log('id :', id)
 	const parentId = id
 	const itemid = idx
 	let parentAttributes = items.reduce((prev, curr) => {
@@ -69,31 +62,18 @@ export const FieldArrayComponent = ({
 		}
 	}, {})
 	const createDefaultObject = () => {
-		// console.log('parentAttributes :', parentAttributes)
-		//! gjøres i parentAttributes?
 		if ('barn_utvandret' in parentAttributes) {
-			// parentAttributes = {
-			// 	identtype: 'FNR',
-			// 	barn_utvandret: [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
-			// }
 			parentAttributes.barn_utvandret = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
 		}
 		arrayHelpers.push({ ...parentAttributes })
-		// console.log('arrayHelpers :', arrayHelpers)
 	}
-	// console.log('arrayHelpers :', arrayHelpers)
-	// console.log('parentAttributes :', parentAttributes)
 	const createSubItem = (subitem, itemIndex) => {
-		// console.log('subitem :', subitem)
-		// console.log('itemIndex :', itemIndex)
 		let subItemArray = subitem.subItems
-		// console.log('subItemArray :', subItemArray)
 		const subItemId = subitem.id
 
 		const subItemAttributes = subItemArray.reduce((prev, curr) => {
 			return { ...prev, [curr.id]: Attributt.initValueSelector(curr) }
 		}, {})
-		// console.log('subItemAttributes :', subItemAttributes)
 		let valueCopy = JSON.parse(JSON.stringify(formikProps.values[parentId][itemIndex]))
 		let subArray = valueCopy[subItemId]
 
@@ -113,17 +93,12 @@ export const FieldArrayComponent = ({
 		arrayHelpers.replace(itemIndex, { ...valueCopy, [subItem]: subItemArr })
 	}
 	let formikValues = formikProps.values[parentId]
-	// console.log('idx :', idx)
 	if (item.id === 'barn_utvandret') {
-		// console.log('parentId :', parentId)
-		// console.log('formikProps :', formikProps)
-
 		formikValues = formikProps.values.barn[idx][parentId]
 	}
-	// console.log('formikValues :', formikValues)
 	let subLabelArray = []
 	return (
-		<Fragment>
+		<Fragment key={item.id}>
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
 					return (
@@ -132,23 +107,7 @@ export const FieldArrayComponent = ({
 							<div className="flexbox">
 								<div className="subkategori-field-group multi">
 									{items.map((item, kdx) => {
-										// console.log('_____item :', item)
-
-										// if (item.id === 'barn_utvandret') {
-										// 	//item.items?
-										// 	item = item.items[0]
-										// }
 										if (item.items) {
-											// console.log('idx :', idx)
-											// let test = [item.items]
-											// console.log('item :', item)
-											// console.log('_______formikProps :', formikProps)
-											// console.log('renderFieldComponent :', renderFieldComponent)
-											// console.log('renderFieldSubItem :', renderFieldSubItem)
-											// console.log('shouldRenderFieldComponent :', shouldRenderFieldComponent)
-											// console.log('shouldRenderSubItem :', shouldRenderSubItem)
-											// console.log('editMode :', editMode)
-											// console.log('arrayHelpers :', arrayHelpers)
 											return FieldArrayComponent({
 												item,
 												formikProps,
@@ -160,15 +119,6 @@ export const FieldArrayComponent = ({
 												arrayHelpers,
 												idx
 											})
-											// return FormEditorFieldArray(
-											// 	item.items,
-											// 	formikProps,
-											// 	renderFieldComponent,
-											// 	renderFieldSubItem,
-											// 	shouldRenderFieldComponent,
-											// 	editMode,
-											// 	shouldRenderSubItem
-											// )
 										}
 										if (
 											item.subKategori.id !== subKategori.navn &&
@@ -209,17 +159,12 @@ export const FieldArrayComponent = ({
 												...item,
 												id: `${parentId}[${idx}]${item.id}`
 											}
-											//! gjør litt mer general
 											if (fakeItem.id === 'barn_utvandret[0]utvandretTilLand') {
-												// fakeItem.id = 'barn[0]barn_utvandret[0]utvandretTilLand'
 												fakeItem.id = `barn[${itemid}]barn_utvandret[0]utvandretTilLand`
 											}
 											if (fakeItem.id === 'barn_utvandret[0]utvandretTilLandFlyttedato') {
 												fakeItem.id = `barn[${itemid}]barn_utvandret[0]utvandretTilLandFlyttedato`
 											}
-											// console.log('itemid :', idx)
-											// console.log('fakeItem :', fakeItem)
-											// console.log('formikProps.values :', formikProps.values)
 											return (
 												<div key={kdx} className="flexbox">
 													{renderFieldComponent(
@@ -250,8 +195,6 @@ export const FieldArrayComponent = ({
 								</div>
 							</div>
 							{items.map((item, ndx) => {
-								// console.log('item :', item)
-								// item.subItems && createSubItem(item, idx)
 								return (
 									item.subItems &&
 									addButton(() => createSubItem(item, idx), item.label.toUpperCase(), ndx)
@@ -272,10 +215,6 @@ export const FieldArrayComponent = ({
 }
 
 export const addButton = (onClick, header, key) => {
-	// console.log('ADDBUTTON!!!!')
-	// console.log('onClick :', onClick)
-	// console.log('header :', header)
-	// console.log('key :', key)
 	return (
 		<Button
 			className="flexbox--align-center field-group-add"
