@@ -273,7 +273,7 @@ export default class AttributtManager {
 		// kanskje alle skal kunne redigeres
 		const itemArray = item.items
 		const editableAttributes = itemArray.filter(item => isAttributtEditable(item))
-		const arrayValues = Object.keys(serverValues).map(valueObj => {
+		const arrayValues = serverValues.map(valueObj => {
 			return editableAttributes.reduce((prev, curr) => {
 				const currentPath = curr.editPath || curr.path
 				return _set(prev, curr.id, valueObj[currentPath])
@@ -292,9 +292,6 @@ export default class AttributtManager {
 
 	_mapArrayToObjectWithEmptyValues = list => {
 		return list.reduce((accumulator, item) => {
-			if (item.items) {
-				return _set(accumulator, item.id, [this._mapArrayToObjectWithEmptyValues(item.items)])
-			}
 			return _set(accumulator, item.id, this.initValueSelector(item))
 		}, {})
 	}

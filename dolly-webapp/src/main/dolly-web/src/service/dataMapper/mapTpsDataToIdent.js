@@ -218,7 +218,6 @@ export function mapTpsfData(tpsfData, testIdent, pdlfData) {
 	}
 
 	if (tpsfData.relasjoner && tpsfData.relasjoner.length) {
-		console.log('tpsfData.relasjoner :', tpsfData.relasjoner)
 		data.push({
 			header: 'Familierelasjoner',
 			multiple: true,
