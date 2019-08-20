@@ -45,7 +45,7 @@ const AttributtListe: Attributt[] = [
 				hovedKategori: Kategorier.PersInfo,
 				subKategori: SubKategorier.Institusjonsopphold,
 				id: 'faktiskSluttdato',
-				label: 'Faktisk sluttdato',
+				label: 'Sluttdato',
 				path: 'faktiskSluttdato',
 				dataSource: DataSource.INST,
 				inputType: InputType.Date,

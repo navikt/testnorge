@@ -530,7 +530,7 @@ export function mapBestillingData(bestillingData) {
 						value: Formatters.formatDate(inst.startdato)
 					},
 					{
-						label: 'Faktisk sluttdato',
+						label: 'Sluttdato',
 						value: Formatters.formatDate(inst.faktiskSluttdato)
 					}
 				])
