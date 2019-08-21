@@ -104,7 +104,7 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterHentBrukereFirstPage();
         stubArenaForvalterHentBrukereSecondPage();
 
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere(null, null, null);
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("", "", "");
 
         assertThat(response.get(2).getPersonident(), is("09038817873"));
         assertThat(response.size(), is(3));
@@ -147,8 +147,8 @@ public class ArenaForvalterConsumerTest {
         stubArenaForvalterFilterPersonidentGuyTo();
         stubArenaForvalterFilterPersonidentGuyToPageEn();
 
-        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", null, null);
-        response.addAll(arenaForvalterConsumer.hentArbeidsoekere("20202020202", null, null));
+        List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "", "");
+        response.addAll(arenaForvalterConsumer.hentArbeidsoekere("20202020202", "", ""));
 
         assertThat(response.size(), is(4));
         assertThat(response.get(2).getPersonident(), is("10101010101"));
