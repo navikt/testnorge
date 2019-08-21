@@ -7,17 +7,18 @@ import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import no.nav.registre.core.database.model.Alias;
 import no.nav.registre.core.database.model.Arbeidsadgang;
-import no.nav.registre.core.database.model.Avgjoerelse;
+import no.nav.registre.core.database.model.Avgjorelse;
 import no.nav.registre.core.database.model.opphold.OppholdStatus;
 import no.nav.registre.core.database.model.Person;
 import no.nav.registre.core.database.model.PersonNavn;
 import no.nav.registre.core.database.repository.AliasRepository;
 import no.nav.registre.core.database.repository.ArbeidsAdgangRepository;
-import no.nav.registre.core.database.repository.AvgjoerelseRepository;
+import no.nav.registre.core.database.repository.AvgjorelseRepository;
 import no.nav.registre.core.database.repository.OppholdStatusRepository;
 import no.nav.registre.core.database.repository.PersonRepository;
 
@@ -28,7 +29,7 @@ public class PersonService {
 
     private final AliasRepository aliasRepository;
     private final ArbeidsAdgangRepository arbeidsAdgangRepository;
-    private final AvgjoerelseRepository avgjoerelseRepository;
+    private final AvgjorelseRepository avgjorelseRepository;
     private final OppholdStatusRepository oppholdStatusRepository;
     private final PersonRepository personRepository;
 
@@ -41,7 +42,7 @@ public class PersonService {
         personRepository.deleteById(finnPerson(fnr).getId());
     }
 
-    public List<Person> opprettPersoner(List<Person> personer) {
+    public List<Optional<Person>> opprettPersoner(List<Person> personer) {
         return personer.parallelStream().map(this::opprettPerson).collect(Collectors.toList());
     }
 
@@ -49,18 +50,18 @@ public class PersonService {
         return aliaser.parallelStream().map(a -> opprettAlias(fnr, a.getNavn())).collect(Collectors.toList());
     }
 
-    public List<Avgjoerelse> opprettAvgjoerelserPaaFnr(String fnr, List<Avgjoerelse> avgjoerelser) {
+    public List<Avgjorelse> opprettAvgjoerelserPaaFnr(String fnr, List<Avgjorelse> avgjoerelser) {
         return avgjoerelser.parallelStream().map(a -> opprettAvgjoerelse(fnr, a))
                 .collect(Collectors.toList());
     }
 
-    public Person opprettPerson(Person person) {
-        if (person.getOppholdStatus() != null)
-            person.getOppholdStatus().setPerson(person);
-        if (person.getArbeidsadgang() != null)
-            person.getArbeidsadgang().setPerson(person);
-        return personRepository.save(person);
-    }
+	public Optional<Person> opprettPerson(Person person) {
+		if (person.getOppholdStatus() != null)
+			person.getOppholdStatus().setPerson(person);
+		if (person.getArbeidsadgang() != null)
+			person.getArbeidsadgang().setPerson(person);
+		return Optional.of(personRepository.save(person));
+	}
 
     public Arbeidsadgang opprettArbeidsAdgang(String fnr, Arbeidsadgang arbeidsadgang) {
         return personRepository.findByFnr(fnr).map(person -> {
@@ -79,12 +80,12 @@ public class PersonService {
         ).orElse(null);
     }
 
-    private Avgjoerelse opprettAvgjoerelse(String fnr, Avgjoerelse avgjoerelse) {
+    private Avgjorelse opprettAvgjoerelse(String fnr, Avgjorelse avgjorelse) {
         return personRepository.findByFnr(fnr).map(person -> {
-            avgjoerelse.setPerson(person);
-            Avgjoerelse lagretAvgjoerelse = avgjoerelseRepository.save(avgjoerelse);
-            lagretAvgjoerelse.setOmgjortAvgjoerelsesId(lagretAvgjoerelse.getId().toString());
-            return avgjoerelseRepository.save(lagretAvgjoerelse);
+            avgjorelse.setPerson(person);
+            Avgjorelse lagretAvgjorelse = avgjorelseRepository.save(avgjorelse);
+            lagretAvgjorelse.setOmgjortAvgjoerelsesId(lagretAvgjorelse.getId().toString());
+            return avgjorelseRepository.save(lagretAvgjorelse);
         }).orElse(null);
     }
 
@@ -95,7 +96,7 @@ public class PersonService {
         }).orElse(null);
     }
 
-    public List<Avgjoerelse> findAvgjoerelserByFnr(String fnr) {
+    public List<Avgjorelse> findAvgjoerelserByFnr(String fnr) {
         return personRepository.findByFnr(fnr).map(Person::getAvgjoerelser).orElse(null);
     }
 

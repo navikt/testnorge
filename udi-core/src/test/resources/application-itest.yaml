@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:test;
     driverClassName: org.h2.Driver
     username: sa
     password:
@@ -13,7 +13,7 @@ spring:
 
 
 application:
-  version: @application.version@
+  version: local
 
 spring.flyway.locations: classpath:db/migration/postgresql
 spring.jpa.hibernate.ddl-auto: update
