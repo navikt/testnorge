@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react'
-import { FieldArray } from 'formik'
+import { Field, FieldArray } from 'formik'
 import { DollyApi } from '~/service/Api'
 import Button from '~/components/button/Button'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 import cn from 'classnames'
+import InputSelector from '~/components/fields/InputSelector'
 
 const Attributt = new AttributtManager()
 
