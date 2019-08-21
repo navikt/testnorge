@@ -10,6 +10,8 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.domain.resultset.IdentType.DNR;
+import static no.nav.dolly.domain.resultset.IdentType.FNR;
 import static no.nav.dolly.domain.resultset.IdentTypeUtil.getIdentType;
 
 import java.io.IOException;
