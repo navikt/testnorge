@@ -13,6 +13,7 @@ import no.nav.registre.core.DefaultTestData;
 import no.nav.registre.core.config.AppConfig;
 import no.nav.registre.core.database.model.Person;
 import no.nav.registre.core.database.repository.PersonRepository;
+import no.nav.registre.core.provider.rs.PersonControllerResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -57,7 +58,7 @@ public class UdiStubITest {
 	@Transactional
 	public void shouldOpprettPersonAndStoreInDb() throws Exception {
 		String requestBody = getJsonContentsAsString("opprettPersonRequest-happy.json");
-		ResponseEntity<String> response = callOpprettPerson(requestBody);
+		ResponseEntity<PersonControllerResponse> response = callOpprettPerson(requestBody);
 
 		assertNotNull(response);
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -97,10 +98,10 @@ public class UdiStubITest {
 	@Transactional
 	public void shouldDeletePerson() throws Exception {
 		personRepository.save(testperson);
-		ResponseEntity<String> response = callDeletePerson();
+		ResponseEntity<PersonControllerResponse> response = callDeletePerson();
 
 		assertNotNull(response);
-		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		Optional<Person> storedPersonOptional = personRepository.findByFnr(TEST_PERSON_FNR);
 		assertTrue(storedPersonOptional.isEmpty());
@@ -110,12 +111,12 @@ public class UdiStubITest {
 		return this.restTemplate.exchange(PERSON_URI, HttpMethod.GET, createHttpEntity(), String.class);
 	}
 
-	private ResponseEntity<String> callOpprettPerson(String body) {
-		return this.restTemplate.exchange(PERSON_URI, HttpMethod.POST, createHttpEntityWithBody(body), String.class);
+	private ResponseEntity<PersonControllerResponse> callOpprettPerson(String body) {
+		return this.restTemplate.exchange(PERSON_URI, HttpMethod.POST, createHttpEntityWithBody(body), PersonControllerResponse.class);
 	}
 
-	private ResponseEntity<String> callDeletePerson() {
-		return this.restTemplate.exchange(PERSON_URI, HttpMethod.DELETE, createHttpEntity(), String.class);
+	private ResponseEntity<PersonControllerResponse> callDeletePerson() {
+		return this.restTemplate.exchange(PERSON_URI, HttpMethod.DELETE, createHttpEntity(), PersonControllerResponse.class);
 	}
 
 	private HttpEntity createHttpEntity() {
