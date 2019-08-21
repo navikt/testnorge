@@ -9,6 +9,7 @@ const selectOptions = {
 	],
 
 	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }],
+	stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
 
 	// SIGRUN
 	inntektTjeneste: [
@@ -32,6 +33,19 @@ const selectOptions = {
 
 	skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
 
+	// PDLF - falsk identitet
+	rettIdentitet: [
+		{ value: 'UKJENT', label: 'Ukjent' },
+		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
+		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' }
+	],
+
+	kjonnFalskIdentitet: [
+		{ value: 'KVINNE', label: 'Kvinne' },
+		{ value: 'MANN', label: 'Mann' },
+		{ value: 'UBESTEMT', label: 'Ubestemt' }
+	],
+
 	// Arena
 	arenaBrukertype: [
 		{ value: 'UTEN_SERVICEBEHOV', label: 'Uten servicebehov' },
@@ -43,6 +57,19 @@ const selectOptions = {
 		{ value: 'BFORM', label: 'BFORM - Situasjonsbestemt innsats' },
 		{ value: 'BATT', label: 'BATT - Spesielt tilpasset innsats' },
 		{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
+	],
+
+	// INST
+	institusjonstype: [
+		{ value: 'AS', label: 'Alders- og sykehjem' },
+		{ value: 'HS', label: 'Helseinstitusjon' },
+		{ value: 'FO', label: 'Fengsel' }
+	],
+
+	varighet: [
+		{ value: 'L', label: 'Langvarig' },
+		{ value: 'K', label: 'Kortvarig' },
+		{ value: 'U', label: 'Ubestemt' }
 	]
 }
 

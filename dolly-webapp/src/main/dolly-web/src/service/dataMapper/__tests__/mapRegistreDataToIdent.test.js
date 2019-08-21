@@ -3,8 +3,10 @@ import {
 	mapKrrData,
 	mapArenaData,
 	mapAaregData,
-	mapSubItemAaregData
+	mapSubItemAaregData,
+	mapInstData
 } from '../mapRegistreDataToIdent'
+import Formatters from '~/utils/DataFormatter'
 
 describe('mapDetailedData.js', () => {
 	describe('mapSigrunData', () => {
@@ -186,6 +188,7 @@ describe('mapDetailedData.js', () => {
 		it('should return arena-data without servicebehov', () => {
 			const testArenaData2 = { data: { arbeidsokerList: { 0: { servicebehov: false } } } }
 			const testDato2 = '2019-06-04T00:00:00'
+			const testKvalifiseringsgruppe2 = undefined
 			const testRes2 = {
 				header: 'Arena',
 				data: [
@@ -231,7 +234,12 @@ describe('mapDetailedData.js', () => {
 					}
 				]
 			}
-			expect(mapArenaData(testArenaData2, undefined, testDato2)).toEqual(testRes2)
+			expect(mapArenaData(testArenaData2, testKvalifiseringsgruppe2, testDato2)).toEqual(testRes2)
+		})
+	})
+	describe('mapAaregData', () => {
+		it('should return null without data', () => {
+			expect(mapAaregData()).toBeNull()
 		})
 
 		it('should return arena-data with 11-5 vedtak and AAP vedtak', () => {
@@ -501,6 +509,63 @@ describe('mapDetailedData.js', () => {
 			}
 
 			expect(mapAaregData(testAaregDataMedSubItem)).toEqual(aaregResSubItem)
+		})
+	})
+
+	describe('mapInstData', () => {
+		it('should return null without data', () => {
+			expect(mapInstData()).toBeNull()
+		})
+
+		it('should return inst-data ', () => {
+			const testInstData = [
+				{
+					faktiskSluttdato: '2018-01-01T00:00:00',
+					startdato: '2017-02-01T00:00:00',
+					institusjonstype: 'AS',
+					varighet: 'K'
+				}
+			]
+
+			const res = {
+				header: 'Institusjonsopphold',
+				multiple: true,
+				data: testInstData.map((data, i) => {
+					return {
+						parent: 'institusjonsopphold',
+						id: data.personidentifikator,
+						value: [
+							{
+								id: 'id',
+								label: '',
+								value: `#1`,
+								width: 'x-small'
+							},
+							{
+								id: 'institusjonstype',
+								label: 'Institusjonstype',
+								value: 'Alders- og sykehjem'
+							},
+							{
+								id: 'varighet',
+								label: 'Varighet',
+								value: 'Kortvarig'
+							},
+							{
+								id: 'startdato',
+								label: 'Startdato',
+								value: '01.02.2017'
+							},
+							{
+								id: 'faktiskSluttdato',
+								label: 'Sluttdato',
+								value: '01.01.2018'
+							}
+						]
+					}
+				})
+			}
+			expect(mapInstData(testInstData)).toEqual(res)
 		})
 	})
 })
