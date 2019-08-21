@@ -17,15 +17,15 @@ export const getSuccessEnv = statusArray => {
 }
 
 export const getPdlforvalterStatusOK = pdlforvalterStatus => {
-	let status = false
+	let totalStatus = false
 	Object.keys(pdlforvalterStatus).map(pdlAttr => {
 		pdlforvalterStatus[pdlAttr].map(status => {
 			if (status.statusMelding === 'OK') {
-				status = true
+				totalStatus = true
 			}
 		})
 	})
-	return status
+	return totalStatus
 }
 
 export const sokSelector = (items, searchStr) => {

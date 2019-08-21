@@ -1,5 +1,5 @@
 import React, { PureComponent, Component, Fragment } from 'react'
-import { Field } from 'formik'
+import { Field, FieldArray } from 'formik'
 import _intersection from 'lodash/intersection'
 import _set from 'lodash/set'
 import { DollyApi } from '~/service/Api'
@@ -7,6 +7,7 @@ import { AttributtType } from '~/service/kodeverk/AttributtManager/Types'
 import Panel from '~/components/panel/Panel'
 import InputSelector from '~/components/fields/InputSelector'
 import FormEditorFieldArray from './FormEditorFieldArray'
+import { FieldArrayComponent } from './FormEditorFieldArray'
 import AutofillAddressConnector from '~/components/autofillAddress/AutofillAddressConnector'
 import StaticValue from '~/components/fields/StaticValue/StaticValue'
 import KodeverkValueConnector from '~/components/fields/KodeverkValue/KodeverkValueConnector'
@@ -15,6 +16,7 @@ import _xor from 'lodash/fp/xor'
 import './FormEditor.less'
 import UtenFastBopelConnector from '../utenFastBopel/UtenFastBopelConnector'
 import Postadresse from '../postadresse/Postadresse'
+import ArrayFieldConnector from '../arrayField/ArrayFieldConnector'
 
 export default class FormEditor extends Component {
 	render() {
@@ -128,21 +130,26 @@ export default class FormEditor extends Component {
 				</div>
 			)
 		}
-		if (subKategori.id === 'doedsbo' || subKategori.id === 'arena') {
-			//Kan også gjøre sjekk items[0].subGruppe = true
-			const subGrupper = this._structureSubGruppe(items[0])
+
+		if (items[0].subGruppe === 'true') {
+			//Hvis subKategorien skal ha flere underoverskrifter/undergrupperinger
+			const subGrupper = this._structureSubGruppe(items)
 			return (
 				<div className="subkategori" key={uniqueId}>
-					<h4>{subKategori.navn}</h4>
 					{subGrupper.map((subGruppe, idx) => {
-						const subGruppeObj = Object.assign({}, { ...items[0], items: subGruppe.items })
+						const subGruppeObj = Object.assign(
+							{},
+							{ ...items[subGruppe.itemNr], items: subGruppe.items }
+						)
 						return (
 							<div key={idx}>
-								{subKategori.id === 'doedsbo' && <h4 className="subgruppe">{subGruppe.navn}</h4>}
-								{subKategori.id === 'arena' &&
+								{subKategori.id === 'arena' ? (
 									formikProps.values.arenaforvalter[0].arenaBrukertype === 'MED_SERVICEBEHOV' && (
 										<h4 className="subgruppe">{subGruppe.navn}</h4>
-									)}
+									)
+								) : (
+									<h4 className="subgruppe">{subGruppe.navn}</h4>
+								)}
 								{FormEditorFieldArray(
 									subGruppeObj,
 									formikProps,
@@ -204,6 +211,7 @@ export default class FormEditor extends Component {
 		if (item.onlyShowAfterSelectedValue) {
 			const { parentId, idx } = parentObject
 			const attributtId = item.onlyShowAfterSelectedValue.attributtId
+
 			let dependantAttributt = items.find(attributt => attributt.id === attributtId)
 			// Spesialtilfelle fordi dependant attributt ligger i en annen subkategori
 			if (item.hovedKategori.id === 'arena' && attributtId) {
@@ -276,21 +284,24 @@ export default class FormEditor extends Component {
 		return Boolean(path && path[0])
 	}
 
-	_structureSubGruppe = item => {
+	_structureSubGruppe = items => {
 		let subGruppeArray = []
-		item.items.map(subitem => {
-			if (subGruppeArray.length < 1) {
-				subGruppeArray.push({ navn: subitem.subGruppe, items: [subitem] })
-			} else {
-				let nyGruppe = true
-				subGruppeArray.map(subGrupper => {
-					if (subitem.subGruppe === subGrupper.navn) {
-						subGrupper.items.push(subitem)
-						nyGruppe = false
-					}
-				})
-				nyGruppe && subGruppeArray.push({ navn: subitem.subGruppe, items: [subitem] })
-			}
+		items.map((item, idx) => {
+			item.items.map(subitem => {
+				if (subGruppeArray.length < 1) {
+					subGruppeArray.push({ navn: subitem.subGruppe, itemNr: idx, items: [subitem] })
+				} else {
+					let nyGruppe = true
+					subGruppeArray.map(subGrupper => {
+						if (subitem.subGruppe === subGrupper.navn) {
+							subGrupper.items.push(subitem)
+							nyGruppe = false
+						}
+					})
+					nyGruppe &&
+						subGruppeArray.push({ navn: subitem.subGruppe, itemNr: idx, items: [subitem] })
+				}
+			})
 		})
 		return subGruppeArray
 	}
@@ -315,6 +326,7 @@ export default class FormEditor extends Component {
 				headerType: 'label',
 				optionalClassName: 'skjemaelement static'
 			}
+
 			if (item.apiKodeverkId) {
 				return <KodeverkValueConnector apiKodeverkId={item.apiKodeverkId} {...staticValueProps} />
 			}
@@ -368,6 +380,11 @@ export default class FormEditor extends Component {
 			return
 		}
 
+		if (item.isMultiple) {
+			return (
+				<ArrayFieldConnector item={item} formikProps={formikProps} valgteVerdier={valgteVerdier} />
+			)
+		}
 		return (
 			<Field
 				key={item.key || item.id}
@@ -421,26 +438,6 @@ export default class FormEditor extends Component {
 		)
 	}
 
-	// Ingvild: Forsøker å lage en mer presis validering
-	// validationFunction = (valgtVerdi, inputType) => {
-	// 	let error
-	// 	switch (inputType) {
-	// 		case 'date': {
-	// 			if (valgtVerdi === '') {
-	// 				error = 'Vennligst fyll inn dato'
-	// 				return error
-	// 			}
-	// 			return
-	// 		}
-	// 		case 'select': {
-	// 			if (valgtVerdi === '') {
-	// 				error = 'Vennligst fyll inn'
-	// 				return error
-	// 			}
-	// 			return
-	// 		}
-	// 	}
-	// }
 	validationSub = value => {
 		let error
 		if (value === '') {

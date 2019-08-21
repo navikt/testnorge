@@ -9,6 +9,7 @@ const selectOptions = {
 	],
 
 	boolean: [{ value: true, label: 'Ja' }, { value: false, label: 'Nei' }],
+	stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
 
 	// SIGRUN
 	inntektTjeneste: [
@@ -31,6 +32,19 @@ const selectOptions = {
 	],
 
 	skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
+
+	// PDLF - falsk identitet
+	rettIdentitet: [
+		{ value: 'UKJENT', label: 'Ukjent' },
+		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
+		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' }
+	],
+
+	kjonnFalskIdentitet: [
+		{ value: 'KVINNE', label: 'Kvinne' },
+		{ value: 'MANN', label: 'Mann' },
+		{ value: 'UBESTEMT', label: 'Ubestemt' }
+	],
 
 	// Arena
 	arenaBrukertype: [
