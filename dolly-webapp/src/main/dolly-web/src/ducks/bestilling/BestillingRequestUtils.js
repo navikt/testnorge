@@ -170,6 +170,10 @@ export const getValues = (attributeList, values) => {
 			return _set(accumulator, pathPrefix, value[0])
 		}
 
+		if (pathPrefix === DataSourceMapper('INST')) {
+			return _set(accumulator, pathPrefix, value)
+		}
+
 		return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value)
 	}, {})
 }
@@ -223,7 +227,6 @@ const _transformAttributt = (attribute, attributes, value) => {
 	}
 	if (attribute.items) {
 		let attributeList = attribute.items.reduce((res, acc) => ({ ...res, [acc.id]: acc }), {})
-
 		if (attribute.isMultiple) {
 			return value.map(val =>
 				Object.assign(

@@ -8,7 +8,7 @@ import Loading from '~/components/loading/Loading'
 import './PersonDetaljer.less'
 import DollyModal from '~/components/modal/DollyModal'
 import BestillingDetaljerSammendrag from '~/components/bestillingDetaljerSammendrag/BestillingDetaljerSammendrag'
-import { getAaregSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
+import { getSuccessEnv, getPdlforvalterStatusOK } from '~/ducks/bestillingStatus/utils'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 
 const AttributtManagerInstance = new AttributtManager()
@@ -33,8 +33,12 @@ export default class PersonDetaljer extends PureComponent {
 			getPdlforvalterStatusOK(this.props.testIdent.pdlforvalterStatus) &&
 			this.props.getPdlfTestbruker()
 		this.props.testIdent.arenaforvalterStatus && this.props.getArenaTestbruker()
-		const aaregSuccessEnvs = getAaregSuccessEnv(this.props.testIdent.aaregStatus)
+
+		const aaregSuccessEnvs = getSuccessEnv(this.props.testIdent.aaregStatus)
 		aaregSuccessEnvs.length > 0 && this.props.getAaregTestbruker(aaregSuccessEnvs[0])
+
+		const instSuccessEnvs = getSuccessEnv(this.props.testIdent.instdataStatus)
+		instSuccessEnvs.length > 0 && this.props.getInstTestbruker(instSuccessEnvs[0])
 	}
 
 	render() {
@@ -106,7 +110,13 @@ export default class PersonDetaljer extends PureComponent {
 
 	// render loading for krr og sigrun
 	_renderPersonInfoBlockHandler = i => {
-		const { isFetchingKrr, isFetchingSigrun, isFetchingAareg, isFetchingArena } = this.props
+		const {
+			isFetchingKrr,
+			isFetchingSigrun,
+			isFetchingAareg,
+			isFetchingArena,
+			isFetchingInst
+		} = this.props
 		if (i.header === 'Inntekter') {
 			return isFetchingSigrun ? (
 				<Loading label="Henter data fra Sigrun-stub" panel />
@@ -128,6 +138,12 @@ export default class PersonDetaljer extends PureComponent {
 		} else if (i.header === 'Arena') {
 			return isFetchingArena ? (
 				<Loading label="Henter data fra Arena" panel />
+			) : (
+				this._renderPersonInfoBlock(i)
+			)
+		} else if (i.header === 'Institusjonsopphold') {
+			return isFetchingInst ? (
+				<Loading label="Henter data fra Inst" panel />
 			) : (
 				this._renderPersonInfoBlock(i)
 			)
