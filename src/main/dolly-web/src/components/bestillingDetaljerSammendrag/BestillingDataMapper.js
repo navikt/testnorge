@@ -83,6 +83,7 @@ export function mapBestillingData(bestillingData) {
 			header: 'Personlig informasjon',
 			items: _getTpsfBestillingData(tpsfKriterier)
 		}
+
 		// For å mappe utenlands-ID under personlig informasjon
 		if (bestillingData.bestKriterier) {
 			const registreKriterier = JSON.parse(bestillingData.bestKriterier)
@@ -112,6 +113,7 @@ export function mapBestillingData(bestillingData) {
 					]
 				}
 				pdlf.items.forEach(item => {
+					console.log('item :', item)
 					personinfo.items.push(item)
 				})
 			}
@@ -292,7 +294,7 @@ export function mapBestillingData(bestillingData) {
 			})
 			data.push(aareg)
 		}
-		const sigrunStubKriterier = registreKriterier.sigrunStub && registreKriterier.sigrunStub
+		const sigrunStubKriterier = registreKriterier.sigrunstub && registreKriterier.sigrunstub
 
 		if (sigrunStubKriterier) {
 			// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
@@ -341,7 +343,7 @@ export function mapBestillingData(bestillingData) {
 			data.push(sigrunStub)
 		}
 
-		const krrKriterier = registreKriterier.krrStub && registreKriterier.krrStub
+		const krrKriterier = registreKriterier.krrstub && registreKriterier.krrstub
 
 		if (krrKriterier) {
 			const krrStub = {
@@ -446,6 +448,69 @@ export function mapBestillingData(bestillingData) {
 				}
 				data.push(doedsbo)
 			}
+
+			if (pdlforvalterKriterier.falskIdentitet) {
+				const falskIdData = pdlforvalterKriterier.falskIdentitet.rettIdentitet
+
+				if (falskIdData.identitetType === 'UKJENT') {
+					const falskId = {
+						header: 'Falsk identitet',
+						items: [
+							{
+								label: 'Rett identitet',
+								value: 'Ukjent'
+							}
+						]
+					}
+					data.push(falskId)
+				} else if (falskIdData.identitetType === 'ENTYDIG') {
+					const falskId = {
+						header: 'Falsk identitet',
+						items: [
+							{
+								label: 'Rett fødselsnummer',
+								value: falskIdData.rettIdentitetVedIdentifikasjonsnummer
+							}
+						]
+					}
+					data.push(falskId)
+				} else {
+					const falskId = {
+						header: 'Falsk identitet',
+						items: [
+							{
+								label: 'Rett identitet',
+								value: 'Kjent ved personopplysninger'
+							},
+							{
+								label: 'Fornavn',
+								value: falskIdData.personnavn.fornavn
+							},
+							{
+								label: 'Mellomnavn',
+								value: falskIdData.personnavn.mellomnavn
+							},
+							{
+								label: 'Etternavn',
+								value: falskIdData.personnavn.etternavn
+							},
+							{
+								label: 'Kjønn',
+								value: falskIdData.kjoenn
+							},
+							{
+								label: 'Fødselsdato',
+								value: Formatters.formatDate(falskIdData.foedselsdato)
+							},
+							{
+								label: 'Statsborgerskap',
+								value: Formatters.arrayToString(falskIdData.statsborgerskap)
+							}
+						]
+					}
+					data.push(falskId)
+				}
+			}
 		}
 		const arenaKriterier = registreKriterier.arenaforvalter && registreKriterier.arenaforvalter
 
@@ -489,7 +554,54 @@ export function mapBestillingData(bestillingData) {
 			}
 			data.push(arenaforvalter)
 		}
-	}
 
+		const instKriterier = registreKriterier.instdata && registreKriterier.instdata
+
+		if (instKriterier) {
+			// Flater ut instKriterier for å gjøre det lettere å mappe
+
+			let flatInstKriterier = []
+			instKriterier.forEach(i => {
+				flatInstKriterier.push({
+					institusjonstype: i.institusjonstype,
+					varighet: i.varighet,
+					startdato: i.startdato,
+					faktiskSluttdato: i.faktiskSluttdato
+				})
+			})
+
+			const instObj = {
+				header: 'Institusjonsopphold',
+				itemRows: []
+			}
+
+			flatInstKriterier.forEach((inst, i) => {
+				instObj.itemRows.push([
+					{
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small'
+					},
+					{
+						label: 'Institusjonstype',
+						value: Formatters.showLabel('institusjonstype', inst.institusjonstype)
+					},
+					{
+						label: 'Varighet',
+						value: inst.varighet && Formatters.showLabel('varighet', inst.varighet)
+					},
+					{
+						label: 'Startdato',
+						value: Formatters.formatDate(inst.startdato)
+					},
+					{
+						label: 'Sluttdato',
+						value: Formatters.formatDate(inst.faktiskSluttdato)
+					}
+				])
+			})
+			data.push(instObj)
+		}
+	}
 	return data
 }

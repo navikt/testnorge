@@ -10,6 +10,8 @@ const DataSourceMapper = data => {
 			return 'pdlforvalter'
 		case 'ARENA':
 			return 'arenaforvalter'
+		case 'INST':
+			return 'instdata'
 		default:
 			return 'tpsf'
 	}
