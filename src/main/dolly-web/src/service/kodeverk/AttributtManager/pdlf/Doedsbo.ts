@@ -7,7 +7,7 @@ import * as yup from 'yup'
 
 const AttributtListe: Attributt[] = [
 	{
-		hovedKategori: Kategorier.KontaktInfoDoedsbo,
+		hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 		subKategori: SubKategorier.Doedsbo,
 		id: 'kontaktinformasjonForDoedsbo',
 		label: 'Har kontaktinformasjon for dødsbo',
@@ -17,7 +17,7 @@ const AttributtListe: Attributt[] = [
 		validation: yup.object(),
 		items: [
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'adressatType',
 				label: 'Adressattype',
@@ -31,7 +31,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'idnummer',
 				label: 'Fnr/dnr',
@@ -47,7 +47,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'foedselsdato',
 				label: 'Fødselsdato',
@@ -60,7 +60,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'fornavn',
 				label: 'Fornavn',
@@ -73,7 +73,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'mellomnavn',
 				label: 'mellomnavn',
@@ -85,7 +85,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'etternavn',
 				label: 'Etternavn',
@@ -98,7 +98,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'org_orgnavn',
 				label: 'Organisasjonsnavn',
@@ -111,7 +111,7 @@ const AttributtListe: Attributt[] = [
 				validation: yup.string().required('Vennligst fyll inn organisasjonsnavn')
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'advokat_orgnavn',
 				label: 'Organisasjonsnavn',
@@ -123,7 +123,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'org_orgnr',
 				label: 'Organisasjonsnummer',
@@ -140,7 +140,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Adressat,
 				id: 'advokat_orgnr',
 				label: 'Organisasjonsnummer',
@@ -157,7 +157,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'landkode',
 				parent: 'adresse',
@@ -171,7 +171,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'adresselinje1',
 				path: 'adresse.adresselinje1',
@@ -184,7 +184,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'adresselinje2',
 				path: 'adresse.adresselinje2',
@@ -196,7 +196,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'postnummer',
 				path: 'adresse.postnummer',
@@ -212,7 +212,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'utenlandsk_postnummer',
 				path: 'adresse.utenlandsk_postnummer',
@@ -226,7 +226,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.DoedsboAdresse,
 				id: 'utenlandsk_poststedsnavn',
 				path: 'adresse.utenlandsk_poststed',
@@ -240,7 +240,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndRead
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Diverse,
 				id: 'skifteform',
 				label: 'Skifteform',
@@ -252,7 +252,7 @@ const AttributtListe: Attributt[] = [
 				attributtType: AttributtType.SelectAndEdit
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Diverse,
 				id: 'utstedtDato',
 				label: 'Skifteform utstedt',
@@ -264,7 +264,7 @@ const AttributtListe: Attributt[] = [
 				defaultValue: new Date()
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Diverse,
 				id: 'gyldigFom',
 				label: 'Gyldig fra',
@@ -276,7 +276,7 @@ const AttributtListe: Attributt[] = [
 				defaultValue: new Date()
 			},
 			{
-				hovedKategori: Kategorier.KontaktInfoDoedsbo,
+				hovedKategori: Kategorier.KontaktInformasjonForDoedsbo,
 				subKategori: SubKategorier.Diverse,
 				id: 'gyldigTom',
 				label: 'Gyldig til',

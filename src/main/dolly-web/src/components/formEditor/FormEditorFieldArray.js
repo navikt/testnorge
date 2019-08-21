@@ -1,10 +1,12 @@
 import React, { Fragment } from 'react'
-import { FieldArray } from 'formik'
+import GenererSyntVerdier from '~/components/genererSyntVerdier/GenererSyntVerdier'
+import { Field, FieldArray } from 'formik'
 import { DollyApi } from '~/service/Api'
 import Button from '~/components/button/Button'
 import AttributtManager from '~/service/kodeverk/AttributtManager/AttributtManager'
 import ContentTooltip from '~/components/contentTooltip/ContentTooltip'
 import cn from 'classnames'
+import InputSelector from '~/components/fields/InputSelector'
 
 const Attributt = new AttributtManager()
 
@@ -98,10 +100,13 @@ export const FieldArrayComponent = ({
 		// formikValues = formikProps.values.barn[idx][parentId]
 	}
 	let subLabelArray = []
+	let antallInstanser = 0
+
 	return (
 		<Fragment key={item.id}>
 			{formikValues && formikValues.length > 0 ? (
 				formikValues.map((faKey, idx) => {
+					antallInstanser = idx + 1
 					return (
 						<Fragment key={idx}>
 							{idx !== 0 && <div className="field-array-line" />}
@@ -207,10 +212,24 @@ export const FieldArrayComponent = ({
 			) : (
 				<p className="ingen-verdi-melding">Ingen verdi lagt til</p>
 			)}
-
-			{!editMode &&
-				item.isMultiple &&
-				addButton(createDefaultObject, subKategori.navn.toUpperCase())}
+			{
+				<div className="flexbox">
+					<div>
+						{!editMode &&
+							item.isMultiple &&
+							addButton(createDefaultObject, subKategori.navn.toUpperCase())}
+					</div>
+					{/* <div>
+						{item.genererSyntVerdier && (
+							<GenererSyntVerdier
+								type={item.id}
+								formikValues={formikValues}
+								antall={antallInstanser}
+							/>
+						)}
+					</div> */}
+				</div>
+			}
 		</Fragment>
 	)
 }
