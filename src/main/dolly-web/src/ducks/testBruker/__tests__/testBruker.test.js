@@ -8,7 +8,9 @@ describe('testBrukerReducer', () => {
 			sigrunstub: null,
 			krrstub: null,
 			aareg: null,
-			arenaforvalteren: null
+			arenaforvalteren: null,
+			instdata: null,
+			pdlforvalter: null
 		}
 	}
 	it('should return initial state', () => {
@@ -54,7 +56,9 @@ describe('testBrukerReducer', () => {
 				sigrunstub: { [testident]: testdata },
 				krrstub: null,
 				aareg: null,
-				arenaforvalteren: null
+				arenaforvalteren: null,
+				instdata: null,
+				pdlforvalter: null
 			}
 		}
 
@@ -79,7 +83,9 @@ describe('testBrukerReducer', () => {
 					[testident]: testident
 				},
 				aareg: null,
-				arenaforvalteren: null
+				arenaforvalteren: null,
+				instdata: null,
+				pdlforvalter: null
 			}
 		}
 
@@ -107,7 +113,9 @@ describe('testBrukerReducer', () => {
 					[testident]: {
 						data: [testident]
 					}
-				}
+				},
+				instdata: null,
+				pdlforvalter: null
 			}
 		}
 

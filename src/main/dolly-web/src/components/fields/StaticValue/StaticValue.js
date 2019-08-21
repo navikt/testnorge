@@ -19,9 +19,8 @@ export default class StaticValue extends PureComponent {
 	render() {
 		const { header, value, format, headerType, optionalClassName, size } = this.props
 
-		let _value = value ? value : 'Ikke spesifisert'
+		let _value = value ? value : value === false ? 'NEI' : 'Ikke spesifisert'
 		if (format) _value = format(value)
-
 		const fixedSize = size ? cn('static-value', 'static-value_' + size) : 'static-value'
 		return (
 			<div className={optionalClassName || cn(fixedSize, 'static-value-headers')}>

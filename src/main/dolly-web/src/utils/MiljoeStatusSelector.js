@@ -27,6 +27,11 @@ const avvikStatus = item => {
 			status.status !== 'OK' && (avvik = true)
 		})
 
+	item.instdataStatus &&
+		item.instdataStatus.map(status => {
+			status.statusMelding !== 'OK' && (avvik = true)
+		})
+
 	item.feil && (avvik = true)
 	return avvik
 }
@@ -100,6 +105,27 @@ const miljoeStatusSelector = bestilling => {
 					: !failedEnvs.includes('Pdl-forvalter') && failedEnvs.push('Pdl-forvalter')
 			})
 		})
+
+	let instHasOneSuccessEnv = false
+	let instFailed = false
+
+	bestilling.instdataStatus &&
+		bestilling.instdataStatus.length > 0 &&
+		bestilling.instdataStatus.map(status => {
+			if (status.statusMelding == 'OK') {
+				instHasOneSuccessEnv = true
+			} else {
+				instFailed = true
+			}
+		})
+
+	if (bestilling.instdataStatus && bestilling.instdataStatus.length > 0) {
+		instFailed
+			? instHasOneSuccessEnv
+				? avvikEnvs.push('Inst')
+				: failedEnvs.push('Inst')
+			: successEnvs.push('Inst')
+	}
 
 	let aaregHasOneSuccessEnv = false
 	let aaregFailed = false

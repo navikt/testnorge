@@ -35,6 +35,12 @@ export default class DollySelect extends PureComponent {
 			hoydeOptions,
 			...restProps
 		} = this.props
+
+		let restPropsCopy = Object.assign({}, restProps)
+		if (typeof this.props.value === 'object') {
+			restPropsCopy.value = {} // <arrayField/> viser ingen verdi i vinduet.
+		}
+
 		return (
 			<div className={cn({ error: Boolean(error) }, size, 'skjemaelement dollyselect')}>
 				<label htmlFor={name} className="skjemaelement__label">
@@ -52,7 +58,7 @@ export default class DollySelect extends PureComponent {
 						openOnFocus
 						optionHeight={this.findOptionHeight(hoydeOptions)}
 						{...this.translations}
-						{...restProps}
+						{...restPropsCopy}
 					/>
 				</div>
 				{error && (
