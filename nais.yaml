@@ -49,6 +49,8 @@ fasitResources:
       resourceType: restservice
     - alias: "testnorge-sam.rest-api"
       resourceType: restservice
+    - alias: "testnorge-medl.rest-api"
+      resourceType: restservice
     - alias: "testnorge-hodejegeren.rest-api"
       resourceType: restservice
     - alias: "orkestratorensProperties"

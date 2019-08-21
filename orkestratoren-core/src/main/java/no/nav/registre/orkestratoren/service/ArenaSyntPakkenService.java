@@ -12,7 +12,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest
 public class ArenaSyntPakkenService {
 
     @Autowired
-    ArenaConsumer arenaConsumer;
+    private ArenaConsumer arenaConsumer;
 
     public List<String> opprettArbeidssokereIArena(SyntetiserArenaRequest arenaRequest) {
         return arenaConsumer.opprettArbeidsoekere(arenaRequest);

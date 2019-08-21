@@ -6,12 +6,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,12 +16,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
+import no.nav.registre.orkestratoren.service.MedlSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.SamSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
@@ -65,6 +66,9 @@ public class JobControllerTest {
 
     @Mock
     private ArenaSyntPakkenService arenaSyntPakkenService;
+
+    @Mock
+    private MedlSyntPakkenService medlSyntPakkenService;
 
     @InjectMocks
     private JobController jobController;
@@ -155,5 +159,11 @@ public class JobControllerTest {
     public void shouldStartArenaBatch() {
         jobController.arenaSyntBatch();
         verify(arenaSyntPakkenService).opprettArbeidssokereIArena(any());
+    }
+
+    @Test
+    public void shouldStartMedlBatch() {
+        jobController.medlSyntBatch();
+        verify(medlSyntPakkenService).genererMedlemskap(any());
     }
 }

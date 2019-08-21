@@ -20,6 +20,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
@@ -30,6 +31,7 @@ import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
+import no.nav.registre.orkestratoren.service.MedlSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.SamSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
@@ -83,6 +85,9 @@ public class JobController {
     @Value("${arenabatch.antallNyeIdenter}")
     private int arenaAnallNyeIdenter;
 
+    @Value("${medlbatch.prosentfaktor}")
+    private double medlProsentfaktor;
+
     @Autowired
     private TpsSyntPakkenService tpsSyntPakkenService;
 
@@ -112,6 +117,9 @@ public class JobController {
 
     @Autowired
     private ArenaSyntPakkenService arenaSyntPakkenService;
+
+    @Autowired
+    private MedlSyntPakkenService medlSyntPakkenService;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
@@ -184,13 +192,6 @@ public class JobController {
         }
     }
 
-    public void arenaSyntBatch() {
-        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            SyntetiserArenaRequest syntetiserArenaRequest = new SyntetiserArenaRequest(entry.getKey(), entry.getValue(), arenaAnallNyeIdenter);
-            arenaSyntPakkenService.opprettArbeidssokereIArena(syntetiserArenaRequest);
-        }
-    }
-
     @Scheduled(cron = "0 0 0 1 5 *")
     public void tpSyntBatch() {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
@@ -207,6 +208,21 @@ public class JobController {
         for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
             SyntetiserSamRequest syntetiserSamRequest = new SyntetiserSamRequest(entry.getKey(), entry.getValue(), samAntallMeldinger);
             samSyntPakkenService.genererSamordningsmeldinger(syntetiserSamRequest);
+        }
+    }
+
+    public void arenaSyntBatch() {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            SyntetiserArenaRequest syntetiserArenaRequest = new SyntetiserArenaRequest(entry.getKey(), entry.getValue(), arenaAnallNyeIdenter);
+            arenaSyntPakkenService.opprettArbeidssokereIArena(syntetiserArenaRequest);
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void medlSyntBatch() {
+        for (Map.Entry<Long, String> entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            SyntetiserMedlRequest syntetiserMedlRequest = new SyntetiserMedlRequest(entry.getKey(), entry.getValue(), medlProsentfaktor);
+            medlSyntPakkenService.genererMedlemskap(syntetiserMedlRequest);
         }
     }
 }

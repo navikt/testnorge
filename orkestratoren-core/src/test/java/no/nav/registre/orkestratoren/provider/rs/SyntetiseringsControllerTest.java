@@ -2,29 +2,33 @@ package no.nav.registre.orkestratoren.provider.rs;
 
 import static org.mockito.Mockito.verify;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.AaregSyntPakkenService;
 import no.nav.registre.orkestratoren.service.ArenaInntektSyntPakkenService;
+import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
+import no.nav.registre.orkestratoren.service.MedlSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpsSyntPakkenService;
@@ -55,6 +59,12 @@ public class SyntetiseringsControllerTest {
 
     @Mock
     private TpSyntPakkenService tpSyntPakkenService;
+
+    @Mock
+    private ArenaSyntPakkenService arenaSyntPakkenService;
+
+    @Mock
+    private MedlSyntPakkenService medlSyntPakkenService;
 
     @InjectMocks
     private SyntetiseringsController syntetiseringsController;
@@ -188,13 +198,29 @@ public class SyntetiseringsControllerTest {
 
     /**
      * Scenario: HVIS syntetiseringskontrolleren får en request om å generere ytelser i tjpen skal metoden kalle på
-     * {@link TpSyntPakkenService#genererTp(SyntetiserTpRequest)}
+     * {@link TpSyntPakkenService#genererTp}
      */
     @Test
     public void shouldProduceYtelserInTp() {
         int antallIdenter = 10;
         SyntetiserTpRequest request = new SyntetiserTpRequest(avspillergruppeId, miljoe, antallIdenter);
-        tpSyntPakkenService.genererTp(request);
+        syntetiseringsController.opprettYtelserITp(request);
         verify(tpSyntPakkenService).genererTp(request);
+    }
+
+    @Test
+    public void asd() {
+        SyntetiserArenaRequest syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
+        syntetiseringsController.opprettArbeidssoekereIArena(syntetiserArenaRequest);
+
+        verify(arenaSyntPakkenService).opprettArbeidssokereIArena(syntetiserArenaRequest);
+    }
+
+    @Test
+    public void shouldProduceMedlemskapInMedl() {
+        SyntetiserMedlRequest syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, 0.1);
+        syntetiseringsController.opprettMedlemskapIMedl(syntetiserMedlRequest);
+
+        verify(medlSyntPakkenService).genererMedlemskap(syntetiserMedlRequest);
     }
 }

@@ -23,6 +23,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserEiaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
@@ -34,6 +35,7 @@ import no.nav.registre.orkestratoren.service.ArenaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.BisysSyntPakkenService;
 import no.nav.registre.orkestratoren.service.EiaSyntPakkenService;
 import no.nav.registre.orkestratoren.service.InstSyntPakkenService;
+import no.nav.registre.orkestratoren.service.MedlSyntPakkenService;
 import no.nav.registre.orkestratoren.service.PoppSyntPakkenService;
 import no.nav.registre.orkestratoren.service.SamSyntPakkenService;
 import no.nav.registre.orkestratoren.service.TpSyntPakkenService;
@@ -73,6 +75,9 @@ public class SyntetiseringsController {
 
     @Autowired
     private ArenaSyntPakkenService arenaSyntPakkenService;
+
+    @Autowired
+    private MedlSyntPakkenService medlSyntPakkenService;
 
     @LogExceptions
     @PostMapping(value = "/tps/skdmeldinger/generer")
@@ -144,5 +149,11 @@ public class SyntetiseringsController {
     @PostMapping(value = "/arena/arbeidsoeker/generer")
     public List<String> opprettArbeidssoekereIArena(@RequestBody SyntetiserArenaRequest syntetiserArenaRequest) {
         return arenaSyntPakkenService.opprettArbeidssokereIArena(syntetiserArenaRequest);
+    }
+
+    @LogExceptions
+    @PostMapping(value = "/medl/medlemskap/generer")
+    public Object opprettMedlemskapIMedl(@RequestBody SyntetiserMedlRequest syntetiserMedlRequest) {
+        return medlSyntPakkenService.genererMedlemskap(syntetiserMedlRequest);
     }
 }
