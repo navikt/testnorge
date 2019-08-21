@@ -10,7 +10,7 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPermisjon;
-import no.nav.dolly.domain.resultset.aareg.RsPerson;
+import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.aareg.RsUtenlandsopphold;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsavtale;
@@ -105,7 +105,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
     }
 
-    private Person mapPerson(RsPerson rsPerson) {
+    private Person mapPerson(RsPersonAareg rsPerson) {
 
         NorskIdent norskIdent = new NorskIdent();
         norskIdent.setIdent(rsPerson.getIdent());

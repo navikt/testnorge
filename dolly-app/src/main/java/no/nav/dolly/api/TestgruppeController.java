@@ -53,7 +53,7 @@ public class TestgruppeController {
             "       &nbsp; &nbsp; \"postnr\": \"string\", <br />"
                     + "     &nbsp; &nbsp; \"kommunenr\": \"string\", <br />"
                     + "     &nbsp; &nbsp; \"flyttedato\": \"string\" <br />";
-    private static final String BOADRESSE_COMMENT = "Alternativt har Json-parametere for boadresse følgende parametre: <br />"
+    public static final String BOADRESSE_COMMENT = "Alternativt har Json-parametere for boadresse følgende parametre: <br />"
             + " For gateadresse:  <br />"
             + "     &nbsp; \"boadresse\": {<br />"
             + "     &nbsp; &nbsp; \"adressetype\": \"GATE\", <br />"
@@ -71,7 +71,7 @@ public class TestgruppeController {
             + "     &nbsp; &nbsp; \"undernr\": \"string\", <br />"
             + ADRESSE_COMMON + "} <br /> <br />";
 
-    private static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br /><br />";
+    public static final String UTEN_ARBEIDSTAKER = "I bestilling benyttes ikke feltet for arbeidstaker. <br /><br />";
 
     private static final String FULLT_NAVN =
             "     &nbsp; &nbsp; &nbsp; \"etternavn\": \"string\", <br />"
@@ -84,7 +84,7 @@ public class TestgruppeController {
     private static final String EPILOG_2 = "     &nbsp; &nbsp; }, </br />";
     private static final String FALSK_IDENTITET_TYPE = "     &nbsp; \"falskIdentitet\": {<br />";
 
-    private static final String KONTAKTINFORMASJON_DOEDSBO = "For kontakinformasjon for dødsbo kan feltet <b>adressat</b> ha en av fire objekttyper: <br />"
+    public static final String KONTAKTINFORMASJON_DOEDSBO = "For kontakinformasjon for dødsbo kan feltet <b>adressat</b> ha en av fire objekttyper: <br />"
             + "For organisasjon eller advokat:<br />"
             + ADRESSAT
             + "     &nbsp; &nbsp; \"adressatType\": \"ORGANISASJON/ADVOKAT\", <br />"
@@ -108,7 +108,7 @@ public class TestgruppeController {
             + "     &nbsp; &nbsp; \"foedselsdato\": \"string\" <br />"
             + EPILOG;
 
-    private static final String FALSK_IDENTITET = "Falsk identitet inneholder et abstrakt felt, <b>rettIdentitet</b>, som har en av tre objekttyper: <br />"
+    public static final String FALSK_IDENTITET = "Falsk identitet inneholder et abstrakt felt, <b>rettIdentitet</b>, som har en av tre objekttyper: <br />"
             + "For identitet ukjent:<br />"
             + FALSK_IDENTITET_TYPE
             + "     &nbsp; &nbsp; \"identitetType\": \"UKJENT\", <br />"
