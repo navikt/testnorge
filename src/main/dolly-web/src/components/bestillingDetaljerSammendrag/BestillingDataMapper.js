@@ -554,7 +554,54 @@ export function mapBestillingData(bestillingData) {
 			}
 			data.push(arenaforvalter)
 		}
-	}
 
+		const instKriterier = registreKriterier.instdata && registreKriterier.instdata
+
+		if (instKriterier) {
+			// Flater ut instKriterier for å gjøre det lettere å mappe
+
+			let flatInstKriterier = []
+			instKriterier.forEach(i => {
+				flatInstKriterier.push({
+					institusjonstype: i.institusjonstype,
+					varighet: i.varighet,
+					startdato: i.startdato,
+					faktiskSluttdato: i.faktiskSluttdato
+				})
+			})
+
+			const instObj = {
+				header: 'Institusjonsopphold',
+				itemRows: []
+			}
+
+			flatInstKriterier.forEach((inst, i) => {
+				instObj.itemRows.push([
+					{
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small'
+					},
+					{
+						label: 'Institusjonstype',
+						value: Formatters.showLabel('institusjonstype', inst.institusjonstype)
+					},
+					{
+						label: 'Varighet',
+						value: inst.varighet && Formatters.showLabel('varighet', inst.varighet)
+					},
+					{
+						label: 'Startdato',
+						value: Formatters.formatDate(inst.startdato)
+					},
+					{
+						label: 'Sluttdato',
+						value: Formatters.formatDate(inst.faktiskSluttdato)
+					}
+				])
+			})
+			data.push(instObj)
+		}
+	}
 	return data
 }

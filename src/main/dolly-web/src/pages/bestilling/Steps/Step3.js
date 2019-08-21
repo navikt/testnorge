@@ -180,7 +180,6 @@ export default class Step3 extends PureComponent {
 				!nested.subKategori.showInSummary &&
 				!nested.items.every(item => this.props.selectedAttributeIds.includes(item.id))
 		)
-
 		return (
 			<Fragment key={hovedKategori.navn}>
 				<h4>{hovedKategori.navn}</h4>
@@ -282,10 +281,25 @@ export default class Step3 extends PureComponent {
 				  ))
 				: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'][0], item.id)))
 		}
+
+		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
+			itemValue = Formatters.oversettBoolean(
+				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
+			)
+		}
+
+		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
+			itemValue = Formatters.showLabel(item.id, itemValue)
+		}
+
+		itemValue === 'true' && (itemValue = true) // Quickfix fra SelectOptions(stringBoolean)
+		itemValue === 'false' && (itemValue = false)
+		typeof itemValue === 'boolean' && (itemValue = Formatters.oversettBoolean(itemValue))
+
 		const staticValueProps = {
 			key: item.id,
 			header: item.label,
-			value: itemValue !== '' ? (itemValue === 'false' ? false : itemValue) : null, //Quickfix for selectOptionManager(stringBoolean)
+			value: itemValue !== '' ? itemValue : null,
 			format: item.format
 		}
 
