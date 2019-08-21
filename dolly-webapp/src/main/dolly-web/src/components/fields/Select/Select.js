@@ -26,6 +26,12 @@ export default class DollySelect extends PureComponent {
 
 	render() {
 		const { name, label, placeholder, loadOptions, error, size, ...restProps } = this.props
+
+		let restPropsCopy = Object.assign({}, restProps)
+		if (typeof this.props.value === 'object') {
+			restPropsCopy.value = {} // <arrayField/> viser ingen verdi i vinduet.
+		}
+
 		return (
 			<div className={cn({ error: Boolean(error) }, size, 'skjemaelement dollyselect')}>
 				<label htmlFor={name} className="skjemaelement__label">
@@ -43,7 +49,7 @@ export default class DollySelect extends PureComponent {
 						clearable
 						openOnFocus
 						{...this.translations}
-						{...restProps}
+						{...restPropsCopy}
 					/>
 				</div>
 				{error && (

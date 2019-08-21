@@ -19,4 +19,5 @@ public class RsDigitalKontaktdata {
         private boolean reservert;
         private String mobil;
         private String epost;
+        private boolean registrert;
 }

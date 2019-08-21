@@ -24,6 +24,7 @@ public class EnvironmentPropsController {
                 .krrStubUrl(providersProps.getKrrStub().getUrl())
                 .kodeverkUrl(providersProps.getKodeverk().getUrl())
                 .arenaForvalterUrl(providersProps.getArenaForvalter().getUrl())
+                .instdataUrl(providersProps.getInstdata().getUrl())
                 .build();
     }
 }
