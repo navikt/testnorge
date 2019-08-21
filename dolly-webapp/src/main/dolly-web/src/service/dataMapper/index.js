@@ -59,11 +59,7 @@ const DataMapper = {
 			testbruker.items.arenaforvalteren && testbruker.items.arenaforvalteren[personId]
 		var bestillingId = _findBestillingId(gruppe, personId)
 
-		let data = mapTpsfData(
-			tpsfData,
-			testIdent,
-			pdlfData && pdlfData.personidenter && pdlfData.personidenter
-		)
+		let data = mapTpsfData(tpsfData, testIdent, pdlfData && pdlfData.personidenter)
 
 		if (aaregData) {
 			data.push(mapAaregData(aaregData))
@@ -75,7 +71,7 @@ const DataMapper = {
 			data.push(mapKrrData(krrData))
 		}
 		if (pdlfData) {
-			data.push(mapPdlData(pdlfData))
+			data.push(...mapPdlData(pdlfData))
 		}
 		if (arenaData) {
 			// Workaround for å hente servicebehov-type, inaktiveringsdato, AAP og AAP115 fra bestilling så lenge vi ikke kan få den fra arenaforvalteren

@@ -65,9 +65,9 @@ export const SubKategorier: KategoriTypes = {
 		navn: 'Nasjonalitet',
 		order: 20
 	},
-	UtenlandsId: {
-		id: 'utenlandskIdentifikasjonsnummer',
-		navn: 'Utenlands-ID',
+	Identifikasjon: {
+		id: 'identifikasjon',
+		navn: 'Identifikasjon',
 		order: 30,
 		showInSummary: true
 	},
