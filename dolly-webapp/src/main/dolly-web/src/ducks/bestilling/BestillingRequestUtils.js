@@ -87,62 +87,83 @@ export const getValues = (attributeList, values) => {
 			return _set(accumulator, pathPrefix, value[0])
 		}
 
-		if (
-			pathPrefix === DataSourceMapper('PDLF') &&
-			attribute.id === 'utenlandskIdentifikasjonsnummer'
-		) {
-			return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value[0])
-		}
+		if (pathPrefix === DataSourceMapper('PDLF')) {
+			if (attribute.id === 'kontaktinformasjonForDoedsbo') {
+				const doedsboValues = values.kontaktinformasjonForDoedsbo[0]
+				const navnObj = deletePropertiesWithoutValues({
+					fornavn: doedsboValues.fornavn,
+					mellomnavn: doedsboValues.mellomnavn,
+					etternavn: doedsboValues.etternavn
+				})
+				const adressatObj = {
+					adressatType: doedsboValues.adressatType
+				}
 
-		if (
-			pathPrefix === DataSourceMapper('PDLF') &&
-			attribute.id === 'kontaktinformasjonForDoedsbo'
-		) {
-			const doedsboValues = values.kontaktinformasjonForDoedsbo[0]
-			const navnObj = deletePropertiesWithoutValues({
-				fornavn: doedsboValues.fornavn,
-				mellomnavn: doedsboValues.mellomnavn,
-				etternavn: doedsboValues.etternavn
-			})
-			const adressatObj = {
-				adressatType: doedsboValues.adressatType
+				if (adressatObj.adressatType === 'PERSON_MEDID')
+					Object.assign(adressatObj, { idnummer: doedsboValues.idnummer })
+				else if (adressatObj.adressatType === 'PERSON_UTENID')
+					Object.assign(adressatObj, {
+						foedselsdato: DataFormatter.parseDate(doedsboValues.foedselsdato),
+						navn: navnObj
+					})
+				else if (adressatObj.adressatType === 'ADVOKAT')
+					Object.assign(adressatObj, {
+						organisasjonsnavn: doedsboValues.advokat_orgnavn,
+						organisajonsnummer: doedsboValues.advokat_orgnr,
+						kontaktperson: navnObj
+					})
+				else if (adressatObj.adressatType === 'ORGANISASJON')
+					Object.assign(adressatObj, {
+						organisasjonsnavn: doedsboValues.org_orgnavn,
+						organisajonsnummer: doedsboValues.org_orgnummer,
+						kontaktperson: navnObj
+					})
+
+				const doedsboObj = { adressat: deletePropertiesWithoutValues(adressatObj) }
+				const otherAttributes = attribute.items.filter(
+					item => !item.path || (item.path && !item.path.includes('adressat'))
+				)
+				otherAttributes.map(item => {
+					let addedItem = { [item.id]: doedsboValues[item.id] }
+					if (item.id.includes('_')) addedItem = { [item.id.split('_')[1]]: doedsboValues[item.id] }
+					else if (item.inputType === 'date')
+						addedItem = { [item.id]: DataFormatter.parseDate(doedsboValues[item.id]) }
+
+					doedsboValues[item.id] && Object.assign(doedsboObj, addedItem)
+				})
+
+				//fiks adresse
+				return _set(accumulator, pathPrefix, { kontaktinformasjonForDoedsbo: doedsboObj })
 			}
 
-			if (adressatObj.adressatType === 'PERSON_MEDID')
-				Object.assign(adressatObj, { idnummer: doedsboValues.idnummer })
-			else if (adressatObj.adressatType === 'PERSON_UTENID')
-				Object.assign(adressatObj, {
-					foedselsdato: DataFormatter.parseDate(doedsboValues.foedselsdato),
-					navn: navnObj
-				})
-			else if (adressatObj.adressatType === 'ADVOKAT')
-				Object.assign(adressatObj, {
-					organisasjonsnavn: doedsboValues.advokat_orgnavn,
-					organisajonsnummer: doedsboValues.advokat_orgnr,
-					kontaktperson: navnObj
-				})
-			else if (adressatObj.adressatType === 'ORGANISASJON')
-				Object.assign(adressatObj, {
-					organisasjonsnavn: doedsboValues.org_orgnavn,
-					organisajonsnummer: doedsboValues.org_orgnummer,
-					kontaktperson: navnObj
-				})
+			if (attribute.id === 'utenlandskIdentifikasjonsnummer') {
+				return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, value[0])
+			}
+			if (attribute.id === 'falskIdentitet') {
+				const falskIdData = value[0]
 
-			const doedsboObj = { adressat: deletePropertiesWithoutValues(adressatObj) }
-			const otherAttributes = attribute.items.filter(
-				item => !item.path || (item.path && !item.path.includes('adressat'))
-			)
-			otherAttributes.map(item => {
-				let addedItem = { [item.id]: doedsboValues[item.id] }
-				if (item.id.includes('_')) addedItem = { [item.id.split('_')[1]]: doedsboValues[item.id] }
-				else if (item.inputType === 'date')
-					addedItem = { [item.id]: DataFormatter.parseDate(doedsboValues[item.id]) }
+				const personnavn = {}
+				const falskIdObj = {}
 
-				doedsboValues[item.id] && Object.assign(doedsboObj, addedItem)
-			})
-
-			//fiks adresse
-			return _set(accumulator, pathPrefix, { kontaktinformasjonForDoedsbo: doedsboObj })
+				Object.keys(falskIdData).map(attr => {
+					if (falskIdData[attr]) {
+						if (attr.includes('navn')) {
+							Object.assign(personnavn, { [attr]: falskIdData[attr] })
+							Object.assign(falskIdObj, { personnavn: personnavn })
+						} else if (falskIdData.identitetType === 'UKJENT') {
+							Object.assign(falskIdObj, {
+								rettIdentitetErUkjent: true,
+								[attr]: falskIdData[attr]
+							})
+						} else {
+							Object.assign(falskIdObj, { [attr]: falskIdData[attr] })
+						}
+					}
+				})
+				return _set(accumulator, `${pathPrefix}.${attribute.path || attribute.id}`, {
+					rettIdentitet: falskIdObj
+				})
+			}
 		}
 
 		if (pathPrefix === DataSourceMapper('ARENA')) {

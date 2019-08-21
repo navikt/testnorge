@@ -7,7 +7,7 @@ import Krr from './krr/Krr'
 import Arbeidsforhold from './aareg/Arbeidsforhold'
 import SigrunInntekt from './sigrun/Inntekt'
 import Doedsbo from './pdlf/Doedsbo'
-import UtenlandsId from './pdlf/UtenlandsId'
+import Identifikasjon from './pdlf/Identifikasjon'
 import Arena from './arena/Arena'
 import Inst from './inst/Inst'
 
@@ -19,9 +19,9 @@ const AttributtListe: Attributt[] = [
 	...SigrunInntekt,
 	...Krr,
 	...Doedsbo,
-	...UtenlandsId,
-	...Arena,
-	...Inst
+	...Inst,
+	...Identifikasjon,
+	...Arena
 ]
 
 export default AttributtListe
