@@ -55,7 +55,6 @@ export default class Step3 extends PureComponent {
 		this.SelectedAttributes = this.AttributtManager.listSelectedAttributesForValueSelection(
 			selectedAttributeIds
 		)
-
 		return (
 			<div className="bestilling-step3">
 				<div className="content-header">
@@ -181,7 +180,6 @@ export default class Step3 extends PureComponent {
 				!nested.subKategori.showInSummary &&
 				!nested.items.every(item => this.props.selectedAttributeIds.includes(item.id))
 		)
-
 		return (
 			<Fragment key={hovedKategori.navn}>
 				<h4>{hovedKategori.navn}</h4>
@@ -191,11 +189,25 @@ export default class Step3 extends PureComponent {
 					removableText={'FJERN RAD'}
 				>
 					<div className="oppsummering-blokk oppsummering-blokk-margin">
-						{items.map(item => this.renderSubKategori(item))}
+						{items.map(item => {
+							return this.renderSubKategori(item)
+						})}
 					</div>
 				</RemoveableField>
 			</Fragment>
 		)
+	}
+
+	renderSubKategori = ({ subKategori, items }) => {
+		const { values } = this.props
+		if (!subKategori.showInSummary) {
+			return items.map(item => this.renderItem(item, values))
+		}
+		if (subKategori.id === 'arena') {
+			return items[0].items.map(item => this.renderItem(item, values))
+		}
+
+		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
 	renderSubKategoriBlokk = (header, items, values) => {
@@ -222,7 +234,14 @@ export default class Step3 extends PureComponent {
 						onRemove={() => this._onRemoveSubKategori(items, header)}
 					>
 						{header && <h4>{typeof header === 'number' ? `# ${header}` : header}</h4>}
-						<div className="oppsummering-blokk">
+
+						<div
+							className={
+								typeof items[0].subGruppe === 'string'
+									? 'oppsummering-blokk margin'
+									: 'oppsummering-blokk'
+							}
+						>
 							{items.map(item => this.renderItem(item, values, header))}
 						</div>
 					</RemoveableField>
@@ -231,24 +250,10 @@ export default class Step3 extends PureComponent {
 		}
 		return (
 			<div className={fieldType} key={header}>
-				{header && <h4>{header}</h4>}
+				{header && !items[0].subGruppe && <h4>{header}</h4>}
 				<div className="oppsummering-blokk">{items.map(item => this.renderItem(item, values))}</div>
 			</div>
 		)
-	}
-
-	renderSubKategori = ({ subKategori, items }) => {
-		const { values } = this.props
-		if (!subKategori.showInSummary) {
-			return items.map(item => this.renderItem(item, values))
-		}
-		if (subKategori.id === 'arena') {
-			return items[0].items.map(item => this.renderItem(item, values))
-		}
-		if (subKategori.id === 'utenlandskIdentifikasjonsnummer') {
-			return items[0].items.map(item => this.renderItem(item, values))
-		}
-		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
 
 	renderItem = (item, stateValues, header) => {
@@ -260,10 +265,14 @@ export default class Step3 extends PureComponent {
 				valueArray = _get(this.props.values.barn[barnIndex], item.id)
 			}
 			return valueArray.map((values, idx) => {
-				Object.keys(values).map(attr => !values[attr] && delete values[attr])
-				return valueArray.length > 1
-					? this.renderSubKategoriBlokk(idx + 1, item.items, values)
-					: this.renderSubKategoriBlokk(null, item.items, values)
+				Object.keys(values).map(attr => {
+					return !values[attr] && delete values[attr]
+				})
+
+				const header =
+					valueArray.length > 1 ? idx + 1 : item.subGruppe ? item.items[0].subGruppe : null
+
+				return this.renderSubKategoriBlokk(header, item.items, values)
 			})
 		}
 
@@ -284,6 +293,14 @@ export default class Step3 extends PureComponent {
 				_get(stateValues['utenlandskIdentifikasjonsnummer'][0], item.id)
 			)
 		}
+
+		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
+			itemValue = Formatters.showLabel(item.id, itemValue)
+		}
+
+		itemValue === 'true' && (itemValue = true) // Quickfix fra SelectOptions(stringBoolean)
+		itemValue === 'false' && (itemValue = false)
+		typeof itemValue === 'boolean' && (itemValue = Formatters.oversettBoolean(itemValue))
 
 		const staticValueProps = {
 			key: item.id,
@@ -322,8 +339,7 @@ export default class Step3 extends PureComponent {
 	}
 
 	_onRemoveSubKategori(items, header) {
-		if (typeof header === 'number') {
-			//|| header === null
+		if (typeof header === 'number' || header === null) {
 			this.props.deleteValuesArray({
 				values: [...new Set(items.map(item => item.subKategori.id))],
 				index: header - 1

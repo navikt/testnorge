@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 
@@ -34,10 +34,10 @@ public class DigitalKontaktMappingStrategyTest {
     @Test
     public void mapReservert_OK() {
 
-        DigitalKontaktdataRequest result = mapperFacade.map(RsDigitalKontaktdata.builder()
+        DigitalKontaktdata result = mapperFacade.map(RsDigitalKontaktdata.builder()
                 .reservert(RESERVERT)
                 .gyldigFra(GYLDIG_FRA)
-                .build(), DigitalKontaktdataRequest.class);
+                .build(), DigitalKontaktdata.class);
 
         assertThat(result.isReservert(), is(equalTo(RESERVERT)));
         assertThat(result.getEpost(), is(nullValue()));
@@ -52,10 +52,10 @@ public class DigitalKontaktMappingStrategyTest {
     @Test
     public void mapMobil_OK() {
 
-        DigitalKontaktdataRequest result = mapperFacade.map(RsDigitalKontaktdata.builder()
+        DigitalKontaktdata result = mapperFacade.map(RsDigitalKontaktdata.builder()
                 .gyldigFra(GYLDIG_FRA)
                 .mobil(MOBIL)
-                .build(), DigitalKontaktdataRequest.class);
+                .build(), DigitalKontaktdata.class);
 
         assertThat(result.getMobil(), is(equalTo(MOBIL)));
         assertThat(result.getMobilOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
@@ -65,10 +65,10 @@ public class DigitalKontaktMappingStrategyTest {
     @Test
     public void mapEpost_OK() {
 
-        DigitalKontaktdataRequest result = mapperFacade.map(RsDigitalKontaktdata.builder()
+        DigitalKontaktdata result = mapperFacade.map(RsDigitalKontaktdata.builder()
                 .gyldigFra(GYLDIG_FRA)
                 .epost(EPOST)
-                .build(), DigitalKontaktdataRequest.class);
+                .build(), DigitalKontaktdata.class);
 
         assertThat(result.getEpost(), is(equalTo(EPOST)));
         assertThat(result.getEpostOppdatert(), is(equalTo(Z_GYLDIG_FRA)));

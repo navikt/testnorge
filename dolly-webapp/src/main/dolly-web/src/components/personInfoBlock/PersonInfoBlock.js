@@ -128,8 +128,10 @@ export default class PersonInfoBlock extends PureComponent {
 						// Spesiell tilfeller for gtVerdi og tknr
 						const apiKodeverkId = v && v.apiKodeverkId ? v.apiKodeverkId : null
 						const tknr = v && v.tknr ? v.tknr : null
+
 						// finn tilhørende attributt
 						const attributt = this.props.attributtManager.getAttributtById(v && v.id)
+
 						if (attributt && attributt.apiKodeverkId && v.value) {
 							return (
 								<KodeverkValueConnector
@@ -137,7 +139,7 @@ export default class PersonInfoBlock extends PureComponent {
 									{...staticValueProps}
 								/>
 							)
-						} else if (apiKodeverkId) {
+						} else if (apiKodeverkId && v.value) {
 							return (
 								<KodeverkValueConnector
 									apiKodeverkId={apiKodeverkId}

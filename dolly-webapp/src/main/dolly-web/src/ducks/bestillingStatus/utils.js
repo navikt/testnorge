@@ -2,12 +2,12 @@ import Formatters from '~/utils/DataFormatter'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 
-export const getAaregSuccessEnv = aaregStatusArray => {
+export const getSuccessEnv = statusArray => {
 	let envs = []
-	if (!aaregStatusArray) return envs
+	if (!statusArray) return envs
 
-	aaregStatusArray.length > 0 &&
-		aaregStatusArray.forEach(status => {
+	statusArray.length > 0 &&
+		statusArray.forEach(status => {
 			if (status.statusMelding === 'OK') {
 				envs.push(Object.keys(status.environmentIdentsForhold))
 			}
@@ -17,13 +17,15 @@ export const getAaregSuccessEnv = aaregStatusArray => {
 }
 
 export const getPdlforvalterStatusOK = pdlforvalterStatus => {
-	return Object.keys(pdlforvalterStatus).map(pdlAttr => {
-		return pdlforvalterStatus[pdlAttr].map(status => {
+	let totalStatus = false
+	Object.keys(pdlforvalterStatus).map(pdlAttr => {
+		pdlforvalterStatus[pdlAttr].map(status => {
 			if (status.statusMelding === 'OK') {
-				return true
+				totalStatus = true
 			}
 		})
 	})
+	return totalStatus
 }
 
 export const sokSelector = (items, searchStr) => {
@@ -100,6 +102,12 @@ const avvikStatus = item => {
 		item.arenaforvalterStatus.map(status => {
 			status.status !== 'OK' && (avvik = true)
 		})
+
+	item.instdataStatus &&
+		item.instdataStatus.map(status => {
+			status.statusMelding !== 'OK' && (avvik = true)
+		})
+
 	item.feil && (avvik = true)
 	return avvik
 }

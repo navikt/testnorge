@@ -10,6 +10,8 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.domain.resultset.IdentType.DNR;
+import static no.nav.dolly.domain.resultset.IdentType.FNR;
 import static no.nav.dolly.domain.resultset.IdentTypeUtil.getIdentType;
 
 import java.io.IOException;
@@ -37,6 +39,7 @@ import no.nav.dolly.domain.resultset.NorskIdent;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.ServiceRoutineResponseStatus;
@@ -53,6 +56,7 @@ import no.nav.dolly.service.TestgruppeService;
 @Service
 public class DollyBestillingService {
 
+    private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
     private static final String SUCCESS = "OK";
     private static final String OUT_FMT = "%s: %s";
 
@@ -104,7 +108,7 @@ public class DollyBestillingService {
             }
         } catch (Exception e) {
             log.error("Bestilling med id <" + bestilling.getId() + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
-            bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres: %s", e.getMessage()));
+            bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
         } finally {
             oppdaterProgressFerdig(bestilling);
             clearCache();
@@ -136,10 +140,33 @@ public class DollyBestillingService {
             }
         } catch (Exception e) {
             log.error("Bestilling med id={} til gruppeId={} ble avsluttet med feil={}", bestilling.getId(), gruppeId, e.getMessage(), e);
-            bestilling.setFeil(format("FEIL: Bestilling kunne ikke utføres: %s", e.getMessage()));
+            bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
         } finally {
             oppdaterProgressFerdig(bestilling);
             clearCache();
+        }
+    }
+
+    @Async
+    public void oppdaterPersonAsync(String ident, RsDollyUpdateRequest request, Bestilling bestilling) {
+
+        try {
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
+
+            tpsfService.updatePerson(request.getTpsfPerson());
+            sendIdenterTilTPS(request.getEnvironments(), singletonList(ident), null, progress);
+            gjenopprettNonTpsf(NorskIdent.builder().ident(ident)
+                    .identType(Character.getType(ident.charAt(0)) > 3 ? DNR : FNR)
+                    .build(), bestilling, progress);
+
+        } catch (Exception e) {
+            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), ident, e.getMessage(), e);
+            bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
+
+        } finally {
+            oppdaterProgressFerdig(bestilling);
+            clearCache();
+
         }
     }
 
@@ -254,7 +281,9 @@ public class DollyBestillingService {
             List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
             List<String> failureMiljoer = extraxtFailureMiljoForHovedperson(hovedperson, response);
 
-            identService.saveIdentTilGruppe(hovedperson, testgruppe);
+            if (nonNull(testgruppe)) {
+                identService.saveIdentTilGruppe(hovedperson, testgruppe);
+            }
             if (!successMiljoer.isEmpty()) {
                 progress.setTpsfSuccessEnv(join(",", successMiljoer));
             }
