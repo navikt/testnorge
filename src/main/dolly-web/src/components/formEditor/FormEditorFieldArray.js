@@ -94,7 +94,8 @@ export const FieldArrayComponent = ({
 	}
 	let formikValues = formikProps.values[parentId]
 	if (item.id === 'barn_utvandret') {
-		formikValues = formikProps.values.barn[idx][parentId]
+		formikValues = [{ utvandretTilLand: '', utvandretTilLandFlyttedato: '' }]
+		// formikValues = formikProps.values.barn[idx][parentId]
 	}
 	let subLabelArray = []
 	return (
