@@ -28,7 +28,7 @@ const ConfigService = {
 			case 'arena':
 				return dollyConfig.arenaUrl
 			case 'inst':
-				return dollyConfig.instUrl
+				return dollyConfig.instdataUrl
 			default:
 				return undefined
 		}
