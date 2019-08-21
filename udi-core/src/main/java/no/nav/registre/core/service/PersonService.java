@@ -7,6 +7,7 @@ import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import no.nav.registre.core.database.model.Alias;
@@ -41,7 +42,7 @@ public class PersonService {
         personRepository.deleteById(finnPerson(fnr).getId());
     }
 
-    public List<Person> opprettPersoner(List<Person> personer) {
+    public List<Optional<Person>> opprettPersoner(List<Person> personer) {
         return personer.parallelStream().map(this::opprettPerson).collect(Collectors.toList());
     }
 
@@ -54,13 +55,13 @@ public class PersonService {
                 .collect(Collectors.toList());
     }
 
-    public Person opprettPerson(Person person) {
-        if (person.getOppholdStatus() != null)
-            person.getOppholdStatus().setPerson(person);
-        if (person.getArbeidsadgang() != null)
-            person.getArbeidsadgang().setPerson(person);
-        return personRepository.save(person);
-    }
+	public Optional<Person> opprettPerson(Person person) {
+		if (person.getOppholdStatus() != null)
+			person.getOppholdStatus().setPerson(person);
+		if (person.getArbeidsadgang() != null)
+			person.getArbeidsadgang().setPerson(person);
+		return Optional.of(personRepository.save(person));
+	}
 
     public Arbeidsadgang opprettArbeidsAdgang(String fnr, Arbeidsadgang arbeidsadgang) {
         return personRepository.findByFnr(fnr).map(person -> {

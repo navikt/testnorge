@@ -3,6 +3,7 @@ package no.nav.registre.core.provider.rs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.core.database.model.Person;
+import no.nav.registre.core.exception.CouldNotCreatePersonException;
 import no.nav.registre.core.exception.NotFoundException;
 import no.nav.registre.core.service.PersonService;
 import org.springframework.http.HttpStatus;
@@ -29,14 +30,9 @@ public class PersonController {
 
 	@PostMapping
 	public ResponseEntity<PersonControllerResponse> opprettPerson(@Valid @RequestBody Person person) {
-		try {
-			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new PersonControllerResponse(personService.opprettPerson(person)));
-		} catch (Exception e) {
-			String message = String.format("Kunne ikke opprette person med fnr:%s, feil ble kastet:%s", person.getFnr(), e.getMessage());
-			log.error(message);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PersonControllerResponse(message));
-		}
+		Person createdPerson = personService.opprettPerson(person)
+				.orElseThrow(() -> new CouldNotCreatePersonException(String.format("Kunne ikke opprette person med fnr:%s", person.getFnr())));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new PersonControllerResponse(createdPerson));
 	}
 
 	@GetMapping
@@ -51,10 +47,6 @@ public class PersonController {
 			return ResponseEntity.status(HttpStatus.OK).body(new PersonControllerResponse());
 		} catch (NotFoundException e) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new PersonControllerResponse(String.format("Kunne ikke slette person med fnr:%s, da personen ikke ble funnet", fnr)));
-		} catch (Exception e) {
-			String message = String.format("Kunne ikke slette person med fnr:%s, fikk følgende feil:%s", fnr, e.getMessage());
-			log.error(message);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new PersonControllerResponse(message));
 		}
 	}
 }
