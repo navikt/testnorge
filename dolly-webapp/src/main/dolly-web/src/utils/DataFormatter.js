@@ -4,6 +4,7 @@ import _startCase from 'lodash/startCase'
 import _capitalize from 'lodash/capitalize'
 
 import { defaultDateFormat } from '~/components/fields/Datepicker/DateValidation'
+import SelectOptionsManager from '~/service/kodeverk/SelectOptionsManager/SelectOptionsManager'
 
 const Formatters = {}
 
@@ -36,6 +37,13 @@ Formatters.parseDate = date => {
 
 	const parts = date.split('.')
 	return new Date(Date.UTC(parts[2], parts[1] - 1, parts[0]))
+}
+
+// Format date AAAA-MM-DD to DD.MM.AAAA
+Formatters.formateStringDates = date => {
+	if (!date) return date
+	const dateArray = date.split('-')
+	return `${dateArray[2]}.${dateArray[1]}.${dateArray[0]}`
 }
 
 Formatters.decamelize = (str, separator) => {
@@ -200,6 +208,11 @@ Formatters.idUtenEllipse = id => {
 Formatters.commaToSpace = streng => {
 	if (!streng) return null
 	return streng.split(',').join(', ')
+}
+
+Formatters.showLabel = (optionsGruppe, value) => {
+	const obj = SelectOptionsManager(optionsGruppe).filter(options => options.value === value)
+	return obj.label || obj[0].label
 }
 
 export default Formatters

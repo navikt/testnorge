@@ -34,7 +34,8 @@ export const iconList = [
 	'arrow-left',
 	'arrow-right',
 	'synchronize',
-	'details'
+	'details',
+	'file-hand'
 ]
 
 export default class Icon extends PureComponent {
@@ -149,7 +150,15 @@ export default class Icon extends PureComponent {
 			case ('file-new-table'): return (<svg {...props} className={cn('svg-icon-file-new-lines', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Ny fil med ruter</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"></g>
 				<g><path d="M 20.961 6.308 c -0.025 -0.061 -0.062 -0.116 -0.108 -0.162 l -5.999 -5.999 c -0.046 -0.046 -0.101 -0.083 -0.162 -0.108 C 14.632 0.014 14.567 0 14.5 0 h -11 C 3.224 0 3 0.224 3 0.5 v 23 C 3 23.776 3.224 24 3.5 24 h 17 c 0.276 0 0.5 -0.224 0.5 -0.5 v -17 C 21 6.433 20.986 6.368 20.961 6.308 Z M 15 1.707 L 19.293 6 H 15 V 1.707 Z M 4 23 V 1 h 10 v 5.5 C 14 6.776 14.224 7 14.5 7 H 20 v 16 H 4 Z"/>
 				<path d= "M 17.5 8 h -11 C 6.224 8 6 8.224 6 8.5 v 12 C 6 20.776 6.224 21 6.5 21 h 11 c 0.276 0 0.5 -0.224 0.5 -0.5 v -12 C 18 8.224 17.776 8 17.5 8 Z M 10 14 H 7 v -2 h 3 V 14 Z M 11 12 h 6 v 2 h -6 V 12 Z M 7 15 h 3 v 2 H 7 V 15 Z M 11 15 h 6 v 2 h -6 V 15 Z M 17 11 h -6 V 9 h 6 V 11 Z M 10 9 v 2 H 7 V 9 H 10 Z M 7 18 h 3 v 2 H 7 V 18 Z M 11 20 v -2 h 6 v 2 H 11 Z"/>
-				</g></svg>)
+				</g></svg>)	
+			case ('file-hand'): return (<svg {...props} className={cn('svg-file-hand-2', className)} focusable="false" height={height || size} width={width || size} style={style} viewBox="0 0 24 24"><title>Hånd som viser fil</title><g stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none"></g>
+			<g><path d="M23.961,5.308c-0.025-0.061-0.062-0.116-0.108-0.162l-4.999-4.999c-0.046-0.046-0.101-0.083-0.162-0.108
+				C18.632,0.014,18.567,0,18.5,0h-8C10.224,0,10,0.224,10,0.5v14h1V1h7v4.5C18,5.776,18.224,6,18.5,6H23v11h-9v1h9.5
+				c0.276,0,0.5-0.224,0.5-0.5v-12C24,5.433,23.986,5.368,23.961,5.308z M19,1.707L22.293,5H19V1.707z"/>
+				<path d="M14,19h-1.787l-0.021-0.021C11.588,18.336,10.332,17,8,17H5v-0.5C5,16.224,4.776,16,4.5,16h-4C0.224,16,0,16.224,0,16.5v7
+				C0,23.776,0.224,24,0.5,24h4C4.776,24,5,23.776,5,23.5V23h16.5c0.276,0,0.5-0.224,0.5-0.5C22,20.438,17.784,19,14,19z M4,23H1v-6h3
+				V23z M5,22v-4h3c1.289,0,2.165,0.498,2.771,1H7c-0.276,0-0.5,0.224-0.5,0.5S6.724,20,7,20h7c3.36,0,6.021,1.073,6.781,2H5z"/>			
+			</g></svg>)		
 		}
 	}
 }
