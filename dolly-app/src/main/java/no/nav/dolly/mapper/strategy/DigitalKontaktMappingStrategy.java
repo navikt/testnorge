@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdataRequest;
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.mapper.MappingStrategy;
 
@@ -17,9 +17,9 @@ import no.nav.dolly.mapper.MappingStrategy;
 public class DigitalKontaktMappingStrategy implements MappingStrategy {
 
     @Override public void register(MapperFactory factory) {
-        factory.classMap(RsDigitalKontaktdata.class, DigitalKontaktdataRequest.class)
-                .customize(new CustomMapper<RsDigitalKontaktdata, DigitalKontaktdataRequest>() {
-                    @Override public void mapAtoB(RsDigitalKontaktdata digitalKontaktdata, DigitalKontaktdataRequest kontaktdataRequest, MappingContext context) {
+        factory.classMap(RsDigitalKontaktdata.class, DigitalKontaktdata.class)
+                .customize(new CustomMapper<RsDigitalKontaktdata, DigitalKontaktdata>() {
+                    @Override public void mapAtoB(RsDigitalKontaktdata digitalKontaktdata, DigitalKontaktdata kontaktdataRequest, MappingContext context) {
 
                         kontaktdataRequest.setGyldigFra(getDato(digitalKontaktdata));
 

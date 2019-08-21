@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class KrrStubResponseHandler {
+public class KrrstubResponseHandler {
 
     public String extractResponse(ResponseEntity<Object> response) {
         return nonNull(response) && isOkStatus(response) ? "OK" : unWrapError(response);
