@@ -294,7 +294,7 @@ export function mapBestillingData(bestillingData) {
 			})
 			data.push(aareg)
 		}
-		const sigrunStubKriterier = registreKriterier.sigrunStub && registreKriterier.sigrunStub
+		const sigrunStubKriterier = registreKriterier.sigrunstub && registreKriterier.sigrunstub
 
 		if (sigrunStubKriterier) {
 			// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
@@ -343,7 +343,7 @@ export function mapBestillingData(bestillingData) {
 			data.push(sigrunStub)
 		}
 
-		const krrKriterier = registreKriterier.krrStub && registreKriterier.krrStub
+		const krrKriterier = registreKriterier.krrstub && registreKriterier.krrstub
 
 		if (krrKriterier) {
 			const krrStub = {
