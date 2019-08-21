@@ -30,7 +30,7 @@ public class KrrstubClientTest {
     private static final Long BESTILLING_ID = 1L;
 
     @Mock
-    private KrrstubConsumer krrStubConsumer;
+    private KrrstubConsumer krrstubConsumer;
 
     @Mock
     private KrrstubResponseHandler krrStubResponseHandler;
@@ -39,13 +39,13 @@ public class KrrstubClientTest {
     private MapperFacade mapperFacade;
 
     @InjectMocks
-    private KrrstubClient krrStubClient;
+    private KrrstubClient krrstubClient;
 
     @Test
     public void gjenopprett_ingendata() {
-        krrStubClient.gjenopprett(new RsDollyBestilling(), NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
+        krrstubClient.gjenopprett(new RsDollyBestilling(), NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
 
-        verify(krrStubConsumer, times(0)).createDigitalKontaktdata(any(DigitalKontaktdata.class));
+        verify(krrstubConsumer, times(0)).createDigitalKontaktdata(any(DigitalKontaktdata.class));
     }
 
     @Test
@@ -53,13 +53,15 @@ public class KrrstubClientTest {
 
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
-        when(krrStubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenReturn(ResponseEntity.ok(""));
 
-        krrStubClient.gjenopprett(RsDollyBestilling.builder().krrstub(new RsDigitalKontaktdata()).build(),
+        when(krrstubConsumer.readDigitalKontaktdata(IDENT)).thenReturn(ResponseEntity.ok(null));
+        when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenReturn(ResponseEntity.ok(""));
+
+        krrstubClient.gjenopprett(RsDollyBestilling.builder().krrstub(new RsDigitalKontaktdata()).build(),
                 NorskIdent.builder().ident(IDENT).build(),
                 BestillingProgress.builder().bestillingId(BESTILLING_ID).build());
 
-        verify(krrStubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
+        verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
         verify(krrStubResponseHandler).extractResponse(any(ResponseEntity.class));
     }
 
@@ -67,15 +69,16 @@ public class KrrstubClientTest {
     public void gjenopprett_krrdata_feil() {
 
         BestillingProgress progress = BestillingProgress.builder().bestillingId(BESTILLING_ID).build();
+        when(krrstubConsumer.readDigitalKontaktdata(IDENT)).thenReturn(ResponseEntity.ok(null));
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
-        when(krrStubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(HttpClientErrorException.class);
+        when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(HttpClientErrorException.class);
 
-        krrStubClient.gjenopprett(RsDollyBestilling.builder()
+        krrstubClient.gjenopprett(RsDollyBestilling.builder()
                 .krrstub(new RsDigitalKontaktdata())
                 .build(), NorskIdent.builder().ident(IDENT).build(), progress);
 
-        verify(krrStubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
+        verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
         verify(krrStubResponseHandler, times(0)).extractResponse(any(ResponseEntity.class));
 
         assertThat(progress.getKrrstubStatus(), containsString("Feil:"));
