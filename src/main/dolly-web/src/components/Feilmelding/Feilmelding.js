@@ -9,23 +9,26 @@ import './Feilmelding.less'
 export default class Feilmelding extends Component {
 	render() {
 		const { bestilling } = this.props
+
 		let cssClass = 'feil-container feil-container_border'
 		const stubStatus = this._finnStubStatus(bestilling)
 		const pdlforvalterStatus =
 			bestilling.pdlforvalterStatus && this._finnPdlforvalterStatus(bestilling)
-		// TODO: Refaktor
-		const finnesTPSFEllerStub =
-			(bestilling.tpsfStatus && this._finnTpsfFeilStatus(bestilling.tpsfStatus).length > 0) ||
-			stubStatus.length > 0 ||
-			(bestilling.aaregStatus && this._finnTpsfFeilStatus(bestilling.aaregStatus).length > 0) ||
+		const finnesIndividuellFeil =
+			this._finnFeilStatus(bestilling.tpsfStatus).length > 0 ||
+			this._finnFeilStatus(bestilling.aaregStatus).length > 0 ||
+			this._finnFeilStatus(bestilling.arenaforvalterStatus).length > 0 ||
+			this._finnFeilStatus(bestilling.instdataStatus).length > 0 ||
 			(pdlforvalterStatus && pdlforvalterStatus.length > 0) ||
-			(bestilling.arenaforvalterStatus &&
-				this._finnTpsfFeilStatus(bestilling.arenaforvalterStatus).length > 0)
+			stubStatus.length > 0
+
 		return (
 			<div className="feil-melding">
 				{/*Generelle feilmeldinger */}
-				{bestilling.feil && this._renderGenerelleFeil(bestilling, cssClass, finnesTPSFEllerStub)}
-				{finnesTPSFEllerStub && (
+				{bestilling.feil && this._renderGenerelleFeil(bestilling, cssClass, finnesIndividuellFeil)}
+
+				{/*Feilmeldinger fra ulike registre */}
+				{finnesIndividuellFeil && (
 					<span className="feil-container">
 						<h2 className="feil-header feil-header_stor">Feilmelding</h2>
 						<span className="feil-kolonne_header">
@@ -34,65 +37,36 @@ export default class Feilmelding extends Component {
 						</span>
 					</span>
 				)}
+
+				{/*Individuelle feilmeldinger med miljø */}
 				{bestilling.tpsfStatus &&
-					this._finnTpsfFeilStatus(bestilling.tpsfStatus).map((feil, i) => {
-						//Feilmeldinger fra tpsf
-						if (stubStatus.length < 1) {
-							const bottomBorder = i != this._finnTpsfFeilStatus(bestilling.tpsfStatus).length - 1
-							cssClass = cn('feil-container', {
-								'feil-container feil-container_border': bottomBorder
-							})
-						}
-						return this._renderTPSFStatus(feil, cssClass, i)
-					})}
-				{/* Gjenbruke tpsf-metodene for AAREG siden de har helt like format */}
-				{/* TODO: Lag en generell metode med generelle metodenavn hvis det blir en ny register med samme format */}
+					this._renderStatusMedMiljoOgIdent(bestilling.tpsfStatus, stubStatus, 'TPSF', cssClass)}
 				{bestilling.aaregStatus &&
-					this._finnTpsfFeilStatus(bestilling.aaregStatus).map((feil, i) => {
-						//Feilmeldinger fra tpsf
-						if (stubStatus.length < 1) {
-							const bottomBorder = i != this._finnTpsfFeilStatus(bestilling.aaregStatus).length - 1
-							cssClass = cn('feil-container', {
-								'feil-container feil-container_border': bottomBorder
-							})
-						}
-						return this._renderAaregStatus(feil, cssClass, i)
-					})}
+					this._renderStatusMedMiljoOgIdent(bestilling.aaregStatus, stubStatus, 'AAREG', cssClass)}
 				{bestilling.arenaforvalterStatus &&
-					this._finnTpsfFeilStatus(bestilling.arenaforvalterStatus).map((feil, i) => {
-						if (stubStatus.length < 1) {
-							const bottomBorder =
-								i != this._finnTpsfFeilStatus(bestilling.arenaforvalterStatus).length - 1
-							cssClass = cn('feil-container', {
-								'feil-container feil-container_border': bottomBorder
-							})
-						}
-						return this._renderArenaStatus(feil, cssClass, i)
-					})}
-				{/*Feilmeldinger fra Sigrun- og krrStub */}
-				{stubStatus && this._renderStubStatus(stubStatus, cssClass)}
-				{pdlforvalterStatus && this._renderStubStatus(pdlforvalterStatus, cssClass)}
+					this._renderStatusMedMiljoOgIdent(
+						bestilling.arenaforvalterStatus,
+						stubStatus,
+						'ARENA',
+						cssClass
+					)}
+				{bestilling.instdataStatus &&
+					this._renderStatusMedMiljoOgIdent(
+						bestilling.instdataStatus,
+						stubStatus,
+						'INST',
+						cssClass
+					)}
+
+				{/*Individuelle feilmeldinger uavhengig av miljø*/}
+				{stubStatus && this._renderStatusUavhengigAvMiljo(stubStatus, cssClass)}
+				{pdlforvalterStatus && this._renderStatusUavhengigAvMiljo(pdlforvalterStatus, cssClass)}
 			</div>
 		)
 	}
 
-	_finnTpsfFeilStatus = tpsfStatus => {
-		let tpsfFeil = []
-		tpsfStatus.map(status => {
-			if (status.statusMelding && status.statusMelding !== 'OK') {
-				tpsfFeil.push(status)
-			}
-			if (status.status && status.status !== 'OK') {
-				tpsfFeil.push(status)
-			}
-		})
-
-		return tpsfFeil
-	}
-
 	_finnStubStatus = bestilling => {
 		let stubStatus = []
-		//const tpsfFeilStatus = this.finnTpsfFeilStatus(bestilling.tpsfStatus)
 		const krrStubStatus = { navn: 'KRRSTUB', status: bestilling.krrStubStatus }
 		const sigrunStubStatus = { navn: 'SIGRUNSTUB', status: bestilling.sigrunStubStatus }
 
@@ -131,133 +105,30 @@ export default class Feilmelding extends Component {
 
 		return pdlfStatuser
 	}
-	_finnArenaStatus = bestilling => {
-		let arenaStatus = []
-		const arenaforvalterStatus = { navn: 'ARENA', status: bestilling.arenaforvalterStatus }
-		arenaforvalterStatus.status &&
-			arenaforvalterStatus.status.map(miljo => {
-				if (miljo.status !== 'OK') {
-					arenaStatus.push(miljo)
-				}
-			})
-		return arenaStatus
-	}
 
-	_renderTPSFStatus = (tpsfFeil, cssClass, i) => {
-		return (
-			<Fragment key={i}>
-				<h5>TPSF</h5>
-				<div className={cssClass}>
-					<span className="feil-kolonne_stor">{tpsfFeil.statusMelding}</span>
-					<div className="feil-kolonne_stor" key={i}>
-						{Object.keys(tpsfFeil.environmentIdents).map((miljo, idx) => {
-							let identerPerMiljo = []
-							tpsfFeil.environmentIdents[miljo].map(ident => {
-								!identerPerMiljo.includes(ident) && identerPerMiljo.push(ident)
-							})
-
-							const miljoUpperCase = miljo.toUpperCase()
-							const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
-							return (
-								<span className="feil-container" key={idx}>
-									<span className="feil-kolonne_liten">{miljoUpperCase}</span>
-									<span className="feil-kolonne_stor">{identerPerMiljoStr}</span>
-								</span>
-							)
-						})}
-					</div>
-				</div>
-			</Fragment>
-		)
-	}
-
-	_renderAaregStatus = (aaregFeil, cssClass, i) => {
-		return (
-			<Fragment key={i}>
-				<h5>AAREG</h5>
-				<div className={cssClass}>
-					<span className="feil-kolonne_stor">{aaregFeil.statusMelding}</span>
-					<div className="feil-kolonne_stor" key={i}>
-						{Object.keys(aaregFeil.environmentIdentsForhold).map((miljo, idx) => {
-							const identerPerMiljo = Object.keys(aaregFeil.environmentIdentsForhold[miljo])
-							const miljoUpperCase = miljo.toUpperCase()
-							const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
-							return (
-								<span className="feil-container" key={idx}>
-									<span className="feil-kolonne_liten">{miljoUpperCase}</span>
-									<span className="feil-kolonne_stor">{identerPerMiljoStr}</span>
-								</span>
-							)
-						})}
-					</div>
-				</div>
-			</Fragment>
-		)
-	}
-
-	_renderStubStatus = (stubStatus, cssClass) => {
-		return stubStatus.map((stub, i) => {
-			const stubNavn = stub.navn
-			const identer = Formatters.arrayToString(stub.status[0].identer || stub.identer)
-			const statusmelding = stub.status[0].statusMelding || stub.status
-			//Ha linje mellom feilmeldingene, men ikke etter den siste
-			const bottomBorder = i != stubStatus.length - 1
-			cssClass = cn('feil-container', {
-				'feil-container feil-container_border': bottomBorder
-			})
-			return (
-				<div className={cssClass} key={i}>
-					<div className="feil-kolonne_stor">{statusmelding}</div>
-					<div className="feil-kolonne_stor">
-						<span className="feil-container">
-							<span className="feil-kolonne_liten">{stubNavn}</span>
-							<span className="feil-kolonne_stor">{identer}</span>
-						</span>
-					</div>
-				</div>
-			)
+	_finnFeilStatus = statuser => {
+		if (!statuser) return []
+		let feil = []
+		statuser.map(status => {
+			const statusMelding = status.statusMelding || status.status
+			statusMelding !== 'OK' && feil.push(status)
 		})
+		return feil
 	}
 
-	_renderArenaStatus = (arenaFeil, cssClass, i) => {
-		return (
-			<Fragment key={i}>
-				<h5>ARENA</h5>
-				<div className={cssClass}>
-					<span className="feil-kolonne_stor">{arenaFeil.status}</span>
-					<div className="feil-kolonne_stor" key={i}>
-						{Object.keys(arenaFeil.envIdent).map((miljo, idx) => {
-							let identerPerMiljo = []
-							arenaFeil.envIdent[miljo].map(ident => {
-								!identerPerMiljo.includes(ident) && identerPerMiljo.push(ident)
-							})
-
-							const miljoUpperCase = miljo.toUpperCase()
-							const identerPerMiljoStr = Formatters.arrayToString(identerPerMiljo)
-							return (
-								<span className="feil-container" key={idx}>
-									<span className="feil-kolonne_liten">{miljoUpperCase}</span>
-									<span className="feil-kolonne_stor">{identerPerMiljoStr}</span>
-								</span>
-							)
-						})}
-					</div>
-				</div>
-			</Fragment>
-		)
-	}
-
-	_renderGenerelleFeil = (bestilling, cssClass, finnesTPSFEllerStub) => {
-		!finnesTPSFEllerStub && (cssClass = 'feil-container')
+	_renderGenerelleFeil = (bestilling, cssClass, finnesIndividuellFeil) => {
+		!finnesIndividuellFeil && (cssClass = 'feil-container')
+		const antallOpprettet = this.antallIdenterOpprettet(bestilling)
 		return (
 			<div className={cssClass}>
 				<div className="feil-kolonne_stor">{bestilling.feil}</div>
-				{/* Har foreløpig ikke miljø og identer å skrive inn */}
 				<div className="feil-kolonne_stor">
 					<span className="feil-container">
 						<span className="feil-kolonne_liten" />
 						<span className="feil-kolonne_stor">
-							{this.antallIdenterOpprettet(bestilling)} av {bestilling.antallIdenter} bestilte
+							{antallOpprettet < 1
+								? 'Ingen'
+								: `${antallOpprettet} av ${bestilling.antallIdenter} bestilte`}{' '}
 							identer ble opprettet i TPSF
 						</span>
 					</span>
@@ -277,5 +148,78 @@ export default class Feilmelding extends Component {
 				})
 			})
 		return identArray.length
+	}
+
+	_renderStatusMedMiljoOgIdent = (bestillingStatus, stubStatus, header, cssClass) => {
+		return this._finnFeilStatus(bestillingStatus).map((feil, i) => {
+			stubStatus.length < 1 && (cssClass = this.finnCSSklasse(bestillingStatus, i))
+
+			const miljoOgIdenter =
+				feil.environmentIdents || feil.environmentIdentsForhold || feil.envIdent
+			const statusMelding = feil.statusMelding || feil.status
+			return (
+				<Fragment key={i}>
+					<h5>{header}</h5>
+					<div className={cssClass}>
+						<span className="feil-kolonne_stor">{statusMelding}</span>
+						<div className="feil-kolonne_stor" key={i}>
+							{Object.keys(miljoOgIdenter).map((miljo, idx) => {
+								return this._renderIdenterOgMiljo(miljoOgIdenter, miljo, idx)
+							})}
+						</div>
+					</div>
+				</Fragment>
+			)
+		})
+	}
+
+	finnCSSklasse = (status, i) => {
+		const bottomBorder = i != this._finnFeilStatus(status).length - 1
+		return cn('feil-container', {
+			'feil-container feil-container_border': bottomBorder
+		})
+	}
+
+	_renderIdenterOgMiljo = (miljoOgIdenter, miljo, idx) => {
+		let identerPerMiljo
+		if (Array.isArray(miljoOgIdenter[miljo])) {
+			identerPerMiljo = []
+			miljoOgIdenter[miljo].map(ident => {
+				!identerPerMiljo.includes(ident) && identerPerMiljo.push(ident)
+			})
+		} else {
+			identerPerMiljo = Object.keys(miljoOgIdenter[miljo])
+		}
+		return (
+			<span className="feil-container" key={idx}>
+				<span className="feil-kolonne_liten">{miljo.toUpperCase()}</span>
+				<span className="feil-kolonne_stor">{Formatters.arrayToString(identerPerMiljo)}</span>
+			</span>
+		)
+	}
+
+	_renderStatusUavhengigAvMiljo = (stubStatus, cssClass) => {
+		return stubStatus.map((stub, i) => {
+			const stubNavn = stub.navn
+			const identer = Formatters.arrayToString(stub.status[0].identer || stub.identer)
+			const statusmelding = stub.status[0].statusMelding || stub.status
+
+			//Ha linje mellom feilmeldingene, men ikke etter den siste
+			const bottomBorder = i != stubStatus.length - 1
+			cssClass = cn('feil-container', {
+				'feil-container feil-container_border': bottomBorder
+			})
+			return (
+				<div className={cssClass} key={i}>
+					<div className="feil-kolonne_stor">{statusmelding}</div>
+					<div className="feil-kolonne_stor">
+						<span className="feil-container">
+							<span className="feil-kolonne_liten">{stubNavn}</span>
+							<span className="feil-kolonne_stor">{identer}</span>
+						</span>
+					</div>
+				</div>
+			)
+		})
 	}
 }

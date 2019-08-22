@@ -108,6 +108,63 @@ describe('mapPdlDataToIdent.js', () => {
 				}
 			]
 		}
-		expect(mapPdlData(testDoedsboData)).toMatchObject(testRes)
+		expect(mapPdlData(testDoedsboData)).toMatchObject([testRes])
+	})
+
+	const testFalskIdData = {
+		falskIdentitet: {
+			rettIdentitetErUkjent: true
+		}
+	}
+
+	it('should return falsk identitet with ukjent rett identitet', () => {
+		const falskIdData = {
+			header: 'Falsk identitet',
+			data: [
+				{
+					id: 'rettIdentitetErUkjent',
+					label: 'Rett identitet',
+					value: 'UKJENT'
+				},
+				{
+					id: 'rettIdentitetVedIdentifikasjonsnummer',
+					label: 'Rett identitet',
+					value: undefined
+				},
+				{
+					id: 'identitetsnummer',
+					label: 'Rett fnr/dnr',
+					value: undefined
+				},
+				{
+					id: 'fornavn',
+					label: 'Fornavn',
+					value: undefined
+				},
+				{
+					id: 'mellomnavn',
+					label: 'Mellomnavn',
+					value: undefined
+				},
+				{
+					id: 'etternavn',
+					label: 'Etternavn',
+					value: undefined
+				},
+				{
+					id: 'foedselsdato',
+					label: 'Fødselsdato',
+					value: undefined
+				},
+				{
+					id: 'statsborgerskap',
+					label: 'Statsborgerskap',
+					width: 'medium',
+					apiKodeverkId: 'StatsborgerskapFreg',
+					value: undefined
+				}
+			]
+		}
+		expect(mapPdlData(testFalskIdData)).toMatchObject([falskIdData])
 	})
 })
