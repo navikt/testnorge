@@ -19,7 +19,7 @@ import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPeriode;
 import no.nav.dolly.domain.resultset.aareg.RsPermisjon;
-import no.nav.dolly.domain.resultset.aareg.RsPerson;
+import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.aareg.RsUtenlandsopphold;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
@@ -124,7 +124,7 @@ public class AaregMappingStrategyTest {
                         .build())
                 .arbeidsforholdID("Ansatt")
                 .arbeidsforholdIDnav(101L)
-                .arbeidstaker(RsPerson.builder()
+                .arbeidstaker(RsPersonAareg.builder()
                         .ident("5345345345")
                         .identtype("FNR")
                         .build())

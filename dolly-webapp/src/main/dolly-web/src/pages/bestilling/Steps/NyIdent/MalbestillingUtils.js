@@ -159,7 +159,7 @@ const _mapRegistreKey = key => {
 			return 'arbeidsforhold'
 		case 'sigrunStub':
 			return 'inntekt'
-		case 'krrStub':
+		case 'krrstub':
 			return 'krr'
 		case 'kontaktinformasjonForDoedsbo':
 			return 'kontaktinformasjonForDoedsbo'
@@ -249,7 +249,7 @@ const _mapRegistreValue = (key, value) => {
 				})
 			})
 			return mappedValue
-		case 'krrStub':
+		case 'krrstub':
 			return [value]
 		case 'kontaktinformasjonForDoedsbo':
 			const mapObj = {}

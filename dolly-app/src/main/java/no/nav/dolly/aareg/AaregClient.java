@@ -19,7 +19,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.domain.resultset.aareg.RsPerson;
+import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 
 @Slf4j
 @Service
@@ -50,7 +50,7 @@ public class AaregClient implements ClientRegister {
                 for (int i = 0; i < bestilling.getAareg().size(); i++) {
                     RsArbeidsforhold arbfInput = bestilling.getAareg().get(i);
                     arbfInput.setArbeidsforholdID(Integer.toString(i + 1));
-                    arbfInput.setArbeidstaker(RsPerson.builder().ident(norskIdent.getIdent()).build());
+                    arbfInput.setArbeidstaker(RsPersonAareg.builder().ident(norskIdent.getIdent()).build());
 
                     boolean found = false;
                     for (int j = 0; j < response.getBody().length; j++) {
