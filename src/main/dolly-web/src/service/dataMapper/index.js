@@ -32,7 +32,9 @@ const DataMapper = {
 			return [
 				i.ident,
 				i.identtype,
-				`${i.fornavn} ${i.etternavn}`,
+				i.mellomnavn
+					? `${i.fornavn} ${i.mellomnavn} ${i.etternavn}`
+					: `${i.fornavn} ${i.etternavn}`,
 				Formatters.kjonnToString(i.kjonn),
 				Formatters.formatAlder(i.alder, i.doedsdato),
 				_findBestillingId(gruppe, i.ident).toString()
