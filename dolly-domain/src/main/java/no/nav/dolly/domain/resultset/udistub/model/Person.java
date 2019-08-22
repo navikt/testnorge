@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.OppholdStatus;
 
 import java.sql.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ public class Person {
 	private List<Alias> aliaser;
 	private List<Avgjoerelse> avgjoerelser;
 	private Arbeidsadgang arbeidsadgang;
-	private String oppholdStatus;
+	private OppholdStatus oppholdStatus;
 
 	private boolean avgjoerelseUavklart;
 

@@ -84,6 +84,13 @@ public class RsBestilling {
         return sigrunStubStatus;
     }
 
+    public Set<RsStatusIdent> getUdiStubStatus() {
+        if (isNull(udiStubStatus)) {
+            udiStubStatus = new HashSet();
+        }
+        return udiStubStatus;
+    }
+
     public Set<RsStatusMiljoeIdentForhold> getAaregStatus() {
         if (isNull(aaregStatus)) {
             aaregStatus = new HashSet();

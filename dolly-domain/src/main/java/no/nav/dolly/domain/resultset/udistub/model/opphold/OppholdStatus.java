@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.udistub.model.opphold;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,20 +14,22 @@ import java.sql.Date;
 @AllArgsConstructor
 @Setter
 @Getter
+@Builder
 public class OppholdStatus {
 
 	private Boolean uavklart;
-	private Periode eoSellerEFTABeslutningOmOppholdsrettPeriode;
 
-	private Date eoSellerEFTABeslutningOmOppholdsrettEffektuering;
-	private String eoSellerEFTABeslutningOmOppholdsrett;
-	private Periode eoSellerEFTAVedtakOmVarigOppholdsrettPeriode;
-	private Date eoSellerEFTAVedtakOmVarigOppholdsrettEffektuering;
-	private String eoSellerEFTAVedtakOmVarigOppholdsrett;
+	private Periode eosEllerEFTABeslutningOmOppholdsrettPeriode;
+	private Date eosEllerEFTABeslutningOmOppholdsrettEffektuering;
+	private String eosEllerEFTABeslutningOmOppholdsrett;
 
-	private Periode eoSellerEFTAOppholdstillatelsePeriode;
-	private Date eoSellerEFTAOppholdstillatelseEffektuering;
-	private String eoSellerEFTAOppholdstillatelse;
+	private Periode eosEllerEFTAVedtakOmVarigOppholdsrettPeriode;
+	private Date eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering;
+	private String eosEllerEFTAVedtakOmVarigOppholdsrett;
+
+	private Periode eosEllerEFTAOppholdstillatelsePeriode;
+	private Date eosEllerEFTAOppholdstillatelseEffektuering;
+	private String eosEllerEFTAOppholdstillatelse;
 
 	private OppholdSammeVilkaar oppholdSammeVilkaar;
 	private IkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOppholdstilatelseIkkeVilkaarIkkeVisum;

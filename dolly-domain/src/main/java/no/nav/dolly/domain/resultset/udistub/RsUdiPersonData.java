@@ -2,7 +2,6 @@ package no.nav.dolly.domain.resultset.udistub;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,20 +19,19 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RsUdiForholdData {
+public class RsUdiPersonData {
 
-	private List<Alias> aliaser;
-	private Arbeidsadgang arbeidsadgang;
-	private Boolean avgjoerelseUavklart;
-	private List<Avgjoerelse> avgjoerelser;
-	private Boolean flyktning;
-	private String fnr;
-	private MangelfullDato foedselsDato;
-	private String id;
-	private PersonNavn navn;
-	private OppholdStatus oppholdsStatus;
-	private Boolean oppholdstilatelse;
-	private String soeksnadOmBeskyttelseUnderBehandling;
-	private Date soknadDato;
-
+		private List<Alias> aliaser;
+		private Arbeidsadgang arbeidsadgang;
+		private Boolean avgjoerelseUavklart;
+		private List<Avgjoerelse> avgjoerelser;
+		private Boolean flyktning;
+		private String fnr;
+		private MangelfullDato foedselsDato;
+		private String id;
+		private PersonNavn navn;
+		private OppholdStatus oppholdsStatus;
+		private Boolean oppholdstilatelse;
+		private String soeksnadOmBeskyttelseUnderBehandling;
+		private Date soknadDato;
 }

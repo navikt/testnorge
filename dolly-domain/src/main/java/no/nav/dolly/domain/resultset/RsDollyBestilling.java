@@ -16,7 +16,7 @@ import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.sigrunstub.RsOpprettSkattegrunnlag;
-import no.nav.dolly.domain.resultset.udistub.RsUdiForholdData;
+import no.nav.dolly.domain.resultset.udistub.RsUdiPersonData;
 
 @Getter
 @Setter
@@ -30,7 +30,7 @@ public class RsDollyBestilling {
 
     private List<RsOpprettSkattegrunnlag> sigrunstub;
     private RsDigitalKontaktdata krrstub;
-    private RsUdiForholdData udistub;
+    private RsUdiPersonData udistub;
     private List<RsArbeidsforhold> aareg;
     private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;

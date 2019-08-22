@@ -1,17 +1,17 @@
 package no.nav.dolly.mapper.strategy;
 
 import ma.glasnost.orika.MapperFactory;
-import no.nav.dolly.domain.resultset.udistub.RsUdiForholdData;
-import no.nav.dolly.domain.resultset.udistub.UdiForholdRequest;
+import no.nav.dolly.domain.resultset.udistub.RsUdiPersonData;
+import no.nav.dolly.domain.resultset.udistub.model.Person;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UdiForholdMappingStrategy implements MappingStrategy {
+public class UdiPersonMappingStrategy implements MappingStrategy {
 
 	@Override
 	public void register(MapperFactory factory) {
-		factory.classMap(RsUdiForholdData.class, UdiForholdRequest.class)
+		factory.classMap(RsUdiPersonData.class, Person.class)
 				.byDefault()
 				.register();
 	}
