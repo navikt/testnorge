@@ -24,7 +24,6 @@ export const getAttributesFromMal = mal => {
 		tpsfKriterier.relasjoner.barn && attrArray.push('barn')
 		tpsfKriterier.relasjoner.partner && attrArray.push('partner')
 	}
-
 	if (bestKriterier.pdlforvalter) {
 		Object.keys(bestKriterier.pdlforvalter).map(pdlattr => {
 			attrArray.push(pdlattr)
@@ -43,12 +42,12 @@ export const getValuesFromMal = mal => {
 	const bestKriterierArray = Object.entries(JSON.parse(mal.bestKriterier))
 
 	_mapValuesToObject(reduxStateValue, tpsfKriterierArray)
-
 	bestKriterierArray.forEach(reg => {
 		const pdlforvalter = reg[0] === 'pdlforvalter'
 		const navn = pdlforvalter ? Object.keys(reg[1])[0] : reg[0]
 		const values = pdlforvalter ? reg[1][navn] : reg[1]
 		let valueArray = _mapRegistreValue(navn, values)
+
 		if (Array.isArray(valueArray)) {
 			_mapArrayValuesToObject(reduxStateValue, valueArray, navn)
 		}
@@ -63,7 +62,6 @@ export const getValuesFromMal = mal => {
 const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 	valueArray.forEach(v => {
 		let key = v[0]
-
 		if (key === 'regdato') return
 
 		let value = v[1]
@@ -107,10 +105,12 @@ const _mapValuesToObject = (objectToAssign, valueArray, keyPrefix = '') => {
 
 const _mapArrayValuesToObject = (objectToAssign, valueArray, key, keyPrefix = '') => {
 	//Må se på hvordan det skal gjøres når utenlandsID kommer inn
+
 	const mappedKey =
 		key === 'pdlforvalter' || key === 'arenaforvalter'
 			? _mapRegistreKey(Object.keys(valueArray[0])[0])
 			: _mapRegistreKey(key)
+
 	let valueArrayObj = []
 
 	valueArray.forEach(v => {
@@ -137,7 +137,10 @@ const _formatValueForObject = (key, value) => {
 		'foedselsdato',
 		'flyttedato',
 		'fraDato',
-		'tilDato'
+		'tilDato',
+		'startdato',
+		'faktiskSluttdato',
+		'forventetSluttdato'
 	]
 
 	if (dateAttributes.includes(key)) {
@@ -156,7 +159,7 @@ const _mapRegistreKey = key => {
 			return 'arbeidsforhold'
 		case 'sigrunStub':
 			return 'inntekt'
-		case 'krrStub':
+		case 'krrstub':
 			return 'krr'
 		case 'kontaktinformasjonForDoedsbo':
 			return 'kontaktinformasjonForDoedsbo'
@@ -164,6 +167,10 @@ const _mapRegistreKey = key => {
 			return 'utenlandskIdentifikasjonsnummer'
 		case 'arenaBrukertype':
 			return 'arenaforvalter'
+		case 'instdata':
+			return 'institusjonsopphold'
+		case 'falskIdentitet':
+			return 'falskIdentitet'
 		default:
 			return key
 	}
@@ -242,7 +249,7 @@ const _mapRegistreValue = (key, value) => {
 				})
 			})
 			return mappedValue
-		case 'krrStub':
+		case 'krrstub':
 			return [value]
 		case 'kontaktinformasjonForDoedsbo':
 			const mapObj = {}
@@ -270,6 +277,16 @@ const _mapRegistreValue = (key, value) => {
 			return [value]
 		case 'arenaforvalter':
 			return [value]
+		case 'falskIdentitet':
+			const mapFalskIdObj = {}
+			Object.entries(value.rettIdentitet).map(attr => {
+				attr[0] === 'personnavn'
+					? Object.entries(value.rettIdentitet[attr[0]]).map(navnAttr => {
+							mapFalskIdObj[navnAttr[0]] = navnAttr[1]
+					  })
+					: (mapFalskIdObj[attr[0]] = attr[1])
+			})
+			return [mapFalskIdObj]
 		default:
 			return value
 	}

@@ -14,7 +14,8 @@ export enum DataSource {
 	KRR = 'KRR',
 	AAREG = 'AAREG',
 	PDLF = 'PDLF',
-	ARENA = 'ARENA'
+	ARENA = 'ARENA',
+	INST = 'INST'
 }
 
 export interface Options {
@@ -74,6 +75,7 @@ export interface Attributt {
 	transform?: (value: any, attributter: Attributt[]) => any
 	informasjonstekst?: String
 	subGruppe?: String
+	genererSyntVerdier?: boolean
 }
 
 // Attributt grupper
