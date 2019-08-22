@@ -4,12 +4,12 @@ import ConfigService from '~/service/Config'
 
 export default class InstService {
 	static getInstUrl() {
-		return ConfigService.getDatesourceUrl('inst') || 'https://testnorge-inst.nais.preprod.local/'
+		return ConfigService.getDatesourceUrl('inst') || 'https://testnorge-inst.nais.preprod.local'
 	}
 
 	static getTestbruker(ident, env) {
 		return Request.getWithoutCredentials(
-			`${this.getInstUrl()}api/v1/ident?identer=${ident}&miljoe=${env}`,
+			`${this.getInstUrl()}/api/v1/ident?identer=${ident}&miljoe=${env}`,
 			{
 				headers: {
 					NavCallId: 'dolly',
@@ -20,6 +20,6 @@ export default class InstService {
 	}
 
 	static getTilgjengeligeMiljoer() {
-		return Request.getWithoutCredentials(`${this.getInstUrl()}api/v1/miljoer`)
+		return Request.getWithoutCredentials(`${this.getInstUrl()}/api/v1/miljoer`)
 	}
 }
