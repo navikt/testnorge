@@ -12,7 +12,7 @@ const selectOptions = {
 	stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
 
 	// SIGRUN
-	inntektTjeneste: [
+	tjeneste: [
 		{ value: 'Beregnet skatt', label: 'Beregnet skatt' },
 		{ value: 'Summert skattegrunnlag', label: 'Summert skattegrunnlag' }
 	],
@@ -24,7 +24,7 @@ const selectOptions = {
 	],
 
 	//PDLF - kontaktinformasjon dødsbo
-	adressattype: [
+	adressatType: [
 		{ value: 'ADVOKAT', label: 'Advokat' },
 		{ value: 'ORGANISASJON', label: 'Organisasjon' },
 		{ value: 'PERSON_MEDID', label: 'Kontaktperson med id' },
@@ -34,7 +34,7 @@ const selectOptions = {
 	skifteform: [{ value: 'OFFENTLIG', label: 'Offentlig' }, { value: 'ANNET', label: 'Annet' }],
 
 	// PDLF - falsk identitet
-	rettIdentitet: [
+	identitetType: [
 		{ value: 'UKJENT', label: 'Ukjent' },
 		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
 		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' }

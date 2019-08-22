@@ -86,8 +86,7 @@ Formatters.arrayToString = (array, separator = ',') => {
 
 Formatters.camelCaseToLabel = camelCase => {
 	if (!camelCase) return null
-
-	return _startCase(camelCase)
+	return _capitalize(_startCase(camelCase))
 }
 
 Formatters.uppercaseAndUnderscoreToCapitalized = value => {
@@ -103,8 +102,11 @@ Formatters.kodeverkLabel = kodeverk => {
 
 Formatters.oversettBoolean = value => {
 	if (value === null) return null
-
-	return value === true ? 'Ja' : value === false ? 'Nei' : value
+	return value === true || value === 'true'
+		? 'Ja'
+		: value === false || value === 'false'
+			? 'Nei'
+			: value
 }
 
 Formatters.booleanToServicebehov = value => {
@@ -211,7 +213,13 @@ Formatters.commaToSpace = streng => {
 }
 
 Formatters.showLabel = (optionsGruppe, value) => {
-	const obj = SelectOptionsManager(optionsGruppe).filter(options => options.value === value)
+	let copyOptionsGruppe = optionsGruppe
+
+	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
+	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
+
+	const obj = SelectOptionsManager(copyOptionsGruppe).filter(options => options.value === value)
+
 	return obj.label || obj[0].label
 }
 

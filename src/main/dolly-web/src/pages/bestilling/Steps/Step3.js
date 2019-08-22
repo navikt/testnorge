@@ -200,29 +200,13 @@ export default class Step3 extends PureComponent {
 		)
 	}
 
-	//INGVILD
 	renderSubKategori = ({ subKategori, items }) => {
 		const { values } = this.props
 		if (!subKategori.showInSummary) {
 			return items.map(item => this.renderItem(item, values))
 		}
-		console.log('items :', items)
-		// if (subKategori.id === 'arena') {
-		// 	return items[0].items.map(item => this.renderItem(item, values))
-		// }
-
 		return this.renderSubKategoriBlokk(subKategori.navn, items, values)
 	}
-
-	// renderSubKategori = ({ subKategori, items }) => {
-	// 	const { values } = this.props
-
-	// 	if (!subKategori.showInSummary) {
-	// 		return items.map(item => this.renderItem(item, values))
-	// 	}
-
-	// 	return this.renderSubKategoriBlokk(subKategori.navn, items, values)
-	// }
 
 	renderSubKategoriBlokk = (header, items, values) => {
 		let fieldType = 'oppsummering-multifield-uten-border'
@@ -233,14 +217,22 @@ export default class Step3 extends PureComponent {
 		if (
 			typeof header === 'number' ||
 			(header === 'Partner' && this.props.selectedAttributeIds.includes('barn')) ||
-			(header === 'Arbeidsforhold' && this.props.selectedAttributeIds.includes('inntekt'))
+			(header === 'Arbeidsforhold' && this.props.selectedAttributeIds.includes('inntekt')) ||
+			(header === 'Falsk identitet' &&
+				this.props.selectedAttributeIds.includes('falskIdentitet')) ||
+			(header === 'Utenlands-ID' &&
+				this.props.selectedAttributeIds.includes('utenlandskIdentifikasjonsnummer')) ||
+			(header === 'Institusjonsopphold' &&
+				this.props.selectedAttributeIds.includes('institusjonsopphold'))
 		) {
 			fieldType = 'oppsummering-multifield'
 		}
-		if (!items.every(nested => nested.items)) {
+		if (
+			!items.every(nested => {
+				return nested.items
+			})
+		) {
 			let removable = !items.every(item => this.props.selectedAttributeIds.includes(item.id))
-			console.log('removable :', removable)
-			console.log('items :', items)
 			return (
 				<div className={fieldType} key={header}>
 					<RemoveableField
@@ -286,27 +278,10 @@ export default class Step3 extends PureComponent {
 		}
 
 		if (!item.inputType) return null
-		console.log('item :', item)
-		let itemValue = Formatters.oversettBoolean(_get(stateValues, item.id))
-		if (item.dataSource === 'ARENA') {
-			item.id === 'arenaBrukertype'
-				? (itemValue = Formatters.uppercaseAndUnderscoreToCapitalized(
-						_get(stateValues['arenaBrukertype'], item.id)
-				  ))
-				: (itemValue = Formatters.oversettBoolean(_get(stateValues['arenaforvalter'], item.id)))
-		}
+		if (item.onlyShowAfterSelectedValue && !itemValue) return null
+		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
 
-		if (item.dataSource === 'PDLF' && item.subKategori.id === 'utenlandskIdentifikasjonsnummer') {
-			itemValue = Formatters.oversettBoolean(_get(stateValues, item.id))
-		}
-
-		if (item.dataSource === 'INST' && (item.id === 'institusjonstype' || item.id === 'varighet')) {
-			itemValue = Formatters.showLabel(item.id, itemValue)
-		}
-
-		itemValue === 'true' && (itemValue = true) // Quickfix fra SelectOptions(stringBoolean)
-		itemValue === 'false' && (itemValue = false)
-		typeof itemValue === 'boolean' && (itemValue = Formatters.oversettBoolean(itemValue))
+		let itemValue = this._formatereItemValue(item, _get(stateValues, item.id))
 
 		const staticValueProps = {
 			key: item.id,
@@ -316,8 +291,6 @@ export default class Step3 extends PureComponent {
 			size: item.size
 		}
 
-		if (item.onlyShowAfterSelectedValue && !itemValue) return null
-		if ((item.id === 'utenFastBopel' || item.id === 'ufb_kommunenr') && !itemValue) return null
 		return (
 			<RemoveableField
 				removable={this.state.edit && this.props.selectedAttributeIds.indexOf(item.id) >= 0}
@@ -365,5 +338,20 @@ export default class Step3 extends PureComponent {
 
 	onClickPrevious = values => {
 		this.props.setEnvironments({ values, goBack: true })
+	}
+
+	_formatereItemValue = (item, itemValue) => {
+		let copyItemValue = Formatters.oversettBoolean(itemValue)
+
+		item.options &&
+			item.options[0].value !== true &&
+			item.options[0].value !== 'true' &&
+			//Vil ikke ha med true/false -> ja/nei
+			(copyItemValue = Formatters.showLabel(item.id, copyItemValue))
+
+		item.id === 'arenaBrukertype' &&
+			(copyItemValue = Formatters.uppercaseAndUnderscoreToCapitalized(copyItemValue))
+
+		return copyItemValue
 	}
 }
