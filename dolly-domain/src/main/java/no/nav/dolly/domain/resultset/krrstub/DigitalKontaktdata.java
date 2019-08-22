@@ -13,7 +13,9 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DigitalKontaktdataRequest {
+public class DigitalKontaktdata {
+
+        private Long id;
 
         private ZonedDateTime gyldigFra;
         private String personident;

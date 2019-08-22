@@ -11,7 +11,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Født etter',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation(),
+		validation: DateValidation(false),
 		attributtType: AttributtType.SelectOnly,
 		sattForEksisterendeIdent: true,
 		defaultValue: new Date().setFullYear(new Date().getFullYear() - 80)
@@ -23,7 +23,7 @@ const AttributtListe: Attributt[] = [
 		label: 'Født før',
 		dataSource: DataSource.TPSF,
 		inputType: InputType.Date,
-		validation: DateValidation(),
+		validation: DateValidation(false),
 		attributtType: AttributtType.SelectOnly,
 		sattForEksisterendeIdent: true,
 		defaultValue: new Date()

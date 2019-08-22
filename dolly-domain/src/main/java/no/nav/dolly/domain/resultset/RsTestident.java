@@ -24,5 +24,5 @@ public class RsTestident {
     private List<RsMeldingStatusIdent> arenaforvalterStatus;
     private List<RsStatusMiljoeIdentForhold> aaregStatus;
     private RsPdlForvalterStatus pdlforvalterStatus;
-    private List<RsStatusMiljoeIdentForhold> instdata;
+    private List<RsStatusMiljoeIdentForhold> instdataStatus;
 }

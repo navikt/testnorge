@@ -3,15 +3,20 @@ package no.nav.dolly.bestilling.tpsf;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.sts.StsOidcService.getUserIdToken;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -25,6 +30,7 @@ import no.nav.dolly.domain.resultset.Person;
 import no.nav.dolly.domain.resultset.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.TpsfIdenterMiljoer;
 import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
+import no.nav.dolly.domain.resultset.tpsf.RsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
@@ -38,6 +44,7 @@ public class TpsfService {
     private static final String TPSF_SEND_TPS_FLERE_URL = "/tilTpsFlere";
     private static final String TPSF_HENT_PERSONER_URL = "/hentpersoner";
     private static final String TPSF_CHECK_IDENT_STATUS = "/checkpersoner";
+    private static final String TPSF_UPDATE_PERSON_URL = "/api/v1/testdata/updatepersoner";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -76,6 +83,12 @@ public class TpsfService {
             });
         }
         return identerMedFamilie;
+    }
+
+    public ResponseEntity updatePerson(RsPerson tpsfPerson) {
+        return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getTpsf().getUrl() + TPSF_UPDATE_PERSON_URL))
+                .header(AUTHORIZATION, getUserIdToken())
+                .body(singletonList(tpsfPerson)), Object.class);
     }
 
     private ResponseEntity<Object> postToTpsf(String addtionalUrl, HttpEntity request) {
