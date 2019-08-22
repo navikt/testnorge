@@ -29,9 +29,9 @@ import no.nav.dolly.domain.resultset.udistub.RsUdiPersonData;
 public class BestKriterier {
 
     private List<RsArbeidsforhold> aareg;
-    private RsDigitalKontaktdata krrStub;
-    private RsUdiPersonData udiStub;
-    private List<RsOpprettSkattegrunnlag> sigrunStub;
+	private RsDigitalKontaktdata krrstub;
+    private RsUdiPersonData udistub;
+    private List<RsOpprettSkattegrunnlag> sigrunstub;
     private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;
     private List<RsInstdata> instdata;
@@ -43,10 +43,10 @@ public class BestKriterier {
         return aareg;
     }
 
-    public List<RsOpprettSkattegrunnlag> getSigrunStub() {
-        if (isNull(sigrunStub)) {
-            sigrunStub = new ArrayList();
+    public List<RsOpprettSkattegrunnlag> getSigrunstub() {
+        if (isNull(sigrunstub)) {
+            sigrunstub = new ArrayList();
         }
-        return sigrunStub;
+        return sigrunstub;
     }
 }

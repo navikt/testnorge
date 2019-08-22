@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RsPerson {
+public class RsPersonAareg {
 
     private String ident;
     private String identtype;

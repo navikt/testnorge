@@ -26,7 +26,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAaregOpprettRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.domain.resultset.aareg.RsPerson;
+import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregClientTest {
@@ -78,7 +78,7 @@ public class AaregClientTest {
 
         aaregClient.gjenopprett(RsDollyBestilling.builder().aareg(singletonList(RsArbeidsforhold.builder()
                         .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
-                        .arbeidstaker(RsPerson.builder().ident(IDENT).build())
+                        .arbeidstaker(RsPersonAareg.builder().ident(IDENT).build())
                         .build())).environments(singletonList("u2")).build(),
                 NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
 
@@ -92,7 +92,7 @@ public class AaregClientTest {
 
         aaregClient.gjenopprett(RsDollyBestilling.builder().aareg(singletonList(RsArbeidsforhold.builder()
                         .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
-                        .arbeidstaker(RsPerson.builder().ident(IDENT).build())
+                        .arbeidstaker(RsPersonAareg.builder().ident(IDENT).build())
                         .build())).environments(singletonList("u2")).build(),
                 NorskIdent.builder().ident(IDENT).build(), new BestillingProgress());
 
@@ -111,7 +111,7 @@ public class AaregClientTest {
 
         aaregClient.gjenopprett(RsDollyBestilling.builder().aareg(singletonList(RsArbeidsforhold.builder()
                         .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
-                        .arbeidstaker(RsPerson.builder().ident(IDENT).build())
+                        .arbeidstaker(RsPersonAareg.builder().ident(IDENT).build())
                         .build())).environments(singletonList("u2")).build(),
                 NorskIdent.builder().ident(IDENT).build(), progress);
 

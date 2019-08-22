@@ -21,6 +21,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -96,6 +97,25 @@ public class BestillingService {
 
     public boolean isStoppet(Long bestillingId) {
         return bestillingKontrollRepository.findByBestillingIdOrderByBestillingId(bestillingId).orElse(BestillingKontroll.builder().stoppet(false).build()).isStoppet();
+    }
+
+    @Transactional
+    public Bestilling saveBestilling(String ident, RsDollyUpdateRequest request) {
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .ident(ident)
+                        .sistOppdatert(now())
+                        .miljoer(join(",", request.getEnvironments()))
+                        .tpsfKriterier(toJson(request.getTpsfPerson()))
+                        .bestKriterier(toJson(BestKriterier.builder()
+                                .aareg(request.getAareg())
+                                .krrstub(request.getKrrstub())
+                                .sigrunstub(request.getSigrunstub())
+                                .arenaforvalter(request.getArenaforvalter())
+                                .pdlforvalter(request.getPdlforvalter())
+                                .instdata(request.getInstdata())
+                                .build()))
+                        .build());
     }
 
     @Transactional
